@@ -1,0 +1,75 @@
+version: 1
+issue: 5
+base: main
+branch: codex/issue-5
+tasks:
+  - id: task-01
+    title: Create `smoke/codex-smoke.txt`
+    status: done
+    started_at: '2026-03-01T04:53:48Z'
+    finished_at: '2026-03-01T04:54:01Z'
+    commit: c0708b9c3f46cd1f1e0bdc57c11d59833ef4da52
+    notes: []
+  - id: task-02
+    title: 'Add a single line to `smoke/codex-smoke.txt`: `codex smoke test`'
+    status: todo
+    started_at: null
+    finished_at: null
+    commit: ''
+    notes: []
+  - id: task-03
+    title: '`smoke/codex-smoke.txt` exists on the PR branch'
+    status: todo
+    started_at: null
+    finished_at: null
+    commit: ''
+    notes: []
+  - id: task-04
+    title: '`smoke/codex-smoke.txt` content exactly matches `codex smoke test`'
+    status: todo
+    started_at: null
+    finished_at: null
+    commit: ''
+    notes: []
+  - id: task-05
+    title: PR references this issue
+    status: todo
+    started_at: null
+    finished_at: null
+    commit: ''
+    notes: []
+  - id: task-06
+    title: Create `smoke/codex-smoke.txt`
+    status: todo
+    started_at: null
+    finished_at: null
+    commit: ''
+    notes: []
+  - id: task-07
+    title: 'Add a single line: `codex smoke test`'
+    status: todo
+    started_at: null
+    finished_at: null
+    commit: ''
+    notes: []
+  - id: task-08
+    title: '`smoke/codex-smoke.txt` exists on the PR branch'
+    status: todo
+    started_at: null
+    finished_at: null
+    commit: ''
+    notes: []
+  - id: task-09
+    title: File content exactly matches `codex smoke test`
+    status: todo
+    started_at: null
+    finished_at: null
+    commit: ''
+    notes: []
+  - id: task-10
+    title: PR references this issue
+    status: todo
+    started_at: null
+    finished_at: null
+    commit: ''
+    notes: []
