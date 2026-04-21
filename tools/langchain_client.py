@@ -8,6 +8,7 @@ timeouts, retries, and environment overrides.
 from __future__ import annotations
 
 import contextlib
+import importlib
 import json
 import logging
 import os
@@ -201,6 +202,15 @@ def _build_github_client(
     return chat_openai(**kwargs)
 
 
+def _load_chat_anthropic_class() -> type | None:
+    try:
+        module = importlib.import_module("langchain_anthropic")
+        chat_anthropic_cls = module.ChatAnthropic
+    except (ImportError, AttributeError):
+        return None
+    return chat_anthropic_cls if isinstance(chat_anthropic_cls, type) else None
+
+
 def build_chat_client(
     *,
     model: str | None = None,
@@ -214,10 +224,7 @@ def build_chat_client(
     except ImportError:
         return None
 
-    try:
-        from langchain_anthropic import ChatAnthropic as chat_anthropic_cls
-    except ImportError:
-        chat_anthropic_cls = None
+    chat_anthropic_cls = _load_chat_anthropic_class()
 
     github_token = os.environ.get("GITHUB_TOKEN")
     openai_token = os.environ.get("OPENAI_API_KEY")
@@ -334,10 +341,7 @@ def build_chat_clients(
     except ImportError:
         return []
 
-    try:
-        from langchain_anthropic import ChatAnthropic as chat_anthropic_cls
-    except ImportError:
-        chat_anthropic_cls = None
+    chat_anthropic_cls = _load_chat_anthropic_class()
 
     github_token = os.environ.get("GITHUB_TOKEN")
     openai_token = os.environ.get("OPENAI_API_KEY")
