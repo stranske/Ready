@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=82.0.1", "wheel"]
+requires = ["setuptools>=69.0.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -26,8 +26,8 @@ dependencies = []
 dev = [
     "pytest==9.0.3",
     "pytest-cov==7.1.0",
-    "ruff>=0.15.12",
-    "mypy==2.0.0",
+    "ruff>=0.15.13",
+    "mypy>=2.1.0",
     "black==26.3.1",
 ]
 
