@@ -40,6 +40,9 @@ def test_generated_dirs_untracked_and_vendored_preserved() -> None:
             f"{generated_dir}/probe.py"
         ), f"{generated_dir}/ must stay ignored so cleaned bytecode cannot return."
 
+    for generated_file in ("module.pyc", "module.pyo", "module.pyd"):
+        assert _git_ignore_rule(generated_file), f"{generated_file} must stay ignored."
+
     vendored = _git_ls_files(".github/scripts/node_modules")
     assert vendored, ".github/scripts/node_modules/ must remain tracked for workflow script deps."
 
