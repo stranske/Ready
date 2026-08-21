@@ -1,3 +1,7 @@
+# Python bytecode is generated locally and must not return after cleanup.
+__pycache__/
+*.py[cod]
+
 # Codex working files (preserved via workflow artifacts, not git)
 # These files are rebuilt each run and would cause merge conflicts
 # if multiple PRs commit them. Historical data is preserved in:
