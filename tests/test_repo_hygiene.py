@@ -24,6 +24,12 @@ def _git_ignore_rule(path: str) -> str | None:
     return result.stdout.strip() or None
 
 
+def _git_ignore_pattern(rule: str) -> str:
+    """Extract the matched pattern from ``git check-ignore -v`` output."""
+    source, _separator, _path = rule.partition("\t")
+    return source.rsplit(":", 1)[-1]
+
+
 def test_generated_dirs_untracked_and_vendored_preserved() -> None:
     """Root node_modules/ and __pycache__ stay untracked; vendored scripts tree remains."""
     root_node_modules = _git_ls_files("node_modules")
@@ -47,9 +53,13 @@ def test_generated_dirs_untracked_and_vendored_preserved() -> None:
     assert vendored, ".github/scripts/node_modules/ must remain tracked for workflow script deps."
 
     root_rule = _git_ignore_rule("node_modules/probe.js")
-    assert (
-        root_rule and root_rule.startswith(".gitignore:") and "/node_modules/\t" in root_rule
-    ), "Root node_modules/ must be ignored specifically by .gitignore's /node_modules/ rule."
+    assert root_rule and root_rule.startswith(
+        ".gitignore:"
+    ), "Root node_modules/ must be ignored by the repository .gitignore."
+    assert _git_ignore_pattern(root_rule) in {"/node_modules/", "node_modules/"}, (
+        "Root node_modules/ must be ignored by a directory rule; the synced template may "
+        "use the broad form when it also explicitly preserves vendored workflow dependencies."
+    )
 
     assert not _git_ignore_rule(
         ".github/scripts/node_modules/minimatch/package.json"
