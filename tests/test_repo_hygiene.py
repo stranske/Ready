@@ -61,6 +61,8 @@ def test_generated_dirs_untracked_and_vendored_preserved() -> None:
         "use the broad form when it also explicitly preserves vendored workflow dependencies."
     )
 
-    assert not _git_ignore_rule(
-        ".github/scripts/node_modules/minimatch/package.json"
-    ), "Vendored .github/scripts/node_modules/ must not match the root-anchored ignore rule."
+    vendored_rule = _git_ignore_rule(".github/scripts/node_modules/minimatch/package.json")
+    assert vendored_rule is None or _git_ignore_pattern(vendored_rule).startswith("!"), (
+        "Vendored .github/scripts/node_modules/ must be unignored; verbose check-ignore "
+        "may report the negation rule that preserves it."
+    )
