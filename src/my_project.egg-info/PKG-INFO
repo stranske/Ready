@@ -100,6 +100,21 @@ This repository uses reusable workflows from [stranske/Workflows](https://github
 
 **Note:** `agents-orchestrator.yml` is legacy and can be removed. The current architecture uses `agents-keepalive-loop.yml` which integrates with the Gate workflow for event-driven triggering.
 
+### Coverage Baseline
+
+`pr-00-gate.yml` runs the coverage soft gate (`coverage-min: "80"`, `enable-soft-gate: true`), which compares each run's coverage against `config/coverage-baseline.json`:
+
+| Field | Meaning |
+|-------|---------|
+| `line` | Baseline coverage percentage. `tools/coverage_trend.py` and `tools/coverage_guard.py` both accept `line` or `coverage`, with `line` taking precedence — use `line`. |
+| `warn_drop` | Coverage-point drop from baseline that triggers a warning before a breach issue is opened. |
+| `recovery_days` | Consecutive days of passing coverage required before a breach issue is closed automatically. |
+| `updated` | Date `line` was last changed. |
+
+This file is excluded from Workflows sync — each repo owns its own baseline. Measured coverage covers `src/my_project` only (`[tool.coverage.run] source = ["src"]` in `pyproject.toml`); everything in `scripts/` and `tools/` is fleet tooling tested upstream in `stranske/Workflows`, not by this repo's own suite.
+
+**Updating the baseline:** when coverage intentionally changes, set `line` to the new measured percentage and `updated` to the date of the change. Otherwise the next run compares against a stale number and reports a drop (or improvement) that was already accepted.
+
 ## Agent Automation
 
 This template uses the **Gate-triggered keepalive** architecture:
