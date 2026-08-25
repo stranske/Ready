@@ -9,12 +9,14 @@ coverage-min in pr-00-gate.yml and fail_under in pyproject.toml or the three dri
 from __future__ import annotations
 
 import json
+import math
 import re
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 BASELINE_PATH = REPO_ROOT / "config" / "coverage-baseline.json"
-GATE_WORKFLOW_PATH = REPO_ROOT / ".github" / "workflows" / "pr-00-gate.yml"
+CI_WORKFLOW_PATH = REPO_ROOT / ".github" / "workflows" / "ci.yml"
+PR_GATE_WORKFLOW_PATH = REPO_ROOT / ".github" / "workflows" / "pr-00-gate.yml"
 PYPROJECT_PATH = REPO_ROOT / "pyproject.toml"
 
 
@@ -42,33 +44,39 @@ def test_baseline_keys_line_not_coverage() -> None:
     )
 
 
-def test_baseline_matches_gate_and_pyproject() -> None:
+def _coverage_min(path: Path) -> float:
+    match = re.search(r"coverage-min:\s*[\"']?(\d+(?:\.\d+)?)[\"']?", path.read_text())
+    assert match, f"{path.name} must set a numeric coverage-min."
+    return float(match.group(1))
+
+
+def test_baseline_matches_ci_gate_and_pyproject() -> None:
     baseline = _load_baseline()
-    gate_text = GATE_WORKFLOW_PATH.read_text()
-    gate_match = re.search(r'coverage-min:\s*"(\d+)"', gate_text)
-    assert gate_match, "pr-00-gate.yml must set a numeric coverage-min."
-    gate_min = float(gate_match.group(1))
+    ci_min = _coverage_min(CI_WORKFLOW_PATH)
+    gate_min = _coverage_min(PR_GATE_WORKFLOW_PATH)
 
     pyproject_text = PYPROJECT_PATH.read_text()
     fail_under_match = re.search(r"fail_under\s*=\s*(\d+)", pyproject_text)
     assert fail_under_match, "pyproject.toml [tool.coverage.report] must set fail_under."
     fail_under = float(fail_under_match.group(1))
 
-    assert baseline["line"] == gate_min == fail_under == 80.0, (
-        "config/coverage-baseline.json `line`, pr-00-gate.yml `coverage-min`, and "
-        "pyproject.toml `fail_under` must all agree (80) so the three don't drift apart: "
-        f"line={baseline['line']!r}, coverage-min={gate_min!r}, fail_under={fail_under!r}"
+    assert baseline["line"] == ci_min == gate_min == fail_under == 80.0, (
+        "config/coverage-baseline.json `line`, ci.yml and pr-00-gate.yml `coverage-min`, "
+        "and pyproject.toml `fail_under` must all agree (80) so the four don't drift apart: "
+        f"line={baseline['line']!r}, ci={ci_min!r}, gate={gate_min!r}, "
+        f"fail_under={fail_under!r}"
     )
 
 
 def test_baseline_has_warn_drop_and_recovery_days() -> None:
     baseline = _load_baseline()
-    assert isinstance(baseline.get("warn_drop"), (int, float)), (
-        "warn_drop must be numeric -- it's the coverage-point drop that triggers a warning "
-        "before a breach issue is opened."
+    warn_drop = baseline.get("warn_drop")
+    assert isinstance(warn_drop, (int, float)) and not isinstance(warn_drop, bool) and math.isfinite(warn_drop), (
+        "warn_drop must be a finite numeric value excluding booleans -- it's the coverage-point "
+        "drop that triggers a warning before a breach issue is opened."
     )
-    assert isinstance(baseline.get("recovery_days"), int), (
-        "recovery_days must be an int -- consecutive passing days required before a breach "
+    assert type(baseline.get("recovery_days")) is int, (
+        "recovery_days must be an exact int excluding booleans -- consecutive passing days required before a breach "
         "issue auto-closes."
     )
     assert baseline["recovery_days"] > 0
