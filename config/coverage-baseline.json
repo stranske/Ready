@@ -1,0 +1,7 @@
+{
+  "line": 80.0,
+  "warn_drop": 1.0,
+  "recovery_days": 3,
+  "updated": "2026-08-25",
+  "notes": "Ready exists to exercise every Workflows capability end-to-end, so it must exercise the coverage BASELINE path too, not just coverage measurement. Without this file tools/coverage_trend.py reports baseline_status=absent and computes no delta, and Maint Coverage Guard has nothing to compare against -- meaning the one repo whose job is to catch fleet CI defects was silently skipping the comparison. That mattered: the guard produced exactly one breach issue fleet-wide in ten months, and this is where that should have surfaced first. Keyed `line` deliberately: both tools/coverage_trend.py and tools/coverage_guard.py accept `line` or `coverage`, with `line` taking precedence, and exercising the precedence path is the point of a conformance repo. Set to 80 to match this repo's coverage-min and pyproject fail_under; measured coverage is 100% of the src/my_project scaffold, which is the only code Ready owns -- everything in scripts/ and tools/ is synced fleet tooling tested upstream in stranske/Workflows."
+}
