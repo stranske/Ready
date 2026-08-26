@@ -45,9 +45,12 @@ def test_baseline_keys_line_not_coverage() -> None:
 
 
 def _coverage_min(path: Path) -> float:
-    match = re.search(r"coverage-min:\s*[\"']?(\d+(?:\.\d+)?)[\"']?", path.read_text())
+    match = re.search(
+        r"(?m)^[ \t]*coverage-min[ \t]*:[ \t]*([\"']?)(\d+(?:\.\d+)?)\1[ \t]*(?:#.*)?$",
+        path.read_text(),
+    )
     assert match, f"{path.name} must set a numeric coverage-min."
-    return float(match.group(1))
+    return float(match.group(2))
 
 
 def test_baseline_matches_ci_gate_and_pyproject() -> None:
@@ -56,7 +59,14 @@ def test_baseline_matches_ci_gate_and_pyproject() -> None:
     gate_min = _coverage_min(PR_GATE_WORKFLOW_PATH)
 
     pyproject_text = PYPROJECT_PATH.read_text()
-    fail_under_match = re.search(r"fail_under\s*=\s*(\d+)", pyproject_text)
+    coverage_report = re.search(
+        r"(?ms)^\[tool\.coverage\.report\][ \t]*\n(.*?)(?=^\[|\Z)", pyproject_text
+    )
+    assert coverage_report, "pyproject.toml must define [tool.coverage.report]."
+    fail_under_match = re.search(
+        r"(?m)^[ \t]*fail_under[ \t]*=[ \t]*(\d+(?:\.\d+)?)[ \t]*(?:#.*)?$",
+        coverage_report.group(1),
+    )
     assert fail_under_match, "pyproject.toml [tool.coverage.report] must set fail_under."
     fail_under = float(fail_under_match.group(1))
 
