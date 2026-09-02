@@ -2,6 +2,9 @@
 __pycache__/
 *.py[cod]
 
+# Distribution metadata is regenerated from pyproject.toml by builds and editable installs.
+*.egg-info/
+
 # Codex working files (preserved via workflow artifacts, not git)
 # These files are rebuilt each run and would cause merge conflicts
 # if multiple PRs commit them. Historical data is preserved in:
