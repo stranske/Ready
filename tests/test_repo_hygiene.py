@@ -41,6 +41,10 @@ def test_generated_distribution_metadata_untracked_and_ignored() -> None:
     probe = "src/install-probe.egg-info/PKG-INFO"
     rule = _git_ignore_rule(probe)
     assert rule, "*.egg-info/ must stay ignored so editable installs cannot dirty the tree."
+    assert rule.startswith(".gitignore:"), (
+        "The egg-info rule must come from this repository's .gitignore; global excludes do not "
+        "protect other clones or CI."
+    )
     assert (
         _git_ignore_pattern(rule) == "*.egg-info/"
     ), "Generated distribution metadata must be covered by the canonical directory rule."

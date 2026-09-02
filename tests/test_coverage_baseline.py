@@ -79,6 +79,7 @@ def test_baseline_matches_ci_gate_and_pyproject() -> None:
 
 
 def test_baseline_has_warn_drop_and_recovery_days() -> None:
+    """Coverage recovery controls must reject ambiguous or non-finite JSON numbers."""
     baseline = _load_baseline()
     warn_drop = baseline.get("warn_drop")
     assert (
