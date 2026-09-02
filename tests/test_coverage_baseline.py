@@ -81,7 +81,11 @@ def test_baseline_matches_ci_gate_and_pyproject() -> None:
 def test_baseline_has_warn_drop_and_recovery_days() -> None:
     baseline = _load_baseline()
     warn_drop = baseline.get("warn_drop")
-    assert isinstance(warn_drop, (int, float)) and not isinstance(warn_drop, bool) and math.isfinite(warn_drop), (
+    assert (
+        isinstance(warn_drop, (int, float))
+        and not isinstance(warn_drop, bool)
+        and math.isfinite(warn_drop)
+    ), (
         "warn_drop must be a finite numeric value excluding booleans -- it's the coverage-point "
         "drop that triggers a warning before a breach issue is opened."
     )

@@ -30,6 +30,22 @@ def _git_ignore_pattern(rule: str) -> str:
     return source.rsplit(":", 1)[-1]
 
 
+def test_generated_distribution_metadata_untracked_and_ignored() -> None:
+    """Editable installs must not commit stale dependency metadata."""
+    tracked = _git_ls_files(":(glob)**/*.egg-info/**")
+    assert not tracked, (
+        "*.egg-info/ is generated from pyproject.toml and must not be tracked; "
+        f"found {len(tracked)} path(s): {tracked[:3]}"
+    )
+
+    probe = "src/install-probe.egg-info/PKG-INFO"
+    rule = _git_ignore_rule(probe)
+    assert rule, "*.egg-info/ must stay ignored so editable installs cannot dirty the tree."
+    assert (
+        _git_ignore_pattern(rule) == "*.egg-info/"
+    ), "Generated distribution metadata must be covered by the canonical directory rule."
+
+
 def test_generated_dirs_untracked_and_vendored_preserved() -> None:
     """Root node_modules/ and __pycache__ stay untracked; vendored scripts tree remains."""
     root_node_modules = _git_ls_files("node_modules")
