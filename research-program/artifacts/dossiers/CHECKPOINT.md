@@ -13,3 +13,4 @@
 ## 2026-09-04T17:31:00Z — wrote corrected artifacts/dossiers/Orchestrator.md (12 headings intact, §12 = 5 bullets, verified-line stamped) — done
 ## 2026-09-04T17:32:00Z — A-verify-Manager-Database — in-progress — Completed adversarial code-cite audit (50 claims checked, 6 wrong, 4 unverifiable).
 ## 2026-09-04T17:35:00Z — wrote corrected artifacts/dossiers/Manager-Database.md (12 headings intact, §12 = 5 bullets, verified-line stamped) — done
+## 2026-09-04T17:38:05Z — A-verify-trip-planner — done — 36 claims checked, 7 corrected, 3 unverifiable; wrote trip-planner.md and trip-planner.verification.md.

@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-04T17:39:06Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-04T17:39:17Z)
 
-Units: 29 — claimed 3, done 16, queued 10
+Units: 29 — claimed 2, done 17, queued 10
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=shed vibe=ok aider=ok
 CLAUDE CONSERVATION ACTIVE until 2026-09-06T12:00:00Z — cheap agents only (launchd driver every 15 min); claude-only units deferred.
@@ -21,7 +21,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | A-verify-Trend_Model_Project | A | A1 | done | gemini | driver | Verify dossier artifacts/dossiers/Trend_Model_Project.md against ../cl |
 | A-verify-Workflows | A | A1 | done | codex | driver | Verify dossier artifacts/dossiers/Workflows.md against ../clones/Workf |
 | A-verify-learning-management-system | A | A1 | done | gemini | driver | Verify dossier artifacts/dossiers/learning-management-system.md agains |
-| A-verify-trip-planner | A | A1 | claimed | cursor | driver | Verify dossier artifacts/dossiers/trip-planner.md against ../clones/tr |
+| A-verify-trip-planner | A | A1 | done | cursor | driver | Verify dossier artifacts/dossiers/trip-planner.md against ../clones/tr |
 | A-dossier-index | A | A2 | claimed | cursor | driver | Fleet index and shared vocabulary from verified dossiers (needs >=12 v |
 | A-personal-reuse-note | A | A2 | queued | cursor |  | Reuse note across personal repos (FAA, Reader, trip-planner) |
 | A-work-side-bundle | A | A3 | queued | codex |  | Work-side bundle: redaction pass, cover memo, safety grep |
@@ -40,7 +40,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-04T17:36:36Z — A-verify-trip-planner — claimed by driver (agent cursor)
 - 2026-09-04T17:36:36Z — R1-legal-decomposition — route — router picked codex from ['codex', 'gemini']
 - 2026-09-04T17:36:36Z — R1-legal-decomposition — claimed by driver (agent codex)
 - 2026-09-04T17:36:37Z — R2-consultant-report-diffing — route — router picked codex from ['codex', 'gemini']
@@ -52,3 +51,4 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-04T17:38:12Z — R4-document-access — claimed by driver (agent codex)
 - 2026-09-04T17:38:41Z — R3-manager-mosaic — done — cursor produced 2580 words at artifacts/research/R3-manager-mosaic-synthesis.md in 123s
 - 2026-09-04T17:39:06Z — R1-legal-decomposition — done — cursor produced 2078 words at artifacts/research/R1-legal-decomposition.md in 149s
+- 2026-09-04T17:39:17Z — A-verify-trip-planner — done — cursor produced 1668 words at artifacts/dossiers/trip-planner.md in 160s
