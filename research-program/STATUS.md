@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-04T17:38:09Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-04T17:38:41Z)
 
-Units: 29 — claimed 4, done 14, queued 11
+Units: 29 — claimed 4, done 15, queued 10
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=shed vibe=ok aider=ok
 CLAUDE CONSERVATION ACTIVE until 2026-09-06T12:00:00Z — cheap agents only (launchd driver every 15 min); claude-only units deferred.
@@ -28,8 +28,8 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | A-dossier-docx | A | A3 | queued | cursor |  | Word versions of all verified dossiers (venv + python-docx) |
 | R1-legal-decomposition | B | B1 | claimed | codex | driver | Brief R1: legal fund-document decomposition and lineage |
 | R2-consultant-report-diffing | B | B1 | done | codex | driver | Brief R2: consultant-report and periodic-communication diffing |
-| R3-manager-mosaic | B | B1 | claimed | codex | driver | Brief R3: manager mosaic synthesis, discrepancy and thesis monitoring |
-| R4-document-access | B | B1 | queued | codex |  | Brief R4: Backstop/MCP/SharePoint mirror substrate (adversarial) |
+| R3-manager-mosaic | B | B1 | done | codex | driver | Brief R3: manager mosaic synthesis, discrepancy and thesis monitoring |
+| R4-document-access | B | B1 | claimed | codex | driver | Brief R4: Backstop/MCP/SharePoint mirror substrate (adversarial) |
 | R5-output-substrate | B | B1 | queued | cursor |  | Brief R5: robust no-install output surfaces |
 | R6-public-corpora | B | B1 | queued | cursor |  | Brief R6: public and synthetic corpora |
 | R7-trip-planning-core | B | B1 | queued | codex |  | Brief R7: trip-planning core (transport, lodging, constraints) |
@@ -40,9 +40,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-04T17:32:04Z — A-verify-Manager-Database — done — gemini produced 1656 words at artifacts/dossiers/Manager-Database.md in 466s
-- 2026-09-04T17:32:07Z — A-dossier-index — route — router picked cursor from ['codex', 'cursor']
-- 2026-09-04T17:32:07Z — A-dossier-index — claimed by driver (agent cursor)
 - 2026-09-04T17:36:36Z — A-verify-trip-planner — route — router picked cursor from ['codex', 'cursor', 'gemini']
 - 2026-09-04T17:36:36Z — A-verify-trip-planner — claimed by driver (agent cursor)
 - 2026-09-04T17:36:36Z — R1-legal-decomposition — route — router picked codex from ['codex', 'gemini']
@@ -52,3 +49,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-04T17:36:37Z — R3-manager-mosaic — route — router picked codex from ['codex', 'gemini']
 - 2026-09-04T17:36:37Z — R3-manager-mosaic — claimed by driver (agent codex)
 - 2026-09-04T17:38:09Z — R2-consultant-report-diffing — done — cursor produced 2256 words at artifacts/research/R2-consultant-report-diffing.md in 92s
+- 2026-09-04T17:38:12Z — R4-document-access — route — router picked codex from ['codex', 'gemini']
+- 2026-09-04T17:38:12Z — R4-document-access — claimed by driver (agent codex)
+- 2026-09-04T17:38:41Z — R3-manager-mosaic — done — cursor produced 2580 words at artifacts/research/R3-manager-mosaic-synthesis.md in 123s

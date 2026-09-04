@@ -1,6 +1,6 @@
 # Fleet Index — Shared Vocabulary and Cross-Repo Overview
 
-*Generated 2026-09-04T18:00:00Z from 14 verified dossiers. Word count: ~1850.*
+*Generated 2026-09-04T18:00:00Z from 14 verified dossiers.*
 
 ---
 
@@ -8,20 +8,20 @@
 
 | Repo | Category | One-line Purpose | Primary Surface | Production-Usable? | Backplane Role | Biggest Gap |
 |------|----------|------------------|-----------------|-------------------|----------------|-------------|
-| **Workflows** | Infrastructure Hub | Central CI/CD, agent orchestration, and contract standards for 13 repos | GitHub Actions workflows, keepalive loop | **Yes** — daily operations | Fleet backplane standards authority | Only 1/6 repos emit conformant run-contract/v1 |
-| **Manager-Database** | Investment Surveillance | Tracks external managers, 13F holdings, conviction scores, activism campaigns | FastAPI + Streamlit UI + WASM demo | **Yes** — EDGAR ingestion, point-in-time queries | Entity authority for manager:cik_* IDs | Integer manager_id vs string manager:<normalized_id> collision |
-| **Pension-Data** | Pension Analytics | Extracts funded status, allocations, fees from pension documents into comparable facts | CLI (one-pdf-pilot), FastAPI, Static HTML | **Partial** — CLI/artifacts work, API fixture-only | Canonical pension:fund:consultant IDs | Manager-Database reconciliation not wired |
-| **Counter_Risk** | Risk Reporting | Monthly counterparty exposure reporting replacing MOSERS spreadsheets | Excel workbook, Tkinter GUI, Excel macro workbook | **Yes** — main surfaces wired | Local name_registry authority | No provider: prefix on canonical_key; no run-contract emitter |
-| **Trend_Model_Project** | Portfolio Construction | Manager-of-managers trend-following with walk-forward backtesting | CLI, Streamlit dashboard, WASM, Jupyter | **Yes** — local execution | Consumer of canonical fund IDs | Emits trend.run_envelope/1 not fleet run-contract/v1 |
-| **Portable-Alpha-Extension-Model** | Monte Carlo Simulation | Portable alpha and active extension fund structure modeling | CLI, Streamlit, Excel/PPTX exports | **Yes** — simulation complete | N/A — no entities to resolve | No run-contract/v1 emission; Scenario.sleeves unwired |
-| **Inv-Man-Intake** | Due Diligence | Investment manager intake, DDQs, meeting notes standardization | CLI, Streamlit | **Yes** — intake pipeline | Source of qualitative diligence | Unaliased slugs; no provider: prefix |
-| **Fine-Art-Archive** | Archive Management | Museum-grade artwork catalog with Wikidata enrichment and dedup | CLI (71 scripts), HTTP API + HTML UI | **Yes** — local corpus operations | Artwork identity authority | No fleet entity joins; private corpus constraint |
-| **Orchestrator** | Agent Fleet Manager | Routes tasks across Claude, Codex, Cursor, Gemini agents with quota tracking | CLI, MCP Server, Observable dashboard | **Yes** — local routing/verification | Fleet agent orchestration | Remote dispatch demoted; no financial entity IDs |
-| **Travel-Plan-Permission** | Travel Governance | Policy compliance checking and travel workbook population | HTTP API, Browser portal, CLI tools | **Yes** — core policy/export | TPP integration seam | No run-contract emitter; ERP write-back missing |
-| **trip-planner** | Travel Planning | Leisure/business travel planning with compliance integration | FastAPI + React SPA | **Yes** — core planning | Consumer of TPP contracts | Live TPP disabled; no source adapters |
-| **Template/Ready/WIT** | Infrastructure Templates | Onboarding scaffold for new Python repos with standardized CI | GitHub Actions CI, agent workflows | **Yes** — automation working | Fleet contract documentation | No emitters; placeholder code |
-| **Collab-Admin** | Governance | Collaboration policies, rubrics, validators, and dashboards | CLI validators, Streamlit UI | **Partial** — validators working | Review workflow automation | Static dashboard not wired; no backplane registry |
-| **learning-management-system** | Training Platform | Source-to-practice learning with knowledge graphs and evidence tracking | FastAPI API + Web UI | **Partial** — prototype | Learning fact provenance | No canonical entity IDs; mastery placeholder |
+| **Workflows** | Infrastructure Hub | Central CI/CD, agent orchestration, contract standards for 13 repos | GitHub Actions, keepalive loop | **Yes** | Fleet standards authority | Only 1/6 repos emit conformant run-contract/v1 |
+| **Manager-Database** | Investment Surveillance | Tracks external managers, 13F holdings, conviction scores, activism campaigns | FastAPI + Streamlit + WASM | **Yes** | Entity authority for manager:cik_* | Integer manager_id vs string manager:<id> collision |
+| **Pension-Data** | Pension Analytics | Extracts funded status, allocations, fees from pension docs | CLI, FastAPI, Static HTML | **Partial** | Canonical pension:fund:consultant IDs | Manager-DB reconciliation not wired |
+| **Counter_Risk** | Risk Reporting | Monthly counterparty exposure reporting replacing MOSERS | Excel, Tkinter GUI, macro workbook | **Yes** | Local name_registry authority | No provider: prefix; no run-contract emitter |
+| **Trend_Model_Project** | Portfolio Construction | Manager-of-managers trend-following with walk-forward backtesting | CLI, Streamlit, WASM, Jupyter | **Yes** | Consumer of canonical fund IDs | Emits trend.run_envelope/1 not fleet run-contract/v1 |
+| **Portable-Alpha-Extension-Model** | Monte Carlo Simulation | Portable alpha and active extension fund structure modeling | CLI, Streamlit, Excel/PPTX | **Yes** | N/A — no entities | No run-contract/v1; Scenario.sleeves unwired |
+| **Inv-Man-Intake** | Due Diligence | Investment manager intake, DDQs, meeting notes standardization | CLI, Streamlit | **Yes** | Source of qualitative diligence | Unaliased slugs; no provider: prefix |
+| **Fine-Art-Archive** | Archive Management | Museum-grade artwork catalog with Wikidata enrichment and dedup | CLI (71 scripts), HTTP API + HTML UI | **Yes** | Artwork identity authority | No fleet entity joins; private corpus constraint |
+| **Orchestrator** | Agent Fleet Manager | Routes tasks across Claude, Codex, Cursor, Gemini with quota tracking | CLI, MCP Server, dashboard | **Yes** | Fleet agent orchestration | Remote dispatch demoted; no financial entity IDs |
+| **Travel-Plan-Permission** | Travel Governance | Policy compliance checking and travel workbook population | HTTP API, Browser portal, CLI | **Yes** | TPP integration seam | No run-contract emitter; ERP write-back missing |
+| **trip-planner** | Travel Planning | Leisure/business travel planning with compliance integration | FastAPI + React SPA | **Yes** | Consumer of TPP contracts | Live TPP disabled; no source adapters |
+| **Template/Ready/WIT** | Infrastructure Templates | Onboarding scaffold for new Python repos with standardized CI | GitHub Actions CI, agent workflows | **Yes** | Fleet contract documentation | No emitters; placeholder code |
+| **Collab-Admin** | Governance | Collaboration policies, rubrics, validators, dashboards | CLI validators, Streamlit UI | **Partial** | Review workflow automation | Static dashboard not wired; no backplane registry |
+| **learning-management-system** | Training Platform | Source-to-practice learning with knowledge graphs and evidence tracking | FastAPI API + Web UI | **Partial** | Learning fact provenance | No canonical entity IDs; mastery placeholder |
 
 ---
 
