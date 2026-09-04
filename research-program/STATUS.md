@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-04T22:42:09Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-04T22:47:45Z)
 
-Units: 43 — done 39, queued 4
+Units: 43 — claimed 1, done 39, queued 3
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=shed vibe=ok aider=ok
 CLAUDE CONSERVATION ACTIVE until 2026-09-06T12:00:00Z — cheap agents only (launchd driver every 15 min); claude-only units deferred.
@@ -50,12 +50,10 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | B7-program-plan-v3-default | B | B7 | done | codex | driver | Consolidated program plan v3 plus the progress-artifact specification |
 | C-skill-curriculum | C | C1 | done | codex | driver | Skill curriculum + tool-literacy loop design (LMS-connected) |
 | D2-issue-body-repair | D | D | done | cursor | driver | Repair issue bodies citing scratchpad paths and unblock the paused aut |
-| D3-unblock-sweep-2026-09-04T21 | D | D | queued | cursor |  | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
+| D3-unblock-sweep-2026-09-04T21 | D | D | claimed | codex | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 
 ## Last checkpoints
 
-- 2026-09-04T20:47:41Z — B7-program-plan-v3 — done — cursor produced 3271 words at artifacts/research/B7-PROGRAM-PLAN-v3.md in 83s
-- 2026-09-04T21:23:30Z — D2-issue-body-repair — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-04T21:23:30Z — D2-issue-body-repair — claimed by driver (agent cursor)
 - 2026-09-04T21:30:48Z — D2-issue-body-repair — done — cursor produced 976 words at artifacts/issues/D2-REPAIR-REPORT.md in 438s
 - 2026-09-04T21:32:18Z — unblock — enqueued D3-unblock-sweep-2026-09-04T21
@@ -66,6 +64,8 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-04T22:42:09Z — A-verify-Portable-Alpha-Extension-Model — completion invalidated: failed offload; queued retained-artifact validation
 - 2026-09-04T22:42:09Z — A-verify-Travel-Plan-Permission — completion invalidated: failed offload; queued retained-artifact validation
 - 2026-09-04T22:42:09Z — D3-unblock-sweep-2026-09-04T21 — completion invalidated: failed offload; queued retained-artifact validation
+- 2026-09-04T22:47:45Z — D3-unblock-sweep-2026-09-04T21 — route — router picked codex from ['codex', 'cursor']
+- 2026-09-04T22:47:45Z — D3-unblock-sweep-2026-09-04T21 — claimed by driver (agent codex)
 
 ## Questions
 
