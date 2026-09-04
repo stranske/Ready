@@ -1,0 +1,103 @@
+# Pension-Data — dossier (2026-09-04)
+
+## 1. Purpose in one paragraph
+
+Pension-Data turns pension-system documents into comparable, reviewable facts: funded status, actuarial measures, cash flows, allocations, fees, manager/fund relationships, consultant disclosures, risk disclosures, and selected security holdings. Intended users are investment allocators, pension executives, and policy analysts ([docs/Planning/PENSION_DATA_PLAN.md:5-13](../docs/Planning/PENSION_DATA_PLAN.md)). The design constraint is privacy and constrained work machines: a reviewer can use a generated browser bundle on loopback or an internal host without public SaaS egress, while a developer runs the Python pipeline locally ([docs/deploy/IN_PERIMETER_REAL_DATA_REVIEW.md:3-18](../docs/deploy/IN_PERIMETER_REAL_DATA_REVIEW.md)). It is an extraction-and-artifact foundation, not yet a complete production analyst application.
+
+## 2. Who uses it and how (surfaces)
+
+| surface | entry point (file) | who uses it | status (working / partial / scaffold) with evidence |
+| --- | --- | --- | --- |
+| CLI | `one-pdf-pilot` → [one_pdf_pilot_cli.py:97-137](../src/pension_data/ops/one_pdf_pilot_cli.py) | data engineer or research operator | **Working:** takes one PDF plus plan/time metadata, writes pilot and backplane artifacts; full suite includes its command path ([tests/ops/test_one_pdf_pilot_cli.py:63-104](../tests/ops/test_one_pdf_pilot_cli.py)). |
+| Python API | [api/app.py:28-136](../src/pension_data/api/app.py) | internal integration developer | **Partial:** health/config and authenticated saved-view/history endpoints work, but they feed hard-coded fixtures; NL and findings routes return HTTP 501. |
+| Static HTML/PWA | [apps/web/index.html](../apps/web/index.html), [apps/web/app.js:149-254](../apps/web/app.js) | investment-office reviewer | **Working for bundles, partial for live use:** validates and displays a local/generated JSON bundle, saves views in browser storage; checked-in bundle is explicitly demo data ([apps/web/README.md:17-18](../apps/web/README.md)). |
+| Artifacts | [one_pdf_pilot.py:282-460](../src/pension_data/ops/one_pdf_pilot.py), [backplane_emitter.py:104-235](../src/pension_data/ops/backplane_emitter.py) | reviewers and sibling automation | **Working:** emits parser, staging, warnings, component-coverage, manifest, and backplane envelope JSON from a one-PDF run. |
+| macOS desktop | [apps/mac-desktop](../apps/mac-desktop) | prospective power user | **Scaffold:** Electron has a window shell, but `src-ui/` and Tauri Rust source are placeholders; implementation plan still lists release, parity, and test work ([IMPLEMENTATION_PLAN.md:14-26](../apps/mac-desktop/IMPLEMENTATION_PLAN.md)). |
+
+## 3. Structure map
+
+```text
+src/pension_data/
+  api/            FastAPI server, auth, and route adapters
+  ingest/, parser/, extract/  document checksuming, PDF parsing, domain extractors, persistence adapters
+  db/, entities/, provenance/ SQLite/PostgreSQL strategy, staging models, identity and evidence lineage
+  query/, quant/, quality/   saved views, safe SQL, metrics/scenarios, confidence and anomaly controls
+  ops/, sources/, langchain/ pilot orchestration, external-source adapters, optional LLM tooling
+apps/
+  web/            dependency-light static review workspace and PWA
+  mac-desktop/    Tauri/Electron packaging track
+config/           pension registry, source maps, saved queries, model/backplane policy
+docs/             contracts, runbooks, deployment and planning material
+scripts/          CLIs, bundle builders, source collection, replay and validation helpers
+tests/            1,386-test unit, contract, fixture, golden, and integration suite
+.github/          CI and most agent automation; synced from stranske/Workflows
+```
+
+## 4. Major code features you must understand to extend it
+
+- **One-document production-shaped run:** `run_one_pdf_pilot` consumes a PDF and plan/date metadata, invokes parsing and orchestration, then writes deterministic JSON artifacts and a manifest ([one_pdf_pilot.py:282-460](../src/pension_data/ops/one_pdf_pilot.py)). It is the clearest end-to-end integration seam.
+- **PDF-to-facts fallback:** `parse_pdf_to_funded_input` produces raw funded/actuarial input, attempts, confidence, evidence anchors, and escalation information; complex tables can be cross-checked by `run_hybrid_table_extraction` ([pdf_pipeline.py:120-154](../src/pension_data/parser/pdf_pipeline.py), [hybrid_backend.py:221-334](../src/pension_data/parser/hybrid_backend.py)). This is where extraction reliability is decided.
+- **Document orchestration:** `run_document_orchestration` covers discovery, immutable ingestion, extraction, validation, and publishing with outcomes and retries ([document_orchestration.py:84-175](../src/pension_data/ops/document_orchestration.py)). It isolates bad documents within a batch.
+- **Domain extraction and staging projection:** `build_extraction_persistence_artifacts` and its adapters turn funded, allocation, fee, governance, lifecycle, position, risk, and flow observations into shared staging rows ([extract/persistence.py:39-171](../src/pension_data/extract/persistence.py)). New domains need to join this contract, not bypass it.
+- **Confidence and human review:** `route_confidence_row` assigns auto-accept, publish-with-warning, or high-priority review; `build_extraction_review_queue` creates auditable queue rows ([quality/confidence.py:14-83](../src/pension_data/quality/confidence.py), [review_queue/extraction.py:38-104](../src/pension_data/review_queue/extraction.py)). This prevents uncertain extraction from looking certain.
+- **Identity management:** `build_canonical_stable_id`, source linking, explicit entity merges, matching and lineage create deterministic entity IDs and forward merge paths ([entities/service.py:54-104](../src/pension_data/entities/service.py), [entities/service.py:199-272](../src/pension_data/entities/service.py)). It is the principal cross-repo join mechanism.
+- **Immutable source versions and bitemporal facts:** raw artifacts are deduplicated by content hash and superseded rather than overwritten ([ingest/artifacts.py:24-35](../src/pension_data/ingest/artifacts.py), [ingest/artifacts.py:127-161](../src/pension_data/ingest/artifacts.py)); staged facts retain valid/assertion time and restatement state ([db/models/core_facts.py:48-75](../src/pension_data/db/models/core_facts.py)).
+- **Quantitative interpretation:** `compute_derived_metrics` produces funded gap, unfunded ratio, cash flow, and contribution coverage with fact and evidence lineage ([quant/metric_engine.py:70-116](../src/pension_data/quant/metric_engine.py), [quant/metric_engine.py:241-345](../src/pension_data/quant/metric_engine.py)).
+- **Fleet artifact projection:** `build_backplane_reference_run` converts a successful pilot manifest into hashed `artifact-manifest/v1` and `run-contract/v1` files ([backplane_emitter.py:104-235](../src/pension_data/ops/backplane_emitter.py)).
+
+## 5. Data model, identifiers and contracts
+
+The main natural key is `plan_id` + `plan_period`, with effective and ingestion dates separating what was true from when it was known. Facts use deterministic `fact:<sha256-prefix>` IDs made from their business fields, document, version, and evidence ([extract/common/ids.py:9-13](../src/pension_data/extract/common/ids.py), [extract/persistence.py:214-274](../src/pension_data/extract/persistence.py)). Documents use `artifact:<hash>` from plan, period, URL, checksum, and fetch timestamp; changed content supersedes the prior active artifact ([ingest/artifacts.py:24-35](../src/pension_data/ingest/artifacts.py)). Security keys prefer CUSIP, then ticker, then normalized name ([security_positions.py:89-97](../src/pension_data/extract/investment/security_positions.py)). Form 5500 joins use a normalized nine-digit EIN plus three-digit plan number ([entities/models.py:30-46](../src/pension_data/entities/models.py)).
+
+SQLite is the local default; PostgreSQL is required for production/shared use and needs the optional `psycopg` extra ([db/strategy.py:15-16](../src/pension_data/db/strategy.py), [db/strategy.py:46-98](../src/pension_data/db/strategy.py)). The code can persist staged core metrics idempotently and closes prior assertions on restatement ([db/staging_persistence.py:96-172](../src/pension_data/db/staging_persistence.py)).
+
+The repo ships document-orchestration, entity-linkage, query-run, findings, backplane run, evidence-object, and artifact-manifest contracts. It **emits** the one-PDF manifest and a validated `run-contract/v1` envelope ([tests/ops/test_backplane_emitter.py:91-150](../tests/ops/test_backplane_emitter.py)). It **constructs** local `EvidenceReference` objects including optional page, excerpt, and method ([extract/common/evidence.py:89-157](../src/pension_data/extract/common/evidence.py)), but does not emit separate `evidence-object/v1` files; the envelope contains hashed reference strings. Query run records are implemented by the query/LangChain modules, while the documented artifact layout warns callers not to write default artifacts into the checkout ([docs/contracts/query-run-record-contract.md:27-47](../docs/contracts/query-run-record-contract.md)).
+
+## 6. External inputs and dependencies
+
+Inputs include operator-supplied PDFs, local CSV/XLS holdings files, Public Plans Database API/cache, Form 5500 rows, and EDGAR 13F submissions/XML. PPD and EDGAR clients have live HTTP methods but tests use cached/recorded fixtures because network is sandboxed ([sources/ppd/client.py:1-14](../src/pension_data/sources/ppd/client.py), [sources/edgar/client.py:12-16](../src/pension_data/sources/edgar/client.py)). PDF parsing uses `pypdf` plus the shared `stranske-pdf-extract`; XML uses `defusedxml`; XLS uses optional `openpyxl` ([pyproject.toml:22-48](../pyproject.toml), [security_positions.py:184-208](../src/pension_data/extract/investment/security_positions.py)). FastAPI/Uvicorn provide the local server. Optional LangChain/OpenAI/Anthropic/LangSmith support requires the `langchain` extra and API credentials ([pyproject.toml:34-41](../pyproject.toml), [langchain/foundation.py:104-143](../src/pension_data/langchain/foundation.py)). There is no Docker requirement; real shared persistence requires a PostgreSQL server.
+
+## 7. Current state
+
+The quality posture is unusually strong for an alpha package: this checkout’s `pytest -q` passed **1,382 tests with 4 skipped**; CI calls the shared Python gate for Ruff, Black, mypy, pytest on Python 3.12/3.13 with 80% coverage ([pyproject.toml:64-68](../pyproject.toml), [.github/workflows/ci.yml:24-32](../.github/workflows/ci.yml)). Fixture and golden coverage is not proof of live source access or a live database deployment.
+
+Main gaps: (1) analyst UI and LangChain findings are explicitly incomplete ([README.md:99-105](../README.md)); (2) the API has fixture-only data and three 501 LLM endpoints ([api/app.py:41-127](../src/pension_data/api/app.py)); (3) desktop lacks signing, measured device data, features, a sidecar, and regression tests ([IMPLEMENTATION_PLAN.md:14-26](../apps/mac-desktop/IMPLEMENTATION_PLAN.md)); (4) live source paths were not exercised here; (5) Cloudflare is fixture-only ([web-cloudflare-pages.yml:103-116](../.github/workflows/web-cloudflare-pages.yml)); and (6) the run-contract doc is stale ([run-contract-v1.md:15-17](../docs/contracts/run-contract-v1.md)).
+
+## 8. Claims vs reality
+
+- README calls the server’s `/api` routes “deterministic,” which is true, but it may suggest an operational data service. Both exposed analytical routes supply `_fixture_*` rows, not database queries ([README.md:32-37](../README.md); [api/app.py:41-105](../src/pension_data/api/app.py)).
+- The findings contract advertises `explain` and `compare` actions ([reviewable-findings-artifact-contract.md:51-58](../docs/contracts/reviewable-findings-artifact-contract.md)), but the served routes always return 501 because chain injection is absent ([api/app.py:106-127](../src/pension_data/api/app.py)). Callable chains exist; they are not wired to the product surface.
+- The desktop README presents `tauri:build` as a command ([apps/mac-desktop/README.md:18-32](../apps/mac-desktop/README.md)), but the Tauri directory has manifest/build configuration only and no Rust application source; the implementation plan labels the track a scaffold ([IMPLEMENTATION_PLAN.md:3-26](../apps/mac-desktop/IMPLEMENTATION_PLAN.md)).
+- The backplane contract says “No participant emits an envelope yet” ([run-contract-v1.md:15-17](../docs/contracts/run-contract-v1.md)); that is stale for this repository, whose CLI adds `run.json` and `manifest.json` ([one_pdf_pilot_cli.py:117-131](../src/pension_data/ops/one_pdf_pilot_cli.py)).
+
+## 9. Interoperability hooks (for the fleet program)
+
+It can offer sibling repos canonical `manager:`, `fund:`, consultant, and pension identity strings; the entity-linkage contract specifies manager/fund/consultant fields and resolution states ([entity-linkage-contract.md:11-30](../docs/contracts/entity-linkage-contract.md)). It can offer document checksum lineage, fact IDs, staging-core rows, confidence queues, page/text/table evidence locators, derived metric lineage, and one-PDF `run-contract/v1` plus `artifact-manifest/v1` ([backplane_emitter.py:158-235](../src/pension_data/ops/backplane_emitter.py)). It can consume upstream source documents, local holdings, PPD/EDGAR formats, and canonical identity references.
+
+The collision to resolve is vocabulary: local fleet emission calls plan/document IDs `plan:` and `document:` ([backplane_emitter.py:151-154](../src/pension_data/ops/backplane_emitter.py)), whereas identity conventions reserve `pension:` and do not list `document` as a canonical entity type ([identity-map-conventions.md:79-88](../docs/contracts/identity-map-conventions.md)). Manager IDs also fall back to normalized names while fleet policy prefers registry IDs, so Manager-Database’s CIK/LEI authority must win ([identity-map-conventions.md:94-121](../docs/contracts/identity-map-conventions.md)).
+
+## 10. Reuse candidates
+
+- Deterministic source artifact dedupe and supersession — [ingest/artifacts.py](../src/pension_data/ingest/artifacts.py).
+- Canonical evidence parsing, IDs, excerpts, and extraction method mapping — [extract/common/evidence.py](../src/pension_data/extract/common/evidence.py).
+- Entity aliases, matching, merge and forward lineage — [entities/](../src/pension_data/entities/).
+- Bitemporal assertion and overlap controls — [db/models/bitemporal.py](../src/pension_data/db/models/bitemporal.py).
+- Read-only SQL/NL guardrails and replay records — [query/](../src/pension_data/query/) and [langchain/nl_sql_chain.py](../src/pension_data/langchain/nl_sql_chain.py).
+- Generated static workspace bundle and loopback server — [scripts/web/](../scripts/web/).
+
+## 11. Proposed direction (evidence-based)
+
+- **Finish what is scaffolded:** connect API saved views/history to database-backed repositories instead of fixture functions ([api/app.py:41-105](../src/pension_data/api/app.py)).
+- **Finish what is scaffolded:** inject approved LangChain chains into the three disabled routes, retaining the proprietary-zone gate ([api/app.py:106-127](../src/pension_data/api/app.py)).
+- **Finish what is scaffolded:** make the Tauri application buildable, then add signing/notarization and desktop bundle regression tests ([IMPLEMENTATION_PLAN.md:14-26](../apps/mac-desktop/IMPLEMENTATION_PLAN.md)).
+- **Finish what is scaffolded:** update stale backplane documentation and emit real `evidence-object/v1` payloads, not only reference hashes ([run-contract-v1.md:15-17](../docs/contracts/run-contract-v1.md); [evidence-object-v1.schema.json:8-99](../docs/contracts/schemas/evidence-object-v1.schema.json)).
+- **New capability:** add a controlled live-source ingestion recipe with cache/provenance capture and source-quality acceptance tests; present tests are fixture-shaped ([sources/ppd/client.py:1-14](../src/pension_data/sources/ppd/client.py)).
+- **New capability:** establish the approved manager-ID reconciliation with Manager-Database before moving sibling data into curated comparisons ([identity-map-conventions.md:94-130](../docs/contracts/identity-map-conventions.md)).
+
+## 12. What a colleague needs to know (5 bullets, no code identifiers)
+
+- It turns pension documents into comparable facts, but someone must still supply and approve the source documents.
+- Every meaningful output should retain its source document and page/table/text trail.
+- Treat low-confidence findings as a review queue, not investment conclusions.
+- The browser review path can keep real data inside the firm’s network; the public demo path must use synthetic data.
+- Today, the safest operational use is a controlled document-to-artifact workflow, not the unfinished live dashboard or desktop application.
