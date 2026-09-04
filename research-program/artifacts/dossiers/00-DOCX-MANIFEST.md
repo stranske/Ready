@@ -2,6 +2,10 @@
 
 *Generated 2026-09-04T18:10:25Z*
 
+The 14 dossier names also occur in `artifacts/work-bundle/`; that bundle is
+the final, redacted source for those same-name Word outputs. `00-INDEX` and
+`00-PERSONAL-REUSE-NOTE` come from `artifacts/dossiers/`.
+
 | File | KB | Headings | Tables | Status |
 |------|-----|----------|--------|--------|
 | 00-COVER-MEMO.docx | 39.7 | 9 | 2 | FAIL |
@@ -24,4 +28,8 @@
 | learning-management-system.docx | 42.7 | 13 | 2 | PASS |
 | trip-planner.docx | 44.0 | 16 | 1 | PASS |
 
-**Summary:** 16/19 PASS
+**Summary:** 16/19 PASS. The three failures are faithful conversions whose
+source Markdown does not itself meet the required structural thresholds:
+`00-COVER-MEMO` has 38 paragraphs and 9 headings, `README` has 14 paragraphs
+and 7 headings, and `REDACTIONS` has one heading. All 19 documents reopen and
+their Word-table counts exactly match their Markdown-table counts.

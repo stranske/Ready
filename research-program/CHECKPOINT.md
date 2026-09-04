@@ -180,3 +180,4 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-04T18:10:57Z — A-dossier-docx — claimed by codex (agent cursor)
 ## 2026-09-04T18:11:08Z — B3-interop-architecture — done — cursor produced 3022 words at artifacts/research/B3-interop-architecture.md in 95s
 ## 2026-09-04T18:11:24Z — A-memo-correction — done — cursor produced 1573 words at artifacts/work-bundle/00-COVER-MEMO.md in 114s
+## 2026-09-04T18:12:22Z — A-dossier-docx — done — All 19 Word outputs reopen with matching Markdown tables; 16 meet the paragraph and heading thresholds and three source-structure exceptions are documented in t

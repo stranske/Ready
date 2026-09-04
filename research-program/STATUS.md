@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-04T18:11:24Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-04T18:12:22Z)
 
-Units: 33 — claimed 1, done 31, queued 1
+Units: 33 — done 32, queued 1
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=shed vibe=ok aider=ok
 CLAUDE CONSERVATION ACTIVE until 2026-09-06T12:00:00Z — cheap agents only (launchd driver every 15 min); claude-only units deferred.
@@ -27,7 +27,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | A-memo-correction | A | A3 | done | cursor | driver | Correct cover-memo maturity labels against the audit ledger and open i |
 | A-work-side-bundle | A | A3 | done | cursor | driver | Work-side bundle: redaction pass, cover memo, safety grep |
 | A-work-side-bundle-refresh | A | A3 | done | cursor | driver | Refresh the work-side bundle with the three late dossiers and re-run t |
-| A-dossier-docx | A | A3 | claimed | cursor | codex | Word versions of all verified dossiers (venv + python-docx) |
+| A-dossier-docx | A | A3 | done | cursor | codex | Word versions of all verified dossiers (venv + python-docx) |
 | B1-citefix-R1-legal-decomposition | B | B1 | done | cursor | driver | Fix unreachable citations in R1-legal-decomposition.md |
 | B1-citefix-R4-document-access-substrate | B | B1 | done | cursor | driver | Fix unreachable citations in R4-document-access-substrate.md |
 | R1-legal-decomposition | B | B1 | done | codex | driver | Brief R1: legal fund-document decomposition and lineage |
@@ -44,7 +44,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-04T18:09:30Z — B3-interop-architecture — route — router picked codex from ['codex', 'gemini']
 - 2026-09-04T18:09:30Z — B3-interop-architecture — claimed by driver (agent codex)
 - 2026-09-04T18:09:30Z — A-dossier-docx — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-04T18:09:30Z — A-dossier-docx — claimed by driver (agent cursor)
@@ -56,3 +55,4 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-04T18:10:57Z — A-dossier-docx — claimed by codex (agent cursor)
 - 2026-09-04T18:11:08Z — B3-interop-architecture — done — cursor produced 3022 words at artifacts/research/B3-interop-architecture.md in 95s
 - 2026-09-04T18:11:24Z — A-memo-correction — done — cursor produced 1573 words at artifacts/work-bundle/00-COVER-MEMO.md in 114s
+- 2026-09-04T18:12:22Z — A-dossier-docx — done — All 19 Word outputs reopen with matching Markdown tables; 16 meet the paragraph and heading thresholds and three source-structure exceptions are documented in t

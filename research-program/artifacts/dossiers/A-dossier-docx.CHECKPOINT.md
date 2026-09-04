@@ -10,3 +10,4 @@
 ## 2026-09-04T18:10:24Z — converted batch: Portable-Alpha-Extension-Model.docx, README.docx, REDACTIONS.docx, Template.docx, Travel-Plan-Permission.docx — done
 ## 2026-09-04T18:10:25Z — converted batch: Trend_Model_Project.docx, Workflows.docx, learning-management-system.docx, trip-planner.docx — done
 ## 2026-09-04T18:10:25Z — wrote manifest 00-DOCX-MANIFEST.md — done
+## 2026-09-04T19:03:00Z — attempt 3 audit — reopened all 19 DOCX files against their final sources; 16 pass and three source-structure exceptions remain accurately marked FAIL in the manifest — done
