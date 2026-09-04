@@ -19,6 +19,7 @@ Rules for using this bundle:
 3. **Do not assume access to firm data.** Every tool here was built and tested on public or synthetic material. Nothing in this bundle has been run against manager documents, holdings, or any internal system. Treat any question about connecting a tool to firm data as a new question requiring approval, not as an established capability.
 4. **When asked what could be adopted, rank by the state column**, name the caveat in the same sentence as the recommendation, and say what a first evaluation step would be.
 5. **Quote the companion document** when you make a claim about a tool, so the reader can check it.
+6. **There is a task for you in this bundle.** `01-INFORMATION-REQUEST.md` asks for the environment and document-shape information I need in order to build the next round of tools. Please answer it as a single returned document, observing its do-not-include list exactly: no names, no document content, no personal data, no internal system identifiers, no credentials. Counts as ranges, formats, yes or no, and field names without values are what is wanted, and "unknown" is an acceptable answer.
 
 ---
 
