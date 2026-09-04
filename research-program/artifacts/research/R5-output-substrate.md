@@ -42,7 +42,7 @@ Three production tools already implement the target pattern incompletely: struct
 | **Pension-Data** | Pipeline emits `workspace.json`; static `apps/web/` with Load Local Bundle, PWA, vendored Plotly | `clones/Pension-Data/apps/web/README.md`, `apps/contracts/runtime-contract.json` | **Reference renderer** — data-driven, offline-capable; evidence links via `artifactBaseUrl` (`app.js:498-504`) |
 | **Inv-Man-Intake** | Headless run writes `run.json` + manifest; `OnePagerModel.as_dict()` for renderers without HTML (`one_pager.py:44-47`) | `clones/Inv-Man-Intake/docs/design/operator-application.md` | Right **narrative content model**; Tier-A Pyodide path unverified at work |
 | **Manager-Database / Trend_Model** | stlite/Pyodide static demos, vendored wheels, no CDN | `clones/Manager-Database/scripts/build_wasm_demo.py`, `Trend_Model_Project/demo/wasm/README.md` | Proven **home** interactive demos; **unverified** at work |
-| **Portable-Alpha-Extension-Model** | Streamlit + Codespaces; explicitly rejects stlite (kaleido, python-pptx) | `clones/Portable-Alpha-Extension-Model/README.md:19` | Quant dashboards need server or Codespace, not WASM publish path |
+| **Portable-Alpha-Extension-Model** | Streamlit + Codespaces primary; `web/index.html` mounts full dashboard via stlite with vendored wheels (README disclaims support; runtime unverified at work) | `clones/Portable-Alpha-Extension-Model/README.md:19`, `web/index.html:271-322` | Local Python path is the work-default per owner guidance; stlite publish path unverified |
 | **Design system** | `tokens.css` + `components.css` synced from Workflows Template | `clones/Template/design-system/README.md` | Shared visual contract for static HTML renderers |
 
 ---
@@ -127,7 +127,7 @@ link_profile: local-file | artifact-http
 | Approach | Why |
 |----------|-----|
 | Hand-built HTML | Unmergeable; silent link drift; fourth renderer rewrite imminent |
-| stlite for published reports | Unverified at work; rebuild tax; PAEM-incompatible deps |
+| stlite for published reports | Unverified at work; rebuild tax; PAEM stlite entry exists but README-disclaimed and work-unprobed |
 | Evidence / Observable as fleet standard | Node build on every change; DuckDB size |
 | Server/database runtime | Blocked at work regardless of tool maturity |
 | Office add-ins | Install/deploy barrier |

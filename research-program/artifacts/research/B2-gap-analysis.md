@@ -115,7 +115,7 @@ Disposition values: `extend:<repo>` | `new-repo:<name>` | `adopt:<tool>` | `reje
 | B2-013 | sentweave | adopt:sentweave | No install | Vecalign-style alignment after segmentation |
 | B2-014 | pdfdelta | adopt:pdfdelta | Optional annotated PDF output | Visual layer atop aligned text |
 | B2-033 | Quarto | adopt:quarto | Single self-contained HTML file | Board one-offs; SharePoint-friendly (R5) |
-| B2-035 | stlite | adopt:stlite | Heavy WASM; demo lane only | PAEM rejects WASM deps; not publish path |
+| B2-035 | stlite | adopt:stlite | Heavy WASM; demo lane only | PAEM has stlite entry (`web/index.html`) but README disclaims; not publish path until work probe |
 | B2-036 | DuckDB-WASM | adopt:duckdb-wasm | Inside renderer bundle | Optional pivot widget; ~34 MB |
 
 ### 2.8 Rejects (summary)
@@ -225,7 +225,7 @@ Tools run on the **home build lane** (Python, CI, Claude Code web). Work PC rece
 | MCP-as-runtime document reader | Throttled, context-heavy, wrong for CI | R4 |
 | Backstop MCP wait-state | No public MCP evidence as of 2026-09-04 | R4 |
 | Hand-built HTML reports | Data/presentation fusion is the failure mode | R5 |
-| stlite as published report channel | Regeneration tax; PAEM WASM rejection | R5 |
+| stlite as published report channel | Regeneration tax; work-side WASM unproven (PAEM entry exists but unverified) | R5 |
 | Evidence.dev / Observable fleet standard | Node CI on every data change | R5 |
 | Parallel 13F/PPD/5500 downloaders | Manager-Database and Pension-Data already own these | R6 |
 | LLM-first trip planner | Constraint drift; deterministic ranker + TPP correct | R7 |

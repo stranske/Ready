@@ -23,7 +23,7 @@ The owner's stated problem — *"your ability to do work outstrips my ability to
 | **Data pipelines / ETL** | Manager-Database Prefect flows; Counter_Risk pipeline; Pension-Data ingest | Scheduled jobs that move data with checkpoints; failure modes are operational, not theoretical |
 | **Entity resolution** | Counter_Risk name registry; Pension-Data matching; Fine-Art-Archive artist lookup | Same real-world thing, many strings — registries and merge rules prevent silent duplication |
 | **CI / test infrastructure** | Workflows coverage guard, deliberate-break gate; WIT cross-repo harness | Tests as contracts: a deliberate break must fail; golden files freeze expected behavior |
-| **Static / offline apps** | TMP/PAEM/IMI Pyodide paths; LMS PWA shell | Apps that run without cloud egress — architecture for air-gapped review |
+| **Static / offline apps** | TMP stlite/Pyodide; PAEM stlite entry (README-disclaimed, work-unverified) + portable zip; IMI Pyodide; LMS PWA shell | Apps that run without cloud egress — architecture for air-gapped review |
 | **Packaging** | Counter_Risk PyInstaller; PAEM portable zip | Shipping a folder someone can double-click — different problem than "it works on my machine" |
 | **Eval harnesses (partial)** | Pension-Data `eval_harness`; WF PDF extract evals; LMS `eval_sets` | Golden inputs → expected outputs; regression when prompts or models change |
 
@@ -84,7 +84,7 @@ Each module teaches one 2026-era AI-tool-builder competency through a **concrete
 | **14 Human-in-the-loop design** | Orchestrator + Workflows | Owner questions, approval cards, shadow dispatch, when agents must stop | 1, 2 | 4 |
 | **15 Cost governance** | learning-management-system | Budget reservation, redaction, trace classification in `LLMClient` | 13 | 3 |
 | **16 Security of agent tooling** | Orchestrator | Read-only MCP tools, subprocess isolation, quota caps, no credential bleed | 1 | 4 |
-| **17 Static/offline delivery** | Portable-Alpha-Extension-Model | Pyodide bundle, portable zip, zero-egress demos | 0B | 4 |
+| **17 Static/offline delivery** | Portable-Alpha-Extension-Model | stlite dashboard mount (`web/index.html`), portable zip, local Python path; browser viability unverified at work | 0B | 4 |
 | **18 Packaging & release** | Counter_Risk | PyInstaller pipeline, release guards, artifact manifests | 17 | 4 |
 | **19 Browser automation** | learning-management-system | Playwright smoke, UI contract tests (opt-in gate) | 0B | 3 |
 | **20 Knowledge graphs (conceptual)** | learning-management-system | `KnowledgeNode`/`KnowledgeEdge`, prerequisites, competency links — not Neo4j | 13 | 5 |
