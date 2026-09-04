@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-04T17:15:55Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-04T17:20:59Z)
 
-Units: 28 — done 3, queued 25
+Units: 28 — claimed 1, done 3, queued 24
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 CLAUDE CONSERVATION ACTIVE until 2026-09-06T12:00:00Z — cheap agents only (launchd driver every 15 min); claude-only units deferred.
@@ -11,7 +11,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | A-verify-Collab-Admin | A | A1 | done | codex | claude | Verify dossier artifacts/dossiers/Collab-Admin.md against ../clones/Co |
 | A-verify-Counter_Risk | A | A1 | done | gemini | driver | Verify dossier artifacts/dossiers/Counter_Risk.md against ../clones/Co |
 | A-verify-Fine-Art-Archive | A | A1 | done | gemini | codex | Verify dossier artifacts/dossiers/Fine-Art-Archive.md against ../clone |
-| A-verify-Inv-Man-Intake | A | A1 | queued | codex |  | Verify dossier artifacts/dossiers/Inv-Man-Intake.md against ../clones/ |
+| A-verify-Inv-Man-Intake | A | A1 | claimed | gemini | driver | Verify dossier artifacts/dossiers/Inv-Man-Intake.md against ../clones/ |
 | A-verify-Manager-Database | A | A1 | queued | codex |  | Verify dossier artifacts/dossiers/Manager-Database.md against ../clone |
 | A-verify-Orchestrator | A | A1 | queued | codex |  | Verify dossier artifacts/dossiers/Orchestrator.md against ../clones/Or |
 | A-verify-Pension-Data | A | A1 | queued | codex |  | Verify dossier artifacts/dossiers/Pension-Data.md against ../clones/Pe |
@@ -39,8 +39,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-04T17:08:33Z — A-verify-Counter_Risk — fail — not-ready: no cheap agent has capacity right now
-- 2026-09-04T17:08:34Z — A-verify-Fine-Art-Archive — route — router unavailable (ModuleNotFoundError); using capacity_ok; capacity_ok -> codex
 - 2026-09-04T17:08:34Z — A-verify-Fine-Art-Archive — claimed by driver (agent codex)
 - 2026-09-04T17:08:34Z — A-verify-Fine-Art-Archive — fail — not-ready: no cheap agent has capacity right now
 - 2026-09-04T17:10:13Z — A-verify-Counter_Risk — route — router picked gemini from ['codex', 'cursor', 'gemini']
@@ -51,3 +49,5 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-04T17:15:18Z — A-verify-Fine-Art-Archive — verification — done — Checked 27 claims in sections 4/5/8/9; corrected dHash, clone configuration, test count, and docs paths.
 - 2026-09-04T17:15:38Z — A-verify-Fine-Art-Archive — done — Verified the Fine-Art-Archive dossier against the clone; corrected dHash, fresh-clone configuration, test count, and docs paths.
 - 2026-09-04T17:15:55Z — A-verify-Counter_Risk — done — gemini produced 2105 words at artifacts/dossiers/Counter_Risk.md in 341s
+- 2026-09-04T17:16:18Z — A-verify-Inv-Man-Intake — route — router picked gemini from ['codex', 'cursor', 'gemini']
+- 2026-09-04T17:16:18Z — A-verify-Inv-Man-Intake — claimed by driver (agent gemini)

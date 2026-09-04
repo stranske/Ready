@@ -58,3 +58,5 @@
 ## 2026-09-04T17:15:18Z — A-verify-Fine-Art-Archive — verification — done — Checked 27 claims in sections 4/5/8/9; corrected dHash, clone configuration, test count, and docs paths.
 ## 2026-09-04T17:15:38Z — A-verify-Fine-Art-Archive — done — Verified the Fine-Art-Archive dossier against the clone; corrected dHash, fresh-clone configuration, test count, and docs paths.
 ## 2026-09-04T17:15:55Z — A-verify-Counter_Risk — done — gemini produced 2105 words at artifacts/dossiers/Counter_Risk.md in 341s
+## 2026-09-04T17:16:18Z — A-verify-Inv-Man-Intake — route — router picked gemini from ['codex', 'cursor', 'gemini']
+## 2026-09-04T17:16:18Z — A-verify-Inv-Man-Intake — claimed by driver (agent gemini)
