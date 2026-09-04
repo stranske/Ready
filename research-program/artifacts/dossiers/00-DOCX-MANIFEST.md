@@ -33,3 +33,8 @@ source Markdown does not itself meet the required structural thresholds:
 `00-COVER-MEMO` has 38 paragraphs and 9 headings, `README` has 14 paragraphs
 and 7 headings, and `REDACTIONS` has one heading. All 19 documents reopen and
 their Word-table counts exactly match their Markdown-table counts.
+
+
+## Verified correction refresh — 2026-09-04 23:38 UTC
+
+Pension-Data, Portable-Alpha-Extension-Model, Travel-Plan-Permission, and 00-INDEX were regenerated after evidence corrections. All four pass structural checks and visual inspection of every rendered page (29 pages total). Both dossier and Work-bundle copies match. See [refresh evidence](../readiness/export-refresh-20260904.md) for hashes. Earlier rows describe the original batch.

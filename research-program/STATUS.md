@@ -1,8 +1,8 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-04T23:28:16Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-04T23:38:58Z)
 
 Units: 44 — done 44
 Paused: False   Phase stops: []
-Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=shed vibe=ok aider=ok
+Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 CLAUDE CONSERVATION ACTIVE until 2026-09-06T12:00:00Z — cheap agents only (launchd driver every 15 min); claude-only units deferred.
 Owner inbox: https://github.com/stranske/Ready/issues/553
 

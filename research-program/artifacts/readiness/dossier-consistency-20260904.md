@@ -69,3 +69,8 @@ Regenerate via existing `tools/md_to_docx.py` / work-bundle sync when the packag
 **Medium** on completeness of work-bundle staleness — only the two mirrors with grep-visible contradictions were flagged; full work-bundle resync was out of scope for this bounded pass.
 
 What would change this conclusion: if `artifacts/work-bundle/*.md` are considered in-scope deliverables rather than packaging queue, they need immediate regeneration from the corrected dossiers.
+
+
+### Packaging follow-up — 2026-09-04 23:38 UTC
+
+The stale Markdown/Word packaging flags are resolved by the [verified export refresh](export-refresh-20260904.md). Seven Word destinations and three Work-bundle Markdown copies now include the corrected evidence.
