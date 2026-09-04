@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-04T23:25:17Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-04T23:26:42Z)
 
-Units: 43 — done 43
+Units: 44 — claimed 1, done 43
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=shed vibe=ok aider=ok
 CLAUDE CONSERVATION ACTIVE until 2026-09-06T12:00:00Z — cheap agents only (launchd driver every 15 min); claude-only units deferred.
@@ -8,6 +8,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 | id | track | phase | status | agent | executor | title |
 |---|---|---|---|---|---|---|
+| readiness-dossier-consistency-20260904 | A | A | claimed | cursor | driver | Reconcile recovered dossier corrections into existing downstream artif |
 | A-verify-Trend_Model_Project | A | A1 | done | cursor | driver | Verify dossier artifacts/dossiers/Trend_Model_Project.md against ../cl |
 | A-verify-Workflows | A | A1 | done | cursor | driver | Verify dossier artifacts/dossiers/Workflows.md against ../clones/Workf |
 | A-verify-learning-management-system | A | A1 | done | cursor | driver | Verify dossier artifacts/dossiers/learning-management-system.md agains |
@@ -54,8 +55,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-04T22:47:45Z — D3-unblock-sweep-2026-09-04T21 — route — router picked codex from ['codex', 'cursor']
-- 2026-09-04T22:47:45Z — D3-unblock-sweep-2026-09-04T21 — claimed by driver (agent codex)
 - 2026-09-04T22:50:47Z — D3-unblock-sweep-2026-09-04T21 — done — cursor produced 656 words at artifacts/sweeps/D3-unblock-sweep-2026-09-04T21.md in 179s
 - 2026-09-04T23:05:51Z — A-verify-Pension-Data — route — router picked cursor from ['codex', 'cursor', 'gemini']
 - 2026-09-04T23:05:51Z — A-verify-Pension-Data — claimed by driver (agent cursor)
@@ -66,6 +65,8 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-04T23:22:25Z — A-verify-Travel-Plan-Permission — route — router picked cursor from ['codex', 'cursor', 'gemini']
 - 2026-09-04T23:22:25Z — A-verify-Travel-Plan-Permission — claimed by driver (agent cursor)
 - 2026-09-04T23:24:08Z — A-verify-Travel-Plan-Permission — done — cursor produced 2064 words at artifacts/dossiers/Travel-Plan-Permission.md in 97s
+- 2026-09-04T23:26:42Z — readiness-dossier-consistency-20260904 — route — router picked cursor from ['codex', 'cursor']
+- 2026-09-04T23:26:42Z — readiness-dossier-consistency-20260904 — claimed by driver (agent cursor)
 
 ## Questions
 
