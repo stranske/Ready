@@ -153,3 +153,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-04T17:57:28Z — R7-trip-planning-core — route — router picked codex from ['codex', 'gemini']
 ## 2026-09-04T17:57:28Z — R7-trip-planning-core — claimed by driver (agent codex)
 ## 2026-09-04T17:58:00Z — B1-citefix-R4-document-access-substrate — done — cursor produced 2545 words at artifacts/research/R4-document-access-substrate.md in 150s
+## 2026-09-04T17:58:02Z — A-dossier-docx — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-04T17:58:02Z — A-dossier-docx — claimed by driver (agent cursor)
+## 2026-09-04T17:58:41Z — A-verify-Workflows — done — cursor produced 1681 words at artifacts/dossiers/Workflows.md in 192s

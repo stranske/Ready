@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-04T17:58:00Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-04T17:58:41Z)
 
-Units: 32 — claimed 4, done 23, queued 5
+Units: 32 — claimed 4, done 24, queued 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=shed vibe=ok aider=ok
 CLAUDE CONSERVATION ACTIVE until 2026-09-06T12:00:00Z — cheap agents only (launchd driver every 15 min); claude-only units deferred.
@@ -9,7 +9,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | id | track | phase | status | agent | executor | title |
 |---|---|---|---|---|---|---|
 | A-verify-Trend_Model_Project | A | A1 | claimed | cursor | driver | Verify dossier artifacts/dossiers/Trend_Model_Project.md against ../cl |
-| A-verify-Workflows | A | A1 | claimed | cursor | driver | Verify dossier artifacts/dossiers/Workflows.md against ../clones/Workf |
+| A-verify-Workflows | A | A1 | done | cursor | driver | Verify dossier artifacts/dossiers/Workflows.md against ../clones/Workf |
 | A-verify-learning-management-system | A | A1 | done | cursor | driver | Verify dossier artifacts/dossiers/learning-management-system.md agains |
 | A-verify-Collab-Admin | A | A1 | done | codex | claude | Verify dossier artifacts/dossiers/Collab-Admin.md against ../clones/Co |
 | A-verify-Counter_Risk | A | A1 | done | gemini | driver | Verify dossier artifacts/dossiers/Counter_Risk.md against ../clones/Co |
@@ -26,7 +26,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | A-personal-reuse-note | A | A2 | done | cursor | driver | Reuse note across personal repos (FAA, Reader, trip-planner) |
 | A-work-side-bundle | A | A3 | done | cursor | driver | Work-side bundle: redaction pass, cover memo, safety grep |
 | A-work-side-bundle-refresh | A | A3 | queued | codex |  | Refresh the work-side bundle with the three late dossiers and re-run t |
-| A-dossier-docx | A | A3 | queued | cursor |  | Word versions of all verified dossiers (venv + python-docx) |
+| A-dossier-docx | A | A3 | claimed | cursor | driver | Word versions of all verified dossiers (venv + python-docx) |
 | B1-citefix-R1-legal-decomposition | B | B1 | done | cursor | driver | Fix unreachable citations in R1-legal-decomposition.md |
 | B1-citefix-R4-document-access-substrate | B | B1 | done | cursor | driver | Fix unreachable citations in R4-document-access-substrate.md |
 | R1-legal-decomposition | B | B1 | done | codex | driver | Brief R1: legal fund-document decomposition and lineage |
@@ -43,9 +43,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-04T17:55:29Z — A-verify-Workflows — route — router picked cursor from ['codex', 'cursor', 'gemini']
-- 2026-09-04T17:55:29Z — A-verify-Workflows — claimed by driver (agent cursor)
-- 2026-09-04T17:55:29Z — A-verify-learning-management-system — route — router picked cursor from ['codex', 'cursor', 'gemini']
 - 2026-09-04T17:55:29Z — A-verify-learning-management-system — claimed by driver (agent cursor)
 - 2026-09-04T17:55:30Z — B1-citefix-R4-document-access-substrate — route — router picked cursor from ['codex', 'cursor', 'gemini']
 - 2026-09-04T17:55:30Z — B1-citefix-R4-document-access-substrate — claimed by driver (agent cursor)
@@ -55,3 +52,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-04T17:57:28Z — R7-trip-planning-core — route — router picked codex from ['codex', 'gemini']
 - 2026-09-04T17:57:28Z — R7-trip-planning-core — claimed by driver (agent codex)
 - 2026-09-04T17:58:00Z — B1-citefix-R4-document-access-substrate — done — cursor produced 2545 words at artifacts/research/R4-document-access-substrate.md in 150s
+- 2026-09-04T17:58:02Z — A-dossier-docx — route — router picked cursor from ['codex', 'cursor']
+- 2026-09-04T17:58:02Z — A-dossier-docx — claimed by driver (agent cursor)
+- 2026-09-04T17:58:41Z — A-verify-Workflows — done — cursor produced 1681 words at artifacts/dossiers/Workflows.md in 192s
