@@ -101,3 +101,14 @@ remote:
 remote: - Required status check "Gate / gate" is 
 ## 2026-09-04T17:31:41Z — A-verify-learning-management-system — done — gemini produced 1600 words at artifacts/dossiers/learning-management-system.md in 7s
 ## 2026-09-04T17:32:04Z — A-verify-Manager-Database — done — gemini produced 1656 words at artifacts/dossiers/Manager-Database.md in 466s
+## 2026-09-04T17:32:07Z — A-dossier-index — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-04T17:32:07Z — A-dossier-index — claimed by driver (agent cursor)
+## 2026-09-04T17:36:36Z — A-verify-trip-planner — route — router picked cursor from ['codex', 'cursor', 'gemini']
+## 2026-09-04T17:36:36Z — A-verify-trip-planner — claimed by driver (agent cursor)
+## 2026-09-04T17:36:36Z — R1-legal-decomposition — route — router picked codex from ['codex', 'gemini']
+## 2026-09-04T17:36:36Z — R1-legal-decomposition — claimed by driver (agent codex)
+## 2026-09-04T17:36:37Z — R2-consultant-report-diffing — route — router picked codex from ['codex', 'gemini']
+## 2026-09-04T17:36:37Z — R2-consultant-report-diffing — claimed by driver (agent codex)
+## 2026-09-04T17:36:37Z — R3-manager-mosaic — route — router picked codex from ['codex', 'gemini']
+## 2026-09-04T17:36:37Z — R3-manager-mosaic — claimed by driver (agent codex)
+## 2026-09-04T17:38:09Z — R2-consultant-report-diffing — done — cursor produced 2256 words at artifacts/research/R2-consultant-report-diffing.md in 92s
