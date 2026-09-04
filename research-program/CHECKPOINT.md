@@ -117,3 +117,4 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-04T17:38:41Z — R3-manager-mosaic — done — cursor produced 2580 words at artifacts/research/R3-manager-mosaic-synthesis.md in 123s
 ## 2026-09-04T17:39:06Z — R1-legal-decomposition — done — cursor produced 2078 words at artifacts/research/R1-legal-decomposition.md in 149s
 ## 2026-09-04T17:39:17Z — A-verify-trip-planner — done — cursor produced 1668 words at artifacts/dossiers/trip-planner.md in 160s
+## 2026-09-04T17:40:23Z — R4-document-access — done — cursor produced 2430 words at artifacts/research/R4-document-access-substrate.md in 131s
