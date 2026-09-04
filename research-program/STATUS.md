@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-04T17:58:41Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-04T17:58:45Z)
 
-Units: 32 — claimed 4, done 24, queued 4
+Units: 32 — claimed 3, done 25, queued 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=shed vibe=ok aider=ok
 CLAUDE CONSERVATION ACTIVE until 2026-09-06T12:00:00Z — cheap agents only (launchd driver every 15 min); claude-only units deferred.
@@ -34,7 +34,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | R3-manager-mosaic | B | B1 | done | codex | driver | Brief R3: manager mosaic synthesis, discrepancy and thesis monitoring |
 | R4-document-access | B | B1 | done | codex | driver | Brief R4: Backstop/MCP/SharePoint mirror substrate (adversarial) |
 | R5-output-substrate | B | B1 | done | cursor | driver | Brief R5: robust no-install output surfaces |
-| R6-public-corpora | B | B1 | claimed | cursor | driver | Brief R6: public and synthetic corpora |
+| R6-public-corpora | B | B1 | done | cursor | driver | Brief R6: public and synthetic corpora |
 | R7-trip-planning-core | B | B1 | claimed | codex | driver | Brief R7: trip-planning core (transport, lodging, constraints) |
 | B2-gap-analysis | B | B2 | queued | codex |  | Gap analysis and disposition of all candidates |
 | B3-interop-architecture | B | B3 | queued | codex |  | Interoperability architecture (identity, typology, tracked variables,  |
@@ -43,7 +43,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-04T17:55:29Z — A-verify-learning-management-system — claimed by driver (agent cursor)
 - 2026-09-04T17:55:30Z — B1-citefix-R4-document-access-substrate — route — router picked cursor from ['codex', 'cursor', 'gemini']
 - 2026-09-04T17:55:30Z — B1-citefix-R4-document-access-substrate — claimed by driver (agent cursor)
 - 2026-09-04T17:56:44Z — R6-public-corpora — route — router picked cursor from ['codex', 'cursor']
@@ -55,3 +54,4 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-04T17:58:02Z — A-dossier-docx — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-04T17:58:02Z — A-dossier-docx — claimed by driver (agent cursor)
 - 2026-09-04T17:58:41Z — A-verify-Workflows — done — cursor produced 1681 words at artifacts/dossiers/Workflows.md in 192s
+- 2026-09-04T17:58:45Z — R6-public-corpora — done — cursor produced 2201 words at artifacts/research/R6-public-corpora-and-synthetic-data.md in 121s
