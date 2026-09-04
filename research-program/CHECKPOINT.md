@@ -184,3 +184,10 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-04T18:19:52Z — B4-issue-drafting — route — router picked cursor from ['codex', 'cursor']
 ## 2026-09-04T18:19:52Z — B4-issue-drafting — claimed by driver (agent cursor)
 ## 2026-09-04T18:23:58Z — B4-issue-drafting — done — cursor produced 1526 words at artifacts/issues/FILING_PLAN.md in 245s
+## 2026-09-04T19:47:31Z — B5-work-env-issue-wave — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-04T19:47:31Z — B5-work-env-issue-wave — claimed by driver (agent cursor)
+## 2026-09-04T19:47:31Z — R4-document-access — route — router picked codex from ['codex', 'gemini']
+## 2026-09-04T19:47:31Z — R4-document-access — claimed by driver (agent codex)
+## 2026-09-04T19:47:32Z — R5-output-substrate — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-04T19:47:32Z — R5-output-substrate — claimed by driver (agent cursor)
+## 2026-09-04T19:49:04Z — R4-document-access — done — cursor produced 2100 words at artifacts/research/R4-document-access-substrate.md in 92s

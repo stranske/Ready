@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-04T18:54:04Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-04T19:49:04Z)
 
-Units: 33 — done 33
+Units: 34 — claimed 2, done 32
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=shed vibe=ok aider=ok
 CLAUDE CONSERVATION ACTIVE until 2026-09-06T12:00:00Z — cheap agents only (launchd driver every 15 min); claude-only units deferred.
@@ -30,29 +30,30 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | A-dossier-docx | A | A3 | done | cursor | codex | Word versions of all verified dossiers (venv + python-docx) |
 | B1-citefix-R1-legal-decomposition | B | B1 | done | cursor | driver | Fix unreachable citations in R1-legal-decomposition.md |
 | B1-citefix-R4-document-access-substrate | B | B1 | done | cursor | driver | Fix unreachable citations in R4-document-access-substrate.md |
+| R4-document-access | B | B1 | done | codex | driver | Brief R4: Backstop/MCP/SharePoint mirror substrate (adversarial) |
+| R5-output-substrate | B | B1 | claimed | cursor | driver | Brief R5: robust no-install output surfaces |
 | R1-legal-decomposition | B | B1 | done | codex | driver | Brief R1: legal fund-document decomposition and lineage |
 | R2-consultant-report-diffing | B | B1 | done | codex | driver | Brief R2: consultant-report and periodic-communication diffing |
 | R3-manager-mosaic | B | B1 | done | codex | driver | Brief R3: manager mosaic synthesis, discrepancy and thesis monitoring |
-| R4-document-access | B | B1 | done | codex | driver | Brief R4: Backstop/MCP/SharePoint mirror substrate (adversarial) |
-| R5-output-substrate | B | B1 | done | cursor | driver | Brief R5: robust no-install output surfaces |
 | R6-public-corpora | B | B1 | done | cursor | driver | Brief R6: public and synthetic corpora |
 | R7-trip-planning-core | B | B1 | done | codex | driver | Brief R7: trip-planning core (transport, lodging, constraints) |
 | B2-gap-analysis | B | B2 | done | codex | driver | Gap analysis and disposition of all candidates |
-| B3-interop-architecture | B | B3 | done | codex | driver | Interoperability architecture (identity, typology, tracked variables,  |
+| B3-interop-architecture | B | B3 | done | codex | driver | Interoperability architecture, anchored on the work tools’ real field  |
 | B4-issue-drafting | B | B4 | done | cursor | driver | Draft AGENT_ISSUE_FORMAT issue bodies from decisions |
+| B5-work-env-issue-wave | B | B5 | claimed | cursor | driver | File the second wave of issues from the work-environment answers |
 | C-skill-curriculum | C | C1 | done | codex | driver | Skill curriculum + tool-literacy loop design (LMS-connected) |
 
 ## Last checkpoints
 
-- 2026-09-04T18:09:33Z — B3-interop-architecture — fail — cursor produced 0 words at /Users/teacher/.codex/automations/research-program/artifacts/research/B3-interop-architecture.md (min 400); rotating agent
-- 2026-09-04T18:09:33Z — B3-interop-architecture — route — router picked codex from ['codex', 'gemini']
-- 2026-09-04T18:09:33Z — B3-interop-architecture — claimed by driver (agent codex)
-- 2026-09-04T18:10:35Z — A-dossier-docx — fail — cursor produced 230 words at /Users/teacher/.codex/automations/research-program/artifacts/dossiers/00-DOCX-MANIFEST.md (min 400); rotating agent
-- 2026-09-04T18:10:57Z — A-dossier-docx — route — router picked cursor from ['codex', 'cursor']
-- 2026-09-04T18:10:57Z — A-dossier-docx — claimed by codex (agent cursor)
-- 2026-09-04T18:11:08Z — B3-interop-architecture — done — cursor produced 3022 words at artifacts/research/B3-interop-architecture.md in 95s
 - 2026-09-04T18:11:24Z — A-memo-correction — done — cursor produced 1573 words at artifacts/work-bundle/00-COVER-MEMO.md in 114s
 - 2026-09-04T18:12:22Z — A-dossier-docx — done — All 19 Word outputs reopen with matching Markdown tables; 16 meet the paragraph and heading thresholds and three source-structure exceptions are documented in t
 - 2026-09-04T18:19:52Z — B4-issue-drafting — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-04T18:19:52Z — B4-issue-drafting — claimed by driver (agent cursor)
 - 2026-09-04T18:23:58Z — B4-issue-drafting — done — cursor produced 1526 words at artifacts/issues/FILING_PLAN.md in 245s
+- 2026-09-04T19:47:31Z — B5-work-env-issue-wave — route — router picked cursor from ['codex', 'cursor']
+- 2026-09-04T19:47:31Z — B5-work-env-issue-wave — claimed by driver (agent cursor)
+- 2026-09-04T19:47:31Z — R4-document-access — route — router picked codex from ['codex', 'gemini']
+- 2026-09-04T19:47:31Z — R4-document-access — claimed by driver (agent codex)
+- 2026-09-04T19:47:32Z — R5-output-substrate — route — router picked cursor from ['codex', 'cursor']
+- 2026-09-04T19:47:32Z — R5-output-substrate — claimed by driver (agent cursor)
+- 2026-09-04T19:49:04Z — R4-document-access — done — cursor produced 2100 words at artifacts/research/R4-document-access-substrate.md in 92s

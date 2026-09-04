@@ -1,102 +1,90 @@
 # Brief R4: Document Access Substrate — Backstop, MCP, SharePoint, and Claude Code Web
 
-**Question.** What should the owner plan for as the working substrate for document operations at work — given Backstop as system of record, possible SharePoint/local mirrors, MCP servers as connectors, and Claude Code web on a no-terminal work PC?
+**Question.** What should the owner plan for as the working substrate for document operations at work — given Backstop as system of record, an existing synced folder mirror, possible MCP connectors, and Claude Code web?
 
-**Confidence.** High on the mirror-over-MCP direction for *agent batch work* and fleet contract alignment. Medium on SharePoint-as-mirror feasibility without IT-run sync. Low on Backstop document API surface (no public spec) and on any near-term Backstop MCP.
+**Confidence.** High on mirror-plus-manifest as the agent substrate (the mirror already exists; the identity layer does not). Medium on SharePoint Graph ingest without IT-run jobs. Low on Backstop document API surface and any near-term Backstop MCP.
 
 ---
 
 ## 1. Problem framing
 
-Work documents live in **Backstop** (ION Analytics). The owner builds with AI coding agents at home on public/synthetic data; at work the constraint model is **browser + Office + Claude Code web + file system, no terminal, no installs**. Every derived fact must link in one click to the primary document and page. Three existing work-side HTML tools (consultant blackline, legal lineage, manager-comms thesis monitor) already assume stable document identity and page anchors; they are not in this repo.
+Work documents live in **Backstop** (ION Analytics). At work the confirmed runtime is **browser + Office + Claude Code + local Python (non-PATH) + PowerShell + synced folder tree** — not “browser-only, no Python” (`artifacts/work-bundle/INFORMATION-REQUEST-RESPONSE.md` §A). Nothing server-hosted or database-backed runs there; every tool is a local script, COM-driven Office file, or static HTML page opened via `file://` deep links that **work in production** (same source, §A3, §D).
+
+The document library is **already a mirror**: one folder per manager, then per document category (~3,800 PDFs, 480+ Excel, 170+ Word in the manager portion). There are **no stable document IDs** — filename is the de facto key; supersession is an ad hoc numeric-prefix convention; one tool already keys OCR side-files by **content hash** because path-based keys orphaned data on rename (same source, §C9–10).
+
+Three HTML tools (consultant blackline, legal lineage, manager-comms thesis monitor) ship today with named schemas that must anchor any shared design (same source, §D). Fleet contracts require stable `source_id` plus `locator.page` on evidence (`clones/Workflows/docs/contracts/schemas/evidence-object-v1.schema.json`) and per-run `artifact-manifest/v1` outputs (`clones/Workflows/docs/contracts/schemas/artifact-manifest-v1.schema.json`). Doc-Lineage’s README now pins scope to identity, OCR-mandatory extraction, and those work-side field names (`clones/Doc-Lineage/README.md`).
 
 The assistant’s position to test: **“plan for the mirror as the working substrate; treat MCP as ingestion and back-link source.”**
 
-**FACTS:** Doc-Lineage’s intent explicitly requires “one-click links back to the source document and page” (`clones/Doc-Lineage/README.md`). Workflows `evidence-object/v1` requires a stable `source_id` plus optional `locator.page` (`clones/Workflows/docs/contracts/schemas/evidence-object-v1.schema.json`). Pension-Data already implements content-hash dedupe, supersession, and `artifact:<hash>` IDs (`clones/Pension-Data/src/pension_data/ingest/artifacts.py`).
+**JUDGMENT:** Correct polarity, but understated. The mirror is not hypothetical — the gap is a **manifest and identity layer** on top of the existing tree, plus OCR sidecars and triple-link HTML. MCP/connector search already exists for interactive discovery; bulk retrieval is **untested** (same source, §C11).
 
 ---
 
 ## 2. Backstop Solutions — documents, APIs, AI
 
-### 2.1 What is publicly known
-
 | Topic | FACTS (sourced) |
 |-------|-----------------|
-| **Document retrieval product** | **Backstop IntellX** automates retrieval of fund documents from source emails and portals and attaches them to funds/investments ([ionanalytics.com/backstop](https://ionanalytics.com/backstop/) [access-restricted]). |
-| **REST APIs** | Backstop offers **specially licensed REST APIs** to integrate with third-party systems and reporting engines; marketing copy does not publish document-specific endpoint catalogs ([ionanalytics.com/backstop](https://ionanalytics.com/backstop/) [access-restricted], [ionanalytics.com/backstop/services/data-services](https://ionanalytics.com/backstop/services/data-services/) [access-restricted]). |
-| **Embedded AI** | Backstop has shipped **client-connected LLM** capability embedded in workflows — firms use **approved models only**, with confidentiality as a stated design constraint ([ionanalytics.com/blog/backstop/integrating-deal-investor-workflow-for-gps-and-lps](https://ionanalytics.com/blog/backstop/integrating-deal-investor-workflow-for-gps-and-lps/) [access-restricted], [LinkedIn product post](https://www.linkedin.com/posts/backstop-solutions-group_solutions-in-action-voices-of-ion-analytics-activity-7424836642122735616-oep-)). |
-| **MCP** | **No public announcement** of a Backstop Solutions Group MCP server or Model Context Protocol integration was found. A separate open-source project named “Backstop” (`github.com/pratyush2514/Backstop`) ships an MCP server for **PostgreSQL** — it is **not** the investment platform ([github.com/pratyush2514/Backstop](https://github.com/pratyush2514/Backstop)). |
+| **IntellX** | Automates retrieval of fund documents from emails/portals into Backstop ([ionanalytics.com/backstop/resource/intellx-2/](https://ionanalytics.com/backstop/resource/intellx-2/)). |
+| **REST APIs** | “Specially licensed REST APIs” for third-party integration; no public document-endpoint catalog ([ionanalytics.com/backstop/services/data-services/](https://ionanalytics.com/backstop/services/data-services/)). |
+| **Embedded AI** | Client-connected LLM inside Backstop workflows; approved models only; confidentiality stated as design constraint ([ionanalytics.com/blog/backstop/integrating-deal-investor-workflow-for-gps-and-lps/](https://ionanalytics.com/blog/backstop/integrating-deal-investor-workflow-for-gps-and-lps/)). |
+| **MCP** | **No public announcement** of a Backstop/ION MCP server. An unrelated open-source “Backstop” project exposes PostgreSQL MCP ([github.com/pratyush2514/Backstop](https://github.com/pratyush2514/Backstop)) — not the investment platform. |
 
-**JUDGMENT:** Treat “Backstop MCP is coming” as **vendor hope, not plan dependency**. Until IT or Backstop account team confirms an MCP or documented document-export API, the owner should plan **export paths you control** (scheduled REST job by IT, SharePoint sync folder, or manual bulk export) plus a local manifest layer.
+**JUDGMENT:** Do not block on “Backstop MCP.” Plan export paths you control: licensed REST (IT), SharePoint sync (already in use), or connector-based retrieval. Backstop remains **system of record** for permissions and “current” attachment; the mirror is a **replica** with `synced_at` and supersession.
 
-### 2.2 Implications for stable IDs and back-links
+**FACTS:** Public materials do not document immutable document IDs, permalink URLs, or page anchors for external integrators. Direct stable links into “the document system” (vs. file path) are **unknown/untested** at work (same source, §A4).
 
-**FACTS:** Public materials do not document whether Backstop exposes immutable document IDs, permalink URLs, or page-level anchors to external integrators.
-
-**JUDGMENT:** The mirror manifest must store **both** (a) a mirror-local content hash and path and (b) whatever opaque Backstop URL/ID the export provides — and treat Backstop URLs as **best-effort** until validated against a real export sample at work. Page-level one-click links will come from **derived locators** (PDF page, DOCX section) in `evidence-object/v1`, not from Backstop alone.
+**JUDGMENT:** Manifest entries need **three link targets**: mirror-relative path (offline), best-effort Backstop/SharePoint URL, and page anchor from `evidence-object/v1` `locator.page`.
 
 ---
 
 ## 3. MCP servers — SharePoint, OneDrive, Microsoft Graph
 
-### 3.1 Official Microsoft offerings
+### 3.1 Official Microsoft
 
-| Server | Scope | FACTS | Fit for document substrate |
-|--------|-------|-------|---------------------------|
-| **Microsoft MCP Server for Enterprise** | Entra ID / directory read-only | Preview at `https://mcp.svc.cloud.microsoft/enterprise` [access-restricted]; **100 calls/min/user**; Graph throttling applies ([learn.microsoft.com/graph/mcp-server/overview](https://learn.microsoft.com/en-us/graph/mcp-server/overview)) | **Not for documents** — identity/admin scenarios only. |
-| **Work IQ / OneDrive Remote MCP** | Files in M365 | Public preview; **~17 file tools**; **5 MB cap per file operation**; large uploads, delta sync, and version enumeration are Graph-API-only; typically requires M365 Copilot licensing ([scalekit.com/blog/onedrive-mcp-vs-api](https://www.scalekit.com/blog/onedrive-mcp-vs-api), [learn.microsoft.com/microsoft-agent-365/mcp-server-reference/odspremoteserver](https://learn.microsoft.com/en-us/microsoft-agent-365/mcp-server-reference/odspremoteserver)) | **Reject as bulk substrate.** Usable for ad-hoc reads of small files inside Copilot-governed agents, not consultant PDF corpora. |
-| **SharePoint Embedded MCP** (`@microsoft/spe-mcp`) | SPE containers | Read-only mode, tool profiles, local developer tool ([learn.microsoft.com/sharepoint/dev/embedded/build/sharepoint-embedded-mcp-server](https://learn.microsoft.com/en-us/sharepoint/dev/embedded/build/sharepoint-embedded-mcp-server)) | Relevant only if the pension deploys **SharePoint Embedded** — unlikely for a standard SharePoint doc library mirror. |
+| Server | FACTS | Document substrate fit |
+|--------|-------|------------------------|
+| **Microsoft MCP Server for Enterprise** | Entra/directory read-only preview at `https://mcp.svc.cloud.microsoft/enterprise`; **100 calls/min/user**; Graph throttling applies ([learn.microsoft.com/graph/mcp-server/overview](https://learn.microsoft.com/en-us/graph/mcp-server/overview)). M365 APIs deferred to Agent 365 ([github.com/mcp/microsoft/EnterpriseMCP](https://github.com/mcp/microsoft/EnterpriseMCP)). | **Reject** for documents. |
+| **Work IQ MCP** (SharePoint, OneDrive, Mail, Teams) | Preview; admin-governed in M365 admin center; read-only unless writes enabled; consumptive billing ([learn.microsoft.com/microsoft-agent-365/tooling-servers-overview](https://learn.microsoft.com/en-us/microsoft-agent-365/tooling-servers-overview)). | Interactive agent tooling, not batch corpus ingest. Third-party analysis cites **~5 MB per-file cap** on OneDrive MCP tools vs. full Graph for large files ([scalekit.com/blog/onedrive-mcp-vs-api](https://www.scalekit.com/blog/onedrive-mcp-vs-api)) — treat as a risk flag until validated on tenant. |
+| **SharePoint Embedded MCP** (`@microsoft/spe-mcp`) | Read-only developer tool for SPE containers ([learn.microsoft.com/sharepoint/dev/embedded/build/sharepoint-embedded-mcp-server](https://learn.microsoft.com/en-us/sharepoint/dev/embedded/build/sharepoint-embedded-mcp-server)). | Only if pension deploys SPE — unlikely for standard doc library. |
 
-### 3.2 Community / third-party MCP servers
+### 3.2 Community servers
 
-| Project | Capabilities (claimed) | Caveats |
-|---------|------------------------|---------|
-| **ravikant1918/sharepoint-mcp** | List, KQL search, download, metadata, upload; Graph or REST; auto-retry on 429 ([github.com/ravikant1918/sharepoint-mcp](https://github.com/ravikant1918/sharepoint-mcp)) | Requires Entra app registration + secrets; **not** work-PC-no-install friendly unless IT hosts the server; security review required for pension data. |
-| **sekops-ch/sharepoint-mcp-server** | Graph search, list sites/drives/items, text file content ([mcpservers.org/servers/sekops-ch/sharepoint-mcp-server](https://mcpservers.org/servers/sekops-ch/sharepoint-mcp-server)) | Text-only content tool — **unsuitable for binary PDF ingestion** without extension. |
-| **softeria/ms-365-mcp-server** | Broad Graph surface (mail, files, SharePoint sites) ([mcpservers.org/servers/softeria/ms-365-mcp-server](https://mcpservers.org/servers/softeria/ms-365-mcp-server)) | Large tool surface increases agent misuse risk; still subject to Graph throttling. |
+| Project | FACTS | Caveat |
+|---------|-------|--------|
+| **ravikant1918/sharepoint-mcp** | List, search, download, metadata, upload via Graph/REST ([github.com/ravikant1918/sharepoint-mcp](https://github.com/ravikant1918/sharepoint-mcp)). | Needs Entra app + hosted server or local install; security review for pension data. |
+| **softeria/ms-365-mcp-server** | Broad Graph surface including files ([mcpservers.org/servers/softeria/ms-365-mcp-server](https://mcpservers.org/servers/softeria/ms-365-mcp-server)). | Large tool surface; agent misuse risk. |
 
-### 3.3 Rate limits and bulk download
+### 3.3 Rate limits and stable IDs
 
-**FACTS:** Microsoft Graph and SharePoint use **dynamic throttling** (HTTP 429/503 + `Retry-After`), not fixed per-minute download quotas ([learn.microsoft.com/graph/throttling](https://learn.microsoft.com/en-us/graph/throttling), [learn.microsoft.com/sharepoint/dev/general-development/how-to-avoid-getting-throttled-or-blocked-in-sharepoint-online](https://learn.microsoft.com/en-us/sharepoint/dev/general-development/how-to-avoid-getting-throttled-or-blocked-in-sharepoint-online)). Typical costs: **download = 1 resource unit**, multi-item list/upload = 2 RUs. Tenant-wide app limits scale with license count (e.g. up to **6,250 RUs/min** per app per tenant at 50k+ licenses). Bulk extraction at scale is explicitly steered toward **Microsoft Graph Data Connect**, not interactive MCP ([learn.microsoft.com/graph/throttling](https://learn.microsoft.com/en-us/graph/throttling)).
+**FACTS:** Graph/SharePoint use **dynamic throttling** (HTTP 429/503, `Retry-After`), not fixed download quotas ([learn.microsoft.com/graph/throttling](https://learn.microsoft.com/en-us/graph/throttling)). Bulk extraction at tenant scale is steered toward **Microsoft Graph Data Connect**, not interactive MCP.
 
-**JUDGMENT:** MCP is appropriate for **interactive probe, search, and incremental ingest** (tens–hundreds of files per session with backoff). It is **wrong as the runtime read layer** for Doc-Lineage blacklines, consultant variable extraction, or repeated CI — those need **local blobs + manifest**.
+**FACTS:** Graph `driveItem` `id` is stable for an item; **paths are not** after moves/renames.
 
-**Stable IDs:** Graph `driveItem` IDs are stable for a given item; **paths are not** (moves/renames). Manifests should key on `driveId` + `itemId` (or SharePoint `UniqueId`) plus content `sha256`, not folder path alone.
+**JUDGMENT:** MCP fits **interactive probe and incremental ingest** (tens–hundreds of files with backoff). It is wrong as the **runtime read layer** for blacklines, variable extraction, or repeated runs — those need local blobs + manifest. At work, connector search over mail/chat/document library **already exists**; treat MCP as overlapping capability, not a prerequisite.
 
 ---
 
 ## 4. Claude Code web without a terminal
 
-### 4.1 What works in the browser
-
 **FACTS:**
 
-- Claude Code on the web runs at claude.ai/code on Anthropic-managed VMs; sessions persist across browser close ([code.claude.com/docs/en/claude-code-on-the-web](https://code.claude.com/docs/en/claude-code-on-the-web)).
-- **GitHub App authorization during browser onboarding** is a first-class path — **no local terminal required** ([code.claude.com/docs/en/claude-code-on-the-web](https://code.claude.com/docs/en/claude-code-on-the-web)).
-- Cloud sessions **clone GitHub remotes** and push branches; they can access **any repo the connected GitHub account can see** ([code.claude.com/docs/en/claude-code-on-the-web](https://code.claude.com/docs/en/claude-code-on-the-web)).
-- Without GitHub, `claude --cloud` can **bundle-upload** a local git repo — but that requires the **CLI on a machine with terminal**, not the work browser-only model ([code.claude.com/docs/en/claude-code-on-the-web](https://code.claude.com/docs/en/claude-code-on-the-web)).
+- Cloud sessions run at `claude.ai/code` on Anthropic VMs; persist across browser close ([code.claude.com/docs/en/claude-code-on-the-web](https://code.claude.com/docs/en/claude-code-on-the-web)).
+- **GitHub App authorization during browser onboarding** is first-class — no local terminal required ([code.claude.com/docs/en/web-quickstart](https://code.claude.com/docs/en/web-quickstart)).
+- Sessions **clone GitHub remotes** and push branches; access any repo the connected account can see.
+- VMs do **not** mount the work filesystem, Backstop, or SharePoint unless exposed via GitHub, cloud env config, or reachable URLs ([code.claude.com/docs/en/claude-code-on-the-web](https://code.claude.com/docs/en/claude-code-on-the-web)).
+- Non-GitHub repos can be bundle-uploaded — but that requires **CLI on a machine with terminal**, not the work browser-only path for the owner.
 
-### 4.2 What does *not* work for document operations
-
-**FACTS:** Cloud sessions run in **isolated VMs** with restricted network; they do **not** mount the owner’s work filesystem, Backstop, or SharePoint unless exposed via (a) files committed to GitHub, (b) environment/network configuration in a cloud environment, or (c) explicit fetch from URLs the VM can reach ([code.claude.com/docs/en/claude-code-on-the-web](https://code.claude.com/docs/en/claude-code-on-the-web), [support.claude.com/en/articles/12618689](https://support.claude.com/en/articles/12618689-claude-code-on-the-web)).
-
-**JUDGMENT:** At work, Claude Code web is a **code-and-PR agent against GitHub repos**, not a document browser. To use a mirror substrate with Claude Code web, the mirror’s **manifest and synthetic/public blob samples** must live in a repo the session can clone — not merely on `C:\Users\...\Documents`. Proprietary full mirrors stay on the work perimeter; only **schemas, validators, and public golden files** sync to GitHub for home/dev loops (matches R2’s synthetic corpus rule).
+**JUDGMENT:** At work, Claude Code web is a **code-and-PR agent against GitHub repos**, not a document browser. Proprietary mirrors stay on the work perimeter; **schemas, validators, and public/synthetic golden files** sync to GitHub for home/dev loops. Work-side document ops run via **local Python/PowerShell** driven by the in-environment assistant — a materially stronger substrate than this brief’s original constraint model assumed.
 
 ---
 
 ## 5. Mirror substrate — fleet-aligned pattern
 
-Pension-Data’s artifact ingest is the closest fleet implementation of what R4 needs (`clones/Pension-Data/src/pension_data/ingest/artifacts.py`):
+Pension-Data’s artifact ingest is the closest fleet implementation: content keyed with **sha256** dedupe, supersession chain, deterministic `artifact:<digest>` IDs (`clones/Pension-Data/src/pension_data/ingest/artifacts.py`).
 
-- Content keyed by `(plan_id, plan_period, source_url)` with **sha256** dedupe.
-- New checksum → **supersede** prior active artifact, preserving lineage pointers.
-- Deterministic `artifact:<digest>` IDs.
+**JUDGMENT:** The work mirror should **add** this logic without relocating files: content-addressed blob references (or hash-verified paths into the existing tree), logical keys for supersession, `artifact-manifest/v1` for derived runs. OCR text sidecars keyed by `sha256` (already practiced at work) become a first-class `derived/ocr/` convention with `method: "ocr"` on evidence objects.
 
-Inv-Man-Intake versions documents by `(fund_id, file_name)` with ordered `version_date` (`clones/Inv-Man-Intake/docs/contracts/core_schema.md`) — logical versioning without content addressing.
-
-Workflows `artifact-manifest/v1` standardizes per-run outputs with `artifact_id`, `path`, `sha256` (`clones/Workflows/docs/contracts/schemas/artifact-manifest-v1.schema.json`).
-
-**JUDGMENT:** The mirror should **unify** these: content-addressed blobs for immutability, logical source keys for supersession, `artifact-manifest/v1` for derived runs (Doc-Lineage blacklines, HTML reviews).
+**FACTS:** A real minority of legal PDFs are scanned images; one OCR pass recovered 20+ documents and 500+ pages previously skipped by text-only pipelines (same source, §C8). Any coverage metric without OCR is **wrong**.
 
 ---
 
@@ -104,73 +92,44 @@ Workflows `artifact-manifest/v1` standardizes per-run outputs with `artifact_id`
 
 | Claim | Verdict | Strongest objection |
 |-------|---------|---------------------|
-| Agents should read local mirror blobs, not call MCP per fact | **Correct** for batch extraction, diff, and CI | MCP per-read is slow, throttled, and blows context on PDF bytes. |
-| MCP is fine for ingestion/back-links | **Mostly correct** | **Overconfident** if ingestion volume is large — need scheduled Graph delta sync or Backstop export, not agent-driven MCP downloads. |
-| Mirror replaces Backstop as authority | **Wrong** | Backstop remains **system of record** for permissions, workflow state, and “current” attachment; mirror is a **replica** with explicit `synced_at` and supersession. |
-| Local mirror works on no-terminal work PC | **Overconfident** | Populating/updating the mirror without terminal implies **IT automation, SharePoint sync, or manual export** — the assistant elides who runs the ingest job. |
-| SharePoint folder = mirror | **Incomplete** | A synced folder lacks manifest, supersession, and content-hash dedupe unless you add the manifest layer. |
-| Backstop MCP will simplify this | **Speculative** | No public MCP; embedded LLM is **in-app**, not an external agent tool ([ionanalytics.com/blog/backstop/integrating-deal-investor-workflow-for-gps-and-lps](https://ionanalytics.com/blog/backstop/integrating-deal-investor-workflow-for-gps-and-lps/) [access-restricted]). |
-| One-click links “just work” from mirror | **Incomplete** | Requires **three URLs** in derived HTML: mirror blob path (or `file://` on work PC), source system URL (Backstop/SharePoint), and page anchor from `evidence-object/v1` locator. |
+| Agents should read local mirror blobs, not MCP per fact | **Correct** | MCP per-read is slow, throttled, and blows context on PDF bytes. |
+| MCP is fine for ingestion/back-links | **Mostly correct** | **Overconfident** at ~3,800 PDFs — need scheduled Graph delta or folder-walk ingest, not agent-driven downloads. Connector bulk path is **untested**. |
+| Mirror replaces Backstop as authority | **Wrong** | Backstop stays system of record; mirror is replica with explicit lineage. |
+| “Plan for mirror” means greenfield | **Wrong** | Mirror **exists**; plan for **manifest overlay**, not new storage. |
+| Local substrate works without terminal | **Revised** | Owner may not use terminal, but **Python + COM + static HTML already run**; ingest can be assistant-driven scripts, not IT-only. |
+| Filename-as-ID is sufficient | **Wrong** | Proven failure mode: renames orphan OCR and break cross-tool joins; content hash + logical key required. |
+| Backstop MCP will simplify this | **Speculative** | No public MCP; embedded LLM is in-app, not an external agent tool. |
+| One-click links “just work” | **Incomplete** | Needs mirror path + source URL + page anchor; path-config bugs already occurred in production (same source, §D). |
 
-**Net judgment:** The assistant’s polarity is **directionally right** but **operationally thin**. Plan: **mirror + manifest as agent substrate**; **MCP/Graph/Backstop API as connectors** that *write into* the mirror on a schedule; **Backstop UI** remains authority for “what’s official today.”
+**Net judgment:** Directionally right, operationally thin on **who maintains the manifest** and **OCR coverage**. Plan: existing folder tree + `document-mirror/v1` manifest; connectors/MCP write into or validate against the manifest; Backstop UI stays authority for “official today.”
 
 ---
 
 ## 7. Mirror layout specification (`document-mirror/v1`)
 
-Proposed layout (POSIX paths; SharePoint sync maps 1:1):
+Non-destructive overlay on the existing manager → category tree (paths may point **into** the live tree rather than copying bytes):
 
 ```
 <mirror_root>/
-  mirror-manifest.json          # catalog — see schema below
-  blobs/
-    sha256/
-      ab/cd/<full64hex>         # immutable bytes; extension in manifest only
-  sources/                      # optional sidecars (export metadata, no secrets)
-    backstop/<source_doc_id>.json
+  mirror-manifest.json
+  blobs/                        # optional; use when copying off-library
+    sha256/ab/cd/<full64hex>
+  ocr/                          # sha256-keyed text sidecars (work pattern)
+    ab/cd/<full64hex>.txt
+  sources/                      # export metadata, no secrets
+    backstop/<opaque_id>.json
     sharepoint/<driveId>_<itemId>.json
-  derived/
-    <run_id>/                   # Doc-Lineage / consultant tools / HTML reviews
-      artifact-manifest.json    # artifact-manifest/v1
-      blackline.html
-      variables.csv
-  .mirror-lock                  # optional ingest lock file
+  derived/<run_id>/
+    artifact-manifest.json      # artifact-manifest/v1
+    blackline.html
+    variables.csv
 ```
 
-**`mirror-manifest.json` (minimum fields):**
+**Minimum `mirror-manifest.json` fields:** `schema_version: "document-mirror/v1"`, `doc_uid`, `logical_key` (manager, category, period — aligned to folder names), `active_blob` or `mirror_relpath`, `sha256`, `media_type`, `supersedes_doc_uid`, `source_refs[]` (backstop + sharepoint), `ocr_sha256` (nullable), `synced_at`.
 
-```json
-{
-  "schema_version": "document-mirror/v1",
-  "mirror_id": "mirror:<tenant-slug>",
-  "updated_at": "2026-09-04T18:00:00Z",
-  "documents": [
-    {
-      "doc_uid": "doc:<stable-logical-key>",
-      "logical_key": { "fund_id": "…", "doc_type": "consultant_report", "period": "2025-Q1" },
-      "active_blob": "sha256:abcd…",
-      "blob_path": "blobs/sha256/ab/cd/abcd…",
-      "media_type": "application/pdf",
-      "bytes": 1234567,
-      "supersedes_doc_uid": "doc:…",
-      "source_refs": [
-        { "system": "backstop", "id": "…", "url": "https://…", "exported_at": "…" },
-        { "system": "sharepoint", "drive_id": "…", "item_id": "…", "web_url": "https://…" }
-      ],
-      "entity_refs": ["pension:calpers"],
-      "synced_at": "2026-09-04T17:55:00Z"
-    }
-  ]
-}
-```
+**Link contract:** (1) mirror-relative or `file://` path, (2) `source_refs[].url` / `web_url`, (3) `#page=N` or tool anchor. Register schema in Workflows alongside `artifact-manifest/v1` — do not overload artifact-manifest with source-system URLs.
 
-**Link contract for HTML outputs:**
-
-1. **Mirror link** — relative path under `<mirror_root>` (works offline on work PC).
-2. **Source link** — `source_refs[].url` / `web_url` (opens Backstop or SharePoint).
-3. **Page link** — `#page=N` or tool-specific anchor from `evidence-object/v1` `locator.page`.
-
-**JUDGMENT:** Register `document-mirror/v1` as a Workflows satellite schema sibling to `artifact-manifest/v1` — do not overload `artifact-manifest` with source-system URLs.
+**Schema alignment:** Derived variable ledgers should reuse work-side names — e.g. consultant `change_type` / `tier` / segment vocabulary; legal `Date|Tier|Theme|Category|Change|From|To`; comms `mentions[].src` pointers (same source, §D).
 
 ---
 
@@ -180,66 +139,53 @@ Build at home on **synthetic/public folders only**; same binary validates real e
 
 | Command | Behavior |
 |---------|----------|
-| `doc-mirror init <mirror_root>` | Create directory skeleton + empty manifest. |
-| `doc-mirror ingest <mirror_root> <folder> [--source backstop\|sharepoint\|local] [--mapping mapping.json]` | Walk folder; sha256-address blobs; append/ supersede manifest entries; reject path traversal. |
-| `doc-mirror validate <mirror_root>` | Verify every `active_blob` exists, hashes match, `supersedes` chain acyclic, JSON schema valid. |
-| `doc-mirror export-refs <mirror_root>` | Emit CSV of doc_uid → mirror_path → source_url for HTML tool integration. |
+| `init <mirror_root>` | Skeleton + empty manifest. |
+| `ingest <mirror_root> <folder> [--mode overlay\|copy] [--mapping mapping.json]` | Walk folder; compute sha256; map to logical keys from relative path; append/supersede; optional OCR sidecar hook. |
+| `validate <mirror_root>` | Hash match, acyclic supersession, schema valid, every `mentions`-style pointer resolvable. |
+| `export-refs <mirror_root>` | CSV: `doc_uid → mirror_path → source_url → page` for HTML tools. |
 
-**Implementation judgment:** **New small repo** (`doc-mirror` or `extend:Workflows` scripts only) reusing Pension-Data’s supersession logic patterns — **do not** pull SQLAlchemy/DB into the mirror tool. Phase 1 (S): ingest + validate + golden synthetic fixture. Phase 2 (M): optional Graph delta adapter (Python, run by IT at work, not MCP). Phase 3 (M): Backstop export adapter once API shape is known.
+**JUDGMENT:** **New small repo** (`doc-mirror`), reusing Pension-Data supersession patterns without SQLAlchemy. Phase 1 (S): ingest + validate + synthetic fixture. Phase 2 (M): Graph delta adapter (IT-scheduled, not MCP). Phase 3 (M): Backstop export adapter once API shape is known.
 
 ---
 
 ## 9. Ranked candidates
 
-| Rank | What | Why it matters | Effort | Prerequisite | Disposition |
-|------|------|----------------|--------|--------------|-------------|
-| 1 | **`doc-mirror` ingest + validate CLI** | Populates and proves the substrate at home; same tool gates work exports | **S** | none | **new-repo:doc-mirror** |
-| 2 | **`document-mirror/v1` JSON schema** | Stable contract for manifest, source refs, supersession | **S** | Workflows contract process | **extend:Workflows** |
-| 3 | **HTML triple-link resolver** (mirror + source + page) | Satisfies one-click standard for existing work HTML tools | **S** | document-mirror/v1 | **extend:Doc-Lineage** |
-| 4 | **Pension-Data supersession patterns in mirror** | Avoid reinventing checksum/lineage logic | **S** | doc-mirror | **extend:Pension-Data** (library extract or copy) |
-| 5 | **Scheduled Graph delta ingest** (non-MCP batch) | Reliable SharePoint/OneDrive sync without agent throttling | **M** | Entra app + IT job runner | **new-repo:doc-mirror** (subcommand) |
-| 6 | **ravikant1918/sharepoint-mcp read-only probe** | Discover files/metadata interactively before batch ingest | **S** | Entra credentials | **adopt-ready-made:sharepoint-mcp** |
-| 7 | **GitHub public mirror fixture repo** | Lets Claude Code web run against manifest + golden PDFs | **S** | doc-mirror synthetic corpus | **extend:Pension-Data** or **new-repo:doc-mirror-fixtures** |
-| 8 | **Official Work IQ OneDrive MCP** | — | **S** | M365 Copilot | **reject** — 5 MB cap, preview instability ([scalekit.com/blog/onedrive-mcp-vs-api](https://www.scalekit.com/blog/onedrive-mcp-vs-api)) |
-| 9 | **Microsoft MCP Server for Enterprise** | — | **S** | Entra | **reject** for documents — directory only ([learn.microsoft.com/graph/mcp-server/overview](https://learn.microsoft.com/en-us/graph/mcp-server/overview)) |
-| 10 | **MCP-as-runtime document reader** | — | **M** | any MCP | **reject** — rate limits + context cost |
-| 11 | **Wait for Backstop MCP** | — | **L** | vendor | **reject** as plan dependency — no public evidence |
+| Rank | What | Why | Effort | Prerequisite | Disposition |
+|------|------|-----|--------|--------------|-------------|
+| 1 | **`doc-mirror` ingest + validate CLI** | Proves substrate at home; gates work overlay | S | none | **new-repo:doc-mirror** (B2-024) |
+| 2 | **`document-mirror/v1` schema** | Manifest, source refs, OCR sidecar, supersession | S | Workflows process | **extend:Workflows** (B2-023) |
+| 3 | **HTML triple-link resolver** | One-click standard for three work HTML tools | S | B2-023 | **extend:Doc-Lineage** (B2-025) |
+| 4 | **Shared PDF extract + OCR fallback** | Replaces three divergent work implementations | M | B2-023 | **extend:Doc-Lineage** (B2-004) |
+| 5 | **Graph delta ingest (non-MCP batch)** | Reliable sync without agent throttling | M | Entra app + IT job | **extend:doc-mirror** (B2-026) |
+| 6 | **sharepoint-mcp read-only probe** | Discovery before batch ingest | S | Entra + security review | **adopt-ready-made:sharepoint-mcp** (B2-027) |
+| 7 | **public-doc-fixtures golden corpus** | Claude Code web can clone schemas + PDFs | M | B2-023 | **new-repo:public-doc-fixtures** (B2-037) |
+| 8 | **Work IQ OneDrive MCP as bulk substrate** | — | S | M365 Copilot | **reject** (B2-R08) — preview, file-size risk |
+| 9 | **Microsoft MCP Server for Enterprise for docs** | — | S | Entra | **reject** (B2-R09) — directory only |
+| 10 | **MCP-as-runtime document reader** | — | M | any MCP | **reject** (B2-R10) |
+| 11 | **Wait for Backstop MCP** | — | L | vendor | **reject** (B2-R11) |
 
 ---
 
 ## 10. Open questions for the owner
 
-1. **Work mirror location:** Is a **local synced folder** (SharePoint → File Explorer) permitted, or must documents stay only inside Backstop’s UI? *(Default assumed: SharePoint or network folder sync allowed; full git mirror of proprietary docs is not.)*
+1. **Manifest placement:** Store `mirror-manifest.json` at the library root, or in a sibling `_meta/` folder to avoid sync churn? *(Default: `_meta/` at mirror root.)*
 
-2. **Who runs ingest at work?** Can IT schedule a **nightly Graph or Backstop export job**, or must the owner manually export? *(Default: manual quarterly export + ad-hoc — drives priority of `doc-mirror ingest` UX over delta sync.)*
+2. **Connector bulk retrieval:** Will you run a one-time test of bulk list/download via the existing connector before building Graph automation? *(Default: yes — outcome changes priority of B2-026 vs. assistant-driven folder walks.)*
 
-3. **Backstop export shape:** Do exports include **stable document IDs and deep links**, or only files on disk? *(Default: files + opaque names — manifest will use content hash as primary key until proven otherwise.)*
+3. **Backstop deep links:** Do exports or UI expose stable document URLs? *(Default: unknown — manifest uses sha256 primary until proven otherwise.)*
 
-4. **Claude Code web at work:** Is the pension’s Claude org on **Anthropic cloud sessions** (not Bedrock/Vertex), and is GitHub access to a **private fixtures repo** allowed? *(Default: yes to cloud sessions, private repo for schemas/fixtures only.)*
+4. **Git on shared drive:** Is a git working tree on the synced library permitted? *(Default: no — sync churn risk flagged at work, §E16.)*
 
-5. **Identity on manifest `entity_refs`:** With Manager-Database no longer absolute, should mirror entries carry **only `pension:` IDs** until authority is decided? *(Default: yes — optional `entity_refs` with `confidence` flag on unresolved names.)*
-
----
-
-## 11. Evaluator stance — what would change my mind
-
-- A **Backstop-documented** export API with immutable IDs and licensed MCP would downgrade candidate 11 from reject to adopt — I have **not** seen this as of 2026-09-04.
-- If work IT confirms **no local mirror folder**, the substrate shifts to **SharePoint library + manifest stored as SharePoint list/JSON** — same schema, different `blob_path` prefix.
-- If Claude Code web gains **native M365/Backstop connectors** (not evidenced today), re-evaluate MCP-as-runtime.
+5. **`entity_refs` authority:** With Manager-Database no longer absolute, carry optional `entity_refs` with `confidence` until identity authority is decided? *(Default: yes — per `clones/Workflows/docs/contracts/identity-map-conventions.md`.)*
 
 ---
 
-NEW_CANDIDATES=11
+## 11. Evaluator stance
+
+- **Backstop-documented** export API + MCP would reopen candidate 11 — not seen as of 2026-09-04.
+- If connector bulk test **fails**, shift ingest to **path-walk + hash** on the existing sync folder (no new infrastructure).
+- If IT forbids manifest files on the share, store manifest in a **local-only `_meta`** path with relative pointers into the library.
 
 ---
 
-## Citation corrections 2026-09-04
-
-| Original (unreachable to automated check) | Action |
-|-----|--------|
-| `https://claude.ai/code` | **(a)** Removed hyperlink; claim retained with reachable Anthropic docs (`code.claude.com/docs/en/claude-code-on-the-web`) that document the `claude.ai/code` URL. |
-| `https://ionanalytics.com/backstop/` | **(d)** Kept URL; marked `[access-restricted]` (live page blocks automated HEAD/GET checks; content verified manually). |
-| `https://ionanalytics.com/backstop/services/data-services/` | **(d)** Kept URL; marked `[access-restricted]` (same). |
-| `https://ionanalytics.com/blog/backstop/integrating-deal-investor-workflow-for-gps-and-lps/` | **(d)** Kept URL; marked `[access-restricted]` (same). |
-| `https://mcp.svc.cloud.microsoft/enterprise` | **(d)** Kept URL; marked `[access-restricted]` (MCP API endpoint; not a browsable page; documented at learn.microsoft.com/graph/mcp-server/overview). |
-| `https://…` | **N/A** — illustrative JSON placeholder in `mirror-manifest.json` example, not a citation URL; no change. |
+NEW_CANDIDATES=0
