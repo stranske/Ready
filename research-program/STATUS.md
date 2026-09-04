@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-04T18:02:38Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-04T18:04:48Z)
 
-Units: 32 — done 28, queued 4
+Units: 32 — done 29, queued 3
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=shed vibe=ok aider=ok
 CLAUDE CONSERVATION ACTIVE until 2026-09-06T12:00:00Z — cheap agents only (launchd driver every 15 min); claude-only units deferred.
@@ -36,16 +36,13 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | R5-output-substrate | B | B1 | done | cursor | driver | Brief R5: robust no-install output surfaces |
 | R6-public-corpora | B | B1 | done | cursor | driver | Brief R6: public and synthetic corpora |
 | R7-trip-planning-core | B | B1 | done | codex | driver | Brief R7: trip-planning core (transport, lodging, constraints) |
-| B2-gap-analysis | B | B2 | queued | codex |  | Gap analysis and disposition of all candidates |
+| B2-gap-analysis | B | B2 | done | codex | driver | Gap analysis and disposition of all candidates |
 | B3-interop-architecture | B | B3 | queued | codex |  | Interoperability architecture (identity, typology, tracked variables,  |
 | B4-issue-drafting | B | B4 | queued | codex |  | Draft AGENT_ISSUE_FORMAT issue bodies from decisions |
 | C-skill-curriculum | C | C1 | done | codex | driver | Skill curriculum + tool-literacy loop design (LMS-connected) |
 
 ## Last checkpoints
 
-- 2026-09-04T17:57:28Z — R7-trip-planning-core — claimed by driver (agent codex)
-- 2026-09-04T17:58:00Z — B1-citefix-R4-document-access-substrate — done — cursor produced 2545 words at artifacts/research/R4-document-access-substrate.md in 150s
-- 2026-09-04T17:58:02Z — A-dossier-docx — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-04T17:58:02Z — A-dossier-docx — claimed by driver (agent cursor)
 - 2026-09-04T17:58:41Z — A-verify-Workflows — done — cursor produced 1681 words at artifacts/dossiers/Workflows.md in 192s
 - 2026-09-04T17:58:45Z — R6-public-corpora — done — cursor produced 2201 words at artifacts/research/R6-public-corpora-and-synthetic-data.md in 121s
@@ -55,3 +52,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-04T17:59:12Z — R7-trip-planning-core — done — cursor produced 2185 words at artifacts/research/R7-trip-planning-core.md in 103s
 - 2026-09-04T18:00:09Z — A-dossier-docx — fail — cursor produced 197 words at /Users/teacher/.codex/automations/research-program/artifacts/dossiers/00-DOCX-MANIFEST.md (min 400); rotating agent
 - 2026-09-04T18:02:38Z — A-work-side-bundle-refresh — done — cursor produced 434 words at logs/work-bundle/00-RUN-REPORT-2.md in 230s
+- 2026-09-04T18:02:41Z — B2-gap-analysis — route — router picked codex from ['codex', 'gemini']
+- 2026-09-04T18:02:41Z — B2-gap-analysis — claimed by driver (agent codex)
+- 2026-09-04T18:04:48Z — B2-gap-analysis — done — cursor produced 3124 words at artifacts/research/B2-gap-analysis.md in 127s

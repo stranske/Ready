@@ -1,0 +1,79 @@
+{"id":"B2-001","what":"Fund-clause vocabulary v1 (vocab/fund-clauses.v1.yaml, ~25 keys)","disposition":"extend:Doc-Lineage","effort":"S","prereq":"none","source_brief":"R1"}
+{"id":"B2-002","what":"Doc-Lineage core pipeline (ingest → extract → diff → static HTML)","disposition":"extend:Doc-Lineage","effort":"L","prereq":"B2-001; Workflows contracts","source_brief":"R1,R2"}
+{"id":"B2-003","what":"tracked-variable/v1 + clause-variable/v1 schemas in Workflows","disposition":"extend:Workflows","effort":"S","prereq":"evidence-object/v1 stable","source_brief":"R1,R2"}
+{"id":"B2-004","what":"Provenance wiring: stranske_pdf_extract → evidence-object/v1 sidecars","disposition":"extend:Doc-Lineage","effort":"M","prereq":"B2-003","source_brief":"R1"}
+{"id":"B2-005","what":"Clause-alignment blackline engine (section-ID + semantic fallback)","disposition":"extend:Doc-Lineage","effort":"M","prereq":"B2-002 M1 structured parse","source_brief":"R1,R2"}
+{"id":"B2-006","what":"Corpus rarity / uniqueness scorer","disposition":"extend:Doc-Lineage","effort":"M","prereq":"B2-002 M2; EDGAR corpus","source_brief":"R1"}
+{"id":"B2-007","what":"EDGAR EX-10 LPA harvest with version-chain metadata","disposition":"extend:Doc-Lineage","effort":"M","prereq":"edgartools","source_brief":"R1,R6"}
+{"id":"B2-008","what":"Synthetic mutation harness (template DOCX/PDF + mutation manifest JSON)","disposition":"extend:Doc-Lineage","effort":"M","prereq":"B2-002 segmenter","source_brief":"R6"}
+{"id":"B2-009","what":"blackline-bundle.json + diff HTML view profile","disposition":"extend:Doc-Lineage","effort":"L","prereq":"B2-002; B2-028 output-substrate","source_brief":"R5"}
+{"id":"B2-010","what":"Consultant section ontology (Standard Element Library shape)","disposition":"extend:Inv-Man-Intake","effort":"M","prereq":"B2-003 ontology pattern","source_brief":"R2"}
+{"id":"B2-011","what":"Python-Redlines DOCX tracked-changes path","disposition":"adopt:python-redlines","effort":"S","prereq":"none","source_brief":"R2"}
+{"id":"B2-012","what":"Docling PDF/DOCX segmentation adapter","disposition":"adopt:docling","effort":"M","prereq":"home Python 3.10+ runtime","source_brief":"R1,R2"}
+{"id":"B2-013","what":"sentweave/Vecalign semantic block alignment","disposition":"adopt:sentweave","effort":"M","prereq":"B2-012 segments","source_brief":"R2"}
+{"id":"B2-014","what":"pdfdelta visual blackline annotation layer","disposition":"adopt:pdfdelta","effort":"S","prereq":"B2-005 aligned text","source_brief":"R2"}
+{"id":"B2-015","what":"mosaic-core contract pack (Fact, Discrepancy, ThesisClaim, ThesisCheck)","disposition":"extend:Workflows","effort":"S","prereq":"none","source_brief":"R3"}
+{"id":"B2-016","what":"Manager-Mosaic repo — SQLite index + static HTML reader","disposition":"new-repo:Manager-Mosaic","effort":"M","prereq":"B2-015","source_brief":"R3"}
+{"id":"B2-017","what":"Evidence-object/v1 emitter in Inv-Man-Intake","disposition":"extend:Inv-Man-Intake","effort":"M","prereq":"B2-015 fact_key registry","source_brief":"R3"}
+{"id":"B2-018","what":"Evidence + canonical ID projection in Pension-Data","disposition":"extend:Pension-Data","effort":"M","prereq":"B2-015","source_brief":"R3"}
+{"id":"B2-019","what":"Canonical manager:cik_* projection in Manager-Database","disposition":"extend:Manager-Database","effort":"L","prereq":"B2-015; identity-map amendment","source_brief":"R3"}
+{"id":"B2-020","what":"Doc-Lineage variable IDs → fact_key map","disposition":"extend:Doc-Lineage","effort":"M","prereq":"B2-002; B2-015","source_brief":"R3"}
+{"id":"B2-021","what":"sqlite-vec + FTS5 hybrid search module","disposition":"adopt:sqlite-vec","effort":"S","prereq":"B2-016","source_brief":"R3"}
+{"id":"B2-022","what":"Work-side mosaic contract capture (docs-only charter)","disposition":"new-repo:Manager-Mosaic","effort":"S","prereq":"owner access to work HTML tool","source_brief":"R3"}
+{"id":"B2-023","what":"document-mirror/v1 JSON schema","disposition":"extend:Workflows","effort":"S","prereq":"none","source_brief":"R4"}
+{"id":"B2-024","what":"doc-mirror CLI (init, ingest, validate, export-refs)","disposition":"new-repo:doc-mirror","effort":"S","prereq":"none","source_brief":"R4"}
+{"id":"B2-025","what":"HTML triple-link resolver (mirror + source + page)","disposition":"extend:Doc-Lineage","effort":"S","prereq":"B2-023","source_brief":"R4"}
+{"id":"B2-026","what":"Scheduled Graph delta ingest (non-MCP batch)","disposition":"extend:doc-mirror","effort":"M","prereq":"Entra app; IT job runner","source_brief":"R4"}
+{"id":"B2-027","what":"sharepoint-mcp read-only probe for discovery","disposition":"adopt:sharepoint-mcp","effort":"S","prereq":"Entra credentials; security review","source_brief":"R4"}
+{"id":"B2-028","what":"output-substrate/v1 contract (manifest + view-bundle + renderer rules)","disposition":"extend:Workflows","effort":"M","prereq":"artifact-manifest/v1","source_brief":"R5"}
+{"id":"B2-029","what":"Shared renderer-shell (factor Pension-Data apps/web → Template)","disposition":"extend:Pension-Data","effort":"M","prereq":"B2-028","source_brief":"R5"}
+{"id":"B2-030","what":"workspace-bundle.json generalized tabular view","disposition":"extend:Pension-Data","effort":"S","prereq":"B2-029","source_brief":"R5"}
+{"id":"B2-031","what":"report-spec.json (OnePagerModel generalized)","disposition":"extend:Inv-Man-Intake","effort":"S","prereq":"B2-029","source_brief":"R5"}
+{"id":"B2-032","what":"Excel manifest export (CSV from artifact-manifest)","disposition":"extend:Workflows","effort":"S","prereq":"B2-028","source_brief":"R5"}
+{"id":"B2-033","what":"Quarto embed-resources publish lane for board one-offs","disposition":"adopt:quarto","effort":"S","prereq":"home render CI","source_brief":"R5"}
+{"id":"B2-034","what":"Word tracked-changes export from Doc-Lineage diff","disposition":"extend:Doc-Lineage","effort":"M","prereq":"B2-011; B2-002","source_brief":"R5"}
+{"id":"B2-035","what":"stlite demo channel (Manager-Database pattern, synthetic only)","disposition":"adopt:stlite","effort":"M","prereq":"vendored Pyodide runtime","source_brief":"R5"}
+{"id":"B2-036","what":"DuckDB-WASM optional table widget inside renderer","disposition":"adopt:duckdb-wasm","effort":"M","prereq":"B2-029 renderer-shell","source_brief":"R5"}
+{"id":"B2-037","what":"public-doc-fixtures manifest repo (content-addressed golden corpus catalog)","disposition":"new-repo:public-doc-fixtures","effort":"M","prereq":"artifact-manifest/v1","source_brief":"R6"}
+{"id":"B2-038","what":"CalPERS IC packet harvester (extends build_pension_sources.py)","disposition":"extend:Pension-Data","effort":"M","prereq":"source_map_v1 CalPERS row","source_brief":"R2,R6"}
+{"id":"B2-039","what":"SEC Form ADV bulk ingest (Part 1 CSV + Part 2/CRS PDF subset)","disposition":"extend:Manager-Database","effort":"M","prereq":"CRD pick list; deprioritize until B2-037","source_brief":"R6"}
+{"id":"B2-040","what":"ILPA DDQ 2.0 synthetic fill generator","disposition":"extend:Inv-Man-Intake","effort":"S","prereq":"B2-010 Standard Element data","source_brief":"R6"}
+{"id":"B2-041","what":"Oaktree Howard Marks memo time-series corpus slice","disposition":"adopt:oaktree-memos","effort":"S","prereq":"B2-037 manifest","source_brief":"R6"}
+{"id":"B2-042","what":"N-CSR sample ingest (20 funds, latest annual)","disposition":"extend:Pension-Data","effort":"M","prereq":"edgartools","source_brief":"R6"}
+{"id":"B2-043","what":"Pension-Data replay corpus expansion for consultant sections","disposition":"extend:Pension-Data","effort":"S","prereq":"B2-038 harvester output","source_brief":"R6"}
+{"id":"B2-044","what":"Pension-Data staging import for Doc-Lineage tracked variables","disposition":"extend:Pension-Data","effort":"S","prereq":"B2-002 CSV emit","source_brief":"R2"}
+{"id":"B2-045","what":"Duffel test-mode flight adapter","disposition":"extend:trip-planner","effort":"S","prereq":"Duffel developer account","source_brief":"R7"}
+{"id":"B2-046","what":"Amtrak GTFS schedule adapter","disposition":"extend:trip-planner","effort":"S","prereq":"none","source_brief":"R7"}
+{"id":"B2-047","what":"Cross-repo fixture eval harness (ranking + TPP compliance)","disposition":"extend:trip-planner","effort":"M","prereq":"B2-045; B2-046","source_brief":"R7"}
+{"id":"B2-048","what":"ConstraintEvaluation envelope on inventory bundles","disposition":"extend:trip-planner","effort":"S","prereq":"epic #519 option contracts","source_brief":"R7"}
+{"id":"B2-049","what":"Google Routes timing enrichment","disposition":"extend:trip-planner","effort":"S","prereq":"Maps Platform key","source_brief":"R7"}
+{"id":"B2-050","what":"Lodging deep-link capture flow with provenance","disposition":"extend:trip-planner","effort":"M","prereq":"provenance contracts","source_brief":"R7"}
+{"id":"B2-051","what":"Live TPP policy execution wire-up","disposition":"extend:trip-planner","effort":"M","prereq":"TPP service deploy","source_brief":"R7"}
+{"id":"B2-052","what":"Rome2Rio partner adapter (multi-modal narratives)","disposition":"extend:trip-planner","effort":"M","prereq":"partner approval; defer","source_brief":"R7"}
+{"id":"B2-R01","what":"ContractEx or LexNLP as extraction backend","disposition":"reject","effort":"S","prereq":"—","source_brief":"R1"}
+{"id":"B2-R02","what":"Kira / Luminance / Ontra commercial adoption","disposition":"reject","effort":"L","prereq":"—","source_brief":"R1"}
+{"id":"B2-R03","what":"Pixel-only PDF diff (diffpdf) as primary","disposition":"reject","effort":"S","prereq":"—","source_brief":"R2"}
+{"id":"B2-R04","what":"Office/Word automation as runtime compare dependency","disposition":"reject","effort":"S","prereq":"—","source_brief":"R2"}
+{"id":"B2-R05","what":"Kùzu embedded graph database","disposition":"reject","effort":"M","prereq":"—","source_brief":"R3"}
+{"id":"B2-R06","what":"Nanopublication/RDF primary provenance store","disposition":"reject","effort":"L","prereq":"—","source_brief":"R3"}
+{"id":"B2-R07","what":"EvidInvest / Helm-class thesis-monitor SaaS","disposition":"reject","effort":"S","prereq":"—","source_brief":"R3"}
+{"id":"B2-R08","what":"Microsoft Work IQ OneDrive MCP as bulk substrate","disposition":"reject","effort":"S","prereq":"—","source_brief":"R4"}
+{"id":"B2-R09","what":"Microsoft MCP Server for Enterprise (document access)","disposition":"reject","effort":"S","prereq":"—","source_brief":"R4"}
+{"id":"B2-R10","what":"MCP-as-runtime document reader for batch extraction","disposition":"reject","effort":"M","prereq":"—","source_brief":"R4"}
+{"id":"B2-R11","what":"Wait for Backstop MCP as plan dependency","disposition":"reject","effort":"L","prereq":"—","source_brief":"R4"}
+{"id":"B2-R12","what":"Evidence.dev full stack as fleet output standard","disposition":"reject","effort":"L","prereq":"—","source_brief":"R5"}
+{"id":"B2-R13","what":"Observable Framework as fleet output standard","disposition":"reject","effort":"M","prereq":"—","source_brief":"R5"}
+{"id":"B2-R14","what":"Office add-ins for report delivery","disposition":"reject","effort":"L","prereq":"—","source_brief":"R5"}
+{"id":"B2-R15","what":"Hand-built HTML as ongoing primary output path","disposition":"reject","effort":"—","prereq":"—","source_brief":"R5"}
+{"id":"B2-R16","what":"SharePoint multi-file stlite host","disposition":"reject","effort":"L","prereq":"—","source_brief":"R5"}
+{"id":"B2-R17","what":"FINRA IARD API for Form ADV","disposition":"reject","effort":"S","prereq":"—","source_brief":"R6"}
+{"id":"B2-R18","what":"sec-api.io paid EDGAR/ADV datasets","disposition":"reject","effort":"S","prereq":"—","source_brief":"R6"}
+{"id":"B2-R19","what":"AIMA DDQ modules as home corpus","disposition":"reject","effort":"S","prereq":"—","source_brief":"R6"}
+{"id":"B2-R20","what":"OpenTripPlanner sidecar for transit routing","disposition":"reject","effort":"L","prereq":"—","source_brief":"R7"}
+{"id":"B2-R21","what":"Google Flights scraper integration","disposition":"reject","effort":"M","prereq":"—","source_brief":"R7"}
+{"id":"B2-R22","what":"LLM-first planner replacing deterministic ranker","disposition":"reject","effort":"L","prereq":"—","source_brief":"R7"}
+{"id":"B2-R23","what":"Booking.com / Expedia Rapid live lodging API","disposition":"reject","effort":"L","prereq":"—","source_brief":"R7"}
+{"id":"B2-R24","what":"Skyscanner / Kiwi flight APIs (near-term)","disposition":"reject","effort":"M","prereq":"—","source_brief":"R7"}
+{"id":"B2-R25","what":"Greenfield rebuild of work-side communications mosaic HTML","disposition":"reject","effort":"L","prereq":"—","source_brief":"R3"}
+{"id":"B2-R26","what":"Manager-Database as mosaic hub for owner daily path","disposition":"reject","effort":"L","prereq":"—","source_brief":"R3"}
+{"id":"B2-R27","what":"Amadeus self-service APIs (decommissioned Jul 2026)","disposition":"reject","effort":"—","prereq":"—","source_brief":"R7"}
