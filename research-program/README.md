@@ -36,3 +36,5 @@ The 80% cross-provider allowance is a planning target, not an independently meas
 aggregate-spend cap in this engine. Routing still uses Orchestrator capacity controls.
 
 Audit completion now records each round’s newly filed issue URLs. Subsequent refill thresholds use that completed round, not cumulative intake history.
+
+State replacement is atomic; maintenance/digest writers merge their own fields under a separate lock, and inbox consumers are serialized. Concurrent ticks retain owner pause/phase-stop commands.

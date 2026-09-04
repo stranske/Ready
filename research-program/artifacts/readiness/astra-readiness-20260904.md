@@ -36,7 +36,7 @@ Reviewed the Projects plan v2, the Astra behavioral contract, the engine's B7 pl
 
 ## Validation
 
-- Research engine: 13 focused regression tests passed, including capacity, phase stops, nonblocking questions, pagination, concurrent refill, per-round denominators, process failures and stale outputs.
+- Research engine: 16 focused regression tests passed, including capacity, phase stops, nonblocking questions, pagination, concurrent refill, per-round denominators, process failures and stale outputs.
 - Orchestrator: 105 focused tests passed; dispatcher/adapter selftests passed. A copy of the installed feedback database upgraded without altering old profile definitions. Frozen historical trial ingestion has regression coverage.
 - Workflows: 130 focused Python tests passed, 2 existing permission-gated cases skipped; template completeness passed; registry JavaScript tests passed earlier in the review. GitHub CI is checked separately on the exact final heads.
 - CodeRabbit reported a spending cap. An independent Orchestrator/Cursor advisory review found candidate-list drift and a database compatibility regression; both were fixed with regression checks. All substantive inline findings on the source PRs were addressed.
@@ -84,3 +84,13 @@ Workflows #3382 merged at 23:29:30 UTC as `72be6db44dd81a7eb8bdaeaf5437a00d1bd5f
 ## Remote runner canary follow-up
 
 The local Astra invocation succeeded, but the first GitHub Actions canary [33930520106](https://github.com/stranske/Workflows/actions/runs/33930520106) failed before creating any job: its reusable workflow was not found at the orphaned pre-squash commit. This is workflow resolution evidence, not an Astra capacity/authentication failure. [Workflows #3386](https://github.com/stranske/Workflows/pull/3386) pins the caller and both registries to reachable merged commit `b06c6d16c3162a624c179a4c4f2080ec3c14876e`; the runner, helper and CLI lockfile are byte-identical. Fourteen focused tests and independent review passed. Remote execution and final consumer delivery still require verification after this repair merges.
+
+
+## Remote Astra execution verified
+
+Workflows #3386 merged at 23:52:24 UTC as `913e2625bdc471de84addea5b4cc8dfefca1c78a` after all checks and zero unresolved threads on exact head `90935a8129081c2c31d7ec1ed4f663b4ebacce67`. The repaired [GitHub canary 33931099913](https://github.com/stranske/Workflows/actions/runs/33931099913) passed: Codex CLI 0.153.2 requested, selected and reported `gpt-6-astra` / `high`, exited zero, recorded no fallback and preserved identical before/after source manifests. Provider-resolved model identity is not exposed by this artifact; no stronger claim is made. Consumer sync [33931101622](https://github.com/stranske/Workflows/actions/runs/33931101622) now uses the corrected source commit and original Astra source-delta base.
+
+
+## Concurrent state safety
+
+State writes now use atomic replacement and a dedicated read/modify/write lock. Maintenance and digest updates merge only their own fields, so a concurrent inbox pause or phase stop is retained. Inbox consumers are serialized to avoid duplicate comment application. Regression tests reproduce a pause arriving during digest posting, concurrent independent writers, and readers during a partial temporary write. All 16 readiness tests pass.
