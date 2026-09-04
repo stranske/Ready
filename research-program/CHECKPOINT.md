@@ -166,3 +166,16 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-04T18:02:41Z — B2-gap-analysis — route — router picked codex from ['codex', 'gemini']
 ## 2026-09-04T18:02:41Z — B2-gap-analysis — claimed by driver (agent codex)
 ## 2026-09-04T18:04:48Z — B2-gap-analysis — done — cursor produced 3124 words at artifacts/research/B2-gap-analysis.md in 127s
+## 2026-09-04T18:09:30Z — A-memo-correction — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-04T18:09:30Z — A-memo-correction — claimed by driver (agent cursor)
+## 2026-09-04T18:09:30Z — B3-interop-architecture — route — router picked codex from ['codex', 'gemini']
+## 2026-09-04T18:09:30Z — B3-interop-architecture — claimed by driver (agent codex)
+## 2026-09-04T18:09:30Z — A-dossier-docx — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-04T18:09:30Z — A-dossier-docx — claimed by driver (agent cursor)
+## 2026-09-04T18:09:33Z — B3-interop-architecture — fail — cursor produced 0 words at /Users/teacher/.codex/automations/research-program/artifacts/research/B3-interop-architecture.md (min 400); rotating agent
+## 2026-09-04T18:09:33Z — B3-interop-architecture — route — router picked codex from ['codex', 'gemini']
+## 2026-09-04T18:09:33Z — B3-interop-architecture — claimed by driver (agent codex)
+## 2026-09-04T18:10:35Z — A-dossier-docx — fail — cursor produced 230 words at /Users/teacher/.codex/automations/research-program/artifacts/dossiers/00-DOCX-MANIFEST.md (min 400); rotating agent
+## 2026-09-04T18:10:57Z — A-dossier-docx — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-04T18:10:57Z — A-dossier-docx — claimed by codex (agent cursor)
+## 2026-09-04T18:11:08Z — B3-interop-architecture — done — cursor produced 3022 words at artifacts/research/B3-interop-architecture.md in 95s

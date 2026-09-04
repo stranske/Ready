@@ -1,7 +1,7 @@
 # Cover memo — tool collection for colleagues
 
 **Date:** 4 September 2026  
-**From:** Investment office research programme  
+**From:** Tim Stranske  
 **Audience:** Investment staff and IT partners evaluating internal tools for safe adoption
 
 ---
@@ -30,15 +30,15 @@ The trade-off is honest. One person cannot operate fourteen production systems s
 
 **Governance, collaboration, and training** covers collaboration rulebooks and a learning prototype—not validated corporate learning management.
 
-## Production-ready versus prototype
+## Maturity at a glance
 
-A concise maturity picture:
+Three labels only. I do not call a tool usable if a primary user-facing path is known broken; the row states what works instead.
 
 | Maturity | Tools |
 |----------|-------|
-| **Usable today for real workflows** | Fleet standards hub, counterparty risk, manager surveillance, portable-alpha simulator, trend portfolio model, manager intake, travel policy engine, trip planner, staging templates, personal art archive |
-| **Strong core, partial product surface** | Pension extraction (pipeline yes; live UI no), collaboration governance (validators yes; dashboard stub), learning platform (credible prototype; firm controls placeholder) |
-| **Infrastructure / gated** | Agent orchestrator (local quota tracking; remote dispatch disabled after poor outcomes) |
+| **Usable for real work now** | Fleet standards hub, manager surveillance, portable-alpha simulator, staging templates |
+| **Usable with a named caveat** | Counterparty risk (maintainer CLI and Excel macro path work; frozen Windows bundle unverified off-platform), trend portfolio model (CLI and institutional Excel export work; Streamlit browser flow shows contradictory fund-selection state and misleading headline metrics), manager intake (local PDF/PPTX validation and scoring work; default CLI is in-memory and formats are narrow), travel policy engine (deterministic policy check and workbook fill work; blocking rules can fail-open on missing or NaN inputs — open #1499, #1504), pension extraction (one-PDF CLI pipeline and backplane emit work; web API serves fixtures only), collaboration admin (CSV validators and rubrics work in CI; local dashboard is a timestamp stub), fine-art archive (works on maintainer machine when artwork storage is mounted) |
+| **Prototype or foundation only** | Trip planner (scenario ranking and budget tracking on static catalog data; approval-packet button and remote TPP integration unwired), agent orchestrator (local quota tracking only; remote dispatch disabled after poor outcomes), learning platform (credible test-covered prototype; firm-grade controls and production learner loop incomplete) |
 
 Alpha labels appear in several repositories. That reflects packaging status, not necessarily analytical weakness.
 
@@ -53,33 +53,44 @@ These tools share a common design envelope shaped by public-sector technology re
 
 ## Interoperability programme (one paragraph)
 
-Across repositories, the author is converging on shared contracts for run records, artifact manifests, evidence objects, and canonical entity identifiers. Only a subset emit conformant records today; the central workflows hub validates fleet-wide while most producers use legacy envelopes. Dossiers document identifier collisions explicitly. Treat exported spreadsheets and JSON as the practical integration surface until fleet-wide envelopes are wired.
+Across repositories, I am converging on shared contracts for run records, artifact manifests, evidence objects, and canonical entity identifiers. Only a subset emit conformant records today; the central workflows hub validates fleet-wide while most producers use legacy envelopes. Dossiers document identifier collisions explicitly. Treat exported spreadsheets and JSON as the practical integration surface until fleet-wide envelopes are wired.
 
 ## What I would suggest we could use
 
-1. **Manager surveillance platform** — Ingests regulatory filings, diffs quarterly holdings, scores conviction, and supports research chat with citations; deployable behind a firewall or as an offline browser demo.
-2. **Counterparty risk reporting** — Replaces a legacy spreadsheet workflow with button-driven Windows operation, producing Excel history, board slides, and an auditable manifest each month.
-3. **Trend-following portfolio model** — Walk-forward manager ranking and allocation simulation with institutional Excel output; runs locally or in a zero-install browser bundle.
+1. **Manager surveillance platform** — Ingests regulatory filings, diffs quarterly holdings, scores conviction, and supports research chat with citations; deployable behind a firewall or as an offline browser demo. Foreign-filing adapters remain stubbed; treat US EDGAR as the proven path.
+2. **Counterparty risk reporting** — Replaces a legacy spreadsheet workflow with button-driven Windows operation, producing Excel history, board slides, and an auditable manifest each month. I have verified the maintainer CLI and macro workbook path; the frozen PyInstaller bundle still needs on-Windows confirmation.
+3. **Trend-following portfolio model** — Walk-forward manager ranking and allocation simulation with institutional Excel output. Use the command-line or packaged Excel export path today; do not treat the Streamlit browser dashboard as audit-ready until the selection-state wiring defects are closed.
 4. **Central fleet standards hub** — Enforces shared continuous integration, contract validation, and template sync across all repositories; the prerequisite for safe multi-tool adoption.
 
 ## Quick reference
 
 | Tool | What it does | State | How a colleague would run it |
 |------|--------------|-------|------------------------------|
-| Fleet workflows hub | CI standards, contract validation, template sync | Production-usable | Automatic on every pull request; maintainers review sync delivery branches |
-| Manager surveillance | Track managers, holdings, activism | Production-usable | Web dashboard or offline browser demo |
-| Counterparty risk | Monthly exposure Excel and board pack | Production-usable | Windows desktop app or Excel macro workbook |
-| Trend portfolio model | Manager ranking and walk-forward simulation | Production-usable | Command line, browser dashboard, or offline browser bundle |
-| Pension data extraction | Facts from pension PDFs | Partial (pipeline yes, live UI no) | Command-line pilot on approved PDFs; browser bundle for review |
-| Manager intake | Score and explain diligence packages | Production-usable (narrow formats) | Local command or offline browser demo |
-| Portable-alpha model | Monte Carlo sleeve scenarios | Production-usable | Scenario wizard in private Python environment |
-| Travel policy engine | Policy check and workbook fill | Production-usable (alpha) | Internal web service; public site is synthetic demo only |
-| Trip planner | Plan and rank travel scenarios | Production-usable (catalog data) | Browser application on internal server |
-| Staging templates | Standard CI and agent guardrails | Production-usable | Create new repo from template; no end-user UI |
-| Agent orchestrator | Route coding tasks across AI subscriptions | Gated / local research | Maintainer workstation only |
-| Collaboration admin | Rubrics, logs, review validators | Partial | Local dashboard; CSV validators in continuous integration |
-| Learning platform | Source-to-practice training prototype | Partial | Internal web service with database server |
-| Fine-art archive | Personal museum catalogue | Production on maintainer machine | Local web app when artwork storage is mounted |
+| Fleet workflows hub | CI standards, contract validation, template sync | Usable for real work now | Automatic on every pull request; maintainers review sync delivery branches |
+| Manager surveillance | Track managers, holdings, activism | Usable for real work now | Web dashboard or offline browser demo (US EDGAR path proven; foreign adapters stubbed) |
+| Counterparty risk | Monthly exposure Excel and board pack | Usable with a named caveat — maintainer CLI and Excel macro path work; frozen Windows bundle unverified off-platform | Windows desktop app or Excel macro workbook |
+| Trend portfolio model | Manager ranking and walk-forward simulation | Usable with a named caveat — CLI pipeline and institutional Excel export work; Streamlit browser flow has contradictory selection metrics (Aug 2026 UX review; open #6017–#6026) | Command line or offline browser bundle for review only; prefer CLI for production runs |
+| Pension data extraction | Facts from pension PDFs | Usable with a named caveat — one-PDF CLI pipeline and backplane emit work; web API serves fixtures and LLM routes return 501 | Command-line pilot on approved PDFs; do not treat the browser API as a live data service |
+| Manager intake | Score and explain diligence packages | Usable with a named caveat — local PDF/PPTX validation and scoring work; default CLI is in-memory; browser demo is not binary-faithful ingestion | Local command on configured stores; offline browser demo for narrow formats only |
+| Portable-alpha model | Monte Carlo sleeve scenarios | Usable for real work now | Scenario wizard in private Python environment |
+| Travel policy engine | Policy check and workbook fill | Usable with a named caveat — deterministic checks and spreadsheet fill work; blocking rules can fail-open on missing inputs (#1499, #1504) | Internal web service; public site is synthetic demo only |
+| Trip planner | Plan and rank travel scenarios | Prototype or foundation only — ranking and budget on static catalog data work; approval-packet button does not submit proposals and remote TPP is off (`live_tpp=off`) | Browser application for scenario exploration only; not for approval workflows |
+| Staging templates | Standard CI and agent guardrails | Usable for real work now | Create new repo from template; no end-user UI |
+| Agent orchestrator | Route coding tasks across AI subscriptions | Prototype or foundation only — local quota tracking works; remote dispatch disabled (shadow mode) after poor merge outcomes | Maintainer workstation only |
+| Collaboration admin | Rubrics, logs, review validators | Usable with a named caveat — CSV validators and rubrics work in CI; local Streamlit dashboard is a timestamp stub | Local dashboard for rubric review; CSV validators in continuous integration |
+| Learning platform | Source-to-practice training prototype | Prototype or foundation only — credible test-covered core; firm-grade controls, validated mastery, and production learner loop incomplete | Internal web service with database server; not validated corporate LMS |
+| Fine-art archive | Personal museum catalogue | Usable with a named caveat — works when artwork storage is mounted; corpus lives outside the repo | Local web app when artwork storage is mounted |
+
+---
+
+## Evidence basis
+
+Labels were re-checked on **4 September 2026** against:
+
+1. **Dossier claims-vs-reality sections** — `./artifacts/dossiers/<Repo>.md` for all fourteen tools in this bundle.
+2. **Audit ledger and per-repo audit folders** — `/Users/teacher/Library/CloudStorage/Dropbox/Learning/Code/Audits/AUDIT_LEDGER.md` (including 2026-09-04 fleet intake wave entries) and the most recent `2026-09-04-*` reports and verification logs under `Code/Audits/<Repo>/`.
+3. **Observed UX traces** — `trip-planner/2026-08-16-UX_REVIEW.md` (Prepare approval packet produces no proposal); `Trend_Model_Project/2026-08-11-UX_REVIEW.md` and `2026-08-23-AUDIT_REPORT.md` (browser operator-surface wiring defects).
+4. **Open GitHub issues** — `gh issue list` was attempted but the CLI was unauthenticated in this environment; issue numbers cited are from AUDIT_LEDGER 2026-09-04 filings and are assumed still open unless a dossier or ledger entry records closure.
 
 ---
 
