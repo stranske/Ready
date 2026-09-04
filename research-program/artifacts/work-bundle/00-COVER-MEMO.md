@@ -1,24 +1,24 @@
 # Cover memo — tool collection for colleagues
 
-**Date:** 4 September 2026  
+**Date:** 4 September 2026
 **From:** Investment office research programme  
-**Audience:** Investment staff and IT partners evaluating whether internally built tools can be adopted safely
+**Audience:** Investment staff and IT partners evaluating internal tools for safe adoption
 
 ---
 
 ## What this collection is
 
-This folder is a redacted, work-safe bundle describing a family of software tools built to support pension investment work. Each document explains one tool: what problem it solves, how a non-developer would use it, what data it touches, how mature it is, and—importantly—where marketing claims diverge from what the code actually does today.
+This folder is a redacted, work-safe bundle describing software tools built to support pension investment work. Each document explains one tool: what problem it solves, how a non-developer would use it, what data it touches, how mature it is, and—importantly—where marketing claims diverge from what the code actually does today.
 
-The bundle contains eleven verified dossiers. Three additional tools exist in the wider programme but were not included because their verification pass is not yet complete. Nothing here is a sales pitch; the claims-versus-reality sections are deliberately blunt.
+The bundle contains eleven verified dossiers. Three additional tools exist in the wider programme but were not included because verification is incomplete. Nothing here is a sales pitch; claims-versus-reality sections are deliberately blunt.
 
 ## How these tools were built, and why that matters
 
-Every tool in this collection was built by a single investment-office practitioner using commercial AI coding assistants, guided by repeatable engineering standards shared across repositories. That is not a novelty detail—it changes what adoption looks like.
+Every tool in this collection was built by a single investment-office practitioner using commercial AI coding assistants, guided by repeatable engineering standards shared across repositories.
 
-Traditional enterprise software assumes a vendor, a procurement cycle, and a dedicated engineering team. These tools invert part of that model. The author can describe a workflow in plain language, generate an initial implementation, and then harden it with automated tests, typed interfaces, and review gates—the same quality practices a small software team would use, but at a fraction of the headcount. For sceptical IT readers, the implication is practical: you are not being asked to trust “vibe-coded” spreadsheets. You are being asked to evaluate repositories that carry thousands of automated tests, explicit data contracts, and documented gaps.
+Traditional enterprise software assumes a vendor and a dedicated engineering team. These tools invert part of that model: a workflow can be described in plain language, implemented, and hardened with automated tests and typed interfaces—the same quality practices a small software team would use, but at a fraction of the headcount. For sceptical IT readers, you are not being asked to trust improvised spreadsheets. You are being asked to evaluate repositories that carry thousands of automated tests, explicit data contracts, and documented gaps.
 
-The trade-off is also honest. One person cannot operate eleven production systems simultaneously. Several tools are genuinely usable today; others are strong foundations with incomplete surfaces (browser dashboards still on fixtures, fleet-wide identifier schemes documented but not emitted everywhere). The dossiers say which is which.
+The trade-off is honest. One person cannot operate eleven production systems simultaneously. Several tools are genuinely usable today; others are strong foundations with incomplete surfaces. The dossiers say which is which.
 
 ## Four categories
 
@@ -26,9 +26,9 @@ The trade-off is also honest. One person cannot operate eleven production system
 
 **Work-related analytics and operations** tools address recurring investment-office tasks: tracking external managers and filings, extracting facts from pension documents, producing counterparty exposure packs, modelling portable-alpha structures, standardising manager due-diligence intake, and governing travel policy. These are the tools most colleagues will care about first.
 
-**Personal tools** sit outside the office mandate. The fine-art archive catalogue is included for completeness because it shares engineering patterns (local-first storage, provenance tracking, offline review surfaces) that may inform how office tools are deployed—but it is not a pension system.
+**Personal tools** sit outside the office mandate. The fine-art archive catalogue shares engineering patterns useful for deployment thinking, but it is not a pension system.
 
-**Governance and collaboration** (Collab-Admin) is a rulebook and instrumentation layer for a specific multi-person collaboration, not an analytics engine. It may still be useful as a pattern for how rubrics, time logs, and review artifacts can be validated mechanically.
+**Governance and collaboration** (Collab-Admin) is a rulebook for a specific multi-person collaboration, not an analytics engine.
 
 ## Production-ready versus prototype
 
@@ -40,7 +40,7 @@ A concise maturity picture:
 | **Strong core, partial product surface** | Pension document extraction (extraction pipeline works; live dashboard and several API routes are fixture-only), collaboration governance (validators work; scheduled dashboard output is still a stub) |
 | **Infrastructure / gated** | Agent orchestrator (valuable locally for quota tracking and verification; automated remote dispatch is intentionally disabled after poor outcomes) |
 
-Alpha labels appear in several repositories. That reflects packaging status, not necessarily analytical weakness—some alpha-labelled tools have test counts in four figures.
+Alpha labels appear in several repositories. That reflects packaging status, not necessarily analytical weakness.
 
 ## Operating constraints the tools were designed for
 
@@ -53,7 +53,7 @@ These tools share a common design envelope shaped by public-sector technology re
 
 ## Interoperability programme (one paragraph)
 
-Across repositories, the author is converging on shared contracts for run records, artifact manifests, evidence objects, and canonical entity identifiers (managers, funds, pensions). Today only a subset of tools emit conformant records; many document the standard without yet writing files. The dossiers call out identifier collisions explicitly—e.g., one system uses integer manager keys while another expects regulator filing numbers in a prefixed string format—because silent mismatch would poison any future data join. The interoperability work is real but incomplete; treat exported JSON and CSV from each tool as the practical integration surface until fleet-wide envelopes are wired.
+Across repositories, the author is converging on shared contracts for run records, artifact manifests, evidence objects, and canonical entity identifiers. Today only a subset of tools emit conformant records. The dossiers call out identifier collisions explicitly because silent mismatch would poison any future data join. Treat exported JSON and CSV from each tool as the practical integration surface until fleet-wide envelopes are wired.
 
 ## What I would suggest we could use
 

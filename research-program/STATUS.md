@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-04T17:48:18Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-04T17:49:08Z)
 
-Units: 31 — claimed 2, done 22, queued 7
+Units: 31 — claimed 1, done 23, queued 7
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=shed vibe=ok aider=ok
 CLAUDE CONSERVATION ACTIVE until 2026-09-06T12:00:00Z — cheap agents only (launchd driver every 15 min); claude-only units deferred.
@@ -24,7 +24,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | A-verify-trip-planner | A | A1 | done | cursor | driver | Verify dossier artifacts/dossiers/trip-planner.md against ../clones/tr |
 | A-dossier-index | A | A2 | done | cursor | driver | Fleet index and shared vocabulary from verified dossiers (needs >=12 v |
 | A-personal-reuse-note | A | A2 | done | cursor | driver | Reuse note across personal repos (FAA, Reader, trip-planner) |
-| A-work-side-bundle | A | A3 | claimed | cursor | driver | Work-side bundle: redaction pass, cover memo, safety grep |
+| A-work-side-bundle | A | A3 | done | cursor | driver | Work-side bundle: redaction pass, cover memo, safety grep |
 | A-dossier-docx | A | A3 | queued | cursor |  | Word versions of all verified dossiers (venv + python-docx) |
 | B1-citefix-R1-legal-decomposition | B | B1 | claimed | cursor | driver | Fix unreachable citations in R1-legal-decomposition.md |
 | B1-citefix-R4-document-access-substrate | B | B1 | queued | codex |  | Fix unreachable citations in R4-document-access-substrate.md |
@@ -42,7 +42,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-04T17:46:24Z — R5-output-substrate — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-04T17:46:24Z — R5-output-substrate — claimed by driver (agent cursor)
 - 2026-09-04T17:46:26Z — C-skill-curriculum — fail — cursor produced 0 words at /Users/teacher/.codex/automations/research-program/artifacts/research/C-skill-curriculum.md (min 400); rotating agent
 - 2026-09-04T17:46:26Z — C-skill-curriculum — route — router picked codex from ['codex', 'gemini']
@@ -54,3 +53,4 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-04T17:47:35Z — B1-citefix-R1-legal-decomposition — claimed by driver (agent cursor)
 - 2026-09-04T17:47:53Z — C-skill-curriculum — done — cursor produced 2785 words at artifacts/research/C-skill-curriculum.md in 86s
 - 2026-09-04T17:48:18Z — R5-output-substrate — done — cursor produced 2355 words at artifacts/research/R5-output-substrate.md in 114s
+- 2026-09-04T17:49:08Z — A-work-side-bundle — done — cursor produced 421 words at artifacts/work-bundle/00-RUN-REPORT.md in 165s
