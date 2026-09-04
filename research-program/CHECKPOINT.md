@@ -204,3 +204,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-04T19:55:23Z — B6-file-drafted-issues — route — router picked cursor from ['codex', 'cursor']
 ## 2026-09-04T19:55:23Z — B6-file-drafted-issues — claimed by driver (agent cursor)
 ## 2026-09-04T20:00:02Z — B6-file-drafted-issues — done — cursor produced 580 words at artifacts/issues/B6-FILING-REPORT.md in 278s
+## 2026-09-04T20:00:05Z — B1-citefix-B3-interop-architecture — route — router picked cursor from ['codex', 'cursor', 'gemini']
+## 2026-09-04T20:00:05Z — B1-citefix-B3-interop-architecture — claimed by driver (agent cursor)
+## 2026-09-04T20:00:47Z — B1-citefix-B3-interop-architecture — done — cursor produced 3073 words at artifacts/research/B3-interop-architecture.md in 41s

@@ -203,7 +203,7 @@ R1 (legal clauses), R2 (consultant sections), and R3 (thesis monitoring) converg
     },
     "source_system": {
       "system": "backstop",
-      "url": "https://…",
+      "url": "<backstop-document-url>",
       "exported_at": "2026-09-04T12:00:00Z"
     }
   },
@@ -331,7 +331,7 @@ Add optional properties (non-breaking in JSON Schema):
   },
   "source_system_locator": {
     "system": "backstop",
-    "url": "https://…"
+    "url": "<backstop-document-url>"
   },
   "tracked_variable_id": "var:…"
 }
@@ -454,3 +454,11 @@ Fleet interoperability is **contract extension + federated cross-walks**, not ce
 ---
 
 *Word count: ~3,450 (body). Schema sketches inline. No `artifacts/dossiers/<Repo>.md` files created.*
+
+---
+
+## Citation corrections 2026-09-04
+
+| Original (unreachable to automated check) | Action |
+|-----|--------|
+| `https://…` (schema sketch placeholder in §3.1 `tracked-variable/v1` and §5.2 `evidence-object/v1` examples) | **N/A (schema sketch)** — Replaced illustrative pseudo-URL with `<backstop-document-url>`; not a real citation, so (a)–(d) do not apply. Ellipsis hostname failed mechanical check.

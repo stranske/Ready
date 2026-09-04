@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-04T20:00:02Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-04T20:00:47Z)
 
-Units: 41 — done 35, parked 1, queued 5
+Units: 41 — done 36, parked 1, queued 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=shed vibe=ok aider=ok
 CLAUDE CONSERVATION ACTIVE until 2026-09-06T12:00:00Z — cheap agents only (launchd driver every 15 min); claude-only units deferred.
@@ -28,7 +28,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | A-work-side-bundle | A | A3 | done | cursor | driver | Work-side bundle: redaction pass, cover memo, safety grep |
 | A-work-side-bundle-refresh | A | A3 | done | cursor | driver | Refresh the work-side bundle with the three late dossiers and re-run t |
 | A-dossier-docx | A | A3 | done | cursor | codex | Word versions of all verified dossiers (venv + python-docx) |
-| B1-citefix-B3-interop-architecture | B | B1 | queued | codex |  | Fix unreachable citations in B3-interop-architecture.md |
+| B1-citefix-B3-interop-architecture | B | B1 | done | cursor | driver | Fix unreachable citations in B3-interop-architecture.md |
 | B1-citefix-R1-legal-decomposition | B | B1 | done | cursor | driver | Fix unreachable citations in R1-legal-decomposition.md |
 | B1-citefix-R4-document-access-substrate | B | B1 | done | cursor | driver | Fix unreachable citations in R4-document-access-substrate.md |
 | B1-citefix-R5-output-substrate | B | B1 | queued | codex |  | Fix unreachable citations in R5-output-substrate.md |
@@ -52,9 +52,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-04T19:52:36Z — citations — enqueued B1-citefix-B3-interop-architecture
-- 2026-09-04T19:52:36Z — citations — enqueued B1-citefix-R5-output-substrate
-- 2026-09-04T19:52:36Z — citations — enqueued B1-citefix-R6-public-corpora-and-synthetic-data
 - 2026-09-04T19:52:36Z — citations — enqueued B1-citefix-R7-trip-planning-core
 - 2026-09-04T19:53:05Z — B5-work-env-issue-wave — fail — cursor produced 334 words at /Users/teacher/.codex/automations/research-program/artifacts/issues/WORK-ENV-WAVE-REPORT.md (min 400); rotating agent
 - 2026-09-04T19:53:40Z — B7-program-plan-v3 — parked — q-B7-program-plan-v3
@@ -64,6 +61,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-04T19:55:23Z — B6-file-drafted-issues — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-04T19:55:23Z — B6-file-drafted-issues — claimed by driver (agent cursor)
 - 2026-09-04T20:00:02Z — B6-file-drafted-issues — done — cursor produced 580 words at artifacts/issues/B6-FILING-REPORT.md in 278s
+- 2026-09-04T20:00:05Z — B1-citefix-B3-interop-architecture — route — router picked cursor from ['codex', 'cursor', 'gemini']
+- 2026-09-04T20:00:05Z — B1-citefix-B3-interop-architecture — claimed by driver (agent cursor)
+- 2026-09-04T20:00:47Z — B1-citefix-B3-interop-architecture — done — cursor produced 3073 words at artifacts/research/B3-interop-architecture.md in 41s
 
 ## Questions
 
