@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-04T17:31:38Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-04T17:31:41Z)
 
-Units: 29 — claimed 3, done 11, queued 15
+Units: 29 — claimed 1, done 12, queued 16
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 CLAUDE CONSERVATION ACTIVE until 2026-09-06T12:00:00Z — cheap agents only (launchd driver every 15 min); claude-only units deferred.
@@ -20,9 +20,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | A-verify-Travel-Plan-Permission | A | A1 | done | gemini | driver | Verify dossier artifacts/dossiers/Travel-Plan-Permission.md against .. |
 | A-verify-Trend_Model_Project | A | A1 | done | gemini | driver | Verify dossier artifacts/dossiers/Trend_Model_Project.md against ../cl |
 | A-verify-Workflows | A | A1 | done | codex | driver | Verify dossier artifacts/dossiers/Workflows.md against ../clones/Workf |
-| A-verify-learning-management-system | A | A1 | claimed | gemini | driver | Verify dossier artifacts/dossiers/learning-management-system.md agains |
+| A-verify-learning-management-system | A | A1 | done | gemini | driver | Verify dossier artifacts/dossiers/learning-management-system.md agains |
 | A-verify-trip-planner | A | A1 | queued | codex |  | Verify dossier artifacts/dossiers/trip-planner.md against ../clones/tr |
-| A-dossier-index | A | A2 | claimed | cursor | driver | Fleet index and shared vocabulary from verified dossiers (needs >=12 v |
+| A-dossier-index | A | A2 | queued | cursor |  | Fleet index and shared vocabulary from verified dossiers (needs >=12 v |
 | A-personal-reuse-note | A | A2 | queued | cursor |  | Reuse note across personal repos (FAA, Reader, trip-planner) |
 | A-work-side-bundle | A | A3 | queued | codex |  | Work-side bundle: redaction pass, cover memo, safety grep |
 | A-dossier-docx | A | A3 | queued | cursor |  | Word versions of all verified dossiers (venv + python-docx) |
@@ -40,11 +40,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-04T17:31:31Z — A-dossier-index — claimed by driver (agent cursor)
-- 2026-09-04T17:31:31Z — A-verify-Template — done — vibe produced 1394 words at artifacts/dossiers/Template.md in 369s
-- 2026-09-04T17:31:32Z — A-verify-Workflows — route — router picked codex from ['codex', 'cursor', 'gemini']
-- 2026-09-04T17:31:32Z — A-verify-Workflows — claimed by driver (agent codex)
-- 2026-09-04T17:31:32Z — A-verify-Trend_Model_Project — done — gemini produced 1548 words at artifacts/dossiers/Trend_Model_Project.md in 8s
 - 2026-09-04T17:31:34Z — mirror — push FAILED — remote: Bypassed rule violations for refs/heads/main:        
 - remote: 
 - remote: - Required status check "Gate / gate" is 
@@ -52,3 +47,8 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-04T17:31:34Z — A-verify-learning-management-system — claimed by driver (agent gemini)
 - 2026-09-04T17:31:37Z — A-verify-Orchestrator — done — gemini produced 2300 words at artifacts/dossiers/Orchestrator.md in 387s
 - 2026-09-04T17:31:38Z — A-verify-Workflows — done — gemini produced 1598 words at artifacts/dossiers/Workflows.md in 6s
+- 2026-09-04T17:31:39Z — A-dossier-index — fail — gemini produced 0 words at /Users/teacher/.codex/automations/research-program/artifacts/dossiers/00-INDEX.md (min 400); rotating agent
+- 2026-09-04T17:31:40Z — mirror — push FAILED — remote: Bypassed rule violations for refs/heads/main:        
+- remote: 
+- remote: - Required status check "Gate / gate" is 
+- 2026-09-04T17:31:41Z — A-verify-learning-management-system — done — gemini produced 1600 words at artifacts/dossiers/learning-management-system.md in 7s
