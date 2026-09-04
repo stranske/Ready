@@ -4,6 +4,7 @@
 |---|---|---|---|
 | B2-gap-analysis.md | 0 | 0 | 0 |
 | B3-interop-architecture.md | 1 | 0 | 1 |
+| B7-PROGRAM-PLAN-v3.md | 2 | 2 | 0 |
 | C-skill-curriculum.md | 0 | 0 | 0 |
 | R1-legal-decomposition.md | 17 | 17 | 0 |
 | R2-consultant-report-diffing.md | 16 | 16 | 0 |
