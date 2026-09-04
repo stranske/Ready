@@ -160,5 +160,4 @@ Boilerplate skipped above: `node_modules` under `.github/scripts/`, and workflow
 - Real employee travel data should stay on internal or on-prem deployments; the public website is a synthetic demo only and must not receive production trips or receipts.
 - Post-trip reimbursement today means generating accounting-ready spreadsheets and tracking review status; it does not automatically post into your general ledger or expense system yet.
 - The codebase is actively tested (high coverage, cross-repo smoke with the companion trip planning application) but still labeled alpha: some documentation describes future REST APIs and fleet-wide run records that are not fully wired.
-
 *Evidence-checked against source repositories; verification metadata omitted from work bundle.*

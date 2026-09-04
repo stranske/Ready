@@ -1,38 +1,53 @@
 # Redactions log
-Generated during work-bundle pass. 11 dossiers processed.
+Generated during work-bundle refresh. 14 dossiers processed.
 
-- **Counter_Risk** — internal telemetry flag name: `\bno_secret\b`
-- **Counter_Risk** — owner-specific env var: `COUNTER_RISK_CHAT_OFFLINE_MODE`
-- **Counter_Risk** — verification footer: `Removed internal verifier attribution line`
-- **Manager-Database** — verification footer: `Removed internal verifier attribution line`
-- **Pension-Data** — verification footer: `Removed internal verifier attribution line`
-- **Inv-Man-Intake** — verification footer: `Removed internal verifier attribution line`
-- **Portable-Alpha-Extension-Model** — verification footer: `Removed internal verifier attribution line`
-- **Orchestrator** — home-directory path: replaced owner home paths with `[orchestrator-state]` / `[handoff-dir]`
-- **Orchestrator** — launchd label: `com\.stranske\.orchestrator`
-- **Orchestrator** — dispatch lane flag: `ORCH_DISPATCH_LANE=1`
-- **Orchestrator** — route publish flag: `ORCH_ROUTE_WEIGHTS_PUBLISH=1`
-- **Orchestrator** — owner state dir variable: `\$ORCH_STATE_DIR`
-- **Orchestrator** — internal usage tool: `\bccusage\b`
-- **Orchestrator** — agent CLI name: `\bclaude\b|\bcodex\b|\bcursor\b|\bagy\b|\bvibe\b|\baider\b`
-- **Orchestrator** — agent product name: `Antigravity`
-- **Orchestrator** — internal dispatch mode: `shadow execution by default`
-- **Orchestrator** — owner-specific deployment: `for an investment office technical owner on a single macOS workstation`
-- **Orchestrator** — verification footer: `Removed internal verifier attribution line`
-- **Travel-Plan-Permission** — verification footer: `Removed internal verifier attribution line`
-- **trip-planner** — home-directory path: replaced default SQLite location with `[app-data-dir]`
-- **trip-planner** — verification footer: `Removed internal verifier attribution line`
-- **Template** — verification footer: `Removed internal verifier attribution line`
-- **Template** — agent product name: `Generalized Codex references in Template`
-- **Fine-Art-Archive** — internal role label: `Owner / local agents`
-- **Fine-Art-Archive** — personal Dropbox layout: `Pictures/Art/works/`
-- **Fine-Art-Archive** — personal cloud provider path: `Dropbox under`
-- **Fine-Art-Archive** — owner possessive: `on the owner's machine`
-- **Fine-Art-Archive** — personal storage: `owner's Dropbox`
-- **Fine-Art-Archive** — owner reference: `one owner\b`
-- **Fine-Art-Archive** — owner role in surfaces table: `\bowner\b(?= /)`
-- **Fine-Art-Archive** — verification footer: `Removed internal verifier attribution line`
-- **Collab-Admin** — owner name: `Tim is sole merger`
-- **Collab-Admin** — internal role label: `Owner running locally`
-- **Collab-Admin** — internal role label: `Owner, scheduled automation`
+- **Collab-Admin** — owner name: `'Tim is sole merger' (1 hits)`
+- **Collab-Admin** — internal role label: `'Owner running locally' (1 hits)`
+- **Collab-Admin** — internal role label: `'Owner, scheduled automation' (1 hits)`
 - **Collab-Admin** — verification footer: `Removed internal verifier attribution line`
+- **Counter_Risk** — internal telemetry flag name: `'\\bno_secret\\b' (1 hits)`
+- **Counter_Risk** — owner-specific env var: `'COUNTER_RISK_CHAT_OFFLINE_MODE' (2 hits)`
+- **Counter_Risk** — verification footer: `Removed internal verifier attribution line`
+- **Fine-Art-Archive** — internal role label: `'Owner / local agents' (1 hits)`
+- **Fine-Art-Archive** — personal Dropbox layout: `'Pictures/Art/works/' (1 hits)`
+- **Fine-Art-Archive** — personal cloud provider path: `'Dropbox under' (1 hits)`
+- **Fine-Art-Archive** — owner possessive: `"on the owner's machine" (1 hits)`
+- **Fine-Art-Archive** — personal storage: `"owner's Dropbox" (1 hits)`
+- **Fine-Art-Archive** — owner reference: `'one owner\\b' (1 hits)`
+- **Fine-Art-Archive** — verification footer: `Removed internal verifier attribution line`
+- **Inv-Man-Intake** — verification footer: `Removed internal verifier attribution line`
+- **Manager-Database** — verification footer: `Removed internal verifier attribution line`
+- **Orchestrator** — home-directory path: replaced owner home paths with generic placeholders (3 hits)
+- **Orchestrator** — launchd label: replaced scheduled-job identifier with generic description
+- **Orchestrator** — dispatch lane flag: generalised dispatch configuration flag
+- **Orchestrator** — route publish flag: generalised route-publish configuration flag
+- **Orchestrator** — owner state dir variable: generalised state-directory reference (2 hits)
+- **Orchestrator** — internal usage tool: `'\\bccusage\\b' (1 hits)`
+- **Orchestrator** — agent CLI name: `'\\bclaude\\b' (1 hits)`
+- **Orchestrator** — agent CLI name: `'\\bcodex\\b' (1 hits)`
+- **Orchestrator** — agent CLI name: `'\\bcursor\\b' (1 hits)`
+- **Orchestrator** — agent CLI name: `'\\bagy\\b' (1 hits)`
+- **Orchestrator** — agent CLI name: `'\\bvibe\\b' (1 hits)`
+- **Orchestrator** — agent CLI name: `'\\baider\\b' (1 hits)`
+- **Orchestrator** — agent product name: `'Antigravity' (1 hits)`
+- **Orchestrator** — internal dispatch mode: `'shadow execution by default' (1 hits)`
+- **Orchestrator** — owner-specific deployment: `'for an investment office technical owner on a single macOS workstation' (1 hits)`
+- **Orchestrator** — verification footer: `Removed internal verifier attribution line`
+- **Pension-Data** — verification footer: `Removed internal verifier attribution line`
+- **Portable-Alpha-Extension-Model** — verification footer: `Removed internal verifier attribution line`
+- **Template** — agent product name: `'\\bCodex\\b' (3 hits)`
+- **Template** — verification footer: `Removed internal verifier attribution line`
+- **Travel-Plan-Permission** — verification footer: `Removed internal verifier attribution line`
+- **Trend_Model_Project** — agent workflow filename: `'agents-71-codex-belt-dispatcher\\.yml' (1 hits)`
+- **Trend_Model_Project** — verification footer: `Removed internal verifier attribution line`
+- **Workflows** — agent CLI name: `'Coding agents \\(Codex, Claude\\)' (1 hits)`
+- **Workflows** — internal role label: `'Human repo owners' (1 hits)`
+- **Workflows** — model profile names: `'gpt-5\\.6-terra \\+ claude-sonnet-5' (1 hits)`
+- **Workflows** — agent workflow filenames: `'reusable-codex-run\\.yml' (2 hits)`
+- **Workflows** — agent workflow filenames: `'reusable-claude-run\\.yml' (2 hits)`
+- **Workflows** — verification footer: `Removed internal verifier attribution line`
+- **learning-management-system** — internal role label: `'owner/operator' (1 hits)`
+- **learning-management-system** — owner scope: `'for one person now' (1 hits)`
+- **learning-management-system** — verification footer: `Removed internal verifier attribution line`
+- **trip-planner** — home-directory path: replaced default SQLite location with app-data placeholder (1 hit)
+- **trip-planner** — verification footer: `Removed internal verifier attribution line`

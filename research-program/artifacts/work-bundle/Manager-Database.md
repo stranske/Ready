@@ -139,5 +139,4 @@ Top functional directories (synced from `stranske/Workflows`):
 - **Key Analytical Insights**: Highlights new positions, liquidations, conviction scores, crowded positions, and post-disclosure returns.
 - **User Experience**: Analysts use a web dashboard, receive email digests, search research notes, or consult an AI assistant citing source documents.
 - **Deployment & Data Security**: Runs disconnected in a browser using sample data, while production keeps proprietary data behind private firewalls.
-
 *Evidence-checked against source repositories; verification metadata omitted from work bundle.*

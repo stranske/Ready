@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-04T17:59:12Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-04T18:02:38Z)
 
-Units: 32 — claimed 2, done 27, queued 3
+Units: 32 — done 28, queued 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=shed vibe=ok aider=ok
 CLAUDE CONSERVATION ACTIVE until 2026-09-06T12:00:00Z — cheap agents only (launchd driver every 15 min); claude-only units deferred.
@@ -25,8 +25,8 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | A-dossier-index | A | A2 | done | cursor | driver | Fleet index and shared vocabulary from verified dossiers (needs >=12 v |
 | A-personal-reuse-note | A | A2 | done | cursor | driver | Reuse note across personal repos (FAA, Reader, trip-planner) |
 | A-work-side-bundle | A | A3 | done | cursor | driver | Work-side bundle: redaction pass, cover memo, safety grep |
-| A-work-side-bundle-refresh | A | A3 | claimed | cursor | driver | Refresh the work-side bundle with the three late dossiers and re-run t |
-| A-dossier-docx | A | A3 | claimed | cursor | driver | Word versions of all verified dossiers (venv + python-docx) |
+| A-work-side-bundle-refresh | A | A3 | done | cursor | driver | Refresh the work-side bundle with the three late dossiers and re-run t |
+| A-dossier-docx | A | A3 | queued | cursor |  | Word versions of all verified dossiers (venv + python-docx) |
 | B1-citefix-R1-legal-decomposition | B | B1 | done | cursor | driver | Fix unreachable citations in R1-legal-decomposition.md |
 | B1-citefix-R4-document-access-substrate | B | B1 | done | cursor | driver | Fix unreachable citations in R4-document-access-substrate.md |
 | R1-legal-decomposition | B | B1 | done | codex | driver | Brief R1: legal fund-document decomposition and lineage |
@@ -43,8 +43,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-04T17:57:25Z — A-verify-learning-management-system — done — cursor produced 1634 words at artifacts/dossiers/learning-management-system.md in 116s
-- 2026-09-04T17:57:28Z — R7-trip-planning-core — route — router picked codex from ['codex', 'gemini']
 - 2026-09-04T17:57:28Z — R7-trip-planning-core — claimed by driver (agent codex)
 - 2026-09-04T17:58:00Z — B1-citefix-R4-document-access-substrate — done — cursor produced 2545 words at artifacts/research/R4-document-access-substrate.md in 150s
 - 2026-09-04T17:58:02Z — A-dossier-docx — route — router picked cursor from ['codex', 'cursor']
@@ -55,3 +53,5 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-04T17:58:47Z — A-work-side-bundle-refresh — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-04T17:58:47Z — A-work-side-bundle-refresh — claimed by driver (agent cursor)
 - 2026-09-04T17:59:12Z — R7-trip-planning-core — done — cursor produced 2185 words at artifacts/research/R7-trip-planning-core.md in 103s
+- 2026-09-04T18:00:09Z — A-dossier-docx — fail — cursor produced 197 words at /Users/teacher/.codex/automations/research-program/artifacts/dossiers/00-DOCX-MANIFEST.md (min 400); rotating agent
+- 2026-09-04T18:02:38Z — A-work-side-bundle-refresh — done — cursor produced 434 words at logs/work-bundle/00-RUN-REPORT-2.md in 230s

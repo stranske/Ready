@@ -101,5 +101,4 @@ The collision to resolve is vocabulary: local fleet emission calls plan/document
 - Treat low-confidence findings as a review queue, not investment conclusions.
 - The browser review path can keep real data inside the firm’s network; the public demo path must use synthetic data.
 - Today, the safest operational use is a controlled document-to-artifact workflow, not the unfinished live dashboard or desktop application.
-
 *Evidence-checked against source repositories; verification metadata omitted from work bundle.*

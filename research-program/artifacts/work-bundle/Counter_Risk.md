@@ -13,7 +13,7 @@ Counter_Risk replaces the legacy MOSERS spreadsheet workflow for monthly counter
 | Excel macro workbook | `Runner.xlsm` | Intended primary operators | **Working** (one gap) | 7 Form-Control buttons wired to VBA via `xl/drawings/vmlDrawing1.vml` (`RunAll_Click`…`OpenPPTFolder_Click`), `legacyDrawing` in `sheet1.xml`, `Config` sheet + 7 `RunnerConfig_*` Named Ranges (builder `build/xlsm.py:124-137`). Gap: no "Ask about this run" control |
 | Static HTML demo | `web/index.html` | Demo/CI only | **Fixture-only** | "fixture-only and no-egress" (`web/index.html:57-59`) |
 | Run artifacts | `pipeline/run.py` output folder | Operators; review | **Working** (caveats) | `manifest.json` validated pre-write (`pipeline/manifest.py:194-196`); PPT COM needs Windows + `pywin32` (`pyproject.toml:42`) |
-| Chat assistant | `counter_risk.chat.session` | Optional operator Q&A | **Partial** | LangChain when credentialed (`README.md:157-158`); offline stub via `OFFLINE_CHAT_MODE=1` (`chat/session.py:206-211`) |
+| Chat assistant | `counter_risk.chat.session` | Optional operator Q&A | **Partial** | LangChain when credentialed (`README.md:157-158`); offline stub via `OFFLINE_MODE=1` (`chat/session.py:206-211`) |
 | Mapping diff CLI | `mapping_diff_report` (`pyproject.toml:71`) | Registry maintainers | **Working** | `docs/name_registry.md:60-65` |
 | Fleet NDJSON | `observability/langsmith_fleet.py` | Fleet dashboard | **Working** | emitted from `pipeline/run.py:626`; contract per `docs/langsmith_fleet.md:3-6` |
 
@@ -78,7 +78,7 @@ Counter_Risk/
 
 **Inputs:** MOSERS/NISA Excel, 3-year historical workbooks, monthly PPT template, CPRS files, optional repo-cash CSV/XLSX/PDF — the authoritative set is the `WorkflowConfig` field list at `config.py:89-108`, where only `hist_all_programs_3yr_xlsx`, `hist_ex_llc_3yr_xlsx`, `hist_llc_3yr_xlsx` and `monthly_pptx` are required; repo-cash layering is documented at `README.md:55-71` and `cash_source_type` accepts `pdf` (`config.py:92`). No live market APIs in the core path.
 
-**LLM/agents:** Optional chat via `langchain-openai` / `langchain-anthropic` (`pyproject.toml:39-40`); LangSmith opt-in, records `no_key_configured` without a key (`langsmith_fleet.md:37-40`). GitHub agent workflows are repo automation from `stranske/Workflows`, not part of the monthly run.
+**LLM/agents:** Optional chat via `langchain-openai` / `langchain-anthropic` (`pyproject.toml:39-40`); LangSmith opt-in, records `telemetry-offline flag` without a key (`langsmith_fleet.md:37-40`). GitHub agent workflows are repo automation from `stranske/Workflows`, not part of the monthly run.
 
 **Libraries:** `openpyxl`, `python-pptx`, `pandas`, `Pillow`, `stranske-pdf-extract` (Workflows git dep), `pywin32` on Windows for COM (`pyproject.toml:33-42`). Maintainers use Python 3.12+; operators target the PyInstaller bundle (`gui_runner.md:9-13`). No Docker on the operator path.
 
@@ -92,7 +92,7 @@ Counter_Risk/
 
 ## 8. Claims vs reality
 
-- **LangChain chat "instead of stubs"** (`README.md:157-158`) — True when credentialed; the offline stub remains for tests, gated on `OFFLINE_CHAT_MODE=1` (`chat/session.py:206-211`, `README.md:169-170`).
+- **LangChain chat "instead of stubs"** (`README.md:157-158`) — True when credentialed; the offline stub remains for tests, gated on `OFFLINE_MODE=1` (`chat/session.py:206-211`, `README.md:169-170`).
 
 - **Standard limit/concentration outputs** (`README.md:17-19`) — Produced when config resolves. **Correction to a widely-repeated claim:** fail-severity limit breaches *do* escalate the data-quality status to RED. `pipeline/data_quality.py:229-248` passes `severity="fail"` whenever `fail_breach_count > 0` or `max_severity == "fail"`; `_derive_overall_status` (`:392-397`) then returns `"fail"`, which `manifest.py:27` renders as `RED`, asserted by `tests/pipeline/test_manifest_data_quality.py:234`. The `"LIMIT_BREACHES": "warn"` entry at `data_quality.py:21` is only the `_SEVERITY_BY_CODE` **default** consumed by `_make_finding` (`:404-414`) when no explicit severity is supplied — i.e. warning-only breaches. The in-repo audit's contrary BLOCKER (`docs/audit/AUDIT_REPORT.md:9`, citing the pre-fix `data_quality.py:20`) is **stale**.
 
@@ -149,5 +149,4 @@ Counter_Risk/
 - Every run writes a manifest and plain-language data-quality summary; review yellow and red before distributing—a hard limit breach does now show red.
 - New bank name spellings in source files need a registry update before charts and limits pick them up correctly.
 - Fleet-wide shared run records and global entity IDs are documented but not yet emitted—treat this repo's CSV and JSON run files as the interoperability surface for now. And be careful with the review documents stored inside this repo: they predate several fixes and are wrong about the current state in at least four places, so check the working code before repeating one of their findings.
-
 *Evidence-checked against source repositories; verification metadata omitted from work bundle.*

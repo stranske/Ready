@@ -46,7 +46,7 @@ stranske/trip-planner/
 ## 5. Data model, identifiers and contracts
 Entities use typed string IDs: `trip_id` (e.g., `trip-leisure-kyoto-draft`) is the root container; `user_id` and `session_id` identify accounts and sessions (authenticated via SHA-256 `token_hash`); `saved_scenario_id` tracks scenario collections (`current_version_id` points to the active version head); `proposal_id` and `proposal_version` identify corporate proposals; catalog items use `option_id`, `destination_id`, `activity_id`, `lodging_id`, and `bundle_id`; options carry `source_id`, and the source-ingestion layer tracks `snapshot_id` on `RawSnapshot` records.
 
-Persistence uses SQLAlchemy 2.0 with Alembic migrations (`trip_planner/persistence/db.py`), defaulting to SQLite at `[app-data-dir]/trip_planner.db`, normalizing to PostgreSQL when `TRIP_PLANNER_DATABASE_URL` is set.
+Persistence uses SQLAlchemy 2.0 with Alembic migrations (`trip_planner/persistence/db.py`), defaulting to SQLite at `[local-path]`, normalizing to PostgreSQL when `TRIP_PLANNER_DATABASE_URL` is set.
 
 ### Contract Audit (`docs/contracts/*`):
 - **Emitted and Consumed**: `trip-plan-proposal.md`, `tpp-approval-ready.md`, `route-context-map-target.md`, `inventory-bundle.md`, `business-ranking.md`, `ranking-results.md`, `activity-option.md`, `lodging-option.md`, `transport-option.md`, `canonical-state-seam.md`, and TPP contracts.
@@ -115,5 +115,4 @@ Persistence uses SQLAlchemy 2.0 with Alembic migrations (`trip_planner/persisten
 - **Corporate compliance automation**: Checks planned itineraries against spend caps and policies, assembling justification packages for management sign-off.
 - **Security and data privacy**: Runs securely inside an enterprise network, keeping itineraries on local servers so confidential plans are never sent to external AI.
 - **Institutional interoperability**: Built to connect with corporate single sign-on, expense tools, and deal calendars to streamline due diligence travel.
-
 *Evidence-checked against source repositories; verification metadata omitted from work bundle.*

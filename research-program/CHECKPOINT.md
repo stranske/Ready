@@ -161,3 +161,5 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-04T17:58:47Z — A-work-side-bundle-refresh — route — router picked cursor from ['codex', 'cursor']
 ## 2026-09-04T17:58:47Z — A-work-side-bundle-refresh — claimed by driver (agent cursor)
 ## 2026-09-04T17:59:12Z — R7-trip-planning-core — done — cursor produced 2185 words at artifacts/research/R7-trip-planning-core.md in 103s
+## 2026-09-04T18:00:09Z — A-dossier-docx — fail — cursor produced 197 words at /Users/teacher/.codex/automations/research-program/artifacts/dossiers/00-DOCX-MANIFEST.md (min 400); rotating agent
+## 2026-09-04T18:02:38Z — A-work-side-bundle-refresh — done — cursor produced 434 words at logs/work-bundle/00-RUN-REPORT-2.md in 230s

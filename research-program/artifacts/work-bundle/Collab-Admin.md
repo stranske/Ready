@@ -2,7 +2,7 @@
 
 ## 1. Purpose in one paragraph
 
-Collab-Admin is a governance and instrumentation repository for a collaboration: policies, rubrics, submission templates, review workflows, time/expense tracking, dashboards, and validation scripts (`README.md` lines 3–15). Configuration declares four workstreams: Trend_Model_Project, Agent Integration, Consumer Usability, and Marketplace Plan (`config/project.yml` lines 14–22). It is not an investment-research engine. Work moves Issue → PR → reviewed artifact; month 1 uses collaborator forks and the repository owner is sole merger (`docs/01-operating-model.md` lines 5–23). Trend understanding deliverables prohibit AI assistance (`docs/09-trend-review-protocol.md` lines 1–8). Thin caller automation uses `stranske/Workflows` as source of truth (`docs/14-workflows-ecosystem.md` lines 5–10).
+Collab-Admin is a governance and instrumentation repository for a collaboration: policies, rubrics, submission templates, review workflows, time/expense tracking, dashboards, and validation scripts (`README.md` lines 3–15). Configuration declares four workstreams: Trend_Model_Project, Agent Integration, Consumer Usability, and Marketplace Plan (`config/project.yml` lines 14–22). It is not an investment-research engine. Work moves Issue → PR → reviewed artifact; month 1 uses collaborator forks and Maintainer is sole merger (`docs/01-operating-model.md` lines 5–23). Trend understanding deliverables prohibit AI assistance (`docs/09-trend-review-protocol.md` lines 1–8). Thin caller automation uses `stranske/Workflows` as source of truth (`docs/14-workflows-ecosystem.md` lines 5–10).
 
 ## 2. Who uses it and how (surfaces)
 
@@ -122,5 +122,4 @@ Wire the static builder into the scheduled dashboard workflow; add packet valida
 - The owner dashboard is local; GitHub visibility depends on available API access.
 - Heavy automation comes from shared workflows through callers.
 - Static dashboard and backplane integration are incomplete, so generic green CI is not end-to-end evidence.
-
 *Evidence-checked against source repositories; verification metadata omitted from work bundle.*

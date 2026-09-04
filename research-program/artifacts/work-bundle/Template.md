@@ -4,7 +4,7 @@ This dossier covers three sibling staging repositories: **stranske/Template**, *
 
 ## 1. Purpose in one paragraph
 
-The staging fleet solves a governance problem: every new Python tool in the investment office should share the same GitHub Actions CI, automated agent keepalive, coverage policy, and (eventually) research-backplane run records—while keeping product code local. **Template** is the GitHub *template repository* used to mint new consumer repos (`docs/SETUP_CHECKLIST.md` §1.1: `gh repo create … --template stranske/Template`). **Ready** is the long-lived conformance repo that exercises the full Workflows surface, including coverage baseline soft-gating that Template omits (`Ready/README.md` “Coverage Baseline”, `config/coverage-baseline.json`). **WIT** is a thin integration consumer that stress-tests the reusable Python CI workflow and reports failures back to Workflows (`Workflows-Integration-Tests/README.md`, `.github/workflows/ci.yml`). The operating constraint is *consumer-repo discipline*: workflow logic is synced from Workflows (`AGENTS.md` “Cross-Repo Policy”); each repo only owns files such as `ci.yml`, `autofix-versions.env`, and `src/`.
+The staging fleet solves a governance problem: every new Python tool in the investment office should share the same GitHub Actions CI, commercial AI coding assistant-based agent keepalive, coverage policy, and (eventually) research-backplane run records—while keeping product code local. **Template** is the GitHub *template repository* used to mint new consumer repos (`docs/SETUP_CHECKLIST.md` §1.1: `gh repo create … --template stranske/Template`). **Ready** is the long-lived conformance repo that exercises the full Workflows surface, including coverage baseline soft-gating that Template omits (`Ready/README.md` “Coverage Baseline”, `config/coverage-baseline.json`). **WIT** is a thin integration consumer that stress-tests the reusable Python CI workflow and reports failures back to Workflows (`Workflows-Integration-Tests/README.md`, `.github/workflows/ci.yml`). The operating constraint is *consumer-repo discipline*: workflow logic is synced from Workflows (`AGENTS.md` “Cross-Repo Policy”); each repo only owns files such as `ci.yml`, `autofix-versions.env`, and `src/`.
 
 ## 2. Who uses it and how (surfaces)
 
@@ -53,7 +53,7 @@ Skipped as synced boilerplate: `.github/scripts/node_modules/` (vendored; guarde
 
 - **Thin CI delegation** — `ci.yml` forwards lint/mypy/pytest to Workflows (`ci.yml` L34–39). WIT exists to regression-test this contract.
 
-- **Keepalive via Gate Followups** — `agents-81-gate-followups.yml` calls `keepalive_loop.js` to dispatch Codex (`agents-81-gate-followups.yml` L290–332). README still names the older `agents-keepalive-loop.yml` (`README.md` L69–76).
+- **Keepalive via Gate Followups** — `agents-81-gate-followups.yml` calls `keepalive_loop.js` to dispatch commercial AI coding assistant (`agents-81-gate-followups.yml` L290–332). README still names the older `agents-keepalive-loop.yml` (`README.md` L69–76).
 
 - **LLM slot resolution** — `tools/llm_registry.py` reads `config/llm_slots.json` and `model_registry.json`, emitting `SelectionDecision` without fabricated scores (`llm_registry.py` L31–50).
 
@@ -87,7 +87,7 @@ Skipped as synced boilerplate: `.github/scripts/node_modules/` (vendored; guarde
 
 ## 6. External inputs and dependencies
 
-GitHub Actions and secrets (`README.md` L141–147) drive all automation. Reusable workflows come from `stranske/Workflows@main` (`ci.yml` L34). Local dev needs Python ≥3.12 (`pyproject.toml` L10) with pytest/ruff/mypy (`pyproject.toml` L26–31). Workflow-only LangChain pins live in `tools/requirements-llm.txt` L10–15. Automated coding agents run via Workflows reusables in the `agent-standard` environment (`README.md` L88–91, L153–154). No public market-data APIs, filings fetchers, or PDF parsers appear in any staging `src/`. `tools/embedding_provider.py` exists as fleet tooling without a staging `src/` caller.
+GitHub Actions and secrets (`README.md` L141–147) drive all automation. Reusable workflows come from `stranske/Workflows@main` (`ci.yml` L34). Local dev needs Python ≥3.12 (`pyproject.toml` L10) with pytest/ruff/mypy (`pyproject.toml` L26–31). Workflow-only LangChain pins live in `tools/requirements-llm.txt` L10–15. commercial AI coding assistant CLI runs via Workflows reusables in the `agent-standard` environment (`README.md` L88–91, L153–154). No public market-data APIs, filings fetchers, or PDF parsers appear in any staging `src/`. `tools/embedding_provider.py` exists as fleet tooling without a staging `src/` caller.
 
 ## 7. Current state
 
@@ -137,5 +137,4 @@ Template and Ready enforce 80% coverage on `src/` (`pyproject.toml` L58). Gate r
 - Automation logic lives mainly in a separate **Workflows** repository—fix agent behavior there, not in synced copies here.
 - Investment “run record” and evidence contracts are **documented but not yet produced** by staging repos.
 - Agent automation requires administrator setup of secrets, environments, and branch protection before it will run reliably.
-
 *Evidence-checked against source repositories; verification metadata omitted from work bundle.*

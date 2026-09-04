@@ -168,5 +168,4 @@ archive/          Retired configs and development logs
 - Every run can leave a reproducibility trail (saved config, random seed, and file fingerprints) so you can defend a number in a meeting or compare two scenarios side by side.
 - Results are gross of fees by default, assume independent monthly draws, and ignore market regimes unless you configure otherwise — read the caveats slide in any generated board pack before presenting.
 - The tool does not know your managers, funds, or filing documents; fleet-wide entity linking is a future integration, not something the current simulation consumes.
-
 *Evidence-checked against source repositories; verification metadata omitted from work bundle.*

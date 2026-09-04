@@ -114,5 +114,4 @@ It should consume an authoritative identity-map resolver before joining on firm/
 - It can preserve document versions, hashes and page-level source pointers when configured with local durable storage.
 - Treat the score as a transparent prioritization aid; exceptions and conflicts are designed for analyst review, not automatic investment decisions.
 - For hand-off to another office tool, use the run record and hashed artifact list, but settle firm and fund identity in a shared authoritative system first.
-
 *Evidence-checked against source repositories; verification metadata omitted from work bundle.*

@@ -2,20 +2,20 @@
 
 ## 1. Purpose in one paragraph
 
-Fine-Art-Archive is the version-controlled **code and policy layer** for a personal museum-grade image archive of roughly 3,400+ artworks. The repository does **not** hold masters or the live sidecar corpus; those live in external storage at `[artwork-corpus-root]/`. `FAA_ART_WORKS_ROOT` selects the primary archive root, while the API store also accepts `FAA_WORKS_DIR` (or legacy `FAA_STAGING_DIR`) for its sidecar tree (`src/fine_art_archive/api/config.py`, `api/store.py`). The tool lets one maintainer **identify, deduplicate, enrich, browse, rate, and display** works with museum-style metadata (Wikidata Q-IDs, holder accessions, field-level provenance) while keeping originals local-first. It assumes a split model: data work on a Mac with the full Dropbox tree, library/CI in GitHub (`docs/NEXT_PHASE_PLAN.md`), with cloud automation unable to see the local corpus.
+Fine-Art-Archive is the version-controlled **code and policy layer** for a personal museum-grade image archive of roughly 3,400+ artworks. The repository does **not** hold masters or the live sidecar corpus; those live in cloud-synced folder under `[artwork-storage]/works/`. `FAA_ART_WORKS_ROOT` selects the primary archive root, while the API store also accepts `FAA_WORKS_DIR` (or legacy `FAA_STAGING_DIR`) for its sidecar tree (`src/fine_art_archive/api/config.py`, `api/store.py`). The tool lets one maintainer **identify, deduplicate, enrich, browse, rate, and display** works with museum-style metadata (Wikidata Q-IDs, holder accessions, field-level provenance) while keeping originals local-first. It assumes a split model: data work on a Mac with the full Dropbox tree, library/CI in GitHub (`docs/NEXT_PHASE_PLAN.md`), with cloud automation unable to see the local corpus.
 
 ## 2. Who uses it and how (surfaces)
 
 | Surface | Entry point | Who uses it | Status (evidence) |
 |--------|-------------|-------------|-------------------|
-| **CLI** (71 Python scripts) | `scripts/*.py` — e.g. `build_manifest.py`, `visual_dedupe.py`, `apply_lens_recovery.py` | Repository maintainer | **Working** — 125 `test_*.py` modules |
+| **CLI** (71 Python scripts) | `scripts/*.py` — e.g. `build_manifest.py`, `visual_dedupe.py`, `apply_lens_recovery.py` | Maintainer / local automation | **Working** — 125 `test_*.py` modules |
 | **CLI launcher** | `scripts/run_companion_app.sh` | Owner starting browse UI | **Working** — rebuilds `manifest.csv` on launch (`README.md` L48–52) |
 | **HTTP API + HTML UI** | `src/fine_art_archive/api/main.py`; `src/fine_art_archive/ui/index.html` | Owner at `http://localhost:8401/` | **Working** — works, ratings, dossiers, e-ink, review routes; `tests/test_companion_app_api.py` |
 | **File artifacts (external)** | `Art/works/<work_id>/meta.json`, `manifest.csv` | All surfaces via `api/store.py` | **Working when workspace mounted** — one fixture in `staging_sidecars/test-wid/` |
 | **JSONL logs** | `data/ratings_log.jsonl`, `data/research_requests.jsonl` | Companion App | **Working** — append-only (`api/main.py` L3–5) |
 | **Backplane contracts** | `docs/contracts/*`, `scripts/validate_run_contract.py` | Fleet (planned) | **Scaffold** — validator only; no emitter (`backplane-conformance.yml` L49–55) |
 | **Excel** | — | — | **Not present** |
-| **E-ink feed** | API `/eink/*`, `src/fine_art_archive/eink/feed.py` | maintainer / LAN panels | **Partial** — logic present; hardware deferred (`docs/NEXT_PHASE_PLAN.md` L48) |
+| **E-ink feed** | API `/eink/*`, `src/fine_art_archive/eink/feed.py` | Owner / LAN panels | **Partial** — logic present; hardware deferred (`docs/NEXT_PHASE_PLAN.md` L48) |
 
 ## 3. Structure map
 
@@ -135,14 +135,13 @@ Fine-Art-Archive/
 
 ## 12. What a colleague needs to know (5 bullets, no code identifiers)
 
-- This repo is **software for a personal art library**, not the images themselves; originals and metadata sit on the external artwork storage and are wired in at runtime.
+- This repo is **software for a personal art library**, not the images themselves; originals and metadata sit on the maintainer cloud storage and are wired in at runtime.
 
 - The daily interface is a **local web app** to browse works, record preferences, and review acquisitions — but only for works listed in a catalog file that must be refreshed when the archive grows.
 
 - Works are identified through **public museum and Wikidata records** where possible, with explicit handling so copies and variants in different museums stay separate holdings.
 
-- Automated tests validate the **code** well, but full-archive checks and vision models only run on the maintainer's machine where the files exist.
+- Automated tests validate the **code** well, but full-archive checks and vision models only run on the maintainer workstation where the files exist.
 
 - Fleet-wide research contracts are **documented here but not yet produced**; linking to investment-office tools will need an agreed mapping between artwork IDs and manager/fund IDs.
-
 *Evidence-checked against source repositories; verification metadata omitted from work bundle.*
