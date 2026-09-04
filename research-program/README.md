@@ -6,7 +6,7 @@
 ## What runs where
 | Executor | Cadence | Trigger | Depends on |
 |---|---|---|---|
-| Codex automation `research-program-worker` | hourly :10 | Codex app (must be running) | ChatGPT Pro window |
+| Codex automation `research-program` (Astra/high) | hourly :10 | Codex app (must be running) | ChatGPT Pro window |
 | Claude scheduled task `research-program-worker` | 06:00, 12:00, 18:00 local | Claude desktop app (open, logged in) | Claude Max window |
 | Orchestrator offloads (gemini/cursor/vibe) | called by either executor | dispatcher.py | their own pools |
 | Stall detector `research-program` (checkin.py) | every 6 h | launchd `com.stranske.checkin-runner` | nothing else |
@@ -21,4 +21,16 @@ All state is in this directory (local disk, not Dropbox): `queue.jsonl`, `CHECKP
 4. Comment `pause` on the inbox to stop all executors; `resume` to continue.
 
 ## Program shape
-Track A dossiers → A-verify → 00-INDEX → docx; Track B briefs R1–R7 → B2 gap analysis → B3 interop architecture → B4 issue bodies; Track C coverage matrix → curriculum + tool-literacy loop design; Track D demand-driven audits (`~/.codex/bin/audit-refill.py`, daily). Plan: `Code/Projects/research-program-2026-09/`.
+Track A dossiers → A-verify → 00-INDEX → docx; Track B briefs R1–R7 → B2 gap analysis → B3 interop architecture → B4 issue bodies; Track C coverage matrix → curriculum + tool-literacy loop design; Track D demand-driven audits (`program.py refill-check`, every 12 hours). Plan: `Code/Projects/research-program-2026-09/`.
+
+## 2026-09-04 readiness repair
+
+The launchd driver runs one unit per invocation every 15 minutes, through the local
+Orchestrator mirror. `clones/` is now a durable directory under this engine, not a
+temporary-session symlink. Phase stops are enforced at claim time. Offload process
+status, dispatcher result status, and fresh output are all required for completion.
+The inbox is paginated; mirror delivery is serialized and pending pushes retry on
+subsequent ticks, including empty ticks. Audit identifiers are unique per round.
+
+The 80% cross-provider allowance is a planning target, not an independently measured
+aggregate-spend cap in this engine. Routing still uses Orchestrator capacity controls.
