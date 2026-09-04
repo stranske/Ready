@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-04T17:15:38Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-04T17:15:55Z)
 
 Units: 28 — done 3, queued 25
 Paused: False   Phase stops: []
@@ -39,7 +39,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-04T17:08:33Z — A-verify-Counter_Risk — claimed by driver (agent codex)
 - 2026-09-04T17:08:33Z — A-verify-Counter_Risk — fail — not-ready: no cheap agent has capacity right now
 - 2026-09-04T17:08:34Z — A-verify-Fine-Art-Archive — route — router unavailable (ModuleNotFoundError); using capacity_ok; capacity_ok -> codex
 - 2026-09-04T17:08:34Z — A-verify-Fine-Art-Archive — claimed by driver (agent codex)
@@ -51,3 +50,4 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-04T17:11:39Z — A-verify-Counter_Risk — done — Counter_Risk dossier verified against HEAD 3f3ae3d: 52 claims checked, 39 confirmed, 11 corrected (5 substantive), 2 off-platform unverifiable — the in-repo doc
 - 2026-09-04T17:15:18Z — A-verify-Fine-Art-Archive — verification — done — Checked 27 claims in sections 4/5/8/9; corrected dHash, clone configuration, test count, and docs paths.
 - 2026-09-04T17:15:38Z — A-verify-Fine-Art-Archive — done — Verified the Fine-Art-Archive dossier against the clone; corrected dHash, fresh-clone configuration, test count, and docs paths.
+- 2026-09-04T17:15:55Z — A-verify-Counter_Risk — done — gemini produced 2105 words at artifacts/dossiers/Counter_Risk.md in 341s
