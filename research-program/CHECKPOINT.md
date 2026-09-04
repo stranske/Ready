@@ -37,3 +37,21 @@
 ## 2026-09-04T16:11:57Z — A-verify-.wrap-Collab-Admin — claimed by codex (agent codex)
 ## 2026-09-04T16:12:16Z — A-verify-.wrap-Collab-Admin — fail — not-ready: required clone /Users/teacher/.codex/automations/research-program/clones/.wrap-Collab-Admin is missing
 ## 2026-09-04T16:15:19Z — A-verify-Collab-Admin — done — Collab-Admin dossier verified: 36 claims checked against the clone, corrections applied in place, verification table written
+## 2026-09-04T16:48:15Z — inbox — applied — recorded as a note: "I can see this"
+## 2026-09-04T17:04:55Z — A-verify-Counter_Risk — route — router picked gemini from ['codex', 'cursor', 'gemini']
+## 2026-09-04T17:04:55Z — A-verify-Counter_Risk — claimed by claude (agent gemini)
+## 2026-09-04T17:08:32Z — auto — added A-verify-CHECKPOINT
+## 2026-09-04T17:08:33Z — A-verify-CHECKPOINT — route — router unavailable (ModuleNotFoundError); using capacity_ok; capacity_ok -> codex
+## 2026-09-04T17:08:33Z — A-verify-CHECKPOINT — claimed by driver (agent codex)
+## 2026-09-04T17:08:33Z — A-verify-CHECKPOINT — fail — not-ready: no cheap agent has capacity right now
+## 2026-09-04T17:08:33Z — A-verify-Counter_Risk — route — router unavailable (ModuleNotFoundError); using capacity_ok; capacity_ok -> codex
+## 2026-09-04T17:08:33Z — A-verify-Counter_Risk — claimed by driver (agent codex)
+## 2026-09-04T17:08:33Z — A-verify-Counter_Risk — fail — not-ready: no cheap agent has capacity right now
+## 2026-09-04T17:08:34Z — A-verify-Fine-Art-Archive — route — router unavailable (ModuleNotFoundError); using capacity_ok; capacity_ok -> codex
+## 2026-09-04T17:08:34Z — A-verify-Fine-Art-Archive — claimed by driver (agent codex)
+## 2026-09-04T17:08:34Z — A-verify-Fine-Art-Archive — fail — not-ready: no cheap agent has capacity right now
+## 2026-09-04T17:10:13Z — A-verify-Counter_Risk — route — router picked gemini from ['codex', 'cursor', 'gemini']
+## 2026-09-04T17:10:13Z — A-verify-Counter_Risk — claimed by driver (agent gemini)
+## 2026-09-04T17:10:56Z — A-verify-Fine-Art-Archive — route — router picked gemini from ['codex', 'cursor', 'gemini']
+## 2026-09-04T17:10:56Z — A-verify-Fine-Art-Archive — claimed by codex (agent gemini)
+## 2026-09-04T17:11:39Z — A-verify-Counter_Risk — done — Counter_Risk dossier verified against HEAD 3f3ae3d: 52 claims checked, 39 confirmed, 11 corrected (5 substantive), 2 off-platform unverifiable — the in-repo doc

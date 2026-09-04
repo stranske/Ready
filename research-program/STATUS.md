@@ -1,15 +1,16 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-04T16:17:23Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-04T17:11:39Z)
 
-Units: 28 — done 1, queued 27
+Units: 28 — claimed 1, done 2, queued 25
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
+CLAUDE CONSERVATION ACTIVE until 2026-09-06T12:00:00Z — cheap agents only (launchd driver every 15 min); claude-only units deferred.
 Owner inbox: https://github.com/stranske/Ready/issues/553
 
 | id | track | phase | status | agent | executor | title |
 |---|---|---|---|---|---|---|
 | A-verify-Collab-Admin | A | A1 | done | codex | claude | Verify dossier artifacts/dossiers/Collab-Admin.md against ../clones/Co |
-| A-verify-Counter_Risk | A | A1 | queued | codex |  | Verify dossier artifacts/dossiers/Counter_Risk.md against ../clones/Co |
-| A-verify-Fine-Art-Archive | A | A1 | queued | codex |  | Verify dossier artifacts/dossiers/Fine-Art-Archive.md against ../clone |
+| A-verify-Counter_Risk | A | A1 | done | gemini | driver | Verify dossier artifacts/dossiers/Counter_Risk.md against ../clones/Co |
+| A-verify-Fine-Art-Archive | A | A1 | claimed | gemini | codex | Verify dossier artifacts/dossiers/Fine-Art-Archive.md against ../clone |
 | A-verify-Inv-Man-Intake | A | A1 | queued | codex |  | Verify dossier artifacts/dossiers/Inv-Man-Intake.md against ../clones/ |
 | A-verify-Manager-Database | A | A1 | queued | codex |  | Verify dossier artifacts/dossiers/Manager-Database.md against ../clone |
 | A-verify-Orchestrator | A | A1 | queued | codex |  | Verify dossier artifacts/dossiers/Orchestrator.md against ../clones/Or |
@@ -38,15 +39,15 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-04T15:47:04Z — auto — added A-verify-Travel-Plan-Permission
-- 2026-09-04T15:47:04Z — auto — added A-verify-Trend_Model_Project
-- 2026-09-04T15:47:04Z — auto — added A-verify-Workflows
-- 2026-09-04T15:47:04Z — auto — added A-verify-learning-management-system
-- 2026-09-04T15:47:04Z — auto — added A-verify-trip-planner
-- 2026-09-04T15:47:10Z — A-verify-Collab-Admin — claimed by claude (agent codex)
-- 2026-09-04T15:49:26Z — inbox — applied — note recorded
-- 2026-09-04T16:11:56Z — auto — added A-verify-.wrap-Collab-Admin
-- 2026-09-04T16:11:56Z — auto — added A-verify-Collab-Admin.CHECKPOINT
-- 2026-09-04T16:11:57Z — A-verify-.wrap-Collab-Admin — claimed by codex (agent codex)
-- 2026-09-04T16:12:16Z — A-verify-.wrap-Collab-Admin — fail — not-ready: required clone /Users/teacher/.codex/automations/research-program/clones/.wrap-Collab-Admin is missing
-- 2026-09-04T16:15:19Z — A-verify-Collab-Admin — done — Collab-Admin dossier verified: 36 claims checked against the clone, corrections applied in place, verification table written
+- 2026-09-04T17:08:33Z — A-verify-CHECKPOINT — fail — not-ready: no cheap agent has capacity right now
+- 2026-09-04T17:08:33Z — A-verify-Counter_Risk — route — router unavailable (ModuleNotFoundError); using capacity_ok; capacity_ok -> codex
+- 2026-09-04T17:08:33Z — A-verify-Counter_Risk — claimed by driver (agent codex)
+- 2026-09-04T17:08:33Z — A-verify-Counter_Risk — fail — not-ready: no cheap agent has capacity right now
+- 2026-09-04T17:08:34Z — A-verify-Fine-Art-Archive — route — router unavailable (ModuleNotFoundError); using capacity_ok; capacity_ok -> codex
+- 2026-09-04T17:08:34Z — A-verify-Fine-Art-Archive — claimed by driver (agent codex)
+- 2026-09-04T17:08:34Z — A-verify-Fine-Art-Archive — fail — not-ready: no cheap agent has capacity right now
+- 2026-09-04T17:10:13Z — A-verify-Counter_Risk — route — router picked gemini from ['codex', 'cursor', 'gemini']
+- 2026-09-04T17:10:13Z — A-verify-Counter_Risk — claimed by driver (agent gemini)
+- 2026-09-04T17:10:56Z — A-verify-Fine-Art-Archive — route — router picked gemini from ['codex', 'cursor', 'gemini']
+- 2026-09-04T17:10:56Z — A-verify-Fine-Art-Archive — claimed by codex (agent gemini)
+- 2026-09-04T17:11:39Z — A-verify-Counter_Risk — done — Counter_Risk dossier verified against HEAD 3f3ae3d: 52 claims checked, 39 confirmed, 11 corrected (5 substantive), 2 off-platform unverifiable — the in-repo doc
