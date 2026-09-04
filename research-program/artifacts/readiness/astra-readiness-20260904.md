@@ -6,7 +6,7 @@ Reviewed 2026-09-04; updated 23:42 UTC. Astra source changes are merged and inst
 
 The previous migration was incomplete: important Orchestrator changes were uncommitted, shared Workflows/consumer defaults remained Terra, seven relevant high-reasoning automations remained Terra, and the isolated repo-review Codex home remained Sol. Those local settings are now Astra/high. Source fixes are in [Workflows #3379](https://github.com/stranske/Workflows/pull/3379) and [Orchestrator #233](https://github.com/stranske/Orchestrator/pull/233); final remote state is recorded below after delivery checks.
 
-The unattended engine is running. At 23:38:58 UTC it reported 44 of 44 units done, unpaused, with no phase stops. All four falsely completed jobs were recovered and actually completed, followed by a downstream consistency pass. The corrected dossiers, summaries and seven Word export destinations are refreshed. Future work remains demand-driven through the scheduled refill mechanism; an empty queue is an intentional stop state.
+The unattended engine is running. At 23:38:58 UTC it reported 44 of 44 units done, unpaused, with no phase stops. All four falsely completed jobs were recovered and actually completed, followed by a downstream consistency pass. The corrected dossiers, summaries and seven Word export destinations are refreshed. Future work remains demand-driven through the scheduled refill mechanism; an empty queue is an intentional stop state. The next refill is due 2026-09-05 03:47 UTC (22:47 Central on September 4), then every twelve hours, and includes all three new product repositories.
 
 ## Astra scope and evidence
 
@@ -79,3 +79,8 @@ Live branch verification: Trend_Model_Project now has `refs/heads/main` at `1861
 ## Coordination recovery verification
 
 Workflows #3382 merged at 23:29:30 UTC as `72be6db44dd81a7eb8bdaeaf5437a00d1bd5f221`, after 81 JavaScript tests, independent review, all remote checks and the review window. The older campaign retry at 23:32 closed zero newer candidates; its remaining failures were missing targets for its old plan. The current Astra candidate pass at 23:38 started an explicit review window on all three unchanged candidate heads, eligible after 23:45:28 UTC. No generated PR was directly merged or closed by this review.
+
+
+## Remote runner canary follow-up
+
+The local Astra invocation succeeded, but the first GitHub Actions canary [33930520106](https://github.com/stranske/Workflows/actions/runs/33930520106) failed before creating any job: its reusable workflow was not found at the orphaned pre-squash commit. This is workflow resolution evidence, not an Astra capacity/authentication failure. [Workflows #3386](https://github.com/stranske/Workflows/pull/3386) pins the caller and both registries to reachable merged commit `b06c6d16c3162a624c179a4c4f2080ec3c14876e`; the runner, helper and CLI lockfile are byte-identical. Fourteen focused tests and independent review passed. Remote execution and final consumer delivery still require verification after this repair merges.

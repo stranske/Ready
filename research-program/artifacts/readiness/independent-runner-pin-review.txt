@@ -1,0 +1,33 @@
+Gathering PR details, diff, checks, and local verification against the pinned commit.
+GitHub CLI isn't authenticated; reviewing from the local checkout and fetching the PR page.
+- **verdict:** approve
+
+- **P0/P1 blockers:** none
+
+- **P2 advisories:**
+  - **Missing workflow source metadata** — `stranske-keepalive[bot]` flagged PR #3386 for lacking a linked issue or `workflow:source-*` marker. This is an automation-management gap, not a correctness defect in the pin change; add source context before relying on PR-metadata automation.
+  - **No shim↔registry cross-test** — `tests/workflows/test_model_profile_trial_workflows.py` validates shim internal consistency and registry internal consistency separately, but does not assert `agents-model-profile-trial.yml` `uses`/`runner_sha` equals `model_profile_trial_contract.runner_ref`. Low risk here because all seven references were updated to the same SHA in one commit; a future pin-only PR could drift without a failing test.
+  - **Post-merge execution unproven** — PR body correctly defers live trial verification to a remote canary after merge. Local tests cannot substitute for GitHub Actions reusable-workflow resolution.
+
+- **validation evidence checked:**
+  - **PR scope:** 3 files, +13/−13 at `90935a8129081c2c31d7ec1ed4f663b4ebacce67` — `.github/agents/registry.yml`, `.github/workflows/agents-model-profile-trial.yml`, `templates/consumer-repo/.github/agents/registry.yml`.
+  - **Root-cause evidence:** Failed canary [run #33930520106](https://github.com/stranske/Workflows/actions/runs/33930520106) — `Startup failure`: `workflow was not found` for `reusable-model-profile-trial.yml@5c0fd50cf57b13c4aa19a79bfa20537211922388`.
+  - **Reachability:** `git merge-base --is-ancestor 5c0fd50… origin/main` → exit 1 (orphaned pre-squash commit). `git merge-base --is-ancestor b06c6d16… origin/main` → exit 0 (`b06c6d1` = squash merge of #3379). No remaining `5c0fd50` references in branch tree (`rg` clean).
+  - **Byte-identical claim verified:** at old pin `5c0fd50…` vs new pin `b06c6d16…`, identical content for:
+    - `.github/workflows/reusable-model-profile-trial.yml`
+    - `scripts/model_profile_trial_contract.py`
+    - `.github/actions/verifier-codex-cli/package-lock.json`
+  - **GitHub Contents API:** resolves `reusable-model-profile-trial.yml` at `ref=b06c6d16…` (24.3 KB blob returned).
+  - **Local tests:** `pytest tests/workflows/test_model_profile_trial_workflows.py tests/scripts/test_model_profile_trial_contract.py -q` → **14 passed**.
+  - **CI (head `90935a8`):** 33 checks success, 13 skipped, 0 failures; 3 still in progress at review time (`summary`, `Semgrep`, `enforce`). Completed includes: Python Tests, JavaScript Tests, workflow lint (maint-36), docs guard, test-quality, privilege environment gate, generated delivery seal, Copilot review (approved, 0 comments). CodeRabbit: capacity-limited (usage spending cap).
+  - **Source issue:** none linked in PR body; fix is operational follow-up to #3379 squash-merge orphaning the pre-merge trial-runner SHA.
+
+- **residual risk:**
+  - CodeRabbit ASSERTIVE pass not performed (spending cap); no third-party deep scan of the pin consistency.
+  - Live Astra trial dispatch not re-run on this branch; only structural/readiness evidence supports the fix.
+  - `enforce` / `summary` gate legs were still running at review snapshot — recheck before merge if branch protection requires them green.
+  - Consumer fleet registry copies update only via Maint 68/71 sync; in-repo trial path reads Workflows `main` registry after merge, so this is not a merge blocker for the immediate failure mode.
+
+- **recommendation:** merge-safe with waiver
+
+**Confidence:** High on correctness of the pin fix. The failure mode (orphaned squash-branch SHA not resolvable for `workflow_call`) matches the evidence; the replacement SHA is on `main` and preserves identical runner bytes. **What would change my mind:** `enforce` or `summary` fails on head, or a post-merge canary still errors on `b06c6d16…`.
