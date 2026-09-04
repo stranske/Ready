@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-04T17:41:40Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-04T17:47:30Z)
 
-Units: 29 — done 19, queued 10
+Units: 31 — claimed 3, done 20, queued 8
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=shed vibe=ok aider=ok
 CLAUDE CONSERVATION ACTIVE until 2026-09-06T12:00:00Z — cheap agents only (launchd driver every 15 min); claude-only units deferred.
@@ -23,32 +23,34 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | A-verify-learning-management-system | A | A1 | done | gemini | driver | Verify dossier artifacts/dossiers/learning-management-system.md agains |
 | A-verify-trip-planner | A | A1 | done | cursor | driver | Verify dossier artifacts/dossiers/trip-planner.md against ../clones/tr |
 | A-dossier-index | A | A2 | done | cursor | driver | Fleet index and shared vocabulary from verified dossiers (needs >=12 v |
-| A-personal-reuse-note | A | A2 | queued | cursor |  | Reuse note across personal repos (FAA, Reader, trip-planner) |
-| A-work-side-bundle | A | A3 | queued | codex |  | Work-side bundle: redaction pass, cover memo, safety grep |
+| A-personal-reuse-note | A | A2 | done | cursor | driver | Reuse note across personal repos (FAA, Reader, trip-planner) |
+| A-work-side-bundle | A | A3 | claimed | cursor | driver | Work-side bundle: redaction pass, cover memo, safety grep |
 | A-dossier-docx | A | A3 | queued | cursor |  | Word versions of all verified dossiers (venv + python-docx) |
+| B1-citefix-R1-legal-decomposition | B | B1 | queued | codex |  | Fix unreachable citations in R1-legal-decomposition.md |
+| B1-citefix-R4-document-access-substrate | B | B1 | queued | codex |  | Fix unreachable citations in R4-document-access-substrate.md |
 | R1-legal-decomposition | B | B1 | done | codex | driver | Brief R1: legal fund-document decomposition and lineage |
 | R2-consultant-report-diffing | B | B1 | done | codex | driver | Brief R2: consultant-report and periodic-communication diffing |
 | R3-manager-mosaic | B | B1 | done | codex | driver | Brief R3: manager mosaic synthesis, discrepancy and thesis monitoring |
 | R4-document-access | B | B1 | done | codex | driver | Brief R4: Backstop/MCP/SharePoint mirror substrate (adversarial) |
-| R5-output-substrate | B | B1 | queued | cursor |  | Brief R5: robust no-install output surfaces |
+| R5-output-substrate | B | B1 | claimed | cursor | driver | Brief R5: robust no-install output surfaces |
 | R6-public-corpora | B | B1 | queued | cursor |  | Brief R6: public and synthetic corpora |
 | R7-trip-planning-core | B | B1 | queued | codex |  | Brief R7: trip-planning core (transport, lodging, constraints) |
 | B2-gap-analysis | B | B2 | queued | codex |  | Gap analysis and disposition of all candidates |
 | B3-interop-architecture | B | B3 | queued | codex |  | Interoperability architecture (identity, typology, tracked variables,  |
 | B4-issue-drafting | B | B4 | queued | codex |  | Draft AGENT_ISSUE_FORMAT issue bodies from decisions |
-| C-skill-curriculum | C | C1 | queued | codex |  | Skill curriculum + tool-literacy loop design (LMS-connected) |
+| C-skill-curriculum | C | C1 | claimed | codex | driver | Skill curriculum + tool-literacy loop design (LMS-connected) |
 
 ## Last checkpoints
 
-- 2026-09-04T17:36:37Z — R2-consultant-report-diffing — route — router picked codex from ['codex', 'gemini']
-- 2026-09-04T17:36:37Z — R2-consultant-report-diffing — claimed by driver (agent codex)
-- 2026-09-04T17:36:37Z — R3-manager-mosaic — route — router picked codex from ['codex', 'gemini']
-- 2026-09-04T17:36:37Z — R3-manager-mosaic — claimed by driver (agent codex)
-- 2026-09-04T17:38:09Z — R2-consultant-report-diffing — done — cursor produced 2256 words at artifacts/research/R2-consultant-report-diffing.md in 92s
-- 2026-09-04T17:38:12Z — R4-document-access — route — router picked codex from ['codex', 'gemini']
-- 2026-09-04T17:38:12Z — R4-document-access — claimed by driver (agent codex)
-- 2026-09-04T17:38:41Z — R3-manager-mosaic — done — cursor produced 2580 words at artifacts/research/R3-manager-mosaic-synthesis.md in 123s
-- 2026-09-04T17:39:06Z — R1-legal-decomposition — done — cursor produced 2078 words at artifacts/research/R1-legal-decomposition.md in 149s
-- 2026-09-04T17:39:17Z — A-verify-trip-planner — done — cursor produced 1668 words at artifacts/dossiers/trip-planner.md in 160s
-- 2026-09-04T17:40:23Z — R4-document-access — done — cursor produced 2430 words at artifacts/research/R4-document-access-substrate.md in 131s
-- 2026-09-04T17:41:40Z — A-dossier-index — done — vibe produced 1262 words at artifacts/dossiers/00-INDEX.md in 573s
+- 2026-09-04T17:46:23Z — A-personal-reuse-note — route — router picked cursor from ['codex', 'cursor']
+- 2026-09-04T17:46:23Z — A-personal-reuse-note — claimed by driver (agent cursor)
+- 2026-09-04T17:46:23Z — C-skill-curriculum — route — router picked codex from ['codex', 'gemini']
+- 2026-09-04T17:46:23Z — C-skill-curriculum — claimed by driver (agent codex)
+- 2026-09-04T17:46:24Z — R5-output-substrate — route — router picked cursor from ['codex', 'cursor']
+- 2026-09-04T17:46:24Z — R5-output-substrate — claimed by driver (agent cursor)
+- 2026-09-04T17:46:26Z — C-skill-curriculum — fail — cursor produced 0 words at /Users/teacher/.codex/automations/research-program/artifacts/research/C-skill-curriculum.md (min 400); rotating agent
+- 2026-09-04T17:46:26Z — C-skill-curriculum — route — router picked codex from ['codex', 'gemini']
+- 2026-09-04T17:46:26Z — C-skill-curriculum — claimed by driver (agent codex)
+- 2026-09-04T17:46:52Z — citations — enqueued B1-citefix-R1-legal-decomposition
+- 2026-09-04T17:46:52Z — citations — enqueued B1-citefix-R4-document-access-substrate
+- 2026-09-04T17:47:30Z — A-personal-reuse-note — done — cursor produced 1387 words at artifacts/dossiers/00-PERSONAL-REUSE-NOTE.md in 66s

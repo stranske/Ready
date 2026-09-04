@@ -1,0 +1,38 @@
+# Redactions log
+Generated during work-bundle pass. 11 dossiers processed.
+
+- **Counter_Risk** — internal telemetry flag name: `\bno_secret\b`
+- **Counter_Risk** — owner-specific env var: `COUNTER_RISK_CHAT_OFFLINE_MODE`
+- **Counter_Risk** — verification footer: `Removed internal verifier attribution line`
+- **Manager-Database** — verification footer: `Removed internal verifier attribution line`
+- **Pension-Data** — verification footer: `Removed internal verifier attribution line`
+- **Inv-Man-Intake** — verification footer: `Removed internal verifier attribution line`
+- **Portable-Alpha-Extension-Model** — verification footer: `Removed internal verifier attribution line`
+- **Orchestrator** — home-directory path: `Replaced ~/.… with [app-data-dir]`
+- **Orchestrator** — launchd label: `com\.stranske\.orchestrator`
+- **Orchestrator** — dispatch lane flag: `ORCH_DISPATCH_LANE=1`
+- **Orchestrator** — route publish flag: `ORCH_ROUTE_WEIGHTS_PUBLISH=1`
+- **Orchestrator** — owner state dir variable: `\$ORCH_STATE_DIR`
+- **Orchestrator** — internal usage tool: `\bccusage\b`
+- **Orchestrator** — agent CLI name: `\bclaude\b|\bcodex\b|\bcursor\b|\bagy\b|\bvibe\b|\baider\b`
+- **Orchestrator** — agent product name: `Antigravity`
+- **Orchestrator** — internal dispatch mode: `shadow execution by default`
+- **Orchestrator** — owner-specific deployment: `for an investment office technical owner on a single macOS workstation`
+- **Orchestrator** — verification footer: `Removed internal verifier attribution line`
+- **Travel-Plan-Permission** — verification footer: `Removed internal verifier attribution line`
+- **trip-planner** — home-directory path: `Replaced ~/.… with [app-data-dir]`
+- **trip-planner** — verification footer: `Removed internal verifier attribution line`
+- **Template** — verification footer: `Removed internal verifier attribution line`
+- **Template** — agent product name: `Generalized Codex references in Template`
+- **Fine-Art-Archive** — internal role label: `Owner / local agents`
+- **Fine-Art-Archive** — personal Dropbox layout: `Pictures/Art/works/`
+- **Fine-Art-Archive** — personal cloud provider path: `Dropbox under`
+- **Fine-Art-Archive** — owner possessive: `on the owner's machine`
+- **Fine-Art-Archive** — personal storage: `owner's Dropbox`
+- **Fine-Art-Archive** — owner reference: `one owner\b`
+- **Fine-Art-Archive** — owner role in surfaces table: `\bowner\b(?= /)`
+- **Fine-Art-Archive** — verification footer: `Removed internal verifier attribution line`
+- **Collab-Admin** — owner name: `Tim is sole merger`
+- **Collab-Admin** — internal role label: `Owner running locally`
+- **Collab-Admin** — internal role label: `Owner, scheduled automation`
+- **Collab-Admin** — verification footer: `Removed internal verifier attribution line`

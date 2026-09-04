@@ -119,3 +119,17 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-04T17:39:17Z — A-verify-trip-planner — done — cursor produced 1668 words at artifacts/dossiers/trip-planner.md in 160s
 ## 2026-09-04T17:40:23Z — R4-document-access — done — cursor produced 2430 words at artifacts/research/R4-document-access-substrate.md in 131s
 ## 2026-09-04T17:41:40Z — A-dossier-index — done — vibe produced 1262 words at artifacts/dossiers/00-INDEX.md in 573s
+## 2026-09-04T17:46:22Z — A-work-side-bundle — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-04T17:46:22Z — A-work-side-bundle — claimed by driver (agent cursor)
+## 2026-09-04T17:46:23Z — A-personal-reuse-note — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-04T17:46:23Z — A-personal-reuse-note — claimed by driver (agent cursor)
+## 2026-09-04T17:46:23Z — C-skill-curriculum — route — router picked codex from ['codex', 'gemini']
+## 2026-09-04T17:46:23Z — C-skill-curriculum — claimed by driver (agent codex)
+## 2026-09-04T17:46:24Z — R5-output-substrate — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-04T17:46:24Z — R5-output-substrate — claimed by driver (agent cursor)
+## 2026-09-04T17:46:26Z — C-skill-curriculum — fail — cursor produced 0 words at /Users/teacher/.codex/automations/research-program/artifacts/research/C-skill-curriculum.md (min 400); rotating agent
+## 2026-09-04T17:46:26Z — C-skill-curriculum — route — router picked codex from ['codex', 'gemini']
+## 2026-09-04T17:46:26Z — C-skill-curriculum — claimed by driver (agent codex)
+## 2026-09-04T17:46:52Z — citations — enqueued B1-citefix-R1-legal-decomposition
+## 2026-09-04T17:46:52Z — citations — enqueued B1-citefix-R4-document-access-substrate
+## 2026-09-04T17:47:30Z — A-personal-reuse-note — done — cursor produced 1387 words at artifacts/dossiers/00-PERSONAL-REUSE-NOTE.md in 66s
