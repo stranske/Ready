@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-04T23:19:04Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-04T23:22:25Z)
 
-Units: 43 — done 42, queued 1
+Units: 43 — claimed 1, done 42
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=shed vibe=ok aider=ok
 CLAUDE CONSERVATION ACTIVE until 2026-09-06T12:00:00Z — cheap agents only (launchd driver every 15 min); claude-only units deferred.
@@ -20,7 +20,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | A-verify-Pension-Data | A | A1 | done | cursor | driver | Verify dossier artifacts/dossiers/Pension-Data.md against ../clones/Pe |
 | A-verify-Portable-Alpha-Extension-Model | A | A1 | done | cursor | codex | Verify dossier artifacts/dossiers/Portable-Alpha-Extension-Model.md ag |
 | A-verify-Template | A | A1 | done | gemini | driver | Verify dossier artifacts/dossiers/Template.md against ../clones/Templa |
-| A-verify-Travel-Plan-Permission | A | A1 | queued | gemini |  | Verify dossier artifacts/dossiers/Travel-Plan-Permission.md against .. |
+| A-verify-Travel-Plan-Permission | A | A1 | claimed | cursor | driver | Verify dossier artifacts/dossiers/Travel-Plan-Permission.md against .. |
 | A-verify-trip-planner | A | A1 | done | cursor | driver | Verify dossier artifacts/dossiers/trip-planner.md against ../clones/tr |
 | A-dossier-index | A | A2 | done | cursor | driver | Fleet index and shared vocabulary from verified dossiers (needs >=12 v |
 | A-personal-reuse-note | A | A2 | done | cursor | driver | Reuse note across personal repos (FAA, Reader, trip-planner) |
@@ -54,8 +54,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-04T22:42:09Z — A-verify-Portable-Alpha-Extension-Model — completion invalidated: failed offload; queued retained-artifact validation
-- 2026-09-04T22:42:09Z — A-verify-Travel-Plan-Permission — completion invalidated: failed offload; queued retained-artifact validation
 - 2026-09-04T22:42:09Z — D3-unblock-sweep-2026-09-04T21 — completion invalidated: failed offload; queued retained-artifact validation
 - 2026-09-04T22:47:45Z — D3-unblock-sweep-2026-09-04T21 — route — router picked codex from ['codex', 'cursor']
 - 2026-09-04T22:47:45Z — D3-unblock-sweep-2026-09-04T21 — claimed by driver (agent codex)
@@ -65,7 +63,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-04T23:07:21Z — A-verify-Pension-Data — done — cursor produced 1648 words at artifacts/dossiers/Pension-Data.md in 88s
 - 2026-09-04T23:10:59Z — A-verify-Portable-Alpha-Extension-Model — route — router picked cursor from ['codex', 'cursor', 'gemini']
 - 2026-09-04T23:10:59Z — A-verify-Portable-Alpha-Extension-Model — claimed by codex (agent cursor)
-- 2026-09-04T23:19:04Z — A-verify-Portable-Alpha-Extension-Model — done — Independently verified 54 dossier claim groups; corrected 13 including browser dashboard, CSV index intake, contract consumers and sweep regimes, and qualified
+- 2026-09-04T23:19:04Z — A-verify-Portable-Alpha-Extension-Model — done — Independently verified 54 dossier claim groups; corrected 13 including browser dashboard, CSV index intake, contract consumers and sweep regimes, and qualified 
+- 2026-09-04T23:22:25Z — A-verify-Travel-Plan-Permission — route — router picked cursor from ['codex', 'cursor', 'gemini']
+- 2026-09-04T23:22:25Z — A-verify-Travel-Plan-Permission — claimed by driver (agent cursor)
 
 ## Questions
 
