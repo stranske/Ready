@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-04T17:49:08Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-04T17:50:43Z)
 
-Units: 31 — claimed 1, done 23, queued 7
+Units: 31 — done 24, queued 7
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=shed vibe=ok aider=ok
 CLAUDE CONSERVATION ACTIVE until 2026-09-06T12:00:00Z — cheap agents only (launchd driver every 15 min); claude-only units deferred.
@@ -26,7 +26,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | A-personal-reuse-note | A | A2 | done | cursor | driver | Reuse note across personal repos (FAA, Reader, trip-planner) |
 | A-work-side-bundle | A | A3 | done | cursor | driver | Work-side bundle: redaction pass, cover memo, safety grep |
 | A-dossier-docx | A | A3 | queued | cursor |  | Word versions of all verified dossiers (venv + python-docx) |
-| B1-citefix-R1-legal-decomposition | B | B1 | claimed | cursor | driver | Fix unreachable citations in R1-legal-decomposition.md |
+| B1-citefix-R1-legal-decomposition | B | B1 | done | cursor | driver | Fix unreachable citations in R1-legal-decomposition.md |
 | B1-citefix-R4-document-access-substrate | B | B1 | queued | codex |  | Fix unreachable citations in R4-document-access-substrate.md |
 | R1-legal-decomposition | B | B1 | done | codex | driver | Brief R1: legal fund-document decomposition and lineage |
 | R2-consultant-report-diffing | B | B1 | done | codex | driver | Brief R2: consultant-report and periodic-communication diffing |
@@ -42,7 +42,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-04T17:46:24Z — R5-output-substrate — claimed by driver (agent cursor)
 - 2026-09-04T17:46:26Z — C-skill-curriculum — fail — cursor produced 0 words at /Users/teacher/.codex/automations/research-program/artifacts/research/C-skill-curriculum.md (min 400); rotating agent
 - 2026-09-04T17:46:26Z — C-skill-curriculum — route — router picked codex from ['codex', 'gemini']
 - 2026-09-04T17:46:26Z — C-skill-curriculum — claimed by driver (agent codex)
@@ -54,3 +53,4 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-04T17:47:53Z — C-skill-curriculum — done — cursor produced 2785 words at artifacts/research/C-skill-curriculum.md in 86s
 - 2026-09-04T17:48:18Z — R5-output-substrate — done — cursor produced 2355 words at artifacts/research/R5-output-substrate.md in 114s
 - 2026-09-04T17:49:08Z — A-work-side-bundle — done — cursor produced 421 words at artifacts/work-bundle/00-RUN-REPORT.md in 165s
+- 2026-09-04T17:50:43Z — B1-citefix-R1-legal-decomposition — done — cursor produced 2188 words at artifacts/research/R1-legal-decomposition.md in 187s

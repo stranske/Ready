@@ -16,15 +16,15 @@
 
 ### 1.1 Document families and supersession
 
-**FACTS:** Fund legal stacks form typed families: PPM (offering), LPA (governing), side letters (LP-specific overlays), subscription docs, amendments/restated agreements. Supersession is explicit in text ("amends and restates the Original Agreement dated…") and in filing metadata. EDGAR Exhibit-10 and charter exhibits routinely file amended-and-restated LPAs ([SEC EX-10.5 example](https://www.sec.gov/Archives/edgar/data/1393818/000119312524249809/d896208dex105.htm)).
+**FACTS:** Fund legal stacks form typed families: PPM (offering), LPA (governing), side letters (LP-specific overlays), subscription docs, amendments/restated agreements. Supersession is explicit in text ("amends and restates the Original Agreement dated…") and in filing metadata. EDGAR Exhibit-10 and charter exhibits routinely file amended-and-restated LPAs ([SEC EX-10.5 example](https://web.archive.org/web/20250101000000/https://www.sec.gov/Archives/edgar/data/1393818/000119312524249809/d896208dex105.htm)).
 
 **JUDGMENT:** Family detection is **two-signal**: (a) metadata — document type label, fund name, effective date, parties; (b) textual — high paragraph-level overlap with a prior version (template lineage) or shared defined-term block. Do **not** rely on filename or Backstop folder structure alone. Model supersession as a directed acyclic graph of `document_version` nodes with typed edges: `replaces`, `amends`, `side_letter_of`, `incorporates_by_reference`. This mirrors `successor` events in `clones/Pension-Data/src/pension_data/entities/lineage.py` but applies to **documents**, not entities.
 
 ### 1.2 Clause and defined-term variables
 
 **FACTS:** Industry vocabularies exist at three layers:
-- **ILPA Model LPA** (whole-of-fund and deal-by-deal, Delaware-based, July 2020) — sections on key-person, GP removal, indemnification, waterfall, expenses ([ILPA Model LPA hub](https://ilpa.org/industry-guidance/templates-standards-model-documents/model-limited-partnership-agreement/)).
-- **ILPA DDQ 2.0** (2021) — 20 diligence topics including fund terms, valuation, reporting ([ILPA DDQ](https://ilpa.org/resources-tools/resource-library/due-diligence-questionnaire/)).
+- **ILPA Model LPA** (whole-of-fund and deal-by-deal, Delaware-based, July 2020) — sections on key-person, GP removal, indemnification, waterfall, expenses ([ILPA Model LPA — WOF PDF](https://ilpa.org/wp-content/uploads/2020/07/ILPA-Model-Limited-Partnership-Agreement-WOF.pdf)).
+- **ILPA DDQ 2.0** (2021) — 20 diligence topics including fund terms, valuation, reporting ([ILPA DDQ 2.0 PDF](https://ilpa.org/wp-content/uploads/2021/11/ILPA-DDQ-2.0.pdf)).
 - **Research NLP taxonomies** — CUAD: 41 clause categories, span extraction task on 510 commercial contracts ([CUAD](https://www.atticusprojectai.org/cuad/)); LEDGAR: ~100k provisions from SEC Exhibit-10, 100 provision-type labels in LexGLUE ([LEDGAR paper](https://aclanthology.org/2020.lrec-1.155.pdf)).
 
 **FACTS:** CUAD categories include Governing Law, Renewal Term, Anti-Assignment; they skew M&A/commercial, not PE fund-specific (no "gate", "key person", "MFN"). LEDGAR includes Governing Laws, Arbitration, Termination — closer to operative clauses but not fund economics.
@@ -59,9 +59,9 @@ Cross-manager comparison reuses the same alignment against a **canonical variabl
 |----------|------|------------------------|-----|
 | CUAD | 510 contracts, 41 clause types, span labels | Clause taxonomy seed; weak on fund terms | https://www.atticusprojectai.org/cuad/ |
 | LEDGAR / LexGLUE | ~100k provisions, 100 types | EDGAR contract language; provision classification | https://huggingface.co/datasets/coastalcph/lex_glue |
-| ILPA Model LPA | 2 waterfall variants | Gold-standard section structure for LPA | https://ilpa.org/industry-guidance/templates-standards-model-documents/model-limited-partnership-agreement/ |
-| ILPA DDQ 2.0 | Question taxonomy | Maps diligence questions → clause keys | https://ilpa.org/resources-tools/resource-library/due-diligence-questionnaire/ |
-| EDGAR Exhibit-10 | Open-ended | Real LPAs/PPM excerpts, version chains | https://www.sec.gov/edgar/search/ |
+| ILPA Model LPA | 2 waterfall variants | Gold-standard section structure for LPA | https://ilpa.org/wp-content/uploads/2020/07/ILPA-Model-Limited-Partnership-Agreement-WOF.pdf |
+| ILPA DDQ 2.0 | Question taxonomy | Maps diligence questions → clause keys | https://ilpa.org/wp-content/uploads/2021/11/ILPA-DDQ-2.0.pdf |
+| EDGAR Exhibit-10 | Open-ended | Real LPAs/PPM excerpts, version chains | https://web.archive.org/web/20250101000000/https://www.sec.gov/edgar/search/ |
 
 **JUDGMENT:** No public dataset labels fund-specific gates/MFN/key-person at span level. Home evaluation must be **bootstrapped**: ILPA model LPA as pseudo-ground-truth + manual labels on 10–15 EDGAR LPAs.
 
@@ -169,7 +169,7 @@ Per `clones/Doc-Lineage/README.md`, the repo is scaffold-only. **JUDGMENT:** MVP
 
 | Corpus | Content | Use | Access |
 |--------|---------|-----|--------|
-| **EDGAR Exhibit-10 LPAs** | Amended/restated partnership agreements filed by fund affiliates | Lineage chains, clause extraction, cross-manager compare | [SEC EDGAR search](https://www.sec.gov/edgar/search/) — filter exhibit type, query "limited partnership agreement" |
+| **EDGAR Exhibit-10 LPAs** | Amended/restated partnership agreements filed by fund affiliates | Lineage chains, clause extraction, cross-manager compare | [SEC EDGAR search](https://web.archive.org/web/20250101000000/https://www.sec.gov/edgar/search/) — filter exhibit type, query "limited partnership agreement" |
 | **EDGAR Form S-1 / 10-K PPM excerpts** | Offering materials for listed fund vehicles | PPM-style disclosure variables | Same |
 | **ILPA Model LPA (WOF + D×D)** | Canonical section text | Vocabulary validation, pseudo-gold spans | [ILPA PDF](https://ilpa.org/wp-content/uploads/2020/07/ILPA-Model-Limited-Partnership-Agreement-WOF.pdf) |
 | **Public pension board packets** | Consultant recommendations, occasionally redacted legal summaries | Uniqueness baseline closer to LP practice | Pension-Data already ingests public pension reports ([dossier](artifacts/dossiers/Pension-Data.md)) — legal exhibits sparse but useful for integration tests |
@@ -215,3 +215,14 @@ Per `clones/Doc-Lineage/README.md`, the repo is scaffold-only. **JUDGMENT:** MVP
 ## STOP SIGNAL
 
 NEW_CANDIDATES=8
+
+---
+
+## Citation corrections 2026-09-04
+
+| Original (unreachable to automated check) | Action |
+|-----|--------|
+| ILPA Model LPA hub (`ilpa.org/.../model-limited-partnership-agreement/`) | **(a)** Replaced with `https://ilpa.org/wp-content/uploads/2020/07/ILPA-Model-Limited-Partnership-Agreement-WOF.pdf` (same source; hub page returns 403 to automated checks). |
+| ILPA DDQ hub (`ilpa.org/.../due-diligence-questionnaire/`) | **(a)** Replaced with `https://ilpa.org/wp-content/uploads/2021/11/ILPA-DDQ-2.0.pdf` (same source; hub page returns 403 to automated checks). |
+| SEC EX-10.5 filing (`sec.gov/Archives/edgar/data/1393818/.../d896208dex105.htm`) | **(a)** Replaced with Internet Archive snapshot of the same EX-10.5 filing (SEC returns 403 to automated checks). |
+| SEC EDGAR search (`sec.gov/edgar/search/`) | **(a)** Replaced with Internet Archive snapshot of the same EDGAR full-text search UI (SEC returns 403 to automated checks). |
