@@ -229,3 +229,7 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-04T21:32:18Z — D3-unblock-sweep-2026-09-04T21 — route — router picked cursor from ['codex', 'cursor']
 ## 2026-09-04T21:32:18Z — D3-unblock-sweep-2026-09-04T21 — claimed by driver (agent cursor)
 ## 2026-09-04T22:12:19Z — D3-unblock-sweep-2026-09-04T21 — done — cursor produced 528 words at artifacts/sweeps/D3-unblock-sweep-2026-09-04T21.md in 2400s
+## 2026-09-04T22:42:09Z — A-verify-Pension-Data — completion invalidated: failed offload; queued retained-artifact validation
+## 2026-09-04T22:42:09Z — A-verify-Portable-Alpha-Extension-Model — completion invalidated: failed offload; queued retained-artifact validation
+## 2026-09-04T22:42:09Z — A-verify-Travel-Plan-Permission — completion invalidated: failed offload; queued retained-artifact validation
+## 2026-09-04T22:42:09Z — D3-unblock-sweep-2026-09-04T21 — completion invalidated: failed offload; queued retained-artifact validation

@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-04T22:39:51Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-04T22:42:09Z)
 
-Units: 43 — done 43
+Units: 43 — done 39, queued 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=shed vibe=ok aider=ok
 CLAUDE CONSERVATION ACTIVE until 2026-09-06T12:00:00Z — cheap agents only (launchd driver every 15 min); claude-only units deferred.
@@ -17,10 +17,10 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | A-verify-Inv-Man-Intake | A | A1 | done | gemini | driver | Verify dossier artifacts/dossiers/Inv-Man-Intake.md against ../clones/ |
 | A-verify-Manager-Database | A | A1 | done | gemini | driver | Verify dossier artifacts/dossiers/Manager-Database.md against ../clone |
 | A-verify-Orchestrator | A | A1 | done | gemini | driver | Verify dossier artifacts/dossiers/Orchestrator.md against ../clones/Or |
-| A-verify-Pension-Data | A | A1 | done | gemini | driver | Verify dossier artifacts/dossiers/Pension-Data.md against ../clones/Pe |
-| A-verify-Portable-Alpha-Extension-Model | A | A1 | done | gemini | driver | Verify dossier artifacts/dossiers/Portable-Alpha-Extension-Model.md ag |
+| A-verify-Pension-Data | A | A1 | queued | gemini |  | Verify dossier artifacts/dossiers/Pension-Data.md against ../clones/Pe |
+| A-verify-Portable-Alpha-Extension-Model | A | A1 | queued | gemini |  | Verify dossier artifacts/dossiers/Portable-Alpha-Extension-Model.md ag |
 | A-verify-Template | A | A1 | done | gemini | driver | Verify dossier artifacts/dossiers/Template.md against ../clones/Templa |
-| A-verify-Travel-Plan-Permission | A | A1 | done | gemini | driver | Verify dossier artifacts/dossiers/Travel-Plan-Permission.md against .. |
+| A-verify-Travel-Plan-Permission | A | A1 | queued | gemini |  | Verify dossier artifacts/dossiers/Travel-Plan-Permission.md against .. |
 | A-verify-trip-planner | A | A1 | done | cursor | driver | Verify dossier artifacts/dossiers/trip-planner.md against ../clones/tr |
 | A-dossier-index | A | A2 | done | cursor | driver | Fleet index and shared vocabulary from verified dossiers (needs >=12 v |
 | A-personal-reuse-note | A | A2 | done | cursor | driver | Reuse note across personal repos (FAA, Reader, trip-planner) |
@@ -50,14 +50,10 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | B7-program-plan-v3-default | B | B7 | done | codex | driver | Consolidated program plan v3 plus the progress-artifact specification |
 | C-skill-curriculum | C | C1 | done | codex | driver | Skill curriculum + tool-literacy loop design (LMS-connected) |
 | D2-issue-body-repair | D | D | done | cursor | driver | Repair issue bodies citing scratchpad paths and unblock the paused aut |
-| D3-unblock-sweep-2026-09-04T21 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
+| D3-unblock-sweep-2026-09-04T21 | D | D | queued | cursor |  | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 
 ## Last checkpoints
 
-- 2026-09-04T20:21:28Z — B7-program-plan-v3-default — claimed by driver (agent codex)
-- 2026-09-04T20:23:21Z — B7-program-plan-v3-default — done — cursor produced 3227 words at artifacts/research/B7-PROGRAM-PLAN-v3.md in 112s
-- 2026-09-04T20:46:18Z — B7-program-plan-v3 — route — router picked codex from ['codex', 'gemini']
-- 2026-09-04T20:46:18Z — B7-program-plan-v3 — claimed by driver (agent codex)
 - 2026-09-04T20:47:41Z — B7-program-plan-v3 — done — cursor produced 3271 words at artifacts/research/B7-PROGRAM-PLAN-v3.md in 83s
 - 2026-09-04T21:23:30Z — D2-issue-body-repair — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-04T21:23:30Z — D2-issue-body-repair — claimed by driver (agent cursor)
@@ -66,6 +62,10 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-04T21:32:18Z — D3-unblock-sweep-2026-09-04T21 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-04T21:32:18Z — D3-unblock-sweep-2026-09-04T21 — claimed by driver (agent cursor)
 - 2026-09-04T22:12:19Z — D3-unblock-sweep-2026-09-04T21 — done — cursor produced 528 words at artifacts/sweeps/D3-unblock-sweep-2026-09-04T21.md in 2400s
+- 2026-09-04T22:42:09Z — A-verify-Pension-Data — completion invalidated: failed offload; queued retained-artifact validation
+- 2026-09-04T22:42:09Z — A-verify-Portable-Alpha-Extension-Model — completion invalidated: failed offload; queued retained-artifact validation
+- 2026-09-04T22:42:09Z — A-verify-Travel-Plan-Permission — completion invalidated: failed offload; queued retained-artifact validation
+- 2026-09-04T22:42:09Z — D3-unblock-sweep-2026-09-04T21 — completion invalidated: failed offload; queued retained-artifact validation
 
 ## Questions
 
