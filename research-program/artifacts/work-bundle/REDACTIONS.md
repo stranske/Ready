@@ -8,7 +8,7 @@ Generated during work-bundle pass. 11 dossiers processed.
 - **Pension-Data** — verification footer: `Removed internal verifier attribution line`
 - **Inv-Man-Intake** — verification footer: `Removed internal verifier attribution line`
 - **Portable-Alpha-Extension-Model** — verification footer: `Removed internal verifier attribution line`
-- **Orchestrator** — home-directory path: `Replaced ~/.… with [app-data-dir]`
+- **Orchestrator** — home-directory path: replaced owner home paths with `[orchestrator-state]` / `[handoff-dir]`
 - **Orchestrator** — launchd label: `com\.stranske\.orchestrator`
 - **Orchestrator** — dispatch lane flag: `ORCH_DISPATCH_LANE=1`
 - **Orchestrator** — route publish flag: `ORCH_ROUTE_WEIGHTS_PUBLISH=1`
@@ -20,7 +20,7 @@ Generated during work-bundle pass. 11 dossiers processed.
 - **Orchestrator** — owner-specific deployment: `for an investment office technical owner on a single macOS workstation`
 - **Orchestrator** — verification footer: `Removed internal verifier attribution line`
 - **Travel-Plan-Permission** — verification footer: `Removed internal verifier attribution line`
-- **trip-planner** — home-directory path: `Replaced ~/.… with [app-data-dir]`
+- **trip-planner** — home-directory path: replaced default SQLite location with `[app-data-dir]`
 - **trip-planner** — verification footer: `Removed internal verifier attribution line`
 - **Template** — verification footer: `Removed internal verifier attribution line`
 - **Template** — agent product name: `Generalized Codex references in Template`
