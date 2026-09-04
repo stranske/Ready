@@ -42,7 +42,7 @@ design-system/       Shared design material; skipped as boilerplate here.
 
 ## 5. Data model, identifiers and contracts
 
-Every persisted entity uses a random UUID string primary key from `new_uuid()`; user email and username are unique, but knowledge nodes have no global stable ID beyond UUID/title/scope (src/lms/auth/models.py:18-20,28-47; src/lms/graphs/models.py:83-99). PostgreSQL is the runtime persistence target, accessed through SQLAlchemy and Alembic; a driverless Render URL is normalized to psycopg v3 (src/lms/db/session.py:16-62; src/lms/settings.py:32-61). Records generally keep created/updated timestamps but there is no graph-version, document-supersession, or canonical alias-resolution model. Source content changes are tracked only as hashes plus `current/stale/missing` drift status (src/lms/sources/models.py:57-74).
+Every persisted entity uses a random UUID string primary key from `new_uuid()`; user email and username are unique, but knowledge nodes have no global stable ID beyond UUID/title/scope (src/lms/auth/models.py:18-20,28-47; src/lms/graphs/models.py:83-99). PostgreSQL is the runtime persistence target, accessed through SQLAlchemy and Alembic; driverless `postgres://` / `postgresql://` URLs are rewritten to `postgresql+psycopg://` in settings (src/lms/settings.py:41-61) and consumed by the engine factory (src/lms/db/session.py:16-24). Records generally keep created/updated timestamps but there is no graph-version, document-supersession, or canonical alias-resolution model. Source content changes are tracked only as hashes plus `current/stale/missing` drift status (src/lms/sources/models.py:57-74).
 
 | contract/object | emitted or consumed? | finding |
 | --- | --- | --- |
@@ -70,14 +70,14 @@ The tested core is credible prototype software: `uv run pytest -q -m 'not slow'`
 ## 8. Claims vs reality
 
 - The product plan says cross-scope linkage requires an explicit `GraphReference` row (docs/product/project-plan.md:304-315). The runtime model instead has only `KnowledgeEdge.is_graph_reference`; there is no `GraphReference` class or table in `src/lms` (src/lms/graphs/models.py:115-190). The document overstates the implemented representation.
-- The backplane workflow describes an emission/conformance gate ( .github/workflows/backplane-conformance.yml:3-12), but its repo-specific emitter is intentionally unwired and prints “No emitter wired yet,” so it skips (lines 45-55). This repo does not currently produce fleet run artifacts.
+- The backplane workflow describes an emission/conformance gate (.github/workflows/backplane-conformance.yml:3-12), but its repo-specific emitter is intentionally unwired and prints “No emitter wired yet,” so it skips (lines 45-55). This repo does not currently produce fleet run artifacts.
 - Deployment documentation labels a specific hosted service as current (docs/development/deployment.md:58-63). A source-only shallow clone cannot prove that service is live, authenticated, migrated, or using real LLM credentials; treat it as an operator note, not verified current state.
 
 ## 9. Interoperability hooks (for the fleet program)
 
 The useful offers are source-grounded learning facts: `SourceReference` carries locator, page/line range, content hash and visibility; nodes/edges carry scope and provenance; evidence, rubric, capability-gap and review records export through LMS JSONL (src/lms/sources/models.py:34-79; src/lms/graphs/models.py:53-190; src/lms/export_import.py:97-118). It can consume sibling document extracts as CSV graphs or Markdown notes.
 
-The hard interoperability risk is identity: siblings expect canonical `entity_type:normalized_identity` references (docs/contracts/identity-map-conventions.md:42-61), whereas this app exposes UUIDs and free-text titles. Do not publish LMS UUIDs as manager/fund/person IDs. Add a canonical entity reference before joining investment-office entities. `SourceReference` provenance and fleet `evidence-object/v1` overlap but are not schema-compatible.
+The hard interoperability risk is identity: siblings expect canonical `entity_type:normalized_identity` references (docs/contracts/identity-map-conventions.md:42-61), whereas this app exposes UUIDs and free-text titles. Do not publish LMS UUIDs as manager/fund/person IDs. Add a canonical entity reference before joining investment-office entities. `SourceReference` provenance and fleet `evidence-object/v1` overlap conceptually but are not schema-compatible (`docs/contracts/schemas/evidence-object-v1.schema.json:8-15` requires `evidence_id`, `fact_ref`, `source_id`, `method`, and `excerpt`; `SourceReference` stores locator, hash, and drift status only).
 
 ## 10. Reuse candidates
 
@@ -92,7 +92,7 @@ The hard interoperability risk is identity: siblings expect canonical `entity_ty
 
 - Finish scaffolded work: replace the mastery placeholder only after collecting and evaluating evidence, keeping its estimator version visible (src/lms/mastery/policy.py:11-31).
 - Finish scaffolded work: decide whether to activate real-browser accessibility testing; the present gate cannot assess it (docs/development/web-prototype.md:59-60,75-108).
-- Finish scaffolded work: wire a deterministic reference emitter if this repo is to participate in the fleet backplane ( .github/workflows/backplane-conformance.yml:45-55).
+- Finish scaffolded work: wire a deterministic reference emitter if this repo is to participate in the fleet backplane (.github/workflows/backplane-conformance.yml:45-55).
 - Finish scaffolded work: complete and record the live-provider gate before treating study-coach output as a production capability (docs/llm/PROVIDER_LIVE_VERIFICATION.md:58-98).
 - New capability: introduce a canonical external-entity field and identity resolver adapter; keep UUIDs as local keys and emit fleet IDs only after resolution (docs/contracts/identity-map-conventions.md:94-130).
 - New capability: define a genuine evidence-object adapter from `SourceReference` plus an attributed fact, rather than relabeling LMS records.
@@ -105,3 +105,5 @@ The hard interoperability risk is identity: siblings expect canonical `entity_ty
 - Its strength is traceability from source passage to learner response.
 - It needs a server and PostgreSQL; it is not an offline desktop tool.
 - Before integration, agree on shared entity identifiers and data-boundary rules.
+
+Verified 2026-09-04T17:56:34Z by composer: 27 claims checked, 1 corrected, 1 unverifiable
