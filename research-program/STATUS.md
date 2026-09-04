@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-04T19:49:14Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-04T19:52:36Z)
 
-Units: 34 — claimed 1, done 33
+Units: 40 — claimed 1, done 33, queued 6
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=shed vibe=ok aider=ok
 CLAUDE CONSERVATION ACTIVE until 2026-09-06T12:00:00Z — cheap agents only (launchd driver every 15 min); claude-only units deferred.
@@ -28,8 +28,12 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | A-work-side-bundle | A | A3 | done | cursor | driver | Work-side bundle: redaction pass, cover memo, safety grep |
 | A-work-side-bundle-refresh | A | A3 | done | cursor | driver | Refresh the work-side bundle with the three late dossiers and re-run t |
 | A-dossier-docx | A | A3 | done | cursor | codex | Word versions of all verified dossiers (venv + python-docx) |
+| B1-citefix-B3-interop-architecture | B | B1 | queued | codex |  | Fix unreachable citations in B3-interop-architecture.md |
 | B1-citefix-R1-legal-decomposition | B | B1 | done | cursor | driver | Fix unreachable citations in R1-legal-decomposition.md |
 | B1-citefix-R4-document-access-substrate | B | B1 | done | cursor | driver | Fix unreachable citations in R4-document-access-substrate.md |
+| B1-citefix-R5-output-substrate | B | B1 | queued | codex |  | Fix unreachable citations in R5-output-substrate.md |
+| B1-citefix-R6-public-corpora-and-synthetic-data | B | B1 | queued | codex |  | Fix unreachable citations in R6-public-corpora-and-synthetic-data.md |
+| B1-citefix-R7-trip-planning-core | B | B1 | queued | codex |  | Fix unreachable citations in R7-trip-planning-core.md |
 | R4-document-access | B | B1 | done | codex | driver | Brief R4: Backstop/MCP/SharePoint mirror substrate (adversarial) |
 | R5-output-substrate | B | B1 | done | cursor | driver | Brief R5: robust no-install output surfaces |
 | R1-legal-decomposition | B | B1 | done | codex | driver | Brief R1: legal fund-document decomposition and lineage |
@@ -41,14 +45,12 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | B3-interop-architecture | B | B3 | done | codex | driver | Interoperability architecture, anchored on the work tools’ real field  |
 | B4-issue-drafting | B | B4 | done | cursor | driver | Draft AGENT_ISSUE_FORMAT issue bodies from decisions |
 | B5-work-env-issue-wave | B | B5 | claimed | cursor | driver | File the second wave of issues from the work-environment answers |
+| B6-file-drafted-issues | B | B6 | queued | codex |  | Verify, correct and file the B4-drafted issue bodies |
+| B7-program-plan-v3 | B | B7 | queued | codex |  | Consolidated program plan v3 plus the progress-artifact specification |
 | C-skill-curriculum | C | C1 | done | codex | driver | Skill curriculum + tool-literacy loop design (LMS-connected) |
 
 ## Last checkpoints
 
-- 2026-09-04T18:12:22Z — A-dossier-docx — done — All 19 Word outputs reopen with matching Markdown tables; 16 meet the paragraph and heading thresholds and three source-structure exceptions are documented in t
-- 2026-09-04T18:19:52Z — B4-issue-drafting — route — router picked cursor from ['codex', 'cursor']
-- 2026-09-04T18:19:52Z — B4-issue-drafting — claimed by driver (agent cursor)
-- 2026-09-04T18:23:58Z — B4-issue-drafting — done — cursor produced 1526 words at artifacts/issues/FILING_PLAN.md in 245s
 - 2026-09-04T19:47:31Z — B5-work-env-issue-wave — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-04T19:47:31Z — B5-work-env-issue-wave — claimed by driver (agent cursor)
 - 2026-09-04T19:47:31Z — R4-document-access — route — router picked codex from ['codex', 'gemini']
@@ -57,3 +59,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-04T19:47:32Z — R5-output-substrate — claimed by driver (agent cursor)
 - 2026-09-04T19:49:04Z — R4-document-access — done — cursor produced 2100 words at artifacts/research/R4-document-access-substrate.md in 92s
 - 2026-09-04T19:49:14Z — R5-output-substrate — done — cursor produced 2643 words at artifacts/research/R5-output-substrate.md in 101s
+- 2026-09-04T19:52:36Z — citations — enqueued B1-citefix-B3-interop-architecture
+- 2026-09-04T19:52:36Z — citations — enqueued B1-citefix-R5-output-substrate
+- 2026-09-04T19:52:36Z — citations — enqueued B1-citefix-R6-public-corpora-and-synthetic-data
+- 2026-09-04T19:52:36Z — citations — enqueued B1-citefix-R7-trip-planning-core

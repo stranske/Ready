@@ -192,3 +192,7 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-04T19:47:32Z — R5-output-substrate — claimed by driver (agent cursor)
 ## 2026-09-04T19:49:04Z — R4-document-access — done — cursor produced 2100 words at artifacts/research/R4-document-access-substrate.md in 92s
 ## 2026-09-04T19:49:14Z — R5-output-substrate — done — cursor produced 2643 words at artifacts/research/R5-output-substrate.md in 101s
+## 2026-09-04T19:52:36Z — citations — enqueued B1-citefix-B3-interop-architecture
+## 2026-09-04T19:52:36Z — citations — enqueued B1-citefix-R5-output-substrate
+## 2026-09-04T19:52:36Z — citations — enqueued B1-citefix-R6-public-corpora-and-synthetic-data
+## 2026-09-04T19:52:36Z — citations — enqueued B1-citefix-R7-trip-planning-core
