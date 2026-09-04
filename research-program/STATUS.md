@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-04T19:49:04Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-04T19:49:14Z)
 
-Units: 34 — claimed 2, done 32
+Units: 34 — claimed 1, done 33
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=shed vibe=ok aider=ok
 CLAUDE CONSERVATION ACTIVE until 2026-09-06T12:00:00Z — cheap agents only (launchd driver every 15 min); claude-only units deferred.
@@ -31,7 +31,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | B1-citefix-R1-legal-decomposition | B | B1 | done | cursor | driver | Fix unreachable citations in R1-legal-decomposition.md |
 | B1-citefix-R4-document-access-substrate | B | B1 | done | cursor | driver | Fix unreachable citations in R4-document-access-substrate.md |
 | R4-document-access | B | B1 | done | codex | driver | Brief R4: Backstop/MCP/SharePoint mirror substrate (adversarial) |
-| R5-output-substrate | B | B1 | claimed | cursor | driver | Brief R5: robust no-install output surfaces |
+| R5-output-substrate | B | B1 | done | cursor | driver | Brief R5: robust no-install output surfaces |
 | R1-legal-decomposition | B | B1 | done | codex | driver | Brief R1: legal fund-document decomposition and lineage |
 | R2-consultant-report-diffing | B | B1 | done | codex | driver | Brief R2: consultant-report and periodic-communication diffing |
 | R3-manager-mosaic | B | B1 | done | codex | driver | Brief R3: manager mosaic synthesis, discrepancy and thesis monitoring |
@@ -45,7 +45,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-04T18:11:24Z — A-memo-correction — done — cursor produced 1573 words at artifacts/work-bundle/00-COVER-MEMO.md in 114s
 - 2026-09-04T18:12:22Z — A-dossier-docx — done — All 19 Word outputs reopen with matching Markdown tables; 16 meet the paragraph and heading thresholds and three source-structure exceptions are documented in t
 - 2026-09-04T18:19:52Z — B4-issue-drafting — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-04T18:19:52Z — B4-issue-drafting — claimed by driver (agent cursor)
@@ -57,3 +56,4 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-04T19:47:32Z — R5-output-substrate — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-04T19:47:32Z — R5-output-substrate — claimed by driver (agent cursor)
 - 2026-09-04T19:49:04Z — R4-document-access — done — cursor produced 2100 words at artifacts/research/R4-document-access-substrate.md in 92s
+- 2026-09-04T19:49:14Z — R5-output-substrate — done — cursor produced 2643 words at artifacts/research/R5-output-substrate.md in 101s
