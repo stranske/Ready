@@ -225,3 +225,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-04T21:23:30Z — D2-issue-body-repair — route — router picked cursor from ['codex', 'cursor']
 ## 2026-09-04T21:23:30Z — D2-issue-body-repair — claimed by driver (agent cursor)
 ## 2026-09-04T21:30:48Z — D2-issue-body-repair — done — cursor produced 976 words at artifacts/issues/D2-REPAIR-REPORT.md in 438s
+## 2026-09-04T21:32:18Z — unblock — enqueued D3-unblock-sweep-2026-09-04T21
+## 2026-09-04T21:32:18Z — D3-unblock-sweep-2026-09-04T21 — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-04T21:32:18Z — D3-unblock-sweep-2026-09-04T21 — claimed by driver (agent cursor)

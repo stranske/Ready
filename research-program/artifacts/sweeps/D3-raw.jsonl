@@ -1,0 +1,480 @@
+{"repo":"Workflows","frozen":[
+  {
+    "labels": [
+      {
+        "id": "LA_kwDOQprj9M8AAAACSq7nhQ",
+        "name": "automation",
+        "description": "Automation and workflow automation",
+        "color": "205d64"
+      },
+      {
+        "id": "LA_kwDOQprj9M8AAAACUhUbLw",
+        "name": "agents:auto-pilot-pause",
+        "description": "Pause auto-pilot at current step",
+        "color": "FEF2C0"
+      },
+      {
+        "id": "LA_kwDOQprj9M8AAAACVO1uJQ",
+        "name": "consumer-sync",
+        "description": "",
+        "color": "ededed"
+      }
+    ],
+    "number": 3365,
+    "title": "[sync-review] Fix upstream manifest-synced paths blocking stranske/Orchestrator#225"
+  },
+  {
+    "labels": [
+      {
+        "id": "LA_kwDOQprj9M8AAAACSq7nhQ",
+        "name": "automation",
+        "description": "Automation and workflow automation",
+        "color": "205d64"
+      },
+      {
+        "id": "LA_kwDOQprj9M8AAAACUhUbLw",
+        "name": "agents:auto-pilot-pause",
+        "description": "Pause auto-pilot at current step",
+        "color": "FEF2C0"
+      },
+      {
+        "id": "LA_kwDOQprj9M8AAAACVO1uJQ",
+        "name": "consumer-sync",
+        "description": "",
+        "color": "ededed"
+      }
+    ],
+    "number": 3343,
+    "title": "[sync-review] Fix upstream manifest-synced paths blocking stranske/Travel-Plan-Permission#1498"
+  },
+  {
+    "labels": [
+      {
+        "id": "LA_kwDOQprj9M8AAAACTQTWVQ",
+        "name": "needs-human",
+        "description": "Requires human intervention or review",
+        "color": "d93f0b"
+      },
+      {
+        "id": "LA_kwDOQprj9M8AAAACTXXhIA",
+        "name": "agent:needs-attention",
+        "description": "Agent needs human review or intervention",
+        "color": "fbca04"
+      },
+      {
+        "id": "LA_kwDOQprj9M8AAAACUphthw",
+        "name": "metrics",
+        "description": "Metrics collection and observability",
+        "color": "0366d6"
+      },
+      {
+        "id": "LA_kwDOQprj9M8AAAACUq4Z_A",
+        "name": "automated",
+        "description": "Automatically created issue",
+        "color": "0e8a16"
+      },
+      {
+        "id": "LA_kwDOQprj9M8AAAAChPq07A",
+        "name": "tracker:durable",
+        "description": "Durable auto-bot tracker; do not close in routine triage",
+        "color": "fbca04"
+      }
+    ],
+    "number": 3123,
+    "title": "🔭 LangSmith Observability Health"
+  }
+],"prs":[{"isDraft":false,"labels":[{"id":"LA_kwDOQprj9M8AAAACSq7hKA","name":"agent:codex","description":"Agent-created issues from Codex","color":"ededed"},{"id":"LA_kwDOQprj9M8AAAACSq7npw","name":"autofix","description":"Opt-in automated formatting & lint remediation","color":"BFDADC"},{"id":"LA_kwDOQprj9M8AAAACSq7pDg","name":"from:codex","description":"Created from Codex agent","color":"ededed"},{"id":"LA_kwDOQprj9M8AAAACVj8jnw","name":"agent:retry","description":"Add to trigger agent retry after rate limit or pause","color":"0e8a16"}],"number":3376,"title":"Agent belt for #3371","updatedAt":"2026-09-04T21:33:35Z"},{"isDraft":false,"labels":[{"id":"LA_kwDOQprj9M8AAAACndjkZQ","name":"autorelease: pending","description":"","color":"ededed"}],"number":3359,"title":"chore(main): release 1.31.1","updatedAt":"2026-09-04T16:17:58Z"},{"isDraft":false,"labels":[],"number":3352,"title":"fix(sync): bind generated PR source context","updatedAt":"2026-09-04T16:26:53Z"},{"isDraft":false,"labels":[{"id":"LA_kwDOQprj9M8AAAACvtW6FQ","name":"workflow:source-dependabot","description":"PR originated from a Renovate or Dependabot dependency change","color":"5319E7"}],"number":3344,"title":"chore(deps): align shared ruff pin to 0.16.6","updatedAt":"2026-09-04T14:28:52Z"}],"runs":[{"conclusion":"success","createdAt":"2026-09-04T21:32:43Z","databaseId":33921585709,"event":"workflow_run","headBranch":"main","name":"Agents 70 Orchestrator","status":"completed"},{"conclusion":"","createdAt":"2026-09-04T21:32:43Z","databaseId":33921585367,"event":"workflow_run","headBranch":"main","name":"Agents Keepalive Loop","status":"in_progress"},{"conclusion":"success","createdAt":"2026-09-04T21:32:43Z","databaseId":33921585368,"event":"workflow_run","headBranch":"main","name":"CI Autofix Loop","status":"completed"},{"conclusion":"success","createdAt":"2026-09-04T21:32:43Z","databaseId":33921585364,"event":"workflow_run","headBranch":"main","name":"Agents Bot Comment Handler","status":"completed"},{"conclusion":"","createdAt":"2026-09-04T21:32:43Z","databaseId":33921585377,"event":"workflow_run","headBranch":"main","name":"Agents Autofix Loop","status":"in_progress"}],"supply":15}
+{"repo":"Travel-Plan-Permission","frozen":[],"prs":[{"isDraft":false,"labels":[{"id":"LA_kwDOPrFQ5c8AAAACThBL5A","name":"sync","description":"Automated sync from Workflows","color":"0e8a16"},{"id":"LA_kwDOPrFQ5c8AAAACThBMHw","name":"automated","description":"Automated sync from Workflows","color":"0e8a16"},{"id":"LA_kwDOPrFQ5c8AAAACv7rsNw","name":"sync:delivery-staging","description":"Generated delivery is mutable and must not merge","color":"d93f0b"}],"number":1498,"title":"chore: sync workflow templates","updatedAt":"2026-09-04T21:10:16Z"},{"isDraft":false,"labels":[],"number":1495,"title":"Orphan sweep: deps sync dev versions","updatedAt":"2026-09-04T02:17:06Z"}],"runs":[{"conclusion":"skipped","createdAt":"2026-06-16T06:54:13Z","databaseId":27599840410,"event":"workflow_run","headBranch":"main","name":"Keepalive Loop Reporter","status":"completed"},{"conclusion":"skipped","createdAt":"2026-06-16T06:54:01Z","databaseId":27599831279,"event":"workflow_run","headBranch":"main","name":"Agents PR Event Hub","status":"completed"},{"conclusion":"failure","createdAt":"2026-06-16T06:54:01Z","databaseId":27599831280,"event":"workflow_run","headBranch":"main","name":"Agents Gate Followups","status":"completed"},{"conclusion":"success","createdAt":"2026-06-16T06:54:01Z","databaseId":27599831274,"event":"workflow_run","headBranch":"main","name":"Autofix","status":"completed"},{"conclusion":"skipped","createdAt":"2026-06-16T06:16:06Z","databaseId":27598180046,"event":"schedule","headBranch":"main","name":"Agents Keepalive Sweep","status":"completed"}],"supply":7}
+{"repo":"Trend_Model_Project","frozen":[],"prs":[{"isDraft":false,"labels":[],"number":6027,"title":"test(sync): allow staged runner rollout","updatedAt":"2026-09-04T20:33:47Z"},{"isDraft":false,"labels":[{"id":"LA_kwDOO0LrSc8AAAACTsjiFA","name":"sync","description":"Automated sync from Workflows","color":"0e8a16"},{"id":"LA_kwDOO0LrSc8AAAACTsjinQ","name":"automated","description":"Automated sync from Workflows","color":"0e8a16"},{"id":"LA_kwDOO0LrSc8AAAACv73ggw","name":"sync:delivery-staging","description":"Generated delivery is mutable and must not merge","color":"d93f0b"},{"id":"LA_kwDOO0LrSc8AAAACv73gqA","name":"sync:delivery-ready","description":"Generated delivery is sealed to its exact reviewed head","color":"0e8a16"}],"number":6016,"title":"chore: sync workflow templates","updatedAt":"2026-09-04T21:26:27Z"}],"runs":[{"conclusion":"skipped","createdAt":"2026-09-04T21:26:30Z","databaseId":33921107719,"event":"issue_comment","headBranch":"main","name":"Agents PR Event Hub","status":"completed"},{"conclusion":"skipped","createdAt":"2026-09-04T21:26:30Z","databaseId":33921107271,"event":"issue_comment","headBranch":"main","name":"Claude Code","status":"completed"},{"conclusion":"skipped","createdAt":"2026-09-04T21:26:22Z","databaseId":33921097703,"event":"schedule","headBranch":"main","name":"Agents Keepalive Sweep","status":"completed"},{"conclusion":"success","createdAt":"2026-09-04T21:10:33Z","databaseId":33919847007,"event":"schedule","headBranch":"main","name":"Agents PR Health","status":"completed"},{"conclusion":"skipped","createdAt":"2026-09-04T20:45:14Z","databaseId":33917787215,"event":"workflow_run","headBranch":"main","name":"Keepalive Loop Reporter","status":"completed"}],"supply":10}
+{"repo":"Portable-Alpha-Extension-Model","frozen":[
+  {
+    "labels": [
+      {
+        "id": "LA_kwDOO15QxM8AAAACUl0YTQ",
+        "name": "agents:auto-pilot-pause",
+        "description": "Pause auto-pilot at current step",
+        "color": "fbca04"
+      }
+    ],
+    "number": 2273,
+    "title": "Raise test coverage toward 90% (autopilot round 6, low blast radius only)"
+  }
+],"prs":[{"isDraft":false,"labels":[],"number":2274,"title":"fix(wizard): preserve loaded capital state","updatedAt":"2026-09-04T15:09:51Z"},{"isDraft":false,"labels":[{"id":"LA_kwDOO15QxM8AAAACTsjiqA","name":"sync","description":"Automated sync from Workflows","color":"0e8a16"},{"id":"LA_kwDOO15QxM8AAAACTsji5A","name":"automated","description":"Automated sync from Workflows","color":"0e8a16"},{"id":"LA_kwDOO15QxM8AAAACv73hhg","name":"sync:delivery-staging","description":"Generated delivery is mutable and must not merge","color":"d93f0b"},{"id":"LA_kwDOO15QxM8AAAACv73hnw","name":"sync:delivery-ready","description":"Generated delivery is sealed to its exact reviewed head","color":"0e8a16"}],"number":2272,"title":"chore: sync workflow templates","updatedAt":"2026-09-04T15:12:46Z"}],"runs":[{"conclusion":"skipped","createdAt":"2026-09-04T21:27:41Z","databaseId":33921197886,"event":"schedule","headBranch":"main","name":"Agents Keepalive Sweep","status":"completed"},{"conclusion":"success","createdAt":"2026-09-04T21:05:31Z","databaseId":33919445722,"event":"schedule","headBranch":"main","name":"Agents PR Health","status":"completed"},{"conclusion":"success","createdAt":"2026-09-04T21:02:37Z","databaseId":33919204831,"event":"issues","headBranch":"main","name":"Agents Issue Format Guard","status":"completed"},{"conclusion":"success","createdAt":"2026-09-04T21:02:37Z","databaseId":33919204843,"event":"issues","headBranch":"main","name":"Auto-Label Issues","status":"completed"},{"conclusion":"skipped","createdAt":"2026-09-04T20:28:59Z","databaseId":33916440079,"event":"schedule","headBranch":"main","name":"Agents Keepalive Sweep","status":"completed"}],"supply":1}
+{"repo":"Counter_Risk","frozen":[
+  {
+    "labels": [
+      {
+        "id": "LA_kwDORPCqTs8AAAACZaQR7w",
+        "name": "agents:auto-pilot-pause",
+        "description": "",
+        "color": "ededed"
+      }
+    ],
+    "number": 996,
+    "title": "Raise test coverage toward 90% (autopilot round 3, low blast radius only)"
+  },
+  {
+    "labels": [
+      {
+        "id": "LA_kwDORPCqTs8AAAACZaQR7w",
+        "name": "agents:auto-pilot-pause",
+        "description": "",
+        "color": "ededed"
+      }
+    ],
+    "number": 978,
+    "title": "Raise test coverage toward 90% (most-productive-gap-first)"
+  }
+],"prs":[{"isDraft":false,"labels":[],"number":995,"title":"orphan(orchestrator/issue-978-gap2): fix(chat): normalize review-edge defaults","updatedAt":"2026-09-04T15:34:14Z"}],"runs":[{"conclusion":"success","createdAt":"2026-09-04T21:27:01Z","databaseId":33921148570,"event":"schedule","headBranch":"main","name":"Agents Keepalive Sweep","status":"completed"},{"conclusion":"success","createdAt":"2026-09-04T21:12:15Z","databaseId":33919980294,"event":"schedule","headBranch":"main","name":"Agents PR Health","status":"completed"},{"conclusion":"success","createdAt":"2026-09-04T20:54:15Z","databaseId":33918526421,"event":"workflow_run","headBranch":"main","name":"Autofix","status":"completed"},{"conclusion":"success","createdAt":"2026-09-04T20:31:39Z","databaseId":33916660584,"event":"issues","headBranch":"main","name":"Auto-Label Issues","status":"completed"},{"conclusion":"success","createdAt":"2026-09-04T20:31:39Z","databaseId":33916660673,"event":"issues","headBranch":"main","name":"Agents Issue Format Guard","status":"completed"}],"supply":2}
+{"repo":"Manager-Database","frozen":[
+  {
+    "labels": [
+      {
+        "id": "LA_kwDOO4LcjM8AAAACUl0YDQ",
+        "name": "agents:auto-pilot-pause",
+        "description": "Pause auto-pilot at current step",
+        "color": "fbca04"
+      }
+    ],
+    "number": 1633,
+    "title": "Raise test coverage toward 90% (autopilot round 7, low blast radius only)"
+  }
+],"prs":[],"runs":[{"conclusion":"success","createdAt":"2026-08-17T13:16:25Z","databaseId":32034198825,"event":"schedule","headBranch":"main","name":"Agents PR Health","status":"completed"},{"conclusion":"skipped","createdAt":"2026-08-17T12:38:34Z","databaseId":32030871967,"event":"schedule","headBranch":"main","name":"Agents Keepalive Sweep","status":"completed"},{"conclusion":"success","createdAt":"2026-08-17T12:07:00Z","databaseId":32028209592,"event":"schedule","headBranch":"main","name":"Agents PR Health","status":"completed"},{"conclusion":"skipped","createdAt":"2026-08-17T11:34:56Z","databaseId":32025615321,"event":"schedule","headBranch":"main","name":"Agents Keepalive Sweep","status":"completed"},{"conclusion":"success","createdAt":"2026-08-17T11:06:34Z","databaseId":32023327718,"event":"schedule","headBranch":"main","name":"Agents PR Health","status":"completed"}],"supply":7}
+{"repo":"Inv-Man-Intake","frozen":[
+  {
+    "labels": [
+      {
+        "id": "LA_kwDORbgIAs8AAAACZuwyXA",
+        "name": "agents:apply-suggestions",
+        "description": "Applies optimization suggestions from agents:optimize",
+        "color": "0E8A16"
+      },
+      {
+        "id": "LA_kwDORbgIAs8AAAACZuxEEA",
+        "name": "agent:codex",
+        "description": "Assign to Codex agent",
+        "color": "0e8a16"
+      },
+      {
+        "id": "LA_kwDORbgIAs8AAAACZuxOUA",
+        "name": "agents:auto-pilot",
+        "description": "Triggers end-to-end auto-pilot pipeline",
+        "color": "0052CC"
+      },
+      {
+        "id": "LA_kwDORbgIAs8AAAACZz_sWA",
+        "name": "needs-human",
+        "description": "",
+        "color": "ededed"
+      },
+      {
+        "id": "LA_kwDORbgIAs8AAAACaqSeiQ",
+        "name": "agents:auto-pilot-pause",
+        "description": "",
+        "color": "ededed"
+      }
+    ],
+    "number": 948,
+    "title": "[P1] Consultant section ontology aligned to tracked-variable/v1 (B2-010)"
+  }
+],"prs":[],"runs":[{"conclusion":"success","createdAt":"2026-09-04T21:27:46Z","databaseId":33921205261,"event":"schedule","headBranch":"main","name":"Agents Keepalive Sweep","status":"completed"},{"conclusion":"success","createdAt":"2026-09-04T21:27:13Z","databaseId":33921163157,"event":"issues","headBranch":"main","name":"Agents Issue Intake","status":"completed"},{"conclusion":"success","createdAt":"2026-09-04T21:27:12Z","databaseId":33921162122,"event":"issues","headBranch":"main","name":"Agents Issue Format Guard","status":"completed"},{"conclusion":"success","createdAt":"2026-09-04T21:27:10Z","databaseId":33921159234,"event":"issues","headBranch":"main","name":"Agents Issue Format Guard","status":"completed"},{"conclusion":"cancelled","createdAt":"2026-09-04T21:27:10Z","databaseId":33921159602,"event":"issues","headBranch":"main","name":"Agents Issue Format Guard","status":"completed"}],"supply":9}
+{"repo":"Pension-Data","frozen":[
+  {
+    "labels": [
+      {
+        "id": "LA_kwDORbgH9M8AAAACZuwwZA",
+        "name": "agents:apply-suggestions",
+        "description": "Applies optimization suggestions from agents:optimize",
+        "color": "0E8A16"
+      },
+      {
+        "id": "LA_kwDORbgH9M8AAAACZuxCWg",
+        "name": "agent:codex",
+        "description": "Assign to Codex agent",
+        "color": "0e8a16"
+      },
+      {
+        "id": "LA_kwDORbgH9M8AAAACZuxMlQ",
+        "name": "agents:auto-pilot",
+        "description": "Triggers end-to-end auto-pilot pipeline",
+        "color": "0052CC"
+      },
+      {
+        "id": "LA_kwDORbgH9M8AAAACZ3_lbg",
+        "name": "needs-human",
+        "description": "",
+        "color": "ededed"
+      },
+      {
+        "id": "LA_kwDORbgH9M8AAAAChSndmw",
+        "name": "agents:auto-pilot-pause",
+        "description": "",
+        "color": "ededed"
+      }
+    ],
+    "number": 883,
+    "title": "[P1] workspace-bundle.json contract wiring (B2-030)"
+  },
+  {
+    "labels": [
+      {
+        "id": "LA_kwDORbgH9M8AAAACZuwwZA",
+        "name": "agents:apply-suggestions",
+        "description": "Applies optimization suggestions from agents:optimize",
+        "color": "0E8A16"
+      },
+      {
+        "id": "LA_kwDORbgH9M8AAAACZuxCWg",
+        "name": "agent:codex",
+        "description": "Assign to Codex agent",
+        "color": "0e8a16"
+      },
+      {
+        "id": "LA_kwDORbgH9M8AAAACZuxMlQ",
+        "name": "agents:auto-pilot",
+        "description": "Triggers end-to-end auto-pilot pipeline",
+        "color": "0052CC"
+      },
+      {
+        "id": "LA_kwDORbgH9M8AAAACZ3_lbg",
+        "name": "needs-human",
+        "description": "",
+        "color": "ededed"
+      },
+      {
+        "id": "LA_kwDORbgH9M8AAAAChSndmw",
+        "name": "agents:auto-pilot-pause",
+        "description": "",
+        "color": "ededed"
+      },
+      {
+        "id": "LA_kwDORbgH9M8AAAACon4A-g",
+        "name": "status:in-progress",
+        "description": "",
+        "color": "ededed"
+      }
+    ],
+    "number": 882,
+    "title": "[P1] Factor renderer-shell from apps/web (B2-029)"
+  },
+  {
+    "labels": [
+      {
+        "id": "LA_kwDORbgH9M8AAAACZuwwZA",
+        "name": "agents:apply-suggestions",
+        "description": "Applies optimization suggestions from agents:optimize",
+        "color": "0E8A16"
+      },
+      {
+        "id": "LA_kwDORbgH9M8AAAACZuxCWg",
+        "name": "agent:codex",
+        "description": "Assign to Codex agent",
+        "color": "0e8a16"
+      },
+      {
+        "id": "LA_kwDORbgH9M8AAAACZuxMlQ",
+        "name": "agents:auto-pilot",
+        "description": "Triggers end-to-end auto-pilot pipeline",
+        "color": "0052CC"
+      },
+      {
+        "id": "LA_kwDORbgH9M8AAAACZ3_lbg",
+        "name": "needs-human",
+        "description": "",
+        "color": "ededed"
+      },
+      {
+        "id": "LA_kwDORbgH9M8AAAAChSndmw",
+        "name": "agents:auto-pilot-pause",
+        "description": "",
+        "color": "ededed"
+      },
+      {
+        "id": "LA_kwDORbgH9M8AAAACon4A-g",
+        "name": "status:in-progress",
+        "description": "",
+        "color": "ededed"
+      }
+    ],
+    "number": 881,
+    "title": "[P1] Evidence + identity-map projection emitter (B2-018)"
+  }
+],"prs":[{"isDraft":false,"labels":[{"id":"LA_kwDORbgH9M8AAAACZuxCWg","name":"agent:codex","description":"Assign to Codex agent","color":"0e8a16"},{"id":"LA_kwDORbgH9M8AAAACZuxCtA","name":"agent:retry","description":"Add to trigger agent retry after rate limit or pause","color":"0e8a16"},{"id":"LA_kwDORbgH9M8AAAACZuxC_Q","name":"agents:keepalive","description":"Enable keepalive monitoring on PR","color":"1d76db"},{"id":"LA_kwDORbgH9M8AAAACZuxDrw","name":"autofix","description":"Let bots format/lint automatically","color":"0366d6"}],"number":887,"title":"fix: reject non-finite PPD allocation values","updatedAt":"2026-09-04T21:30:55Z"},{"isDraft":false,"labels":[],"number":864,"title":"Orphan sweep: deps sync dev versions","updatedAt":"2026-09-04T02:18:33Z"}],"runs":[{"conclusion":"success","createdAt":"2026-09-04T21:33:14Z","databaseId":33921628431,"event":"workflow_run","headBranch":"main","name":"Keepalive Loop Reporter","status":"completed"},{"conclusion":"success","createdAt":"2026-09-04T21:32:30Z","databaseId":33921569941,"event":"workflow_run","headBranch":"main","name":"Agents PR Event Hub","status":"completed"},{"conclusion":"success","createdAt":"2026-09-04T21:32:30Z","databaseId":33921569956,"event":"workflow_run","headBranch":"main","name":"Autofix","status":"completed"},{"conclusion":"success","createdAt":"2026-09-04T21:32:30Z","databaseId":33921569951,"event":"workflow_run","headBranch":"main","name":"Agents Gate Followups","status":"completed"},{"conclusion":"success","createdAt":"2026-09-04T21:31:48Z","databaseId":33921512295,"event":"workflow_run","headBranch":"main","name":"Autofix","status":"completed"}],"supply":10}
+{"repo":"Ready","frozen":[],"prs":[{"isDraft":false,"labels":[{"id":"LA_kwDORbgIC88AAAACZuwwSw","name":"sync","description":"Automated sync from Workflows","color":"0e8a16"},{"id":"LA_kwDORbgIC88AAAACZuwwYA","name":"automated","description":"Automated sync from Workflows","color":"0e8a16"},{"id":"LA_kwDORbgIC88AAAACv73hwg","name":"sync:delivery-staging","description":"Generated delivery is mutable and must not merge","color":"d93f0b"}],"number":552,"title":"chore: sync workflow templates","updatedAt":"2026-09-04T21:25:30Z"}],"runs":[{"conclusion":"success","createdAt":"2026-09-04T21:32:03Z","databaseId":33921531784,"event":"workflow_run","headBranch":"main","name":"Autofix","status":"completed"},{"conclusion":"skipped","createdAt":"2026-09-04T21:30:53Z","databaseId":33921442749,"event":"push","headBranch":"main","name":"Cross-Repo Smoke","status":"completed"},{"conclusion":"success","createdAt":"2026-09-04T21:30:53Z","databaseId":33921442669,"event":"push","headBranch":"main","name":"CI","status":"completed"},{"conclusion":"success","createdAt":"2026-09-04T21:26:41Z","databaseId":33921121042,"event":"schedule","headBranch":"main","name":"Agents Keepalive Sweep","status":"completed"},{"conclusion":"success","createdAt":"2026-09-04T21:25:33Z","databaseId":33921034462,"event":"issue_comment","headBranch":"main","name":"Agents PR Event Hub","status":"completed"}],"supply":0}
+{"repo":"trip-planner","frozen":[
+  {
+    "labels": [
+      {
+        "id": "LA_kwDOOzvyds8AAAACTcAVJw",
+        "name": "agent:codex",
+        "description": "Assign to Codex agent",
+        "color": "0e8a16"
+      },
+      {
+        "id": "LA_kwDOOzvyds8AAAACUHuizQ",
+        "name": "agents:apply-suggestions",
+        "description": "Applies optimization suggestions from agents:optimize",
+        "color": "0E8A16"
+      },
+      {
+        "id": "LA_kwDOOzvyds8AAAACbnsevQ",
+        "name": "agents:auto-pilot",
+        "description": "Trigger agent auto-pilot workflow",
+        "color": "0E8A16"
+      },
+      {
+        "id": "LA_kwDOOzvyds8AAAACbnvNRA",
+        "name": "status:in-progress",
+        "description": "",
+        "color": "ededed"
+      },
+      {
+        "id": "LA_kwDOOzvyds8AAAACdR9OzQ",
+        "name": "needs-human",
+        "description": "",
+        "color": "ededed"
+      },
+      {
+        "id": "LA_kwDOOzvyds8AAAAChIG_Rw",
+        "name": "agents:auto-pilot-pause",
+        "description": "",
+        "color": "ededed"
+      }
+    ],
+    "number": 1787,
+    "title": "[P2] Lodging deep-link capture adapter (B2-050)"
+  },
+  {
+    "labels": [
+      {
+        "id": "LA_kwDOOzvyds8AAAACTcAVJw",
+        "name": "agent:codex",
+        "description": "Assign to Codex agent",
+        "color": "0e8a16"
+      },
+      {
+        "id": "LA_kwDOOzvyds8AAAACUHuizQ",
+        "name": "agents:apply-suggestions",
+        "description": "Applies optimization suggestions from agents:optimize",
+        "color": "0E8A16"
+      },
+      {
+        "id": "LA_kwDOOzvyds8AAAACbnsevQ",
+        "name": "agents:auto-pilot",
+        "description": "Trigger agent auto-pilot workflow",
+        "color": "0E8A16"
+      },
+      {
+        "id": "LA_kwDOOzvyds8AAAACdR9OzQ",
+        "name": "needs-human",
+        "description": "",
+        "color": "ededed"
+      },
+      {
+        "id": "LA_kwDOOzvyds8AAAAChIG_Rw",
+        "name": "agents:auto-pilot-pause",
+        "description": "",
+        "color": "ededed"
+      }
+    ],
+    "number": 1786,
+    "title": "[P2] Ranking fixture eval harness (B2-047)"
+  },
+  {
+    "labels": [
+      {
+        "id": "LA_kwDOOzvyds8AAAACTcAVJw",
+        "name": "agent:codex",
+        "description": "Assign to Codex agent",
+        "color": "0e8a16"
+      },
+      {
+        "id": "LA_kwDOOzvyds8AAAACUHuizQ",
+        "name": "agents:apply-suggestions",
+        "description": "Applies optimization suggestions from agents:optimize",
+        "color": "0E8A16"
+      },
+      {
+        "id": "LA_kwDOOzvyds8AAAACbnsevQ",
+        "name": "agents:auto-pilot",
+        "description": "Trigger agent auto-pilot workflow",
+        "color": "0E8A16"
+      },
+      {
+        "id": "LA_kwDOOzvyds8AAAACbnvNRA",
+        "name": "status:in-progress",
+        "description": "",
+        "color": "ededed"
+      },
+      {
+        "id": "LA_kwDOOzvyds8AAAACdR9OzQ",
+        "name": "needs-human",
+        "description": "",
+        "color": "ededed"
+      },
+      {
+        "id": "LA_kwDOOzvyds8AAAAChIG_Rw",
+        "name": "agents:auto-pilot-pause",
+        "description": "",
+        "color": "ededed"
+      }
+    ],
+    "number": 1785,
+    "title": "[P2] Duffel flight source adapter (B2-045)"
+  },
+  {
+    "labels": [
+      {
+        "id": "LA_kwDOOzvyds8AAAACbnsevQ",
+        "name": "agents:auto-pilot",
+        "description": "Trigger agent auto-pilot workflow",
+        "color": "0E8A16"
+      },
+      {
+        "id": "LA_kwDOOzvyds8AAAACdR9OzQ",
+        "name": "needs-human",
+        "description": "",
+        "color": "ededed"
+      },
+      {
+        "id": "LA_kwDOOzvyds8AAAAChIG_Rw",
+        "name": "agents:auto-pilot-pause",
+        "description": "",
+        "color": "ededed"
+      }
+    ],
+    "number": 1783,
+    "title": "[P2] Amtrak GTFS source adapter (B2-046)"
+  }
+],"prs":[{"isDraft":false,"labels":[{"id":"LA_kwDOOzvyds8AAAACThBM0g","name":"sync","description":"Automated sync from Workflows","color":"0e8a16"},{"id":"LA_kwDOOzvyds8AAAACThBNGg","name":"automated","description":"Automated sync from Workflows","color":"0e8a16"},{"id":"LA_kwDOOzvyds8AAAACv7rsnA","name":"sync:delivery-staging","description":"Generated delivery is mutable and must not merge","color":"d93f0b"},{"id":"LA_kwDOOzvyds8AAAACv7rszA","name":"sync:delivery-ready","description":"Generated delivery is sealed to its exact reviewed head","color":"0e8a16"}],"number":1777,"title":"chore: sync workflow templates","updatedAt":"2026-09-04T15:12:57Z"},{"isDraft":false,"labels":[],"number":1773,"title":"Orphan sweep: deps/sync-dev-versions-bc87c31279ff — deps: sync dev tool versions from Workflows","updatedAt":"2026-09-04T02:18:13Z"}],"runs":[{"conclusion":"skipped","createdAt":"2026-09-04T21:32:15Z","databaseId":33921549022,"event":"workflow_run","headBranch":"main","name":"Keepalive Loop Reporter","status":"completed"},{"conclusion":"skipped","createdAt":"2026-09-04T21:32:02Z","databaseId":33921530920,"event":"workflow_run","headBranch":"main","name":"Agents PR Event Hub","status":"completed"},{"conclusion":"success","createdAt":"2026-09-04T21:32:02Z","databaseId":33921531026,"event":"workflow_run","headBranch":"main","name":"Agents Gate Followups","status":"completed"},{"conclusion":"success","createdAt":"2026-09-04T21:32:02Z","databaseId":33921530902,"event":"workflow_run","headBranch":"main","name":"Autofix","status":"completed"},{"conclusion":"success","createdAt":"2026-09-04T21:30:55Z","databaseId":33921445976,"event":"issues","headBranch":"main","name":"Agents Issue Format Guard","status":"completed"}],"supply":3}
+{"repo":"learning-management-system","frozen":[],"prs":[{"isDraft":false,"labels":[{"id":"LA_kwDOSm8tI88AAAACklI0Dw","name":"sync","description":"Automated sync from Workflows","color":"0e8a16"},{"id":"LA_kwDOSm8tI88AAAACklI0Vw","name":"automated","description":"Automated sync from Workflows","color":"0e8a16"},{"id":"LA_kwDOSm8tI88AAAACv73f5g","name":"sync:delivery-staging","description":"Generated delivery is mutable and must not merge","color":"d93f0b"},{"id":"LA_kwDOSm8tI88AAAACv73gAQ","name":"sync:delivery-ready","description":"Generated delivery is sealed to its exact reviewed head","color":"0e8a16"}],"number":569,"title":"chore: sync workflow templates","updatedAt":"2026-09-04T21:26:32Z"}],"runs":[{"conclusion":"success","createdAt":"2026-09-04T21:27:24Z","databaseId":33921177915,"event":"schedule","headBranch":"main","name":"Agents Keepalive Sweep","status":"completed"},{"conclusion":"success","createdAt":"2026-09-04T21:26:35Z","databaseId":33921113697,"event":"issue_comment","headBranch":"main","name":"Agents PR Event Hub","status":"completed"},{"conclusion":"success","createdAt":"2026-09-04T21:08:15Z","databaseId":33919665085,"event":"schedule","headBranch":"main","name":"Agents PR Health","status":"completed"},{"conclusion":"success","createdAt":"2026-09-04T20:28:44Z","databaseId":33916419239,"event":"schedule","headBranch":"main","name":"Agents Keepalive Sweep","status":"completed"},{"conclusion":"success","createdAt":"2026-09-04T20:09:26Z","databaseId":33914811268,"event":"schedule","headBranch":"main","name":"Agents PR Health","status":"completed"}],"supply":5}
+{"repo":"Fine-Art-Archive","frozen":[
+  {
+    "labels": [
+      {
+        "id": "LA_kwDOSrX7x88AAAACu_ejCw",
+        "name": "agents:auto-pilot-pause",
+        "description": "",
+        "color": "ededed"
+      }
+    ],
+    "number": 665,
+    "title": "Raise test coverage toward 90% (continuing round 4, low blast radius only)"
+  }
+],"prs":[],"runs":[{"conclusion":"success","createdAt":"2026-09-04T21:26:40Z","databaseId":33921119488,"event":"schedule","headBranch":"main","name":"Agents Keepalive Sweep","status":"completed"},{"conclusion":"success","createdAt":"2026-09-04T21:12:38Z","databaseId":33920009685,"event":"schedule","headBranch":"main","name":"Agents PR Health","status":"completed"},{"conclusion":"success","createdAt":"2026-09-04T20:35:03Z","databaseId":33916951612,"event":"workflow_run","headBranch":"main","name":"Autofix","status":"completed"},{"conclusion":"skipped","createdAt":"2026-09-04T20:31:39Z","databaseId":33916661343,"event":"push","headBranch":"main","name":"Cross-Repo Smoke","status":"completed"},{"conclusion":"failure","createdAt":"2026-09-04T20:31:39Z","databaseId":33916661327,"event":"push","headBranch":"main","name":"CI","status":"completed"}],"supply":1}
+{"repo":"Doc-Lineage","frozen":[
+  {
+    "labels": [
+      {
+        "id": "LA_kwDOUOakrc8AAAACz0b_nw",
+        "name": "agents:auto-pilot-pause",
+        "description": "",
+        "color": "ededed"
+      }
+    ],
+    "number": 1,
+    "title": "Dependency Dashboard"
+  }
+],"prs":[],"runs":[{"conclusion":"success","createdAt":"2026-09-04T21:27:05Z","databaseId":33921153687,"event":"schedule","headBranch":"main","name":"Agents Keepalive Sweep","status":"completed"},{"conclusion":"skipped","createdAt":"2026-09-04T21:26:59Z","databaseId":33921145220,"event":"issues","headBranch":"main","name":"Auto-Label Issues","status":"completed"},{"conclusion":"cancelled","createdAt":"2026-09-04T21:26:59Z","databaseId":33921145330,"event":"issues","headBranch":"main","name":"Agents Issue Format Guard","status":"completed"},{"conclusion":"success","createdAt":"2026-09-04T21:26:59Z","databaseId":33921145291,"event":"issues","headBranch":"main","name":"Agents Issue Format Guard","status":"completed"},{"conclusion":"success","createdAt":"2026-09-04T21:26:59Z","databaseId":33921146133,"event":"issues","headBranch":"main","name":"Agents Issue Intake","status":"completed"}],"supply":12}
+{"repo":"Deliverable-Render","frozen":[],"prs":[],"runs":[{"conclusion":"success","createdAt":"2026-09-04T21:26:58Z","databaseId":33921144950,"event":"schedule","headBranch":"main","name":"Agents Keepalive Sweep","status":"completed"},{"conclusion":"success","createdAt":"2026-09-04T21:25:03Z","databaseId":33920995612,"event":"workflow_run","headBranch":"main","name":"Autofix","status":"completed"},{"conclusion":"skipped","createdAt":"2026-09-04T21:24:00Z","databaseId":33920910944,"event":"push","headBranch":"main","name":"Cross-Repo Smoke","status":"completed"},{"conclusion":"success","createdAt":"2026-09-04T21:24:00Z","databaseId":33920910915,"event":"push","headBranch":"main","name":"CI","status":"completed"},{"conclusion":"success","createdAt":"2026-09-04T21:05:33Z","databaseId":33919448063,"event":"schedule","headBranch":"main","name":"Agents PR Health","status":"completed"}],"supply":6}
+{"repo":"Manager-Mosaic","frozen":[],"prs":[],"runs":[{"conclusion":"success","createdAt":"2026-09-04T21:27:21Z","databaseId":33921174134,"event":"schedule","headBranch":"main","name":"Agents Keepalive Sweep","status":"completed"},{"conclusion":"success","createdAt":"2026-09-04T21:25:03Z","databaseId":33920995823,"event":"workflow_run","headBranch":"main","name":"Autofix","status":"completed"},{"conclusion":"skipped","createdAt":"2026-09-04T21:24:02Z","databaseId":33920913619,"event":"push","headBranch":"main","name":"Cross-Repo Smoke","status":"completed"},{"conclusion":"success","createdAt":"2026-09-04T21:24:02Z","databaseId":33920913673,"event":"push","headBranch":"main","name":"CI","status":"completed"},{"conclusion":"success","createdAt":"2026-09-04T21:02:56Z","databaseId":33919230982,"event":"schedule","headBranch":"main","name":"Agents PR Health","status":"completed"}],"supply":2}

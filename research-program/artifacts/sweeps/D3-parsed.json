@@ -1,0 +1,602 @@
+done 15
+  "repo": "Workflows",
+    "frozen": [
+      {
+        "labels": [
+          {
+            "id": "LA_kwDOQprj9M8AAAACSq7nhQ",
+            "name": "automation",
+            "description": "Automation and workflow automation",
+            "color": "205d64"
+          },
+          {
+            "id": "LA_kwDOQprj9M8AAAACUhUbLw",
+            "name": "agents:auto-pilot-pause",
+            "description": "Pause auto-pilot at current step",
+            "color": "FEF2C0"
+          },
+          {
+            "id": "LA_kwDOQprj9M8AAAACVO1uJQ",
+            "name": "consumer-sync",
+            "description": "",
+            "color": "ededed"
+          }
+        ],
+        "number": 3365,
+        "title": "[sync-review] Fix upstream manifest-synced paths blocking stranske/Orchestrator#225"
+      },
+      {
+        "labels": [
+          {
+            "id": "LA_kwDOQprj9M8AAAACSq7nhQ",
+            "name": "automation",
+            "description": "Automation and workflow automation",
+            "color": "205d64"
+          },
+          {
+            "id": "LA_kwDOQprj9M8AAAACUhUbLw",
+            "name": "agents:auto-pilot-pause",
+            "description": "Pause auto-pilot at current step",
+            "color": "FEF2C0"
+          },
+          {
+            "id": "LA_kwDOQprj9M8AAAACVO1uJQ",
+            "name": "consumer-sync",
+            "description": "",
+            "color": "ededed"
+          }
+        ],
+        "number": 3343,
+        "title": "[sync-review] Fix upstream manifest-synced paths blocking stranske/Travel-Plan-Permission#1498"
+      },
+      {
+        "labels": [
+          {
+            "id": "LA_kwDOQprj9M8AAAACTQTWVQ",
+            "name": "needs-human",
+            "description": "Requires human intervention or review",
+            "color": "d93f0b"
+          },
+          {
+            "id": "LA_kwDOQprj9M8AAAACTXXhIA",
+            "name": "agent:needs-attention",
+            "description": "Agent needs human review or intervention",
+            "color": "fbca04"
+          },
+          {
+            "id": "LA_kwDOQprj9M8AAAACUphthw",
+            "name": "metrics",
+            "description": "Metrics collection and observability",
+            "color": "0366d6"
+          },
+          {
+            "id": "LA_kwDOQprj9M8AAAACUq4Z_A",
+            "name": "automated",
+            "description": "Automatically created issue",
+            "color": "0e8a16"
+          },
+          {
+            "id": "LA_kwDOQprj9M8AAAAChPq07A",
+            "name": "tracker:durable",
+            "description": "Durable auto-bot tracker; do not close in routine triage",
+            "color": "fbca04"
+          }
+        ],
+        "number": 3123,
+        "title": "\ud83d\udd2d LangSmith Observability Health"
+      }
+    ],
+    "stalled": [],
+    "branch_state": "green",
+    "fail_run": null,
+    "supply": 15
+  },
+  {
+    "repo": "Travel-Plan-Permission",
+    "frozen": [],
+    "stalled": [],
+    "branch_state": "red",
+    "fail_run": {
+      "conclusion": "failure",
+      "createdAt": "2026-09-04T20:50:27Z",
+      "databaseId": 33918219572,
+      "event": "workflow_run",
+      "headBranch": "main",
+      "name": "Agents Gate Followups",
+      "status": "completed"
+    },
+    "supply": 7
+  },
+  {
+    "repo": "Trend_Model_Project",
+    "frozen": [],
+    "stalled": [],
+    "branch_state": "green",
+    "fail_run": null,
+    "supply": 10
+  },
+  {
+    "repo": "Portable-Alpha-Extension-Model",
+    "frozen": [
+      {
+        "labels": [
+          {
+            "id": "LA_kwDOO15QxM8AAAACUl0YTQ",
+            "name": "agents:auto-pilot-pause",
+            "description": "Pause auto-pilot at current step",
+            "color": "fbca04"
+          }
+        ],
+        "number": 2273,
+        "title": "Raise test coverage toward 90% (autopilot round 6, low blast radius only)"
+      }
+    ],
+    "stalled": [],
+    "branch_state": "green",
+    "fail_run": null,
+    "supply": 1
+  },
+  {
+    "repo": "Counter_Risk",
+    "frozen": [
+      {
+        "labels": [
+          {
+            "id": "LA_kwDORPCqTs8AAAACZaQR7w",
+            "name": "agents:auto-pilot-pause",
+            "description": "",
+            "color": "ededed"
+          }
+        ],
+        "number": 996,
+        "title": "Raise test coverage toward 90% (autopilot round 3, low blast radius only)"
+      },
+      {
+        "labels": [
+          {
+            "id": "LA_kwDORPCqTs8AAAACZaQR7w",
+            "name": "agents:auto-pilot-pause",
+            "description": "",
+            "color": "ededed"
+          }
+        ],
+        "number": 978,
+        "title": "Raise test coverage toward 90% (most-productive-gap-first)"
+      }
+    ],
+    "stalled": [],
+    "branch_state": "green",
+    "fail_run": null,
+    "supply": 2
+  },
+  {
+    "repo": "Manager-Database",
+    "frozen": [
+      {
+        "labels": [
+          {
+            "id": "LA_kwDOO4LcjM8AAAACUl0YDQ",
+            "name": "agents:auto-pilot-pause",
+            "description": "Pause auto-pilot at current step",
+            "color": "fbca04"
+          }
+        ],
+        "number": 1633,
+        "title": "Raise test coverage toward 90% (autopilot round 7, low blast radius only)"
+      }
+    ],
+    "stalled": [],
+    "branch_state": "green",
+    "fail_run": null,
+    "supply": 7
+  },
+  {
+    "repo": "Inv-Man-Intake",
+    "frozen": [
+      {
+        "labels": [
+          {
+            "id": "LA_kwDORbgIAs8AAAACZuwyXA",
+            "name": "agents:apply-suggestions",
+            "description": "Applies optimization suggestions from agents:optimize",
+            "color": "0E8A16"
+          },
+          {
+            "id": "LA_kwDORbgIAs8AAAACZuxEEA",
+            "name": "agent:codex",
+            "description": "Assign to Codex agent",
+            "color": "0e8a16"
+          },
+          {
+            "id": "LA_kwDORbgIAs8AAAACZuxOUA",
+            "name": "agents:auto-pilot",
+            "description": "Triggers end-to-end auto-pilot pipeline",
+            "color": "0052CC"
+          },
+          {
+            "id": "LA_kwDORbgIAs8AAAACZz_sWA",
+            "name": "needs-human",
+            "description": "",
+            "color": "ededed"
+          },
+          {
+            "id": "LA_kwDORbgIAs8AAAACaqSeiQ",
+            "name": "agents:auto-pilot-pause",
+            "description": "",
+            "color": "ededed"
+          }
+        ],
+        "number": 948,
+        "title": "[P1] Consultant section ontology aligned to tracked-variable/v1 (B2-010)"
+      }
+    ],
+    "stalled": [],
+    "branch_state": "green",
+    "fail_run": null,
+    "supply": 9
+  },
+  {
+    "repo": "Pension-Data",
+    "frozen": [
+      {
+        "labels": [
+          {
+            "id": "LA_kwDORbgH9M8AAAACZuwwZA",
+            "name": "agents:apply-suggestions",
+            "description": "Applies optimization suggestions from agents:optimize",
+            "color": "0E8A16"
+          },
+          {
+            "id": "LA_kwDORbgH9M8AAAACZuxCWg",
+            "name": "agent:codex",
+            "description": "Assign to Codex agent",
+            "color": "0e8a16"
+          },
+          {
+            "id": "LA_kwDORbgH9M8AAAACZuxMlQ",
+            "name": "agents:auto-pilot",
+            "description": "Triggers end-to-end auto-pilot pipeline",
+            "color": "0052CC"
+          },
+          {
+            "id": "LA_kwDORbgH9M8AAAACZ3_lbg",
+            "name": "needs-human",
+            "description": "",
+            "color": "ededed"
+          },
+          {
+            "id": "LA_kwDORbgH9M8AAAAChSndmw",
+            "name": "agents:auto-pilot-pause",
+            "description": "",
+            "color": "ededed"
+          }
+        ],
+        "number": 883,
+        "title": "[P1] workspace-bundle.json contract wiring (B2-030)"
+      },
+      {
+        "labels": [
+          {
+            "id": "LA_kwDORbgH9M8AAAACZuwwZA",
+            "name": "agents:apply-suggestions",
+            "description": "Applies optimization suggestions from agents:optimize",
+            "color": "0E8A16"
+          },
+          {
+            "id": "LA_kwDORbgH9M8AAAACZuxCWg",
+            "name": "agent:codex",
+            "description": "Assign to Codex agent",
+            "color": "0e8a16"
+          },
+          {
+            "id": "LA_kwDORbgH9M8AAAACZuxMlQ",
+            "name": "agents:auto-pilot",
+            "description": "Triggers end-to-end auto-pilot pipeline",
+            "color": "0052CC"
+          },
+          {
+            "id": "LA_kwDORbgH9M8AAAACZ3_lbg",
+            "name": "needs-human",
+            "description": "",
+            "color": "ededed"
+          },
+          {
+            "id": "LA_kwDORbgH9M8AAAAChSndmw",
+            "name": "agents:auto-pilot-pause",
+            "description": "",
+            "color": "ededed"
+          },
+          {
+            "id": "LA_kwDORbgH9M8AAAACon4A-g",
+            "name": "status:in-progress",
+            "description": "",
+            "color": "ededed"
+          }
+        ],
+        "number": 882,
+        "title": "[P1] Factor renderer-shell from apps/web (B2-029)"
+      },
+      {
+        "labels": [
+          {
+            "id": "LA_kwDORbgH9M8AAAACZuwwZA",
+            "name": "agents:apply-suggestions",
+            "description": "Applies optimization suggestions from agents:optimize",
+            "color": "0E8A16"
+          },
+          {
+            "id": "LA_kwDORbgH9M8AAAACZuxCWg",
+            "name": "agent:codex",
+            "description": "Assign to Codex agent",
+            "color": "0e8a16"
+          },
+          {
+            "id": "LA_kwDORbgH9M8AAAACZuxMlQ",
+            "name": "agents:auto-pilot",
+            "description": "Triggers end-to-end auto-pilot pipeline",
+            "color": "0052CC"
+          },
+          {
+            "id": "LA_kwDORbgH9M8AAAACZ3_lbg",
+            "name": "needs-human",
+            "description": "",
+            "color": "ededed"
+          },
+          {
+            "id": "LA_kwDORbgH9M8AAAAChSndmw",
+            "name": "agents:auto-pilot-pause",
+            "description": "",
+            "color": "ededed"
+          },
+          {
+            "id": "LA_kwDORbgH9M8AAAACon4A-g",
+            "name": "status:in-progress",
+            "description": "",
+            "color": "ededed"
+          }
+        ],
+        "number": 881,
+        "title": "[P1] Evidence + identity-map projection emitter (B2-018)"
+      }
+    ],
+    "stalled": [],
+    "branch_state": "green",
+    "fail_run": null,
+    "supply": 10
+  },
+  {
+    "repo": "Ready",
+    "frozen": [],
+    "stalled": [],
+    "branch_state": "green",
+    "fail_run": null,
+    "supply": 0
+  },
+  {
+    "repo": "trip-planner",
+    "frozen": [
+      {
+        "labels": [
+          {
+            "id": "LA_kwDOOzvyds8AAAACTcAVJw",
+            "name": "agent:codex",
+            "description": "Assign to Codex agent",
+            "color": "0e8a16"
+          },
+          {
+            "id": "LA_kwDOOzvyds8AAAACUHuizQ",
+            "name": "agents:apply-suggestions",
+            "description": "Applies optimization suggestions from agents:optimize",
+            "color": "0E8A16"
+          },
+          {
+            "id": "LA_kwDOOzvyds8AAAACbnsevQ",
+            "name": "agents:auto-pilot",
+            "description": "Trigger agent auto-pilot workflow",
+            "color": "0E8A16"
+          },
+          {
+            "id": "LA_kwDOOzvyds8AAAACbnvNRA",
+            "name": "status:in-progress",
+            "description": "",
+            "color": "ededed"
+          },
+          {
+            "id": "LA_kwDOOzvyds8AAAACdR9OzQ",
+            "name": "needs-human",
+            "description": "",
+            "color": "ededed"
+          },
+          {
+            "id": "LA_kwDOOzvyds8AAAAChIG_Rw",
+            "name": "agents:auto-pilot-pause",
+            "description": "",
+            "color": "ededed"
+          }
+        ],
+        "number": 1787,
+        "title": "[P2] Lodging deep-link capture adapter (B2-050)"
+      },
+      {
+        "labels": [
+          {
+            "id": "LA_kwDOOzvyds8AAAACTcAVJw",
+            "name": "agent:codex",
+            "description": "Assign to Codex agent",
+            "color": "0e8a16"
+          },
+          {
+            "id": "LA_kwDOOzvyds8AAAACUHuizQ",
+            "name": "agents:apply-suggestions",
+            "description": "Applies optimization suggestions from agents:optimize",
+            "color": "0E8A16"
+          },
+          {
+            "id": "LA_kwDOOzvyds8AAAACbnsevQ",
+            "name": "agents:auto-pilot",
+            "description": "Trigger agent auto-pilot workflow",
+            "color": "0E8A16"
+          },
+          {
+            "id": "LA_kwDOOzvyds8AAAACdR9OzQ",
+            "name": "needs-human",
+            "description": "",
+            "color": "ededed"
+          },
+          {
+            "id": "LA_kwDOOzvyds8AAAAChIG_Rw",
+            "name": "agents:auto-pilot-pause",
+            "description": "",
+            "color": "ededed"
+          }
+        ],
+        "number": 1786,
+        "title": "[P2] Ranking fixture eval harness (B2-047)"
+      },
+      {
+        "labels": [
+          {
+            "id": "LA_kwDOOzvyds8AAAACTcAVJw",
+            "name": "agent:codex",
+            "description": "Assign to Codex agent",
+            "color": "0e8a16"
+          },
+          {
+            "id": "LA_kwDOOzvyds8AAAACUHuizQ",
+            "name": "agents:apply-suggestions",
+            "description": "Applies optimization suggestions from agents:optimize",
+            "color": "0E8A16"
+          },
+          {
+            "id": "LA_kwDOOzvyds8AAAACbnsevQ",
+            "name": "agents:auto-pilot",
+            "description": "Trigger agent auto-pilot workflow",
+            "color": "0E8A16"
+          },
+          {
+            "id": "LA_kwDOOzvyds8AAAACbnvNRA",
+            "name": "status:in-progress",
+            "description": "",
+            "color": "ededed"
+          },
+          {
+            "id": "LA_kwDOOzvyds8AAAACdR9OzQ",
+            "name": "needs-human",
+            "description": "",
+            "color": "ededed"
+          },
+          {
+            "id": "LA_kwDOOzvyds8AAAAChIG_Rw",
+            "name": "agents:auto-pilot-pause",
+            "description": "",
+            "color": "ededed"
+          }
+        ],
+        "number": 1785,
+        "title": "[P2] Duffel flight source adapter (B2-045)"
+      },
+      {
+        "labels": [
+          {
+            "id": "LA_kwDOOzvyds8AAAACbnsevQ",
+            "name": "agents:auto-pilot",
+            "description": "Trigger agent auto-pilot workflow",
+            "color": "0E8A16"
+          },
+          {
+            "id": "LA_kwDOOzvyds8AAAACdR9OzQ",
+            "name": "needs-human",
+            "description": "",
+            "color": "ededed"
+          },
+          {
+            "id": "LA_kwDOOzvyds8AAAAChIG_Rw",
+            "name": "agents:auto-pilot-pause",
+            "description": "",
+            "color": "ededed"
+          }
+        ],
+        "number": 1783,
+        "title": "[P2] Amtrak GTFS source adapter (B2-046)"
+      }
+    ],
+    "stalled": [],
+    "branch_state": "green",
+    "fail_run": null,
+    "supply": 3
+  },
+  {
+    "repo": "learning-management-system",
+    "frozen": [],
+    "stalled": [],
+    "branch_state": "green",
+    "fail_run": null,
+    "supply": 5
+  },
+  {
+    "repo": "Fine-Art-Archive",
+    "frozen": [
+      {
+        "labels": [
+          {
+            "id": "LA_kwDOSrX7x88AAAACu_ejCw",
+            "name": "agents:auto-pilot-pause",
+            "description": "",
+            "color": "ededed"
+          }
+        ],
+        "number": 665,
+        "title": "Raise test coverage toward 90% (continuing round 4, low blast radius only)"
+      }
+    ],
+    "stalled": [],
+    "branch_state": "red",
+    "fail_run": {
+      "conclusion": "failure",
+      "createdAt": "2026-09-04T20:31:39Z",
+      "databaseId": 33916661327,
+      "event": "push",
+      "headBranch": "main",
+      "name": "CI",
+      "status": "completed"
+    },
+    "supply": 1
+  },
+  {
+    "repo": "Doc-Lineage",
+    "frozen": [
+      {
+        "labels": [
+          {
+            "id": "LA_kwDOUOakrc8AAAACz0b_nw",
+            "name": "agents:auto-pilot-pause",
+            "description": "",
+            "color": "ededed"
+          }
+        ],
+        "number": 1,
+        "title": "Dependency Dashboard"
+      }
+    ],
+    "stalled": [],
+    "branch_state": "green",
+    "fail_run": null,
+    "supply": 12
+  },
+  {
+    "repo": "Deliverable-Render",
+    "frozen": [],
+    "stalled": [],
+    "branch_state": "green",
+    "fail_run": null,
+    "supply": 6
+  },
+  {
+    "repo": "Manager-Mosaic",
+    "frozen": [],
+    "stalled": [],
+    "branch_state": "green",
+    "fail_run": null,
+    "supply": 2
+  }
+]
