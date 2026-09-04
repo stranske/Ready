@@ -26,3 +26,6 @@
 ## 2026-09-04T17:59:42Z — A-dossier-docx — wrote 00-DOCX-MANIFEST.md (16/16 PASS) — done
 ## 2026-09-04T17:57:24Z — A-verify-Trend_Model_Project — done — 24 claims checked, 15 corrected, 0 unverifiable; wrote Trend_Model_Project.md and Trend_Model_Project.verification.md.
 ## 2026-09-04T23:06:43Z — A-verify-Pension-Data — done — 63 claims checked, 1 corrected, 1 unverifiable; wrote Pension-Data.md and Pension-Data.verification.md.
+## 2026-09-04T23:11:48.691514+00:00 — A-verify-Portable-Alpha-Extension-Model resume — done — Read retained dossier, verification table, both checkpoints and owner guidance; clone created today at 8ddf6be, no refresh required.
+## 2026-09-04T23:13:50.307811+00:00 — A-verify-Portable-Alpha-Extension-Model independent cite audit — done — Opened retained cite ranges and followed disputed symbols; found dashboard stlite mount, CSV-only index loader, different Run Logs inputs, capability consumers in automation, and implemented sweep regimes.
+## 2026-09-04T23:19:04Z — A-verify-Portable-Alpha-Extension-Model artifacts and validation — done — Wrote corrected dossier and verification table: 54 claim groups, 40 confirmed, 13 corrected, 1 unverifiable; checked twelve headings, five final bullets, verdict totals and citation paths/ranges. No repository code changed.

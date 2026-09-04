@@ -64,3 +64,11 @@ Owner-facing status: [research-program/STATUS.md](https://github.com/stranske/Re
 ## Later unattended execution evidence
 
 At 23:05:50 UTC the scheduled driver claimed A-verify-Pension-Data and completed it with a fresh 1,648-word dossier. Its verification table reports 63 checked claims, one citation refinement, and one explicitly unverified live-network claim. The output and verification table were inspected during this review. Two recovered verification units remain queued.
+
+## Consumer coordination defect found during rollout
+
+The first Astra source-delta candidates were closed, not merged, by an older Maint 71 campaign at 23:09 UTC. Its `plan_mismatch` handling incorrectly treated another plan's delivery as superseded. The subsequent `stable_base_refresh_required` result was a downstream missing-candidate symptom, not evidence of a changed base. [Workflows #3382](https://github.com/stranske/Workflows/pull/3382) makes plan-bound retries preserve other plans and limits stale cleanup to the selected plan. Its regression test runs the real reconciliation with mutations enabled and asserts no close/comment/delete calls for a foreign plan.
+
+The automatic recovery generated a full template plan, bringing unrelated review findings back into scope. After the ownership fix, the intended recovery is the original immutable Astra source delta. Source migrations remain merged; consumer completion is not yet certified.
+
+Live branch verification: Trend_Model_Project now has `refs/heads/main` at `18616a82837411b35d1581e86daf726737cf2142`; direct `refs/heads/phase-3` lookup returns 404. The old branch endpoint reports the renamed main branch. This review did not recreate an obsolete branch or alter lane arrays.
