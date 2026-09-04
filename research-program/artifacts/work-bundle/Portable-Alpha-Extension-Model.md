@@ -29,7 +29,7 @@ scripts/          Portable zip, launcher creation, run-contract validator
 tests/            Pytest suite (~1240 tests collected per local `pytest --collect-only`)
 web/              stlite/Plotly static helper (not a full app shell)
 tools/            CI triage utilities
-.github/          CI, agent workflows — synced from stranske/Workflows (per `CLAUDE.md`)
+.github/          CI, agent workflows — synced from a shared engineering-standards repository (per `CLAUDE.md`)
 design-system/    UI tokens — boilerplate, not simulation logic
 archive/          Retired configs and development logs
 ```

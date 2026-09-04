@@ -23,7 +23,7 @@ tests/               Unit, API, end-to-end demo, UI snapshot, and deployment-con
 docs/                Product decisions, contracts, deployment, research registry, and handoff records.
 scripts/             Operational validators and automation helpers.
 config/              Model, coverage, and source-of-truth configuration.
-.github/             Consumer automation, synced from stranske/Workflows.
+.github/             Consumer automation, synced from a shared engineering-standards repository.
 design-system/       Shared design material; skipped as boilerplate here.
 ```
 

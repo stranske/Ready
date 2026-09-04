@@ -30,7 +30,7 @@ config/           pension registry, source maps, saved queries, model/backplane 
 docs/             contracts, runbooks, deployment and planning material
 scripts/          CLIs, bundle builders, source collection, replay and validation helpers
 tests/            1,386-test unit, contract, fixture, golden, and integration suite
-.github/          CI and most agent automation; synced from stranske/Workflows
+.github/          CI and most agent automation; synced from a shared engineering-standards repository
 ```
 
 ## 4. Major code features you must understand to extend it

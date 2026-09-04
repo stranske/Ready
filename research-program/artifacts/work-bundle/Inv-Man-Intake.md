@@ -27,8 +27,8 @@ config/                    thresholds, scoring TOML, model policy, and a non-aut
 docs/                      plan, runbooks, and fleet/domain contracts
 tests/                     deterministic unit, integration, browser and reference-fixture coverage
 artifacts/                 committed reference run and telemetry examples
-scripts/                   local validation/report helpers; workflow automation is synced from stranske/Workflows
-.github/, design-system/  CI/agent materials and UI tokens; synced from stranske/Workflows where the manifest says so
+scripts/                   local validation/report helpers; workflow automation is synced from a shared engineering-standards repository
+.github/, design-system/  CI/agent materials and UI tokens; synced from a shared engineering-standards repository where the manifest says so
 ```
 
 ## 4. Major code features you must understand to extend it

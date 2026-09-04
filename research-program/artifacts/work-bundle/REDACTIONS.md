@@ -51,3 +51,8 @@ Generated during work-bundle refresh. 14 dossiers processed.
 - **learning-management-system** — verification footer: `Removed internal verifier attribution line`
 - **trip-planner** — home-directory path: replaced default SQLite location with app-data placeholder (1 hit)
 - **trip-planner** — verification footer: `Removed internal verifier attribution line`
+
+
+## Scope reduction (4 September 2026)
+
+Five documents were removed from this bundle after it was first assembled, at the owner's instruction: the two development-infrastructure tools, the collaboration control plane, the repository template, and the personal fine-art archive. They are not work tools and are out of scope for anyone reading this bundle. Passing references to shared engineering standards remain in the nine documents because they explain why the tools are consistent with each other, but the infrastructure itself is not described and is not offered for use.

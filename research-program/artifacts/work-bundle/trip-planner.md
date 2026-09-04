@@ -31,7 +31,7 @@ stranske/trip-planner/
 ├── scripts/                       # Operational, verification, and test scripts
 ├── tests/                         # Pytest test suite
 ├── data/                          # Legacy JSON datasets
-└── Synced from stranske/Workflows: # Workflows CI and backplane scripts
+└── Synced from a shared engineering-standards repository: # Workflows CI and backplane scripts
 ```
 
 ## 4. Major code features you must understand to extend it
@@ -58,7 +58,7 @@ Persistence uses SQLAlchemy 2.0 with Alembic migrations (`trip_planner/persisten
 - **Key Libraries & Runtime**: FastAPI, Uvicorn, SQLAlchemy 2.0, Alembic, psycopg[binary] on backend; Vite, React 19, TypeScript on frontend. Runs locally with Python 3.12+ and SQLite; production uses Netlify and Render.
 
 ## 7. Current state
-- **Test and CI Posture**: Gated via `.github/workflows/ci.yml` and `pr-00-gate.yml`. Runs Ruff, Black, Mypy, and Pytest on Python 3.12/3.13, enforcing a 90% coverage floor (`stranske/Workflows` reusable `reusable-10-ci-python.yml` via `ci.yml`) and complexity ceiling of 25 (`scripts/measure_complexity.py`). Runtime CI validates full-stack connectivity (`scripts/check_full_stack_runtime.sh`) and Playwright browser journeys (`scripts/run_two_trip_ui_canary.sh`).
+- **Test and CI Posture**: Gated via `.github/workflows/ci.yml` and `pr-00-gate.yml`. Runs Ruff, Black, Mypy, and Pytest on Python 3.12/3.13, enforcing a 90% coverage floor (`a shared engineering-standards repository` reusable `reusable-10-ci-python.yml` via `ci.yml`) and complexity ceiling of 25 (`scripts/measure_complexity.py`). Runtime CI validates full-stack connectivity (`scripts/check_full_stack_runtime.sh`) and Playwright browser journeys (`scripts/run_two_trip_ui_canary.sh`).
 - **Production-Usable vs Prototype**: Persistence, authentication, trip/scenario CRUD, budget tracking, and rule-based policy evaluations are production-usable. Live data ingestion, live Google Maps geometry, and remote TPP governance are prototype/deferred seams.
 - **Consequential Gap Signals**:
   1. *No live source adapters*: `trip_planner/sources/adapters/base.py` exists without concrete implementations.

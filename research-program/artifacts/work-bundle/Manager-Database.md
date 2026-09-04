@@ -17,7 +17,7 @@ Manager-Database is an investment surveillance platform for institutional alloca
 
 ## 3. Structure map
 
-Top functional directories (synced from `stranske/Workflows`):
+Top functional directories (synced from a shared engineering-standards repository):
 
 - `adapters/`: Ingestion (EDGAR, Companies House, OpenFIGI, prices, news, foreign stubs).
 - `alembic/`: Database migrations.

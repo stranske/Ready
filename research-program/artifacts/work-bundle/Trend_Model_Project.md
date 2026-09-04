@@ -16,7 +16,7 @@ Trend_Model_Project is an allocator-facing manager-of-managers trend-following/C
 
 ## 3. Structure map
 The repository contains ~2,778 tracked files across these primary roots (counts from clone, 2026-09-04):
-- `.github/` (~280 files): Automations, conformance tests, and PR gates (`.github/workflows/pr-00-gate.yml:1`). Orchestration workflows (`fleet-synced agent automation workflow`) sync from `stranske/Workflows`; local edits are overwritten.
+- `.github/` (~280 files): Automations, conformance tests, and PR gates (`.github/workflows/pr-00-gate.yml:1`). Orchestration workflows (`fleet-synced agent automation workflow`) sync from `a shared engineering-standards repository`; local edits are overwritten.
 - `src/` (~219 files): Core packages: `trend/` (CLI) and `trend_analysis/` (domain models, pipeline, walk-forward engine, scoring, exporters).
 - `tests/` (~716 files): Test suites enforcing coverage gates.
 - `streamlit_app/` (~33 files): Multi-page Streamlit web dashboard.

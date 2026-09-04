@@ -34,7 +34,7 @@ Travel-Plan-Permission/
 ├── tests/                        # pytest suite, planner fixtures, golden approval baselines
 ├── scripts/                      # Schema validation, run-contract validator, complexity guard
 ├── tools/                        # CI helpers, optional LangChain client (not product runtime)
-├── .github/                      # CI, gate, agent thin callers — largely synced from stranske/Workflows
+├── .github/                      # CI, gate, agent thin callers — largely synced from a shared engineering-standards repository
 └── design-system/                # UI assets (not central to current portal; server-rendered Jinja)
 ```
 
@@ -88,7 +88,7 @@ Boilerplate skipped above: `node_modules` under `.github/scripts/`, and workflow
 
 ## 7. Current state
 
-**Test/CI posture.** Default pytest excludes `perf` markers, enforces ≥80% coverage (`pyproject.toml:91-118`). `ci.yml` delegates lint/typecheck/test to `stranske/Workflows` reusable Python CI, adds module-size and complexity guards, LangGraph orchestration tests, and a cross-repo smoke job against pinned `trip-planner`. `pr-00-gate.yml` aggregates required checks for PR keepalive. Schema validation uses AJV (`README.md:17-26`). Package classifiers mark **Alpha** (`pyproject.toml:11`).
+**Test/CI posture.** Default pytest excludes `perf` markers, enforces ≥80% coverage (`pyproject.toml:91-118`). `ci.yml` delegates lint/typecheck/test to `a shared engineering-standards repository` reusable Python CI, adds module-size and complexity guards, LangGraph orchestration tests, and a cross-repo smoke job against pinned `trip-planner`. `pr-00-gate.yml` aggregates required checks for PR keepalive. Schema validation uses AJV (`README.md:17-26`). Package classifiers mark **Alpha** (`pyproject.toml:11`).
 
 **Production-usable vs prototype.** Deterministic policy checks, spreadsheet generation, planner HTTP contract, portal draft/review, audit export, and accounting CSV/XLSX export appear production-grade with broad test coverage. Prototype or bounded: public Render demo (synthetic only), optional OCR, LangGraph orchestration (deterministic nodes only), backplane run envelopes, ERP integration, and the documented `/api/itineraries` REST surface.
 

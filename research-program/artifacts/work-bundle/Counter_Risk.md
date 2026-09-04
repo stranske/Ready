@@ -29,11 +29,11 @@ Counter_Risk/
 ├── templates/, assets/templates/  # Excel/PPT templates for writers
 ├── Runner.xlsm         # Operator macro workbook (button-driven)
 ├── web/                # Static fixture-replay demo page
-├── .github/            # CI/Gate — synced from stranske/Workflows
+├── .github/            # CI/Gate — synced from a shared engineering-standards repository
 └── design-system/, node_modules/  # Not on operator path; boilerplate/dev
 ```
 
-`src/counter_risk/pipeline/` orchestrates the monthly run. `parsers/` reads vendor Excel/PDF layouts. `writers/` and `outputs/` emit workbooks and staged PPT artifacts. `compute/` holds concentration, limits, and risk proxies. `docs/contracts/` ships fleet schemas (mostly not emitted yet). `docs/audit/` holds the 2026 in-repo audit — **historical, partly superseded** (see §8). `.github/` workflow logic is owned by `stranske/Workflows` (`AGENTS.md:48-51`).
+`src/counter_risk/pipeline/` orchestrates the monthly run. `parsers/` reads vendor Excel/PDF layouts. `writers/` and `outputs/` emit workbooks and staged PPT artifacts. `compute/` holds concentration, limits, and risk proxies. `docs/contracts/` ships fleet schemas (mostly not emitted yet). `docs/audit/` holds the 2026 in-repo audit — **historical, partly superseded** (see §8). `.github/` workflow logic is owned by `a shared engineering-standards repository` (`AGENTS.md:48-51`).
 
 ## 4. Major code features you must understand to extend it
 
@@ -78,7 +78,7 @@ Counter_Risk/
 
 **Inputs:** MOSERS/NISA Excel, 3-year historical workbooks, monthly PPT template, CPRS files, optional repo-cash CSV/XLSX/PDF — the authoritative set is the `WorkflowConfig` field list at `config.py:89-108`, where only `hist_all_programs_3yr_xlsx`, `hist_ex_llc_3yr_xlsx`, `hist_llc_3yr_xlsx` and `monthly_pptx` are required; repo-cash layering is documented at `README.md:55-71` and `cash_source_type` accepts `pdf` (`config.py:92`). No live market APIs in the core path.
 
-**LLM/agents:** Optional chat via `langchain-openai` / `langchain-anthropic` (`pyproject.toml:39-40`); LangSmith opt-in, records `telemetry-offline flag` without a key (`langsmith_fleet.md:37-40`). GitHub agent workflows are repo automation from `stranske/Workflows`, not part of the monthly run.
+**LLM/agents:** Optional chat via `langchain-openai` / `langchain-anthropic` (`pyproject.toml:39-40`); LangSmith opt-in, records `telemetry-offline flag` without a key (`langsmith_fleet.md:37-40`). GitHub agent workflows are repo automation from `a shared engineering-standards repository`, not part of the monthly run.
 
 **Libraries:** `openpyxl`, `python-pptx`, `pandas`, `Pillow`, `stranske-pdf-extract` (Workflows git dep), `pywin32` on Windows for COM (`pyproject.toml:33-42`). Maintainers use Python 3.12+; operators target the PyInstaller bundle (`gui_runner.md:9-13`). No Docker on the operator path.
 
