@@ -11,7 +11,7 @@ Pension-Data turns pension-system documents into comparable, reviewable facts: f
 | CLI | `one-pdf-pilot` → [one_pdf_pilot_cli.py:97-137](src/pension_data/ops/one_pdf_pilot_cli.py) | data engineer or research operator | **Working:** takes one PDF plus plan/time metadata, writes pilot and backplane artifacts; full suite includes its command path ([tests/ops/test_one_pdf_pilot_cli.py:63-104](tests/ops/test_one_pdf_pilot_cli.py)). |
 | Python API | [api/app.py:28-136](src/pension_data/api/app.py) | internal integration developer | **Partial:** health/config and authenticated saved-view/history endpoints work, but they feed hard-coded fixtures; NL and findings routes return HTTP 501. |
 | Static HTML/PWA | [apps/web/index.html](apps/web/index.html), [apps/web/app.js:149-254](apps/web/app.js) | investment-office reviewer | **Working for bundles, partial for live use:** validates and displays a local/generated JSON bundle, saves views in browser storage; checked-in bundle is explicitly demo data ([apps/web/README.md:17-18](apps/web/README.md)). |
-| Artifacts | [one_pdf_pilot.py:282-498](src/pension_data/ops/one_pdf_pilot.py), [backplane_emitter.py:104-235](src/pension_data/ops/backplane_emitter.py) | reviewers and sibling automation | **Working:** emits parser, staging, warnings, component-coverage, manifest, and backplane envelope JSON from a one-PDF run. |
+| Artifacts | [one_pdf_pilot.py:282-505](src/pension_data/ops/one_pdf_pilot.py), [backplane_emitter.py:104-235](src/pension_data/ops/backplane_emitter.py) | reviewers and sibling automation | **Working:** emits parser, staging, warnings, component-coverage, manifest, and backplane envelope JSON from a one-PDF run. |
 | macOS desktop | [apps/mac-desktop](apps/mac-desktop) | prospective power user | **Scaffold:** Electron has a window shell and Tauri has a minimal Rust entry point ([apps/mac-desktop/src-tauri/src/main.rs:1-8](apps/mac-desktop/src-tauri/src/main.rs)), but `src-ui/` is empty until synced from web UI; implementation plan tracks release signing, benchmark parity, sidecar, and test work as pending ([apps/mac-desktop/IMPLEMENTATION_PLAN.md:14-26](apps/mac-desktop/IMPLEMENTATION_PLAN.md)). |
 
 ## 3. Structure map
@@ -35,7 +35,7 @@ tests/            1,386-test unit, contract, fixture, golden, and integration su
 
 ## 4. Major code features you must understand to extend it
 
-- **One-document production-shaped run:** `run_one_pdf_pilot` consumes a PDF and plan/date metadata, invokes parsing and orchestration, then writes deterministic JSON artifacts and a manifest ([one_pdf_pilot.py:282-498](src/pension_data/ops/one_pdf_pilot.py)). It is the clearest end-to-end integration seam.
+- **One-document production-shaped run:** `run_one_pdf_pilot` consumes a PDF and plan/date metadata, invokes parsing and orchestration, then writes deterministic JSON artifacts and a manifest ([one_pdf_pilot.py:282-505](src/pension_data/ops/one_pdf_pilot.py)). It is the clearest end-to-end integration seam.
 - **PDF-to-facts fallback:** `parse_pdf_to_funded_input` produces raw funded/actuarial input, attempts, confidence, evidence anchors, and escalation information; complex tables can be cross-checked by `run_hybrid_table_extraction` ([pdf_pipeline.py:120-144, 492-542](src/pension_data/parser/pdf_pipeline.py), [hybrid_backend.py:221-332](src/pension_data/parser/hybrid_backend.py)). This is where extraction reliability is decided.
 - **Document orchestration:** `run_document_orchestration` covers discovery, immutable ingestion, extraction, validation, and publishing with outcomes and retries ([document_orchestration.py:84-175, 717-862](src/pension_data/ops/document_orchestration.py)). It isolates bad documents within a batch.
 - **Domain extraction and staging projection:** `build_extraction_persistence_artifacts` and its adapters turn funded, allocation, fee, governance, lifecycle, position, risk, and flow observations into shared staging rows ([extract/persistence.py:39-171, 941-1089](src/pension_data/extract/persistence.py)). New domains need to join this contract, not bypass it.
@@ -102,4 +102,4 @@ The collision to resolve is vocabulary: local fleet emission calls plan/document
 - The browser review path can keep real data inside the firm’s network; the public demo path must use synthetic data.
 - Today, the safest operational use is a controlled document-to-artifact workflow, not the unfinished live dashboard or desktop application.
 
-Verified 2026-09-04T17:35:00Z by gemini: 63 claims checked, 7 corrected, 1 unverifiable.
+Verified 2026-09-04T23:06:43Z by composer: 63 claims checked, 1 corrected, 1 unverifiable.

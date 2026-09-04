@@ -25,4 +25,4 @@
 ## 2026-09-04T17:59:42Z — A-dossier-docx — converted batch 4/4 (trip-planner) — done
 ## 2026-09-04T17:59:42Z — A-dossier-docx — wrote 00-DOCX-MANIFEST.md (16/16 PASS) — done
 ## 2026-09-04T17:57:24Z — A-verify-Trend_Model_Project — done — 24 claims checked, 15 corrected, 0 unverifiable; wrote Trend_Model_Project.md and Trend_Model_Project.verification.md.
-## 2026-09-04T18:06:00Z — A-verify-Workflows — done — 38 claims checked, 12 corrected, 1 unverifiable; wrote Workflows.md and Workflows.verification.md.
+## 2026-09-04T23:06:43Z — A-verify-Pension-Data — done — 63 claims checked, 1 corrected, 1 unverifiable; wrote Pension-Data.md and Pension-Data.verification.md.
