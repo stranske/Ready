@@ -9,9 +9,9 @@
 | R2-consultant-report-diffing.md | 16 | 16 | 0 |
 | R3-manager-mosaic-synthesis.md | 12 | 12 | 0 |
 | R4-document-access-substrate.md | 15 | 11 | 4 |
-| R5-output-substrate.md | 9 | 7 | 2 |
-| R6-public-corpora-and-synthetic-data.md | 21 | 14 | 7 |
-| R7-trip-planning-core.md | 25 | 21 | 4 |
+| R5-output-substrate.md | 10 | 8 | 2 |
+| R6-public-corpora-and-synthetic-data.md | 26 | 19 | 7 |
+| R7-trip-planning-core.md | 28 | 23 | 5 |
 
 ## Unreachable in B3-interop-architecture.md
 
@@ -45,5 +45,6 @@
 - https://www.sciencedirect.com/science/article/abs/pii/S030505480900080X
 - https://www.techrxiv.org/doi/pdf/10.36227/techrxiv.177219979.94060974
 - https://www.whitecase.com/insight-our-thinking/web-scraping-website-terms-and-cfaa-hiqs-preliminary-injunction-affirmed-again
+- https://zenodo.org/records/18316076
 
 Unreachable can mean fabricated, paywalled, bot-blocked, or moved. Any brief with unreachable URLs gets a correction unit: the agent must replace or re-source each one, or mark it explicitly as unverifiable.

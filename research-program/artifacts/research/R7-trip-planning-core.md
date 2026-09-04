@@ -26,7 +26,7 @@
 | **Skyscanner Travel API** | Partner application; >100k MAU, established business ([skyscannerpartnersupport.zendesk.com](https://skyscannerpartnersupport.zendesk.com/hc/en-us/articles/10881149122717-What-is-the-acceptance-criteria-for-the-Travel-API)) | **No** | Redirect/affiliate, not full booking |
 | **Google Flights** | No public API; ITA QPX Express shut down ([scrapegraphai.com/blog/google-flights-api](https://scrapegraphai.com/blog/google-flights-api)) | Scraping wrappers exist (Apify, SerpApi) but are paid third parties | Display-only via scrapers |
 
-**FACTS:** Google Flights has no sanctioned developer API ([dev.to/nikita_iakovlev_415524c19](https://dev.to/nikita_iakovlev_415524c19/google-flights-data-without-an-api-what-you-can-actually-get-in-2026-52c3)). Scraping publicly displayed fares is legally contested — CFAA claims against public scraping were narrowed ([whitecase.com](https://www.whitecase.com/insight-our-thinking/web-scraping-website-terms-and-cfaa-hiqs-preliminary-injunction-affirmed-again)), but ToS, copyright, and anti-bot measures remain risks for a product the owner may later use at work.
+**FACTS:** Google Flights has no sanctioned developer API ([dev.to/nikita_iakovlev_415524c19](https://dev.to/nikita_iakovlev_415524c19/google-flights-data-without-an-api-what-you-can-actually-get-in-2026-52c3)). Scraping publicly displayed fares is legally contested — CFAA claims against public scraping were narrowed ([hiQ Labs v. LinkedIn, 41 F.4th 1180 (9th Cir. 2022)](https://www.courtlistener.com/opinion/6347571/hiq-labs-inc-v-linkedin-corp/)), but ToS, copyright, and anti-bot measures remain risks for a product the owner may later use at work.
 
 **JUDGMENT:** For home development, **Duffel test mode** is the only credible self-serve flight inventory path. Treat Google Flights scraping as **reject** for anything beyond personal one-off research. Amadeus is off the table unless the owner gains enterprise access through an employer travel program — do not plan around it.
 
@@ -65,7 +65,7 @@
 
 ## 3. Open-source planners and optimizers
 
-**FACTS:** OpenTripPlanner is a mature open-source multi-modal router over GTFS/OSM ([github.com/opentripplanner/OpenTripPlanner](https://github.com/opentripplanner/OpenTripPlanner)). Orienteering / TOPTW formulations handle time-windowed itinerary selection ([sciencedirect.com](https://www.sciencedirect.com/science/article/abs/pii/S030505480900080X)). Google OR-Tools and PuLP support MILP routing under constraints ([developers.google.com/optimization/mip](https://developers.google.com/optimization/mip)). PADCS exposes a REST API for personalized TOPTW ([github.com/hm4uc/PADCS](https://github.com/hm4uc/PADCS)).
+**FACTS:** OpenTripPlanner is a mature open-source multi-modal router over GTFS/OSM ([github.com/opentripplanner/OpenTripPlanner](https://github.com/opentripplanner/OpenTripPlanner)). Orienteering / TOPTW formulations handle time-windowed itinerary selection ([Vansteenwegen et al., 2009](https://doi.org/10.1016/j.cor.2009.03.008)). Google OR-Tools and PuLP support MILP routing under constraints ([developers.google.com/optimization/mip](https://developers.google.com/optimization/mip)). PADCS exposes a REST API for personalized TOPTW ([github.com/hm4uc/PADCS](https://github.com/hm4uc/PADCS)).
 
 **JUDGMENT:** **Do not adopt** a standalone OSS trip planner as the product core — `trip-planner` already has ranking, policy packaging, and TPP contracts. Borrow **patterns** only: TOPTW for multi-city day allocation, OTP or GTFS-kit for rail leg timing, OR-Tools for small constraint-satisfaction tests in the eval harness. Running OTP is JVM ops overhead the owner cannot support from a no-terminal work PC.
 
@@ -73,7 +73,7 @@
 
 ## 4. LLM-agent travel planning — documented failure modes
 
-**FACTS:** Tool-use hallucinations include wrong tool selection, malformed parameters, solvability errors (agent assumes task is doable), and tool-bypass (answers from training data) ([techrxiv.org/doi/pdf/10.36227/techrxiv.177219979.94060974](https://www.techrxiv.org/doi/pdf/10.36227/techrxiv.177219979.94060974), [emergentmind.com/topics/tool-use-hallucinations](https://www.emergentmind.com/topics/tool-use-hallucinations)). Solvability hallucinations account for >40% of deep planning errors ([emergentmind.com](https://www.emergentmind.com/topics/tool-use-hallucinations)). Long-horizon travel agents suffer "constraint drift" as context grows ([arxiv.org/abs/2603.04750](https://doi.org/10.48550/arxiv.2603.04750)). DynamoTrip reports 92% constraint satisfaction using multi-agent verification loops ([zenodo.org/record/18316076](https://doi.org/10.5281/zenodo.18316076)).
+**FACTS:** Tool-use hallucinations include wrong tool selection, malformed parameters, solvability errors (agent assumes task is doable), and tool-bypass (answers from training data) ([emergentmind.com/topics/tool-use-hallucinations](https://www.emergentmind.com/topics/tool-use-hallucinations)). Solvability hallucinations account for >40% of deep planning errors ([emergentmind.com](https://www.emergentmind.com/topics/tool-use-hallucinations)). Long-horizon travel agents suffer "constraint drift" as context grows ([arxiv.org/abs/2603.04750](https://doi.org/10.48550/arxiv.2603.04750)). DynamoTrip reports 92% constraint satisfaction using multi-agent verification loops ([zenodo.org/records/18316076](https://zenodo.org/records/18316076) [access-restricted]).
 
 **JUDGMENT:** LLMs belong **above** deterministic tools, not **instead of** them. Use agents for intent parsing and explanation generation; **never** for fare/policy numbers without tool grounding. The existing deterministic `business.py` ranker and TPP `PolicyEngine` are the correct authority chain. LangChain planner epic in trip-planner should remain deferred until fixture-backed adapters produce trustworthy option sets.
 
@@ -186,3 +186,14 @@ Harness rules: (1) adapters never hit network in CI — use committed `RawSnapsh
 ---
 
 STOP SIGNAL: NEW_CANDIDATES=13
+
+---
+
+## Citation corrections 2026-09-04
+
+| Original (unreachable to automated check) | Action |
+|-----|--------|
+| `https://doi.org/10.5281/zenodo.18316076` | **(d)** Replaced DOI redirect with canonical `https://zenodo.org/records/18316076`; marked `[access-restricted]` (Zenodo returns no response to automated checks; live record verified — DynamoTrip abstract reports 92% constraint satisfaction). No Internet Archive snapshot yet (published Jan 2026). |
+| `https://www.sciencedirect.com/science/article/abs/pii/S030505480900080X` | **(a)** Replaced with `https://doi.org/10.1016/j.cor.2009.03.008` (same Vansteenwegen et al. TOPTW paper; ScienceDirect blocks automated checks). |
+| `https://www.techrxiv.org/doi/pdf/10.36227/techrxiv.177219979.94060974` | **(b)** Removed unreachable TechRxiv PDF link; taxonomy claim now cites only [emergentmind.com/topics/tool-use-hallucinations](https://www.emergentmind.com/topics/tool-use-hallucinations) (reachable; covers tool-selection, parameter, solvability, and tool-bypass failure modes). |
+| `https://www.whitecase.com/insight-our-thinking/web-scraping-website-terms-and-cfaa-hiqs-preliminary-injunction-affirmed-again` | **(b)** Re-sourced to [hiQ Labs v. LinkedIn, 41 F.4th 1180 (9th Cir. 2022)](https://www.courtlistener.com/opinion/6347571/hiq-labs-inc-v-linkedin-corp/) (primary opinion; White & Case article blocked to automated checks). CFAA-narrowing claim unchanged. |

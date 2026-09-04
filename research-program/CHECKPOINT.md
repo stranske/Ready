@@ -213,3 +213,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-04T20:15:50Z — B1-citefix-R6-public-corpora-and-synthetic-data — route — router picked cursor from ['codex', 'cursor', 'gemini']
 ## 2026-09-04T20:15:50Z — B1-citefix-R6-public-corpora-and-synthetic-data — claimed by driver (agent cursor)
 ## 2026-09-04T20:17:49Z — B1-citefix-R6-public-corpora-and-synthetic-data — done — cursor produced 2408 words at artifacts/research/R6-public-corpora-and-synthetic-data.md in 118s
+## 2026-09-04T20:17:52Z — B1-citefix-R7-trip-planning-core — route — router picked cursor from ['codex', 'cursor', 'gemini']
+## 2026-09-04T20:17:52Z — B1-citefix-R7-trip-planning-core — claimed by driver (agent cursor)
+## 2026-09-04T20:21:26Z — B1-citefix-R7-trip-planning-core — done — cursor produced 2323 words at artifacts/research/R7-trip-planning-core.md in 213s
