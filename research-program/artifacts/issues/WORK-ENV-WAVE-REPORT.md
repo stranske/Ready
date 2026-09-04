@@ -39,6 +39,12 @@ Eight entries appended to `/Users/teacher/.codex/orchestrator/measurement/intake
 - stranske/Orchestrator — excluded
 - Wave-1 duplicates — Doc-Lineage #2–#4, Deliverable-Render #2–#4, Workflows #3368
 
+## Format status (post-file)
+
+Six issues were auto-reformatted by the fleet optimizer and carry `agents:formatted`: Deliverable-Render #5–#6, Inv-Man-Intake #947, Pension-Data #878, Travel-Plan-Permission #1513, learning-management-system #580.
+
+Two issues still fail the format validator on the generic "Perform deliberate-break verification" task line and retain `agents:format`: Doc-Lineage #5, Workflows #3370. The optimizer rewrote the deliberate-break task in the other six to name a concrete file (e.g. `src/deliverable_render/docx/memo.py`); those two need the same one-line task fix before agents can pick them up.
+
 ## Checkpoint
 
 Resume state recorded in `artifacts/issues/B5-work-env-issue-wave.CHECKPOINT.md`.

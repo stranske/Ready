@@ -198,3 +198,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-04T19:52:36Z — citations — enqueued B1-citefix-R7-trip-planning-core
 ## 2026-09-04T19:53:05Z — B5-work-env-issue-wave — fail — cursor produced 334 words at /Users/teacher/.codex/automations/research-program/artifacts/issues/WORK-ENV-WAVE-REPORT.md (min 400); rotating agent
 ## 2026-09-04T19:53:40Z — B7-program-plan-v3 — parked — q-B7-program-plan-v3
+## 2026-09-04T19:54:12Z — B5-work-env-issue-wave — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-04T19:54:12Z — B5-work-env-issue-wave — claimed by driver (agent cursor)
+## 2026-09-04T19:55:21Z — B5-work-env-issue-wave — done — cursor produced 412 words at artifacts/issues/WORK-ENV-WAVE-REPORT.md in 69s

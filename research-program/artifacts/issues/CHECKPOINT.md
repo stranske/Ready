@@ -15,3 +15,5 @@
 ## 2026-09-04T20:55:00Z — Workflows filed: https://github.com/stranske/Workflows/issues/3370 — done
 
 ## 2026-09-04T20:55:00Z — WORK-ENV-WAVE-REPORT.md written — done
+
+## 2026-09-04T21:00:00Z — Resume verified all 8 URLs live; no re-file — done
