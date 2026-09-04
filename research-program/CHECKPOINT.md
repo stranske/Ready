@@ -55,3 +55,5 @@
 ## 2026-09-04T17:10:56Z — A-verify-Fine-Art-Archive — route — router picked gemini from ['codex', 'cursor', 'gemini']
 ## 2026-09-04T17:10:56Z — A-verify-Fine-Art-Archive — claimed by codex (agent gemini)
 ## 2026-09-04T17:11:39Z — A-verify-Counter_Risk — done — Counter_Risk dossier verified against HEAD 3f3ae3d: 52 claims checked, 39 confirmed, 11 corrected (5 substantive), 2 off-platform unverifiable — the in-repo doc
+## 2026-09-04T17:15:18Z — A-verify-Fine-Art-Archive — verification — done — Checked 27 claims in sections 4/5/8/9; corrected dHash, clone configuration, test count, and docs paths.
+## 2026-09-04T17:15:38Z — A-verify-Fine-Art-Archive — done — Verified the Fine-Art-Archive dossier against the clone; corrected dHash, fresh-clone configuration, test count, and docs paths.

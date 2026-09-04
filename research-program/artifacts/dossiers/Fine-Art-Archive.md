@@ -2,13 +2,13 @@
 
 ## 1. Purpose in one paragraph
 
-Fine-Art-Archive is the version-controlled **code and policy layer** for a personal museum-grade image archive of roughly 3,400+ artworks. The repository does **not** hold masters or sidecars; those live in a Dropbox workspace (`Dropbox/Pictures/Art/works/`), selected at runtime via `FAA_WORKS_DIR` / `FAA_ART_WORKS_ROOT` (`README.md`, `src/fine_art_archive/api/config.py`). The tool lets one owner **identify, deduplicate, enrich, browse, rate, and display** works with museum-style metadata (Wikidata Q-IDs, holder accessions, field-level provenance) while keeping originals local-first. It assumes a split model: data work on a Mac with the full Dropbox tree, library/CI in GitHub (`docs/NEXT_PHASE_PLAN.md`), with cloud automation unable to see the local corpus.
+Fine-Art-Archive is the version-controlled **code and policy layer** for a personal museum-grade image archive of roughly 3,400+ artworks. The repository does **not** hold masters or the live sidecar corpus; those live in Dropbox under `Pictures/Art/works/`. `FAA_ART_WORKS_ROOT` selects the primary archive root, while the API store also accepts `FAA_WORKS_DIR` (or legacy `FAA_STAGING_DIR`) for its sidecar tree (`src/fine_art_archive/api/config.py`, `api/store.py`). The tool lets one owner **identify, deduplicate, enrich, browse, rate, and display** works with museum-style metadata (Wikidata Q-IDs, holder accessions, field-level provenance) while keeping originals local-first. It assumes a split model: data work on a Mac with the full Dropbox tree, library/CI in GitHub (`docs/NEXT_PHASE_PLAN.md`), with cloud automation unable to see the local corpus.
 
 ## 2. Who uses it and how (surfaces)
 
 | Surface | Entry point | Who uses it | Status (evidence) |
 |--------|-------------|-------------|-------------------|
-| **CLI** (~74 scripts) | `scripts/*.py` — e.g. `build_manifest.py`, `visual_dedupe.py`, `apply_lens_recovery.py` | Owner / local agents | **Working** — 123 `test_*.py` modules |
+| **CLI** (71 Python scripts) | `scripts/*.py` — e.g. `build_manifest.py`, `visual_dedupe.py`, `apply_lens_recovery.py` | Owner / local agents | **Working** — 125 `test_*.py` modules |
 | **CLI launcher** | `scripts/run_companion_app.sh` | Owner starting browse UI | **Working** — rebuilds `manifest.csv` on launch (`README.md` L48–52) |
 | **HTTP API + HTML UI** | `src/fine_art_archive/api/main.py`; `src/fine_art_archive/ui/index.html` | Owner at `http://localhost:8401/` | **Working** — works, ratings, dossiers, e-ink, review routes; `tests/test_companion_app_api.py` |
 | **File artifacts (external)** | `Art/works/<work_id>/meta.json`, `manifest.csv` | All surfaces via `api/store.py` | **Working when workspace mounted** — one fixture in `staging_sidecars/test-wid/` |
@@ -39,7 +39,7 @@ Fine-Art-Archive/
 
 - **Manifest gate** — `build_manifest.py` + `store.py`: UI lists only works in `manifest.csv` (`README.md` L43–46).
 
-- **D017 dedup cascade** — `collect/dedup_cascade.py`: sha256 → pHash → artist Q-ID → title → DINOv2 hook; blocks duplicate acquisitions.
+- **D017 dedup cascade** — `collect/dedup_cascade.py`: sha256 → dHash → artist Q-ID → title metadata → DINOv2 hook; blocks duplicate acquisitions.
 
 - **Acquisition flow** — `collect/acquisition_flow.py`: museum collectors, verify, quality, dedup in one assessment.
 
@@ -59,7 +59,7 @@ Fine-Art-Archive/
 
 **Entities:** **work** via `work_id` (7-char hash prefix + slug, `meta.schema.json` L17–20). Stable keys: `stable_identifiers.wikidata_q`, museum accession, `artist.wikidata_q`, ULAN.
 
-**Persistence:** files only — JSON sidecars, CSV manifest, JSONL logs, NPZ embedding caches (`visual_dedupe.py` L19–41). No app database in `src/`.
+**Persistence:** files only — JSON sidecars, CSV manifest, JSONL logs, and operational embedding caches; no application database is defined in `src/`.
 
 **Versioning:** `schema_version: "1.0"`; `field_provenance` records supersession via `prior_value` (partially wired).
 
@@ -81,13 +81,13 @@ Fine-Art-Archive/
 
 ## 7. Current state
 
-**CI:** `pr-00-gate.yml` + reusable Python CI; **81% coverage** floor (`ci.yml` L49). Package **Alpha** (`pyproject.toml` L16). 123 test modules.
+**CI:** `pr-00-gate.yml` + reusable Python CI; **81% coverage** floor (`ci.yml` L49). Package **Alpha** (`pyproject.toml`). 125 test modules.
 
 **Usable now:** sidecar validation, dedup, enrichment scripts, Companion API, manifest rebuild, crosswalk/IIIF.
 
 **Gated / partial:** preference learning (`NEXT_PHASE_PLAN.md` L42–43); physical e-ink; backplane emission; LLM dossier synthesis (`dossier.py` L17–18).
 
-**Key gaps:** corpus outside repo (`PROJECT_TODO.md` L11–14); manifest must be rebuilt after promotion (`README.md` L54–57); lineage fields unread (`PROJECT_TODO.md` L56–63); DINOv2 cache can lag (`AGENTS.md` L227–230); ops scripts named in `AGENTS.md` absent from `scripts/`; Stage C e-ink dormant (`A_SERIES_ROADMAP.md` L33–46).
+**Key gaps:** corpus outside repo (`docs/PROJECT_TODO.md` L11–14); manifest must be rebuilt after promotion (`README.md` L52–65); lineage fields remain unread (`docs/PROJECT_TODO.md` L56–63); DINOv2 cache can lag (`AGENTS.md` L227–232); ops scripts named in `AGENTS.md` are absent from `scripts/`; Stage C e-ink remains dormant (`docs/A_SERIES_ROADMAP.md` L28–46).
 
 ## 8. Claims vs reality
 
@@ -97,7 +97,7 @@ Fine-Art-Archive/
 
 - **`validate_run_contract.py` L409–412** references `tests/fixtures/backplane/` — **missing**.
 
-- **Fresh clone** serves one fixture work unless `FAA_WORKS_DIR` set (`main.py` L66–70).
+- **Fresh clone** contains one staged fixture, but the API store defaults to Dropbox `Art/works`; `FAA_WORKS_DIR` (or legacy `FAA_STAGING_DIR`) must be set to point it at another sidecar tree (`api/config.py`, `api/store.py` L23–45).
 
 - **`companion_app_design.md`** referenced in `NEXT_PHASE_PLAN.md` L46 — **not in repo**.
 
@@ -129,9 +129,9 @@ Fine-Art-Archive/
 
 ## 11. Proposed direction (evidence-based)
 
-**Finish scaffolded:** wire backplane fixtures + `emit_reference_run.sh` (§8); implement `crop_region` consumer (`PROJECT_TODO.md` L62–63); complete `prior_value` re-resolution (`misresolved_work_qid.py` L185); restore or delete missing ops scripts from `AGENTS.md`.
+**Finish scaffolded:** wire backplane fixtures + `emit_reference_run.sh` (§8); implement a `crop_region` consumer (`docs/PROJECT_TODO.md` L62–63); complete `prior_value` re-resolution (`src/fine_art_archive/enrichment/misresolved_work_qid.py` L185); restore or delete missing ops scripts from `AGENTS.md`.
 
-**New capability:** art-specific fleet entity type for Wikidata joins; emit `run-contract/v1` from enrichment batches; post-promotion manifest hook; DINOv2 cache freshness in `/healthz`; demand-ordered dossiers (`A_SERIES_ROADMAP.md` L58–59).
+**New capability:** art-specific fleet entity type for Wikidata joins; emit `run-contract/v1` from enrichment batches; post-promotion manifest hook; DINOv2 cache freshness in `/healthz`; demand-ordered dossiers (`docs/A_SERIES_ROADMAP.md` L55–58).
 
 ## 12. What a colleague needs to know (5 bullets, no code identifiers)
 
@@ -143,4 +143,6 @@ Fine-Art-Archive/
 
 - Automated tests validate the **code** well, but full-archive checks and vision models only run on the owner's machine where the files exist.
 
-- Fleet-wide research contracts are **documented here but not yet produced**; linking to investment-office tools will need a agreed mapping between artwork IDs and manager/fund IDs.
+- Fleet-wide research contracts are **documented here but not yet produced**; linking to investment-office tools will need an agreed mapping between artwork IDs and manager/fund IDs.
+
+Verified 2026-09-04T17:15:18Z by codex: 27 claims checked, 4 corrected, 0 unverifiable.

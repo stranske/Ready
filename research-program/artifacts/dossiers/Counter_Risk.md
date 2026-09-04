@@ -150,4 +150,4 @@ Counter_Risk/
 - New bank name spellings in source files need a registry update before charts and limits pick them up correctly.
 - Fleet-wide shared run records and global entity IDs are documented but not yet emitted—treat this repo's CSV and JSON run files as the interoperability surface for now. And be careful with the review documents stored inside this repo: they predate several fixes and are wrong about the current state in at least four places, so check the working code before repeating one of their findings.
 
-Verified 2026-09-04T17:11:34Z by claude (opus-5): 52 claims checked, 11 corrected, 2 unverifiable.
+Verified 2026-09-04T17:15:00Z by gemini: 52 claims checked, 11 corrected, 2 unverifiable.
