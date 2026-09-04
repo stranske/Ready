@@ -60,3 +60,7 @@ Owner-facing status: [research-program/STATUS.md](https://github.com/stranske/Re
 - Canonical local Workflows fast-forwarded to the merged source while preserving its unrelated untracked test.
 - The report itself was read back from the Ready GitHub mirror.
 
+
+## Later unattended execution evidence
+
+At 23:05:50 UTC the scheduled driver claimed A-verify-Pension-Data and completed it with a fresh 1,648-word dossier. Its verification table reports 63 checked claims, one citation refinement, and one explicitly unverified live-network claim. The output and verification table were inspected during this review. Two recovered verification units remain queued.
