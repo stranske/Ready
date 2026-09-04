@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-04T18:11:08Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-04T18:11:24Z)
 
-Units: 33 — claimed 2, done 30, queued 1
+Units: 33 — claimed 1, done 31, queued 1
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=shed vibe=ok aider=ok
 CLAUDE CONSERVATION ACTIVE until 2026-09-06T12:00:00Z — cheap agents only (launchd driver every 15 min); claude-only units deferred.
@@ -24,7 +24,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | A-verify-trip-planner | A | A1 | done | cursor | driver | Verify dossier artifacts/dossiers/trip-planner.md against ../clones/tr |
 | A-dossier-index | A | A2 | done | cursor | driver | Fleet index and shared vocabulary from verified dossiers (needs >=12 v |
 | A-personal-reuse-note | A | A2 | done | cursor | driver | Reuse note across personal repos (FAA, Reader, trip-planner) |
-| A-memo-correction | A | A3 | claimed | cursor | driver | Correct cover-memo maturity labels against the audit ledger and open i |
+| A-memo-correction | A | A3 | done | cursor | driver | Correct cover-memo maturity labels against the audit ledger and open i |
 | A-work-side-bundle | A | A3 | done | cursor | driver | Work-side bundle: redaction pass, cover memo, safety grep |
 | A-work-side-bundle-refresh | A | A3 | done | cursor | driver | Refresh the work-side bundle with the three late dossiers and re-run t |
 | A-dossier-docx | A | A3 | claimed | cursor | codex | Word versions of all verified dossiers (venv + python-docx) |
@@ -44,7 +44,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-04T18:09:30Z — A-memo-correction — claimed by driver (agent cursor)
 - 2026-09-04T18:09:30Z — B3-interop-architecture — route — router picked codex from ['codex', 'gemini']
 - 2026-09-04T18:09:30Z — B3-interop-architecture — claimed by driver (agent codex)
 - 2026-09-04T18:09:30Z — A-dossier-docx — route — router picked cursor from ['codex', 'cursor']
@@ -56,3 +55,4 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-04T18:10:57Z — A-dossier-docx — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-04T18:10:57Z — A-dossier-docx — claimed by codex (agent cursor)
 - 2026-09-04T18:11:08Z — B3-interop-architecture — done — cursor produced 3022 words at artifacts/research/B3-interop-architecture.md in 95s
+- 2026-09-04T18:11:24Z — A-memo-correction — done — cursor produced 1573 words at artifacts/work-bundle/00-COVER-MEMO.md in 114s
