@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-04T17:31:37Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-04T17:31:38Z)
 
-Units: 29 — claimed 4, done 10, queued 15
+Units: 29 — claimed 3, done 11, queued 15
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 CLAUDE CONSERVATION ACTIVE until 2026-09-06T12:00:00Z — cheap agents only (launchd driver every 15 min); claude-only units deferred.
@@ -19,7 +19,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | A-verify-Template | A | A1 | done | gemini | driver | Verify dossier artifacts/dossiers/Template.md against ../clones/Templa |
 | A-verify-Travel-Plan-Permission | A | A1 | done | gemini | driver | Verify dossier artifacts/dossiers/Travel-Plan-Permission.md against .. |
 | A-verify-Trend_Model_Project | A | A1 | done | gemini | driver | Verify dossier artifacts/dossiers/Trend_Model_Project.md against ../cl |
-| A-verify-Workflows | A | A1 | claimed | codex | driver | Verify dossier artifacts/dossiers/Workflows.md against ../clones/Workf |
+| A-verify-Workflows | A | A1 | done | codex | driver | Verify dossier artifacts/dossiers/Workflows.md against ../clones/Workf |
 | A-verify-learning-management-system | A | A1 | claimed | gemini | driver | Verify dossier artifacts/dossiers/learning-management-system.md agains |
 | A-verify-trip-planner | A | A1 | queued | codex |  | Verify dossier artifacts/dossiers/trip-planner.md against ../clones/tr |
 | A-dossier-index | A | A2 | claimed | cursor | driver | Fleet index and shared vocabulary from verified dossiers (needs >=12 v |
@@ -40,7 +40,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-04T17:31:31Z — A-dossier-index — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-04T17:31:31Z — A-dossier-index — claimed by driver (agent cursor)
 - 2026-09-04T17:31:31Z — A-verify-Template — done — vibe produced 1394 words at artifacts/dossiers/Template.md in 369s
 - 2026-09-04T17:31:32Z — A-verify-Workflows — route — router picked codex from ['codex', 'cursor', 'gemini']
@@ -52,3 +51,4 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-04T17:31:34Z — A-verify-learning-management-system — route — router picked gemini from ['codex', 'cursor', 'gemini']
 - 2026-09-04T17:31:34Z — A-verify-learning-management-system — claimed by driver (agent gemini)
 - 2026-09-04T17:31:37Z — A-verify-Orchestrator — done — gemini produced 2300 words at artifacts/dossiers/Orchestrator.md in 387s
+- 2026-09-04T17:31:38Z — A-verify-Workflows — done — gemini produced 1598 words at artifacts/dossiers/Workflows.md in 6s

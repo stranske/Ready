@@ -94,3 +94,4 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-04T17:31:34Z — A-verify-learning-management-system — route — router picked gemini from ['codex', 'cursor', 'gemini']
 ## 2026-09-04T17:31:34Z — A-verify-learning-management-system — claimed by driver (agent gemini)
 ## 2026-09-04T17:31:37Z — A-verify-Orchestrator — done — gemini produced 2300 words at artifacts/dossiers/Orchestrator.md in 387s
+## 2026-09-04T17:31:38Z — A-verify-Workflows — done — gemini produced 1598 words at artifacts/dossiers/Workflows.md in 6s
