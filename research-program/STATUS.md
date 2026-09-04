@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-04T17:31:29Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-04T17:31:32Z)
 
-Units: 29 — claimed 5, done 7, queued 17
+Units: 29 — claimed 5, done 8, queued 16
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 CLAUDE CONSERVATION ACTIVE until 2026-09-06T12:00:00Z — cheap agents only (launchd driver every 15 min); claude-only units deferred.
@@ -16,10 +16,10 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | A-verify-Orchestrator | A | A1 | claimed | gemini | driver | Verify dossier artifacts/dossiers/Orchestrator.md against ../clones/Or |
 | A-verify-Pension-Data | A | A1 | done | gemini | driver | Verify dossier artifacts/dossiers/Pension-Data.md against ../clones/Pe |
 | A-verify-Portable-Alpha-Extension-Model | A | A1 | done | gemini | driver | Verify dossier artifacts/dossiers/Portable-Alpha-Extension-Model.md ag |
-| A-verify-Template | A | A1 | claimed | gemini | driver | Verify dossier artifacts/dossiers/Template.md against ../clones/Templa |
+| A-verify-Template | A | A1 | done | gemini | driver | Verify dossier artifacts/dossiers/Template.md against ../clones/Templa |
 | A-verify-Travel-Plan-Permission | A | A1 | done | gemini | driver | Verify dossier artifacts/dossiers/Travel-Plan-Permission.md against .. |
 | A-verify-Trend_Model_Project | A | A1 | claimed | gemini | driver | Verify dossier artifacts/dossiers/Trend_Model_Project.md against ../cl |
-| A-verify-Workflows | A | A1 | queued | codex |  | Verify dossier artifacts/dossiers/Workflows.md against ../clones/Workf |
+| A-verify-Workflows | A | A1 | claimed | codex | driver | Verify dossier artifacts/dossiers/Workflows.md against ../clones/Workf |
 | A-verify-learning-management-system | A | A1 | queued | codex |  | Verify dossier artifacts/dossiers/learning-management-system.md agains |
 | A-verify-trip-planner | A | A1 | queued | codex |  | Verify dossier artifacts/dossiers/trip-planner.md against ../clones/tr |
 | A-dossier-index | A | A2 | claimed | cursor | driver | Fleet index and shared vocabulary from verified dossiers (needs >=12 v |
@@ -40,15 +40,15 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-04T17:25:21Z — A-verify-Portable-Alpha-Extension-Model — claimed by driver (agent gemini)
-- 2026-09-04T17:25:21Z — A-verify-Template — route — router picked gemini from ['codex', 'cursor', 'gemini']
-- 2026-09-04T17:25:21Z — A-verify-Template — claimed by driver (agent gemini)
-- 2026-09-04T17:25:22Z — A-verify-Travel-Plan-Permission — route — router picked gemini from ['codex', 'cursor', 'gemini']
-- 2026-09-04T17:25:22Z — A-verify-Travel-Plan-Permission — claimed by driver (agent gemini)
-- 2026-09-04T17:31:21Z — A-verify-Pension-Data — done — gemini produced 1648 words at artifacts/dossiers/Pension-Data.md in 360s
 - 2026-09-04T17:31:21Z — A-verify-Travel-Plan-Permission — done — gemini produced 2049 words at artifacts/dossiers/Travel-Plan-Permission.md in 359s
 - 2026-09-04T17:31:22Z — A-dossier-index — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-04T17:31:22Z — A-dossier-index — claimed by driver (agent cursor)
 - 2026-09-04T17:31:24Z — A-verify-Trend_Model_Project — route — router picked gemini from ['codex', 'cursor', 'gemini']
 - 2026-09-04T17:31:24Z — A-verify-Trend_Model_Project — claimed by driver (agent gemini)
 - 2026-09-04T17:31:29Z — A-verify-Portable-Alpha-Extension-Model — done — gemini produced 2173 words at artifacts/dossiers/Portable-Alpha-Extension-Model.md in 367s
+- 2026-09-04T17:31:31Z — A-dossier-index — fail — gemini produced 0 words at /Users/teacher/.codex/automations/research-program/artifacts/dossiers/00-INDEX.md (min 400); rotating agent
+- 2026-09-04T17:31:31Z — A-dossier-index — route — router picked cursor from ['codex', 'cursor']
+- 2026-09-04T17:31:31Z — A-dossier-index — claimed by driver (agent cursor)
+- 2026-09-04T17:31:31Z — A-verify-Template — done — vibe produced 1394 words at artifacts/dossiers/Template.md in 369s
+- 2026-09-04T17:31:32Z — A-verify-Workflows — route — router picked codex from ['codex', 'cursor', 'gemini']
+- 2026-09-04T17:31:32Z — A-verify-Workflows — claimed by driver (agent codex)

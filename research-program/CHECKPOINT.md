@@ -81,3 +81,9 @@
 ## 2026-09-04T17:31:24Z — A-verify-Trend_Model_Project — route — router picked gemini from ['codex', 'cursor', 'gemini']
 ## 2026-09-04T17:31:24Z — A-verify-Trend_Model_Project — claimed by driver (agent gemini)
 ## 2026-09-04T17:31:29Z — A-verify-Portable-Alpha-Extension-Model — done — gemini produced 2173 words at artifacts/dossiers/Portable-Alpha-Extension-Model.md in 367s
+## 2026-09-04T17:31:31Z — A-dossier-index — fail — gemini produced 0 words at /Users/teacher/.codex/automations/research-program/artifacts/dossiers/00-INDEX.md (min 400); rotating agent
+## 2026-09-04T17:31:31Z — A-dossier-index — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-04T17:31:31Z — A-dossier-index — claimed by driver (agent cursor)
+## 2026-09-04T17:31:31Z — A-verify-Template — done — vibe produced 1394 words at artifacts/dossiers/Template.md in 369s
+## 2026-09-04T17:31:32Z — A-verify-Workflows — route — router picked codex from ['codex', 'cursor', 'gemini']
+## 2026-09-04T17:31:32Z — A-verify-Workflows — claimed by driver (agent codex)
