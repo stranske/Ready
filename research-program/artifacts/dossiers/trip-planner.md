@@ -9,7 +9,7 @@
 | **REST Web API** | `trip_planner/app/main.py` | Browser SPA, test runners | **Working**. FastAPI backend for auth, trips, workspace, and proposals (`routes/`). Verified in `tests/app/test_trip_routes.py`. |
 | **Web UI (SPA)** | `frontend/src/main.tsx` | Travelers, travel managers | **Working**. React 19 / Vite SPA (`src/router.tsx`) covering onboarding, trip creation, and workspace. Verified via Playwright canary (`scripts/run_two_trip_ui_canary.sh`). |
 | **Operator CLI** | `scripts/seed_demo_data.py` | Developers, test automation | **Working**. Seeds demo user (`demo@trip-planner.local`); `scripts/check_full_product_verification.py` verifies product journeys. |
-| **Map Card** | `frontend/src/components/maps/GoogleMapAdapter.tsx` | Travelers checking routes | **Partial (Bounded Fallback)**. Renders Google Maps with key; otherwise falls back to SVG schematics (`RouteContextMapTarget`). Server distance verification is deferred (`docs/reports/runtime-seam-audit.md:43`). |
+| **Map Card** | `frontend/src/components/maps/TripMap.tsx` | Travelers checking routes | **Partial (Bounded Fallback)**. Renders Google Maps when the JS API loads with a key; otherwise falls back to bounded SVG schematics per `docs/contracts/route-context-map-target.md`. Live distance/geometry verification remains a follow-up (`docs/reports/runtime-seam-audit.md:30`, Issue `#1191`). |
 | **TPP Remote Client** | `trip_planner/integrations/tpp/client.py` | Compliance teams, expense systems | **Partial (Integration Seam)**. HTTP client with circuit breaking (`_CircuitBreaker`). Disabled by default (`live_tpp=off`), using local evaluation (`trip_planner/business/approval_ready.py`). |
 | **Legacy HTML Generator** | `scripts/build_html.py` | Legacy demo reviewers | **Scaffold / Broken Legacy**. Renders static HTML from `data/`. Requires unlisted `jinja2`; `tests/test_build_html.py` is skipped in pytest (`pyproject.toml:65`). |
 
@@ -38,13 +38,13 @@ stranske/trip-planner/
 - **Workspace State Aggregator** (`trip_planner.app.services.workspace:get_workspace_payload`): Assembles workspace JSON from `trip_id`, credentials, and db session. Why it matters: Central hydration nexus for frontend views.
 - **Conversational Planner Engine** (`trip_planner.app.services.planner:submit_planner_turn`): Executes planning dialogue within privacy redactions. Why it matters: Powers conversational planning with deterministic fallback.
 - **Multicriteria Scenario Ranking Engine** (`trip_planner.ranking.leisure:LeisureRankingEngine`, `trip_planner.ranking.business:BusinessRankingEngine`): Evaluates candidate bundles against traveler/business preference profiles. Why it matters: Drives comparative evaluation across alternative itineraries.
-- **Mixed-Inventory Feasibility Pipeline** (`trip_planner.itinerary.feasibility:evaluate_itinerary_feasibility`): Validates lodging, transit, and activity timings to produce an `InventoryBundle`. Why it matters: Prevents impossible schedules reaching travelers.
+- **Mixed-Inventory Feasibility Pipeline** (`trip_planner.itinerary.feasibility:evaluate_bundle_feasibility`): Validates lodging, transit, and activity timings to produce a `FeasibilityAssessment` over an `InventoryBundle`. Why it matters: Prevents impossible schedules reaching travelers.
 - **Corporate Policy & Approval Compiler** (`trip_planner.business.approval_ready:build_approval_ready_package`): Compiles profiles, proposals, and evaluations into an `ApprovalReadyPackage`. Why it matters: Converts travel plans into auditable compliance proposals for executive sign-off.
-- **Revealed Preference Learning Engine** (`trip_planner.preferences.revealed_preference:update_revealed_preferences`): Adjusts preference weights dynamically from user interaction events. Why it matters: Continuously adapts suggestions without repetitive questionnaires.
+- **Revealed Preference Learning Engine** (`trip_planner.preferences.revealed_preference:build_revealed_preference_update`): Adjusts preference weights dynamically from user interaction events. Why it matters: Continuously adapts suggestions without repetitive questionnaires.
 - **Fault-Tolerant TPP Client** (`trip_planner.integrations.tpp.client:HTTPTPPIntegrationClient`, `_CircuitBreaker`): Wraps remote policy queries with exponential backoff and circuit breaking. Why it matters: Isolates the workspace from service outages.
 
 ## 5. Data model, identifiers and contracts
-Entities use typed string IDs: `trip_id` (e.g., `trip-tokyo-2026`) is the root container; `user_id` and `session_id` identify accounts and sessions (authenticated via SHA-256 `token_hash`); `saved_scenario_id` tracks scenario collections (`current_version_id` points to the active version head); `proposal_id` and `proposal_version` identify corporate proposals; catalog items use `option_id`, `destination_id`, `activity_id`, `lodging_id`, and `bundle_id`; items carry `source_id`, `snapshot_id`, and `sha256:` content hashes.
+Entities use typed string IDs: `trip_id` (e.g., `trip-leisure-kyoto-draft`) is the root container; `user_id` and `session_id` identify accounts and sessions (authenticated via SHA-256 `token_hash`); `saved_scenario_id` tracks scenario collections (`current_version_id` points to the active version head); `proposal_id` and `proposal_version` identify corporate proposals; catalog items use `option_id`, `destination_id`, `activity_id`, `lodging_id`, and `bundle_id`; options carry `source_id`, and the source-ingestion layer tracks `snapshot_id` on `RawSnapshot` records.
 
 Persistence uses SQLAlchemy 2.0 with Alembic migrations (`trip_planner/persistence/db.py`), defaulting to SQLite at `~/.trip-planner/trip_planner.db`, normalizing to PostgreSQL when `TRIP_PLANNER_DATABASE_URL` is set.
 
@@ -58,21 +58,21 @@ Persistence uses SQLAlchemy 2.0 with Alembic migrations (`trip_planner/persisten
 - **Key Libraries & Runtime**: FastAPI, Uvicorn, SQLAlchemy 2.0, Alembic, psycopg[binary] on backend; Vite, React 19, TypeScript on frontend. Runs locally with Python 3.12+ and SQLite; production uses Netlify and Render.
 
 ## 7. Current state
-- **Test and CI Posture**: Gated via `.github/workflows/ci.yml` and `pr-00-gate.yml`. Runs Ruff, Black, Mypy, and Pytest on Python 3.12/3.13, enforcing a 90% coverage floor (`reusable-10-ci-python.yml`) and complexity ceiling of 25 (`scripts/measure_complexity.py`). Runtime CI validates full-stack connectivity (`scripts/check_full_stack_runtime.sh`) and Playwright browser journeys (`scripts/run_two_trip_ui_canary.sh`).
+- **Test and CI Posture**: Gated via `.github/workflows/ci.yml` and `pr-00-gate.yml`. Runs Ruff, Black, Mypy, and Pytest on Python 3.12/3.13, enforcing a 90% coverage floor (`stranske/Workflows` reusable `reusable-10-ci-python.yml` via `ci.yml`) and complexity ceiling of 25 (`scripts/measure_complexity.py`). Runtime CI validates full-stack connectivity (`scripts/check_full_stack_runtime.sh`) and Playwright browser journeys (`scripts/run_two_trip_ui_canary.sh`).
 - **Production-Usable vs Prototype**: Persistence, authentication, trip/scenario CRUD, budget tracking, and rule-based policy evaluations are production-usable. Live data ingestion, live Google Maps geometry, and remote TPP governance are prototype/deferred seams.
 - **Consequential Gap Signals**:
   1. *No live source adapters*: `trip_planner/sources/adapters/base.py` exists without concrete implementations.
-  2. *Live remote TPP deferred*: `scripts/check_full_product_verification.py:379` skips remote TPP (`live_tpp=off`).
-  3. *Route distance verification deferred*: Live Google Maps distance matrix checks remain unverified (`docs/reports/runtime-seam-audit.md:43`, Issue `#1191`).
+  2. *Live remote TPP deferred*: `scripts/check_full_product_verification.py:504` (`tpp_prerequisite_status`) skips remote TPP when `live_tpp=off`.
+  3. *Route distance verification deferred*: Live distance/geometry verification remains a design follow-up (`docs/reports/runtime-seam-audit.md:30`, Issue `#1191`).
   4. *Broken legacy script*: `scripts/build_html.py` imports unlisted `jinja2`, skipped in `pyproject.toml:65`.
   5. *Absence of longitudinal memory*: Cross-trip standing preferences are deferred (`docs/effortless-travel-roadmap.md:57-58`).
-  6. *Keyword matching memory*: Planner memory uses substring checks instead of vector search (`planner_tools.py:902`).
+  6. *Keyword matching planner routing*: Deterministic planner intent routing uses keyword checks, not semantic or vector recall (`docs/langchain-planner-runtime-epic.md:28`, `trip_planner/app/services/planner_routing.py:154-167`).
 
 ## 8. Claims vs reality
-- **Claim: Research-backplane participant emitting `run-contract/v1` envelopes** (`docs/contracts/run-contract-v1.md`). Reality: Zero code in `trip_planner/` emits or consumes it; `scripts/validate_run_contract.py` passes only because the repo is omitted from `config/backplane_participants.json`.
+- **Claim: Research-backplane participant emitting `run-contract/v1` envelopes** (`docs/contracts/run-contract-v1.md`). Reality: Zero code in `trip_planner/` emits or consumes it; `scripts/validate_run_contract.py` is opt-in and no-ops (SKIP) when the repo is absent from the registry passed via `--registry` (this repo ships no `config/backplane_participants.json` entry).
 - **Claim: Extensible external source adapter framework** (`docs/contracts/source-adapters.md`). Reality: Only `trip_planner/sources/adapters/base.py` exists; all inventory loads from static files in `trip_planner/resources/`.
 - **Claim: Functional legacy demo quick start** (`README.md:95-100`). Reality: `scripts/build_html.py` crashes on fresh installs because `jinja2` is omitted from `pyproject.toml` dependencies; tests are suppressed in `pyproject.toml:65`.
-- **Claim: Semantic planner memory** (`docs/langchain-planner-runtime-epic.md`). Reality: `planner_tools.py:902` uses basic substring matching against fixed categories, not semantic or vector recall.
+- **Claim: Semantic planner memory** (`docs/langchain-planner-runtime-epic.md`). Reality: Planner routing and offline fallback use keyword matching (`trip_planner/app/services/planner_routing.py:154-167`, `trip_planner/app/services/planner.py:975-979`); the epic still lists semantic recall for scattered planning notes as an open gap (`docs/langchain-planner-runtime-epic.md:28`).
 - **Claim: Live remote policy integration** (`docs/contracts/tpp-proposal-execution.md`). Reality: Remote HTTP transport runs disabled (`live_tpp=off`), relying on local rules in `approval_ready.py`.
 
 ## 9. Interoperability hooks (for the fleet program)
@@ -85,7 +85,7 @@ Persistence uses SQLAlchemy 2.0 with Alembic migrations (`trip_planner/persisten
   - Corporate Travel Policies: Nightly lodging limits and per-diem allowances via `TPPPolicyRequirement` payloads (`policy_sync.py`).
   - Travel Authorizations: Approval/rejection decisions from `Travel-Plan-Permission` (`PersistedEvaluationResult` in `results.py`).
   - Investment Calendar Events: Target company meetings or due diligence schedules ingested into `required_presence_windows`.
-- **Potential Collisions**: Internal keys (`user_id`) conflict with corporate Active Directory / SSO GUIDs; unvalidated strings (`organization_id`) conflict with Legal Entity Identifiers (LEI); local slugs (`kyoto`) conflict with IATA codes (`NRT`); internal `EvidenceRecord` lacks standard `evidence-object-v1` hashes and page citations.
+- **Potential Collisions**: Internal keys (`user_id`) conflict with corporate Active Directory / SSO GUIDs; unvalidated strings (`organization_id`) conflict with Legal Entity Identifiers (LEI); local slugs (`kyoto`) conflict with IATA codes (`NRT`); internal `DimensionEvidenceRecord` lacks standard `evidence-object-v1` hashes and page citations.
 
 ## 10. Reuse candidates
 - `trip_planner/integrations/tpp/client.py` (`_CircuitBreaker`): Host-keyed HTTP circuit breaker with exponential backoff and typed error taxonomy.
@@ -94,20 +94,20 @@ Persistence uses SQLAlchemy 2.0 with Alembic migrations (`trip_planner/persisten
 - `scripts/measure_complexity.py`: Standalone AST-based PR complexity ceiling enforcer.
 - `trip_planner/sources/quality.py` (`SourceQualityScorer`): Epistemic source credibility and trust-tier scoring calculator.
 - `trip_planner/app/services/workspace_map_payloads.py`: Bounded route geometry generator with SVG fallback.
-- `trip_planner/app/services/auth.py` (`AuthSession`): Lightweight bearer token session service with sliding renewal.
+- `trip_planner/persistence/models/session.py` (`AuthSession`) with helpers in `trip_planner/app/services/auth.py`: Lightweight bearer token session service with sliding renewal.
 
 ## 11. Proposed direction (evidence-based)
 ### Finish What Is Scaffolded:
 - **Concrete Source Adapters**: Build connectors in `trip_planner/sources/adapters/` against an open travel API to replace static JSON fixtures.
 - **Live TPP Client in Staging**: Activate HTTP transport in `trip_planner/integrations/tpp/client.py` against a running `Travel-Plan-Permission` container in CI.
-- **Route Geometry Seam (#1191)**: Complete server-side distance matrix verification when Google Maps credentials exist (`docs/reports/runtime-seam-audit.md:43`).
+- **Route Geometry Seam (#1191)**: Complete server-side distance matrix verification when Google Maps credentials exist (`docs/reports/runtime-seam-audit.md:30`).
 - **Modernize Legacy Scripts**: Restore `jinja2` to `pyproject.toml` dependencies and re-enable `tests/test_build_html.py`, or remove `scripts/build_html.py`.
 
 ### New Capabilities:
 - **Adopt Run Contracts**: Implement emission of `run-contract/v1` envelopes and `artifact-manifest-v1` files in `trip_planner/app/services/`.
 - **Corporate SSO**: Replace local password auth with SAML/OIDC integration, mapping traveler profiles to directory IDs.
 - **Due Diligence Calendar Ingestion**: Ingest corporate calendar feeds (.ics/API) to generate business presence windows for deal teams.
-- **Vectorized Planner Memory**: Upgrade `trip_planner/app/services/planner_memory.py` from substring matching to local vector embeddings.
+- **Vectorized Planner Memory**: Upgrade planner recall from keyword routing to local vector embeddings per `docs/langchain-planner-runtime-epic.md:28`.
 
 ## 12. What a colleague needs to know (5 bullets, no code identifiers)
 - **What the tool does**: Dual-purpose travel portal allowing professionals to build, visualize, and budget vacations or business trips in a browser.
@@ -115,3 +115,5 @@ Persistence uses SQLAlchemy 2.0 with Alembic migrations (`trip_planner/persisten
 - **Corporate compliance automation**: Checks planned itineraries against spend caps and policies, assembling justification packages for management sign-off.
 - **Security and data privacy**: Runs securely inside an enterprise network, keeping itineraries on local servers so confidential plans are never sent to external AI.
 - **Institutional interoperability**: Built to connect with corporate single sign-on, expense tools, and deal calendars to streamline due diligence travel.
+
+Verified 2026-09-04T17:38:05Z by composer: 36 claims checked, 7 corrected, 3 unverifiable
