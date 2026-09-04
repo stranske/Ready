@@ -93,17 +93,17 @@ archive/          Retired configs and development logs
 5. No `config/backplane_participants.json` in repo — referenced by conformance workflow but absent from `config/`.
 6. Model limitations documented as intentional — i.i.d. monthly draws, no regimes in sweeps, forward-looking not backtested (`README.md` L86–89).
 7. `docs/ISSUES_BACKLOG.md` lists historical backlog items; several (DataImportAgent, packaging) are now implemented (`pa_core/data/importer.py`, `pyproject.toml` scripts) but backlog not updated.
-8. `ISSUES_BACKLOG.md` item 10 ("Remove Excel/CSV parameter inputs") not done — CLI still accepts CSV index + YAML config.
+8. `docs/ISSUES_BACKLOG.md` item 10 ("Remove Excel/CSV parameter inputs; keep converter for one release") is completed: CLI parameter input is strictly YAML (`pa_core/cli.py:442-449`); CSV/XLSX parameter ingestion was removed from the simulation entry point, and `pa_core/data/convert.py` (`pa-convert-params`) was provided as the transition converter. CSV inputs are accepted only for market index return series (`--index`), not model parameters.
 
 ## 8. Claims vs reality
 
-- **Fleet run envelope is wired.** `docs/contracts/run-contract-v1.md` L16–17 states no participant emits `run-contract/v1` yet; code emits a **different** local `run.json` (`docs/contracts/run-record.md`, `pa_core/cli.py` L915–923) without `schema_version: run-contract/v1`.
-- **Backplane conformance gate validates PAEM runs.** `.github/workflows/backplane-conformance.yml` L49–54: without `emit_reference_run.sh`, the job prints "No emitter wired yet; the conformance gate will skip."
-- **Scenario YAML `sleeves` field drives simulation.** README and `pa_core/schema.py` L155–160 say it is validated only; `pa_core/reporting/disclaimers.py` L25 repeats this in board packs.
-- **Pure browser / stlite deployment.** README L19 explicitly disclaims the stlite path because Kaleido and python-pptx are not Pyodide-viable; `web/index.html` is a Plotly render helper, not the full dashboard.
-- **ISSUES_BACKLOG "Streamlit MVP pages" as open work.** Seven pages exist under `dashboard/pages/`; backlog (`docs/ISSUES_BACKLOG.md` L12) is stale relative to code.
-- **Evidence objects with document provenance.** Schemas exist (`docs/contracts/schemas/evidence-object-v1.schema.json`) but no PAEM module writes `evidence-object/v1` JSON.
-- **Entity IDs for fleet join.** `docs/contracts/identity-map-conventions.md` L31–32 assigns PAEM "1/3, N/A" — no `identity_refs` emission in run artifacts.
+- **Claim: PAEM's `run.json` satisfies the fleet `run-contract/v1` envelope.** `docs/contracts/run-record.md:3-7` defines `run.json` as fulfilling the "blueprint `run_contract` standard", which can be conflated with the fleet standard. In reality, `docs/contracts/run-contract-v1.md:16–17` explicitly notes that no participant emits `run-contract/v1` yet; code emits a **different** local `run.json` (`docs/contracts/run-record.md`, `pa_core/cli.py:910–928`) without `schema_version: run-contract/v1`.
+- **Claim: Backplane conformance gate validates PAEM runs.** `.github/workflows/backplane-conformance.yml:49–55`: without `emit_reference_run.sh`, the job prints "No emitter wired yet; the conformance gate will skip."
+- **Claim: Scenario YAML `sleeves` field drives simulation.** README and `pa_core/schema.py:155–160` say it is validated only; `pa_core/reporting/disclaimers.py:25` repeats this in board packs.
+- **Claim: Pure browser / stlite deployment.** README line 19 explicitly disclaims the stlite path because Kaleido and python-pptx are not Pyodide-viable; `web/index.html` is a Plotly render helper, not the full dashboard.
+- **Claim: ISSUES_BACKLOG "Streamlit MVP pages" as open work.** Seven pages exist under `dashboard/pages/`; backlog (`docs/ISSUES_BACKLOG.md:12`) is stale relative to code.
+- **Claim: Evidence objects with document provenance.** Schemas exist (`docs/contracts/schemas/evidence-object-v1.schema.json`) but no PAEM module writes `evidence-object/v1` JSON.
+- **Claim: Entity IDs for fleet join.** `docs/contracts/identity-map-conventions.md:31–32` assigns PAEM "1/3, N/A" — no `identity_refs` emission in run artifacts.
 
 ## 9. Interoperability hooks (for the fleet program)
 
@@ -168,3 +168,5 @@ archive/          Retired configs and development logs
 - Every run can leave a reproducibility trail (saved config, random seed, and file fingerprints) so you can defend a number in a meeting or compare two scenarios side by side.
 - Results are gross of fees by default, assume independent monthly draws, and ignore market regimes unless you configure otherwise — read the caveats slide in any generated board pack before presenting.
 - The tool does not know your managers, funds, or filing documents; fleet-wide entity linking is a future integration, not something the current simulation consumes.
+
+Verified 2026-09-04T17:30:30Z by gemini: 53 claims checked, 1 corrected, 0 unverifiable.

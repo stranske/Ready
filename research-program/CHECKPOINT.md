@@ -76,3 +76,8 @@
 ## 2026-09-04T17:25:22Z — A-verify-Travel-Plan-Permission — claimed by driver (agent gemini)
 ## 2026-09-04T17:31:21Z — A-verify-Pension-Data — done — gemini produced 1648 words at artifacts/dossiers/Pension-Data.md in 360s
 ## 2026-09-04T17:31:21Z — A-verify-Travel-Plan-Permission — done — gemini produced 2049 words at artifacts/dossiers/Travel-Plan-Permission.md in 359s
+## 2026-09-04T17:31:22Z — A-dossier-index — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-04T17:31:22Z — A-dossier-index — claimed by driver (agent cursor)
+## 2026-09-04T17:31:24Z — A-verify-Trend_Model_Project — route — router picked gemini from ['codex', 'cursor', 'gemini']
+## 2026-09-04T17:31:24Z — A-verify-Trend_Model_Project — claimed by driver (agent gemini)
+## 2026-09-04T17:31:29Z — A-verify-Portable-Alpha-Extension-Model — done — gemini produced 2173 words at artifacts/dossiers/Portable-Alpha-Extension-Model.md in 367s
