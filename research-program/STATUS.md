@@ -1,13 +1,13 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-04T15:49:27Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-04T16:15:19Z)
 
-Units: 28 — claimed 1, queued 27
+Units: 28 — done 1, queued 27
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 Owner inbox: https://github.com/stranske/Ready/issues/553
 
 | id | track | phase | status | agent | executor | title |
 |---|---|---|---|---|---|---|
-| A-verify-Collab-Admin | A | A1 | claimed | codex | claude | Verify dossier artifacts/dossiers/Collab-Admin.md against ../clones/Co |
+| A-verify-Collab-Admin | A | A1 | done | codex | claude | Verify dossier artifacts/dossiers/Collab-Admin.md against ../clones/Co |
 | A-verify-Counter_Risk | A | A1 | queued | codex |  | Verify dossier artifacts/dossiers/Counter_Risk.md against ../clones/Co |
 | A-verify-Fine-Art-Archive | A | A1 | queued | codex |  | Verify dossier artifacts/dossiers/Fine-Art-Archive.md against ../clone |
 | A-verify-Inv-Man-Intake | A | A1 | queued | codex |  | Verify dossier artifacts/dossiers/Inv-Man-Intake.md against ../clones/ |
@@ -38,11 +38,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-04T15:47:04Z — auto — added A-verify-Manager-Database
-- 2026-09-04T15:47:04Z — auto — added A-verify-Orchestrator
-- 2026-09-04T15:47:04Z — auto — added A-verify-Pension-Data
-- 2026-09-04T15:47:04Z — auto — added A-verify-Portable-Alpha-Extension-Model
-- 2026-09-04T15:47:04Z — auto — added A-verify-Template
 - 2026-09-04T15:47:04Z — auto — added A-verify-Travel-Plan-Permission
 - 2026-09-04T15:47:04Z — auto — added A-verify-Trend_Model_Project
 - 2026-09-04T15:47:04Z — auto — added A-verify-Workflows
@@ -50,3 +45,8 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-04T15:47:04Z — auto — added A-verify-trip-planner
 - 2026-09-04T15:47:10Z — A-verify-Collab-Admin — claimed by claude (agent codex)
 - 2026-09-04T15:49:26Z — inbox — applied — note recorded
+- 2026-09-04T16:11:56Z — auto — added A-verify-.wrap-Collab-Admin
+- 2026-09-04T16:11:56Z — auto — added A-verify-Collab-Admin.CHECKPOINT
+- 2026-09-04T16:11:57Z — A-verify-.wrap-Collab-Admin — claimed by codex (agent codex)
+- 2026-09-04T16:12:16Z — A-verify-.wrap-Collab-Admin — fail — not-ready: required clone /Users/teacher/.codex/automations/research-program/clones/.wrap-Collab-Admin is missing
+- 2026-09-04T16:15:19Z — A-verify-Collab-Admin — done — Collab-Admin dossier verified: 36 claims checked against the clone, corrections applied in place, verification table written

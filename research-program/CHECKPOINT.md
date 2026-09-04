@@ -32,3 +32,8 @@
 ## 2026-09-04T15:47:04Z — auto — added A-verify-trip-planner
 ## 2026-09-04T15:47:10Z — A-verify-Collab-Admin — claimed by claude (agent codex)
 ## 2026-09-04T15:49:26Z — inbox — applied — note recorded
+## 2026-09-04T16:11:56Z — auto — added A-verify-.wrap-Collab-Admin
+## 2026-09-04T16:11:56Z — auto — added A-verify-Collab-Admin.CHECKPOINT
+## 2026-09-04T16:11:57Z — A-verify-.wrap-Collab-Admin — claimed by codex (agent codex)
+## 2026-09-04T16:12:16Z — A-verify-.wrap-Collab-Admin — fail — not-ready: required clone /Users/teacher/.codex/automations/research-program/clones/.wrap-Collab-Admin is missing
+## 2026-09-04T16:15:19Z — A-verify-Collab-Admin — done — Collab-Admin dossier verified: 36 claims checked against the clone, corrections applied in place, verification table written
