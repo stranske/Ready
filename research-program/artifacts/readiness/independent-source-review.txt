@@ -1,0 +1,147 @@
+Reviewing both PRs and the research engine against the rubric. Gathering diffs, backup copies, and wiring evidence.
+## Advisory Review — Astra Rollout (Workflows PR 3379, Orchestrator PR 233, Research Engine)
+
+**verdict:** `needs-fix`  
+**Confidence:** High on P1s (reproduced locally). Medium on P2s (manual/stale-path only).
+
+---
+
+### P0 blockers
+
+**none**
+
+---
+
+### P1 blockers
+
+#### 1) Workflows — `config/model_eval_candidates.json` not regenerated after Astra catalog entry
+
+- **File/lines:** `Workflows/config/model_registry.json` (adds `gpt-6-astra`); missing update to `Workflows/config/model_eval_candidates.json`
+- **Violation:** Registry-derived drift gate fails; committed candidates omit `openai:gpt-6-astra:candidate`.
+- **Reproduction:**
+  ```bash
+  cd Workflows
+  python3 -m tools.refresh_model_eval_candidates --check   # exit 1
+  python3 -m pytest tests/tools/test_refresh_model_eval_candidates.py::test_committed_candidates_match_registry_derivation -v  # FAIL
+  ```
+- **Why tests miss it in PR scope:** Astra-focused tests pass (129/129 subset), but full suite fails (5543 passed, **3 failed** including this one). `selftest-ci.yml` runs `python -m pytest tests`.
+- **Merge-risk:** **Block Workflows merge** until `python -m tools.refresh_model_eval_candidates --write` is committed.
+- **Owner:** closer fix
+
+#### 2) Orchestrator — retiring `codex-5.6-sol-high` breaks existing SQLite profile rows
+
+- **File/lines:** `Orchestrator/src/execution_profiles.py:361-362`
+- **Violation:** `ensure_schema()` treats persisted execution profiles as immutable. Changing Sol from `active` → `retired` + adding `successor_profile_id` raises `ValueError: immutable execution profile changed: codex-5.6-sol-high` on any DB seeded before this PR.
+- **Reproduction:**
+  ```bash
+  cd Orchestrator/src
+  python3 -c "
+  import sqlite3, tempfile, os, copy, execution_profiles as ep
+  old = copy.deepcopy(ep.PROFILE_REGISTRY)
+  s = copy.deepcopy(old['codex-5.6-sol-high']); s['lifecycle_status']='active'; s.pop('successor_profile_id',None)
+  old['codex-5.6-sol-high']=s; old.pop('codex-6-astra-high',None)
+  td=tempfile.mkdtemp(); conn=sqlite3.connect(os.path.join(td,'t.db'))
+  conn.executescript(ep.SCHEMA)
+  for p in old.values():
+    p=ep.validate_profile(p); conn.execute('INSERT INTO execution_profiles VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
+      (1,p['profile_id'],p['agent'],p['provider'],p['requested_model'],p['reasoning_effort'],p['permission_mode'],
+       ep._canonical(p['transport_support']),p.get('legacy_adapter_mode'),p['adapter_version'],p['prompt_version'],
+       p['lifecycle_status'],p.get('successor_profile_id'),ep._canonical(p),1))
+  conn.commit(); ep.ensure_schema(conn)  # ValueError
+  "
+  ```
+  Also: `pytest tests/test_evidence_contract_compiler.py::test_evaluator_prompt_and_generated_issue_are_contract_aware` fails on non-fresh local DB.
+- **Why tests miss it:** New-install tests pass; no migration test for lifecycle transitions on existing rows.
+- **Merge-risk:** **Block Orchestrator merge** for unattended hosts with existing orchestrator DB (router/dispatcher/trial paths calling `ensure_schema`).
+- **Owner:** closer fix (lifecycle migration or schema-version bump with UPDATE path)
+
+---
+
+### P2 advisories
+
+#### 3) Workflows trial dispatch still exposes retired Sol arm
+
+- **File/lines:** `Workflows/.github/workflows/agents-model-profile-trial.yml:17-21` (profile_id options include `codex-5.6-sol-high`)
+- **Violation:** Orchestrator `EXPECTED_PROFILE_IDS` is now `{codex-6-astra-high, codex-5.6-terra-high, codex-5.6-luna-high}` (`Orchestrator/src/model_profile_trial.py:39-43`). Manual `workflow_dispatch` of Sol arm runs in GHA but trial ingest rejects retired profile (`model_profile_trial.py:390-391`).
+- **Reproduction:** Dispatch Sol arm after Orchestrator merge → artifact produced → orchestrator validation fails on inactive profile.
+- **Merge-risk:** Low for automated trials; footgun for manual replay.
+- **Owner:** closer fix (remove Sol from dispatch options) or owner waiver if historical replay is intentional
+
+#### 4) Orchestrator dispatcher selftest still whitelists retired Sol profile
+
+- **File/lines:** `Orchestrator/src/dispatcher.py:3074-3079` (committed HEAD)
+- **Violation:** Selftest allows `codex-5.6-sol-high` even though `profiles_for_agent("codex")` excludes retired profiles. Misleading, not a runtime selector bug (mid-tier offload correctly resolves Terra via `DEFAULT_OFFLOAD_TIER="mid"`).
+- **Merge-risk:** Low; test hygiene only.
+- **Owner:** keepalive fix
+
+#### 5) Workflows full-suite noise unrelated to Astra
+
+- `tests/scripts/test_update_versions_from_pypi.py` fails on stale PyPI pins (ruff/isort) — environmental, not introduced by this diff.
+- **Merge-risk:** May block CI independently of Astra; not a regression from Astra wiring.
+
+---
+
+### Wiring assessment (requested focus areas)
+
+| Area | Assessment |
+|------|------------|
+| **Astra high-reasoning routing** | Correct: `MODEL_TIERS.full` → `gpt-6-astra` (`adapters.py:69`), new `codex-6-astra-high` profile, Sol retired with successor (`execution_profiles.py:125-126, 265-267`) |
+| **Cheap/balanced tiers preserved** | Correct: Luna/Terra unchanged; offload stays mid/Terra (`dispatcher.py:1276-1277`); trial arms are Astra/Terra/Luna |
+| **CLI compatibility** | Consistent 0.153.2 pins (trial, verifier, codex-run); `MIN_CODEX_CLI_BY_MODEL` includes Astra `(0,153,2)` |
+| **Immutable runner pins** | Consistent `@aa6f391c595858114beeabf58a3b3f44d3ece5b2` across contract, registry, dispatch shim; aa6f391 is ancestor of HEAD |
+| **Registry/catalog/trial contract** | Lifecycle check correctly accepts `current` for Astra (`model_profile_trial_contract.py:240-241`); bridge aligned (`model_profile_trial_bridge.py:451-454`) |
+| **Retired Sol selection** | Runtime routing excludes retired Sol (`profiles_for_agent` filters `lifecycle_status=="active"`); historical profile retained for provenance |
+| **`codex-default` → Astra** | Intentional per `docs/ops/ASTRA_ROLLOUT.md`; evaluate-mode balanced selection still Terra via `model_registry.json` selections (lines 283-285) |
+| **Research engine repair** | No material regressions vs `maintenance-backups/20260904-astra/`; fixes are net improvements (fail-closed capacity, fresh-output validation, inbox pagination, mirror lock, park dedup). **10/10 isolated tests pass.** |
+
+---
+
+### validation evidence checked
+
+| Target | Command | Result |
+|--------|---------|--------|
+| Workflows Astra subset | 129 tests (contract, langchain, trial workflows, verifier, codex-run) | **129 passed**, 2 skipped |
+| Workflows full | `pytest -q` | **5543 passed, 3 failed** (1 Astra-related drift, 2 PyPI pin staleness) |
+| Orchestrator Astra subset | 38 tests (migration, capacity, trial, bridge) | **38 passed** |
+| Orchestrator full | `pytest -q` | **629 passed, 3 failed** (1 profile immutability on existing DB, 2 sqlite-lock flakes in parallel run) |
+| Research engine | `pytest test_readiness.py -q` | **10 passed** |
+| Runner pin ancestry | `git merge-base --is-ancestor aa6f391 HEAD` | confirmed |
+| PR metadata | `gh pr view` | unavailable (no GH auth) |
+| CodeRabbit | unavailable | per offload brief |
+
+---
+
+### Research engine vs backup (regression check)
+
+Changes are intentional repairs, not regressions:
+
+- `capacity_ok`: fail-closed when capacity unreadable/missing agent (was fail-open)
+- `runnable`: honors `phase_stops`
+- `DOSSIER_SRC`: `./clones` default (was ephemeral temp path)
+- `cmd_park`: single unit, no `-default` duplicate writer
+- `driver.py`: enforces program.py exit codes, offload exit/envelope, fresh mtime, router-aware fallback only on `router unavailable`
+- `mirror_push`: file lock + retry semantics
+
+No unattended-operation defects found in these deltas.
+
+---
+
+### residual risk (CodeRabbit unavailable)
+
+- No live CI/check/comment state for PRs 3379/233
+- Cross-repo deploy ordering: Orchestrator should land before/alongside Workflows trial runs expecting Astra arms
+- Cost impact: default worker + checkbox verifier now frontier-tier by design; not a wiring bug but operational change
+- In-flight frozen trials with Sol arm will not validate post-migration
+
+---
+
+### recommendation
+
+**send to keepalive/closer fix path** — do not merge either PR until:
+
+1. Workflows regenerates and commits `config/model_eval_candidates.json`
+2. Orchestrator adds a migration path for `codex-5.6-sol-high` lifecycle retirement (or bumps profile schema version with explicit UPDATE)
+
+After those fixes: **merge-safe with waiver** on P2 Sol dispatch option cleanup.
+
+**Research engine repair:** approve as-is (no blockers found).

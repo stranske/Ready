@@ -34,3 +34,5 @@ subsequent ticks, including empty ticks. Audit identifiers are unique per round.
 
 The 80% cross-provider allowance is a planning target, not an independently measured
 aggregate-spend cap in this engine. Routing still uses Orchestrator capacity controls.
+
+Audit completion now records each round’s newly filed issue URLs. Subsequent refill thresholds use that completed round, not cumulative intake history.
