@@ -1,12 +1,12 @@
 # Astra migration and unattended readiness review
 
-Reviewed 2026-09-04. Source delivery remains in progress; this report distinguishes installed local behavior from remote delivery.
+Reviewed 2026-09-04; updated 23:42 UTC. Astra source changes are merged and installed locally. Consumer delivery remains in progress through Maint 68/71.
 
 ## Current disposition
 
 The previous migration was incomplete: important Orchestrator changes were uncommitted, shared Workflows/consumer defaults remained Terra, seven relevant high-reasoning automations remained Terra, and the isolated repo-review Codex home remained Sol. Those local settings are now Astra/high. Source fixes are in [Workflows #3379](https://github.com/stranske/Workflows/pull/3379) and [Orchestrator #233](https://github.com/stranske/Orchestrator/pull/233); final remote state is recorded below after delivery checks.
 
-The unattended engine is running and has completed a recovered unit with the repaired driver. At the 22:55 UTC checkpoint it reported 40 done / 3 queued, unpaused, no phase stops. Three previously failed dossier-verification outputs remain queued for actual validation; the earlier claim of 43 complete was not reliable.
+The unattended engine is running. At 23:38:58 UTC it reported 44 of 44 units done, unpaused, with no phase stops. All four falsely completed jobs were recovered and actually completed, followed by a downstream consistency pass. The corrected dossiers, summaries and seven Word export destinations are refreshed. Future work remains demand-driven through the scheduled refill mechanism; an empty queue is an intentional stop state.
 
 ## Astra scope and evidence
 
@@ -29,7 +29,7 @@ Reviewed the Projects plan v2, the Astra behavioral contract, the engine's B7 pl
 3. Enforced phase stops before claims. Missing capacity now blocks that seat instead of granting permission. Router fallback only applies when the router is unavailable, not when it declines capacity.
 4. Made parked questions nonblocking defaults on the original unit, preserving dependency identity and preventing duplicate writers. Paginated inbox reads and late answers are retained in OWNER_NOTES even after a unit finishes.
 5. Completion now requires a successful subprocess, no explicit dispatcher error envelope, a fresh output file, and the artifact floor; dossier verification also requires its verification table. A successful dispatcher can return plain text, which is accepted. Failed engine commands raise errors rather than impersonating NO_UNIT.
-6. Audited claimed completions: three failed Gemini verification runs and one timed-out Cursor unblock sweep had been marked done. Requeued them with checkpoints and retained artifacts. The repaired driver subsequently completed the unblock sweep successfully (656-word artifact); the three dossier verifications await their queue turns.
+6. Audited claimed completions: three failed Gemini verification runs and one timed-out Cursor unblock sweep had been marked done. Requeued them with checkpoints and retained artifacts. The repaired driver subsequently completed the unblock sweep successfully (656-word artifact); all three dossier verifications subsequently completed successfully.
 7. Serialized GitHub mirroring, checked git command outcomes and made pending pushes retry even during empty ticks. The repaired queue status was read back from GitHub.
 8. Made audit round IDs unique and merged refill additions into the fresh queue, preserving concurrent completions. Future completed audits replace the last-filed-set denominator using unique intake URLs added since their first claim; the denominator no longer grows cumulatively across completed rounds. Added Deliverable-Render and Manager-Mosaic to the research refill population from the current plan; lane fleet arrays were preserved.
 9. Preserved Claude conservation through 2026-09-06 12:00 UTC with its existing automatic expiry. Verified macOS sleep disabled and local executor apps running.
@@ -63,7 +63,9 @@ Owner-facing status: [research-program/STATUS.md](https://github.com/stranske/Re
 
 ## Later unattended execution evidence
 
-At 23:05:50 UTC the scheduled driver claimed A-verify-Pension-Data and completed it with a fresh 1,648-word dossier. Its verification table reports 63 checked claims, one citation refinement, and one explicitly unverified live-network claim. The output and verification table were inspected during this review. Two recovered verification units remain queued.
+The repaired scheduled driver completed Pension-Data verification at 23:05:50 UTC (1,648 words; 63 checked claims). Codex completed Portable-Alpha verification at 23:19:04 (54 claim groups; 13 corrected). The driver completed Travel-Plan-Permission at 23:24:08 (2,064 words; 54 claims, 9 corrected, 1 explicitly unverified). The bounded downstream consistency unit then corrected the index, R5, B2 and curriculum summaries, including the mistaken assertion that PAEM rejected browser delivery.
+
+The three redacted Work-bundle Markdown files and seven Word destinations were regenerated from corrected evidence. All four unique documents passed structural verification and all 29 rendered pages were visually inspected. See [export refresh evidence](https://github.com/stranske/Ready/blob/main/research-program/artifacts/readiness/export-refresh-20260904.md). Prior exports were backed up.
 
 ## Consumer coordination defect found during rollout
 
@@ -72,3 +74,8 @@ The first Astra source-delta candidates were closed, not merged, by an older Mai
 The automatic recovery generated a full template plan, bringing unrelated review findings back into scope. After the ownership fix, the intended recovery is the original immutable Astra source delta. Source migrations remain merged; consumer completion is not yet certified.
 
 Live branch verification: Trend_Model_Project now has `refs/heads/main` at `18616a82837411b35d1581e86daf726737cf2142`; direct `refs/heads/phase-3` lookup returns 404. The old branch endpoint reports the renamed main branch. This review did not recreate an obsolete branch or alter lane arrays.
+
+
+## Coordination recovery verification
+
+Workflows #3382 merged at 23:29:30 UTC as `72be6db44dd81a7eb8bdaeaf5437a00d1bd5f221`, after 81 JavaScript tests, independent review, all remote checks and the review window. The older campaign retry at 23:32 closed zero newer candidates; its remaining failures were missing targets for its old plan. The current Astra candidate pass at 23:38 started an explicit review window on all three unchanged candidate heads, eligible after 23:45:28 UTC. No generated PR was directly merged or closed by this review.
