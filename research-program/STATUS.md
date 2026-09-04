@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-04T17:31:41Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-04T17:32:04Z)
 
-Units: 29 — claimed 1, done 12, queued 16
+Units: 29 — done 13, queued 16
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 CLAUDE CONSERVATION ACTIVE until 2026-09-06T12:00:00Z — cheap agents only (launchd driver every 15 min); claude-only units deferred.
@@ -12,7 +12,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | A-verify-Counter_Risk | A | A1 | done | gemini | driver | Verify dossier artifacts/dossiers/Counter_Risk.md against ../clones/Co |
 | A-verify-Fine-Art-Archive | A | A1 | done | gemini | codex | Verify dossier artifacts/dossiers/Fine-Art-Archive.md against ../clone |
 | A-verify-Inv-Man-Intake | A | A1 | done | gemini | driver | Verify dossier artifacts/dossiers/Inv-Man-Intake.md against ../clones/ |
-| A-verify-Manager-Database | A | A1 | claimed | gemini | driver | Verify dossier artifacts/dossiers/Manager-Database.md against ../clone |
+| A-verify-Manager-Database | A | A1 | done | gemini | driver | Verify dossier artifacts/dossiers/Manager-Database.md against ../clone |
 | A-verify-Orchestrator | A | A1 | done | gemini | driver | Verify dossier artifacts/dossiers/Orchestrator.md against ../clones/Or |
 | A-verify-Pension-Data | A | A1 | done | gemini | driver | Verify dossier artifacts/dossiers/Pension-Data.md against ../clones/Pe |
 | A-verify-Portable-Alpha-Extension-Model | A | A1 | done | gemini | driver | Verify dossier artifacts/dossiers/Portable-Alpha-Extension-Model.md ag |
@@ -40,7 +40,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-04T17:31:34Z — mirror — push FAILED — remote: Bypassed rule violations for refs/heads/main:        
 - remote: 
 - remote: - Required status check "Gate / gate" is 
 - 2026-09-04T17:31:34Z — A-verify-learning-management-system — route — router picked gemini from ['codex', 'cursor', 'gemini']
@@ -52,3 +51,4 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - remote: 
 - remote: - Required status check "Gate / gate" is 
 - 2026-09-04T17:31:41Z — A-verify-learning-management-system — done — gemini produced 1600 words at artifacts/dossiers/learning-management-system.md in 7s
+- 2026-09-04T17:32:04Z — A-verify-Manager-Database — done — gemini produced 1656 words at artifacts/dossiers/Manager-Database.md in 466s
