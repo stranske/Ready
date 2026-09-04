@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-04T17:58:46Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-04T17:59:12Z)
 
-Units: 32 — claimed 2, done 26, queued 4
+Units: 32 — claimed 2, done 27, queued 3
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=shed vibe=ok aider=ok
 CLAUDE CONSERVATION ACTIVE until 2026-09-06T12:00:00Z — cheap agents only (launchd driver every 15 min); claude-only units deferred.
@@ -25,7 +25,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | A-dossier-index | A | A2 | done | cursor | driver | Fleet index and shared vocabulary from verified dossiers (needs >=12 v |
 | A-personal-reuse-note | A | A2 | done | cursor | driver | Reuse note across personal repos (FAA, Reader, trip-planner) |
 | A-work-side-bundle | A | A3 | done | cursor | driver | Work-side bundle: redaction pass, cover memo, safety grep |
-| A-work-side-bundle-refresh | A | A3 | queued | codex |  | Refresh the work-side bundle with the three late dossiers and re-run t |
+| A-work-side-bundle-refresh | A | A3 | claimed | cursor | driver | Refresh the work-side bundle with the three late dossiers and re-run t |
 | A-dossier-docx | A | A3 | claimed | cursor | driver | Word versions of all verified dossiers (venv + python-docx) |
 | B1-citefix-R1-legal-decomposition | B | B1 | done | cursor | driver | Fix unreachable citations in R1-legal-decomposition.md |
 | B1-citefix-R4-document-access-substrate | B | B1 | done | cursor | driver | Fix unreachable citations in R4-document-access-substrate.md |
@@ -35,7 +35,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | R4-document-access | B | B1 | done | codex | driver | Brief R4: Backstop/MCP/SharePoint mirror substrate (adversarial) |
 | R5-output-substrate | B | B1 | done | cursor | driver | Brief R5: robust no-install output surfaces |
 | R6-public-corpora | B | B1 | done | cursor | driver | Brief R6: public and synthetic corpora |
-| R7-trip-planning-core | B | B1 | claimed | codex | driver | Brief R7: trip-planning core (transport, lodging, constraints) |
+| R7-trip-planning-core | B | B1 | done | codex | driver | Brief R7: trip-planning core (transport, lodging, constraints) |
 | B2-gap-analysis | B | B2 | queued | codex |  | Gap analysis and disposition of all candidates |
 | B3-interop-architecture | B | B3 | queued | codex |  | Interoperability architecture (identity, typology, tracked variables,  |
 | B4-issue-drafting | B | B4 | queued | codex |  | Draft AGENT_ISSUE_FORMAT issue bodies from decisions |
@@ -43,9 +43,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-04T17:55:30Z — B1-citefix-R4-document-access-substrate — claimed by driver (agent cursor)
-- 2026-09-04T17:56:44Z — R6-public-corpora — route — router picked cursor from ['codex', 'cursor']
-- 2026-09-04T17:56:44Z — R6-public-corpora — claimed by driver (agent cursor)
 - 2026-09-04T17:57:25Z — A-verify-learning-management-system — done — cursor produced 1634 words at artifacts/dossiers/learning-management-system.md in 116s
 - 2026-09-04T17:57:28Z — R7-trip-planning-core — route — router picked codex from ['codex', 'gemini']
 - 2026-09-04T17:57:28Z — R7-trip-planning-core — claimed by driver (agent codex)
@@ -55,3 +52,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-04T17:58:41Z — A-verify-Workflows — done — cursor produced 1681 words at artifacts/dossiers/Workflows.md in 192s
 - 2026-09-04T17:58:45Z — R6-public-corpora — done — cursor produced 2201 words at artifacts/research/R6-public-corpora-and-synthetic-data.md in 121s
 - 2026-09-04T17:58:46Z — A-verify-Trend_Model_Project — done — cursor produced 1641 words at artifacts/dossiers/Trend_Model_Project.md in 197s
+- 2026-09-04T17:58:47Z — A-work-side-bundle-refresh — route — router picked cursor from ['codex', 'cursor']
+- 2026-09-04T17:58:47Z — A-work-side-bundle-refresh — claimed by driver (agent cursor)
+- 2026-09-04T17:59:12Z — R7-trip-planning-core — done — cursor produced 2185 words at artifacts/research/R7-trip-planning-core.md in 103s
