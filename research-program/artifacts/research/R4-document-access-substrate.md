@@ -22,9 +22,9 @@ The assistant’s position to test: **“plan for the mirror as the working subs
 
 | Topic | FACTS (sourced) |
 |-------|-----------------|
-| **Document retrieval product** | **Backstop IntellX** automates retrieval of fund documents from source emails and portals and attaches them to funds/investments ([ionanalytics.com/backstop](https://ionanalytics.com/backstop/)). |
-| **REST APIs** | Backstop offers **specially licensed REST APIs** to integrate with third-party systems and reporting engines; marketing copy does not publish document-specific endpoint catalogs ([ionanalytics.com/backstop](https://ionanalytics.com/backstop/), [ionanalytics.com/backstop/services/data-services](https://ionanalytics.com/backstop/services/data-services/)). |
-| **Embedded AI** | Backstop has shipped **client-connected LLM** capability embedded in workflows — firms use **approved models only**, with confidentiality as a stated design constraint ([ionanalytics.com/blog/backstop/integrating-deal-investor-workflow-for-gps-and-lps](https://ionanalytics.com/blog/backstop/integrating-deal-investor-workflow-for-gps-and-lps/), [LinkedIn product post](https://www.linkedin.com/posts/backstop-solutions-group_solutions-in-action-voices-of-ion-analytics-activity-7424836642122735616-oep-)). |
+| **Document retrieval product** | **Backstop IntellX** automates retrieval of fund documents from source emails and portals and attaches them to funds/investments ([ionanalytics.com/backstop](https://ionanalytics.com/backstop/) [access-restricted]). |
+| **REST APIs** | Backstop offers **specially licensed REST APIs** to integrate with third-party systems and reporting engines; marketing copy does not publish document-specific endpoint catalogs ([ionanalytics.com/backstop](https://ionanalytics.com/backstop/) [access-restricted], [ionanalytics.com/backstop/services/data-services](https://ionanalytics.com/backstop/services/data-services/) [access-restricted]). |
+| **Embedded AI** | Backstop has shipped **client-connected LLM** capability embedded in workflows — firms use **approved models only**, with confidentiality as a stated design constraint ([ionanalytics.com/blog/backstop/integrating-deal-investor-workflow-for-gps-and-lps](https://ionanalytics.com/blog/backstop/integrating-deal-investor-workflow-for-gps-and-lps/) [access-restricted], [LinkedIn product post](https://www.linkedin.com/posts/backstop-solutions-group_solutions-in-action-voices-of-ion-analytics-activity-7424836642122735616-oep-)). |
 | **MCP** | **No public announcement** of a Backstop Solutions Group MCP server or Model Context Protocol integration was found. A separate open-source project named “Backstop” (`github.com/pratyush2514/Backstop`) ships an MCP server for **PostgreSQL** — it is **not** the investment platform ([github.com/pratyush2514/Backstop](https://github.com/pratyush2514/Backstop)). |
 
 **JUDGMENT:** Treat “Backstop MCP is coming” as **vendor hope, not plan dependency**. Until IT or Backstop account team confirms an MCP or documented document-export API, the owner should plan **export paths you control** (scheduled REST job by IT, SharePoint sync folder, or manual bulk export) plus a local manifest layer.
@@ -43,7 +43,7 @@ The assistant’s position to test: **“plan for the mirror as the working subs
 
 | Server | Scope | FACTS | Fit for document substrate |
 |--------|-------|-------|---------------------------|
-| **Microsoft MCP Server for Enterprise** | Entra ID / directory read-only | Preview at `https://mcp.svc.cloud.microsoft/enterprise`; **100 calls/min/user**; Graph throttling applies ([learn.microsoft.com/graph/mcp-server/overview](https://learn.microsoft.com/en-us/graph/mcp-server/overview)) | **Not for documents** — identity/admin scenarios only. |
+| **Microsoft MCP Server for Enterprise** | Entra ID / directory read-only | Preview at `https://mcp.svc.cloud.microsoft/enterprise` [access-restricted]; **100 calls/min/user**; Graph throttling applies ([learn.microsoft.com/graph/mcp-server/overview](https://learn.microsoft.com/en-us/graph/mcp-server/overview)) | **Not for documents** — identity/admin scenarios only. |
 | **Work IQ / OneDrive Remote MCP** | Files in M365 | Public preview; **~17 file tools**; **5 MB cap per file operation**; large uploads, delta sync, and version enumeration are Graph-API-only; typically requires M365 Copilot licensing ([scalekit.com/blog/onedrive-mcp-vs-api](https://www.scalekit.com/blog/onedrive-mcp-vs-api), [learn.microsoft.com/microsoft-agent-365/mcp-server-reference/odspremoteserver](https://learn.microsoft.com/en-us/microsoft-agent-365/mcp-server-reference/odspremoteserver)) | **Reject as bulk substrate.** Usable for ad-hoc reads of small files inside Copilot-governed agents, not consultant PDF corpora. |
 | **SharePoint Embedded MCP** (`@microsoft/spe-mcp`) | SPE containers | Read-only mode, tool profiles, local developer tool ([learn.microsoft.com/sharepoint/dev/embedded/build/sharepoint-embedded-mcp-server](https://learn.microsoft.com/en-us/sharepoint/dev/embedded/build/sharepoint-embedded-mcp-server)) | Relevant only if the pension deploys **SharePoint Embedded** — unlikely for a standard SharePoint doc library mirror. |
 
@@ -71,7 +71,7 @@ The assistant’s position to test: **“plan for the mirror as the working subs
 
 **FACTS:**
 
-- Claude Code on the web runs at [claude.ai/code](https://claude.ai/code) on Anthropic-managed VMs; sessions persist across browser close ([code.claude.com/docs/en/claude-code-on-the-web](https://code.claude.com/docs/en/claude-code-on-the-web)).
+- Claude Code on the web runs at claude.ai/code on Anthropic-managed VMs; sessions persist across browser close ([code.claude.com/docs/en/claude-code-on-the-web](https://code.claude.com/docs/en/claude-code-on-the-web)).
 - **GitHub App authorization during browser onboarding** is a first-class path — **no local terminal required** ([code.claude.com/docs/en/claude-code-on-the-web](https://code.claude.com/docs/en/claude-code-on-the-web)).
 - Cloud sessions **clone GitHub remotes** and push branches; they can access **any repo the connected GitHub account can see** ([code.claude.com/docs/en/claude-code-on-the-web](https://code.claude.com/docs/en/claude-code-on-the-web)).
 - Without GitHub, `claude --cloud` can **bundle-upload** a local git repo — but that requires the **CLI on a machine with terminal**, not the work browser-only model ([code.claude.com/docs/en/claude-code-on-the-web](https://code.claude.com/docs/en/claude-code-on-the-web)).
@@ -109,7 +109,7 @@ Workflows `artifact-manifest/v1` standardizes per-run outputs with `artifact_id`
 | Mirror replaces Backstop as authority | **Wrong** | Backstop remains **system of record** for permissions, workflow state, and “current” attachment; mirror is a **replica** with explicit `synced_at` and supersession. |
 | Local mirror works on no-terminal work PC | **Overconfident** | Populating/updating the mirror without terminal implies **IT automation, SharePoint sync, or manual export** — the assistant elides who runs the ingest job. |
 | SharePoint folder = mirror | **Incomplete** | A synced folder lacks manifest, supersession, and content-hash dedupe unless you add the manifest layer. |
-| Backstop MCP will simplify this | **Speculative** | No public MCP; embedded LLM is **in-app**, not an external agent tool ([ionanalytics.com/blog/backstop/integrating-deal-investor-workflow-for-gps-and-lps](https://ionanalytics.com/blog/backstop/integrating-deal-investor-workflow-for-gps-and-lps/)). |
+| Backstop MCP will simplify this | **Speculative** | No public MCP; embedded LLM is **in-app**, not an external agent tool ([ionanalytics.com/blog/backstop/integrating-deal-investor-workflow-for-gps-and-lps](https://ionanalytics.com/blog/backstop/integrating-deal-investor-workflow-for-gps-and-lps/) [access-restricted]). |
 | One-click links “just work” from mirror | **Incomplete** | Requires **three URLs** in derived HTML: mirror blob path (or `file://` on work PC), source system URL (Backstop/SharePoint), and page anchor from `evidence-object/v1` locator. |
 
 **Net judgment:** The assistant’s polarity is **directionally right** but **operationally thin**. Plan: **mirror + manifest as agent substrate**; **MCP/Graph/Backstop API as connectors** that *write into* the mirror on a schedule; **Backstop UI** remains authority for “what’s official today.”
@@ -230,3 +230,16 @@ Build at home on **synthetic/public folders only**; same binary validates real e
 ---
 
 NEW_CANDIDATES=11
+
+---
+
+## Citation corrections 2026-09-04
+
+| Original (unreachable to automated check) | Action |
+|-----|--------|
+| `https://claude.ai/code` | **(a)** Removed hyperlink; claim retained with reachable Anthropic docs (`code.claude.com/docs/en/claude-code-on-the-web`) that document the `claude.ai/code` URL. |
+| `https://ionanalytics.com/backstop/` | **(d)** Kept URL; marked `[access-restricted]` (live page blocks automated HEAD/GET checks; content verified manually). |
+| `https://ionanalytics.com/backstop/services/data-services/` | **(d)** Kept URL; marked `[access-restricted]` (same). |
+| `https://ionanalytics.com/blog/backstop/integrating-deal-investor-workflow-for-gps-and-lps/` | **(d)** Kept URL; marked `[access-restricted]` (same). |
+| `https://mcp.svc.cloud.microsoft/enterprise` | **(d)** Kept URL; marked `[access-restricted]` (MCP API endpoint; not a browsable page; documented at learn.microsoft.com/graph/mcp-server/overview). |
+| `https://…` | **N/A** — illustrative JSON placeholder in `mirror-manifest.json` example, not a citation URL; no change. |
