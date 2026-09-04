@@ -133,3 +133,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-04T17:46:52Z — citations — enqueued B1-citefix-R1-legal-decomposition
 ## 2026-09-04T17:46:52Z — citations — enqueued B1-citefix-R4-document-access-substrate
 ## 2026-09-04T17:47:30Z — A-personal-reuse-note — done — cursor produced 1387 words at artifacts/dossiers/00-PERSONAL-REUSE-NOTE.md in 66s
+## 2026-09-04T17:47:35Z — B1-citefix-R1-legal-decomposition — route — router picked cursor from ['codex', 'cursor', 'gemini']
+## 2026-09-04T17:47:35Z — B1-citefix-R1-legal-decomposition — claimed by driver (agent cursor)
+## 2026-09-04T17:47:53Z — C-skill-curriculum — done — cursor produced 2785 words at artifacts/research/C-skill-curriculum.md in 86s

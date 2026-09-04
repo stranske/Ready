@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-04T17:47:30Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-04T17:47:53Z)
 
-Units: 31 — claimed 3, done 20, queued 8
+Units: 31 — claimed 3, done 21, queued 7
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=shed vibe=ok aider=ok
 CLAUDE CONSERVATION ACTIVE until 2026-09-06T12:00:00Z — cheap agents only (launchd driver every 15 min); claude-only units deferred.
@@ -26,7 +26,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | A-personal-reuse-note | A | A2 | done | cursor | driver | Reuse note across personal repos (FAA, Reader, trip-planner) |
 | A-work-side-bundle | A | A3 | claimed | cursor | driver | Work-side bundle: redaction pass, cover memo, safety grep |
 | A-dossier-docx | A | A3 | queued | cursor |  | Word versions of all verified dossiers (venv + python-docx) |
-| B1-citefix-R1-legal-decomposition | B | B1 | queued | codex |  | Fix unreachable citations in R1-legal-decomposition.md |
+| B1-citefix-R1-legal-decomposition | B | B1 | claimed | cursor | driver | Fix unreachable citations in R1-legal-decomposition.md |
 | B1-citefix-R4-document-access-substrate | B | B1 | queued | codex |  | Fix unreachable citations in R4-document-access-substrate.md |
 | R1-legal-decomposition | B | B1 | done | codex | driver | Brief R1: legal fund-document decomposition and lineage |
 | R2-consultant-report-diffing | B | B1 | done | codex | driver | Brief R2: consultant-report and periodic-communication diffing |
@@ -38,13 +38,10 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | B2-gap-analysis | B | B2 | queued | codex |  | Gap analysis and disposition of all candidates |
 | B3-interop-architecture | B | B3 | queued | codex |  | Interoperability architecture (identity, typology, tracked variables,  |
 | B4-issue-drafting | B | B4 | queued | codex |  | Draft AGENT_ISSUE_FORMAT issue bodies from decisions |
-| C-skill-curriculum | C | C1 | claimed | codex | driver | Skill curriculum + tool-literacy loop design (LMS-connected) |
+| C-skill-curriculum | C | C1 | done | codex | driver | Skill curriculum + tool-literacy loop design (LMS-connected) |
 
 ## Last checkpoints
 
-- 2026-09-04T17:46:23Z — A-personal-reuse-note — route — router picked cursor from ['codex', 'cursor']
-- 2026-09-04T17:46:23Z — A-personal-reuse-note — claimed by driver (agent cursor)
-- 2026-09-04T17:46:23Z — C-skill-curriculum — route — router picked codex from ['codex', 'gemini']
 - 2026-09-04T17:46:23Z — C-skill-curriculum — claimed by driver (agent codex)
 - 2026-09-04T17:46:24Z — R5-output-substrate — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-04T17:46:24Z — R5-output-substrate — claimed by driver (agent cursor)
@@ -54,3 +51,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-04T17:46:52Z — citations — enqueued B1-citefix-R1-legal-decomposition
 - 2026-09-04T17:46:52Z — citations — enqueued B1-citefix-R4-document-access-substrate
 - 2026-09-04T17:47:30Z — A-personal-reuse-note — done — cursor produced 1387 words at artifacts/dossiers/00-PERSONAL-REUSE-NOTE.md in 66s
+- 2026-09-04T17:47:35Z — B1-citefix-R1-legal-decomposition — route — router picked cursor from ['codex', 'cursor', 'gemini']
+- 2026-09-04T17:47:35Z — B1-citefix-R1-legal-decomposition — claimed by driver (agent cursor)
+- 2026-09-04T17:47:53Z — C-skill-curriculum — done — cursor produced 2785 words at artifacts/research/C-skill-curriculum.md in 86s

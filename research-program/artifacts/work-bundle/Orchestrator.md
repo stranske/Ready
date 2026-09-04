@@ -1,15 +1,15 @@
 # Orchestrator — dossier (2026-09-04)
 
 ## 1. Purpose in one paragraph
-The Orchestrator coordinates subscription-tier command-line coding agents (coding-agent Code, OpenAI coding-agent, coding-agent, Gemini via cloud agent provider, Mistral coding-agent) across roughly eleven GitHub repositories. It deterministically routes tasks based on empirical performance and costs while strictly managing expiring subscription quotas (rolling 5-hour bursts and weekly drain limits). Designed for a technical lead on a single workstation, the tool runs locally without external database servers, containers, or background daemons. To prevent SQLite lockups under cloud storage, canonical code is separated from local runtime state, and human decisions use non-blocking, auto-expiring prompts that prevent fleet stalls (`README.md:3-10, 20-33`, `ARCHITECTURE.md:14-43`, `PLANNING.md:9-18`).
+The Orchestrator coordinates subscription-tier commercial coding-agent CLIs across roughly eleven GitHub repositories. It deterministically routes tasks based on empirical performance and costs while strictly managing expiring subscription quotas (rolling 5-hour bursts and weekly drain limits). Designed for a technical lead on a single workstation, the tool runs locally without external database servers, containers, or background daemons. To prevent SQLite lockups under cloud storage, canonical code is separated from local runtime state, and human decisions use non-blocking, auto-expiring prompts that prevent fleet stalls (`README.md:3-10, 20-33`, `ARCHITECTURE.md:14-43`, `PLANNING.md:9-18`).
 
 ## 2. Who uses it and how (surfaces)
 | Surface | Entry Point | Who Uses It | Status (Evidence) |
 |---|---|---|---|
-| CLI (Fleet Tick) | `orchestrate.sh` / `src/tick.py` | Automated macOS launchd daemon (`[scheduled-job-label]`, hourly at :40) and human operators | Working; dry-run execution by default. Live dispatch is gated behind `[dispatch-enabled-flag]` since 2026-09-03 after 14 dispatches produced 9 abandoned runs and 0 durable outcomes (`README.md:34-39`, `orchestrate.sh:1-120`). |
+| CLI (Fleet Tick) | `orchestrate.sh` / `src/tick.py` | Scheduled macOS job and human operators | Working; dry-run execution by default. Live dispatch is gated behind an explicit enable flag since 2026-09-03 after 14 dispatches produced 9 abandoned runs and 0 durable outcomes (`README.md:34-39`, `orchestrate.sh:1-120`). |
 | CLI (Verification Suite) | `src/verify.py` | Developers, coding agents prior to commit, and CI runner (`pr-00-gate.yml`) | Working; strictly validates test collection equality against `.verify-floor.json` (631 collected/passed, bounded skip ceilings, 94 selftest modules, 5 gates; `src/verify.py:1-54`). |
 | CLI (Observability) | `src/observability_dashboard.py` / `src/periodic_report.py` | Human operator assessing fleet health, seat quotas, and learner convergence | Working; generates terminal scorecards and JSON dumps across productivity, quality, and live capacity (`src/observability_dashboard.py:1-8, 2225-2237`). |
-| API / Stdio (MCP Server) | `src/mcp_server.py` | Local coding-agent Code or desktop agent sessions via Model Context Protocol | Working; standard-library stdio JSON-RPC server offering 10 tools for capacity status, route weights, capability advice, and question answering (`src/mcp_server.py:1-219`). |
+| API / Stdio (MCP Server) | `src/mcp_server.py` | Local desktop agent sessions via Model Context Protocol | Working; standard-library stdio JSON-RPC server offering 10 tools for capacity status, route weights, capability advice, and question answering (`src/mcp_server.py:1-219`). |
 | Artifacts (Route Export) | `src/route_weights_export.py` | Sibling GitHub Actions workflows (Keepalive, Autofix) via `config/route-weights.json` on branch `exports/route-weights` | Working / Partial; generates local routing tables (`[orchestrator-state-dir]/route-weights-export.json`) and handoff heartbeats, but remote git branch publishing is gated behind `[route-publish-flag]` (`docs/ROUTE_WEIGHTS_EXPORT.md:1-40`). |
 | UI / Web (Presentation) | `design-system/ds_streamlit.py` | None in this repository | Scaffold / Inactive; synced boilerplate from `stranske/Workflows` template; Orchestrator contains no running Streamlit app or web service (`design-system/README.md:49-51`). |
 | Excel / Spreadsheets | None | None | Absent; no Excel or spreadsheet generation or parsing libraries exist in `src/`. |
@@ -55,7 +55,7 @@ The Orchestrator coordinates subscription-tier command-line coding agents (codin
 ## 5. Data model, identifiers and contracts
 Entities are tracked via standard keys: runs via UUID `run_id` and `attempt_id`; targets via git strings (`owner/repo#number`); events via `event_id` and hashes (`sha256:...`); and capabilities via kebab-case keys (`frontend-verifier`, `runtime-ac-gate`).
 
-**Persistence**: Local SQLite at `[app-data-dir]
+**Persistence**: Local SQLite at `[orchestrator-state]/feedback/orchestrator.db` (`src/feedback.py:45`) houses fifteen tables: `runs`, `outcomes`, `costs`, `execution_traces`, `execution_attempts`, `completion_events`, `influence_edges`, `route_weights`, `evaluations`, `evaluations_v2`, `human_calibration`, `evidence_gaps`, `evidence_types`, `owner_questions`, and `resume_tokens`. Ephemeral state lives in `[orchestrator-state]/` JSON files and claim directories.
 
 **Versioning**: Applied via integer `version` keys in `route_weights`, durability lifecycles (`pending` -> `durable`, `reverted`, `reworked`, `reopened`, `broke_later`), 30-day recency decay, and 0.5 model-supersession discounts (`src/feedback.py:58, 179, 186`).
 
@@ -68,7 +68,7 @@ Entities are tracked via standard keys: runs via UUID `run_id` and `attempt_id`;
 
 ## 6. External inputs and dependencies
 - **Data Sources**: Queries GitHub REST/GraphQL APIs via `gh` CLI or HTTP for issues, PRs, and artifacts. Ingests execution traces and costs directly from the LangSmith REST API (`https://api.smith.langchain.com`) via standard library HTTP requests in `src/langsmith_direct.py`. Ingests local agent logs and `subscription-usage-log` session files.
-- **LLM / Agent Tooling**: Executes external agent CLIs as isolated subprocesses (`coding-agent`, `coding-agent`, `coding-agent`, `coding-agent`, `coding-agent`, `coding-agent`). Does not import LangChain or LangGraph runtime libraries in `src/`. Implements an in-house, zero-dependency Model Context Protocol (MCP) server over stdio JSON-RPC (`src/mcp_server.py`).
+- **LLM / Agent Tooling**: Executes external commercial coding-agent CLIs as isolated subprocesses. Does not import LangChain or LangGraph runtime libraries in `src/`. Implements an in-house, zero-dependency Model Context Protocol (MCP) server over stdio JSON-RPC (`src/mcp_server.py`).
 - **Libraries & Environment**: Built almost entirely on the Python standard library (`sqlite3`, `subprocess`, `urllib.request`, `json`, `hashlib`, `pathlib`, `argparse`, `ast`). Only third-party runtime package is optional `PyYAML` (`yaml`, `src/model_profile_trial_bridge.py:249`). Runs headlessly on macOS with zero external database servers, containers, or daemon web servers.
 
 ## 7. Current state
@@ -78,7 +78,7 @@ Entities are tracked via standard keys: runs via UUID `run_id` and `attempt_id`;
 
 **Consequential Gaps & Signals**:
 1. *Discovery Unwired*: `src/router.py:932` carries `TODO(discovery): wire the opener/closer discovery to write backlog.json:`.
-2. *Per-Tool Quotas Incomplete*: `src/capacity.py:10` notes `[per-tool coding-agent/coding-agent split is a v1 TODO]`.
+2. *Per-Tool Quotas Incomplete*: `src/capacity.py:10` notes per-tool subscription split is a v1 TODO.
 3. *Verifier Signals Pending*: `src/backlog.py:18` states `review/polish come from later verifier signals (TODO)`.
 4. *Starved LangSmith Pipeline*: `src/langsmith_direct.py:4-8` notes consumer CI repos do not upload artifacts, forcing direct API polling.
 5. *Unimplemented Backplane*: `docs/contracts/run-contract-v1.md:16-17` admits: "No participant emits an envelope yet (that is P1+)."
@@ -96,7 +96,7 @@ Entities are tracked via standard keys: runs via UUID `run_id` and `attempt_id`;
 ## 9. Interoperability hooks (for the fleet program)
 - **What this repo could OFFER to sibling repos**:
   - *Learned Routing Snapshot*: Exports `config/route-weights.json` on git branch `exports/route-weights` (and local `[orchestrator-state-dir]/route-weights-export.json`) via `src/route_weights_export.py`, providing rankings, posteriors, and cost-per-success scores per agent and task type.
-  - *Fleet Capacity Heartbeat*: Emits `[app-data-dir]
+  - *Fleet Capacity Heartbeat*: Emits `[handoff-dir]/orchestrator.json` and `capacity.json` for external automation to check seat exhaustion.
   - *Reconciled Telemetry Aggregates*: Exposes cross-vendor token consumption, dollar costs, and run latency from `feedback.py`.
   - *Repository Playbook Rules*: Exports managed invariants into consumer `AGENTS.md` files or `capability-bundle/v1` payloads via `src/repo_knowledge.py:967`.
 - **What this repo would CONSUME from sibling repos**:

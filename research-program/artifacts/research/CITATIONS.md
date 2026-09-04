@@ -2,6 +2,7 @@
 
 | brief | urls | reachable | unreachable |
 |---|---|---|---|
+| C-skill-curriculum.CHECKPOINT.md | 0 | 0 | 0 |
 | R1-legal-decomposition.CHECKPOINT.md | 0 | 0 | 0 |
 | R1-legal-decomposition.md | 18 | 14 | 4 |
 | R2-consultant-report-diffing.CHECKPOINT.md | 0 | 0 | 0 |
@@ -10,6 +11,7 @@
 | R3-manager-mosaic.CHECKPOINT.md | 0 | 0 | 0 |
 | R4-document-access-substrate.md | 19 | 13 | 6 |
 | R4-document-access.CHECKPOINT.md | 0 | 0 | 0 |
+| R5-output-substrate.CHECKPOINT.md | 0 | 0 | 0 |
 
 ## Unreachable in R1-legal-decomposition.md
 
