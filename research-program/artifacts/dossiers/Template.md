@@ -137,3 +137,5 @@ Template and Ready enforce 80% coverage on `src/` (`pyproject.toml` L58). Gate r
 - Automation logic lives mainly in a separate **Workflows** repository—fix agent behavior there, not in synced copies here.
 - Investment “run record” and evidence contracts are **documented but not yet produced** by staging repos.
 - Agent automation requires administrator setup of secrets, environments, and branch protection before it will run reliably.
+
+Verified 2026-09-04T17:50:00Z by Mistral Vibe: 45 claims checked, 0 corrected, 1 unverifiable

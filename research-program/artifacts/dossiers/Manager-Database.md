@@ -8,11 +8,11 @@ Manager-Database is an investment surveillance platform for institutional alloca
 
 | Surface | Entry point (file) | Who uses it | Status (working / partial / scaffold) with evidence |
 | :--- | :--- | :--- | :--- |
-| Web UI | `ui/app.py` (`mgrdb-app`) | Analysts | **Working**. Streamlit app (`ui/app.py:12`), verified in `tests/test_ui_navigation.py`. |
+| Web UI | `ui/app.py` (`mgrdb-app`) | Analysts | **Working**. Streamlit app (`ui/app.py:12`), console script `mgrdb-app` (`pyproject.toml:38`, `ui/launch.py:27-41`), verified in `tests/test_ui_navigation.py`. |
 | Browser Demo | `web/index.html` | Allocators | **Working**. Pyodide app (`web/wasm_app.py:42`), verified in `tests/test_wasm_demo_build.py`. |
-| REST API | `api/chat.py` | UI & services | **Working**. FastAPI routers (`api/chat.py`), verified in `tests/test_chat_api.py`. |
+| REST API | `api/chat.py` | UI & services | **Working**. FastAPI routers (`api/chat.py:47`), verified in `tests/test_chat_api.py`. |
 | Scheduled ETL | `etl/edgar_flow.py`, `etl/news_flow.py` | Operations | **Partial**. EDGAR flows work (`tests/test_edgar_flow.py`); foreign stubs return `unsupported` (`adapters/canada.py:44`, `adapters/asic.py:67`, `adapters/mas.py:53`). |
-| CLI Tools | `diff_holdings.py`, `scripts/db_snapshot_restore.py` | Engineers | **Working**. Computes deltas (`diff_holdings.py:157`) and S3 backups (`tests/test_diff_holdings.py`). |
+| CLI Tools | `diff_holdings.py`, `scripts/db_snapshot_restore.py` | Engineers | **Working**. Computes deltas (`diff_holdings.py:157`) and S3 backups (`tests/test_db_snapshot_restore.py`). |
 | Observability | `llm/langsmith_fleet.py`, `tools/run_contract.py` | Orchestrators | **Partial**. Emits `langsmith-fleet/v1` (`llm/langsmith_fleet.py:27`); wire contract un-emitted (`.github/workflows/backplane-conformance.yml:54`). |
 
 ## 3. Structure map
@@ -44,7 +44,7 @@ Top functional directories (synced from `stranske/Workflows`):
 - **Rate-Governed EDGAR Ingest** (`adapters/edgar.py`: `list_new_filings`): Consumes SEC CIKs; uploads filings to MinIO and populates `holdings` under a 10 req/sec governor.
 - **Identifier Resolution Cache** (`adapters/openfigi.py`: `OpenFigiClient.map_cusips`): Maps CUSIPs to Tickers, FIGIs, ISINs, and LEIs for market joins.
 - **Signal-Alpha Strategy Backtesting** (`etl/backtest_flow.py`: `run_backtest`): Consumes rules and prices; logs returns in `backtest_results` to evaluate post-filing alpha.
-- **Activism Campaign Engine** (`etl/activism_campaign_flow.py`: `rebuild_activism_campaigns`): Consumes 13D/13G filings; outputs categorized `activism_events` grouped into campaigns.
+- **Activism Campaign Engine** (`etl/activism_campaign_flow.py`: `materialize_activism_campaigns`): Consumes 13D/13G filings; outputs categorized `activism_events` grouped into campaigns.
 - **Conviction & Crowding Detector** (`etl/conviction_flow.py`: `compute_conviction_scores`): Consumes active holdings; outputs conviction scores and crowded metrics.
 - **Attributable RAG Router** (`chains/rag_search.py`, `chains/evidence.py`: `Evidence`): Consumes queries and filings; outputs answers with structured `Evidence` citations.
 
@@ -77,18 +77,18 @@ Top functional directories (synced from `stranske/Workflows`):
   4. *Price scraping*: `adapters/prices.py:28` scrapes Stooq/yfinance for backtests.
   5. *Deletion cascade*: `api/managers.py:488` fails on foreign keys, orphaning blobs and vectors.
   6. *Missing regression corpus*: Lacks retained raw HTML filings (`docs/reports/design-doc-behavioral-claims-audit.md:32`, issue #1151).
-  7. *Cost accounting*: `tools/run_contract.py:RunCost` defaults to `0.0` USD (`adapters/base.py:175`).
+  7. *Cost accounting*: `tools/run_contract.py:RunCost` defaults to `0.0` USD (`adapters/base.py:246-293`).
   8. *Identifier mismatch*: Integer `manager_id` vs string `manager:<normalized_id>` (`docs/contracts/identity-map-conventions.md:47`).
 
 ## 8. Claims vs reality
 
-- **Parser Regression Suite**: *Claim*: Tests use retained HTML snapshots (`Manager-Intel-Platform.md:110`). *Reality*: No HTML corpus exists; tests use mocks (`docs/reports/design-doc-behavioral-claims-audit.md:32`, issue #1151).
-- **Foreign Adapters**: *Claim*: Working adapters for Canada, Australia, Singapore (`Manager-Intel-Platform.md:119-123`). *Reality*: Stubs return `{"status": "unsupported"}` (`adapters/canada.py:44`, `adapters/asic.py:67`, `adapters/mas.py:53`).
+- **Parser Regression Suite**: *Claim*: Tests use retained HTML snapshots (`Manager-Intel-Platform.md:110`). *Reality*: No HTML corpus exists; tests use mocks (`docs/reports/design-doc-behavioral-claims-audit.md:32`, issue #1151; `tests/test_parser_snapshot_regression.py`).
+- **Foreign Adapters**: *Documentation*: Early roadmap (Manager-Intel-Platform.md:201, 229) planned Canada and UK adapters, but the Revised Source Adapter Matrix (`Manager-Intel-Platform.md:119-123`) explicitly notes that Canada parsing returns `unsupported` until a parser exists, ASIC filing documents return `unsupported` (paywalled), and MAS returns `unsupported` (unconfigured endpoint). *Reality*: Confirms documentation; `adapters/canada.py:44`, `adapters/asic.py:67`, and `adapters/mas.py:53` return `{"status": "unsupported"}`.
 - **Tika & XBRL**: *Claim*: Uses Tika and XBRL (`Manager-Intel-Platform.md:50, 59`). *Reality*: Neither exists in code; uses `stranske-pdf-extract` (`utils/extract.py:5`), `edgartools`, and XML parsing (`adapters/edgar.py:195`).
 - **Commercial SEC API**: *Claim*: Ingests via `sec-api.io` (`Manager-Intel-Platform.md:44, 57`). *Reality*: Unused; queries `data.sec.gov` directly (`adapters/edgar.py:22`).
-- **Universal Rate Limits**: *Claim*: All endpoints enforce rate limits (`docs/api_design_guidelines.md:11`). *Reality*: Only chat write routes are throttled; read routes are unthrottled (`docs/api_rate_limiting.md:43`).
-- **One-Click GDPR Takedown**: *Claim*: Provides one-click GDPR erasure (`Manager-Intel-Platform.md:104`). *Reality*: `DELETE /managers/{id}` (`api/managers.py:1580`) fails on foreign keys, orphaning blobs and vectors.
-- **Backplane Conformance**: *Claim*: `run-contract/v1` and `evidence-object/v1` are conformant (`docs/contracts/run-contract-v1.md`). *Reality*: Skips in CI (`.github/workflows/backplane-conformance.yml:54`); `chains/evidence.py` lacks schema fields.
+- **Universal Rate Limits**: *Claim*: Former guideline draft claimed all endpoints were rate limited (historical drift noted in `docs/reports/design-doc-behavioral-claims-audit.md:38`). *Reality*: Current code and docs (`docs/api_design_guidelines.md:11-14`, `docs/api_rate_limiting.md:43`, resolved by #1145) align: only chat write routes are throttled; read routes and health checks are unthrottled.
+- **One-Click GDPR Takedown**: *Claim*: Provides one-click GDPR erasure (`Manager-Intel-Platform.md:104`). *Reality*: `DELETE /managers/{id}` (`api/managers.py:1580`, calling `_delete_manager` at `:488`) fails on foreign keys, orphaning blobs and vectors.
+- **Backplane Conformance**: *Claim*: Run contract is often assumed to be actively wired. *Reality*: `docs/contracts/run-contract-v1.md:15-17` explicitly states "No participant emits an envelope yet (that is P1+); nothing here is wired into any repo's CI." The actual implementation gap is that `tools/run_contract.py:85` defines local `RunResult`, but `scripts/emit_reference_run.sh` does not exist, causing `.github/workflows/backplane-conformance.yml:54` to skip, while `chains/evidence.py:11` lacks schema-required fields.
 
 ## 9. Interoperability hooks (for the fleet program)
 
@@ -139,3 +139,5 @@ Top functional directories (synced from `stranske/Workflows`):
 - **Key Analytical Insights**: Highlights new positions, liquidations, conviction scores, crowded positions, and post-disclosure returns.
 - **User Experience**: Analysts use a web dashboard, receive email digests, search research notes, or consult an AI assistant citing source documents.
 - **Deployment & Data Security**: Runs disconnected in a browser using sample data, while production keeps proprietary data behind private firewalls.
+
+Verified 2026-09-04T17:35:00Z by Gemini: 50 claims checked, 6 corrected, 4 unverifiable

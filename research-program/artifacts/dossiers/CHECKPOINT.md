@@ -3,3 +3,13 @@
 ## 2026-09-04T17:18:00Z — A-verify-Inv-Man-Intake — in-progress — Located dossier, clone at HEAD 8778d10, initiated adversarial cite-check.
 ## 2026-09-04T17:22:00Z — A-verify-Inv-Man-Intake — in-progress — Completed adversarial code-cite audit (50 claims checked, 3 wrong, 1 unverifiable).
 ## 2026-09-04T17:25:00Z — wrote corrected artifacts/dossiers/Inv-Man-Intake.md (12 headings intact, §12 = 5 bullets, verified-line stamped) — done
+## 2026-09-04T17:25:00Z — A-verify-Manager-Database — in-progress — Located dossier, clone at HEAD 68baf3f, initiated adversarial cite-check.
+## 2026-09-04T17:26:00Z — A-verify-Travel-Plan-Permission — in-progress — Located dossier, clone at HEAD d67298f, initiated adversarial cite-check.
+## 2026-09-04T17:26:00Z — A-verify-Orchestrator — in-progress — Located dossier, clone at HEAD e63a541, initiated adversarial cite-check.
+## 2026-09-04T17:25:53Z — A-verify-Portable-Alpha-Extension-Model — in-progress — Located dossier, clone at HEAD 8ddf6be, initiated adversarial cite-check.
+## 2026-09-04T17:30:00Z — A-verify-Orchestrator — in-progress — Completed adversarial code-cite audit (57 claims checked, 12 wrong, 1 unverifiable).
+## 2026-09-04T17:31:00Z — A-verify-Travel-Plan-Permission — in-progress — Completed adversarial code-cite audit (54 claims checked, 4 wrong, 1 unverifiable).
+## 2026-09-04T17:30:30Z — A-verify-Portable-Alpha-Extension-Model — in-progress — Completed adversarial code-cite audit (53 claims checked, 1 wrong, 0 unverifiable).
+## 2026-09-04T17:31:00Z — wrote corrected artifacts/dossiers/Orchestrator.md (12 headings intact, §12 = 5 bullets, verified-line stamped) — done
+## 2026-09-04T17:32:00Z — A-verify-Manager-Database — in-progress — Completed adversarial code-cite audit (50 claims checked, 6 wrong, 4 unverifiable).
+## 2026-09-04T17:35:00Z — wrote corrected artifacts/dossiers/Manager-Database.md (12 headings intact, §12 = 5 bullets, verified-line stamped) — done

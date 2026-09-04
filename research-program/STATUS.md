@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-04T17:24:15Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-04T17:31:21Z)
 
-Units: 28 — done 4, queued 24
+Units: 29 — claimed 4, done 6, queued 19
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 CLAUDE CONSERVATION ACTIVE until 2026-09-06T12:00:00Z — cheap agents only (launchd driver every 15 min); claude-only units deferred.
@@ -12,19 +12,20 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | A-verify-Counter_Risk | A | A1 | done | gemini | driver | Verify dossier artifacts/dossiers/Counter_Risk.md against ../clones/Co |
 | A-verify-Fine-Art-Archive | A | A1 | done | gemini | codex | Verify dossier artifacts/dossiers/Fine-Art-Archive.md against ../clone |
 | A-verify-Inv-Man-Intake | A | A1 | done | gemini | driver | Verify dossier artifacts/dossiers/Inv-Man-Intake.md against ../clones/ |
-| A-verify-Manager-Database | A | A1 | queued | codex |  | Verify dossier artifacts/dossiers/Manager-Database.md against ../clone |
-| A-verify-Orchestrator | A | A1 | queued | codex |  | Verify dossier artifacts/dossiers/Orchestrator.md against ../clones/Or |
-| A-verify-Pension-Data | A | A1 | queued | codex |  | Verify dossier artifacts/dossiers/Pension-Data.md against ../clones/Pe |
-| A-verify-Portable-Alpha-Extension-Model | A | A1 | queued | codex |  | Verify dossier artifacts/dossiers/Portable-Alpha-Extension-Model.md ag |
-| A-verify-Template | A | A1 | queued | codex |  | Verify dossier artifacts/dossiers/Template.md against ../clones/Templa |
-| A-verify-Travel-Plan-Permission | A | A1 | queued | codex |  | Verify dossier artifacts/dossiers/Travel-Plan-Permission.md against .. |
+| A-verify-Manager-Database | A | A1 | claimed | gemini | driver | Verify dossier artifacts/dossiers/Manager-Database.md against ../clone |
+| A-verify-Orchestrator | A | A1 | claimed | gemini | driver | Verify dossier artifacts/dossiers/Orchestrator.md against ../clones/Or |
+| A-verify-Pension-Data | A | A1 | done | gemini | driver | Verify dossier artifacts/dossiers/Pension-Data.md against ../clones/Pe |
+| A-verify-Portable-Alpha-Extension-Model | A | A1 | claimed | gemini | driver | Verify dossier artifacts/dossiers/Portable-Alpha-Extension-Model.md ag |
+| A-verify-Template | A | A1 | claimed | gemini | driver | Verify dossier artifacts/dossiers/Template.md against ../clones/Templa |
+| A-verify-Travel-Plan-Permission | A | A1 | done | gemini | driver | Verify dossier artifacts/dossiers/Travel-Plan-Permission.md against .. |
 | A-verify-Trend_Model_Project | A | A1 | queued | codex |  | Verify dossier artifacts/dossiers/Trend_Model_Project.md against ../cl |
 | A-verify-Workflows | A | A1 | queued | codex |  | Verify dossier artifacts/dossiers/Workflows.md against ../clones/Workf |
 | A-verify-learning-management-system | A | A1 | queued | codex |  | Verify dossier artifacts/dossiers/learning-management-system.md agains |
 | A-verify-trip-planner | A | A1 | queued | codex |  | Verify dossier artifacts/dossiers/trip-planner.md against ../clones/tr |
 | A-dossier-index | A | A2 | queued | codex |  | Fleet index and shared vocabulary from verified dossiers (needs >=12 v |
 | A-personal-reuse-note | A | A2 | queued | cursor |  | Reuse note across personal repos (FAA, Reader, trip-planner) |
-| A-dossier-docx | A | A3 | queued | claude |  | Word versions of all dossiers (Claude executor: use the docx skill) |
+| A-work-side-bundle | A | A3 | queued | codex |  | Work-side bundle: redaction pass, cover memo, safety grep |
+| A-dossier-docx | A | A3 | queued | cursor |  | Word versions of all verified dossiers (venv + python-docx) |
 | R1-legal-decomposition | B | B1 | queued | codex |  | Brief R1: legal fund-document decomposition and lineage |
 | R2-consultant-report-diffing | B | B1 | queued | codex |  | Brief R2: consultant-report and periodic-communication diffing |
 | R3-manager-mosaic | B | B1 | queued | codex |  | Brief R3: manager mosaic synthesis, discrepancy and thesis monitoring |
@@ -39,15 +40,15 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-04T17:08:34Z — A-verify-Fine-Art-Archive — fail — not-ready: no cheap agent has capacity right now
-- 2026-09-04T17:10:13Z — A-verify-Counter_Risk — route — router picked gemini from ['codex', 'cursor', 'gemini']
-- 2026-09-04T17:10:13Z — A-verify-Counter_Risk — claimed by driver (agent gemini)
-- 2026-09-04T17:10:56Z — A-verify-Fine-Art-Archive — route — router picked gemini from ['codex', 'cursor', 'gemini']
-- 2026-09-04T17:10:56Z — A-verify-Fine-Art-Archive — claimed by codex (agent gemini)
-- 2026-09-04T17:11:39Z — A-verify-Counter_Risk — done — Counter_Risk dossier verified against HEAD 3f3ae3d: 52 claims checked, 39 confirmed, 11 corrected (5 substantive), 2 off-platform unverifiable — the in-repo doc
-- 2026-09-04T17:15:18Z — A-verify-Fine-Art-Archive — verification — done — Checked 27 claims in sections 4/5/8/9; corrected dHash, clone configuration, test count, and docs paths.
-- 2026-09-04T17:15:38Z — A-verify-Fine-Art-Archive — done — Verified the Fine-Art-Archive dossier against the clone; corrected dHash, fresh-clone configuration, test count, and docs paths.
-- 2026-09-04T17:15:55Z — A-verify-Counter_Risk — done — gemini produced 2105 words at artifacts/dossiers/Counter_Risk.md in 341s
-- 2026-09-04T17:16:18Z — A-verify-Inv-Man-Intake — route — router picked gemini from ['codex', 'cursor', 'gemini']
-- 2026-09-04T17:16:18Z — A-verify-Inv-Man-Intake — claimed by driver (agent gemini)
-- 2026-09-04T17:24:15Z — A-verify-Inv-Man-Intake — done — gemini produced 1677 words at artifacts/dossiers/Inv-Man-Intake.md in 476s
+- 2026-09-04T17:25:09Z — A-verify-Orchestrator — claimed by driver (agent gemini)
+- 2026-09-04T17:25:20Z — inbox — read FAILED — gh: We couldn't respond to your request in time. Sorry about that. Please try resubmitting your requ
+- 2026-09-04T17:25:21Z — A-verify-Pension-Data — route — router picked gemini from ['codex', 'cursor', 'gemini']
+- 2026-09-04T17:25:21Z — A-verify-Pension-Data — claimed by driver (agent gemini)
+- 2026-09-04T17:25:21Z — A-verify-Portable-Alpha-Extension-Model — route — router picked gemini from ['codex', 'cursor', 'gemini']
+- 2026-09-04T17:25:21Z — A-verify-Portable-Alpha-Extension-Model — claimed by driver (agent gemini)
+- 2026-09-04T17:25:21Z — A-verify-Template — route — router picked gemini from ['codex', 'cursor', 'gemini']
+- 2026-09-04T17:25:21Z — A-verify-Template — claimed by driver (agent gemini)
+- 2026-09-04T17:25:22Z — A-verify-Travel-Plan-Permission — route — router picked gemini from ['codex', 'cursor', 'gemini']
+- 2026-09-04T17:25:22Z — A-verify-Travel-Plan-Permission — claimed by driver (agent gemini)
+- 2026-09-04T17:31:21Z — A-verify-Pension-Data — done — gemini produced 1648 words at artifacts/dossiers/Pension-Data.md in 360s
+- 2026-09-04T17:31:21Z — A-verify-Travel-Plan-Permission — done — gemini produced 2049 words at artifacts/dossiers/Travel-Plan-Permission.md in 359s
