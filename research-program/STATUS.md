@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-04T18:17:53Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-04T18:23:58Z)
 
-Units: 33 — done 32, queued 1
+Units: 33 — done 33
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=shed vibe=ok aider=ok
 CLAUDE CONSERVATION ACTIVE until 2026-09-06T12:00:00Z — cheap agents only (launchd driver every 15 min); claude-only units deferred.
@@ -39,14 +39,11 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | R7-trip-planning-core | B | B1 | done | codex | driver | Brief R7: trip-planning core (transport, lodging, constraints) |
 | B2-gap-analysis | B | B2 | done | codex | driver | Gap analysis and disposition of all candidates |
 | B3-interop-architecture | B | B3 | done | codex | driver | Interoperability architecture (identity, typology, tracked variables,  |
-| B4-issue-drafting | B | B4 | queued | codex |  | Draft AGENT_ISSUE_FORMAT issue bodies from decisions |
+| B4-issue-drafting | B | B4 | done | cursor | driver | Draft AGENT_ISSUE_FORMAT issue bodies from decisions |
 | C-skill-curriculum | C | C1 | done | codex | driver | Skill curriculum + tool-literacy loop design (LMS-connected) |
 
 ## Last checkpoints
 
-- 2026-09-04T18:09:30Z — B3-interop-architecture — claimed by driver (agent codex)
-- 2026-09-04T18:09:30Z — A-dossier-docx — route — router picked cursor from ['codex', 'cursor']
-- 2026-09-04T18:09:30Z — A-dossier-docx — claimed by driver (agent cursor)
 - 2026-09-04T18:09:33Z — B3-interop-architecture — fail — cursor produced 0 words at /Users/teacher/.codex/automations/research-program/artifacts/research/B3-interop-architecture.md (min 400); rotating agent
 - 2026-09-04T18:09:33Z — B3-interop-architecture — route — router picked codex from ['codex', 'gemini']
 - 2026-09-04T18:09:33Z — B3-interop-architecture — claimed by driver (agent codex)
@@ -56,3 +53,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-04T18:11:08Z — B3-interop-architecture — done — cursor produced 3022 words at artifacts/research/B3-interop-architecture.md in 95s
 - 2026-09-04T18:11:24Z — A-memo-correction — done — cursor produced 1573 words at artifacts/work-bundle/00-COVER-MEMO.md in 114s
 - 2026-09-04T18:12:22Z — A-dossier-docx — done — All 19 Word outputs reopen with matching Markdown tables; 16 meet the paragraph and heading thresholds and three source-structure exceptions are documented in t
+- 2026-09-04T18:19:52Z — B4-issue-drafting — route — router picked cursor from ['codex', 'cursor']
+- 2026-09-04T18:19:52Z — B4-issue-drafting — claimed by driver (agent cursor)
+- 2026-09-04T18:23:58Z — B4-issue-drafting — done — cursor produced 1526 words at artifacts/issues/FILING_PLAN.md in 245s

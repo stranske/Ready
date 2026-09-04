@@ -181,3 +181,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-04T18:11:08Z — B3-interop-architecture — done — cursor produced 3022 words at artifacts/research/B3-interop-architecture.md in 95s
 ## 2026-09-04T18:11:24Z — A-memo-correction — done — cursor produced 1573 words at artifacts/work-bundle/00-COVER-MEMO.md in 114s
 ## 2026-09-04T18:12:22Z — A-dossier-docx — done — All 19 Word outputs reopen with matching Markdown tables; 16 meet the paragraph and heading thresholds and three source-structure exceptions are documented in t
+## 2026-09-04T18:19:52Z — B4-issue-drafting — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-04T18:19:52Z — B4-issue-drafting — claimed by driver (agent cursor)
+## 2026-09-04T18:23:58Z — B4-issue-drafting — done — cursor produced 1526 words at artifacts/issues/FILING_PLAN.md in 245s
