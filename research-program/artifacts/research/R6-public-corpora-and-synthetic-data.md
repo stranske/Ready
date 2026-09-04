@@ -29,7 +29,7 @@
 
 ### 2.1 Manager regulatory filings — Form ADV (IAPD)
 
-**FACTS:** SEC publishes Form ADV Part 1 structured data (CSV inside ZIP archives), Part 2 brochure PDFs, and Part 3 CRS PDFs on the FOIA Form ADV data page ([SEC Form ADV Data](https://www.sec.gov/foia-services/frequently-requested-documents/form-adv-data)). Current filings are also viewable per firm on IAPD ([adviserinfo.sec.gov](https://adviserinfo.sec.gov/)). Monthly compilation reports describe column-to-ADV-item mappings ([SEC IA Information Reports](https://www.sec.gov/data-research/sec-markets-data/information-about-registered-investment-advisers-exempt-reporting-advisers)). SEC EDGAR access requires a descriptive `User-Agent` ([SEC EDGAR FAQ for developers](https://www.sec.gov/os/webmaster-faq#developers)).
+**FACTS:** SEC publishes Form ADV Part 1 structured data (CSV inside ZIP archives), Part 2 brochure PDFs, and Part 3 CRS PDFs on the FOIA Form ADV data page ([SEC Form ADV Data](https://web.archive.org/web/20250103203028/https://www.sec.gov/foia-services/frequently-requested-documents/form-adv-data)). Current filings are also viewable per firm on IAPD ([adviserinfo.sec.gov](https://adviserinfo.sec.gov/)). Monthly compilation reports describe column-to-ADV-item mappings ([SEC IA Information Reports](https://web.archive.org/web/20250101000000/https://www.sec.gov/data-research/sec-markets-data/information-about-registered-investment-advisers-exempt-reporting-advisers)). SEC EDGAR access requires a descriptive `User-Agent` ([SEC EDGAR FAQ for developers](https://web.archive.org/web/20250101000000/https://www.sec.gov/about/webmaster-frequently-asked-questions#developers)).
 
 **FACTS:** FINRA's IARD Query API terms restrict Firm Registration Data to FINRA members or IARD-entitled firms ([FINRA API Terms, Firm Registration Data](https://developer.finra.org/sites/default/files/2024-07/Developer%20API%20-%20Specific%20Terms%20-%20Firm%20Registration%20Data%20%2807-17-2024%29%20%281%29.pdf)) — not a home-dev path.
 
@@ -37,7 +37,7 @@
 
 ### 2.2 Fund legal documents — LPAs/PPM via EDGAR exhibits
 
-**FACTS:** Material contracts file as **Exhibit 10** attachments on 8-K, 10-K, S-1, etc. ([SEC EDGAR search](https://www.sec.gov/search-filings)). Real amended-and-restated LPAs appear as EX-10 HTML/PDF (e.g., [Starwood REIT OP LPA EX-10.2](https://www.sec.gov/Archives/edgar/data/1711929/000119312526346339/ck0001711929-ex10_2.htm), [JLLIPT Sixth A&R LPA EX-10.1](https://www.sec.gov/Archives/edgar/data/1314152/000131415226000084/exhibit101-sixtharlpaofjll.htm)). EDGAR full-text search supports `"limited partnership agreement"` + `form-type:EX-10` queries.
+**FACTS:** Material contracts file as **Exhibit 10** attachments on 8-K, 10-K, S-1, etc. ([SEC EDGAR search](https://web.archive.org/web/20241231213510/https://www.sec.gov/search-filings)). Real amended-and-restated LPAs appear as EX-10 HTML/PDF (e.g., [Starwood REIT OP LPA EX-10.2](https://www.sec.gov/Archives/edgar/data/1711929/000119312526346339/ck0001711929-ex10_2.htm) [access-restricted], [JLLIPT Sixth A&R LPA EX-10.1](https://www.sec.gov/Archives/edgar/data/1314152/000131415226000084/exhibit101-sixtharlpaofjll.htm) [access-restricted]). EDGAR full-text search supports `"limited partnership agreement"` + `form-type:EX-10` queries.
 
 **JUDGMENT:** Harvest **15–25 LPAs** with explicit version chains ("amends and restates… dated…") via EDGAR full-text search + `edgartools` ([edgartools](https://github.com/mrabino1/edgartools)). Filter to private-fund-affiliate operating partnerships and BDC interval funds; exclude employment agreements. Ground truth: ILPA Model LPA section headings as pseudo-labels (R1 vocabulary) + 10 manually tagged clause spans per doc. Size: ~50–150 MB HTML/PDF.
 
@@ -70,7 +70,7 @@
 
 ### 2.6 Audited financial statements — public funds and N-CSR
 
-**FACTS:** Registered funds file certified shareholder reports on **Form N-CSR** (annual) and N-CSRS (semi-annual) on EDGAR ([SEC Form N-CSR search](https://www.sec.gov/edgar/search/#/q=N-CSR&category=form-cat1)). N-PORT filings carry portfolio holdings. Pension plan audited financials appear in CAFRs discoverable via Pension-Data's `build_pension_sources.py` and PPD.
+**FACTS:** Registered funds file certified shareholder reports on **Form N-CSR** (annual) and N-CSRS (semi-annual) on EDGAR ([SEC EDGAR full-text search](https://web.archive.org/web/20250101044947/https://www.sec.gov/edgar/search/) — filter by form type N-CSR). N-PORT filings carry portfolio holdings. Pension plan audited financials appear in CAFRs discoverable via Pension-Data's `build_pension_sources.py` and PPD.
 
 **JUDGMENT:** For **fund-level** audited financials, sample 20 N-CSR filings across mutual funds and interval funds (HTML/XBRL era) via `edgartools`. For **plan-level** statements, reuse Pension-Data annual-report PDFs already targeted by source collection — do not build a parallel CAFR crawler. Ground truth: XBRL tags where present; otherwise table cell coordinates + expected numeric values on 5 filings.
 
@@ -140,3 +140,15 @@ Public corpora get the fleet to **80% document-type coverage** but **<50% term-s
 ---
 
 **STOP SIGNAL:** NEW_CANDIDATES=12
+
+## Citation corrections 2026-09-04
+
+| Original (unreachable to automated check) | Action |
+|-----|--------|
+| `https://www.sec.gov/Archives/edgar/data/1314152/000131415226000084/exhibit101-sixtharlpaofjll.htm` | **(d)** Kept canonical SEC exhibit URL; marked `[access-restricted]` (SEC returns 403 to undeclared automated checks; live filing verified — Sixth A&R LPA of JLLIPT Holdings LP, filed May 2026). No Internet Archive snapshot yet. |
+| `https://www.sec.gov/Archives/edgar/data/1711929/000119312526346339/ck0001711929-ex10_2.htm` | **(d)** Kept canonical SEC exhibit URL; marked `[access-restricted]` (same; live filing verified — Second A&R LPA of Starwood REIT Operating Partnership, filed Aug 2026). No Internet Archive snapshot yet. |
+| `https://www.sec.gov/data-research/sec-markets-data/information-about-registered-investment-advisers-exempt-reporting-advisers` | **(a)** Replaced with Internet Archive snapshot of the same IA Information Reports page (SEC returns 403 to automated checks). |
+| `https://www.sec.gov/edgar/search/#/q=N-CSR&category=form-cat1` | **(a)** Replaced with Internet Archive snapshot of EDGAR full-text search; hash-fragment query not reachable to HEAD/GET. Wording adjusted to note N-CSR filter. |
+| `https://www.sec.gov/foia-services/frequently-requested-documents/form-adv-data` | **(a)** Replaced with Internet Archive snapshot of the same Form ADV bulk-data page (SEC returns 403 to automated checks). |
+| `https://www.sec.gov/os/webmaster-faq#developers` | **(a)** Replaced with Internet Archive snapshot of the current page at `/about/webmaster-frequently-asked-questions#developers` (old `/os/webmaster-faq` redirects 301). |
+| `https://www.sec.gov/search-filings` | **(a)** Replaced with Internet Archive snapshot of the same EDGAR search-filings hub (SEC returns 403 to automated checks). |
