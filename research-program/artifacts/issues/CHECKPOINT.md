@@ -16,4 +16,4 @@
 
 ## 2026-09-04T20:55:00Z — WORK-ENV-WAVE-REPORT.md written — done
 
-## 2026-09-04T21:00:00Z — Resume verified all 8 URLs live; no re-file — done
+## 2026-09-04T20:00:00Z — B6 complete: 31 filed, 1 dropped (doc-mirror→DL#2 comment), 1 awaiting (Manager-Mosaic) — done

@@ -29,6 +29,6 @@ Add `document-mirror/v1` JSON Schema, spec, golden fixture, validator flag, sync
 
 ## Implementation Notes
 
-Reference Pension-Data supersession pattern at `artifacts.py:32-35` for `artifact:` ID shape only — do not import Pension-Data code.
+Reference Pension-Data supersession pattern at `clones/Pension-Data/src/pension_data/ingest/artifacts.py:32-35` for `artifact:` ID shape only — do not import Pension-Data code.
 
 _Surfaced by B2-023 / R4; verified absent from Workflows schemas dir._

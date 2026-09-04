@@ -1,6 +1,6 @@
 ## Why
 
-Doc-Lineage README (`clones/Doc-Lineage/README.md:5-6`) states the repo is scaffold-only; no vocabulary data exists. R1 requires ~25 stable `ontology_key` values for cross-manager clause joins. Verified: `clones/Doc-Lineage/tests/test_main.py:1-35` only tests template `my_project` stubs — no `vocab/` directory. **Missing behavior:** no `legal.withdrawal.notice_days`-class keys for extraction or diff.
+Doc-Lineage README (`clones/Doc-Lineage/README.md:5-6`) states the repo is scaffold-only; no vocabulary data exists. R1 requires ~25 stable `ontology_key` values for cross-manager clause joins. Verified: `clones/Doc-Lineage/tests/test_main.py:1-33` only tests template `my_project` stubs — no `vocab/` directory. **Missing behavior:** no `legal.withdrawal.notice_days`-class keys for extraction or diff.
 
 ## Scope
 
@@ -26,6 +26,6 @@ Add `vocab/legal-clauses.json` with ~25 keys, conformance test, and README wire-
 
 ## Implementation Notes
 
-Mirror Inv-Man-Intake stub pattern at `docs/contracts/standard_element_library.md:9-13` for data-file vocabulary shape.
+Mirror Inv-Man-Intake stub pattern at `clones/Inv-Man-Intake/docs/contracts/standard_element_library.md:9-13` for data-file vocabulary shape.
 
 _Surfaced by B2-001; verified scaffold-only Doc-Lineage checkout._

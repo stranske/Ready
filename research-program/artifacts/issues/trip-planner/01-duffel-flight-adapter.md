@@ -1,6 +1,6 @@
 ## Why
 
-trip-planner has `SourceAdapter` ABC (`trip_planner/sources/adapters/base.py:15`) but only fixture adapters in production path (`app/services/inventory.py:858` uses `PersistedTripInventoryFixtureAdapter`). Architecture ahead of data (R7).
+trip-planner has `SourceAdapter` ABC (`trip_planner/sources/adapters/base.py:15`) but only fixture adapters in production path (`trip_planner/app/services/inventory.py:858` uses `PersistedTripInventoryFixtureAdapter`). Architecture ahead of data (R7).
 
 ## Scope
 

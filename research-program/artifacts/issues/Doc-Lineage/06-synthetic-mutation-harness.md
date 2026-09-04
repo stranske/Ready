@@ -1,6 +1,6 @@
 ## Why
 
-R6 requires deterministic mutations for CI ground truth without proprietary docs. Verified: `clones/Doc-Lineage/tests/test_main.py:1-35` is the only functional test module — no `tests/mutations/` directory. **Missing behavior:** no labeled mutation pairs for diff gates.
+R6 requires deterministic mutations for CI ground truth without proprietary docs. Verified: `clones/Doc-Lineage/tests/test_main.py:1-33` is the only functional test module — no `tests/mutations/` directory. **Missing behavior:** no labeled mutation pairs for diff gates.
 
 ## Scope
 

@@ -1,6 +1,6 @@
 ## Why
 
-Honest lodging lane without OTA APIs (R7 §5). Verified: `clones/trip-planner/trip_planner/sources/adapters/__init__.py:3-5` lists only the base adapter — no lodging module. **Depends on:** provenance contracts (`docs/contracts/source-adapters.md:21`).
+Honest lodging lane without OTA APIs (R7 §5). Verified: `clones/trip-planner/trip_planner/sources/adapters/__init__.py:3-5` lists only the base adapter — no lodging module. **Depends on:** provenance contracts (`docs/contracts/source-adapters.md:21`; verified `clones/trip-planner/docs/contracts/source-adapters.md`).
 
 ## Scope
 
