@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-04T20:23:21Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-04T20:46:15Z)
 
-Units: 41 — done 40, parked 1
+Units: 41 — done 40, queued 1
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=shed vibe=ok aider=ok
 CLAUDE CONSERVATION ACTIVE until 2026-09-06T12:00:00Z — cheap agents only (launchd driver every 15 min); claude-only units deferred.
@@ -46,7 +46,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | B4-issue-drafting | B | B4 | done | cursor | driver | Draft AGENT_ISSUE_FORMAT issue bodies from decisions |
 | B5-work-env-issue-wave | B | B5 | done | cursor | driver | File the second wave of issues from the work-environment answers |
 | B6-file-drafted-issues | B | B6 | done | cursor | driver | Verify, correct and file the B4-drafted issue bodies |
-| B7-program-plan-v3 | B | B7 | parked | codex |  | Consolidated program plan v3 plus the progress-artifact specification |
+| B7-program-plan-v3 | B | B7 | queued | codex |  | Consolidated program plan v3 plus the progress-artifact specification |
 | B7-program-plan-v3-default | B | B7 | done | codex | driver | Consolidated program plan v3 plus the progress-artifact specification |
 | C-skill-curriculum | C | C1 | done | codex | driver | Skill curriculum + tool-literacy loop design (LMS-connected) |
 
