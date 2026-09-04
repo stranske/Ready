@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-04T20:47:41Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-04T21:30:48Z)
 
-Units: 41 — done 41
+Units: 42 — done 42
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=shed vibe=ok aider=ok
 CLAUDE CONSERVATION ACTIVE until 2026-09-06T12:00:00Z — cheap agents only (launchd driver every 15 min); claude-only units deferred.
@@ -49,12 +49,10 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | B7-program-plan-v3 | B | B7 | done | codex | driver | Consolidated program plan v3 plus the progress-artifact specification |
 | B7-program-plan-v3-default | B | B7 | done | codex | driver | Consolidated program plan v3 plus the progress-artifact specification |
 | C-skill-curriculum | C | C1 | done | codex | driver | Skill curriculum + tool-literacy loop design (LMS-connected) |
+| D2-issue-body-repair | D | D | done | cursor | driver | Repair issue bodies citing scratchpad paths and unblock the paused aut |
 
 ## Last checkpoints
 
-- 2026-09-04T20:15:50Z — B1-citefix-R6-public-corpora-and-synthetic-data — route — router picked cursor from ['codex', 'cursor', 'gemini']
-- 2026-09-04T20:15:50Z — B1-citefix-R6-public-corpora-and-synthetic-data — claimed by driver (agent cursor)
-- 2026-09-04T20:17:49Z — B1-citefix-R6-public-corpora-and-synthetic-data — done — cursor produced 2408 words at artifacts/research/R6-public-corpora-and-synthetic-data.md in 118s
 - 2026-09-04T20:17:52Z — B1-citefix-R7-trip-planning-core — route — router picked cursor from ['codex', 'cursor', 'gemini']
 - 2026-09-04T20:17:52Z — B1-citefix-R7-trip-planning-core — claimed by driver (agent cursor)
 - 2026-09-04T20:21:26Z — B1-citefix-R7-trip-planning-core — done — cursor produced 2323 words at artifacts/research/R7-trip-planning-core.md in 213s
@@ -64,6 +62,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-04T20:46:18Z — B7-program-plan-v3 — route — router picked codex from ['codex', 'gemini']
 - 2026-09-04T20:46:18Z — B7-program-plan-v3 — claimed by driver (agent codex)
 - 2026-09-04T20:47:41Z — B7-program-plan-v3 — done — cursor produced 3271 words at artifacts/research/B7-PROGRAM-PLAN-v3.md in 83s
+- 2026-09-04T21:23:30Z — D2-issue-body-repair — route — router picked cursor from ['codex', 'cursor']
+- 2026-09-04T21:23:30Z — D2-issue-body-repair — claimed by driver (agent cursor)
+- 2026-09-04T21:30:48Z — D2-issue-body-repair — done — cursor produced 976 words at artifacts/issues/D2-REPAIR-REPORT.md in 438s
 
 ## Questions
 

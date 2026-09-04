@@ -222,3 +222,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-04T20:46:18Z — B7-program-plan-v3 — route — router picked codex from ['codex', 'gemini']
 ## 2026-09-04T20:46:18Z — B7-program-plan-v3 — claimed by driver (agent codex)
 ## 2026-09-04T20:47:41Z — B7-program-plan-v3 — done — cursor produced 3271 words at artifacts/research/B7-PROGRAM-PLAN-v3.md in 83s
+## 2026-09-04T21:23:30Z — D2-issue-body-repair — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-04T21:23:30Z — D2-issue-body-repair — claimed by driver (agent cursor)
+## 2026-09-04T21:30:48Z — D2-issue-body-repair — done — cursor produced 976 words at artifacts/issues/D2-REPAIR-REPORT.md in 438s
