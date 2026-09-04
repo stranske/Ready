@@ -55,7 +55,7 @@ Three production tools already implement the target pattern incompletely: struct
 |--------|-------|-----------------|--------------------|--------------|-------------------|
 | **Structured store + vendored static renderer** (Deliverable-Render / Pension-Data pattern) | Vanilla JS, vendored assets, optional PWA cache | Small renderer (~MB); data separate | Work: **single HTML + `file://` doc links confirmed**; fleet multi-file mode may need loopback HTTP (`serve_local.py`) or Load Local Bundle | Re-run pipeline → replace data/view artifacts | "Regenerate and open" — never edit HTML |
 | **stlite / Pyodide** | Whole Python+Streamlit in browser; large cold start ([stlite overview](https://github.com/whitphx/stlite)) | **10–50+ MB** typical; Trend_Model vendors wheels to avoid CDN (`demo/wasm/README.md`) | **Untested at work**; `index.html` fetches sibling assets (problematic under SharePoint sandbox) | Rebuild when code *or* data changes | **Poor** for published artifacts |
-| **Observable Framework** | SSG; data loaders at build time ([Observable Framework](https://observablehq.com/framework/what-is-framework)) | Moderate `dist/` | Static `dist/` on any host | `npm run build` when data changes | Needs Node — home-only |
+| **Observable Framework** | SSG; data loaders at build time ([Observable Framework](https://observablehq.github.io/framework/what-is-framework)) | Moderate `dist/` | Static `dist/` on any host | `npm run build` when data changes | Needs Node — home-only |
 | **Evidence.dev** | SQL+Markdown → static SvelteKit; DuckDB-WASM in browser ([Evidence](https://openapps.pro/apps/evidence)) | DuckDB WASM **~34 MB**; host limits ~25 MB ([discussion #3259](https://github.com/evidence-dev/evidence/discussions/3259)) | Static host; CDN breaks air-gap | Build-time SQL refresh | BI-as-code — wrong maintainer model |
 | **DuckDB-WASM + Perspective** | Self-hosted WASM bundles supported ([DuckDB WASM docs](https://duckdb.org/docs/clients/wasm/instantiation)) | Large WASM payload | Embeddable in custom shell | Rebuild inputs | **JUDGMENT:** optional explorer widget inside fleet renderer, not whole stack |
 | **Quarto `embed-resources: true`** | Single self-contained HTML ([Quarto HTML basics](https://quarto.org/docs/output-formats/html-basics.html)) | Can be very large | E-mail/synced-folder share | Re-render `.qmd` at home | Board one-offs with agent help |
@@ -205,7 +205,7 @@ link_profile: local-file | artifact-http
 
 ## 8. Open questions for the owner
 
-1. **Link profile at work:** Must evidence links stay **`file://` to the synced mirror** (today's production pattern), or is **`http://127.0.0.1`** acceptable for multi-file renderers? *(Default: `local-file` primary; loopback secondary for Pension-Data-style apps.)*
+1. **Link profile at work:** Must evidence links stay **`file://` to the synced mirror** (today's production pattern), or is **loopback HTTP** acceptable for multi-file renderers? *(Default: `local-file` primary; loopback secondary for Pension-Data-style apps.)*
 
 2. **Regeneration location:** With Python confirmed at work, should pipelines run **there via assistant** (faster iteration) or only **home CI** with bundles synced in? *(Default: both allowed; only artifact bundles cross zones.)*
 
@@ -226,3 +226,8 @@ What would change my mind: (a) WASM probe passes under work browser policy with 
 ---
 
 NEW_CANDIDATES=7
+
+## Citation corrections 2026-09-04
+
+- `https://observablehq.com/framework/what-is-framework` — **(a)** replaced with the official moved page at `https://observablehq.github.io/framework/what-is-framework`; it supports the same Framework description and data-loader claim.
+- `http://127.0.0.1` — **(c)** removed the raw loopback endpoint from the owner decision question. It was an illustrative local address, not a supporting source; the question remains as the source-neutral “loopback HTTP” decision.

@@ -207,3 +207,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-04T20:00:05Z — B1-citefix-B3-interop-architecture — route — router picked cursor from ['codex', 'cursor', 'gemini']
 ## 2026-09-04T20:00:05Z — B1-citefix-B3-interop-architecture — claimed by driver (agent cursor)
 ## 2026-09-04T20:00:47Z — B1-citefix-B3-interop-architecture — done — cursor produced 3073 words at artifacts/research/B3-interop-architecture.md in 41s
+## 2026-09-04T20:10:57Z — B1-citefix-R5-output-substrate — route — router picked codex from ['codex', 'cursor', 'gemini']
+## 2026-09-04T20:10:57Z — B1-citefix-R5-output-substrate — claimed by codex (agent codex)
+## 2026-09-04T20:12:09Z — B1-citefix-R5-output-substrate — done — R5 now uses Observable's reachable official documentation and removes the unsupported raw localhost example.

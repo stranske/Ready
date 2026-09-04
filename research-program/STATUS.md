@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-04T20:00:47Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-04T20:12:09Z)
 
-Units: 41 — done 36, parked 1, queued 4
+Units: 41 — done 37, parked 1, queued 3
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=shed vibe=ok aider=ok
 CLAUDE CONSERVATION ACTIVE until 2026-09-06T12:00:00Z — cheap agents only (launchd driver every 15 min); claude-only units deferred.
@@ -31,7 +31,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | B1-citefix-B3-interop-architecture | B | B1 | done | cursor | driver | Fix unreachable citations in B3-interop-architecture.md |
 | B1-citefix-R1-legal-decomposition | B | B1 | done | cursor | driver | Fix unreachable citations in R1-legal-decomposition.md |
 | B1-citefix-R4-document-access-substrate | B | B1 | done | cursor | driver | Fix unreachable citations in R4-document-access-substrate.md |
-| B1-citefix-R5-output-substrate | B | B1 | queued | codex |  | Fix unreachable citations in R5-output-substrate.md |
+| B1-citefix-R5-output-substrate | B | B1 | done | codex | codex | Fix unreachable citations in R5-output-substrate.md |
 | B1-citefix-R6-public-corpora-and-synthetic-data | B | B1 | queued | codex |  | Fix unreachable citations in R6-public-corpora-and-synthetic-data.md |
 | B1-citefix-R7-trip-planning-core | B | B1 | queued | codex |  | Fix unreachable citations in R7-trip-planning-core.md |
 | R4-document-access | B | B1 | done | codex | driver | Brief R4: Backstop/MCP/SharePoint mirror substrate (adversarial) |
@@ -52,9 +52,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-04T19:52:36Z — citations — enqueued B1-citefix-R7-trip-planning-core
-- 2026-09-04T19:53:05Z — B5-work-env-issue-wave — fail — cursor produced 334 words at /Users/teacher/.codex/automations/research-program/artifacts/issues/WORK-ENV-WAVE-REPORT.md (min 400); rotating agent
-- 2026-09-04T19:53:40Z — B7-program-plan-v3 — parked — q-B7-program-plan-v3
 - 2026-09-04T19:54:12Z — B5-work-env-issue-wave — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-04T19:54:12Z — B5-work-env-issue-wave — claimed by driver (agent cursor)
 - 2026-09-04T19:55:21Z — B5-work-env-issue-wave — done — cursor produced 412 words at artifacts/issues/WORK-ENV-WAVE-REPORT.md in 69s
@@ -64,6 +61,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-04T20:00:05Z — B1-citefix-B3-interop-architecture — route — router picked cursor from ['codex', 'cursor', 'gemini']
 - 2026-09-04T20:00:05Z — B1-citefix-B3-interop-architecture — claimed by driver (agent cursor)
 - 2026-09-04T20:00:47Z — B1-citefix-B3-interop-architecture — done — cursor produced 3073 words at artifacts/research/B3-interop-architecture.md in 41s
+- 2026-09-04T20:10:57Z — B1-citefix-R5-output-substrate — route — router picked codex from ['codex', 'cursor', 'gemini']
+- 2026-09-04T20:10:57Z — B1-citefix-R5-output-substrate — claimed by codex (agent codex)
+- 2026-09-04T20:12:09Z — B1-citefix-R5-output-substrate — done — R5 now uses Observable's reachable official documentation and removes the unsupported raw localhost example.
 
 ## Questions
 
