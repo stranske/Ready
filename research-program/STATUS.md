@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-04T23:00:40Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-04T23:05:51Z)
 
-Units: 43 — done 40, queued 3
+Units: 43 — claimed 1, done 40, queued 2
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=shed vibe=ok aider=ok
 CLAUDE CONSERVATION ACTIVE until 2026-09-06T12:00:00Z — cheap agents only (launchd driver every 15 min); claude-only units deferred.
@@ -17,7 +17,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | A-verify-Inv-Man-Intake | A | A1 | done | gemini | driver | Verify dossier artifacts/dossiers/Inv-Man-Intake.md against ../clones/ |
 | A-verify-Manager-Database | A | A1 | done | gemini | driver | Verify dossier artifacts/dossiers/Manager-Database.md against ../clone |
 | A-verify-Orchestrator | A | A1 | done | gemini | driver | Verify dossier artifacts/dossiers/Orchestrator.md against ../clones/Or |
-| A-verify-Pension-Data | A | A1 | queued | gemini |  | Verify dossier artifacts/dossiers/Pension-Data.md against ../clones/Pe |
+| A-verify-Pension-Data | A | A1 | claimed | cursor | driver | Verify dossier artifacts/dossiers/Pension-Data.md against ../clones/Pe |
 | A-verify-Portable-Alpha-Extension-Model | A | A1 | queued | gemini |  | Verify dossier artifacts/dossiers/Portable-Alpha-Extension-Model.md ag |
 | A-verify-Template | A | A1 | done | gemini | driver | Verify dossier artifacts/dossiers/Template.md against ../clones/Templa |
 | A-verify-Travel-Plan-Permission | A | A1 | queued | gemini |  | Verify dossier artifacts/dossiers/Travel-Plan-Permission.md against .. |
@@ -54,8 +54,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-04T21:30:48Z — D2-issue-body-repair — done — cursor produced 976 words at artifacts/issues/D2-REPAIR-REPORT.md in 438s
-- 2026-09-04T21:32:18Z — unblock — enqueued D3-unblock-sweep-2026-09-04T21
 - 2026-09-04T21:32:18Z — D3-unblock-sweep-2026-09-04T21 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-04T21:32:18Z — D3-unblock-sweep-2026-09-04T21 — claimed by driver (agent cursor)
 - 2026-09-04T22:12:19Z — D3-unblock-sweep-2026-09-04T21 — done — cursor produced 528 words at artifacts/sweeps/D3-unblock-sweep-2026-09-04T21.md in 2400s
@@ -66,6 +64,8 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-04T22:47:45Z — D3-unblock-sweep-2026-09-04T21 — route — router picked codex from ['codex', 'cursor']
 - 2026-09-04T22:47:45Z — D3-unblock-sweep-2026-09-04T21 — claimed by driver (agent codex)
 - 2026-09-04T22:50:47Z — D3-unblock-sweep-2026-09-04T21 — done — cursor produced 656 words at artifacts/sweeps/D3-unblock-sweep-2026-09-04T21.md in 179s
+- 2026-09-04T23:05:51Z — A-verify-Pension-Data — route — router picked cursor from ['codex', 'cursor', 'gemini']
+- 2026-09-04T23:05:51Z — A-verify-Pension-Data — claimed by driver (agent cursor)
 
 ## Questions
 

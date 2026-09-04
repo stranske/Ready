@@ -53,4 +53,10 @@ Owner-facing status: [research-program/STATUS.md](https://github.com/stranske/Re
 
 ## Final remote delivery evidence
 
-Pending source CI and controlled consumer distribution at report creation. Updated below as verified.
+- Workflows #3379 merged at 23:02:15 UTC as `b06c6d16c3162a624c179a4c4f2080ec3c14876e`.
+- Orchestrator #233 merged at 23:02:19 UTC as `ebe1ca514eca08d3489536f899072f1b8e1fc24c`.
+- Both exact source heads passed every reported check, had zero unresolved review threads, were directly mergeable, and exceeded the seven-minute review window before merging.
+- [Maint 68 source-delta canary run](https://github.com/stranske/Workflows/actions/runs/33927956548) uses exact range `0b65b95a362ae4643aaa0326bdc06b1b47f814b7..b06c6d16c3162a624c179a4c4f2080ec3c14876e`. Consumer delivery is still in progress.
+- Canonical local Workflows fast-forwarded to the merged source while preserving its unrelated untracked test.
+- The report itself was read back from the Ready GitHub mirror.
+
