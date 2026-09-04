@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-04T19:52:36Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-04T19:53:05Z)
 
-Units: 40 — claimed 1, done 33, queued 6
+Units: 40 — done 33, queued 7
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=shed vibe=ok aider=ok
 CLAUDE CONSERVATION ACTIVE until 2026-09-06T12:00:00Z — cheap agents only (launchd driver every 15 min); claude-only units deferred.
@@ -44,14 +44,13 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | B2-gap-analysis | B | B2 | done | codex | driver | Gap analysis and disposition of all candidates |
 | B3-interop-architecture | B | B3 | done | codex | driver | Interoperability architecture, anchored on the work tools’ real field  |
 | B4-issue-drafting | B | B4 | done | cursor | driver | Draft AGENT_ISSUE_FORMAT issue bodies from decisions |
-| B5-work-env-issue-wave | B | B5 | claimed | cursor | driver | File the second wave of issues from the work-environment answers |
+| B5-work-env-issue-wave | B | B5 | queued | cursor |  | File the second wave of issues from the work-environment answers |
 | B6-file-drafted-issues | B | B6 | queued | codex |  | Verify, correct and file the B4-drafted issue bodies |
 | B7-program-plan-v3 | B | B7 | queued | codex |  | Consolidated program plan v3 plus the progress-artifact specification |
 | C-skill-curriculum | C | C1 | done | codex | driver | Skill curriculum + tool-literacy loop design (LMS-connected) |
 
 ## Last checkpoints
 
-- 2026-09-04T19:47:31Z — B5-work-env-issue-wave — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-04T19:47:31Z — B5-work-env-issue-wave — claimed by driver (agent cursor)
 - 2026-09-04T19:47:31Z — R4-document-access — route — router picked codex from ['codex', 'gemini']
 - 2026-09-04T19:47:31Z — R4-document-access — claimed by driver (agent codex)
@@ -63,3 +62,4 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-04T19:52:36Z — citations — enqueued B1-citefix-R5-output-substrate
 - 2026-09-04T19:52:36Z — citations — enqueued B1-citefix-R6-public-corpora-and-synthetic-data
 - 2026-09-04T19:52:36Z — citations — enqueued B1-citefix-R7-trip-planning-core
+- 2026-09-04T19:53:05Z — B5-work-env-issue-wave — fail — cursor produced 334 words at /Users/teacher/.codex/automations/research-program/artifacts/issues/WORK-ENV-WAVE-REPORT.md (min 400); rotating agent

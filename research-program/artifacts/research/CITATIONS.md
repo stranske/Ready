@@ -2,37 +2,16 @@
 
 | brief | urls | reachable | unreachable |
 |---|---|---|---|
-| B1-citefix-R1-legal-decomposition.CHECKPOINT.md | 0 | 0 | 0 |
-| B1-citefix-R4-document-access-substrate.CHECKPOINT.md | 6 | 0 | 6 |
-| B2-gap-analysis.CHECKPOINT.md | 0 | 0 | 0 |
 | B2-gap-analysis.md | 0 | 0 | 0 |
-| B3-interop-architecture.CHECKPOINT.md | 0 | 0 | 0 |
 | B3-interop-architecture.md | 1 | 0 | 1 |
-| C-skill-curriculum.CHECKPOINT.md | 0 | 0 | 0 |
 | C-skill-curriculum.md | 0 | 0 | 0 |
-| R1-legal-decomposition.CHECKPOINT.md | 0 | 0 | 0 |
 | R1-legal-decomposition.md | 17 | 17 | 0 |
-| R2-consultant-report-diffing.CHECKPOINT.md | 0 | 0 | 0 |
 | R2-consultant-report-diffing.md | 16 | 16 | 0 |
 | R3-manager-mosaic-synthesis.md | 12 | 12 | 0 |
-| R3-manager-mosaic.CHECKPOINT.md | 0 | 0 | 0 |
 | R4-document-access-substrate.md | 15 | 11 | 4 |
-| R4-document-access.CHECKPOINT.md | 0 | 0 | 0 |
-| R5-output-substrate.CHECKPOINT.md | 0 | 0 | 0 |
 | R5-output-substrate.md | 9 | 7 | 2 |
 | R6-public-corpora-and-synthetic-data.md | 21 | 14 | 7 |
-| R6-public-corpora.CHECKPOINT.md | 0 | 0 | 0 |
-| R7-trip-planning-core.CHECKPOINT.md | 0 | 0 | 0 |
 | R7-trip-planning-core.md | 25 | 21 | 4 |
-
-## Unreachable in B1-citefix-R4-document-access-substrate.CHECKPOINT.md
-
-- https://claude.ai/code
-- https://ionanalytics.com/backstop/
-- https://ionanalytics.com/backstop/services/data-services/
-- https://ionanalytics.com/blog/backstop/integrating-deal-investor-workflow-for-gps-and-lps/
-- https://mcp.svc.cloud.microsoft/enterprise
-- https://…
 
 ## Unreachable in B3-interop-architecture.md
 

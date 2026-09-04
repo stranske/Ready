@@ -196,3 +196,4 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-04T19:52:36Z — citations — enqueued B1-citefix-R5-output-substrate
 ## 2026-09-04T19:52:36Z — citations — enqueued B1-citefix-R6-public-corpora-and-synthetic-data
 ## 2026-09-04T19:52:36Z — citations — enqueued B1-citefix-R7-trip-planning-core
+## 2026-09-04T19:53:05Z — B5-work-env-issue-wave — fail — cursor produced 334 words at /Users/teacher/.codex/automations/research-program/artifacts/issues/WORK-ENV-WAVE-REPORT.md (min 400); rotating agent
