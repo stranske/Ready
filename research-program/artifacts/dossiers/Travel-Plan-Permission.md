@@ -14,7 +14,7 @@ Travel-Plan-Permission (TPP) automates the travel-request approval and expense-r
 | CLI — audit export/prune | `tpp-audit-export`, `tpp-audit-prune` → `src/travel_plan_permission/audit.py` | Finance/compliance admins | **Working** — `src/travel_plan_permission/audit.py:17-18`; `tests/python/test_audit.py` |
 | CLI — orchestration demo | `orchestration-demo` → `src/travel_plan_permission/orchestration/example.py` | Developers exercising LangGraph path | **Working (demo)** — optional `langgraph` extra; CI orchestration job `.github/workflows/ci.yml:61-87` |
 | HTTP API — planner seam | `tpp-planner-service` → `src/travel_plan_permission/http_service.py`, `src/travel_plan_permission/planner_http_routes.py` | `trip-planner` and automation clients | **Working** — routes `/api/planner/*`, `/readyz`; contract in `docs/contracts/planner-integration.md` |
-| Browser UI — portal | `/portal`, `/portal/requests/new`, `/portal/review/{id}` in `src/travel_plan_permission/http_service.py` | Travelers, managers (demo/review) | **Working** — `README.md:91-102`; `tests/python/test_portal_review.py` |
+| Browser UI — portal | `/portal`, `/portal/draft/new`, `/portal/review/{draft_id}` in `src/travel_plan_permission/http_service.py` | Travelers, managers (demo/review) | **Working** — `http_service.py:1609, 1629, 1753`; `tests/python/test_portal_review.py` (README still documents stale `/portal/requests/new` at `README.md:94`) |
 | Browser UI — handoff | `POST /portal/handoff` → `src/travel_plan_permission/portal_handoff.py` | `trip-planner` sending partial trip context | **Working** — restrictive cookie capability; `tests/python/test_portal_handoff.py` |
 | Browser UI — expense portal | `/portal/expenses/new` in `src/travel_plan_permission/http_service.py` | Travelers submitting receipts post-trip | **Partial** — export path works (`docs/expense-workflow.md:26-31`); no ERP write-back (`docs/accounting-integration.md:39`) |
 | Excel artifacts | `policy_api.fill_travel_spreadsheet`, `ExportService` | Travelers, accounting | **Working** — `src/travel_plan_permission/policy_api.py`, `src/travel_plan_permission/export.py`; golden tests under `tests/baseline/` |
@@ -42,7 +42,7 @@ Boilerplate skipped above: `node_modules` under `.github/scripts/`, and workflow
 
 ## 4. Major code features you must understand to extend it
 
-- **Canonical TripPlan intake** — `load_trip_plan_input()` (`src/travel_plan_permission/canonical.py:219-226`) validates input against Pydantic model `CanonicalTripPlan` (aligned with `schemas/trip_plan.min.schema.json`) into a `TripPlanInput` dataclass holding `plan` (`TripPlan`) and `canonical` (`CanonicalTripPlan | None`); designated blessed loader per `Issues.txt:29-50` (Issue 4).
+- **Canonical TripPlan intake** — `load_trip_plan_input()` (`src/travel_plan_permission/canonical.py:219-226`) validates input against Pydantic model `CanonicalTripPlan` (aligned with `schemas/trip_plan.min.schema.json`) into a `TripPlanInput` dataclass holding `plan` (`TripPlan`) and `canonical` (`CanonicalTripPlan | None`); designated blessed loader per `Issues.txt:136-153` (Issue 4).
 - **Policy-lite engine** — `PolicyEngine` (`src/travel_plan_permission/policy.py:459-570`) runs YAML rules from `config/policy.yaml` on `PolicyContext`; returns a list of blocking/advisory `PolicyResult` records.
 - **Policy API façade** — `src/travel_plan_permission/policy_api.py` functions (`check_trip_plan`, `get_policy_snapshot`, `submit_proposal`, etc.) feed HTTP routes, portal review, and orchestration.
 - **Spreadsheet pipeline** — `src/travel_plan_permission/workbook_population.py` / `src/travel_plan_permission/workbook_ooxml.py` fill `templates/*.xlsx` via `config/excel_mappings.yaml`; `UnfilledMappingReport` (`src/travel_plan_permission/policy_contract_models.py:515-531`) lists missing cells.
@@ -67,7 +67,7 @@ Boilerplate skipped above: `node_modules` under `.github/scripts/`, and workflow
 | --- | --- | --- |
 | TripPlan minimal schema | `schemas/trip_plan.min.schema.json` | **Consumed** by `canonical.py`, validated in CI schema jobs |
 | Planner integration v1 | `docs/contracts/planner-integration.md` + `tests/fixtures/planner_integration/` | **Emitted/consumed** — HTTP routes and `TravelPlanPermissionClient` |
-| Expense report schema | `schemas/expense_report.min.schema.json` | **Contract schema** validated via external AJV CLI (`README.md:23-25`) against fixtures; `src/travel_plan_permission/models.py:321` implements an independent `ExpenseReport` Pydantic model (not consumed directly in Python) |
+| Expense report schema | `schemas/expense_report.min.schema.json` | **Contract schema** validated via external AJV CLI (`README.md:23-25`) against fixtures; `src/travel_plan_permission/models.py:563` implements an independent `ExpenseReport` Pydantic model (not consumed directly in Python) |
 | run-contract/v1 | `docs/contracts/run-contract-v1.md` + `docs/contracts/schemas/` | **Documented only** — doc states “No participant emits an envelope yet” (`run-contract-v1.md:16-17`); validator exists (`scripts/validate_run_contract.py`) but `config/backplane_participants.json` is absent and no `run.json` emitter in `src/` |
 | identity-map conventions | `docs/contracts/identity-map-conventions.md` | **Documented only** — no `identity_refs` emission in product code |
 | evidence-object/v1 | `docs/contracts/schemas/evidence-object-v1.schema.json` | **Documented only** |
@@ -122,14 +122,14 @@ Boilerplate skipped above: `node_modules` under `.github/scripts/`, and workflow
 
 - Partial trip context from `trip-planner` via `POST /portal/handoff` (`src/travel_plan_permission/portal_handoff.py`).
 - Planner proposal payloads conforming to `tests/fixtures/planner_integration/proposal_submission.json`.
-- Receipt metadata and optional OCR text into `Receipt` / `ExpenseItem` models.
+- Receipt metadata and optional OCR text into `Receipt` / `ExpenseItem` models (`src/travel_plan_permission/receipts.py:18-32`, `src/travel_plan_permission/models.py:519-537`).
 - Sibling integration: runtime consumption by `trip-planner` of planner HTTP API and handoff cookie capability.
 
 **Collision risks with siblings**
 
 - `trip_id` is a free-form string on `TripPlan`, not a fleet `manager:cik_*` or `fund:lei_*` canonical ID (`docs/contracts/identity-map-conventions.md` vocabulary does not appear in TPP models).
 - `ExpenseCategory` enum (`airfare`, `lodging`, etc.) may not align with accounting or pension-data taxonomies.
-- `cost_center` is a plain string on TripPlan — no shared cost-center registry.
+- `cost_center` is a plain string on `CanonicalTripPlan` and `ExpenseReport`, not a fleet registry field (`src/travel_plan_permission/canonical.py:103`, `src/travel_plan_permission/models.py:569`).
 - Policy version strings are TPP-local (`PolicyVersion` in `src/travel_plan_permission/policy_versioning.py`), not synchronized with external policy-management systems.
 - Public demo fixtures must never be confused with production entity data (`render.yaml:1-6`).
 
@@ -161,4 +161,4 @@ Boilerplate skipped above: `node_modules` under `.github/scripts/`, and workflow
 - Post-trip reimbursement today means generating accounting-ready spreadsheets and tracking review status; it does not automatically post into your general ledger or expense system yet.
 - The codebase is actively tested (high coverage, cross-repo smoke with the companion trip planning application) but still labeled alpha: some documentation describes future REST APIs and fleet-wide run records that are not fully wired.
 
-Verified 2026-09-04T17:35:00Z by gemini: 54 claims checked, 4 corrected, 1 unverifiable.
+Verified 2026-09-04T23:23:20Z by composer: 54 claims checked, 9 corrected, 1 unverifiable.

@@ -1,0 +1,144 @@
+Reviewing the branch against `origin/main`: gathering the diff and inspecting the changed modules and tests.
+Tracing pre-fix behavior and other paths that could close foreign-plan PRs.
+## Findings
+
+### 1. Root cause confirmed — `plan_mismatch` was treated as supersession and closed the active PR (pre-fix)
+
+Before this branch, a plan-bound Maint 71 run that found a stable-branch PR owned by a different plan would get `plan_mismatch` from `mergeEligibility`, but Maint 71 still classified any ineligible row with a delivery record as `superseded` and **closed** it:
+
+```1999:2044:.github/scripts/maint71_merge_sync_prs.js
+      if (!selection.eligibility?.eligible) {
+        const reason = selection.eligibility?.reason || 'missing_delivery_record';
+        ...
+        const deliveryDisposition = reason === 'lease_expired'
+          ? 'expired'
+          : selection.deliveryRecord
+            ? 'superseded'
+            : 'owner-decision';
+        ...
+        if (deliveryDisposition === 'expired' || deliveryDisposition === 'superseded') {
+          ...
+            await withRetry((client) => client.rest.pulls.update({
+              ...
+              state: 'closed',
+            }));
+```
+
+`plan_mismatch` is emitted when `planId` is set and the record disagrees:
+
+```127:127:.github/scripts/sync_pr_lease_contract.js
+  if (clean(planId) && normalized.plan_id !== clean(planId)) return { eligible: false, reason: 'plan_mismatch' };
+```
+
+That matches the incident: a delayed campaign with an old `expectedPlanId` could close a newer candidate/delivery on the stable branch.
+
+---
+
+### 2. Fix is load-bearing in **both** changed modules — contract alone would not stop active-PR closure
+
+`sync_pr_merge_contract.js` now sets `foreignPlan`, clears `stale`, and returns early eligibility:
+
+```777:787:.github/scripts/sync_pr_merge_contract.js
+  const foreignPlan = Boolean(planId && record && record.plan_id !== planId);
+  if (foreignPlan) {
+    return { ...selection, stale: [], deliveryRecord: record, foreignPlan,
+      eligibility: { eligible: false, reason: 'plan_mismatch' } };
+  }
+  if (planId) {
+    selection.stale = selection.stale.filter(
+      (pr) => parseDeliveryRecord(pr.body || '')?.plan_id === planId,
+    );
+  }
+```
+
+`stale: []` only prevents **other** PRs from being closed. Without the Maint 71 guard, the active foreign-plan PR would still hit the superseded-close path above (`deliveryRecord` present, `reason === 'plan_mismatch'`).
+
+The new early exit is required:
+
+```1904:1914:.github/scripts/maint71_merge_sync_prs.js
+      if (selection.foreignPlan) {
+        console.log(`Leaving PR #${selection.active.number} untouched: it belongs to another plan`);
+        results.push({
+          ...
+          status: 'delivery_contract_blocked', delivery_reason: 'plan_mismatch',
+          delivery_disposition: 'other-plan', blocker_owner: 'maint-71',
+          expected_plan_id: expectedPlanId, observed_plan_id: selection.deliveryRecord.plan_id,
+          next_command: 'resume-owning-plan',
+        });
+        continue;
+      }
+```
+
+Integration test confirms zero mutations and no close:
+
+```3358:3363:.github/scripts/__tests__/sync_pr_merge_contract.test.js
+    assert.equal(report.results[0].status, 'delivery_contract_blocked');
+    assert.equal(report.results[0].delivery_reason, 'plan_mismatch');
+    assert.equal(report.results[0].observed_plan_id, planId);
+    assert.equal(report.results[0].next_command, 'resume-owning-plan');
+    assert.deepEqual(mutations, []);
+```
+
+**Confidence: high** this fixes the reported campaign scenario.
+
+---
+
+### 3. Matching-plan merge gates appear unchanged for the owning campaign
+
+For a matching `planId`, `selectMergeEligibleSyncPr` still calls `mergeEligibility` with `planId`, `repository`, and `desiredTreeHash` (`:789-791`), and the post-selection merge path (exact-head refresh, review window, required checks, seal) is untouched. The unit test shows a matching plan remains eligible:
+
+```3254:3256:.github/scripts/__tests__/sync_pr_merge_contract.test.js
+  const current = selectMergeEligibleSyncPr([successor, legacy], {syncHash: 'candidate', planId: 'plan-new'});
+  assert.equal(current.eligibility.eligible, true);
+  assert.deepEqual(current.stale, []);
+```
+
+Plan-bound candidate/campaign runs still require exact plan binding:
+
+```893:899:.github/scripts/maint71_merge_sync_prs.js
+  if (
+    ['candidate', 'campaign'].includes(requestedSyncHash)
+    && (!expectedPlanId || !expectedSourceCommit)
+  ) {
+    throw new Error(
+      'Candidate/campaign reconciliation requires an exact expected plan and source commit',
+```
+
+**Confidence: high** no regression found for same-plan merge behavior.
+
+---
+
+### 4. Same-lane stale cleanup is correctly scoped to the bound plan
+
+All `sync/workflows-*` branches share lane `'sync'` (`:70-72`), so without the filter a plan-bound pass could treat another plan’s PR as stale. The filter at `:785-787` and the `foreignPlan` `stale: []` guard address that; unit test covers the foreign-plan active case:
+
+```3250:3253:.github/scripts/__tests__/sync_pr_merge_contract.test.js
+  const wrong = selectMergeEligibleSyncPr([successor, legacy], {syncHash: 'candidate', planId: 'plan-old'});
+  assert.equal(wrong.foreignPlan, true);
+  assert.equal(wrong.eligibility.reason, 'plan_mismatch');
+  assert.deepEqual(wrong.stale, []);
+```
+
+---
+
+### 5. Minor behavioral side effect — plan-bound stale cleanup skips record-less PRs
+
+When `planId` is set, stale cleanup only includes PRs whose parsed delivery record’s `plan_id` exactly equals `planId` (`:785-787`). Same-lane PRs **without** a delivery record (`parseDeliveryRecord(...) === null`) are no longer closed as stale during plan-bound runs. Pre-fix they would have been.
+
+**Confidence: medium-low** this matters in production; only flagging because it is a real logic change, not covered by tests.
+
+---
+
+### 6. Out of scope for this fix — unscoped Maint 71 still has no plan ownership guard
+
+When `expectedPlanId` is empty, `foreignPlan` is always false (`:779`) and the stale filter is skipped (`:784`). Scheduled/unscoped janitor runs (`maint-71-merge-sync-prs.yml:27-33`, run-name `'unscoped'`) are unaffected. That is separate from plan-bound campaign retries, which always require `expectedPlanId` for `candidate`/`campaign` (`:893-899`).
+
+---
+
+## Tests
+
+`node --test .github/scripts/__tests__/sync_pr_merge_contract.test.js` — **81/81 pass**, including the two new tests.
+
+## Summary
+
+No blocking defects found in this branch for the stated problem. The branch correctly prevents a delayed plan-bound Maint 71 campaign from closing a newer candidate/delivery owned by another plan, and preserves matching-plan merge behavior. The Maint 71 `foreignPlan` early-exit is essential; the contract change alone would not have fixed active-PR closure.

@@ -1,0 +1,594 @@
+Registered consumer repos: stranske/Ready
+Processing repos: stranske/Ready
+Auto-merge: false, Dry run: true
+Evidence only: false
+Prepare only: false
+Resolution only: false
+Candidate evidence authorized: false
+Reviewer policy: minimum=1, quiet=7m, max=15m
+Cleanup stale sync branches: false
+
+
+=== stranske/Ready ===
+No sync PRs found
+
+=== Summary ===
+[
+  {
+    "owner": "stranske",
+    "repo": "Ready",
+    "status": "no_prs"
+  }
+]
+
+Merged: 0
+Stale closed: 0
+Leftover branches deleted: 0
+Failed: 0
+Pending: 0
+Ready (not auto-merged): 0
+Registered consumer repos: stranske/Travel-Plan-Permission
+Processing repos: stranske/Travel-Plan-Permission
+Auto-merge: false, Dry run: true
+Evidence only: true
+Prepare only: false
+Resolution only: false
+Candidate evidence authorized: false
+Reviewer policy: minimum=1, quiet=7m, max=15m
+Cleanup stale sync branches: false
+
+Target sync hash: candidate
+Expected plan identity: sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa @ bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+
+=== stranske/Travel-Plan-Permission ===
+✓ Confirmed exact-head no-change evidence at cccccccccccccccccccccccccccccccccccccccc
+
+=== Summary ===
+[
+  {
+    "owner": "stranske",
+    "repo": "Travel-Plan-Permission",
+    "status": "evidence_recovered",
+    "delivery_disposition": "no-change-canary-confirmed",
+    "branch": "sync/workflows-candidate",
+    "observed_head_sha": "cccccccccccccccccccccccccccccccccccccccc",
+    "active_review_thread_count": 0
+  }
+]
+
+Merged: 0
+Stale closed: 0
+Leftover branches deleted: 0
+Failed: 0
+Pending: 0
+Ready (not auto-merged): 0
+Registered consumer repos: stranske/Travel-Plan-Permission
+Processing repos: stranske/Travel-Plan-Permission
+Auto-merge: false, Dry run: true
+Evidence only: true
+Prepare only: false
+Resolution only: false
+Candidate evidence authorized: false
+Reviewer policy: minimum=1, quiet=7m, max=15m
+Cleanup stale sync branches: false
+
+Target sync hash: candidate
+Expected plan identity: sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa @ bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+
+=== stranske/Travel-Plan-Permission ===
+No-change canary required checks are not green: checks_failed
+
+=== Summary ===
+[
+  {
+    "owner": "stranske",
+    "repo": "Travel-Plan-Permission",
+    "status": "checks_failed",
+    "expected_head_sha": "cccccccccccccccccccccccccccccccccccccccc",
+    "observed_head_sha": "cccccccccccccccccccccccccccccccccccccccc",
+    "reason": "no_change_canary_required_checks_not_ready",
+    "failed_checks": [
+      "Gate / gate"
+    ],
+    "pending_checks": []
+  }
+]
+
+Merged: 0
+Stale closed: 0
+Leftover branches deleted: 0
+Failed: 0
+Pending: 0
+Ready (not auto-merged): 0
+Registered consumer repos: stranske/Travel-Plan-Permission
+Processing repos: stranske/Travel-Plan-Permission
+Auto-merge: false, Dry run: true
+Evidence only: true
+Prepare only: false
+Resolution only: false
+Candidate evidence authorized: false
+Reviewer policy: minimum=1, quiet=7m, max=15m
+Cleanup stale sync branches: false
+
+Target sync hash: candidate
+Expected plan identity: sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa @ bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+
+=== stranske/Travel-Plan-Permission ===
+Legacy branch protection for stranske/Travel-Plan-Permission@main has no required checks; checking active repository and organization rulesets
+No active ruleset requires status checks for stranske/Travel-Plan-Permission@main
+No-change canary has no authoritative required check contexts
+
+=== Summary ===
+[
+  {
+    "owner": "stranske",
+    "repo": "Travel-Plan-Permission",
+    "status": "checks_failed",
+    "expected_head_sha": "cccccccccccccccccccccccccccccccccccccccc",
+    "observed_head_sha": "cccccccccccccccccccccccccccccccccccccccc",
+    "reason": "no_change_canary_required_checks_unconfigured"
+  }
+]
+
+Merged: 0
+Stale closed: 0
+Leftover branches deleted: 0
+Failed: 0
+Pending: 0
+Ready (not auto-merged): 0
+Registered consumer repos: stranske/Ready
+Processing repos: stranske/Ready
+Auto-merge: false, Dry run: true
+Evidence only: false
+Prepare only: false
+Resolution only: false
+Candidate evidence authorized: false
+Reviewer policy: minimum=1, quiet=7m, max=15m
+Cleanup stale sync branches: false
+
+Target sync hash: campaign
+Expected plan identity: sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa @ bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+
+=== stranske/Ready ===
+✓ Confirmed campaign no-change evidence at cccccccccccccccccccccccccccccccccccccccc
+
+=== Summary ===
+[
+  {
+    "owner": "stranske",
+    "repo": "Ready",
+    "status": "campaign_no_change_verified",
+    "observed_head_sha": "cccccccccccccccccccccccccccccccccccccccc",
+    "plan_id": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "source_commit": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  }
+]
+
+Merged: 0
+Stale closed: 0
+Leftover branches deleted: 0
+Failed: 0
+Pending: 0
+Ready (not auto-merged): 0
+Registered consumer repos: stranske/Travel-Plan-Permission
+Processing repos: stranske/Travel-Plan-Permission
+Auto-merge: false, Dry run: true
+Evidence only: true
+Prepare only: false
+Resolution only: false
+Candidate evidence authorized: false
+Reviewer policy: minimum=1, quiet=7m, max=15m
+Cleanup stale sync branches: false
+
+Target sync hash: candidate
+Expected plan identity: plan-abc @ source-abc
+
+=== stranske/Travel-Plan-Permission ===
+Recovering canary evidence from merged PR #1427 (head-abc)
+
+Processing active PR #1427: chore: sync workflow templates
+Branch: sync/workflows-candidate
+Created: 2026-08-11T05:22:39Z
+Branch protection unavailable for stranske/Travel-Plan-Permission@main (403); checking active repository and organization rulesets
+Ruleset required checks: Gate / gate
+Checks (rulesets): 1 gating, 0 failed, 0 pending
+✓ Recovered green, review-clear evidence from the merged candidate PR
+
+=== Summary ===
+[
+  {
+    "owner": "stranske",
+    "repo": "Travel-Plan-Permission",
+    "pr": 1427,
+    "branch": "sync/workflows-candidate",
+    "head_sha": "head-abc",
+    "delivery_generation": "candidate-1",
+    "plan_id": "plan-abc",
+    "plan_scope": "full",
+    "scope_base_sha": "",
+    "source_commit": "source-abc",
+    "canary_baseline_evidence_json": "",
+    "campaign_no_change_evidence_json": "",
+    "delivery_lane": "sync",
+    "continuation_lane": "",
+    "delivery_disposition": "current",
+    "blocker_owner": "maint-71",
+    "next_command": "merge-current-delivery",
+    "review_resolution_thread_ids": [],
+    "review_resolution_would_resolve_thread_ids": [],
+    "review_resolution_errors": [],
+    "status": "evidence_recovered",
+    "active_review_thread_count": 0
+  }
+]
+
+Merged: 0
+Stale closed: 0
+Leftover branches deleted: 0
+Failed: 0
+Pending: 0
+Ready (not auto-merged): 0
+Registered consumer repos: stranske/Travel-Plan-Permission
+Processing repos: stranske/Travel-Plan-Permission
+Auto-merge: false, Dry run: true
+Evidence only: false
+Prepare only: true
+Resolution only: false
+Candidate evidence authorized: false
+Reviewer policy: minimum=1, quiet=7m, max=15m
+Cleanup stale sync branches: false
+
+Target sync hash: campaign
+Expected plan identity: plan-abc @ source-abc
+
+=== stranske/Travel-Plan-Permission ===
+✓ Recovered already-merged campaign row from PR #1448 (head-campaign)
+
+=== Summary ===
+[
+  {
+    "owner": "stranske",
+    "repo": "Travel-Plan-Permission",
+    "pr": 1448,
+    "branch": "sync/workflows-delivery",
+    "head_sha": "head-campaign",
+    "delivery_generation": "campaign-1",
+    "plan_id": "plan-abc",
+    "source_commit": "source-abc",
+    "status": "merged",
+    "evidence_source": "campaign-prepare-recovery"
+  }
+]
+
+Merged: 1
+Stale closed: 0
+Leftover branches deleted: 0
+Failed: 0
+Pending: 0
+Ready (not auto-merged): 0
+Registered consumer repos: stranske/Travel-Plan-Permission
+Processing repos: stranske/Travel-Plan-Permission
+Auto-merge: false, Dry run: true
+Evidence only: false
+Prepare only: false
+Resolution only: false
+Candidate evidence authorized: false
+Reviewer policy: minimum=1, quiet=7m, max=15m
+Cleanup stale sync branches: false
+
+Target sync hash: candidate
+Expected plan identity: sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa @ cccccccccccccccccccccccccccccccccccccccc
+
+=== stranske/Travel-Plan-Permission ===
+
+Processing active PR #1464: chore: sync workflow templates
+Branch: sync/workflows-candidate
+Created: 2026-09-04T23:21:48.206Z
+Post-push review window remains open until 2026-09-04T23:28:48.206Z
+
+=== Summary ===
+[
+  {
+    "owner": "stranske",
+    "repo": "Travel-Plan-Permission",
+    "pr": 1464,
+    "branch": "sync/workflows-candidate",
+    "head_sha": "dddddddddddddddddddddddddddddddddddddddd",
+    "delivery_generation": "record-generation",
+    "plan_id": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "plan_scope": "source-delta",
+    "scope_base_sha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "source_commit": "cccccccccccccccccccccccccccccccccccccccc",
+    "canary_baseline_evidence_json": "",
+    "campaign_no_change_evidence_json": "",
+    "delivery_lane": "sync",
+    "continuation_lane": "",
+    "delivery_disposition": "awaiting-review-window",
+    "blocker_owner": "maint-71",
+    "next_command": "rerun-after:2026-09-04T23:28:48.206Z",
+    "status": "review_window_pending",
+    "review_window_eligible_at": "2026-09-04T23:28:48.206Z"
+  }
+]
+
+Merged: 0
+Stale closed: 0
+Leftover branches deleted: 0
+Failed: 0
+Pending: 0
+Ready (not auto-merged): 0
+Registered consumer repos: stranske/Travel-Plan-Permission
+Processing repos: stranske/Travel-Plan-Permission
+Auto-merge: false, Dry run: true
+Evidence only: false
+Prepare only: false
+Resolution only: false
+Candidate evidence authorized: false
+Reviewer policy: minimum=1, quiet=7m, max=15m
+Cleanup stale sync branches: false
+
+Target sync hash: candidate
+Expected plan identity: sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa @ cccccccccccccccccccccccccccccccccccccccc
+
+=== stranske/Travel-Plan-Permission ===
+
+Processing active PR #1464: chore: sync workflow templates
+Branch: sync/workflows-candidate
+Created: 2020-08-14T00:00:00Z
+Checks (branch-protection): 1 gating, 0 failed, 0 pending
+
+=== Summary ===
+[
+  {
+    "owner": "stranske",
+    "repo": "Travel-Plan-Permission",
+    "pr": 1464,
+    "branch": "sync/workflows-candidate",
+    "head_sha": "dddddddddddddddddddddddddddddddddddddddd",
+    "delivery_generation": "delivery-record-generation",
+    "plan_id": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "plan_scope": "source-delta",
+    "scope_base_sha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "source_commit": "cccccccccccccccccccccccccccccccccccccccc",
+    "canary_baseline_evidence_json": "",
+    "campaign_no_change_evidence_json": "",
+    "delivery_lane": "sync",
+    "continuation_lane": "",
+    "delivery_disposition": "owner-decision",
+    "blocker_owner": "source",
+    "next_command": "refresh-stable-delivery-record",
+    "review_resolution_thread_ids": [],
+    "review_resolution_would_resolve_thread_ids": [],
+    "review_resolution_errors": [],
+    "status": "delivery_contract_blocked",
+    "delivery_reason": "stable_delivery_state_missing"
+  }
+]
+
+Merged: 0
+Stale closed: 0
+Leftover branches deleted: 0
+Failed: 0
+Pending: 0
+Ready (not auto-merged): 0
+Registered consumer repos: stranske/Travel-Plan-Permission
+Processing repos: stranske/Travel-Plan-Permission
+Auto-merge: false, Dry run: true
+Evidence only: false
+Prepare only: false
+Resolution only: false
+Candidate evidence authorized: false
+Reviewer policy: minimum=1, quiet=7m, max=15m
+Cleanup stale sync branches: false
+
+Target sync hash: candidate
+Expected plan identity: sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa @ cccccccccccccccccccccccccccccccccccccccc
+
+=== stranske/Travel-Plan-Permission ===
+Delivery contract blocks merge: missing_delivery_record
+
+=== Summary ===
+[
+  {
+    "owner": "stranske",
+    "repo": "Travel-Plan-Permission",
+    "pr": 1465,
+    "branch": "sync/workflows-candidate",
+    "head_sha": "dddddddddddddddddddddddddddddddddddddddd",
+    "delivery_generation": "",
+    "delivery_lane": "sync",
+    "delivery_disposition": "owner-decision",
+    "delivery_reason": "missing_delivery_record",
+    "blocker_owner": "source",
+    "next_command": "attach-or-infer-delivery-record",
+    "status": "delivery_contract_blocked"
+  }
+]
+
+Merged: 0
+Stale closed: 0
+Leftover branches deleted: 0
+Failed: 0
+Pending: 0
+Ready (not auto-merged): 0
+Registered consumer repos: stranske/RepoA, stranske/RepoB, stranske/RepoC
+Processing repos: stranske/RepoA, stranske/RepoB, stranske/RepoC
+Auto-merge: false, Dry run: true
+Evidence only: false
+Prepare only: false
+Resolution only: false
+Candidate evidence authorized: false
+Reviewer policy: minimum=1, quiet=7m, max=15m
+Cleanup stale sync branches: false
+
+
+=== stranske/RepoA ===
+Primary rate limit exhausted and no alternative token found. Token: unknown. Check token rotation and rate limit budgets.
+✗ Error processing RepoA: API rate limit exceeded for installation ID 123.
+✗ Primary rate limit exhausted; deferring 2 remaining repo(s) instead of calling them with an exhausted credential.
+
+=== Summary ===
+[
+  {
+    "owner": "stranske",
+    "repo": "RepoA",
+    "status": "error",
+    "error": "API rate limit exceeded for installation ID 123."
+  },
+  {
+    "owner": "stranske",
+    "repo": "RepoB",
+    "status": "deferred_rate_limit",
+    "error": "Skipped: primary rate limit exhausted earlier in this run."
+  },
+  {
+    "owner": "stranske",
+    "repo": "RepoC",
+    "status": "deferred_rate_limit",
+    "error": "Skipped: primary rate limit exhausted earlier in this run."
+  }
+]
+
+Merged: 0
+Stale closed: 0
+Leftover branches deleted: 0
+Failed: 0
+Pending: 0
+Ready (not auto-merged): 0
+Registered consumer repos: stranske/Travel-Plan-Permission
+Processing repos: stranske/Travel-Plan-Permission
+Auto-merge: false, Dry run: false
+Evidence only: false
+Prepare only: false
+Resolution only: false
+Candidate evidence authorized: false
+Reviewer policy: minimum=1, quiet=7m, max=15m
+Cleanup stale sync branches: false
+
+Target sync hash: candidate
+Expected plan identity: sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee @ cccccccccccccccccccccccccccccccccccccccc
+
+=== stranske/Travel-Plan-Permission ===
+Leaving PR #1464 untouched: it belongs to another plan
+
+=== Summary ===
+[
+  {
+    "owner": "stranske",
+    "repo": "Travel-Plan-Permission",
+    "pr": 1464,
+    "branch": "sync/workflows-candidate",
+    "head_sha": "dddddddddddddddddddddddddddddddddddddddd",
+    "status": "delivery_plan_handoff",
+    "delivery_reason": "plan_mismatch",
+    "delivery_generation": "delivery-record-generation",
+    "plan_id": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "plan_scope": "source-delta",
+    "scope_base_sha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "source_commit": "cccccccccccccccccccccccccccccccccccccccc",
+    "continuation_lane": "candidate",
+    "check_state": "checks_pending",
+    "review_state": "not-applicable",
+    "delivery_disposition": "other-plan",
+    "blocker_owner": "maint-71",
+    "expected_plan_id": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "observed_plan_id": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "next_command": "resume-owning-plan"
+  }
+]
+
+Merged: 0
+Stale closed: 0
+Leftover branches deleted: 0
+Failed: 0
+Pending: 0
+Ready (not auto-merged): 0
+✔ Maint 71 always requires the generated delivery Gate context (1.768958ms)
+✔ Maint 71 retains the staging merge hold while it seals a delivery (0.423125ms)
+✔ Maint 71 falls back only when repository policy rejects a merge method (0.163458ms)
+✔ Maint 71 keeps Collab-Admin out of fleet runs but allows an explicit manual reconciliation (0.213292ms)
+✔ parseNoChangeEvidenceDocument shares fail-closed lane validation (0.815958ms)
+✔ campaign no-change delivery evidence is exact-tree terminal without a live Gate (0.066333ms)
+✔ campaign no-change delivery evidence requires exact-tree validation (0.163541ms)
+✔ transient delivery holds carry a durable due time and lane (5.365083ms)
+✔ promotion requires complete exact-plan evidence and prepared candidate rows (0.408542ms)
+✔ campaign maps canaries to candidate and the remaining fleet to delivery (0.131208ms)
+✔ campaign commit authorization binds every prepared exact head (0.512542ms)
+✔ hasCampaignCommitAuthorization rejects empty or partial authorization payloads (0.062417ms)
+✔ campaign commit authorization accepts already-merged rows on resume (0.089542ms)
+✔ selectLatestMergedSyncPr matches authorized campaign identity (0.322875ms)
+✔ candidate base drift requests a no-filter refresh and stays transient (0.158625ms)
+✔ delivery base drift replays only signed exact-plan promotion evidence (0.3715ms)
+✔ review resolution proof is exact-head, source-linked, and actor-bound (0.861292ms)
+✔ proof-bound resolution permits an unresolved outdated thread (0.064875ms)
+✔ maint71 run writes reports and records a no-PR result with fake action clients (11.116958ms)
+✔ maint71 fails closed before cross-repository API calls without OWNER_PR_PAT (1.051167ms)
+✔ maint71 accepts no-change canary evidence only while the exact base head is current (8.05025ms)
+✔ maint71 accepts exact-tree no-change delivery evidence without a redundant Gate (1.928625ms)
+✔ maint71 recovers exact-head evidence from an already-merged candidate PR (6.532083ms)
+✔ maint71 prepare pass recovers an already-merged campaign row (2.435083ms)
+✔ normalizeSyncHash accepts raw hashes and branch names (0.071917ms)
+✔ selectLatestMergedCandidatePr recovers only the newest trusted merged candidate (0.232666ms)
+✔ validateExpectedCandidateIdentity binds open candidates to every immutable input (0.15225ms)
+✔ validateCanaryEvidence fails closed on missing, mixed, red, or reviewed canaries (0.07025ms)
+✔ validateCanaryEvidence preserves one immutable source-delta range (0.149209ms)
+✔ source-delta evidence is bound to the immutable generated commit message (0.232458ms)
+✔ parseBooleanInput preserves explicit false values (0.044708ms)
+✔ post-push review window fails closed until seven full minutes elapse (0.095541ms)
+✔ reviewer settlement never requires every configured reviewer (0.37ms)
+✔ review policy normalizes invalid numeric values to finite defaults (0.049541ms)
+✔ reviewer evidence query retries and fails closed when GraphQL is unavailable (0.3185ms)
+✔ legacy reviewer status preserves its timestamp and satisfies reviewer evidence (0.178041ms)
+✔ reviewer evidence does not count explicit skipped-review status as a response (0.114917ms)
+✔ reviewer evidence counts a completed negative verdict with substantive output (0.103667ms)
+✔ reviewer evidence preserves a response across a later capacity signal (0.13975ms)
+✔ review non-response policy does not match generic feature availability prose (0.150667ms)
+✔ a sync selector ignores dev-tool deliveries instead of reporting a missing sync target (0.054375ms)
+✔ the dev-tool selector cannot be hidden by a newer workflow-sync PR (0.0755ms)
+✔ stable delivery branches and strict branch-update failures are recognized (0.045666ms)
+✔ workflow sync delivery merge requires a valid cryptographic signature (0.065042ms)
+✔ only the workflow-sync lane requires a verified generated head (0.047959ms)
+✔ strict required checks update behind branches before a generated merge (0.058084ms)
+✔ branch-update failures are blocking sync-system failures (0.04ms)
+✔ candidate mutation requires the evidence pass authorization (0.098416ms)
+✔ selectActiveSyncPr falls back to newest sync PR without a target hash (0.074666ms)
+✔ isTrustedSyncPr requires the configured actor and sync branch (0.058666ms)
+✔ generated delivery classification gives sync and dev-tool lanes identical check and review dispositions (1.211917ms)
+✔ review-blocked sync bot threads on manifest-synced paths route to maint-71 auto-resolve (0.381042ms)
+✔ review-blocked sync thread routing derives every bot login from review policy (0.254625ms)
+✔ manifest source resolution preserves template ownership and consumer targets (0.0955ms)
+✔ selectActiveSyncPr honors target hash instead of newest PR (0.052917ms)
+✔ selectActiveSyncPr can target the stable canary candidate branch (0.044334ms)
+✔ selectActiveSyncPr never marks another generated-delivery lane stale (0.043125ms)
+✔ selectActiveSyncPr reports missing target without marking stale PRs (0.032459ms)
+✔ selectMergeEligibleSyncPr refuses legacy delivery attempts (0.033542ms)
+✔ selectMergeEligibleSyncPr rejects a PR whose head no longer matches its lease (0.052083ms)
+✔ buildMergeReport provides machine-readable summary counts (0.080917ms)
+✔ buildDeliveryHandoff preserves the restart fields for a generated PR (0.0895ms)
+✔ buildDeliveryHandoff serializes review-window and delivery context bindings (0.137667ms)
+✔ maint71 execution emits a fully bound review-window handoff (2.502334ms)
+✔ maint71 execution preserves delivery-record precedence in the normal delivery context (2.18ms)
+✔ maint71 fails closed before emitting a handoff for a new candidate without a delivery record (2.19625ms)
+✔ buildDeliveryHandoff rewrites terminal merge outcomes (0.141792ms)
+✔ buildDeliveryHandoff rejects results that lack required restart fields (0.0415ms)
+✔ collectDeletableSyncBranches keeps open PR branches and non-sync branches (0.11975ms)
+✔ classifySyncPrChecks ignores non-required failing checks when required contexts pass (0.070292ms)
+✔ classifySyncPrChecks fails when a required check fails (0.066083ms)
+✔ classifySyncPrChecks uses the latest check run per name (0.078541ms)
+✔ classifySyncPrChecks reports pending when a required check is in progress (0.051709ms)
+✔ classifySyncPrChecks falls back to denylist when required contexts are empty (0.068167ms)
+✔ requiredContextsFromRulesets selects active rules for the target branch (0.146209ms)
+✔ runtime-AC sync PRs are blocked while ordinary sync PRs still merge (0.294833ms)
+✔ buildMarkdownSummary includes non-zero statuses and artifact name (0.0615ms)
+✔ maint71 circuit-breaks the repo loop on terminal primary rate-limit exhaustion (2.736917ms)
+✔ Maint 71 discovers an open generated PR beyond the first 100 results (0.199917ms)
+✔ plan-bound selection preserves successor deliveries and excludes other-plan cleanup (0.163375ms)
+✔ maint71 real execution never closes a candidate owned by a different plan (2.217792ms)
+ℹ tests 81
+ℹ suites 0
+ℹ pass 81
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 144.702
