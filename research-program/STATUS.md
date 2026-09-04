@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-04T17:40:23Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-04T17:41:40Z)
 
-Units: 29 — claimed 1, done 18, queued 10
+Units: 29 — done 19, queued 10
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=shed vibe=ok aider=ok
 CLAUDE CONSERVATION ACTIVE until 2026-09-06T12:00:00Z — cheap agents only (launchd driver every 15 min); claude-only units deferred.
@@ -22,7 +22,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | A-verify-Workflows | A | A1 | done | codex | driver | Verify dossier artifacts/dossiers/Workflows.md against ../clones/Workf |
 | A-verify-learning-management-system | A | A1 | done | gemini | driver | Verify dossier artifacts/dossiers/learning-management-system.md agains |
 | A-verify-trip-planner | A | A1 | done | cursor | driver | Verify dossier artifacts/dossiers/trip-planner.md against ../clones/tr |
-| A-dossier-index | A | A2 | claimed | cursor | driver | Fleet index and shared vocabulary from verified dossiers (needs >=12 v |
+| A-dossier-index | A | A2 | done | cursor | driver | Fleet index and shared vocabulary from verified dossiers (needs >=12 v |
 | A-personal-reuse-note | A | A2 | queued | cursor |  | Reuse note across personal repos (FAA, Reader, trip-planner) |
 | A-work-side-bundle | A | A3 | queued | codex |  | Work-side bundle: redaction pass, cover memo, safety grep |
 | A-dossier-docx | A | A3 | queued | cursor |  | Word versions of all verified dossiers (venv + python-docx) |
@@ -40,7 +40,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-04T17:36:36Z — R1-legal-decomposition — claimed by driver (agent codex)
 - 2026-09-04T17:36:37Z — R2-consultant-report-diffing — route — router picked codex from ['codex', 'gemini']
 - 2026-09-04T17:36:37Z — R2-consultant-report-diffing — claimed by driver (agent codex)
 - 2026-09-04T17:36:37Z — R3-manager-mosaic — route — router picked codex from ['codex', 'gemini']
@@ -52,3 +51,4 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-04T17:39:06Z — R1-legal-decomposition — done — cursor produced 2078 words at artifacts/research/R1-legal-decomposition.md in 149s
 - 2026-09-04T17:39:17Z — A-verify-trip-planner — done — cursor produced 1668 words at artifacts/dossiers/trip-planner.md in 160s
 - 2026-09-04T17:40:23Z — R4-document-access — done — cursor produced 2430 words at artifacts/research/R4-document-access-substrate.md in 131s
+- 2026-09-04T17:41:40Z — A-dossier-index — done — vibe produced 1262 words at artifacts/dossiers/00-INDEX.md in 573s
