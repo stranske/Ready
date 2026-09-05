@@ -103,17 +103,3 @@ If yes:
 ## Claude-Specific Note
 
 Keep this file materially aligned with `AGENTS.md`. Differences between the two should only be agent-specific execution notes, not different repository rules.
-
----
-
-# Ready — research-programme context (added 2026-09-04)
-
-This repo is the published home of the 2026-09 research programme as well as a fleet consumer. See `README.md` for the map of `research-program/`.
-
-**`research-program/` is machine-owned.** A local engine (`~/.codex/automations/research-program/`) rsyncs that tree here with deletion enabled on every worker tick. Anything you write there is removed or overwritten without warning, and no error will tell you. Fix the engine, not the mirror. Do not open pull requests touching that tree.
-
-**The owner inbox is issue #553.** The engine posts questions there with the default it is proceeding on, plus a daily digest and stall alerts. It parses owner replies for `answer <qid>: …`, `pause`, `resume`, `resume <unit>`, `stop phase <n>` and `note: …`. Do not post there in an agent role; it is a human channel.
-
-**What the artifacts are for.** `artifacts/work-bundle/` is prepared to be handed to the owner's work colleagues, so it is held to a disclosure standard rather than a tidiness one: no home paths, no credential fragments, no internal identifiers, no scratchpad paths. `artifacts/dossiers/` are evidence-bound descriptions of every fleet repo and are the fastest way to understand a sibling repo before working in it.
-
-**Ordinary work in this repo** lives outside `research-program/` and follows the normal flow. Cite paths relative to this repository.
