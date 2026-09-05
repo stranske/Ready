@@ -1,8 +1,8 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-05T09:19:37Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-05T11:35:04Z)
 
 Units: 49 — done 49
 Paused: False   Phase stops: []
-Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=warn vibe=ok aider=ok
+Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 CLAUDE CONSERVATION ACTIVE until 2026-09-06T12:00:00Z — non-Claude executors continue (launchd driver every 15 min); claude-only units deferred.
 Owner inbox: https://github.com/stranske/Ready/issues/553
 
@@ -60,18 +60,18 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-05T06:10:31Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-05T07:47:29+00:00; local work continues
-- 2026-09-05T06:16:14Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-05T07:47:29+00:00; local work continues
-- 2026-09-05T06:31:16Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-05T07:47:29+00:00; local work continues
-- 2026-09-05T06:46:17Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-05T07:47:29+00:00; local work continues
-- 2026-09-05T07:01:19Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-05T07:47:29+00:00; local work continues
-- 2026-09-05T07:10:31Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-05T07:47:29+00:00; local work continues
-- 2026-09-05T07:16:21Z — D-audit-Manager-Mosaic--2026-09-05T04-00-25Z — route — router picked codex from ['codex']
-- 2026-09-05T07:16:21Z — D-audit-Manager-Mosaic--2026-09-05T04-00-25Z — claimed by driver (agent codex)
-- 2026-09-05T07:16:21Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-05T07:47:29+00:00; local work continues
-- 2026-09-05T07:19:07Z — D-audit-Manager-Mosaic--2026-09-05T04-00-25Z — done — cursor produced 520 words at artifacts/audits/Manager-Mosaic-2026-09-05.md in 165s
-- 2026-09-05T07:19:08Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-05T07:47:29+00:00; local work continues
 - 2026-09-05T07:34:09Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-05T07:47:29+00:00; local work continues
+- 2026-09-05T09:34:42Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-05T11:28:43+00:00; local work continues
+- 2026-09-05T09:49:44Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-05T11:28:43+00:00; local work continues
+- 2026-09-05T10:04:47Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-05T11:28:43+00:00; local work continues
+- 2026-09-05T10:10:33Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-05T11:28:43+00:00; local work continues
+- 2026-09-05T10:19:49Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-05T11:28:43+00:00; local work continues
+- 2026-09-05T10:34:50Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+- 2026-09-05T10:34:51Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-05T11:28:43+00:00; local work continues
+- 2026-09-05T10:49:53Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-05T11:28:43+00:00; local work continues
+- 2026-09-05T11:04:55Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-05T11:28:43+00:00; local work continues
+- 2026-09-05T11:11:03Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-05T11:28:43+00:00; local work continues
+- 2026-09-05T11:20:02Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-05T11:28:43+00:00; local work continues
 
 ## Questions
 
