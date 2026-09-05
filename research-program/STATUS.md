@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-05T05:18:16Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-05T05:38:14Z)
 
-Units: 48 — claimed 1, done 46, queued 1
+Units: 49 — claimed 1, done 46, queued 2
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=warn vibe=ok aider=ok
 CLAUDE CONSERVATION ACTIVE until 2026-09-06T12:00:00Z — non-Claude executors continue (launchd driver every 15 min); claude-only units deferred.
@@ -52,17 +52,14 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | C-skill-curriculum | C | C1 | done | codex | driver | Skill curriculum + tool-literacy loop design (LMS-connected) |
 | D2-issue-body-repair | D | D | done | cursor | driver | Repair issue bodies citing scratchpad paths and unblock the paused aut |
 | D3-unblock-sweep-2026-09-04T21 | D | D | done | codex | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
+| D3-unblock-sweep-2026-09-05T05 | D | D | claimed | codex | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D-audit-Fine-Art-Archive--2026-09-05T04-00-31Z | D | D | done | codex | codex | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 2) |
 | D-audit-Manager-Mosaic--2026-09-05T04-00-25Z | D | D | queued | codex |  | Audit stranske/Manager-Mosaic and file issues (supply 2 <= 2) |
-| D-audit-learning-management-system--2026-09-05T04-00-30Z | D | D | claimed | codex | driver | Audit stranske/learning-management-system and file issues (supply 2 <= |
+| D-audit-learning-management-system--2026-09-05T04-00-30Z | D | D | queued | codex |  | Audit stranske/learning-management-system and file issues (supply 2 <= |
 | D4-verify-merged-2026-09-05T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
 
 ## Last checkpoints
 
-- 2026-09-05T04:08:08Z — D-audit-Fine-Art-Archive--2026-09-05T04-00-31Z — fail — gemini produced 348 words at /Users/teacher/.codex/automations/research-program/artifacts/audits/Fine-Art-Archive-2026-09-05.md (min 400); rotating agent
-- 2026-09-05T04:12:00Z — D-audit-Fine-Art-Archive--2026-09-05T04-00-31Z — route — router picked codex from ['codex']
-- 2026-09-05T04:12:00Z — D-audit-Fine-Art-Archive--2026-09-05T04-00-31Z — claimed by codex (agent codex)
-- 2026-09-05T04:17:16Z — D-audit-Fine-Art-Archive--2026-09-05T04-00-31Z — done — Reconciled nine existing Fine-Art-Archive audit issues, reproduced defects, staged corrected bodies, and documented eight remote guard passes plus the remaining
 - 2026-09-05T04:23:10Z — D-audit-Manager-Mosaic--2026-09-05T04-00-25Z — route — router picked codex from ['codex']
 - 2026-09-05T04:23:10Z — D-audit-Manager-Mosaic--2026-09-05T04-00-25Z — claimed by driver (agent codex)
 - 2026-09-05T05:03:13Z — D-audit-Manager-Mosaic--2026-09-05T04-00-25Z — fail — offload to gemini exited 1; retained artifact is not proof of success
@@ -71,6 +68,10 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-05T05:12:20Z — D-audit-Manager-Mosaic--2026-09-05T04-00-25Z — fail — not-ready: required Phase 0 input artifacts/dossiers/Manager-Mosaic.md does not exist
 - 2026-09-05T05:18:16Z — D-audit-learning-management-system--2026-09-05T04-00-30Z — route — router picked codex from ['codex']
 - 2026-09-05T05:18:16Z — D-audit-learning-management-system--2026-09-05T04-00-30Z — claimed by driver (agent codex)
+- 2026-09-05T05:23:12Z — D-audit-learning-management-system--2026-09-05T04-00-30Z — fail — cursor produced 373 words at /Users/teacher/.codex/automations/research-program/artifacts/audits/learning-management-system-2026-09-05.md (min 400); rotating ag
+- 2026-09-05T05:38:13Z — unblock — enqueued D3-unblock-sweep-2026-09-05T05
+- 2026-09-05T05:38:14Z — D3-unblock-sweep-2026-09-05T05 — route — router picked codex from ['codex', 'cursor']
+- 2026-09-05T05:38:14Z — D3-unblock-sweep-2026-09-05T05 — claimed by driver (agent codex)
 
 ## Questions
 
