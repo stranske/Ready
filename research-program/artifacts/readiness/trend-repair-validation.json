@@ -1,29 +1,34 @@
 {
   "pr": "https://github.com/stranske/Trend_Model_Project/pull/6027",
-  "commit": "9d4d20bc",
+  "reviewed_head": "e38d75790934b5a38e7f320ff10599467461108d",
+  "state": "MERGED",
+  "merge_commit": "50d91ce9eadf863d4336ae60523911dc86c37ef4",
+  "merged_at": "2026-09-05T02:34:13Z",
   "policy_tests_passed": 17,
-  "local_smoke_successes": 2,
-  "selection_transitions": [
-    20,
-    0,
-    20
+  "local_validation": [
+    {
+      "python": "CPython 3.12.12",
+      "result": "same rerun and selection logic passes 20 -> 0 -> 20 before allocator follow-up"
+    },
+    {
+      "python": "CPython 3.14.3",
+      "result": "full browser smoke passes 20 -> 0 -> 20 with Arrow system pool; clean shutdown"
+    },
+    {
+      "python": "CPython 3.14.3",
+      "result": "in-process AppTest passes 20 -> 0 -> 20; no exceptions"
+    }
   ],
-  "python": "CPython 3.12.12",
-  "dependencies": "repository-pinned app dependencies",
-  "js_syntax": "pass",
-  "diff_check": "pass",
-  "head": "e38d75790934b5a38e7f320ff10599467461108d",
-  "latest_local_smoke": "pass; 20 of 20 -> 0 of 20 -> 20 of 20",
-  "github_9d4d20bc_failure": "transient duplicate visible status during rerender",
-  "repair": "poll all visible matching statuses and require exactly one before evaluating; terminate app in nested finally",
-  "local_python_314_browser": "pass; 20 -> 0 -> 20 with Arrow system pool",
-  "local_python_314_apptest": "pass; 20 -> 0 -> 20; no exceptions",
-  "native_crash_evidence": "SIGSEGV; pyarrow 25.0.0 libarrow mi_thread_init via MimallocAllocator while rerendering",
-  "allocator_scope": "smoke subprocess only, caller override preserved",
-  "source": "https://arrow.apache.org/docs/cpp/env_vars.html#arrow-default-memory-pool",
   "github_browser_run": 33938311896,
   "github_browser_result": "SUCCESS",
-  "latest_ci_infrastructure_failure": "Python 3.13 dependency bootstrap curl connection reset; retry requested",
   "gate_run": 33938312322,
-  "gate_retry": "failed jobs rerun requested after Python 3.12 passed; attempt 1 Python 3.13 bootstrap curl connection reset"
+  "gate_attempt": 2,
+  "gate_result": "SUCCESS",
+  "retry_reason": "attempt 1 Python 3.13 dependency bootstrap curl connection reset; recovered on attempt 2",
+  "native_crash_evidence": "Local SIGSEGV; pyarrow 25.0.0 libarrow mi_thread_init via MimallocAllocator during pandas-to-Arrow rendering",
+  "repair": "wait for completed server reruns, evaluate one settled visible status, use the supported system allocator by default, and always terminate the smoke server",
+  "allocator_scope": "smoke subprocess only; caller override preserved",
+  "source": "https://arrow.apache.org/docs/cpp/env_vars.html#arrow-default-memory-pool",
+  "js_syntax": "pass",
+  "diff_check": "pass"
 }
