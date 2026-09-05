@@ -19,6 +19,11 @@
       "repo": "stranske/Workflows",
       "pr": 3386,
       "merge": "913e2625bdc471de84addea5b4cc8dfefca1c78a"
+    },
+    {
+      "repo": "stranske/Workflows",
+      "pr": 3388,
+      "merge": "f88d7fc5f6ce6f78c64d0341eaea7dbe9aa78c19"
     }
   ],
   "remote_astra_canary_run": 33931099913,
@@ -26,11 +31,14 @@
   "source_delta_head": "913e2625bdc471de84addea5b4cc8dfefca1c78a",
   "consumer_plan_id": "sha256:695d947ab30a1bbeb81d5fe2006db08c375126d10ce8f442df3c63997485c681",
   "consumer_sync_run": 33931101622,
-  "consumer_delivery_status": "deferred_github_primary_quota",
+  "consumer_delivery_status": "in_progress",
   "research_units_done": 44,
   "readiness_tests_passed": 16,
   "aggregate_spending_cap_enforced": false,
   "github_core_reset_at": "2026-09-05T00:40:20Z",
-  "trip_planner_fresh_sealed_gate": 33933089597,
-  "ready_label_fix_pr": 3388
+  "trip_planner_fresh_sealed_gate": 33933089879,
+  "ready_label_fix_pr": 3388,
+  "trip_planner_gate_attempt": 2,
+  "packaging_race_fix_pr": 1792,
+  "latest_canary_owner_run": 33934102005
 }

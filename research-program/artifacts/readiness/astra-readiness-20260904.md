@@ -1,6 +1,6 @@
 # Astra migration and unattended readiness review
 
-Updated 2026-09-05 00:36 UTC. **Astra is installed locally and verified in GitHub Actions. Remote consumer delivery is still in progress.**
+Updated 2026-09-05 00:48 UTC. **Astra is installed locally and verified in GitHub Actions. Remote consumer delivery is still in progress.**
 
 ## Current state
 
@@ -29,12 +29,15 @@ The model contract was checked against the [official latest-model guide](https:/
 | [Orchestrator #233: routing and historical compatibility](https://github.com/stranske/Orchestrator/pull/233) | `ebe1ca514eca08d3489536f899072f1b8e1fc24c` |
 | [Workflows #3382: preserve deliveries owned by another plan](https://github.com/stranske/Workflows/pull/3382) | `72be6db44dd81a7eb8bdaeaf5437a00d1bd5f221` |
 | [Workflows #3386: reachable immutable runner](https://github.com/stranske/Workflows/pull/3386) | `913e2625bdc471de84addea5b4cc8dfefca1c78a` |
+| [Workflows #3388: fresh sealing event](https://github.com/stranske/Workflows/pull/3388) | `f88d7fc5f6ce6f78c64d0341eaea7dbe9aa78c19` |
 
 Every merged source head passed its checks, had zero unresolved review threads, was directly mergeable, and exceeded the seven-minute review window. CodeRabbit capacity was unavailable; independent Orchestrator/Cursor advisory reviews were completed and substantive findings fixed. Required statuses were not bypassed.
 
 The consumer migration uses source range `0b65b95a362ae4643aaa0326bdc06b1b47f814b7..913e2625bdc471de84addea5b4cc8dfefca1c78a`, plan `sha256:695d947ab30a1bbeb81d5fe2006db08c375126d10ce8f442df3c63997485c681`, and [Maint 68 run 33931101622](https://github.com/stranske/Workflows/actions/runs/33931101622). Only the three Astra manifest paths are in this delivery.
 
-All three canaries are sealed and have fresh passing Gates. trip-planner required a verified label refresh because a stale `sync:delivery-ready` label prevented sealing from emitting a fresh event. Its old run retained the unsealed payload when rerun; the fresh [Gate 33933089597](https://github.com/stranske/trip-planner/actions/runs/33933089597) passed. [Workflows #3388](https://github.com/stranske/Workflows/pull/3388) fixes review-start cleanup so future generations receive that event automatically; it is under review. A subsequent owner attempt stopped safely on GitHub primary quota exhaustion, with remaining targets deferred. Source or owner-run success alone is not treated as proof that consumer defaults changed.
+All three canaries are sealed and have passing required Gates. trip-planner required a verified label refresh because a stale `sync:delivery-ready` label prevented sealing from emitting a fresh event. Its old run retained the unsealed payload when rerun. The fresh [required Gate 33933089879](https://github.com/stranske/trip-planner/actions/runs/33933089879) passed on attempt 2 after exposing a separate parallel-test race. The green `gate` job in run 33933089597 was an automation eligibility job, not the required CI Gate; evidence was corrected accordingly.
+
+[Workflows #3388](https://github.com/stranske/Workflows/pull/3388) merged and was installed into both local Workflows checkouts. It clears stale ready labels before advancing review state. [trip-planner #1792](https://github.com/stranske/trip-planner/pull/1792) isolates a negative packaging test that had rewritten real production code concurrently with positive checks; serial and xdist checks passed, remote review is in progress. After one safely deferred quota-exhausted run, reconciliation resumed when the actual primary quota reset. Current owner run: [33934102005](https://github.com/stranske/Workflows/actions/runs/33934102005). Consumer completion still requires default-branch verification.
 
 Generated candidates remain Maint 68/71-owned. The narrowly verified trigger repair changed only the ready label; no generated head, seal, merge authorization or staging hold was bypassed.
 

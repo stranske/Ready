@@ -1,0 +1,33 @@
+Gathering the PR diff, checks, linked issues, and local test context for an advisory review.
+GitHub API calls failed; continuing with local diff analysis and running tests.
+## Fallback Code Review — PR #1792
+
+**verdict:** `approve`
+
+**P0/P1 blockers:** none
+
+**P2 advisories:**
+- `tests/test_packaging.py:134-135` — Expected offender string hardcodes POSIX separators (`trip_planner/app/services/scenarios.py`). On Windows, `Path.relative_to()` may emit backslashes and break the assertion. CI runs on `ubuntu-latest`, so this is unlikely to bite in required paths; use `str(scenarios_path.relative_to(tmp_path))` if cross-platform local runs matter.
+- `tests/test_packaging.py:109-113` — Parametrize still covers only `from tests.*` imports, not bare `import tests` (pre-existing gap; scanner supports both at lines 21–22).
+
+**validation evidence checked:**
+- `git diff origin/main...48eba46` — single-file, test-only change (+16/−17); no production code touched.
+- `tests/test_packaging.py` — reviewed `_production_tests_import_offenders()` (lines 14–23) and refactored negative test (lines 115–136); monkeypatch of `REPO_ROOT`/`TRIP_PLANNER_ROOT` is read at call time, so isolation is sound; `pytest` fixture teardown restores module globals.
+- Local: `pytest tests/test_packaging.py -v` — 4/4 passed (Python 3.12).
+- Local: `pytest tests/test_packaging.py::test_no_production_imports_from_tests_package tests/test_packaging.py::test_production_tests_import_guard_fails_on_deliberate_break -n 2 -v` — 2/2 passed under xdist (reproduces stated race scenario).
+- Local: `ruff check` and `black --check` on changed file — passed.
+- PR body (https://github.com/stranske/trip-planner/pull/1792) — documents xdist race via checkout mutation of real `scenarios.py`; fix moves deliberate-break to `tmp_path`; references PR #1790 as exposure context.
+- GitHub API check-runs for `48eba46`: **success** on Complexity guard, Runtime CI, Cross-Repo Smoke, Python CI lint-ruff, typecheck-mypy, copilot-pull-request-reviewer; **in_progress** on Python CI / python 3.12 and 3.13 at review time; **no failures** observed; CodeRabbit status **pending** (“Review in progress”).
+- Copilot review: approval recommended, 0 inline comments.
+- No linked acceptance-criteria issue; no unresolved review threads with actionable code objections.
+- `gh` CLI unavailable (unauthenticated); PR metadata fetched via public API/web.
+
+**residual risk:**
+- Python 3.12/3.13 full-suite CI was still running at review time — cannot confirm green on the exact interpreter (3.13) where #1790 saw the flake, though local xdist reproduction passes and other CI jobs on the same SHA are green.
+- CodeRabbit review incomplete (processing, not failed) — no ASSERTIVE-profile findings to cross-check.
+- Fallback review cannot confirm reusable Workflows CI invokes pytest with xdist on every run; fix is still correct for any xdist-enabled invocation.
+- Negative test now validates scanner behavior on a synthetic tree, not mutation of the real `trip_planner/app/services/scenarios.py`; production scanning remains covered by `test_no_production_imports_from_tests_package`.
+
+**recommendation:** `merge-safe with waiver`
+
+The change correctly fixes a real concurrency defect: the old test wrote to the live checkout (`scenarios.py` + `finally` restore), which races with `test_no_production_imports_from_tests_package` and wheel builds under pytest-xdist. Moving the deliberate break to `tmp_path` with scoped `monkeypatch` eliminates checkout mutation without weakening the positive guard. Test-only scope; no security, data-loss, migration, or workflow regressions identified. Proceed once Python 3.12/3.13 jobs finish green; CodeRabbit waiver is reasonable given Copilot approval and local xdist validation.
