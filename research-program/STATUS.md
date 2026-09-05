@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-05T00:58:51Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-05T02:39:07Z)
 
-Units: 44 — done 44
+Units: 45 — done 45
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 CLAUDE CONSERVATION ACTIVE until 2026-09-06T12:00:00Z — cheap agents only (launchd driver every 15 min); claude-only units deferred.
@@ -52,21 +52,22 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | C-skill-curriculum | C | C1 | done | codex | driver | Skill curriculum + tool-literacy loop design (LMS-connected) |
 | D2-issue-body-repair | D | D | done | cursor | driver | Repair issue bodies citing scratchpad paths and unblock the paused aut |
 | D3-unblock-sweep-2026-09-04T21 | D | D | done | codex | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
+| D4-verify-merged-2026-09-05T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
 
 ## Last checkpoints
 
-- 2026-09-04T23:05:51Z — A-verify-Pension-Data — route — router picked cursor from ['codex', 'cursor', 'gemini']
-- 2026-09-04T23:05:51Z — A-verify-Pension-Data — claimed by driver (agent cursor)
-- 2026-09-04T23:07:21Z — A-verify-Pension-Data — done — cursor produced 1648 words at artifacts/dossiers/Pension-Data.md in 88s
-- 2026-09-04T23:10:59Z — A-verify-Portable-Alpha-Extension-Model — route — router picked cursor from ['codex', 'cursor', 'gemini']
-- 2026-09-04T23:10:59Z — A-verify-Portable-Alpha-Extension-Model — claimed by codex (agent cursor)
-- 2026-09-04T23:19:04Z — A-verify-Portable-Alpha-Extension-Model — done — Independently verified 54 dossier claim groups; corrected 13 including browser dashboard, CSV index intake, contract consumers and sweep regimes, and qualified 
-- 2026-09-04T23:22:25Z — A-verify-Travel-Plan-Permission — route — router picked cursor from ['codex', 'cursor', 'gemini']
-- 2026-09-04T23:22:25Z — A-verify-Travel-Plan-Permission — claimed by driver (agent cursor)
-- 2026-09-04T23:24:08Z — A-verify-Travel-Plan-Permission — done — cursor produced 2064 words at artifacts/dossiers/Travel-Plan-Permission.md in 97s
-- 2026-09-04T23:26:42Z — readiness-dossier-consistency-20260904 — route — router picked cursor from ['codex', 'cursor']
-- 2026-09-04T23:26:42Z — readiness-dossier-consistency-20260904 — claimed by driver (agent cursor)
-- 2026-09-04T23:28:16Z — readiness-dossier-consistency-20260904 — done — cursor produced 905 words at artifacts/readiness/dossier-consistency-20260904.md in 92s
+- 2026-09-05T01:14:53Z — mirror — deferred — Ready#552 exact-head sync review; publication resumes by 2026-09-05T01:50:09+00:00; local work continues
+- 2026-09-05T01:14:53Z — mirror — deferred — Ready#552 exact-head sync review; publication resumes by 2026-09-05T01:50:09+00:00; local work continues
+- 2026-09-05T01:15:26Z — mirror — deferred — Ready#552 exact-head sync review; publication resumes by 2026-09-05T01:50:09+00:00; local work continues
+- 2026-09-05T01:20:49Z — D4-verify-merged-2026-09-05T01 — done — gemini produced 3731 words at artifacts/verification/D4-verify-merged-2026-09-05T01.md in 356s
+- 2026-09-05T01:20:49Z — mirror — deferred — Ready#552 exact-head sync review; publication resumes by 2026-09-05T01:50:09+00:00; local work continues
+- 2026-09-05T01:29:54Z — mirror — FAILED — RuntimeError; pending commits retained for next tick
+- 2026-09-05T01:34:48Z — mirror — deferred — Ready#552 exact-head sync review; publication resumes by 2026-09-05T01:50:09+00:00; local work continues
+- 2026-09-05T01:44:56Z — mirror — deferred — Ready#552 exact-head sync review; publication resumes by 2026-09-05T01:50:09+00:00; local work continues
+- 2026-09-05T01:59:59Z — mirror — deferred — Ready#552 exact-head sync review; publication resumes by 2026-09-05T03:05:09+00:00; local work continues
+- 2026-09-05T02:11:01Z — mirror — deferred — Ready#552 exact-head sync review; publication resumes by 2026-09-05T03:05:09+00:00; local work continues
+- 2026-09-05T02:15:00Z — mirror — deferred — Ready#552 exact-head sync review; publication resumes by 2026-09-05T03:05:09+00:00; local work continues
+- 2026-09-05T02:30:02Z — mirror — deferred — Ready#552 exact-head sync review; publication resumes by 2026-09-05T03:05:09+00:00; local work continues
 
 ## Questions
 

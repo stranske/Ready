@@ -1,0 +1,29 @@
+{
+  "pr": "https://github.com/stranske/Trend_Model_Project/pull/6027",
+  "commit": "9d4d20bc",
+  "policy_tests_passed": 17,
+  "local_smoke_successes": 2,
+  "selection_transitions": [
+    20,
+    0,
+    20
+  ],
+  "python": "CPython 3.12.12",
+  "dependencies": "repository-pinned app dependencies",
+  "js_syntax": "pass",
+  "diff_check": "pass",
+  "head": "e38d75790934b5a38e7f320ff10599467461108d",
+  "latest_local_smoke": "pass; 20 of 20 -> 0 of 20 -> 20 of 20",
+  "github_9d4d20bc_failure": "transient duplicate visible status during rerender",
+  "repair": "poll all visible matching statuses and require exactly one before evaluating; terminate app in nested finally",
+  "local_python_314_browser": "pass; 20 -> 0 -> 20 with Arrow system pool",
+  "local_python_314_apptest": "pass; 20 -> 0 -> 20; no exceptions",
+  "native_crash_evidence": "SIGSEGV; pyarrow 25.0.0 libarrow mi_thread_init via MimallocAllocator while rerendering",
+  "allocator_scope": "smoke subprocess only, caller override preserved",
+  "source": "https://arrow.apache.org/docs/cpp/env_vars.html#arrow-default-memory-pool",
+  "github_browser_run": 33938311896,
+  "github_browser_result": "SUCCESS",
+  "latest_ci_infrastructure_failure": "Python 3.13 dependency bootstrap curl connection reset; retry requested",
+  "gate_run": 33938312322,
+  "gate_retry": "failed jobs rerun requested after Python 3.12 passed; attempt 1 Python 3.13 bootstrap curl connection reset"
+}

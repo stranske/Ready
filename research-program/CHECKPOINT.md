@@ -248,3 +248,20 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-04T23:26:42Z — readiness-dossier-consistency-20260904 — route — router picked cursor from ['codex', 'cursor']
 ## 2026-09-04T23:26:42Z — readiness-dossier-consistency-20260904 — claimed by driver (agent cursor)
 ## 2026-09-04T23:28:16Z — readiness-dossier-consistency-20260904 — done — cursor produced 905 words at artifacts/readiness/dossier-consistency-20260904.md in 92s
+## 2026-09-05T01:12:19Z — verify — enqueued D4-verify-merged-2026-09-05T01
+## 2026-09-05T01:12:19Z — D4-verify-merged-2026-09-05T01 — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-05T01:12:19Z — D4-verify-merged-2026-09-05T01 — claimed by driver (agent cursor)
+## 2026-09-05T01:14:52Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-05T01:14:52Z — mirror — deferred — Ready#552 exact-head sync review; publication resumes by 2026-09-05T01:50:09+00:00; local work continues
+## 2026-09-05T01:14:53Z — mirror — deferred — Ready#552 exact-head sync review; publication resumes by 2026-09-05T01:50:09+00:00; local work continues
+## 2026-09-05T01:14:53Z — mirror — deferred — Ready#552 exact-head sync review; publication resumes by 2026-09-05T01:50:09+00:00; local work continues
+## 2026-09-05T01:15:26Z — mirror — deferred — Ready#552 exact-head sync review; publication resumes by 2026-09-05T01:50:09+00:00; local work continues
+## 2026-09-05T01:20:49Z — D4-verify-merged-2026-09-05T01 — done — gemini produced 3731 words at artifacts/verification/D4-verify-merged-2026-09-05T01.md in 356s
+## 2026-09-05T01:20:49Z — mirror — deferred — Ready#552 exact-head sync review; publication resumes by 2026-09-05T01:50:09+00:00; local work continues
+## 2026-09-05T01:29:54Z — mirror — FAILED — RuntimeError; pending commits retained for next tick
+## 2026-09-05T01:34:48Z — mirror — deferred — Ready#552 exact-head sync review; publication resumes by 2026-09-05T01:50:09+00:00; local work continues
+## 2026-09-05T01:44:56Z — mirror — deferred — Ready#552 exact-head sync review; publication resumes by 2026-09-05T01:50:09+00:00; local work continues
+## 2026-09-05T01:59:59Z — mirror — deferred — Ready#552 exact-head sync review; publication resumes by 2026-09-05T03:05:09+00:00; local work continues
+## 2026-09-05T02:11:01Z — mirror — deferred — Ready#552 exact-head sync review; publication resumes by 2026-09-05T03:05:09+00:00; local work continues
+## 2026-09-05T02:15:00Z — mirror — deferred — Ready#552 exact-head sync review; publication resumes by 2026-09-05T03:05:09+00:00; local work continues
+## 2026-09-05T02:30:02Z — mirror — deferred — Ready#552 exact-head sync review; publication resumes by 2026-09-05T03:05:09+00:00; local work continues
