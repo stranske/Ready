@@ -16,3 +16,15 @@ Phases 0–5 on clone tip 02ffccf. Dossier missing; scoped from README/CLAUDE/R3
 
 ## 2026-09-05T16:14:54.536097+00:00 — D-audit-Travel-Plan-Permission--2026-09-05T16-11-36Z Phase 0/1
 Read brief/dossier/owner notes/skill/references and audit continuity. Refreshed clone; oriented 49 Python files, 14828 LOC, 69 test files; saved live issue/PR/CI/label inventory. Current tracked tree unchanged. Scope and initial ledger written. Next analysis.
+
+## 2026-09-05T16:38:56.584615+00:00 — D-audit-Travel-Plan-Permission--2026-09-05T16-11-36Z Phase 2
+Completed two bounded reading offloads plus local synthetic browser captures and four-evaluator UX panel without Claude; all eight dimensions assessed.
+
+## 2026-09-05T16:38:56.584615+00:00 — D-audit-Travel-Plan-Permission--2026-09-05T16-11-36Z Phase 3
+Independently reran six supplied proofs; verified anonymous expense routes, literal XLSX formula cells and draft auth failure. Corrected tier severity, ERP claim and proposed handoff permissions. Remote main unchanged.
+
+## 2026-09-05T16:38:56.584615+00:00 — D-audit-Travel-Plan-Permission--2026-09-05T16-11-36Z Phase 4
+Wrote eight issue bodies, all repo validator PASS without advisories. Citations opened at exact lines. Zero filed per research-only executor rule.
+
+## 2026-09-05T16:38:56.584615+00:00 — D-audit-Travel-Plan-Permission--2026-09-05T16-11-36Z Phase 5
+Wrote OUT and canonical audit/UX/verification reports, copied issue bodies, reconciled every candidate and updated ledger/index. Existing 1436 follow-up retained; platform gaps explicit.

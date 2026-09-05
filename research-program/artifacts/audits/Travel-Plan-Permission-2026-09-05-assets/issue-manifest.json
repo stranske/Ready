@@ -1,0 +1,98 @@
+[
+  {
+    "id": "01-expense-authorization",
+    "priority": "P1",
+    "title": "Enforce permissions on expense intake, review, and export",
+    "body_file": "/Users/teacher/.codex/automations/research-program/artifacts/audits/Travel-Plan-Permission-2026-09-05-assets/issue-bodies/01-expense-authorization.md",
+    "labels": [
+      "security",
+      "priority:high"
+    ],
+    "status": "staged_research_only",
+    "url": null
+  },
+  {
+    "id": "02-exception-create-authorization",
+    "priority": "P1",
+    "title": "Authenticate exception creation and bind its audit actor",
+    "body_file": "/Users/teacher/.codex/automations/research-program/artifacts/audits/Travel-Plan-Permission-2026-09-05-assets/issue-bodies/02-exception-create-authorization.md",
+    "labels": [
+      "security",
+      "priority:high"
+    ],
+    "status": "staged_research_only",
+    "url": null
+  },
+  {
+    "id": "03-approval-actor-integrity",
+    "priority": "P1",
+    "title": "Bind approval history to the authenticated decision maker",
+    "body_file": "/Users/teacher/.codex/automations/research-program/artifacts/audits/Travel-Plan-Permission-2026-09-05-assets/issue-bodies/03-approval-actor-integrity.md",
+    "labels": [
+      "security",
+      "priority:high"
+    ],
+    "status": "staged_research_only",
+    "url": null
+  },
+  {
+    "id": "04-export-literal-text",
+    "priority": "P1",
+    "title": "Preserve untrusted export text as literal spreadsheet cells",
+    "body_file": "/Users/teacher/.codex/automations/research-program/artifacts/audits/Travel-Plan-Permission-2026-09-05-assets/issue-bodies/04-export-literal-text.md",
+    "labels": [
+      "bug",
+      "priority:high"
+    ],
+    "status": "staged_research_only",
+    "url": null
+  },
+  {
+    "id": "05-receipt-link-contract",
+    "priority": "P1",
+    "title": "Replace placeholder receipt links with a verifiable delivery contract",
+    "body_file": "/Users/teacher/.codex/automations/research-program/artifacts/audits/Travel-Plan-Permission-2026-09-05-assets/issue-bodies/05-receipt-link-contract.md",
+    "labels": [
+      "bug",
+      "priority:high"
+    ],
+    "status": "staged_research_only",
+    "url": null
+  },
+  {
+    "id": "06-browser-draft-recovery",
+    "priority": "P2",
+    "title": "Give direct portal drafts a usable scoped review session",
+    "body_file": "/Users/teacher/.codex/automations/research-program/artifacts/audits/Travel-Plan-Permission-2026-09-05-assets/issue-bodies/06-browser-draft-recovery.md",
+    "labels": [
+      "enhancement",
+      "priority:normal"
+    ],
+    "status": "staged_research_only",
+    "url": null
+  },
+  {
+    "id": "07-config-parity-guard",
+    "priority": "P2",
+    "title": "Guard shipped YAML defaults against checkout and wheel drift",
+    "body_file": "/Users/teacher/.codex/automations/research-program/artifacts/audits/Travel-Plan-Permission-2026-09-05-assets/issue-bodies/07-config-parity-guard.md",
+    "labels": [
+      "validation",
+      "priority:normal"
+    ],
+    "status": "staged_research_only",
+    "url": null
+  },
+  {
+    "id": "08-exception-tier-authority",
+    "priority": "P2",
+    "title": "Bind routed exception levels to authenticated approval authority",
+    "body_file": "/Users/teacher/.codex/automations/research-program/artifacts/audits/Travel-Plan-Permission-2026-09-05-assets/issue-bodies/08-exception-tier-authority.md",
+    "labels": [
+      "architecture",
+      "priority:normal"
+    ],
+    "status": "staged_research_only",
+    "url": null
+  }
+]

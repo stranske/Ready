@@ -1,0 +1,186 @@
+
+docs/accounting-integration.md:16
+15: 5. `cost_center` – Cost center associated with the expense report.
+16: 6. `receipt_link` – Signed URL valid for 7 days.
+17: 
+18: ## File naming
+
+docs/accounting-integration.md:32
+31: 
+32: Receipt links are signed for 7 days and emitted as clickable hyperlinks in the Excel export. They are intended for short-lived sharing with accounting systems.
+33: 
+34: ## Limits and performance
+
+docs/exception-policy.md:48
+47: ## Current portal workflow
+48: 
+49: The current shipped portal/admin surface supports a bounded exception loop:
+50: 
+
+docs/security-model.md:145
+144: 
+145: The browser handoff from `trip-planner` uses an HMAC-signed, short-lived HttpOnly
+146: cookie instead of placing traveler data or a bearer token in the URL. The first
+147: capability may complete one handoff form. TPP then replaces it with a capability
+
+src/travel_plan_permission/config_loader.py:35
+34: 
+35:         target_path = cls._resolve_config_path(path)
+36:         if target_path is None or not target_path.exists():
+37:             content = cls._read_default_config_resource()
+
+src/travel_plan_permission/export.py:25
+24:         *,
+25:         receipt_base_url: str = "https://receipts.example.com",
+26:         receipt_signer: Callable[[str, datetime], str] | None = None,
+27:     ) -> None:
+
+src/travel_plan_permission/export.py:40
+39: 
+40:     def _default_signed_link(self, receipt_url: str, expires_at: datetime) -> str:
+41:         target = urljoin(self.receipt_base_url, receipt_url.lstrip("/"))
+42:         return f"{target}?{urlencode({'expires_at': expires_at.isoformat()})}"
+
+src/travel_plan_permission/export.py:59
+58:                     else ""
+59:                 )
+60:                 yield {
+61:                     "date": expense.expense_date.isoformat(),
+
+src/travel_plan_permission/export.py:84
+83:         writer = csv.DictWriter(output, fieldnames=self.schema)
+84:         writer.writeheader()
+85:         writer.writerows(rows)
+86: 
+
+src/travel_plan_permission/export.py:110
+109:         for row in rows:
+110:             ws.append(
+111:                 [
+112:                     row["date"],
+
+src/travel_plan_permission/http_service.py:1294
+1293: ) -> dict[str, PortalArtifact]:
+1294:     service = ExportService()
+1295:     csv_filename, csv_content = service.to_csv([expense_report], batch_id=draft_id)
+1296:     excel_filename, excel_content = service.to_excel([expense_report], batch_id=draft_id)
+
+src/travel_plan_permission/http_service.py:1695
+1694:             status_code=status.HTTP_303_SEE_OTHER,
+1695:         )
+1696:         _set_handoff_cookie(
+1697:             response,
+
+src/travel_plan_permission/http_service.py:1703
+1702: 
+1703:     @app.post("/portal/draft")
+1704:     async def portal_draft_review(request: Request) -> Response:
+1705:         answers = _portal_answers_from_encoded_body(await request.body())
+
+src/travel_plan_permission/http_service.py:1726
+1725: 
+1726:     @app.post("/portal/expenses/review")
+1727:     async def portal_expense_review(request: Request) -> Response:
+1728:         answers = _expense_answers_from_encoded_body(await request.body())
+
+src/travel_plan_permission/http_service.py:1762
+1761:     ) -> HTMLResponse:
+1762:         auth_context = _authorize_portal_view(
+1763:             request,
+1764:             authorization,
+
+src/travel_plan_permission/http_service.py:1799
+1798:     )
+1799:     def portal_expense_detail(request: Request, draft_id: str) -> HTMLResponse:
+1800:         draft = proposal_store.lookup_expense_draft(draft_id)
+1801:         if draft is None:
+
+src/travel_plan_permission/http_service.py:1815
+1814: 
+1815:     @app.post("/portal/review/{draft_id}/exceptions")
+1816:     async def portal_submit_exception_request(
+1817:         request: Request,
+
+src/travel_plan_permission/http_service.py:1867
+1866:                 justification=parsed.get("justification", [""])[-1].strip(),
+1867:                 requestor=str(draft.answers.get("traveler_name") or "portal-traveler"),
+1868:                 amount=parsed_amount,
+1869:                 supporting_docs=[supporting_doc] if supporting_doc else [],
+
+src/travel_plan_permission/http_service.py:1884
+1883:             )
+1884:         proposal_store.create_exception_request(draft_id, exception_request)
+1885:         return RedirectResponse(
+1886:             url=request.url_for("portal_review_detail", draft_id=draft_id),
+
+src/travel_plan_permission/http_service.py:2033
+2032:     ) -> Response:
+2033:         auth_context = _authorize_request(
+2034:             authorization,
+2035:             required_permission=Permission.APPROVE,
+
+src/travel_plan_permission/http_service.py:2041
+2040:         action_name = parsed.get("action", [""])[-1].strip()
+2041:         actor_id = parsed.get("actor_id", [""])[-1].strip()
+2042:         rationale = parsed.get("rationale", [""])[-1].strip()
+2043: 
+
+src/travel_plan_permission/http_service.py:2074
+2073:                 action=action,
+2074:                 actor_id=actor_id,
+2075:                 rationale=rationale,
+2076:             )
+
+src/travel_plan_permission/http_service.py:2114
+2113:     ) -> RedirectResponse:
+2114:         _authorize_request(
+2115:             authorization,
+2116:             required_permission=Permission.APPROVE,
+
+src/travel_plan_permission/http_service.py:2123
+2122:         )
+2123:         actor_id = parsed.get("actor_id", [""])[-1].strip()
+2124:         if not actor_id:
+2125:             raise HTTPException(
+
+src/travel_plan_permission/http_service.py:2253
+2252: 
+2253:     @app.get("/portal/expenses/{draft_id}/artifacts/{artifact_name}")
+2254:     def portal_expense_artifact(
+2255:         draft_id: str,
+
+src/travel_plan_permission/models.py:194
+193: }
+194: _DIRECTOR_THRESHOLD = Decimal("5000")
+195: _BOARD_THRESHOLD = Decimal("20000")
+196: _ESCALATION_WINDOW = timedelta(hours=48)
+
+src/travel_plan_permission/models.py:263
+262:         decision_time = timestamp or datetime.now(UTC)
+263:         approval_level = level or self.approval_level or ExceptionApprovalLevel.MANAGER
+264:         self.approval = ExceptionApprovalRecord(
+265:             approver_id=approver_id,
+
+src/travel_plan_permission/security.py:14
+13: 
+14: class Permission(StrEnum):
+15:     """Supported permissions for API endpoints."""
+16: 
+
+src/travel_plan_permission/security.py:55
+54:     ),
+55:     RoleName.FINANCE_ADMIN: Role(
+56:         name=RoleName.FINANCE_ADMIN,
+57:         permissions={
+
+tests/python/test_policy_api.py:1188
+1187: 
+1188:     package_config = resources.files("travel_plan_permission").joinpath("config")
+1189:     for filename in ("policy.yaml", "validation.yaml", "providers.yaml", "approval_rules.yaml"):
+1190:         assert package_config.joinpath(filename).is_file(), (
+
+tests/python/test_template_assets.py:61
+60: def test_template_mapping_requires_template_asset(tmp_path: Path) -> None:
+61:     source = Path("config/excel_mappings.yaml").read_text(encoding="utf-8")
+62:     data = yaml.safe_load(source)
+63:     data["templates"][DEFAULT_TEMPLATE_VERSION]["metadata"][

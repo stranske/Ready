@@ -326,3 +326,4 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-05T16:11:36Z — refill — Travel-Plan-Permission: open=3 <= 3 → audit queued
 ## 2026-09-05T16:11:40Z — D-audit-Travel-Plan-Permission--2026-09-05T16-11-36Z — route — router picked codex from ['codex']
 ## 2026-09-05T16:11:40Z — D-audit-Travel-Plan-Permission--2026-09-05T16-11-36Z — claimed by codex (agent codex)
+## 2026-09-05T16:39:40Z — D-audit-Travel-Plan-Permission--2026-09-05T16-11-36Z — done — Audit establishes six reproduced behavior defects and two bounded hardening proposals; eight issue bodies validate without advisories and remain staged under th

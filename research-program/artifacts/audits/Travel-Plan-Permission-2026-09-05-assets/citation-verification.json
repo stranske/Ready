@@ -1,0 +1,188 @@
+[
+  {
+    "body": "01-expense-authorization.md",
+    "path": "src/travel_plan_permission/http_service.py",
+    "line": 1726,
+    "text": "    @app.post(\"/portal/expenses/review\")"
+  },
+  {
+    "body": "01-expense-authorization.md",
+    "path": "src/travel_plan_permission/http_service.py",
+    "line": 1799,
+    "text": "    def portal_expense_detail(request: Request, draft_id: str) -> HTMLResponse:"
+  },
+  {
+    "body": "01-expense-authorization.md",
+    "path": "src/travel_plan_permission/http_service.py",
+    "line": 2253,
+    "text": "    @app.get(\"/portal/expenses/{draft_id}/artifacts/{artifact_name}\")"
+  },
+  {
+    "body": "01-expense-authorization.md",
+    "path": "src/travel_plan_permission/security.py",
+    "line": 14,
+    "text": "class Permission(StrEnum):"
+  },
+  {
+    "body": "01-expense-authorization.md",
+    "path": "src/travel_plan_permission/security.py",
+    "line": 55,
+    "text": "    RoleName.FINANCE_ADMIN: Role("
+  },
+  {
+    "body": "02-exception-create-authorization.md",
+    "path": "src/travel_plan_permission/http_service.py",
+    "line": 1815,
+    "text": "    @app.post(\"/portal/review/{draft_id}/exceptions\")"
+  },
+  {
+    "body": "02-exception-create-authorization.md",
+    "path": "src/travel_plan_permission/http_service.py",
+    "line": 1867,
+    "text": "                requestor=str(draft.answers.get(\"traveler_name\") or \"portal-traveler\"),"
+  },
+  {
+    "body": "02-exception-create-authorization.md",
+    "path": "src/travel_plan_permission/http_service.py",
+    "line": 1884,
+    "text": "        proposal_store.create_exception_request(draft_id, exception_request)"
+  },
+  {
+    "body": "02-exception-create-authorization.md",
+    "path": "docs/security-model.md",
+    "line": 148,
+    "text": "whose subject is the exact saved draft ID and whose permission set contains only"
+  },
+  {
+    "body": "03-approval-actor-integrity.md",
+    "path": "src/travel_plan_permission/http_service.py",
+    "line": 2033,
+    "text": "        auth_context = _authorize_request("
+  },
+  {
+    "body": "03-approval-actor-integrity.md",
+    "path": "src/travel_plan_permission/http_service.py",
+    "line": 2041,
+    "text": "        actor_id = parsed.get(\"actor_id\", [\"\"])[-1].strip()"
+  },
+  {
+    "body": "03-approval-actor-integrity.md",
+    "path": "src/travel_plan_permission/http_service.py",
+    "line": 2074,
+    "text": "                actor_id=actor_id,"
+  },
+  {
+    "body": "03-approval-actor-integrity.md",
+    "path": "src/travel_plan_permission/http_service.py",
+    "line": 2123,
+    "text": "        actor_id = parsed.get(\"actor_id\", [\"\"])[-1].strip()"
+  },
+  {
+    "body": "04-export-literal-text.md",
+    "path": "src/travel_plan_permission/export.py",
+    "line": 62,
+    "text": "                    \"vendor\": expense.vendor or \"\","
+  },
+  {
+    "body": "04-export-literal-text.md",
+    "path": "src/travel_plan_permission/export.py",
+    "line": 85,
+    "text": "        writer.writerows(rows)"
+  },
+  {
+    "body": "04-export-literal-text.md",
+    "path": "src/travel_plan_permission/export.py",
+    "line": 110,
+    "text": "            ws.append("
+  },
+  {
+    "body": "05-receipt-link-contract.md",
+    "path": "src/travel_plan_permission/export.py",
+    "line": 25,
+    "text": "        receipt_base_url: str = \"https://receipts.example.com\","
+  },
+  {
+    "body": "05-receipt-link-contract.md",
+    "path": "src/travel_plan_permission/export.py",
+    "line": 40,
+    "text": "    def _default_signed_link(self, receipt_url: str, expires_at: datetime) -> str:"
+  },
+  {
+    "body": "05-receipt-link-contract.md",
+    "path": "src/travel_plan_permission/http_service.py",
+    "line": 1294,
+    "text": "    service = ExportService()"
+  },
+  {
+    "body": "05-receipt-link-contract.md",
+    "path": "docs/accounting-integration.md",
+    "line": 16,
+    "text": "6. `receipt_link` \u2013 Signed URL valid for 7 days."
+  },
+  {
+    "body": "05-receipt-link-contract.md",
+    "path": "docs/accounting-integration.md",
+    "line": 32,
+    "text": "Receipt links are signed for 7 days and emitted as clickable hyperlinks in the Excel export. They are intended for short-lived sharing with accounting systems."
+  },
+  {
+    "body": "06-browser-draft-recovery.md",
+    "path": "src/travel_plan_permission/http_service.py",
+    "line": 1703,
+    "text": "    @app.post(\"/portal/draft\")"
+  },
+  {
+    "body": "06-browser-draft-recovery.md",
+    "path": "src/travel_plan_permission/http_service.py",
+    "line": 1762,
+    "text": "        auth_context = _authorize_portal_view("
+  },
+  {
+    "body": "06-browser-draft-recovery.md",
+    "path": "src/travel_plan_permission/http_service.py",
+    "line": 1696,
+    "text": "        _set_handoff_cookie("
+  },
+  {
+    "body": "07-config-parity-guard.md",
+    "path": "src/travel_plan_permission/config_loader.py",
+    "line": 35,
+    "text": "        target_path = cls._resolve_config_path(path)"
+  },
+  {
+    "body": "07-config-parity-guard.md",
+    "path": "tests/python/test_policy_api.py",
+    "line": 1188,
+    "text": "    package_config = resources.files(\"travel_plan_permission\").joinpath(\"config\")"
+  },
+  {
+    "body": "07-config-parity-guard.md",
+    "path": "tests/python/test_template_assets.py",
+    "line": 61,
+    "text": "    source = Path(\"config/excel_mappings.yaml\").read_text(encoding=\"utf-8\")"
+  },
+  {
+    "body": "08-exception-tier-authority.md",
+    "path": "src/travel_plan_permission/models.py",
+    "line": 194,
+    "text": "_DIRECTOR_THRESHOLD = Decimal(\"5000\")"
+  },
+  {
+    "body": "08-exception-tier-authority.md",
+    "path": "src/travel_plan_permission/models.py",
+    "line": 263,
+    "text": "        approval_level = level or self.approval_level or ExceptionApprovalLevel.MANAGER"
+  },
+  {
+    "body": "08-exception-tier-authority.md",
+    "path": "src/travel_plan_permission/http_service.py",
+    "line": 2114,
+    "text": "        _authorize_request("
+  },
+  {
+    "body": "08-exception-tier-authority.md",
+    "path": "docs/exception-policy.md",
+    "line": 53,
+    "text": "- Approve-capable roles can record approve/reject decisions, and those actions are reflected in the runtime audit trail, including any supplied notes."
+  }
+]

@@ -1,0 +1,262 @@
+[
+  {
+    "failure_mode": "confusion",
+    "category": "confusion",
+    "app_count": 11,
+    "apps": [
+      "JobSearch.2026 lead review",
+      "local/Reader",
+      "stranske/Counter_Risk",
+      "stranske/Inv-Man-Intake",
+      "stranske/Manager-Database",
+      "stranske/Pension-Data",
+      "stranske/Portable-Alpha-Extension-Model",
+      "stranske/Trend_Model_Project",
+      "stranske/learning-management-system",
+      "stranske/trip-planner",
+      "stranske/trip-planner + stranske/Travel-Plan-Permission"
+    ],
+    "occurrences": 105,
+    "max_severity": 4,
+    "examples": [
+      {
+        "app": "stranske/Trend_Model_Project",
+        "screen": "Home",
+        "element": "Run Demo button \u2014 no output preview or timing hint",
+        "severity": 3
+      },
+      {
+        "app": "stranske/Trend_Model_Project",
+        "screen": "Results",
+        "element": "error card",
+        "severity": 4
+      },
+      {
+        "app": "stranske/Counter_Risk",
+        "screen": "Counter Risk Runner (main window)",
+        "element": "Run vs Dry-Run Discovery \u2014 no guidance on which to press first",
+        "severity": 4
+      },
+      {
+        "app": "stranske/Counter_Risk",
+        "screen": "Counter Risk Runner (main window)",
+        "element": "Initial setup and Run flow",
+        "severity": 4
+      },
+      {
+        "app": "stranske/Counter_Risk",
+        "screen": "Counter Risk Runner (main window)",
+        "element": "First-launch monthly-report workflow",
+        "severity": 4
+      }
+    ]
+  },
+  {
+    "failure_mode": "efficiency_trap",
+    "category": "efficiency_trap",
+    "app_count": 11,
+    "apps": [
+      "JobSearch.2026 lead review",
+      "local/Reader",
+      "stranske/Counter_Risk",
+      "stranske/Inv-Man-Intake",
+      "stranske/Manager-Database",
+      "stranske/Pension-Data",
+      "stranske/Portable-Alpha-Extension-Model",
+      "stranske/Trend_Model_Project",
+      "stranske/learning-management-system",
+      "stranske/trip-planner",
+      "stranske/trip-planner + stranske/Travel-Plan-Permission"
+    ],
+    "occurrences": 86,
+    "max_severity": 4,
+    "examples": [
+      {
+        "app": "stranske/Trend_Model_Project",
+        "screen": "Results",
+        "element": "Core demo workflow (Home \u2192 Results)",
+        "severity": 4
+      },
+      {
+        "app": "stranske/Trend_Model_Project",
+        "screen": "Home / Results",
+        "element": "Run Demo workflow",
+        "severity": 3
+      },
+      {
+        "app": "stranske/Trend_Model_Project",
+        "screen": "Home \u2192 Results",
+        "element": "Run Demo primary path",
+        "severity": 4
+      },
+      {
+        "app": "stranske/Trend_Model_Project",
+        "screen": "Home\u2192Results",
+        "element": "Run Demo button / navigation",
+        "severity": 3
+      },
+      {
+        "app": "stranske/Counter_Risk",
+        "screen": "Counter Risk Runner (main window)",
+        "element": "'Open Output Folder / Open Manifest / Open Summary / Open PPT Folder' buttons rendered before any run",
+        "severity": 3
+      }
+    ]
+  },
+  {
+    "failure_mode": "false_success",
+    "category": "false_success",
+    "app_count": 11,
+    "apps": [
+      "JobSearch.2026 lead review",
+      "local/Reader",
+      "stranske/Counter_Risk",
+      "stranske/Inv-Man-Intake",
+      "stranske/Manager-Database",
+      "stranske/Pension-Data",
+      "stranske/Portable-Alpha-Extension-Model",
+      "stranske/Trend_Model_Project",
+      "stranske/learning-management-system",
+      "stranske/trip-planner",
+      "stranske/trip-planner + stranske/Travel-Plan-Permission"
+    ],
+    "occurrences": 101,
+    "max_severity": 4,
+    "examples": [
+      {
+        "app": "stranske/Trend_Model_Project",
+        "screen": "Results",
+        "element": "Run Demo button (Home)",
+        "severity": 4
+      },
+      {
+        "app": "stranske/Trend_Model_Project",
+        "screen": "Results",
+        "element": "Run Demo button / demo analysis pipeline",
+        "severity": 3
+      },
+      {
+        "app": "stranske/Trend_Model_Project",
+        "screen": "Home \u2192 Results",
+        "element": "Run Demo button (Balanced preset)",
+        "severity": 4
+      },
+      {
+        "app": "stranske/Counter_Risk",
+        "screen": "Counter Risk Runner (main window)",
+        "element": "Input Root default value 'inputs'",
+        "severity": 3
+      },
+      {
+        "app": "stranske/Trend_Model_Project",
+        "screen": "Results / Export",
+        "element": "Excel Workbook / CSV Export",
+        "severity": 3
+      }
+    ]
+  },
+  {
+    "failure_mode": "missing_help",
+    "category": "missing_help",
+    "app_count": 11,
+    "apps": [
+      "JobSearch.2026 lead review",
+      "local/Reader",
+      "stranske/Counter_Risk",
+      "stranske/Inv-Man-Intake",
+      "stranske/Manager-Database",
+      "stranske/Pension-Data",
+      "stranske/Portable-Alpha-Extension-Model",
+      "stranske/Trend_Model_Project",
+      "stranske/learning-management-system",
+      "stranske/trip-planner",
+      "stranske/trip-planner + stranske/Travel-Plan-Permission"
+    ],
+    "occurrences": 79,
+    "max_severity": 4,
+    "examples": [
+      {
+        "app": "stranske/Trend_Model_Project",
+        "screen": "Results",
+        "element": "PIPELINE_NO_FUNDS_SELECTED error card",
+        "severity": 4
+      },
+      {
+        "app": "stranske/Trend_Model_Project",
+        "screen": "Results",
+        "element": "Error card",
+        "severity": 3
+      },
+      {
+        "app": "stranske/Trend_Model_Project",
+        "screen": "Results",
+        "element": "Error card (PIPELINE_NO_FUNDS_SELECTED)",
+        "severity": 3
+      },
+      {
+        "app": "stranske/Trend_Model_Project",
+        "screen": "Home",
+        "element": "Demo with Sample Data section",
+        "severity": 3
+      },
+      {
+        "app": "stranske/Counter_Risk",
+        "screen": "Counter Risk Runner (main window)",
+        "element": "'Discovery Mode' label",
+        "severity": 4
+      }
+    ]
+  },
+  {
+    "failure_mode": "recovery_failure",
+    "category": "recovery_failure",
+    "app_count": 11,
+    "apps": [
+      "JobSearch.2026 lead review",
+      "local/Reader",
+      "stranske/Counter_Risk",
+      "stranske/Inv-Man-Intake",
+      "stranske/Manager-Database",
+      "stranske/Pension-Data",
+      "stranske/Portable-Alpha-Extension-Model",
+      "stranske/Trend_Model_Project",
+      "stranske/learning-management-system",
+      "stranske/trip-planner",
+      "stranske/trip-planner + stranske/Travel-Plan-Permission"
+    ],
+    "occurrences": 91,
+    "max_severity": 4,
+    "examples": [
+      {
+        "app": "stranske/Trend_Model_Project",
+        "screen": "Results",
+        "element": "Error state after Run Demo",
+        "severity": 4
+      },
+      {
+        "app": "stranske/Trend_Model_Project",
+        "screen": "Results",
+        "element": "Results output after demo run",
+        "severity": 4
+      },
+      {
+        "app": "stranske/Trend_Model_Project",
+        "screen": "Results",
+        "element": "Results page after Run Demo",
+        "severity": 4
+      },
+      {
+        "app": "stranske/Trend_Model_Project",
+        "screen": "Results",
+        "element": "error card",
+        "severity": 4
+      },
+      {
+        "app": "stranske/Trend_Model_Project",
+        "screen": "Results",
+        "element": "error card",
+        "severity": 3
+      }
+    ]
+  }
+]
