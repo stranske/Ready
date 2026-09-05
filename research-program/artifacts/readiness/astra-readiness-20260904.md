@@ -94,3 +94,8 @@ Workflows #3386 merged at 23:52:24 UTC as `913e2625bdc471de84addea5b4cc8dfefca1c
 ## Concurrent state safety
 
 State writes now use atomic replacement and a dedicated read/modify/write lock. Maintenance and digest updates merge only their own fields, so a concurrent inbox pause or phase stop is retained. Inbox consumers are serialized to avoid duplicate comment application. Regression tests reproduce a pause arriving during digest posting, concurrent independent writers, and readers during a partial temporary write. All 16 readiness tests pass.
+
+
+## Local checkout installation completed
+
+Installed the exact reviewed Astra source delta in all 16 root checkouts containing agent registries (15 distinct repositories, including the two Workflows checkouts). All target paths were clean, patches passed preflight and reverse checks, and branch/head identities were preserved. The Workflows checkout received the full 23-path Astra source change; both Workflows checkouts received the reachable runner pin and campaign coordination repair. Other checkouts received the three manifest-owned model/client changes. All local registry/catalog parses and client syntax checks pass. Existing unrelated edits remain intact. Workflows-Integration-Tests has no agent registry to migrate. These are local working-tree installations on preserved branches, backed by separately merged remote source/delivery commits; no generated delivery branch was edited. Backups and exact patches are under `maintenance-backups/20260904-astra/local-migration/`.
