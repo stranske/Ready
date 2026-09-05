@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-05T13:51:00Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-05T14:07:04Z)
 
 Units: 50 — claimed 1, done 49
 Paused: False   Phase stops: []
@@ -61,9 +61,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-05T10:04:47Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-05T11:28:43+00:00; local work continues
-- 2026-09-05T10:10:33Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-05T11:28:43+00:00; local work continues
-- 2026-09-05T10:19:49Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-05T11:28:43+00:00; local work continues
 - 2026-09-05T10:34:50Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 - 2026-09-05T10:34:51Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-05T11:28:43+00:00; local work continues
 - 2026-09-05T10:49:53Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-05T11:28:43+00:00; local work continues
@@ -73,6 +70,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-05T13:51:00Z — unblock — enqueued D3-unblock-sweep-2026-09-05T13
 - 2026-09-05T13:51:00Z — D3-unblock-sweep-2026-09-05T13 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-05T13:51:00Z — D3-unblock-sweep-2026-09-05T13 — claimed by driver (agent cursor)
+- 2026-09-05T13:52:02Z — D3-unblock-sweep-2026-09-05T13 — fail — offload to gemini exited 1; retained artifact is not proof of success
+- 2026-09-05T14:07:04Z — D3-unblock-sweep-2026-09-05T13 — route — router picked cursor from ['codex', 'cursor']
+- 2026-09-05T14:07:04Z — D3-unblock-sweep-2026-09-05T13 — claimed by driver (agent cursor)
 
 ## Questions
 
