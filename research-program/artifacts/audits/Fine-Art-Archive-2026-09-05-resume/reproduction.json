@@ -1,0 +1,61 @@
+{
+  "689-allocate-nan": {
+    "exception": "ValueError",
+    "message": "cannot convert float NaN to integer"
+  },
+  "689-monthly-nan": {
+    "exception": "ValueError",
+    "message": "cannot convert float NaN to integer"
+  },
+  "689-zero-control": {
+    "result": "{'canon': 1, 'atypicality': 9}"
+  },
+  "690-naive": {
+    "exception": "TypeError",
+    "message": "can't subtract offset-naive and offset-aware datetimes"
+  },
+  "691-canonical": {
+    "result": "[{'type': 'Actor', '_label': 'Test', 'identified_by': [{'type': 'Name', 'content': 'Test'}]}]"
+  },
+  "692-3d-mm": {
+    "result": "(463.0, 535.0)"
+  },
+  "694-canonical": {
+    "result": "None"
+  },
+  "696-year": {
+    "result": "''"
+  },
+  "697-none": {
+    "exception": "TypeError",
+    "message": "unsupported operand type(s) for -: 'NoneType' and 'float'"
+  },
+  "697-nan-selection": {
+    "result": "('a', 'b')"
+  },
+  "695-missing-only": {
+    "system_exit": 2
+  },
+  "693-zero": {
+    "exception": "HTTPException",
+    "message": "500: resize failed: division by zero"
+  },
+  "693-huge-no-upscale": {
+    "size": [
+      100,
+      100
+    ]
+  },
+  "693-query-schema": [
+    {
+      "name": "max",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "integer",
+        "default": 900,
+        "title": "Max"
+      }
+    }
+  ]
+}

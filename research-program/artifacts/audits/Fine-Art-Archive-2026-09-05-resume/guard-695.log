@@ -1,0 +1,774 @@
+check	Set up job	﻿2026-09-05T04:07:22.6980135Z Current runner version: '2.337.0'
+check	Set up job	2026-09-05T04:07:22.7005988Z ##[group]Runner Image Provisioner
+check	Set up job	2026-09-05T04:07:22.7006921Z Hosted Compute Agent
+check	Set up job	2026-09-05T04:07:22.7007542Z Version: 20260828.587
+check	Set up job	2026-09-05T04:07:22.7008261Z Commit: abac92662cab4cc7352de4f9f9d2e2419aad9c29
+check	Set up job	2026-09-05T04:07:22.7009059Z Build Date: 2026-08-28T16:44:25Z
+check	Set up job	2026-09-05T04:07:22.7009804Z Worker ID: {30a129bd-5c75-45d7-b571-edea6e10c0f4}
+check	Set up job	2026-09-05T04:07:22.7010605Z Azure Region: eastus
+check	Set up job	2026-09-05T04:07:22.7011262Z ##[endgroup]
+check	Set up job	2026-09-05T04:07:22.7012810Z ##[group]Operating System
+check	Set up job	2026-09-05T04:07:22.7013469Z Ubuntu
+check	Set up job	2026-09-05T04:07:22.7014079Z 24.04.4
+check	Set up job	2026-09-05T04:07:22.7014671Z LTS
+check	Set up job	2026-09-05T04:07:22.7015567Z ##[endgroup]
+check	Set up job	2026-09-05T04:07:22.7016209Z ##[group]Runner Image
+check	Set up job	2026-09-05T04:07:22.7016848Z Image: ubuntu-24.04
+check	Set up job	2026-09-05T04:07:22.7017424Z Version: 20260831.293.1
+check	Set up job	2026-09-05T04:07:22.7018643Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260831.293/images/ubuntu/Ubuntu2404-Readme.md
+check	Set up job	2026-09-05T04:07:22.7020551Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260831.293
+check	Set up job	2026-09-05T04:07:22.7021559Z ##[endgroup]
+check	Set up job	2026-09-05T04:07:22.7022977Z ##[group]GITHUB_TOKEN Permissions
+check	Set up job	2026-09-05T04:07:22.7025315Z Actions: write
+check	Set up job	2026-09-05T04:07:22.7026074Z Contents: read
+check	Set up job	2026-09-05T04:07:22.7026660Z Issues: write
+check	Set up job	2026-09-05T04:07:22.7027254Z Metadata: read
+check	Set up job	2026-09-05T04:07:22.7028147Z ##[endgroup]
+check	Set up job	2026-09-05T04:07:22.7030494Z Secret source: Actions
+check	Set up job	2026-09-05T04:07:22.7031683Z Prepare workflow directory
+check	Set up job	2026-09-05T04:07:22.7352445Z Prepare all required actions
+check	Set up job	2026-09-05T04:07:22.7399967Z Getting action download info
+check	Set up job	2026-09-05T04:07:22.9338389Z Download action repository 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+check	Set up job	2026-09-05T04:07:23.1225918Z Complete job name: check
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	﻿2026-09-05T04:07:23.2104056Z ##[group]Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.2105440Z with:
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.2105997Z   persist-credentials: false
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.2106635Z   repository: stranske/Fine-Art-Archive
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.2110760Z   token: ***
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.2111268Z   ssh-strict: true
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.2111772Z   ssh-user: git
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.2112256Z   clean: true
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.2112769Z   sparse-checkout-cone-mode: true
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.2113353Z   fetch-depth: 1
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.2113837Z   fetch-tags: false
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.2114335Z   show-progress: true
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.2115022Z   lfs: false
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.2115533Z   submodules: false
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.2116054Z   set-safe-directory: true
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.2116616Z   allow-unsafe-pr-checkout: false
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.2117493Z ##[endgroup]
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.3075882Z Syncing repository: stranske/Fine-Art-Archive
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.3077899Z ##[group]Getting Git version info
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.3078806Z Working directory is '/home/runner/work/Fine-Art-Archive/Fine-Art-Archive'
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.3080090Z [command]/usr/bin/git version
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.3123669Z git version 2.55.0
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.3142500Z ##[endgroup]
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.3152286Z Temporarily overriding HOME='/home/runner/work/_temp/990c44e5-2dcf-4cae-a6d1-8e4b98444f1d' before making global git config changes
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.3153719Z Adding repository directory to the temporary git global config as a safe directory
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.3157871Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/Fine-Art-Archive/Fine-Art-Archive
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.3198255Z Deleting the contents of '/home/runner/work/Fine-Art-Archive/Fine-Art-Archive'
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.3201594Z ##[group]Determining repository object format
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.3203059Z ##[endgroup]
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.3203892Z ##[group]Initializing the repository
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.3207253Z [command]/usr/bin/git init /home/runner/work/Fine-Art-Archive/Fine-Art-Archive
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.3278338Z hint: Using 'master' as the name for the initial branch. This default branch name
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.3279825Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.3280971Z hint: to use in all of your new repositories, which will suppress this warning,
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.3281693Z hint: call:
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.3282102Z hint:
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.3282616Z hint: 	git config --global init.defaultBranch <name>
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.3283250Z hint:
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.3283841Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.3284773Z hint: 'development'. The just-created branch can be renamed via this command:
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.3285887Z hint:
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.3286322Z hint: 	git branch -m <name>
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.3286797Z hint:
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.3287487Z hint: Disable this message with "git config set advice.defaultBranchName false"
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.3289109Z Initialized empty Git repository in /home/runner/work/Fine-Art-Archive/Fine-Art-Archive/.git/
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.3297955Z [command]/usr/bin/git remote add origin https://github.com/stranske/Fine-Art-Archive
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.3339095Z ##[endgroup]
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.3342605Z ##[group]Disabling automatic garbage collection
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.3343315Z [command]/usr/bin/git config --local gc.auto 0
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.3371733Z ##[endgroup]
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.3372575Z ##[group]Setting up auth
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.3373127Z Removing SSH command configuration
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.3377710Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.3408166Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.3704161Z Removing HTTP extra header
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.3710101Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.3743795Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.3965730Z Removing includeIf entries pointing to credentials config files
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.3970267Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.4001388Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.4233023Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-7007f508-2046-4bdd-8542-360f47e88289.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.4269698Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/Fine-Art-Archive/Fine-Art-Archive/.git.path /home/runner/work/_temp/git-credentials-7007f508-2046-4bdd-8542-360f47e88289.config
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.4300498Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/Fine-Art-Archive/Fine-Art-Archive/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-7007f508-2046-4bdd-8542-360f47e88289.config
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.4334698Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-7007f508-2046-4bdd-8542-360f47e88289.config
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.4366264Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-7007f508-2046-4bdd-8542-360f47e88289.config
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.4394148Z ##[endgroup]
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.4395432Z ##[group]Fetching the repository
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:23.4400451Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +d149861964fa4093d4228ef424853fa5de1dced0:refs/remotes/origin/main
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:24.0225557Z From https://github.com/stranske/Fine-Art-Archive
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:24.0227209Z  * [new ref]         d149861964fa4093d4228ef424853fa5de1dced0 -> origin/main
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:24.0234050Z [command]/usr/bin/git branch --list --remote origin/main
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:24.0259475Z   origin/main
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:24.0267765Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:24.0290284Z d149861964fa4093d4228ef424853fa5de1dced0
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:24.0294367Z ##[endgroup]
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:24.0295582Z ##[group]Determining the checkout info
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:24.0296538Z ##[endgroup]
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:24.0300386Z [command]/usr/bin/git sparse-checkout disable
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:24.0347693Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:24.0379720Z ##[group]Checking out the ref
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:24.0380761Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:24.1126518Z Switched to a new branch 'main'
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:24.1129046Z branch 'main' set up to track 'origin/main'.
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:24.1138901Z ##[endgroup]
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:24.1182407Z [command]/usr/bin/git log -1 --format=%H
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:24.1208799Z d149861964fa4093d4228ef424853fa5de1dced0
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:24.1218215Z ##[group]Removing auth
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:24.1219082Z Removing SSH command configuration
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:24.1222037Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:24.1258043Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:24.1488039Z Removing HTTP extra header
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:24.1491385Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:24.1524066Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:24.1752207Z Removing includeIf entries pointing to credentials config files
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:24.1755842Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:24.1781878Z includeif.gitdir:/home/runner/work/Fine-Art-Archive/Fine-Art-Archive/.git.path
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:24.1785501Z includeif.gitdir:/home/runner/work/Fine-Art-Archive/Fine-Art-Archive/.git/worktrees/*.path
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:24.1788152Z includeif.gitdir:/github/workspace/.git.path
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:24.1790404Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:24.1795871Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/Fine-Art-Archive/Fine-Art-Archive/.git.path
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:24.1815130Z /home/runner/work/_temp/git-credentials-7007f508-2046-4bdd-8542-360f47e88289.config
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:24.1825929Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/Fine-Art-Archive/Fine-Art-Archive/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-7007f508\-2046\-4bdd\-8542\-360f47e88289\.config
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:24.1880695Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/Fine-Art-Archive/Fine-Art-Archive/.git/worktrees/*.path
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:24.1904029Z /home/runner/work/_temp/git-credentials-7007f508-2046-4bdd-8542-360f47e88289.config
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:24.1916787Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/Fine-Art-Archive/Fine-Art-Archive/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-7007f508\-2046\-4bdd\-8542\-360f47e88289\.config
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:24.1955593Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:24.1997861Z /github/runner_temp/git-credentials-7007f508-2046-4bdd-8542-360f47e88289.config
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:24.2005339Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-7007f508\-2046\-4bdd\-8542\-360f47e88289\.config
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:24.2061602Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:24.2085491Z /github/runner_temp/git-credentials-7007f508-2046-4bdd-8542-360f47e88289.config
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:24.2095570Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-7007f508\-2046\-4bdd\-8542\-360f47e88289\.config
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:24.2129292Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:24.2362513Z Removing credentials config '/home/runner/work/_temp/git-credentials-7007f508-2046-4bdd-8542-360f47e88289.config'
+check	Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:24.2367244Z ##[endgroup]
+check	Resolve issue	﻿2026-09-05T04:07:24.2628576Z ##[group]Run set -euo pipefail
+check	Resolve issue	2026-09-05T04:07:24.2629917Z ^[[36;1mset -euo pipefail^[[0m
+check	Resolve issue	2026-09-05T04:07:24.2631365Z ^[[36;1mgh issue view "$NUMBER" --repo "$GITHUB_REPOSITORY" \^[[0m
+check	Resolve issue	2026-09-05T04:07:24.2633231Z ^[[36;1m  --json number,body,labels,state,author > issue.json^[[0m
+check	Resolve issue	2026-09-05T04:07:24.2635103Z ^[[36;1mjq -r '.body // ""' issue.json > body.md^[[0m
+check	Resolve issue	2026-09-05T04:07:24.2636453Z ^[[36;1mexempt=false^[[0m
+check	Resolve issue	2026-09-05T04:07:24.2637450Z ^[[36;1mheld=false^[[0m
+check	Resolve issue	2026-09-05T04:07:24.2638953Z ^[[36;1m# A closed issue has nothing left to format. Routing one to the optimizer^[[0m
+check	Resolve issue	2026-09-05T04:07:24.2641244Z ^[[36;1m# produces a body edit, that edit re-fires this guard, and the pair loops^[[0m
+check	Resolve issue	2026-09-05T04:07:24.2643584Z ^[[36;1m# against work that is already delivered — see Fine-Art-Archive#464, which^[[0m
+check	Resolve issue	2026-09-05T04:07:24.2645729Z ^[[36;1m# kept formatting for 17.5 hours after it was closed.^[[0m
+check	Resolve issue	2026-09-05T04:07:24.2647655Z ^[[36;1mif [[ "$(jq -r '.state // "" | ascii_downcase' issue.json)" == "closed" ]]; then^[[0m
+check	Resolve issue	2026-09-05T04:07:24.2649575Z ^[[36;1m  echo "Issue is closed — nothing to format."^[[0m
+check	Resolve issue	2026-09-05T04:07:24.2650949Z ^[[36;1m  exempt=true^[[0m
+check	Resolve issue	2026-09-05T04:07:24.2651953Z ^[[36;1mfi^[[0m
+check	Resolve issue	2026-09-05T04:07:24.2654045Z ^[[36;1mif jq -e '[.labels[].name] | any(. == "tracker:durable" or . == "wontfix" or . == "automated")' issue.json >/dev/null; then exempt=true; fi^[[0m
+check	Resolve issue	2026-09-05T04:07:24.2657716Z ^[[36;1mif jq -e '[.labels[].name] | any(. == "agents:auto-pilot-pause" or . == "needs-human")' issue.json >/dev/null; then held=true; fi^[[0m
+check	Resolve issue	2026-09-05T04:07:24.2660928Z ^[[36;1mif jq -er '.author.login // ""' issue.json | grep -qiE '(\[bot\]|^renovate$|^dependabot$)'; then exempt=true; fi^[[0m
+check	Resolve issue	2026-09-05T04:07:24.2663719Z ^[[36;1mif grep -qiE 'do not dispatch|not a (repo|cloud) coding task' body.md; then exempt=true; fi^[[0m
+check	Resolve issue	2026-09-05T04:07:24.2665751Z ^[[36;1m{^[[0m
+check	Resolve issue	2026-09-05T04:07:24.2666656Z ^[[36;1m  echo "number=$NUMBER"^[[0m
+check	Resolve issue	2026-09-05T04:07:24.2667818Z ^[[36;1m  echo "exempt=$exempt"^[[0m
+check	Resolve issue	2026-09-05T04:07:24.2668943Z ^[[36;1m  echo "held=$held"^[[0m
+check	Resolve issue	2026-09-05T04:07:24.2670164Z ^[[36;1m  echo "state=$(jq -r '.state' issue.json)"^[[0m
+check	Resolve issue	2026-09-05T04:07:24.2671522Z ^[[36;1m} >> "$GITHUB_OUTPUT"^[[0m
+check	Resolve issue	2026-09-05T04:07:24.2716055Z shell: /usr/bin/bash -e {0}
+check	Resolve issue	2026-09-05T04:07:24.2717175Z env:
+check	Resolve issue	2026-09-05T04:07:24.2726141Z   GH_TOKEN: ***
+check	Resolve issue	2026-09-05T04:07:24.2727061Z   NUMBER: 695
+check	Resolve issue	2026-09-05T04:07:24.2727947Z ##[endgroup]
+check	Setup API client	﻿2026-09-05T04:07:24.6684301Z Prepare all required actions
+check	Setup API client	2026-09-05T04:07:24.7332324Z ##[group]Run ./.github/actions/setup-api-client
+check	Setup API client	2026-09-05T04:07:24.7333581Z with:
+check	Setup API client	2026-09-05T04:07:24.7341406Z   github_token: ***
+check	Setup API client	2026-09-05T04:07:24.7342351Z   skip_deps: false
+check	Setup API client	2026-09-05T04:07:24.7343269Z   verbose: false
+check	Setup API client	2026-09-05T04:07:24.7344143Z ##[endgroup]
+check	Setup API client	2026-09-05T04:07:24.7408695Z ##[start-action display=Install API client dependencies;id=__self.__run]
+check	Setup API client	2026-09-05T04:07:24.7479814Z ##[group]Run set -euo pipefail
+check	Setup API client	2026-09-05T04:07:24.7481654Z ^[[36;1mset -euo pipefail^[[0m
+check	Setup API client	2026-09-05T04:07:24.7482631Z ^[[36;1m^[[0m
+check	Setup API client	2026-09-05T04:07:24.7483613Z ^[[36;1m# Use dedicated scripts dir, create if needed^[[0m
+check	Setup API client	2026-09-05T04:07:24.7484987Z ^[[36;1mINSTALL_DIR=""^[[0m
+check	Setup API client	2026-09-05T04:07:24.7485982Z ^[[36;1mif [ -z "$INSTALL_DIR" ]; then^[[0m
+check	Setup API client	2026-09-05T04:07:24.7487471Z ^[[36;1m  INSTALL_DIR="${GITHUB_WORKSPACE}/.github/scripts"^[[0m
+check	Setup API client	2026-09-05T04:07:24.7488716Z ^[[36;1mfi^[[0m
+check	Setup API client	2026-09-05T04:07:24.7489606Z ^[[36;1mmkdir -p "$INSTALL_DIR"^[[0m
+check	Setup API client	2026-09-05T04:07:24.7490676Z ^[[36;1m^[[0m
+check	Setup API client	2026-09-05T04:07:24.7491817Z ^[[36;1mecho "📦 Installing @octokit dependencies in $INSTALL_DIR..."^[[0m
+check	Setup API client	2026-09-05T04:07:24.7493230Z ^[[36;1mcd "$INSTALL_DIR"^[[0m
+check	Setup API client	2026-09-05T04:07:24.7494191Z ^[[36;1m^[[0m
+check	Setup API client	2026-09-05T04:07:24.7495259Z ^[[36;1mdeclare -a VENDORED_ALIAS_DIRS=()^[[0m
+check	Setup API client	2026-09-05T04:07:24.7496380Z ^[[36;1m^[[0m
+check	Setup API client	2026-09-05T04:07:24.7497245Z ^[[36;1mcleanup_vendor_aliases() {^[[0m
+check	Setup API client	2026-09-05T04:07:24.7498429Z ^[[36;1m  if [ "${#VENDORED_ALIAS_DIRS[@]}" -eq 0 ]; then^[[0m
+check	Setup API client	2026-09-05T04:07:24.7499636Z ^[[36;1m    return 0^[[0m
+check	Setup API client	2026-09-05T04:07:24.7500530Z ^[[36;1m  fi^[[0m
+check	Setup API client	2026-09-05T04:07:24.7501358Z ^[[36;1m^[[0m
+check	Setup API client	2026-09-05T04:07:24.7502234Z ^[[36;1m  local cleanup_dir="$INSTALL_DIR"^[[0m
+check	Setup API client	2026-09-05T04:07:24.7503398Z ^[[36;1m  if [ -z "$cleanup_dir" ]; then^[[0m
+check	Setup API client	2026-09-05T04:07:24.7504987Z ^[[36;1m    echo "::warning::Install dir is empty, skipping vendored alias cleanup"^[[0m
+check	Setup API client	2026-09-05T04:07:24.7506514Z ^[[36;1m    return 0^[[0m
+check	Setup API client	2026-09-05T04:07:24.7507401Z ^[[36;1m  fi^[[0m
+check	Setup API client	2026-09-05T04:07:24.7508240Z ^[[36;1m^[[0m
+check	Setup API client	2026-09-05T04:07:24.7509236Z ^[[36;1m  if ! pushd "$cleanup_dir" >/dev/null 2>&1; then^[[0m
+check	Setup API client	2026-09-05T04:07:24.7511054Z ^[[36;1m    echo "::warning::Failed to enter install dir \"$cleanup_dir\"; skipping vendored alias cleanup"^[[0m
+check	Setup API client	2026-09-05T04:07:24.7512738Z ^[[36;1m    return 0^[[0m
+check	Setup API client	2026-09-05T04:07:24.7513625Z ^[[36;1m  fi^[[0m
+check	Setup API client	2026-09-05T04:07:24.7514440Z ^[[36;1m^[[0m
+check	Setup API client	2026-09-05T04:07:24.7515562Z ^[[36;1m  for vendored_alias in "${VENDORED_ALIAS_DIRS[@]}"; do^[[0m
+check	Setup API client	2026-09-05T04:07:24.7516897Z ^[[36;1m    if [ -z "$vendored_alias" ]; then^[[0m
+check	Setup API client	2026-09-05T04:07:24.7518004Z ^[[36;1m      continue^[[0m
+check	Setup API client	2026-09-05T04:07:24.7518911Z ^[[36;1m    fi^[[0m
+check	Setup API client	2026-09-05T04:07:24.7519815Z ^[[36;1m    rm -rf -- "$vendored_alias" || true^[[0m
+check	Setup API client	2026-09-05T04:07:24.7520956Z ^[[36;1m    local parent_dir^[[0m
+check	Setup API client	2026-09-05T04:07:24.7522029Z ^[[36;1m    parent_dir=$(dirname "$vendored_alias")^[[0m
+check	Setup API client	2026-09-05T04:07:24.7523707Z ^[[36;1m    # Remove empty parent directories that may have been created for scoped packages^[[0m
+check	Setup API client	2026-09-05T04:07:24.7525651Z ^[[36;1m    while [ "$parent_dir" != "." ] && [ "$parent_dir" != "/" ]; do^[[0m
+check	Setup API client	2026-09-05T04:07:24.7527089Z ^[[36;1m      rmdir -- "$parent_dir" 2>/dev/null || break^[[0m
+check	Setup API client	2026-09-05T04:07:24.7528341Z ^[[36;1m      parent_dir=$(dirname "$parent_dir")^[[0m
+check	Setup API client	2026-09-05T04:07:24.7529435Z ^[[36;1m    done^[[0m
+check	Setup API client	2026-09-05T04:07:24.7530255Z ^[[36;1m  done^[[0m
+check	Setup API client	2026-09-05T04:07:24.7531063Z ^[[36;1m^[[0m
+check	Setup API client	2026-09-05T04:07:24.7531886Z ^[[36;1m  popd >/dev/null 2>&1 || true^[[0m
+check	Setup API client	2026-09-05T04:07:24.7532904Z ^[[36;1m}^[[0m
+check	Setup API client	2026-09-05T04:07:24.7533687Z ^[[36;1m^[[0m
+check	Setup API client	2026-09-05T04:07:24.7534523Z ^[[36;1mtrap cleanup_vendor_aliases EXIT^[[0m
+check	Setup API client	2026-09-05T04:07:24.7535740Z ^[[36;1m^[[0m
+check	Setup API client	2026-09-05T04:07:24.7536556Z ^[[36;1mcreate_vendor_aliases() {^[[0m
+check	Setup API client	2026-09-05T04:07:24.7537628Z ^[[36;1m  if [ ! -f "package.json" ]; then^[[0m
+check	Setup API client	2026-09-05T04:07:24.7538722Z ^[[36;1m    return 0^[[0m
+check	Setup API client	2026-09-05T04:07:24.7539583Z ^[[36;1m  fi^[[0m
+check	Setup API client	2026-09-05T04:07:24.7540375Z ^[[36;1m^[[0m
+check	Setup API client	2026-09-05T04:07:24.7541196Z ^[[36;1m  local alias_tmp^[[0m
+check	Setup API client	2026-09-05T04:07:24.7542396Z ^[[36;1m  alias_tmp=$(mktemp)^[[0m
+check	Setup API client	2026-09-05T04:07:24.7543351Z ^[[36;1m^[[0m
+check	Setup API client	2026-09-05T04:07:24.7544977Z ^[[36;1m  local helper_root="${GITHUB_ACTION_PATH:-${GITHUB_WORKSPACE}/.github/actions/setup-api-client}"^[[0m
+check	Setup API client	2026-09-05T04:07:24.7546952Z ^[[36;1m  local alias_helper="${helper_root}/create_vendor_aliases.js"^[[0m
+check	Setup API client	2026-09-05T04:07:24.7548336Z ^[[36;1m  if [ ! -f "$alias_helper" ]; then^[[0m
+check	Setup API client	2026-09-05T04:07:24.7549672Z ^[[36;1m    echo "::error::Missing vendored alias helper: $alias_helper"^[[0m
+check	Setup API client	2026-09-05T04:07:24.7551014Z ^[[36;1m    rm -f "$alias_tmp"^[[0m
+check	Setup API client	2026-09-05T04:07:24.7551990Z ^[[36;1m    return 1^[[0m
+check	Setup API client	2026-09-05T04:07:24.7552842Z ^[[36;1m  fi^[[0m
+check	Setup API client	2026-09-05T04:07:24.7553641Z ^[[36;1m^[[0m
+check	Setup API client	2026-09-05T04:07:24.7554655Z ^[[36;1m  if node "$alias_helper" "$INSTALL_DIR" >"$alias_tmp"; then^[[0m
+check	Setup API client	2026-09-05T04:07:24.7556192Z ^[[36;1m    :^[[0m
+check	Setup API client	2026-09-05T04:07:24.7556995Z ^[[36;1m  else^[[0m
+check	Setup API client	2026-09-05T04:07:24.7558096Z ^[[36;1m    echo "::error::Failed to prepare vendored dependency aliases"^[[0m
+check	Setup API client	2026-09-05T04:07:24.7559467Z ^[[36;1m    rm -f "$alias_tmp"^[[0m
+check	Setup API client	2026-09-05T04:07:24.7560437Z ^[[36;1m    return 1^[[0m
+check	Setup API client	2026-09-05T04:07:24.7561298Z ^[[36;1m  fi^[[0m
+check	Setup API client	2026-09-05T04:07:24.7562089Z ^[[36;1m^[[0m
+check	Setup API client	2026-09-05T04:07:24.7562957Z ^[[36;1m  while IFS= read -r vendored_alias; do^[[0m
+check	Setup API client	2026-09-05T04:07:24.7564141Z ^[[36;1m    if [ -z "$vendored_alias" ]; then^[[0m
+check	Setup API client	2026-09-05T04:07:24.7565312Z ^[[36;1m      continue^[[0m
+check	Setup API client	2026-09-05T04:07:24.7566191Z ^[[36;1m    fi^[[0m
+check	Setup API client	2026-09-05T04:07:24.7567131Z ^[[36;1m    VENDORED_ALIAS_DIRS+=("$vendored_alias")^[[0m
+check	Setup API client	2026-09-05T04:07:24.7568284Z ^[[36;1m  done <"$alias_tmp"^[[0m
+check	Setup API client	2026-09-05T04:07:24.7569202Z ^[[36;1m^[[0m
+check	Setup API client	2026-09-05T04:07:24.7569995Z ^[[36;1m  rm -f "$alias_tmp"^[[0m
+check	Setup API client	2026-09-05T04:07:24.7570911Z ^[[36;1m}^[[0m
+check	Setup API client	2026-09-05T04:07:24.7571707Z ^[[36;1m^[[0m
+check	Setup API client	2026-09-05T04:07:24.7572516Z ^[[36;1mcreate_vendor_aliases^[[0m
+check	Setup API client	2026-09-05T04:07:24.7573441Z ^[[36;1m^[[0m
+check	Setup API client	2026-09-05T04:07:24.7574639Z ^[[36;1m# Strip unresolvable file: dependencies from package.json so npm install^[[0m
+check	Setup API client	2026-09-05T04:07:24.7576618Z ^[[36;1m# doesn't choke when vendored packages are missing (e.g. sparse checkout^[[0m
+check	Setup API client	2026-09-05T04:07:24.7578428Z ^[[36;1m# that doesn't include node_modules/).  Back up the original first so we^[[0m
+check	Setup API client	2026-09-05T04:07:24.7580208Z ^[[36;1m# can restore it after npm install — avoids leaking modified state into^[[0m
+check	Setup API client	2026-09-05T04:07:24.7581778Z ^[[36;1m# downstream steps that expect a clean workspace.^[[0m
+check	Setup API client	2026-09-05T04:07:24.7583019Z ^[[36;1mSTRIPPED_PKG_JSON=false^[[0m
+check	Setup API client	2026-09-05T04:07:24.7584052Z ^[[36;1mif [ -f "package.json" ]; then^[[0m
+check	Setup API client	2026-09-05T04:07:24.7585189Z ^[[36;1m  node -e '^[[0m
+check	Setup API client	2026-09-05T04:07:24.7586093Z ^[[36;1m    const fs = require("fs");^[[0m
+check	Setup API client	2026-09-05T04:07:24.7587174Z ^[[36;1m    const path = require("path");^[[0m
+check	Setup API client	2026-09-05T04:07:24.7588434Z ^[[36;1m    const raw = fs.readFileSync("package.json", "utf8");^[[0m
+check	Setup API client	2026-09-05T04:07:24.7589754Z ^[[36;1m    const pkg = JSON.parse(raw);^[[0m
+check	Setup API client	2026-09-05T04:07:24.7590825Z ^[[36;1m    let changed = false;^[[0m
+check	Setup API client	2026-09-05T04:07:24.7592077Z ^[[36;1m    for (const section of ["dependencies", "devDependencies"]) {^[[0m
+check	Setup API client	2026-09-05T04:07:24.7593480Z ^[[36;1m      if (!pkg[section]) continue;^[[0m
+check	Setup API client	2026-09-05T04:07:24.7594800Z ^[[36;1m      for (const [name, spec] of Object.entries(pkg[section])) {^[[0m
+check	Setup API client	2026-09-05T04:07:24.7596504Z ^[[36;1m        if (typeof spec === "string" && spec.startsWith("file:")) {^[[0m
+check	Setup API client	2026-09-05T04:07:24.7597979Z ^[[36;1m          const target = path.resolve(spec.slice(5));^[[0m
+check	Setup API client	2026-09-05T04:07:24.7599247Z ^[[36;1m          if (!fs.existsSync(target)) {^[[0m
+check	Setup API client	2026-09-05T04:07:24.7600409Z ^[[36;1m            delete pkg[section][name];^[[0m
+check	Setup API client	2026-09-05T04:07:24.7601523Z ^[[36;1m            changed = true;^[[0m
+check	Setup API client	2026-09-05T04:07:24.7603130Z ^[[36;1m            console.log("::notice::Stripped unresolvable vendored dep: " + name + " (" + spec + ")");^[[0m
+check	Setup API client	2026-09-05T04:07:24.7604809Z ^[[36;1m          }^[[0m
+check	Setup API client	2026-09-05T04:07:24.7605764Z ^[[36;1m        }^[[0m
+check	Setup API client	2026-09-05T04:07:24.7606586Z ^[[36;1m      }^[[0m
+check	Setup API client	2026-09-05T04:07:24.7607691Z ^[[36;1m      if (pkg[section] && Object.keys(pkg[section]).length === 0) {^[[0m
+check	Setup API client	2026-09-05T04:07:24.7609213Z ^[[36;1m        delete pkg[section];^[[0m
+check	Setup API client	2026-09-05T04:07:24.7610209Z ^[[36;1m      }^[[0m
+check	Setup API client	2026-09-05T04:07:24.7611021Z ^[[36;1m    }^[[0m
+check	Setup API client	2026-09-05T04:07:24.7611842Z ^[[36;1m    if (changed) {^[[0m
+check	Setup API client	2026-09-05T04:07:24.7613009Z ^[[36;1m      fs.copyFileSync("package.json", "package.json.bak");^[[0m
+check	Setup API client	2026-09-05T04:07:24.7614685Z ^[[36;1m      fs.writeFileSync("package.json", JSON.stringify(pkg, null, 2) + "\n");^[[0m
+check	Setup API client	2026-09-05T04:07:24.7616390Z ^[[36;1m      process.stdout.write("STRIPPED");^[[0m
+check	Setup API client	2026-09-05T04:07:24.7617492Z ^[[36;1m    }^[[0m
+check	Setup API client	2026-09-05T04:07:24.7618289Z ^[[36;1m  '^[[0m
+check	Setup API client	2026-09-05T04:07:24.7619185Z ^[[36;1m  if [ -f "package.json.bak" ]; then^[[0m
+check	Setup API client	2026-09-05T04:07:24.7620311Z ^[[36;1m    STRIPPED_PKG_JSON=true^[[0m
+check	Setup API client	2026-09-05T04:07:24.7621432Z ^[[36;1m  fi^[[0m
+check	Setup API client	2026-09-05T04:07:24.7622226Z ^[[36;1mfi^[[0m
+check	Setup API client	2026-09-05T04:07:24.7623002Z ^[[36;1m^[[0m
+check	Setup API client	2026-09-05T04:07:24.7624338Z ^[[36;1m# Vendored packages often ship lifecycle scripts (tshy builds, custom bundlers, etc.)^[[0m
+check	Setup API client	2026-09-05T04:07:24.7626665Z ^[[36;1m# that expect repo-specific tooling. Disable lifecycle scripts globally so npm install^[[0m
+check	Setup API client	2026-09-05T04:07:24.7628376Z ^[[36;1m# never invokes those hooks inside CI.^[[0m
+check	Setup API client	2026-09-05T04:07:24.7629582Z ^[[36;1mexport npm_config_ignore_scripts=true^[[0m
+check	Setup API client	2026-09-05T04:07:24.7630677Z ^[[36;1m^[[0m
+check	Setup API client	2026-09-05T04:07:24.7631686Z ^[[36;1m# Track if we create package.json so we can clean it up^[[0m
+check	Setup API client	2026-09-05T04:07:24.7632975Z ^[[36;1mCREATED_PACKAGE_JSON=false^[[0m
+check	Setup API client	2026-09-05T04:07:24.7634042Z ^[[36;1mif [ ! -f "package.json" ]; then^[[0m
+check	Setup API client	2026-09-05T04:07:24.7635307Z ^[[36;1m  echo '{"private":true}' > package.json^[[0m
+check	Setup API client	2026-09-05T04:07:24.7636466Z ^[[36;1m  CREATED_PACKAGE_JSON=true^[[0m
+check	Setup API client	2026-09-05T04:07:24.7637464Z ^[[36;1mfi^[[0m
+check	Setup API client	2026-09-05T04:07:24.7638251Z ^[[36;1m^[[0m
+check	Setup API client	2026-09-05T04:07:24.7639373Z ^[[36;1m# Check if already installed (including lru-cache@10.4.3, a required^[[0m
+check	Setup API client	2026-09-05T04:07:24.7641148Z ^[[36;1m# transitive dep of @octokit/auth-app used for GitHub App token minting).^[[0m
+check	Setup API client	2026-09-05T04:07:24.7643079Z ^[[36;1mif [ -d "node_modules/@octokit/rest" ] && [ -d "node_modules/lru-cache" ]; then^[[0m
+check	Setup API client	2026-09-05T04:07:24.7644666Z ^[[36;1m  echo "✅ @octokit/rest already installed"^[[0m
+check	Setup API client	2026-09-05T04:07:24.7645888Z ^[[36;1melse^[[0m
+check	Setup API client	2026-09-05T04:07:24.7646966Z ^[[36;1m  # Snapshot vendored package metadata before npm install.^[[0m
+check	Setup API client	2026-09-05T04:07:24.7648540Z ^[[36;1m  # npm may overwrite transitive deps (e.g. minimatch) that are^[[0m
+check	Setup API client	2026-09-05T04:07:24.7650179Z ^[[36;1m  # committed as vendored packages with intentional version pins.^[[0m
+check	Setup API client	2026-09-05T04:07:24.7651577Z ^[[36;1m  VENDORED_SNAPSHOT=""^[[0m
+check	Setup API client	2026-09-05T04:07:24.7652747Z ^[[36;1m  if [ -f "node_modules/minimatch/package.json" ]; then^[[0m
+check	Setup API client	2026-09-05T04:07:24.7654037Z ^[[36;1m    VENDORED_SNAPSHOT=$(mktemp -d)^[[0m
+check	Setup API client	2026-09-05T04:07:24.7655370Z ^[[36;1m    for pkg_dir in node_modules/*/; do^[[0m
+check	Setup API client	2026-09-05T04:07:24.7656596Z ^[[36;1m      if [ -f "${pkg_dir}package.json" ]; then^[[0m
+check	Setup API client	2026-09-05T04:07:24.7657819Z ^[[36;1m        pkg_name=$(basename "$pkg_dir")^[[0m
+check	Setup API client	2026-09-05T04:07:24.7659084Z ^[[36;1m        mkdir -p "${VENDORED_SNAPSHOT}/${pkg_name}"^[[0m
+check	Setup API client	2026-09-05T04:07:24.7660674Z ^[[36;1m        cp "${pkg_dir}package.json" "${VENDORED_SNAPSHOT}/${pkg_name}/package.json"^[[0m
+check	Setup API client	2026-09-05T04:07:24.7662142Z ^[[36;1m      fi^[[0m
+check	Setup API client	2026-09-05T04:07:24.7662953Z ^[[36;1m    done^[[0m
+check	Setup API client	2026-09-05T04:07:24.7663951Z ^[[36;1m    echo "📸 Snapshotted vendored package metadata"^[[0m
+check	Setup API client	2026-09-05T04:07:24.7665220Z ^[[36;1m  fi^[[0m
+check	Setup API client	2026-09-05T04:07:24.7666015Z ^[[36;1m^[[0m
+check	Setup API client	2026-09-05T04:07:24.7666975Z ^[[36;1m  # Install with pinned versions for consistency.^[[0m
+check	Setup API client	2026-09-05T04:07:24.7668593Z ^[[36;1m  # lru-cache is an explicit transitive dep of @octokit/auth-app required for^[[0m
+check	Setup API client	2026-09-05T04:07:24.7670519Z ^[[36;1m  # GitHub App token minting; pin it here so npm always hoists a specific version^[[0m
+check	Setup API client	2026-09-05T04:07:24.7672277Z ^[[36;1m  # even if a prior cached node_modules state is missing it.^[[0m
+check	Setup API client	2026-09-05T04:07:24.7673545Z ^[[36;1m  #^[[0m
+check	Setup API client	2026-09-05T04:07:24.7674778Z ^[[36;1m  # Retry with exponential backoff to survive transient npm registry errors^[[0m
+check	Setup API client	2026-09-05T04:07:24.7676910Z ^[[36;1m  # (e.g. 403 Forbidden from CDN/rate-limit on safe-buffer, undici, etc.).^[[0m
+check	Setup API client	2026-09-05T04:07:24.7678352Z ^[[36;1m  NPM_PACKAGES=(^[[0m
+check	Setup API client	2026-09-05T04:07:24.7679295Z ^[[36;1m    @octokit/rest@20.0.2^[[0m
+check	Setup API client	2026-09-05T04:07:24.7680335Z ^[[36;1m    @octokit/plugin-retry@6.0.1^[[0m
+check	Setup API client	2026-09-05T04:07:24.7681493Z ^[[36;1m    @octokit/plugin-paginate-rest@9.1.5^[[0m
+check	Setup API client	2026-09-05T04:07:24.7682679Z ^[[36;1m    @octokit/auth-app@6.0.3^[[0m
+check	Setup API client	2026-09-05T04:07:24.7683723Z ^[[36;1m    lru-cache@10.4.3^[[0m
+check	Setup API client	2026-09-05T04:07:24.7684655Z ^[[36;1m  )^[[0m
+check	Setup API client	2026-09-05T04:07:24.7685586Z ^[[36;1m  NPM_MAX_RETRIES=3^[[0m
+check	Setup API client	2026-09-05T04:07:24.7686735Z ^[[36;1m  NPM_BACKOFF=5  # seconds; doubles each retry (5, 10)^[[0m
+check	Setup API client	2026-09-05T04:07:24.7688148Z ^[[36;1m  npm_installed=false^[[0m
+check	Setup API client	2026-09-05T04:07:24.7689103Z ^[[36;1m^[[0m
+check	Setup API client	2026-09-05T04:07:24.7690164Z ^[[36;1m  for (( attempt=1; attempt<=NPM_MAX_RETRIES; attempt++ )); do^[[0m
+check	Setup API client	2026-09-05T04:07:24.7691532Z ^[[36;1m    npm_output=$(mktemp)^[[0m
+check	Setup API client	2026-09-05T04:07:24.7692515Z ^[[36;1m^[[0m
+check	Setup API client	2026-09-05T04:07:24.7693857Z ^[[36;1m    if npm install --no-save --location=project "${NPM_PACKAGES[@]}" 2>"$npm_output"; then^[[0m
+check	Setup API client	2026-09-05T04:07:24.7695634Z ^[[36;1m      rm -f "$npm_output"^[[0m
+check	Setup API client	2026-09-05T04:07:24.7696679Z ^[[36;1m      npm_installed=true^[[0m
+check	Setup API client	2026-09-05T04:07:24.7697676Z ^[[36;1m      break^[[0m
+check	Setup API client	2026-09-05T04:07:24.7698522Z ^[[36;1m    fi^[[0m
+check	Setup API client	2026-09-05T04:07:24.7699336Z ^[[36;1m^[[0m
+check	Setup API client	2026-09-05T04:07:24.7700201Z ^[[36;1m    npm_err=$(cat "$npm_output")^[[0m
+check	Setup API client	2026-09-05T04:07:24.7701300Z ^[[36;1m    rm -f "$npm_output"^[[0m
+check	Setup API client	2026-09-05T04:07:24.7702781Z ^[[36;1m    echo "::warning::npm install attempt $attempt/$NPM_MAX_RETRIES failed (see logs)"^[[0m
+check	Setup API client	2026-09-05T04:07:24.7704483Z ^[[36;1m    echo "::group::npm stderr (attempt $attempt)"^[[0m
+check	Setup API client	2026-09-05T04:07:24.7705827Z ^[[36;1m    echo "$npm_err"^[[0m
+check	Setup API client	2026-09-05T04:07:24.7706826Z ^[[36;1m    echo "::endgroup::"^[[0m
+check	Setup API client	2026-09-05T04:07:24.7707791Z ^[[36;1m^[[0m
+check	Setup API client	2026-09-05T04:07:24.7708904Z ^[[36;1m    # On peer-dep / ERESOLVE failures, also try --legacy-peer-deps^[[0m
+check	Setup API client	2026-09-05T04:07:24.7710791Z ^[[36;1m    if echo "$npm_err" | grep -qiE 'ERESOLVE|peer dep|Could not resolve dependency'; then^[[0m
+check	Setup API client	2026-09-05T04:07:24.7712940Z ^[[36;1m      echo "::warning::Detected peer dependency conflict, retrying with --legacy-peer-deps"^[[0m
+check	Setup API client	2026-09-05T04:07:24.7714621Z ^[[36;1m      npm_output=$(mktemp)^[[0m
+check	Setup API client	2026-09-05T04:07:24.7716508Z ^[[36;1m      if npm install --no-save --legacy-peer-deps --location=project "${NPM_PACKAGES[@]}" 2>"$npm_output"; then^[[0m
+check	Setup API client	2026-09-05T04:07:24.7718387Z ^[[36;1m        rm -f "$npm_output"^[[0m
+check	Setup API client	2026-09-05T04:07:24.7719451Z ^[[36;1m        npm_installed=true^[[0m
+check	Setup API client	2026-09-05T04:07:24.7720463Z ^[[36;1m        break^[[0m
+check	Setup API client	2026-09-05T04:07:24.7721344Z ^[[36;1m      fi^[[0m
+check	Setup API client	2026-09-05T04:07:24.7722274Z ^[[36;1m      npm_err_legacy=$(cat "$npm_output")^[[0m
+check	Setup API client	2026-09-05T04:07:24.7723417Z ^[[36;1m      rm -f "$npm_output"^[[0m
+check	Setup API client	2026-09-05T04:07:24.7724809Z ^[[36;1m      echo "::warning::npm install with --legacy-peer-deps failed (see logs)"^[[0m
+check	Setup API client	2026-09-05T04:07:24.7726568Z ^[[36;1m      echo "::group::npm stderr (--legacy-peer-deps)"^[[0m
+check	Setup API client	2026-09-05T04:07:24.7727807Z ^[[36;1m      echo "$npm_err_legacy"^[[0m
+check	Setup API client	2026-09-05T04:07:24.7728869Z ^[[36;1m      echo "::endgroup::"^[[0m
+check	Setup API client	2026-09-05T04:07:24.7729853Z ^[[36;1m    fi^[[0m
+check	Setup API client	2026-09-05T04:07:24.7730659Z ^[[36;1m^[[0m
+check	Setup API client	2026-09-05T04:07:24.7731599Z ^[[36;1m    if [ "$attempt" -lt "$NPM_MAX_RETRIES" ]; then^[[0m
+check	Setup API client	2026-09-05T04:07:24.7732990Z ^[[36;1m      echo "::notice::Waiting ${NPM_BACKOFF}s before retry..."^[[0m
+check	Setup API client	2026-09-05T04:07:24.7734308Z ^[[36;1m      sleep "$NPM_BACKOFF"^[[0m
+check	Setup API client	2026-09-05T04:07:24.7735547Z ^[[36;1m      NPM_BACKOFF=$((NPM_BACKOFF * 2))^[[0m
+check	Setup API client	2026-09-05T04:07:24.7736648Z ^[[36;1m    fi^[[0m
+check	Setup API client	2026-09-05T04:07:24.7737467Z ^[[36;1m  done^[[0m
+check	Setup API client	2026-09-05T04:07:24.7738281Z ^[[36;1m^[[0m
+check	Setup API client	2026-09-05T04:07:24.7739168Z ^[[36;1m  if [ "$npm_installed" != "true" ]; then^[[0m
+check	Setup API client	2026-09-05T04:07:24.7740599Z ^[[36;1m    echo "::error::npm install failed after $NPM_MAX_RETRIES attempts"^[[0m
+check	Setup API client	2026-09-05T04:07:24.7742172Z ^[[36;1m    exit 1^[[0m
+check	Setup API client	2026-09-05T04:07:24.7743016Z ^[[36;1m  fi^[[0m
+check	Setup API client	2026-09-05T04:07:24.7743815Z ^[[36;1m^[[0m
+check	Setup API client	2026-09-05T04:07:24.7745078Z ^[[36;1m  # Restore vendored package metadata that npm may have overwritten^[[0m
+check	Setup API client	2026-09-05T04:07:24.7746809Z ^[[36;1m  if [ -n "${VENDORED_SNAPSHOT:-}" ] && [ -d "${VENDORED_SNAPSHOT}" ]; then^[[0m
+check	Setup API client	2026-09-05T04:07:24.7748370Z ^[[36;1m    for pkg_backup in "${VENDORED_SNAPSHOT}"/*/; do^[[0m
+check	Setup API client	2026-09-05T04:07:24.7749664Z ^[[36;1m      pkg_name=$(basename "$pkg_backup")^[[0m
+check	Setup API client	2026-09-05T04:07:24.7750987Z ^[[36;1m      if [ -f "node_modules/${pkg_name}/package.json" ] && \^[[0m
+check	Setup API client	2026-09-05T04:07:24.7752373Z ^[[36;1m         [ -f "${pkg_backup}package.json" ]; then^[[0m
+check	Setup API client	2026-09-05T04:07:24.7753897Z ^[[36;1m        cp "${pkg_backup}package.json" "node_modules/${pkg_name}/package.json"^[[0m
+check	Setup API client	2026-09-05T04:07:24.7755559Z ^[[36;1m      fi^[[0m
+check	Setup API client	2026-09-05T04:07:24.7756383Z ^[[36;1m    done^[[0m
+check	Setup API client	2026-09-05T04:07:24.7757283Z ^[[36;1m    rm -rf "${VENDORED_SNAPSHOT}"^[[0m
+check	Setup API client	2026-09-05T04:07:24.7758511Z ^[[36;1m    echo "📸 Restored vendored package metadata"^[[0m
+check	Setup API client	2026-09-05T04:07:24.7759658Z ^[[36;1m  fi^[[0m
+check	Setup API client	2026-09-05T04:07:24.7760464Z ^[[36;1m^[[0m
+check	Setup API client	2026-09-05T04:07:24.7761373Z ^[[36;1m  echo "✅ @octokit dependencies installed"^[[0m
+check	Setup API client	2026-09-05T04:07:24.7762487Z ^[[36;1mfi^[[0m
+check	Setup API client	2026-09-05T04:07:24.7763276Z ^[[36;1m^[[0m
+check	Setup API client	2026-09-05T04:07:24.7764431Z ^[[36;1m# Restore original package.json if we stripped file: deps earlier,^[[0m
+check	Setup API client	2026-09-05T04:07:24.7766117Z ^[[36;1m# so downstream steps see an unmodified workspace.^[[0m
+check	Setup API client	2026-09-05T04:07:24.7767680Z ^[[36;1mif [ "$STRIPPED_PKG_JSON" = "true" ] && [ -f "package.json.bak" ]; then^[[0m
+check	Setup API client	2026-09-05T04:07:24.7769781Z ^[[36;1m  mv "package.json.bak" "package.json"^[[0m
+check	Setup API client	2026-09-05T04:07:24.7771002Z ^[[36;1mfi^[[0m
+check	Setup API client	2026-09-05T04:07:24.7771895Z ^[[36;1m^[[0m
+check	Setup API client	2026-09-05T04:07:24.7772818Z ^[[36;1mcleanup_vendor_aliases^[[0m
+check	Setup API client	2026-09-05T04:07:24.7773821Z ^[[36;1mtrap - EXIT^[[0m
+check	Setup API client	2026-09-05T04:07:24.7816864Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+check	Setup API client	2026-09-05T04:07:24.7818146Z ##[endgroup]
+check	Setup API client	2026-09-05T04:07:24.7901970Z 📦 Installing @octokit dependencies in /home/runner/work/Fine-Art-Archive/Fine-Art-Archive/.github/scripts...
+check	Setup API client	2026-09-05T04:07:24.9510051Z 📸 Snapshotted vendored package metadata
+check	Setup API client	2026-09-05T04:07:27.6826355Z 
+check	Setup API client	2026-09-05T04:07:27.6827414Z added 66 packages, changed 1 package, and audited 70 packages in 3s
+check	Setup API client	2026-09-05T04:07:27.6828850Z 
+check	Setup API client	2026-09-05T04:07:27.6829197Z 2 packages are looking for funding
+check	Setup API client	2026-09-05T04:07:27.6829729Z   run `npm fund` for details
+check	Setup API client	2026-09-05T04:07:27.6849134Z 
+check	Setup API client	2026-09-05T04:07:27.6849561Z 2 vulnerabilities (1 moderate, 1 high)
+check	Setup API client	2026-09-05T04:07:27.6849958Z 
+check	Setup API client	2026-09-05T04:07:27.6850232Z To address issues that do not require attention, run:
+check	Setup API client	2026-09-05T04:07:27.6850688Z   npm audit fix
+check	Setup API client	2026-09-05T04:07:27.6850899Z 
+check	Setup API client	2026-09-05T04:07:27.6851032Z To address all issues, run:
+check	Setup API client	2026-09-05T04:07:27.6851367Z   npm audit fix --force
+check	Setup API client	2026-09-05T04:07:27.6851545Z 
+check	Setup API client	2026-09-05T04:07:27.6851700Z Run `npm audit` for details.
+check	Setup API client	2026-09-05T04:07:27.7777686Z 📸 Restored vendored package metadata
+check	Setup API client	2026-09-05T04:07:27.7778785Z ✅ @octokit dependencies installed
+check	Setup API client	2026-09-05T04:07:27.7829165Z ##[end-action id=__self.__run;outcome=success;conclusion=success;duration_ms=3041]
+check	Setup API client	2026-09-05T04:07:27.7833389Z ##[start-action display=Export NODE_PATH for shared deps;id=__self.__run_2]
+check	Setup API client	2026-09-05T04:07:27.7860920Z ##[group]Run set -euo pipefail
+check	Setup API client	2026-09-05T04:07:27.7861311Z ^[[36;1mset -euo pipefail^[[0m
+check	Setup API client	2026-09-05T04:07:27.7861609Z ^[[36;1mINSTALL_DIR=""^[[0m
+check	Setup API client	2026-09-05T04:07:27.7861963Z ^[[36;1mif [ -z "$INSTALL_DIR" ]; then^[[0m
+check	Setup API client	2026-09-05T04:07:27.7862351Z ^[[36;1m  INSTALL_DIR="${GITHUB_WORKSPACE}/.github/scripts"^[[0m
+check	Setup API client	2026-09-05T04:07:27.7862725Z ^[[36;1mfi^[[0m
+check	Setup API client	2026-09-05T04:07:27.7863019Z ^[[36;1mif [ -d "${INSTALL_DIR}/node_modules" ]; then^[[0m
+check	Setup API client	2026-09-05T04:07:27.7863413Z ^[[36;1m  if [ -n "${NODE_PATH:-}" ]; then^[[0m
+check	Setup API client	2026-09-05T04:07:27.7863859Z ^[[36;1m    echo "NODE_PATH=${INSTALL_DIR}/node_modules:${NODE_PATH}" >> "$GITHUB_ENV"^[[0m
+check	Setup API client	2026-09-05T04:07:27.7864582Z ^[[36;1m  else^[[0m
+check	Setup API client	2026-09-05T04:07:27.7887045Z ^[[36;1m    echo "NODE_PATH=${INSTALL_DIR}/node_modules" >> "$GITHUB_ENV"^[[0m
+check	Setup API client	2026-09-05T04:07:27.7887536Z ^[[36;1m  fi^[[0m
+check	Setup API client	2026-09-05T04:07:27.7887798Z ^[[36;1melse^[[0m
+check	Setup API client	2026-09-05T04:07:27.7888280Z ^[[36;1m  echo "::notice::setup-api-client: ${INSTALL_DIR}/node_modules not found; skipping NODE_PATH export."^[[0m
+check	Setup API client	2026-09-05T04:07:27.7888813Z ^[[36;1mfi^[[0m
+check	Setup API client	2026-09-05T04:07:27.7927608Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+check	Setup API client	2026-09-05T04:07:27.7928018Z ##[endgroup]
+check	Setup API client	2026-09-05T04:07:27.7996605Z ##[end-action id=__self.__run_2;outcome=success;conclusion=success;duration_ms=16]
+check	Setup API client	2026-09-05T04:07:27.8005197Z ##[start-action display=Export load balancer tokens;id=__self.export-tokens]
+check	Setup API client	2026-09-05T04:07:27.8026141Z ##[group]Run set -euo pipefail
+check	Setup API client	2026-09-05T04:07:27.8026792Z ^[[36;1mset -euo pipefail^[[0m
+check	Setup API client	2026-09-05T04:07:27.8027087Z ^[[36;1m^[[0m
+check	Setup API client	2026-09-05T04:07:27.8027351Z ^[[36;1mtoken_count=0^[[0m
+check	Setup API client	2026-09-05T04:07:27.8027640Z ^[[36;1mavailable_tokens=""^[[0m
+check	Setup API client	2026-09-05T04:07:27.8027943Z ^[[36;1m^[[0m
+check	Setup API client	2026-09-05T04:07:27.8028220Z ^[[36;1m# Export a variable to GITHUB_ENV^[[0m
+check	Setup API client	2026-09-05T04:07:27.8028698Z ^[[36;1m# Note: Empty values are intentionally not counted as available tokens^[[0m
+check	Setup API client	2026-09-05T04:07:27.8029155Z ^[[36;1mexport_var() {^[[0m
+check	Setup API client	2026-09-05T04:07:27.8029448Z ^[[36;1m  local name="$1"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8029742Z ^[[36;1m  local value="${2-}"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8030055Z ^[[36;1m  if [ -z "${value}" ]; then^[[0m
+check	Setup API client	2026-09-05T04:07:27.8030375Z ^[[36;1m    return 0^[[0m
+check	Setup API client	2026-09-05T04:07:27.8030644Z ^[[36;1m  fi^[[0m
+check	Setup API client	2026-09-05T04:07:27.8031026Z ^[[36;1m^[[0m
+check	Setup API client	2026-09-05T04:07:27.8031476Z ^[[36;1m  # Handle multiline values (like private keys)^[[0m
+check	Setup API client	2026-09-05T04:07:27.8031961Z ^[[36;1m  if [[ "${value}" == *$'\n'* ]]; then^[[0m
+check	Setup API client	2026-09-05T04:07:27.8032308Z ^[[36;1m    {^[[0m
+check	Setup API client	2026-09-05T04:07:27.8032571Z ^[[36;1m      echo "${name}<<EOF"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8032890Z ^[[36;1m      printf '%s\n' "${value}"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8033216Z ^[[36;1m      echo "EOF"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8033512Z ^[[36;1m    } >>"${GITHUB_ENV}"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8033819Z ^[[36;1m  else^[[0m
+check	Setup API client	2026-09-05T04:07:27.8034160Z ^[[36;1m    printf '%s=%s\n' "${name}" "${value}" >>"${GITHUB_ENV}"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8034548Z ^[[36;1m  fi^[[0m
+check	Setup API client	2026-09-05T04:07:27.8034795Z ^[[36;1m^[[0m
+check	Setup API client	2026-09-05T04:07:27.8035258Z ^[[36;1m  token_count=$((token_count + 1))^[[0m
+check	Setup API client	2026-09-05T04:07:27.8035644Z ^[[36;1m  if [ -n "$available_tokens" ]; then^[[0m
+check	Setup API client	2026-09-05T04:07:27.8036048Z ^[[36;1m    available_tokens="${available_tokens},${name}"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8036416Z ^[[36;1m  else^[[0m
+check	Setup API client	2026-09-05T04:07:27.8036688Z ^[[36;1m    available_tokens="${name}"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8037002Z ^[[36;1m  fi^[[0m
+check	Setup API client	2026-09-05T04:07:27.8037247Z ^[[36;1m^[[0m
+check	Setup API client	2026-09-05T04:07:27.8037528Z ^[[36;1m  if [ "${INPUT_VERBOSE}" = "true" ]; then^[[0m
+check	Setup API client	2026-09-05T04:07:27.8037907Z ^[[36;1m    echo "  ✅ ${name} exported"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8038232Z ^[[36;1m  fi^[[0m
+check	Setup API client	2026-09-05T04:07:27.8038478Z ^[[36;1m}^[[0m
+check	Setup API client	2026-09-05T04:07:27.8038715Z ^[[36;1m^[[0m
+check	Setup API client	2026-09-05T04:07:27.8039020Z ^[[36;1mecho "🔐 Exporting tokens to environment..."^[[0m
+check	Setup API client	2026-09-05T04:07:27.8039374Z ^[[36;1m^[[0m
+check	Setup API client	2026-09-05T04:07:27.8039689Z ^[[36;1m# Try to extract from JSON secrets first (requires jq)^[[0m
+check	Setup API client	2026-09-05T04:07:27.8040193Z ^[[36;1mif [ -n "${INPUT_SECRETS:-}" ] && [ "${INPUT_SECRETS}" != "null" ]; then^[[0m
+check	Setup API client	2026-09-05T04:07:27.8040664Z ^[[36;1m  if ! command -v jq >/dev/null 2>&1; then^[[0m
+check	Setup API client	2026-09-05T04:07:27.8041274Z ^[[36;1m    echo "::warning::'jq' is not installed; falling back to individual token inputs instead of parsing JSON secrets."^[[0m
+check	Setup API client	2026-09-05T04:07:27.8041933Z ^[[36;1m    # Fall back to individual inputs when jq is unavailable^[[0m
+check	Setup API client	2026-09-05T04:07:27.8042383Z ^[[36;1m    SERVICE_BOT_PAT="${INPUT_SERVICE_BOT_PAT:-}"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8042822Z ^[[36;1m    ACTIONS_BOT_PAT="${INPUT_ACTIONS_BOT_PAT:-}"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8043216Z ^[[36;1m    OWNER_PR_PAT="${INPUT_OWNER_PR_PAT:-}"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8043644Z ^[[36;1m    AGENTS_AUTOMATION_PAT="${INPUT_AGENTS_AUTOMATION_PAT:-}"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8044304Z ^[[36;1m    WORKFLOWS_APP_ID="${INPUT_WORKFLOWS_APP_ID:-}"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8044802Z ^[[36;1m    WORKFLOWS_APP_PRIVATE_KEY="${INPUT_WORKFLOWS_APP_PRIVATE_KEY:-}"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8045496Z ^[[36;1m    KEEPALIVE_APP_ID="${INPUT_KEEPALIVE_APP_ID:-}"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8045997Z ^[[36;1m    KEEPALIVE_APP_PRIVATE_KEY="${INPUT_KEEPALIVE_APP_PRIVATE_KEY:-}"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8046461Z ^[[36;1m    GH_APP_ID="${INPUT_GH_APP_ID:-}"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8046862Z ^[[36;1m    GH_APP_PRIVATE_KEY="${INPUT_GH_APP_PRIVATE_KEY:-}"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8047271Z ^[[36;1m    APP_1_ID="${INPUT_APP_1_ID:-}"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8047665Z ^[[36;1m    APP_1_PRIVATE_KEY="${INPUT_APP_1_PRIVATE_KEY:-}"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8048202Z ^[[36;1m    APP_2_ID="${INPUT_APP_2_ID:-}"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8048584Z ^[[36;1m    APP_2_PRIVATE_KEY="${INPUT_APP_2_PRIVATE_KEY:-}"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8048948Z ^[[36;1m  else^[[0m
+check	Setup API client	2026-09-05T04:07:27.8049237Z ^[[36;1m    # Parse JSON secrets using jq^[[0m
+check	Setup API client	2026-09-05T04:07:27.8049594Z ^[[36;1m    extract_secret() {^[[0m
+check	Setup API client	2026-09-05T04:07:27.8049900Z ^[[36;1m      local key="$1"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8050317Z ^[[36;1m      echo "${INPUT_SECRETS}" | jq -r ".${key} // empty" 2>/dev/null || echo ""^[[0m
+check	Setup API client	2026-09-05T04:07:27.8050762Z ^[[36;1m    }^[[0m
+check	Setup API client	2026-09-05T04:07:27.8051014Z ^[[36;1m^[[0m
+check	Setup API client	2026-09-05T04:07:27.8051336Z ^[[36;1m    SERVICE_BOT_PAT=$(extract_secret "SERVICE_BOT_PAT")^[[0m
+check	Setup API client	2026-09-05T04:07:27.8051793Z ^[[36;1m    ACTIONS_BOT_PAT=$(extract_secret "ACTIONS_BOT_PAT")^[[0m
+check	Setup API client	2026-09-05T04:07:27.8052225Z ^[[36;1m    OWNER_PR_PAT=$(extract_secret "OWNER_PR_PAT")^[[0m
+check	Setup API client	2026-09-05T04:07:27.8052707Z ^[[36;1m    AGENTS_AUTOMATION_PAT=$(extract_secret "AGENTS_AUTOMATION_PAT")^[[0m
+check	Setup API client	2026-09-05T04:07:27.8053220Z ^[[36;1m    WORKFLOWS_APP_ID=$(extract_secret "WORKFLOWS_APP_ID")^[[0m
+check	Setup API client	2026-09-05T04:07:27.8053755Z ^[[36;1m    WORKFLOWS_APP_PRIVATE_KEY=$(extract_secret "WORKFLOWS_APP_PRIVATE_KEY")^[[0m
+check	Setup API client	2026-09-05T04:07:27.8054294Z ^[[36;1m    KEEPALIVE_APP_ID=$(extract_secret "KEEPALIVE_APP_ID")^[[0m
+check	Setup API client	2026-09-05T04:07:27.8054824Z ^[[36;1m    KEEPALIVE_APP_PRIVATE_KEY=$(extract_secret "KEEPALIVE_APP_PRIVATE_KEY")^[[0m
+check	Setup API client	2026-09-05T04:07:27.8055526Z ^[[36;1m    GH_APP_ID=$(extract_secret "GH_APP_ID")^[[0m
+check	Setup API client	2026-09-05T04:07:27.8055968Z ^[[36;1m    GH_APP_PRIVATE_KEY=$(extract_secret "GH_APP_PRIVATE_KEY")^[[0m
+check	Setup API client	2026-09-05T04:07:27.8056409Z ^[[36;1m    APP_1_ID=$(extract_secret "APP_1_ID")^[[0m
+check	Setup API client	2026-09-05T04:07:27.8056838Z ^[[36;1m    APP_1_PRIVATE_KEY=$(extract_secret "APP_1_PRIVATE_KEY")^[[0m
+check	Setup API client	2026-09-05T04:07:27.8057279Z ^[[36;1m    APP_2_ID=$(extract_secret "APP_2_ID")^[[0m
+check	Setup API client	2026-09-05T04:07:27.8057699Z ^[[36;1m    APP_2_PRIVATE_KEY=$(extract_secret "APP_2_PRIVATE_KEY")^[[0m
+check	Setup API client	2026-09-05T04:07:27.8058093Z ^[[36;1m  fi^[[0m
+check	Setup API client	2026-09-05T04:07:27.8058346Z ^[[36;1melse^[[0m
+check	Setup API client	2026-09-05T04:07:27.8058631Z ^[[36;1m  # Fall back to individual inputs^[[0m
+check	Setup API client	2026-09-05T04:07:27.8059024Z ^[[36;1m  SERVICE_BOT_PAT="${INPUT_SERVICE_BOT_PAT:-}"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8059433Z ^[[36;1m  ACTIONS_BOT_PAT="${INPUT_ACTIONS_BOT_PAT:-}"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8059831Z ^[[36;1m  OWNER_PR_PAT="${INPUT_OWNER_PR_PAT:-}"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8060269Z ^[[36;1m  AGENTS_AUTOMATION_PAT="${INPUT_AGENTS_AUTOMATION_PAT:-}"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8060729Z ^[[36;1m  WORKFLOWS_APP_ID="${INPUT_WORKFLOWS_APP_ID:-}"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8061220Z ^[[36;1m  WORKFLOWS_APP_PRIVATE_KEY="${INPUT_WORKFLOWS_APP_PRIVATE_KEY:-}"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8061707Z ^[[36;1m  KEEPALIVE_APP_ID="${INPUT_KEEPALIVE_APP_ID:-}"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8062174Z ^[[36;1m  KEEPALIVE_APP_PRIVATE_KEY="${INPUT_KEEPALIVE_APP_PRIVATE_KEY:-}"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8062618Z ^[[36;1m  GH_APP_ID="${INPUT_GH_APP_ID:-}"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8063011Z ^[[36;1m  GH_APP_PRIVATE_KEY="${INPUT_GH_APP_PRIVATE_KEY:-}"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8063403Z ^[[36;1m  APP_1_ID="${INPUT_APP_1_ID:-}"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8063793Z ^[[36;1m  APP_1_PRIVATE_KEY="${INPUT_APP_1_PRIVATE_KEY:-}"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8064178Z ^[[36;1m  APP_2_ID="${INPUT_APP_2_ID:-}"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8064562Z ^[[36;1m  APP_2_PRIVATE_KEY="${INPUT_APP_2_PRIVATE_KEY:-}"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8065264Z ^[[36;1mfi^[[0m
+check	Setup API client	2026-09-05T04:07:27.8065511Z ^[[36;1m^[[0m
+check	Setup API client	2026-09-05T04:07:27.8065870Z ^[[36;1m# Export GITHUB_TOKEN (GH_TOKEN is the same value, only count once)^[[0m
+check	Setup API client	2026-09-05T04:07:27.8066342Z ^[[36;1mif [ -n "${INPUT_GITHUB_TOKEN:-}" ]; then^[[0m
+check	Setup API client	2026-09-05T04:07:27.8066745Z ^[[36;1m  export_var "GITHUB_TOKEN" "${INPUT_GITHUB_TOKEN}"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8067170Z ^[[36;1m  # GH_TOKEN is exported but not double-counted^[[0m
+check	Setup API client	2026-09-05T04:07:27.8067629Z ^[[36;1m  printf '%s=%s\n' "GH_TOKEN" "${INPUT_GITHUB_TOKEN}" >>"${GITHUB_ENV}"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8068048Z ^[[36;1mfi^[[0m
+check	Setup API client	2026-09-05T04:07:27.8068296Z ^[[36;1m^[[0m
+check	Setup API client	2026-09-05T04:07:27.8068544Z ^[[36;1m# Export PATs^[[0m
+check	Setup API client	2026-09-05T04:07:27.8069018Z ^[[36;1mexport_var "SERVICE_BOT_PAT" "${SERVICE_BOT_PAT:-}"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8069462Z ^[[36;1mexport_var "ACTIONS_BOT_PAT" "${ACTIONS_BOT_PAT:-}"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8069875Z ^[[36;1mexport_var "OWNER_PR_PAT" "${OWNER_PR_PAT:-}"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8070345Z ^[[36;1mexport_var "AGENTS_AUTOMATION_PAT" "${AGENTS_AUTOMATION_PAT:-}"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8070755Z ^[[36;1m^[[0m
+check	Setup API client	2026-09-05T04:07:27.8071018Z ^[[36;1m# Export App credentials^[[0m
+check	Setup API client	2026-09-05T04:07:27.8071403Z ^[[36;1mexport_var "WORKFLOWS_APP_ID" "${WORKFLOWS_APP_ID:-}"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8071925Z ^[[36;1mexport_var "WORKFLOWS_APP_PRIVATE_KEY" "${WORKFLOWS_APP_PRIVATE_KEY:-}"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8072435Z ^[[36;1mexport_var "KEEPALIVE_APP_ID" "${KEEPALIVE_APP_ID:-}"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8072939Z ^[[36;1mexport_var "KEEPALIVE_APP_PRIVATE_KEY" "${KEEPALIVE_APP_PRIVATE_KEY:-}"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8073415Z ^[[36;1mexport_var "GH_APP_ID" "${GH_APP_ID:-}"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8073838Z ^[[36;1mexport_var "GH_APP_PRIVATE_KEY" "${GH_APP_PRIVATE_KEY:-}"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8074269Z ^[[36;1mexport_var "APP_1_ID" "${APP_1_ID:-}"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8074686Z ^[[36;1mexport_var "APP_1_PRIVATE_KEY" "${APP_1_PRIVATE_KEY:-}"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8075317Z ^[[36;1mexport_var "APP_2_ID" "${APP_2_ID:-}"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8075726Z ^[[36;1mexport_var "APP_2_PRIVATE_KEY" "${APP_2_PRIVATE_KEY:-}"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8076098Z ^[[36;1m^[[0m
+check	Setup API client	2026-09-05T04:07:27.8076347Z ^[[36;1m# Output summary^[[0m
+check	Setup API client	2026-09-05T04:07:27.8076700Z ^[[36;1mecho "token_count=${token_count}" >> "$GITHUB_OUTPUT"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8077181Z ^[[36;1mecho "available_tokens=${available_tokens}" >> "$GITHUB_OUTPUT"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8077595Z ^[[36;1m^[[0m
+check	Setup API client	2026-09-05T04:07:27.8077868Z ^[[36;1minstall_dir="${INPUT_INSTALL_DIR:-}"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8078227Z ^[[36;1mif [ -z "$install_dir" ]; then^[[0m
+check	Setup API client	2026-09-05T04:07:27.8078615Z ^[[36;1m  install_dir="${GITHUB_WORKSPACE}/.github/scripts"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8078984Z ^[[36;1mfi^[[0m
+check	Setup API client	2026-09-05T04:07:27.8079241Z ^[[36;1msetup_contract="$(^[[0m
+check	Setup API client	2026-09-05T04:07:27.8079580Z ^[[36;1m  AVAILABLE_TOKENS="${available_tokens}" \^[[0m
+check	Setup API client	2026-09-05T04:07:27.8079949Z ^[[36;1m  TOKEN_COUNT="${token_count}" \^[[0m
+check	Setup API client	2026-09-05T04:07:27.8080285Z ^[[36;1m  INSTALL_DIR="${install_dir}" \^[[0m
+check	Setup API client	2026-09-05T04:07:27.8080611Z ^[[36;1m  node <<'NODE'^[[0m
+check	Setup API client	2026-09-05T04:07:27.8080907Z ^[[36;1mconst fs = require('node:fs');^[[0m
+check	Setup API client	2026-09-05T04:07:27.8081254Z ^[[36;1mconst path = require('node:path');^[[0m
+check	Setup API client	2026-09-05T04:07:27.8081588Z ^[[36;1m^[[0m
+check	Setup API client	2026-09-05T04:07:27.8081897Z ^[[36;1mconst installDir = process.env.INSTALL_DIR || '';^[[0m
+check	Setup API client	2026-09-05T04:07:27.8082356Z ^[[36;1mconst tokenNames = (process.env.AVAILABLE_TOKENS || '')^[[0m
+check	Setup API client	2026-09-05T04:07:27.8082754Z ^[[36;1m  .split(',')^[[0m
+check	Setup API client	2026-09-05T04:07:27.8083048Z ^[[36;1m  .map((value) => value.trim())^[[0m
+check	Setup API client	2026-09-05T04:07:27.8083375Z ^[[36;1m  .filter(Boolean);^[[0m
+check	Setup API client	2026-09-05T04:07:27.8083692Z ^[[36;1mconst tokenSet = new Set(tokenNames);^[[0m
+check	Setup API client	2026-09-05T04:07:27.8084039Z ^[[36;1mconst appPairs = [^[[0m
+check	Setup API client	2026-09-05T04:07:27.8084451Z ^[[36;1m  ['WORKFLOWS_APP', 'WORKFLOWS_APP_ID', 'WORKFLOWS_APP_PRIVATE_KEY'],^[[0m
+check	Setup API client	2026-09-05T04:07:27.8085319Z ^[[36;1m  ['KEEPALIVE_APP', 'KEEPALIVE_APP_ID', 'KEEPALIVE_APP_PRIVATE_KEY'],^[[0m
+check	Setup API client	2026-09-05T04:07:27.8085797Z ^[[36;1m  ['GH_APP', 'GH_APP_ID', 'GH_APP_PRIVATE_KEY'],^[[0m
+check	Setup API client	2026-09-05T04:07:27.8086346Z ^[[36;1m  ['APP_1', 'APP_1_ID', 'APP_1_PRIVATE_KEY'],^[[0m
+check	Setup API client	2026-09-05T04:07:27.8086734Z ^[[36;1m  ['APP_2', 'APP_2_ID', 'APP_2_PRIVATE_KEY'],^[[0m
+check	Setup API client	2026-09-05T04:07:27.8087067Z ^[[36;1m];^[[0m
+check	Setup API client	2026-09-05T04:07:27.8087323Z ^[[36;1mconst authModes = [];^[[0m
+check	Setup API client	2026-09-05T04:07:27.8087649Z ^[[36;1mif (tokenSet.has('GITHUB_TOKEN')) {^[[0m
+check	Setup API client	2026-09-05T04:07:27.8088091Z ^[[36;1m  authModes.push({ source: 'GITHUB_TOKEN', mode: 'github-token' });^[[0m
+check	Setup API client	2026-09-05T04:07:27.8088514Z ^[[36;1m}^[[0m
+check	Setup API client	2026-09-05T04:07:27.8088786Z ^[[36;1mfor (const name of tokenNames) {^[[0m
+check	Setup API client	2026-09-05T04:07:27.8089130Z ^[[36;1m  if (name.endsWith('_PAT')) {^[[0m
+check	Setup API client	2026-09-05T04:07:27.8089507Z ^[[36;1m    authModes.push({ source: name, mode: 'pat' });^[[0m
+check	Setup API client	2026-09-05T04:07:27.8089993Z ^[[36;1m  }^[[0m
+check	Setup API client	2026-09-05T04:07:27.8090244Z ^[[36;1m}^[[0m
+check	Setup API client	2026-09-05T04:07:27.8090561Z ^[[36;1mfor (const [source, idName, keyName] of appPairs) {^[[0m
+check	Setup API client	2026-09-05T04:07:27.8091015Z ^[[36;1m  if (tokenSet.has(idName) && tokenSet.has(keyName)) {^[[0m
+check	Setup API client	2026-09-05T04:07:27.8091417Z ^[[36;1m    authModes.push({^[[0m
+check	Setup API client	2026-09-05T04:07:27.8091715Z ^[[36;1m      source,^[[0m
+check	Setup API client	2026-09-05T04:07:27.8092012Z ^[[36;1m      mode: 'github-app',^[[0m
+check	Setup API client	2026-09-05T04:07:27.8092359Z ^[[36;1m      credential_names: [idName, keyName],^[[0m
+check	Setup API client	2026-09-05T04:07:27.8092701Z ^[[36;1m    });^[[0m
+check	Setup API client	2026-09-05T04:07:27.8092953Z ^[[36;1m  }^[[0m
+check	Setup API client	2026-09-05T04:07:27.8093190Z ^[[36;1m}^[[0m
+check	Setup API client	2026-09-05T04:07:27.8093430Z ^[[36;1m^[[0m
+check	Setup API client	2026-09-05T04:07:27.8093763Z ^[[36;1mconst moduleDir = path.join(installDir, 'node_modules');^[[0m
+check	Setup API client	2026-09-05T04:07:27.8094333Z ^[[36;1mconst hasModule = (name) => fs.existsSync(path.join(moduleDir, ...name.split('/')));^[[0m
+check	Setup API client	2026-09-05T04:07:27.8095026Z ^[[36;1mconst contract = {^[[0m
+check	Setup API client	2026-09-05T04:07:27.8095394Z ^[[36;1m  schema: 'workflows-api-client-setup/v1',^[[0m
+check	Setup API client	2026-09-05T04:07:27.8095898Z ^[[36;1m  token_count: Number.parseInt(process.env.TOKEN_COUNT || '0', 10) || 0,^[[0m
+check	Setup API client	2026-09-05T04:07:27.8096378Z ^[[36;1m  available_token_names: tokenNames,^[[0m
+check	Setup API client	2026-09-05T04:07:27.8096739Z ^[[36;1m  auth_modes: authModes,^[[0m
+check	Setup API client	2026-09-05T04:07:27.8097059Z ^[[36;1m  dependency_state: {^[[0m
+check	Setup API client	2026-09-05T04:07:27.8097402Z ^[[36;1m    node_path_ready: fs.existsSync(moduleDir),^[[0m
+check	Setup API client	2026-09-05T04:07:27.8097817Z ^[[36;1m    octokit_rest_ready: hasModule('@octokit/rest'),^[[0m
+check	Setup API client	2026-09-05T04:07:27.8098273Z ^[[36;1m    octokit_auth_app_ready: hasModule('@octokit/auth-app'),^[[0m
+check	Setup API client	2026-09-05T04:07:27.8098713Z ^[[36;1m    lru_cache_ready: hasModule('lru-cache'),^[[0m
+check	Setup API client	2026-09-05T04:07:27.8099069Z ^[[36;1m  },^[[0m
+check	Setup API client	2026-09-05T04:07:27.8099311Z ^[[36;1m};^[[0m
+check	Setup API client	2026-09-05T04:07:27.8099631Z ^[[36;1mprocess.stdout.write(JSON.stringify(contract));^[[0m
+check	Setup API client	2026-09-05T04:07:27.8100007Z ^[[36;1mNODE^[[0m
+check	Setup API client	2026-09-05T04:07:27.8100249Z ^[[36;1m)"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8100612Z ^[[36;1mprintf 'setup_contract=%s\n' "$setup_contract" >> "$GITHUB_OUTPUT"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8101032Z ^[[36;1m^[[0m
+check	Setup API client	2026-09-05T04:07:27.8101265Z ^[[36;1mecho ""^[[0m
+check	Setup API client	2026-09-05T04:07:27.8101546Z ^[[36;1mecho "📊 Token Setup Summary:"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8101923Z ^[[36;1mecho "  Total tokens exported: ${token_count}"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8102385Z ^[[36;1mecho "  Setup contract schema: workflows-api-client-setup/v1"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8102822Z ^[[36;1mif [ "${INPUT_VERBOSE}" = "true" ]; then^[[0m
+check	Setup API client	2026-09-05T04:07:27.8103199Z ^[[36;1m  echo "  Available: ${available_tokens}"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8103587Z ^[[36;1m  echo "  Setup contract: ${setup_contract}"^[[0m
+check	Setup API client	2026-09-05T04:07:27.8103921Z ^[[36;1mfi^[[0m
+check	Setup API client	2026-09-05T04:07:27.8104155Z ^[[36;1m^[[0m
+check	Setup API client	2026-09-05T04:07:27.8104410Z ^[[36;1m# Warn if no tokens were exported^[[0m
+check	Setup API client	2026-09-05T04:07:27.8104762Z ^[[36;1mif [ "${token_count}" -eq 0 ]; then^[[0m
+check	Setup API client	2026-09-05T04:07:27.8105375Z ^[[36;1m  echo "::warning::No tokens were exported! API calls may fail."^[[0m
+check	Setup API client	2026-09-05T04:07:27.8105908Z ^[[36;1m  echo "::warning::Ensure secrets are passed to this action."^[[0m
+check	Setup API client	2026-09-05T04:07:27.8106301Z ^[[36;1mfi^[[0m
+check	Setup API client	2026-09-05T04:07:27.8142543Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+check	Setup API client	2026-09-05T04:07:27.8142947Z env:
+check	Setup API client	2026-09-05T04:07:27.8143547Z   NODE_PATH: /home/runner/work/Fine-Art-Archive/Fine-Art-Archive/.github/scripts/node_modules
+check	Setup API client	2026-09-05T04:07:27.8144055Z   INPUT_SECRETS: 
+check	Setup API client	2026-09-05T04:07:27.8147024Z   INPUT_GITHUB_TOKEN: ***
+check	Setup API client	2026-09-05T04:07:27.8147350Z   INPUT_SERVICE_BOT_PAT: 
+check	Setup API client	2026-09-05T04:07:27.8147638Z   INPUT_ACTIONS_BOT_PAT: 
+check	Setup API client	2026-09-05T04:07:27.8147915Z   INPUT_OWNER_PR_PAT: 
+check	Setup API client	2026-09-05T04:07:27.8148195Z   INPUT_AGENTS_AUTOMATION_PAT: 
+check	Setup API client	2026-09-05T04:07:27.8148502Z   INPUT_WORKFLOWS_APP_ID: 
+check	Setup API client	2026-09-05T04:07:27.8148800Z   INPUT_WORKFLOWS_APP_PRIVATE_KEY: 
+check	Setup API client	2026-09-05T04:07:27.8149117Z   INPUT_KEEPALIVE_APP_ID: 
+check	Setup API client	2026-09-05T04:07:27.8149403Z   INPUT_KEEPALIVE_APP_PRIVATE_KEY: 
+check	Setup API client	2026-09-05T04:07:27.8149703Z   INPUT_GH_APP_ID: 
+check	Setup API client	2026-09-05T04:07:27.8150118Z   INPUT_GH_APP_PRIVATE_KEY: 
+check	Setup API client	2026-09-05T04:07:27.8150414Z   INPUT_APP_1_ID: 
+check	Setup API client	2026-09-05T04:07:27.8150678Z   INPUT_APP_1_PRIVATE_KEY: 
+check	Setup API client	2026-09-05T04:07:27.8150961Z   INPUT_APP_2_ID: 
+check	Setup API client	2026-09-05T04:07:27.8151221Z   INPUT_APP_2_PRIVATE_KEY: 
+check	Setup API client	2026-09-05T04:07:27.8151511Z   INPUT_INSTALL_DIR: 
+check	Setup API client	2026-09-05T04:07:27.8151776Z   INPUT_VERBOSE: false
+check	Setup API client	2026-09-05T04:07:27.8152039Z ##[endgroup]
+check	Setup API client	2026-09-05T04:07:27.8211887Z 🔐 Exporting tokens to environment...
+check	Setup API client	2026-09-05T04:07:27.8506351Z 
+check	Setup API client	2026-09-05T04:07:27.8507000Z 📊 Token Setup Summary:
+check	Setup API client	2026-09-05T04:07:27.8507498Z   Total tokens exported: 1
+check	Setup API client	2026-09-05T04:07:27.8507948Z   Setup contract schema: workflows-api-client-setup/v1
+check	Setup API client	2026-09-05T04:07:27.8516037Z ##[end-action id=__self.export-tokens;outcome=success;conclusion=success;duration_ms=50]
+check	Validate against AGENT_ISSUE_FORMAT	﻿2026-09-05T04:07:27.8581884Z ##[group]Run set -euo pipefail
+check	Validate against AGENT_ISSUE_FORMAT	2026-09-05T04:07:27.8582294Z ^[[36;1mset -euo pipefail^[[0m
+check	Validate against AGENT_ISSUE_FORMAT	2026-09-05T04:07:27.8582676Z ^[[36;1mreport_file="$(mktemp)"^[[0m
+check	Validate against AGENT_ISSUE_FORMAT	2026-09-05T04:07:27.8583004Z ^[[36;1merror_file="$(mktemp)"^[[0m
+check	Validate against AGENT_ISSUE_FORMAT	2026-09-05T04:07:27.8583398Z ^[[36;1mtrap 'rm -f "$report_file" "$error_file"' EXIT^[[0m
+check	Validate against AGENT_ISSUE_FORMAT	2026-09-05T04:07:27.8583845Z ^[[36;1mif [[ ! -f .github/scripts/issue_format.py ]]; then^[[0m
+check	Validate against AGENT_ISSUE_FORMAT	2026-09-05T04:07:27.8584350Z ^[[36;1m  # Tolerated: a consumer repo mid-sync may not have the validator yet,^[[0m
+check	Validate against AGENT_ISSUE_FORMAT	2026-09-05T04:07:27.8585169Z ^[[36;1m  # and hard-failing would block every issue there. But the job used to^[[0m
+check	Validate against AGENT_ISSUE_FORMAT	2026-09-05T04:07:27.8585730Z ^[[36;1m  # exit GREEN having validated nothing, so a sync that dropped the^[[0m
+check	Validate against AGENT_ISSUE_FORMAT	2026-09-05T04:07:27.8586244Z ^[[36;1m  # file removed the gate with no signal at all. Make it loud.^[[0m
+check	Validate against AGENT_ISSUE_FORMAT	2026-09-05T04:07:27.8587140Z ^[[36;1m  echo "::warning title=Issue format guard inactive::.github/scripts/issue_format.py is missing, so this issue was NOT validated. Re-sync from stranske/Workflows to restore the gate."^[[0m
+check	Validate against AGENT_ISSUE_FORMAT	2026-09-05T04:07:27.8588093Z ^[[36;1m  echo "validator absent — skipping while this repo is mid-sync"^[[0m
+check	Validate against AGENT_ISSUE_FORMAT	2026-09-05T04:07:27.8588571Z ^[[36;1m  echo "rc=skip" >> "$GITHUB_OUTPUT"^[[0m
+check	Validate against AGENT_ISSUE_FORMAT	2026-09-05T04:07:27.8588926Z ^[[36;1m  exit 0^[[0m
+check	Validate against AGENT_ISSUE_FORMAT	2026-09-05T04:07:27.8589184Z ^[[36;1mfi^[[0m
+check	Validate against AGENT_ISSUE_FORMAT	2026-09-05T04:07:27.8589436Z ^[[36;1mset +e^[[0m
+check	Validate against AGENT_ISSUE_FORMAT	2026-09-05T04:07:27.8589865Z ^[[36;1mpython3 .github/scripts/issue_format.py body.md > "$report_file" 2> "$error_file"^[[0m
+check	Validate against AGENT_ISSUE_FORMAT	2026-09-05T04:07:27.8590362Z ^[[36;1mrc=$?^[[0m
+check	Validate against AGENT_ISSUE_FORMAT	2026-09-05T04:07:27.8590621Z ^[[36;1mset -e^[[0m
+check	Validate against AGENT_ISSUE_FORMAT	2026-09-05T04:07:27.8590897Z ^[[36;1mecho "rc=$rc" >> "$GITHUB_OUTPUT"^[[0m
+check	Validate against AGENT_ISSUE_FORMAT	2026-09-05T04:07:27.8591235Z ^[[36;1mcat "$report_file" || true^[[0m
+check	Validate against AGENT_ISSUE_FORMAT	2026-09-05T04:07:27.8591590Z ^[[36;1mif [[ "$rc" -eq 1 && -s "$error_file" ]]; then^[[0m
+check	Validate against AGENT_ISSUE_FORMAT	2026-09-05T04:07:27.8592026Z ^[[36;1m  echo "::error::issue-format validator failed unexpectedly"^[[0m
+check	Validate against AGENT_ISSUE_FORMAT	2026-09-05T04:07:27.8592438Z ^[[36;1m  cat "$error_file" >&2^[[0m
+check	Validate against AGENT_ISSUE_FORMAT	2026-09-05T04:07:27.8592733Z ^[[36;1m  exit 1^[[0m
+check	Validate against AGENT_ISSUE_FORMAT	2026-09-05T04:07:27.8592999Z ^[[36;1mfi^[[0m
+check	Validate against AGENT_ISSUE_FORMAT	2026-09-05T04:07:27.8593282Z ^[[36;1mif [[ "$rc" -ne 0 && "$rc" -ne 1 ]]; then^[[0m
+check	Validate against AGENT_ISSUE_FORMAT	2026-09-05T04:07:27.8593629Z ^[[36;1m  cat "$error_file" >&2^[[0m
+check	Validate against AGENT_ISSUE_FORMAT	2026-09-05T04:07:27.8593929Z ^[[36;1m  exit "$rc"^[[0m
+check	Validate against AGENT_ISSUE_FORMAT	2026-09-05T04:07:27.8594193Z ^[[36;1mfi^[[0m
+check	Validate against AGENT_ISSUE_FORMAT	2026-09-05T04:07:27.8594453Z ^[[36;1mcp "$report_file" report.md^[[0m
+check	Validate against AGENT_ISSUE_FORMAT	2026-09-05T04:07:27.8632101Z shell: /usr/bin/bash -e {0}
+check	Validate against AGENT_ISSUE_FORMAT	2026-09-05T04:07:27.8632427Z env:
+check	Validate against AGENT_ISSUE_FORMAT	2026-09-05T04:07:27.8632876Z   NODE_PATH: /home/runner/work/Fine-Art-Archive/Fine-Art-Archive/.github/scripts/node_modules
+check	Validate against AGENT_ISSUE_FORMAT	2026-09-05T04:07:27.8635844Z   GITHUB_TOKEN: ***
+check	Validate against AGENT_ISSUE_FORMAT	2026-09-05T04:07:27.8638175Z   GH_TOKEN: ***
+check	Validate against AGENT_ISSUE_FORMAT	2026-09-05T04:07:27.8638470Z ##[endgroup]
+check	Validate against AGENT_ISSUE_FORMAT	2026-09-05T04:07:27.9189195Z Issue body conforms to `docs/AGENT_ISSUE_FORMAT.md`.
+check	Clear the stale format trigger	﻿2026-09-05T04:07:27.9433315Z ##[group]Run set -euo pipefail
+check	Clear the stale format trigger	2026-09-05T04:07:27.9433784Z ^[[36;1mset -euo pipefail^[[0m
+check	Clear the stale format trigger	2026-09-05T04:07:27.9434342Z ^[[36;1mgh issue view "$NUMBER" --repo "$GITHUB_REPOSITORY" --json labels \^[[0m
+check	Clear the stale format trigger	2026-09-05T04:07:27.9435214Z ^[[36;1m  --jq '.labels[].name' > labels.txt^[[0m
+check	Clear the stale format trigger	2026-09-05T04:07:27.9435873Z ^[[36;1mif grep -qx 'agents:format' labels.txt; then^[[0m
+check	Clear the stale format trigger	2026-09-05T04:07:27.9436527Z ^[[36;1m  gh issue edit "$NUMBER" --repo "$GITHUB_REPOSITORY" --remove-label "agents:format"^[[0m
+check	Clear the stale format trigger	2026-09-05T04:07:27.9437512Z ^[[36;1m  echo "Conforms now — cleared agents:format."^[[0m
+check	Clear the stale format trigger	2026-09-05T04:07:27.9438019Z ^[[36;1mfi^[[0m
+check	Clear the stale format trigger	2026-09-05T04:07:27.9479455Z shell: /usr/bin/bash -e {0}
+check	Clear the stale format trigger	2026-09-05T04:07:27.9479959Z env:
+check	Clear the stale format trigger	2026-09-05T04:07:27.9480597Z   NODE_PATH: /home/runner/work/Fine-Art-Archive/Fine-Art-Archive/.github/scripts/node_modules
+check	Clear the stale format trigger	2026-09-05T04:07:27.9539928Z   GITHUB_TOKEN: ***
+check	Clear the stale format trigger	2026-09-05T04:07:27.9543039Z   GH_TOKEN: ***
+check	Clear the stale format trigger	2026-09-05T04:07:27.9543320Z   NUMBER: 695
+check	Clear the stale format trigger	2026-09-05T04:07:27.9543576Z ##[endgroup]
+check	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	﻿2026-09-05T04:07:28.1767843Z Post job cleanup.
+check	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:28.2583693Z [command]/usr/bin/git version
+check	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:28.2626904Z git version 2.55.0
+check	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:28.2660337Z Temporarily overriding HOME='/home/runner/work/_temp/0940a7e7-be5a-4573-a299-1387e9673e54' before making global git config changes
+check	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:28.2662121Z Adding repository directory to the temporary git global config as a safe directory
+check	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:28.2666244Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/Fine-Art-Archive/Fine-Art-Archive
+check	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:28.2695694Z Removing SSH command configuration
+check	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:28.2701640Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+check	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:28.2734454Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+check	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:28.2963061Z Removing HTTP extra header
+check	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:28.2967592Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+check	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:28.2999221Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+check	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:28.3244050Z Removing includeIf entries pointing to credentials config files
+check	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:28.3249862Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+check	Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1	2026-09-05T04:07:28.3282758Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+check	Complete job	﻿2026-09-05T04:07:28.3642500Z Cleaning up orphan processes
