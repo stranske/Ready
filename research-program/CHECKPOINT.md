@@ -280,3 +280,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-05T05:03:13Z — D-audit-Manager-Mosaic--2026-09-05T04-00-25Z — fail — offload to gemini exited 1; retained artifact is not proof of success
 ## 2026-09-05T05:11:30Z — D-audit-Manager-Mosaic--2026-09-05T04-00-25Z — route — router picked codex from ['codex']
 ## 2026-09-05T05:11:30Z — D-audit-Manager-Mosaic--2026-09-05T04-00-25Z — claimed by codex (agent codex)
+## 2026-09-05T05:12:20Z — D-audit-Manager-Mosaic--2026-09-05T04-00-25Z — fail — not-ready: required Phase 0 input artifacts/dossiers/Manager-Mosaic.md does not exist
+## 2026-09-05T05:18:16Z — D-audit-learning-management-system--2026-09-05T04-00-30Z — route — router picked codex from ['codex']
+## 2026-09-05T05:18:16Z — D-audit-learning-management-system--2026-09-05T04-00-30Z — claimed by driver (agent codex)
