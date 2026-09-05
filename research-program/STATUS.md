@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-05T05:44:06Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-05T07:49:12Z)
 
-Units: 49 — done 47, queued 2
+Units: 49 — done 49
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=warn vibe=ok aider=ok
 CLAUDE CONSERVATION ACTIVE until 2026-09-06T12:00:00Z — non-Claude executors continue (launchd driver every 15 min); claude-only units deferred.
@@ -54,24 +54,24 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D3-unblock-sweep-2026-09-04T21 | D | D | done | codex | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D3-unblock-sweep-2026-09-05T05 | D | D | done | codex | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D-audit-Fine-Art-Archive--2026-09-05T04-00-31Z | D | D | done | codex | codex | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 2) |
-| D-audit-Manager-Mosaic--2026-09-05T04-00-25Z | D | D | queued | codex |  | Audit stranske/Manager-Mosaic and file issues (supply 2 <= 2) |
-| D-audit-learning-management-system--2026-09-05T04-00-30Z | D | D | queued | codex |  | Audit stranske/learning-management-system and file issues (supply 2 <= |
+| D-audit-Manager-Mosaic--2026-09-05T04-00-25Z | D | D | done | codex | driver | Audit stranske/Manager-Mosaic and file issues (supply 2 <= 2) |
+| D-audit-learning-management-system--2026-09-05T04-00-30Z | D | D | done | codex | driver | Audit stranske/learning-management-system and file issues (supply 2 <= |
 | D4-verify-merged-2026-09-05T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
 
 ## Last checkpoints
 
-- 2026-09-05T04:23:10Z — D-audit-Manager-Mosaic--2026-09-05T04-00-25Z — claimed by driver (agent codex)
-- 2026-09-05T05:03:13Z — D-audit-Manager-Mosaic--2026-09-05T04-00-25Z — fail — offload to gemini exited 1; retained artifact is not proof of success
-- 2026-09-05T05:11:30Z — D-audit-Manager-Mosaic--2026-09-05T04-00-25Z — route — router picked codex from ['codex']
-- 2026-09-05T05:11:30Z — D-audit-Manager-Mosaic--2026-09-05T04-00-25Z — claimed by codex (agent codex)
-- 2026-09-05T05:12:20Z — D-audit-Manager-Mosaic--2026-09-05T04-00-25Z — fail — not-ready: required Phase 0 input artifacts/dossiers/Manager-Mosaic.md does not exist
-- 2026-09-05T05:18:16Z — D-audit-learning-management-system--2026-09-05T04-00-30Z — route — router picked codex from ['codex']
-- 2026-09-05T05:18:16Z — D-audit-learning-management-system--2026-09-05T04-00-30Z — claimed by driver (agent codex)
-- 2026-09-05T05:23:12Z — D-audit-learning-management-system--2026-09-05T04-00-30Z — fail — cursor produced 373 words at /Users/teacher/.codex/automations/research-program/artifacts/audits/learning-management-system-2026-09-05.md (min 400); rotating ag
-- 2026-09-05T05:38:13Z — unblock — enqueued D3-unblock-sweep-2026-09-05T05
-- 2026-09-05T05:38:14Z — D3-unblock-sweep-2026-09-05T05 — route — router picked codex from ['codex', 'cursor']
-- 2026-09-05T05:38:14Z — D3-unblock-sweep-2026-09-05T05 — claimed by driver (agent codex)
-- 2026-09-05T05:44:06Z — D3-unblock-sweep-2026-09-05T05 — done — cursor produced 700 words at artifacts/sweeps/D3-unblock-sweep-2026-09-05T05.md in 349s
+- 2026-09-05T06:10:31Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-05T07:47:29+00:00; local work continues
+- 2026-09-05T06:16:14Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-05T07:47:29+00:00; local work continues
+- 2026-09-05T06:31:16Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-05T07:47:29+00:00; local work continues
+- 2026-09-05T06:46:17Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-05T07:47:29+00:00; local work continues
+- 2026-09-05T07:01:19Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-05T07:47:29+00:00; local work continues
+- 2026-09-05T07:10:31Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-05T07:47:29+00:00; local work continues
+- 2026-09-05T07:16:21Z — D-audit-Manager-Mosaic--2026-09-05T04-00-25Z — route — router picked codex from ['codex']
+- 2026-09-05T07:16:21Z — D-audit-Manager-Mosaic--2026-09-05T04-00-25Z — claimed by driver (agent codex)
+- 2026-09-05T07:16:21Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-05T07:47:29+00:00; local work continues
+- 2026-09-05T07:19:07Z — D-audit-Manager-Mosaic--2026-09-05T04-00-25Z — done — cursor produced 520 words at artifacts/audits/Manager-Mosaic-2026-09-05.md in 165s
+- 2026-09-05T07:19:08Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-05T07:47:29+00:00; local work continues
+- 2026-09-05T07:34:09Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-05T07:47:29+00:00; local work continues
 
 ## Questions
 
