@@ -1,0 +1,44 @@
+{
+  "verified_at": "2026-09-05T03:23:30.550424+00:00",
+  "repo": "stranske/Portable-Alpha-Extension-Model",
+  "pr": 2276,
+  "head": "63025f44639b3c32b4a1b1856cb2ac10d93e8564",
+  "changed_paths": [
+    ".github/agents/registry.yml",
+    "config/model_registry.json",
+    "tools/langchain_client.py"
+  ],
+  "source_followup": "https://github.com/stranske/Workflows/issues/3392",
+  "threads": [
+    {
+      "thread_id": "PRRT_kwDOO15QxM6fd9Sl",
+      "path": ".github/workflows/maint-coverage-guard.yml",
+      "disposition": "Disposition after checking exact head `63025f44639b3c32b4a1b1856cb2ac10d93e8564`: this thread belongs to the superseded broad sync; the current Astra-only delivery changes only registry.yml, model_registry.json, and langchain_client.py. The PAEM baseline still contains the unused token mint, so I am not claiming that baseline finding is fixed here. Current Workflows source no longer contains the unused mint step (https://github.com/stranske/Workflows/blob/main/.github/workflows/maint-coverage-guard.yml); delivery of that source change belongs to the next source-owned workflow sync, tracked through Workflows#1836. Resolving the obsolete current-PR thread with this explicit source-delivery disposition.",
+      "reply": {
+        "id": "PRRC_kwDOO15QxM7qzMy9",
+        "url": "https://github.com/stranske/Portable-Alpha-Extension-Model/pull/2276#discussion_r3939290301"
+      },
+      "resolved": true
+    },
+    {
+      "thread_id": "PRRT_kwDOO15QxM6fd9vJ",
+      "path": ".github/workflows/agents-81-gate-followups.yml",
+      "disposition": "Disposition after checking exact head `63025f44639b3c32b4a1b1856cb2ac10d93e8564`: the current three-file Astra delivery does not modify this workflow. The credential-availability gap remains in the upstream consumer template and is not fixed by this PR. Preserved as concrete source-owned follow-up https://github.com/stranske/Workflows/issues/3392 with reproduction, files, tests, and delivery acceptance criteria. Resolving this thread from the superseded broad generation; the baseline fix remains open in #3392.",
+      "reply": {
+        "id": "PRRC_kwDOO15QxM7qzMzn",
+        "url": "https://github.com/stranske/Portable-Alpha-Extension-Model/pull/2276#discussion_r3939290343"
+      },
+      "resolved": true
+    },
+    {
+      "thread_id": "PRRT_kwDOO15QxM6fd9vK",
+      "path": "scripts/langchain/label_matcher.py",
+      "disposition": "Disposition after checking exact head `63025f44639b3c32b4a1b1856cb2ac10d93e8564`: the current three-file Astra delivery does not modify scripts/langchain/label_matcher.py. The proposed issue_auto_apply_matches function and its threshold/margin filter are absent from the current file; they were removed when the old broad generation was superseded. The reported new-code path therefore is no longer part of this PR. Resolving this obsolete thread on that evidence, without claiming an unrelated baseline change.",
+      "reply": {
+        "id": "PRRC_kwDOO15QxM7qzM01",
+        "url": "https://github.com/stranske/Portable-Alpha-Extension-Model/pull/2276#discussion_r3939290421"
+      },
+      "resolved": true
+    }
+  ]
+}

@@ -31,7 +31,7 @@
   "source_delta_head": "913e2625bdc471de84addea5b4cc8dfefca1c78a",
   "consumer_plan_id": "sha256:695d947ab30a1bbeb81d5fe2006db08c375126d10ce8f442df3c63997485c681",
   "consumer_sync_run": 33931101622,
-  "consumer_delivery_status": "in_progress",
+  "consumer_delivery_status": "complete",
   "research_units_done": 45,
   "readiness_tests_passed": 22,
   "aggregate_spending_cap_enforced": false,
@@ -44,9 +44,9 @@
   "promotion_run": 33934143121,
   "promotion_status": "success",
   "promoted_deliveries": 14,
-  "latest_campaign_run": 33940577254,
+  "latest_campaign_run": 33941735034,
   "manual_collab_owner_run": 33935597186,
-  "all_new_deliveries_in_review": true,
+  "all_new_deliveries_in_review": false,
   "mirror_review_guard": "installed; no active Ready review hold after merge",
   "manual_mirror_hold_released": true,
   "ready_refresh_run": 33935024740,
@@ -66,7 +66,7 @@
     "gate_attempt": 2,
     "browser_run": 33938311896
   },
-  "remote_applicable_verified": 14,
+  "remote_applicable_verified": 18,
   "remote_applicable_total": 18,
   "trend_refresh_run": 33939464310,
   "trend_delivery_head": "41c67230d66fe3669ddd36ab92c917f367f42167",
@@ -76,5 +76,21 @@
   "recurring_sweep_enqueue": "same-hour idempotence verified; next hour remains eligible",
   "trend_sealed_at": "2026-09-05T02:59:34.628Z",
   "trend_required_gate_run": 33940607920,
-  "trend_required_gate_result": "SUCCESS"
+  "trend_required_gate_result": "SUCCESS",
+  "verified_at": "2026-09-05T03:27:27.689551+00:00",
+  "consumer_deliveries_merged": 17,
+  "campaign_partial_merge_run": 33941206363,
+  "paem_review_disposition": "paem-superseded-review-disposition.json",
+  "baseline_routing_followup": "https://github.com/stranske/Workflows/issues/3392",
+  "local_final_reconciliation": "local-astra-final-reconciliation.json",
+  "remote_default_branch_evidence": "remote-astra-default-branches.json",
+  "consumer_merge_evidence": "astra-consumer-merge-verification.json",
+  "trip_packaging_repair": {
+    "pr": 1792,
+    "head": "cee2b6fb7e9f23bac67c28bbd2dd47cfcf5f69ff",
+    "merge": "90a736a0fd023ff9adb9f8cf6e57d1393e6cd9bd",
+    "gate_run": 33941413461,
+    "merged_at": "2026-09-05T03:24:18Z"
+  },
+  "owner_cleanup_notice": "Already-deleted generated branch returned 404; PR merges and model delivery verified independently."
 }
