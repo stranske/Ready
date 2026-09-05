@@ -1,0 +1,2374 @@
+{
+  "Workflows": {
+    "repo": "Workflows",
+    "full_repo": "stranske/Workflows",
+    "frozen_issues": [
+      {
+        "body": "## Why\n\nThe consumer keepalive evaluation can silently retain the default Codex route for `agent:auto`, even when other provider credentials exist: `evaluateKeepaliveLoop` reads five `HAS_*` environment flags, but its invoking step exports none of them. This was reported on a superseded generation of Portable-Alpha-Extension-Model#2276 and remains present in current Workflows main. The current Astra-only delivery changes three other files, so this source-owned follow-up preserves the finding separately.\n\n## Scope\n\n`templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml`, the evaluation step invoking `.github/scripts/keepalive_loop.js`, and focused workflow contract tests.\n\n## Non-Goals\n\nDo NOT change consumer repos directly from this issue.\n\n## Tasks\n\n- [ ] Export credential-presence booleans for `HAS_CODEX_AUTH`, `HAS_CLAUDE_AUTH`, `HAS_CLAUDE_OAUTH`, `HAS_CURSOR_AUTH`, and `HAS_GEMINI_AUTH` in the evaluation step of `templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml`, using existing preflight credential semantics without exposing secrets.\n  - [ ] Document the exact environment variable export syntax needed for each credential flag in the evaluation step (verify: confirm completion in repo)\n  - [ ] Identify the preflight step's credential detection logic that should be replicated in the evaluation step (verify: confirm completion in repo)\n  - [ ] Create a test fixture that validates credential flags are exported without exposing secret values (verify: confirm completion in repo)\n  - [ ] Prepare the workflow YAML changes as a patch file for manual application to the protected workflow (verify: confirm completion in repo)\n- [ ] Add a contract test in `tests/workflows/test_workflow_agents_consolidation.py` that checks evaluation and preflight provide matching availability inputs, plus an auto-routing case with a non-Codex provider available.\n  - [ ] Create a test function that verifies evaluation step exports match preflight step credential flags (verify: confirm completion in repo)\n  - [ ] Implement a test case for auto-routing behavior when only non-Codex provider credentials are available (verify: confirm completion in repo)\n  - [ ] Add a test that validates availability input consistency between evaluation (verify: confirm completion in repo)\n  - [ ] preflight steps (verify: confirm completion in repo)\n  - [ ] Write assertions to confirm the keepalive script receives all required HAS_* environment variables (verify: confirm completion in repo)\n- [ ] Publish the source change in `.github/scripts/keepalive_loop.js` before delivering the updated workflow through Maint 68 consumer sync.\n  - [ ] Review keepalive_loop.js to identify what changes are needed to properly consume the HAS_* environment variables (verify: confirm completion in repo)\n  - [ ] Update keepalive_loop.js to handle cases where non-Codex providers are available but Codex is not (verify: confirm completion in repo)\n  - [ ] Add error handling in keepalive_loop.js for missing credential environment variables (verify: confirm completion in repo)\n  - [ ] Document the deployment sequence for coordinating script changes with workflow template updates (verify: confirm completion in repo)\n\n## Acceptance Criteria\n\n- [ ] `python -m pytest tests/workflows/test_workflow_agents_consolidation.py -k keepalive -q` exits 0 including the new credential-export contract assertions.\n- [ ] With only an available non-Codex provider, auto-routing selects an eligible provider instead of treating every provider as unavailable.\n- [ ] Missing credentials still prevent selecting that provider; no secret values appear in logs.\n\n## Implementation Notes\n\nCurrent source inspected 2026-09-05: evaluation lines 294\u2013297 export only input values and `ROUTE_WEIGHTS_URL`; preflight exports credential flags. Original review thread: https://github.com/stranske/Portable-Alpha-Extension-Model/pull/2276 (thread `PRRT_kwDOO15QxM6fd9vJ`, old generation `22edf0a89622d91e3d9ecf06d582d837f0d10950`). Current Astra delivery head `63025f44639b3c32b4a1b1856cb2ac10d93e8564` does not modify this workflow.\n\n<details>\n<summary>Original Issue</summary>\n\n```text\n## Why\n\nThe consumer keepalive evaluation can silently retain the default Codex route for `agent:auto`, even when other provider credentials exist: `evaluateKeepaliveLoop` reads five `HAS_*` environment flags, but its invoking step exports none of them. This was reported on a superseded generation of Portable-Alpha-Extension-Model#2276 and remains present in current Workflows main. The current Astra-only delivery changes three other files, so this source-owned follow-up preserves the finding separately.\n\n## Scope\n\n`templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml`, the evaluation step invoking `.github/scripts/keepalive_loop.js`, and focused workflow contract tests.\n\n## Non-Goals\n\n- Do NOT change consumer repos directly from this issue.\n\n## Tasks\n\n- [ ] Export credential-presence booleans for `HAS_CODEX_AUTH`, `HAS_CLAUDE_AUTH`, `HAS_CLAUDE_OAUTH`, `HAS_CURSOR_AUTH`, and `HAS_GEMINI_AUTH` in the evaluation step of `templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml`, using the existing preflight credential semantics without exposing secrets.\n- [ ] Add a contract test in `tests/workflows/test_workflow_agents_consolidation.py` that checks evaluation and preflight provide matching availability inputs, plus an auto-routing case with a non-Codex provider available.\n- [ ] Publish the source change in `.github/scripts/keepalive_loop.js` before delivering the updated workflow through Maint 68 consumer sync.\n\n## Acceptance Criteria\n\n- [ ] python -m pytest tests/workflows/test_workflow_agents_consolidation.py -k keepalive -q exits 0 including the new credential-export contract assertions.\n- [ ] With only an available non-Codex provider, auto-routing selects an eligible provider instead of treating every provider as unavailable.\n- [ ] Missing credentials still prevent selecting that provider; no secret values appear in logs.\n\n## Implementation Notes\n\nCurrent source inspected 2026-09-05: evaluation lines 294\u2013297 export only input values and `ROUTE_WEIGHTS_URL`; preflight exports credential flags. Original review thread: https://github.com/stranske/Portable-Alpha-Extension-Model/pull/2276 (thread `PRRT_kwDOO15QxM6fd9vJ`, old generation `22edf0a89622d91e3d9ecf06d582d837f0d10950`). Current Astra delivery head `63025f44639b3c32b4a1b1856cb2ac10d93e8564` does not modify this workflow.\n```\n</details>\n\n\n\n## Deferred Tasks (Requires Human)\n\n- [ ] Export credential-presence booleans for `HAS_CODEX_AUTH`, `HAS_CLAUDE_AUTH`, `HAS_CLAUDE_OAUTH`, `HAS_CURSOR_AUTH`, and `HAS_GEMINI_AUTH` in the evaluation step of `templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml` (Agent cannot modify .github/workflows/*.yml files (protected paths per AGENT_LIMITATIONS) | Agent should prepare the required YAML changes as a documented patch or pull request description for human review and manual application. Include exact line numbers and export statements based on the preflight step pattern.)\n\n<!-- issue-pr-context:formatted-body:v1 {\"sha256\":\"85b9c581310a5f27abe8cac98f48915c5d38103a4437d31d0af9f46521421835\",\"workflows\":[\"agents-auto-pilot\",\"agents-issue-optimizer\",\"agents-63-issue-intake\",\"issue_formatter\",\"issue_optimizer\"]} -->\n",
+        "comments": [
+          {
+            "id": "IC_kwDOQprj9M8AAAABSr9QsA",
+            "author": {
+              "login": "github-actions"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `Add a workflow contract test that checks evaluation and preflight provide matching availability inputs, plus an auto-routing case with a non-Codex provider avai`.\n- `Acceptance Criteria` names no test, runnable command or observable verification gate \u2014 Definition of Ready / Quality Bar \u00a72 requires one.\n\n_Advisory:_\n- 1 cited path(s) do not exist yet: `68/71.` \u2014 expected when a task creates them; check for typos otherwise.\n\n_Recommended but absent:_ `Implementation Notes`, `Non-Goals`\n\nDispatched the Agents Issue Optimizer format phase (attempt 1 of 3).\n\n<!-- format-guard:1a6311dede58:attempt:1 -->\n",
+            "createdAt": "2026-09-05T03:23:04Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3392#issuecomment-5549019312",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSr9exg",
+            "author": {
+              "login": "agents-workflows-bot"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "### \ud83c\udff7\ufe0f Label Suggestions\n\nBased on the issue content, these labels might be relevant:\n\n- `agent:auto` (95% confidence)\n- `agents` (95% confidence)\n- `agents:keepalive` (95% confidence)\n- `codex` (95% confidence)\n- `consumer-sync` (95% confidence)\n\n<details>\n<summary>How to use these suggestions</summary>\n\n- Click the label name in the sidebar to add it\n- Or use the GitHub CLI: `gh issue edit 3392 --add-label \"label-name\"`\n</details>\n\n---\n*Auto-generated by label matcher*",
+            "createdAt": "2026-09-05T03:23:47Z",
+            "includesCreatedEdit": true,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3392#issuecomment-5549022918",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSr9ihA",
+            "author": {
+              "login": "github-actions"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Workflows/actions/runs/33941698764)\n\n**Format validation report:**\n```text\nThis issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `Add a workflow contract test that checks evaluation and preflight provide matching availability inputs, plus an auto-routing case with a non-Codex provider avai`.\n- `Acceptance Criteria` names no test, runnable command or observable verification gate \u2014 Definition of Ready / Quality Bar \u00a72 requires one.\n\n_Advisory:_\n- 1 cited path(s) do not exist yet: `68/71.` \u2014 expected when a task creates them; check for typos otherwise.\n```\n",
+            "createdAt": "2026-09-05T03:24:00Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3392#issuecomment-5549023876",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSr9pZw",
+            "author": {
+              "login": "github-actions"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `Add a workflow contract test that checks evaluation and preflight provide matching availability inputs, plus an auto-routing case with a non-Codex provider avai`.\n- `Acceptance Criteria` names no test, runnable command or observable verification gate \u2014 Definition of Ready / Quality Bar \u00a72 requires one.\n\n_Advisory:_\n- 1 cited path(s) do not exist yet: `68/71.` \u2014 expected when a task creates them; check for typos otherwise.\n\n_Recommended but absent:_ `Implementation Notes`, `Non-Goals`\n\nDispatched the Agents Issue Optimizer format phase (attempt 2 of 3).\n\n<!-- format-guard:1a6311dede58:attempt:2 -->\n",
+            "createdAt": "2026-09-05T03:24:22Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3392#issuecomment-5549025639",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSr95eA",
+            "author": {
+              "login": "github-actions"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Workflows/actions/runs/33941757665)\n\n**Format validation report:**\n```text\nThis issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `Add a workflow contract test that checks evaluation and preflight provide matching availability inputs, plus an auto-routing case with a non-Codex provider avai`.\n- `Acceptance Criteria` names no test, runnable command or observable verification gate \u2014 Definition of Ready / Quality Bar \u00a72 requires one.\n\n_Advisory:_\n- 1 cited path(s) do not exist yet: `68/71.` \u2014 expected when a task creates them; check for typos otherwise.\n```\n",
+            "createdAt": "2026-09-05T03:25:12Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3392#issuecomment-5549029752",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSr9_KA",
+            "author": {
+              "login": "github-actions"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `Add a workflow contract test that checks evaluation and preflight provide matching availability inputs, plus an auto-routing case with a non-Codex provider avai`.\n- `Acceptance Criteria` names no test, runnable command or observable verification gate \u2014 Definition of Ready / Quality Bar \u00a72 requires one.\n\n_Advisory:_\n- 1 cited path(s) do not exist yet: `68/71.` \u2014 expected when a task creates them; check for typos otherwise.\n\n_Recommended but absent:_ `Implementation Notes`, `Non-Goals`\n\nDispatched the Agents Issue Optimizer format phase (attempt 3 of 3).\n\n<!-- format-guard:1a6311dede58:attempt:3 -->\n",
+            "createdAt": "2026-09-05T03:25:30Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3392#issuecomment-5549031208",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSr-O7Q",
+            "author": {
+              "login": "github-actions"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Workflows/actions/runs/33941811844)\n\n**Format validation report:**\n```text\nThis issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `Add a workflow contract test that checks evaluation and preflight provide matching availability inputs, plus an auto-routing case with a non-Codex provider avai`.\n- `Acceptance Criteria` names no test, runnable command or observable verification gate \u2014 Definition of Ready / Quality Bar \u00a72 requires one.\n\n_Advisory:_\n- 1 cited path(s) do not exist yet: `68/71.` \u2014 expected when a task creates them; check for typos otherwise.\n```\n",
+            "createdAt": "2026-09-05T03:26:19Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3392#issuecomment-5549035245",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSr-UFA",
+            "author": {
+              "login": "github-actions"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "<!-- format-guard:attempt-cap -->\nAutomated formatting stopped after 3 optimizer attempts. Fix the issue body manually, then remove agents:auto-pilot-pause before retrying.\n",
+            "createdAt": "2026-09-05T03:26:36Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3392#issuecomment-5549036564",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSsp05Q",
+            "author": {
+              "login": "stranske-keepalive"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "\ud83e\udd16 **Auto-pilot step $((STEP_COUNT + 1))**: Starting issue formatting...\n\nRunning formatter inline (not via label trigger).\n",
+            "createdAt": "2026-09-05T05:43:24Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3392#issuecomment-5549749477",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSsqPIQ",
+            "author": {
+              "login": "stranske-keepalive"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "\ud83e\udd16 **Auto-pilot step $((STEP_COUNT + 1))**: Analyzing issue for improvements...\n\nRunning optimizer inline (not via label trigger).\n",
+            "createdAt": "2026-09-05T05:44:43Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3392#issuecomment-5549756193",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSsqi5A",
+            "author": {
+              "login": "agents-workflows-bot"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "## Issue Optimization Suggestions\n\nReview the suggestions below. If you want the agent to apply them, add the\n`agents:apply-suggestions` label to this issue.\n\n### Task splitting\n- Export credential-presence booleans for `HAS_CODEX_AUTH`, `HAS_CLAUDE_AUTH`, `HAS_CLAUDE_OAUTH`, `HAS_CURSOR_AUTH`, and `HAS_GEMINI_AUTH` in the evaluation step of `templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml`, using existing preflight credential semantics without exposing secrets. (This task combines workflow modification (agent-blocked), implementation research, and security validation. The agent cannot modify protected workflow files.). Suggested split: Document the exact environment variable export syntax needed for each credential flag in the evaluation step, Identify the preflight step's credential detection logic that should be replicated in the evaluation step, Create a test fixture that validates credential flags are exported without exposing secret values, Prepare the workflow YAML changes as a patch file for manual application to the protected workflow.\n- Add a contract test in `tests/workflows/test_workflow_agents_consolidation.py` that checks evaluation and preflight provide matching availability inputs, plus an auto-routing case with a non-Codex provider available. (This combines three distinct test scenarios: credential export matching, auto-routing with non-Codex providers, and input validation. Each requires different test setup and assertions.). Suggested split: Create a test function that verifies evaluation step exports match preflight step credential flags, Implement a test case for auto-routing behavior when only non-Codex provider credentials are available, Add a test that validates availability input consistency between evaluation and preflight steps, Write assertions to confirm the keepalive script receives all required HAS_* environment variables.\n- Publish the source change in `.github/scripts/keepalive_loop.js` before delivering the updated workflow through Maint 68 consumer sync. (This task involves coordination with external processes (Maint 68 sync) and assumes changes to keepalive_loop.js are needed, but the issue doesn't specify what changes are required to that script.). Suggested split: Review keepalive_loop.js to identify what changes are needed to properly consume the HAS_* environment variables, Update keepalive_loop.js to handle cases where non-Codex providers are available but Codex is not, Add error handling in keepalive_loop.js for missing credential environment variables, Document the deployment sequence for coordinating script changes with workflow template updates.\n\n### Blocked tasks\n- Export credential-presence booleans for `HAS_CODEX_AUTH`, `HAS_CLAUDE_AUTH`, `HAS_CLAUDE_OAUTH`, `HAS_CURSOR_AUTH`, and `HAS_GEMINI_AUTH` in the evaluation step of `templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml` (Agent cannot modify .github/workflows/*.yml files (protected paths per AGENT_LIMITATIONS) | Agent should prepare the required YAML changes as a documented patch or pull request description for human review and manual application. Include exact line numbers and export statements based on the preflight step pattern.)\n\n### Objective acceptance criteria\n- With only an available non-Codex provider, auto-routing selects an eligible provider instead of treating every provider as unavailable. (This is a behavioral criterion that lacks specific measurable outcomes. What constitutes 'selects an eligible provider'? Should we verify log output, return values, or routing decisions? | The keepalive evaluation script logs the selected provider name when agent:auto is configured and only Claude credentials are present. Verify the log output contains 'Selected provider: claude' and does not contain 'Selected provider: codex' or 'No providers available'.)\n- Missing credentials still prevent selecting that provider; no secret values appear in logs. (This combines two separate concerns (authorization logic and security) without specifying how to verify either. What log output should be checked? What constitutes a 'secret value'? | Split into two criteria: (1) 'When HAS_CLAUDE_AUTH=false, the keepalive script does not select claude as the provider and logs contain provider unavailable message' and (2) 'Test logs do not contain any string matching the pattern of actual credential values (verified by grep for known test secret patterns)'.)\n\n### Missing sections\n- None\n\n### Formatting issues\n- The 'Non-Goals' section uses a bullet point for a single item; should either be plain text or multiple bullets for consistency\n- The Implementation Notes section contains a very long single paragraph that would benefit from line breaks or sub-bullets for readability\n- The acceptance criteria mixes command-line syntax (`python -m pytest...`) with prose descriptions; consider formatting the command as a code block\n- The original issue is preserved in a details/summary block, which creates redundancy since the main body already contains all the same information\n\n### Notes\n- This issue is well-structured with clear context and specific technical details. The main compatibility concern is that the primary workflow modification task is blocked by agent limitations on protected files. The agent can contribute by: (1) implementing the test suite changes, (2) documenting the required workflow changes as patches, (3) analyzing and updating keepalive_loop.js if changes are needed there. The issue would benefit from clarifying what specific changes (if any) are needed to keepalive_loop.js itself, as the current description focuses on the workflow's environment variable exports but mentions publishing 'the source change' to the script without specifying what that change is. The acceptance criteria need more precision around observable outcomes rather than behavioral descriptions.\n\n<!-- suggestions-json: {\"task_splitting\": [{\"task\": \"Export credential-presence booleans for `HAS_CODEX_AUTH`, `HAS_CLAUDE_AUTH`, `HAS_CLAUDE_OAUTH`, `HAS_CURSOR_AUTH`, and `HAS_GEMINI_AUTH` in the evaluation step of `templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml`, using existing preflight credential semantics without exposing secrets.\", \"reason\": \"This task combines workflow modification (agent-blocked), implementation research, and security validation. The agent cannot modify protected workflow files.\", \"split_suggestions\": [\"Document the exact environment variable export syntax needed for each credential flag in the evaluation step\", \"Identify the preflight step's credential detection logic that should be replicated in the evaluation step\", \"Create a test fixture that validates credential flags are exported without exposing secret values\", \"Prepare the workflow YAML changes as a patch file for manual application to the protected workflow\"]}, {\"task\": \"Add a contract test in `tests/workflows/test_workflow_agents_consolidation.py` that checks evaluation and preflight provide matching availability inputs, plus an auto-routing case with a non-Codex provider available.\", \"reason\": \"This combines three distinct test scenarios: credential export matching, auto-routing with non-Codex providers, and input validation. Each requires different test setup and assertions.\", \"split_suggestions\": [\"Create a test function that verifies evaluation step exports match preflight step credential flags\", \"Implement a test case for auto-routing behavior when only non-Codex provider credentials are available\", \"Add a test that validates availability input consistency between evaluation and preflight steps\", \"Write assertions to confirm the keepalive script receives all required HAS_* environment variables\"]}, {\"task\": \"Publish the source change in `.github/scripts/keepalive_loop.js` before delivering the updated workflow through Maint 68 consumer sync.\", \"reason\": \"This task involves coordination with external processes (Maint 68 sync) and assumes changes to keepalive_loop.js are needed, but the issue doesn't specify what changes are required to that script.\", \"split_suggestions\": [\"Review keepalive_loop.js to identify what changes are needed to properly consume the HAS_* environment variables\", \"Update keepalive_loop.js to handle cases where non-Codex providers are available but Codex is not\", \"Add error handling in keepalive_loop.js for missing credential environment variables\", \"Document the deployment sequence for coordinating script changes with workflow template updates\"]}], \"blocked_tasks\": [{\"task\": \"Export credential-presence booleans for `HAS_CODEX_AUTH`, `HAS_CLAUDE_AUTH`, `HAS_CLAUDE_OAUTH`, `HAS_CURSOR_AUTH`, and `HAS_GEMINI_AUTH` in the evaluation step of `templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml`\", \"reason\": \"Agent cannot modify .github/workflows/*.yml files (protected paths per AGENT_LIMITATIONS)\", \"suggested_action\": \"Agent should prepare the required YAML changes as a documented patch or pull request description for human review and manual application. Include exact line numbers and export statements based on the preflight step pattern.\"}], \"objective_criteria\": [{\"criterion\": \"With only an available non-Codex provider, auto-routing selects an eligible provider instead of treating every provider as unavailable.\", \"issue\": \"This is a behavioral criterion that lacks specific measurable outcomes. What constitutes 'selects an eligible provider'? Should we verify log output, return values, or routing decisions?\", \"suggestion\": \"The keepalive evaluation script logs the selected provider name when agent:auto is configured and only Claude credentials are present. Verify the log output contains 'Selected provider: claude' and does not contain 'Selected provider: codex' or 'No providers available'.\"}, {\"criterion\": \"Missing credentials still prevent selecting that provider; no secret values appear in logs.\", \"issue\": \"This combines two separate concerns (authorization logic and security) without specifying how to verify either. What log output should be checked? What constitutes a 'secret value'?\", \"suggestion\": \"Split into two criteria: (1) 'When HAS_CLAUDE_AUTH=false, the keepalive script does not select claude as the provider and logs contain provider unavailable message' and (2) 'Test logs do not contain any string matching the pattern of actual credential values (verified by grep for known test secret patterns)'.\"}], \"missing_sections\": [], \"formatting_issues\": [\"The 'Non-Goals' section uses a bullet point for a single item; should either be plain text or multiple bullets for consistency\", \"The Implementation Notes section contains a very long single paragraph that would benefit from line breaks or sub-bullets for readability\", \"The acceptance criteria mixes command-line syntax (`python -m pytest...`) with prose descriptions; consider formatting the command as a code block\", \"The original issue is preserved in a details/summary block, which creates redundancy since the main body already contains all the same information\"], \"overall_notes\": \"This issue is well-structured with clear context and specific technical details. The main compatibility concern is that the primary workflow modification task is blocked by agent limitations on protected files. The agent can contribute by: (1) implementing the test suite changes, (2) documenting the required workflow changes as patches, (3) analyzing and updating keepalive_loop.js if changes are needed there. The issue would benefit from clarifying what specific changes (if any) are needed to keepalive_loop.js itself, as the current description focuses on the workflow's environment variable exports but mentions publishing 'the source change' to the script without specifying what that change is. The acceptance criteria need more precision around observable outcomes rather than behavioral descriptions.\"} -->",
+            "createdAt": "2026-09-05T05:45:42Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3392#issuecomment-5549761252",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSsq3FQ",
+            "author": {
+              "login": "github-actions"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Workflows/actions/runs/33948046922)\n",
+            "createdAt": "2026-09-05T05:46:39Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3392#issuecomment-5549766421",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSsq--g",
+            "author": {
+              "login": "agents-workflows-bot"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "\ud83e\udd16 **Auto-pilot step $((STEP_COUNT + 1))**: Applying optimization suggestions...\n\nRunning apply inline (not via label trigger).\n",
+            "createdAt": "2026-09-05T05:47:01Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3392#issuecomment-5549768442",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSssMeA",
+            "author": {
+              "login": "stranske-keepalive"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "\ud83e\udd16 **Auto-pilot step 1**: Issue prepared! Assigning to agent...\n\nAdding `agent:codex` label. The capability check will run automatically.\n\n\u23f3 Agent will create a PR shortly.",
+            "createdAt": "2026-09-05T05:50:51Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3392#issuecomment-5549788280",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSss0Jw",
+            "author": {
+              "login": "agents-workflows-bot"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "Belt dispatcher queued this issue and created branch `codex/issue-3392`.",
+            "createdAt": "2026-09-05T05:52:58Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3392#issuecomment-5549798439",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSstB2w",
+            "author": {
+              "login": "stranske-keepalive"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "\ud83e\udd16 **Auto-pilot step $((STEP_COUNT + 1))**: Starting issue formatting...\n\nRunning formatter inline (not via label trigger).\n",
+            "createdAt": "2026-09-05T05:53:40Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3392#issuecomment-5549801947",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSstDmA",
+            "author": {
+              "login": "agents-workflows-bot"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "\u26a0\ufe0f **Auto-pilot paused during formatting.**\n\nFormatter output does not satisfy the canonical issue-format contract.",
+            "createdAt": "2026-09-05T05:53:46Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3392#issuecomment-5549802392",
+            "viewerDidAuthor": false
+          }
+        ],
+        "labels": [
+          {
+            "id": "LA_kwDOQprj9M8AAAACSq7hKA",
+            "name": "agent:codex",
+            "description": "Agent-created issues from Codex",
+            "color": "ededed"
+          },
+          {
+            "id": "LA_kwDOQprj9M8AAAACSq7o8Q",
+            "name": "status:in-progress",
+            "description": "Work in progress",
+            "color": "ededed"
+          },
+          {
+            "id": "LA_kwDOQprj9M8AAAACTQTWVQ",
+            "name": "needs-human",
+            "description": "Requires human intervention or review",
+            "color": "d93f0b"
+          },
+          {
+            "id": "LA_kwDOQprj9M8AAAACUIP_Kw",
+            "name": "agents:format",
+            "description": "",
+            "color": "ededed"
+          },
+          {
+            "id": "LA_kwDOQprj9M8AAAACUb_fPQ",
+            "name": "agents:apply-suggestions",
+            "description": "",
+            "color": "cded24"
+          },
+          {
+            "id": "LA_kwDOQprj9M8AAAACUhUZ3Q",
+            "name": "agents:auto-pilot",
+            "description": "End-to-end automation: Issue \u2192 Agent \u2192 Merge",
+            "color": "0E8A16"
+          },
+          {
+            "id": "LA_kwDOQprj9M8AAAACUhUbLw",
+            "name": "agents:auto-pilot-pause",
+            "description": "Pause auto-pilot at current step",
+            "color": "FEF2C0"
+          }
+        ],
+        "number": 3392,
+        "title": "fix: expose provider availability to consumer keepalive auto-routing"
+      },
+      {
+        "body": "## Why\n\nFleet coverage initiative round 8 remains below the 90% objective (baseline 85% in `config/coverage-baseline.json`; measured ~77% on recent Gate runs). Workflows is the fleet's largest remaining gap.\n\n## Scope\n\nAdd a discriminating regression in `tests/scripts/test_issue_format.py` for an uncovered branch in `.github/scripts/issue_format.py`.\n\n## Non-Goals\n\nDo not modify `templates/consumer-repo/` or `.github/workflows/*.yml` dispatch, keepalive, or routing logic.\n\n## Tasks\n\n- [ ] Test `tests/scripts/test_issue_format.py` with `python -m pytest tests/scripts/test_issue_format.py --cov=.github/scripts/issue_format.py --cov-report=term-missing` and record the baseline in the PR body.\n  - [ ] Run pytest with coverage on test_issue_format.py (verify: formatter passes)\n  - [ ] Run pytest with capture the terminal output showing current coverage percentage (verify: confirm completion in repo)\n  - [ ] Run pytest with missing lines (verify: confirm completion in repo)\n  - [ ] Analyze the coverage report to identify all uncovered branches in issue_format.py (verify: formatter passes)\n  - [ ] list them with line numbers (verify: confirm completion in repo)\n  - [ ] _(3 further sub-tasks elided; split this issue)_\n- [ ] Add a regression in `tests/scripts/test_issue_format.py` for an uncovered non-trivial branch in `.github/scripts/issue_format.py`.\n  - [ ] Read the source code of the selected uncovered branch to understand its conditional logic (verify: confirm completion in repo)\n  - [ ] required inputs (verify: confirm completion in repo)\n  - [ ] Design test inputs that will trigger execution of the previously uncovered branch (verify: confirm completion in repo)\n  - [ ] Implement a new test function in test_issue_format.py that exercises the selected branch (verify: formatter passes)\n  - [ ] Run pytest to verify the new test passes\n  - [ ] increases coverage of the target branch (verify: confirm completion in repo)\n- [ ] Update the PR body with the deliberate-break result and before/after coverage.\n  - [ ] Modify the selected branch in issue_format.py to deliberately break its logic in a way the new test should catch (verify: formatter passes)\n  - [ ] Run pytest (verify: confirm completion in repo)\n  - [ ] capture the failure output showing the new test correctly detects the broken branch (verify: confirm completion in repo)\n  - [ ] Revert the deliberate break to restore the original correct implementation (verify: confirm completion in repo)\n  - [ ] Run pytest again to confirm the test now passes (verify: confirm completion in repo)\n  - [ ] _(2 further sub-tasks elided; split this issue)_\n\n## Acceptance Criteria\n\n- [ ] `python -m pytest tests/scripts/test_issue_format.py --cov=.github/scripts/issue_format.py --cov-report=term-missing` exits 0 with before/after coverage recorded in the PR body.\n- [ ] The new regression fails when its selected branch in `.github/scripts/issue_format.py` is deliberately broken, then passes after revert; both results are recorded in the PR body.\n\n## Implementation Notes\n\nCoverage-autopilot round 8; low blast radius only. If measured coverage is already at or above 90%, comment and close without opening a PR.\n\n<details>\n<summary>Original Issue</summary>\n\n```text\n## Why\n\nFleet coverage initiative round 8 remains below the 90% objective (baseline 85% in `config/coverage-baseline.json`; measured ~77% on recent Gate runs). Workflows is the fleet's largest remaining gap.\n\n## Scope\n\nAdd a discriminating regression in `tests/scripts/test_issue_format.py` for an uncovered branch in `.github/scripts/issue_format.py`.\n\n## Non-Goals\n\n- Do NOT modify `templates/consumer-repo/` or `.github/workflows/*.yml` dispatch, keepalive, or routing logic.\n\n## Tasks\n\n- [ ] Run `python -m pytest tests/scripts/test_issue_format.py --cov=.github/scripts/issue_format.py --cov-report=term-missing` and record baseline in the PR body.\n- [ ] Add a regression in `tests/scripts/test_issue_format.py` for an uncovered non-trivial branch in `.github/scripts/issue_format.py`.\n- [ ] Document deliberate-break result and before/after coverage in the PR body.\n\n## Acceptance Criteria\n\n- [ ] python -m pytest tests/scripts/test_issue_format.py --cov=.github/scripts/issue_format.py --cov-report=term-missing exits 0 with before/after coverage recorded in the PR body.\n- [ ] The new regression fails when its selected branch in `.github/scripts/issue_format.py` is deliberately broken, then passes after revert; both recorded in the PR body.\n\n## Implementation Notes\n\nCoverage-autopilot round 8; low blast radius only. If measured coverage is already at or above 90%, comment and close without opening a PR.\n```\n</details>\n\n\n\n## Deferred Tasks (Requires Human)\n\n- [ ] If measured coverage is already at or above 90%, comment and close without opening a PR. (Agent cannot close issues or make decisions about whether work should proceed based on coverage thresholds. | Rephrase as: 'Report the current coverage percentage. If it is at or above 90%, note that no changes are needed per the implementation notes.' Let human decide whether to close.)\n\n<!-- issue-pr-context:formatted-body:v1 {\"sha256\":\"6fbeb2e1a962558e301d942619745fc673114664c3e4a27aea02b3438bb31115\",\"workflows\":[\"agents-auto-pilot\",\"agents-issue-optimizer\",\"agents-63-issue-intake\",\"issue_formatter\",\"issue_optimizer\"]} -->\n",
+        "comments": [
+          {
+            "id": "IC_kwDOQprj9M8AAAABSrIy-g",
+            "author": {
+              "login": "github-actions"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n**Missing required sections:** `Tasks`, `Acceptance Criteria`\n\n_Recommended but absent:_ `Why`, `Scope`, `Implementation Notes`, `Non-Goals`\n\nDispatched the Agents Issue Optimizer format phase (attempt 1 of 3).\n\n<!-- format-guard:addb98e0bd22:attempt:1 -->\n",
+            "createdAt": "2026-09-05T00:45:26Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3389#issuecomment-5548159738",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSrI-Uw",
+            "author": {
+              "login": "agents-workflows-bot"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "### \ud83c\udff7\ufe0f Label Suggestions\n\nBased on the issue content, these labels might be relevant:\n\n- `config` (95% confidence)\n- `python` (95% confidence)\n- `test` (95% confidence)\n- `workflows` (95% confidence)\n- `bug` (91% confidence)\n\n<details>\n<summary>How to use these suggestions</summary>\n\n- Click the label name in the sidebar to add it\n- Or use the GitHub CLI: `gh issue edit 3389 --add-label \"label-name\"`\n</details>\n\n---\n*Auto-generated by label matcher*",
+            "createdAt": "2026-09-05T00:45:54Z",
+            "includesCreatedEdit": true,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3389#issuecomment-5548162643",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSrJGNA",
+            "author": {
+              "login": "github-actions"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Workflows/actions/runs/33934017060)\n\n**Format validation report:**\n```text\nThis issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `_Not provided._`.\n- `Acceptance Criteria` names no test, runnable command or observable verification gate \u2014 Definition of Ready / Quality Bar \u00a72 requires one.\n```\n",
+            "createdAt": "2026-09-05T00:46:10Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3389#issuecomment-5548164660",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSrJPDA",
+            "author": {
+              "login": "github-actions"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n**Missing required sections:** `Tasks`, `Acceptance Criteria`\n\n_Recommended but absent:_ `Why`, `Scope`, `Implementation Notes`, `Non-Goals`\n\nDispatched the Agents Issue Optimizer format phase (attempt 2 of 3).\n\n<!-- format-guard:addb98e0bd22:attempt:2 -->\n",
+            "createdAt": "2026-09-05T00:46:28Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3389#issuecomment-5548166924",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSrJpVg",
+            "author": {
+              "login": "github-actions"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Workflows/actions/runs/33934069915)\n\n**Format validation report:**\n```text\nThis issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `_Not provided._`.\n- `Acceptance Criteria` names no test, runnable command or observable verification gate \u2014 Definition of Ready / Quality Bar \u00a72 requires one.\n```\n",
+            "createdAt": "2026-09-05T00:47:16Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3389#issuecomment-5548173654",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSrJysw",
+            "author": {
+              "login": "github-actions"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n**Missing required sections:** `Tasks`, `Acceptance Criteria`\n\n_Recommended but absent:_ `Why`, `Scope`, `Implementation Notes`, `Non-Goals`\n\nDispatched the Agents Issue Optimizer format phase (attempt 3 of 3).\n\n<!-- format-guard:addb98e0bd22:attempt:3 -->\n",
+            "createdAt": "2026-09-05T00:47:34Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3389#issuecomment-5548176051",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSrKLLQ",
+            "author": {
+              "login": "github-actions"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Workflows/actions/runs/33934127354)\n\n**Format validation report:**\n```text\nThis issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `_Not provided._`.\n- `Acceptance Criteria` names no test, runnable command or observable verification gate \u2014 Definition of Ready / Quality Bar \u00a72 requires one.\n```\n",
+            "createdAt": "2026-09-05T00:48:27Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3389#issuecomment-5548182317",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSrKSoA",
+            "author": {
+              "login": "github-actions"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "<!-- format-guard:attempt-cap -->\nAutomated formatting stopped after 3 optimizer attempts. Fix the issue body manually, then remove agents:auto-pilot-pause before retrying.\n",
+            "createdAt": "2026-09-05T00:48:47Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3389#issuecomment-5548184224",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSspyiQ",
+            "author": {
+              "login": "stranske-keepalive"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "\ud83e\udd16 **Auto-pilot step $((STEP_COUNT + 1))**: Starting issue formatting...\n\nRunning formatter inline (not via label trigger).\n",
+            "createdAt": "2026-09-05T05:43:18Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3389#issuecomment-5549748873",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSsqMbw",
+            "author": {
+              "login": "stranske-keepalive"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "\ud83e\udd16 **Auto-pilot step $((STEP_COUNT + 1))**: Analyzing issue for improvements...\n\nRunning optimizer inline (not via label trigger).\n",
+            "createdAt": "2026-09-05T05:44:35Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3389#issuecomment-5549755503",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSsqa1A",
+            "author": {
+              "login": "agents-workflows-bot"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "## Issue Optimization Suggestions\n\nReview the suggestions below. If you want the agent to apply them, add the\n`agents:apply-suggestions` label to this issue.\n\n### Task splitting\n- Test `tests/scripts/test_issue_format.py` with `python -m pytest tests/scripts/test_issue_format.py --cov=.github/scripts/issue_format.py --cov-report=term-missing` and record the baseline in the PR body. (This task combines execution, analysis, and documentation. The agent needs to run coverage, identify uncovered branches, select a target, and document findings.). Suggested split: Run pytest with coverage on test_issue_format.py and capture the terminal output showing current coverage percentage and missing lines, Analyze the coverage report to identify all uncovered branches in issue_format.py and list them with line numbers, Select one non-trivial uncovered branch as the target for the new regression test, Document the baseline coverage percentage and the selected target branch in the PR body.\n- Add a regression in `tests/scripts/test_issue_format.py` for an uncovered non-trivial branch in `.github/scripts/issue_format.py`. (This task requires understanding the code logic, designing test inputs, implementing the test, and verifying it works. Multiple distinct steps are needed.). Suggested split: Read the source code of the selected uncovered branch to understand its conditional logic and required inputs, Design test inputs that will trigger execution of the previously uncovered branch, Implement a new test function in test_issue_format.py that exercises the selected branch, Run pytest to verify the new test passes and increases coverage of the target branch.\n- Update the PR body with the deliberate-break result and before/after coverage. (This task requires modifying code to break it, running tests, reverting changes, running tests again, and documenting all results. These are distinct verification steps.). Suggested split: Modify the selected branch in issue_format.py to deliberately break its logic in a way the new test should catch, Run pytest and capture the failure output showing the new test correctly detects the broken branch, Revert the deliberate break to restore the original correct implementation, Run pytest again to confirm the test now passes and document both before and after coverage percentages in the PR body.\n\n### Blocked tasks\n- If measured coverage is already at or above 90%, comment and close without opening a PR. (Agent cannot close issues or make decisions about whether work should proceed based on coverage thresholds. | Rephrase as: 'Report the current coverage percentage. If it is at or above 90%, note that no changes are needed per the implementation notes.' Let human decide whether to close.)\n\n### Objective acceptance criteria\n- Add a regression in `tests/scripts/test_issue_format.py` for an uncovered non-trivial branch (The term 'non-trivial' is subjective. What constitutes a non-trivial branch is open to interpretation. | Define non-trivial objectively: 'Add a test for an uncovered branch that contains at least one function call or raises an exception (not just a simple return or assignment).')\n- The new regression fails when its selected branch in `.github/scripts/issue_format.py` is deliberately broken (What constitutes 'deliberately broken' is not specified. Different break strategies may or may not be caught by the test. | Specify the break strategy: 'The new test must fail when the branch's conditional logic is inverted (e.g., if X becomes if not X) or when the branch's return/raise statement is changed to return None.')\n\n### Missing sections\n- None\n\n### Formatting issues\n- In the Non-Goals section, the first bullet uses 'Do not modify' while the original used a dash. Both formats are present, creating inconsistency.\n- The Tasks section mixes action items with documentation requirements. Consider separating 'record the baseline' as a distinct documentation task.\n- The Acceptance Criteria section has inconsistent formatting: the first criterion uses backticks around the command, while the second does not use backticks consistently for file names.\n- The Implementation Notes section contains a conditional instruction ('If measured coverage is already at or above 90%...') that should be in Tasks or Acceptance Criteria, not implementation guidance.\n\n### Notes\n- This issue is well-structured with all required sections present. The main concerns are: (1) tasks are too broad and combine multiple distinct steps that should be broken down for agent execution, (2) subjective terms like 'non-trivial' need objective definitions, (3) the agent cannot make decisions about closing issues based on coverage thresholds, and (4) minor formatting inconsistencies exist. The issue correctly avoids protected workflow modifications per AGENT_LIMITATIONS. The scope is appropriately narrow (single file pair). Consider whether the agent can reliably identify 'non-trivial' branches without explicit criteria.\n\n<!-- suggestions-json: {\"task_splitting\": [{\"task\": \"Test `tests/scripts/test_issue_format.py` with `python -m pytest tests/scripts/test_issue_format.py --cov=.github/scripts/issue_format.py --cov-report=term-missing` and record the baseline in the PR body.\", \"reason\": \"This task combines execution, analysis, and documentation. The agent needs to run coverage, identify uncovered branches, select a target, and document findings.\", \"split_suggestions\": [\"Run pytest with coverage on test_issue_format.py and capture the terminal output showing current coverage percentage and missing lines\", \"Analyze the coverage report to identify all uncovered branches in issue_format.py and list them with line numbers\", \"Select one non-trivial uncovered branch as the target for the new regression test\", \"Document the baseline coverage percentage and the selected target branch in the PR body\"]}, {\"task\": \"Add a regression in `tests/scripts/test_issue_format.py` for an uncovered non-trivial branch in `.github/scripts/issue_format.py`.\", \"reason\": \"This task requires understanding the code logic, designing test inputs, implementing the test, and verifying it works. Multiple distinct steps are needed.\", \"split_suggestions\": [\"Read the source code of the selected uncovered branch to understand its conditional logic and required inputs\", \"Design test inputs that will trigger execution of the previously uncovered branch\", \"Implement a new test function in test_issue_format.py that exercises the selected branch\", \"Run pytest to verify the new test passes and increases coverage of the target branch\"]}, {\"task\": \"Update the PR body with the deliberate-break result and before/after coverage.\", \"reason\": \"This task requires modifying code to break it, running tests, reverting changes, running tests again, and documenting all results. These are distinct verification steps.\", \"split_suggestions\": [\"Modify the selected branch in issue_format.py to deliberately break its logic in a way the new test should catch\", \"Run pytest and capture the failure output showing the new test correctly detects the broken branch\", \"Revert the deliberate break to restore the original correct implementation\", \"Run pytest again to confirm the test now passes and document both before and after coverage percentages in the PR body\"]}], \"blocked_tasks\": [{\"task\": \"If measured coverage is already at or above 90%, comment and close without opening a PR.\", \"reason\": \"Agent cannot close issues or make decisions about whether work should proceed based on coverage thresholds.\", \"suggested_action\": \"Rephrase as: 'Report the current coverage percentage. If it is at or above 90%, note that no changes are needed per the implementation notes.' Let human decide whether to close.\"}], \"objective_criteria\": [{\"criterion\": \"Add a regression in `tests/scripts/test_issue_format.py` for an uncovered non-trivial branch\", \"issue\": \"The term 'non-trivial' is subjective. What constitutes a non-trivial branch is open to interpretation.\", \"suggestion\": \"Define non-trivial objectively: 'Add a test for an uncovered branch that contains at least one function call or raises an exception (not just a simple return or assignment).'\"}, {\"criterion\": \"The new regression fails when its selected branch in `.github/scripts/issue_format.py` is deliberately broken\", \"issue\": \"What constitutes 'deliberately broken' is not specified. Different break strategies may or may not be caught by the test.\", \"suggestion\": \"Specify the break strategy: 'The new test must fail when the branch's conditional logic is inverted (e.g., if X becomes if not X) or when the branch's return/raise statement is changed to return None.'\"}], \"missing_sections\": [], \"formatting_issues\": [\"In the Non-Goals section, the first bullet uses 'Do not modify' while the original used a dash. Both formats are present, creating inconsistency.\", \"The Tasks section mixes action items with documentation requirements. Consider separating 'record the baseline' as a distinct documentation task.\", \"The Acceptance Criteria section has inconsistent formatting: the first criterion uses backticks around the command, while the second does not use backticks consistently for file names.\", \"The Implementation Notes section contains a conditional instruction ('If measured coverage is already at or above 90%...') that should be in Tasks or Acceptance Criteria, not implementation guidance.\"], \"overall_notes\": \"This issue is well-structured with all required sections present. The main concerns are: (1) tasks are too broad and combine multiple distinct steps that should be broken down for agent execution, (2) subjective terms like 'non-trivial' need objective definitions, (3) the agent cannot make decisions about closing issues based on coverage thresholds, and (4) minor formatting inconsistencies exist. The issue correctly avoids protected workflow modifications per AGENT_LIMITATIONS. The scope is appropriately narrow (single file pair). Consider whether the agent can reliably identify 'non-trivial' branches without explicit criteria.\"} -->",
+            "createdAt": "2026-09-05T05:45:19Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3389#issuecomment-5549759188",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSsqzYg",
+            "author": {
+              "login": "github-actions"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Workflows/actions/runs/33948028011)\n",
+            "createdAt": "2026-09-05T05:46:28Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3389#issuecomment-5549765474",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSsq0Ew",
+            "author": {
+              "login": "agents-workflows-bot"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "\ud83e\udd16 **Auto-pilot step $((STEP_COUNT + 1))**: Applying optimization suggestions...\n\nRunning apply inline (not via label trigger).\n",
+            "createdAt": "2026-09-05T05:46:30Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3389#issuecomment-5549765651",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSsrS_w",
+            "author": {
+              "login": "stranske-keepalive"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "\ud83e\udd16 **Auto-pilot step 1**: Issue prepared! Assigning to agent...\n\nAdding `agent:codex` label. The capability check will run automatically.\n\n\u23f3 Agent will create a PR shortly.",
+            "createdAt": "2026-09-05T05:48:01Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3389#issuecomment-5549773567",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSssHvA",
+            "author": {
+              "login": "agents-workflows-bot"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "Belt dispatcher queued this issue and created branch `codex/issue-3389`.",
+            "createdAt": "2026-09-05T05:50:36Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3389#issuecomment-5549787068",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSss22Q",
+            "author": {
+              "login": "stranske-keepalive"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "\ud83e\udd16 **Auto-pilot step $((STEP_COUNT + 1))**: Starting issue formatting...\n\nRunning formatter inline (not via label trigger).\n",
+            "createdAt": "2026-09-05T05:53:07Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3389#issuecomment-5549799129",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSss4ng",
+            "author": {
+              "login": "stranske-keepalive"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "\u26a0\ufe0f **Auto-pilot paused during formatting.**\n\nFormatter output does not satisfy the canonical issue-format contract.",
+            "createdAt": "2026-09-05T05:53:12Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3389#issuecomment-5549799582",
+            "viewerDidAuthor": false
+          }
+        ],
+        "labels": [
+          {
+            "id": "LA_kwDOQprj9M8AAAACSq7hKA",
+            "name": "agent:codex",
+            "description": "Agent-created issues from Codex",
+            "color": "ededed"
+          },
+          {
+            "id": "LA_kwDOQprj9M8AAAACSq7o8Q",
+            "name": "status:in-progress",
+            "description": "Work in progress",
+            "color": "ededed"
+          },
+          {
+            "id": "LA_kwDOQprj9M8AAAACTQTWVQ",
+            "name": "needs-human",
+            "description": "Requires human intervention or review",
+            "color": "d93f0b"
+          },
+          {
+            "id": "LA_kwDOQprj9M8AAAACUIP_Kw",
+            "name": "agents:format",
+            "description": "",
+            "color": "ededed"
+          },
+          {
+            "id": "LA_kwDOQprj9M8AAAACUb_fPQ",
+            "name": "agents:apply-suggestions",
+            "description": "",
+            "color": "cded24"
+          },
+          {
+            "id": "LA_kwDOQprj9M8AAAACUhUZ3Q",
+            "name": "agents:auto-pilot",
+            "description": "End-to-end automation: Issue \u2192 Agent \u2192 Merge",
+            "color": "0E8A16"
+          },
+          {
+            "id": "LA_kwDOQprj9M8AAAACUhUbLw",
+            "name": "agents:auto-pilot-pause",
+            "description": "Pause auto-pilot at current step",
+            "color": "FEF2C0"
+          }
+        ],
+        "number": 3389,
+        "title": "Raise test coverage toward 90% (autopilot round 8, low blast radius only)"
+      },
+      {
+        "body": "## Why\n\nConsumer sync delivery PR stranske/Travel-Plan-Permission#1498 has unresolved bot review threads on manifest-synced paths. Fix Workflows main so the next regeneration outdates consumer threads.\n\n## Scope\n\nResolve upstream source paths for the listed manifest-synced consumer workflows.\n\n## Non-Goals\n\nDo not edit consumer repositories directly.\n\n## Tasks\n\n- [ ] Fix the 12 listed workflow sources under `templates/consumer-repo/.github/workflows/` in Workflows main.\n  - [ ] Fix the agents-71-codex-belt-dispatcher.yml workflow source file in templates/consumer-repo/.github/workflows/ (verify: confirm completion in repo)\n  - [ ] Fix the agents-72-codex-belt-worker.yml workflow source file in templates/consumer-repo/.github/workflows/ (verify: confirm completion in repo)\n  - [ ] Fix the agents-73-codex-belt-conveyor.yml workflow source file in templates/consumer-repo/.github/workflows/ (verify: confirm completion in repo)\n  - [ ] Fix the agents-81-gate-followups.yml workflow source file in templates/consumer-repo/.github/workflows/ (verify: confirm completion in repo)\n  - [ ] Fix the agents-auto-pilot.yml workflow source file in templates/consumer-repo/.github/workflows/ (verify: confirm completion in repo)\n  - [ ] _(7 further sub-tasks elided; split this issue)_\n- [ ] Verify each listed source path exists under `templates/consumer-repo/` in Workflows main.\n\n## Acceptance Criteria\n\n- [ ] `test -f templates/consumer-repo/.github/workflows/agents-71-codex-belt-dispatcher.yml && test -f templates/consumer-repo/.github/workflows/reusable-pr-context.yml` passes in a fresh Workflows clone, with all 12 Implementation Notes paths present.\n- [ ] `python -m pytest tests/workflows/test_workflow_agents_consolidation.py -q` exits 0 on Workflows main after the source fixes land.\n- [ ] A follow-up consumer sync PR no longer lists these paths as unresolved manifest-synced threads for Travel-Plan-Permission#1498.\n\n## Implementation Notes\n\nConsumer delivery PR: stranske/Travel-Plan-Permission#1498\n\nManifest-synced paths with unresolved bot review threads:\n\nconsumer `.github/workflows/agents-71-codex-belt-dispatcher.yml` \u2192 source `templates/consumer-repo/.github/workflows/agents-71-codex-belt-dispatcher.yml`  \nconsumer `.github/workflows/agents-72-codex-belt-worker.yml` \u2192 source `templates/consumer-repo/.github/workflows/agents-72-codex-belt-worker.yml`  \nconsumer `.github/workflows/agents-73-codex-belt-conveyor.yml` \u2192 source `templates/consumer-repo/.github/workflows/agents-73-codex-belt-conveyor.yml`  \nconsumer `.github/workflows/agents-81-gate-followups.yml` \u2192 source `templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml`  \nconsumer `.github/workflows/agents-auto-pilot.yml` \u2192 source `templates/consumer-repo/.github/workflows/agents-auto-pilot.yml`  \nconsumer `.github/workflows/agents-autofix-dispatcher.yml` \u2192 source `templates/consumer-repo/.github/workflows/agents-autofix-dispatcher.yml`  \nconsumer `.github/workflows/agents-guard.yml` \u2192 source `templates/consumer-repo/.github/workflows/agents-guard.yml`  \nconsumer `.github/workflows/agents-issue-optimizer.yml` \u2192 source `templates/consumer-repo/.github/workflows/agents-issue-optimizer.yml`  \nconsumer `.github/workflows/agents-keepalive-loop-reporter.yml` \u2192 source `templates/consumer-repo/.github/workflows/agents-keepalive-loop-reporter.yml`  \nconsumer `.github/workflows/agents-weekly-metrics.yml` \u2192 source `templates/consumer-repo/.github/workflows/agents-weekly-metrics.yml`  \nconsumer `.github/workflows/maint-coverage-guard.yml` \u2192 source `templates/consumer-repo/.github/workflows/maint-coverage-guard.yml`  \nconsumer `.github/workflows/reusable-pr-context.yml` \u2192 source `templates/consumer-repo/.github/workflows/reusable-pr-context.yml`\n\n<details>\n<summary>Original Issue</summary>\n\n```text\n## Why\n\nConsumer sync delivery PR stranske/Travel-Plan-Permission#1498 has unresolved bot review threads on manifest-synced paths. Workflows main must be fixed so the next regeneration outdates consumer threads.\n\n## Scope\n\nResolve upstream source paths for manifest-synced consumer workflows listed below.\n\n## Non-Goals\n\n- Do NOT edit consumer repos directly from this issue.\n\n## Tasks\n\n- [ ] Fix `templates/consumer-repo/.github/workflows/agents-71-codex-belt-dispatcher.yml` through `templates/consumer-repo/.github/workflows/reusable-pr-context.yml` (12 paths) in Workflows main.\n- [ ] Verify each listed source path exists under `templates/consumer-repo/` in Workflows main.\n\n## Acceptance Criteria\n\n- [ ] test -f templates/consumer-repo/.github/workflows/agents-71-codex-belt-dispatcher.yml && test -f templates/consumer-repo/.github/workflows/reusable-pr-context.yml pass in a fresh Workflows clone (all 12 paths listed in Implementation Notes).\n- [ ] python -m pytest tests/workflows/test_workflow_agents_consolidation.py -q exits 0 on Workflows main after the source fixes land.\n- [ ] A follow-up consumer sync PR no longer lists these paths as unresolved manifest-synced threads for Travel-Plan-Permission#1498.\n\n## Implementation Notes\n\nConsumer delivery PR: stranske/Travel-Plan-Permission#1498\n\nManifest-synced paths with unresolved bot review threads:\n- consumer `.github/workflows/agents-71-codex-belt-dispatcher.yml` \u2192 source `templates/consumer-repo/.github/workflows/agents-71-codex-belt-dispatcher.yml`\n- consumer `.github/workflows/agents-72-codex-belt-worker.yml` \u2192 source `templates/consumer-repo/.github/workflows/agents-72-codex-belt-worker.yml`\n- consumer `.github/workflows/agents-73-codex-belt-conveyor.yml` \u2192 source `templates/consumer-repo/.github/workflows/agents-73-codex-belt-conveyor.yml`\n- consumer `.github/workflows/agents-81-gate-followups.yml` \u2192 source `templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml`\n- consumer `.github/workflows/agents-auto-pilot.yml` \u2192 source `templates/consumer-repo/.github/workflows/agents-auto-pilot.yml`\n- consumer `.github/workflows/agents-autofix-dispatcher.yml` \u2192 source `templates/consumer-repo/.github/workflows/agents-autofix-dispatcher.yml`\n- consumer `.github/workflows/agents-guard.yml` \u2192 source `templates/consumer-repo/.github/workflows/agents-guard.yml`\n- consumer `.github/workflows/agents-issue-optimizer.yml` \u2192 source `templates/consumer-repo/.github/workflows/agents-issue-optimizer.yml`\n- consumer `.github/workflows/agents-keepalive-loop-reporter.yml` \u2192 source `templates/consumer-repo/.github/workflows/agents-keepalive-loop-reporter.yml`\n- consumer `.github/workflows/agents-weekly-metrics.yml` \u2192 source `templates/consumer-repo/.github/workflows/agents-weekly-metrics.yml`\n- consumer `.github/workflows/maint-coverage-guard.yml` \u2192 source `templates/consumer-repo/.github/workflows/maint-coverage-guard.yml`\n- consumer `.github/workflows/reusable-pr-context.yml` \u2192 source `templates/consumer-repo/.github/workflows/reusable-pr-context.yml`\n```\n</details>\n\n\n\n## Deferred Tasks (Requires Human)\n\n- [ ] Fix the 12 listed workflow sources under `templates/consumer-repo/.github/workflows/` in Workflows main. (Agent cannot modify files under .github/workflows/ paths due to AGENT_LIMITATIONS protection rules. | Convert this to a human-assigned task with HUMAN_REQUIRED label, or move workflow files to an unprotected directory structure before agent processing.)\n- [ ] Verify each listed source path exists under `templates/consumer-repo/` in Workflows main. (Verification depends on completing the blocked workflow file fixes first, creating a dependency chain the agent cannot execute. | Mark this as a post-fix validation step for human review, or create a separate verification issue after workflow fixes are manually completed.)\n\n<!-- issue-pr-context:formatted-body:v1 {\"sha256\":\"ce0b83d54fc6b2a15ca3cffedaab0c3c72e7b5f0447303c0c78226eb4bafeaab\",\"workflows\":[\"agents-auto-pilot\",\"agents-issue-optimizer\",\"agents-63-issue-intake\",\"issue_formatter\",\"issue_optimizer\"]} -->\n",
+        "comments": [
+          {
+            "id": "IC_kwDOQprj9M8AAAABSeNEpg",
+            "author": {
+              "login": "stranske"
+            },
+            "authorAssociation": "OWNER",
+            "body": "## Upstream sync review debt\n\nConsumer delivery PR: stranske/trip-planner#1777\n\nManifest-synced paths with unresolved bot review threads:\n- consumer `.github/workflows/agents-81-gate-followups.yml` \u2192 source `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml`\n- consumer `.github/workflows/agents-keepalive-loop-reporter.yml` \u2192 source `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-keepalive-loop-reporter.yml`\n- consumer `.github/workflows/maint-coverage-guard.yml` \u2192 source `stranske/Workflows/templates/consumer-repo/.github/workflows/maint-coverage-guard.yml`\n- consumer `.github/workflows/reusable-pr-context.yml` \u2192 source `stranske/Workflows/templates/consumer-repo/.github/workflows/reusable-pr-context.yml`\n\nFix these paths in Workflows main so the next sync regeneration outdates the consumer threads.",
+            "createdAt": "2026-09-04T01:59:56Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3343#issuecomment-5534598310",
+            "viewerDidAuthor": true
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSeNI_Q",
+            "author": {
+              "login": "stranske"
+            },
+            "authorAssociation": "OWNER",
+            "body": "## Upstream sync review debt\n\nConsumer delivery PR: stranske/Portable-Alpha-Extension-Model#2272\n\nManifest-synced paths with unresolved bot review threads:\n- consumer `.github/workflows/agents-81-gate-followups.yml` \u2192 source `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml`\n- consumer `scripts/check_deliberate_break.py` \u2192 source `stranske/Workflows/scripts/check_deliberate_break.py`\n\nFix these paths in Workflows main so the next sync regeneration outdates the consumer threads.",
+            "createdAt": "2026-09-04T02:00:06Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3343#issuecomment-5534599421",
+            "viewerDidAuthor": true
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSePBnw",
+            "author": {
+              "login": "github-actions"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n**Missing required sections:** `Tasks`, `Acceptance Criteria`\n\n_Advisory:_\n- 13 cited path(s) do not exist yet: `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-71-codex-belt-dispatcher.yml`, `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-72-codex-belt-worker.yml`, `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-73-codex-belt-conveyor.yml`, `.github/workflows/agents-81-gate-followups.yml`, `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml`, `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-auto-pilot.yml`, \u2026 \u2014 expected when a task creates them; check for typos otherwise.\n\n_Recommended but absent:_ `Why`, `Scope`, `Implementation Notes`, `Non-Goals`\n\nDispatched the Agents Issue Optimizer format phase (attempt 1 of 3).\n\n<!-- format-guard:4726cd428b3f:attempt:1 -->\n",
+            "createdAt": "2026-09-04T02:04:21Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3343#issuecomment-5534630303",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSeQgWw",
+            "author": {
+              "login": "agents-workflows-bot"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "### \ud83c\udff7\ufe0f Label Suggestions\n\nBased on the issue content, these labels might be relevant:\n\n- `agents` (95% confidence)\n- `agents:keepalive` (95% confidence)\n- `autofix` (95% confidence)\n- `codex` (95% confidence)\n- `consumer-sync` (95% confidence)\n\n<details>\n<summary>How to use these suggestions</summary>\n\n- Click the label name in the sidebar to add it\n- Or use the GitHub CLI: `gh issue edit 3343 --add-label \"label-name\"`\n</details>\n\n---\n*Auto-generated by label matcher*",
+            "createdAt": "2026-09-04T02:07:38Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3343#issuecomment-5534654555",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSeRkxA",
+            "author": {
+              "login": "github-actions"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Workflows/actions/runs/33828136442)\n\n**Format validation report:**\n```text\nThis issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `_Not provided._`.\n- `Acceptance Criteria` names no test, runnable command or observable verification gate \u2014 Definition of Ready / Quality Bar \u00a72 requires one.\n\n_Advisory:_\n- 13 cited path(s) do not exist yet: `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-71-codex-belt-dispatcher.yml`, `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-72-codex-belt-worker.yml`, `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-73-codex-belt-conveyor.yml`, `.github/workflows/agents-81-gate-followups.yml`, `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml`, `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-auto-pilot.yml`, \u2026 \u2014 expected when a task creates them; check for typos otherwise.\n```\n",
+            "createdAt": "2026-09-04T02:09:51Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3343#issuecomment-5534672068",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSeVj9w",
+            "author": {
+              "login": "github-actions"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n**Missing required sections:** `Tasks`, `Acceptance Criteria`\n\n_Advisory:_\n- 13 cited path(s) do not exist yet: `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-71-codex-belt-dispatcher.yml`, `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-72-codex-belt-worker.yml`, `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-73-codex-belt-conveyor.yml`, `.github/workflows/agents-81-gate-followups.yml`, `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml`, `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-auto-pilot.yml`, \u2026 \u2014 expected when a task creates them; check for typos otherwise.\n\n_Recommended but absent:_ `Why`, `Scope`, `Implementation Notes`, `Non-Goals`\n\nDispatched the Agents Issue Optimizer format phase (attempt 2 of 3).\n\n<!-- format-guard:4726cd428b3f:attempt:2 -->\n",
+            "createdAt": "2026-09-04T02:18:37Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3343#issuecomment-5534737399",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSeXbng",
+            "author": {
+              "login": "github-actions"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Workflows/actions/runs/33829039560)\n\n**Format validation report:**\n```text\nThis issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `_Not provided._`.\n- `Acceptance Criteria` names no test, runnable command or observable verification gate \u2014 Definition of Ready / Quality Bar \u00a72 requires one.\n\n_Advisory:_\n- 13 cited path(s) do not exist yet: `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-71-codex-belt-dispatcher.yml`, `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-72-codex-belt-worker.yml`, `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-73-codex-belt-conveyor.yml`, `.github/workflows/agents-81-gate-followups.yml`, `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml`, `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-auto-pilot.yml`, \u2026 \u2014 expected when a task creates them; check for typos otherwise.\n```\n",
+            "createdAt": "2026-09-04T02:22:47Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3343#issuecomment-5534768030",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSeZTtw",
+            "author": {
+              "login": "github-actions"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n**Missing required sections:** `Tasks`, `Acceptance Criteria`\n\n_Advisory:_\n- 13 cited path(s) do not exist yet: `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-71-codex-belt-dispatcher.yml`, `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-72-codex-belt-worker.yml`, `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-73-codex-belt-conveyor.yml`, `.github/workflows/agents-81-gate-followups.yml`, `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml`, `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-auto-pilot.yml`, \u2026 \u2014 expected when a task creates them; check for typos otherwise.\n\n_Recommended but absent:_ `Why`, `Scope`, `Implementation Notes`, `Non-Goals`\n\nDispatched the Agents Issue Optimizer format phase (attempt 3 of 3).\n\n<!-- format-guard:4726cd428b3f:attempt:3 -->\n",
+            "createdAt": "2026-09-04T02:26:59Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3343#issuecomment-5534798775",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSebluA",
+            "author": {
+              "login": "github-actions"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Workflows/actions/runs/33829556763)\n\n**Format validation report:**\n```text\nThis issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `_Not provided._`.\n- `Acceptance Criteria` names no test, runnable command or observable verification gate \u2014 Definition of Ready / Quality Bar \u00a72 requires one.\n\n_Advisory:_\n- 13 cited path(s) do not exist yet: `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-71-codex-belt-dispatcher.yml`, `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-72-codex-belt-worker.yml`, `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-73-codex-belt-conveyor.yml`, `.github/workflows/agents-81-gate-followups.yml`, `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml`, `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-auto-pilot.yml`, \u2026 \u2014 expected when a task creates them; check for typos otherwise.\n```\n",
+            "createdAt": "2026-09-04T02:32:05Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3343#issuecomment-5534836152",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSecO7Q",
+            "author": {
+              "login": "github-actions"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "<!-- format-guard:attempt-cap -->\nAutomated formatting stopped after 3 optimizer attempts. Fix the issue body manually, then remove agents:auto-pilot-pause before retrying.\n",
+            "createdAt": "2026-09-04T02:33:33Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3343#issuecomment-5534846701",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSeovCA",
+            "author": {
+              "login": "stranske"
+            },
+            "authorAssociation": "OWNER",
+            "body": "## Upstream sync review debt\n\nConsumer delivery PR: stranske/Pension-Data#868\n\nManifest-synced paths with unresolved bot review threads:\n- consumer `.github/workflows/maint-coverage-guard.yml` \u2192 source `stranske/Workflows/templates/consumer-repo/.github/workflows/maint-coverage-guard.yml`\n- consumer `scripts/check_deliberate_break.py` \u2192 source `stranske/Workflows/scripts/check_deliberate_break.py`\n\nFix these paths in Workflows main so the next sync regeneration outdates the consumer threads.",
+            "createdAt": "2026-09-04T03:02:15Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3343#issuecomment-5535051528",
+            "viewerDidAuthor": true
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSepIvQ",
+            "author": {
+              "login": "stranske"
+            },
+            "authorAssociation": "OWNER",
+            "body": "## Upstream sync review debt\n\nConsumer delivery PR: stranske/Trend_Model_Project#6016\n\nManifest-synced paths with unresolved bot review threads:\n- consumer `.github/workflows/agents-81-gate-followups.yml` \u2192 source `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml`\n- consumer `.github/scripts/agent_delegation_policy.js` \u2192 source `stranske/Workflows/.github/scripts/agent_delegation_policy.js`\n\nFix these paths in Workflows main so the next sync regeneration outdates the consumer threads.",
+            "createdAt": "2026-09-04T03:03:03Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3343#issuecomment-5535058109",
+            "viewerDidAuthor": true
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSepNIQ",
+            "author": {
+              "login": "stranske"
+            },
+            "authorAssociation": "OWNER",
+            "body": "## Upstream sync review debt\n\nConsumer delivery PR: stranske/learning-management-system#569\n\nManifest-synced paths with unresolved bot review threads:\n- consumer `.github/workflows/maint-coverage-guard.yml` \u2192 source `stranske/Workflows/templates/consumer-repo/.github/workflows/maint-coverage-guard.yml`\n- consumer `scripts/check_deliberate_break.py` \u2192 source `stranske/Workflows/scripts/check_deliberate_break.py`\n\nFix these paths in Workflows main so the next sync regeneration outdates the consumer threads.",
+            "createdAt": "2026-09-04T03:03:13Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3343#issuecomment-5535059233",
+            "viewerDidAuthor": true
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSepRBQ",
+            "author": {
+              "login": "stranske"
+            },
+            "authorAssociation": "OWNER",
+            "body": "## Upstream sync review debt\n\nConsumer delivery PR: stranske/Fine-Art-Archive#669\n\nManifest-synced paths with unresolved bot review threads:\n- consumer `.github/workflows/agents-issue-optimizer.yml` \u2192 source `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-issue-optimizer.yml`\n- consumer `.github/workflows/maint-coverage-guard.yml` \u2192 source `stranske/Workflows/templates/consumer-repo/.github/workflows/maint-coverage-guard.yml`\n\nFix these paths in Workflows main so the next sync regeneration outdates the consumer threads.",
+            "createdAt": "2026-09-04T03:03:21Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3343#issuecomment-5535060229",
+            "viewerDidAuthor": true
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSp1u-w",
+            "author": {
+              "login": "github-actions"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Acceptance Criteria` names no test, runnable command or observable verification gate \u2014 Definition of Ready / Quality Bar \u00a72 requires one.\n\n_Advisory:_\n- 1 cited path(s) do not exist yet: `.github/workflows/agents-81-gate-followups.yml` \u2014 expected when a task creates them; check for typos otherwise.\n\nDispatched the Agents Issue Optimizer format phase (attempt 1 of 3).\n\n<!-- format-guard:9cbcbea9c0a2:attempt:1 -->\n",
+            "createdAt": "2026-09-04T21:44:54Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3343#issuecomment-5546798843",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSp2L5w",
+            "author": {
+              "login": "github-actions"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Workflows/actions/runs/33922497312)\n\n**Format validation report:**\n```text\nThis issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Acceptance Criteria` names no test, runnable command or observable verification gate \u2014 Definition of Ready / Quality Bar \u00a72 requires one.\n\n_Advisory:_\n- 1 cited path(s) do not exist yet: `.github/workflows/agents-81-gate-followups.yml` \u2014 expected when a task creates them; check for typos otherwise.\n```\n",
+            "createdAt": "2026-09-04T21:45:43Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3343#issuecomment-5546806247",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSp2U2w",
+            "author": {
+              "login": "github-actions"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Acceptance Criteria` names no test, runnable command or observable verification gate \u2014 Definition of Ready / Quality Bar \u00a72 requires one.\n\n_Advisory:_\n- 1 cited path(s) do not exist yet: `.github/workflows/agents-81-gate-followups.yml` \u2014 expected when a task creates them; check for typos otherwise.\n\nDispatched the Agents Issue Optimizer format phase (attempt 2 of 3).\n\n<!-- format-guard:9cbcbea9c0a2:attempt:2 -->\n",
+            "createdAt": "2026-09-04T21:45:59Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3343#issuecomment-5546808539",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSp2sVA",
+            "author": {
+              "login": "github-actions"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Workflows/actions/runs/33922580184)\n\n**Format validation report:**\n```text\nThis issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Acceptance Criteria` names no test, runnable command or observable verification gate \u2014 Definition of Ready / Quality Bar \u00a72 requires one.\n\n_Advisory:_\n- 1 cited path(s) do not exist yet: `.github/workflows/agents-81-gate-followups.yml` \u2014 expected when a task creates them; check for typos otherwise.\n```\n",
+            "createdAt": "2026-09-04T21:46:39Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3343#issuecomment-5546814548",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSp23XA",
+            "author": {
+              "login": "github-actions"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Acceptance Criteria` names no test, runnable command or observable verification gate \u2014 Definition of Ready / Quality Bar \u00a72 requires one.\n\n_Advisory:_\n- 1 cited path(s) do not exist yet: `.github/workflows/agents-81-gate-followups.yml` \u2014 expected when a task creates them; check for typos otherwise.\n\nDispatched the Agents Issue Optimizer format phase (attempt 3 of 3).\n\n<!-- format-guard:9cbcbea9c0a2:attempt:3 -->\n",
+            "createdAt": "2026-09-04T21:46:59Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3343#issuecomment-5546817372",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSp3UFw",
+            "author": {
+              "login": "github-actions"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Workflows/actions/runs/33922653599)\n\n**Format validation report:**\n```text\nThis issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Acceptance Criteria` names no test, runnable command or observable verification gate \u2014 Definition of Ready / Quality Bar \u00a72 requires one.\n\n_Advisory:_\n- 1 cited path(s) do not exist yet: `.github/workflows/agents-81-gate-followups.yml` \u2014 expected when a task creates them; check for typos otherwise.\n```\n",
+            "createdAt": "2026-09-04T21:47:51Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3343#issuecomment-5546824727",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSp3eiA",
+            "author": {
+              "login": "github-actions"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "<!-- format-guard:attempt-cap -->\nAutomated formatting stopped after 3 optimizer attempts. Fix the issue body manually, then remove agents:auto-pilot-pause before retrying.\n",
+            "createdAt": "2026-09-04T21:48:10Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3343#issuecomment-5546827400",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSqWLUQ",
+            "author": {
+              "login": "github-actions"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "<!-- format-guard:attempt-cap -->\nAutomated formatting stopped after 3 optimizer attempts. Fix the issue body manually, then remove agents:auto-pilot-pause before retrying.\n",
+            "createdAt": "2026-09-04T22:49:54Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3343#issuecomment-5547330385",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSqkwdA",
+            "author": {
+              "login": "stranske"
+            },
+            "authorAssociation": "OWNER",
+            "body": "## Upstream sync review debt\n\nConsumer delivery PR: stranske/Portable-Alpha-Extension-Model#2275\n\nManifest-synced paths with unresolved bot review threads:\n- consumer `.github/workflows/agents-81-gate-followups.yml` \u2192 source `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml`\n- consumer `.github/scripts/keepalive_loop.js` \u2192 source `stranske/Workflows/.github/scripts/keepalive_loop.js`\n\nFix these paths in Workflows main so the next sync regeneration outdates the consumer threads.",
+            "createdAt": "2026-09-04T23:21:11Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3343#issuecomment-5547569268",
+            "viewerDidAuthor": true
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSseavA",
+            "author": {
+              "login": "stranske"
+            },
+            "authorAssociation": "OWNER",
+            "body": "## Upstream sync review debt\n\nConsumer delivery PR: stranske/Travel-Plan-Permission#1516\n\nManifest-synced paths with unresolved bot review threads:\n- consumer `.github/workflows/agents-71-codex-belt-dispatcher.yml` \u2192 source `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-71-codex-belt-dispatcher.yml`\n- consumer `.github/workflows/agents-72-codex-belt-worker.yml` \u2192 source `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-72-codex-belt-worker.yml`\n- consumer `.github/workflows/agents-73-codex-belt-conveyor.yml` \u2192 source `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-73-codex-belt-conveyor.yml`\n- consumer `.github/workflows/agents-81-gate-followups.yml` \u2192 source `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml`\n- consumer `.github/workflows/agents-auto-pilot.yml` \u2192 source `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-auto-pilot.yml`\n- consumer `.github/workflows/agents-autofix-dispatcher.yml` \u2192 source `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-autofix-dispatcher.yml`\n- consumer `.github/workflows/agents-guard.yml` \u2192 source `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-guard.yml`\n- consumer `.github/workflows/agents-issue-optimizer.yml` \u2192 source `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-issue-optimizer.yml`\n- consumer `.github/workflows/agents-keepalive-loop-reporter.yml` \u2192 source `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-keepalive-loop-reporter.yml`\n- consumer `.github/workflows/agents-weekly-metrics.yml` \u2192 source `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-weekly-metrics.yml`\n- consumer `.github/workflows/maint-coverage-guard.yml` \u2192 source `stranske/Workflows/templates/consumer-repo/.github/workflows/maint-coverage-guard.yml`\n- consumer `.github/workflows/reusable-pr-context.yml` \u2192 source `stranske/Workflows/templates/consumer-repo/.github/workflows/reusable-pr-context.yml`\n- consumer `scripts/validate_run_contract.py` \u2192 source `stranske/Workflows/scripts/validate_run_contract.py`\n- consumer `tools/coverage_guard.py` \u2192 source `stranske/Workflows/tools/coverage_guard.py`\n\nFix these paths in Workflows main so the next sync regeneration outdates the consumer threads.",
+            "createdAt": "2026-09-05T05:11:23Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3343#issuecomment-5549562556",
+            "viewerDidAuthor": true
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSsegyA",
+            "author": {
+              "login": "stranske"
+            },
+            "authorAssociation": "OWNER",
+            "body": "## Upstream sync review debt\n\nConsumer delivery PR: stranske/trip-planner#1795\n\nManifest-synced paths with unresolved bot review threads:\n- consumer `.github/workflows/agents-71-codex-belt-dispatcher.yml` \u2192 source `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-71-codex-belt-dispatcher.yml`\n- consumer `.github/workflows/agents-72-codex-belt-worker.yml` \u2192 source `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-72-codex-belt-worker.yml`\n- consumer `.github/workflows/agents-73-codex-belt-conveyor.yml` \u2192 source `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-73-codex-belt-conveyor.yml`\n- consumer `.github/workflows/agents-81-gate-followups.yml` \u2192 source `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml`\n- consumer `.github/workflows/agents-auto-pilot.yml` \u2192 source `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-auto-pilot.yml`\n- consumer `.github/workflows/agents-autofix-dispatcher.yml` \u2192 source `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-autofix-dispatcher.yml`\n- consumer `.github/workflows/agents-guard.yml` \u2192 source `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-guard.yml`\n- consumer `.github/workflows/agents-issue-optimizer.yml` \u2192 source `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-issue-optimizer.yml`\n- consumer `.github/workflows/agents-keepalive-loop-reporter.yml` \u2192 source `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-keepalive-loop-reporter.yml`\n- consumer `.github/workflows/agents-weekly-metrics.yml` \u2192 source `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-weekly-metrics.yml`\n- consumer `.github/workflows/maint-coverage-guard.yml` \u2192 source `stranske/Workflows/templates/consumer-repo/.github/workflows/maint-coverage-guard.yml`\n- consumer `.github/workflows/reusable-pr-context.yml` \u2192 source `stranske/Workflows/templates/consumer-repo/.github/workflows/reusable-pr-context.yml`\n- consumer `scripts/validate_run_contract.py` \u2192 source `stranske/Workflows/scripts/validate_run_contract.py`\n- consumer `docs/contracts/tracked-variable-v1.md` \u2192 source `stranske/Workflows/docs/contracts/tracked-variable-v1.md`\n\nFix these paths in Workflows main so the next sync regeneration outdates the consumer threads.",
+            "createdAt": "2026-09-05T05:11:41Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3343#issuecomment-5549564104",
+            "viewerDidAuthor": true
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSsemFQ",
+            "author": {
+              "login": "stranske"
+            },
+            "authorAssociation": "OWNER",
+            "body": "## Upstream sync review debt\n\nConsumer delivery PR: stranske/Portable-Alpha-Extension-Model#2277\n\nManifest-synced paths with unresolved bot review threads:\n- consumer `scripts/validate_run_contract.py` \u2192 source `stranske/Workflows/scripts/validate_run_contract.py`\n- consumer `.github/workflows/agents-81-gate-followups.yml` \u2192 source `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml`\n- consumer `docs/contracts/schemas/tracked-variable-v1.schema.json` \u2192 source `stranske/Workflows/docs/contracts/schemas/tracked-variable-v1.schema.json`\n- consumer `scripts/check_deliberate_break.py` \u2192 source `stranske/Workflows/scripts/check_deliberate_break.py`\n\nFix these paths in Workflows main so the next sync regeneration outdates the consumer threads.",
+            "createdAt": "2026-09-05T05:11:57Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3343#issuecomment-5549565461",
+            "viewerDidAuthor": true
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSsp2vQ",
+            "author": {
+              "login": "stranske-keepalive"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "\ud83e\udd16 **Auto-pilot step $((STEP_COUNT + 1))**: Starting issue formatting...\n\nRunning formatter inline (not via label trigger).\n",
+            "createdAt": "2026-09-05T05:43:30Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3343#issuecomment-5549749949",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSsqOqw",
+            "author": {
+              "login": "stranske-keepalive"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "\ud83e\udd16 **Auto-pilot step $((STEP_COUNT + 1))**: Analyzing issue for improvements...\n\nRunning optimizer inline (not via label trigger).\n",
+            "createdAt": "2026-09-05T05:44:42Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3343#issuecomment-5549756075",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSsqa4g",
+            "author": {
+              "login": "agents-workflows-bot"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "## Issue Optimization Suggestions\n\nReview the suggestions below. If you want the agent to apply them, add the\n`agents:apply-suggestions` label to this issue.\n\n### Task splitting\n- Fix the 12 listed workflow sources under `templates/consumer-repo/.github/workflows/` in Workflows main. (This task bundles 12 distinct file fixes into one checkbox, making progress tracking impossible and creating an all-or-nothing completion scenario.). Suggested split: Fix the agents-71-codex-belt-dispatcher.yml workflow source file in templates/consumer-repo/.github/workflows/, Fix the agents-72-codex-belt-worker.yml workflow source file in templates/consumer-repo/.github/workflows/, Fix the agents-73-codex-belt-conveyor.yml workflow source file in templates/consumer-repo/.github/workflows/, Fix the agents-81-gate-followups.yml workflow source file in templates/consumer-repo/.github/workflows/, Fix the agents-auto-pilot.yml workflow source file in templates/consumer-repo/.github/workflows/, Fix the agents-autofix-dispatcher.yml workflow source file in templates/consumer-repo/.github/workflows/, Fix the agents-guard.yml workflow source file in templates/consumer-repo/.github/workflows/, Fix the agents-issue-optimizer.yml workflow source file in templates/consumer-repo/.github/workflows/, Fix the agents-keepalive-loop-reporter.yml workflow source file in templates/consumer-repo/.github/workflows/, Fix the agents-weekly-metrics.yml workflow source file in templates/consumer-repo/.github/workflows/, Fix the maint-coverage-guard.yml workflow source file in templates/consumer-repo/.github/workflows/, Fix the reusable-pr-context.yml workflow source file in templates/consumer-repo/.github/workflows/.\n\n### Blocked tasks\n- Fix the 12 listed workflow sources under `templates/consumer-repo/.github/workflows/` in Workflows main. (Agent cannot modify files under .github/workflows/ paths due to AGENT_LIMITATIONS protection rules. | Convert this to a human-assigned task with HUMAN_REQUIRED label, or move workflow files to an unprotected directory structure before agent processing.)\n- Verify each listed source path exists under `templates/consumer-repo/` in Workflows main. (Verification depends on completing the blocked workflow file fixes first, creating a dependency chain the agent cannot execute. | Mark this as a post-fix validation step for human review, or create a separate verification issue after workflow fixes are manually completed.)\n\n### Objective acceptance criteria\n- A follow-up consumer sync PR no longer lists these paths as unresolved manifest-synced threads for Travel-Plan-Permission#1498. (Success depends on external PR behavior and bot review thread resolution, which the agent cannot verify or control. | Replace with: 'All 12 workflow source files in templates/consumer-repo/.github/workflows/ pass schema validation via `yamllint` with zero errors.')\n\n### Missing sections\n- None\n\n### Formatting issues\n- Implementation Notes uses inconsistent formatting: the first line uses inline code for consumer path but plain text for 'source', while subsequent lines use inline code for both consumer and source paths.\n- Acceptance Criteria mixes shell command syntax with prose: backticks around `test -f` commands should be formatted as code blocks for clarity and executability.\n- The collapsed <details> section labeled 'Original Issue' duplicates the entire issue body with only minor formatting differences (bullet list vs paragraph format in Implementation Notes), creating redundancy without adding value.\n\n### Notes\n- This issue has a critical agent compatibility problem: all primary tasks involve modifying .github/workflows/*.yml files, which are explicitly protected per AGENT_LIMITATIONS. The issue is well-structured with all required sections present (Why, Scope, Non-Goals, Tasks, Acceptance Criteria, Implementation Notes), but the core work cannot be completed by an agent. The 12-file bundled task should be split for progress tracking, and the acceptance criteria depending on external PR behavior should be replaced with locally verifiable checks. The collapsed 'Original Issue' section appears to be version control rather than supplementary information and could be removed. Recommend either: (1) reassigning to human with HUMAN_REQUIRED label, or (2) restructuring to move workflow files outside protected paths before agent processing.\n\n<!-- suggestions-json: {\"task_splitting\": [{\"task\": \"Fix the 12 listed workflow sources under `templates/consumer-repo/.github/workflows/` in Workflows main.\", \"reason\": \"This task bundles 12 distinct file fixes into one checkbox, making progress tracking impossible and creating an all-or-nothing completion scenario.\", \"split_suggestions\": [\"Fix the agents-71-codex-belt-dispatcher.yml workflow source file in templates/consumer-repo/.github/workflows/\", \"Fix the agents-72-codex-belt-worker.yml workflow source file in templates/consumer-repo/.github/workflows/\", \"Fix the agents-73-codex-belt-conveyor.yml workflow source file in templates/consumer-repo/.github/workflows/\", \"Fix the agents-81-gate-followups.yml workflow source file in templates/consumer-repo/.github/workflows/\", \"Fix the agents-auto-pilot.yml workflow source file in templates/consumer-repo/.github/workflows/\", \"Fix the agents-autofix-dispatcher.yml workflow source file in templates/consumer-repo/.github/workflows/\", \"Fix the agents-guard.yml workflow source file in templates/consumer-repo/.github/workflows/\", \"Fix the agents-issue-optimizer.yml workflow source file in templates/consumer-repo/.github/workflows/\", \"Fix the agents-keepalive-loop-reporter.yml workflow source file in templates/consumer-repo/.github/workflows/\", \"Fix the agents-weekly-metrics.yml workflow source file in templates/consumer-repo/.github/workflows/\", \"Fix the maint-coverage-guard.yml workflow source file in templates/consumer-repo/.github/workflows/\", \"Fix the reusable-pr-context.yml workflow source file in templates/consumer-repo/.github/workflows/\"]}], \"blocked_tasks\": [{\"task\": \"Fix the 12 listed workflow sources under `templates/consumer-repo/.github/workflows/` in Workflows main.\", \"reason\": \"Agent cannot modify files under .github/workflows/ paths due to AGENT_LIMITATIONS protection rules.\", \"suggested_action\": \"Convert this to a human-assigned task with HUMAN_REQUIRED label, or move workflow files to an unprotected directory structure before agent processing.\"}, {\"task\": \"Verify each listed source path exists under `templates/consumer-repo/` in Workflows main.\", \"reason\": \"Verification depends on completing the blocked workflow file fixes first, creating a dependency chain the agent cannot execute.\", \"suggested_action\": \"Mark this as a post-fix validation step for human review, or create a separate verification issue after workflow fixes are manually completed.\"}], \"objective_criteria\": [{\"criterion\": \"A follow-up consumer sync PR no longer lists these paths as unresolved manifest-synced threads for Travel-Plan-Permission#1498.\", \"issue\": \"Success depends on external PR behavior and bot review thread resolution, which the agent cannot verify or control.\", \"suggestion\": \"Replace with: 'All 12 workflow source files in templates/consumer-repo/.github/workflows/ pass schema validation via `yamllint` with zero errors.'\"}], \"missing_sections\": [], \"formatting_issues\": [\"Implementation Notes uses inconsistent formatting: the first line uses inline code for consumer path but plain text for 'source', while subsequent lines use inline code for both consumer and source paths.\", \"Acceptance Criteria mixes shell command syntax with prose: backticks around `test -f` commands should be formatted as code blocks for clarity and executability.\", \"The collapsed <details> section labeled 'Original Issue' duplicates the entire issue body with only minor formatting differences (bullet list vs paragraph format in Implementation Notes), creating redundancy without adding value.\"], \"overall_notes\": \"This issue has a critical agent compatibility problem: all primary tasks involve modifying .github/workflows/*.yml files, which are explicitly protected per AGENT_LIMITATIONS. The issue is well-structured with all required sections present (Why, Scope, Non-Goals, Tasks, Acceptance Criteria, Implementation Notes), but the core work cannot be completed by an agent. The 12-file bundled task should be split for progress tracking, and the acceptance criteria depending on external PR behavior should be replaced with locally verifiable checks. The collapsed 'Original Issue' section appears to be version control rather than supplementary information and could be removed. Recommend either: (1) reassigning to human with HUMAN_REQUIRED label, or (2) restructuring to move workflow files outside protected paths before agent processing.\"} -->",
+            "createdAt": "2026-09-05T05:45:19Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3343#issuecomment-5549759202",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSsq0_w",
+            "author": {
+              "login": "stranske-keepalive"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "\ud83e\udd16 **Auto-pilot step $((STEP_COUNT + 1))**: Applying optimization suggestions...\n\nRunning apply inline (not via label trigger).\n",
+            "createdAt": "2026-09-05T05:46:33Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3343#issuecomment-5549765887",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSsq5nA",
+            "author": {
+              "login": "github-actions"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Workflows/actions/runs/33948028571)\n",
+            "createdAt": "2026-09-05T05:46:46Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3343#issuecomment-5549767068",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSsribQ",
+            "author": {
+              "login": "stranske-keepalive"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "\ud83e\udd16 **Auto-pilot step 1**: Issue prepared! Assigning to agent...\n\nAdding `agent:codex` label. The capability check will run automatically.\n\n\u23f3 Agent will create a PR shortly.",
+            "createdAt": "2026-09-05T05:48:51Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3343#issuecomment-5549777517",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSssqJA",
+            "author": {
+              "login": "agents-workflows-bot"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "Belt dispatcher queued this issue and created branch `codex/issue-3343`.",
+            "createdAt": "2026-09-05T05:52:25Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3343#issuecomment-5549795876",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSstEXw",
+            "author": {
+              "login": "stranske-keepalive"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "\ud83e\udd16 **Auto-pilot step $((STEP_COUNT + 1))**: Starting issue formatting...\n\nRunning formatter inline (not via label trigger).\n",
+            "createdAt": "2026-09-05T05:53:49Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3343#issuecomment-5549802591",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSstGLw",
+            "author": {
+              "login": "stranske-keepalive"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "\u26a0\ufe0f **Auto-pilot paused during formatting.**\n\nFormatter output does not satisfy the canonical issue-format contract.",
+            "createdAt": "2026-09-05T05:53:54Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3343#issuecomment-5549803055",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOQprj9M8AAAABSs02PQ",
+            "author": {
+              "login": "stranske"
+            },
+            "authorAssociation": "OWNER",
+            "body": "## Upstream sync review debt\n\nConsumer delivery PR: stranske/Trend_Model_Project#6028\n\nManifest-synced paths with unresolved bot review threads:\n- consumer `.github/workflows/agents-71-codex-belt-dispatcher.yml` \u2192 source `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-71-codex-belt-dispatcher.yml`\n- consumer `.github/workflows/agents-72-codex-belt-worker.yml` \u2192 source `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-72-codex-belt-worker.yml`\n- consumer `.github/workflows/agents-73-codex-belt-conveyor.yml` \u2192 source `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-73-codex-belt-conveyor.yml`\n- consumer `.github/workflows/agents-guard.yml` \u2192 source `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-guard.yml`\n- consumer `.github/workflows/agents-issue-optimizer.yml` \u2192 source `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-issue-optimizer.yml`\n- consumer `.github/workflows/agents-weekly-metrics.yml` \u2192 source `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-weekly-metrics.yml`\n- consumer `.github/workflows/maint-coverage-guard.yml` \u2192 source `stranske/Workflows/templates/consumer-repo/.github/workflows/maint-coverage-guard.yml`\n- consumer `.github/workflows/reusable-pr-context.yml` \u2192 source `stranske/Workflows/templates/consumer-repo/.github/workflows/reusable-pr-context.yml`\n- consumer `docs/contracts/schemas/tracked-variable-v1.schema.json` \u2192 source `stranske/Workflows/docs/contracts/schemas/tracked-variable-v1.schema.json`\n- consumer `.github/scripts/keepalive_loop.js` \u2192 source `stranske/Workflows/.github/scripts/keepalive_loop.js`\n- consumer `tools/coverage_guard.py` \u2192 source `stranske/Workflows/tools/coverage_guard.py`\n\nFix these paths in Workflows main so the next sync regeneration outdates the consumer threads.",
+            "createdAt": "2026-09-05T06:19:17Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Workflows/issues/3343#issuecomment-5549930045",
+            "viewerDidAuthor": true
+          }
+        ],
+        "labels": [
+          {
+            "id": "LA_kwDOQprj9M8AAAACSq7hKA",
+            "name": "agent:codex",
+            "description": "Agent-created issues from Codex",
+            "color": "ededed"
+          },
+          {
+            "id": "LA_kwDOQprj9M8AAAACSq7nhQ",
+            "name": "automation",
+            "description": "Automation and workflow automation",
+            "color": "205d64"
+          },
+          {
+            "id": "LA_kwDOQprj9M8AAAACSq7o8Q",
+            "name": "status:in-progress",
+            "description": "Work in progress",
+            "color": "ededed"
+          },
+          {
+            "id": "LA_kwDOQprj9M8AAAACTQTWVQ",
+            "name": "needs-human",
+            "description": "Requires human intervention or review",
+            "color": "d93f0b"
+          },
+          {
+            "id": "LA_kwDOQprj9M8AAAACUIP_Kw",
+            "name": "agents:format",
+            "description": "",
+            "color": "ededed"
+          },
+          {
+            "id": "LA_kwDOQprj9M8AAAACUb_fPQ",
+            "name": "agents:apply-suggestions",
+            "description": "",
+            "color": "cded24"
+          },
+          {
+            "id": "LA_kwDOQprj9M8AAAACUhUZ3Q",
+            "name": "agents:auto-pilot",
+            "description": "End-to-end automation: Issue \u2192 Agent \u2192 Merge",
+            "color": "0E8A16"
+          },
+          {
+            "id": "LA_kwDOQprj9M8AAAACUhUbLw",
+            "name": "agents:auto-pilot-pause",
+            "description": "Pause auto-pilot at current step",
+            "color": "FEF2C0"
+          },
+          {
+            "id": "LA_kwDOQprj9M8AAAACVO1uJQ",
+            "name": "consumer-sync",
+            "description": "",
+            "color": "ededed"
+          }
+        ],
+        "number": 3343,
+        "title": "[sync-review] Fix upstream manifest-synced paths blocking stranske/Travel-Plan-Permission#1498"
+      }
+    ],
+    "stalled_prs": [],
+    "runs": [
+      {
+        "conclusion": "action_required",
+        "createdAt": "2026-08-23T05:01:18Z",
+        "databaseId": 32619308101,
+        "headSha": "ebf666f28cf9196074640203e1f8d0978189f0ad",
+        "name": "Health 68 Consumer Sync Drift Check",
+        "status": "completed",
+        "url": "https://github.com/stranske/Workflows/actions/runs/32619308101",
+        "workflowName": "Health 68 Consumer Sync Drift Check"
+      },
+      {
+        "conclusion": "failure",
+        "createdAt": "2026-08-23T04:57:34Z",
+        "databaseId": 32619145717,
+        "headSha": "ebf666f28cf9196074640203e1f8d0978189f0ad",
+        "name": "Merge Sync PRs [candidate]\nheartbeat-0092b473-sealed-gates-0457",
+        "status": "completed",
+        "url": "https://github.com/stranske/Workflows/actions/runs/32619145717",
+        "workflowName": "Merge Sync PRs"
+      },
+      {
+        "conclusion": "action_required",
+        "createdAt": "2026-08-23T04:55:08Z",
+        "databaseId": 32619046588,
+        "headSha": "ebf666f28cf9196074640203e1f8d0978189f0ad",
+        "name": "Auto-Label Issues",
+        "status": "completed",
+        "url": "https://github.com/stranske/Workflows/actions/runs/32619046588",
+        "workflowName": "Auto-Label Issues"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-08-23T04:55:08Z",
+        "databaseId": 32619046599,
+        "headSha": "ebf666f28cf9196074640203e1f8d0978189f0ad",
+        "name": "Agents Issue Format Guard",
+        "status": "completed",
+        "url": "https://github.com/stranske/Workflows/actions/runs/32619046599",
+        "workflowName": "Agents Issue Format Guard"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-08-23T04:54:42Z",
+        "databaseId": 32619028171,
+        "headSha": "ebf666f28cf9196074640203e1f8d0978189f0ad",
+        "name": "Sync/Dependency Campaign",
+        "status": "completed",
+        "url": "https://github.com/stranske/Workflows/actions/runs/32619028171",
+        "workflowName": "Sync/Dependency Campaign"
+      }
+    ],
+    "branch_state": "red (Merge Sync PRs)",
+    "agent_ready_supply": 16,
+    "total_open_issues": 29,
+    "open_prs_count": 3
+  },
+  "Travel-Plan-Permission": {
+    "repo": "Travel-Plan-Permission",
+    "full_repo": "stranske/Travel-Plan-Permission",
+    "frozen_issues": [],
+    "stalled_prs": [],
+    "runs": [
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-05T14:05:03Z",
+        "databaseId": 33970746271,
+        "headSha": "0f07c24ee6c16fed640b8d1aee57a58e2bb651f3",
+        "name": "Agents PR Health",
+        "status": "completed",
+        "url": "https://github.com/stranske/Travel-Plan-Permission/actions/runs/33970746271",
+        "workflowName": "Agents PR Health"
+      },
+      {
+        "conclusion": "skipped",
+        "createdAt": "2026-09-05T13:47:23Z",
+        "databaseId": 33969911360,
+        "headSha": "0f07c24ee6c16fed640b8d1aee57a58e2bb651f3",
+        "name": "Keepalive Loop Reporter",
+        "status": "completed",
+        "url": "https://github.com/stranske/Travel-Plan-Permission/actions/runs/33969911360",
+        "workflowName": "Keepalive Loop Reporter"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-05T13:47:08Z",
+        "databaseId": 33969900580,
+        "headSha": "0f07c24ee6c16fed640b8d1aee57a58e2bb651f3",
+        "name": "Agents Gate Followups",
+        "status": "completed",
+        "url": "https://github.com/stranske/Travel-Plan-Permission/actions/runs/33969900580",
+        "workflowName": "Agents Gate Followups"
+      },
+      {
+        "conclusion": "skipped",
+        "createdAt": "2026-09-05T13:47:08Z",
+        "databaseId": 33969900602,
+        "headSha": "0f07c24ee6c16fed640b8d1aee57a58e2bb651f3",
+        "name": "Agents PR Event Hub",
+        "status": "completed",
+        "url": "https://github.com/stranske/Travel-Plan-Permission/actions/runs/33969900602",
+        "workflowName": "Agents PR Event Hub"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-05T13:47:08Z",
+        "databaseId": 33969900504,
+        "headSha": "0f07c24ee6c16fed640b8d1aee57a58e2bb651f3",
+        "name": "Autofix",
+        "status": "completed",
+        "url": "https://github.com/stranske/Travel-Plan-Permission/actions/runs/33969900504",
+        "workflowName": "Autofix"
+      }
+    ],
+    "branch_state": "green",
+    "agent_ready_supply": 5,
+    "total_open_issues": 9,
+    "open_prs_count": 3
+  },
+  "Trend_Model_Project": {
+    "repo": "Trend_Model_Project",
+    "full_repo": "stranske/Trend_Model_Project",
+    "frozen_issues": [],
+    "stalled_prs": [],
+    "runs": [
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-05T13:26:02Z",
+        "databaseId": 33968880712,
+        "headSha": "b9bc99d36dfc1830db3b3080aa637f29a6e6b88b",
+        "name": "Agents Keepalive Sweep",
+        "status": "completed",
+        "url": "https://github.com/stranske/Trend_Model_Project/actions/runs/33968880712",
+        "workflowName": "Agents Keepalive Sweep"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-05T13:10:20Z",
+        "databaseId": 33968120846,
+        "headSha": "b9bc99d36dfc1830db3b3080aa637f29a6e6b88b",
+        "name": "Agents PR Health",
+        "status": "completed",
+        "url": "https://github.com/stranske/Trend_Model_Project/actions/runs/33968120846",
+        "workflowName": "Agents PR Health"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-05T12:42:19Z",
+        "databaseId": 33966792245,
+        "headSha": "b9bc99d36dfc1830db3b3080aa637f29a6e6b88b",
+        "name": "Autofix",
+        "status": "completed",
+        "url": "https://github.com/stranske/Trend_Model_Project/actions/runs/33966792245",
+        "workflowName": "Autofix"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-05T12:34:43Z",
+        "databaseId": 33966435003,
+        "headSha": "b9bc99d36dfc1830db3b3080aa637f29a6e6b88b",
+        "name": "Agents Keepalive Sweep",
+        "status": "completed",
+        "url": "https://github.com/stranske/Trend_Model_Project/actions/runs/33966435003",
+        "workflowName": "Agents Keepalive Sweep"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-05T12:32:35Z",
+        "databaseId": 33966335947,
+        "headSha": "b9bc99d36dfc1830db3b3080aa637f29a6e6b88b",
+        "name": "Auto-Label Issues",
+        "status": "completed",
+        "url": "https://github.com/stranske/Trend_Model_Project/actions/runs/33966335947",
+        "workflowName": "Auto-Label Issues"
+      }
+    ],
+    "branch_state": "green",
+    "agent_ready_supply": 10,
+    "total_open_issues": 12,
+    "open_prs_count": 0
+  },
+  "Portable-Alpha-Extension-Model": {
+    "repo": "Portable-Alpha-Extension-Model",
+    "full_repo": "stranske/Portable-Alpha-Extension-Model",
+    "frozen_issues": [],
+    "stalled_prs": [],
+    "runs": [
+      {
+        "conclusion": "success",
+        "createdAt": "2026-08-19T09:10:10Z",
+        "databaseId": 32236227561,
+        "headSha": "20a71db2aece86eb61a6174b71189a9cead4cfa1",
+        "name": "Agents PR Health",
+        "status": "completed",
+        "url": "https://github.com/stranske/Portable-Alpha-Extension-Model/actions/runs/32236227561",
+        "workflowName": "Agents PR Health"
+      },
+      {
+        "conclusion": "skipped",
+        "createdAt": "2026-08-19T08:37:07Z",
+        "databaseId": 32233487854,
+        "headSha": "20a71db2aece86eb61a6174b71189a9cead4cfa1",
+        "name": "Agents Keepalive Sweep",
+        "status": "completed",
+        "url": "https://github.com/stranske/Portable-Alpha-Extension-Model/actions/runs/32233487854",
+        "workflowName": "Agents Keepalive Sweep"
+      },
+      {
+        "conclusion": "action_required",
+        "createdAt": "2026-08-19T07:02:15Z",
+        "databaseId": 32225977885,
+        "headSha": "20a71db2aece86eb61a6174b71189a9cead4cfa1",
+        "name": "Maint Coverage Guard",
+        "status": "completed",
+        "url": "https://github.com/stranske/Portable-Alpha-Extension-Model/actions/runs/32225977885",
+        "workflowName": "Maint Coverage Guard"
+      },
+      {
+        "conclusion": "skipped",
+        "createdAt": "2026-08-19T06:37:47Z",
+        "databaseId": 32224221821,
+        "headSha": "20a71db2aece86eb61a6174b71189a9cead4cfa1",
+        "name": "Agents Keepalive Sweep",
+        "status": "completed",
+        "url": "https://github.com/stranske/Portable-Alpha-Extension-Model/actions/runs/32224221821",
+        "workflowName": "Agents Keepalive Sweep"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-08-19T06:07:57Z",
+        "databaseId": 32222128451,
+        "headSha": "20a71db2aece86eb61a6174b71189a9cead4cfa1",
+        "name": "Agents PR Health",
+        "status": "completed",
+        "url": "https://github.com/stranske/Portable-Alpha-Extension-Model/actions/runs/32222128451",
+        "workflowName": "Agents PR Health"
+      }
+    ],
+    "branch_state": "green",
+    "agent_ready_supply": 1,
+    "total_open_issues": 3,
+    "open_prs_count": 1
+  },
+  "Counter_Risk": {
+    "repo": "Counter_Risk",
+    "full_repo": "stranske/Counter_Risk",
+    "frozen_issues": [],
+    "stalled_prs": [],
+    "runs": [
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-05T13:51:43Z",
+        "databaseId": 33970116655,
+        "headSha": "aa3173e73016741449df48f7e4cbec0699cc3517",
+        "name": "Autofix",
+        "status": "completed",
+        "url": "https://github.com/stranske/Counter_Risk/actions/runs/33970116655",
+        "workflowName": "Autofix"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-05T13:41:19Z",
+        "databaseId": 33969621406,
+        "headSha": "aa3173e73016741449df48f7e4cbec0699cc3517",
+        "name": "Keepalive Loop Reporter",
+        "status": "completed",
+        "url": "https://github.com/stranske/Counter_Risk/actions/runs/33969621406",
+        "workflowName": "Keepalive Loop Reporter"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-05T13:37:12Z",
+        "databaseId": 33969425146,
+        "headSha": "aa3173e73016741449df48f7e4cbec0699cc3517",
+        "name": "Autofix",
+        "status": "completed",
+        "url": "https://github.com/stranske/Counter_Risk/actions/runs/33969425146",
+        "workflowName": "Autofix"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-05T13:37:12Z",
+        "databaseId": 33969425185,
+        "headSha": "aa3173e73016741449df48f7e4cbec0699cc3517",
+        "name": "Agents PR Event Hub",
+        "status": "completed",
+        "url": "https://github.com/stranske/Counter_Risk/actions/runs/33969425185",
+        "workflowName": "Agents PR Event Hub"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-05T13:37:12Z",
+        "databaseId": 33969425230,
+        "headSha": "aa3173e73016741449df48f7e4cbec0699cc3517",
+        "name": "Agents Gate Followups",
+        "status": "completed",
+        "url": "https://github.com/stranske/Counter_Risk/actions/runs/33969425230",
+        "workflowName": "Agents Gate Followups"
+      }
+    ],
+    "branch_state": "green",
+    "agent_ready_supply": 2,
+    "total_open_issues": 4,
+    "open_prs_count": 0
+  },
+  "Manager-Database": {
+    "repo": "Manager-Database",
+    "full_repo": "stranske/Manager-Database",
+    "frozen_issues": [],
+    "stalled_prs": [],
+    "runs": [
+      {
+        "conclusion": "skipped",
+        "createdAt": "2026-08-18T10:36:29Z",
+        "databaseId": 32127590212,
+        "headSha": "7e1d59fb12d90c5b2b4ddc343621ff51aba57f4f",
+        "name": "Agents Keepalive Sweep",
+        "status": "completed",
+        "url": "https://github.com/stranske/Manager-Database/actions/runs/32127590212",
+        "workflowName": "Agents Keepalive Sweep"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-08-18T10:06:49Z",
+        "databaseId": 32125117554,
+        "headSha": "7e1d59fb12d90c5b2b4ddc343621ff51aba57f4f",
+        "name": "Agents PR Health",
+        "status": "completed",
+        "url": "https://github.com/stranske/Manager-Database/actions/runs/32125117554",
+        "workflowName": "Agents PR Health"
+      },
+      {
+        "conclusion": "skipped",
+        "createdAt": "2026-08-18T09:37:15Z",
+        "databaseId": 32122553057,
+        "headSha": "7e1d59fb12d90c5b2b4ddc343621ff51aba57f4f",
+        "name": "Agents Keepalive Sweep",
+        "status": "completed",
+        "url": "https://github.com/stranske/Manager-Database/actions/runs/32122553057",
+        "workflowName": "Agents Keepalive Sweep"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-08-18T09:09:30Z",
+        "databaseId": 32120098061,
+        "headSha": "7e1d59fb12d90c5b2b4ddc343621ff51aba57f4f",
+        "name": "Agents PR Health",
+        "status": "completed",
+        "url": "https://github.com/stranske/Manager-Database/actions/runs/32120098061",
+        "workflowName": "Agents PR Health"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-08-18T08:09:30Z",
+        "databaseId": 32114939782,
+        "headSha": "7e1d59fb12d90c5b2b4ddc343621ff51aba57f4f",
+        "name": "Agents PR Health",
+        "status": "completed",
+        "url": "https://github.com/stranske/Manager-Database/actions/runs/32114939782",
+        "workflowName": "Agents PR Health"
+      }
+    ],
+    "branch_state": "green",
+    "agent_ready_supply": 6,
+    "total_open_issues": 8,
+    "open_prs_count": 0
+  },
+  "Inv-Man-Intake": {
+    "repo": "Inv-Man-Intake",
+    "full_repo": "stranske/Inv-Man-Intake",
+    "frozen_issues": [],
+    "stalled_prs": [],
+    "runs": [
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-05T13:27:04Z",
+        "databaseId": 33968929931,
+        "headSha": "b3211e3535ee5dc0c5b217ecd93354b47565136b",
+        "name": "Agents Keepalive Sweep",
+        "status": "completed",
+        "url": "https://github.com/stranske/Inv-Man-Intake/actions/runs/33968929931",
+        "workflowName": "Agents Keepalive Sweep"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-05T13:10:22Z",
+        "databaseId": 33968123094,
+        "headSha": "b3211e3535ee5dc0c5b217ecd93354b47565136b",
+        "name": "Agents PR Health",
+        "status": "completed",
+        "url": "https://github.com/stranske/Inv-Man-Intake/actions/runs/33968123094",
+        "workflowName": "Agents PR Health"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-05T12:34:52Z",
+        "databaseId": 33966443210,
+        "headSha": "b3211e3535ee5dc0c5b217ecd93354b47565136b",
+        "name": "Agents Keepalive Sweep",
+        "status": "completed",
+        "url": "https://github.com/stranske/Inv-Man-Intake/actions/runs/33966443210",
+        "workflowName": "Agents Keepalive Sweep"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-05T12:33:36Z",
+        "databaseId": 33966382994,
+        "headSha": "b3211e3535ee5dc0c5b217ecd93354b47565136b",
+        "name": "Autofix",
+        "status": "completed",
+        "url": "https://github.com/stranske/Inv-Man-Intake/actions/runs/33966382994",
+        "workflowName": "Autofix"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-05T12:30:47Z",
+        "databaseId": 33966247508,
+        "headSha": "b3211e3535ee5dc0c5b217ecd93354b47565136b",
+        "name": "Agents Issue Format Guard",
+        "status": "completed",
+        "url": "https://github.com/stranske/Inv-Man-Intake/actions/runs/33966247508",
+        "workflowName": "Agents Issue Format Guard"
+      }
+    ],
+    "branch_state": "green",
+    "agent_ready_supply": 10,
+    "total_open_issues": 15,
+    "open_prs_count": 0
+  },
+  "Pension-Data": {
+    "repo": "Pension-Data",
+    "full_repo": "stranske/Pension-Data",
+    "frozen_issues": [],
+    "stalled_prs": [],
+    "runs": [
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-05T13:25:02Z",
+        "databaseId": 33968833504,
+        "headSha": "1703329abe42164f2f7fd4cd6c4e66c1e4ea6e4a",
+        "name": "Agents Keepalive Sweep",
+        "status": "completed",
+        "url": "https://github.com/stranske/Pension-Data/actions/runs/33968833504",
+        "workflowName": "Agents Keepalive Sweep"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-05T13:09:44Z",
+        "databaseId": 33968090329,
+        "headSha": "1703329abe42164f2f7fd4cd6c4e66c1e4ea6e4a",
+        "name": "Agents PR Health",
+        "status": "completed",
+        "url": "https://github.com/stranske/Pension-Data/actions/runs/33968090329",
+        "workflowName": "Agents PR Health"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-05T12:33:57Z",
+        "databaseId": 33966401317,
+        "headSha": "1703329abe42164f2f7fd4cd6c4e66c1e4ea6e4a",
+        "name": "Agents Keepalive Sweep",
+        "status": "completed",
+        "url": "https://github.com/stranske/Pension-Data/actions/runs/33966401317",
+        "workflowName": "Agents Keepalive Sweep"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-05T12:32:33Z",
+        "databaseId": 33966334069,
+        "headSha": "1703329abe42164f2f7fd4cd6c4e66c1e4ea6e4a",
+        "name": "Autofix",
+        "status": "completed",
+        "url": "https://github.com/stranske/Pension-Data/actions/runs/33966334069",
+        "workflowName": "Autofix"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-05T12:31:27Z",
+        "databaseId": 33966279801,
+        "headSha": "1703329abe42164f2f7fd4cd6c4e66c1e4ea6e4a",
+        "name": "Agents Issue Format Guard",
+        "status": "completed",
+        "url": "https://github.com/stranske/Pension-Data/actions/runs/33966279801",
+        "workflowName": "Agents Issue Format Guard"
+      }
+    ],
+    "branch_state": "green",
+    "agent_ready_supply": 8,
+    "total_open_issues": 14,
+    "open_prs_count": 0
+  },
+  "Ready": {
+    "repo": "Ready",
+    "full_repo": "stranske/Ready",
+    "frozen_issues": [],
+    "stalled_prs": [],
+    "runs": [
+      {
+        "conclusion": "skipped",
+        "createdAt": "2026-09-05T14:07:09Z",
+        "databaseId": 33970850723,
+        "headSha": "5ef9bf3172fdfd3784aa0b39d2b559f568f2f338",
+        "name": "Cross-Repo Smoke",
+        "status": "completed",
+        "url": "https://github.com/stranske/Ready/actions/runs/33970850723",
+        "workflowName": "Cross-Repo Smoke"
+      },
+      {
+        "conclusion": "",
+        "createdAt": "2026-09-05T14:07:09Z",
+        "databaseId": 33970850660,
+        "headSha": "5ef9bf3172fdfd3784aa0b39d2b559f568f2f338",
+        "name": "CI",
+        "status": "queued",
+        "url": "https://github.com/stranske/Ready/actions/runs/33970850660",
+        "workflowName": "CI"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-05T14:03:44Z",
+        "databaseId": 33970684708,
+        "headSha": "8df079ad370aa2d954ae4ac24c4a5b44169699c1",
+        "name": "Agents PR Health",
+        "status": "completed",
+        "url": "https://github.com/stranske/Ready/actions/runs/33970684708",
+        "workflowName": "Agents PR Health"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-05T13:51:56Z",
+        "databaseId": 33970128396,
+        "headSha": "8df079ad370aa2d954ae4ac24c4a5b44169699c1",
+        "name": "Autofix",
+        "status": "completed",
+        "url": "https://github.com/stranske/Ready/actions/runs/33970128396",
+        "workflowName": "Autofix"
+      },
+      {
+        "conclusion": "skipped",
+        "createdAt": "2026-09-05T13:51:04Z",
+        "databaseId": 33970087796,
+        "headSha": "8df079ad370aa2d954ae4ac24c4a5b44169699c1",
+        "name": "Cross-Repo Smoke",
+        "status": "completed",
+        "url": "https://github.com/stranske/Ready/actions/runs/33970087796",
+        "workflowName": "Cross-Repo Smoke"
+      }
+    ],
+    "branch_state": "green",
+    "agent_ready_supply": 1,
+    "total_open_issues": 4,
+    "open_prs_count": 1
+  },
+  "trip-planner": {
+    "repo": "trip-planner",
+    "full_repo": "stranske/trip-planner",
+    "frozen_issues": [],
+    "stalled_prs": [],
+    "runs": [
+      {
+        "conclusion": "skipped",
+        "createdAt": "2026-08-07T14:41:13Z",
+        "databaseId": 31188836639,
+        "headSha": "dd8ab33e5efe3526c01be90563cd38b53d7d22a0",
+        "name": "Agents Keepalive Sweep",
+        "status": "completed",
+        "url": "https://github.com/stranske/trip-planner/actions/runs/31188836639",
+        "workflowName": "Agents Keepalive Sweep"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-08-07T14:21:13Z",
+        "databaseId": 31187149429,
+        "headSha": "dd8ab33e5efe3526c01be90563cd38b53d7d22a0",
+        "name": "Agents PR Health",
+        "status": "completed",
+        "url": "https://github.com/stranske/trip-planner/actions/runs/31187149429",
+        "workflowName": "Agents PR Health"
+      },
+      {
+        "conclusion": "skipped",
+        "createdAt": "2026-08-07T13:50:39Z",
+        "databaseId": 31184594110,
+        "headSha": "dd8ab33e5efe3526c01be90563cd38b53d7d22a0",
+        "name": "Agents Keepalive Sweep",
+        "status": "completed",
+        "url": "https://github.com/stranske/trip-planner/actions/runs/31184594110",
+        "workflowName": "Agents Keepalive Sweep"
+      },
+      {
+        "conclusion": "skipped",
+        "createdAt": "2026-08-07T13:31:08Z",
+        "databaseId": 31183007863,
+        "headSha": "dd8ab33e5efe3526c01be90563cd38b53d7d22a0",
+        "name": "Keepalive Loop Reporter",
+        "status": "completed",
+        "url": "https://github.com/stranske/trip-planner/actions/runs/31183007863",
+        "workflowName": "Keepalive Loop Reporter"
+      },
+      {
+        "conclusion": "action_required",
+        "createdAt": "2026-08-07T13:30:50Z",
+        "databaseId": 31182983792,
+        "headSha": "dd8ab33e5efe3526c01be90563cd38b53d7d22a0",
+        "name": "Agents PR Event Hub",
+        "status": "completed",
+        "url": "https://github.com/stranske/trip-planner/actions/runs/31182983792",
+        "workflowName": "Agents PR Event Hub"
+      }
+    ],
+    "branch_state": "green",
+    "agent_ready_supply": 3,
+    "total_open_issues": 7,
+    "open_prs_count": 2
+  },
+  "learning-management-system": {
+    "repo": "learning-management-system",
+    "full_repo": "stranske/learning-management-system",
+    "frozen_issues": [],
+    "stalled_prs": [],
+    "runs": [
+      {
+        "conclusion": "",
+        "createdAt": "2026-09-05T14:08:18Z",
+        "databaseId": 33970909427,
+        "headSha": "51a8cdb57fe3a17befd0cd594df662ff9a09e25e",
+        "name": "Agents PR Health",
+        "status": "queued",
+        "url": "https://github.com/stranske/learning-management-system/actions/runs/33970909427",
+        "workflowName": "Agents PR Health"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-05T13:26:26Z",
+        "databaseId": 33968901541,
+        "headSha": "51a8cdb57fe3a17befd0cd594df662ff9a09e25e",
+        "name": "Agents Keepalive Sweep",
+        "status": "completed",
+        "url": "https://github.com/stranske/learning-management-system/actions/runs/33968901541",
+        "workflowName": "Agents Keepalive Sweep"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-05T13:08:03Z",
+        "databaseId": 33968010451,
+        "headSha": "51a8cdb57fe3a17befd0cd594df662ff9a09e25e",
+        "name": "Agents PR Health",
+        "status": "completed",
+        "url": "https://github.com/stranske/learning-management-system/actions/runs/33968010451",
+        "workflowName": "Agents PR Health"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-05T12:58:23Z",
+        "databaseId": 33967544468,
+        "headSha": "51a8cdb57fe3a17befd0cd594df662ff9a09e25e",
+        "name": "Autofix",
+        "status": "completed",
+        "url": "https://github.com/stranske/learning-management-system/actions/runs/33967544468",
+        "workflowName": "Autofix"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-05T12:55:58Z",
+        "databaseId": 33967439219,
+        "headSha": "51a8cdb57fe3a17befd0cd594df662ff9a09e25e",
+        "name": "Agents Issue Format Guard",
+        "status": "completed",
+        "url": "https://github.com/stranske/learning-management-system/actions/runs/33967439219",
+        "workflowName": "Agents Issue Format Guard"
+      }
+    ],
+    "branch_state": "green",
+    "agent_ready_supply": 6,
+    "total_open_issues": 9,
+    "open_prs_count": 0
+  },
+  "Fine-Art-Archive": {
+    "repo": "Fine-Art-Archive",
+    "full_repo": "stranske/Fine-Art-Archive",
+    "frozen_issues": [],
+    "stalled_prs": [],
+    "runs": [
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-05T13:26:02Z",
+        "databaseId": 33968880403,
+        "headSha": "826015b9a1a7e581a12ac380af0c47f031fe42e2",
+        "name": "Agents Keepalive Sweep",
+        "status": "completed",
+        "url": "https://github.com/stranske/Fine-Art-Archive/actions/runs/33968880403",
+        "workflowName": "Agents Keepalive Sweep"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-05T13:12:28Z",
+        "databaseId": 33968224299,
+        "headSha": "826015b9a1a7e581a12ac380af0c47f031fe42e2",
+        "name": "Agents PR Health",
+        "status": "completed",
+        "url": "https://github.com/stranske/Fine-Art-Archive/actions/runs/33968224299",
+        "workflowName": "Agents PR Health"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-05T12:34:42Z",
+        "databaseId": 33966434222,
+        "headSha": "826015b9a1a7e581a12ac380af0c47f031fe42e2",
+        "name": "Agents Keepalive Sweep",
+        "status": "completed",
+        "url": "https://github.com/stranske/Fine-Art-Archive/actions/runs/33966434222",
+        "workflowName": "Agents Keepalive Sweep"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-05T12:32:54Z",
+        "databaseId": 33966351779,
+        "headSha": "826015b9a1a7e581a12ac380af0c47f031fe42e2",
+        "name": "Autofix",
+        "status": "completed",
+        "url": "https://github.com/stranske/Fine-Art-Archive/actions/runs/33966351779",
+        "workflowName": "Autofix"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-05T12:30:40Z",
+        "databaseId": 33966240973,
+        "headSha": "826015b9a1a7e581a12ac380af0c47f031fe42e2",
+        "name": "Agents Issue Format Guard",
+        "status": "completed",
+        "url": "https://github.com/stranske/Fine-Art-Archive/actions/runs/33966240973",
+        "workflowName": "Agents Issue Format Guard"
+      }
+    ],
+    "branch_state": "green",
+    "agent_ready_supply": 8,
+    "total_open_issues": 12,
+    "open_prs_count": 0
+  },
+  "Doc-Lineage": {
+    "repo": "Doc-Lineage",
+    "full_repo": "stranske/Doc-Lineage",
+    "frozen_issues": [
+      {
+        "body": "This issue lists Renovate updates and detected dependencies. Read the [Dependency Dashboard](https://docs.renovatebot.com/key-concepts/dashboard/) docs to learn more.<br>[View this repository on the Mend.io Web Portal](https://developer.mend.io/github/stranske/Doc-Lineage).\n\n## Repository Problems\n\nThese problems occurred while renovating this repository. [View logs](https://developer.mend.io//github/stranske/Doc-Lineage).\n\n - \u26a0\ufe0f WARN: pip-compile: dependency not found in lock file\n\n## Awaiting Schedule\n\nThe following updates are awaiting their schedule. To get an update now, click on a checkbox below.\n\n - [ ] <!-- unschedule-branch=renovate/lock-file-maintenance-weekly-lock-file-maintenance -->chore(deps): lock file maintenance\n\n## Detected Dependencies\n\n<details><summary>github-actions (35)</summary>\n<blockquote>\n\n<details><summary>.github/actions/agent-run-base/action.yml</summary>\n\n\n</details>\n\n<details><summary>.github/actions/artifact-cache/action.yml</summary>\n\n\n</details>\n\n<details><summary>.github/actions/resolve-default-branch/action.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-71-codex-belt-dispatcher.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-72-codex-belt-worker.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-73-codex-belt-conveyor.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-80-pr-event-hub.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-81-gate-followups.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-auto-label.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-auto-pilot.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-autofix-dispatcher.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-capability-check.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-decompose.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-dedup.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-guard.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-issue-format-guard.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-issue-intake.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-issue-optimizer.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-keepalive-loop-reporter.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-keepalive-sweep.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-pr-health.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-verifier.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-verify-to-new-pr.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-weekly-metrics.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/autofix.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/backplane-conformance.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/ci.yml (1)</summary>\n\n - `stranske/Workflows main`\n\n</details>\n\n<details><summary>.github/workflows/cross-repo-smoke.yml (1)</summary>\n\n - `stranske/Workflows main`\n\n</details>\n\n<details><summary>.github/workflows/list-llm-models.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/maint-76-claude-code-review.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/maint-87-docs-drift-fix-agent.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/maint-coverage-guard.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/pr-00-gate.yml (43)</summary>\n\n - `actions/create-github-app-token v3@bcd2ba49218906704ab6c1aa796996da409d3eb1`\n - `actions/checkout v7.0.1@3d3c42e5aac5ba805825da76410c181273ba90b1`\n - `actions/github-script v9@3a2844b7e9c422d3c10d287c895573f7108da1b3`\n - `stranske/Workflows main`\n - `actions/checkout v7.0.1@3d3c42e5aac5ba805825da76410c181273ba90b1`\n - `actions/setup-python v7@5fda3b95a4ea91299a34e894583c3862153e4b97`\n - `actions/checkout v7.0.1@3d3c42e5aac5ba805825da76410c181273ba90b1`\n - `actions/setup-node v7@820762786026740c76f36085b0efc47a31fe5020`\n - `actions/setup-python v7@5fda3b95a4ea91299a34e894583c3862153e4b97`\n - `actions/checkout v7.0.1@3d3c42e5aac5ba805825da76410c181273ba90b1`\n - `actions/setup-python v7@5fda3b95a4ea91299a34e894583c3862153e4b97`\n - `actions/checkout v7.0.1@3d3c42e5aac5ba805825da76410c181273ba90b1`\n - `actions/setup-python v7@5fda3b95a4ea91299a34e894583c3862153e4b97`\n - `actions/github-script v9@3a2844b7e9c422d3c10d287c895573f7108da1b3`\n - `stranske/Workflows main`\n - `actions/create-github-app-token v3@bcd2ba49218906704ab6c1aa796996da409d3eb1`\n - `actions/checkout v7.0.1@3d3c42e5aac5ba805825da76410c181273ba90b1`\n - `actions/setup-python v7@5fda3b95a4ea91299a34e894583c3862153e4b97`\n - `actions/create-github-app-token v3@bcd2ba49218906704ab6c1aa796996da409d3eb1`\n - `actions/checkout v7.0.1@3d3c42e5aac5ba805825da76410c181273ba90b1`\n - `actions/setup-node v7@820762786026740c76f36085b0efc47a31fe5020`\n - `actions/github-script v9@3a2844b7e9c422d3c10d287c895573f7108da1b3`\n - `actions/github-script v9@3a2844b7e9c422d3c10d287c895573f7108da1b3`\n - `actions/github-script v9@3a2844b7e9c422d3c10d287c895573f7108da1b3`\n - `actions/github-script v9@3a2844b7e9c422d3c10d287c895573f7108da1b3`\n - `actions/download-artifact v8@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c`\n - `actions/github-script v9@3a2844b7e9c422d3c10d287c895573f7108da1b3`\n - `actions/github-script v9@3a2844b7e9c422d3c10d287c895573f7108da1b3`\n - `actions/github-script v9@3a2844b7e9c422d3c10d287c895573f7108da1b3`\n - `actions/upload-artifact v7@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a`\n - `actions/upload-artifact v7@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a`\n - `actions/upload-artifact v7@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a`\n - `actions/upload-artifact v7@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a`\n - `actions/github-script v9@3a2844b7e9c422d3c10d287c895573f7108da1b3`\n - `actions/github-script v9@3a2844b7e9c422d3c10d287c895573f7108da1b3`\n - `actions/github-script v9@3a2844b7e9c422d3c10d287c895573f7108da1b3`\n - `python 3.14`\n - `node 24`\n - `python 3.14`\n - `python 3.14`\n - `python 3.14`\n - `python 3.14`\n - `node 24`\n\n</details>\n\n<details><summary>.github/workflows/pr-46-dependency-repair-contract.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/reusable-pr-context.yml</summary>\n\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>npm (1)</summary>\n<blockquote>\n\n<details><summary>.github/scripts/package.json</summary>\n\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>pip-compile (1)</summary>\n<blockquote>\n\n<details><summary>pyproject.toml (2)</summary>\n\n - `python >=3.12`\n - `setuptools >=82.0.1`\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>pip_requirements (1)</summary>\n<blockquote>\n\n<details><summary>tools/requirements-llm.txt</summary>\n\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>poetry (1)</summary>\n<blockquote>\n\n<details><summary>pyproject.toml</summary>\n\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>renovate-config (1)</summary>\n<blockquote>\n\n<details><summary>.github/renovate.json</summary>\n\n\n</details>\n\n</blockquote>\n</details>\n\n---\n\n- [ ] <!-- manual job -->Check this box to trigger a request for Renovate to run again on this repository\n\n",
+        "comments": [
+          {
+            "id": "IC_kwDOUOakrc8AAAABSl33GQ",
+            "author": {
+              "login": "github-actions"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n**Missing required sections:** `Tasks`, `Acceptance Criteria`\n\n_Advisory:_\n- 4 cited path(s) do not exist yet: `renovate/non-major-updates`, `renovate/github-actions`, `stranske/Workflows`, `renovate/lock-file-maintenance-weekly-lock-file-maintenance` \u2014 expected when a task creates them; check for typos otherwise.\n\n_Recommended but absent:_ `Why`, `Scope`, `Implementation Notes`, `Non-Goals`\n\nDispatched the Agents Issue Optimizer format phase (attempt 1 of 3).\n\n<!-- format-guard:73ca91da37ac:attempt:1 -->\n",
+            "createdAt": "2026-09-04T15:20:49Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Doc-Lineage/issues/1#issuecomment-5542639385",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOUOakrc8AAAABSl4hhw",
+            "author": {
+              "login": "github-actions"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Doc-Lineage/actions/runs/33888943959)\n",
+            "createdAt": "2026-09-04T15:21:34Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Doc-Lineage/issues/1#issuecomment-5542650247",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOUOakrc8AAAABSl41IA",
+            "author": {
+              "login": "github-actions"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n**Missing required sections:** `Tasks`, `Acceptance Criteria`\n\n_Advisory:_\n- 4 cited path(s) do not exist yet: `renovate/non-major-updates`, `renovate/github-actions`, `stranske/Workflows`, `renovate/lock-file-maintenance-weekly-lock-file-maintenance` \u2014 expected when a task creates them; check for typos otherwise.\n\n_Recommended but absent:_ `Why`, `Scope`, `Implementation Notes`, `Non-Goals`\n\nDispatched the Agents Issue Optimizer format phase (attempt 2 of 3).\n\n<!-- format-guard:73ca91da37ac:attempt:2 -->\n",
+            "createdAt": "2026-09-04T15:21:55Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Doc-Lineage/issues/1#issuecomment-5542655264",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOUOakrc8AAAABSl5s5Q",
+            "author": {
+              "login": "agents-workflows-bot"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Doc-Lineage/actions/runs/33889047850)\n\n**Format validation report:**\n```text\nThis issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `_Not provided._`.\n- `Acceptance Criteria` names no test, runnable command or observable verification gate \u2014 Definition of Ready / Quality Bar \u00a72 requires one.\n```\n",
+            "createdAt": "2026-09-04T15:22:54Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Doc-Lineage/issues/1#issuecomment-5542669541",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOUOakrc8AAAABSl5_Cg",
+            "author": {
+              "login": "github-actions"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n**Missing required sections:** `Tasks`, `Acceptance Criteria`\n\n_Advisory:_\n- 4 cited path(s) do not exist yet: `renovate/non-major-updates`, `renovate/github-actions`, `stranske/Workflows`, `renovate/lock-file-maintenance-weekly-lock-file-maintenance` \u2014 expected when a task creates them; check for typos otherwise.\n\n_Recommended but absent:_ `Why`, `Scope`, `Implementation Notes`, `Non-Goals`\n\nDispatched the Agents Issue Optimizer format phase (attempt 3 of 3).\n\n<!-- format-guard:73ca91da37ac:attempt:3 -->\n",
+            "createdAt": "2026-09-04T15:23:15Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Doc-Lineage/issues/1#issuecomment-5542674186",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOUOakrc8AAAABSl6V_w",
+            "author": {
+              "login": "github-actions"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "<!-- format-guard:attempt-cap -->\nAutomated formatting stopped after 3 optimizer attempts. Fix the issue body manually, then remove agents:auto-pilot-pause before retrying.\n",
+            "createdAt": "2026-09-04T15:23:37Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Doc-Lineage/issues/1#issuecomment-5542680063",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOUOakrc8AAAABSl6uQw",
+            "author": {
+              "login": "agents-workflows-bot"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Doc-Lineage/actions/runs/33889175789)\n\n**Format validation report:**\n```text\nThis issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `_Not provided._`.\n- `Acceptance Criteria` names no test, runnable command or observable verification gate \u2014 Definition of Ready / Quality Bar \u00a72 requires one.\n```\n",
+            "createdAt": "2026-09-04T15:24:02Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Doc-Lineage/issues/1#issuecomment-5542686275",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOUOakrc8AAAABSl6-0w",
+            "author": {
+              "login": "github-actions"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "<!-- format-guard:attempt-cap -->\nAutomated formatting stopped after 3 optimizer attempts. Fix the issue body manually, then remove agents:auto-pilot-pause before retrying.\n",
+            "createdAt": "2026-09-04T15:24:19Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Doc-Lineage/issues/1#issuecomment-5542690515",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOUOakrc8AAAABSo6zjg",
+            "author": {
+              "login": "github-actions"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n**Missing required sections:** `Tasks`, `Acceptance Criteria`\n- None of the 4 paths this issue cites exist in this repository (`renovate/non-major-updates`, `renovate/github-actions`, `stranske/workflows`, `renovate/lock-file-maintenance-weekly-lock-file-maintenance`). An agent cloning this repo has nothing to act on. File it against the repo that holds the code, or cite the evidence here.\n\n_Recommended but absent:_ `Why`, `Scope`, `Implementation Notes`, `Non-Goals`\n\nDispatched the Agents Issue Optimizer format phase (attempt 1 of 3).\n\n<!-- format-guard:5a55e8114682:attempt:1 -->\n",
+            "createdAt": "2026-09-04T20:03:04Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Doc-Lineage/issues/1#issuecomment-5545833358",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOUOakrc8AAAABSo7Xdw",
+            "author": {
+              "login": "agents-workflows-bot"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Doc-Lineage/actions/runs/33914268086)\n\n**Format validation report:**\n```text\nThis issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `_Not provided._`.\n- `Acceptance Criteria` names no test, runnable command or observable verification gate \u2014 Definition of Ready / Quality Bar \u00a72 requires one.\n```\n",
+            "createdAt": "2026-09-04T20:04:01Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Doc-Lineage/issues/1#issuecomment-5545842551",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOUOakrc8AAAABSo7xOA",
+            "author": {
+              "login": "github-actions"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n**Missing required sections:** `Tasks`, `Acceptance Criteria`\n- None of the 4 paths this issue cites exist in this repository (`renovate/non-major-updates`, `renovate/github-actions`, `stranske/workflows`, `renovate/lock-file-maintenance-weekly-lock-file-maintenance`). An agent cloning this repo has nothing to act on. File it against the repo that holds the code, or cite the evidence here.\n\n_Recommended but absent:_ `Why`, `Scope`, `Implementation Notes`, `Non-Goals`\n\nDispatched the Agents Issue Optimizer format phase (attempt 2 of 3).\n\n<!-- format-guard:5a55e8114682:attempt:2 -->\n",
+            "createdAt": "2026-09-04T20:04:39Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Doc-Lineage/issues/1#issuecomment-5545849144",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOUOakrc8AAAABSo8Xgg",
+            "author": {
+              "login": "agents-workflows-bot"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Doc-Lineage/actions/runs/33914402626)\n\n**Format validation report:**\n```text\nThis issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `_Not provided._`.\n- `Acceptance Criteria` names no test, runnable command or observable verification gate \u2014 Definition of Ready / Quality Bar \u00a72 requires one.\n```\n",
+            "createdAt": "2026-09-04T20:05:38Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Doc-Lineage/issues/1#issuecomment-5545858946",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOUOakrc8AAAABSo80SQ",
+            "author": {
+              "login": "github-actions"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n**Missing required sections:** `Tasks`, `Acceptance Criteria`\n- None of the 4 paths this issue cites exist in this repository (`renovate/non-major-updates`, `renovate/github-actions`, `stranske/workflows`, `renovate/lock-file-maintenance-weekly-lock-file-maintenance`). An agent cloning this repo has nothing to act on. File it against the repo that holds the code, or cite the evidence here.\n\n_Recommended but absent:_ `Why`, `Scope`, `Implementation Notes`, `Non-Goals`\n\nDispatched the Agents Issue Optimizer format phase (attempt 3 of 3).\n\n<!-- format-guard:5a55e8114682:attempt:3 -->\n",
+            "createdAt": "2026-09-04T20:06:22Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Doc-Lineage/issues/1#issuecomment-5545866313",
+            "viewerDidAuthor": false
+          },
+          {
+            "id": "IC_kwDOUOakrc8AAAABSo9FjQ",
+            "author": {
+              "login": "github-actions"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "<!-- format-guard:attempt-cap -->\nAutomated formatting stopped after 3 optimizer attempts. Fix the issue body manually, then remove agents:auto-pilot-pause before retrying.\n",
+            "createdAt": "2026-09-04T20:06:50Z",
+            "includesCreatedEdit": false,
+            "isMinimized": false,
+            "minimizedReason": "",
+            "reactionGroups": [],
+            "url": "https://github.com/stranske/Doc-Lineage/issues/1#issuecomment-5545870733",
+            "viewerDidAuthor": false
+          }
+        ],
+        "labels": [
+          {
+            "id": "LA_kwDOUOakrc8AAAACz0b_nw",
+            "name": "agents:auto-pilot-pause",
+            "description": "",
+            "color": "ededed"
+          }
+        ],
+        "number": 1,
+        "title": "Dependency Dashboard"
+      }
+    ],
+    "stalled_prs": [],
+    "runs": [
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-05T13:26:35Z",
+        "databaseId": 33968908292,
+        "headSha": "dcc847e96d28d1e60348d84128837fd01df256f4",
+        "name": "Agents Keepalive Sweep",
+        "status": "completed",
+        "url": "https://github.com/stranske/Doc-Lineage/actions/runs/33968908292",
+        "workflowName": "Agents Keepalive Sweep"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-05T13:13:57Z",
+        "databaseId": 33968294706,
+        "headSha": "dcc847e96d28d1e60348d84128837fd01df256f4",
+        "name": "Agents PR Health",
+        "status": "completed",
+        "url": "https://github.com/stranske/Doc-Lineage/actions/runs/33968294706",
+        "workflowName": "Agents PR Health"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-05T12:34:56Z",
+        "databaseId": 33966447368,
+        "headSha": "dcc847e96d28d1e60348d84128837fd01df256f4",
+        "name": "Agents Keepalive Sweep",
+        "status": "completed",
+        "url": "https://github.com/stranske/Doc-Lineage/actions/runs/33966447368",
+        "workflowName": "Agents Keepalive Sweep"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-05T12:30:45Z",
+        "databaseId": 33966245375,
+        "headSha": "dcc847e96d28d1e60348d84128837fd01df256f4",
+        "name": "Auto-Label Issues",
+        "status": "completed",
+        "url": "https://github.com/stranske/Doc-Lineage/actions/runs/33966245375",
+        "workflowName": "Auto-Label Issues"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-05T12:30:45Z",
+        "databaseId": 33966245355,
+        "headSha": "dcc847e96d28d1e60348d84128837fd01df256f4",
+        "name": "Agents Issue Format Guard",
+        "status": "completed",
+        "url": "https://github.com/stranske/Doc-Lineage/actions/runs/33966245355",
+        "workflowName": "Agents Issue Format Guard"
+      }
+    ],
+    "branch_state": "green",
+    "agent_ready_supply": 12,
+    "total_open_issues": 15,
+    "open_prs_count": 0
+  },
+  "Deliverable-Render": {
+    "repo": "Deliverable-Render",
+    "full_repo": "stranske/Deliverable-Render",
+    "frozen_issues": [],
+    "stalled_prs": [],
+    "runs": [
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-05T14:05:34Z",
+        "databaseId": 33970775623,
+        "headSha": "5b86788e4fe25b2f6f41fdfc2ebd6e20113c43f3",
+        "name": "Agents PR Health",
+        "status": "completed",
+        "url": "https://github.com/stranske/Deliverable-Render/actions/runs/33970775623",
+        "workflowName": "Agents PR Health"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-05T13:26:15Z",
+        "databaseId": 33968892419,
+        "headSha": "5b86788e4fe25b2f6f41fdfc2ebd6e20113c43f3",
+        "name": "Agents Keepalive Sweep",
+        "status": "completed",
+        "url": "https://github.com/stranske/Deliverable-Render/actions/runs/33968892419",
+        "workflowName": "Agents Keepalive Sweep"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-05T13:05:45Z",
+        "databaseId": 33967901395,
+        "headSha": "5b86788e4fe25b2f6f41fdfc2ebd6e20113c43f3",
+        "name": "Agents PR Health",
+        "status": "completed",
+        "url": "https://github.com/stranske/Deliverable-Render/actions/runs/33967901395",
+        "workflowName": "Agents PR Health"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-05T12:35:07Z",
+        "databaseId": 33966457789,
+        "headSha": "5b86788e4fe25b2f6f41fdfc2ebd6e20113c43f3",
+        "name": "Agents Keepalive Sweep",
+        "status": "completed",
+        "url": "https://github.com/stranske/Deliverable-Render/actions/runs/33966457789",
+        "workflowName": "Agents Keepalive Sweep"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-05T12:30:37Z",
+        "databaseId": 33966238879,
+        "headSha": "5b86788e4fe25b2f6f41fdfc2ebd6e20113c43f3",
+        "name": "Auto-Label Issues",
+        "status": "completed",
+        "url": "https://github.com/stranske/Deliverable-Render/actions/runs/33966238879",
+        "workflowName": "Auto-Label Issues"
+      }
+    ],
+    "branch_state": "green",
+    "agent_ready_supply": 6,
+    "total_open_issues": 6,
+    "open_prs_count": 0
+  },
+  "Manager-Mosaic": {
+    "repo": "Manager-Mosaic",
+    "full_repo": "stranske/Manager-Mosaic",
+    "frozen_issues": [],
+    "stalled_prs": [],
+    "runs": [
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-05T14:02:39Z",
+        "databaseId": 33970632511,
+        "headSha": "831e0cf97fe3ff217944911d50961f45b16fb48e",
+        "name": "Agents PR Health",
+        "status": "completed",
+        "url": "https://github.com/stranske/Manager-Mosaic/actions/runs/33970632511",
+        "workflowName": "Agents PR Health"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-05T13:26:48Z",
+        "databaseId": 33968916665,
+        "headSha": "831e0cf97fe3ff217944911d50961f45b16fb48e",
+        "name": "Agents Gate Followups",
+        "status": "completed",
+        "url": "https://github.com/stranske/Manager-Mosaic/actions/runs/33968916665",
+        "workflowName": "Agents Gate Followups"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-05T13:26:37Z",
+        "databaseId": 33968909783,
+        "headSha": "831e0cf97fe3ff217944911d50961f45b16fb48e",
+        "name": "Agents Keepalive Sweep",
+        "status": "completed",
+        "url": "https://github.com/stranske/Manager-Mosaic/actions/runs/33968909783",
+        "workflowName": "Agents Keepalive Sweep"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-05T13:02:49Z",
+        "databaseId": 33967755818,
+        "headSha": "831e0cf97fe3ff217944911d50961f45b16fb48e",
+        "name": "Agents PR Health",
+        "status": "completed",
+        "url": "https://github.com/stranske/Manager-Mosaic/actions/runs/33967755818",
+        "workflowName": "Agents PR Health"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-05T12:36:35Z",
+        "databaseId": 33966525775,
+        "headSha": "831e0cf97fe3ff217944911d50961f45b16fb48e",
+        "name": "Keepalive Loop Reporter",
+        "status": "completed",
+        "url": "https://github.com/stranske/Manager-Mosaic/actions/runs/33966525775",
+        "workflowName": "Keepalive Loop Reporter"
+      }
+    ],
+    "branch_state": "green",
+    "agent_ready_supply": 11,
+    "total_open_issues": 11,
+    "open_prs_count": 1
+  }
+}
