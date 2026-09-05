@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-05T13:35:55Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-05T13:51:00Z)
 
-Units: 49 — done 49
+Units: 50 — claimed 1, done 49
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 CLAUDE CONSERVATION ACTIVE until 2026-09-06T12:00:00Z — non-Claude executors continue (launchd driver every 15 min); claude-only units deferred.
@@ -53,6 +53,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D2-issue-body-repair | D | D | done | cursor | driver | Repair issue bodies citing scratchpad paths and unblock the paused aut |
 | D3-unblock-sweep-2026-09-04T21 | D | D | done | codex | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D3-unblock-sweep-2026-09-05T05 | D | D | done | codex | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
+| D3-unblock-sweep-2026-09-05T13 | D | D | claimed | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D-audit-Fine-Art-Archive--2026-09-05T04-00-31Z | D | D | done | codex | codex | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 2) |
 | D-audit-Manager-Mosaic--2026-09-05T04-00-25Z | D | D | done | codex | driver | Audit stranske/Manager-Mosaic and file issues (supply 2 <= 2) |
 | D-audit-learning-management-system--2026-09-05T04-00-30Z | D | D | done | codex | driver | Audit stranske/learning-management-system and file issues (supply 2 <= |
@@ -60,9 +61,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-05T07:34:09Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-05T07:47:29+00:00; local work continues
-- 2026-09-05T09:34:42Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-05T11:28:43+00:00; local work continues
-- 2026-09-05T09:49:44Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-05T11:28:43+00:00; local work continues
 - 2026-09-05T10:04:47Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-05T11:28:43+00:00; local work continues
 - 2026-09-05T10:10:33Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-05T11:28:43+00:00; local work continues
 - 2026-09-05T10:19:49Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-05T11:28:43+00:00; local work continues
@@ -72,6 +70,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-05T11:04:55Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-05T11:28:43+00:00; local work continues
 - 2026-09-05T11:11:03Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-05T11:28:43+00:00; local work continues
 - 2026-09-05T11:20:02Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-05T11:28:43+00:00; local work continues
+- 2026-09-05T13:51:00Z — unblock — enqueued D3-unblock-sweep-2026-09-05T13
+- 2026-09-05T13:51:00Z — D3-unblock-sweep-2026-09-05T13 — route — router picked cursor from ['codex', 'cursor']
+- 2026-09-05T13:51:00Z — D3-unblock-sweep-2026-09-05T13 — claimed by driver (agent cursor)
 
 ## Questions
 
