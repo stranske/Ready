@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-05T03:28:32Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-05T03:30:17Z)
 
 Units: 45 — done 45
 Paused: False   Phase stops: []
@@ -57,7 +57,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 ## Last checkpoints
 
 - 2026-09-05T01:14:53Z — mirror — deferred — Ready#552 exact-head sync review; publication resumes by 2026-09-05T01:50:09+00:00; local work continues
-- 2026-09-05T01:14:53Z — mirror — deferred — Ready#552 exact-head sync review; publication resumes by 2026-09-05T01:50:09+00:00; local work continues
 - 2026-09-05T01:15:26Z — mirror — deferred — Ready#552 exact-head sync review; publication resumes by 2026-09-05T01:50:09+00:00; local work continues
 - 2026-09-05T01:20:49Z — D4-verify-merged-2026-09-05T01 — done — gemini produced 3731 words at artifacts/verification/D4-verify-merged-2026-09-05T01.md in 356s
 - 2026-09-05T01:20:49Z — mirror — deferred — Ready#552 exact-head sync review; publication resumes by 2026-09-05T01:50:09+00:00; local work continues
@@ -68,6 +67,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-05T02:11:01Z — mirror — deferred — Ready#552 exact-head sync review; publication resumes by 2026-09-05T03:05:09+00:00; local work continues
 - 2026-09-05T02:15:00Z — mirror — deferred — Ready#552 exact-head sync review; publication resumes by 2026-09-05T03:05:09+00:00; local work continues
 - 2026-09-05T02:30:02Z — mirror — deferred — Ready#552 exact-head sync review; publication resumes by 2026-09-05T03:05:09+00:00; local work continues
+- 2026-09-05T03:30:17Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 
 ## Questions
 
