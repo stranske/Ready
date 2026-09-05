@@ -327,3 +327,13 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-05T16:11:40Z — D-audit-Travel-Plan-Permission--2026-09-05T16-11-36Z — route — router picked codex from ['codex']
 ## 2026-09-05T16:11:40Z — D-audit-Travel-Plan-Permission--2026-09-05T16-11-36Z — claimed by codex (agent codex)
 ## 2026-09-05T16:39:40Z — D-audit-Travel-Plan-Permission--2026-09-05T16-11-36Z — done — Audit establishes six reproduced behavior defects and two bounded hardening proposals; eight issue bodies validate without advisories and remain staged under th
+## 2026-09-05T16:58:23Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-05T18:54:56+00:00; local work continues
+## 2026-09-05T17:12:04Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-05T18:54:56+00:00; local work continues
+## 2026-09-05T17:13:26Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-05T18:54:56+00:00; local work continues
+## 2026-09-05T17:28:31Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-05T18:54:56+00:00; local work continues
+## 2026-09-05T17:43:33Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-05T18:54:56+00:00; local work continues
+## 2026-09-05T17:58:35Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-05T18:54:56+00:00; local work continues
+## 2026-09-05T18:13:00Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-05T18:54:56+00:00; local work continues
+## 2026-09-05T18:13:45Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-05T18:54:56+00:00; local work continues
+## 2026-09-05T18:28:47Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-05T18:54:56+00:00; local work continues
+## 2026-09-05T18:43:49Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-05T18:54:56+00:00; local work continues
