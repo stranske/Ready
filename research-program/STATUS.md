@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-05T05:38:14Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-05T05:44:06Z)
 
-Units: 49 — claimed 1, done 46, queued 2
+Units: 49 — done 47, queued 2
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=warn vibe=ok aider=ok
 CLAUDE CONSERVATION ACTIVE until 2026-09-06T12:00:00Z — non-Claude executors continue (launchd driver every 15 min); claude-only units deferred.
@@ -52,7 +52,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | C-skill-curriculum | C | C1 | done | codex | driver | Skill curriculum + tool-literacy loop design (LMS-connected) |
 | D2-issue-body-repair | D | D | done | cursor | driver | Repair issue bodies citing scratchpad paths and unblock the paused aut |
 | D3-unblock-sweep-2026-09-04T21 | D | D | done | codex | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
-| D3-unblock-sweep-2026-09-05T05 | D | D | claimed | codex | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
+| D3-unblock-sweep-2026-09-05T05 | D | D | done | codex | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D-audit-Fine-Art-Archive--2026-09-05T04-00-31Z | D | D | done | codex | codex | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 2) |
 | D-audit-Manager-Mosaic--2026-09-05T04-00-25Z | D | D | queued | codex |  | Audit stranske/Manager-Mosaic and file issues (supply 2 <= 2) |
 | D-audit-learning-management-system--2026-09-05T04-00-30Z | D | D | queued | codex |  | Audit stranske/learning-management-system and file issues (supply 2 <= |
@@ -60,7 +60,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-05T04:23:10Z — D-audit-Manager-Mosaic--2026-09-05T04-00-25Z — route — router picked codex from ['codex']
 - 2026-09-05T04:23:10Z — D-audit-Manager-Mosaic--2026-09-05T04-00-25Z — claimed by driver (agent codex)
 - 2026-09-05T05:03:13Z — D-audit-Manager-Mosaic--2026-09-05T04-00-25Z — fail — offload to gemini exited 1; retained artifact is not proof of success
 - 2026-09-05T05:11:30Z — D-audit-Manager-Mosaic--2026-09-05T04-00-25Z — route — router picked codex from ['codex']
@@ -72,6 +71,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-05T05:38:13Z — unblock — enqueued D3-unblock-sweep-2026-09-05T05
 - 2026-09-05T05:38:14Z — D3-unblock-sweep-2026-09-05T05 — route — router picked codex from ['codex', 'cursor']
 - 2026-09-05T05:38:14Z — D3-unblock-sweep-2026-09-05T05 — claimed by driver (agent codex)
+- 2026-09-05T05:44:06Z — D3-unblock-sweep-2026-09-05T05 — done — cursor produced 700 words at artifacts/sweeps/D3-unblock-sweep-2026-09-05T05.md in 349s
 
 ## Questions
 
