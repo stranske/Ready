@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-05T04:00:31Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-05T04:12:00Z)
 
 Units: 48 — claimed 1, done 45, queued 2
 Paused: False   Phase stops: []
@@ -52,16 +52,13 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | C-skill-curriculum | C | C1 | done | codex | driver | Skill curriculum + tool-literacy loop design (LMS-connected) |
 | D2-issue-body-repair | D | D | done | cursor | driver | Repair issue bodies citing scratchpad paths and unblock the paused aut |
 | D3-unblock-sweep-2026-09-04T21 | D | D | done | codex | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
-| D-audit-Fine-Art-Archive--2026-09-05T04-00-31Z | D | D | claimed | codex | driver | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 2) |
+| D-audit-Fine-Art-Archive--2026-09-05T04-00-31Z | D | D | claimed | codex | codex | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 2) |
 | D-audit-Manager-Mosaic--2026-09-05T04-00-25Z | D | D | queued | claude |  | Audit stranske/Manager-Mosaic and file issues (supply 2 <= 2) |
 | D-audit-learning-management-system--2026-09-05T04-00-30Z | D | D | queued | claude |  | Audit stranske/learning-management-system and file issues (supply 2 <= |
 | D4-verify-merged-2026-09-05T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
 
 ## Last checkpoints
 
-- 2026-09-05T01:34:48Z — mirror — deferred — Ready#552 exact-head sync review; publication resumes by 2026-09-05T01:50:09+00:00; local work continues
-- 2026-09-05T01:44:56Z — mirror — deferred — Ready#552 exact-head sync review; publication resumes by 2026-09-05T01:50:09+00:00; local work continues
-- 2026-09-05T01:59:59Z — mirror — deferred — Ready#552 exact-head sync review; publication resumes by 2026-09-05T03:05:09+00:00; local work continues
 - 2026-09-05T02:11:01Z — mirror — deferred — Ready#552 exact-head sync review; publication resumes by 2026-09-05T03:05:09+00:00; local work continues
 - 2026-09-05T02:15:00Z — mirror — deferred — Ready#552 exact-head sync review; publication resumes by 2026-09-05T03:05:09+00:00; local work continues
 - 2026-09-05T02:30:02Z — mirror — deferred — Ready#552 exact-head sync review; publication resumes by 2026-09-05T03:05:09+00:00; local work continues
@@ -71,6 +68,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-05T04:00:31Z — refill — Fine-Art-Archive: open=1 <= 2 → audit queued
 - 2026-09-05T04:00:31Z — D-audit-Fine-Art-Archive--2026-09-05T04-00-31Z — route — router picked codex from ['codex']
 - 2026-09-05T04:00:31Z — D-audit-Fine-Art-Archive--2026-09-05T04-00-31Z — claimed by driver (agent codex)
+- 2026-09-05T04:08:08Z — D-audit-Fine-Art-Archive--2026-09-05T04-00-31Z — fail — gemini produced 348 words at /Users/teacher/.codex/automations/research-program/artifacts/audits/Fine-Art-Archive-2026-09-05.md (min 400); rotating agent
+- 2026-09-05T04:12:00Z — D-audit-Fine-Art-Archive--2026-09-05T04-00-31Z — route — router picked codex from ['codex']
+- 2026-09-05T04:12:00Z — D-audit-Fine-Art-Archive--2026-09-05T04-00-31Z — claimed by codex (agent codex)
 
 ## Questions
 
