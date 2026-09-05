@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-05T04:17:16Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-05T04:23:10Z)
 
-Units: 48 — done 46, queued 2
+Units: 48 — claimed 1, done 46, queued 1
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 CLAUDE CONSERVATION ACTIVE until 2026-09-06T12:00:00Z — non-Claude executors continue (launchd driver every 15 min); claude-only units deferred.
@@ -53,14 +53,12 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D2-issue-body-repair | D | D | done | cursor | driver | Repair issue bodies citing scratchpad paths and unblock the paused aut |
 | D3-unblock-sweep-2026-09-04T21 | D | D | done | codex | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D-audit-Fine-Art-Archive--2026-09-05T04-00-31Z | D | D | done | codex | codex | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 2) |
-| D-audit-Manager-Mosaic--2026-09-05T04-00-25Z | D | D | queued | claude |  | Audit stranske/Manager-Mosaic and file issues (supply 2 <= 2) |
+| D-audit-Manager-Mosaic--2026-09-05T04-00-25Z | D | D | claimed | codex | driver | Audit stranske/Manager-Mosaic and file issues (supply 2 <= 2) |
 | D-audit-learning-management-system--2026-09-05T04-00-30Z | D | D | queued | claude |  | Audit stranske/learning-management-system and file issues (supply 2 <= |
 | D4-verify-merged-2026-09-05T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
 
 ## Last checkpoints
 
-- 2026-09-05T02:15:00Z — mirror — deferred — Ready#552 exact-head sync review; publication resumes by 2026-09-05T03:05:09+00:00; local work continues
-- 2026-09-05T02:30:02Z — mirror — deferred — Ready#552 exact-head sync review; publication resumes by 2026-09-05T03:05:09+00:00; local work continues
 - 2026-09-05T03:30:17Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 - 2026-09-05T04:00:25Z — refill — Manager-Mosaic: open=2 <= 2 → audit queued
 - 2026-09-05T04:00:30Z — refill — learning-management-system: open=2 <= 2 → audit queued
@@ -71,6 +69,8 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-05T04:12:00Z — D-audit-Fine-Art-Archive--2026-09-05T04-00-31Z — route — router picked codex from ['codex']
 - 2026-09-05T04:12:00Z — D-audit-Fine-Art-Archive--2026-09-05T04-00-31Z — claimed by codex (agent codex)
 - 2026-09-05T04:17:16Z — D-audit-Fine-Art-Archive--2026-09-05T04-00-31Z — done — Reconciled nine existing Fine-Art-Archive audit issues, reproduced defects, staged corrected bodies, and documented eight remote guard passes plus the remaining
+- 2026-09-05T04:23:10Z — D-audit-Manager-Mosaic--2026-09-05T04-00-25Z — route — router picked codex from ['codex']
+- 2026-09-05T04:23:10Z — D-audit-Manager-Mosaic--2026-09-05T04-00-25Z — claimed by driver (agent codex)
 
 ## Questions
 
