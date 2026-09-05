@@ -1,0 +1,26 @@
+Reviewing PR #3388 against the specified commits and gathering diff, issue context, and CI state.
+GitHub CLI isn't authenticated; gathering PR context from git history, source code, and local tests.
+- **verdict:** approve
+
+- **P0/P1 blockers:** none
+
+- **P2 advisories:**
+  - **In-flight `reviewing` recoveries:** `beginStableDeliveryReview` clears stale `sync:delivery-ready` only on the `staging → reviewing` transition (`.github/scripts/maint71_merge_sync_prs.js` ~1277–1301). A PR already persisted in `delivery_state: reviewing` with a leftover ready label from a prior generation will still hit `sealStableDelivery`’s add-only path (~1376–1381), which does not emit a new `labeled` event if the label is already present. Recovery then depends on `restageStableDelivery` (head mismatch) or manual label removal—not covered by the new test.
+  - **Operation order vs `restageStableDelivery`:** `beginStableDeliveryReview` now does staging-label add → ready remove → body update; `restageStableDelivery` still does body update → staging add → ready remove (~1324–1345). Both are consistent with maint-68’s refresh path (`maint-68-sync-consumer-repos.yml` ~1314–1315), but the asymmetry means a brief extra Gate wake-up on `labeled`/`synchronize` during review start is possible; `gate_summary.py` should still fail-closed on unsealed records.
+
+- **validation evidence checked:**
+  - Local diff `913e2625bdc471de84addea5b4cc8dfefca1c78a..84ff4a405a0248923e7973ba03b8625ea8f8b0e5` (1 commit, 2 files: `maint71_merge_sync_prs.js`, `sync_pr_merge_contract.test.js`)
+  - `node --test .github/scripts/__tests__/sync_pr_merge_contract.test.js` — **82/82 pass**, including new test `maint71 starts review by clearing stale ready labels while retaining the staging hold`
+  - `python3 -m pytest tests/workflows/test_sync_manifest_delivery.py -q` — **25/25 pass**
+  - Contract/docs read: `docs/ops/CONSUMER_REPO_MAINTENANCE.md` (~463–467) documents that `sync:delivery-ready` must trigger a **fresh** Gate after sealing; consumer Gate listens on `pull_request` `labeled` (`templates/consumer-repo/.github/workflows/pr-00-gate.yml` ~16)
+  - Existing structural test confirms `sealStableDelivery` intentionally does **not** `removeLabel` (`sync_pr_merge_contract.test.js` ~95–103)
+  - **Not reachable locally:** `gh`/GitHub API (auth blocked), so PR body, linked issues, live check rollup, and unresolved review threads could not be read; relied on user note that CodeRabbit check is **SUCCESS**
+
+- **residual risk:**
+  - No CodeRabbit semantic pass; no live confirmation of PR acceptance criteria, issue linkage, or remote CI/review-thread state
+  - No end-to-end test that `sealStableDelivery` actually re-fires consumer Gate after a full stale-label cycle; coverage stops at review start + 404/403 label-removal behavior
+  - Production behavior still assumes GitHub does not re-emit `labeled` when `addLabels` is called for an already-present label (documented consumer constraint in `templates/consumer-repo/docs/LABELS.md` ~790)
+
+- **recommendation:** merge-safe with waiver
+
+**Review summary (confidence: high for the changed path, medium for fleet recovery edge cases):** The fix correctly targets the root cause—stale `sync:delivery-ready` from a prior generation prevents a new `labeled` event when Maint 71 later seals—by clearing the label at review start while keeping `sync:delivery-staging`, mirroring the existing `restageStableDelivery` and maint-68 refresh patterns. Fail-closed on 403 and idempotent 404 handling are tested. I would change my mind if the source issue requires healing PRs already stuck in `reviewing` without a restage, or if live CI shows a required check failure unrelated to CodeRabbit capacity.
