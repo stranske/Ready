@@ -1,0 +1,50 @@
+{
+  "ok": true,
+  "status": "ready",
+  "helper": {
+    "path": "/Users/teacher/.codex/orchestrator/frontend-verify/verify.mjs",
+    "exists": true,
+    "diagnostic": "helper_ready"
+  },
+  "node": {
+    "available": true,
+    "path": "/opt/homebrew/bin/node",
+    "diagnostic": "node_ready"
+  },
+  "browser_endpoint_required": true,
+  "browser_endpoint_source": "default_start_browser",
+  "browser_endpoint": {
+    "configured": true,
+    "endpoint": "http://127.0.0.1:9222",
+    "version_url": "http://127.0.0.1:9222/json/version",
+    "reachable": true,
+    "diagnostic": "browser_endpoint_ready",
+    "browser": "Chrome/152.0.7977.82",
+    "websocket_debugger_url": "ws://127.0.0.1:9222/devtools/browser/a9b94a4b-cfa6-4f20-ac1a-67964dbccad3"
+  },
+  "browser_start": {
+    "attempted": true,
+    "ok": true,
+    "endpoint": "http://127.0.0.1:9222",
+    "diagnostic": "browser_started",
+    "pid": 20635,
+    "browser_path": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+    "profile_dir": "/Users/teacher/.codex/orchestrator/frontend-verify/chrome-cdp",
+    "command": "'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' --remote-debugging-port=9222 --user-data-dir=/Users/teacher/.codex/orchestrator/frontend-verify/chrome-cdp --no-first-run --no-default-browser-check",
+    "probe": {
+      "configured": true,
+      "endpoint": "http://127.0.0.1:9222",
+      "version_url": "http://127.0.0.1:9222/json/version",
+      "reachable": true,
+      "diagnostic": "browser_endpoint_ready",
+      "browser": "Chrome/152.0.7977.82",
+      "websocket_debugger_url": "ws://127.0.0.1:9222/devtools/browser/a9b94a4b-cfa6-4f20-ac1a-67964dbccad3"
+    },
+    "hint": "Browser endpoint is ready."
+  },
+  "launch_commands": [
+    "'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' --remote-debugging-port=9222 --user-data-dir=$HOME/.codex/orchestrator/frontend-verify/chrome-cdp --no-first-run --no-default-browser-check",
+    "/Applications/Chromium.app/Contents/MacOS/Chromium --remote-debugging-port=9222 --user-data-dir=$HOME/.codex/orchestrator/frontend-verify/chrome-cdp --no-first-run --no-default-browser-check"
+  ],
+  "hint": "CDP endpoint is ready for sandboxed frontend verification."
+}

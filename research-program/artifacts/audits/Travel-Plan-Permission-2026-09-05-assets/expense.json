@@ -1,0 +1,19 @@
+{
+  "ok": false,
+  "url": "http://127.0.0.1:38473/portal/expenses/new",
+  "title": "Expense Portal",
+  "findings": [],
+  "snapshotNodeCount": 69,
+  "settle": {
+    "polls": 4,
+    "nodeCount": 69,
+    "settled": true,
+    "reason": "stable_with_content"
+  },
+  "error": null,
+  "diagnostic": null,
+  "hint": null,
+  "browserTransport": "cdp",
+  "screenshot": "/Users/teacher/.codex/automations/research-program/artifacts/audits/Travel-Plan-Permission-2026-09-05-assets/expense.png",
+  "snapshot": "- main:\n  - link \"Travel Request Portal\":\n    - /url: /portal\n  - heading \"Prepare an expense report from an approved request.\" [level=1]\n  - paragraph: Link the expense draft to an approved request, capture receipt metadata with optional OCR text, and generate the accounting handoff from the repo's current approval and export services.\n  - heading \"Report linkage\" [level=2]\n  - text: Approved request ID\n  - textbox \"Approved request ID\"\n  - text: Trip ID\n  - textbox \"Trip ID\"\n  - text: Traveler name\n  - textbox \"Traveler name\"\n  - text: Cost center Optional\n  - textbox \"Cost center Optional\"\n  - heading \"Expense line\" [level=2]\n  - text: Description\n  - textbox \"Description\"\n  - text: Category\n  - combobox \"Category\":\n    - option \"Select\" [selected]\n    - option \"airfare\"\n    - option \"lodging\"\n    - option \"ground_transport\"\n    - option \"meals\"\n    - option \"conference_fees\"\n    - option \"other\"\n  - text: Amount\n  - spinbutton \"Amount\"\n  - text: Expense date\n  - textbox \"Expense date\"\n  - text: Vendor Optional\n  - textbox \"Vendor Optional\"\n  - heading \"Receipt intake\" [level=2]\n  - text: Receipt file reference Optional\n  - textbox \"Receipt file reference Optional\"\n  - text: Receipt size bytes Optional\n  - spinbutton \"Receipt size bytes Optional\"\n  - text: Manual receipt total Optional\n  - spinbutton \"Manual receipt total Optional\"\n  - text: Manual receipt date Optional\n  - textbox \"Manual receipt date Optional\"\n  - text: Manual receipt vendor Optional\n  - textbox \"Manual receipt vendor Optional\"\n  - text: Paid by third party Optional\n  - combobox \"Paid by third party Optional\":\n    - option \"Select\" [selected]\n    - option \"Yes\"\n    - option \"No\"\n  - text: Third-party explanation Optional\n  - textbox \"Third-party explanation Optional\"\n  - text: OCR text preview Optional\n  - textbox \"OCR text preview Optional\"\n  - heading \"Review disposition\" [level=2]\n  - text: Reimbursement status Optional\n  - combobox \"Reimbursement status Optional\":\n    - option \"Select\" [selected]\n    - option \"draft\"\n    - option \"manager_review\"\n    - option \"accounting_review\"\n    - option \"export_ready\""
+}

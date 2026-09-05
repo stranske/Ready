@@ -1,0 +1,8 @@
+Running the bounded D-audit: loading the audit skill, dossier, inventories, and repo baseline.
+Writing the breadth audit artifact and checkpoint from verified findings.
+**Artifact:** `/Users/teacher/.codex/automations/research-program/artifacts/audits/Travel-Plan-Permission-2026-09-05-assets/breadth.md`  
+**Count:** 4 actionable candidates  
+**Top 3:**
+1. CI guard for dual YAML config parity (`config/` vs `src/travel_plan_permission/config/`)
+2. Optional NetSuite-style dual-file export profile (Oracle primary-source gap vs flat 6-column export)
+3. Gate format + `check_local_env_freshness` automation (closes `format_check: false` / local-testing-plan skew)

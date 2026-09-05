@@ -1,0 +1,105 @@
+........................................................................ [  8%]
+........................................................................ [ 17%]
+.....................................................F..............xxx. [ 26%]
+........................................................................ [ 35%]
+........................................................................ [ 44%]
+........................................................................ [ 53%]
+........................................................................ [ 61%]
+..........................s............................................. [ 70%]
+........................................................................ [ 79%]
+........................................................................ [ 88%]
+........................................................................ [ 97%]
+.......................                                                  [100%]
+=================================== FAILURES ===================================
+_____ TestDependencyVersions.test_all_dependencies_within_declared_ranges ______
+
+self = <python.test_dependency_version_patterns.TestDependencyVersions object at 0x11cd2f650>
+
+    def test_all_dependencies_within_declared_ranges(self) -> None:
+        """All installed packages should satisfy pyproject.toml constraints.
+    
+        This is the recommended "catch-all" test that prevents lock file
+        drift and catches installation issues.
+    
+        ✅ Passes when all dependencies match declared ranges
+        ❌ Fails when lock file is out of sync or manual installs conflict
+        """
+>       assert_all_dependencies_within_ranges()
+
+tests/python/test_dependency_version_patterns.py:41: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+pyproject_path = PosixPath('/Users/teacher/.codex/automations/research-program/clones/Travel-Plan-Permission/pyproject.toml')
+
+    def assert_all_dependencies_within_ranges(
+        pyproject_path: Path | None = None,
+    ) -> None:
+        """Assert all installed dependencies satisfy their declared ranges.
+    
+        This provides a comprehensive check that the entire dependency tree
+        is consistent with pyproject.toml. Useful as a single test to catch
+        lock file drift or manual installation issues.
+    
+        Args:
+            pyproject_path: Path to pyproject.toml (defaults to repo root)
+    
+        Raises:
+            AssertionError: If any dependency version is out of range
+    
+        Example:
+            >>> def test_all_dependency_versions():
+            ...     assert_all_dependencies_within_ranges()
+        """
+        if pyproject_path is None:
+            pyproject_path = Path(__file__).parents[2] / "pyproject.toml"
+    
+        with open(pyproject_path, "rb") as f:
+            pyproject = tomllib.load(f)
+    
+        # Collect all dependency specifications
+        all_deps = list(pyproject.get("project", {}).get("dependencies", []))
+        for group_deps in pyproject.get("project", {}).get("optional-dependencies", {}).values():
+            all_deps.extend(group_deps)
+    
+        failures = []
+        for dep_spec in all_deps:
+            package_name = _extract_package_name(dep_spec)
+            try:
+                installed = get_package_version(package_name)
+                declared = _parse_version_spec(dep_spec)
+    
+                if declared and installed not in declared:
+                    failures.append(f"{package_name}: installed {installed} not in declared {declared}")
+            except importlib.metadata.PackageNotFoundError:
+                # Optional dependency not installed - skip
+                pass
+    
+>       assert not failures, "Dependency versions out of range:\n  " + "\n  ".join(failures)
+E       AssertionError: Dependency versions out of range:
+E         ruff: installed 0.16.5 not in declared ==0.16.4
+
+tests/helpers/version_utils.py:163: AssertionError
+=============================== warnings summary ===============================
+tests/python/test_dependency_version_patterns.py::TestHypothesisCompatibility::test_hypothesis_core_strategies
+  /Users/teacher/.codex/automations/research-program/clones/Travel-Plan-Permission/tests/python/test_dependency_version_patterns.py:182: NonInteractiveExampleWarning: The `.example()` method is good for exploring strategies, but should only be used interactively.  We recommend using `@given` for tests - it performs better, saves and replays failures to avoid flakiness, and reports minimal examples. (strategy: integers(min_value=1, max_value=10))
+    sample = int_strategy.example()
+
+tests/python/test_planner_smoke.py::test_planner_smoke_main_succeeds_against_live_service
+  /opt/anaconda3/lib/python3.12/site-packages/websockets/legacy/__init__.py:6: DeprecationWarning: websockets.legacy is deprecated; see https://websockets.readthedocs.io/en/stable/howto/upgrade.html for upgrade instructions
+    warnings.warn(  # deprecated in 14.0 - 2024-11-09
+
+tests/python/test_planner_smoke.py::test_planner_smoke_main_succeeds_against_live_service
+  /opt/anaconda3/lib/python3.12/site-packages/uvicorn/protocols/websockets/websockets_impl.py:17: DeprecationWarning: websockets.server.WebSocketServerProtocol is deprecated
+    from websockets.server import WebSocketServerProtocol
+
+tests/python/test_spreadsheet_fill.py::test_unfilled_mapping_report_tracks_missing_and_invalid
+  /opt/anaconda3/lib/python3.12/site-packages/pydantic/main.py:475: UserWarning: Pydantic serializer warnings:
+    PydanticSerializationUnexpectedValue(Expected `date` - serialized value may not be as expected [field_name='departure_date', input_value=123, input_type=int])
+    PydanticSerializationUnexpectedValue(Expected `date` - serialized value may not be as expected [field_name='return_date', input_value=123, input_type=int])
+    PydanticSerializationUnexpectedValue(Expected `decimal` - serialized value may not be as expected [field_name='expense_breakdown', input_value=<object object at 0x13b035570>, input_type=object])
+    return self.__pydantic_serializer__.to_python(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/python/test_dependency_version_patterns.py::TestDependencyVersions::test_all_dependencies_within_declared_ranges
+1 failed, 810 passed, 1 skipped, 3 xfailed, 4 warnings in 63.27s (0:01:03)

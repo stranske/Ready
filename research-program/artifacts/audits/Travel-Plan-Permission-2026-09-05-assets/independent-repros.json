@@ -1,0 +1,38 @@
+[
+  {
+    "script": "repro_board_exception_approved_by_generic_approver.py",
+    "exit": 0,
+    "stdout": "generic approve credential approved a board-level exception\n",
+    "stderr": ""
+  },
+  {
+    "script": "repro_exception_request_without_auth.py",
+    "exit": 0,
+    "stdout": "unauthenticated client created an exception on draft aff66f6c8b32\n",
+    "stderr": ""
+  },
+  {
+    "script": "repro_expense_export_audit_lost_on_restart.py",
+    "exit": 0,
+    "stdout": "expense export audit event disappears after restart\n",
+    "stderr": ""
+  },
+  {
+    "script": "repro_expense_export_without_auth.py",
+    "exit": 0,
+    "stdout": "unauthenticated download succeeded for draft c069fbfa4588\n",
+    "stderr": ""
+  },
+  {
+    "script": "repro_manager_decision_actor_spoof.py",
+    "exit": 0,
+    "stdout": "authenticated-approver recorded the decision as forged-manager-id\n",
+    "stderr": ""
+  },
+  {
+    "script": "repro_unsigned_receipt_link.py",
+    "exit": 0,
+    "stdout": "date,vendor,amount,category,cost_center,receipt_link\n2026-09-01,,250.00,lodging,,https://receipts.example.com/receipts/alice-hotel.pdf?expires_at=2026-09-12T00%3A00%3A00\n\n",
+    "stderr": ""
+  }
+]

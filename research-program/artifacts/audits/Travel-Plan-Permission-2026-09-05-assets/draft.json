@@ -1,0 +1,19 @@
+{
+  "ok": false,
+  "url": "http://127.0.0.1:38473/portal/draft/new",
+  "title": "Travel Request Draft Entry",
+  "findings": [],
+  "snapshotNodeCount": 162,
+  "settle": {
+    "polls": 4,
+    "nodeCount": 162,
+    "settled": true,
+    "reason": "stable_with_content"
+  },
+  "error": null,
+  "diagnostic": null,
+  "hint": null,
+  "browserTransport": "cdp",
+  "screenshot": "/Users/teacher/.codex/automations/research-program/artifacts/audits/Travel-Plan-Permission-2026-09-05-assets/draft.png",
+  "snapshot": "- main:\n  - link \"Travel Request Portal\":\n    - /url: /portal\n  - heading \"Draft a travel request through the real service runtime.\" [level=1]\n  - paragraph: Start with the browser-facing entry form, then move into a separate review summary only after the required fields are present.\n  - heading \"Trip brief\" [level=2]\n  - text: Traveler name\n  - textbox \"Traveler name\"\n  - text: Business purpose\n  - textbox \"Business purpose\"\n  - text: Cost center Optional\n  - textbox \"Cost center Optional\"\n  - text: Destination city and state\n  - textbox \"Destination city and state\"\n  - text: Destination ZIP\n  - textbox \"Destination ZIP\"\n  - text: Departure date\n  - textbox \"Departure date\"\n  - text: Return date\n  - textbox \"Return date\"\n  - text: Event or meeting dates Optional\n  - textbox \"Event or meeting dates Optional\"\n  - text: Departure city or airport Optional\n  - textbox \"Departure city or airport Optional\"\n  - text: Return city or airport Optional\n  - textbox \"Return city or airport Optional\"\n  - text: Traveler notes Optional\n  - textbox \"Traveler notes Optional\"\n  - heading \"Air and lodging\" [level=2]\n  - text: Outbound flight Optional\n  - textbox \"Outbound flight Optional\"\n  - text: Outbound departure Optional\n  - textbox \"Outbound departure Optional\"\n  - text: Outbound arrival Optional\n  - textbox \"Outbound arrival Optional\"\n  - text: Chosen roundtrip fare Optional\n  - spinbutton \"Chosen roundtrip fare Optional\"\n  - text: Return flight Optional\n  - textbox \"Return flight Optional\"\n  - text: Return departure Optional\n  - textbox \"Return departure Optional\"\n  - text: Return arrival Optional\n  - textbox \"Return arrival Optional\"\n  - text: Lowest available roundtrip fare Optional\n  - spinbutton \"Lowest available roundtrip fare Optional\"\n  - text: Hotel name Optional\n  - textbox \"Hotel name Optional\"\n  - text: Hotel address Optional\n  - textbox \"Hotel address Optional\"\n  - text: Hotel city and state Optional\n  - textbox \"Hotel city and state Optional\"\n  - text: Nightly rate Optional\n  - spinbutton \"Nightly rate Optional\"\n  - text: Nights Optional\n  - spinbutton \"Nights Optional\"\n  - text: Conference hotel Optional\n  - combobox \"Conference hotel Optional\":\n    - option \"Select\" [selected]\n    - option \"Yes\"\n    - option \"No\""
+}

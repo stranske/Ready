@@ -1,0 +1,81 @@
+{
+  "improvements": [
+    {
+      "dimension": "help_clarity",
+      "failure_mode": "missing_help",
+      "severity": 4,
+      "corroboration": 4,
+      "element": "Access-denied response",
+      "fix_hints": [
+        "Keep the permission restriction and render a human-readable access-denied page with portal navigation.",
+        "Replace API error JSON with an HTML error template that names the problem, required action, and sign-in entry point",
+        "Wrap API authorization failures in a standard user-facing error template that offers guidance and a link back to the portal home.",
+        "Show message: 'Please sign in to save your travel request. Your data will not be lost.'"
+      ]
+    },
+    {
+      "dimension": "wired",
+      "failure_mode": "recovery_failure",
+      "severity": 4,
+      "corroboration": 4,
+      "element": "Save draft and review",
+      "fix_hints": [
+        "Check authentication before intake and provide sign-in with a return destination to the saved draft; preserve authorization checks.",
+        "Render a portal authentication page with a sign-in action and retained draft destination.",
+        "Render an HTML forbidden template with role requirements and a link back to portal home instead of returning API JSON to the browser",
+        "After successful draft POST, redirect unauthenticated users to OIDC sign-in with return URL to the saved draft review page",
+        "Catch 401/403 responses in the frontend and render a proper user-facing authentication challenge instead of exposing the raw API JSON error.",
+        "Route unauthenticated submissions to login flow or show user-friendly auth prompt instead of raw API error",
+        "Replace technical permission error with user-friendly access denied message"
+      ]
+    },
+    {
+      "dimension": "usability",
+      "failure_mode": "confusion",
+      "severity": 3,
+      "corroboration": 4,
+      "element": "Policy status and exception selection",
+      "fix_hints": [
+        "Explain the outstanding waiver and its effect on approval, and preselect or directly link to the relevant exception type.",
+        "Use matching field labels, link errors to their inputs, and explicitly mark cost center optional in recovery guidance.",
+        "Map validation codes to visible labels, focus the first invalid control, and mark required inputs before submit",
+        "Promote the human questions into per-field error text adjacent to each textbox and aria-describedby links",
+        "Remove the receipt size input from the UI and compute it automatically on the frontend or backend during receipt upload.",
+        "Hide the JSON payload preview from standard user views, or place it behind a 'Debug Details' toggle restricted to admins/developers.",
+        "Group fields into logical sections, use progressive disclosure for optional details, clearly distinguish required from optional"
+      ]
+    },
+    {
+      "dimension": "workflow_productivity",
+      "failure_mode": "efficiency_trap",
+      "severity": 3,
+      "corroboration": 4,
+      "element": "Submitted answers and canonical payload preview",
+      "fix_hints": [
+        "Group details into traveler, itinerary, costs, and policy sections using readable labels; place the technical payload behind an optional disclosure.",
+        "Stage the workflow into required trip brief first, then optional air/lodging and policy sections after draft save",
+        "Replace byte/reference inputs with file upload and auto-populate receipt metadata after OCR",
+        "Implement a 'Select Approved Trip' picker that fetches the user's active trips and automatically populates the underlying system IDs.",
+        "Pre-fill defaults, reduce mandatory fields, add quick-entry options for common trip types"
+      ]
+    }
+  ],
+  "coverage_gaps": [
+    "No observed clicks or results for Submit request, Save exception request, or the itinerary and summary download links.",
+    "Expense captures show the form but no browser-observed submission, validation, receipt processing, or approved-request artifact download.",
+    "Production OIDC sign-in was not configured or exercised; successful authentication was demonstrated only through synthetic token injection.",
+    "No populated reviewer queue or approval-decision interaction was supplied.",
+    "Screenshot paths were supplied without image contents; visual hierarchy, contrast, focus visibility, and mobile touch targets cannot be assessed from the trees alone.",
+    "No browser scenario observed for expense Review expense report submit or post-save review status panel",
+    "Submit request on authenticated-draft-result was not clicked; submission wiring unverified in browser",
+    "OIDC provider sign-in flow not exercised (coverage driven: false)",
+    "Expense artifact download from approved request not validated in browser fixture",
+    "Download itinerary and Download summary links on review page were not click-tested",
+    "OIDC provider sign-in flow UI and accessibility tree (currently missing/synthetic).",
+    "Expense artifact download behavior and user feedback upon successful download (pending richer browser fixture).",
+    "Viewport-specific scrolling or layout feedback on mobile, beyond the basic ARIA tree elements.",
+    "OIDC provider sign-in flow not observed (production identity provider not configured)"
+  ],
+  "n_findings": 4,
+  "n_with_hints": 4
+}

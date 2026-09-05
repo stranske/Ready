@@ -1,0 +1,212 @@
+{
+  "review_id": "TPP-research-20260905-1611",
+  "app": "stranske/Travel-Plan-Permission",
+  "dimension_medians": {
+    "wired": 4.0,
+    "usability": 4.0,
+    "help_clarity": 4.0,
+    "workflow_productivity": 5.0
+  },
+  "consensus_flags": {
+    "wired": false,
+    "usability": false,
+    "help_clarity": false,
+    "workflow_productivity": true
+  },
+  "overall_median": 3.0,
+  "findings": [
+    {
+      "dimension": "help_clarity",
+      "severity": 4,
+      "screen": "admin-auth",
+      "element": "Access-denied response",
+      "click_path": [
+        "Open /portal/admin with the captured static-token context"
+      ],
+      "expected": "Show an understandable access-denied page with a route back to the portal and guidance about the required access.",
+      "actual": "The entire captured page is raw JSON: {\"detail\":\"Static planner token does not grant 'configure'.\"}, with no navigation or recovery guidance.",
+      "fix_hint": "Keep the permission restriction and render a human-readable access-denied page with portal navigation.",
+      "confidence": 1.0,
+      "failure_mode": "missing_help",
+      "fix_hints": [
+        "Keep the permission restriction and render a human-readable access-denied page with portal navigation.",
+        "Replace API error JSON with an HTML error template that names the problem, required action, and sign-in entry point",
+        "Wrap API authorization failures in a standard user-facing error template that offers guidance and a link back to the portal home.",
+        "Show message: 'Please sign in to save your travel request. Your data will not be lost.'"
+      ],
+      "corroboration": 4
+    },
+    {
+      "dimension": "wired",
+      "severity": 4,
+      "screen": "anonymous-draft-result",
+      "element": "Save draft and review",
+      "click_path": [
+        "Open new travel draft anonymously",
+        "Complete all synthetic trip fields",
+        "Click Save draft and review"
+      ],
+      "expected": "Open the saved draft review, or provide an authentication flow that resumes review.",
+      "actual": "The scenario ends at raw 401 JSON: {\"detail\":\"Missing bearer token.\"}. Gate-1 confirms the promised review transition fails for the anonymous flow.",
+      "fix_hint": "Check authentication before intake and provide sign-in with a return destination to the saved draft; preserve authorization checks.",
+      "confidence": 1.0,
+      "failure_mode": "recovery_failure",
+      "fix_hints": [
+        "Check authentication before intake and provide sign-in with a return destination to the saved draft; preserve authorization checks.",
+        "Render a portal authentication page with a sign-in action and retained draft destination.",
+        "Render an HTML forbidden template with role requirements and a link back to portal home instead of returning API JSON to the browser",
+        "After successful draft POST, redirect unauthenticated users to OIDC sign-in with return URL to the saved draft review page",
+        "Catch 401/403 responses in the frontend and render a proper user-facing authentication challenge instead of exposing the raw API JSON error.",
+        "Route unauthenticated submissions to login flow or show user-friendly auth prompt instead of raw API error",
+        "Replace technical permission error with user-friendly access denied message"
+      ],
+      "corroboration": 4
+    },
+    {
+      "dimension": "usability",
+      "severity": 3,
+      "screen": "authenticated-draft-result",
+      "element": "Policy status and exception selection",
+      "click_path": [
+        "Inject the synthetic token",
+        "Reload the saved draft",
+        "Read policy status and the exception form"
+      ],
+      "expected": "Clearly distinguish submission readiness from required approval exceptions and identify the relevant exception.",
+      "actual": "The page simultaneously displays 'pass', 'Ready for submit', and a local overnight waiver requirement. The exception selector defaults to 'advance_booking' despite the displayed issue being 'local_overnight'.",
+      "fix_hint": "Explain the outstanding waiver and its effect on approval, and preselect or directly link to the relevant exception type.",
+      "confidence": 1.0,
+      "failure_mode": "confusion",
+      "fix_hints": [
+        "Explain the outstanding waiver and its effect on approval, and preselect or directly link to the relevant exception type.",
+        "Use matching field labels, link errors to their inputs, and explicitly mark cost center optional in recovery guidance.",
+        "Map validation codes to visible labels, focus the first invalid control, and mark required inputs before submit",
+        "Promote the human questions into per-field error text adjacent to each textbox and aria-describedby links",
+        "Remove the receipt size input from the UI and compute it automatically on the frontend or backend during receipt upload.",
+        "Hide the JSON payload preview from standard user views, or place it behind a 'Debug Details' toggle restricted to admins/developers.",
+        "Group fields into logical sections, use progressive disclosure for optional details, clearly distinguish required from optional"
+      ],
+      "corroboration": 4
+    },
+    {
+      "dimension": "workflow_productivity",
+      "severity": 3,
+      "screen": "authenticated-draft-result",
+      "element": "Submitted answers and canonical payload preview",
+      "click_path": [
+        "Inject the synthetic token",
+        "Reload the saved draft",
+        "Review submitted trip details before submission"
+      ],
+      "expected": "Provide a concise, grouped trip summary that makes important details and outstanding actions easy to verify.",
+      "actual": "The review presents a long list of internal field paths, including 'flight_pref_outbound.roundtrip_cost' and 'comparable_hotels[0].nightly_rate', followed by a JSON payload repeating much of the same information.",
+      "fix_hint": "Group details into traveler, itinerary, costs, and policy sections using readable labels; place the technical payload behind an optional disclosure.",
+      "confidence": 1.0,
+      "failure_mode": "efficiency_trap",
+      "fix_hints": [
+        "Group details into traveler, itinerary, costs, and policy sections using readable labels; place the technical payload behind an optional disclosure.",
+        "Stage the workflow into required trip brief first, then optional air/lodging and policy sections after draft save",
+        "Replace byte/reference inputs with file upload and auto-populate receipt metadata after OCR",
+        "Implement a 'Select Approved Trip' picker that fetches the user's active trips and automatically populates the underlying system IDs.",
+        "Pre-fill defaults, reduce mandatory fields, add quick-entry options for common trip types"
+      ],
+      "corroboration": 4
+    }
+  ],
+  "non_findings": [],
+  "adversarial": {
+    "worst_case": null,
+    "findings": []
+  },
+  "evidence_gaps": [
+    "No observed clicks or results for Submit request, Save exception request, or the itinerary and summary download links.",
+    "Expense captures show the form but no browser-observed submission, validation, receipt processing, or approved-request artifact download.",
+    "Production OIDC sign-in was not configured or exercised; successful authentication was demonstrated only through synthetic token injection.",
+    "No populated reviewer queue or approval-decision interaction was supplied.",
+    "Screenshot paths were supplied without image contents; visual hierarchy, contrast, focus visibility, and mobile touch targets cannot be assessed from the trees alone.",
+    "No browser scenario observed for expense Review expense report submit or post-save review status panel",
+    "Submit request on authenticated-draft-result was not clicked; submission wiring unverified in browser",
+    "OIDC provider sign-in flow not exercised (coverage driven: false)",
+    "Expense artifact download from approved request not validated in browser fixture",
+    "Download itinerary and Download summary links on review page were not click-tested",
+    "OIDC provider sign-in flow UI and accessibility tree (currently missing/synthetic).",
+    "Expense artifact download behavior and user feedback upon successful download (pending richer browser fixture).",
+    "Viewport-specific scrolling or layout feedback on mobile, beyond the basic ARIA tree elements.",
+    "OIDC provider sign-in flow not observed (production identity provider not configured)"
+  ],
+  "panel": {
+    "codex": {
+      "wired": 4,
+      "usability": 4,
+      "help_clarity": 4,
+      "workflow_productivity": 5
+    },
+    "cursor": {
+      "wired": 5,
+      "usability": 4,
+      "help_clarity": 4,
+      "workflow_productivity": 3
+    },
+    "gemini": {
+      "wired": 4,
+      "usability": 4,
+      "help_clarity": 5,
+      "workflow_productivity": 6
+    },
+    "vibe": {
+      "wired": 3,
+      "usability": 5,
+      "help_clarity": 4,
+      "workflow_productivity": 5
+    }
+  },
+  "blockers": [
+    {
+      "dimension": "help_clarity",
+      "severity": 4,
+      "screen": "admin-auth",
+      "element": "Access-denied response",
+      "click_path": [
+        "Open /portal/admin with the captured static-token context"
+      ],
+      "expected": "Show an understandable access-denied page with a route back to the portal and guidance about the required access.",
+      "actual": "The entire captured page is raw JSON: {\"detail\":\"Static planner token does not grant 'configure'.\"}, with no navigation or recovery guidance.",
+      "fix_hint": "Keep the permission restriction and render a human-readable access-denied page with portal navigation.",
+      "confidence": 1.0,
+      "failure_mode": "missing_help",
+      "fix_hints": [
+        "Keep the permission restriction and render a human-readable access-denied page with portal navigation.",
+        "Replace API error JSON with an HTML error template that names the problem, required action, and sign-in entry point",
+        "Wrap API authorization failures in a standard user-facing error template that offers guidance and a link back to the portal home.",
+        "Show message: 'Please sign in to save your travel request. Your data will not be lost.'"
+      ],
+      "corroboration": 4
+    },
+    {
+      "dimension": "wired",
+      "severity": 4,
+      "screen": "anonymous-draft-result",
+      "element": "Save draft and review",
+      "click_path": [
+        "Open new travel draft anonymously",
+        "Complete all synthetic trip fields",
+        "Click Save draft and review"
+      ],
+      "expected": "Open the saved draft review, or provide an authentication flow that resumes review.",
+      "actual": "The scenario ends at raw 401 JSON: {\"detail\":\"Missing bearer token.\"}. Gate-1 confirms the promised review transition fails for the anonymous flow.",
+      "fix_hint": "Check authentication before intake and provide sign-in with a return destination to the saved draft; preserve authorization checks.",
+      "confidence": 1.0,
+      "failure_mode": "recovery_failure",
+      "fix_hints": [
+        "Check authentication before intake and provide sign-in with a return destination to the saved draft; preserve authorization checks.",
+        "Render a portal authentication page with a sign-in action and retained draft destination.",
+        "Render an HTML forbidden template with role requirements and a link back to portal home instead of returning API JSON to the browser",
+        "After successful draft POST, redirect unauthenticated users to OIDC sign-in with return URL to the saved draft review page",
+        "Catch 401/403 responses in the frontend and render a proper user-facing authentication challenge instead of exposing the raw API JSON error.",
+        "Route unauthenticated submissions to login flow or show user-friendly auth prompt instead of raw API error",
+        "Replace technical permission error with user-friendly access denied message"
+      ],
+      "corroboration": 4
+    }
+  ]
+}

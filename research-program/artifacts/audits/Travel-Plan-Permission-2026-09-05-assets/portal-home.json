@@ -1,0 +1,26 @@
+{
+  "ok": true,
+  "url": "http://127.0.0.1:38473/portal",
+  "title": "Travel Request Portal",
+  "findings": [
+    {
+      "type": "text",
+      "target": "Travel",
+      "pass": true,
+      "detail": "present in aria snapshot"
+    }
+  ],
+  "snapshotNodeCount": 24,
+  "settle": {
+    "polls": 4,
+    "nodeCount": 24,
+    "settled": true,
+    "reason": "stable_with_content"
+  },
+  "error": null,
+  "diagnostic": null,
+  "hint": null,
+  "browserTransport": "cdp",
+  "screenshot": "/Users/teacher/.codex/automations/research-program/artifacts/audits/Travel-Plan-Permission-2026-09-05-assets/portal-home.png",
+  "snapshot": "- main:\n  - text: Workflow Lite Portal\n  - heading \"Travel request drafting without fixture gymnastics.\" [level=1]\n  - paragraph: Start a browser-facing request, review canonical readiness, and generate the spreadsheet and summary artifacts from the repo\u2019s real travel-plan seams.\n  - link \"Start a new request\":\n    - /url: /portal/draft/new\n  - link \"Open expense portal\":\n    - /url: /portal/expenses/new\n  - link \"Check runtime readiness\":\n    - /url: /readyz\n  - link \"Open admin console\":\n    - /url: /portal/admin\n  - article:\n    - text: What It Uses\n    - heading \"Real repo logic\" [level=2]\n    - list:\n      - listitem: Canonical trip fields and missing-input guidance.\n      - listitem: Planner policy snapshot and policy-lite posture.\n      - listitem: Spreadsheet and summary artifact generation.\n      - listitem: Expense receipt intake, review warnings, and accounting export handoff.\n  - article:\n    - text: Runtime\n    - heading \"Service status\" [level=2]\n    - paragraph: Planner auth configured\n    - paragraph: The portal shell is available without planner credentials; the lower-level planner API still follows the normal token requirements.\n    - paragraph:\n      - text: \"Auth mode:\"\n      - strong: static-token"
+}
