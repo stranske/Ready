@@ -323,3 +323,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-05T14:07:04Z — D3-unblock-sweep-2026-09-05T13 — route — router picked cursor from ['codex', 'cursor']
 ## 2026-09-05T14:07:04Z — D3-unblock-sweep-2026-09-05T13 — claimed by driver (agent cursor)
 ## 2026-09-05T14:12:32Z — D3-unblock-sweep-2026-09-05T13 — done — gemini produced 781 words at artifacts/sweeps/D3-unblock-sweep-2026-09-05T13.md in 325s
+## 2026-09-05T16:11:36Z — refill — Travel-Plan-Permission: open=3 <= 3 → audit queued
+## 2026-09-05T16:11:40Z — D-audit-Travel-Plan-Permission--2026-09-05T16-11-36Z — route — router picked codex from ['codex']
+## 2026-09-05T16:11:40Z — D-audit-Travel-Plan-Permission--2026-09-05T16-11-36Z — claimed by codex (agent codex)
