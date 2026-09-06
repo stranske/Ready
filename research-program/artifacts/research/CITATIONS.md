@@ -9,7 +9,7 @@
 | R1-legal-decomposition.md | 17 | 17 | 0 |
 | R2-consultant-report-diffing.md | 16 | 16 | 0 |
 | R3-manager-mosaic-synthesis.md | 12 | 12 | 0 |
-| R4-document-access-substrate.md | 15 | 11 | 4 |
+| R4-document-access-substrate.md | 15 | 10 | 5 |
 | R5-output-substrate.md | 10 | 8 | 2 |
 | R6-public-corpora-and-synthetic-data.md | 26 | 19 | 7 |
 | R7-trip-planning-core.md | 28 | 23 | 5 |
@@ -24,6 +24,7 @@
 - https://ionanalytics.com/backstop/services/data-services/
 - https://ionanalytics.com/blog/backstop/integrating-deal-investor-workflow-for-gps-and-lps/
 - https://mcp.svc.cloud.microsoft/enterprise
+- https://mcpservers.org/servers/softeria/ms-365-mcp-server
 
 ## Unreachable in R5-output-substrate.md
 
