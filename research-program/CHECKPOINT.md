@@ -345,3 +345,7 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-06T01:20:01Z — D4-verify-merged-2026-09-06T01 — route — router picked cursor from ['codex', 'cursor']
 ## 2026-09-06T01:20:01Z — D4-verify-merged-2026-09-06T01 — claimed by driver (agent cursor)
 ## 2026-09-06T01:24:36Z — D4-verify-merged-2026-09-06T01 — done — gemini produced 2006 words at artifacts/verification/D4-verify-merged-2026-09-06T01.md in 272s
+## 2026-09-06T04:25:49Z — refill — Travel-Plan-Permission: open=1 <= 2 → audit queued
+## 2026-09-06T04:25:53Z — refill — Fine-Art-Archive: open=1 <= 3 → audit queued
+## 2026-09-06T04:25:54Z — D-audit-Fine-Art-Archive--2026-09-06T04-25-53Z — route — router picked codex from ['codex']
+## 2026-09-06T04:25:54Z — D-audit-Fine-Art-Archive--2026-09-06T04-25-53Z — claimed by driver (agent codex)
