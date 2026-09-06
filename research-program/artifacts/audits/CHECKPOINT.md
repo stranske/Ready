@@ -44,3 +44,9 @@ Phases 0–5 complete on clone tip 3e53ddea64838fd863146c6efd169e1e32a8ec02. Eva
 
 ## 2026-09-06T16:45:00Z — D-audit-Travel-Plan-Permission--2026-09-06T16-33-27Z complete
 Phases 0–5 complete on clone tip 8c046c91b94aa2aed58b50cd152c9ce4ece07611. Evaluated 50 src files (15,081 LOC) and 77 test files (18,280 LOC). Filed 9 verified issues #1539–#1547 (4xP1, 5xP2). Local issue_format.py 9/9 PASS (0 advisories); remote Agents Issue Format Guard completed with SUCCESS on all 9 issues. Intake log updated with 9 rows. OUT written to artifacts/audits/Travel-Plan-Permission-2026-09-06.md. Durable audit ledger and repo refill report updated.
+
+## 2026-09-06T17:01:00Z — D-audit-learning-management-system--2026-09-06T16-33-31Z Phase 0
+Phase 0 scoping complete on clone tip fd0ea516100d6022029a6ed0b4659e95badb189b. Scoped to src/lms/, tests/, alembic/, scripts/ (app-owned); excluding synced .github/ and tools/. Initialized run artifacts and advancing to Phase 1.
+
+## 2026-09-06T17:02:00Z — D-audit-learning-management-system--2026-09-06T16-33-31Z Phase 1
+Phase 1 cheap orientation complete on tip fd0ea51. 1,239 tests collected, 30,465 src LOC, CI green on main. Wrote 2026-09-06-00-repo-map.md and 2026-09-06-audit-run.md. Advancing to Phase 2.
