@@ -28,3 +28,12 @@ Wrote eight issue bodies, all repo validator PASS without advisories. Citations 
 
 ## 2026-09-05T16:38:56.584615+00:00 — D-audit-Travel-Plan-Permission--2026-09-05T16-11-36Z Phase 5
 Wrote OUT and canonical audit/UX/verification reports, copied issue bodies, reconciled every candidate and updated ledger/index. Existing 1436 follow-up retained; platform gaps explicit.
+
+## 2026-09-06T04:25:53Z — D-audit-Fine-Art-Archive--2026-09-06T04-25-53Z Phase 0
+Phase 0 scoping complete on clone tip 9d6d61918cf2153d043c298b1ba3b1cb2aa7f6af. Initialized 2026-09-06-audit-run.md and updated AUDIT_LEDGER.md. Advancing to Phase 1.
+
+## 2026-09-06T04:27:30Z — D-audit-Fine-Art-Archive--2026-09-06T04-25-53Z Phase 1
+Phase 1 cheap orientation complete on tip 9d6d619. 2,014 tests collected, clean working tree, CI green. Wrote 2026-09-06-00-repo-map.md. Advancing to Phase 2.
+
+## 2026-09-06T04:35:00Z — D-audit-Fine-Art-Archive--2026-09-06T04-25-53Z complete
+Phases 0–5 complete on clone tip 9d6d61918cf2153d043c298b1ba3b1cb2aa7f6af. Filed 8 verified issues #708–#715 (2xP1, 6xP2). Local issue_lint.py 8/8 PASS; remote Agents Issue Format Guard completed with SUCCESS on all eight issues. Intake log updated with 8 rows. OUT written to artifacts/audits/Fine-Art-Archive-2026-09-06.md. Durable audit ledger and repo README updated.
