@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-06T00:34:47Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-06T01:24:36Z)
 
-Units: 52 — done 52
+Units: 53 — done 53
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 CLAUDE CONSERVATION ACTIVE until 2026-09-06T12:00:00Z — non-Claude executors continue (launchd driver every 15 min); claude-only units deferred.
@@ -60,13 +60,10 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Travel-Plan-Permission--2026-09-05T16-11-36Z | D | D | done | codex | codex | Audit stranske/Travel-Plan-Permission and file issues (supply 3 <= 3) |
 | D-audit-learning-management-system--2026-09-05T04-00-30Z | D | D | done | codex | driver | Audit stranske/learning-management-system and file issues (supply 2 <= |
 | D4-verify-merged-2026-09-05T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
+| D4-verify-merged-2026-09-06T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
 
 ## Last checkpoints
 
-- 2026-09-05T17:13:26Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-05T18:54:56+00:00; local work continues
-- 2026-09-05T17:28:31Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-05T18:54:56+00:00; local work continues
-- 2026-09-05T17:43:33Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-05T18:54:56+00:00; local work continues
-- 2026-09-05T17:58:35Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-05T18:54:56+00:00; local work continues
 - 2026-09-05T18:13:00Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-05T18:54:56+00:00; local work continues
 - 2026-09-05T18:13:45Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-05T18:54:56+00:00; local work continues
 - 2026-09-05T18:28:47Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-05T18:54:56+00:00; local work continues
@@ -75,6 +72,10 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-05T21:59:46Z — D3-unblock-sweep-2026-09-05T21 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-05T21:59:46Z — D3-unblock-sweep-2026-09-05T21 — claimed by driver (agent cursor)
 - 2026-09-05T22:03:44Z — D3-unblock-sweep-2026-09-05T21 — done — gemini produced 687 words at artifacts/sweeps/D3-unblock-sweep-2026-09-05T21.md in 234s
+- 2026-09-06T01:20:01Z — verify — enqueued D4-verify-merged-2026-09-06T01
+- 2026-09-06T01:20:01Z — D4-verify-merged-2026-09-06T01 — route — router picked cursor from ['codex', 'cursor']
+- 2026-09-06T01:20:01Z — D4-verify-merged-2026-09-06T01 — claimed by driver (agent cursor)
+- 2026-09-06T01:24:36Z — D4-verify-merged-2026-09-06T01 — done — gemini produced 2006 words at artifacts/verification/D4-verify-merged-2026-09-06T01.md in 272s
 
 ## Questions
 
