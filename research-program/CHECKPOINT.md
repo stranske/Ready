@@ -371,3 +371,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-06T16:59:15Z — D-audit-learning-management-system--2026-09-06T16-33-31Z — route — router picked codex from ['codex']
 ## 2026-09-06T16:59:15Z — D-audit-learning-management-system--2026-09-06T16-33-31Z — claimed by driver (agent codex)
 ## 2026-09-06T17:11:34Z — D-audit-learning-management-system--2026-09-06T16-33-31Z — done — gemini produced 709 words at artifacts/audits/learning-management-system-2026-09-06.md in 735s
+## 2026-09-06T22:13:24Z — unblock — enqueued D3-unblock-sweep-2026-09-06T22
+## 2026-09-06T22:13:25Z — D3-unblock-sweep-2026-09-06T22 — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-06T22:13:25Z — D3-unblock-sweep-2026-09-06T22 — claimed by driver (agent cursor)
