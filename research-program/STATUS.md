@@ -1,8 +1,8 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-06T05:55:15Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-06T06:10:20Z)
 
-Units: 55 — done 55
+Units: 56 — claimed 1, done 55
 Paused: False   Phase stops: []
-Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
+Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=warn vibe=ok aider=ok
 CLAUDE CONSERVATION ACTIVE until 2026-09-06T12:00:00Z — non-Claude executors continue (launchd driver every 15 min); claude-only units deferred.
 Owner inbox: https://github.com/stranske/Ready/issues/553
 
@@ -55,6 +55,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D3-unblock-sweep-2026-09-05T05 | D | D | done | codex | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D3-unblock-sweep-2026-09-05T13 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D3-unblock-sweep-2026-09-05T21 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
+| D3-unblock-sweep-2026-09-06T06 | D | D | claimed | codex | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D-audit-Fine-Art-Archive--2026-09-05T04-00-31Z | D | D | done | codex | codex | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 2) |
 | D-audit-Fine-Art-Archive--2026-09-06T04-25-53Z | D | D | done | codex | driver | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 3) |
 | D-audit-Manager-Mosaic--2026-09-05T04-00-25Z | D | D | done | codex | driver | Audit stranske/Manager-Mosaic and file issues (supply 2 <= 2) |
@@ -66,9 +67,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-06T01:20:01Z — D4-verify-merged-2026-09-06T01 — claimed by driver (agent cursor)
-- 2026-09-06T01:24:36Z — D4-verify-merged-2026-09-06T01 — done — gemini produced 2006 words at artifacts/verification/D4-verify-merged-2026-09-06T01.md in 272s
-- 2026-09-06T04:25:49Z — refill — Travel-Plan-Permission: open=1 <= 2 → audit queued
 - 2026-09-06T04:25:53Z — refill — Fine-Art-Archive: open=1 <= 3 → audit queued
 - 2026-09-06T04:25:54Z — D-audit-Fine-Art-Archive--2026-09-06T04-25-53Z — route — router picked codex from ['codex']
 - 2026-09-06T04:25:54Z — D-audit-Fine-Art-Archive--2026-09-06T04-25-53Z — claimed by driver (agent codex)
@@ -78,6 +76,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-06T04:55:01Z — D-audit-Travel-Plan-Permission--2026-09-06T04-25-49Z — done — gemini produced 1166 words at artifacts/audits/Travel-Plan-Permission-2026-09-06.md in 391s
 - 2026-09-06T05:25:11Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-06T07:12:48+00:00; local work continues
 - 2026-09-06T05:40:13Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-06T07:12:48+00:00; local work continues
+- 2026-09-06T06:10:20Z — unblock — enqueued D3-unblock-sweep-2026-09-06T06
+- 2026-09-06T06:10:20Z — D3-unblock-sweep-2026-09-06T06 — route — router picked codex from ['codex', 'cursor']
+- 2026-09-06T06:10:20Z — D3-unblock-sweep-2026-09-06T06 — claimed by driver (agent codex)
 
 ## Questions
 
