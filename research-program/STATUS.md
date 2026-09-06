@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-06T16:33:32Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-06T16:44:10Z)
 
-Units: 59 — claimed 1, done 57, queued 1
+Units: 59 — done 58, queued 1
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 Claude conservation: off (weekly window available)
@@ -62,7 +62,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Manager-Mosaic--2026-09-05T04-00-25Z | D | D | done | codex | driver | Audit stranske/Manager-Mosaic and file issues (supply 2 <= 2) |
 | D-audit-Travel-Plan-Permission--2026-09-05T16-11-36Z | D | D | done | codex | codex | Audit stranske/Travel-Plan-Permission and file issues (supply 3 <= 3) |
 | D-audit-Travel-Plan-Permission--2026-09-06T04-25-49Z | D | D | done | codex | driver | Audit stranske/Travel-Plan-Permission and file issues (supply 1 <= 2) |
-| D-audit-Travel-Plan-Permission--2026-09-06T16-33-27Z | D | D | claimed | codex | driver | Audit stranske/Travel-Plan-Permission and file issues (supply 2 <= 2) |
+| D-audit-Travel-Plan-Permission--2026-09-06T16-33-27Z | D | D | done | codex | driver | Audit stranske/Travel-Plan-Permission and file issues (supply 2 <= 2) |
 | D-audit-learning-management-system--2026-09-05T04-00-30Z | D | D | done | codex | driver | Audit stranske/learning-management-system and file issues (supply 2 <= |
 | D-audit-learning-management-system--2026-09-06T16-33-31Z | D | D | queued | claude |  | Audit stranske/learning-management-system and file issues (supply 1 <= |
 | D4-verify-merged-2026-09-05T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
@@ -70,7 +70,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-06T06:10:20Z — unblock — enqueued D3-unblock-sweep-2026-09-06T06
 - 2026-09-06T06:10:20Z — D3-unblock-sweep-2026-09-06T06 — route — router picked codex from ['codex', 'cursor']
 - 2026-09-06T06:10:20Z — D3-unblock-sweep-2026-09-06T06 — claimed by driver (agent codex)
 - 2026-09-06T06:14:26Z — D3-unblock-sweep-2026-09-06T06 — done — cursor produced 692 words at artifacts/sweeps/D3-unblock-sweep-2026-09-06T06.md in 243s
@@ -82,6 +81,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-06T16:33:31Z — refill — learning-management-system: open=1 <= 2 → audit queued
 - 2026-09-06T16:33:32Z — D-audit-Travel-Plan-Permission--2026-09-06T16-33-27Z — route — router picked codex from ['codex']
 - 2026-09-06T16:33:32Z — D-audit-Travel-Plan-Permission--2026-09-06T16-33-27Z — claimed by driver (agent codex)
+- 2026-09-06T16:44:10Z — D-audit-Travel-Plan-Permission--2026-09-06T16-33-27Z — done — gemini produced 1021 words at artifacts/audits/Travel-Plan-Permission-2026-09-06.md in 635s
 
 ## Questions
 
