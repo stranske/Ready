@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-06T14:11:46Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-06T14:17:34Z)
 
-Units: 57 — claimed 1, done 56
+Units: 57 — done 57
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 Claude conservation: off (weekly window available)
@@ -56,7 +56,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D3-unblock-sweep-2026-09-05T13 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D3-unblock-sweep-2026-09-05T21 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D3-unblock-sweep-2026-09-06T06 | D | D | done | codex | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
-| D3-unblock-sweep-2026-09-06T14 | D | D | claimed | cursor | codex | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
+| D3-unblock-sweep-2026-09-06T14 | D | D | done | cursor | codex | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D-audit-Fine-Art-Archive--2026-09-05T04-00-31Z | D | D | done | codex | codex | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 2) |
 | D-audit-Fine-Art-Archive--2026-09-06T04-25-53Z | D | D | done | codex | driver | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 3) |
 | D-audit-Manager-Mosaic--2026-09-05T04-00-25Z | D | D | done | codex | driver | Audit stranske/Manager-Mosaic and file issues (supply 2 <= 2) |
@@ -68,7 +68,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-06T04:48:27Z — D-audit-Travel-Plan-Permission--2026-09-06T04-25-49Z — route — router picked codex from ['codex']
 - 2026-09-06T04:48:27Z — D-audit-Travel-Plan-Permission--2026-09-06T04-25-49Z — claimed by driver (agent codex)
 - 2026-09-06T04:55:01Z — D-audit-Travel-Plan-Permission--2026-09-06T04-25-49Z — done — gemini produced 1166 words at artifacts/audits/Travel-Plan-Permission-2026-09-06.md in 391s
 - 2026-09-06T05:25:11Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-06T07:12:48+00:00; local work continues
@@ -80,6 +79,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-06T14:11:46Z — unblock — enqueued D3-unblock-sweep-2026-09-06T14
 - 2026-09-06T14:11:46Z — D3-unblock-sweep-2026-09-06T14 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-06T14:11:46Z — D3-unblock-sweep-2026-09-06T14 — claimed by codex (agent cursor)
+- 2026-09-06T14:17:34Z — D3-unblock-sweep-2026-09-06T14 — done — Swept 15 repos: 96 label-filter ready issues, no owner holds or stalled PRs, two confirmed CI failures with staged follow-ups, and Workflows main Gate unverifie
 
 ## Questions
 

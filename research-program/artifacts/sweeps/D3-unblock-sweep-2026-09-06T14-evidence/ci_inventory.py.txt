@@ -1,0 +1,22 @@
+import concurrent.futures,datetime,json,pathlib,re,subprocess
+out=pathlib.Path('/Users/teacher/.codex/automations/research-program/artifacts/sweeps/D3-unblock-sweep-2026-09-06T14-evidence')
+def gh(args):
+ p=subprocess.run(['gh',*args],cwd='/tmp',capture_output=True,text=True,timeout=90)
+ return json.loads(p.stdout) if p.returncode==0 else {'error':p.stderr}
+def get(path):
+ repo=path.stem; data=json.loads(path.read_text()); branch=data['repo']['defaultBranchRef']['name']
+ ws=gh(['api',f'repos/stranske/{repo}/actions/workflows?per_page=100'])
+ selected=[w for w in ws.get('workflows',[]) if re.search(r'(^Gate$|\bCI\b|^CI |^Gate )',w['name'],re.I) and w['state']=='active']
+ results=[]
+ for w in selected:
+  runs=gh(['api',f"repos/stranske/{repo}/actions/workflows/{w['id']}/runs?branch={branch}&per_page=1"])
+  results.append({'workflow':w,'runs':runs})
+ result={'repo':repo,'workflows':ws,'ci':results,'observedAt':datetime.datetime.now(datetime.timezone.utc).isoformat()}
+ (out/f'{repo}.ci.json').write_text(json.dumps(result,indent=2)+'\n')
+ return {'repo':repo,'ci':[{'name':x['workflow']['name'],'runs':[{'id':r['id'],'status':r['status'],'conclusion':r['conclusion'],'created_at':r['created_at'],'head_sha':r['head_sha'],'url':r['html_url']} for r in x['runs'].get('workflow_runs',[])]} for x in results]}
+paths=[p for p in out.glob('*.json') if '.' not in p.stem]
+with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:
+ for x in pool.map(get,paths):print(json.dumps(x),flush=True)
+detail=gh(['issue','view','1','-R','stranske/Doc-Lineage','--json','number,title,body,author,comments,labels,url'])
+(out/'Doc-Lineage-1.json').write_text(json.dumps(detail,indent=2)+'\n')
+print(json.dumps(detail))

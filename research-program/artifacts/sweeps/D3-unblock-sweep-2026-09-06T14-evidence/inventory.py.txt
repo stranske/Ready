@@ -1,0 +1,27 @@
+import concurrent.futures,datetime,json,pathlib,re,subprocess
+root=pathlib.Path('/Users/teacher/.codex/automations/research-program')
+out=root/'artifacts/sweeps/D3-unblock-sweep-2026-09-06T14-evidence'
+repos=re.search(r'SUPPORTED_REPOS=\(([^)]*)\)',pathlib.Path('/Users/teacher/.codex/bin/handoff.sh').read_text()).group(1).split()
+repos=[r for r in repos if r!='Orchestrator']
+def gh(args):
+ p=subprocess.run(['gh',*args],cwd='/tmp',capture_output=True,text=True,timeout=90)
+ if p.returncode: return {'error':p.stderr,'returncode':p.returncode}
+ return json.loads(p.stdout)
+def get(repo):
+ full='stranske/'+repo
+ specs={'repo':['repo','view',full,'--json','defaultBranchRef,url'], 'issues':['issue','list','-R',full,'--state','open','--limit','1000','--json','number,title,labels,url'], 'prs':['pr','list','-R',full,'--state','open','--limit','1000','--json','number,title,labels,updatedAt,isDraft,url']}
+ with concurrent.futures.ThreadPoolExecutor(max_workers=3) as pool:
+  data=dict(zip(specs,pool.map(gh,specs.values())))
+ branch=data['repo'].get('defaultBranchRef',{}).get('name','main')
+ data['runs']=gh(['run','list','-R',full,'--branch',branch,'--limit','5','--json','databaseId,workflowName,status,conclusion,createdAt,headSha,url'])
+ data['observedAt']=datetime.datetime.now(datetime.timezone.utc).isoformat()
+ (out/f'{repo}.json').write_text(json.dumps(data,indent=2)+'\n')
+ with (root/'artifacts/sweeps/CHECKPOINT.md').open('a') as f:f.write(f"\n- {data['observedAt']} D3-unblock-sweep-2026-09-06T14: {repo} inventory captured in {out.name}/{repo}.json; detailed disposition pending.\n")
+ blocked={'needs-human','agents:pause','agents:paused','status:in-progress','tracker:durable','dependencies','epic'}
+ issues=data['issues'] if isinstance(data['issues'],list) else []
+ frozen=[i for i in issues if {'needs-human','agents:auto-pilot-pause'} & {x['name'] for x in i['labels']}]
+ prs=data['prs'] if isinstance(data['prs'],list) else []
+ agent=[p for p in prs if any(x['name'].startswith('agent:') for x in p['labels'])]
+ return {'repo':repo,'branch':branch,'issues':len(issues),'supply':sum(not(blocked & {x['name'] for x in i['labels']}) for i in issues),'frozen':frozen,'agent_prs':agent,'runs':data['runs'],'errors':{k:v for k,v in data.items() if isinstance(v,dict) and 'error' in v}}
+with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:
+ for result in pool.map(get,repos):print(json.dumps(result),flush=True)

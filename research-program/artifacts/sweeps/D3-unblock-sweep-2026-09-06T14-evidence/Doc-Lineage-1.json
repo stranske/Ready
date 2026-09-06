@@ -1,0 +1,230 @@
+{
+  "author": {
+    "is_bot": true,
+    "login": "app/renovate"
+  },
+  "body": "This issue lists Renovate updates and detected dependencies. Read the [Dependency Dashboard](https://docs.renovatebot.com/key-concepts/dashboard/) docs to learn more.<br>[View this repository on the Mend.io Web Portal](https://developer.mend.io/github/stranske/Doc-Lineage).\n\n## Repository Problems\n\nThese problems occurred while renovating this repository. [View logs](https://developer.mend.io//github/stranske/Doc-Lineage).\n\n - \u26a0\ufe0f WARN: pip-compile: dependency not found in lock file\n\n## Awaiting Schedule\n\nThe following updates are awaiting their schedule. To get an update now, click on a checkbox below.\n\n - [ ] <!-- unschedule-branch=renovate/lock-file-maintenance-weekly-lock-file-maintenance -->chore(deps): lock file maintenance\n\n## Detected Dependencies\n\n<details><summary>github-actions (35)</summary>\n<blockquote>\n\n<details><summary>.github/actions/agent-run-base/action.yml</summary>\n\n\n</details>\n\n<details><summary>.github/actions/artifact-cache/action.yml</summary>\n\n\n</details>\n\n<details><summary>.github/actions/resolve-default-branch/action.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-71-codex-belt-dispatcher.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-72-codex-belt-worker.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-73-codex-belt-conveyor.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-80-pr-event-hub.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-81-gate-followups.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-auto-label.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-auto-pilot.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-autofix-dispatcher.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-capability-check.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-decompose.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-dedup.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-guard.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-issue-format-guard.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-issue-intake.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-issue-optimizer.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-keepalive-loop-reporter.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-keepalive-sweep.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-pr-health.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-verifier.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-verify-to-new-pr.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-weekly-metrics.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/autofix.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/backplane-conformance.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/ci.yml (1)</summary>\n\n - `stranske/Workflows main`\n\n</details>\n\n<details><summary>.github/workflows/cross-repo-smoke.yml (1)</summary>\n\n - `stranske/Workflows main`\n\n</details>\n\n<details><summary>.github/workflows/list-llm-models.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/maint-76-claude-code-review.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/maint-87-docs-drift-fix-agent.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/maint-coverage-guard.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/pr-00-gate.yml (43)</summary>\n\n - `actions/create-github-app-token v3@bcd2ba49218906704ab6c1aa796996da409d3eb1`\n - `actions/checkout v7.0.1@3d3c42e5aac5ba805825da76410c181273ba90b1`\n - `actions/github-script v9@3a2844b7e9c422d3c10d287c895573f7108da1b3`\n - `stranske/Workflows main`\n - `actions/checkout v7.0.1@3d3c42e5aac5ba805825da76410c181273ba90b1`\n - `actions/setup-python v7@5fda3b95a4ea91299a34e894583c3862153e4b97`\n - `actions/checkout v7.0.1@3d3c42e5aac5ba805825da76410c181273ba90b1`\n - `actions/setup-node v7@820762786026740c76f36085b0efc47a31fe5020`\n - `actions/setup-python v7@5fda3b95a4ea91299a34e894583c3862153e4b97`\n - `actions/checkout v7.0.1@3d3c42e5aac5ba805825da76410c181273ba90b1`\n - `actions/setup-python v7@5fda3b95a4ea91299a34e894583c3862153e4b97`\n - `actions/checkout v7.0.1@3d3c42e5aac5ba805825da76410c181273ba90b1`\n - `actions/setup-python v7@5fda3b95a4ea91299a34e894583c3862153e4b97`\n - `actions/github-script v9@3a2844b7e9c422d3c10d287c895573f7108da1b3`\n - `stranske/Workflows main`\n - `actions/create-github-app-token v3@bcd2ba49218906704ab6c1aa796996da409d3eb1`\n - `actions/checkout v7.0.1@3d3c42e5aac5ba805825da76410c181273ba90b1`\n - `actions/setup-python v7@5fda3b95a4ea91299a34e894583c3862153e4b97`\n - `actions/create-github-app-token v3@bcd2ba49218906704ab6c1aa796996da409d3eb1`\n - `actions/checkout v7.0.1@3d3c42e5aac5ba805825da76410c181273ba90b1`\n - `actions/setup-node v7@820762786026740c76f36085b0efc47a31fe5020`\n - `actions/github-script v9@3a2844b7e9c422d3c10d287c895573f7108da1b3`\n - `actions/github-script v9@3a2844b7e9c422d3c10d287c895573f7108da1b3`\n - `actions/github-script v9@3a2844b7e9c422d3c10d287c895573f7108da1b3`\n - `actions/github-script v9@3a2844b7e9c422d3c10d287c895573f7108da1b3`\n - `actions/download-artifact v8@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c`\n - `actions/github-script v9@3a2844b7e9c422d3c10d287c895573f7108da1b3`\n - `actions/github-script v9@3a2844b7e9c422d3c10d287c895573f7108da1b3`\n - `actions/github-script v9@3a2844b7e9c422d3c10d287c895573f7108da1b3`\n - `actions/upload-artifact v7@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a`\n - `actions/upload-artifact v7@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a`\n - `actions/upload-artifact v7@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a`\n - `actions/upload-artifact v7@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a`\n - `actions/github-script v9@3a2844b7e9c422d3c10d287c895573f7108da1b3`\n - `actions/github-script v9@3a2844b7e9c422d3c10d287c895573f7108da1b3`\n - `actions/github-script v9@3a2844b7e9c422d3c10d287c895573f7108da1b3`\n - `python 3.14`\n - `node 24`\n - `python 3.14`\n - `python 3.14`\n - `python 3.14`\n - `python 3.14`\n - `node 24`\n\n</details>\n\n<details><summary>.github/workflows/pr-46-dependency-repair-contract.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/reusable-pr-context.yml</summary>\n\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>npm (1)</summary>\n<blockquote>\n\n<details><summary>.github/scripts/package.json</summary>\n\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>pip-compile (1)</summary>\n<blockquote>\n\n<details><summary>pyproject.toml (2)</summary>\n\n - `python >=3.12`\n - `setuptools >=82.0.1`\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>pip_requirements (1)</summary>\n<blockquote>\n\n<details><summary>tools/requirements-llm.txt</summary>\n\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>poetry (1)</summary>\n<blockquote>\n\n<details><summary>pyproject.toml</summary>\n\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>renovate-config (1)</summary>\n<blockquote>\n\n<details><summary>.github/renovate.json</summary>\n\n\n</details>\n\n</blockquote>\n</details>\n\n---\n\n- [ ] <!-- manual job -->Check this box to trigger a request for Renovate to run again on this repository\n\n",
+  "comments": [
+    {
+      "id": "IC_kwDOUOakrc8AAAABSl33GQ",
+      "author": {
+        "login": "github-actions"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n**Missing required sections:** `Tasks`, `Acceptance Criteria`\n\n_Advisory:_\n- 4 cited path(s) do not exist yet: `renovate/non-major-updates`, `renovate/github-actions`, `stranske/Workflows`, `renovate/lock-file-maintenance-weekly-lock-file-maintenance` \u2014 expected when a task creates them; check for typos otherwise.\n\n_Recommended but absent:_ `Why`, `Scope`, `Implementation Notes`, `Non-Goals`\n\nDispatched the Agents Issue Optimizer format phase (attempt 1 of 3).\n\n<!-- format-guard:73ca91da37ac:attempt:1 -->\n",
+      "createdAt": "2026-09-04T15:20:49Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Doc-Lineage/issues/1#issuecomment-5542639385",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDOUOakrc8AAAABSl4hhw",
+      "author": {
+        "login": "github-actions"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Doc-Lineage/actions/runs/33888943959)\n",
+      "createdAt": "2026-09-04T15:21:34Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Doc-Lineage/issues/1#issuecomment-5542650247",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDOUOakrc8AAAABSl41IA",
+      "author": {
+        "login": "github-actions"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n**Missing required sections:** `Tasks`, `Acceptance Criteria`\n\n_Advisory:_\n- 4 cited path(s) do not exist yet: `renovate/non-major-updates`, `renovate/github-actions`, `stranske/Workflows`, `renovate/lock-file-maintenance-weekly-lock-file-maintenance` \u2014 expected when a task creates them; check for typos otherwise.\n\n_Recommended but absent:_ `Why`, `Scope`, `Implementation Notes`, `Non-Goals`\n\nDispatched the Agents Issue Optimizer format phase (attempt 2 of 3).\n\n<!-- format-guard:73ca91da37ac:attempt:2 -->\n",
+      "createdAt": "2026-09-04T15:21:55Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Doc-Lineage/issues/1#issuecomment-5542655264",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDOUOakrc8AAAABSl5s5Q",
+      "author": {
+        "login": "agents-workflows-bot"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Doc-Lineage/actions/runs/33889047850)\n\n**Format validation report:**\n```text\nThis issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `_Not provided._`.\n- `Acceptance Criteria` names no test, runnable command or observable verification gate \u2014 Definition of Ready / Quality Bar \u00a72 requires one.\n```\n",
+      "createdAt": "2026-09-04T15:22:54Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Doc-Lineage/issues/1#issuecomment-5542669541",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDOUOakrc8AAAABSl5_Cg",
+      "author": {
+        "login": "github-actions"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n**Missing required sections:** `Tasks`, `Acceptance Criteria`\n\n_Advisory:_\n- 4 cited path(s) do not exist yet: `renovate/non-major-updates`, `renovate/github-actions`, `stranske/Workflows`, `renovate/lock-file-maintenance-weekly-lock-file-maintenance` \u2014 expected when a task creates them; check for typos otherwise.\n\n_Recommended but absent:_ `Why`, `Scope`, `Implementation Notes`, `Non-Goals`\n\nDispatched the Agents Issue Optimizer format phase (attempt 3 of 3).\n\n<!-- format-guard:73ca91da37ac:attempt:3 -->\n",
+      "createdAt": "2026-09-04T15:23:15Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Doc-Lineage/issues/1#issuecomment-5542674186",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDOUOakrc8AAAABSl6V_w",
+      "author": {
+        "login": "github-actions"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "<!-- format-guard:attempt-cap -->\nAutomated formatting stopped after 3 optimizer attempts. Fix the issue body manually, then remove agents:auto-pilot-pause before retrying.\n",
+      "createdAt": "2026-09-04T15:23:37Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Doc-Lineage/issues/1#issuecomment-5542680063",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDOUOakrc8AAAABSl6uQw",
+      "author": {
+        "login": "agents-workflows-bot"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Doc-Lineage/actions/runs/33889175789)\n\n**Format validation report:**\n```text\nThis issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `_Not provided._`.\n- `Acceptance Criteria` names no test, runnable command or observable verification gate \u2014 Definition of Ready / Quality Bar \u00a72 requires one.\n```\n",
+      "createdAt": "2026-09-04T15:24:02Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Doc-Lineage/issues/1#issuecomment-5542686275",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDOUOakrc8AAAABSl6-0w",
+      "author": {
+        "login": "github-actions"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "<!-- format-guard:attempt-cap -->\nAutomated formatting stopped after 3 optimizer attempts. Fix the issue body manually, then remove agents:auto-pilot-pause before retrying.\n",
+      "createdAt": "2026-09-04T15:24:19Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Doc-Lineage/issues/1#issuecomment-5542690515",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDOUOakrc8AAAABSo6zjg",
+      "author": {
+        "login": "github-actions"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n**Missing required sections:** `Tasks`, `Acceptance Criteria`\n- None of the 4 paths this issue cites exist in this repository (`renovate/non-major-updates`, `renovate/github-actions`, `stranske/workflows`, `renovate/lock-file-maintenance-weekly-lock-file-maintenance`). An agent cloning this repo has nothing to act on. File it against the repo that holds the code, or cite the evidence here.\n\n_Recommended but absent:_ `Why`, `Scope`, `Implementation Notes`, `Non-Goals`\n\nDispatched the Agents Issue Optimizer format phase (attempt 1 of 3).\n\n<!-- format-guard:5a55e8114682:attempt:1 -->\n",
+      "createdAt": "2026-09-04T20:03:04Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Doc-Lineage/issues/1#issuecomment-5545833358",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDOUOakrc8AAAABSo7Xdw",
+      "author": {
+        "login": "agents-workflows-bot"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Doc-Lineage/actions/runs/33914268086)\n\n**Format validation report:**\n```text\nThis issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `_Not provided._`.\n- `Acceptance Criteria` names no test, runnable command or observable verification gate \u2014 Definition of Ready / Quality Bar \u00a72 requires one.\n```\n",
+      "createdAt": "2026-09-04T20:04:01Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Doc-Lineage/issues/1#issuecomment-5545842551",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDOUOakrc8AAAABSo7xOA",
+      "author": {
+        "login": "github-actions"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n**Missing required sections:** `Tasks`, `Acceptance Criteria`\n- None of the 4 paths this issue cites exist in this repository (`renovate/non-major-updates`, `renovate/github-actions`, `stranske/workflows`, `renovate/lock-file-maintenance-weekly-lock-file-maintenance`). An agent cloning this repo has nothing to act on. File it against the repo that holds the code, or cite the evidence here.\n\n_Recommended but absent:_ `Why`, `Scope`, `Implementation Notes`, `Non-Goals`\n\nDispatched the Agents Issue Optimizer format phase (attempt 2 of 3).\n\n<!-- format-guard:5a55e8114682:attempt:2 -->\n",
+      "createdAt": "2026-09-04T20:04:39Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Doc-Lineage/issues/1#issuecomment-5545849144",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDOUOakrc8AAAABSo8Xgg",
+      "author": {
+        "login": "agents-workflows-bot"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Doc-Lineage/actions/runs/33914402626)\n\n**Format validation report:**\n```text\nThis issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `_Not provided._`.\n- `Acceptance Criteria` names no test, runnable command or observable verification gate \u2014 Definition of Ready / Quality Bar \u00a72 requires one.\n```\n",
+      "createdAt": "2026-09-04T20:05:38Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Doc-Lineage/issues/1#issuecomment-5545858946",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDOUOakrc8AAAABSo80SQ",
+      "author": {
+        "login": "github-actions"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n**Missing required sections:** `Tasks`, `Acceptance Criteria`\n- None of the 4 paths this issue cites exist in this repository (`renovate/non-major-updates`, `renovate/github-actions`, `stranske/workflows`, `renovate/lock-file-maintenance-weekly-lock-file-maintenance`). An agent cloning this repo has nothing to act on. File it against the repo that holds the code, or cite the evidence here.\n\n_Recommended but absent:_ `Why`, `Scope`, `Implementation Notes`, `Non-Goals`\n\nDispatched the Agents Issue Optimizer format phase (attempt 3 of 3).\n\n<!-- format-guard:5a55e8114682:attempt:3 -->\n",
+      "createdAt": "2026-09-04T20:06:22Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Doc-Lineage/issues/1#issuecomment-5545866313",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDOUOakrc8AAAABSo9FjQ",
+      "author": {
+        "login": "github-actions"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "<!-- format-guard:attempt-cap -->\nAutomated formatting stopped after 3 optimizer attempts. Fix the issue body manually, then remove agents:auto-pilot-pause before retrying.\n",
+      "createdAt": "2026-09-04T20:06:50Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Doc-Lineage/issues/1#issuecomment-5545870733",
+      "viewerDidAuthor": false
+    }
+  ],
+  "labels": [
+    {
+      "id": "LA_kwDOUOakrc8AAAACz0b_nw",
+      "name": "agents:auto-pilot-pause",
+      "description": "",
+      "color": "ededed"
+    }
+  ],
+  "number": 1,
+  "title": "Dependency Dashboard",
+  "url": "https://github.com/stranske/Doc-Lineage/issues/1"
+}

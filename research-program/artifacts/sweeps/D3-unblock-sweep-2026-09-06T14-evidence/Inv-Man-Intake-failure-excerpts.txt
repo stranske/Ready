@@ -1,0 +1,9 @@
+Static SPA browser E2E	UNKNOWN STEP	2026-09-05T12:33:31.1342246Z tests/app/test_static_spa_browser_e2e.py:222: 
+Static SPA browser E2E	UNKNOWN STEP	2026-09-05T12:33:31.1354386Z E           playwright._impl._errors.TimeoutError: Locator.inner_text: Timeout 30000ms exceeded.
+Static SPA browser E2E	UNKNOWN STEP	2026-09-05T12:33:31.1355320Z E             - waiting for get_by_role("table", name="Packet graphics").get_by_role("row", name=re.compile(r"vector-chart.*Rendered page 1"))
+Static SPA browser E2E	UNKNOWN STEP	2026-09-05T12:33:31.1360084Z tests/app/test_static_spa_browser_e2e.py:318: 
+Static SPA browser E2E	UNKNOWN STEP	2026-09-05T12:33:31.1368984Z E       AssertionError: assert ('.png' in 'select\tartifact\ttype\taction\n\treturn-series.xlsx\tspreadsheet\tdownload\n\tone-pager-summary.html\tone-pager\tdownload' or 'graphic' in 'select\tartifact\ttype\taction\n\treturn-series.xlsx\tspreadsheet\tdownload\n\tone-pager-summary.html\tone-pager\tdownload')
+Static SPA browser E2E	UNKNOWN STEP	2026-09-05T12:33:31.1375389Z tests/app/test_static_spa_browser_e2e.py:282: AssertionError
+Static SPA browser E2E	UNKNOWN STEP	2026-09-05T12:33:31.1376776Z FAILED tests/app/test_static_spa_browser_e2e.py::test_vector_figure_export_renders_a_local_pdf_region_without_egress - playwright._impl._errors.TimeoutError: Locator.inner_text: Timeout 30000ms exceeded.
+Static SPA browser E2E	UNKNOWN STEP	2026-09-05T12:33:31.1379728Z FAILED tests/app/test_static_spa_browser_e2e.py::test_export_panel_produces_artifacts_and_manifest - AssertionError: assert ('.png' in 'select\tartifact\ttype\taction\n\treturn-series.xlsx\tspreadsheet\tdownload\n\tone-pager-summary.html\tone-pager\tdownload' or 'graphic' in 'select\tartifact\ttype\taction\n\treturn-series.xlsx\tspreadsheet\tdownload\n\tone-pager-summary.html\tone-pager\tdownload')
+Static SPA browser E2E	UNKNOWN STEP	2026-09-05T12:33:31.1386277Z 2 failed, 6 passed in 50.47s

@@ -362,3 +362,4 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-06T14:11:46Z — unblock — enqueued D3-unblock-sweep-2026-09-06T14
 ## 2026-09-06T14:11:46Z — D3-unblock-sweep-2026-09-06T14 — route — router picked cursor from ['codex', 'cursor']
 ## 2026-09-06T14:11:46Z — D3-unblock-sweep-2026-09-06T14 — claimed by codex (agent cursor)
+## 2026-09-06T14:17:34Z — D3-unblock-sweep-2026-09-06T14 — done — Swept 15 repos: 96 label-filter ready issues, no owner holds or stalled PRs, two confirmed CI failures with staged follow-ups, and Workflows main Gate unverifie
