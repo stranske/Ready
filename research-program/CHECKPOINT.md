@@ -363,3 +363,7 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-06T14:11:46Z — D3-unblock-sweep-2026-09-06T14 — route — router picked cursor from ['codex', 'cursor']
 ## 2026-09-06T14:11:46Z — D3-unblock-sweep-2026-09-06T14 — claimed by codex (agent cursor)
 ## 2026-09-06T14:17:34Z — D3-unblock-sweep-2026-09-06T14 — done — Swept 15 repos: 96 label-filter ready issues, no owner holds or stalled PRs, two confirmed CI failures with staged follow-ups, and Workflows main Gate unverifie
+## 2026-09-06T16:33:27Z — refill — Travel-Plan-Permission: open=2 <= 2 → audit queued
+## 2026-09-06T16:33:31Z — refill — learning-management-system: open=1 <= 2 → audit queued
+## 2026-09-06T16:33:32Z — D-audit-Travel-Plan-Permission--2026-09-06T16-33-27Z — route — router picked codex from ['codex']
+## 2026-09-06T16:33:32Z — D-audit-Travel-Plan-Permission--2026-09-06T16-33-27Z — claimed by driver (agent codex)

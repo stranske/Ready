@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-06T16:18:19Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-06T16:33:32Z)
 
-Units: 57 — done 57
+Units: 59 — claimed 1, done 57, queued 1
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 Claude conservation: off (weekly window available)
@@ -62,16 +62,14 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Manager-Mosaic--2026-09-05T04-00-25Z | D | D | done | codex | driver | Audit stranske/Manager-Mosaic and file issues (supply 2 <= 2) |
 | D-audit-Travel-Plan-Permission--2026-09-05T16-11-36Z | D | D | done | codex | codex | Audit stranske/Travel-Plan-Permission and file issues (supply 3 <= 3) |
 | D-audit-Travel-Plan-Permission--2026-09-06T04-25-49Z | D | D | done | codex | driver | Audit stranske/Travel-Plan-Permission and file issues (supply 1 <= 2) |
+| D-audit-Travel-Plan-Permission--2026-09-06T16-33-27Z | D | D | claimed | codex | driver | Audit stranske/Travel-Plan-Permission and file issues (supply 2 <= 2) |
 | D-audit-learning-management-system--2026-09-05T04-00-30Z | D | D | done | codex | driver | Audit stranske/learning-management-system and file issues (supply 2 <= |
+| D-audit-learning-management-system--2026-09-06T16-33-31Z | D | D | queued | claude |  | Audit stranske/learning-management-system and file issues (supply 1 <= |
 | D4-verify-merged-2026-09-05T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
 | D4-verify-merged-2026-09-06T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
 
 ## Last checkpoints
 
-- 2026-09-06T04:48:27Z — D-audit-Travel-Plan-Permission--2026-09-06T04-25-49Z — claimed by driver (agent codex)
-- 2026-09-06T04:55:01Z — D-audit-Travel-Plan-Permission--2026-09-06T04-25-49Z — done — gemini produced 1166 words at artifacts/audits/Travel-Plan-Permission-2026-09-06.md in 391s
-- 2026-09-06T05:25:11Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-06T07:12:48+00:00; local work continues
-- 2026-09-06T05:40:13Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-06T07:12:48+00:00; local work continues
 - 2026-09-06T06:10:20Z — unblock — enqueued D3-unblock-sweep-2026-09-06T06
 - 2026-09-06T06:10:20Z — D3-unblock-sweep-2026-09-06T06 — route — router picked codex from ['codex', 'cursor']
 - 2026-09-06T06:10:20Z — D3-unblock-sweep-2026-09-06T06 — claimed by driver (agent codex)
@@ -80,6 +78,10 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-06T14:11:46Z — D3-unblock-sweep-2026-09-06T14 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-06T14:11:46Z — D3-unblock-sweep-2026-09-06T14 — claimed by codex (agent cursor)
 - 2026-09-06T14:17:34Z — D3-unblock-sweep-2026-09-06T14 — done — Swept 15 repos: 96 label-filter ready issues, no owner holds or stalled PRs, two confirmed CI failures with staged follow-ups, and Workflows main Gate unverifie
+- 2026-09-06T16:33:27Z — refill — Travel-Plan-Permission: open=2 <= 2 → audit queued
+- 2026-09-06T16:33:31Z — refill — learning-management-system: open=1 <= 2 → audit queued
+- 2026-09-06T16:33:32Z — D-audit-Travel-Plan-Permission--2026-09-06T16-33-27Z — route — router picked codex from ['codex']
+- 2026-09-06T16:33:32Z — D-audit-Travel-Plan-Permission--2026-09-06T16-33-27Z — claimed by driver (agent codex)
 
 ## Questions
 
