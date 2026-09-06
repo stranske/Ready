@@ -61,6 +61,7 @@ fail_under = 80
 target-version = "py312"
 line-length = 100
 src = ["src", "tests"]
+extend-exclude = ["research-program/artifacts"]
 
 [tool.ruff.lint]
 select = [
