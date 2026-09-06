@@ -353,3 +353,5 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-06T04:48:27Z — D-audit-Travel-Plan-Permission--2026-09-06T04-25-49Z — route — router picked codex from ['codex']
 ## 2026-09-06T04:48:27Z — D-audit-Travel-Plan-Permission--2026-09-06T04-25-49Z — claimed by driver (agent codex)
 ## 2026-09-06T04:55:01Z — D-audit-Travel-Plan-Permission--2026-09-06T04-25-49Z — done — gemini produced 1166 words at artifacts/audits/Travel-Plan-Permission-2026-09-06.md in 391s
+## 2026-09-06T05:25:11Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-06T07:12:48+00:00; local work continues
+## 2026-09-06T05:40:13Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-06T07:12:48+00:00; local work continues

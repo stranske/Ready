@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-06T05:11:07Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-06T05:55:15Z)
 
 Units: 55 — done 55
 Paused: False   Phase stops: []
@@ -66,8 +66,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-06T01:20:01Z — verify — enqueued D4-verify-merged-2026-09-06T01
-- 2026-09-06T01:20:01Z — D4-verify-merged-2026-09-06T01 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-06T01:20:01Z — D4-verify-merged-2026-09-06T01 — claimed by driver (agent cursor)
 - 2026-09-06T01:24:36Z — D4-verify-merged-2026-09-06T01 — done — gemini produced 2006 words at artifacts/verification/D4-verify-merged-2026-09-06T01.md in 272s
 - 2026-09-06T04:25:49Z — refill — Travel-Plan-Permission: open=1 <= 2 → audit queued
@@ -78,6 +76,8 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-06T04:48:27Z — D-audit-Travel-Plan-Permission--2026-09-06T04-25-49Z — route — router picked codex from ['codex']
 - 2026-09-06T04:48:27Z — D-audit-Travel-Plan-Permission--2026-09-06T04-25-49Z — claimed by driver (agent codex)
 - 2026-09-06T04:55:01Z — D-audit-Travel-Plan-Permission--2026-09-06T04-25-49Z — done — gemini produced 1166 words at artifacts/audits/Travel-Plan-Permission-2026-09-06.md in 391s
+- 2026-09-06T05:25:11Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-06T07:12:48+00:00; local work continues
+- 2026-09-06T05:40:13Z — mirror — deferred — Ready#555 exact-head sync review; publication resumes by 2026-09-06T07:12:48+00:00; local work continues
 
 ## Questions
 
