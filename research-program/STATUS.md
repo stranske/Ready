@@ -1,8 +1,8 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-07T06:33:13Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-07T06:48:18Z)
 
-Units: 67 — done 64, queued 3
+Units: 67 — claimed 1, done 64, queued 2
 Paused: False   Phase stops: []
-Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
+Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=warn vibe=ok aider=ok
 Claude conservation: off (weekly window available)
 Owner inbox: https://github.com/stranske/Ready/issues/553
 
@@ -68,7 +68,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Travel-Plan-Permission--2026-09-05T16-11-36Z | D | D | done | codex | codex | Audit stranske/Travel-Plan-Permission and file issues (supply 3 <= 3) |
 | D-audit-Travel-Plan-Permission--2026-09-06T04-25-49Z | D | D | done | codex | driver | Audit stranske/Travel-Plan-Permission and file issues (supply 1 <= 2) |
 | D-audit-Travel-Plan-Permission--2026-09-06T16-33-27Z | D | D | done | codex | driver | Audit stranske/Travel-Plan-Permission and file issues (supply 2 <= 2) |
-| D-audit-Travel-Plan-Permission--2026-09-07T04-47-30Z | D | D | queued | claude |  | Audit stranske/Travel-Plan-Permission and file issues (supply 2 <= 3) |
+| D-audit-Travel-Plan-Permission--2026-09-07T04-47-30Z | D | D | claimed | codex | driver | Audit stranske/Travel-Plan-Permission and file issues (supply 2 <= 3) |
 | D-audit-learning-management-system--2026-09-05T04-00-30Z | D | D | done | codex | driver | Audit stranske/learning-management-system and file issues (supply 2 <= |
 | D-audit-learning-management-system--2026-09-06T16-33-31Z | D | D | done | codex | driver | Audit stranske/learning-management-system and file issues (supply 1 <= |
 | D-audit-trip-planner--2026-09-07T04-47-34Z | D | D | queued | claude |  | Audit stranske/trip-planner and file issues (supply 2 <= 2) |
@@ -78,8 +78,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-07T05:30:08Z — D-audit-Portable-Alpha-Extension-Model--2026-09-07T04-47-31Z — done — Verified ten staged issue bodies covering allocation, fees, financing, CVaR calibration, provenance, sample workflows and Plotly compatibility; research-only ar
-- 2026-09-07T05:53:14Z — D-audit-Ready--2026-09-07T04-47-33Z — fail — offload to gemini exited 1; retained artifact is not proof of success
 - 2026-09-07T06:08:18Z — D-audit-Ready--2026-09-07T04-47-33Z — route — router picked codex from ['codex']
 - 2026-09-07T06:08:18Z — D-audit-Ready--2026-09-07T04-47-33Z — claimed by driver (agent codex)
 - 2026-09-07T06:11:39Z — D-audit-Ready--2026-09-07T04-47-33Z — fail — gemini did not write a fresh output artifact
@@ -90,6 +88,8 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-07T06:26:42Z — D3-unblock-sweep-2026-09-07T06 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-07T06:26:42Z — D3-unblock-sweep-2026-09-07T06 — claimed by driver (agent cursor)
 - 2026-09-07T06:33:13Z — D3-unblock-sweep-2026-09-07T06 — done — gemini produced 769 words at artifacts/sweeps/D3-unblock-sweep-2026-09-07T06.md in 387s
+- 2026-09-07T06:48:18Z — D-audit-Travel-Plan-Permission--2026-09-07T04-47-30Z — route — router picked codex from ['codex']
+- 2026-09-07T06:48:18Z — D-audit-Travel-Plan-Permission--2026-09-07T04-47-30Z — claimed by driver (agent codex)
 
 ## Questions
 
