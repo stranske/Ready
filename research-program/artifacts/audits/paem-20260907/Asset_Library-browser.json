@@ -1,0 +1,18 @@
+{
+  "ok": false,
+  "url": "http://127.0.0.1:8537/Asset_Library",
+  "title": "Asset Library",
+  "findings": [],
+  "snapshotNodeCount": 51,
+  "settle": {
+    "polls": 4,
+    "nodeCount": 51,
+    "settled": true,
+    "reason": "stable_with_content"
+  },
+  "error": null,
+  "diagnostic": null,
+  "hint": null,
+  "browserTransport": "cdp",
+  "snapshot": "- list:\n  - listitem:\n    - link \"app\":\n      - /url: http://127.0.0.1:8537/\n      - paragraph: app\n  - listitem:\n    - link \"Asset Library\":\n      - /url: http://127.0.0.1:8537/Asset_Library\n      - paragraph: Asset Library\n  - listitem:\n    - link \"Portfolio Builder\":\n      - /url: http://127.0.0.1:8537/Portfolio_Builder\n      - paragraph: Portfolio Builder\n  - listitem:\n    - link \"Scenario Wizard\":\n      - /url: http://127.0.0.1:8537/Scenario_Wizard\n      - paragraph: Scenario Wizard\n  - listitem:\n    - link \"Results\":\n      - /url: http://127.0.0.1:8537/Results\n      - paragraph: Results\n  - listitem:\n    - link \"Scenario Grid\":\n      - /url: http://127.0.0.1:8537/Scenario_Grid\n      - paragraph: Scenario Grid\n  - listitem:\n    - link \"Stress Lab\":\n      - /url: http://127.0.0.1:8537/Stress_Lab\n      - paragraph: Stress Lab\n  - listitem:\n    - link \"Run Logs\":\n      - /url: http://127.0.0.1:8537/Run_Logs\n      - paragraph: Run Logs\n- group:\n  - text: keyboard_arrow_right\n  - paragraph: Advanced / Settings\n- banner:\n  - button \"keyboard_double_arrow_right\"\n  - button \"Deploy\"\n  - button \"Main menu\"\n- heading \"Asset Library\" [level=1]:\n  - text: Asset Library\n  - link \"Link to heading\":\n    - /url: \"#asset-library\"\n- paragraph:\n  - strong: Upload asset return data\n- checkbox \"Use bundled sample asset data (no upload needed)\"\n- paragraph: Use bundled sample asset data (no upload needed)\n- button \"Help for Use bundled sample asset data (no upload needed)\"\n- button \"Download asset return template\":\n  - paragraph: Download asset return template\n- paragraph: Drag and drop a CSV or Excel file, or click to browse.\n- region \"Drag-and-drop CSV/XLSX\":\n  - button \"file upload\"\n  - button \"upload Upload\":\n    - text: upload\n    - paragraph: Upload\n  - text: 200MB per file • CSV, XLSX, XLS\n- status:\n  - paragraph: Upload asset return data or use the bundled sample to begin."
+}

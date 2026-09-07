@@ -1,0 +1,129 @@
+- list:
+  - listitem:
+    - link "app":
+      - /url: http://127.0.0.1:8537/
+      - paragraph: app
+  - listitem:
+    - link "Asset Library":
+      - /url: http://127.0.0.1:8537/Asset_Library
+      - paragraph: Asset Library
+  - listitem:
+    - link "Portfolio Builder":
+      - /url: http://127.0.0.1:8537/Portfolio_Builder
+      - paragraph: Portfolio Builder
+  - listitem:
+    - link "Scenario Wizard":
+      - /url: http://127.0.0.1:8537/Scenario_Wizard
+      - paragraph: Scenario Wizard
+  - listitem:
+    - link "Results":
+      - /url: http://127.0.0.1:8537/Results
+      - paragraph: Results
+  - listitem:
+    - link "Scenario Grid":
+      - /url: http://127.0.0.1:8537/Scenario_Grid
+      - paragraph: Scenario Grid
+  - listitem:
+    - link "Stress Lab":
+      - /url: http://127.0.0.1:8537/Stress_Lab
+      - paragraph: Stress Lab
+  - listitem:
+    - link "Run Logs":
+      - /url: http://127.0.0.1:8537/Run_Logs
+      - paragraph: Run Logs
+- group:
+  - text: keyboard_arrow_right
+  - paragraph: Advanced / Settings
+- banner:
+  - button "Deploy"
+  - button "Main menu"
+- heading "Asset Library" [level=1]:
+  - text: Asset Library
+  - link "Link to heading":
+    - /url: "#asset-library"
+- paragraph:
+  - strong: Upload asset return data
+- checkbox "Use bundled sample asset data (no upload needed)" [checked]
+- paragraph: Use bundled sample asset data (no upload needed)
+- button "Help for Use bundled sample asset data (no upload needed)"
+- button "Download asset return template":
+  - paragraph: Download asset return template
+- paragraph: Drag and drop a CSV or Excel file, or click to browse.
+- region "Drag-and-drop CSV/XLSX":
+  - button "file upload"
+  - button "upload Upload":
+    - text: upload
+    - paragraph: Upload
+  - text: 200MB per file • CSV, XLSX, XLS
+- paragraph: "Using bundled sample: asset_timeseries_wide_returns.csv"
+- separator
+- heading "Column Mapping & Parse Options" [level=3]:
+  - text: Column Mapping & Parse Options
+  - link "Link to heading":
+    - /url: "#column-mapping-and-parse-options"
+- textbox "Date column":
+  - /placeholder: ""
+  - text: Date
+- radiogroup "Input layout":
+  - radio "wide" [checked]
+  - paragraph: wide
+  - radio "long"
+  - paragraph: long
+- radiogroup "Value type":
+  - radio "returns" [checked]
+  - paragraph: returns
+  - radio "prices"
+  - paragraph: prices
+- textbox "ID column (long only)":
+  - /placeholder: ""
+  - text: Id
+- textbox "Value column (long only)":
+  - /placeholder: ""
+  - text: Return
+- radiogroup "Frequency":
+  - radio "monthly" [checked]
+  - paragraph: monthly
+  - radio "daily"
+  - paragraph: daily
+- spinbutton "Min observations per id": "36"
+- button "Decrement"
+- button "Increment"
+- button "Help for Covariance shrinkage"
+- group:
+  - combobox "Covariance shrinkage": none
+  - button "Open"
+- button "Help for Volatility regime"
+- group:
+  - combobox "Volatility regime": single
+  - button "Open"
+- button "Help for Vol regime window (months)"
+- spinbutton "Vol regime window (months)": "12"
+- button "Decrement"
+- button "Increment"
+- textbox "Excel sheet name (optional)":
+  - /placeholder: ""
+- textbox "NA markers (comma‑sep)":
+  - /placeholder: ""
+- textbox "Decimal separator":
+  - /placeholder: ""
+  - text: .
+- textbox "Thousands separator":
+  - /placeholder: ""
+- paragraph:
+  - strong: Mapping Templates
+- button "💾 Save mapping as template":
+  - paragraph: 💾 Save mapping as template
+- region "Load mapping template":
+  - button "file upload"
+  - button "upload Upload":
+    - text: upload
+    - paragraph: Upload
+  - text: 200MB per file • YAML, YML
+- alert:
+  - text: "ValueError: insufficient data for ids: FUND_A, FUND_B, SP500_TR Traceback:"
+  - code: "File \"/Users/teacher/.codex/automations/research-program/clones/Portable-Alpha-Extension-Model/dashboard/pages/1_Asset_Library.py\", line 313, in <module> main() File \"/Users/teacher/.codex/automations/research-program/clones/Portable-Alpha-Extension-Model/dashboard/pages/1_Asset_Library.py\", line 204, in main df = importer.load(tmp_path) ^^^^^^^^^^^^^^^^^^^^^^^ File \"/Users/teacher/.codex/automations/research-program/clones/Portable-Alpha-Extension-Model/pa_core/data/importer.py\", line 174, in load raise ValueError(f\"insufficient data for ids: {ids_str}\")"
+  - button "Copy"
+  - link "Ask Google":
+    - /url: https://www.google.com/search?q=ValueError%3A%20insufficient%20data%20for%20ids%3A%20FUND_A%2C%20FUND_B%2C%20SP500_TR
+  - link "Ask ChatGPT":
+    - /url: https://chatgpt.com/?q=ValueError%3A%20insufficient%20data%20for%20ids%3A%20FUND_A%2C%20FUND_B%2C%20SP500_TR%0A%0AFile%20%22%2FUsers%2Fteacher%2F.codex%2Fautomations%2Fresearch-program%2Fclones%2FPortable-Alpha-Extension-Model%2Fdashboard%2Fpages%2F1_Asset_Library.py%22%2C%20line%20313%2C%20in%20%3Cmodule%3E%0A%20%20%20%20main()%0AFile%20%22%2FUsers%2Fteacher%2F.codex%2Fautomations%2Fresearch-program%2Fclones%2FPortable-Alpha-Extension-Model%2Fdashboard%2Fpages%2F1_Asset_Library.py%22%2C%20line%20204%2C%20in%20main%0A%20%20%20%20df%20%3D%20importer.load(tmp_path)%0A%20%20%20%20%20%20%20%20%20%5E%5E%5E%5E%5E%5E%5E%5E%5E%5E%5E%5E%5E%5E%5E%5E%5E%5E%5E%5E%5E%5E%5E%0AFile%20%22%2FUsers%2Fteacher%2F.codex%2Fautomations%2Fresearch-program%2Fclones%2FPortable-Alpha-Extension-Model%2Fpa_core%2Fdata%2Fimporter.py%22%2C%20line%20174%2C%20in%20load%0A%20%20%20%20raise%20ValueError(f%22insufficient%20data%20for%20ids%3A%20%7Bids_str%7D%22)

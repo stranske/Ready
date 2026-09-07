@@ -1,0 +1,125 @@
+{
+  "git_commit": "59cb12be9d4b06434d41bc1b71612167ea6d9cfc",
+  "timestamp": "2026-09-07T05:22:45.853869+00:00",
+  "seed": 123,
+  "substream_ids": {
+    "active_ext": "466405ae6587c99b3023b870713bfa9f6a5b127927396574221126c56d8da58b",
+    "external_pa": "fa509d4aa2f92e9fba635e641e1e547927ea10253cd289242682de1ca52b15a9",
+    "internal": "85b837651770a5b959656b3aeb10d7639b8341559cc2ef2f1aac312f66b78c79"
+  },
+  "config": {
+    "N_MONTHS": 12,
+    "N_SIMULATIONS": 100,
+    "financing_mode": "per_path",
+    "sweep": {
+      "method": "grid",
+      "parameters": {
+        "theta_extpa": {
+          "values": [
+            0.5
+          ]
+        }
+      }
+    }
+  },
+  "data_files": {
+    "/Users/teacher/.codex/automations/research-program/clones/Portable-Alpha-Extension-Model/data/sp500tr_fred_divyield.csv": "ec6bf57e8eacb6b97f5ca79bbafb9906d67ae972c1cab1b4c0a57187bfcd640d",
+    "/Users/teacher/.codex/automations/research-program/artifacts/audits/paem-20260907/cli-bundle-proof/config.yaml": "bcca3ff4c36bd1a1e0be2b159bd7015ac7245ff8aebd37f750b2185828ac351b",
+    "/Users/teacher/.codex/automations/research-program/artifacts/audits/paem-20260907/cli-bundle-proof/out.xlsx": "55de600493152f2ad6524c09952411fbb9bc03f24528fcc8ce3a601c691dcbdf"
+  },
+  "cli_args": {
+    "config": "/Users/teacher/.codex/automations/research-program/artifacts/audits/paem-20260907/cli-bundle-proof/config.yaml",
+    "index": "/Users/teacher/.codex/automations/research-program/clones/Portable-Alpha-Extension-Model/data/sp500tr_fred_divyield.csv",
+    "index_frequency": "daily",
+    "resample": null,
+    "output": "/Users/teacher/.codex/automations/research-program/artifacts/audits/paem-20260907/cli-bundle-proof/out.xlsx",
+    "bundle": "/Users/teacher/.codex/automations/research-program/artifacts/audits/paem-20260907/cli-bundle-proof/bundle",
+    "mode": "returns",
+    "stress_preset": null,
+    "pivot": false,
+    "backend": "numpy",
+    "cov_shrinkage": null,
+    "vol_regime": null,
+    "vol_regime_window": null,
+    "log_json": true,
+    "seed": 123,
+    "legacy_agent_rng": false,
+    "return_distribution": null,
+    "return_t_df": null,
+    "return_copula": null,
+    "register": false,
+    "validate_only": false,
+    "png": false,
+    "pdf": false,
+    "pptx": false,
+    "html": false,
+    "compare_viz": false,
+    "gif": false,
+    "alt_text": null,
+    "packet": false,
+    "sensitivity": false,
+    "dashboard": false,
+    "prev_manifest": null,
+    "suggest_sleeves": false,
+    "suggest_apply_index": null,
+    "tradeoff_table": false,
+    "tradeoff_top": 10,
+    "tradeoff_sort": "risk_score",
+    "max_te": 0.02,
+    "max_breach": 0.05,
+    "max_cvar": 0.03,
+    "max_shortfall": 1.0,
+    "sleeve_step": 0.25,
+    "optimize": false,
+    "optimize_objective": "total_return",
+    "min_external": null,
+    "max_external": null,
+    "min_active": null,
+    "max_active": null,
+    "min_internal": null,
+    "max_internal": null
+  },
+  "config_hash": "bcca3ff4c36bd1a1e0be2b159bd7015ac7245ff8aebd37f750b2185828ac351b",
+  "backend": "numpy",
+  "run_log": "runs/20260907T052240Z/run.log",
+  "previous_run": null,
+  "run_timing": {
+    "duration_seconds": 6.387563582975417,
+    "started_at": "2026-09-07T05:22:39.480561+00:00",
+    "ended_at": "2026-09-07T05:22:45.868149+00:00"
+  },
+  "warnings": [
+    {
+      "code": "Pandas4Warning",
+      "severity": "warning",
+      "message": "Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.",
+      "context": {
+        "source": "warnings",
+        "category": "Pandas4Warning",
+        "filename": "/Users/teacher/.codex/automations/research-program/clones/Portable-Alpha-Extension-Model/pa_core/cli.py",
+        "lineno": 1080
+      }
+    },
+    {
+      "code": "UserWarning",
+      "severity": "warning",
+      "message": "Index frequency mismatch: expected monthly, detected daily. Use --resample monthly to convert or --index-frequency daily to skip validation.",
+      "context": {
+        "source": "warnings",
+        "category": "UserWarning",
+        "filename": "/Users/teacher/.codex/automations/research-program/clones/Portable-Alpha-Extension-Model/pa_core/cli.py",
+        "lineno": 1139
+      }
+    }
+  ],
+  "cost": {
+    "latency_seconds": 6.387563582975417,
+    "dollars": null
+  },
+  "data_quality": {
+    "rows_in": 663,
+    "coerced_non_numeric": 0,
+    "rows_dropped": 0,
+    "detected_frequency": "monthly"
+  }
+}

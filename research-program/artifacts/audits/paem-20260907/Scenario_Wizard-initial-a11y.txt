@@ -1,0 +1,98 @@
+- list:
+  - listitem:
+    - link "app":
+      - /url: http://127.0.0.1:8537/
+      - paragraph: app
+  - listitem:
+    - link "Asset Library":
+      - /url: http://127.0.0.1:8537/Asset_Library
+      - paragraph: Asset Library
+  - listitem:
+    - link "Portfolio Builder":
+      - /url: http://127.0.0.1:8537/Portfolio_Builder
+      - paragraph: Portfolio Builder
+  - listitem:
+    - link "Scenario Wizard":
+      - /url: http://127.0.0.1:8537/Scenario_Wizard
+      - paragraph: Scenario Wizard
+  - listitem:
+    - link "Results":
+      - /url: http://127.0.0.1:8537/Results
+      - paragraph: Results
+  - listitem:
+    - link "Scenario Grid":
+      - /url: http://127.0.0.1:8537/Scenario_Grid
+      - paragraph: Scenario Grid
+  - listitem:
+    - link "Stress Lab":
+      - /url: http://127.0.0.1:8537/Stress_Lab
+      - paragraph: Stress Lab
+  - listitem:
+    - link "Run Logs":
+      - /url: http://127.0.0.1:8537/Run_Logs
+      - paragraph: Run Logs
+- group:
+  - text: keyboard_arrow_right
+  - paragraph: Advanced / Settings
+- separator
+- heading "📋 Quick Actions" [level=3]
+- button "🏠 Reset to Step 1":
+  - paragraph: 🏠 Reset to Step 1
+- button "🔄 Reset All Defaults":
+  - paragraph: 🔄 Reset All Defaults
+- separator
+- 'heading "📁 Alternative: File Upload" [level=3]'
+- region "Upload Scenario YAML":
+  - button "file upload"
+  - button "upload Upload":
+    - text: upload
+    - paragraph: Upload
+  - text: 200MB per file • YAML, YML
+- group:
+  - text: keyboard_arrow_right
+  - paragraph: 💬 Config Chat
+- banner:
+  - button "Deploy"
+  - button "Main menu"
+- heading "📋 Scenario Configuration Wizard" [level=3]:
+  - text: 📋 Scenario Configuration Wizard
+  - link "Link to heading":
+    - /url: "#scenario-configuration-wizard"
+- progressbar "progress"
+- status:
+  - list:
+    - listitem: Analysis Mode
+- paragraph: ⭕ 2. Capital Allocation
+- paragraph: ⭕ 3. Return & Risk
+- paragraph: ⭕ 4. Correlations
+- paragraph: ⭕ 5. Review & Run
+- 'heading "Step 1: Analysis Mode & Basic Settings" [level=3]':
+  - text: "Step 1: Analysis Mode & Basic Settings"
+  - link "Link to heading":
+    - /url: "#step-1-analysis-mode-and-basic-settings"
+- paragraph:
+  - text: Results will appear on the
+  - strong: Results
+  - text: page after the run completes.
+- paragraph:
+  - strong: "Choose Your Analysis Focus:"
+- button "Help for Analysis Mode"
+- group:
+  - combobox "Analysis Mode": 📈 Returns Analysis - Compare different return assumptions
+  - button "Open"
+- paragraph:
+  - strong: "Simulation Settings:"
+- button "Help for Number of Simulations"
+- spinbutton "Number of Simulations": "100"
+- button "Decrement" [disabled]
+- button "Increment"
+- button "Help for Simulation Horizon [months]"
+- spinbutton "Simulation Horizon [months]": "1"
+- button "Decrement" [disabled]
+- button "Increment"
+- status:
+  - paragraph:
+    - strong: "Returns Mode:"
+    - text: This mode focuses on testing different return assumptions while keeping capital allocation fixed. Ideal for sensitivity analysis on alpha expectations.
+- 'button "➡️ Next: Capital Allocation"':
+  - paragraph: "➡️ Next: Capital Allocation"

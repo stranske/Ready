@@ -1,0 +1,45 @@
+- list:
+  - listitem:
+    - link "app":
+      - /url: http://127.0.0.1:8537/
+      - paragraph: app
+  - listitem:
+    - link "Asset Library":
+      - /url: http://127.0.0.1:8537/Asset_Library
+      - paragraph: Asset Library
+  - listitem:
+    - link "Portfolio Builder":
+      - /url: http://127.0.0.1:8537/Portfolio_Builder
+      - paragraph: Portfolio Builder
+  - listitem:
+    - link "Scenario Wizard":
+      - /url: http://127.0.0.1:8537/Scenario_Wizard
+      - paragraph: Scenario Wizard
+  - listitem:
+    - link "Results":
+      - /url: http://127.0.0.1:8537/Results
+      - paragraph: Results
+  - listitem:
+    - link "Scenario Grid":
+      - /url: http://127.0.0.1:8537/Scenario_Grid
+      - paragraph: Scenario Grid
+  - listitem:
+    - link "Stress Lab":
+      - /url: http://127.0.0.1:8537/Stress_Lab
+      - paragraph: Stress Lab
+  - listitem:
+    - link "Run Logs":
+      - /url: http://127.0.0.1:8537/Run_Logs
+      - paragraph: Run Logs
+- group:
+  - text: keyboard_arrow_right
+  - paragraph: Advanced / Settings
+- banner:
+  - button "Deploy"
+  - button "Main menu"
+- heading "Results" [level=1]:
+  - text: Results
+  - link "Link to heading":
+    - /url: "#results"
+- status:
+  - paragraph: No results yet - complete a run in the Scenario Wizard, then return here to inspect the generated workbook.

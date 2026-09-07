@@ -1,0 +1,16 @@
+node:internal/modules/run_main:105
+    triggerUncaughtException(
+    ^
+
+locator.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for getByRole('button', { name: 'Load bundled sample portfolio', exact: true })[22m
+
+    at /Users/teacher/.codex/automations/research-program/artifacts/audits/paem-20260907/browser-followup.mjs:8:141 {
+  log: [
+    "  - waiting for getByRole('button', { name: 'Load bundled sample portfolio', exact: true })"
+  ],
+  name: 'TimeoutError'
+}
+
+Node.js v24.3.0

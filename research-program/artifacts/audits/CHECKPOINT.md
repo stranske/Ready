@@ -56,3 +56,24 @@ Phases 0–5 complete on clone tip fd0ea516100d6022029a6ed0b4659e95badb189b. Eva
 
 ## 2026-09-07T04:58:00Z — D-audit-Counter_Risk--2026-09-07T04-47-32Z complete
 Phases 0–5 complete on clone tip aa3173e. Evaluated 106 src files (25,911 LOC) and 177 test files (39,437 LOC). Filed 7 verified issues #1000–#1006 (2xP1, 5xP2). Local issue_format.py 7/7 PASS (0 advisories, conforms strictly to docs/AGENT_ISSUE_FORMAT.md). Intake log updated with 7 rows. OUT written to artifacts/audits/Counter_Risk-2026-09-07.md. Durable audit ledger and repo README updated.
+
+## 2026-09-07T05:13:54.121796+00:00 D-audit-Portable-Alpha-Extension-Model--2026-09-07T04-47-31Z Phase 0-1
+Scope and orientation saved at /Users/teacher/.codex/automations/research-program/artifacts/audits/paem-20260907/scope.md. Live issue snapshot captured.
+
+## 2026-09-07T05:17:50.479301+00:00 PAEM Phase 2 progress
+Two bounded read-only offloads running. 1465 tests collected/2 deselected; Ruff pass; focused 31 pass. Primary-source comparator scan and CVaR calibration proof saved. Browser home observed; remaining pages in progress.
+
+## 2026-09-07T05:19:00Z — D-audit-Ready--2026-09-07T04-47-33Z complete
+Phases 0–5 complete on clone tip 1d7c8d1c0a477af97098d15ffb265c5010b68ee5. Evaluated tools/, scripts/, scripts/langchain/, design-system/, docs/contracts/ (~10,500 LOC) and tests/ (243 LOC). Filed 7 verified issues #557–#563 (3xP1, 4xP2). Local issue_format.py 7/7 PASS (0 errors, 0 advisories, conforms strictly to docs/AGENT_ISSUE_FORMAT.md); remote Agents Issue Format Guard completed without rejections. Intake log updated with 7 rows. OUT written to artifacts/audits/Ready-2026-09-07.md. Durable audit ledger and repo README updated.
+
+## 2026-09-07T05:22:40.078652+00:00 D-audit-Portable-Alpha-Extension-Model--2026-09-07T04-47-31Z Phase 2 complete; Phase 3 verification
+Numeric offload returned five deterministic defects; independently reran all five with matching results. Cursor returned six candidates; reject index_hash authenticity claim, defer missing-file race, combine relative manifest concern into provenance follow-up. Wheel sample absence confirmed with actual installed package. Browser observed seven initial pages, asset-sample crash (24 rows vs minimum36), and successful stress comparison. Fresh dependency solve permits Plotly7 which removes engine argument and breaks export; lock has6.9. Pinning only audit venv to isolate bundle finalization repro. UX panel running on captured evidence.
+
+## 2026-09-07T05:29:22.129286+00:00 D-audit-Portable-Alpha-Extension-Model--2026-09-07T04-47-31Z Phase 3
+All retained claims independently verified at unchanged head; candidate dispositions recorded.
+
+## 2026-09-07T05:29:22.129286+00:00 D-audit-Portable-Alpha-Extension-Model--2026-09-07T04-47-31Z Phase 4
+Ten issue bodies staged, zero format advisories; filing prohibited by executor rule, no intake rows.
+
+## 2026-09-07T05:29:22.129286+00:00 D-audit-Portable-Alpha-Extension-Model--2026-09-07T04-47-31Z Phase 5
+OUT and canonical audit ledger/index/reconciliation written. /Users/teacher/.codex/automations/research-program/artifacts/audits/Portable-Alpha-Extension-Model-2026-09-07.md

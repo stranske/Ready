@@ -1,0 +1,159 @@
+- list:
+  - listitem:
+    - link "app":
+      - /url: http://127.0.0.1:8537/
+      - paragraph: app
+  - listitem:
+    - link "Asset Library":
+      - /url: http://127.0.0.1:8537/Asset_Library
+      - paragraph: Asset Library
+  - listitem:
+    - link "Portfolio Builder":
+      - /url: http://127.0.0.1:8537/Portfolio_Builder
+      - paragraph: Portfolio Builder
+  - listitem:
+    - link "Scenario Wizard":
+      - /url: http://127.0.0.1:8537/Scenario_Wizard
+      - paragraph: Scenario Wizard
+  - listitem:
+    - link "Results":
+      - /url: http://127.0.0.1:8537/Results
+      - paragraph: Results
+  - listitem:
+    - link "Scenario Grid":
+      - /url: http://127.0.0.1:8537/Scenario_Grid
+      - paragraph: Scenario Grid
+  - listitem:
+    - link "Stress Lab":
+      - /url: http://127.0.0.1:8537/Stress_Lab
+      - paragraph: Stress Lab
+  - listitem:
+    - link "Run Logs":
+      - /url: http://127.0.0.1:8537/Run_Logs
+      - paragraph: Run Logs
+- group:
+  - text: keyboard_arrow_right
+  - paragraph: Advanced / Settings
+- heading "Base configuration" [level=3]
+- spinbutton "Number of simulations": "1000"
+- button "Decrement"
+- button "Increment"
+- spinbutton "Number of months": "12"
+- button "Decrement"
+- button "Increment"
+- separator
+- paragraph:
+  - strong: Capital ($mm)
+- spinbutton "Total fund capital": "1000.00"
+- button "Decrement"
+- button "Increment"
+- spinbutton "External PA capital": "200.00"
+- button "Decrement"
+- button "Increment"
+- spinbutton "Active Extension capital": "200.00"
+- button "Decrement"
+- button "Increment"
+- spinbutton "Internal PA capital": "200.00"
+- button "Decrement"
+- button "Increment"
+- group "External PA alpha fraction θ":
+  - slider "External PA alpha fraction θ External PA alpha fraction θ": "0.5"
+  - paragraph: "0.50"
+  - paragraph: "0.00"
+  - paragraph: "1.00"
+- group "Active share":
+  - slider "Active share Active share": "0.5"
+  - paragraph: "0.50"
+  - paragraph: "0.00"
+  - paragraph: "1.00"
+- separator
+- paragraph:
+  - strong: Constraint limits
+- spinbutton "Max tracking error": "0.020"
+- button "Decrement"
+- button "Increment"
+- spinbutton "Max breach probability": "0.50"
+- button "Decrement"
+- button "Increment"
+- spinbutton "Max monthly CVaR": "0.050"
+- button "Decrement"
+- button "Increment"
+- banner:
+  - button "Deploy"
+  - button "Main menu"
+- heading "Stress Lab (presets)" [level=1]:
+  - text: Stress Lab (presets)
+  - link "Link to heading":
+    - /url: "#stress-lab-presets"
+- paragraph: Pick a preset, run base vs stressed with identical seeds, and review deltas.
+- region "Index returns CSV (single numeric column)":
+  - button "file upload"
+  - button "upload Upload":
+    - text: upload
+    - paragraph: Upload
+  - text: 200MB per file • CSV
+- checkbox "Use bundled sample data (no upload needed)" [checked]
+- paragraph: Use bundled sample data (no upload needed)
+- button "Help for Use bundled sample data (no upload needed)"
+- spinbutton "Random seed": "42"
+- button "Decrement"
+- button "Increment"
+- group:
+  - combobox "Stress preset": 2008-like vol regime
+  - button "Open"
+- button "Run stress test":
+  - paragraph: Run stress test
+- heading "Summary (Base vs Stressed)" [level=3]:
+  - text: Summary (Base vs Stressed)
+  - link "Link to heading":
+    - /url: "#summary-base-vs-stressed"
+- paragraph:
+  - strong: Base
+- button "Show/hide columns"
+- button "Download as CSV"
+- button "Search"
+- button "Fullscreen"
+- paragraph:
+  - strong: Stressed
+- button "Show/hide columns"
+- button "Download as CSV"
+- button "Search"
+- button "Fullscreen"
+- heading "Constraint breaches (Base vs Stressed)" [level=3]:
+  - text: Constraint breaches (Base vs Stressed)
+  - link "Link to heading":
+    - /url: "#constraint-breaches-base-vs-stressed"
+- paragraph:
+  - strong: Base
+- button "Show/hide columns"
+- button "Download as CSV"
+- button "Search"
+- button "Fullscreen"
+- paragraph:
+  - strong: Stressed
+- button "Show/hide columns"
+- button "Download as CSV"
+- button "Search"
+- button "Fullscreen"
+- heading "Delta (Stressed - Base)" [level=3]:
+  - text: Delta (Stressed - Base)
+  - link "Link to heading":
+    - /url: "#delta-stressed-base"
+- button "Show/hide columns"
+- button "Download as CSV"
+- button "Search"
+- button "Fullscreen"
+- button "Download deltas as CSV":
+  - paragraph: Download deltas as CSV
+- heading "Config diff" [level=3]:
+  - text: Config diff
+  - link "Link to heading":
+    - /url: "#config-diff"
+- button "Show/hide columns"
+- button "Download as CSV"
+- button "Search"
+- button "Fullscreen"
+- button "Download config diff":
+  - paragraph: Download config diff
+- button "Download stress results (Excel)":
+  - paragraph: Download stress results (Excel)

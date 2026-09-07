@@ -1,0 +1,183 @@
+- list:
+  - listitem:
+    - link "app":
+      - /url: http://127.0.0.1:8537/
+      - paragraph: app
+  - listitem:
+    - link "Asset Library":
+      - /url: http://127.0.0.1:8537/Asset_Library
+      - paragraph: Asset Library
+  - listitem:
+    - link "Portfolio Builder":
+      - /url: http://127.0.0.1:8537/Portfolio_Builder
+      - paragraph: Portfolio Builder
+  - listitem:
+    - link "Scenario Wizard":
+      - /url: http://127.0.0.1:8537/Scenario_Wizard
+      - paragraph: Scenario Wizard
+  - listitem:
+    - link "Results":
+      - /url: http://127.0.0.1:8537/Results
+      - paragraph: Results
+  - listitem:
+    - link "Scenario Grid":
+      - /url: http://127.0.0.1:8537/Scenario_Grid
+      - paragraph: Scenario Grid
+  - listitem:
+    - link "Stress Lab":
+      - /url: http://127.0.0.1:8537/Stress_Lab
+      - paragraph: Stress Lab
+  - listitem:
+    - link "Run Logs":
+      - /url: http://127.0.0.1:8537/Run_Logs
+      - paragraph: Run Logs
+- group:
+  - text: keyboard_arrow_right
+  - paragraph: Advanced / Settings
+- banner:
+  - button "Deploy"
+  - button "Main menu"
+- heading "Asset Library" [level=1]:
+  - text: Asset Library
+  - link "Link to heading":
+    - /url: "#asset-library"
+- paragraph:
+  - strong: Upload asset return data
+- checkbox "Use bundled sample asset data (no upload needed)" [checked]
+- paragraph: Use bundled sample asset data (no upload needed)
+- button "Help for Use bundled sample asset data (no upload needed)"
+- button "Download asset return template":
+  - paragraph: Download asset return template
+- paragraph: Drag and drop a CSV or Excel file, or click to browse.
+- region "Drag-and-drop CSV/XLSX":
+  - button "file upload"
+  - button "upload Upload":
+    - text: upload
+    - paragraph: Upload
+  - text: 200MB per file • CSV, XLSX, XLS
+- paragraph: "Using bundled sample: asset_timeseries_wide_returns.csv"
+- separator
+- heading "Column Mapping & Parse Options" [level=3]:
+  - text: Column Mapping & Parse Options
+  - link "Link to heading":
+    - /url: "#column-mapping-and-parse-options"
+- textbox "Date column":
+  - /placeholder: ""
+  - text: Date
+- radiogroup "Input layout":
+  - radio "wide" [checked]
+  - paragraph: wide
+  - radio "long"
+  - paragraph: long
+- radiogroup "Value type":
+  - radio "returns" [checked]
+  - paragraph: returns
+  - radio "prices"
+  - paragraph: prices
+- textbox "ID column (long only)":
+  - /placeholder: ""
+  - text: Id
+- textbox "Value column (long only)":
+  - /placeholder: ""
+  - text: Return
+- radiogroup "Frequency":
+  - radio "monthly" [checked]
+  - paragraph: monthly
+  - radio "daily"
+  - paragraph: daily
+- spinbutton "Min observations per id": "24"
+- button "Decrement"
+- button "Increment"
+- button "Help for Covariance shrinkage"
+- group:
+  - combobox "Covariance shrinkage": none
+  - button "Open"
+- button "Help for Volatility regime"
+- group:
+  - combobox "Volatility regime": single
+  - button "Open"
+- button "Help for Vol regime window (months)"
+- spinbutton "Vol regime window (months)": "12"
+- button "Decrement"
+- button "Increment"
+- textbox "Excel sheet name (optional)":
+  - /placeholder: ""
+- textbox "NA markers (comma‑sep)":
+  - /placeholder: ""
+- textbox "Decimal separator":
+  - /placeholder: ""
+  - text: .
+- textbox "Thousands separator":
+  - /placeholder: ""
+- paragraph:
+  - strong: Mapping Templates
+- button "💾 Save mapping as template":
+  - paragraph: 💾 Save mapping as template
+- region "Load mapping template":
+  - button "file upload"
+  - button "upload Upload":
+    - text: upload
+    - paragraph: Upload
+  - text: 200MB per file • YAML, YML
+- status:
+  - paragraph: Data loaded successfully with current mapping
+- button "Show/hide columns"
+- button "Download as CSV"
+- button "Search"
+- button "Fullscreen"
+- img
+- text: "{ \" source_file \" : \"/Users/teacher/.codex/automations/research-program/clones/Portable-Alpha-Extension-Model/templates/asset_timeseries_wide_returns.csv\" \" value_type \" : \"returns\" \" frequency \" : \"monthly\" \" monthly_rule \" : \"ME\" \" wide \" : true"
+- img
+- text: "\"io\" : { \" sheet_name \" : NULL \" na_values \" : NULL \" decimal \" : \".\" \" thousands \" : NULL }"
+- img
+- text: "\"columns\" : { \" date \" : \"Date\" \" id \" : \"Id\" \" value \" : \"Return\" }"
+- img
+- text: "\"data_quality\" : { \" min_obs \" : 24"
+- img
+- text: "\"series\" : {"
+- img
+- text: "\"FUND_A\" : { \" n_obs \" : 24 \" below_min_obs \" : false }"
+- img
+- text: "\"FUND_B\" : { \" n_obs \" : 24 \" below_min_obs \" : false }"
+- img
+- text: "\"SP500_TR\" : { \" n_obs \" : 24 \" below_min_obs \" : false } } } }"
+- group:
+  - combobox "Index column": FUND_A
+  - button "Open"
+- button "Calibrate":
+  - paragraph: Calibrate
+- heading "Alpha Presets" [level=3]:
+  - text: Alpha Presets
+  - link "Link to heading":
+    - /url: "#alpha-presets"
+- textbox "Preset ID":
+  - /placeholder: ""
+- button "Help for mu [annual %]"
+- spinbutton "mu [annual %]": "0.0000"
+- button "Decrement"
+- button "Increment"
+- button "Help for sigma [annual %]"
+- spinbutton "sigma [annual %]": "0.0000"
+- button "Decrement"
+- button "Increment"
+- button "Help for rho [-1..1]"
+- spinbutton "rho [-1..1]": "0.0000"
+- button "Decrement"
+- button "Increment"
+- button "Save Preset":
+  - paragraph: Save Preset
+- group:
+  - combobox "Delete preset"
+  - button "Open"
+- button "Delete Preset":
+  - paragraph: Delete Preset
+- button "Download Presets YAML":
+  - paragraph: Download Presets YAML
+- button "Download Presets JSON":
+  - paragraph: Download Presets JSON
+- region "Import presets":
+  - button "file upload"
+  - button "upload Upload":
+    - text: upload
+    - paragraph: Upload
+  - text: 200MB per file • YAML, YML, JSON

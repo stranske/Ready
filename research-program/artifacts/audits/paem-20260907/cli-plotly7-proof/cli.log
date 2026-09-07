@@ -1,0 +1,29 @@
+/Users/teacher/.codex/automations/research-program/clones/Portable-Alpha-Extension-Model/pa_core/cli.py:2106: DeprecationWarning: Direct use of pa_core.cli is deprecated; use `pa run` instead.
+  main()
+/Users/teacher/.codex/automations/research-program/clones/Portable-Alpha-Extension-Model/pa_core/cli.py:1080: Pandas4Warning: Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.
+  ts = pd.Timestamp.utcnow().strftime("%Y%m%dT%H%M%SZ")
+/Users/teacher/.codex/automations/research-program/clones/Portable-Alpha-Extension-Model/pa_core/cli.py:1139: UserWarning: Index frequency mismatch: expected monthly, detected daily. Use --resample monthly to convert or --index-frequency daily to skip validation.
+  validate_frequency(idx_series, expected="monthly", strict=freq_strict)
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/Users/teacher/.codex/automations/research-program/clones/Portable-Alpha-Extension-Model/pa_core/cli.py", line 2106, in <module>
+    main()
+  File "/Users/teacher/.codex/automations/research-program/clones/Portable-Alpha-Extension-Model/pa_core/cli.py", line 398, in main
+    _main(argv, deps, warning_collector=warning_collector)
+  File "/Users/teacher/.codex/automations/research-program/clones/Portable-Alpha-Extension-Model/pa_core/cli.py", line 1260, in _main
+    export_sweep_results(results, filename=args.output, metadata=sweep_metadata)
+  File "/Users/teacher/.codex/automations/research-program/clones/Portable-Alpha-Extension-Model/pa_core/reporting/sweep_excel.py", line 128, in export_sweep_results
+    img_bytes = figure_to_png_bytes(fig)
+                ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/teacher/.codex/automations/research-program/clones/Portable-Alpha-Extension-Model/pa_core/viz/export_backend.py", line 63, in figure_to_png_bytes
+    return figure_to_image_bytes(fig, format="png", **opts)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/teacher/.codex/automations/research-program/clones/Portable-Alpha-Extension-Model/pa_core/viz/export_backend.py", line 88, in figure_to_image_bytes
+    return cast(bytes, fig.to_image(format=format, engine="kaleido", **clean_opts))
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/paem-audit-plotly7-venv/lib/python3.12/site-packages/plotly/basedatatypes.py", line 3755, in to_image
+    return pio.to_image(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: to_image() got an unexpected keyword argument 'engine'
+[BACKEND] Using backend: numpy

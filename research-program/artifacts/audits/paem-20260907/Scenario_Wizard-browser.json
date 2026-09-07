@@ -1,0 +1,18 @@
+{
+  "ok": false,
+  "url": "http://127.0.0.1:8537/Scenario_Wizard",
+  "title": "Scenario Wizard",
+  "findings": [],
+  "snapshotNodeCount": 86,
+  "settle": {
+    "polls": 4,
+    "nodeCount": 86,
+    "settled": true,
+    "reason": "stable_with_content"
+  },
+  "error": null,
+  "diagnostic": null,
+  "hint": null,
+  "browserTransport": "cdp",
+  "snapshot": "- list:\n  - listitem:\n    - link \"app\":\n      - /url: http://127.0.0.1:8537/\n      - paragraph: app\n  - listitem:\n    - link \"Asset Library\":\n      - /url: http://127.0.0.1:8537/Asset_Library\n      - paragraph: Asset Library\n  - listitem:\n    - link \"Portfolio Builder\":\n      - /url: http://127.0.0.1:8537/Portfolio_Builder\n      - paragraph: Portfolio Builder\n  - listitem:\n    - link \"Scenario Wizard\":\n      - /url: http://127.0.0.1:8537/Scenario_Wizard\n      - paragraph: Scenario Wizard\n  - listitem:\n    - link \"Results\":\n      - /url: http://127.0.0.1:8537/Results\n      - paragraph: Results\n  - listitem:\n    - link \"Scenario Grid\":\n      - /url: http://127.0.0.1:8537/Scenario_Grid\n      - paragraph: Scenario Grid\n  - listitem:\n    - link \"Stress Lab\":\n      - /url: http://127.0.0.1:8537/Stress_Lab\n      - paragraph: Stress Lab\n  - listitem:\n    - link \"Run Logs\":\n      - /url: http://127.0.0.1:8537/Run_Logs\n      - paragraph: Run Logs\n- group:\n  - text: keyboard_arrow_right\n  - paragraph: Advanced / Settings\n- separator\n- heading \"📋 Quick Actions\" [level=3]\n- button \"🏠 Reset to Step 1\":\n  - paragraph: 🏠 Reset to Step 1\n- button \"🔄 Reset All Defaults\":\n  - paragraph: 🔄 Reset All Defaults\n- separator\n- 'heading \"📁 Alternative: File Upload\" [level=3]'\n- region \"Upload Scenario YAML\":\n  - button \"file upload\"\n  - button \"upload Upload\":\n    - text: upload\n    - paragraph: Upload\n  - text: 200MB per file • YAML, YML\n- group:\n  - text: keyboard_arrow_right\n  - paragraph: 💬 Config Chat\n- banner:\n  - button \"keyboard_double_arrow_right\"\n  - button \"Deploy\"\n  - button \"Main menu\"\n- heading \"📋 Scenario Configuration Wizard\" [level=3]:\n  - text: 📋 Scenario Configuration Wizard\n  - link \"Link to heading\":"
+}

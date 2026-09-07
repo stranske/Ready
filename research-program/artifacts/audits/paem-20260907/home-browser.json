@@ -1,0 +1,8 @@
+{
+  "ok": false,
+  "error": "could not parse verifier output",
+  "diagnostic": "invalid_helper_output",
+  "hint": "Inspect the helper stderr/stdout and rerun with a narrower URL/assertion.",
+  "raw": "ue,\n  \"url\": \"http://127.0.0.1:8537\",\n  \"title\": \"Portable Alpha Dashboard\",\n  \"findings\": [\n    {\n      \"type\": \"text\",\n      \"target\": \"Portable\",\n      \"pass\": true,\n      \"detail\": \"present in aria snapshot\"\n    }\n  ],\n  \"snapshotNodeCount\": 73,\n  \"settle\": {\n    \"polls\": 6,\n    \"nodeCount\": 73,\n    \"settled\": true,\n    \"reason\": \"stable_with_content\"\n  },\n  \"error\": null,\n  \"diagnostic\": null,\n  \"hint\": null,\n  \"browserTransport\": \"cdp\",\n  \"screenshot\": \"/Users/teacher/.codex/automations/re",
+  "stderr": ""
+}

@@ -1,0 +1,202 @@
+[
+  {
+    "file": "/Users/teacher/.codex/automations/research-program/artifacts/audits/paem-20260907/issue-bodies/01.md",
+    "returncode": 0,
+    "report": "Issue body is agent-processable with advisories.\n\n\n_Advisory:_\n- 1 cited path(s) do not exist yet: `capital/share` \u2014 expected when a task creates them; check for typos otherwise.\n",
+    "verified_citations": [
+      {
+        "path": "pa_core/sweep.py",
+        "line": 610,
+        "text": "        mod_cfg = cfg.model_copy(update=overrides)"
+      },
+      {
+        "path": "pa_core/sleeve_suggestor.py",
+        "line": 281,
+        "text": "    test_cfg = cfg.model_copy("
+      },
+      {
+        "path": "pa_core/agents/registry.py",
+        "line": 57,
+        "text": "    for agent in cfg.agents:"
+      },
+      {
+        "path": "pa_core/config.py",
+        "line": 674,
+        "text": "        if ext_cap > 0:"
+      }
+    ]
+  },
+  {
+    "file": "/Users/teacher/.codex/automations/research-program/artifacts/audits/paem-20260907/issue-bodies/02.md",
+    "returncode": 0,
+    "report": "Issue body is agent-processable with advisories.\n\n\n_Advisory:_\n- 1 cited path(s) do not exist yet: `absent/zero` \u2014 expected when a task creates them; check for typos otherwise.\n",
+    "verified_citations": [
+      {
+        "path": "pa_core/sweep.py",
+        "line": 715,
+        "text": "        returns = simulate_agents("
+      },
+      {
+        "path": "pa_core/facade.py",
+        "line": 483,
+        "text": "        fee_schedule=run_cfg.fee_schedule,"
+      }
+    ]
+  },
+  {
+    "file": "/Users/teacher/.codex/automations/research-program/artifacts/audits/paem-20260907/issue-bodies/03.md",
+    "returncode": 0,
+    "report": "Issue body conforms to `docs/AGENT_ISSUE_FORMAT.md`.\n",
+    "verified_citations": [
+      {
+        "path": "pa_core/agents/internal_pa.py",
+        "line": 24,
+        "text": "        return self.p.alpha_share * alpha_stream - financing"
+      },
+      {
+        "path": "pa_core/portfolio/core.py",
+        "line": 34,
+        "text": "    Sleeves emit contribution returns already scaled by capital share. The"
+      }
+    ]
+  },
+  {
+    "file": "/Users/teacher/.codex/automations/research-program/artifacts/audits/paem-20260907/issue-bodies/04.md",
+    "returncode": 0,
+    "report": "Issue body conforms to `docs/AGENT_ISSUE_FORMAT.md`.\n",
+    "verified_citations": [
+      {
+        "path": "pa_core/sweep.py",
+        "line": 602,
+        "text": "        if financing_series is None:"
+      },
+      {
+        "path": "pa_core/sweep.py",
+        "line": 703,
+        "text": "        f_internal_pa = resolve_internal_pa_financing_series("
+      }
+    ]
+  },
+  {
+    "file": "/Users/teacher/.codex/automations/research-program/artifacts/audits/paem-20260907/issue-bodies/05.md",
+    "returncode": 0,
+    "report": "Issue body conforms to `docs/AGENT_ISSUE_FORMAT.md`.\n",
+    "verified_citations": [
+      {
+        "path": "pa_core/sim/metrics.py",
+        "line": 447,
+        "text": "    tail = np.asarray(_cvar_tail_values(returns, confidence=confidence), dtype=np.float64)"
+      },
+      {
+        "path": "pa_core/sim/metrics.py",
+        "line": 463,
+        "text": "    center = conditional_value_at_risk(returns, confidence=confidence)"
+      },
+      {
+        "path": "pa_core/sim/metrics.py",
+        "line": 638,
+        "text": "        cvar_month_se = cvar_standard_error(arr, confidence=var_conf)"
+      }
+    ]
+  },
+  {
+    "file": "/Users/teacher/.codex/automations/research-program/artifacts/audits/paem-20260907/issue-bodies/06.md",
+    "returncode": 0,
+    "report": "Issue body conforms to `docs/AGENT_ISSUE_FORMAT.md`.\n",
+    "verified_citations": [
+      {
+        "path": "pa_core/cli.py",
+        "line": 1414,
+        "text": "        _maybe_write_bundle(index_hash=index_hash, manifest_data=manifest_data)"
+      },
+      {
+        "path": "pa_core/cli.py",
+        "line": 2100,
+        "text": "    _maybe_write_bundle(index_hash=index_hash, manifest_data=manifest_data)"
+      },
+      {
+        "path": "pa_core/cli.py",
+        "line": 944,
+        "text": "        timing = _finalize_manifest_timing(timing, warnings=collected, cost=cost)"
+      }
+    ]
+  },
+  {
+    "file": "/Users/teacher/.codex/automations/research-program/artifacts/audits/paem-20260907/issue-bodies/07.md",
+    "returncode": 0,
+    "report": "Issue body conforms to `docs/AGENT_ISSUE_FORMAT.md`.\n",
+    "verified_citations": [
+      {
+        "path": "dashboard/pages/7_Run_Logs.py",
+        "line": 59,
+        "text": "    if found_manifest is None or not found_manifest.exists():"
+      }
+    ]
+  },
+  {
+    "file": "/Users/teacher/.codex/automations/research-program/artifacts/audits/paem-20260907/issue-bodies/08.md",
+    "returncode": 0,
+    "report": "Issue body is agent-processable with advisories.\n\n\n_Advisory:_\n- 1 cited path(s) do not exist yet: `build/install` \u2014 expected when a task creates them; check for typos otherwise.\n",
+    "verified_citations": [
+      {
+        "path": "dashboard/utils.py",
+        "line": 146,
+        "text": "    return Path(__file__).resolve().parents[1] / \"templates\" / filename"
+      },
+      {
+        "path": "pyproject.toml",
+        "line": 89,
+        "text": "data = [\"*.csv\"]"
+      },
+      {
+        "path": "dashboard/utils.py",
+        "line": 177,
+        "text": "def bundled_portfolio_template_path() -> Path:"
+      }
+    ]
+  },
+  {
+    "file": "/Users/teacher/.codex/automations/research-program/artifacts/audits/paem-20260907/issue-bodies/09.md",
+    "returncode": 0,
+    "report": "Issue body conforms to `docs/AGENT_ISSUE_FORMAT.md`.\n",
+    "verified_citations": [
+      {
+        "path": "templates/asset_timeseries_wide_returns.csv",
+        "line": 2,
+        "text": "2022-01-31,0.014141512392632942,-0.004566556443262145,0.022972839076797376"
+      },
+      {
+        "path": "dashboard/pages/1_Asset_Library.py",
+        "line": 116,
+        "text": "            min_obs = st.number_input(\"Min observations per id\", min_value=1, value=36, step=1)"
+      },
+      {
+        "path": "dashboard/pages/1_Asset_Library.py",
+        "line": 204,
+        "text": "        df = importer.load(tmp_path)"
+      }
+    ]
+  },
+  {
+    "file": "/Users/teacher/.codex/automations/research-program/artifacts/audits/paem-20260907/issue-bodies/10.md",
+    "returncode": 0,
+    "report": "Issue body is agent-processable with advisories.\n\n\n_Advisory:_\n- 2 cited path(s) do not exist yet: `CI/PYTEST_CURRENT_TEST`, `signature/export` \u2014 expected when a task creates them; check for typos otherwise.\n",
+    "verified_citations": [
+      {
+        "path": "pyproject.toml",
+        "line": 123,
+        "text": "    \"python-pptx\","
+      },
+      {
+        "path": "pa_core/viz/export_backend.py",
+        "line": 88,
+        "text": "    return cast(bytes, fig.to_image(format=format, engine=\"kaleido\", **clean_opts))"
+      },
+      {
+        "path": "pa_core/reporting/sweep_excel.py",
+        "line": 96,
+        "text": "        and not (os.environ.get(\"CI\") or os.environ.get(\"PYTEST_CURRENT_TEST\"))"
+      }
+    ]
+  }
+]

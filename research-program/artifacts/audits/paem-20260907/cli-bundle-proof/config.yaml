@@ -1,0 +1,9 @@
+N_MONTHS: 12
+N_SIMULATIONS: 100
+financing_mode: per_path
+sweep:
+  method: grid
+  parameters:
+    theta_extpa:
+      values:
+      - 0.5

@@ -1,0 +1,90 @@
+- list:
+  - listitem:
+    - link "app":
+      - /url: http://127.0.0.1:8537/
+      - paragraph: app
+  - listitem:
+    - link "Asset Library":
+      - /url: http://127.0.0.1:8537/Asset_Library
+      - paragraph: Asset Library
+  - listitem:
+    - link "Portfolio Builder":
+      - /url: http://127.0.0.1:8537/Portfolio_Builder
+      - paragraph: Portfolio Builder
+  - listitem:
+    - link "Scenario Wizard":
+      - /url: http://127.0.0.1:8537/Scenario_Wizard
+      - paragraph: Scenario Wizard
+  - listitem:
+    - link "Results":
+      - /url: http://127.0.0.1:8537/Results
+      - paragraph: Results
+  - listitem:
+    - link "Scenario Grid":
+      - /url: http://127.0.0.1:8537/Scenario_Grid
+      - paragraph: Scenario Grid
+  - listitem:
+    - link "Stress Lab":
+      - /url: http://127.0.0.1:8537/Stress_Lab
+      - paragraph: Stress Lab
+  - listitem:
+    - link "Run Logs":
+      - /url: http://127.0.0.1:8537/Run_Logs
+      - paragraph: Run Logs
+- group:
+  - text: keyboard_arrow_right
+  - paragraph: Advanced / Settings
+- separator
+- heading "Sweep steps (alpha shares)" [level=3]
+- spinbutton "ExtPA alpha min [%]": "25.00"
+- button "Decrement"
+- button "Increment"
+- spinbutton "ExtPA alpha max [%]": "75.00"
+- button "Decrement"
+- button "Increment"
+- spinbutton "ExtPA alpha step [%]": "5.00"
+- button "Decrement"
+- button "Increment"
+- spinbutton "Active share min [%]": "20.00"
+- button "Decrement"
+- button "Increment"
+- spinbutton "Active share max [%]": "100.00"
+- button "Decrement"
+- button "Increment"
+- spinbutton "Active share step [%]": "5.00"
+- button "Decrement"
+- button "Increment"
+- separator
+- heading "Axis options" [level=3]
+- group:
+  - combobox "Y axis": External alpha fraction (theta)
+  - button "Open"
+- banner:
+  - button "Deploy"
+  - button "Main menu"
+- heading "Scenario Grid & Frontier (beta)" [level=1]:
+  - text: Scenario Grid & Frontier (beta)
+  - link "Link to heading":
+    - /url: "#scenario-grid-and-frontier-beta"
+- tablist:
+  - tab "Upload Grid CSV" [selected]:
+    - paragraph: Upload Grid CSV
+  - tab "Compute from Config":
+    - paragraph: Compute from Config
+- tabpanel "Upload Grid CSV":
+  - paragraph:
+    - text: Upload a grid CSV with columns
+    - code: AE_leverage
+    - text: ","
+    - code: ExtPA_frac
+    - text: ","
+    - code: Sharpe
+    - text: to preview the heatmap.
+  - region "Grid CSV":
+    - button "file upload"
+    - button "upload Upload":
+      - text: upload
+      - paragraph: Upload
+    - text: 200MB per file • CSV
+  - status:
+    - paragraph: Provide a CSV to render the grid heatmap.

@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-07T05:13:10Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-07T05:30:08Z)
 
-Units: 66 — claimed 2, done 62, queued 2
+Units: 66 — claimed 1, done 63, queued 2
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 Claude conservation: off (weekly window available)
@@ -62,7 +62,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Fine-Art-Archive--2026-09-05T04-00-31Z | D | D | done | codex | codex | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 2) |
 | D-audit-Fine-Art-Archive--2026-09-06T04-25-53Z | D | D | done | codex | driver | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 3) |
 | D-audit-Manager-Mosaic--2026-09-05T04-00-25Z | D | D | done | codex | driver | Audit stranske/Manager-Mosaic and file issues (supply 2 <= 2) |
-| D-audit-Portable-Alpha-Extension-Model--2026-09-07T04-47-31Z | D | D | claimed | codex | codex | Audit stranske/Portable-Alpha-Extension-Model and file issues (supply  |
+| D-audit-Portable-Alpha-Extension-Model--2026-09-07T04-47-31Z | D | D | done | codex | codex | Audit stranske/Portable-Alpha-Extension-Model and file issues (supply  |
 | D-audit-Ready--2026-09-07T04-47-33Z | D | D | claimed | codex | driver | Audit stranske/Ready and file issues (supply 1 <= 2) |
 | D-audit-Travel-Plan-Permission--2026-09-05T16-11-36Z | D | D | done | codex | codex | Audit stranske/Travel-Plan-Permission and file issues (supply 3 <= 3) |
 | D-audit-Travel-Plan-Permission--2026-09-06T04-25-49Z | D | D | done | codex | driver | Audit stranske/Travel-Plan-Permission and file issues (supply 1 <= 2) |
@@ -77,7 +77,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-07T04:47:30Z — refill — Travel-Plan-Permission: open=2 <= 3 → audit queued
 - 2026-09-07T04:47:31Z — refill — Portable-Alpha-Extension-Model: open=1 <= 2 → audit queued
 - 2026-09-07T04:47:32Z — refill — Counter_Risk: open=2 <= 2 → audit queued
 - 2026-09-07T04:47:33Z — refill — Ready: open=1 <= 2 → audit queued
@@ -89,6 +88,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-07T05:11:49Z — D-audit-Portable-Alpha-Extension-Model--2026-09-07T04-47-31Z — claimed by codex (agent codex)
 - 2026-09-07T05:13:10Z — D-audit-Ready--2026-09-07T04-47-33Z — route — router picked codex from ['codex']
 - 2026-09-07T05:13:10Z — D-audit-Ready--2026-09-07T04-47-33Z — claimed by driver (agent codex)
+- 2026-09-07T05:30:08Z — D-audit-Portable-Alpha-Extension-Model--2026-09-07T04-47-31Z — done — Verified ten staged issue bodies covering allocation, fees, financing, CVaR calibration, provenance, sample workflows and Plotly compatibility; research-only ar
 
 ## Questions
 

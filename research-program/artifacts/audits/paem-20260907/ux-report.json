@@ -1,0 +1,163 @@
+{
+  "review_id": "paem-research-20260907-0522",
+  "app": "stranske/Portable-Alpha-Extension-Model",
+  "dimension_medians": {
+    "wired": 5.0,
+    "usability": 6.0,
+    "help_clarity": 4.5,
+    "workflow_productivity": 7.0
+  },
+  "consensus_flags": {
+    "wired": false,
+    "usability": false,
+    "help_clarity": false,
+    "workflow_productivity": false
+  },
+  "overall_median": 3.0,
+  "findings": [
+    {
+      "dimension": "wired",
+      "severity": 4,
+      "screen": "asset-sample",
+      "element": "Use bundled sample asset data (no upload needed)",
+      "click_path": [
+        "Open Asset Library",
+        "Check Use bundled sample asset data (no upload needed)"
+      ],
+      "expected": "The bundled sample loads successfully with the default settings.",
+      "actual": "With Min observations per id set to 36, loading the sample raises ValueError: insufficient data for ids: FUND_A, FUND_B, SP500_TR. The scenario goal fails, matching the Gate-1 wiring finding.",
+      "fix_hint": "Supply bundled data that satisfies the default observation requirement and verify sample loading with unchanged defaults.",
+      "confidence": 1.0,
+      "failure_mode": "recovery_failure",
+      "fix_hints": [
+        "Supply bundled data that satisfies the default observation requirement and verify sample loading with unchanged defaults.",
+        "Keep the sample path usable by default and provide an inline recovery action when validation fails, preserving the user's selections.",
+        "Make the bundled sample load succeed out of the box and show a clear success state with a CTA to Portfolio Builder or download YAML",
+        "Adjust the default 'Min observations per id' to match the bundled dataset, or update the dataset to have at least 36 observations.",
+        "Automatically update dependent fields (like 'Min observations per id') to compatible values when the bundled sample is toggled.",
+        "Ensure bundled sample has >=36 observations for all IDs, or reduce default min_observations threshold, or validate data before load attempt"
+      ],
+      "corroboration": 4
+    },
+    {
+      "dimension": "usability",
+      "severity": 4,
+      "screen": "home",
+      "element": "Tick \u201cUse bundled sample data\u201d on Stress Lab (or Scenario Grid) guidance",
+      "click_path": [
+        "Read home onboarding copy",
+        "Navigate to Scenario Grid expecting the same one-click bundled example as Stress Lab"
+      ],
+      "expected": "Scenario Grid offers an equally obvious bundled-sample path as Stress Lab for a complete example",
+      "actual": "Scenario Grid initial state shows only 'Upload Grid CSV' tab with status 'Provide a CSV to render the grid heatmap'; no bundled-sample checkbox observed on that surface",
+      "fix_hint": "Add a visible bundled-sample control on Scenario Grid or remove Scenario Grid from the home one-click claim so onboarding matches available affordances",
+      "confidence": 1.0,
+      "failure_mode": "confusion",
+      "fix_hints": [
+        "Add a visible bundled-sample control on Scenario Grid or remove Scenario Grid from the home one-click claim so onboarding matches available affordances",
+        "Catch the data loading exceptions and render a user-friendly Streamlit warning or error message with actionable advice.",
+        "Replace technical traceback with plain-language explanation and suggested fix (e.g., 'Increase data history or lower min observations')",
+        "Implement application-level error handling that translates backend exceptions into user-facing messages"
+      ],
+      "corroboration": 3
+    }
+  ],
+  "non_findings": [],
+  "adversarial": {
+    "worst_case": null,
+    "findings": []
+  },
+  "evidence_gaps": [
+    "Wizard completion, Portfolio Builder sample loading, Scenario Grid computation, and upload roundtrips were not exercised.",
+    "Stress Lab export buttons were exposed, but download success and exported file contents were not verified.",
+    "Stress Lab table values are absent from the supplied accessibility text, limiting assessment of result interpretation.",
+    "Tooltip contents, expanded help, and recovery after changing Asset Library settings were not captured.",
+    "Scenario Wizard steps 2\u20135 and run-to-Results completion not driven",
+    "Portfolio Builder 'Load bundled sample portfolio' interaction not exercised",
+    "Scenario Grid 'Compute from Config' tab and any bundled-sample path not exercised",
+    "Help button tooltip/popover text for bundled-sample and analysis controls not captured",
+    "Export buttons on Stress Lab (CSV/Excel) not verified for successful download or file contents",
+    "Custom CSV/XLSX upload roundtrip on Asset Library and Portfolio Builder not tested",
+    "Wizard completion execution and assertions",
+    "File upload roundtrips for CSV/YAML",
+    "Inspection of exported Office files",
+    "Browser stlite execution behavior",
+    "Help button content not observed in scenarios",
+    "Scenario Wizard end-to-end completion not driven",
+    "File upload and export roundtrip not tested"
+  ],
+  "panel": {
+    "codex": {
+      "wired": 6,
+      "usability": 7,
+      "help_clarity": 6,
+      "workflow_productivity": 8
+    },
+    "cursor": {
+      "wired": 5,
+      "usability": 6,
+      "help_clarity": 5,
+      "workflow_productivity": 6
+    },
+    "gemini": {
+      "wired": 5,
+      "usability": 5,
+      "help_clarity": 4,
+      "workflow_productivity": 8
+    },
+    "vibe": {
+      "wired": 4,
+      "usability": 6,
+      "help_clarity": 4,
+      "workflow_productivity": 6
+    }
+  },
+  "blockers": [
+    {
+      "dimension": "wired",
+      "severity": 4,
+      "screen": "asset-sample",
+      "element": "Use bundled sample asset data (no upload needed)",
+      "click_path": [
+        "Open Asset Library",
+        "Check Use bundled sample asset data (no upload needed)"
+      ],
+      "expected": "The bundled sample loads successfully with the default settings.",
+      "actual": "With Min observations per id set to 36, loading the sample raises ValueError: insufficient data for ids: FUND_A, FUND_B, SP500_TR. The scenario goal fails, matching the Gate-1 wiring finding.",
+      "fix_hint": "Supply bundled data that satisfies the default observation requirement and verify sample loading with unchanged defaults.",
+      "confidence": 1.0,
+      "failure_mode": "recovery_failure",
+      "fix_hints": [
+        "Supply bundled data that satisfies the default observation requirement and verify sample loading with unchanged defaults.",
+        "Keep the sample path usable by default and provide an inline recovery action when validation fails, preserving the user's selections.",
+        "Make the bundled sample load succeed out of the box and show a clear success state with a CTA to Portfolio Builder or download YAML",
+        "Adjust the default 'Min observations per id' to match the bundled dataset, or update the dataset to have at least 36 observations.",
+        "Automatically update dependent fields (like 'Min observations per id') to compatible values when the bundled sample is toggled.",
+        "Ensure bundled sample has >=36 observations for all IDs, or reduce default min_observations threshold, or validate data before load attempt"
+      ],
+      "corroboration": 4
+    },
+    {
+      "dimension": "usability",
+      "severity": 4,
+      "screen": "home",
+      "element": "Tick \u201cUse bundled sample data\u201d on Stress Lab (or Scenario Grid) guidance",
+      "click_path": [
+        "Read home onboarding copy",
+        "Navigate to Scenario Grid expecting the same one-click bundled example as Stress Lab"
+      ],
+      "expected": "Scenario Grid offers an equally obvious bundled-sample path as Stress Lab for a complete example",
+      "actual": "Scenario Grid initial state shows only 'Upload Grid CSV' tab with status 'Provide a CSV to render the grid heatmap'; no bundled-sample checkbox observed on that surface",
+      "fix_hint": "Add a visible bundled-sample control on Scenario Grid or remove Scenario Grid from the home one-click claim so onboarding matches available affordances",
+      "confidence": 1.0,
+      "failure_mode": "confusion",
+      "fix_hints": [
+        "Add a visible bundled-sample control on Scenario Grid or remove Scenario Grid from the home one-click claim so onboarding matches available affordances",
+        "Catch the data loading exceptions and render a user-friendly Streamlit warning or error message with actionable advice.",
+        "Replace technical traceback with plain-language explanation and suggested fix (e.g., 'Increase data history or lower min observations')",
+        "Implement application-level error handling that translates backend exceptions into user-facing messages"
+      ],
+      "corroboration": 3
+    }
+  ]
+}

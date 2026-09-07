@@ -1,0 +1,18 @@
+{
+  "ok": false,
+  "url": "http://127.0.0.1:8537/Scenario_Grid",
+  "title": "Scenario Grid",
+  "findings": [],
+  "snapshotNodeCount": 70,
+  "settle": {
+    "polls": 4,
+    "nodeCount": 70,
+    "settled": true,
+    "reason": "stable_with_content"
+  },
+  "error": null,
+  "diagnostic": null,
+  "hint": null,
+  "browserTransport": "cdp",
+  "snapshot": "- list:\n  - listitem:\n    - link \"app\":\n      - /url: http://127.0.0.1:8537/\n      - paragraph: app\n  - listitem:\n    - link \"Asset Library\":\n      - /url: http://127.0.0.1:8537/Asset_Library\n      - paragraph: Asset Library\n  - listitem:\n    - link \"Portfolio Builder\":\n      - /url: http://127.0.0.1:8537/Portfolio_Builder\n      - paragraph: Portfolio Builder\n  - listitem:\n    - link \"Scenario Wizard\":\n      - /url: http://127.0.0.1:8537/Scenario_Wizard\n      - paragraph: Scenario Wizard\n  - listitem:\n    - link \"Results\":\n      - /url: http://127.0.0.1:8537/Results\n      - paragraph: Results\n  - listitem:\n    - link \"Scenario Grid\":\n      - /url: http://127.0.0.1:8537/Scenario_Grid\n      - paragraph: Scenario Grid\n  - listitem:\n    - link \"Stress Lab\":\n      - /url: http://127.0.0.1:8537/Stress_Lab\n      - paragraph: Stress Lab\n  - listitem:\n    - link \"Run Logs\":\n      - /url: http://127.0.0.1:8537/Run_Logs\n      - paragraph: Run Logs\n- group:\n  - text: keyboard_arrow_right\n  - paragraph: Advanced / Settings\n- separator\n- heading \"Sweep steps (alpha shares)\" [level=3]\n- spinbutton \"ExtPA alpha min [%]\": \"25.00\"\n- spinbutton \"ExtPA alpha max [%]\": \"75.00\"\n- spinbutton \"ExtPA alpha step [%]\": \"5.00\"\n- spinbutton \"Active share min [%]\": \"20.00\"\n- spinbutton \"Active share max [%]\": \"100.00\"\n- spinbutton \"Active share step [%]\": \"5.00\"\n- separator\n- heading \"Axis options\" [level=3]\n- group:\n  - combobox \"Y axis\": External alpha fraction (theta)\n  - button \"Open\"\n- banner:\n  - button \"keyboard_double_arrow_right\"\n  - button \"Deploy\"\n  - button \"Main menu\"\n- heading \"Scenario Grid & Frontier (beta)\" [level=1]:\n  - text: Scenario Grid & Frontier (beta)\n  - link \"Link to heading\":\n    - /url: \"#scenario-grid-and-frontier-beta\"\n- tablist:\n  - tab \"Upload Grid CSV\" [selected]:\n    - paragraph: Upload Grid CSV"
+}

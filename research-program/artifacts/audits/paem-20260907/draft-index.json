@@ -1,0 +1,132 @@
+[
+  {
+    "id": "01",
+    "priority": "P1",
+    "title": "Recompile derived agents for sweep and allocation overrides",
+    "labels": [
+      "bug",
+      "engine",
+      "priority: high"
+    ],
+    "body": "/Users/teacher/.codex/automations/research-program/artifacts/audits/paem-20260907/issue-bodies/01.md",
+    "evidence": "numeric-lead-recheck.out",
+    "status": "staged-research-only"
+  },
+  {
+    "id": "02",
+    "priority": "P1",
+    "title": "Apply configured fee schedules to parameter sweeps",
+    "labels": [
+      "bug",
+      "engine",
+      "priority: high"
+    ],
+    "body": "/Users/teacher/.codex/automations/research-program/artifacts/audits/paem-20260907/issue-bodies/02.md",
+    "evidence": "numeric-lead-recheck.out",
+    "status": "staged-research-only"
+  },
+  {
+    "id": "03",
+    "priority": "P1",
+    "title": "Scale InternalPA financing by sleeve contribution share",
+    "labels": [
+      "bug",
+      "engine",
+      "priority: high"
+    ],
+    "body": "/Users/teacher/.codex/automations/research-program/artifacts/audits/paem-20260907/issue-bodies/03.md",
+    "evidence": "numeric-lead-recheck.out",
+    "status": "staged-research-only"
+  },
+  {
+    "id": "04",
+    "priority": "P2",
+    "title": "Preserve common random draws for InternalPA sweep financing",
+    "labels": [
+      "bug",
+      "engine",
+      "priority: medium"
+    ],
+    "body": "/Users/teacher/.codex/automations/research-program/artifacts/audits/paem-20260907/issue-bodies/04.md",
+    "evidence": "numeric-lead-recheck.out",
+    "status": "staged-research-only"
+  },
+  {
+    "id": "05",
+    "priority": "P1",
+    "title": "Calibrate the exported CVaR confidence intervals",
+    "labels": [
+      "bug",
+      "engine",
+      "priority: high"
+    ],
+    "body": "/Users/teacher/.codex/automations/research-program/artifacts/audits/paem-20260907/issue-bodies/05.md",
+    "evidence": "probe-cvar-result.json",
+    "status": "staged-research-only"
+  },
+  {
+    "id": "06",
+    "priority": "P1",
+    "title": "Finalize manifest provenance before creating run bundles",
+    "labels": [
+      "bug",
+      "data",
+      "priority: high"
+    ],
+    "body": "/Users/teacher/.codex/automations/research-program/artifacts/audits/paem-20260907/issue-bodies/06.md",
+    "evidence": "cli-bundle-result.json",
+    "status": "staged-research-only"
+  },
+  {
+    "id": "07",
+    "priority": "P2",
+    "title": "Keep Run Logs provenance bound to the selected run",
+    "labels": [
+      "bug",
+      "ui",
+      "priority: medium"
+    ],
+    "body": "/Users/teacher/.codex/automations/research-program/artifacts/audits/paem-20260907/issue-bodies/07.md",
+    "evidence": "run-logs-apptest-result.json",
+    "status": "staged-research-only"
+  },
+  {
+    "id": "08",
+    "priority": "P2",
+    "title": "Ship asset and portfolio samples in installed packages",
+    "labels": [
+      "bug",
+      "ui",
+      "priority: medium"
+    ],
+    "body": "/Users/teacher/.codex/automations/research-program/artifacts/audits/paem-20260907/issue-bodies/08.md",
+    "evidence": "installed-sample-result.json",
+    "status": "staged-research-only"
+  },
+  {
+    "id": "09",
+    "priority": "P1",
+    "title": "Make the bundled Asset Library sample load with defaults",
+    "labels": [
+      "bug",
+      "ui",
+      "priority: high"
+    ],
+    "body": "/Users/teacher/.codex/automations/research-program/artifacts/audits/paem-20260907/issue-bodies/09.md",
+    "evidence": "asset-sample-a11y.txt",
+    "status": "staged-research-only"
+  },
+  {
+    "id": "10",
+    "priority": "P1",
+    "title": "Support Plotly 7 image export or constrain installation",
+    "labels": [
+      "bug",
+      "infra",
+      "priority: high"
+    ],
+    "body": "/Users/teacher/.codex/automations/research-program/artifacts/audits/paem-20260907/issue-bodies/10.md",
+    "evidence": "cli-plotly7-proof/cli.log",
+    "status": "staged-research-only"
+  }
+]

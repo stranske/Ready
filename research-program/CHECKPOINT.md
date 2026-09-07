@@ -391,3 +391,4 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-07T05:11:49Z — D-audit-Portable-Alpha-Extension-Model--2026-09-07T04-47-31Z — claimed by codex (agent codex)
 ## 2026-09-07T05:13:10Z — D-audit-Ready--2026-09-07T04-47-33Z — route — router picked codex from ['codex']
 ## 2026-09-07T05:13:10Z — D-audit-Ready--2026-09-07T04-47-33Z — claimed by driver (agent codex)
+## 2026-09-07T05:30:08Z — D-audit-Portable-Alpha-Extension-Model--2026-09-07T04-47-31Z — done — Verified ten staged issue bodies covering allocation, fees, financing, CVaR calibration, provenance, sample workflows and Plotly compatibility; research-only ar

@@ -1,0 +1,47 @@
+{
+  "event": "run_end",
+  "duration_seconds": 6.387563582975417,
+  "seed": 123,
+  "backend": "numpy",
+  "artifact_paths": [
+    "runs/20260907T052240Z/run.log",
+    "/Users/teacher/.codex/automations/research-program/artifacts/audits/paem-20260907/cli-bundle-proof/out.xlsx",
+    "/Users/teacher/.codex/automations/research-program/artifacts/audits/paem-20260907/cli-bundle-proof/manifest.json",
+    "/Users/teacher/.codex/automations/research-program/artifacts/audits/paem-20260907/cli-bundle-proof/run.json"
+  ],
+  "status": "success",
+  "warnings": [
+    {
+      "code": "Pandas4Warning",
+      "severity": "warning",
+      "message": "Timestamp.utcnow is deprecated and will be removed in a future version. Use Timestamp.now('UTC') instead.",
+      "context": {
+        "source": "warnings",
+        "category": "Pandas4Warning",
+        "filename": "/Users/teacher/.codex/automations/research-program/clones/Portable-Alpha-Extension-Model/pa_core/cli.py",
+        "lineno": 1080
+      }
+    },
+    {
+      "code": "UserWarning",
+      "severity": "warning",
+      "message": "Index frequency mismatch: expected monthly, detected daily. Use --resample monthly to convert or --index-frequency daily to skip validation.",
+      "context": {
+        "source": "warnings",
+        "category": "UserWarning",
+        "filename": "/Users/teacher/.codex/automations/research-program/clones/Portable-Alpha-Extension-Model/pa_core/cli.py",
+        "lineno": 1139
+      }
+    }
+  ],
+  "cost": {
+    "latency_seconds": 6.387563582975417,
+    "dollars": null
+  },
+  "started_at": "2026-09-07T05:22:39.480561+00:00",
+  "ended_at": "2026-09-07T05:22:45.868149+00:00",
+  "run_id": "20260907T052240Z",
+  "run_log": "runs/20260907T052240Z/run.log",
+  "manifest_path": "/Users/teacher/.codex/automations/research-program/artifacts/audits/paem-20260907/cli-bundle-proof/manifest.json",
+  "recorded_at": "2026-09-07T05:22:45.868833+00:00"
+}

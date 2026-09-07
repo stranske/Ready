@@ -1,0 +1,19 @@
+Conducting a bounded audit of dashboard, reporting, portability, and data-import paths. Reading scope artifacts and exploring the target code.
+Writing repro scripts and the audit report.
+## Index
+
+| ID | Finding | Severity |
+|----|---------|----------|
+| F1 | `--bundle` ships stale `manifest.json` (pre-finalize) | High |
+| F2 | `RunArtifactBundle.verify()` ignores `index_hash` | Medium |
+| F3 | Run Logs cwd `manifest.json` fallback shows wrong provenance | Medium |
+| F4 | Relative `manifest_path` in `run_end.json` breaks off output dir | Medium |
+| F5 | `ManifestWriter` silently omits missing index from `data_files` | Medium |
+| F6 | Bundled asset sample not shipped for pip-style installs | Medium |
+
+## Counts
+
+- **Verified findings:** 6 (1 high, 5 medium)
+- **Duplicates:** 1 partial (#2026)
+- **Repro scripts:** 6 (all PASS)
+- **Report:** `artifacts/audits/paem-20260907/dashboard.md`

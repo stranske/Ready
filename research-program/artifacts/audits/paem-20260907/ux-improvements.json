@@ -1,0 +1,53 @@
+{
+  "improvements": [
+    {
+      "dimension": "wired",
+      "failure_mode": "recovery_failure",
+      "severity": 4,
+      "corroboration": 4,
+      "element": "Use bundled sample asset data (no upload needed)",
+      "fix_hints": [
+        "Supply bundled data that satisfies the default observation requirement and verify sample loading with unchanged defaults.",
+        "Keep the sample path usable by default and provide an inline recovery action when validation fails, preserving the user's selections.",
+        "Make the bundled sample load succeed out of the box and show a clear success state with a CTA to Portfolio Builder or download YAML",
+        "Adjust the default 'Min observations per id' to match the bundled dataset, or update the dataset to have at least 36 observations.",
+        "Automatically update dependent fields (like 'Min observations per id') to compatible values when the bundled sample is toggled.",
+        "Ensure bundled sample has >=36 observations for all IDs, or reduce default min_observations threshold, or validate data before load attempt"
+      ]
+    },
+    {
+      "dimension": "usability",
+      "failure_mode": "confusion",
+      "severity": 4,
+      "corroboration": 3,
+      "element": "Tick \u201cUse bundled sample data\u201d on Stress Lab (or Scenario Grid) guidance",
+      "fix_hints": [
+        "Add a visible bundled-sample control on Scenario Grid or remove Scenario Grid from the home one-click claim so onboarding matches available affordances",
+        "Catch the data loading exceptions and render a user-friendly Streamlit warning or error message with actionable advice.",
+        "Replace technical traceback with plain-language explanation and suggested fix (e.g., 'Increase data history or lower min observations')",
+        "Implement application-level error handling that translates backend exceptions into user-facing messages"
+      ]
+    }
+  ],
+  "coverage_gaps": [
+    "Wizard completion, Portfolio Builder sample loading, Scenario Grid computation, and upload roundtrips were not exercised.",
+    "Stress Lab export buttons were exposed, but download success and exported file contents were not verified.",
+    "Stress Lab table values are absent from the supplied accessibility text, limiting assessment of result interpretation.",
+    "Tooltip contents, expanded help, and recovery after changing Asset Library settings were not captured.",
+    "Scenario Wizard steps 2\u20135 and run-to-Results completion not driven",
+    "Portfolio Builder 'Load bundled sample portfolio' interaction not exercised",
+    "Scenario Grid 'Compute from Config' tab and any bundled-sample path not exercised",
+    "Help button tooltip/popover text for bundled-sample and analysis controls not captured",
+    "Export buttons on Stress Lab (CSV/Excel) not verified for successful download or file contents",
+    "Custom CSV/XLSX upload roundtrip on Asset Library and Portfolio Builder not tested",
+    "Wizard completion execution and assertions",
+    "File upload roundtrips for CSV/YAML",
+    "Inspection of exported Office files",
+    "Browser stlite execution behavior",
+    "Help button content not observed in scenarios",
+    "Scenario Wizard end-to-end completion not driven",
+    "File upload and export roundtrip not tested"
+  ],
+  "n_findings": 2,
+  "n_with_hints": 2
+}

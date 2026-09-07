@@ -1,0 +1,18 @@
+{
+  "ok": false,
+  "url": "http://127.0.0.1:8537/Stress_Lab",
+  "title": "Stress Lab",
+  "findings": [],
+  "snapshotNodeCount": 47,
+  "settle": {
+    "polls": 4,
+    "nodeCount": 47,
+    "settled": true,
+    "reason": "stable_with_content"
+  },
+  "error": null,
+  "diagnostic": null,
+  "hint": null,
+  "browserTransport": "cdp",
+  "snapshot": "- list:\n  - listitem:\n    - link \"app\":\n      - /url: http://127.0.0.1:8537/\n      - paragraph: app\n  - listitem:\n    - link \"Asset Library\":\n      - /url: http://127.0.0.1:8537/Asset_Library\n      - paragraph: Asset Library\n  - listitem:\n    - link \"Portfolio Builder\":\n      - /url: http://127.0.0.1:8537/Portfolio_Builder\n      - paragraph: Portfolio Builder\n  - listitem:\n    - link \"Scenario Wizard\":\n      - /url: http://127.0.0.1:8537/Scenario_Wizard\n      - paragraph: Scenario Wizard\n  - listitem:\n    - link \"Results\":\n      - /url: http://127.0.0.1:8537/Results\n      - paragraph: Results\n  - listitem:\n    - link \"Scenario Grid\":\n      - /url: http://127.0.0.1:8537/Scenario_Grid\n      - paragraph: Scenario Grid\n  - listitem:\n    - link \"Stress Lab\":\n      - /url: http://127.0.0.1:8537/Stress_Lab\n      - paragraph: Stress Lab\n  - listitem:\n    - link \"Run Logs\":\n      - /url: http://127.0.0.1:8537/Run_Logs\n      - paragraph: Run Logs\n- group:\n  - text: keyboard_arrow_right\n  - paragraph: Advanced / Settings\n- banner:\n  - button \"keyboard_double_arrow_right\"\n  - button \"Deploy\"\n  - button \"Main menu\"\n- heading \"Stress Lab (presets)\" [level=1]:\n  - text: Stress Lab (presets)\n  - link \"Link to heading\":\n    - /url: \"#stress-lab-presets\"\n- paragraph: Pick a preset, run base vs stressed with identical seeds, and review deltas.\n- region \"Index returns CSV (single numeric column)\":\n  - button \"file upload\"\n  - button \"upload Upload\":\n    - text: upload\n    - paragraph: Upload\n  - text: 200MB per file • CSV\n- checkbox \"Use bundled sample data (no upload needed)\"\n- paragraph: Use bundled sample data (no upload needed)\n- button \"Help for Use bundled sample data (no upload needed)\"\n- status:\n  - paragraph: Upload an index CSV, tick 'Use bundled sample data', or run a scenario first to simulate."
+}

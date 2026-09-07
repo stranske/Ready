@@ -1,0 +1,59 @@
+- list:
+  - listitem:
+    - link "app":
+      - /url: http://127.0.0.1:8537/
+      - paragraph: app
+  - listitem:
+    - link "Asset Library":
+      - /url: http://127.0.0.1:8537/Asset_Library
+      - paragraph: Asset Library
+  - listitem:
+    - link "Portfolio Builder":
+      - /url: http://127.0.0.1:8537/Portfolio_Builder
+      - paragraph: Portfolio Builder
+  - listitem:
+    - link "Scenario Wizard":
+      - /url: http://127.0.0.1:8537/Scenario_Wizard
+      - paragraph: Scenario Wizard
+  - listitem:
+    - link "Results":
+      - /url: http://127.0.0.1:8537/Results
+      - paragraph: Results
+  - listitem:
+    - link "Scenario Grid":
+      - /url: http://127.0.0.1:8537/Scenario_Grid
+      - paragraph: Scenario Grid
+  - listitem:
+    - link "Stress Lab":
+      - /url: http://127.0.0.1:8537/Stress_Lab
+      - paragraph: Stress Lab
+  - listitem:
+    - link "Run Logs":
+      - /url: http://127.0.0.1:8537/Run_Logs
+      - paragraph: Run Logs
+- group:
+  - text: keyboard_arrow_right
+  - paragraph: Advanced / Settings
+- banner:
+  - button "Deploy"
+  - button "Main menu"
+- heading "Asset Library" [level=1]:
+  - text: Asset Library
+  - link "Link to heading":
+    - /url: "#asset-library"
+- paragraph:
+  - strong: Upload asset return data
+- checkbox "Use bundled sample asset data (no upload needed)"
+- paragraph: Use bundled sample asset data (no upload needed)
+- button "Help for Use bundled sample asset data (no upload needed)"
+- button "Download asset return template":
+  - paragraph: Download asset return template
+- paragraph: Drag and drop a CSV or Excel file, or click to browse.
+- region "Drag-and-drop CSV/XLSX":
+  - button "file upload"
+  - button "upload Upload":
+    - text: upload
+    - paragraph: Upload
+  - text: 200MB per file • CSV, XLSX, XLS
+- status:
+  - paragraph: Upload asset return data or use the bundled sample to begin.
