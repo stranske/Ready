@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-07T17:21:21Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-07T17:23:11Z)
 
-Units: 70 — claimed 1, done 69
+Units: 70 — done 70
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 Claude conservation: off (weekly window available)
@@ -71,7 +71,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Travel-Plan-Permission--2026-09-06T04-25-49Z | D | D | done | codex | driver | Audit stranske/Travel-Plan-Permission and file issues (supply 1 <= 2) |
 | D-audit-Travel-Plan-Permission--2026-09-06T16-33-27Z | D | D | done | codex | driver | Audit stranske/Travel-Plan-Permission and file issues (supply 2 <= 2) |
 | D-audit-Travel-Plan-Permission--2026-09-07T04-47-30Z | D | D | done | codex | codex | Audit stranske/Travel-Plan-Permission and file issues (supply 2 <= 3) |
-| D-audit-Travel-Plan-Permission--2026-09-07T17-01-43Z | D | D | claimed | codex | claude | Audit stranske/Travel-Plan-Permission and file issues (supply 1 <= 2) |
+| D-audit-Travel-Plan-Permission--2026-09-07T17-01-43Z | D | D | done | codex | claude | Audit stranske/Travel-Plan-Permission and file issues (supply 1 <= 2) |
 | D-audit-learning-management-system--2026-09-05T04-00-30Z | D | D | done | codex | driver | Audit stranske/learning-management-system and file issues (supply 2 <= |
 | D-audit-learning-management-system--2026-09-06T16-33-31Z | D | D | done | codex | driver | Audit stranske/learning-management-system and file issues (supply 1 <= |
 | D-audit-trip-planner--2026-09-07T04-47-34Z | D | D | done | codex | codex | Audit stranske/trip-planner and file issues (supply 2 <= 2) |
@@ -81,7 +81,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-07T10:24:36Z — mirror — FAILED — RuntimeError; pending commits retained for next tick
 - 2026-09-07T14:41:12Z — unblock — enqueued D3-unblock-sweep-2026-09-07T14
 - 2026-09-07T14:41:12Z — D3-unblock-sweep-2026-09-07T14 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-07T14:41:12Z — D3-unblock-sweep-2026-09-07T14 — claimed by driver (agent cursor)
@@ -93,6 +92,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-07T17:04:58Z — D-audit-Travel-Plan-Permission--2026-09-07T17-01-43Z — route — router picked codex from ['codex']
 - 2026-09-07T17:04:58Z — D-audit-Travel-Plan-Permission--2026-09-07T17-01-43Z — claimed by claude (agent codex)
 - 2026-09-07T17:06:15Z — D-audit-Portable-Alpha-Extension-Model--2026-09-07T17-01-44Z — done — gemini produced 1181 words at artifacts/audits/Portable-Alpha-Extension-Model-2026-09-07.md in 264s
+- 2026-09-07T17:23:11Z — D-audit-Travel-Plan-Permission--2026-09-07T17-01-43Z — done — Refilled Travel-Plan-Permission's empty agent-ready queue with 9 adversarially verified, runtime-reproduced issues (#1564-#1572), including a shipped advance-bo
 
 ## Questions
 
