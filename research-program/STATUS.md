@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-07T16:46:36Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-07T17:01:48Z)
 
-Units: 68 — done 68
+Units: 70 — claimed 1, done 68, queued 1
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 Claude conservation: off (weekly window available)
@@ -65,11 +65,13 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Fine-Art-Archive--2026-09-06T04-25-53Z | D | D | done | codex | driver | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 3) |
 | D-audit-Manager-Mosaic--2026-09-05T04-00-25Z | D | D | done | codex | driver | Audit stranske/Manager-Mosaic and file issues (supply 2 <= 2) |
 | D-audit-Portable-Alpha-Extension-Model--2026-09-07T04-47-31Z | D | D | done | codex | codex | Audit stranske/Portable-Alpha-Extension-Model and file issues (supply  |
+| D-audit-Portable-Alpha-Extension-Model--2026-09-07T17-01-44Z | D | D | claimed | codex | driver | Audit stranske/Portable-Alpha-Extension-Model and file issues (supply  |
 | D-audit-Ready--2026-09-07T04-47-33Z | D | D | done | codex | driver | Audit stranske/Ready and file issues (supply 1 <= 2) |
 | D-audit-Travel-Plan-Permission--2026-09-05T16-11-36Z | D | D | done | codex | codex | Audit stranske/Travel-Plan-Permission and file issues (supply 3 <= 3) |
 | D-audit-Travel-Plan-Permission--2026-09-06T04-25-49Z | D | D | done | codex | driver | Audit stranske/Travel-Plan-Permission and file issues (supply 1 <= 2) |
 | D-audit-Travel-Plan-Permission--2026-09-06T16-33-27Z | D | D | done | codex | driver | Audit stranske/Travel-Plan-Permission and file issues (supply 2 <= 2) |
 | D-audit-Travel-Plan-Permission--2026-09-07T04-47-30Z | D | D | done | codex | codex | Audit stranske/Travel-Plan-Permission and file issues (supply 2 <= 3) |
+| D-audit-Travel-Plan-Permission--2026-09-07T17-01-43Z | D | D | queued | claude |  | Audit stranske/Travel-Plan-Permission and file issues (supply 1 <= 2) |
 | D-audit-learning-management-system--2026-09-05T04-00-30Z | D | D | done | codex | driver | Audit stranske/learning-management-system and file issues (supply 2 <= |
 | D-audit-learning-management-system--2026-09-06T16-33-31Z | D | D | done | codex | driver | Audit stranske/learning-management-system and file issues (supply 1 <= |
 | D-audit-trip-planner--2026-09-07T04-47-34Z | D | D | done | codex | codex | Audit stranske/trip-planner and file issues (supply 2 <= 2) |
@@ -79,10 +81,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-07T08:07:47Z — D-audit-trip-planner--2026-09-07T04-47-34Z — fail — cursor did not write a fresh output artifact
-- 2026-09-07T08:12:18Z — D-audit-trip-planner--2026-09-07T04-47-34Z — route — router picked codex from ['codex']
-- 2026-09-07T08:12:18Z — D-audit-trip-planner--2026-09-07T04-47-34Z — claimed by codex (agent codex)
-- 2026-09-07T08:16:22Z — D-audit-trip-planner--2026-09-07T04-47-34Z — done — Reconciled eight existing trip-planner issues at unchanged main, verified local and remote format passes, reproduced four backend gaps, and qualified audit cove
 - 2026-09-07T08:22:49Z — D-audit-Ready--2026-09-07T04-47-33Z — route — router picked codex from ['codex']
 - 2026-09-07T08:22:49Z — D-audit-Ready--2026-09-07T04-47-33Z — claimed by driver (agent codex)
 - 2026-09-07T08:23:49Z — D-audit-Ready--2026-09-07T04-47-33Z — done — cursor produced 651 words at artifacts/audits/Ready-2026-09-07.md in 56s
@@ -91,6 +89,10 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-07T14:41:12Z — D3-unblock-sweep-2026-09-07T14 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-07T14:41:12Z — D3-unblock-sweep-2026-09-07T14 — claimed by driver (agent cursor)
 - 2026-09-07T14:45:50Z — D3-unblock-sweep-2026-09-07T14 — done — gemini produced 869 words at artifacts/sweeps/D3-unblock-sweep-2026-09-07T14.md in 273s
+- 2026-09-07T17:01:43Z — refill — Travel-Plan-Permission: open=1 <= 2 → audit queued
+- 2026-09-07T17:01:44Z — refill — Portable-Alpha-Extension-Model: open=0 <= 2 → audit queued
+- 2026-09-07T17:01:48Z — D-audit-Portable-Alpha-Extension-Model--2026-09-07T17-01-44Z — route — router picked codex from ['codex']
+- 2026-09-07T17:01:48Z — D-audit-Portable-Alpha-Extension-Model--2026-09-07T17-01-44Z — claimed by driver (agent codex)
 
 ## Questions
 
