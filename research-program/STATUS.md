@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-07T01:22:13Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-07T01:31:15Z)
 
-Units: 61 — claimed 1, done 60
+Units: 61 — done 61
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 Claude conservation: off (weekly window available)
@@ -68,11 +68,10 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-learning-management-system--2026-09-06T16-33-31Z | D | D | done | codex | driver | Audit stranske/learning-management-system and file issues (supply 1 <= |
 | D4-verify-merged-2026-09-05T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
 | D4-verify-merged-2026-09-06T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
-| D4-verify-merged-2026-09-07T01 | D | D | claimed | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
+| D4-verify-merged-2026-09-07T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
 
 ## Last checkpoints
 
-- 2026-09-06T16:33:32Z — D-audit-Travel-Plan-Permission--2026-09-06T16-33-27Z — claimed by driver (agent codex)
 - 2026-09-06T16:44:10Z — D-audit-Travel-Plan-Permission--2026-09-06T16-33-27Z — done — gemini produced 1021 words at artifacts/audits/Travel-Plan-Permission-2026-09-06.md in 635s
 - 2026-09-06T16:59:15Z — D-audit-learning-management-system--2026-09-06T16-33-31Z — route — router picked codex from ['codex']
 - 2026-09-06T16:59:15Z — D-audit-learning-management-system--2026-09-06T16-33-31Z — claimed by driver (agent codex)
@@ -84,6 +83,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-07T01:22:13Z — verify — enqueued D4-verify-merged-2026-09-07T01
 - 2026-09-07T01:22:13Z — D4-verify-merged-2026-09-07T01 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-07T01:22:13Z — D4-verify-merged-2026-09-07T01 — claimed by driver (agent cursor)
+- 2026-09-07T01:31:15Z — D4-verify-merged-2026-09-07T01 — done — vibe produced 2417 words at artifacts/verification/D4-verify-merged-2026-09-07T01.md in 538s
 
 ## Questions
 
