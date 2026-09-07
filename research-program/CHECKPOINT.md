@@ -421,3 +421,4 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-07T08:22:49Z — D-audit-Ready--2026-09-07T04-47-33Z — route — router picked codex from ['codex']
 ## 2026-09-07T08:22:49Z — D-audit-Ready--2026-09-07T04-47-33Z — claimed by driver (agent codex)
 ## 2026-09-07T08:23:49Z — D-audit-Ready--2026-09-07T04-47-33Z — done — cursor produced 651 words at artifacts/audits/Ready-2026-09-07.md in 56s
+## 2026-09-07T10:24:36Z — mirror — FAILED — RuntimeError; pending commits retained for next tick

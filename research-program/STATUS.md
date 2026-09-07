@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-07T10:10:52Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-07T10:39:38Z)
 
 Units: 67 — done 67
 Paused: False   Phase stops: []
@@ -78,7 +78,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-07T07:11:32Z — D-audit-trip-planner--2026-09-07T04-47-34Z — claimed by driver (agent codex)
 - 2026-09-07T07:16:25Z — D-audit-Travel-Plan-Permission--2026-09-07T04-47-30Z — done — Reverified three existing Travel-Plan-Permission defects and intake records; confirmed two remote format successes, documented one unconfirmed verdict and audit
 - 2026-09-07T07:51:38Z — D-audit-trip-planner--2026-09-07T04-47-34Z — fail — offload to cursor exited 1; retained artifact is not proof of success
 - 2026-09-07T08:06:41Z — D-audit-trip-planner--2026-09-07T04-47-34Z — route — router picked codex from ['codex']
@@ -90,6 +89,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-07T08:22:49Z — D-audit-Ready--2026-09-07T04-47-33Z — route — router picked codex from ['codex']
 - 2026-09-07T08:22:49Z — D-audit-Ready--2026-09-07T04-47-33Z — claimed by driver (agent codex)
 - 2026-09-07T08:23:49Z — D-audit-Ready--2026-09-07T04-47-33Z — done — cursor produced 651 words at artifacts/audits/Ready-2026-09-07.md in 56s
+- 2026-09-07T10:24:36Z — mirror — FAILED — RuntimeError; pending commits retained for next tick
 
 ## Questions
 
