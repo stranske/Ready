@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-07T07:16:25Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-07T08:06:41Z)
 
 Units: 67 — claimed 1, done 65, queued 1
 Paused: False   Phase stops: []
@@ -78,9 +78,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-07T06:26:42Z — unblock — enqueued D3-unblock-sweep-2026-09-07T06
-- 2026-09-07T06:26:42Z — D3-unblock-sweep-2026-09-07T06 — route — router picked cursor from ['codex', 'cursor']
-- 2026-09-07T06:26:42Z — D3-unblock-sweep-2026-09-07T06 — claimed by driver (agent cursor)
 - 2026-09-07T06:33:13Z — D3-unblock-sweep-2026-09-07T06 — done — gemini produced 769 words at artifacts/sweeps/D3-unblock-sweep-2026-09-07T06.md in 387s
 - 2026-09-07T06:48:18Z — D-audit-Travel-Plan-Permission--2026-09-07T04-47-30Z — route — router picked codex from ['codex']
 - 2026-09-07T06:48:18Z — D-audit-Travel-Plan-Permission--2026-09-07T04-47-30Z — claimed by driver (agent codex)
@@ -90,6 +87,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-07T07:11:32Z — D-audit-trip-planner--2026-09-07T04-47-34Z — route — router picked codex from ['codex']
 - 2026-09-07T07:11:32Z — D-audit-trip-planner--2026-09-07T04-47-34Z — claimed by driver (agent codex)
 - 2026-09-07T07:16:25Z — D-audit-Travel-Plan-Permission--2026-09-07T04-47-30Z — done — Reverified three existing Travel-Plan-Permission defects and intake records; confirmed two remote format successes, documented one unconfirmed verdict and audit
+- 2026-09-07T07:51:38Z — D-audit-trip-planner--2026-09-07T04-47-34Z — fail — offload to cursor exited 1; retained artifact is not proof of success
+- 2026-09-07T08:06:41Z — D-audit-trip-planner--2026-09-07T04-47-34Z — route — router picked codex from ['codex']
+- 2026-09-07T08:06:41Z — D-audit-trip-planner--2026-09-07T04-47-34Z — claimed by driver (agent codex)
 
 ## Questions
 

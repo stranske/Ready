@@ -411,3 +411,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-07T07:11:32Z — D-audit-trip-planner--2026-09-07T04-47-34Z — route — router picked codex from ['codex']
 ## 2026-09-07T07:11:32Z — D-audit-trip-planner--2026-09-07T04-47-34Z — claimed by driver (agent codex)
 ## 2026-09-07T07:16:25Z — D-audit-Travel-Plan-Permission--2026-09-07T04-47-30Z — done — Reverified three existing Travel-Plan-Permission defects and intake records; confirmed two remote format successes, documented one unconfirmed verdict and audit
+## 2026-09-07T07:51:38Z — D-audit-trip-planner--2026-09-07T04-47-34Z — fail — offload to cursor exited 1; retained artifact is not proof of success
+## 2026-09-07T08:06:41Z — D-audit-trip-planner--2026-09-07T04-47-34Z — route — router picked codex from ['codex']
+## 2026-09-07T08:06:41Z — D-audit-trip-planner--2026-09-07T04-47-34Z — claimed by driver (agent codex)

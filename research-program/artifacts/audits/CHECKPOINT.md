@@ -89,6 +89,9 @@ Resumed from retained Phase 5 report and shared checkpoint; did not restart the 
 ## 2026-09-07T06:20:00Z — D-audit-Travel-Plan-Permission--2026-09-07T04-47-30Z complete
 Phases 0–5 on tip 37f7ed8. Prior wave largely merged; #1547 still open. Filed 3 verified P1 issues #1557–#1559 (exception terminal guard, escalation SLA wiring, manager resubmit stale trip plan). Local issue_format.py 3/3 PASS. OUT: artifacts/audits/Travel-Plan-Permission-2026-09-07.md. Intake log + AUDIT_LEDGER updated.
 
+## 2026-09-07T07:36:00Z — D-audit-trip-planner--2026-09-07T04-47-34Z complete
+Phases 0–5 on clone tip 8077785611d5c96a533eb4f0bc42877718ea66d1. Filed 8 verified issues #1798–#1805 (7×P1, 1×P2). Local issue_format.py 8/8 PASS; remote Agents Issue Format Guard success runs observed. Intake log updated with 8 rows. OUT: artifacts/audits/trip-planner-2026-09-07.md. Durable audit ledger updated.
+
 ## 2026-09-07T07:14:32.180523+00:00 — attempt 2 Phase 3/5 reconciliation
 Resumed completed checkpoint without restarting. Remote main matches clone 37f7ed8afbfb4d6e16ffc613c9856421605ad359. Opened all three cited implementation paths; all three issues remain open, #1557 has open PR #1560. Remote CI success on this head. Exact live issue bodies pass local validator with advisories. #1557/#1559 have successful format workflow runs; #1558 only skipped/cancelled among available runs. Coverage corrections and bounded runtime reproductions in progress. No issue filing or repo edits.
 
