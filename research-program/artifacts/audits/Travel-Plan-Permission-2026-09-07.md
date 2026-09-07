@@ -1,69 +1,35 @@
-# Travel-Plan-Permission Refill Audit Report (2026-09-07)
+# Travel-Plan-Permission audit reconciliation — 2026-09-07
 
-**Unit ID:** `D-audit-Travel-Plan-Permission--2026-09-07T04-47-30Z`  
-**Repository:** `stranske/Travel-Plan-Permission`  
-**Tip SHA:** `37f7ed8afbfb4d6e16ffc613c9856421605ad359`  
-**Trigger:** Open agent-ready supply 2/9 (≤25% threshold)  
-**Filed Issues:** 3 verified P1 issues (#1557–#1559)
+Unit: `D-audit-Travel-Plan-Permission--2026-09-07T04-47-30Z`; attempt 2; verified 2026-09-07T07:16:25.145626+00:00.
+OUT: `/Users/teacher/.codex/automations/research-program/artifacts/audits/Travel-Plan-Permission-2026-09-07.md`.
+Current clone and remote main: `37f7ed8afbfb4d6e16ffc613c9856421605ad359`.
 
----
+Resumed the retained Phase 5 checkpoint; no audit restart, new filing, code edits, or offloads. The previous executor filed three P1 issues. All three remain open and the underlying defects remain present on main. This run independently verified the cited code, reproduced the model/store behaviors, validated the exact live issue bodies, and reconciled delivery evidence.
 
-## Executive Summary
-
-Demand-driven refill audit on tip `37f7ed8` (includes merged #1556 audit-metadata fix and closure of most 2026-09-06 wave issues). Prior-wave defects in policy NaN handling, PDF escaping, snapshot confinement, expense auth, and European date parsing are **fixed on main**; only #1547 (workbook_ooxml NaN guard) remains open from the prior set.
-
-This run focused on **exception workflow** and **manager review resubmit** gaps introduced or left exposed by recent exception-authority work. Three adversarially verified findings were filed as AGENT_ISSUE_FORMAT issues; local `issue_format.py` passed all three (advisories only).
-
----
-
-## Orientation
-
-| Metric | Value |
+| Finding | Current evidence and disposition |
 |---|---|
-| Python LOC (src/tests/scripts) | ~61,410 |
-| Tests collected | 1,106 (5 baseline collection errors on Dropbox — CI is ground truth) |
-| Open issues pre-audit | 6 (#1547 + housekeeping/docs) |
-| Prior refill issues merged since 2026-09-06 | #1539, #1540, #1542, #1543, #1544, #1545, #1546, #1556 (+ others) |
+| [#1557](https://github.com/stranske/Travel-Plan-Permission/issues/1557) exception decisions are not terminal | `models.py:252-277`: approve then reject produces rejected status while retaining the first approver; reject then approve also succeeds. `http_service.py:885-905,2205` exposes these unguarded methods. Open PR [#1560](https://github.com/stranske/Travel-Plan-Permission/pull/1560) targets this issue; no merge or acceptance verdict made here. |
+| [#1558](https://github.com/stranske/Travel-Plan-Permission/issues/1558) overdue escalation is unwired | `docs/exception-policy.md:68` promises escalation after 48 hours. `models.py:279-293` implements it; search finds the definition but no production calls. The 49-hour synthetic request stays pending/manager until the helper is explicitly invoked, then becomes escalated/director. Decision route `http_service.py:2187-2205` authorizes the unchanged tier. Remains open. |
+| [#1559](https://github.com/stranske/Travel-Plan-Permission/issues/1559) manager resubmit retains stale data | `review_workflow.py:188-209` returns the stored review without refreshing new inputs. Reproduced create → request changes → resubmit: submitted CHANGED-TRAVELER, stored Jordan Lee, status still changes_requested. `http_service.py:735-751,2025` wires this store into portal submit. Remains open. |
 
----
+All shortened source paths in this table are under `src/travel_plan_permission/` except the explicit docs path. All cited source lines were opened in the target clone. Runtime evidence is at `/Users/teacher/.codex/automations/research-program/artifacts/audits/tpp-20260907-recovery/reproduction.txt`; its executable reproduction uses synthetic inputs and the repository fixtures. These are model/store reproductions plus static route tracing, not end-to-end browser tests.
 
-## Filed Issues
+## Format and delivery evidence
 
-1. **#1557** `[P1] Exception decisions are not terminal — repeat approve/reject overwrites finalized status`
-   - Evidence: `src/travel_plan_permission/models.py:252-277`, `src/travel_plan_permission/http_service.py:885-905`, `2205`
-   - Labels: `bug`, `risk:major`, `priority:high`, `type:workflow`
+- Exact live issue bodies: all three pass `.github/scripts/issue_format.py` at the audited head. All lack recommended Scope and Implementation Notes sections. #1558 and #1559 additionally trigger path advisories for ordinary slash-separated prose (pending/escalated and queue/detail); these are not missing source files.
+- #1557 successful format run: [34092973521](https://github.com/stranske/Travel-Plan-Permission/actions/runs/34092973521).
+- #1559 successful format run: [34092977334](https://github.com/stranske/Travel-Plan-Permission/actions/runs/34092977334).
+- #1558: only cancelled/skipped runs in the available workflow inventory; remote validation is UNCONFIRMED. Latest observed [34092976957](https://github.com/stranske/Travel-Plan-Permission/actions/runs/34092976957) skipped. Local validation is a separate positive result.
+- Current-head CI succeeded: [34082936960](https://github.com/stranske/Travel-Plan-Permission/actions/runs/34082936960).
+- Existing intake log contains exactly one row for each issue (#1557–1559, lines 136–138 at inspection). No duplicate rows added. Original staged issue bodies and audit records remain intact.
+- Raw remote snapshots and format outputs: `/Users/teacher/.codex/automations/research-program/artifacts/audits/tpp-20260907-recovery`.
 
-2. **#1558** `[P1] Wire 48-hour exception escalation before authorization and decisions`
-   - Evidence: `docs/exception-policy.md:66-68`, `src/travel_plan_permission/models.py:279-293` (no `src/` callers)
-   - Labels: `bug`, `risk:major`, `priority:high`, `type:workflow`
+## Coverage and corrections
 
-3. **#1559** `[P1] Manager review resubmit keeps stale trip plan from first submission`
-   - Evidence: `src/travel_plan_permission/review_workflow.py:196-200`, `src/travel_plan_permission/http_service.py:746`, `2025`
-   - Labels: `bug`, `risk:major`, `priority:high`, `type:workflow`
+The retained audit is a focused correctness/wiring refill, not a verified comprehensive eight-dimension audit. D1 and D3 have fresh source/runtime evidence. D2, D5, D6, D7 and D8 lack fresh comprehensive evidence in this unit. D4 was described as static workflow review: that does not establish observed UX coverage. No fresh browser captures or panel exist for this unit; no UX score or gate pass is claimed.
 
----
+The previous report's 1,106 collected tests with five collection errors, attribution to Dropbox, and broad claims that all prior-wave fixes were verified are historical executor statements, not independently established by this recovery. The clone is outside Dropbox. Current-head remote CI is confirmed, but does not explain the prior local errors. Prior-wave #1547 and other disposition claims are retained in the archived report rather than reasserted as current verified facts.
 
-## Non-Filed / Deferred
+The original #1559 Tasks offer a new review id for finalized reviews while its Non-Goals forbid reopening finalized records. An implementation should preserve immutable finalized records and refresh the changes-requested path; this ambiguity does not refute the reproduced defect.
 
-| Finding | Disposition |
-|---|---|
-| #1547 workbook_ooxml NaN guard | Already open; not duplicated |
-| Exception filing without draft-scope check | Downgraded — same CREATE-scoped pattern as other portal routes; weaker than terminal/SLA defects |
-| Prior-wave items (#1523–#1546) | Verified fixed or closed on tip |
-
----
-
-## Artifacts
-
-- `Code/Audits/Travel-Plan-Permission/2026-09-07-issue-bodies/` (01..03)
-- `Code/Audits/Travel-Plan-Permission/2026-09-07-audit-run.md`
-- `Code/Audits/Travel-Plan-Permission/2026-09-07-verification-log.md`
-- Checkpoint: `artifacts/audits/D-audit-Travel-Plan-Permission--2026-09-07T04-47-30Z.CHECKPOINT.md`
-
----
-
-## Confidence
-
-**High** on all three filed issues — each reproduced on live tip or confirmed by docs/code parity (`rg` zero `src/` callers for escalation). **Medium** that resubmit refresh is the only stale-state path; other `create_or_get` callers may need the same guard.
-
-**Would change my mind:** If product intent is explicitly single-shot manager reviews (no resubmit), issue #1559 should be closed as non-actionable — but `request_changes` flow and docs imply resubmit is supported.
+Next delivery actions: implement/review the three existing issues through their owning lanes; obtain a successful remote format verdict for #1558 if required by intake. Full observed UX and the unverified audit dimensions remain coverage gaps. No implementation, issue mutation, workflow dispatch, or new issue filing was performed by this executor.
