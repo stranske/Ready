@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-07T04:32:23Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-07T04:47:36Z)
 
-Units: 61 — done 61
+Units: 66 — claimed 1, done 61, queued 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 Claude conservation: off (weekly window available)
@@ -58,32 +58,37 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D3-unblock-sweep-2026-09-06T06 | D | D | done | codex | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D3-unblock-sweep-2026-09-06T14 | D | D | done | cursor | codex | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D3-unblock-sweep-2026-09-06T22 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
+| D-audit-Counter_Risk--2026-09-07T04-47-32Z | D | D | claimed | codex | driver | Audit stranske/Counter_Risk and file issues (supply 2 <= 2) |
 | D-audit-Fine-Art-Archive--2026-09-05T04-00-31Z | D | D | done | codex | codex | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 2) |
 | D-audit-Fine-Art-Archive--2026-09-06T04-25-53Z | D | D | done | codex | driver | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 3) |
 | D-audit-Manager-Mosaic--2026-09-05T04-00-25Z | D | D | done | codex | driver | Audit stranske/Manager-Mosaic and file issues (supply 2 <= 2) |
+| D-audit-Portable-Alpha-Extension-Model--2026-09-07T04-47-31Z | D | D | queued | claude |  | Audit stranske/Portable-Alpha-Extension-Model and file issues (supply  |
+| D-audit-Ready--2026-09-07T04-47-33Z | D | D | queued | claude |  | Audit stranske/Ready and file issues (supply 1 <= 2) |
 | D-audit-Travel-Plan-Permission--2026-09-05T16-11-36Z | D | D | done | codex | codex | Audit stranske/Travel-Plan-Permission and file issues (supply 3 <= 3) |
 | D-audit-Travel-Plan-Permission--2026-09-06T04-25-49Z | D | D | done | codex | driver | Audit stranske/Travel-Plan-Permission and file issues (supply 1 <= 2) |
 | D-audit-Travel-Plan-Permission--2026-09-06T16-33-27Z | D | D | done | codex | driver | Audit stranske/Travel-Plan-Permission and file issues (supply 2 <= 2) |
+| D-audit-Travel-Plan-Permission--2026-09-07T04-47-30Z | D | D | queued | claude |  | Audit stranske/Travel-Plan-Permission and file issues (supply 2 <= 3) |
 | D-audit-learning-management-system--2026-09-05T04-00-30Z | D | D | done | codex | driver | Audit stranske/learning-management-system and file issues (supply 2 <= |
 | D-audit-learning-management-system--2026-09-06T16-33-31Z | D | D | done | codex | driver | Audit stranske/learning-management-system and file issues (supply 1 <= |
+| D-audit-trip-planner--2026-09-07T04-47-34Z | D | D | queued | claude |  | Audit stranske/trip-planner and file issues (supply 2 <= 2) |
 | D4-verify-merged-2026-09-05T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
 | D4-verify-merged-2026-09-06T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
 | D4-verify-merged-2026-09-07T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
 
 ## Last checkpoints
 
-- 2026-09-06T16:44:10Z — D-audit-Travel-Plan-Permission--2026-09-06T16-33-27Z — done — gemini produced 1021 words at artifacts/audits/Travel-Plan-Permission-2026-09-06.md in 635s
-- 2026-09-06T16:59:15Z — D-audit-learning-management-system--2026-09-06T16-33-31Z — route — router picked codex from ['codex']
-- 2026-09-06T16:59:15Z — D-audit-learning-management-system--2026-09-06T16-33-31Z — claimed by driver (agent codex)
-- 2026-09-06T17:11:34Z — D-audit-learning-management-system--2026-09-06T16-33-31Z — done — gemini produced 709 words at artifacts/audits/learning-management-system-2026-09-06.md in 735s
-- 2026-09-06T22:13:24Z — unblock — enqueued D3-unblock-sweep-2026-09-06T22
-- 2026-09-06T22:13:25Z — D3-unblock-sweep-2026-09-06T22 — route — router picked cursor from ['codex', 'cursor']
-- 2026-09-06T22:13:25Z — D3-unblock-sweep-2026-09-06T22 — claimed by driver (agent cursor)
 - 2026-09-06T22:20:36Z — D3-unblock-sweep-2026-09-06T22 — done — gemini produced 793 words at artifacts/sweeps/D3-unblock-sweep-2026-09-06T22.md in 428s
 - 2026-09-07T01:22:13Z — verify — enqueued D4-verify-merged-2026-09-07T01
 - 2026-09-07T01:22:13Z — D4-verify-merged-2026-09-07T01 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-07T01:22:13Z — D4-verify-merged-2026-09-07T01 — claimed by driver (agent cursor)
 - 2026-09-07T01:31:15Z — D4-verify-merged-2026-09-07T01 — done — vibe produced 2417 words at artifacts/verification/D4-verify-merged-2026-09-07T01.md in 538s
+- 2026-09-07T04:47:30Z — refill — Travel-Plan-Permission: open=2 <= 3 → audit queued
+- 2026-09-07T04:47:31Z — refill — Portable-Alpha-Extension-Model: open=1 <= 2 → audit queued
+- 2026-09-07T04:47:32Z — refill — Counter_Risk: open=2 <= 2 → audit queued
+- 2026-09-07T04:47:33Z — refill — Ready: open=1 <= 2 → audit queued
+- 2026-09-07T04:47:34Z — refill — trip-planner: open=2 <= 2 → audit queued
+- 2026-09-07T04:47:36Z — D-audit-Counter_Risk--2026-09-07T04-47-32Z — route — router picked codex from ['codex']
+- 2026-09-07T04:47:36Z — D-audit-Counter_Risk--2026-09-07T04-47-32Z — claimed by driver (agent codex)
 
 ## Questions
 

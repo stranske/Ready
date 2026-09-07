@@ -379,3 +379,10 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-07T01:22:13Z — D4-verify-merged-2026-09-07T01 — route — router picked cursor from ['codex', 'cursor']
 ## 2026-09-07T01:22:13Z — D4-verify-merged-2026-09-07T01 — claimed by driver (agent cursor)
 ## 2026-09-07T01:31:15Z — D4-verify-merged-2026-09-07T01 — done — vibe produced 2417 words at artifacts/verification/D4-verify-merged-2026-09-07T01.md in 538s
+## 2026-09-07T04:47:30Z — refill — Travel-Plan-Permission: open=2 <= 3 → audit queued
+## 2026-09-07T04:47:31Z — refill — Portable-Alpha-Extension-Model: open=1 <= 2 → audit queued
+## 2026-09-07T04:47:32Z — refill — Counter_Risk: open=2 <= 2 → audit queued
+## 2026-09-07T04:47:33Z — refill — Ready: open=1 <= 2 → audit queued
+## 2026-09-07T04:47:34Z — refill — trip-planner: open=2 <= 2 → audit queued
+## 2026-09-07T04:47:36Z — D-audit-Counter_Risk--2026-09-07T04-47-32Z — route — router picked codex from ['codex']
+## 2026-09-07T04:47:36Z — D-audit-Counter_Risk--2026-09-07T04-47-32Z — claimed by driver (agent codex)
