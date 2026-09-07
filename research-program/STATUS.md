@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-07T08:22:49Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-07T08:23:49Z)
 
-Units: 67 — claimed 1, done 66
+Units: 67 — done 67
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=warn vibe=ok aider=ok
 Claude conservation: off (weekly window available)
@@ -64,7 +64,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Fine-Art-Archive--2026-09-06T04-25-53Z | D | D | done | codex | driver | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 3) |
 | D-audit-Manager-Mosaic--2026-09-05T04-00-25Z | D | D | done | codex | driver | Audit stranske/Manager-Mosaic and file issues (supply 2 <= 2) |
 | D-audit-Portable-Alpha-Extension-Model--2026-09-07T04-47-31Z | D | D | done | codex | codex | Audit stranske/Portable-Alpha-Extension-Model and file issues (supply  |
-| D-audit-Ready--2026-09-07T04-47-33Z | D | D | claimed | codex | driver | Audit stranske/Ready and file issues (supply 1 <= 2) |
+| D-audit-Ready--2026-09-07T04-47-33Z | D | D | done | codex | driver | Audit stranske/Ready and file issues (supply 1 <= 2) |
 | D-audit-Travel-Plan-Permission--2026-09-05T16-11-36Z | D | D | done | codex | codex | Audit stranske/Travel-Plan-Permission and file issues (supply 3 <= 3) |
 | D-audit-Travel-Plan-Permission--2026-09-06T04-25-49Z | D | D | done | codex | driver | Audit stranske/Travel-Plan-Permission and file issues (supply 1 <= 2) |
 | D-audit-Travel-Plan-Permission--2026-09-06T16-33-27Z | D | D | done | codex | driver | Audit stranske/Travel-Plan-Permission and file issues (supply 2 <= 2) |
@@ -78,7 +78,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-07T07:11:32Z — D-audit-trip-planner--2026-09-07T04-47-34Z — route — router picked codex from ['codex']
 - 2026-09-07T07:11:32Z — D-audit-trip-planner--2026-09-07T04-47-34Z — claimed by driver (agent codex)
 - 2026-09-07T07:16:25Z — D-audit-Travel-Plan-Permission--2026-09-07T04-47-30Z — done — Reverified three existing Travel-Plan-Permission defects and intake records; confirmed two remote format successes, documented one unconfirmed verdict and audit
 - 2026-09-07T07:51:38Z — D-audit-trip-planner--2026-09-07T04-47-34Z — fail — offload to cursor exited 1; retained artifact is not proof of success
@@ -90,6 +89,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-07T08:16:22Z — D-audit-trip-planner--2026-09-07T04-47-34Z — done — Reconciled eight existing trip-planner issues at unchanged main, verified local and remote format passes, reproduced four backend gaps, and qualified audit cove
 - 2026-09-07T08:22:49Z — D-audit-Ready--2026-09-07T04-47-33Z — route — router picked codex from ['codex']
 - 2026-09-07T08:22:49Z — D-audit-Ready--2026-09-07T04-47-33Z — claimed by driver (agent codex)
+- 2026-09-07T08:23:49Z — D-audit-Ready--2026-09-07T04-47-33Z — done — cursor produced 651 words at artifacts/audits/Ready-2026-09-07.md in 56s
 
 ## Questions
 
