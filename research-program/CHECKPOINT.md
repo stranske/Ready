@@ -405,3 +405,8 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-07T06:33:13Z — D3-unblock-sweep-2026-09-07T06 — done — gemini produced 769 words at artifacts/sweeps/D3-unblock-sweep-2026-09-07T06.md in 387s
 ## 2026-09-07T06:48:18Z — D-audit-Travel-Plan-Permission--2026-09-07T04-47-30Z — route — router picked codex from ['codex']
 ## 2026-09-07T06:48:18Z — D-audit-Travel-Plan-Permission--2026-09-07T04-47-30Z — claimed by driver (agent codex)
+## 2026-09-07T06:56:17Z — D-audit-Travel-Plan-Permission--2026-09-07T04-47-30Z — fail — cursor produced 397 words at /Users/teacher/.codex/automations/research-program/artifacts/audits/Travel-Plan-Permission-2026-09-07.md (min 400); rotating agent
+## 2026-09-07T07:11:32Z — D-audit-Travel-Plan-Permission--2026-09-07T04-47-30Z — route — router picked codex from ['codex']
+## 2026-09-07T07:11:32Z — D-audit-Travel-Plan-Permission--2026-09-07T04-47-30Z — claimed by codex (agent codex)
+## 2026-09-07T07:11:32Z — D-audit-trip-planner--2026-09-07T04-47-34Z — route — router picked codex from ['codex']
+## 2026-09-07T07:11:32Z — D-audit-trip-planner--2026-09-07T04-47-34Z — claimed by driver (agent codex)
