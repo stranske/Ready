@@ -77,3 +77,7 @@ Ten issue bodies staged, zero format advisories; filing prohibited by executor r
 
 ## 2026-09-07T05:29:22.129286+00:00 D-audit-Portable-Alpha-Extension-Model--2026-09-07T04-47-31Z Phase 5
 OUT and canonical audit ledger/index/reconciliation written. /Users/teacher/.codex/automations/research-program/artifacts/audits/Portable-Alpha-Extension-Model-2026-09-07.md
+
+## 2026-09-07T06:12:00Z — D-audit-Ready--2026-09-07T04-47-33Z attempt 2
+Resumed from unit checkpoint Phase 5 on remote tip 1023302cd1556018fa594081c89439c4fc9d913f (base code identical to 1d7c8d1c). Re-verified all 7 candidate defects on live clone. Re-validated all 7 staged issue bodies in Code/Audits/Ready/2026-09-07-issue-bodies/ with issue_format.py (7/7 PASS, 0 errors, 0 problems). Confirmed 7 open issue URLs (#557–#563) and intake log entries. Verified durable ledger and index. OUT report verified and written. No repository edits, new issue filing, or duplicate intake writes.
+

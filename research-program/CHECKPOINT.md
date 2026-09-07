@@ -395,3 +395,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-07T05:53:14Z — D-audit-Ready--2026-09-07T04-47-33Z — fail — offload to gemini exited 1; retained artifact is not proof of success
 ## 2026-09-07T06:08:18Z — D-audit-Ready--2026-09-07T04-47-33Z — route — router picked codex from ['codex']
 ## 2026-09-07T06:08:18Z — D-audit-Ready--2026-09-07T04-47-33Z — claimed by driver (agent codex)
+## 2026-09-07T06:11:39Z — D-audit-Ready--2026-09-07T04-47-33Z — fail — gemini did not write a fresh output artifact
+## 2026-09-07T06:12:22Z — D-audit-Ready--2026-09-07T04-47-33Z — route — router picked codex from ['codex']
+## 2026-09-07T06:12:22Z — D-audit-Ready--2026-09-07T04-47-33Z — claimed by codex (agent codex)
