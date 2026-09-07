@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-07T14:41:12Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-07T14:45:50Z)
 
-Units: 68 — claimed 1, done 67
+Units: 68 — done 68
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 Claude conservation: off (weekly window available)
@@ -59,7 +59,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D3-unblock-sweep-2026-09-06T14 | D | D | done | cursor | codex | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D3-unblock-sweep-2026-09-06T22 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D3-unblock-sweep-2026-09-07T06 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
-| D3-unblock-sweep-2026-09-07T14 | D | D | claimed | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
+| D3-unblock-sweep-2026-09-07T14 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D-audit-Counter_Risk--2026-09-07T04-47-32Z | D | D | done | codex | driver | Audit stranske/Counter_Risk and file issues (supply 2 <= 2) |
 | D-audit-Fine-Art-Archive--2026-09-05T04-00-31Z | D | D | done | codex | codex | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 2) |
 | D-audit-Fine-Art-Archive--2026-09-06T04-25-53Z | D | D | done | codex | driver | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 3) |
@@ -79,7 +79,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-07T08:06:41Z — D-audit-trip-planner--2026-09-07T04-47-34Z — claimed by driver (agent codex)
 - 2026-09-07T08:07:47Z — D-audit-trip-planner--2026-09-07T04-47-34Z — fail — cursor did not write a fresh output artifact
 - 2026-09-07T08:12:18Z — D-audit-trip-planner--2026-09-07T04-47-34Z — route — router picked codex from ['codex']
 - 2026-09-07T08:12:18Z — D-audit-trip-planner--2026-09-07T04-47-34Z — claimed by codex (agent codex)
@@ -91,6 +90,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-07T14:41:12Z — unblock — enqueued D3-unblock-sweep-2026-09-07T14
 - 2026-09-07T14:41:12Z — D3-unblock-sweep-2026-09-07T14 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-07T14:41:12Z — D3-unblock-sweep-2026-09-07T14 — claimed by driver (agent cursor)
+- 2026-09-07T14:45:50Z — D3-unblock-sweep-2026-09-07T14 — done — gemini produced 869 words at artifacts/sweeps/D3-unblock-sweep-2026-09-07T14.md in 273s
 
 ## Questions
 
