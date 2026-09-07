@@ -107,3 +107,6 @@ Three existing open findings reverified at unchanged main 37f7ed8. Model/store r
 
 ## 2026-09-07T08:16:10.742185+00:00 — D-audit-trip-planner--2026-09-07T04-47-34Z attempt 3 Phase 5 reconciliation
 Resumed retained completion. Main 8077785 unchanged; all eight existing issues open and remote guards successful; local exact bodies 8/8 PASS with advisories. Four bounded reproductions saved; coverage overclaims corrected in OUT. Intake rows 139–146 verified, none added. No code edits or new issues. Ready for engine done.
+
+## 2026-09-07T17:05:00Z — D-audit-Portable-Alpha-Extension-Model--2026-09-07T17-01-44Z Phase 0-3
+Resumed on remote tip 59cb12be9d4b06434d41bc1b71612167ea6d9cfc. Scoped from dossier and AUDIT_LEDGER. Cheap bash orientation confirmed clean working tree and remote tip match. Adversarially verified all 10 candidate findings against the codebase at cited lines; local issue_format.py validation 10/10 PASS (0 errors, 0 advisories). Authorized filing lane active. Advancing to Phase 4 issue filing.

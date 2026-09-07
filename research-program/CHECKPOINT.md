@@ -430,3 +430,5 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-07T17:01:44Z — refill — Portable-Alpha-Extension-Model: open=0 <= 2 → audit queued
 ## 2026-09-07T17:01:48Z — D-audit-Portable-Alpha-Extension-Model--2026-09-07T17-01-44Z — route — router picked codex from ['codex']
 ## 2026-09-07T17:01:48Z — D-audit-Portable-Alpha-Extension-Model--2026-09-07T17-01-44Z — claimed by driver (agent codex)
+## 2026-09-07T17:04:58Z — D-audit-Travel-Plan-Permission--2026-09-07T17-01-43Z — route — router picked codex from ['codex']
+## 2026-09-07T17:04:58Z — D-audit-Travel-Plan-Permission--2026-09-07T17-01-43Z — claimed by claude (agent codex)
