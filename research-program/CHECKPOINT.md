@@ -398,3 +398,7 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-07T06:11:39Z — D-audit-Ready--2026-09-07T04-47-33Z — fail — gemini did not write a fresh output artifact
 ## 2026-09-07T06:12:22Z — D-audit-Ready--2026-09-07T04-47-33Z — route — router picked codex from ['codex']
 ## 2026-09-07T06:12:22Z — D-audit-Ready--2026-09-07T04-47-33Z — claimed by codex (agent codex)
+## 2026-09-07T06:13:21Z — D-audit-Ready--2026-09-07T04-47-33Z — fail — not-ready: required Phase 0 input artifacts/dossiers/Ready.md is missing
+## 2026-09-07T06:26:42Z — unblock — enqueued D3-unblock-sweep-2026-09-07T06
+## 2026-09-07T06:26:42Z — D3-unblock-sweep-2026-09-07T06 — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-07T06:26:42Z — D3-unblock-sweep-2026-09-07T06 — claimed by driver (agent cursor)

@@ -81,3 +81,7 @@ OUT and canonical audit ledger/index/reconciliation written. /Users/teacher/.cod
 ## 2026-09-07T06:12:00Z — D-audit-Ready--2026-09-07T04-47-33Z attempt 2
 Resumed from unit checkpoint Phase 5 on remote tip 1023302cd1556018fa594081c89439c4fc9d913f (base code identical to 1d7c8d1c). Re-verified all 7 candidate defects on live clone. Re-validated all 7 staged issue bodies in Code/Audits/Ready/2026-09-07-issue-bodies/ with issue_format.py (7/7 PASS, 0 errors, 0 problems). Confirmed 7 open issue URLs (#557–#563) and intake log entries. Verified durable ledger and index. OUT report verified and written. No repository edits, new issue filing, or duplicate intake writes.
 
+
+
+## 2026-09-07T06:13:20.873014+00:00 — D-audit-Ready--2026-09-07T04-47-33Z attempt 3: missing prerequisite
+Resumed from retained Phase 5 report and shared checkpoint; did not restart the audit. Required Phase 0 input artifacts/dossiers/Ready.md does not exist. Per executor missing-precondition rule, this attempt is not-ready and must requeue for two hours without burning an attempt. Existing report and prior issue records are preserved; prior verification and filing claims were not independently revalidated during this attempt. No repository code changes, new issue filing, or duplicate intake writes.

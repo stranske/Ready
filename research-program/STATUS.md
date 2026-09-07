@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-07T06:12:22Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-07T06:26:42Z)
 
-Units: 66 — claimed 1, done 63, queued 2
+Units: 67 — claimed 1, done 63, queued 3
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 Claude conservation: off (weekly window available)
@@ -58,12 +58,13 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D3-unblock-sweep-2026-09-06T06 | D | D | done | codex | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D3-unblock-sweep-2026-09-06T14 | D | D | done | cursor | codex | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D3-unblock-sweep-2026-09-06T22 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
+| D3-unblock-sweep-2026-09-07T06 | D | D | claimed | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D-audit-Counter_Risk--2026-09-07T04-47-32Z | D | D | done | codex | driver | Audit stranske/Counter_Risk and file issues (supply 2 <= 2) |
 | D-audit-Fine-Art-Archive--2026-09-05T04-00-31Z | D | D | done | codex | codex | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 2) |
 | D-audit-Fine-Art-Archive--2026-09-06T04-25-53Z | D | D | done | codex | driver | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 3) |
 | D-audit-Manager-Mosaic--2026-09-05T04-00-25Z | D | D | done | codex | driver | Audit stranske/Manager-Mosaic and file issues (supply 2 <= 2) |
 | D-audit-Portable-Alpha-Extension-Model--2026-09-07T04-47-31Z | D | D | done | codex | codex | Audit stranske/Portable-Alpha-Extension-Model and file issues (supply  |
-| D-audit-Ready--2026-09-07T04-47-33Z | D | D | claimed | codex | codex | Audit stranske/Ready and file issues (supply 1 <= 2) |
+| D-audit-Ready--2026-09-07T04-47-33Z | D | D | queued | codex |  | Audit stranske/Ready and file issues (supply 1 <= 2) |
 | D-audit-Travel-Plan-Permission--2026-09-05T16-11-36Z | D | D | done | codex | codex | Audit stranske/Travel-Plan-Permission and file issues (supply 3 <= 3) |
 | D-audit-Travel-Plan-Permission--2026-09-06T04-25-49Z | D | D | done | codex | driver | Audit stranske/Travel-Plan-Permission and file issues (supply 1 <= 2) |
 | D-audit-Travel-Plan-Permission--2026-09-06T16-33-27Z | D | D | done | codex | driver | Audit stranske/Travel-Plan-Permission and file issues (supply 2 <= 2) |
@@ -77,10 +78,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-07T04:58:05Z — D-audit-Counter_Risk--2026-09-07T04-47-32Z — done — gemini produced 1088 words at artifacts/audits/Counter_Risk-2026-09-07.md in 626s
-- 2026-09-07T05:11:49Z — D-audit-Portable-Alpha-Extension-Model--2026-09-07T04-47-31Z — route — router picked codex from ['codex']
-- 2026-09-07T05:11:49Z — D-audit-Portable-Alpha-Extension-Model--2026-09-07T04-47-31Z — claimed by codex (agent codex)
-- 2026-09-07T05:13:10Z — D-audit-Ready--2026-09-07T04-47-33Z — route — router picked codex from ['codex']
 - 2026-09-07T05:13:10Z — D-audit-Ready--2026-09-07T04-47-33Z — claimed by driver (agent codex)
 - 2026-09-07T05:30:08Z — D-audit-Portable-Alpha-Extension-Model--2026-09-07T04-47-31Z — done — Verified ten staged issue bodies covering allocation, fees, financing, CVaR calibration, provenance, sample workflows and Plotly compatibility; research-only ar
 - 2026-09-07T05:53:14Z — D-audit-Ready--2026-09-07T04-47-33Z — fail — offload to gemini exited 1; retained artifact is not proof of success
@@ -89,6 +86,10 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-07T06:11:39Z — D-audit-Ready--2026-09-07T04-47-33Z — fail — gemini did not write a fresh output artifact
 - 2026-09-07T06:12:22Z — D-audit-Ready--2026-09-07T04-47-33Z — route — router picked codex from ['codex']
 - 2026-09-07T06:12:22Z — D-audit-Ready--2026-09-07T04-47-33Z — claimed by codex (agent codex)
+- 2026-09-07T06:13:21Z — D-audit-Ready--2026-09-07T04-47-33Z — fail — not-ready: required Phase 0 input artifacts/dossiers/Ready.md is missing
+- 2026-09-07T06:26:42Z — unblock — enqueued D3-unblock-sweep-2026-09-07T06
+- 2026-09-07T06:26:42Z — D3-unblock-sweep-2026-09-07T06 — route — router picked cursor from ['codex', 'cursor']
+- 2026-09-07T06:26:42Z — D3-unblock-sweep-2026-09-07T06 — claimed by driver (agent cursor)
 
 ## Questions
 
