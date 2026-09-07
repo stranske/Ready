@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-07T06:26:42Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-07T06:33:13Z)
 
-Units: 67 — claimed 1, done 63, queued 3
+Units: 67 — done 64, queued 3
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 Claude conservation: off (weekly window available)
@@ -58,7 +58,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D3-unblock-sweep-2026-09-06T06 | D | D | done | codex | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D3-unblock-sweep-2026-09-06T14 | D | D | done | cursor | codex | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D3-unblock-sweep-2026-09-06T22 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
-| D3-unblock-sweep-2026-09-07T06 | D | D | claimed | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
+| D3-unblock-sweep-2026-09-07T06 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D-audit-Counter_Risk--2026-09-07T04-47-32Z | D | D | done | codex | driver | Audit stranske/Counter_Risk and file issues (supply 2 <= 2) |
 | D-audit-Fine-Art-Archive--2026-09-05T04-00-31Z | D | D | done | codex | codex | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 2) |
 | D-audit-Fine-Art-Archive--2026-09-06T04-25-53Z | D | D | done | codex | driver | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 3) |
@@ -78,7 +78,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-07T05:13:10Z — D-audit-Ready--2026-09-07T04-47-33Z — claimed by driver (agent codex)
 - 2026-09-07T05:30:08Z — D-audit-Portable-Alpha-Extension-Model--2026-09-07T04-47-31Z — done — Verified ten staged issue bodies covering allocation, fees, financing, CVaR calibration, provenance, sample workflows and Plotly compatibility; research-only ar
 - 2026-09-07T05:53:14Z — D-audit-Ready--2026-09-07T04-47-33Z — fail — offload to gemini exited 1; retained artifact is not proof of success
 - 2026-09-07T06:08:18Z — D-audit-Ready--2026-09-07T04-47-33Z — route — router picked codex from ['codex']
@@ -90,6 +89,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-07T06:26:42Z — unblock — enqueued D3-unblock-sweep-2026-09-07T06
 - 2026-09-07T06:26:42Z — D3-unblock-sweep-2026-09-07T06 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-07T06:26:42Z — D3-unblock-sweep-2026-09-07T06 — claimed by driver (agent cursor)
+- 2026-09-07T06:33:13Z — D3-unblock-sweep-2026-09-07T06 — done — gemini produced 769 words at artifacts/sweeps/D3-unblock-sweep-2026-09-07T06.md in 387s
 
 ## Questions
 
