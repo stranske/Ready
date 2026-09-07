@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-07T05:30:08Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-07T06:08:18Z)
 
 Units: 66 — claimed 1, done 63, queued 2
 Paused: False   Phase stops: []
@@ -77,9 +77,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-07T04:47:31Z — refill — Portable-Alpha-Extension-Model: open=1 <= 2 → audit queued
-- 2026-09-07T04:47:32Z — refill — Counter_Risk: open=2 <= 2 → audit queued
-- 2026-09-07T04:47:33Z — refill — Ready: open=1 <= 2 → audit queued
 - 2026-09-07T04:47:34Z — refill — trip-planner: open=2 <= 2 → audit queued
 - 2026-09-07T04:47:36Z — D-audit-Counter_Risk--2026-09-07T04-47-32Z — route — router picked codex from ['codex']
 - 2026-09-07T04:47:36Z — D-audit-Counter_Risk--2026-09-07T04-47-32Z — claimed by driver (agent codex)
@@ -89,6 +86,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-07T05:13:10Z — D-audit-Ready--2026-09-07T04-47-33Z — route — router picked codex from ['codex']
 - 2026-09-07T05:13:10Z — D-audit-Ready--2026-09-07T04-47-33Z — claimed by driver (agent codex)
 - 2026-09-07T05:30:08Z — D-audit-Portable-Alpha-Extension-Model--2026-09-07T04-47-31Z — done — Verified ten staged issue bodies covering allocation, fees, financing, CVaR calibration, provenance, sample workflows and Plotly compatibility; research-only ar
+- 2026-09-07T05:53:14Z — D-audit-Ready--2026-09-07T04-47-33Z — fail — offload to gemini exited 1; retained artifact is not proof of success
+- 2026-09-07T06:08:18Z — D-audit-Ready--2026-09-07T04-47-33Z — route — router picked codex from ['codex']
+- 2026-09-07T06:08:18Z — D-audit-Ready--2026-09-07T04-47-33Z — claimed by driver (agent codex)
 
 ## Questions
 
