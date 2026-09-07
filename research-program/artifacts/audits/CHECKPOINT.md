@@ -100,3 +100,7 @@ Resumed completed checkpoint without restarting. Remote main matches clone 37f7e
 
 ## 2026-09-07T07:16:25.145626+00:00 — D-audit-Travel-Plan-Permission--2026-09-07T04-47-30Z attempt 2 completed reconciliation
 Three existing open findings reverified at unchanged main 37f7ed8. Model/store reproductions passed; exact live bodies 3/3 local validator PASS with advisories. Remote format success #1557/#1559; #1558 unconfirmed (only skipped/cancelled). Main CI success; PR #1560 open for #1557. Existing intake rows verified, none added. Coverage corrected: focused D1/D3; static D4 is not observed UX; prior test/coverage claims qualified. See /Users/teacher/.codex/automations/research-program/artifacts/audits/Travel-Plan-Permission-2026-09-07.md and /Users/teacher/Library/CloudStorage/Dropbox/Learning/Code/Audits/Travel-Plan-Permission/2026-09-07-recovery-report.md. No code changes or new filing.
+
+
+## 2026-09-07T08:16:10.742185+00:00 — D-audit-trip-planner--2026-09-07T04-47-34Z attempt 3 Phase 5 reconciliation
+Resumed retained completion. Main 8077785 unchanged; all eight existing issues open and remote guards successful; local exact bodies 8/8 PASS with advisories. Four bounded reproductions saved; coverage overclaims corrected in OUT. Intake rows 139–146 verified, none added. No code edits or new issues. Ready for engine done.

@@ -1,0 +1,93 @@
+{
+  "url": "https://api.github.com/repos/stranske/trip-planner/issues/1798",
+  "repository_url": "https://api.github.com/repos/stranske/trip-planner",
+  "labels_url": "https://api.github.com/repos/stranske/trip-planner/issues/1798/labels{/name}",
+  "comments_url": "https://api.github.com/repos/stranske/trip-planner/issues/1798/comments",
+  "events_url": "https://api.github.com/repos/stranske/trip-planner/issues/1798/events",
+  "html_url": "https://github.com/stranske/trip-planner/issues/1798",
+  "id": 5371375655,
+  "node_id": "I_kwDOOzvyds8AAAABQCiwJw",
+  "number": 1798,
+  "title": "[P1] Workspace policy reload must treat pass status with blocking issues as non-compliant",
+  "user": {
+    "login": "stranske",
+    "id": 23046322,
+    "node_id": "MDQ6VXNlcjIzMDQ2MzIy",
+    "avatar_url": "https://avatars.githubusercontent.com/u/23046322?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/stranske",
+    "html_url": "https://github.com/stranske",
+    "followers_url": "https://api.github.com/users/stranske/followers",
+    "following_url": "https://api.github.com/users/stranske/following{/other_user}",
+    "gists_url": "https://api.github.com/users/stranske/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/stranske/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/stranske/subscriptions",
+    "organizations_url": "https://api.github.com/users/stranske/orgs",
+    "repos_url": "https://api.github.com/users/stranske/repos",
+    "events_url": "https://api.github.com/users/stranske/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/stranske/received_events",
+    "type": "User",
+    "user_view_type": "public",
+    "site_admin": false
+  },
+  "labels": [
+    {
+      "id": 8706328281,
+      "node_id": "LA_kwDOOzvyds8AAAACBvAG2Q",
+      "url": "https://api.github.com/repos/stranske/trip-planner/labels/bug",
+      "name": "bug",
+      "color": "d73a4a",
+      "default": true,
+      "description": "Something isn't working"
+    },
+    {
+      "id": 10796305210,
+      "node_id": "LA_kwDOOzvyds8AAAACg4KLOg",
+      "url": "https://api.github.com/repos/stranske/trip-planner/labels/priority:high",
+      "name": "priority:high",
+      "color": "b60205",
+      "default": false,
+      "description": "High-priority weekly repo-review work"
+    }
+  ],
+  "state": "open",
+  "locked": false,
+  "assignees": [],
+  "milestone": null,
+  "comments": 0,
+  "created_at": "2026-09-07T07:19:12Z",
+  "updated_at": "2026-09-07T07:19:12Z",
+  "closed_at": null,
+  "assignee": null,
+  "author_association": "OWNER",
+  "active_lock_reason": null,
+  "sub_issues_summary": {
+    "total": 0,
+    "completed": 0,
+    "percent_completed": 0
+  },
+  "issue_dependencies_summary": {
+    "blocked_by": 0,
+    "total_blocked_by": 0,
+    "blocking": 0,
+    "total_blocking": 0
+  },
+  "body": "# [P1] Workspace policy reload must treat pass status with blocking issues as non-compliant\n\n## Why\n\n`trip_planner/app/services/policy.py:266-288` maps `blocking_issues` into `failure_reasons` only inside the `elif imported.organization_context.policy_status == \"fail\"` branch. When persisted `organization_context.policy_status` is the explicit string `\"pass\"` but `blocking_issues` is non-empty, evaluation falls through to compliant paths. #1778 fixed missing or empty `policy_status` (see `tests/app/test_policy.py:206-253`) but not an explicit `\"pass\"` paired with stored blockers. Live TPP HTTP import can populate both fields (`trip_planner/integrations/tpp/client.py:915-919`).\n\n## Scope\n\nReload evaluation in `trip_planner/app/services/policy.py` for persisted `PersistedPolicyState.organization_context`.\n\n## Tasks\n\n- [ ] Add `test_workspace_policy_reload_pass_status_with_blocking_issues_is_non_compliant` in `tests/app/test_policy.py` seeding `policy_status: \"pass\"` plus a blocking issue and asserting `policy_evaluation.status == \"non_compliant\"`.\n- [ ] Update `trip_planner/app/services/policy.py` `_policy_evaluation_from_import` to treat any non-empty `blocking_issues` as non-compliant regardless of `policy_status`.\n- [ ] Keep `trip_planner/app/services/policy.py` `_normalize_organization_context_payload` consistent with the evaluation rule above.\n\n## Acceptance Criteria\n\n- `pytest tests/app/test_policy.py::test_workspace_policy_reload_pass_status_with_blocking_issues_is_non_compliant` passes.\n- `pytest tests/app/test_policy.py` passes.\n- Deliberate-break \u2192 revert: temporarily restrict `blocking_issues` handling to the `policy_status == \"fail\"` branch in `trip_planner/app/services/policy.py` and confirm the new test fails; revert.\n\n## Non-Goals\n\n- Changing TPP HTTP fetch logic in `trip_planner/integrations/tpp/client.py`.\n- Scaffold-only completion does NOT count: adding a comment without changing evaluation when `policy_status == \"pass\"` and `blocking_issues` is non-empty is a failure of this issue.\n\n_Surfaced by repo-audit Track D 2026-09-07; verified on clone tip 8077785._\n",
+  "closed_by": null,
+  "reactions": {
+    "url": "https://api.github.com/repos/stranske/trip-planner/issues/1798/reactions",
+    "total_count": 0,
+    "+1": 0,
+    "-1": 0,
+    "laugh": 0,
+    "hooray": 0,
+    "confused": 0,
+    "heart": 0,
+    "rocket": 0,
+    "eyes": 0
+  },
+  "timeline_url": "https://api.github.com/repos/stranske/trip-planner/issues/1798/timeline",
+  "performed_via_github_app": null,
+  "state_reason": null,
+  "pinned_comment": null
+}

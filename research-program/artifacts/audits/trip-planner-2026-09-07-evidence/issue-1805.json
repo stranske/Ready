@@ -1,0 +1,93 @@
+{
+  "url": "https://api.github.com/repos/stranske/trip-planner/issues/1805",
+  "repository_url": "https://api.github.com/repos/stranske/trip-planner",
+  "labels_url": "https://api.github.com/repos/stranske/trip-planner/issues/1805/labels{/name}",
+  "comments_url": "https://api.github.com/repos/stranske/trip-planner/issues/1805/comments",
+  "events_url": "https://api.github.com/repos/stranske/trip-planner/issues/1805/events",
+  "html_url": "https://github.com/stranske/trip-planner/issues/1805",
+  "id": 5371376935,
+  "node_id": "I_kwDOOzvyds8AAAABQCi1Jw",
+  "number": 1805,
+  "title": "[P2] Exception-nearest scenario preview must key off exception_nearest label not hyphenated note",
+  "user": {
+    "login": "stranske",
+    "id": 23046322,
+    "node_id": "MDQ6VXNlcjIzMDQ2MzIy",
+    "avatar_url": "https://avatars.githubusercontent.com/u/23046322?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/stranske",
+    "html_url": "https://github.com/stranske",
+    "followers_url": "https://api.github.com/users/stranske/followers",
+    "following_url": "https://api.github.com/users/stranske/following{/other_user}",
+    "gists_url": "https://api.github.com/users/stranske/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/stranske/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/stranske/subscriptions",
+    "organizations_url": "https://api.github.com/users/stranske/orgs",
+    "repos_url": "https://api.github.com/users/stranske/repos",
+    "events_url": "https://api.github.com/users/stranske/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/stranske/received_events",
+    "type": "User",
+    "user_view_type": "public",
+    "site_admin": false
+  },
+  "labels": [
+    {
+      "id": 8706328281,
+      "node_id": "LA_kwDOOzvyds8AAAACBvAG2Q",
+      "url": "https://api.github.com/repos/stranske/trip-planner/labels/bug",
+      "name": "bug",
+      "color": "d73a4a",
+      "default": true,
+      "description": "Something isn't working"
+    },
+    {
+      "id": 10880621839,
+      "node_id": "LA_kwDOOzvyds8AAAACiIkdDw",
+      "url": "https://api.github.com/repos/stranske/trip-planner/labels/priority:normal",
+      "name": "priority:normal",
+      "color": "fbca04",
+      "default": false,
+      "description": "Normal-priority weekly repo-review work"
+    }
+  ],
+  "state": "open",
+  "locked": false,
+  "assignees": [],
+  "milestone": null,
+  "comments": 0,
+  "created_at": "2026-09-07T07:19:19Z",
+  "updated_at": "2026-09-07T07:19:19Z",
+  "closed_at": null,
+  "assignee": null,
+  "author_association": "OWNER",
+  "active_lock_reason": null,
+  "sub_issues_summary": {
+    "total": 0,
+    "completed": 0,
+    "percent_completed": 0
+  },
+  "issue_dependencies_summary": {
+    "blocked_by": 0,
+    "total_blocked_by": 0,
+    "blocking": 0,
+    "total_blocking": 0
+  },
+  "body": "# [P2] Exception-nearest scenario preview must key off exception_nearest label not hyphenated note\n\n## Why\n\n`trip_planner/app/services/scenario_policy_preview.py:143-144` only adds the `POL-EXC` preview when scenario notes contain the literal `\"exception-nearest\"`. Canonical scenario labels use underscore form `exception_nearest` (`trip_planner/state/scenarios.py:21`, saved fixture `trip_planner/resources/state/scenarios/business_compliant_vs_exception.json:52`). Runtime search notes are prose (`trip_planner/itinerary/search.py:272-290`), so exception-nearest scenarios usually skip the preview unless a seeded hyphenated note is present (`trip_planner/app/services/workspace.py:346`).\n\n## Scope\n\nException-path preview detection in `trip_planner/app/services/scenario_policy_preview.py` and compare-row inputs from `trip_planner/app/services/workspace.py`.\n\n## Tasks\n\n- [ ] Add `test_exception_nearest_saved_scenario_surfaces_pol_exc_preview_violation` in `tests/app/test_scenario_policy_preview.py` using label `exception_nearest` without the hyphenated note token.\n- [ ] Pass scenario label or metadata into `build_scenario_policy_preview` from `trip_planner/app/services/workspace.py` `attach_policy_preview_to_row` instead of relying on `\"exception-nearest\" in notes` at `trip_planner/app/services/scenario_policy_preview.py:143`.\n- [ ] Update `trip_planner/app/services/scenario_policy_preview.py` `_exception_note_violation` to detect `exception_nearest` label metadata.\n\n## Acceptance Criteria\n\n- `pytest tests/app/test_scenario_policy_preview.py::test_exception_nearest_saved_scenario_surfaces_pol_exc_preview_violation` passes.\n- `pytest tests/app/test_scenario_policy_preview.py` passes.\n- Deliberate-break \u2192 revert: restore the `\"exception-nearest\" in notes` check and confirm the new test fails; revert.\n\n## Non-Goals\n\n- Changing authoritative TPP exception approval workflow in `trip_planner/business/approval_ready.py`.\n- Scaffold-only completion does NOT count: adding another magic string to notes without using scenario label metadata is a failure of this issue.\n\n_Surfaced by repo-audit Track D 2026-09-07; verified on clone tip 8077785._\n",
+  "closed_by": null,
+  "reactions": {
+    "url": "https://api.github.com/repos/stranske/trip-planner/issues/1805/reactions",
+    "total_count": 0,
+    "+1": 0,
+    "-1": 0,
+    "laugh": 0,
+    "hooray": 0,
+    "confused": 0,
+    "heart": 0,
+    "rocket": 0,
+    "eyes": 0
+  },
+  "timeline_url": "https://api.github.com/repos/stranske/trip-planner/issues/1805/timeline",
+  "performed_via_github_app": null,
+  "state_reason": null,
+  "pinned_comment": null
+}

@@ -1,0 +1,93 @@
+{
+  "url": "https://api.github.com/repos/stranske/trip-planner/issues/1801",
+  "repository_url": "https://api.github.com/repos/stranske/trip-planner",
+  "labels_url": "https://api.github.com/repos/stranske/trip-planner/issues/1801/labels{/name}",
+  "comments_url": "https://api.github.com/repos/stranske/trip-planner/issues/1801/comments",
+  "events_url": "https://api.github.com/repos/stranske/trip-planner/issues/1801/events",
+  "html_url": "https://github.com/stranske/trip-planner/issues/1801",
+  "id": 5371376155,
+  "node_id": "I_kwDOOzvyds8AAAABQCiyGw",
+  "number": 1801,
+  "title": "[P1] Lodging policy preview must not mark compliant when nightly rate is unavailable",
+  "user": {
+    "login": "stranske",
+    "id": 23046322,
+    "node_id": "MDQ6VXNlcjIzMDQ2MzIy",
+    "avatar_url": "https://avatars.githubusercontent.com/u/23046322?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/stranske",
+    "html_url": "https://github.com/stranske",
+    "followers_url": "https://api.github.com/users/stranske/followers",
+    "following_url": "https://api.github.com/users/stranske/following{/other_user}",
+    "gists_url": "https://api.github.com/users/stranske/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/stranske/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/stranske/subscriptions",
+    "organizations_url": "https://api.github.com/users/stranske/orgs",
+    "repos_url": "https://api.github.com/users/stranske/repos",
+    "events_url": "https://api.github.com/users/stranske/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/stranske/received_events",
+    "type": "User",
+    "user_view_type": "public",
+    "site_admin": false
+  },
+  "labels": [
+    {
+      "id": 8706328281,
+      "node_id": "LA_kwDOOzvyds8AAAACBvAG2Q",
+      "url": "https://api.github.com/repos/stranske/trip-planner/labels/bug",
+      "name": "bug",
+      "color": "d73a4a",
+      "default": true,
+      "description": "Something isn't working"
+    },
+    {
+      "id": 10796305210,
+      "node_id": "LA_kwDOOzvyds8AAAACg4KLOg",
+      "url": "https://api.github.com/repos/stranske/trip-planner/labels/priority:high",
+      "name": "priority:high",
+      "color": "b60205",
+      "default": false,
+      "description": "High-priority weekly repo-review work"
+    }
+  ],
+  "state": "open",
+  "locked": false,
+  "assignees": [],
+  "milestone": null,
+  "comments": 0,
+  "created_at": "2026-09-07T07:19:15Z",
+  "updated_at": "2026-09-07T07:19:15Z",
+  "closed_at": null,
+  "assignee": null,
+  "author_association": "OWNER",
+  "active_lock_reason": null,
+  "sub_issues_summary": {
+    "total": 0,
+    "completed": 0,
+    "percent_completed": 0
+  },
+  "issue_dependencies_summary": {
+    "blocked_by": 0,
+    "total_blocked_by": 0,
+    "blocking": 0,
+    "total_blocking": 0
+  },
+  "body": "# [P1] Lodging policy preview must not mark compliant when nightly rate is unavailable\n\n## Why\n\n`trip_planner/app/services/scenario_policy_preview.py:91-92` returns an empty violation list when `nightly_typical_amount` is missing or non-numeric, even when `lodging_rules.max_nightly_rate_usd` is configured. Trip-total preview correctly returns an incomplete violation at `:57-66` after #1780. A business scenario with a trip total but no nightly breakdown can still show `In policy (preview)` while the lodging cap was never checked.\n\n## Scope\n\nLodging branch of `trip_planner/app/services/scenario_policy_preview.py`.\n\n## Tasks\n\n- [ ] Add `test_missing_nightly_amount_marks_lodging_preview_incomplete_not_compliant` in `tests/app/test_scenario_policy_preview.py` with a lodging cap and `estimated_total` lacking `nightly_typical_amount`.\n- [ ] Change `trip_planner/app/services/scenario_policy_preview.py` `_lodging_violations` to return an `incomplete: True` violation when a cap exists and nightly actual is absent, mirroring `_budget_violations`.\n- [ ] Ensure `build_scenario_policy_preview` in `trip_planner/app/services/scenario_policy_preview.py` treats lodging-only incomplete violations like budget incomplete violations at lines 207-215.\n\n## Acceptance Criteria\n\n- `pytest tests/app/test_scenario_policy_preview.py::test_missing_nightly_amount_marks_lodging_preview_incomplete_not_compliant` passes.\n- `pytest tests/app/test_scenario_policy_preview.py` passes.\n- Deliberate-break \u2192 revert: restore the early `return []` at `trip_planner/app/services/scenario_policy_preview.py:91-92` and confirm the new test fails; revert.\n\n## Non-Goals\n\n- Authoritative TPP verdict logic in `trip_planner/app/services/policy.py`.\n- Scaffold-only completion does NOT count: returning a generic note without setting `compliant: None` for missing nightly data is a failure of this issue.\n\n_Surfaced by repo-audit Track D 2026-09-07; verified on clone tip 8077785._\n",
+  "closed_by": null,
+  "reactions": {
+    "url": "https://api.github.com/repos/stranske/trip-planner/issues/1801/reactions",
+    "total_count": 0,
+    "+1": 0,
+    "-1": 0,
+    "laugh": 0,
+    "hooray": 0,
+    "confused": 0,
+    "heart": 0,
+    "rocket": 0,
+    "eyes": 0
+  },
+  "timeline_url": "https://api.github.com/repos/stranske/trip-planner/issues/1801/timeline",
+  "performed_via_github_app": null,
+  "state_reason": null,
+  "pinned_comment": null
+}

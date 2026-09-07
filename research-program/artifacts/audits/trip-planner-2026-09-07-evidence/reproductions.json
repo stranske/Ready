@@ -1,0 +1,51 @@
+{
+  "1800": {
+    "input_budget_rules": {
+      "max_trip_total_usd": 100
+    },
+    "serialized_budget_rules": null
+  },
+  "1801": {
+    "authoritative": false,
+    "disclaimer": "Policy preview only \u2014 not the final TPP verdict.",
+    "violations": [],
+    "status": "compliant",
+    "status_label": "In policy (preview)",
+    "compliant": true,
+    "snapshot_available": true
+  },
+  "1805": {
+    "exception_nearest": {
+      "authoritative": false,
+      "disclaimer": "Policy preview only \u2014 not the final TPP verdict.",
+      "violations": [],
+      "status": "compliant",
+      "status_label": "In policy (preview)",
+      "compliant": true,
+      "snapshot_available": true
+    },
+    "exception-nearest": {
+      "authoritative": false,
+      "disclaimer": "Policy preview only \u2014 not the final TPP verdict.",
+      "violations": [
+        {
+          "rule_id": "POL-EXC",
+          "message": "Exception-nearest route requires approval before booking.",
+          "cap_amount": null,
+          "actual_amount": null,
+          "currency": null
+        }
+      ],
+      "status": "non_compliant",
+      "status_label": "Policy issues (preview)",
+      "compliant": false,
+      "snapshot_available": true
+    }
+  },
+  "1798": {
+    "status": "compliant",
+    "failure_reasons": [],
+    "input_blocker_count": 1,
+    "freshness_override": "patched fresh to isolate status/blocker handling"
+  }
+}

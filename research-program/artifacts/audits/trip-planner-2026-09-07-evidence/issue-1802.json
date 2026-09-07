@@ -1,0 +1,93 @@
+{
+  "url": "https://api.github.com/repos/stranske/trip-planner/issues/1802",
+  "repository_url": "https://api.github.com/repos/stranske/trip-planner",
+  "labels_url": "https://api.github.com/repos/stranske/trip-planner/issues/1802/labels{/name}",
+  "comments_url": "https://api.github.com/repos/stranske/trip-planner/issues/1802/comments",
+  "events_url": "https://api.github.com/repos/stranske/trip-planner/issues/1802/events",
+  "html_url": "https://github.com/stranske/trip-planner/issues/1802",
+  "id": 5371376311,
+  "node_id": "I_kwDOOzvyds8AAAABQCiytw",
+  "number": 1802,
+  "title": "[P1] Proposal submission must read policy context from public workspace policy_state",
+  "user": {
+    "login": "stranske",
+    "id": 23046322,
+    "node_id": "MDQ6VXNlcjIzMDQ2MzIy",
+    "avatar_url": "https://avatars.githubusercontent.com/u/23046322?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/stranske",
+    "html_url": "https://github.com/stranske",
+    "followers_url": "https://api.github.com/users/stranske/followers",
+    "following_url": "https://api.github.com/users/stranske/following{/other_user}",
+    "gists_url": "https://api.github.com/users/stranske/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/stranske/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/stranske/subscriptions",
+    "organizations_url": "https://api.github.com/users/stranske/orgs",
+    "repos_url": "https://api.github.com/users/stranske/repos",
+    "events_url": "https://api.github.com/users/stranske/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/stranske/received_events",
+    "type": "User",
+    "user_view_type": "public",
+    "site_admin": false
+  },
+  "labels": [
+    {
+      "id": 8706328281,
+      "node_id": "LA_kwDOOzvyds8AAAACBvAG2Q",
+      "url": "https://api.github.com/repos/stranske/trip-planner/labels/bug",
+      "name": "bug",
+      "color": "d73a4a",
+      "default": true,
+      "description": "Something isn't working"
+    },
+    {
+      "id": 10796305210,
+      "node_id": "LA_kwDOOzvyds8AAAACg4KLOg",
+      "url": "https://api.github.com/repos/stranske/trip-planner/labels/priority:high",
+      "name": "priority:high",
+      "color": "b60205",
+      "default": false,
+      "description": "High-priority weekly repo-review work"
+    }
+  ],
+  "state": "open",
+  "locked": false,
+  "assignees": [],
+  "milestone": null,
+  "comments": 0,
+  "created_at": "2026-09-07T07:19:16Z",
+  "updated_at": "2026-09-07T07:19:16Z",
+  "closed_at": null,
+  "assignee": null,
+  "author_association": "OWNER",
+  "active_lock_reason": null,
+  "sub_issues_summary": {
+    "total": 0,
+    "completed": 0,
+    "percent_completed": 0
+  },
+  "issue_dependencies_summary": {
+    "blocked_by": 0,
+    "total_blocked_by": 0,
+    "blocking": 0,
+    "total_blocking": 0
+  },
+  "body": "# [P1] Proposal submission must read policy context from public workspace policy_state\n\n## Why\n\n`frontend/src/lib/proposalSubmission.ts:65-84` resolves `organizationId` and `constraintSetId` only from `workspace.view_model.debug_state.sections.policy_state.payload`. Default workspace responses omit debug sections and strip identifiers (`trip_planner/app/services/workspace.py:1815-1818`, `1847-1854`; `tests/app/test_workspace.py:3437-3438`). `buildProposalSubmissionPayload` then throws `Policy context is not available for this workspace` at `frontend/src/lib/proposalSubmission.ts:108-110` on normal loads even when policy preview renders.\n\n## Scope\n\nFrontend proposal submission context resolution and any minimal backend fields needed on the public workspace payload.\n\n## Tasks\n\n- [ ] Add a frontend unit test in `frontend/src/lib/proposalSubmission.test.ts` covering a non-debug workspace payload with public `policy_state` identifiers.\n- [ ] Update `frontend/src/lib/proposalSubmission.ts` `readPolicyContext` to read `organization_id` and `constraint_set.policy_id` from `workspace.policy_state` before falling back to debug sections.\n- [ ] If required identifiers are intentionally redacted, expose submission-safe `organization_id` and `policy_id` on the public workspace payload in `trip_planner/app/services/workspace.py` `_public_workspace_policy_state`.\n\n## Acceptance Criteria\n\n- `npm test -- proposalSubmission` passes including the new non-debug policy-context case.\n- `pytest tests/app/test_workspace.py::test_workspace_response_filters_business_policy_proposal_diagnostics_by_default` still passes after any backend shape change.\n- Deliberate-break \u2192 revert: restore debug-only lookup in `frontend/src/lib/proposalSubmission.ts` and confirm the new test fails; revert.\n\n## Non-Goals\n\n- Removing all policy redaction from public workspace responses.\n- Scaffold-only completion does NOT count: documenting that users must append `?debug=true` instead of fixing submission on default loads is a failure of this issue.\n\n_Surfaced by repo-audit Track D 2026-09-07; verified on clone tip 8077785._\n",
+  "closed_by": null,
+  "reactions": {
+    "url": "https://api.github.com/repos/stranske/trip-planner/issues/1802/reactions",
+    "total_count": 0,
+    "+1": 0,
+    "-1": 0,
+    "laugh": 0,
+    "hooray": 0,
+    "confused": 0,
+    "heart": 0,
+    "rocket": 0,
+    "eyes": 0
+  },
+  "timeline_url": "https://api.github.com/repos/stranske/trip-planner/issues/1802/timeline",
+  "performed_via_github_app": null,
+  "state_reason": null,
+  "pinned_comment": null
+}

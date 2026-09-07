@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-07T08:12:18Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-07T08:16:22Z)
 
-Units: 67 — claimed 1, done 65, queued 1
+Units: 67 — done 66, queued 1
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=warn vibe=ok aider=ok
 Claude conservation: off (weekly window available)
@@ -71,14 +71,13 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Travel-Plan-Permission--2026-09-07T04-47-30Z | D | D | done | codex | codex | Audit stranske/Travel-Plan-Permission and file issues (supply 2 <= 3) |
 | D-audit-learning-management-system--2026-09-05T04-00-30Z | D | D | done | codex | driver | Audit stranske/learning-management-system and file issues (supply 2 <= |
 | D-audit-learning-management-system--2026-09-06T16-33-31Z | D | D | done | codex | driver | Audit stranske/learning-management-system and file issues (supply 1 <= |
-| D-audit-trip-planner--2026-09-07T04-47-34Z | D | D | claimed | codex | codex | Audit stranske/trip-planner and file issues (supply 2 <= 2) |
+| D-audit-trip-planner--2026-09-07T04-47-34Z | D | D | done | codex | codex | Audit stranske/trip-planner and file issues (supply 2 <= 2) |
 | D4-verify-merged-2026-09-05T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
 | D4-verify-merged-2026-09-06T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
 | D4-verify-merged-2026-09-07T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
 
 ## Last checkpoints
 
-- 2026-09-07T06:56:17Z — D-audit-Travel-Plan-Permission--2026-09-07T04-47-30Z — fail — cursor produced 397 words at /Users/teacher/.codex/automations/research-program/artifacts/audits/Travel-Plan-Permission-2026-09-07.md (min 400); rotating agent
 - 2026-09-07T07:11:32Z — D-audit-Travel-Plan-Permission--2026-09-07T04-47-30Z — route — router picked codex from ['codex']
 - 2026-09-07T07:11:32Z — D-audit-Travel-Plan-Permission--2026-09-07T04-47-30Z — claimed by codex (agent codex)
 - 2026-09-07T07:11:32Z — D-audit-trip-planner--2026-09-07T04-47-34Z — route — router picked codex from ['codex']
@@ -90,6 +89,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-07T08:07:47Z — D-audit-trip-planner--2026-09-07T04-47-34Z — fail — cursor did not write a fresh output artifact
 - 2026-09-07T08:12:18Z — D-audit-trip-planner--2026-09-07T04-47-34Z — route — router picked codex from ['codex']
 - 2026-09-07T08:12:18Z — D-audit-trip-planner--2026-09-07T04-47-34Z — claimed by codex (agent codex)
+- 2026-09-07T08:16:22Z — D-audit-trip-planner--2026-09-07T04-47-34Z — done — Reconciled eight existing trip-planner issues at unchanged main, verified local and remote format passes, reproduced four backend gaps, and qualified audit cove
 
 ## Questions
 

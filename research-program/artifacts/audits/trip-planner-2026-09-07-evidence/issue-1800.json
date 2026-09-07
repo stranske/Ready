@@ -1,0 +1,93 @@
+{
+  "url": "https://api.github.com/repos/stranske/trip-planner/issues/1800",
+  "repository_url": "https://api.github.com/repos/stranske/trip-planner",
+  "labels_url": "https://api.github.com/repos/stranske/trip-planner/issues/1800/labels{/name}",
+  "comments_url": "https://api.github.com/repos/stranske/trip-planner/issues/1800/comments",
+  "events_url": "https://api.github.com/repos/stranske/trip-planner/issues/1800/events",
+  "html_url": "https://github.com/stranske/trip-planner/issues/1800",
+  "id": 5371376017,
+  "node_id": "I_kwDOOzvyds8AAAABQCixkQ",
+  "number": 1800,
+  "title": "[P1] PolicyConstraintSet must persist budget_rules for scenario preview caps",
+  "user": {
+    "login": "stranske",
+    "id": 23046322,
+    "node_id": "MDQ6VXNlcjIzMDQ2MzIy",
+    "avatar_url": "https://avatars.githubusercontent.com/u/23046322?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/stranske",
+    "html_url": "https://github.com/stranske",
+    "followers_url": "https://api.github.com/users/stranske/followers",
+    "following_url": "https://api.github.com/users/stranske/following{/other_user}",
+    "gists_url": "https://api.github.com/users/stranske/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/stranske/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/stranske/subscriptions",
+    "organizations_url": "https://api.github.com/users/stranske/orgs",
+    "repos_url": "https://api.github.com/users/stranske/repos",
+    "events_url": "https://api.github.com/users/stranske/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/stranske/received_events",
+    "type": "User",
+    "user_view_type": "public",
+    "site_admin": false
+  },
+  "labels": [
+    {
+      "id": 8706328281,
+      "node_id": "LA_kwDOOzvyds8AAAACBvAG2Q",
+      "url": "https://api.github.com/repos/stranske/trip-planner/labels/bug",
+      "name": "bug",
+      "color": "d73a4a",
+      "default": true,
+      "description": "Something isn't working"
+    },
+    {
+      "id": 10796305210,
+      "node_id": "LA_kwDOOzvyds8AAAACg4KLOg",
+      "url": "https://api.github.com/repos/stranske/trip-planner/labels/priority:high",
+      "name": "priority:high",
+      "color": "b60205",
+      "default": false,
+      "description": "High-priority weekly repo-review work"
+    }
+  ],
+  "state": "open",
+  "locked": false,
+  "assignees": [],
+  "milestone": null,
+  "comments": 0,
+  "created_at": "2026-09-07T07:19:14Z",
+  "updated_at": "2026-09-07T07:19:14Z",
+  "closed_at": null,
+  "assignee": null,
+  "author_association": "OWNER",
+  "active_lock_reason": null,
+  "sub_issues_summary": {
+    "total": 0,
+    "completed": 0,
+    "percent_completed": 0
+  },
+  "issue_dependencies_summary": {
+    "blocked_by": 0,
+    "total_blocked_by": 0,
+    "blocking": 0,
+    "total_blocking": 0
+  },
+  "body": "# [P1] PolicyConstraintSet must persist budget_rules for scenario preview caps\n\n## Why\n\n`trip_planner/app/services/scenario_policy_preview.py:189-196` reads `constraint_set.budget_rules` for spend-cap preview. `trip_planner/business/policy_contracts.py:47-58` defines `PolicyConstraintSet` without a `budget_rules` field, and `trip_planner/integrations/tpp/policy_sync.py:322-356` cannot import it. Fixture policy state includes `budget_rules` (`trip_planner/resources/state/policy/business_client_summit_policy.json:7-10`), but TPP import persists `imported.constraint_set.to_dict()` in `trip_planner/app/services/policy.py:735`, which drops budget caps after sync.\n\n## Scope\n\n`PolicyConstraintSet` contract, TPP import, and reload normalization for `budget_rules`.\n\n## Tasks\n\n- [ ] Add `budget_rules: dict[str, Any]` to `PolicyConstraintSet` in `trip_planner/business/policy_contracts.py` with validation mirroring other rule maps.\n- [ ] Map `budget_rules` through `trip_planner/integrations/tpp/policy_sync.py` import and `trip_planner/app/services/policy.py` `_normalize_constraint_set_payload`.\n- [ ] Add `test_policy_import_persists_budget_rules_for_scenario_preview` in `tests/app/test_scenario_policy_preview.py` importing a fixture with `budget_rules` and asserting preview violations surface.\n\n## Acceptance Criteria\n\n- `pytest tests/app/test_scenario_policy_preview.py::test_policy_import_persists_budget_rules_for_scenario_preview` passes.\n- `pytest tests/app/test_policy.py tests/app/test_scenario_policy_preview.py` pass.\n- Deliberate-break \u2192 revert: remove `budget_rules` from `PolicyConstraintSet.to_dict()` and confirm the new test fails; revert.\n\n## Non-Goals\n\n- Changing unrelated ranking weights in `trip_planner/ranking/business.py`.\n- Scaffold-only completion does NOT count: adding `budget_rules` to the dataclass without wiring import, reload, and preview is a failure of this issue.\n\n_Surfaced by repo-audit Track D 2026-09-07; verified on clone tip 8077785._\n",
+  "closed_by": null,
+  "reactions": {
+    "url": "https://api.github.com/repos/stranske/trip-planner/issues/1800/reactions",
+    "total_count": 0,
+    "+1": 0,
+    "-1": 0,
+    "laugh": 0,
+    "hooray": 0,
+    "confused": 0,
+    "heart": 0,
+    "rocket": 0,
+    "eyes": 0
+  },
+  "timeline_url": "https://api.github.com/repos/stranske/trip-planner/issues/1800/timeline",
+  "performed_via_github_app": null,
+  "state_reason": null,
+  "pinned_comment": null
+}
