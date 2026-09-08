@@ -1,8 +1,8 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-08T13:00:34Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-08T13:10:32Z)
 
 Units: 75 — done 75
 Paused: False   Phase stops: []
-Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=warn vibe=ok aider=ok
+Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 Claude conservation: off (weekly window available)
 Owner inbox: https://github.com/stranske/Ready/issues/553
 
