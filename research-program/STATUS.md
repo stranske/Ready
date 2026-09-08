@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-08T07:41:37Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-08T07:43:23Z)
 
-Units: 75 — claimed 1, done 74
+Units: 75 — done 75
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 Claude conservation: off (weekly window available)
@@ -31,7 +31,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | A-dossier-docx | A | A3 | done | cursor | codex | Word versions of all verified dossiers (venv + python-docx) |
 | B1-citefix-B3-interop-architecture | B | B1 | done | cursor | driver | Fix unreachable citations in B3-interop-architecture.md |
 | B1-citefix-R1-legal-decomposition | B | B1 | done | cursor | driver | Fix unreachable citations in R1-legal-decomposition.md |
-| B1-citefix-R3-manager-mosaic-synthesis | B | B1 | claimed | gemini | driver | Fix unreachable citations in R3-manager-mosaic-synthesis.md |
+| B1-citefix-R3-manager-mosaic-synthesis | B | B1 | done | gemini | driver | Fix unreachable citations in R3-manager-mosaic-synthesis.md |
 | B1-citefix-R4-document-access-substrate | B | B1 | done | cursor | driver | Fix unreachable citations in R4-document-access-substrate.md |
 | B1-citefix-R5-output-substrate | B | B1 | done | codex | codex | Fix unreachable citations in R5-output-substrate.md |
 | B1-citefix-R6-public-corpora-and-synthetic-data | B | B1 | done | cursor | driver | Fix unreachable citations in R6-public-corpora-and-synthetic-data.md |
@@ -86,7 +86,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-08T06:18:50Z — mirror — deferred — Ready#564 exact-head sync review; publication resumes by 2026-09-08T07:55:00+00:00; local work continues
 - 2026-09-08T06:18:57Z — D-audit-learning-management-system--2026-09-08T05-06-08Z — done — Reconciled eight existing LMS issues: six supported defects, one latent numeric weakness, one refuted finding; staged corrected guidance with verified evidence.
 - 2026-09-08T06:18:57Z — mirror — deferred — Ready#564 exact-head sync review; publication resumes by 2026-09-08T07:55:00+00:00; local work continues
 - 2026-09-08T06:33:53Z — mirror — deferred — Ready#564 exact-head sync review; publication resumes by 2026-09-08T07:55:00+00:00; local work continues
@@ -98,6 +97,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-08T07:41:37Z — citations — enqueued B1-citefix-R3-manager-mosaic-synthesis
 - 2026-09-08T07:41:37Z — B1-citefix-R3-manager-mosaic-synthesis — route — router picked gemini from ['codex', 'cursor', 'gemini']
 - 2026-09-08T07:41:37Z — B1-citefix-R3-manager-mosaic-synthesis — claimed by driver (agent gemini)
+- 2026-09-08T07:43:23Z — B1-citefix-R3-manager-mosaic-synthesis — done — gemini produced 2625 words at artifacts/research/R3-manager-mosaic-synthesis.md in 102s
 
 ## Questions
 

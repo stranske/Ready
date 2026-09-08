@@ -42,7 +42,7 @@ The non-negotiable product standard: **one-click navigation from any derived sta
 
 ### 3.3 Thesis monitoring in investment tooling (public descriptions)
 
-- Purpose-built **thesis monitors** (e.g. EvidInvest Thesis Monitor, Helm Terminal) take user-written criteria per holding and return supported / at-risk / contradicted verdicts with **filed-passage citations** ([EvidInvest](https://evidinvest.com/thesis-monitor); [Helm comparison](https://helmterminal.dev/best-thesis-trackers)).
+- Purpose-built **thesis monitors** (e.g. EvidInvest Thesis Monitor, Helm Terminal) take user-written criteria per holding and return supported / at-risk / contradicted verdicts with **filed-passage citations** ([EvidInvest](https://evidinvest.com/thesis-monitor) [access-restricted]; [Helm comparison](https://helmterminal.dev/best-thesis-trackers)).
 - **Bloomberg PORT** is portfolio/risk/performance analytics, not a communications mosaic or thesis tracker ([Bloomberg PORT](https://professional.bloomberg.com/products/bloomberg-terminal/portfolio-analytics/)).
 - **Koyfin** provides screening, charts, and watchlist alerts on price/valuation/news — not manager-communication discrepancy workflows ([Koyfin research teams](https://www.koyfin.com/for-financial-advisors/investment-research-teams-cio/)).
 
@@ -163,7 +163,7 @@ Detection rules (JUDGMENT): run deterministic comparators first (normalized numb
 | `evidence_ids[]` | Must be non-empty for non-`insufficient_evidence` |
 | `checked_at`, `trigger_source_id` | Audit |
 
-Align verdict enum with public thesis-monitor products ([EvidInvest](https://evidinvest.com/thesis-monitor)) so owner mental models transfer.
+Align verdict enum with public thesis-monitor products ([EvidInvest](https://evidinvest.com/thesis-monitor) [access-restricted]) so owner mental models transfer.
 
 ### 5.2 Storage and search (JUDGMENT)
 
@@ -277,3 +277,9 @@ Do not auto-promote LLM extractions at Inv-Man-Intake's `field_auto_accept_min` 
 ---
 
 **STOP SIGNAL:** NEW_CANDIDATES=11
+
+## Citation corrections 2026-09-08
+
+| Original (unreachable to automated check) | Action |
+|-----|--------|
+| `https://evidinvest.com/thesis-monitor` | **(d)** Kept URL; marked `[access-restricted]` (vendor site behind Vercel bot challenge / returns 429 to automated HEAD/GET requests; live platform provides SEC-filing grounded thesis checks). |
