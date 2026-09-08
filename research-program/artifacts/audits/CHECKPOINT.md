@@ -129,3 +129,6 @@ Resumed from unit checkpoint Phase 5 on remote tip 0ae9443cdb72ae4f0ccae10346bb5
 
 ## 2026-09-08T06:18:57.461069+00:00 — D-audit-learning-management-system--2026-09-08T05-06-08Z attempt 3 Phase 5 reconciliation
 Resumed retained Phase 5 without restart. Main 0ae9443 unchanged; six supported defect findings, one latent numeric weakness, #627 refuted by repeated-action HTTP 200 probes. Eight existing issues open, intake rows166–173 verified, no duplicates. Seven remote guard validation steps success, #626 unconfirmed. Exact live bodies8/8 local PASS; seven corrected bodies staged with zero advisories. OUT rewritten with evidence and coverage corrections; durable ledger/index updated. No source/remote issue changes or offloads. Ready for engine done.
+
+## 2026-09-08T17:13:52.286868+00:00 — D-audit-Counter_Risk--2026-09-08T17-11-36Z — Phases 0–1
+Dossier and prior audit read; scope inherited; clone pulled to e2a1bacf37503217e00e467aa72198988777afa4; preexisting untracked dossier-out/ and uv.lock retained. Baseline, CI and 120-issue dedup snapshot at /Users/teacher/.codex/automations/research-program/artifacts/audits/Counter_Risk-2026-09-08-evidence. High machine load; bounded probes preferred.

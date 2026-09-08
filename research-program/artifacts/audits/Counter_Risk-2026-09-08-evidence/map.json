@@ -1,0 +1,142 @@
+{
+  "loc": {
+    "name_registry.py": 161,
+    "logging.py": 64,
+    "config.py": 183,
+    "runner_date_control.py": 85,
+    "runner_launch.py": 482,
+    "normalize.py": 302,
+    "__init__.py": 3,
+    "limits_config.py": 82,
+    "yaml_utils.py": 74,
+    "formatting.py": 59,
+    "demo_artifact.py": 231,
+    "parser.py": 17,
+    "runtime_paths.py": 84,
+    "writer.py": 19,
+    "dates.py": 188,
+    "name_matching.py": 19,
+    "web_demo.py": 223,
+    "renderers": 624,
+    "pipeline": 8212,
+    "parsers": 2635,
+    "chat": 1971,
+    "writers": 1601,
+    "io": 1091,
+    "workflows": 51,
+    "cli": 714,
+    "observability": 438,
+    "integrations": 612,
+    "compute": 1543,
+    "gui": 782,
+    "calculations": 123,
+    "mosers": 722,
+    "ppt": 702,
+    "build": 731,
+    "outputs": 559,
+    "reports": 582
+  },
+  "hotspots": [
+    [
+      5597,
+      "src/counter_risk/pipeline/run.py"
+    ],
+    [
+      852,
+      "src/counter_risk/chat/session.py"
+    ],
+    [
+      837,
+      "src/counter_risk/writers/historical_update.py"
+    ],
+    [
+      777,
+      "src/counter_risk/gui/runner.py"
+    ],
+    [
+      630,
+      "src/counter_risk/compute/rollups.py"
+    ],
+    [
+      619,
+      "src/counter_risk/renderers/table_png.py"
+    ],
+    [
+      592,
+      "src/counter_risk/mosers/workbook_generation.py"
+    ],
+    [
+      586,
+      "src/counter_risk/pipeline/manifest_schema.py"
+    ],
+    [
+      565,
+      "src/counter_risk/parsers/cprs_ch.py"
+    ],
+    [
+      556,
+      "src/counter_risk/pipeline/manifest.py"
+    ],
+    [
+      550,
+      "src/counter_risk/compute/futures_delta.py"
+    ],
+    [
+      518,
+      "src/counter_risk/cli/__init__.py"
+    ],
+    [
+      514,
+      "src/counter_risk/pipeline/data_quality.py"
+    ],
+    [
+      510,
+      "src/counter_risk/pipeline/reconciliation.py"
+    ],
+    [
+      497,
+      "src/counter_risk/io/mosers_workbook.py"
+    ],
+    [
+      483,
+      "src/counter_risk/parsers/nisa.py"
+    ],
+    [
+      482,
+      "src/counter_risk/runner_launch.py"
+    ],
+    [
+      465,
+      "src/counter_risk/parsers/cprs_fcm.py"
+    ],
+    [
+      437,
+      "src/counter_risk/observability/langsmith_fleet.py"
+    ],
+    [
+      434,
+      "src/counter_risk/build/release.py"
+    ],
+    [
+      421,
+      "src/counter_risk/chat/providers/langchain_runtime.py"
+    ],
+    [
+      403,
+      "src/counter_risk/writers/dropin_templates.py"
+    ],
+    [
+      376,
+      "src/counter_risk/reports/change_attribution.py"
+    ],
+    [
+      329,
+      "src/counter_risk/ppt/pptx_postprocess.py"
+    ],
+    [
+      324,
+      "src/counter_risk/io/discover.py"
+    ]
+  ],
+  "test_files": 160
+}
