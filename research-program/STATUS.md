@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-08T04:50:55Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-08T05:06:09Z)
 
-Units: 72 — done 72
+Units: 73 — claimed 1, done 72
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 Claude conservation: off (weekly window available)
@@ -75,6 +75,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Travel-Plan-Permission--2026-09-07T17-01-43Z | D | D | done | codex | claude | Audit stranske/Travel-Plan-Permission and file issues (supply 1 <= 2) |
 | D-audit-learning-management-system--2026-09-05T04-00-30Z | D | D | done | codex | driver | Audit stranske/learning-management-system and file issues (supply 2 <= |
 | D-audit-learning-management-system--2026-09-06T16-33-31Z | D | D | done | codex | driver | Audit stranske/learning-management-system and file issues (supply 1 <= |
+| D-audit-learning-management-system--2026-09-08T05-06-08Z | D | D | claimed | codex | driver | Audit stranske/learning-management-system and file issues (supply 1 <= |
 | D-audit-trip-planner--2026-09-07T04-47-34Z | D | D | done | codex | codex | Audit stranske/trip-planner and file issues (supply 2 <= 2) |
 | D4-verify-merged-2026-09-05T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
 | D4-verify-merged-2026-09-06T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
@@ -83,9 +84,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-07T22:53:41Z — D3-unblock-sweep-2026-09-07T22 — route — router picked cursor from ['codex', 'cursor']
-- 2026-09-07T22:53:41Z — D3-unblock-sweep-2026-09-07T22 — claimed by driver (agent cursor)
-- 2026-09-07T22:58:48Z — D3-unblock-sweep-2026-09-07T22 — done — gemini produced 1059 words at artifacts/sweeps/D3-unblock-sweep-2026-09-07T22.md in 303s
 - 2026-09-08T01:29:56Z — verify — enqueued D4-verify-merged-2026-09-08T01
 - 2026-09-08T01:29:57Z — D4-verify-merged-2026-09-08T01 — route — router picked codex from ['codex', 'cursor']
 - 2026-09-08T01:29:57Z — D4-verify-merged-2026-09-08T01 — claimed by driver (agent codex)
@@ -95,6 +93,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - - OUT: /Users/teacher/.codex/automations/research-program/artifacts/verification/D4-verify-merged-2026-09-08T01.md
 - - Checkpoint: /Users/teacher/.codex/automations/research-program/artifacts/verification/D4-verify-merged-2026-09-08T01.CHECKPOINT.md
 - 2026-09-08T01:34:39Z — D4-verify-merged-2026-09-08T01 — done — gemini produced 2701 words at artifacts/verification/D4-verify-merged-2026-09-08T01.md in 278s
+- 2026-09-08T05:06:08Z — refill — learning-management-system: open=1 <= 3 → audit queued
+- 2026-09-08T05:06:09Z — D-audit-learning-management-system--2026-09-08T05-06-08Z — route — router picked codex from ['codex']
+- 2026-09-08T05:06:09Z — D-audit-learning-management-system--2026-09-08T05-06-08Z — claimed by driver (agent codex)
 
 ## Questions
 
