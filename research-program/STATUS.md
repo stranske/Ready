@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-08T01:14:40Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-08T01:29:57Z)
 
-Units: 71 — done 71
+Units: 72 — claimed 1, done 71
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 Claude conservation: off (weekly window available)
@@ -79,12 +79,10 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D4-verify-merged-2026-09-05T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
 | D4-verify-merged-2026-09-06T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
 | D4-verify-merged-2026-09-07T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
+| D4-verify-merged-2026-09-08T01 | D | D | claimed | codex | driver | Verify merged PRs against their issues' acceptance criteria |
 
 ## Last checkpoints
 
-- 2026-09-07T17:01:43Z — refill — Travel-Plan-Permission: open=1 <= 2 → audit queued
-- 2026-09-07T17:01:44Z — refill — Portable-Alpha-Extension-Model: open=0 <= 2 → audit queued
-- 2026-09-07T17:01:48Z — D-audit-Portable-Alpha-Extension-Model--2026-09-07T17-01-44Z — route — router picked codex from ['codex']
 - 2026-09-07T17:01:48Z — D-audit-Portable-Alpha-Extension-Model--2026-09-07T17-01-44Z — claimed by driver (agent codex)
 - 2026-09-07T17:04:58Z — D-audit-Travel-Plan-Permission--2026-09-07T17-01-43Z — route — router picked codex from ['codex']
 - 2026-09-07T17:04:58Z — D-audit-Travel-Plan-Permission--2026-09-07T17-01-43Z — claimed by claude (agent codex)
@@ -94,6 +92,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-07T22:53:41Z — D3-unblock-sweep-2026-09-07T22 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-07T22:53:41Z — D3-unblock-sweep-2026-09-07T22 — claimed by driver (agent cursor)
 - 2026-09-07T22:58:48Z — D3-unblock-sweep-2026-09-07T22 — done — gemini produced 1059 words at artifacts/sweeps/D3-unblock-sweep-2026-09-07T22.md in 303s
+- 2026-09-08T01:29:56Z — verify — enqueued D4-verify-merged-2026-09-08T01
+- 2026-09-08T01:29:57Z — D4-verify-merged-2026-09-08T01 — route — router picked codex from ['codex', 'cursor']
+- 2026-09-08T01:29:57Z — D4-verify-merged-2026-09-08T01 — claimed by driver (agent codex)
 
 ## Questions
 
