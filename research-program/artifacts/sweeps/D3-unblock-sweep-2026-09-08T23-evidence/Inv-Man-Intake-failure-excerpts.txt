@@ -1,0 +1,23 @@
+971: Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6558846Z E       AssertionError: assert 'Uploaded file count: 0' == 'Uploaded file count: 1'
+972: Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6559193Z E         
+973: Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6559376Z E         - Uploaded file count: 1
+974: Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6559595Z E         ?                      ^
+975: Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6559810Z E         + Uploaded file count: 0
+976: Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6560020Z E         ?                      ^
+978: Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6560303Z tests/app/test_static_spa_browser_e2e.py:79: AssertionError
+1039: Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6578771Z         except Exception as error:
+1041: Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6579580Z E           playwright._impl._errors.TimeoutError: Locator.inner_text: Timeout 30000ms exceeded.
+1042: Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6579966Z E           Call log:
+1043: Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6580431Z E             - waiting for get_by_role("table", name="Packet graphics").get_by_role("row", name=re.compile(r"vector-chart.*Rendered page 1"))
+1045: Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6581180Z /opt/hostedtoolcache/Python/3.14.7/x64/lib/python3.14/site-packages/playwright/_impl/_connection.py:632: TimeoutError
+1082: Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6604037Z E       AssertionError: assert ('.png' in 'select\tartifact\ttype\taction\n\treturn-series.xlsx\tspreadsheet\tdownload\n\tone-pager-summary.html\tone-pager\tdownload' or 'graphic' in 'select\tartifact\ttype\taction\n\treturn-series.xlsx\tspreadsheet\tdownload\n\tone-pager-summary.html\tone-pager\tdownload')
+1083: Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6605696Z E        +  where 'select\tartifact\ttype\taction\n\treturn-series.xlsx\tspreadsheet\tdownload\n\tone-pager-summary.html\tone-pager\tdownload' = <built-in method lower of str object at 0x7f374cecfaf0>()
+1084: Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6607041Z E        +    where <built-in method lower of str object at 0x7f374cecfaf0> = 'SELECT\tARTIFACT\tTYPE\tACTION\n\treturn-series.xlsx\tspreadsheet\tDownload\n\tone-pager-summary.html\tone-pager\tDownload'.lower
+1085: Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6608379Z E        +  and   'select\tartifact\ttype\taction\n\treturn-series.xlsx\tspreadsheet\tdownload\n\tone-pager-summary.html\tone-pager\tdownload' = <built-in method lower of str object at 0x7f374cecfaf0>()
+1086: Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6609588Z E        +    where <built-in method lower of str object at 0x7f374cecfaf0> = 'SELECT\tARTIFACT\tTYPE\tACTION\n\treturn-series.xlsx\tspreadsheet\tDownload\n\tone-pager-summary.html\tone-pager\tDownload'.lower
+1088: Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6610396Z tests/app/test_static_spa_browser_e2e.py:282: AssertionError
+1090: Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6611787Z FAILED tests/app/test_static_spa_browser_e2e.py::test_static_spa_offline_upload_runs_local_pyodide_packet_path_without_egress - AssertionError: assert 'Uploaded file count: 0' == 'Uploaded file count: 1'
+1096: Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6613975Z FAILED tests/app/test_static_spa_browser_e2e.py::test_vector_figure_export_renders_a_local_pdf_region_without_egress - playwright._impl._errors.TimeoutError: Locator.inner_text: Timeout 30000ms exceeded.
+1099: Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6616720Z FAILED tests/app/test_static_spa_browser_e2e.py::test_export_panel_produces_artifacts_and_manifest - AssertionError: assert ('.png' in 'select\tartifact\ttype\taction\n\treturn-series.xlsx\tspreadsheet\tdownload\n\tone-pager-summary.html\tone-pager\tdownload' or 'graphic' in 'select\tartifact\ttype\taction\n\treturn-series.xlsx\tspreadsheet\tdownload\n\tone-pager-summary.html\tone-pager\tdownload')
+1104: Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6622421Z 3 failed, 5 passed in 42.18s
+1105: Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.8244699Z ##[error]Process completed with exit code 1.

@@ -1,0 +1,1138 @@
+Static SPA browser E2E	UNKNOWN STEP	﻿2026-09-08T20:27:43.4461475Z Current runner version: '2.337.0'
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:43.4488073Z ##[group]Runner Image Provisioner
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:43.4488920Z Hosted Compute Agent
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:43.4489444Z Version: 20260828.587
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:43.4490022Z Commit: abac92662cab4cc7352de4f9f9d2e2419aad9c29
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:43.4490792Z Build Date: 2026-08-28T16:44:25Z
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:43.4491395Z Worker ID: {4caeca93-197a-4fa2-bd0e-a4083a5a4291}
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:43.4492082Z Azure Region: westus3
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:43.4492608Z ##[endgroup]
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:43.4493954Z ##[group]Operating System
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:43.4494568Z Ubuntu
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:43.4495022Z 24.04.5
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:43.4495464Z LTS
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:43.4495984Z ##[endgroup]
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:43.4496465Z ##[group]Runner Image
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:43.4497140Z Image: ubuntu-24.04
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:43.4497770Z Version: 20260907.300.1
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:43.4499017Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260907.300/images/ubuntu/Ubuntu2404-Readme.md
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:43.4500469Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260907.300
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:43.4501801Z ##[endgroup]
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:43.4504676Z ##[group]GITHUB_TOKEN Permissions
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:43.4507137Z Actions: write
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:43.4507849Z ArtifactMetadata: write
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:43.4508363Z Attestations: write
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:43.4508972Z Checks: write
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:43.4509460Z CodeQuality: write
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:43.4510001Z Contents: write
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:43.4510523Z CopilotRequests: write
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:43.4511044Z Deployments: write
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:43.4511614Z Discussions: write
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:43.4512092Z Drives: write
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:43.4512579Z Issues: write
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:43.4513116Z Metadata: read
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:43.4513716Z Models: read
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:43.4514260Z Packages: write
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:43.4514735Z Pages: write
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:43.4515242Z PullRequests: write
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:43.4515817Z RepositoryProjects: write
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:43.4516368Z SecurityEvents: write
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:43.4516990Z Statuses: write
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:43.4517492Z VulnerabilityAlerts: read
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:43.4518160Z ##[endgroup]
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:43.4520376Z Secret source: Actions
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:43.4521540Z Prepare workflow directory
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:43.4754155Z Prepare all required actions
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:43.4786225Z Getting action download info
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:43.7753295Z Download action repository 'actions/checkout@v7' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.3405410Z Download action repository 'actions/setup-python@v7' (SHA:5fda3b95a4ea91299a34e894583c3862153e4b97)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.4960739Z Complete job name: Static SPA browser E2E
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.5411263Z ##[group]Run actions/checkout@v7
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.5411700Z with:
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.5411962Z   repository: stranske/Inv-Man-Intake
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.5414105Z   token: ***
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.5414347Z   ssh-strict: true
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.5414602Z   ssh-user: git
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.5414892Z   persist-credentials: true
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.5415171Z   clean: true
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.5415427Z   sparse-checkout-cone-mode: true
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.5415726Z   fetch-depth: 1
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.5415974Z   fetch-tags: false
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.5416226Z   show-progress: true
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.5416498Z   lfs: false
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.5416745Z   submodules: false
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.5417002Z   set-safe-directory: true
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.5417290Z   allow-unsafe-pr-checkout: false
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.5417764Z ##[endgroup]
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.6043169Z Syncing repository: stranske/Inv-Man-Intake
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.6044238Z ##[group]Getting Git version info
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.6044764Z Working directory is '/home/runner/work/Inv-Man-Intake/Inv-Man-Intake'
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.6045417Z [command]/usr/bin/git version
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.6287743Z git version 2.55.0
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.6300025Z ##[endgroup]
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.6307930Z Temporarily overriding HOME='/home/runner/work/_temp/35fb13b8-9e0b-4d77-b966-e7bc012ad7ac' before making global git config changes
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.6308997Z Adding repository directory to the temporary git global config as a safe directory
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.6311573Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/Inv-Man-Intake/Inv-Man-Intake
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.6485916Z Deleting the contents of '/home/runner/work/Inv-Man-Intake/Inv-Man-Intake'
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.6488396Z ##[group]Determining repository object format
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.6489427Z ##[endgroup]
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.6489992Z ##[group]Initializing the repository
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.6492446Z [command]/usr/bin/git init /home/runner/work/Inv-Man-Intake/Inv-Man-Intake
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.6624654Z hint: Using 'master' as the name for the initial branch. This default branch name
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.6625533Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.6626073Z hint: to use in all of your new repositories, which will suppress this warning,
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.6626521Z hint: call:
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.6626761Z hint:
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.6627113Z hint: 	git config --global init.defaultBranch <name>
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.6627471Z hint:
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.6627891Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.6628427Z hint: 'development'. The just-created branch can be renamed via this command:
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.6628865Z hint:
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.6629115Z hint: 	git branch -m <name>
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.6629401Z hint:
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.6629771Z hint: Disable this message with "git config set advice.defaultBranchName false"
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.6634047Z Initialized empty Git repository in /home/runner/work/Inv-Man-Intake/Inv-Man-Intake/.git/
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.6640315Z [command]/usr/bin/git remote add origin https://github.com/stranske/Inv-Man-Intake
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.6860743Z ##[endgroup]
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.6861283Z ##[group]Disabling automatic garbage collection
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.6863311Z [command]/usr/bin/git config --local gc.auto 0
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.6889570Z ##[endgroup]
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.6890169Z ##[group]Setting up auth
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.6890548Z Removing SSH command configuration
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.6893664Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.6918496Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.7387094Z Removing HTTP extra header
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.7392086Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.7415848Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.7585125Z Removing includeIf entries pointing to credentials config files
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.7588905Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.7612269Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.7791462Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-b2f2bbd0-ccc4-4e8b-a123-1b29dafb25da.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.7819173Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/Inv-Man-Intake/Inv-Man-Intake/.git.path /home/runner/work/_temp/git-credentials-b2f2bbd0-ccc4-4e8b-a123-1b29dafb25da.config
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.7842614Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/Inv-Man-Intake/Inv-Man-Intake/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-b2f2bbd0-ccc4-4e8b-a123-1b29dafb25da.config
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.7868155Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-b2f2bbd0-ccc4-4e8b-a123-1b29dafb25da.config
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.7891610Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-b2f2bbd0-ccc4-4e8b-a123-1b29dafb25da.config
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.7912076Z ##[endgroup]
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.7912795Z ##[group]Fetching the repository
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:44.7917250Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +127bfec51634a05b7b40606fe8c4bbef0721223d:refs/remotes/origin/main
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:47.0401916Z From https://github.com/stranske/Inv-Man-Intake
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:47.0402559Z  * [new ref]         127bfec51634a05b7b40606fe8c4bbef0721223d -> origin/main
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:47.0409974Z [command]/usr/bin/git branch --list --remote origin/main
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:47.0432174Z   origin/main
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:47.0438526Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:47.0456473Z 127bfec51634a05b7b40606fe8c4bbef0721223d
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:47.0460428Z ##[endgroup]
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:47.0460912Z ##[group]Determining the checkout info
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:47.0461590Z ##[endgroup]
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:47.0464552Z [command]/usr/bin/git sparse-checkout disable
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:47.1424502Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:47.1451502Z ##[group]Checking out the ref
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:47.1454477Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:47.5390857Z Switched to a new branch 'main'
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:47.5398375Z branch 'main' set up to track 'origin/main'.
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:47.5414794Z ##[endgroup]
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:47.5449824Z [command]/usr/bin/git log -1 --format=%H
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:47.5469203Z 127bfec51634a05b7b40606fe8c4bbef0721223d
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:47.5656052Z ##[group]Run actions/setup-python@v7
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:47.5656226Z with:
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:47.5656342Z   python-version: 3.14
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:47.5656477Z   check-latest: false
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:47.5658151Z   token: ***
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:47.5658272Z   update-environment: true
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:47.5658412Z   allow-prereleases: false
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:47.5658551Z   freethreaded: false
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:47.5658675Z ##[endgroup]
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:47.6455047Z ##[group]Installed versions
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:47.6668037Z Successfully set up CPython (3.14.7)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:47.6668546Z ##[endgroup]
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:47.6828224Z ##[group]Run pip install -e ".[dev]"
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:47.6828463Z ^[[36;1mpip install -e ".[dev]"^[[0m
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:47.6868030Z shell: /usr/bin/bash -e {0}
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:47.6868182Z env:
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:47.6868335Z   pythonLocation: /opt/hostedtoolcache/Python/3.14.7/x64
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:47.6868576Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.14.7/x64/lib/pkgconfig
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:47.6868808Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.7/x64
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:47.6869026Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.7/x64
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:47.6869229Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.7/x64
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:47.6869434Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.14.7/x64/lib
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:47.6869611Z ##[endgroup]
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:49.4043322Z Obtaining file:///home/runner/work/Inv-Man-Intake/Inv-Man-Intake
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:49.4054686Z   Installing build dependencies: started
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:51.0856816Z   Installing build dependencies: finished with status 'done'
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:51.0861016Z   Checking if build backend supports build_editable: started
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:51.7962135Z   Checking if build backend supports build_editable: finished with status 'done'
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:51.7968037Z   Getting requirements to build editable: started
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:52.0799285Z   Getting requirements to build editable: finished with status 'done'
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:52.0805877Z   Preparing editable metadata (pyproject.toml): started
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:52.3424609Z   Preparing editable metadata (pyproject.toml): finished with status 'done'
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:52.5344979Z Collecting langsmith>=0.4.59 (from inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:52.5950712Z   Downloading langsmith-0.12.2-py3-none-any.whl.metadata (22 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:53.0346980Z Collecting openpyxl>=3.1.5 (from inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:53.0446942Z   Downloading openpyxl-3.1.5-py2.py3-none-any.whl.metadata (2.5 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:53.1564420Z Collecting stranske-pdf-extract @ git+https://github.com/stranske/Workflows.git@pdf-extract-v0.1.0#subdirectory=packages/stranske_pdf_extract (from inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:53.1566129Z   Cloning https://github.com/stranske/Workflows.git (to revision pdf-extract-v0.1.0) to /tmp/pip-install-rgocipja/stranske-pdf-extract_998ddb1784454c4c86611cc4e4a656d2
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:53.1584767Z   Running command git clone --filter=blob:none --quiet https://github.com/stranske/Workflows.git /tmp/pip-install-rgocipja/stranske-pdf-extract_998ddb1784454c4c86611cc4e4a656d2
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:57.1913314Z   Running command git checkout -q ccfea3511cd5bc1a44f9fc8d35ed6b060873d44c
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:58.2881519Z   Resolved https://github.com/stranske/Workflows.git to commit ccfea3511cd5bc1a44f9fc8d35ed6b060873d44c
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:58.2912020Z   Installing build dependencies: started
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:59.4548910Z   Installing build dependencies: finished with status 'done'
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:59.4553273Z   Getting requirements to build wheel: started
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:59.5753291Z   Getting requirements to build wheel: finished with status 'done'
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:59.5759023Z   Preparing metadata (pyproject.toml): started
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:59.7009145Z   Preparing metadata (pyproject.toml): finished with status 'done'
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:59.9137807Z Collecting playwright>=1.56.0 (from inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:27:59.9238684Z   Downloading playwright-1.62.0-py3-none-manylinux1_x86_64.whl.metadata (3.3 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:00.3145506Z Collecting pytest==9.1.1 (from inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:00.3244703Z   Downloading pytest-9.1.1-py3-none-any.whl.metadata (7.6 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:00.4926979Z Collecting pytest-cov==7.1.0 (from inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:00.5024924Z   Downloading pytest_cov-7.1.0-py3-none-any.whl.metadata (32 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:00.7052657Z Collecting ruff==0.16.6 (from inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:00.7152052Z   Downloading ruff-0.16.6-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (26 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:00.7914107Z Collecting mypy==2.3.1 (from inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:00.8020494Z   Downloading mypy-2.3.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.4 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:00.8368671Z Collecting black==26.5.1 (from inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:00.8469377Z   Downloading black-26.5.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (95 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:00.8783854Z Collecting tomlkit==0.15.1 (from inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:00.8792826Z   Using cached tomlkit-0.15.1-py3-none-any.whl.metadata (3.3 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:00.9354654Z Collecting pydantic==2.13.4 (from inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:00.9455299Z   Downloading pydantic-2.13.4-py3-none-any.whl.metadata (109 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:00.9666260Z Collecting pytest-regressions==2.11.0 (from inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:00.9770033Z   Downloading pytest_regressions-2.11.0-py3-none-any.whl.metadata (4.9 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:01.2937165Z Collecting docling (from inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:01.3037226Z   Downloading docling-2.126.0-py3-none-any.whl.metadata (11 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:01.3466894Z Collecting click>=8.0.0 (from black==26.5.1->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:01.3563226Z   Downloading click-8.5.0-py3-none-any.whl.metadata (2.6 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:01.3876751Z Collecting mypy-extensions>=0.4.3 (from black==26.5.1->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:01.3975509Z   Downloading mypy_extensions-1.1.0-py3-none-any.whl.metadata (1.1 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:01.4160669Z Collecting packaging>=22.0 (from black==26.5.1->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:01.4167970Z   Using cached packaging-26.3-py3-none-any.whl.metadata (3.5 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:01.4199063Z Collecting pathspec>=1.0.0 (from black==26.5.1->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:01.4206529Z   Using cached pathspec-1.1.1-py3-none-any.whl.metadata (14 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:01.4727572Z Collecting platformdirs>=2 (from black==26.5.1->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:01.4823569Z   Downloading platformdirs-4.11.7-py3-none-any.whl.metadata (5.5 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:01.5408830Z Collecting pytokens~=0.4.0 (from black==26.5.1->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:01.5504570Z   Downloading pytokens-0.4.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (3.8 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:01.5680038Z Collecting typing_extensions>=4.6.0 (from mypy==2.3.1->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:01.5775348Z   Downloading typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:01.6571021Z Collecting librt>=0.13.0 (from mypy==2.3.1->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:01.6671639Z   Downloading librt-0.15.0-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (1.3 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:01.6982288Z Collecting ast-serialize<1.0.0,>=0.6.0 (from mypy==2.3.1->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:01.7083020Z   Downloading ast_serialize-0.11.0-cp39-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (1.4 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:01.8054867Z Collecting annotated-types>=0.6.0 (from pydantic==2.13.4->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:01.8154318Z   Downloading annotated_types-0.8.0-py3-none-any.whl.metadata (15 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:02.2608240Z Collecting pydantic-core==2.46.4 (from pydantic==2.13.4->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:02.2711835Z   Downloading pydantic_core-2.46.4-cp314-cp314-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (6.6 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:02.7086269Z Collecting typing-inspection>=0.4.2 (from pydantic==2.13.4->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:02.7181777Z   Downloading typing_inspection-0.4.4-py3-none-any.whl.metadata (2.6 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:02.8841478Z Collecting iniconfig>=1.0.1 (from pytest==9.1.1->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:02.8937929Z   Downloading iniconfig-2.3.0-py3-none-any.whl.metadata (2.5 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:02.8999294Z Collecting pluggy<2,>=1.5 (from pytest==9.1.1->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:02.9006222Z   Using cached pluggy-1.6.0-py3-none-any.whl.metadata (4.8 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:02.9174251Z Collecting pygments>=2.7.2 (from pytest==9.1.1->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:02.9269075Z   Downloading pygments-2.21.0-py3-none-any.whl.metadata (2.5 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:03.3297873Z Collecting coverage>=7.10.6 (from coverage[toml]>=7.10.6->pytest-cov==7.1.0->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:03.3397110Z   Downloading coverage-7.16.0-cp314-cp314-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (8.6 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:03.4247394Z Collecting pytest-datadir>=1.7.0 (from pytest-regressions==2.11.0->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:03.4351447Z   Downloading pytest_datadir-1.8.0-py3-none-any.whl.metadata (4.0 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:03.6091532Z Collecting pyyaml (from pytest-regressions==2.11.0->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:03.6187554Z   Downloading pyyaml-6.0.3-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.4 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:03.7359935Z Collecting anyio>=3.5.0 (from langsmith>=0.4.59->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:03.7455717Z   Downloading anyio-4.15.1-py3-none-any.whl.metadata (4.7 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:03.8681117Z Collecting distro>=1.7.0 (from langsmith>=0.4.59->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:03.8776421Z   Downloading distro-1.9.0-py3-none-any.whl.metadata (6.8 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:03.8935314Z Collecting httpx2<3,>=2 (from langsmith>=0.4.59->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:03.9030801Z   Downloading httpx2-2.12.0-py3-none-any.whl.metadata (9.5 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:04.0281551Z Collecting orjson>=3.9.14 (from langsmith>=0.4.59->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:04.0382978Z   Downloading orjson-3.12.0-cp314-cp314-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (41 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:04.0811312Z Collecting requests-toolbelt>=1.0.0 (from langsmith>=0.4.59->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:04.0914349Z   Downloading requests_toolbelt-1.0.0-py2.py3-none-any.whl.metadata (14 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:04.1429645Z Collecting requests>=2.0.0 (from langsmith>=0.4.59->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:04.1535982Z   Downloading requests-2.34.2-py3-none-any.whl.metadata (4.8 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:04.2142184Z Collecting sniffio>=1.1 (from langsmith>=0.4.59->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:04.2239758Z   Downloading sniffio-1.3.1-py3-none-any.whl.metadata (3.9 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:04.3222996Z Collecting uuid-utils<1.0,>=0.12.0 (from langsmith>=0.4.59->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:04.3323443Z   Downloading uuid_utils-0.17.1-cp314-cp314-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (6.4 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:04.5539736Z Collecting websockets>=15.0 (from langsmith>=0.4.59->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:04.5640956Z   Downloading websockets-17.1-cp314-cp314-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (6.3 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:04.7401534Z Collecting xxhash>=3.0.0 (from langsmith>=0.4.59->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:04.7502392Z   Downloading xxhash-4.0.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (17 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:04.8277014Z Collecting zstandard>=0.23.0 (from langsmith>=0.4.59->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:04.8380337Z   Downloading zstandard-0.25.0-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (3.3 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:04.8566809Z Collecting httpcore2==2.12.0 (from httpx2<3,>=2->langsmith>=0.4.59->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:04.8661436Z   Downloading httpcore2-2.12.0-py3-none-any.whl.metadata (25 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:04.9356649Z Collecting idna>=3.18 (from httpx2<3,>=2->langsmith>=0.4.59->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:04.9454065Z   Downloading idna-3.19-py3-none-any.whl.metadata (9.2 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:04.9616896Z Collecting truststore>=0.10 (from httpx2<3,>=2->langsmith>=0.4.59->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:04.9712500Z   Downloading truststore-0.10.4-py3-none-any.whl.metadata (4.4 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:05.0535765Z Collecting h11>=0.16 (from httpcore2==2.12.0->httpx2<3,>=2->langsmith>=0.4.59->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:05.0635223Z   Downloading h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:05.2631630Z Collecting et-xmlfile (from openpyxl>=3.1.5->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:05.2730055Z   Downloading et_xmlfile-2.0.0-py3-none-any.whl.metadata (2.7 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:05.4407487Z Collecting pyee<14,>=13 (from playwright>=1.56.0->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:05.4502390Z   Downloading pyee-13.0.1-py3-none-any.whl.metadata (3.0 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:05.7018245Z Collecting greenlet<4.0.0,>=3.1.1 (from playwright>=1.56.0->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:05.7117569Z   Downloading greenlet-3.5.5-cp314-cp314-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata (3.8 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:05.7943954Z Collecting charset_normalizer<4,>=2 (from requests>=2.0.0->langsmith>=0.4.59->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:05.8044816Z   Downloading charset_normalizer-3.5.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (45 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:05.8318453Z Collecting urllib3<3,>=1.26 (from requests>=2.0.0->langsmith>=0.4.59->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:05.8419805Z   Downloading urllib3-2.7.0-py3-none-any.whl.metadata (6.9 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:05.8625912Z Collecting certifi>=2023.5.7 (from requests>=2.0.0->langsmith>=0.4.59->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:05.8730689Z   Downloading certifi-2026.7.22-py3-none-any.whl.metadata (2.5 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:05.9202087Z Collecting docling-slim==2.126.0 (from docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:05.9302159Z   Downloading docling_slim-2.126.0-py3-none-any.whl.metadata (20 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:06.0052410Z Collecting docling-core<3.0.0,>=2.91.0 (from docling-slim==2.126.0->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:06.0154480Z   Downloading docling_core-2.95.0-py3-none-any.whl.metadata (8.4 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:06.0635549Z Collecting filetype<2.0.0,>=1.2.0 (from docling-slim==2.126.0->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:06.0731188Z   Downloading filetype-1.2.0-py2.py3-none-any.whl.metadata (6.5 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:06.0978084Z Collecting pydantic-settings<3.0.0,>=2.3.0 (from docling-slim==2.126.0->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:06.1072718Z   Downloading pydantic_settings-2.15.0-py3-none-any.whl.metadata (3.9 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:06.1332190Z Collecting tqdm<5.0.0,>=4.65.0 (from docling-slim==2.126.0->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:06.1429990Z   Downloading tqdm-4.70.0-py3-none-any.whl.metadata (57 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:06.1665778Z Collecting accelerate<2,>=1.0.0 (from docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:06.1773794Z   Downloading accelerate-1.14.0-py3-none-any.whl.metadata (19 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:06.1986894Z Collecting beautifulsoup4<5.0.0,>=4.12.3 (from docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:06.2082562Z   Downloading beautifulsoup4-4.15.0-py3-none-any.whl.metadata (3.8 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:06.2290932Z Collecting defusedxml<0.8.0,>=0.7.1 (from docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:06.2385240Z   Downloading defusedxml-0.7.1-py2.py3-none-any.whl.metadata (32 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:06.2656840Z Collecting docling-ibm-models<5,>=4.0.2 (from docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:06.2752020Z   Downloading docling_ibm_models-4.0.2-py3-none-any.whl.metadata (6.3 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:06.3372464Z Collecting docling-parse<8.0.0,>=7.16.0 (from docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:06.3474592Z   Downloading docling_parse-7.18.0-cp314-cp314-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (15 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:06.3806069Z Collecting httpx<1.0.0,>=0.28 (from docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:06.3900891Z   Downloading httpx-0.28.1-py3-none-any.whl.metadata (7.1 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:06.5367208Z Collecting huggingface-hub<2,>=0.23 (from docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:06.5478080Z   Downloading huggingface_hub-1.30.0-py3-none-any.whl.metadata (16 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:06.5714496Z Collecting mail-parser<5.0.0,>=4.1.4 (from docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:06.5809660Z   Downloading mail_parser-4.6.4-py3-none-any.whl.metadata (25 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:06.6000989Z Collecting marko<3.0.0,>=2.1.2 (from docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:06.6100496Z   Downloading marko-2.2.4-py3-none-any.whl.metadata (4.5 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:06.7056666Z Collecting numpy<3.0.0,>=1.24.0 (from docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:06.7154330Z   Downloading numpy-2.5.3-cp314-cp314-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (6.6 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:06.8322419Z Collecting pillow<13.0.0,>=10.0.0 (from docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:06.8418883Z   Downloading pillow-12.3.0-cp314-cp314-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (9.1 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:06.8738397Z Collecting polyfactory>=2.22.2 (from docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:06.8833902Z   Downloading polyfactory-3.3.0-py3-none-any.whl.metadata (27 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:06.9017930Z Collecting pylatexenc<3.0,>=2.10 (from docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:06.9143907Z   Downloading pylatexenc-2.11-py2.py3-none-any.whl.metadata (3.9 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:06.9616577Z Collecting pypdfium2!=4.30.1,<6.0.0,>=4.30.0 (from docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:06.9713351Z   Downloading pypdfium2-5.13.0-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (66 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:06.9889184Z Collecting python-docx<2.0.0,>=1.2.0 (from docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:06.9984235Z   Downloading python_docx-1.2.0-py3-none-any.whl.metadata (2.0 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:07.0682726Z Collecting python-dotenv~=1.0 (from docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:07.0780062Z   Downloading python_dotenv-1.2.3-py3-none-any.whl.metadata (29 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:07.1020029Z Collecting python-oxmsg<0.1.0,>=0.0.2 (from docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:07.1120428Z   Downloading python_oxmsg-0.0.2-py3-none-any.whl.metadata (5.0 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:07.1284585Z Collecting python-pptx<2.0.0,>=1.0.2 (from docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:07.1382362Z   Downloading python_pptx-1.0.2-py3-none-any.whl.metadata (2.5 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:07.1542488Z Collecting rapidocr<4.0.0,>=3.9.1 (from docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:07.1641148Z   Downloading rapidocr-3.9.2-py3-none-any.whl.metadata (1.1 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:07.1872369Z Collecting rich>=13.0.0 (from docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:07.1968182Z   Downloading rich-15.0.0-py3-none-any.whl.metadata (18 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:07.2408239Z Collecting rtree<2.0.0,>=1.3.0 (from docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:07.2507199Z   Downloading rtree-1.4.1-py3-none-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata (2.1 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:07.3231539Z Collecting scipy<2.0.0,>=1.6.0 (from docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:07.3328783Z   Downloading scipy-1.18.1-cp314-cp314-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (62 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:07.3839295Z Collecting torch<3.0.0,>=2.2.2 (from docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:07.3934112Z   Downloading torch-2.14.0-cp314-cp314-manylinux_2_28_x86_64.whl.metadata (37 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:07.4578098Z Collecting torchvision<1,>=0 (from docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:07.4674432Z   Downloading torchvision-0.29.0-cp314-cp314-manylinux_2_28_x86_64.whl.metadata (5.7 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:07.4858448Z Collecting typer<0.27.0,>=0.12.5 (from docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:07.4953932Z   Downloading typer-0.26.8-py3-none-any.whl.metadata (15 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:07.4991385Z Collecting websockets>=15.0 (from langsmith>=0.4.59->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:07.5088161Z   Downloading websockets-16.1.1-cp314-cp314-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (6.8 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:07.5833401Z Collecting psutil (from accelerate<2,>=1.0.0->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:07.5936611Z   Downloading psutil-7.2.2-cp36-abi3-manylinux2010_x86_64.manylinux_2_12_x86_64.manylinux_2_28_x86_64.whl.metadata (22 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:07.6577329Z Collecting safetensors>=0.4.3 (from accelerate<2,>=1.0.0->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:07.6673255Z   Downloading safetensors-0.8.0-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.2 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:07.6863472Z Collecting soupsieve>=1.6.1 (from beautifulsoup4<5.0.0,>=4.12.3->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:07.6958070Z   Downloading soupsieve-2.9.2-py3-none-any.whl.metadata (4.6 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:07.7454593Z Collecting jsonschema<5.0.0,>=4.16.0 (from docling-core<3.0.0,>=2.91.0->docling-slim==2.126.0->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:07.7550819Z   Downloading jsonschema-4.26.0-py3-none-any.whl.metadata (7.6 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:07.7799884Z Collecting jsonref<2.0.0,>=1.1.0 (from docling-core<3.0.0,>=2.91.0->docling-slim==2.126.0->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:07.7894888Z   Downloading jsonref-1.1.0-py3-none-any.whl.metadata (2.7 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:07.8042139Z Collecting tabulate<0.11.0,>=0.9.0 (from docling-core<3.0.0,>=2.91.0->docling-slim==2.126.0->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:07.8136616Z   Downloading tabulate-0.10.0-py3-none-any.whl.metadata (40 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:07.8819675Z Collecting pandas<4.0.0,>=2.1.4 (from docling-core<3.0.0,>=2.91.0->docling-slim==2.126.0->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:07.8917725Z   Downloading pandas-3.0.5-cp314-cp314-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata (79 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:07.9241569Z Collecting latex2mathml<4.0.0,>=3.77.0 (from docling-core<3.0.0,>=2.91.0->docling-slim==2.126.0->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:07.9335466Z   Downloading latex2mathml-3.81.1-py3-none-any.whl.metadata (15 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:07.9817984Z Collecting doclang<0.8,>=0.7 (from docling-core<3.0.0,>=2.91.0->docling-slim==2.126.0->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:07.9913688Z   Downloading doclang-0.7.3-py3-none-any.whl.metadata (4.6 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:08.1046790Z Collecting lxml>=4.8.0 (from doclang<0.8,>=0.7->docling-core<3.0.0,>=2.91.0->docling-slim==2.126.0->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:08.1145886Z   Downloading lxml-6.1.3-cp314-cp314-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl.metadata (3.3 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:08.1411724Z Collecting semchunk<4.0.0,>=2.2.0 (from docling-core[chunking]<3.0.0,>=2.94.1; extra == "standard"->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:08.1506682Z   Downloading semchunk-3.2.5-py3-none-any.whl.metadata (14 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:08.3117468Z Collecting tree-sitter<0.27.0,>=0.25.0 (from docling-core[chunking]<3.0.0,>=2.94.1; extra == "standard"->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:08.3219028Z   Downloading tree_sitter-0.26.0-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (10 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:08.3511857Z Collecting tree-sitter-python>=0.23.6 (from docling-core[chunking]<3.0.0,>=2.94.1; extra == "standard"->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:08.3606494Z   Downloading tree_sitter_python-0.25.0-cp310-abi3-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (1.9 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:08.3782282Z Collecting tree-sitter-c>=0.23.4 (from docling-core[chunking]<3.0.0,>=2.94.1; extra == "standard"->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:08.3876395Z   Downloading tree_sitter_c-0.24.2-cp310-abi3-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (1.8 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:08.4757044Z Collecting tree-sitter-javascript>=0.23.1 (from docling-core[chunking]<3.0.0,>=2.94.1; extra == "standard"->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:08.4852558Z   Downloading tree_sitter_javascript-0.25.0-cp310-abi3-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (2.2 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:08.5154721Z Collecting tree-sitter-typescript>=0.23.2 (from docling-core[chunking]<3.0.0,>=2.94.1; extra == "standard"->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:08.5251380Z   Downloading tree_sitter_typescript-0.23.2-cp39-abi3-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (2.3 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:08.5530065Z Collecting transformers<6.0.0,>=4.42.0 (from docling-core[chunking]<3.0.0,>=2.94.1; extra == "standard"->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:08.5625493Z   Downloading transformers-5.16.1-py3-none-any.whl.metadata (32 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:08.6323658Z Collecting httpcore==1.* (from httpx<1.0.0,>=0.28->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:08.6419612Z   Downloading httpcore-1.0.9-py3-none-any.whl.metadata (21 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:08.8986051Z Collecting filelock>=3.10.0 (from huggingface-hub<2,>=0.23->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:08.9082370Z   Downloading filelock-3.32.5-py3-none-any.whl.metadata (2.0 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:08.9282346Z Collecting fsspec>=2023.5.0 (from huggingface-hub<2,>=0.23->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:08.9377523Z   Downloading fsspec-2026.7.0-py3-none-any.whl.metadata (10 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:08.9807903Z Collecting hf-xet<2.0.0,>=1.5.2 (from huggingface-hub<2,>=0.23->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:08.9903842Z   Downloading hf_xet-1.6.0-cp38-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (4.9 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:09.0828797Z Collecting attrs>=22.2.0 (from jsonschema<5.0.0,>=4.16.0->docling-core<3.0.0,>=2.91.0->docling-slim==2.126.0->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:09.0926646Z   Downloading attrs-26.1.0-py3-none-any.whl.metadata (8.8 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:09.1089621Z Collecting jsonschema-specifications>=2023.03.6 (from jsonschema<5.0.0,>=4.16.0->docling-core<3.0.0,>=2.91.0->docling-slim==2.126.0->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:09.1185480Z   Downloading jsonschema_specifications-2025.9.1-py3-none-any.whl.metadata (2.9 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:09.1802435Z Collecting referencing>=0.28.4 (from jsonschema<5.0.0,>=4.16.0->docling-core<3.0.0,>=2.91.0->docling-slim==2.126.0->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:09.1919878Z   Downloading referencing-0.37.0-py3-none-any.whl.metadata (2.8 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:09.3148486Z Collecting rpds-py>=0.25.0 (from jsonschema<5.0.0,>=4.16.0->docling-core<3.0.0,>=2.91.0->docling-slim==2.126.0->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:09.3247847Z   Downloading rpds_py-2026.6.3-cp314-cp314-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.1 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:09.5019177Z Collecting python-dateutil>=2.8.2 (from pandas<4.0.0,>=2.1.4->docling-core<3.0.0,>=2.91.0->docling-slim==2.126.0->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:09.5113996Z   Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl.metadata (8.4 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:09.5341296Z Collecting olefile (from python-oxmsg<0.1.0,>=0.0.2->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:09.5435861Z   Downloading olefile-0.47-py2.py3-none-any.whl.metadata (9.7 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:09.6148456Z Collecting XlsxWriter>=0.5.7 (from python-pptx<2.0.0,>=1.0.2->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:09.6244503Z   Downloading xlsxwriter-3.2.9-py3-none-any.whl.metadata (2.7 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:09.6560982Z Collecting pyclipper>=1.2.0 (from rapidocr<4.0.0,>=3.9.1->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:09.6655775Z   Downloading pyclipper-1.4.0-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (8.6 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:09.9372962Z Collecting opencv_python>=4.5.1.48 (from rapidocr<4.0.0,>=3.9.1->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:09.9472089Z   Downloading opencv_python-5.0.0.93-cp37-abi3-manylinux_2_28_x86_64.whl.metadata (19 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:10.2168329Z Collecting six>=1.15.0 (from rapidocr<4.0.0,>=3.9.1->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:10.2263976Z   Downloading six-1.17.0-py2.py3-none-any.whl.metadata (1.7 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:10.4692213Z Collecting Shapely!=2.0.4,>=1.7.1 (from rapidocr<4.0.0,>=3.9.1->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:10.4788493Z   Downloading shapely-2.1.2-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (6.8 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:10.5002922Z Collecting omegaconf!=2.2.1 (from rapidocr<4.0.0,>=3.9.1->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:10.5098053Z   Downloading omegaconf-2.3.1-py3-none-any.whl.metadata (4.5 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:10.5788248Z Collecting colorlog (from rapidocr<4.0.0,>=3.9.1->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:10.5886067Z   Downloading colorlog-6.12.0-py3-none-any.whl.metadata (11 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:10.6099224Z Collecting mpire[dill] (from semchunk<4.0.0,>=2.2.0->docling-core[chunking]<3.0.0,>=2.94.1; extra == "standard"->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:10.6199928Z   Downloading mpire-2.10.2-py3-none-any.whl.metadata (14 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:10.7077719Z Collecting setuptools>=77.0.3 (from torch<3.0.0,>=2.2.2->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:10.7085407Z   Using cached setuptools-84.0.0-py3-none-any.whl.metadata (6.6 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:10.7407058Z Collecting sympy>=1.13.3 (from torch<3.0.0,>=2.2.2->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:10.7502174Z   Downloading sympy-1.14.0-py3-none-any.whl.metadata (12 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:10.7999390Z Collecting networkx>=2.5.1 (from torch<3.0.0,>=2.2.2->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:10.8094477Z   Downloading networkx-3.6.1-py3-none-any.whl.metadata (6.8 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:11.1163294Z Collecting jinja2 (from torch<3.0.0,>=2.2.2->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:11.1259015Z   Downloading jinja2-3.1.6-py3-none-any.whl.metadata (2.9 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:11.1435520Z Collecting cuda-toolkit==13.0.3 (from cuda-toolkit[cublas,cudart,cufft,cufile,cupti,curand,cusolver,cusparse,nvjitlink,nvrtc,nvtx]==13.0.3; platform_system == "Linux"->torch<3.0.0,>=2.2.2->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:11.1530672Z   Downloading cuda_toolkit-13.0.3.0-py2.py3-none-any.whl.metadata (17 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:11.2234254Z Collecting cuda-bindings<14,>=13.0.3 (from torch<3.0.0,>=2.2.2->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:11.2329409Z   Downloading cuda_bindings-13.3.1-cp314-cp314-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata (2.5 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:11.2653087Z Collecting nvidia-cudnn-cu13==9.24.0.43 (from torch<3.0.0,>=2.2.2->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:11.2749643Z   Downloading nvidia_cudnn_cu13-9.24.0.43-py3-none-manylinux_2_27_x86_64.whl.metadata (1.9 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:11.3335061Z Collecting nvidia-cusparselt-cu13==0.8.1 (from torch<3.0.0,>=2.2.2->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:11.3432039Z   Downloading nvidia_cusparselt_cu13-0.8.1-py3-none-manylinux2014_x86_64.whl.metadata (12 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:11.3685590Z Collecting nvidia-nccl-cu13==2.30.7 (from torch<3.0.0,>=2.2.2->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:11.3783567Z   Downloading nvidia_nccl_cu13-2.30.7-py3-none-manylinux_2_18_x86_64.whl.metadata (2.1 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:11.3935789Z Collecting nvidia-nvshmem-cu13==3.4.5 (from torch<3.0.0,>=2.2.2->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:11.4031032Z   Downloading nvidia_nvshmem_cu13-3.4.5-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (2.1 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:11.4281799Z Collecting triton~=3.8.0 (from torch<3.0.0,>=2.2.2->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:11.4377168Z   Downloading triton-3.8.0-cp314-cp314-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (978 bytes)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:11.4598612Z Collecting nvidia-cublas==13.1.1.3.* (from cuda-toolkit[cublas,cudart,cufft,cufile,cupti,curand,cusolver,cusparse,nvjitlink,nvrtc,nvtx]==13.0.3; platform_system == "Linux"->torch<3.0.0,>=2.2.2->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:11.4692613Z   Downloading nvidia_cublas-13.1.1.3-py3-none-manylinux_2_27_x86_64.whl.metadata (1.8 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:11.4869763Z Collecting nvidia-cuda-nvrtc==13.0.88.* (from cuda-toolkit[cublas,cudart,cufft,cufile,cupti,curand,cusolver,cusparse,nvjitlink,nvrtc,nvtx]==13.0.3; platform_system == "Linux"->torch<3.0.0,>=2.2.2->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:11.4963479Z   Downloading nvidia_cuda_nvrtc-13.0.88-py3-none-manylinux2010_x86_64.manylinux_2_12_x86_64.whl.metadata (1.7 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:11.5251374Z Collecting nvidia-cuda-runtime==13.0.96.* (from cuda-toolkit[cublas,cudart,cufft,cufile,cupti,curand,cusolver,cusparse,nvjitlink,nvrtc,nvtx]==13.0.3; platform_system == "Linux"->torch<3.0.0,>=2.2.2->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:11.5347393Z   Downloading nvidia_cuda_runtime-13.0.96-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (1.7 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:11.5535946Z Collecting nvidia-cufft==12.0.0.61.* (from cuda-toolkit[cublas,cudart,cufft,cufile,cupti,curand,cusolver,cusparse,nvjitlink,nvrtc,nvtx]==13.0.3; platform_system == "Linux"->torch<3.0.0,>=2.2.2->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:11.5631977Z   Downloading nvidia_cufft-12.0.0.61-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (1.8 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:11.6338748Z Collecting nvidia-nvjitlink<14,>=13.0.88 (from cuda-toolkit[cublas,cudart,cufft,cufile,cupti,curand,cusolver,cusparse,nvjitlink,nvrtc,nvtx]==13.0.3; platform_system == "Linux"->torch<3.0.0,>=2.2.2->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:11.6433983Z   Downloading nvidia_nvjitlink-13.3.33-py3-none-manylinux2010_x86_64.manylinux_2_12_x86_64.whl.metadata (1.8 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:11.7452946Z Collecting nvidia-cufile==1.15.1.6.* (from cuda-toolkit[cublas,cudart,cufft,cufile,cupti,curand,cusolver,cusparse,nvjitlink,nvrtc,nvtx]==13.0.3; platform_system == "Linux"->torch<3.0.0,>=2.2.2->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:11.7547028Z   Downloading nvidia_cufile-1.15.1.6-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (1.7 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:11.8277485Z Collecting nvidia-cuda-cupti==13.0.85.* (from cuda-toolkit[cublas,cudart,cufft,cufile,cupti,curand,cusolver,cusparse,nvjitlink,nvrtc,nvtx]==13.0.3; platform_system == "Linux"->torch<3.0.0,>=2.2.2->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:11.8374497Z   Downloading nvidia_cuda_cupti-13.0.85-py3-none-manylinux_2_25_x86_64.whl.metadata (1.7 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:11.8522697Z Collecting nvidia-curand==10.4.0.35.* (from cuda-toolkit[cublas,cudart,cufft,cufile,cupti,curand,cusolver,cusparse,nvjitlink,nvrtc,nvtx]==13.0.3; platform_system == "Linux"->torch<3.0.0,>=2.2.2->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:11.8616574Z   Downloading nvidia_curand-10.4.0.35-py3-none-manylinux_2_27_x86_64.whl.metadata (1.7 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:11.8782839Z Collecting nvidia-cusolver==12.0.4.66.* (from cuda-toolkit[cublas,cudart,cufft,cufile,cupti,curand,cusolver,cusparse,nvjitlink,nvrtc,nvtx]==13.0.3; platform_system == "Linux"->torch<3.0.0,>=2.2.2->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:11.8877332Z   Downloading nvidia_cusolver-12.0.4.66-py3-none-manylinux_2_27_x86_64.whl.metadata (1.8 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:11.9030093Z Collecting nvidia-cusparse==12.6.3.3.* (from cuda-toolkit[cublas,cudart,cufft,cufile,cupti,curand,cusolver,cusparse,nvjitlink,nvrtc,nvtx]==13.0.3; platform_system == "Linux"->torch<3.0.0,>=2.2.2->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:11.9124112Z   Downloading nvidia_cusparse-12.6.3.3-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (1.8 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:11.9302948Z Collecting nvidia-nvtx==13.0.85.* (from cuda-toolkit[cublas,cudart,cufft,cufile,cupti,curand,cusolver,cusparse,nvjitlink,nvrtc,nvtx]==13.0.3; platform_system == "Linux"->torch<3.0.0,>=2.2.2->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:11.9397937Z   Downloading nvidia_nvtx-13.0.85-py3-none-manylinux1_x86_64.manylinux_2_5_x86_64.whl.metadata (1.8 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:12.0143639Z Collecting cuda-pathfinder>=1.4.2 (from cuda-bindings<14,>=13.0.3->torch<3.0.0,>=2.2.2->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:12.0238187Z   Downloading cuda_pathfinder-1.8.1-py3-none-any.whl.metadata (1.9 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:12.2845792Z Collecting regex>=2025.10.22 (from transformers<6.0.0,>=4.42.0->docling-core[chunking]<3.0.0,>=2.94.1; extra == "standard"->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:12.2946230Z   Downloading regex-2026.9.3-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (40 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:12.4829634Z Collecting tokenizers<0.24.0,>=0.23.1 (from transformers<6.0.0,>=4.42.0->docling-core[chunking]<3.0.0,>=2.94.1; extra == "standard"->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:12.4929204Z   Downloading tokenizers-0.23.2-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (9.8 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:12.5258491Z Collecting shellingham>=1.3.0 (from typer<0.27.0,>=0.12.5->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:12.5353861Z   Downloading shellingham-1.5.4-py2.py3-none-any.whl.metadata (3.5 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:12.5567431Z Collecting annotated-doc>=0.0.2 (from typer<0.27.0,>=0.12.5->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:12.5662235Z   Downloading annotated_doc-0.0.5-py3-none-any.whl.metadata (6.5 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:12.7965954Z Collecting antlr4-python3-runtime==4.9.* (from omegaconf!=2.2.1->rapidocr<4.0.0,>=3.9.1->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:12.8061507Z   Downloading antlr4-python3-runtime-4.9.3.tar.gz (117 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:12.8203252Z   Installing build dependencies: started
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:13.3260203Z   Installing build dependencies: finished with status 'done'
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:13.3264126Z   Getting requirements to build wheel: started
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:13.5977200Z   Getting requirements to build wheel: finished with status 'done'
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:13.5983165Z   Preparing metadata (pyproject.toml): started
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:13.7214942Z   Preparing metadata (pyproject.toml): finished with status 'done'
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:13.7625954Z Collecting faker>=5.0.0 (from polyfactory>=2.22.2->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:13.7722422Z   Downloading faker-40.38.0-py3-none-any.whl.metadata (16 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:14.1132424Z Collecting markdown-it-py>=2.2.0 (from rich>=13.0.0->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:14.1227146Z   Downloading markdown_it_py-4.2.0-py3-none-any.whl.metadata (7.4 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:14.1832131Z Collecting mdurl~=0.1 (from markdown-it-py>=2.2.0->rich>=13.0.0->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:14.1928729Z   Downloading mdurl-0.1.2-py3-none-any.whl.metadata (1.6 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:14.2406766Z Collecting mpmath<1.4,>=1.1.0 (from sympy>=1.13.3->torch<3.0.0,>=2.2.2->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:14.2502259Z   Downloading mpmath-1.3.0-py3-none-any.whl.metadata (8.6 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:14.2897217Z Collecting MarkupSafe>=2.0 (from jinja2->torch<3.0.0,>=2.2.2->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:14.2992527Z   Downloading markupsafe-3.0.3-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.7 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:14.3427814Z Collecting multiprocess>=0.70.15 (from mpire[dill]->semchunk<4.0.0,>=2.2.0->docling-core[chunking]<3.0.0,>=2.94.1; extra == "standard"->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:14.3522324Z   Downloading multiprocess-0.70.19-py314-none-any.whl.metadata (7.2 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:14.3844103Z Collecting dill>=0.4.1 (from multiprocess>=0.70.15->mpire[dill]->semchunk<4.0.0,>=2.2.0->docling-core[chunking]<3.0.0,>=2.94.1; extra == "standard"->docling-slim[standard]==2.126.0->docling->inv-man-intake==0.1.0)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:14.3938070Z   Downloading dill-0.4.1-py3-none-any.whl.metadata (10 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:14.8642966Z Downloading black-26.5.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (1.9 MB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:14.9241969Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.9/1.9 MB 33.3 MB/s  0:00:00
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:14.9350432Z Downloading mypy-2.3.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (15.2 MB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:15.1439202Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 15.2/15.2 MB 72.2 MB/s  0:00:00
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:15.1539170Z Downloading pydantic-2.13.4-py3-none-any.whl (472 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:15.2481390Z Downloading pydantic_core-2.46.4-cp314-cp314-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.1 MB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:15.2571370Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.1/2.1 MB 244.8 MB/s  0:00:00
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:15.2671575Z Downloading pytest-9.1.1-py3-none-any.whl (386 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:15.2805032Z Downloading pytest_cov-7.1.0-py3-none-any.whl (22 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:15.2921140Z Downloading pytest_regressions-2.11.0-py3-none-any.whl (25 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:15.3032973Z Downloading ruff-0.16.6-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (10.3 MB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:15.7744916Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 10.3/10.3 MB 21.4 MB/s  0:00:00
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:15.7755409Z Using cached tomlkit-0.15.1-py3-none-any.whl (49 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:15.7852436Z Downloading ast_serialize-0.11.0-cp39-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (1.3 MB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:15.7909742Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.3/1.3 MB 241.4 MB/s  0:00:00
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:15.7917093Z Using cached pluggy-1.6.0-py3-none-any.whl (20 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:15.8012390Z Downloading pytokens-0.4.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (268 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:15.8133750Z Downloading annotated_types-0.8.0-py3-none-any.whl (13 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:15.8247044Z Downloading click-8.5.0-py3-none-any.whl (125 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:15.8433886Z Downloading coverage-7.16.0-cp314-cp314-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (257 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:15.8556493Z Downloading iniconfig-2.3.0-py3-none-any.whl (7.5 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:15.8669967Z Downloading langsmith-0.12.2-py3-none-any.whl (760 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:15.8860142Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 760.7/760.7 kB 28.3 MB/s  0:00:00
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:15.8954157Z Downloading httpx2-2.12.0-py3-none-any.whl (95 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:15.9084526Z Downloading httpcore2-2.12.0-py3-none-any.whl (83 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:15.9239290Z Downloading uuid_utils-0.17.1-cp314-cp314-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (325 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:15.9360863Z Downloading anyio-4.15.1-py3-none-any.whl (132 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:15.9481210Z Downloading distro-1.9.0-py3-none-any.whl (20 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:15.9591132Z Downloading h11-0.16.0-py3-none-any.whl (37 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:15.9750896Z Downloading idna-3.19-py3-none-any.whl (68 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:15.9879791Z Downloading librt-0.15.0-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (523 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:16.0822438Z Downloading mypy_extensions-1.1.0-py3-none-any.whl (5.0 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:16.0968662Z Downloading openpyxl-3.1.5-py2.py3-none-any.whl (250 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:16.1082364Z Downloading orjson-3.12.0-cp314-cp314-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (131 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:16.1224125Z Using cached packaging-26.3-py3-none-any.whl (129 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:16.1231307Z Using cached pathspec-1.1.1-py3-none-any.whl (57 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:16.1326902Z Downloading platformdirs-4.11.7-py3-none-any.whl (23 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:16.1463182Z Downloading playwright-1.62.0-py3-none-manylinux1_x86_64.whl (47.7 MB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:16.5399224Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 47.7/47.7 MB 121.1 MB/s  0:00:00
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:16.5499707Z Downloading greenlet-3.5.5-cp314-cp314-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl (670 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:16.8435729Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 670.8/670.8 kB 1.4 MB/s  0:00:00
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:16.8533303Z Downloading pyee-13.0.1-py3-none-any.whl (15 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:16.9086802Z Downloading pygments-2.21.0-py3-none-any.whl (1.3 MB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:16.9287064Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.3/1.3 MB 52.7 MB/s  0:00:00
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:16.9385737Z Downloading pytest_datadir-1.8.0-py3-none-any.whl (6.5 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:16.9496890Z Downloading requests-2.34.2-py3-none-any.whl (73 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:17.2232308Z Downloading charset_normalizer-3.5.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (251 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:17.2626125Z Downloading urllib3-2.7.0-py3-none-any.whl (131 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:17.2767275Z Downloading certifi-2026.7.22-py3-none-any.whl (136 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:17.2880293Z Downloading requests_toolbelt-1.0.0-py2.py3-none-any.whl (54 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:17.2990003Z Downloading sniffio-1.3.1-py3-none-any.whl (10 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:17.3106856Z Downloading truststore-0.10.4-py3-none-any.whl (18 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:17.3228790Z Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:17.3345642Z Downloading typing_inspection-0.4.4-py3-none-any.whl (14 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:17.4549906Z Downloading xxhash-4.0.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (268 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:17.4743336Z Downloading zstandard-0.25.0-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (5.6 MB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:17.5599248Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.6/5.6 MB 63.1 MB/s  0:00:00
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:17.5699870Z Downloading docling-2.126.0-py3-none-any.whl (5.2 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:17.6115397Z Downloading docling_slim-2.126.0-py3-none-any.whl (814 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:17.6161081Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 814.7/814.7 kB 181.3 MB/s  0:00:00
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:17.6258007Z Downloading accelerate-1.14.0-py3-none-any.whl (389 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:17.6380324Z Downloading beautifulsoup4-4.15.0-py3-none-any.whl (109 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:17.7186469Z Downloading defusedxml-0.7.1-py2.py3-none-any.whl (25 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:17.7303284Z Downloading docling_core-2.95.0-py3-none-any.whl (300 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:17.7463488Z Downloading doclang-0.7.3-py3-none-any.whl (32 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:17.7604987Z Downloading docling_ibm_models-4.0.2-py3-none-any.whl (69 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:17.8062386Z Downloading docling_parse-7.18.0-cp314-cp314-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (10.8 MB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:18.0226778Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 10.8/10.8 MB 48.9 MB/s  0:00:00
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:18.0328011Z Downloading filetype-1.2.0-py2.py3-none-any.whl (19 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:18.0573143Z Downloading httpx-0.28.1-py3-none-any.whl (73 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:18.0724147Z Downloading httpcore-1.0.9-py3-none-any.whl (78 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:18.0844304Z Downloading huggingface_hub-1.30.0-py3-none-any.whl (796 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:18.0897189Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 796.8/796.8 kB 138.3 MB/s  0:00:00
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:18.0994938Z Downloading hf_xet-1.6.0-cp38-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (4.5 MB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:18.2617391Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.5/4.5 MB 26.2 MB/s  0:00:00
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:18.2717570Z Downloading jsonref-1.1.0-py3-none-any.whl (9.4 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:18.2902586Z Downloading jsonschema-4.26.0-py3-none-any.whl (90 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:18.3068919Z Downloading latex2mathml-3.81.1-py3-none-any.whl (79 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:18.3185046Z Downloading mail_parser-4.6.4-py3-none-any.whl (50 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:18.3304350Z Downloading marko-2.2.4-py3-none-any.whl (46 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:18.3414765Z Downloading numpy-2.5.3-cp314-cp314-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (16.7 MB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:18.5553264Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.7/16.7 MB 77.5 MB/s  0:00:00
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:18.5652060Z Downloading pandas-3.0.5-cp314-cp314-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl (11.0 MB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:18.8057169Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.0/11.0 MB 44.9 MB/s  0:00:00
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:18.8154983Z Downloading pillow-12.3.0-cp314-cp314-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (6.9 MB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:19.0753705Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.9/6.9 MB 25.9 MB/s  0:00:00
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:19.0852858Z Downloading pydantic_settings-2.15.0-py3-none-any.whl (69 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:19.3412865Z Downloading pylatexenc-2.11-py2.py3-none-any.whl (137 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:19.3530401Z Downloading pypdfium2-5.13.0-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (3.7 MB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:19.3753684Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.7/3.7 MB 166.4 MB/s  0:00:00
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:19.3852705Z Downloading python_docx-1.2.0-py3-none-any.whl (252 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:19.3967563Z Downloading python_dotenv-1.2.3-py3-none-any.whl (22 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:19.4083582Z Downloading python_oxmsg-0.0.2-py3-none-any.whl (31 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:19.4245552Z Downloading python_pptx-1.0.2-py3-none-any.whl (472 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:19.4619906Z Downloading pyyaml-6.0.3-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (794 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:19.4682665Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 794.2/794.2 kB 143.6 MB/s  0:00:00
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:19.4800514Z Downloading rapidocr-3.9.2-py3-none-any.whl (27.3 MB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:19.6836290Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 27.3/27.3 MB 134.4 MB/s  0:00:00
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:19.6952361Z Downloading rtree-1.4.1-py3-none-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl (507 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:19.7078373Z Downloading safetensors-0.8.0-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (516 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:19.7271505Z Downloading scipy-1.18.1-cp314-cp314-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (35.3 MB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:20.0092277Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 35.3/35.3 MB 124.9 MB/s  0:00:00
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:20.0192084Z Downloading semchunk-3.2.5-py3-none-any.whl (13 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:20.0307939Z Downloading tabulate-0.10.0-py3-none-any.whl (39 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:20.0430244Z Downloading torch-2.14.0-cp314-cp314-manylinux_2_28_x86_64.whl (554.6 MB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:25.9531724Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 554.6/554.6 MB 48.9 MB/s  0:00:05
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:25.9631939Z Downloading cuda_toolkit-13.0.3.0-py2.py3-none-any.whl (2.5 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:25.9747399Z Downloading nvidia_cudnn_cu13-9.24.0.43-py3-none-manylinux_2_27_x86_64.whl (553.1 MB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:32.9938892Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 553.1/553.1 MB 41.1 MB/s  0:00:07
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:33.0048907Z Downloading nvidia_cusparselt_cu13-0.8.1-py3-none-manylinux2014_x86_64.whl (170.1 MB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:34.3369129Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 170.1/170.1 MB 127.8 MB/s  0:00:01
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:34.3473321Z Downloading nvidia_nccl_cu13-2.30.7-py3-none-manylinux_2_18_x86_64.whl (216.0 MB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:37.4875621Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 216.0/216.0 MB 68.7 MB/s  0:00:03
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:37.4975870Z Downloading nvidia_nvshmem_cu13-3.4.5-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (60.4 MB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:38.1859989Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 60.4/60.4 MB 87.6 MB/s  0:00:00
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:38.1962272Z Downloading cuda_bindings-13.3.1-cp314-cp314-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl (6.5 MB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:38.2469316Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.5/6.5 MB 128.1 MB/s  0:00:00
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:38.2570806Z Downloading nvidia_cublas-13.1.1.3-py3-none-manylinux_2_27_x86_64.whl (423.1 MB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:44.9559163Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 423.1/423.1 MB 42.2 MB/s  0:00:06
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:44.9661040Z Downloading nvidia_cuda_cupti-13.0.85-py3-none-manylinux_2_25_x86_64.whl (10.7 MB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:45.0781088Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 10.7/10.7 MB 94.8 MB/s  0:00:00
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:45.0880888Z Downloading nvidia_cuda_nvrtc-13.0.88-py3-none-manylinux2010_x86_64.manylinux_2_12_x86_64.whl (90.2 MB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:45.9638597Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 90.2/90.2 MB 103.0 MB/s  0:00:00
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:45.9742001Z Downloading nvidia_cuda_runtime-13.0.96-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (2.2 MB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:46.1576176Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.2/2.2 MB 10.9 MB/s  0:00:00
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:46.1675629Z Downloading nvidia_cufft-12.0.0.61-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (214.1 MB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:49.8762360Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 214.1/214.1 MB 57.7 MB/s  0:00:03
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:49.8872361Z Downloading nvidia_cufile-1.15.1.6-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (1.2 MB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:49.9504076Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.2/1.2 MB 15.7 MB/s  0:00:00
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:49.9614949Z Downloading nvidia_curand-10.4.0.35-py3-none-manylinux_2_27_x86_64.whl (59.5 MB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:50.7596499Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 59.5/59.5 MB 74.4 MB/s  0:00:00
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:50.7698063Z Downloading nvidia_cusolver-12.0.4.66-py3-none-manylinux_2_27_x86_64.whl (200.9 MB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:53.2461536Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 200.9/200.9 MB 81.1 MB/s  0:00:02
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:53.2563501Z Downloading nvidia_cusparse-12.6.3.3-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (145.9 MB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:54.7511949Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 145.9/145.9 MB 97.6 MB/s  0:00:01
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:54.7616737Z Downloading nvidia_nvjitlink-13.3.33-py3-none-manylinux2010_x86_64.manylinux_2_12_x86_64.whl (40.7 MB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:55.2943501Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 40.7/40.7 MB 76.2 MB/s  0:00:00
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:55.3043854Z Downloading nvidia_nvtx-13.0.85-py3-none-manylinux1_x86_64.manylinux_2_5_x86_64.whl (148 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:55.3177366Z Downloading torchvision-0.29.0-cp314-cp314-manylinux_2_28_x86_64.whl (7.4 MB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:55.4011105Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.4/7.4 MB 86.6 MB/s  0:00:00
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:55.4108779Z Downloading tqdm-4.70.0-py3-none-any.whl (80 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:55.4244867Z Downloading transformers-5.16.1-py3-none-any.whl (12.1 MB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:55.5723194Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.1/12.1 MB 81.2 MB/s  0:00:00
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:55.5823240Z Downloading tokenizers-0.23.2-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (3.4 MB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:55.6107342Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.4/3.4 MB 117.7 MB/s  0:00:00
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:55.6205557Z Downloading tree_sitter-0.26.0-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (668 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:55.6263692Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 668.3/668.3 kB 102.4 MB/s  0:00:00
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:28:55.6363430Z Downloading triton-3.8.0-cp314-cp314-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (248.0 MB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:01.0236035Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 248.0/248.0 MB 46.0 MB/s  0:00:05
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:01.0343801Z Downloading typer-0.26.8-py3-none-any.whl (122 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:01.0480116Z Downloading websockets-16.1.1-cp314-cp314-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (187 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:01.0596921Z Downloading annotated_doc-0.0.5-py3-none-any.whl (5.3 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:01.0711298Z Downloading attrs-26.1.0-py3-none-any.whl (67 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:01.0854015Z Downloading cuda_pathfinder-1.8.1-py3-none-any.whl (62 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:01.0967837Z Downloading filelock-3.32.5-py3-none-any.whl (100 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:01.1080509Z Downloading fsspec-2026.7.0-py3-none-any.whl (206 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:01.1267996Z Downloading jsonschema_specifications-2025.9.1-py3-none-any.whl (18 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:01.1384248Z Downloading lxml-6.1.3-cp314-cp314-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl (5.2 MB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:01.1891903Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.2/5.2 MB 102.7 MB/s  0:00:00
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:01.1992155Z Downloading networkx-3.6.1-py3-none-any.whl (2.1 MB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:01.2660294Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.1/2.1 MB 28.0 MB/s  0:00:00
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:01.2759156Z Downloading omegaconf-2.3.1-py3-none-any.whl (79 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:01.3345691Z Downloading opencv_python-5.0.0.93-cp37-abi3-manylinux_2_28_x86_64.whl (73.8 MB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:02.3266728Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 73.8/73.8 MB 74.3 MB/s  0:00:00
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:02.3375491Z Downloading polyfactory-3.3.0-py3-none-any.whl (62 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:02.3917403Z Downloading faker-40.38.0-py3-none-any.whl (2.1 MB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:02.4324679Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.1/2.1 MB 46.8 MB/s  0:00:00
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:02.4425592Z Downloading pyclipper-1.4.0-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (968 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:02.4691814Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 968.2/968.2 kB 31.3 MB/s  0:00:00
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:02.4787506Z Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl (229 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:02.4908866Z Downloading referencing-0.37.0-py3-none-any.whl (26 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:02.5019596Z Downloading regex-2026.9.3-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (801 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:02.5105842Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 801.4/801.4 kB 81.8 MB/s  0:00:00
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:02.5201282Z Downloading rich-15.0.0-py3-none-any.whl (310 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:02.5368912Z Downloading markdown_it_py-4.2.0-py3-none-any.whl (91 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:02.5482045Z Downloading mdurl-0.1.2-py3-none-any.whl (10.0 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:02.5592241Z Downloading rpds_py-2026.6.3-cp314-cp314-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (367 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:02.5782635Z Using cached setuptools-84.0.0-py3-none-any.whl (818 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:02.5883429Z Downloading shapely-2.1.2-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (3.1 MB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:02.6636049Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.1/3.1 MB 38.5 MB/s  0:00:00
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:02.6732930Z Downloading shellingham-1.5.4-py2.py3-none-any.whl (9.8 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:02.6843709Z Downloading six-1.17.0-py2.py3-none-any.whl (11 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:02.6956373Z Downloading soupsieve-2.9.2-py3-none-any.whl (37 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:02.7066607Z Downloading sympy-1.14.0-py3-none-any.whl (6.3 MB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:02.7811012Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.3/6.3 MB 83.8 MB/s  0:00:00
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:02.7908741Z Downloading mpmath-1.3.0-py3-none-any.whl (536 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:02.7962358Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 536.2/536.2 kB 90.6 MB/s  0:00:00
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:02.8060776Z Downloading tree_sitter_c-0.24.2-cp310-abi3-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (94 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:02.8173684Z Downloading tree_sitter_javascript-0.25.0-cp310-abi3-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (99 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:02.8286167Z Downloading tree_sitter_python-0.25.0-cp310-abi3-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (108 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:02.8398076Z Downloading tree_sitter_typescript-0.23.2-cp39-abi3-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl (344 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:02.8550357Z Downloading xlsxwriter-3.2.9-py3-none-any.whl (175 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:02.8678834Z Downloading colorlog-6.12.0-py3-none-any.whl (12 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:02.8794901Z Downloading et_xmlfile-2.0.0-py3-none-any.whl (18 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:02.8973904Z Downloading jinja2-3.1.6-py3-none-any.whl (134 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:02.9085832Z Downloading markupsafe-3.0.3-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (23 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:02.9197003Z Downloading mpire-2.10.2-py3-none-any.whl (272 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:02.9328432Z Downloading multiprocess-0.70.19-py314-none-any.whl (160 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:02.9461770Z Downloading dill-0.4.1-py3-none-any.whl (120 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:02.9574452Z Downloading olefile-0.47-py2.py3-none-any.whl (114 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:02.9729687Z Downloading psutil-7.2.2-cp36-abi3-manylinux2010_x86_64.manylinux_2_12_x86_64.manylinux_2_28_x86_64.whl (155 kB)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:04.9061928Z Building wheels for collected packages: inv-man-intake, stranske-pdf-extract, antlr4-python3-runtime
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:04.9144238Z   Building editable for inv-man-intake (pyproject.toml): started
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:05.0700758Z   Building editable for inv-man-intake (pyproject.toml): finished with status 'done'
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:05.0704472Z   Created wheel for inv-man-intake: filename=inv_man_intake-0.1.0-0.editable-py3-none-any.whl size=5145 sha256=ab6f645160576479347788940a08f0e3b6d41772e5bbb4af426f6e5d80191d1b
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:05.0705403Z   Stored in directory: /tmp/pip-ephem-wheel-cache-6wzvxaap/wheels/e0/1a/da/6e6b8dfd3f204701b38ce75dcb42a6d0fe7059a3d3483df5d1
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:05.0739981Z   Building wheel for stranske-pdf-extract (pyproject.toml): started
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:05.1079922Z   Building wheel for stranske-pdf-extract (pyproject.toml): finished with status 'done'
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:05.1083368Z   Created wheel for stranske-pdf-extract: filename=stranske_pdf_extract-0.1.0-py3-none-any.whl size=18613 sha256=2b389b85b94e532863bcc98308c73670f471b16b7de812d965b05e2b67436ee9
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:05.1084288Z   Stored in directory: /tmp/pip-ephem-wheel-cache-6wzvxaap/wheels/15/49/96/8b5bd519097b0260249ebf95817413c29a467f6a305650c1dd
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:05.1098064Z   Building wheel for antlr4-python3-runtime (pyproject.toml): started
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:05.2972866Z   Building wheel for antlr4-python3-runtime (pyproject.toml): finished with status 'done'
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:05.2976957Z   Created wheel for antlr4-python3-runtime: filename=antlr4_python3_runtime-4.9.3-py3-none-any.whl size=144590 sha256=e7ff6e783ec9c738c4376d136e2c4d2e708931043be14a17294084a16a9e0cfc
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:05.2978055Z   Stored in directory: /home/runner/.cache/pip/wheels/ea/ca/a6/5ad163e6c66e23b25d4e6a81dba06bce77047ef6257d643728
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:05.2990146Z Successfully built inv-man-intake stranske-pdf-extract antlr4-python3-runtime
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:29:05.5095527Z Installing collected packages: pylatexenc, nvidia-cusparselt-cu13, mpmath, filetype, cuda-toolkit, antlr4-python3-runtime, zstandard, xxhash, XlsxWriter, websockets, uuid-utils, urllib3, typing_extensions, truststore, triton, tree-sitter-typescript, tree-sitter-python, tree-sitter-javascript, tree-sitter-c, tree-sitter, tqdm, tomlkit, tabulate, sympy, stranske-pdf-extract, soupsieve, sniffio, six, shellingham, setuptools, safetensors, ruff, rtree, rpds-py, regex, pyyaml, pytokens, python-dotenv, pypdfium2, pygments, pyclipper, psutil, pluggy, platformdirs, pillow, pathspec, packaging, orjson, olefile, nvidia-nvtx, nvidia-nvshmem-cu13, nvidia-nvjitlink, nvidia-nccl-cu13, nvidia-curand, nvidia-cufile, nvidia-cuda-runtime, nvidia-cuda-nvrtc, nvidia-cuda-cupti, numpy, networkx, mypy-extensions, mdurl, MarkupSafe, marko, mail-parser, lxml, librt, latex2mathml, jsonref, iniconfig, idna, hf-xet, h11, greenlet, fsspec, filelock, faker, et-xmlfile, distro, dill, defusedxml, cuda-pathfinder, coverage, colorlog, click, charset_normalizer, certifi, attrs, ast-serialize, annotated-types, annotated-doc, typing-inspection, Shapely, scipy, requests, referencing, python-pptx, python-oxmsg, python-docx, python-dateutil, pytest, pyee, pydantic-core, polyfactory, openpyxl, opencv_python, omegaconf, nvidia-cusparse, nvidia-cufft, nvidia-cublas, mypy, multiprocess, mpire, markdown-it-py, jinja2, httpcore2, httpcore, cuda-bindings, black, beautifulsoup4, anyio, rich, requests-toolbelt, rapidocr, pytest-datadir, pytest-cov, pydantic, playwright, pandas, nvidia-cusolver, nvidia-cudnn-cu13, jsonschema-specifications, httpx2, httpx, typer, semchunk, pytest-regressions, pydantic-settings, langsmith, jsonschema, huggingface-hub, torch, tokenizers, inv-man-intake, doclang, transformers, torchvision, docling-core, accelerate, docling-slim, docling-parse, docling-ibm-models, docling
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:15.4798160Z 
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:15.4864139Z Successfully installed MarkupSafe-3.0.3 Shapely-2.1.2 XlsxWriter-3.2.9 accelerate-1.14.0 annotated-doc-0.0.5 annotated-types-0.8.0 antlr4-python3-runtime-4.9.3 anyio-4.15.1 ast-serialize-0.11.0 attrs-26.1.0 beautifulsoup4-4.15.0 black-26.5.1 certifi-2026.7.22 charset_normalizer-3.5.1 click-8.5.0 colorlog-6.12.0 coverage-7.16.0 cuda-bindings-13.3.1 cuda-pathfinder-1.8.1 cuda-toolkit-13.0.3.0 defusedxml-0.7.1 dill-0.4.1 distro-1.9.0 doclang-0.7.3 docling-2.126.0 docling-core-2.95.0 docling-ibm-models-4.0.2 docling-parse-7.18.0 docling-slim-2.126.0 et-xmlfile-2.0.0 faker-40.38.0 filelock-3.32.5 filetype-1.2.0 fsspec-2026.7.0 greenlet-3.5.5 h11-0.16.0 hf-xet-1.6.0 httpcore-1.0.9 httpcore2-2.12.0 httpx-0.28.1 httpx2-2.12.0 huggingface-hub-1.30.0 idna-3.19 iniconfig-2.3.0 inv-man-intake-0.1.0 jinja2-3.1.6 jsonref-1.1.0 jsonschema-4.26.0 jsonschema-specifications-2025.9.1 langsmith-0.12.2 latex2mathml-3.81.1 librt-0.15.0 lxml-6.1.3 mail-parser-4.6.4 markdown-it-py-4.2.0 marko-2.2.4 mdurl-0.1.2 mpire-2.10.2 mpmath-1.3.0 multiprocess-0.70.19 mypy-2.3.1 mypy-extensions-1.1.0 networkx-3.6.1 numpy-2.5.3 nvidia-cublas-13.1.1.3 nvidia-cuda-cupti-13.0.85 nvidia-cuda-nvrtc-13.0.88 nvidia-cuda-runtime-13.0.96 nvidia-cudnn-cu13-9.24.0.43 nvidia-cufft-12.0.0.61 nvidia-cufile-1.15.1.6 nvidia-curand-10.4.0.35 nvidia-cusolver-12.0.4.66 nvidia-cusparse-12.6.3.3 nvidia-cusparselt-cu13-0.8.1 nvidia-nccl-cu13-2.30.7 nvidia-nvjitlink-13.3.33 nvidia-nvshmem-cu13-3.4.5 nvidia-nvtx-13.0.85 olefile-0.47 omegaconf-2.3.1 opencv_python-5.0.0.93 openpyxl-3.1.5 orjson-3.12.0 packaging-26.3 pandas-3.0.5 pathspec-1.1.1 pillow-12.3.0 platformdirs-4.11.7 playwright-1.62.0 pluggy-1.6.0 polyfactory-3.3.0 psutil-7.2.2 pyclipper-1.4.0 pydantic-2.13.4 pydantic-core-2.46.4 pydantic-settings-2.15.0 pyee-13.0.1 pygments-2.21.0 pylatexenc-2.11 pypdfium2-5.13.0 pytest-9.1.1 pytest-cov-7.1.0 pytest-datadir-1.8.0 pytest-regressions-2.11.0 python-dateutil-2.9.0.post0 python-docx-1.2.0 python-dotenv-1.2.3 python-oxmsg-0.0.2 python-pptx-1.0.2 pytokens-0.4.1 pyyaml-6.0.3 rapidocr-3.9.2 referencing-0.37.0 regex-2026.9.3 requests-2.34.2 requests-toolbelt-1.0.0 rich-15.0.0 rpds-py-2026.6.3 rtree-1.4.1 ruff-0.16.6 safetensors-0.8.0 scipy-1.18.1 semchunk-3.2.5 setuptools-84.0.0 shellingham-1.5.4 six-1.17.0 sniffio-1.3.1 soupsieve-2.9.2 stranske-pdf-extract-0.1.0 sympy-1.14.0 tabulate-0.10.0 tokenizers-0.23.2 tomlkit-0.15.1 torch-2.14.0 torchvision-0.29.0 tqdm-4.70.0 transformers-5.16.1 tree-sitter-0.26.0 tree-sitter-c-0.24.2 tree-sitter-javascript-0.25.0 tree-sitter-python-0.25.0 tree-sitter-typescript-0.23.2 triton-3.8.0 truststore-0.10.4 typer-0.26.8 typing-inspection-0.4.4 typing_extensions-4.16.0 urllib3-2.7.0 uuid-utils-0.17.1 websockets-16.1.1 xxhash-4.0.1 zstandard-0.25.0
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:16.2115957Z ##[group]Run playwright install --with-deps chromium
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:16.2116233Z ^[[36;1mplaywright install --with-deps chromium^[[0m
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:16.2217014Z shell: /usr/bin/bash -e {0}
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:16.2217154Z env:
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:16.2217300Z   pythonLocation: /opt/hostedtoolcache/Python/3.14.7/x64
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:16.2217526Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.14.7/x64/lib/pkgconfig
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:16.2217891Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.7/x64
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:16.2218089Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.7/x64
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:16.2218284Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.7/x64
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:16.2218480Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.14.7/x64/lib
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:16.2218649Z ##[endgroup]
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:16.4338315Z Installing dependencies...
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:16.4381893Z Switching to root user to install dependencies...
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:16.5136367Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:16.5383457Z Get:6 https://packages.microsoft.com/ubuntu/24.04/prod noble InRelease [3600 B]
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:16.5507992Z Hit:2 http://azure.archive.ubuntu.com/ubuntu noble InRelease
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:16.5525526Z Get:3 http://azure.archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:16.5563913Z Get:4 http://azure.archive.ubuntu.com/ubuntu noble-backports InRelease [126 kB]
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:16.5577872Z Get:5 http://azure.archive.ubuntu.com/ubuntu noble-security InRelease [126 kB]
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:16.6006580Z Get:7 https://packages.microsoft.com/ubuntu/24.04/prod noble/main arm64 Packages [394 kB]
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:16.6193033Z Get:8 https://dl.google.com/linux/chrome-stable/deb stable InRelease [2548 B]
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:16.6225188Z Get:9 https://packages.microsoft.com/ubuntu/24.04/prod noble/main amd64 Packages [441 kB]
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:16.7019399Z Get:10 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages [1260 kB]
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:16.7089100Z Get:11 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 Components [180 kB]
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:16.7118342Z Get:12 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe amd64 Packages [1690 kB]
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:16.7178456Z Get:13 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe amd64 Components [388 kB]
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:16.7199169Z Get:14 http://azure.archive.ubuntu.com/ubuntu noble-updates/restricted amd64 Packages [1536 kB]
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:16.7259391Z Get:15 http://azure.archive.ubuntu.com/ubuntu noble-updates/multiverse amd64 Components [940 B]
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:16.7429709Z Get:16 http://azure.archive.ubuntu.com/ubuntu noble-backports/main amd64 Components [5760 B]
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:16.7440243Z Get:17 http://azure.archive.ubuntu.com/ubuntu noble-backports/universe amd64 Components [12.6 kB]
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:16.7775747Z Get:18 http://azure.archive.ubuntu.com/ubuntu noble-security/main amd64 Packages [1005 kB]
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:16.7822036Z Get:19 http://azure.archive.ubuntu.com/ubuntu noble-security/main Translation-en [213 kB]
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:16.8292300Z Get:20 http://azure.archive.ubuntu.com/ubuntu noble-security/main amd64 Components [46.3 kB]
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:16.8304883Z Get:21 http://azure.archive.ubuntu.com/ubuntu noble-security/universe amd64 Components [76.2 kB]
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:16.8319764Z Get:22 http://azure.archive.ubuntu.com/ubuntu noble-security/restricted amd64 Packages [1441 kB]
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:16.8368768Z Get:23 http://azure.archive.ubuntu.com/ubuntu noble-security/restricted Translation-en [334 kB]
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:16.8743864Z Get:24 https://dl.google.com/linux/chrome-stable/deb stable/main amd64 Packages [1401 B]
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:23.7818247Z Fetched 9410 kB in 1s (11.3 MB/s)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.2500152Z Reading package lists...
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.2690448Z Reading package lists...
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.3983887Z Building dependency tree...
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.3988978Z Reading state information...
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5014683Z libasound2t64 is already the newest version (1.2.11-1ubuntu0.3).
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5015033Z libasound2t64 set to manually installed.
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5015231Z libatk-bridge2.0-0t64 is already the newest version (2.52.0-1build1).
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5015447Z libatk-bridge2.0-0t64 set to manually installed.
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5015640Z libatk1.0-0t64 is already the newest version (2.52.0-1build1).
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5015914Z libatk1.0-0t64 set to manually installed.
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5016185Z libatspi2.0-0t64 is already the newest version (2.52.0-1build1).
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5016473Z libatspi2.0-0t64 set to manually installed.
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5016735Z libcairo2 is already the newest version (1.18.0-3build1).
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5017014Z libcairo2 set to manually installed.
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5017298Z libcups2t64 is already the newest version (2.4.7-1.2ubuntu7.14).
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5017750Z libcups2t64 set to manually installed.
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5018023Z libdbus-1-3 is already the newest version (1.14.10-4ubuntu4.1).
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5018456Z libdbus-1-3 set to manually installed.
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5018714Z libdrm2 is already the newest version (2.4.125-1ubuntu0.1~24.04.2).
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5018996Z libdrm2 set to manually installed.
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5019253Z libgbm1 is already the newest version (25.2.8-0ubuntu0.24.04.2).
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5019518Z libgbm1 set to manually installed.
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5019776Z libglib2.0-0t64 is already the newest version (2.80.0-6ubuntu3.8).
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5020084Z libglib2.0-0t64 set to manually installed.
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5020340Z libnspr4 is already the newest version (2:4.35-1.1build1).
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5020595Z libnspr4 set to manually installed.
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5020837Z libnss3 is already the newest version (2:3.98-1ubuntu0.2).
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5021085Z libnss3 set to manually installed.
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5021337Z libpango-1.0-0 is already the newest version (1.52.1+ds-1build1).
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5021617Z libpango-1.0-0 set to manually installed.
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5021887Z libx11-6 is already the newest version (2:1.8.7-1build1).
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5022148Z libx11-6 set to manually installed.
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5022394Z libxcb1 is already the newest version (1.15-1ubuntu2).
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5022650Z libxcb1 set to manually installed.
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5022920Z libxcomposite1 is already the newest version (1:0.4.5-1build3).
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5023157Z libxcomposite1 set to manually installed.
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5023334Z libxdamage1 is already the newest version (1:1.1.6-1build1).
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5023509Z libxdamage1 set to manually installed.
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5023674Z libxext6 is already the newest version (2:1.3.4-1build2).
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5023842Z libxext6 set to manually installed.
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5024008Z libxfixes3 is already the newest version (1:6.0.0-2build1).
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5024179Z libxfixes3 set to manually installed.
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5024352Z libxkbcommon0 is already the newest version (1.6.0-1build1).
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5024531Z libxkbcommon0 set to manually installed.
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5024700Z libxrandr2 is already the newest version (2:1.5.2-2build1).
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5024871Z libxrandr2 set to manually installed.
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5025033Z xvfb is already the newest version (2:21.1.12-1ubuntu1.6).
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5025260Z fonts-noto-color-emoji is already the newest version (2.047-0ubuntu0.24.04.1).
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5025511Z libfontconfig1 is already the newest version (2.15.0-1.1ubuntu2).
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5025699Z libfontconfig1 set to manually installed.
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5025889Z libfreetype6 is already the newest version (2.13.2+dfsg-1ubuntu0.1).
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5026082Z libfreetype6 set to manually installed.
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5026262Z fonts-liberation is already the newest version (1:2.1.5-3).
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5026447Z fonts-liberation set to manually installed.
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5026625Z The following additional packages will be installed:
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5026925Z   xfonts-encodings xfonts-utils
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5027064Z Recommended packages:
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5027200Z   fonts-ipafont-mincho fonts-tlwg-loma
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5542391Z The following NEW packages will be installed:
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5542790Z   fonts-freefont-ttf fonts-ipafont-gothic fonts-tlwg-loma-otf fonts-unifont
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5544854Z   fonts-wqy-zenhei xfonts-cyrillic xfonts-encodings xfonts-scalable
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5545145Z   xfonts-utils
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5666942Z 0 upgraded, 9 newly installed, 0 to remove and 1 not upgraded.
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5667255Z Need to get 21.1 MB of archives.
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5667454Z After this operation, 79.5 MB of additional disk space will be used.
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.5667811Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.6369051Z Get:2 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-ipafont-gothic all 00303-21ubuntu1 [3513 kB]
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.8544662Z Get:3 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 fonts-freefont-ttf all 20211204+svn4273-2 [5641 kB]
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:24.9612297Z Get:4 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-tlwg-loma-otf all 1:0.7.3-1 [107 kB]
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:25.0068986Z Get:5 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-unifont all 1:15.1.01-1build1 [2993 kB]
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:25.0983342Z Get:6 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-wqy-zenhei all 0.9.45-8 [7472 kB]
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:25.2456176Z Get:7 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 xfonts-encodings all 1:1.0.5-0ubuntu2 [578 kB]
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:25.2936241Z Get:8 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 xfonts-utils amd64 1:7.7+6build3 [94.4 kB]
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:25.3390572Z Get:9 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 xfonts-cyrillic all 1:1.0.5+nmu1 [384 kB]
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:25.3860442Z Get:10 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 xfonts-scalable all 1:1.0.3-1.3 [304 kB]
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:25.6089789Z Fetched 21.1 MB in 1s (25.5 MB/s)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:25.6997843Z Selecting previously unselected package fonts-ipafont-gothic.
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:25.7933312Z (Reading database ... 
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:25.7933471Z (Reading database ... 5%
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:25.7933610Z (Reading database ... 10%
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:25.7933743Z (Reading database ... 15%
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:25.7933868Z (Reading database ... 20%
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:25.7933992Z (Reading database ... 25%
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:25.7934114Z (Reading database ... 30%
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:25.7934235Z (Reading database ... 35%
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:25.7934360Z (Reading database ... 40%
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:25.7934489Z (Reading database ... 45%
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:25.7934886Z (Reading database ... 50%
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:25.7972216Z (Reading database ... 55%
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:25.9475830Z (Reading database ... 60%
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:26.3204556Z (Reading database ... 65%
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:26.5220816Z (Reading database ... 70%
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:26.6653151Z (Reading database ... 75%
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:26.8508787Z (Reading database ... 80%
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:27.0130903Z (Reading database ... 85%
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:27.1398441Z (Reading database ... 90%
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:27.4417397Z (Reading database ... 95%
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:27.4417768Z (Reading database ... 100%
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:27.4418074Z (Reading database ... 201818 files and directories currently installed.)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:27.4453399Z Preparing to unpack .../0-fonts-ipafont-gothic_00303-21ubuntu1_all.deb ...
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:27.4521089Z Unpacking fonts-ipafont-gothic (00303-21ubuntu1) ...
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:27.6623222Z Selecting previously unselected package fonts-freefont-ttf.
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:27.6718711Z Preparing to unpack .../1-fonts-freefont-ttf_20211204+svn4273-2_all.deb ...
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:27.6811559Z Unpacking fonts-freefont-ttf (20211204+svn4273-2) ...
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:27.8677924Z Selecting previously unselected package fonts-tlwg-loma-otf.
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:27.8771528Z Preparing to unpack .../2-fonts-tlwg-loma-otf_1%3a0.7.3-1_all.deb ...
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:27.8779404Z Unpacking fonts-tlwg-loma-otf (1:0.7.3-1) ...
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:27.9137835Z Selecting previously unselected package fonts-unifont.
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:27.9228591Z Preparing to unpack .../3-fonts-unifont_1%3a15.1.01-1build1_all.deb ...
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:27.9558372Z Unpacking fonts-unifont (1:15.1.01-1build1) ...
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:28.1851702Z Selecting previously unselected package fonts-wqy-zenhei.
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:28.1948642Z Preparing to unpack .../4-fonts-wqy-zenhei_0.9.45-8_all.deb ...
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:28.2112501Z Unpacking fonts-wqy-zenhei (0.9.45-8) ...
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:28.6518658Z Selecting previously unselected package xfonts-encodings.
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:28.6612879Z Preparing to unpack .../5-xfonts-encodings_1%3a1.0.5-0ubuntu2_all.deb ...
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:28.6634594Z Unpacking xfonts-encodings (1:1.0.5-0ubuntu2) ...
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:28.7802047Z Selecting previously unselected package xfonts-utils.
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:28.7898792Z Preparing to unpack .../6-xfonts-utils_1%3a7.7+6build3_amd64.deb ...
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:28.7908332Z Unpacking xfonts-utils (1:7.7+6build3) ...
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:28.8549265Z Selecting previously unselected package xfonts-cyrillic.
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:28.8644555Z Preparing to unpack .../7-xfonts-cyrillic_1%3a1.0.5+nmu1_all.deb ...
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:28.9183125Z Unpacking xfonts-cyrillic (1:1.0.5+nmu1) ...
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:29.0153968Z Selecting previously unselected package xfonts-scalable.
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:29.0248778Z Preparing to unpack .../8-xfonts-scalable_1%3a1.0.3-1.3_all.deb ...
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:29.0256679Z Unpacking xfonts-scalable (1:1.0.3-1.3) ...
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:29.1178843Z Setting up fonts-wqy-zenhei (0.9.45-8) ...
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:29.1276643Z Setting up fonts-freefont-ttf (20211204+svn4273-2) ...
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:29.1297128Z Setting up fonts-tlwg-loma-otf (1:0.7.3-1) ...
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:29.1319161Z Setting up xfonts-encodings (1:1.0.5-0ubuntu2) ...
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:29.1341891Z Setting up fonts-ipafont-gothic (00303-21ubuntu1) ...
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:29.1744628Z update-alternatives: using /usr/share/fonts/opentype/ipafont-gothic/ipag.ttf to provide /usr/share/fonts/truetype/fonts-japanese-gothic.ttf (fonts-japanese-gothic.ttf) in auto mode
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:29.1761675Z Setting up fonts-unifont (1:15.1.01-1build1) ...
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:29.1784042Z Setting up xfonts-utils (1:7.7+6build3) ...
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:29.1822495Z Setting up xfonts-cyrillic (1:1.0.5+nmu1) ...
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:29.3477715Z Setting up xfonts-scalable (1:1.0.3-1.3) ...
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:29.3683076Z Processing triggers for man-db (2.12.0-4build2) ...
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:29.3703343Z Not building database; man-db/auto-update is not 'true'.
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:29.3714694Z Processing triggers for fontconfig (2.15.0-1.1ubuntu2) ...
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:29.9239459Z 
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:29.9241434Z Running kernel seems to be up-to-date.
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:29.9241724Z 
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:29.9241969Z No services need to be restarted.
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:29.9242123Z 
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:29.9242242Z No containers need to be restarted.
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:29.9242410Z 
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:29.9242522Z No user sessions are running outdated binaries.
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:29.9242711Z 
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:29.9242884Z No VM guests are running outdated hypervisor (qemu) binaries on this host.
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:30.5446468Z Downloading Chrome for Testing 151.0.7922.34 (playwright chromium v1234) from https://cdn.playwright.dev/builds/cft/151.0.7922.34/linux64/chrome-linux64.zip
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:31.4444462Z |                                                                                |   0% of 184.3 MiB
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:31.7312726Z |■■■■■■■■                                                                        |  10% of 184.3 MiB
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:31.8751155Z |■■■■■■■■■■■■■■■■                                                                |  20% of 184.3 MiB
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:32.0581106Z |■■■■■■■■■■■■■■■■■■■■■■■■                                                        |  30% of 184.3 MiB
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:32.2344869Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                                |  40% of 184.3 MiB
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:32.4899990Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                        |  50% of 184.3 MiB
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:32.7602570Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                |  60% of 184.3 MiB
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:33.0894973Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                        |  70% of 184.3 MiB
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:33.4595925Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                |  80% of 184.3 MiB
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:33.7690590Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■        |  90% of 184.3 MiB
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:33.9055578Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■| 100% of 184.3 MiB
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:35.9567522Z Chrome for Testing 151.0.7922.34 (playwright chromium v1234) downloaded to /home/runner/.cache/ms-playwright/chromium-1234
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:35.9570978Z Downloading FFmpeg (playwright ffmpeg v1011) from https://cdn.playwright.dev/dbazure/download/playwright/builds/ffmpeg/1011/ffmpeg-linux.zip
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:36.7991283Z |                                                                                |   0% of 2.3 MiB
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:36.8220303Z |■■■■■■■■                                                                        |  10% of 2.3 MiB
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:36.8304114Z |■■■■■■■■■■■■■■■■                                                                |  20% of 2.3 MiB
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:36.8336906Z |■■■■■■■■■■■■■■■■■■■■■■■■                                                        |  30% of 2.3 MiB
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:36.8415040Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                                |  40% of 2.3 MiB
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:36.8465584Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                        |  50% of 2.3 MiB
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:36.8479752Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                |  60% of 2.3 MiB
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:36.8540282Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                        |  70% of 2.3 MiB
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:36.8549558Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                |  80% of 2.3 MiB
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:36.8572487Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■        |  90% of 2.3 MiB
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:36.8618871Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■| 100% of 2.3 MiB
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:36.8973394Z FFmpeg (playwright ffmpeg v1011) downloaded to /home/runner/.cache/ms-playwright/ffmpeg-1011
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:36.8975256Z Downloading Chrome Headless Shell 151.0.7922.34 (playwright chromium-headless-shell v1234) from https://cdn.playwright.dev/builds/cft/151.0.7922.34/linux64/chrome-headless-shell-linux64.zip
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:37.8009121Z |                                                                                |   0% of 114.7 MiB
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:37.9774735Z |■■■■■■■■                                                                        |  10% of 114.7 MiB
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:38.0428717Z |■■■■■■■■■■■■■■■■                                                                |  20% of 114.7 MiB
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:38.0979056Z |■■■■■■■■■■■■■■■■■■■■■■■■                                                        |  30% of 114.7 MiB
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:38.1753676Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                                |  40% of 114.7 MiB
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:38.2359703Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                        |  50% of 114.7 MiB
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:38.3096598Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                |  60% of 114.7 MiB
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:38.3543468Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                        |  70% of 114.7 MiB
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:38.4104720Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                |  80% of 114.7 MiB
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:38.4820600Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■        |  90% of 114.7 MiB
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:38.5555562Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■| 100% of 114.7 MiB
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:40.0094460Z Chrome Headless Shell 151.0.7922.34 (playwright chromium-headless-shell v1234) downloaded to /home/runner/.cache/ms-playwright/chromium_headless_shell-1234
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:40.0319451Z ##[group]Run pytest -q tests/app/test_static_spa_browser_e2e.py -p no:cacheprovider -o addopts=""
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:40.0319836Z ^[[36;1mpytest -q tests/app/test_static_spa_browser_e2e.py -p no:cacheprovider -o addopts=""^[[0m
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:40.0350015Z shell: /usr/bin/bash -e {0}
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:40.0350148Z env:
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:40.0350293Z   pythonLocation: /opt/hostedtoolcache/Python/3.14.7/x64
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:40.0350526Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.14.7/x64/lib/pkgconfig
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:40.0350754Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.7/x64
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:40.0350980Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.7/x64
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:40.0351181Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.7/x64
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:40.0351386Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.14.7/x64/lib
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:40.0351555Z   CI: true
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:40.0351659Z   STATIC_SPA_E2E: true
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:30:40.0351778Z ##[endgroup]
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6549121Z FF...F..                                                                 [100%]
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6550725Z =================================== FAILURES ===================================
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6551436Z _ test_static_spa_offline_upload_runs_local_pyodide_packet_path_without_egress _
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6551795Z 
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6552089Z     def test_static_spa_offline_upload_runs_local_pyodide_packet_path_without_egress() -> None:
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6552656Z         """The full initial-load path is local-only and runs the deterministic Pyodide bridge."""
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6553461Z     
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6553631Z         _require_browser_e2e()
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6554003Z         server_context, playwright_context, browser, page, external_requests = _with_page(
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6554396Z             enforce_local_requests=True
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6554620Z         )
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6554775Z         try:
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6554980Z >           _verify_static_spa_interactions(page)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6555164Z 
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6555278Z tests/app/test_static_spa_browser_e2e.py:191: 
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6555591Z _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6555805Z 
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6555960Z page = <Page url='http://127.0.0.1:56505/app/index.html'>
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6556172Z 
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6556312Z     def _verify_static_spa_interactions(page: object) -> None:
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6556707Z         """Exercise the MVP packet surfaces through accessible browser UI."""
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6557029Z     
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6557296Z         page.locator("#packet-upload").set_input_files(str(PACKET_FIXTURE))
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6557812Z         upload_count = page.locator("#upload-count")
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6558101Z         upload_count.wait_for(timeout=45_000)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6558416Z >       assert upload_count.text_content() == "Uploaded file count: 1"
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6558846Z E       AssertionError: assert 'Uploaded file count: 0' == 'Uploaded file count: 1'
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6559193Z E         
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6559376Z E         - Uploaded file count: 1
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6559595Z E         ?                      ^
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6559810Z E         + Uploaded file count: 0
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6560020Z E         ?                      ^
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6560159Z 
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6560303Z tests/app/test_static_spa_browser_e2e.py:79: AssertionError
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6560707Z _____ test_vector_figure_export_renders_a_local_pdf_region_without_egress ______
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6561000Z 
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6561200Z     def test_vector_figure_export_renders_a_local_pdf_region_without_egress() -> None:
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6561726Z         """A PDF drawing operator becomes a cropped local PNG preview, never a network request."""
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6562102Z     
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6562266Z         _require_browser_e2e()
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6562895Z         server_context, playwright_context, browser, page, external_requests = _with_page(
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6563293Z             enforce_local_requests=True
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6563521Z         )
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6563675Z         try:
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6563891Z             page.locator("#packet-upload").set_input_files(
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6564158Z                 {
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6564356Z                     "name": "vector-chart.pdf",
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6564624Z                     "mimeType": "application/pdf",
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6564892Z                     "buffer": _vector_chart_pdf(),
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6565133Z                 }
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6565300Z             )
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6565566Z             graphics_table = page.get_by_role("table", name="Packet graphics")
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6565928Z             vector_row = graphics_table.get_by_role(
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6566252Z                 "row", name=re.compile(r"vector-chart.*Rendered page 1")
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6566544Z             )
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6566737Z             vector_row.wait_for(timeout=45_000)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6566997Z             assert vector_row.is_visible()
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6567315Z             vector_row.get_by_role("button", name="Preview graphic").click()
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6567800Z             preview = page.locator("#graphic-preview img")
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6568093Z             preview.wait_for(timeout=45_000)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6568395Z             assert preview.get_attribute("src").startswith("blob:")
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6568712Z >           assert "bbox" in vector_row.inner_text()
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6569124Z                              ^^^^^^^^^^^^^^^^^^^^^^^
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6569284Z 
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6569388Z tests/app/test_static_spa_browser_e2e.py:222: 
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6569688Z _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6570223Z /opt/hostedtoolcache/Python/3.14.7/x64/lib/python3.14/site-packages/playwright/sync_api/_generated.py:19446: in inner_text
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6570803Z     self._sync(self._impl_obj.inner_text(timeout=to_milliseconds(timeout)))
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6571352Z /opt/hostedtoolcache/Python/3.14.7/x64/lib/python3.14/site-packages/playwright/_impl/_locator.py:498: in inner_text
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6571820Z     return await self._frame.inner_text(
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6572271Z /opt/hostedtoolcache/Python/3.14.7/x64/lib/python3.14/site-packages/playwright/_impl/_frame.py:743: in inner_text
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6572726Z     return await self._channel.send(
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6573163Z /opt/hostedtoolcache/Python/3.14.7/x64/lib/python3.14/site-packages/playwright/_impl/_connection.py:76: in send
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6573643Z     return await self._connection.wrap_api_call(
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6573940Z _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6574148Z 
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6574327Z self = <playwright._impl._connection.Connection object at 0x7f374d24c2d0>
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6574732Z cb = <function Channel.send.<locals>.<lambda> at 0x7f374c768a90>
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6575046Z is_internal = False, title = None
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6575190Z 
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6575272Z     async def wrap_api_call(
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6575565Z         self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6575876Z     ) -> Any:
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6576051Z         if self._api_zone.get():
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6576267Z             return await cb()
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6576493Z         task = asyncio.current_task(self._loop)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6576767Z         parsed_st = _attach_api_call_information(
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6577093Z             getattr(task, "__pw_stack__", None) or _capture_stack_trace(),
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6577394Z             is_internal,
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6577577Z             title,
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6577846Z         )
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6578015Z         self._api_zone.set(parsed_st)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6578229Z         try:
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6578554Z             return await cb()
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6578771Z         except Exception as error:
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6579085Z >           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6579580Z E           playwright._impl._errors.TimeoutError: Locator.inner_text: Timeout 30000ms exceeded.
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6579966Z E           Call log:
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6580431Z E             - waiting for get_by_role("table", name="Packet graphics").get_by_role("row", name=re.compile(r"vector-chart.*Rendered page 1"))
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6580858Z 
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6581180Z /opt/hostedtoolcache/Python/3.14.7/x64/lib/python3.14/site-packages/playwright/_impl/_connection.py:632: TimeoutError
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6581751Z ______________ test_export_panel_produces_artifacts_and_manifest _______________
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6582207Z 
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6582410Z     def test_export_panel_produces_artifacts_and_manifest() -> None:
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6582959Z         """Export panel yields graphic bytes, xlsx, one-pager surface, and a skip reason row."""
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6583525Z     
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6583868Z         _require_browser_e2e()
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6594960Z         server_context, playwright_context, browser, page, external_requests = _with_page(
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6595401Z             enforce_local_requests=True
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6595634Z         )
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6595789Z         try:
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6595972Z >           _verify_export_panel(page)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6596129Z 
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6596238Z tests/app/test_static_spa_browser_e2e.py:318: 
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6596691Z _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6596908Z 
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6597079Z page = <Page url='http://127.0.0.1:58937/app/index.html'>
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6597292Z 
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6597405Z     def _verify_export_panel(page: object) -> None:
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6598223Z         """Drive select → export and assert local artifacts + skipped-with-reason rows."""
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6598580Z     
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6598785Z         page.locator("#packet-upload").set_input_files(
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6599050Z             {
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6599242Z                 "name": "vector-chart.pdf",
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6599495Z                 "mimeType": "application/pdf",
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6599750Z                 "buffer": _vector_chart_pdf(),
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6599976Z             }
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6600133Z         )
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6600379Z         export_table = page.get_by_role("table", name="Export artifacts")
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6600733Z         export_table.wait_for(timeout=45_000)
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6601067Z         page.get_by_role("button", name="Select all artifacts").click()
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6601440Z         page.get_by_role("button", name="Export selected").click()
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6601765Z         status = page.locator("#export-status")
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6602047Z         assert "Exported" in status.inner_text()
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6602287Z     
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6602469Z         artifact_text = export_table.inner_text()
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6602836Z >       assert ".png" in artifact_text.lower() or "graphic" in artifact_text.lower()
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6604037Z E       AssertionError: assert ('.png' in 'select\tartifact\ttype\taction\n\treturn-series.xlsx\tspreadsheet\tdownload\n\tone-pager-summary.html\tone-pager\tdownload' or 'graphic' in 'select\tartifact\ttype\taction\n\treturn-series.xlsx\tspreadsheet\tdownload\n\tone-pager-summary.html\tone-pager\tdownload')
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6605696Z E        +  where 'select\tartifact\ttype\taction\n\treturn-series.xlsx\tspreadsheet\tdownload\n\tone-pager-summary.html\tone-pager\tdownload' = <built-in method lower of str object at 0x7f374cecfaf0>()
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6607041Z E        +    where <built-in method lower of str object at 0x7f374cecfaf0> = 'SELECT\tARTIFACT\tTYPE\tACTION\n\treturn-series.xlsx\tspreadsheet\tDownload\n\tone-pager-summary.html\tone-pager\tDownload'.lower
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6608379Z E        +  and   'select\tartifact\ttype\taction\n\treturn-series.xlsx\tspreadsheet\tdownload\n\tone-pager-summary.html\tone-pager\tdownload' = <built-in method lower of str object at 0x7f374cecfaf0>()
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6609588Z E        +    where <built-in method lower of str object at 0x7f374cecfaf0> = 'SELECT\tARTIFACT\tTYPE\tACTION\n\treturn-series.xlsx\tspreadsheet\tDownload\n\tone-pager-summary.html\tone-pager\tDownload'.lower
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6610247Z 
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6610396Z tests/app/test_static_spa_browser_e2e.py:282: AssertionError
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6610844Z =========================== short test summary info ============================
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6611787Z FAILED tests/app/test_static_spa_browser_e2e.py::test_static_spa_offline_upload_runs_local_pyodide_packet_path_without_egress - AssertionError: assert 'Uploaded file count: 0' == 'Uploaded file count: 1'
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6612511Z   
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6612686Z   - Uploaded file count: 1
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6612896Z   ?                      ^
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6613092Z   + Uploaded file count: 0
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6613281Z   ?                      ^
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6613975Z FAILED tests/app/test_static_spa_browser_e2e.py::test_vector_figure_export_renders_a_local_pdf_region_without_egress - playwright._impl._errors.TimeoutError: Locator.inner_text: Timeout 30000ms exceeded.
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6614697Z Call log:
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6615109Z   - waiting for get_by_role("table", name="Packet graphics").get_by_role("row", name=re.compile(r"vector-chart.*Rendered page 1"))
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6616720Z FAILED tests/app/test_static_spa_browser_e2e.py::test_export_panel_produces_artifacts_and_manifest - AssertionError: assert ('.png' in 'select\tartifact\ttype\taction\n\treturn-series.xlsx\tspreadsheet\tdownload\n\tone-pager-summary.html\tone-pager\tdownload' or 'graphic' in 'select\tartifact\ttype\taction\n\treturn-series.xlsx\tspreadsheet\tdownload\n\tone-pager-summary.html\tone-pager\tdownload')
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6618537Z  +  where 'select\tartifact\ttype\taction\n\treturn-series.xlsx\tspreadsheet\tdownload\n\tone-pager-summary.html\tone-pager\tdownload' = <built-in method lower of str object at 0x7f374cecfaf0>()
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6619604Z  +    where <built-in method lower of str object at 0x7f374cecfaf0> = 'SELECT\tARTIFACT\tTYPE\tACTION\n\treturn-series.xlsx\tspreadsheet\tDownload\n\tone-pager-summary.html\tone-pager\tDownload'.lower
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6620703Z  +  and   'select\tartifact\ttype\taction\n\treturn-series.xlsx\tspreadsheet\tdownload\n\tone-pager-summary.html\tone-pager\tdownload' = <built-in method lower of str object at 0x7f374cecfaf0>()
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6621759Z  +    where <built-in method lower of str object at 0x7f374cecfaf0> = 'SELECT\tARTIFACT\tTYPE\tACTION\n\treturn-series.xlsx\tspreadsheet\tDownload\n\tone-pager-summary.html\tone-pager\tDownload'.lower
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.6622421Z 3 failed, 5 passed in 42.18s
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.8244699Z ##[error]Process completed with exit code 1.
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:26.8333858Z Post job cleanup.
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:27.4137344Z [command]/usr/bin/git version
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:27.4168196Z git version 2.55.0
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:27.4196720Z Temporarily overriding HOME='/home/runner/work/_temp/ac8ac105-ea8d-465e-9ae9-4f3761f7e631' before making global git config changes
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:27.4197425Z Adding repository directory to the temporary git global config as a safe directory
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:27.4200575Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/Inv-Man-Intake/Inv-Man-Intake
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:27.4229001Z Removing SSH command configuration
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:27.4233399Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:27.4260467Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:27.5081333Z Removing HTTP extra header
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:27.5085662Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:27.5113951Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:27.5288473Z Removing includeIf entries pointing to credentials config files
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:27.5293574Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:27.5317102Z includeif.gitdir:/home/runner/work/Inv-Man-Intake/Inv-Man-Intake/.git.path
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:27.5317831Z includeif.gitdir:/home/runner/work/Inv-Man-Intake/Inv-Man-Intake/.git/worktrees/*.path
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:27.5318292Z includeif.gitdir:/github/workspace/.git.path
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:27.5318744Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:27.5323265Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/Inv-Man-Intake/Inv-Man-Intake/.git.path
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:27.5341733Z /home/runner/work/_temp/git-credentials-b2f2bbd0-ccc4-4e8b-a123-1b29dafb25da.config
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:27.5348658Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/Inv-Man-Intake/Inv-Man-Intake/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-b2f2bbd0\-ccc4\-4e8b\-a123\-1b29dafb25da\.config
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:27.5376825Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/Inv-Man-Intake/Inv-Man-Intake/.git/worktrees/*.path
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:27.5394818Z /home/runner/work/_temp/git-credentials-b2f2bbd0-ccc4-4e8b-a123-1b29dafb25da.config
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:27.5401007Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/Inv-Man-Intake/Inv-Man-Intake/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-b2f2bbd0\-ccc4\-4e8b\-a123\-1b29dafb25da\.config
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:27.5431259Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:27.5449871Z /github/runner_temp/git-credentials-b2f2bbd0-ccc4-4e8b-a123-1b29dafb25da.config
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:27.5455155Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-b2f2bbd0\-ccc4\-4e8b\-a123\-1b29dafb25da\.config
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:27.5480810Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:27.5499382Z /github/runner_temp/git-credentials-b2f2bbd0-ccc4-4e8b-a123-1b29dafb25da.config
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:27.5505103Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-b2f2bbd0\-ccc4\-4e8b\-a123\-1b29dafb25da\.config
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:27.5531431Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:27.5705966Z Removing credentials config '/home/runner/work/_temp/git-credentials-b2f2bbd0-ccc4-4e8b-a123-1b29dafb25da.config'
+Static SPA browser E2E	UNKNOWN STEP	2026-09-08T20:31:27.5982563Z Cleaning up orphan processes

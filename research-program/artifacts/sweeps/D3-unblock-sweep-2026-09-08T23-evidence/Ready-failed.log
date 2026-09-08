@@ -1,0 +1,1267 @@
+Python CI / lint-format	UNKNOWN STEP	﻿2026-09-08T23:11:18.2896287Z Current runner version: '2.337.0'
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:18.2917096Z ##[group]Runner Image Provisioner
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:18.2918129Z Hosted Compute Agent
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:18.2918907Z Version: 20260828.587
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:18.2919691Z Commit: abac92662cab4cc7352de4f9f9d2e2419aad9c29
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:18.2920669Z Build Date: 2026-08-28T16:44:25Z
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:18.2921545Z Worker ID: {aaa0473f-ced9-497a-9499-ee6444342d6b}
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:18.2922417Z Azure Region: westus3
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:18.2923111Z ##[endgroup]
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:18.2924592Z ##[group]Operating System
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:18.2925545Z Ubuntu
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:18.2926201Z 24.04.5
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:18.2926880Z LTS
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:18.2927545Z ##[endgroup]
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:18.2928221Z ##[group]Runner Image
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:18.2928992Z Image: ubuntu-24.04
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:18.2929692Z Version: 20260907.300.1
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:18.2931102Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260907.300/images/ubuntu/Ubuntu2404-Readme.md
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:18.2932654Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260907.300
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:18.2933701Z ##[endgroup]
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:18.2935305Z ##[group]GITHUB_TOKEN Permissions
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:18.2937470Z Contents: read
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:18.2938221Z Metadata: read
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:18.2938910Z ##[endgroup]
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:18.2940809Z Secret source: Actions
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:18.2942020Z Prepare workflow directory
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:18.3388596Z Prepare all required actions
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:18.3431021Z Getting action download info
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:18.6423471Z Download action repository 'actions/checkout@v7' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:18.7485523Z Download action repository 'actions/setup-python@v7' (SHA:5fda3b95a4ea91299a34e894583c3862153e4b97)
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:18.8645669Z Download action repository 'actions/setup-node@820762786026740c76f36085b0efc47a31fe5020' (SHA:820762786026740c76f36085b0efc47a31fe5020)
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:18.9751193Z Download action repository 'actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9' (SHA:55cc8345863c7cc4c66a329aec7e433d2d1c52a9)
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.2164454Z Uses: stranske/Workflows/.github/workflows/reusable-10-ci-python.yml@refs/heads/main (1f269cd20716e0ebb4ddd54c0923be9d44a8d5f1)
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.2168696Z ##[group] Inputs
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.2169503Z   working-directory: .
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.2170230Z   workflows_ref: main
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.2170914Z   python-version: 3.12
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.2171634Z   python-versions: ["3.12", "3.13"]
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.2172423Z   changed-files-json: []
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.2173353Z   force-full: false
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.2174068Z   primary-python-version: 3.12
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.2175057Z   marker: 
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.2175735Z   pytest_markers: 
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.2176433Z   pytest_args: 
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.2177343Z   coverage-min: 80
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.2178010Z   lint: true
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.2178671Z   format_check: true
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.2179438Z   typecheck: true
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.2180277Z   run-mypy: true
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.2180954Z   coverage: true
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.2181924Z   cache: true
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.2182660Z   enable-metrics: false
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.2183341Z   slow-test-top: 15
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.2184039Z   slow-test-min-seconds: 1
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.2184930Z   enable-history: false
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.2185668Z   enable-classification: false
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.2186465Z   history-artifact-name: metrics-history.ndjson
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.2187557Z   enable-coverage-delta: false
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.2188576Z   baseline-coverage: 0
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.2189253Z   coverage-alert-drop: 1
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.2189977Z   fail-on-coverage-drop: false
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.2190747Z   coverage-drop-label: coverage-drop
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.2191495Z   enable-soft-gate: false
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.2192211Z   artifact-prefix: gate-
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.2192956Z ##[endgroup]
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.2193986Z Complete job name: Python CI / lint-format
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.2805393Z ##[group]Run actions/checkout@v7
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.2806433Z with:
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.2807132Z   repository: stranske/Workflows
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.2807894Z   ref: main
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.2808533Z   path: .workflows-lib
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.2809315Z   sparse-checkout: .github/actions/setup-api-client
+Python CI / lint-format	UNKNOWN STEP	
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.2810194Z   sparse-checkout-cone-mode: false
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.2813614Z   token: ***
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.2814250Z   ssh-strict: true
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.2815272Z   ssh-user: git
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.2815996Z   persist-credentials: true
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.2816677Z   clean: true
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.2817365Z   fetch-depth: 1
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.2818044Z   fetch-tags: false
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.2818695Z   show-progress: true
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.2819390Z   lfs: false
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.2820058Z   submodules: false
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.2820736Z   set-safe-directory: true
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.2821448Z   allow-unsafe-pr-checkout: false
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.2822431Z env:
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.2823191Z   WORKDIR: .
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.2823874Z   WORKSPACE_ROOT: /home/runner/work/Ready/Ready
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.2824901Z   PROJECT_ROOT: /home/runner/work/Ready/Ready
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.2825714Z ##[endgroup]
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.3677397Z Syncing repository: stranske/Workflows
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.3679530Z ##[group]Getting Git version info
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.3680498Z Working directory is '/home/runner/work/Ready/Ready/.workflows-lib'
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.3681875Z [command]/usr/bin/git version
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.3783740Z git version 2.55.0
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.3805953Z ##[endgroup]
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.3814894Z Temporarily overriding HOME='/home/runner/work/_temp/bfbe036e-4205-4b70-9f97-0e4b09c0b446' before making global git config changes
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.3816576Z Adding repository directory to the temporary git global config as a safe directory
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.3820643Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/Ready/Ready/.workflows-lib
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.3856865Z ##[group]Determining repository object format
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.6896633Z ##[endgroup]
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.6898306Z ##[group]Initializing the repository
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.6903714Z [command]/usr/bin/git init /home/runner/work/Ready/Ready/.workflows-lib
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.7014413Z hint: Using 'master' as the name for the initial branch. This default branch name
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.7015975Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.7017128Z hint: to use in all of your new repositories, which will suppress this warning,
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.7018121Z hint: call:
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.7018808Z hint:
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.7019563Z hint: 	git config --global init.defaultBranch <name>
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.7020391Z hint:
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.7021212Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.7022286Z hint: 'development'. The just-created branch can be renamed via this command:
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.7023275Z hint:
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.7023926Z hint: 	git branch -m <name>
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.7024614Z hint:
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.7025599Z hint: Disable this message with "git config set advice.defaultBranchName false"
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.7030354Z Initialized empty Git repository in /home/runner/work/Ready/Ready/.workflows-lib/.git/
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.7038572Z [command]/usr/bin/git remote add origin https://github.com/stranske/Workflows
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.7086321Z ##[endgroup]
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.7087822Z ##[group]Disabling automatic garbage collection
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.7089187Z [command]/usr/bin/git config --local gc.auto 0
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.7118245Z ##[endgroup]
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.7119632Z ##[group]Setting up auth
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.7120419Z Removing SSH command configuration
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.7122965Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.7153778Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.7488161Z Removing HTTP extra header
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.7489852Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.7494298Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.7642441Z Removing includeIf entries pointing to credentials config files
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.7645448Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.7670919Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.7845554Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-0fc3ef79-6a75-4e94-a47b-772d2fb17a2f.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.7875254Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/Ready/Ready/.workflows-lib/.git.path /home/runner/work/_temp/git-credentials-0fc3ef79-6a75-4e94-a47b-772d2fb17a2f.config
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.7899270Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/Ready/Ready/.workflows-lib/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-0fc3ef79-6a75-4e94-a47b-772d2fb17a2f.config
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.7926924Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.workflows-lib/.git.path /github/runner_temp/git-credentials-0fc3ef79-6a75-4e94-a47b-772d2fb17a2f.config
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.7949769Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.workflows-lib/.git/worktrees/*.path /github/runner_temp/git-credentials-0fc3ef79-6a75-4e94-a47b-772d2fb17a2f.config
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.7974414Z ##[endgroup]
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.7978730Z ##[group]Fetching the repository
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:19.7983750Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --filter=blob:none --depth=1 origin +refs/heads/main*:refs/remotes/origin/main* +refs/tags/main*:refs/tags/main*
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:20.4620173Z From https://github.com/stranske/Workflows
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:20.4621296Z  * [new branch]      main       -> origin/main
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:20.4624482Z ##[endgroup]
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:20.4626163Z ##[group]Determining the checkout info
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:20.4629417Z [command]/usr/bin/git branch --list --remote origin/main
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:20.4653071Z   origin/main
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:20.4655972Z ##[endgroup]
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:20.4657090Z ##[group]Setting up sparse checkout
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:20.4660523Z [command]/usr/bin/git config core.sparseCheckout true
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:20.4685694Z [command]/usr/bin/git rev-parse --git-path info/sparse-checkout
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:20.4726583Z .git/info/sparse-checkout
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:20.4760164Z ##[endgroup]
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:20.4761179Z ##[group]Checking out the ref
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:20.4763532Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.2523452Z Switched to a new branch 'main'
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.2525377Z branch 'main' set up to track 'origin/main'.
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.2528914Z ##[endgroup]
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.2565591Z [command]/usr/bin/git log -1 --format=%H
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.2584444Z 1f269cd20716e0ebb4ddd54c0923be9d44a8d5f1
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3057132Z Prepare all required actions
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3268150Z ##[group]Run ./.workflows-lib/.github/actions/setup-api-client
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3268692Z with:
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3271324Z   github_token: ***
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3271754Z   workflows_app_id: ***
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3277061Z   workflows_app_private_key: ***
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3277568Z   skip_deps: false
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3277947Z   verbose: false
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3278323Z env:
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3278755Z   WORKDIR: .
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3279333Z   WORKSPACE_ROOT: /home/runner/work/Ready/Ready
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3279839Z   PROJECT_ROOT: /home/runner/work/Ready/Ready
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3280341Z ##[endgroup]
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3331984Z ##[start-action display=Install API client dependencies;id=__self.__run]
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3388999Z ##[group]Run set -euo pipefail
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3390102Z ^[[36;1mset -euo pipefail^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3390591Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3391188Z ^[[36;1m# Use dedicated scripts dir, create if needed^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3391695Z ^[[36;1mINSTALL_DIR=""^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3392134Z ^[[36;1mif [ -z "$INSTALL_DIR" ]; then^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3392668Z ^[[36;1m  INSTALL_DIR="${GITHUB_WORKSPACE}/.github/scripts"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3393171Z ^[[36;1mfi^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3393571Z ^[[36;1mmkdir -p "$INSTALL_DIR"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3394039Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3394533Z ^[[36;1mecho "📦 Installing @octokit dependencies in $INSTALL_DIR..."^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3395236Z ^[[36;1mcd "$INSTALL_DIR"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3395679Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3396152Z ^[[36;1mdeclare -a VENDORED_ALIAS_DIRS=()^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3396600Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3397017Z ^[[36;1mcleanup_vendor_aliases() {^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3397508Z ^[[36;1m  if [ "${#VENDORED_ALIAS_DIRS[@]}" -eq 0 ]; then^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3398020Z ^[[36;1m    return 0^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3398411Z ^[[36;1m  fi^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3398795Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3399231Z ^[[36;1m  local cleanup_dir="$INSTALL_DIR"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3399720Z ^[[36;1m  if [ -z "$cleanup_dir" ]; then^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3400265Z ^[[36;1m    echo "::warning::Install dir is empty, skipping vendored alias cleanup"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3400829Z ^[[36;1m    return 0^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3401246Z ^[[36;1m  fi^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3401613Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3402055Z ^[[36;1m  if ! pushd "$cleanup_dir" >/dev/null 2>&1; then^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3402710Z ^[[36;1m    echo "::warning::Failed to enter install dir \"$cleanup_dir\"; skipping vendored alias cleanup"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3403332Z ^[[36;1m    return 0^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3403714Z ^[[36;1m  fi^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3404350Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3404940Z ^[[36;1m  for vendored_alias in "${VENDORED_ALIAS_DIRS[@]}"; do^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3405480Z ^[[36;1m    if [ -z "$vendored_alias" ]; then^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3405958Z ^[[36;1m      continue^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3406400Z ^[[36;1m    fi^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3406810Z ^[[36;1m    rm -rf -- "$vendored_alias" || true^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3407296Z ^[[36;1m    local parent_dir^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3407868Z ^[[36;1m    parent_dir=$(dirname "$vendored_alias")^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3408460Z ^[[36;1m    # Remove empty parent directories that may have been created for scoped packages^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3409157Z ^[[36;1m    while [ "$parent_dir" != "." ] && [ "$parent_dir" != "/" ]; do^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3409699Z ^[[36;1m      rmdir -- "$parent_dir" 2>/dev/null || break^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3410209Z ^[[36;1m      parent_dir=$(dirname "$parent_dir")^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3410719Z ^[[36;1m    done^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3411114Z ^[[36;1m  done^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3411481Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3411923Z ^[[36;1m  popd >/dev/null 2>&1 || true^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3412359Z ^[[36;1m}^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3412715Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3413156Z ^[[36;1mtrap cleanup_vendor_aliases EXIT^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3413808Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3414218Z ^[[36;1mcreate_vendor_aliases() {^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3414959Z ^[[36;1m  if [ ! -f "package.json" ]; then^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3415666Z ^[[36;1m    return 0^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3416077Z ^[[36;1m  fi^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3416461Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3416839Z ^[[36;1m  local alias_tmp^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3417278Z ^[[36;1m  alias_tmp=$(mktemp)^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3417696Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3418257Z ^[[36;1m  local helper_root="${GITHUB_ACTION_PATH:-${GITHUB_WORKSPACE}/.github/actions/setup-api-client}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3419019Z ^[[36;1m  local alias_helper="${helper_root}/create_vendor_aliases.js"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3419566Z ^[[36;1m  if [ ! -f "$alias_helper" ]; then^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3420128Z ^[[36;1m    echo "::error::Missing vendored alias helper: $alias_helper"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3420614Z ^[[36;1m    rm -f "$alias_tmp"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3421039Z ^[[36;1m    return 1^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3421482Z ^[[36;1m  fi^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3421827Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3422278Z ^[[36;1m  if node "$alias_helper" "$INSTALL_DIR" >"$alias_tmp"; then^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3422815Z ^[[36;1m    :^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3423161Z ^[[36;1m  else^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3423663Z ^[[36;1m    echo "::error::Failed to prepare vendored dependency aliases"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3424180Z ^[[36;1m    rm -f "$alias_tmp"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3424562Z ^[[36;1m    return 1^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3425200Z ^[[36;1m  fi^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3425605Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3425979Z ^[[36;1m  while IFS= read -r vendored_alias; do^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3426493Z ^[[36;1m    if [ -z "$vendored_alias" ]; then^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3427143Z ^[[36;1m      continue^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3427545Z ^[[36;1m    fi^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3428040Z ^[[36;1m    VENDORED_ALIAS_DIRS+=("$vendored_alias")^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3428559Z ^[[36;1m  done <"$alias_tmp"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3428960Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3429408Z ^[[36;1m  rm -f "$alias_tmp"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3429852Z ^[[36;1m}^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3430388Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3430830Z ^[[36;1mcreate_vendor_aliases^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3431270Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3431795Z ^[[36;1m# Strip unresolvable file: dependencies from package.json so npm install^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3432474Z ^[[36;1m# doesn't choke when vendored packages are missing (e.g. sparse checkout^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3433177Z ^[[36;1m# that doesn't include node_modules/).  Back up the original first so we^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3433851Z ^[[36;1m# can restore it after npm install — avoids leaking modified state into^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3434479Z ^[[36;1m# downstream steps that expect a clean workspace.^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3435090Z ^[[36;1mSTRIPPED_PKG_JSON=false^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3435592Z ^[[36;1mif [ -f "package.json" ]; then^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3436074Z ^[[36;1m  node -e '^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3436551Z ^[[36;1m    const fs = require("fs");^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3437031Z ^[[36;1m    const path = require("path");^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3437588Z ^[[36;1m    const raw = fs.readFileSync("package.json", "utf8");^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3438167Z ^[[36;1m    const pkg = JSON.parse(raw);^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3438624Z ^[[36;1m    let changed = false;^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3439170Z ^[[36;1m    for (const section of ["dependencies", "devDependencies"]) {^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3439765Z ^[[36;1m      if (!pkg[section]) continue;^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3440294Z ^[[36;1m      for (const [name, spec] of Object.entries(pkg[section])) {^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3440969Z ^[[36;1m        if (typeof spec === "string" && spec.startsWith("file:")) {^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3441547Z ^[[36;1m          const target = path.resolve(spec.slice(5));^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3442077Z ^[[36;1m          if (!fs.existsSync(target)) {^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3442628Z ^[[36;1m            delete pkg[section][name];^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3443217Z ^[[36;1m            changed = true;^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3443832Z ^[[36;1m            console.log("::notice::Stripped unresolvable vendored dep: " + name + " (" + spec + ")");^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3444534Z ^[[36;1m          }^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3445028Z ^[[36;1m        }^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3445489Z ^[[36;1m      }^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3445961Z ^[[36;1m      if (pkg[section] && Object.keys(pkg[section]).length === 0) {^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3446503Z ^[[36;1m        delete pkg[section];^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3447011Z ^[[36;1m      }^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3447472Z ^[[36;1m    }^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3447881Z ^[[36;1m    if (changed) {^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3448445Z ^[[36;1m      fs.copyFileSync("package.json", "package.json.bak");^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3449075Z ^[[36;1m      fs.writeFileSync("package.json", JSON.stringify(pkg, null, 2) + "\n");^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3449668Z ^[[36;1m      process.stdout.write("STRIPPED");^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3450191Z ^[[36;1m    }^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3450572Z ^[[36;1m  '^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3451042Z ^[[36;1m  if [ -f "package.json.bak" ]; then^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3451555Z ^[[36;1m    STRIPPED_PKG_JSON=true^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3451983Z ^[[36;1m  fi^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3452414Z ^[[36;1mfi^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3452897Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3453436Z ^[[36;1m# Vendored packages often ship lifecycle scripts (tshy builds, custom bundlers, etc.)^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3454245Z ^[[36;1m# that expect repo-specific tooling. Disable lifecycle scripts globally so npm install^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3455089Z ^[[36;1m# never invokes those hooks inside CI.^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3455661Z ^[[36;1mexport npm_config_ignore_scripts=true^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3456168Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3456625Z ^[[36;1m# Track if we create package.json so we can clean it up^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3457157Z ^[[36;1mCREATED_PACKAGE_JSON=false^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3457655Z ^[[36;1mif [ ! -f "package.json" ]; then^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3458169Z ^[[36;1m  echo '{"private":true}' > package.json^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3458659Z ^[[36;1m  CREATED_PACKAGE_JSON=true^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3459131Z ^[[36;1mfi^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3459505Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3459973Z ^[[36;1m# Check if already installed (including lru-cache@10.4.3, a required^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3460629Z ^[[36;1m# transitive dep of @octokit/auth-app used for GitHub App token minting).^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3461276Z ^[[36;1mif [ -d "node_modules/@octokit/rest" ] && [ -d "node_modules/lru-cache" ]; then^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3461865Z ^[[36;1m  echo "✅ @octokit/rest already installed"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3462350Z ^[[36;1melse^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3462835Z ^[[36;1m  # Snapshot vendored package metadata before npm install.^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3463390Z ^[[36;1m  # npm may overwrite transitive deps (e.g. minimatch) that are^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3464013Z ^[[36;1m  # committed as vendored packages with intentional version pins.^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3464562Z ^[[36;1m  VENDORED_SNAPSHOT=""^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3465112Z ^[[36;1m  if [ -f "node_modules/minimatch/package.json" ]; then^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3465693Z ^[[36;1m    VENDORED_SNAPSHOT=$(mktemp -d)^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3466168Z ^[[36;1m    for pkg_dir in node_modules/*/; do^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3466632Z ^[[36;1m      if [ -f "${pkg_dir}package.json" ]; then^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3467216Z ^[[36;1m        pkg_name=$(basename "$pkg_dir")^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3467733Z ^[[36;1m        mkdir -p "${VENDORED_SNAPSHOT}/${pkg_name}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3468327Z ^[[36;1m        cp "${pkg_dir}package.json" "${VENDORED_SNAPSHOT}/${pkg_name}/package.json"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3469005Z ^[[36;1m      fi^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3469414Z ^[[36;1m    done^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3469913Z ^[[36;1m    echo "📸 Snapshotted vendored package metadata"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3470402Z ^[[36;1m  fi^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3470789Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3471283Z ^[[36;1m  # Install with pinned versions for consistency.^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3472004Z ^[[36;1m  # lru-cache is an explicit transitive dep of @octokit/auth-app required for^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3472702Z ^[[36;1m  # GitHub App token minting; pin it here so npm always hoists a specific version^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3473390Z ^[[36;1m  # even if a prior cached node_modules state is missing it.^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3473912Z ^[[36;1m  #^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3474432Z ^[[36;1m  # Retry with exponential backoff to survive transient npm registry errors^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3475222Z ^[[36;1m  # (e.g. 403 Forbidden from CDN/rate-limit on safe-buffer, undici, etc.).^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3475863Z ^[[36;1m  NPM_PACKAGES=(^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3476366Z ^[[36;1m    @octokit/rest@20.0.2^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3476834Z ^[[36;1m    @octokit/plugin-retry@6.0.1^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3477320Z ^[[36;1m    @octokit/plugin-paginate-rest@9.1.5^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3477866Z ^[[36;1m    @octokit/auth-app@6.0.3^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3478318Z ^[[36;1m    lru-cache@10.4.3^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3478744Z ^[[36;1m  )^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3479207Z ^[[36;1m  NPM_MAX_RETRIES=3^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3479686Z ^[[36;1m  NPM_BACKOFF=5  # seconds; doubles each retry (5, 10)^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3480206Z ^[[36;1m  npm_installed=false^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3481032Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3481490Z ^[[36;1m  for (( attempt=1; attempt<=NPM_MAX_RETRIES; attempt++ )); do^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3482048Z ^[[36;1m    npm_output=$(mktemp)^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3482528Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3483117Z ^[[36;1m    if npm install --no-save --location=project "${NPM_PACKAGES[@]}" 2>"$npm_output"; then^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3483719Z ^[[36;1m      rm -f "$npm_output"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3484257Z ^[[36;1m      npm_installed=true^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3484773Z ^[[36;1m      break^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3485183Z ^[[36;1m    fi^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3485627Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3486030Z ^[[36;1m    npm_err=$(cat "$npm_output")^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3486494Z ^[[36;1m    rm -f "$npm_output"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3487146Z ^[[36;1m    echo "::warning::npm install attempt $attempt/$NPM_MAX_RETRIES failed (see logs)"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3487781Z ^[[36;1m    echo "::group::npm stderr (attempt $attempt)"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3488271Z ^[[36;1m    echo "$npm_err"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3488771Z ^[[36;1m    echo "::endgroup::"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3489210Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3489736Z ^[[36;1m    # On peer-dep / ERESOLVE failures, also try --legacy-peer-deps^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3490455Z ^[[36;1m    if echo "$npm_err" | grep -qiE 'ERESOLVE|peer dep|Could not resolve dependency'; then^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3491207Z ^[[36;1m      echo "::warning::Detected peer dependency conflict, retrying with --legacy-peer-deps"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3491852Z ^[[36;1m      npm_output=$(mktemp)^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3492521Z ^[[36;1m      if npm install --no-save --legacy-peer-deps --location=project "${NPM_PACKAGES[@]}" 2>"$npm_output"; then^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3493212Z ^[[36;1m        rm -f "$npm_output"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3493679Z ^[[36;1m        npm_installed=true^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3494138Z ^[[36;1m        break^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3494578Z ^[[36;1m      fi^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3495223Z ^[[36;1m      npm_err_legacy=$(cat "$npm_output")^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3495749Z ^[[36;1m      rm -f "$npm_output"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3496329Z ^[[36;1m      echo "::warning::npm install with --legacy-peer-deps failed (see logs)"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3496907Z ^[[36;1m      echo "::group::npm stderr (--legacy-peer-deps)"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3497418Z ^[[36;1m      echo "$npm_err_legacy"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3497888Z ^[[36;1m      echo "::endgroup::"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3498305Z ^[[36;1m    fi^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3498723Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3499133Z ^[[36;1m    if [ "$attempt" -lt "$NPM_MAX_RETRIES" ]; then^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3499666Z ^[[36;1m      echo "::notice::Waiting ${NPM_BACKOFF}s before retry..."^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3500212Z ^[[36;1m      sleep "$NPM_BACKOFF"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3500772Z ^[[36;1m      NPM_BACKOFF=$((NPM_BACKOFF * 2))^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3501196Z ^[[36;1m    fi^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3501624Z ^[[36;1m  done^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3502019Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3502392Z ^[[36;1m  if [ "$npm_installed" != "true" ]; then^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3502968Z ^[[36;1m    echo "::error::npm install failed after $NPM_MAX_RETRIES attempts"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3503499Z ^[[36;1m    exit 1^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3503960Z ^[[36;1m  fi^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3504333Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3505082Z ^[[36;1m  # Restore vendored package metadata that npm may have overwritten^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3505728Z ^[[36;1m  if [ -n "${VENDORED_SNAPSHOT:-}" ] && [ -d "${VENDORED_SNAPSHOT}" ]; then^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3506298Z ^[[36;1m    for pkg_backup in "${VENDORED_SNAPSHOT}"/*/; do^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3506818Z ^[[36;1m      pkg_name=$(basename "$pkg_backup")^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3507367Z ^[[36;1m      if [ -f "node_modules/${pkg_name}/package.json" ] && \^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3507913Z ^[[36;1m         [ -f "${pkg_backup}package.json" ]; then^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3508533Z ^[[36;1m        cp "${pkg_backup}package.json" "node_modules/${pkg_name}/package.json"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3509033Z ^[[36;1m      fi^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3509410Z ^[[36;1m    done^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3509855Z ^[[36;1m    rm -rf "${VENDORED_SNAPSHOT}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3510338Z ^[[36;1m    echo "📸 Restored vendored package metadata"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3510799Z ^[[36;1m  fi^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3511228Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3511628Z ^[[36;1m  echo "✅ @octokit dependencies installed"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3512100Z ^[[36;1mfi^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3512497Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3512951Z ^[[36;1m# Restore original package.json if we stripped file: deps earlier,^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3513544Z ^[[36;1m# so downstream steps see an unmodified workspace.^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3514149Z ^[[36;1mif [ "$STRIPPED_PKG_JSON" = "true" ] && [ -f "package.json.bak" ]; then^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3514679Z ^[[36;1m  mv "package.json.bak" "package.json"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3515248Z ^[[36;1mfi^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3515623Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3515986Z ^[[36;1mcleanup_vendor_aliases^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3516457Z ^[[36;1mtrap - EXIT^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3541816Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3542349Z env:
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3542775Z   WORKDIR: .
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3543225Z   WORKSPACE_ROOT: /home/runner/work/Ready/Ready
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3543742Z   PROJECT_ROOT: /home/runner/work/Ready/Ready
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3544208Z ##[endgroup]
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:21.3614621Z 📦 Installing @octokit dependencies in /home/runner/work/Ready/Ready/.github/scripts...
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5574170Z 
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5575391Z added 66 packages, and audited 67 packages in 3s
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5576092Z 
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5576738Z 1 package is looking for funding
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5577534Z   run `npm fund` for details
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5593667Z 
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5593914Z 1 moderate severity vulnerability
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5594203Z 
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5594574Z To address all issues, run:
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5595198Z   npm audit fix --force
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5595698Z 
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5595923Z Run `npm audit` for details.
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5820995Z ✅ @octokit dependencies installed
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5838306Z ##[end-action id=__self.__run;outcome=success;conclusion=success;duration_ms=3250]
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5842766Z ##[start-action display=Export NODE_PATH for shared deps;id=__self.__run_2]
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5870442Z ##[group]Run set -euo pipefail
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5870983Z ^[[36;1mset -euo pipefail^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5871383Z ^[[36;1mINSTALL_DIR=""^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5871868Z ^[[36;1mif [ -z "$INSTALL_DIR" ]; then^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5872374Z ^[[36;1m  INSTALL_DIR="${GITHUB_WORKSPACE}/.github/scripts"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5872874Z ^[[36;1mfi^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5873516Z ^[[36;1mif [ -d "${INSTALL_DIR}/node_modules" ]; then^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5874008Z ^[[36;1m  if [ -n "${NODE_PATH:-}" ]; then^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5874592Z ^[[36;1m    echo "NODE_PATH=${INSTALL_DIR}/node_modules:${NODE_PATH}" >> "$GITHUB_ENV"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5875583Z ^[[36;1m  else^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5876054Z ^[[36;1m    echo "NODE_PATH=${INSTALL_DIR}/node_modules" >> "$GITHUB_ENV"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5876579Z ^[[36;1m  fi^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5876971Z ^[[36;1melse^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5877617Z ^[[36;1m  echo "::notice::setup-api-client: ${INSTALL_DIR}/node_modules not found; skipping NODE_PATH export."^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5878364Z ^[[36;1mfi^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5902372Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5902988Z env:
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5903383Z   WORKDIR: .
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5903897Z   WORKSPACE_ROOT: /home/runner/work/Ready/Ready
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5904436Z   PROJECT_ROOT: /home/runner/work/Ready/Ready
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5905051Z ##[endgroup]
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5956452Z ##[end-action id=__self.__run_2;outcome=success;conclusion=success;duration_ms=11]
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5965024Z ##[start-action display=Export load balancer tokens;id=__self.export-tokens]
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5985225Z ##[group]Run set -euo pipefail
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5986235Z ^[[36;1mset -euo pipefail^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5986688Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5987098Z ^[[36;1mtoken_count=0^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5987570Z ^[[36;1mavailable_tokens=""^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5988269Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5988742Z ^[[36;1m# Export a variable to GITHUB_ENV^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5989303Z ^[[36;1m# Note: Empty values are intentionally not counted as available tokens^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5989834Z ^[[36;1mexport_var() {^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5990263Z ^[[36;1m  local name="$1"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5990686Z ^[[36;1m  local value="${2-}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5991121Z ^[[36;1m  if [ -z "${value}" ]; then^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5991608Z ^[[36;1m    return 0^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5992001Z ^[[36;1m  fi^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5992372Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5992847Z ^[[36;1m  # Handle multiline values (like private keys)^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5993331Z ^[[36;1m  if [[ "${value}" == *$'\n'* ]]; then^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5993771Z ^[[36;1m    {^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5994211Z ^[[36;1m      echo "${name}<<EOF"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5994641Z ^[[36;1m      printf '%s\n' "${value}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5995283Z ^[[36;1m      echo "EOF"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5995728Z ^[[36;1m    } >>"${GITHUB_ENV}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5996153Z ^[[36;1m  else^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5996634Z ^[[36;1m    printf '%s=%s\n' "${name}" "${value}" >>"${GITHUB_ENV}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5997138Z ^[[36;1m  fi^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5997494Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5997918Z ^[[36;1m  token_count=$((token_count + 1))^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5998402Z ^[[36;1m  if [ -n "$available_tokens" ]; then^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5998881Z ^[[36;1m    available_tokens="${available_tokens},${name}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5999395Z ^[[36;1m  else^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.5999821Z ^[[36;1m    available_tokens="${name}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6000239Z ^[[36;1m  fi^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6000638Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6001055Z ^[[36;1m  if [ "${INPUT_VERBOSE}" = "true" ]; then^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6001534Z ^[[36;1m    echo "  ✅ ${name} exported"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6001984Z ^[[36;1m  fi^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6002375Z ^[[36;1m}^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6002752Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6003181Z ^[[36;1mecho "🔐 Exporting tokens to environment..."^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6003676Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6004117Z ^[[36;1m# Try to extract from JSON secrets first (requires jq)^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6004846Z ^[[36;1mif [ -n "${INPUT_SECRETS:-}" ] && [ "${INPUT_SECRETS}" != "null" ]; then^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6005411Z ^[[36;1m  if ! command -v jq >/dev/null 2>&1; then^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6006250Z ^[[36;1m    echo "::warning::'jq' is not installed; falling back to individual token inputs instead of parsing JSON secrets."^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6006984Z ^[[36;1m    # Fall back to individual inputs when jq is unavailable^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6007558Z ^[[36;1m    SERVICE_BOT_PAT="${INPUT_SERVICE_BOT_PAT:-}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6008053Z ^[[36;1m    ACTIONS_BOT_PAT="${INPUT_ACTIONS_BOT_PAT:-}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6008577Z ^[[36;1m    OWNER_PR_PAT="${INPUT_OWNER_PR_PAT:-}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6009138Z ^[[36;1m    AGENTS_AUTOMATION_PAT="${INPUT_AGENTS_AUTOMATION_PAT:-}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6009653Z ^[[36;1m    WORKFLOWS_APP_ID="${INPUT_WORKFLOWS_APP_ID:-}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6010385Z ^[[36;1m    WORKFLOWS_APP_PRIVATE_KEY="${INPUT_WORKFLOWS_APP_PRIVATE_KEY:-}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6010944Z ^[[36;1m    KEEPALIVE_APP_ID="${INPUT_KEEPALIVE_APP_ID:-}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6011483Z ^[[36;1m    KEEPALIVE_APP_PRIVATE_KEY="${INPUT_KEEPALIVE_APP_PRIVATE_KEY:-}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6012082Z ^[[36;1m    GH_APP_ID="${INPUT_GH_APP_ID:-}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6012585Z ^[[36;1m    GH_APP_PRIVATE_KEY="${INPUT_GH_APP_PRIVATE_KEY:-}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6013060Z ^[[36;1m    APP_1_ID="${INPUT_APP_1_ID:-}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6013616Z ^[[36;1m    APP_1_PRIVATE_KEY="${INPUT_APP_1_PRIVATE_KEY:-}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6014151Z ^[[36;1m    APP_2_ID="${INPUT_APP_2_ID:-}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6014683Z ^[[36;1m    APP_2_PRIVATE_KEY="${INPUT_APP_2_PRIVATE_KEY:-}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6015307Z ^[[36;1m  else^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6015720Z ^[[36;1m    # Parse JSON secrets using jq^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6016233Z ^[[36;1m    extract_secret() {^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6016662Z ^[[36;1m      local key="$1"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6017180Z ^[[36;1m      echo "${INPUT_SECRETS}" | jq -r ".${key} // empty" 2>/dev/null || echo ""^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6017729Z ^[[36;1m    }^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6018113Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6018554Z ^[[36;1m    SERVICE_BOT_PAT=$(extract_secret "SERVICE_BOT_PAT")^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6019135Z ^[[36;1m    ACTIONS_BOT_PAT=$(extract_secret "ACTIONS_BOT_PAT")^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6019663Z ^[[36;1m    OWNER_PR_PAT=$(extract_secret "OWNER_PR_PAT")^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6020250Z ^[[36;1m    AGENTS_AUTOMATION_PAT=$(extract_secret "AGENTS_AUTOMATION_PAT")^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6020837Z ^[[36;1m    WORKFLOWS_APP_ID=$(extract_secret "WORKFLOWS_APP_ID")^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6021434Z ^[[36;1m    WORKFLOWS_APP_PRIVATE_KEY=$(extract_secret "WORKFLOWS_APP_PRIVATE_KEY")^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6022055Z ^[[36;1m    KEEPALIVE_APP_ID=$(extract_secret "KEEPALIVE_APP_ID")^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6022652Z ^[[36;1m    KEEPALIVE_APP_PRIVATE_KEY=$(extract_secret "KEEPALIVE_APP_PRIVATE_KEY")^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6023243Z ^[[36;1m    GH_APP_ID=$(extract_secret "GH_APP_ID")^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6023756Z ^[[36;1m    GH_APP_PRIVATE_KEY=$(extract_secret "GH_APP_PRIVATE_KEY")^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6024286Z ^[[36;1m    APP_1_ID=$(extract_secret "APP_1_ID")^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6025002Z ^[[36;1m    APP_1_PRIVATE_KEY=$(extract_secret "APP_1_PRIVATE_KEY")^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6025598Z ^[[36;1m    APP_2_ID=$(extract_secret "APP_2_ID")^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6026150Z ^[[36;1m    APP_2_PRIVATE_KEY=$(extract_secret "APP_2_PRIVATE_KEY")^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6026610Z ^[[36;1m  fi^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6026993Z ^[[36;1melse^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6027414Z ^[[36;1m  # Fall back to individual inputs^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6027881Z ^[[36;1m  SERVICE_BOT_PAT="${INPUT_SERVICE_BOT_PAT:-}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6028394Z ^[[36;1m  ACTIONS_BOT_PAT="${INPUT_ACTIONS_BOT_PAT:-}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6028909Z ^[[36;1m  OWNER_PR_PAT="${INPUT_OWNER_PR_PAT:-}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6029428Z ^[[36;1m  AGENTS_AUTOMATION_PAT="${INPUT_AGENTS_AUTOMATION_PAT:-}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6029968Z ^[[36;1m  WORKFLOWS_APP_ID="${INPUT_WORKFLOWS_APP_ID:-}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6030546Z ^[[36;1m  WORKFLOWS_APP_PRIVATE_KEY="${INPUT_WORKFLOWS_APP_PRIVATE_KEY:-}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6031067Z ^[[36;1m  KEEPALIVE_APP_ID="${INPUT_KEEPALIVE_APP_ID:-}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6031744Z ^[[36;1m  KEEPALIVE_APP_PRIVATE_KEY="${INPUT_KEEPALIVE_APP_PRIVATE_KEY:-}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6032253Z ^[[36;1m  GH_APP_ID="${INPUT_GH_APP_ID:-}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6032713Z ^[[36;1m  GH_APP_PRIVATE_KEY="${INPUT_GH_APP_PRIVATE_KEY:-}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6033234Z ^[[36;1m  APP_1_ID="${INPUT_APP_1_ID:-}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6033689Z ^[[36;1m  APP_1_PRIVATE_KEY="${INPUT_APP_1_PRIVATE_KEY:-}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6034143Z ^[[36;1m  APP_2_ID="${INPUT_APP_2_ID:-}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6034657Z ^[[36;1m  APP_2_PRIVATE_KEY="${INPUT_APP_2_PRIVATE_KEY:-}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6035339Z ^[[36;1mfi^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6035709Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6036156Z ^[[36;1m# Export GITHUB_TOKEN (GH_TOKEN is the same value, only count once)^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6153872Z ^[[36;1mif [ -n "${INPUT_GITHUB_TOKEN:-}" ]; then^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6154524Z ^[[36;1m  export_var "GITHUB_TOKEN" "${INPUT_GITHUB_TOKEN}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6155196Z ^[[36;1m  # GH_TOKEN is exported but not double-counted^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6155791Z ^[[36;1m  printf '%s=%s\n' "GH_TOKEN" "${INPUT_GITHUB_TOKEN}" >>"${GITHUB_ENV}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6156270Z ^[[36;1mfi^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6156585Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6156905Z ^[[36;1m# Export PATs^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6157363Z ^[[36;1mexport_var "SERVICE_BOT_PAT" "${SERVICE_BOT_PAT:-}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6157960Z ^[[36;1mexport_var "ACTIONS_BOT_PAT" "${ACTIONS_BOT_PAT:-}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6158560Z ^[[36;1mexport_var "OWNER_PR_PAT" "${OWNER_PR_PAT:-}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6159135Z ^[[36;1mexport_var "AGENTS_AUTOMATION_PAT" "${AGENTS_AUTOMATION_PAT:-}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6159692Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6160018Z ^[[36;1m# Export App credentials^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6160496Z ^[[36;1mexport_var "WORKFLOWS_APP_ID" "${WORKFLOWS_APP_ID:-}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6161152Z ^[[36;1mexport_var "WORKFLOWS_APP_PRIVATE_KEY" "${WORKFLOWS_APP_PRIVATE_KEY:-}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6161828Z ^[[36;1mexport_var "KEEPALIVE_APP_ID" "${KEEPALIVE_APP_ID:-}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6162542Z ^[[36;1mexport_var "KEEPALIVE_APP_PRIVATE_KEY" "${KEEPALIVE_APP_PRIVATE_KEY:-}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6163211Z ^[[36;1mexport_var "GH_APP_ID" "${GH_APP_ID:-}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6163779Z ^[[36;1mexport_var "GH_APP_PRIVATE_KEY" "${GH_APP_PRIVATE_KEY:-}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6164332Z ^[[36;1mexport_var "APP_1_ID" "${APP_1_ID:-}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6165071Z ^[[36;1mexport_var "APP_1_PRIVATE_KEY" "${APP_1_PRIVATE_KEY:-}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6165637Z ^[[36;1mexport_var "APP_2_ID" "${APP_2_ID:-}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6166212Z ^[[36;1mexport_var "APP_2_PRIVATE_KEY" "${APP_2_PRIVATE_KEY:-}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6166731Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6167073Z ^[[36;1m# Output summary^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6167510Z ^[[36;1mecho "token_count=${token_count}" >> "$GITHUB_OUTPUT"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6168139Z ^[[36;1mecho "available_tokens=${available_tokens}" >> "$GITHUB_OUTPUT"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6168664Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6169036Z ^[[36;1minstall_dir="${INPUT_INSTALL_DIR:-}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6169545Z ^[[36;1mif [ -z "$install_dir" ]; then^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6170085Z ^[[36;1m  install_dir="${GITHUB_WORKSPACE}/.github/scripts"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6170603Z ^[[36;1mfi^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6170977Z ^[[36;1msetup_contract="$(^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6171422Z ^[[36;1m  AVAILABLE_TOKENS="${available_tokens}" \^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6171928Z ^[[36;1m  TOKEN_COUNT="${token_count}" \^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6172390Z ^[[36;1m  INSTALL_DIR="${install_dir}" \^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6172832Z ^[[36;1m  node <<'NODE'^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6173250Z ^[[36;1mconst fs = require('node:fs');^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6173732Z ^[[36;1mconst path = require('node:path');^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6174164Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6174581Z ^[[36;1mconst installDir = process.env.INSTALL_DIR || '';^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6175360Z ^[[36;1mconst tokenNames = (process.env.AVAILABLE_TOKENS || '')^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6175905Z ^[[36;1m  .split(',')^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6176525Z ^[[36;1m  .map((value) => value.trim())^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6176957Z ^[[36;1m  .filter(Boolean);^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6177396Z ^[[36;1mconst tokenSet = new Set(tokenNames);^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6177882Z ^[[36;1mconst appPairs = [^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6178429Z ^[[36;1m  ['WORKFLOWS_APP', 'WORKFLOWS_APP_ID', 'WORKFLOWS_APP_PRIVATE_KEY'],^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6179146Z ^[[36;1m  ['KEEPALIVE_APP', 'KEEPALIVE_APP_ID', 'KEEPALIVE_APP_PRIVATE_KEY'],^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6179742Z ^[[36;1m  ['GH_APP', 'GH_APP_ID', 'GH_APP_PRIVATE_KEY'],^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6180440Z ^[[36;1m  ['APP_1', 'APP_1_ID', 'APP_1_PRIVATE_KEY'],^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6180972Z ^[[36;1m  ['APP_2', 'APP_2_ID', 'APP_2_PRIVATE_KEY'],^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6181403Z ^[[36;1m];^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6181732Z ^[[36;1mconst authModes = [];^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6182106Z ^[[36;1mif (tokenSet.has('GITHUB_TOKEN')) {^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6182670Z ^[[36;1m  authModes.push({ source: 'GITHUB_TOKEN', mode: 'github-token' });^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6183204Z ^[[36;1m}^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6183535Z ^[[36;1mfor (const name of tokenNames) {^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6183990Z ^[[36;1m  if (name.endsWith('_PAT')) {^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6184489Z ^[[36;1m    authModes.push({ source: name, mode: 'pat' });^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6185184Z ^[[36;1m  }^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6185487Z ^[[36;1m}^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6185887Z ^[[36;1mfor (const [source, idName, keyName] of appPairs) {^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6186462Z ^[[36;1m  if (tokenSet.has(idName) && tokenSet.has(keyName)) {^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6186971Z ^[[36;1m    authModes.push({^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6187334Z ^[[36;1m      source,^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6187722Z ^[[36;1m      mode: 'github-app',^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6188190Z ^[[36;1m      credential_names: [idName, keyName],^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6188621Z ^[[36;1m    });^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6188963Z ^[[36;1m  }^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6189294Z ^[[36;1m}^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6189624Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6190079Z ^[[36;1mconst moduleDir = path.join(installDir, 'node_modules');^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6190868Z ^[[36;1mconst hasModule = (name) => fs.existsSync(path.join(moduleDir, ...name.split('/')));^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6191536Z ^[[36;1mconst contract = {^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6192008Z ^[[36;1m  schema: 'workflows-api-client-setup/v1',^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6192657Z ^[[36;1m  token_count: Number.parseInt(process.env.TOKEN_COUNT || '0', 10) || 0,^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6193304Z ^[[36;1m  available_token_names: tokenNames,^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6193794Z ^[[36;1m  auth_modes: authModes,^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6194236Z ^[[36;1m  dependency_state: {^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6194889Z ^[[36;1m    node_path_ready: fs.existsSync(moduleDir),^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6195498Z ^[[36;1m    octokit_rest_ready: hasModule('@octokit/rest'),^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6196141Z ^[[36;1m    octokit_auth_app_ready: hasModule('@octokit/auth-app'),^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6196742Z ^[[36;1m    lru_cache_ready: hasModule('lru-cache'),^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6197191Z ^[[36;1m  },^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6197494Z ^[[36;1m};^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6197803Z ^[[36;1mprocess.stdout.write(JSON.stringify(contract));^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6198146Z ^[[36;1mNODE^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6198380Z ^[[36;1m)"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6198713Z ^[[36;1mprintf 'setup_contract=%s\n' "$setup_contract" >> "$GITHUB_OUTPUT"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6199090Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6199331Z ^[[36;1mecho ""^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6199600Z ^[[36;1mecho "📊 Token Setup Summary:"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6199936Z ^[[36;1mecho "  Total tokens exported: ${token_count}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6200366Z ^[[36;1mecho "  Setup contract schema: workflows-api-client-setup/v1"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6200766Z ^[[36;1mif [ "${INPUT_VERBOSE}" = "true" ]; then^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6201110Z ^[[36;1m  echo "  Available: ${available_tokens}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6201456Z ^[[36;1m  echo "  Setup contract: ${setup_contract}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6201767Z ^[[36;1mfi^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6201996Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6202422Z ^[[36;1m# Warn if no tokens were exported^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6202770Z ^[[36;1mif [ "${token_count}" -eq 0 ]; then^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6203157Z ^[[36;1m  echo "::warning::No tokens were exported! API calls may fail."^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6203596Z ^[[36;1m  echo "::warning::Ensure secrets are passed to this action."^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6203951Z ^[[36;1mfi^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6222558Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6222924Z env:
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6223172Z   WORKDIR: .
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6223554Z   WORKSPACE_ROOT: /home/runner/work/Ready/Ready
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6223898Z   PROJECT_ROOT: /home/runner/work/Ready/Ready
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6224308Z   NODE_PATH: /home/runner/work/Ready/Ready/.github/scripts/node_modules
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6224857Z   INPUT_SECRETS: 
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6226929Z   INPUT_GITHUB_TOKEN: ***
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6227221Z   INPUT_SERVICE_BOT_PAT: 
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6227483Z   INPUT_ACTIONS_BOT_PAT: 
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6227759Z   INPUT_OWNER_PR_PAT: 
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6228032Z   INPUT_AGENTS_AUTOMATION_PAT: 
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6228330Z   INPUT_WORKFLOWS_APP_ID: ***
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6233349Z   INPUT_WORKFLOWS_APP_PRIVATE_KEY: ***
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6233660Z   INPUT_KEEPALIVE_APP_ID: 
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6233942Z   INPUT_KEEPALIVE_APP_PRIVATE_KEY: 
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6234250Z   INPUT_GH_APP_ID: 
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6234514Z   INPUT_GH_APP_PRIVATE_KEY: 
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6234932Z   INPUT_APP_1_ID: 
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6235225Z   INPUT_APP_1_PRIVATE_KEY: 
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6235535Z   INPUT_APP_2_ID: 
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6235790Z   INPUT_APP_2_PRIVATE_KEY: 
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6236057Z   INPUT_INSTALL_DIR: 
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6236309Z   INPUT_VERBOSE: false
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6236563Z ##[endgroup]
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6273277Z 🔐 Exporting tokens to environment...
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6524298Z 
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6525089Z 📊 Token Setup Summary:
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6525478Z   Total tokens exported: 3
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6526045Z   Setup contract schema: workflows-api-client-setup/v1
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6545623Z ##[end-action id=__self.export-tokens;outcome=success;conclusion=success;duration_ms=57]
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6656909Z ##[group]Run actions/checkout@v7
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6657296Z with:
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6657556Z   submodules: false
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6657815Z   fetch-depth: 1
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6658092Z   repository: stranske/Ready
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6660043Z   token: ***
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6660294Z   ssh-strict: true
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6660580Z   ssh-user: git
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6660855Z   persist-credentials: true
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6661133Z   clean: true
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6661396Z   sparse-checkout-cone-mode: true
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6661699Z   fetch-tags: false
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6661969Z   show-progress: true
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6662231Z   lfs: false
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6662490Z   set-safe-directory: true
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6662791Z   allow-unsafe-pr-checkout: false
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6663082Z env:
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6663316Z   WORKDIR: .
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6663595Z   WORKSPACE_ROOT: /home/runner/work/Ready/Ready
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6663975Z   PROJECT_ROOT: /home/runner/work/Ready/Ready
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6664392Z   NODE_PATH: /home/runner/work/Ready/Ready/.github/scripts/node_modules
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6666556Z   GITHUB_TOKEN: ***
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6668329Z   GH_TOKEN: ***
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6668608Z   WORKFLOWS_APP_ID: ***
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6673552Z   WORKFLOWS_APP_PRIVATE_KEY: ***
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.6673876Z ##[endgroup]
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.7372247Z Syncing repository: stranske/Ready
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.7373764Z ##[group]Getting Git version info
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.7374546Z Working directory is '/home/runner/work/Ready/Ready'
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.7400451Z [command]/usr/bin/git version
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.7435610Z git version 2.55.0
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.7450150Z ##[endgroup]
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.7457557Z Temporarily overriding HOME='/home/runner/work/_temp/e0a6eda8-a403-45d8-8b55-99fa2fd78b95' before making global git config changes
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.7458605Z Adding repository directory to the temporary git global config as a safe directory
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.7462340Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/Ready/Ready
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.7486003Z Deleting the contents of '/home/runner/work/Ready/Ready'
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.7776570Z ##[group]Determining repository object format
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.7777769Z ##[endgroup]
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.7778290Z ##[group]Initializing the repository
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.7782381Z [command]/usr/bin/git init /home/runner/work/Ready/Ready
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.7811076Z hint: Using 'master' as the name for the initial branch. This default branch name
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.7812056Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.7812907Z hint: to use in all of your new repositories, which will suppress this warning,
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.7813628Z hint: call:
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.7814039Z hint:
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.7814567Z hint: 	git config --global init.defaultBranch <name>
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.7815314Z hint:
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.7816048Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.7816927Z hint: 'development'. The just-created branch can be renamed via this command:
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.7817661Z hint:
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.7818156Z hint: 	git branch -m <name>
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.7818653Z hint:
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.7819242Z hint: Disable this message with "git config set advice.defaultBranchName false"
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.7820117Z Initialized empty Git repository in /home/runner/work/Ready/Ready/.git/
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.7821771Z [command]/usr/bin/git remote add origin https://github.com/stranske/Ready
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.7852996Z ##[endgroup]
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.7853777Z ##[group]Disabling automatic garbage collection
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.7854557Z [command]/usr/bin/git config --local gc.auto 0
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.7877431Z ##[endgroup]
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.7877915Z ##[group]Setting up auth
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.7878450Z Removing SSH command configuration
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.7884313Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.7911861Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.8084057Z Removing HTTP extra header
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.8090673Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.8112250Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.8273684Z Removing includeIf entries pointing to credentials config files
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.8278476Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.8307524Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.8476972Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-accd2383-bec1-4ccd-b0ac-3c36df742ea7.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.8507014Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/Ready/Ready/.git.path /home/runner/work/_temp/git-credentials-accd2383-bec1-4ccd-b0ac-3c36df742ea7.config
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.8533137Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/Ready/Ready/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-accd2383-bec1-4ccd-b0ac-3c36df742ea7.config
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.8559290Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-accd2383-bec1-4ccd-b0ac-3c36df742ea7.config
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.8584009Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-accd2383-bec1-4ccd-b0ac-3c36df742ea7.config
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.8606295Z ##[endgroup]
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.8606833Z ##[group]Fetching the repository
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:24.8613957Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +0ee6026f59b513319e5b5eaf93f4867a08cab0ba:refs/remotes/origin/main
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.2579096Z From https://github.com/stranske/Ready
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.2579824Z  * [new ref]         0ee6026f59b513319e5b5eaf93f4867a08cab0ba -> origin/main
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.2589023Z [command]/usr/bin/git branch --list --remote origin/main
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.2613663Z   origin/main
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.2620983Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.2641443Z 0ee6026f59b513319e5b5eaf93f4867a08cab0ba
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.2643902Z ##[endgroup]
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.2644496Z ##[group]Determining the checkout info
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.2645197Z ##[endgroup]
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.2648577Z [command]/usr/bin/git sparse-checkout disable
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.2682590Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.2704343Z ##[group]Checking out the ref
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.2707375Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.3739651Z Switched to a new branch 'main'
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.3740431Z branch 'main' set up to track 'origin/main'.
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.3747241Z ##[endgroup]
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.3777643Z [command]/usr/bin/git log -1 --format=%H
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.3796488Z 0ee6026f59b513319e5b5eaf93f4867a08cab0ba
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.3916875Z ##[group]Run actions/setup-python@v7
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.3917196Z with:
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.3917465Z   python-version: 3.12
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.3917742Z   check-latest: false
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.3919621Z   token: ***
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.3919886Z   update-environment: true
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.3920172Z   allow-prereleases: false
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.3920466Z   freethreaded: false
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.3920731Z env:
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.3920976Z   WORKDIR: .
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.3921265Z   WORKSPACE_ROOT: /home/runner/work/Ready/Ready
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.3921619Z   PROJECT_ROOT: /home/runner/work/Ready/Ready
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.3922028Z   NODE_PATH: /home/runner/work/Ready/Ready/.github/scripts/node_modules
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.3923896Z   GITHUB_TOKEN: ***
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.3925880Z   GH_TOKEN: ***
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.3926175Z   WORKFLOWS_APP_ID: ***
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.3931038Z   WORKFLOWS_APP_PRIVATE_KEY: ***
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.3931329Z ##[endgroup]
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.4867112Z ##[group]Installed versions
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.4929710Z Successfully set up CPython (3.12.14)
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.4930382Z ##[endgroup]
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.5024136Z ##[group]Run actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.5024525Z with:
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.5024952Z   node-version: 24
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.5025226Z   check-latest: false
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.5027052Z   token: ***
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.5027318Z   package-manager-cache: true
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.5027596Z env:
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.5027825Z   WORKDIR: .
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.5028107Z   WORKSPACE_ROOT: /home/runner/work/Ready/Ready
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.5028458Z   PROJECT_ROOT: /home/runner/work/Ready/Ready
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.5028865Z   NODE_PATH: /home/runner/work/Ready/Ready/.github/scripts/node_modules
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.5030754Z   GITHUB_TOKEN: ***
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.5032483Z   GH_TOKEN: ***
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.5032748Z   WORKFLOWS_APP_ID: ***
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.5037755Z   WORKFLOWS_APP_PRIVATE_KEY: ***
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.5038152Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.14/x64
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.5038643Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.14/x64/lib/pkgconfig
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.5039072Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.14/x64
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.5039470Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.14/x64
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.5039871Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.14/x64
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.5040261Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.14/x64/lib
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.5040626Z ##[endgroup]
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.6055015Z Found in cache @ /opt/hostedtoolcache/node/24.20.0/x64
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.6057810Z ##[group]Environment details
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.9956814Z node: v24.20.0
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.9957459Z npm: 11.19.0
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.9957955Z yarn: 1.22.22
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:26.9958756Z ##[endgroup]
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:27.0041011Z ##[group]Run curl -LsSf https://astral.sh/uv/install.sh | sh
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:27.0041489Z ^[[36;1mcurl -LsSf https://astral.sh/uv/install.sh | sh^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:27.0041877Z ^[[36;1mecho "$HOME/.local/bin" >> "$GITHUB_PATH"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:27.0075059Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:27.0075442Z env:
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:27.0075703Z   WORKDIR: .
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:27.0075986Z   WORKSPACE_ROOT: /home/runner/work/Ready/Ready
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:27.0076340Z   PROJECT_ROOT: /home/runner/work/Ready/Ready
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:27.0076752Z   NODE_PATH: /home/runner/work/Ready/Ready/.github/scripts/node_modules
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:27.0078907Z   GITHUB_TOKEN: ***
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:27.0080684Z   GH_TOKEN: ***
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:27.0080968Z   WORKFLOWS_APP_ID: ***
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:27.0086465Z   WORKFLOWS_APP_PRIVATE_KEY: ***
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:27.0086839Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.14/x64
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:27.0087327Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.14/x64/lib/pkgconfig
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:27.0087753Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.14/x64
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:27.0088146Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.14/x64
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:27.0088543Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.14/x64
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:27.0088932Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.14/x64/lib
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:27.0089292Z ##[endgroup]
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:27.1820054Z downloading uv 0.12.11 x86_64-unknown-linux-gnu
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:27.7508164Z installing to /home/runner/.local/bin
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:27.7549191Z   uv
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:27.7562720Z   uvx
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:27.7589095Z everything's installed!
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:27.8589277Z ##[group]Run actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:27.8589665Z with:
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:27.8589928Z   path: ~/.cache/uv
+Python CI / lint-format	UNKNOWN STEP	
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:27.8590567Z   key: uv-Linux-3.12-207e3610e8779eaffffdd3bda9afb628da5cec7b985adab394c688a08278d797-fe3bb89833759f0fed833213997e1272e8ff2363d4e938309a1ce8b5961ab82c
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:27.8591209Z   restore-keys: uv-Linux-
+Python CI / lint-format	UNKNOWN STEP	
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:27.8591510Z   enableCrossOsArchive: false
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:27.8591802Z   fail-on-cache-miss: false
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:27.8592080Z   lookup-only: false
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:27.8592349Z   save-always: false
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:27.8592598Z env:
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:27.8592836Z   WORKDIR: .
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:27.8593121Z   WORKSPACE_ROOT: /home/runner/work/Ready/Ready
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:27.8593471Z   PROJECT_ROOT: /home/runner/work/Ready/Ready
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:27.8593871Z   NODE_PATH: /home/runner/work/Ready/Ready/.github/scripts/node_modules
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:27.8596076Z   GITHUB_TOKEN: ***
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:27.8597974Z   GH_TOKEN: ***
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:27.8598247Z   WORKFLOWS_APP_ID: ***
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:27.8603222Z   WORKFLOWS_APP_PRIVATE_KEY: ***
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:27.8603567Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.14/x64
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:27.8604021Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.14/x64/lib/pkgconfig
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:27.8604446Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.14/x64
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:27.8605259Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.14/x64
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:27.8605659Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.14/x64
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:27.8606050Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.14/x64/lib
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:27.8606407Z ##[endgroup]
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:28.1523902Z Cache hit for: uv-Linux-3.12-207e3610e8779eaffffdd3bda9afb628da5cec7b985adab394c688a08278d797-fe3bb89833759f0fed833213997e1272e8ff2363d4e938309a1ce8b5961ab82c
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:29.4028286Z Received 29360128 of 336157658 (8.7%), 28.0 MBs/sec
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:30.4056789Z Received 188743680 of 336157658 (56.1%), 89.8 MBs/sec
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:31.2171781Z Received 336157658 of 336157658 (100.0%), 113.9 MBs/sec
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:31.2173306Z Cache Size: ~321 MB (336157658 B)
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:31.2233031Z [command]/usr/bin/tar -xf /home/runner/work/_temp/030100ce-dea4-4a0e-ad2f-ed2146d28898/cache.tzst -P -C /home/runner/work/Ready/Ready --use-compress-program unzstd
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.7018182Z Cache restored successfully
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.7584533Z Cache restored from key: uv-Linux-3.12-207e3610e8779eaffffdd3bda9afb628da5cec7b985adab394c688a08278d797-fe3bb89833759f0fed833213997e1272e8ff2363d4e938309a1ce8b5961ab82c
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8195359Z ##[group]Run set -euo pipefail
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8195867Z ^[[36;1mset -euo pipefail^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8196160Z ^[[36;1mstart_ts=$(date +%s)^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8196442Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8196697Z ^[[36;1mto_bool() {^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8197046Z ^[[36;1m  case "$(printf '%s' "${1:-}" | tr '[:upper:]' '[:lower:]')" in^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8197458Z ^[[36;1m    1|true|yes|y|on) echo "true" ;;^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8197791Z ^[[36;1m    *) echo "false" ;;^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8198094Z ^[[36;1m  esac^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8198367Z ^[[36;1m}^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8198624Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8198908Z ^[[36;1mlint_enabled=$(to_bool "$INPUT_LINT")^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8199279Z ^[[36;1mformat_enabled=$(to_bool "$INPUT_FORMAT_CHECK")^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8199672Z ^[[36;1mtypecheck_enabled=$(to_bool "$INPUT_TYPECHECK")^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8200061Z ^[[36;1mrun_mypy_enabled=$(to_bool "$INPUT_RUN_MYPY")^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8200488Z ^[[36;1mcoverage_enabled=$(to_bool "$INPUT_COVERAGE")^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8200922Z ^[[36;1minstall_project_deps=$(to_bool "${INPUT_INSTALL_PROJECT_DEPS:-true}")^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8201329Z ^[[36;1mmypy_enabled="false"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8201713Z ^[[36;1mif [ "$typecheck_enabled" = "true" ] && [ "$run_mypy_enabled" = "true" ]; then^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8202127Z ^[[36;1m  mypy_enabled="true"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8202416Z ^[[36;1mfi^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8202664Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8202907Z ^[[36;1madd_tool() {^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8203188Z ^[[36;1m  specs+=("$1")^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8203469Z ^[[36;1m  tools_installed+=("$2")^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8203773Z ^[[36;1m}^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8204011Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8204255Z ^[[36;1mskip_tool() {^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8204544Z ^[[36;1m  tools_skipped+=("$1")^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8204945Z ^[[36;1m}^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8205194Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8205538Z ^[[36;1m# A pyproject.toml that only carries tool configuration (e.g.^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8206026Z ^[[36;1m# [tool.coverage]) is not an installable distribution. Treat the repo^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8206485Z ^[[36;1m# as a package only when it declares [project] (PEP 621),^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8206946Z ^[[36;1m# [build-system], or [tool.poetry]; otherwise `-e .[app,dev]` fails^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8207410Z ^[[36;1m# for a consumer that merely wants somewhere to keep tool config.^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8207867Z ^[[36;1mpyproject_declares_distribution() {^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8208207Z ^[[36;1m  [ -f pyproject.toml ] || return 1^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8208769Z ^[[36;1m  grep -Eq \^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8209157Z ^[[36;1m    '^[[:space:]]*\[[[:space:]]*(project|build-system|tool\.poetry)[[:space:]]*\]' \^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8209567Z ^[[36;1m    pyproject.toml^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8209843Z ^[[36;1m}^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8210087Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8210362Z ^[[36;1mif [ -n "${PRIVATE_PYPI_TOKEN:-}" ]; then^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8210833Z ^[[36;1m  export PIP_INDEX_URL="https://__token__:${PRIVATE_PYPI_TOKEN}@pypi.org/simple"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8211245Z ^[[36;1mfi^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8211503Z ^[[36;1mspecs=()^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8211770Z ^[[36;1mtools_installed=()^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8212065Z ^[[36;1mtools_skipped=()^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8212335Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8212620Z ^[[36;1mif [ "$install_project_deps" = "true" ]; then^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8212979Z ^[[36;1m  if [ -f requirements.lock ]; then^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8213332Z ^[[36;1m    specs+=('-r' 'requirements.lock')^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8213796Z ^[[36;1m  fi^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8214044Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8214331Z ^[[36;1m  if pyproject_declares_distribution \^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8214779Z ^[[36;1m    || [ -f setup.cfg ] || [ -f setup.py ]; then^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8215165Z ^[[36;1m    specs+=('-e' '.[app,dev]')^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8215592Z ^[[36;1m  fi^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8215855Z ^[[36;1mfi^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8216193Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8216447Z ^[[36;1mblack_spec="black"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8216745Z ^[[36;1mdocformatter_spec="docformatter"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8217073Z ^[[36;1misort_spec="isort"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8217351Z ^[[36;1mruff_spec="ruff"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8217633Z ^[[36;1mmypy_spec="mypy"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8217927Z ^[[36;1mpytest_spec=""^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8218202Z ^[[36;1mpytest_cov_spec=""^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8218486Z ^[[36;1mcoverage_spec=""^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8218762Z ^[[36;1mpytest_xdist_spec=""^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8219142Z ^[[36;1m# Do not install heavyweight "baseline" test deps implicitly.^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8219591Z ^[[36;1m# Repos should declare their own runtime/test dependencies.^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8219962Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8220208Z ^[[36;1mresolve_spec() {^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8220491Z ^[[36;1m  local package=$1^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8220775Z ^[[36;1m  local version=${2:-}^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8221087Z ^[[36;1m  local default_version=${3:-}^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8221407Z ^[[36;1m  if [ -n "$version" ]; then^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8221735Z ^[[36;1m    echo "${package}==${version}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8222069Z ^[[36;1m  elif [ -n "$default_version" ]; then^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8222426Z ^[[36;1m    echo "${package}>=${default_version}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8222747Z ^[[36;1m  else^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8223012Z ^[[36;1m    echo "$package"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8223287Z ^[[36;1m  fi^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8223534Z ^[[36;1m}^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8223785Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8224143Z ^[[36;1mautofix_env="${GITHUB_WORKSPACE}/.github/workflows/autofix-versions.env"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8224566Z ^[[36;1mrequire_exact_pin() {^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8224983Z ^[[36;1m  local tool=$1^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8225284Z ^[[36;1m  local spec=${2:-}^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8225633Z ^[[36;1m  if [ -z "$spec" ] || [ "${spec#*==}" = "$spec" ]; then^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8226173Z ^[[36;1m    echo "Error: ${tool} must be pinned in ${autofix_env}; refusing to install unpinned tooling." >&2^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8226632Z ^[[36;1m    exit 1^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8226900Z ^[[36;1m  fi^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8227144Z ^[[36;1m}^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8227535Z ^[[36;1m# Always honor tool pins when present. Lock files typically only capture runtime deps.^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8227979Z ^[[36;1mif [ -f "$autofix_env" ]; then^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8228379Z ^[[36;1m  # shellcheck source=.github/workflows/autofix-versions.env^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8228765Z ^[[36;1m  source "$autofix_env"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8229140Z ^[[36;1m  black_spec=$(resolve_spec "black" "${BLACK_VERSION:-}" "")^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8229625Z ^[[36;1m  docformatter_spec=$(resolve_spec "docformatter" "${DOCFORMATTER_VERSION:-}" "")^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8230113Z ^[[36;1m  isort_spec=$(resolve_spec "isort" "${ISORT_VERSION:-}" "")^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8230530Z ^[[36;1m  ruff_spec=$(resolve_spec "ruff" "${RUFF_VERSION:-}" "")^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8230959Z ^[[36;1m  mypy_spec=$(resolve_spec "mypy" "${MYPY_VERSION:-}" "")^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8231385Z ^[[36;1m  pytest_spec=$(resolve_spec "pytest" "${PYTEST_VERSION:-}" "")^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8231867Z ^[[36;1m  pytest_cov_spec=$(resolve_spec "pytest-cov" "${PYTEST_COV_VERSION:-}" "")^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8232353Z ^[[36;1m  coverage_spec=$(resolve_spec "coverage" "${COVERAGE_VERSION:-}" "")^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8232863Z ^[[36;1m  pytest_xdist_spec=$(resolve_spec "pytest-xdist" "${PYTEST_XDIST_VERSION:-}" "")^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8233271Z ^[[36;1melse^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8233779Z ^[[36;1m  echo "Error: ${autofix_env} is required; refusing to install unpinned tooling." >&2^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8234202Z ^[[36;1m  exit 1^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8234468Z ^[[36;1mfi^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8234787Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8235087Z ^[[36;1mrequire_exact_pin "pytest" "$pytest_spec"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8235485Z ^[[36;1mrequire_exact_pin "pytest-xdist" "$pytest_xdist_spec"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8235944Z ^[[36;1mif [ "$coverage_enabled" = "true" ]; then^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8236320Z ^[[36;1m  require_exact_pin "pytest-cov" "$pytest_cov_spec"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8236718Z ^[[36;1m  require_exact_pin "coverage" "$coverage_spec"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8237059Z ^[[36;1mfi^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8237312Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8237671Z ^[[36;1m# Always install dev tools - lock files only contain runtime deps, not dev tools^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8238108Z ^[[36;1mif [ "$format_enabled" = "true" ]; then^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8238439Z ^[[36;1m  add_tool "$black_spec" "black"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8238798Z ^[[36;1m  add_tool "$docformatter_spec" "docformatter"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8239146Z ^[[36;1m  add_tool "$isort_spec" "isort"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8239451Z ^[[36;1melse^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8239732Z ^[[36;1m  skip_tool "black (format_check disabled)"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8240113Z ^[[36;1m  skip_tool "docformatter (format_check disabled)"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8240485Z ^[[36;1m  skip_tool "isort (format_check disabled)"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8240806Z ^[[36;1mfi^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8241046Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8241318Z ^[[36;1mif [ "$lint_enabled" = "true" ]; then^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8241639Z ^[[36;1m  add_tool "$ruff_spec" "ruff"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8241932Z ^[[36;1melse^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8242201Z ^[[36;1m  skip_tool "ruff (lint disabled)"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8242508Z ^[[36;1mfi^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8242750Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8243009Z ^[[36;1mif [ "$mypy_enabled" = "true" ]; then^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8243343Z ^[[36;1m  add_tool "$mypy_spec" "mypy"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8243640Z ^[[36;1melse^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8243920Z ^[[36;1m  skip_tool "mypy (typecheck disabled)"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8244236Z ^[[36;1mfi^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8244479Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8244828Z ^[[36;1madd_tool "$pytest_spec" "pytest"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8245191Z ^[[36;1madd_tool "$pytest_xdist_spec" "pytest-xdist"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8245517Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8245796Z ^[[36;1mif [ "$coverage_enabled" = "true" ]; then^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8246153Z ^[[36;1m  add_tool "$pytest_cov_spec" "pytest-cov"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8246516Z ^[[36;1m  add_tool "$coverage_spec" "coverage"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8246826Z ^[[36;1melse^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8247118Z ^[[36;1m  skip_tool "pytest-cov (coverage disabled)"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8247476Z ^[[36;1m  skip_tool "coverage (coverage disabled)"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8247802Z ^[[36;1mfi^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8248042Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8248305Z ^[[36;1mif [ ${#specs[@]} -eq 0 ]; then^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8248712Z ^[[36;1m  echo "No install targets found; skipping dependency installation."^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8249092Z ^[[36;1melse^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8249377Z ^[[36;1m  uv pip install --system "${specs[@]}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8249695Z ^[[36;1mfi^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8249950Z ^[[36;1m^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8250193Z ^[[36;1mend_ts=$(date +%s)^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8250495Z ^[[36;1mduration=$((end_ts - start_ts))^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8250831Z ^[[36;1mif [ -n "${GITHUB_STEP_SUMMARY:-}" ]; then^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8251171Z ^[[36;1m  installed_label="none"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8251476Z ^[[36;1m  skipped_label="none"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8251800Z ^[[36;1m  if [ ${#tools_installed[@]} -gt 0 ]; then^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8252199Z ^[[36;1m    installed_label=$(printf '%s, ' "${tools_installed[@]}")^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8252602Z ^[[36;1m    installed_label=${installed_label%, }^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8252922Z ^[[36;1m  fi^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8253297Z ^[[36;1m  if [ ${#tools_skipped[@]} -gt 0 ]; then^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8253672Z ^[[36;1m    skipped_label=$(printf '%s, ' "${tools_skipped[@]}")^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8254066Z ^[[36;1m    skipped_label=${skipped_label%, }^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8254371Z ^[[36;1m  fi^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8254622Z ^[[36;1m  {^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8255080Z ^[[36;1m    printf '## Dependency installation timing\n'^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8255668Z ^[[36;1m    printf -- '- Duration: %ss\n' "$duration"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8256066Z ^[[36;1m    printf -- '- Tools installed: %s\n' "$installed_label"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8256510Z ^[[36;1m    printf -- '- Tools skipped (disabled): %s\n' "$skipped_label"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8256912Z ^[[36;1m    if [ ${#tools_skipped[@]} -gt 0 ]; then^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8257374Z ^[[36;1m      printf -- '- Note: skipping %d tool(s) avoids extra setup time when disabled.\n' \^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8257810Z ^[[36;1m        "${#tools_skipped[@]}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8258116Z ^[[36;1m    fi^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8258500Z ^[[36;1m    req_hash=$(sha256sum requirements.lock 2>/dev/null | cut -d' ' -f1 || echo none)^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8259062Z ^[[36;1m    pyproject_hash=$(sha256sum pyproject.toml 2>/dev/null | cut -d' ' -f1 || echo none)^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8259527Z ^[[36;1m    printf -- '- Cache key: uv-%s-%s-%s-%s\n' \^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8259875Z ^[[36;1m      "Linux" \^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8260165Z ^[[36;1m      "$INPUT_PYTHON_VERSION" \^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8260485Z ^[[36;1m      "$req_hash" \^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8260772Z ^[[36;1m      "$pyproject_hash"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8261082Z ^[[36;1m  } >>"${GITHUB_STEP_SUMMARY}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8261375Z ^[[36;1mfi^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8282771Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8283165Z env:
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8283418Z   WORKDIR: .
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8283706Z   WORKSPACE_ROOT: /home/runner/work/Ready/Ready
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8284065Z   PROJECT_ROOT: /home/runner/work/Ready/Ready
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8284495Z   NODE_PATH: /home/runner/work/Ready/Ready/.github/scripts/node_modules
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8286666Z   GITHUB_TOKEN: ***
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8288426Z   GH_TOKEN: ***
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8288717Z   WORKFLOWS_APP_ID: ***
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8293702Z   WORKFLOWS_APP_PRIVATE_KEY: ***
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8294060Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.14/x64
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8294534Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.14/x64/lib/pkgconfig
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8295115Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.14/x64
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8295671Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.14/x64
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8296071Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.14/x64
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8296472Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.14/x64/lib
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8296825Z   PRIVATE_PYPI_TOKEN: 
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8297105Z   INPUT_LINT: true
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8297369Z   INPUT_FORMAT_CHECK: true
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8297670Z   INPUT_INSTALL_PROJECT_DEPS: false
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8297978Z   INPUT_TYPECHECK: false
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8298251Z   INPUT_RUN_MYPY: false
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8298515Z   INPUT_COVERAGE: false
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8298788Z   INPUT_PYTHON_VERSION: 3.12
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:32.8299065Z ##[endgroup]
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:33.0211023Z Using Python 3.12.14 environment at: /opt/hostedtoolcache/Python/3.12.14/x64
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:33.1309169Z Resolved 17 packages in 108ms
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:33.1362898Z Downloading pygments (1.2MiB)
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:33.1590680Z  Downloaded pygments
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:33.1592819Z Prepared 7 packages in 27ms
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:33.1679535Z Installed 17 packages in 8ms
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:33.1680135Z  + black==26.5.1
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:33.1680886Z  + charset-normalizer==3.5.1
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:33.1681547Z  + click==8.5.0
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:33.1682068Z  + docformatter==1.7.8
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:33.1682455Z  + execnet==2.1.2
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:33.1683046Z  + iniconfig==2.3.0
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:33.1683807Z  + isort==8.0.1
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:33.1684239Z  + mypy-extensions==1.1.0
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:33.1685095Z  + packaging==26.3
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:33.1685798Z  + pathspec==1.1.1
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:33.1686295Z  + platformdirs==4.11.8
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:33.1687037Z  + pluggy==1.6.0
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:33.1687503Z  + pygments==2.21.0
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:33.1688092Z  + pytest==9.1.1
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:33.1688767Z  + pytest-xdist==3.8.0
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:33.1689581Z  + pytokens==0.4.1
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:33.1690153Z  + ruff==0.16.5
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:33.1793585Z ##[group]Run set -euo pipefail
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:33.1793947Z ^[[36;1mset -euo pipefail^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:33.1794347Z ^[[36;1m# Exclude repo-local tooling directories created during CI setup.^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:33.1795120Z ^[[36;1mblack --check --line-length 100 --exclude '(\.venv|\.workflows-lib|node_modules)' .^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:33.1816125Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:33.1816512Z env:
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:33.1816772Z   WORKDIR: .
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:33.1817070Z   WORKSPACE_ROOT: /home/runner/work/Ready/Ready
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:33.1817431Z   PROJECT_ROOT: /home/runner/work/Ready/Ready
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:33.1817855Z   NODE_PATH: /home/runner/work/Ready/Ready/.github/scripts/node_modules
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:33.1819880Z   GITHUB_TOKEN: ***
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:33.1821655Z   GH_TOKEN: ***
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:33.1821946Z   WORKFLOWS_APP_ID: ***
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:33.1827245Z   WORKFLOWS_APP_PRIVATE_KEY: ***
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:33.1827659Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.14/x64
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:33.1828108Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.14/x64/lib/pkgconfig
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:33.1828545Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.14/x64
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:33.1828948Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.14/x64
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:33.1829359Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.14/x64
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:33.1829763Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.14/x64/lib
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:33.1830125Z ##[endgroup]
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:34.1106504Z would reformat /home/runner/work/Ready/Ready/research-program/artifacts/audits/Counter_Risk-2026-09-08-evidence/finalize_report.py
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:34.1256206Z would reformat /home/runner/work/Ready/Ready/research-program/artifacts/audits/Counter_Risk-2026-09-08-evidence/verify_ops.py
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:34.1286180Z would reformat /home/runner/work/Ready/Ready/research-program/artifacts/audits/Counter_Risk-2026-09-08-evidence/write_core_bodies.py
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:34.1476091Z would reformat /home/runner/work/Ready/Ready/research-program/artifacts/audits/Counter_Risk-2026-09-08-evidence/verify_core.py
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:34.1595884Z would reformat /home/runner/work/Ready/Ready/research-program/artifacts/audits/Counter_Risk-2026-09-08-evidence/write_support.py
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:34.2196086Z would reformat /home/runner/work/Ready/Ready/research-program/artifacts/audits/Travel-Plan-Permission-2026-09-05-assets/expense-proof.py
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:34.2205727Z would reformat /home/runner/work/Ready/Ready/research-program/artifacts/audits/Fine-Art-Archive-2026-09-05-resume/finalize.py
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:34.2405918Z would reformat /home/runner/work/Ready/Ready/research-program/artifacts/audits/Fine-Art-Archive-2026-09-05-resume/reproduce.py
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:34.2608581Z would reformat /home/runner/work/Ready/Ready/research-program/artifacts/audits/Travel-Plan-Permission-2026-09-05-assets/run-panel.py
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:34.2686105Z would reformat /home/runner/work/Ready/Ready/research-program/artifacts/audits/Travel-Plan-Permission-2026-09-05-assets/serve.py
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:34.2762249Z would reformat /home/runner/work/Ready/Ready/research-program/artifacts/audits/Travel-Plan-Permission-2026-09-05-assets/serve-seeded.py
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:34.2785871Z would reformat /home/runner/work/Ready/Ready/research-program/artifacts/audits/Travel-Plan-Permission-2026-09-05-assets/finalize.py
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:34.3776196Z would reformat /home/runner/work/Ready/Ready/research-program/artifacts/audits/Travel-Plan-Permission-2026-09-05-assets/write-issues.py
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:34.3793038Z would reformat /home/runner/work/Ready/Ready/research-program/artifacts/audits/paem-20260907/finalize_report.py
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:34.3915939Z would reformat /home/runner/work/Ready/Ready/research-program/artifacts/audits/lms-20260908-reconciliation/reproduce.py
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:34.4155952Z would reformat /home/runner/work/Ready/Ready/research-program/artifacts/audits/paem-20260907/probe_cli_plotly7.py
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:34.4212320Z would reformat /home/runner/work/Ready/Ready/research-program/artifacts/audits/paem-20260907/probe_cli_bundle.py
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:34.4231884Z would reformat /home/runner/work/Ready/Ready/research-program/artifacts/audits/paem-20260907/probe_cvar_interval.py
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:34.4285961Z would reformat /home/runner/work/Ready/Ready/research-program/artifacts/audits/paem-20260907/probe_installed_sample.py
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:34.4319584Z would reformat /home/runner/work/Ready/Ready/research-program/artifacts/audits/paem-20260907/numeric_repro.py
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:34.4419698Z would reformat /home/runner/work/Ready/Ready/research-program/artifacts/audits/paem-20260907/probe_run_logs_apptest.py
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:34.4465972Z would reformat /home/runner/work/Ready/Ready/research-program/artifacts/audits/paem-20260907/repros/repro_bundle_index_hash_verify.py
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:34.4556047Z would reformat /home/runner/work/Ready/Ready/research-program/artifacts/audits/paem-20260907/repros/repro_manifest_missing_data_files.py
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:34.4595936Z would reformat /home/runner/work/Ready/Ready/research-program/artifacts/audits/paem-20260907/repros/repro_pip_asset_sample_missing.py
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:34.4638793Z would reformat /home/runner/work/Ready/Ready/research-program/artifacts/audits/paem-20260907/repros/repro_manifest_relative_cwd.py
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:34.4795950Z would reformat /home/runner/work/Ready/Ready/research-program/artifacts/audits/paem-20260907/repros/repro_bundle_manifest_stale.py
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:34.5056037Z would reformat /home/runner/work/Ready/Ready/research-program/artifacts/audits/paem-20260907/repros/repro_run_logs_stale_manifest.py
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:34.5155789Z would reformat /home/runner/work/Ready/Ready/research-program/artifacts/audits/tpp-20260907-recovery/reproduce.py
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:34.5593929Z would reformat /home/runner/work/Ready/Ready/research-program/artifacts/audits/paem-20260907/write_issue_drafts.py
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.3310958Z 
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.3312143Z Oh no! 💥 💔 💥
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.3312976Z 29 files would be reformatted, 80 files would be left unchanged.
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.3565660Z ##[error]Process completed with exit code 1.
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.3606149Z ##[group]Run set -euo pipefail
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.3606509Z ^[[36;1mset -euo pipefail^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.3606859Z ^[[36;1mecho "outcome=${FORMAT_OUTCOME}" >> "${GITHUB_OUTPUT}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.3607261Z ^[[36;1mif [ -n "${GITHUB_STEP_SUMMARY:-}" ]; then^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.3607608Z ^[[36;1m  {^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.3607875Z ^[[36;1m    printf '## Format check\n'^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.3608233Z ^[[36;1m    printf -- '- Outcome: %s\n' "${FORMAT_OUTCOME}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.3608589Z ^[[36;1m  } >>"${GITHUB_STEP_SUMMARY}"^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.3608894Z ^[[36;1mfi^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.3609251Z ^[[36;1mif [ "${FORMAT_OUTCOME}" != "success" ] && [ "${FORMAT_OUTCOME}" != "skipped" ]; then^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.3609774Z ^[[36;1m  printf 'Format check failed with outcome: %s\n' "${FORMAT_OUTCOME}" >&2^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.3610162Z ^[[36;1m  exit 1^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.3610417Z ^[[36;1mfi^[[0m
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.3630887Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.3631274Z env:
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.3631545Z   WORKDIR: .
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.3631837Z   WORKSPACE_ROOT: /home/runner/work/Ready/Ready
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.3632200Z   PROJECT_ROOT: /home/runner/work/Ready/Ready
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.3632613Z   NODE_PATH: /home/runner/work/Ready/Ready/.github/scripts/node_modules
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.3634836Z   GITHUB_TOKEN: ***
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.3636619Z   GH_TOKEN: ***
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.3636901Z   WORKFLOWS_APP_ID: ***
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.3641875Z   WORKFLOWS_APP_PRIVATE_KEY: ***
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.3642236Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.14/x64
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.3642700Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.14/x64/lib/pkgconfig
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.3643139Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.14/x64
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.3643554Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.14/x64
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.3643963Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.14/x64
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.3644376Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.14/x64/lib
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.3644836Z   FORMAT_OUTCOME: failure
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.3645134Z ##[endgroup]
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.3686205Z Format check failed with outcome: failure
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.3688834Z ##[error]Process completed with exit code 1.
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.3776837Z Post job cleanup.
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.4458533Z [command]/usr/bin/git version
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.4486019Z git version 2.55.0
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.4518222Z Temporarily overriding HOME='/home/runner/work/_temp/fda9c843-3c89-4eb8-8a00-46a404dffe16' before making global git config changes
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.4519406Z Adding repository directory to the temporary git global config as a safe directory
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.4522148Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/Ready/Ready
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.4544562Z Removing SSH command configuration
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.4549899Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.4576210Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.4737566Z Removing HTTP extra header
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.4741477Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.4765740Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.4919404Z Removing includeIf entries pointing to credentials config files
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.4923768Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.4944662Z includeif.gitdir:/home/runner/work/Ready/Ready/.git.path
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.4945762Z includeif.gitdir:/home/runner/work/Ready/Ready/.git/worktrees/*.path
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.4946254Z includeif.gitdir:/github/workspace/.git.path
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.4946691Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.4950247Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/Ready/Ready/.git.path
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.4966377Z /home/runner/work/_temp/git-credentials-accd2383-bec1-4ccd-b0ac-3c36df742ea7.config
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.4973737Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/Ready/Ready/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-accd2383\-bec1\-4ccd\-b0ac\-3c36df742ea7\.config
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.4997757Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/Ready/Ready/.git/worktrees/*.path
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.5015945Z /home/runner/work/_temp/git-credentials-accd2383-bec1-4ccd-b0ac-3c36df742ea7.config
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.5022610Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/Ready/Ready/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-accd2383\-bec1\-4ccd\-b0ac\-3c36df742ea7\.config
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.5044399Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.5059768Z /github/runner_temp/git-credentials-accd2383-bec1-4ccd-b0ac-3c36df742ea7.config
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.5065086Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-accd2383\-bec1\-4ccd\-b0ac\-3c36df742ea7\.config
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.5087382Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.5103133Z /github/runner_temp/git-credentials-accd2383-bec1-4ccd-b0ac-3c36df742ea7.config
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.5108502Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-accd2383\-bec1\-4ccd\-b0ac\-3c36df742ea7\.config
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.5131243Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.5284523Z Removing credentials config '/home/runner/work/_temp/git-credentials-accd2383-bec1-4ccd-b0ac-3c36df742ea7.config'
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.5390499Z Post job cleanup.
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.6237651Z Evaluate and set job outputs
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.6242525Z Set output 'format_outcome'
+Python CI / lint-format	UNKNOWN STEP	2026-09-08T23:11:36.6244556Z Cleaning up orphan processes
