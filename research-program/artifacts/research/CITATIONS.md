@@ -8,7 +8,7 @@
 | C-skill-curriculum.md | 0 | 0 | 0 |
 | R1-legal-decomposition.md | 17 | 17 | 0 |
 | R2-consultant-report-diffing.md | 16 | 16 | 0 |
-| R3-manager-mosaic-synthesis.md | 12 | 12 | 0 |
+| R3-manager-mosaic-synthesis.md | 12 | 11 | 1 |
 | R4-document-access-substrate.md | 15 | 10 | 5 |
 | R5-output-substrate.md | 10 | 8 | 2 |
 | R6-public-corpora-and-synthetic-data.md | 26 | 19 | 7 |
@@ -17,6 +17,10 @@
 ## Unreachable in B3-interop-architecture.md
 
 - https://…
+
+## Unreachable in R3-manager-mosaic-synthesis.md
+
+- https://evidinvest.com/thesis-monitor
 
 ## Unreachable in R4-document-access-substrate.md
 
