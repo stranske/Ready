@@ -1,0 +1,13 @@
+# Windows operator verification handoff
+
+Status: NOT EXECUTED on this macOS host. Use synthetic fixtures only and an isolated release directory. Do not change operator reservations, source workbooks or live monthly outputs.
+
+1. On Windows, check out the audited revision or the eventual fix, install declared build dependencies and run the existing release assembly command: `python -m counter_risk.build.release --version 0.1.0 --output-dir <scratch-release>`.
+2. Inspect the complete assembled bin directory against PyInstaller's dist directory: Python runtime libraries, extensions, config and templates must survive. The current spec places companions alongside the executable. Record a recursive file inventory and hashes.
+3. From an unrelated directory, execute `<scratch-release>\0.1.0\bin\counter-risk.exe --help`, then `gui --headless --dry-run-discovery --as-of-date 2025-12-31 --config <absolute-fixture-config> --input-root <fixture-root> --output-root <scratch-output>`. Capture stdout, stderr and exit status. Passing help alone is insufficient.
+4. Copy the complete assembled release to a path containing spaces. Exercise `run_counter_risk_gui.cmd` with a command recorder for deterministic selection and argument assertions. The selected executable must be the assembled bin copy, not a global installation. Test a nonzero child result and retained diagnostics.
+5. Launch the actual Tk GUI, verify input and date validation, all three modes, discover selection, repeat-run folder suffixes, error recovery, and each post-run Open button. Record screenshots of initial, discovery, completed and failed states.
+6. Open the shipped XLSM, enumerate and exercise its seven macro controls on synthetic inputs. Confirm settings are passed, the completed run is selected, and links open that run's manifest, summary and PPT folder.
+7. Run fixture replay through the packaged binary and compare captured manifest and workbook values against the reference fixture. Exercise Excel and PowerPoint COM refresh/export, inspect the exported slides and save the evidence. This requires a Windows Office installation; Linux release tests cannot attest it.
+
+Pass criteria: correct packaged process selected, no missing runtime/config assets, schema-valid manifest, numeric fixture equivalence, repeat-run isolation, all links refer to the completed run, readable errors. Fail criteria: any absent runtime companion, global Python fallback, missing output, wrong-run link, macro/COM failure, or unverified output claimed complete. Store logs/screenshots in this evidence directory or the canonical Code/Audits/Counter_Risk assets folder with the tested commit recorded.

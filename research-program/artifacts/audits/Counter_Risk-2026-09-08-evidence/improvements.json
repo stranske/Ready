@@ -1,0 +1,55 @@
+{
+  "improvements": [
+    {
+      "dimension": "usability",
+      "failure_mode": "confusion",
+      "severity": 4,
+      "corroboration": 4,
+      "element": "Result artifact access",
+      "fix_hints": [
+        "Provide an artifact location or explicit retrieval instructions compatible with the static demo.",
+        "Add a visible View results or Download artifacts affordance on the entry page, or a prominent empty-state CTA naming the exact CLI command to run",
+        "Add download links or buttons for the generated artifacts.",
+        "Wire up controls to serve the artifacts.",
+        "Add explicit download link/path or remove the download instruction"
+      ]
+    },
+    {
+      "dimension": "workflow_productivity",
+      "failure_mode": "efficiency_trap",
+      "severity": 4,
+      "corroboration": 3,
+      "element": "Handoff from demo explanation to results",
+      "fix_hints": [
+        "Add a direct artifact link or a precise external handoff destination so users can continue without searching independently.",
+        "Expose a one-click run or results panel on the static entry so browser users can reach outputs without hunting Python entry points",
+        "Implement the workflow to allow users to view the mentioned result artifacts."
+      ]
+    },
+    {
+      "dimension": "help_clarity",
+      "failure_mode": "missing_help",
+      "severity": 3,
+      "corroboration": 3,
+      "element": "Instruction to render artifacts after download",
+      "fix_hints": [
+        "Identify the artifact source and explain the steps needed to obtain and view the files.",
+        "Add explicit download URLs/paths or embed artifact preview; align instructional copy with affordances actually present on the page",
+        "Remove the download instruction if the page is strictly static, or provide the necessary links."
+      ]
+    }
+  ],
+  "coverage_gaps": [
+    "No interactive controls were present, so wired scoring reflects the successful static render only; full workflow wiring was not verified.",
+    "No result artifacts or artifact-viewing transcript were supplied to assess result readability.",
+    "Windows Tk GUI, Excel macro, COM, and assembled executable interactions were not captured and cannot be assessed.",
+    "Windows Tk GUI, Excel macro, COM, and assembled exe surfaces were not exercised (macOS host; driven=false)",
+    "Headless GUI discovery was marked driven but no step transcript or observed outcomes were included in the bundle",
+    "No Gate-1 wiring transcript for interactive production workflows beyond the static browser entry contract",
+    "Unable to evaluate Windows Tk GUI, Excel macro, COM, and assembled exe as they are unavailable on the macOS host.",
+    "No evidence provided for the full Counter Risk GUI application, only the headless run log and a static browser demo.",
+    "Windows Tk GUI, Excel macro, COM and assembled exe surfaces (not driven on macOS host)"
+  ],
+  "n_findings": 3,
+  "n_with_hints": 3
+}

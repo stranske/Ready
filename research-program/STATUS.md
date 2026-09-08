@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-08T17:17:45Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-08T17:28:54Z)
 
-Units: 77 — claimed 1, done 76
+Units: 77 — done 77
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 Claude conservation: off (weekly window available)
@@ -65,7 +65,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D3-unblock-sweep-2026-09-08T07 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D3-unblock-sweep-2026-09-08T15 | D | D | done | cursor | codex | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D-audit-Counter_Risk--2026-09-07T04-47-32Z | D | D | done | codex | driver | Audit stranske/Counter_Risk and file issues (supply 2 <= 2) |
-| D-audit-Counter_Risk--2026-09-08T17-11-36Z | D | D | claimed | codex | codex | Audit stranske/Counter_Risk and file issues (supply 1 <= 2) |
+| D-audit-Counter_Risk--2026-09-08T17-11-36Z | D | D | done | codex | codex | Audit stranske/Counter_Risk and file issues (supply 1 <= 2) |
 | D-audit-Fine-Art-Archive--2026-09-05T04-00-31Z | D | D | done | codex | codex | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 2) |
 | D-audit-Fine-Art-Archive--2026-09-06T04-25-53Z | D | D | done | codex | driver | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 3) |
 | D-audit-Manager-Mosaic--2026-09-05T04-00-25Z | D | D | done | codex | driver | Audit stranske/Manager-Mosaic and file issues (supply 2 <= 2) |
@@ -88,7 +88,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-08T07:26:20Z — D3-unblock-sweep-2026-09-08T07 — done — gemini produced 1165 words at artifacts/sweeps/D3-unblock-sweep-2026-09-08T07.md in 1336s
 - 2026-09-08T07:41:37Z — citations — enqueued B1-citefix-R3-manager-mosaic-synthesis
 - 2026-09-08T07:41:37Z — B1-citefix-R3-manager-mosaic-synthesis — route — router picked gemini from ['codex', 'cursor', 'gemini']
 - 2026-09-08T07:41:37Z — B1-citefix-R3-manager-mosaic-synthesis — claimed by driver (agent gemini)
@@ -100,6 +99,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-08T17:11:36Z — refill — Counter_Risk: open=1 <= 2 → audit queued
 - 2026-09-08T17:11:40Z — D-audit-Counter_Risk--2026-09-08T17-11-36Z — route — router picked codex from ['codex']
 - 2026-09-08T17:11:40Z — D-audit-Counter_Risk--2026-09-08T17-11-36Z — claimed by codex (agent codex)
+- 2026-09-08T17:28:54Z — D-audit-Counter_Risk--2026-09-08T17-11-36Z — done — Verified five code defects and one documentation correction at e2a1bacf; six format-valid issue bodies staged under research-only rules, with Windows verificati
 
 ## Questions
 

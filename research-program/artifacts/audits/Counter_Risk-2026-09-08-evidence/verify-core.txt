@@ -1,0 +1,9 @@
+LIMIT 50.0 accepted 50.0 breaches 1
+LIMIT inf accepted inf breaches 0
+CASH [10.0] => [100.0] aggregate 100.0
+CASH [10.0, 20.0] => [100.0, 20.0] aggregate 120.0
+ATTRIBUTION [300.0] => [{"current_notional": 300.0, "prior_notional": 50.0, "notional_change": 250.0}]
+ATTRIBUTION [100.0, 200.0] => [{"current_notional": 100.0, "prior_notional": 50.0, "notional_change": 50.0}, {"current_notional": 200.0, "prior_notional": 50.0, "notional_change": 150.0}]
+PIPELINE_ATTRIBUTION single sum_delta 50.0 sum_prior 250.0 warnings []
+PIPELINE_ATTRIBUTION split sum_delta -200.0 sum_prior 500.0 warnings []
+REAL_CASH_AGGREGATOR {'CIBC': 120.0}
