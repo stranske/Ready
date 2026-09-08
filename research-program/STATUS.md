@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-08T05:11:59Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-08T07:03:59Z)
 
-Units: 73 — claimed 1, done 72
+Units: 74 — claimed 1, done 73
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 Claude conservation: off (weekly window available)
@@ -61,6 +61,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D3-unblock-sweep-2026-09-07T06 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D3-unblock-sweep-2026-09-07T14 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D3-unblock-sweep-2026-09-07T22 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
+| D3-unblock-sweep-2026-09-08T07 | D | D | claimed | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D-audit-Counter_Risk--2026-09-07T04-47-32Z | D | D | done | codex | driver | Audit stranske/Counter_Risk and file issues (supply 2 <= 2) |
 | D-audit-Fine-Art-Archive--2026-09-05T04-00-31Z | D | D | done | codex | codex | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 2) |
 | D-audit-Fine-Art-Archive--2026-09-06T04-25-53Z | D | D | done | codex | driver | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 3) |
@@ -75,7 +76,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Travel-Plan-Permission--2026-09-07T17-01-43Z | D | D | done | codex | claude | Audit stranske/Travel-Plan-Permission and file issues (supply 1 <= 2) |
 | D-audit-learning-management-system--2026-09-05T04-00-30Z | D | D | done | codex | driver | Audit stranske/learning-management-system and file issues (supply 2 <= |
 | D-audit-learning-management-system--2026-09-06T16-33-31Z | D | D | done | codex | driver | Audit stranske/learning-management-system and file issues (supply 1 <= |
-| D-audit-learning-management-system--2026-09-08T05-06-08Z | D | D | claimed | codex | driver | Audit stranske/learning-management-system and file issues (supply 1 <= |
+| D-audit-learning-management-system--2026-09-08T05-06-08Z | D | D | done | codex | codex | Audit stranske/learning-management-system and file issues (supply 1 <= |
 | D-audit-trip-planner--2026-09-07T04-47-34Z | D | D | done | codex | codex | Audit stranske/trip-planner and file issues (supply 2 <= 2) |
 | D4-verify-merged-2026-09-05T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
 | D4-verify-merged-2026-09-06T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
@@ -84,18 +85,18 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-08T01:29:56Z — verify — enqueued D4-verify-merged-2026-09-08T01
-- 2026-09-08T01:29:57Z — D4-verify-merged-2026-09-08T01 — route — router picked codex from ['codex', 'cursor']
-- 2026-09-08T01:29:57Z — D4-verify-merged-2026-09-08T01 — claimed by driver (agent codex)
-- 
-- Unit D4-verify-merged-2026-09-08T01 Completed
-- - Total PRs verified: 20
-- - OUT: /Users/teacher/.codex/automations/research-program/artifacts/verification/D4-verify-merged-2026-09-08T01.md
-- - Checkpoint: /Users/teacher/.codex/automations/research-program/artifacts/verification/D4-verify-merged-2026-09-08T01.CHECKPOINT.md
-- 2026-09-08T01:34:39Z — D4-verify-merged-2026-09-08T01 — done — gemini produced 2701 words at artifacts/verification/D4-verify-merged-2026-09-08T01.md in 278s
-- 2026-09-08T05:06:08Z — refill — learning-management-system: open=1 <= 3 → audit queued
-- 2026-09-08T05:06:09Z — D-audit-learning-management-system--2026-09-08T05-06-08Z — route — router picked codex from ['codex']
-- 2026-09-08T05:06:09Z — D-audit-learning-management-system--2026-09-08T05-06-08Z — claimed by driver (agent codex)
+- 2026-09-08T06:03:47Z — D-audit-learning-management-system--2026-09-08T05-06-08Z — fail — gemini did not write a fresh output artifact
+- 2026-09-08T06:12:00Z — D-audit-learning-management-system--2026-09-08T05-06-08Z — route — router picked codex from ['codex']
+- 2026-09-08T06:12:00Z — D-audit-learning-management-system--2026-09-08T05-06-08Z — claimed by codex (agent codex)
+- 2026-09-08T06:12:00Z — mirror — deferred — Ready#564 exact-head sync review; publication resumes by 2026-09-08T07:55:00+00:00; local work continues
+- 2026-09-08T06:18:50Z — mirror — deferred — Ready#564 exact-head sync review; publication resumes by 2026-09-08T07:55:00+00:00; local work continues
+- 2026-09-08T06:18:57Z — D-audit-learning-management-system--2026-09-08T05-06-08Z — done — Reconciled eight existing LMS issues: six supported defects, one latent numeric weakness, one refuted finding; staged corrected guidance with verified evidence.
+- 2026-09-08T06:18:57Z — mirror — deferred — Ready#564 exact-head sync review; publication resumes by 2026-09-08T07:55:00+00:00; local work continues
+- 2026-09-08T06:33:53Z — mirror — deferred — Ready#564 exact-head sync review; publication resumes by 2026-09-08T07:55:00+00:00; local work continues
+- 2026-09-08T06:48:56Z — mirror — deferred — Ready#564 exact-head sync review; publication resumes by 2026-09-08T07:55:00+00:00; local work continues
+- 2026-09-08T07:03:59Z — unblock — enqueued D3-unblock-sweep-2026-09-08T07
+- 2026-09-08T07:03:59Z — D3-unblock-sweep-2026-09-08T07 — route — router picked cursor from ['codex', 'cursor']
+- 2026-09-08T07:03:59Z — D3-unblock-sweep-2026-09-08T07 — claimed by driver (agent cursor)
 
 ## Questions
 

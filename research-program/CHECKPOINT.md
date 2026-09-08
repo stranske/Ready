@@ -450,3 +450,19 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-08T05:06:08Z — refill — learning-management-system: open=1 <= 3 → audit queued
 ## 2026-09-08T05:06:09Z — D-audit-learning-management-system--2026-09-08T05-06-08Z — route — router picked codex from ['codex']
 ## 2026-09-08T05:06:09Z — D-audit-learning-management-system--2026-09-08T05-06-08Z — claimed by driver (agent codex)
+## 2026-09-08T05:46:13Z — D-audit-learning-management-system--2026-09-08T05-06-08Z — fail — offload to gemini exited 1; retained artifact is not proof of success
+## 2026-09-08T06:01:16Z — D-audit-learning-management-system--2026-09-08T05-06-08Z — route — router picked codex from ['codex']
+## 2026-09-08T06:01:16Z — D-audit-learning-management-system--2026-09-08T05-06-08Z — claimed by driver (agent codex)
+## 2026-09-08T06:01:17Z — mirror — deferred — Ready#564 exact-head sync review; publication resumes by 2026-09-08T07:55:00+00:00; local work continues
+## 2026-09-08T06:03:47Z — D-audit-learning-management-system--2026-09-08T05-06-08Z — fail — gemini did not write a fresh output artifact
+## 2026-09-08T06:12:00Z — D-audit-learning-management-system--2026-09-08T05-06-08Z — route — router picked codex from ['codex']
+## 2026-09-08T06:12:00Z — D-audit-learning-management-system--2026-09-08T05-06-08Z — claimed by codex (agent codex)
+## 2026-09-08T06:12:00Z — mirror — deferred — Ready#564 exact-head sync review; publication resumes by 2026-09-08T07:55:00+00:00; local work continues
+## 2026-09-08T06:18:50Z — mirror — deferred — Ready#564 exact-head sync review; publication resumes by 2026-09-08T07:55:00+00:00; local work continues
+## 2026-09-08T06:18:57Z — D-audit-learning-management-system--2026-09-08T05-06-08Z — done — Reconciled eight existing LMS issues: six supported defects, one latent numeric weakness, one refuted finding; staged corrected guidance with verified evidence.
+## 2026-09-08T06:18:57Z — mirror — deferred — Ready#564 exact-head sync review; publication resumes by 2026-09-08T07:55:00+00:00; local work continues
+## 2026-09-08T06:33:53Z — mirror — deferred — Ready#564 exact-head sync review; publication resumes by 2026-09-08T07:55:00+00:00; local work continues
+## 2026-09-08T06:48:56Z — mirror — deferred — Ready#564 exact-head sync review; publication resumes by 2026-09-08T07:55:00+00:00; local work continues
+## 2026-09-08T07:03:59Z — unblock — enqueued D3-unblock-sweep-2026-09-08T07
+## 2026-09-08T07:03:59Z — D3-unblock-sweep-2026-09-08T07 — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-08T07:03:59Z — D3-unblock-sweep-2026-09-08T07 — claimed by driver (agent cursor)
