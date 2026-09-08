@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-08T15:11:04Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-08T15:16:38Z)
 
-Units: 76 — claimed 1, done 75
+Units: 76 — done 76
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 Claude conservation: off (weekly window available)
@@ -63,7 +63,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D3-unblock-sweep-2026-09-07T14 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D3-unblock-sweep-2026-09-07T22 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D3-unblock-sweep-2026-09-08T07 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
-| D3-unblock-sweep-2026-09-08T15 | D | D | claimed | cursor | codex | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
+| D3-unblock-sweep-2026-09-08T15 | D | D | done | cursor | codex | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D-audit-Counter_Risk--2026-09-07T04-47-32Z | D | D | done | codex | driver | Audit stranske/Counter_Risk and file issues (supply 2 <= 2) |
 | D-audit-Fine-Art-Archive--2026-09-05T04-00-31Z | D | D | done | codex | codex | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 2) |
 | D-audit-Fine-Art-Archive--2026-09-06T04-25-53Z | D | D | done | codex | driver | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 3) |
@@ -87,7 +87,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-08T06:48:56Z — mirror — deferred — Ready#564 exact-head sync review; publication resumes by 2026-09-08T07:55:00+00:00; local work continues
 - 2026-09-08T07:03:59Z — unblock — enqueued D3-unblock-sweep-2026-09-08T07
 - 2026-09-08T07:03:59Z — D3-unblock-sweep-2026-09-08T07 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-08T07:03:59Z — D3-unblock-sweep-2026-09-08T07 — claimed by driver (agent cursor)
@@ -99,6 +98,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-08T15:11:04Z — unblock — enqueued D3-unblock-sweep-2026-09-08T15
 - 2026-09-08T15:11:04Z — D3-unblock-sweep-2026-09-08T15 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-08T15:11:04Z — D3-unblock-sweep-2026-09-08T15 — claimed by codex (agent cursor)
+- 2026-09-08T15:16:38Z — D3-unblock-sweep-2026-09-08T15 — done — Surveyed 15 fleet repos: 132 agent-ready issues, no owner holds or stalled agent PRs, and four current-head CI failures with verified staged follow-ups.
 
 ## Questions
 
