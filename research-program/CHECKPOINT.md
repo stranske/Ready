@@ -479,3 +479,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-08T17:11:40Z — D-audit-Counter_Risk--2026-09-08T17-11-36Z — route — router picked codex from ['codex']
 ## 2026-09-08T17:11:40Z — D-audit-Counter_Risk--2026-09-08T17-11-36Z — claimed by codex (agent codex)
 ## 2026-09-08T17:28:54Z — D-audit-Counter_Risk--2026-09-08T17-11-36Z — done — Verified five code defects and one documentation correction at e2a1bacf; six format-valid issue bodies staged under research-only rules, with Windows verificati
+## 2026-09-08T23:11:05Z — unblock — enqueued D3-unblock-sweep-2026-09-08T23
+## 2026-09-08T23:11:05Z — D3-unblock-sweep-2026-09-08T23 — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-08T23:11:05Z — D3-unblock-sweep-2026-09-08T23 — claimed by codex (agent cursor)
