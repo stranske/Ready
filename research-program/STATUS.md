@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-08T07:11:27Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-08T07:26:20Z)
 
-Units: 74 — claimed 1, done 73
+Units: 74 — done 74
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 Claude conservation: off (weekly window available)
@@ -61,7 +61,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D3-unblock-sweep-2026-09-07T06 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D3-unblock-sweep-2026-09-07T14 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D3-unblock-sweep-2026-09-07T22 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
-| D3-unblock-sweep-2026-09-08T07 | D | D | claimed | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
+| D3-unblock-sweep-2026-09-08T07 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D-audit-Counter_Risk--2026-09-07T04-47-32Z | D | D | done | codex | driver | Audit stranske/Counter_Risk and file issues (supply 2 <= 2) |
 | D-audit-Fine-Art-Archive--2026-09-05T04-00-31Z | D | D | done | codex | codex | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 2) |
 | D-audit-Fine-Art-Archive--2026-09-06T04-25-53Z | D | D | done | codex | driver | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 3) |
@@ -85,7 +85,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-08T06:03:47Z — D-audit-learning-management-system--2026-09-08T05-06-08Z — fail — gemini did not write a fresh output artifact
 - 2026-09-08T06:12:00Z — D-audit-learning-management-system--2026-09-08T05-06-08Z — route — router picked codex from ['codex']
 - 2026-09-08T06:12:00Z — D-audit-learning-management-system--2026-09-08T05-06-08Z — claimed by codex (agent codex)
 - 2026-09-08T06:12:00Z — mirror — deferred — Ready#564 exact-head sync review; publication resumes by 2026-09-08T07:55:00+00:00; local work continues
@@ -97,6 +96,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-08T07:03:59Z — unblock — enqueued D3-unblock-sweep-2026-09-08T07
 - 2026-09-08T07:03:59Z — D3-unblock-sweep-2026-09-08T07 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-08T07:03:59Z — D3-unblock-sweep-2026-09-08T07 — claimed by driver (agent cursor)
+- 2026-09-08T07:26:20Z — D3-unblock-sweep-2026-09-08T07 — done — gemini produced 1165 words at artifacts/sweeps/D3-unblock-sweep-2026-09-08T07.md in 1336s
 
 ## Questions
 
