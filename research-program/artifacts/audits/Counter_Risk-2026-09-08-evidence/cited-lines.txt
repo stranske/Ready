@@ -1,0 +1,15 @@
+01-package-payload.md: release.spec:40: exe = EXE(
+01-package-payload.md: release.spec:66: coll = COLLECT(
+01-package-payload.md: release.spec:57:     contents_directory=".",
+01-package-payload.md: src/counter_risk/build/release.py:268: def _copy_bundled_executable(root: Path, bundle_dir: Path) -> Path:
+02-gui-release-launcher.md: src/counter_risk/build/release.py:281:     bundle_bin_dir = bundle_dir / "bin"
+02-gui-release-launcher.md: src/counter_risk/build/release.py:303:                 "## GUI launcher",
+02-gui-release-launcher.md: run_counter_risk_gui.cmd:19: if exist "%~dp0dist\counter-risk\counter-risk.exe" (
+03-hhi-doc-reference.md: docs/concentration_metrics.md:77: 3. An `hhi` above roughly `0.18` (DOJ 1,800) is the conventional
+04-finite-limit.md: src/counter_risk/limits_config.py:23:     limit_value: float = Field(gt=0)
+04-finite-limit.md: src/counter_risk/compute/limits.py:277:         breach_amount = actual_value - limit.limit_value
+04-finite-limit.md: src/counter_risk/pipeline/run.py:2396:     limits_cfg = load_limits_config(limits_path)
+05-repo-cash-duplicate.md: src/counter_risk/pipeline/run.py:1107:     # UPSERT, not blind append: the MOSERS CPRS-CH "Repo" section may already carry
+05-repo-cash-duplicate.md: src/counter_risk/pipeline/run.py:4097:         combined[normalized_name] = combined.get(normalized_name, 0.0) + float(
+06-current-attribution.md: src/counter_risk/reports/change_attribution.py:215:     prior_by_exact = _index_prior_rows(prior_rows, normalize=False)
+06-current-attribution.md: src/counter_risk/pipeline/run.py:2069:     prior_rows = _infer_prior_rows_from_notional_change(current_rows=current_rows)

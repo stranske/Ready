@@ -1,0 +1,55 @@
+{
+  "app": "stranske/Counter_Risk",
+  "review_id": "stranske/Counter_Risk:uxreview:2026-09-08-research",
+  "url": "http://127.0.0.1:8769/",
+  "commit": "e2a1bacf37503217e00e467aa72198988777afa4",
+  "wired": {
+    "ok": false,
+    "findings": [
+      {
+        "target": "static entry page",
+        "pass": true,
+        "note": "Page renders, no interactive run control. This is intentionally static per source; no full workflow Gate 1."
+      }
+    ]
+  },
+  "coverage": [
+    {
+      "surface": "static browser demo",
+      "driven": true,
+      "note": "Navigated and inspected DOM plus screenshot."
+    },
+    {
+      "surface": "headless GUI discovery",
+      "driven": true,
+      "note": "Counter Risk GUI headless run completed.\n"
+    },
+    {
+      "surface": "Windows Tk GUI, Excel macro, COM and assembled exe",
+      "driven": false,
+      "note": "macOS host; no Windows runtime available, separate handoff needed."
+    }
+  ],
+  "screens": [
+    {
+      "name": "Static browser fixture entry",
+      "a11y": "- main:\n  - heading \"Counter Risk Fixture Replay (Offline Browser Demo)\" [level=1]\n  - paragraph: This page is a static browser entry for the synthetic demo path. It is intentionally fixture-only and no-egress.\n  - list:\n    - text: \"Inputs: bundled files under\"\n    - code: tests/fixtures/\n    - text: only\n    - text: \"Pipeline helper:\"\n    - code: counter_risk.web_demo.run_web_demo_pipeline\n    - text: \"Entry API used by the helper:\"\n    - code: run_pipeline_with_config(...)\n    - text: \"Chat boundary:\"\n    - code: COUNTER_RISK_CHAT_OFFLINE_MODE=1\n  - paragraph:\n    - text: The CI/browser artifact path emits\n    - code: manifest.json\n    - text: and\n    - code: DATA_QUALITY_SUMMARY.txt\n    - text: . Render these files in-browser after download.\n  - generic: \"Ready: fixture-only browser demo contract loaded.\"",
+      "screenshot_path": "/Users/teacher/.codex/automations/research-program/artifacts/audits/Counter_Risk-2026-09-08-evidence/demo.png",
+      "notes": "Observed no controls/download links. Score only observed single static page; cannot infer usability of Tk/Excel from it."
+    }
+  ],
+  "scenarios": [
+    {
+      "name": "Locate fixture replay results",
+      "goal": "Find observable result artifact or action",
+      "steps": [
+        {
+          "action": "Navigate to local web entry",
+          "observed": "Static explanation and Ready status; no links or controls to retrieve results"
+        }
+      ],
+      "goal_achieved": false
+    }
+  ],
+  "help_surfaces": "Explains fixture-only and no-egress, lists Python symbols; text says render artifacts after download but no download location. Do not infer production Windows UX or treat intentional fixture-only scope as defect. Only read this evidence; no source edits, external actions, or queue commands."
+}

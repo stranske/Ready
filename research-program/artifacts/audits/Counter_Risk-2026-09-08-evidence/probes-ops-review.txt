@@ -1,0 +1,23 @@
+Counter_Risk ops-review probes — clone e2a1bacf37503217e00e467aa72198988777afa4
+Run: 2026-09-08 (bounded, PYTHONPATH=src)
+
+=== PROBE 1: frozen resolve_runtime_path with release layout (config at bundle root, exe in bin/) ===
+Setup: bundle_root/config/all_programs.yml exists; exe at bundle_root/bin/counter-risk.exe;
+       COUNTER_RISK_BUNDLE_ROOT=bin/ (mimics pyinstaller_runtime_hook.py)
+Result: RuntimePathResolutionError — Searched roots: .../bin. Searched locations: .../bin/config/all_programs.yml
+Control: COUNTER_RISK_BUNDLE_ROOT=bundle_root → resolved .../config/all_programs.yml exists=True
+
+=== PROBE 2: run_counter_risk_gui.cmd search paths ===
+Contains 'dist\\counter-risk\\counter-risk.exe': True
+Contains 'bin\\counter-risk.exe': False
+Contains 'bin\\counter-risk': False
+(release._create_runner_file uses bin\\counter-risk.exe: True)
+
+=== PROBE 3: chat _parse_float non-finite ===
+chat _parse_float(nan)=nan isfinite=False
+chat _parse_float("inf")=inf
+_format_exposure_value(nan)='nan'
+
+=== PROBE 4: validate_release_bundle.sh GUI wiring ===
+Script mentions run_counter_risk_gui: False
+(release.yml workflow lists run_counter_risk_gui.cmd as present file only, no wiring check)

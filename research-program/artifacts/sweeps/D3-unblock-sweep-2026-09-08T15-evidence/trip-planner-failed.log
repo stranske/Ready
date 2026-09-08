@@ -1,0 +1,643 @@
+Browser first-use canary	UNKNOWN STEP	﻿2026-09-08T07:02:56.8054991Z Current runner version: '2.337.0'
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:56.8078724Z ##[group]Runner Image Provisioner
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:56.8079552Z Hosted Compute Agent
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:56.8080135Z Version: 20260828.587
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:56.8081089Z Commit: abac92662cab4cc7352de4f9f9d2e2419aad9c29
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:56.8081793Z Build Date: 2026-08-28T16:44:25Z
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:56.8082421Z Worker ID: {03d05f2d-9e24-4c2e-bc4f-8735e7f77102}
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:56.8083230Z Azure Region: northcentralus
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:56.8083874Z ##[endgroup]
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:56.8085232Z ##[group]Operating System
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:56.8085800Z Ubuntu
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:56.8086277Z 24.04.4
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:56.8086787Z LTS
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:56.8087304Z ##[endgroup]
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:56.8087844Z ##[group]Runner Image
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:56.8088417Z Image: ubuntu-24.04
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:56.8088948Z Version: 20260831.293.1
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:56.8090166Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260831.293/images/ubuntu/Ubuntu2404-Readme.md
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:56.8091866Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260831.293
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:56.8092784Z ##[endgroup]
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:56.8096203Z ##[group]GITHUB_TOKEN Permissions
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:56.8098880Z Actions: write
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:56.8099466Z ArtifactMetadata: write
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:56.8100035Z Attestations: write
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:56.8100721Z Checks: write
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:56.8101293Z CodeQuality: write
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:56.8101850Z Contents: write
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:56.8102412Z CopilotRequests: write
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:56.8102964Z Deployments: write
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:56.8103495Z Discussions: write
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:56.8104460Z Drives: write
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:56.8105062Z Issues: write
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:56.8105665Z Metadata: read
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:56.8106316Z Models: read
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:56.8106817Z Packages: write
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:56.8107358Z Pages: write
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:56.8107966Z PullRequests: write
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:56.8108539Z RepositoryProjects: write
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:56.8109132Z SecurityEvents: write
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:56.8109672Z Statuses: write
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:56.8110204Z VulnerabilityAlerts: read
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:56.8110917Z ##[endgroup]
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:56.8113036Z Secret source: Actions
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:56.8114060Z Prepare workflow directory
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:56.8438146Z Prepare all required actions
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:56.8486927Z Getting action download info
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:57.1073853Z Download action repository 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:57.2868808Z Download action repository 'actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405' (SHA:a309ff8b426b58ec0e2a45f0f869d46889d02405)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:57.4626301Z Download action repository 'astral-sh/setup-uv@94527f2e458b27549849d47d273a16bec83a01e9' (SHA:94527f2e458b27549849d47d273a16bec83a01e9)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:57.8858868Z Download action repository 'actions/setup-node@820762786026740c76f36085b0efc47a31fe5020' (SHA:820762786026740c76f36085b0efc47a31fe5020)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.2671753Z Complete job name: Browser first-use canary
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.3593478Z ##[group]Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.3596001Z with:
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.3597553Z   repository: stranske/trip-planner
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.3606690Z   token: ***
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.3607746Z   ssh-strict: true
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.3608719Z   ssh-user: git
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.3610022Z   persist-credentials: true
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.3611397Z   clean: true
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.3612403Z   sparse-checkout-cone-mode: true
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.3613571Z   fetch-depth: 1
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.3614574Z   fetch-tags: false
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.3615546Z   show-progress: true
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.3616582Z   lfs: false
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.3617516Z   submodules: false
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.3618535Z   set-safe-directory: true
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.3619659Z   allow-unsafe-pr-checkout: false
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.3621335Z ##[endgroup]
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.4598158Z Syncing repository: stranske/trip-planner
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.4601656Z ##[group]Getting Git version info
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.4603422Z Working directory is '/home/runner/work/trip-planner/trip-planner'
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.4605927Z [command]/usr/bin/git version
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.4722284Z git version 2.55.0
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.4740947Z ##[endgroup]
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.4749766Z Temporarily overriding HOME='/home/runner/work/_temp/351493c5-ae62-4b6d-891e-62ee851ea9c2' before making global git config changes
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.4753056Z Adding repository directory to the temporary git global config as a safe directory
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.4756358Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/trip-planner/trip-planner
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.4818994Z Deleting the contents of '/home/runner/work/trip-planner/trip-planner'
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.4822079Z ##[group]Determining repository object format
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.4824416Z ##[endgroup]
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.4826155Z ##[group]Initializing the repository
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.4828236Z [command]/usr/bin/git init /home/runner/work/trip-planner/trip-planner
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.4909243Z hint: Using 'master' as the name for the initial branch. This default branch name
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.4912806Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.4915857Z hint: to use in all of your new repositories, which will suppress this warning,
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.4918201Z hint: call:
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.4919453Z hint:
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.4921226Z hint: 	git config --global init.defaultBranch <name>
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.4923164Z hint:
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.4925343Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.4928297Z hint: 'development'. The just-created branch can be renamed via this command:
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.4930079Z hint:
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.4932033Z hint: 	git branch -m <name>
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.4933625Z hint:
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.4935299Z hint: Disable this message with "git config set advice.defaultBranchName false"
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.4937455Z Initialized empty Git repository in /home/runner/work/trip-planner/trip-planner/.git/
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.4941174Z [command]/usr/bin/git remote add origin https://github.com/stranske/trip-planner
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.4966525Z ##[endgroup]
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.4968898Z ##[group]Disabling automatic garbage collection
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.4971364Z [command]/usr/bin/git config --local gc.auto 0
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.4998195Z ##[endgroup]
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.5000509Z ##[group]Setting up auth
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.5002352Z Removing SSH command configuration
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.5004756Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.5031091Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.5323135Z Removing HTTP extra header
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.5328869Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.5358701Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.5529817Z Removing includeIf entries pointing to credentials config files
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.5534739Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.5561850Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.5754669Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-108c989b-8e6d-4711-b52f-1de4c2419eb9.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.5789480Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/trip-planner/trip-planner/.git.path /home/runner/work/_temp/git-credentials-108c989b-8e6d-4711-b52f-1de4c2419eb9.config
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.5816184Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/trip-planner/trip-planner/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-108c989b-8e6d-4711-b52f-1de4c2419eb9.config
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.5844599Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-108c989b-8e6d-4711-b52f-1de4c2419eb9.config
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.5873759Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-108c989b-8e6d-4711-b52f-1de4c2419eb9.config
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.5896284Z ##[endgroup]
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.5898674Z ##[group]Fetching the repository
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:58.5903985Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +70db2be47f7a145480b99639f8d18adc744325fd:refs/remotes/origin/main
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:59.6886075Z From https://github.com/stranske/trip-planner
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:59.6887062Z  * [new ref]         70db2be47f7a145480b99639f8d18adc744325fd -> origin/main
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:59.6894690Z [command]/usr/bin/git branch --list --remote origin/main
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:59.6917327Z   origin/main
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:59.6923303Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:59.6944159Z 70db2be47f7a145480b99639f8d18adc744325fd
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:59.6946599Z ##[endgroup]
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:59.6947566Z ##[group]Determining the checkout info
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:59.6948594Z ##[endgroup]
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:59.6953323Z [command]/usr/bin/git sparse-checkout disable
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:59.6995337Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:59.7022188Z ##[group]Checking out the ref
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:59.7026916Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:59.9778839Z Switched to a new branch 'main'
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:59.9783539Z branch 'main' set up to track 'origin/main'.
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:59.9803320Z ##[endgroup]
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:59.9849262Z [command]/usr/bin/git log -1 --format=%H
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:02:59.9874711Z 70db2be47f7a145480b99639f8d18adc744325fd
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:00.0144272Z ##[group]Run actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:00.0144845Z with:
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:00.0145210Z   python-version: 3.14
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:00.0145598Z   check-latest: false
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:00.0148827Z   token: ***
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:00.0149297Z   update-environment: true
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:00.0149699Z   allow-prereleases: false
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:00.0150086Z   freethreaded: false
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:00.0150449Z ##[endgroup]
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:00.1477853Z ##[group]Installed versions
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:00.2478556Z Successfully set up CPython (3.14.7)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:00.2479705Z ##[endgroup]
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:00.2660246Z ##[group]Run astral-sh/setup-uv@94527f2e458b27549849d47d273a16bec83a01e9
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:00.2661157Z with:
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:00.2661577Z   activate-environment: false
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:00.2662107Z   working-directory: /home/runner/work/trip-planner/trip-planner
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:00.2665456Z   github-token: ***
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:00.2665854Z   enable-cache: auto
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:00.2666572Z   cache-dependency-glob: **/*requirements*.txt
+Browser first-use canary	UNKNOWN STEP	**/*requirements*.in
+Browser first-use canary	UNKNOWN STEP	**/*constraints*.txt
+Browser first-use canary	UNKNOWN STEP	**/*constraints*.in
+Browser first-use canary	UNKNOWN STEP	**/pyproject.toml
+Browser first-use canary	UNKNOWN STEP	**/uv.lock
+Browser first-use canary	UNKNOWN STEP	**/*.py.lock
+Browser first-use canary	UNKNOWN STEP	
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:00.2667337Z   restore-cache: true
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:00.2667719Z   save-cache: true
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:00.2668082Z   prune-cache: true
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:00.2668492Z   cache-python: false
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:00.2668892Z   ignore-nothing-to-cache: false
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:00.2669333Z   ignore-empty-workdir: false
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:00.2669750Z   add-problem-matchers: true
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:00.2670147Z   resolution-strategy: highest
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:00.2670826Z env:
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:00.2671436Z   pythonLocation: /opt/hostedtoolcache/Python/3.14.7/x64
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:00.2672003Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.14.7/x64/lib/pkgconfig
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:00.2672584Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.7/x64
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:00.2673097Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.7/x64
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:00.2673663Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.7/x64
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:00.2674205Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.14.7/x64/lib
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:00.2674654Z ##[endgroup]
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:00.4372195Z Trying to find version for uv in: /home/runner/work/trip-planner/trip-planner/uv.toml
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:00.4373299Z Could not find file: /home/runner/work/trip-planner/trip-planner/uv.toml
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:00.4380351Z Trying to find version for uv in: /home/runner/work/trip-planner/trip-planner/pyproject.toml
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:00.4381913Z Could not determine uv version from uv.toml or pyproject.toml. Falling back to latest.
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:00.4384757Z Fetching version data from https://raw.githubusercontent.com/astral-sh/versions/main/v1/uv.ndjson ...
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:00.4976381Z Downloading uv from "https://releases.astral.sh/github/uv/releases/download/0.12.10/uv-x86_64-unknown-linux-gnu.tar.gz" ...
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:00.7997751Z [command]/usr/bin/tar xz --warning=no-unknown-keyword --overwrite -C /home/runner/work/_temp/30baff79-aeb3-4351-a5b2-b1e42e87805a -f /home/runner/work/_temp/b9ee7dc8-d450-4e44-b631-2108cc126e67
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:01.3821218Z Added /home/runner/.local/bin to the path
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:01.3823259Z Added /opt/hostedtoolcache/uv/0.12.10/x86_64 to the path
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:01.3824253Z Set UV_PYTHON_INSTALL_DIR to /home/runner/work/_temp/uv-python-dir
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:01.3825046Z Added /home/runner/work/_temp/uv-python-dir to the path
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:01.3837404Z Set UV_CACHE_DIR to /home/runner/work/_temp/setup-uv-cache
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:01.3838457Z Successfully installed uv version 0.12.10
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:02.3268113Z Searching files using cache dependency glob: /home/runner/work/trip-planner/trip-planner/**/*requirements*.txt,/home/runner/work/trip-planner/trip-planner/**/*requirements*.in,/home/runner/work/trip-planner/trip-planner/**/*constraints*.txt,/home/runner/work/trip-planner/trip-planner/**/*constraints*.in,/home/runner/work/trip-planner/trip-planner/**/pyproject.toml,/home/runner/work/trip-planner/trip-planner/**/uv.lock,/home/runner/work/trip-planner/trip-planner/**/*.py.lock
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:02.7058541Z /home/runner/work/trip-planner/trip-planner/pyproject.toml
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:02.7079100Z /home/runner/work/trip-planner/trip-planner/requirements.txt
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:02.7434099Z /home/runner/work/trip-planner/trip-planner/tools/requirements-llm.txt
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:02.7657131Z Found 3 files to hash.
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:02.7719914Z Trying to restore cache from GitHub Actions cache with key: setup-uv-2-x86_64-unknown-linux-gnu-ubuntu-24.04-3.14.7-pruned-38030dd0b22a55887903120f3fe5ca6c24fad224cc54c79f105eec979d6b9c38
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:02.9750299Z Cache hit for: setup-uv-2-x86_64-unknown-linux-gnu-ubuntu-24.04-3.14.7-pruned-38030dd0b22a55887903120f3fe5ca6c24fad224cc54c79f105eec979d6b9c38
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:03.7435790Z Received 40958508 of 40958508 (100.0%), 59.7 MBs/sec
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:03.7436812Z Cache Size: ~39 MB (40958508 B)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:03.7570510Z [command]/usr/bin/tar -xf /home/runner/work/_temp/fa18ffde-7e62-4b8c-af97-bc3c6f69e51d/cache.tzst -P -C /home/runner/work/trip-planner/trip-planner --use-compress-program unzstd
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:03.9093817Z Cache restored successfully
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:03.9115318Z cache restored from GitHub Actions cache with key: setup-uv-2-x86_64-unknown-linux-gnu-ubuntu-24.04-3.14.7-pruned-38030dd0b22a55887903120f3fe5ca6c24fad224cc54c79f105eec979d6b9c38
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:03.9759455Z ##[group]Run actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:03.9759946Z with:
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:03.9760277Z   node-version: 22
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:03.9760830Z   cache: npm
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:03.9761383Z   cache-dependency-path: frontend/package-lock.json
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:03.9761759Z   check-latest: false
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:03.9764642Z   token: ***
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:03.9764965Z   package-manager-cache: true
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:03.9765303Z env:
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:03.9765673Z   pythonLocation: /opt/hostedtoolcache/Python/3.14.7/x64
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:03.9766154Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.14.7/x64/lib/pkgconfig
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:03.9766635Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.7/x64
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:03.9767113Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.7/x64
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:03.9767569Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.7/x64
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:03.9768090Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.14.7/x64/lib
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:03.9768562Z   UV_PYTHON_INSTALL_DIR: /home/runner/work/_temp/uv-python-dir
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:03.9769006Z   UV_CACHE_DIR: /home/runner/work/_temp/setup-uv-cache
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:03.9769418Z ##[endgroup]
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:04.1117735Z Found in cache @ /opt/hostedtoolcache/node/22.23.2/x64
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:04.1119567Z ##[group]Environment details
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:07.7609694Z node: v22.23.2
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:07.7611149Z npm: 10.9.8
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:07.7611891Z yarn: 1.22.22
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:07.7613121Z ##[endgroup]
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:07.7629401Z [command]/opt/hostedtoolcache/node/22.23.2/x64/bin/npm config get cache
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:08.0794888Z /home/runner/.npm
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:08.2618634Z Cache hit for: node-cache-Linux-x64-npm-638b072109dbc1ef526d65a3313963c642b3c82138074bc21445c1ce4b71d32b
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:08.9489010Z Received 40071461 of 40071461 (100.0%), 66.8 MBs/sec
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:08.9490135Z Cache Size: ~38 MB (40071461 B)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:08.9522755Z [command]/usr/bin/tar -xf /home/runner/work/_temp/6dd66634-d694-4ecc-95bf-47c7282cceea/cache.tzst -P -C /home/runner/work/trip-planner/trip-planner --use-compress-program unzstd
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:09.0045600Z Cache restored successfully
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:09.0068066Z Cache restored from key: node-cache-Linux-x64-npm-638b072109dbc1ef526d65a3313963c642b3c82138074bc21445c1ce4b71d32b
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:09.0194814Z ##[group]Run python -m pip install -e ".[dev]"
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:09.0195354Z ^[[36;1mpython -m pip install -e ".[dev]"^[[0m
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:09.0195805Z ^[[36;1mnpm --prefix frontend ci^[[0m
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:09.0196318Z ^[[36;1mnpm --prefix frontend exec playwright install --with-deps chromium^[[0m
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:09.0241066Z shell: /usr/bin/bash -e {0}
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:09.0241478Z env:
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:09.0241909Z   pythonLocation: /opt/hostedtoolcache/Python/3.14.7/x64
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:09.0242418Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.14.7/x64/lib/pkgconfig
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:09.0242943Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.7/x64
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:09.0243423Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.7/x64
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:09.0243881Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.7/x64
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:09.0244474Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.14.7/x64/lib
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:09.0245053Z   UV_PYTHON_INSTALL_DIR: /home/runner/work/_temp/uv-python-dir
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:09.0245570Z   UV_CACHE_DIR: /home/runner/work/_temp/setup-uv-cache
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:09.0245945Z ##[endgroup]
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:12.0469281Z Obtaining file:///home/runner/work/trip-planner/trip-planner
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:12.0482347Z   Installing build dependencies: started
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:13.5314311Z   Installing build dependencies: finished with status 'done'
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:13.5318173Z   Checking if build backend supports build_editable: started
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:14.3948350Z   Checking if build backend supports build_editable: finished with status 'done'
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:14.3972835Z   Getting requirements to build editable: started
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:14.7750076Z   Getting requirements to build editable: finished with status 'done'
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:14.7758932Z   Preparing editable metadata (pyproject.toml): started
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:14.9819931Z   Preparing editable metadata (pyproject.toml): finished with status 'done'
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:15.0562503Z Collecting alembic==1.18.5 (from trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:15.1014219Z   Downloading alembic-1.18.5-py3-none-any.whl.metadata (7.2 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:15.1172882Z Collecting anyio==4.14.2 (from trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:15.1205694Z   Downloading anyio-4.14.2-py3-none-any.whl.metadata (4.6 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:15.1568006Z Collecting fastapi==0.141.1 (from trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:15.1603037Z   Downloading fastapi-0.141.1-py3-none-any.whl.metadata (27 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:15.1839099Z Collecting jsonschema<4.27.0,>=4.26.0 (from trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:15.1872185Z   Downloading jsonschema-4.26.0-py3-none-any.whl.metadata (7.6 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:15.2171860Z Collecting langchain-core==1.5.3 (from trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:15.2210191Z   Downloading langchain_core-1.5.3-py3-none-any.whl.metadata (4.7 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:15.2621285Z Collecting langchain-openai==1.4.1 (from trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:15.2657519Z   Downloading langchain_openai-1.4.1-py3-none-any.whl.metadata (3.4 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:15.2791838Z Collecting psycopg==3.3.4 (from psycopg[binary]==3.3.4->trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:15.2821507Z   Downloading psycopg-3.3.4-py3-none-any.whl.metadata (4.3 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:15.3026346Z Collecting starlette==1.3.1 (from trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:15.3058960Z   Downloading starlette-1.3.1-py3-none-any.whl.metadata (6.4 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:15.5018151Z Collecting sqlalchemy==2.0.51 (from trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:15.5052438Z   Downloading sqlalchemy-2.0.51-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (9.5 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:15.5390382Z Collecting uvicorn==0.52.0 (from trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:15.5427740Z   Downloading uvicorn-0.52.0-py3-none-any.whl.metadata (6.6 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:15.7858019Z Collecting ruff==0.16.4 (from trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:15.7893465Z   Downloading ruff-0.16.4-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (26 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:15.8736799Z Collecting mypy==2.3.1 (from trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:15.8773598Z   Downloading mypy-2.3.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.4 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:15.8980454Z Collecting pytest==9.1.1 (from trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:15.9011123Z   Downloading pytest-9.1.1-py3-none-any.whl.metadata (7.6 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:15.9170784Z Collecting pytest-cov==7.1.0 (from trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:15.9204036Z   Downloading pytest_cov-7.1.0-py3-none-any.whl.metadata (32 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:15.9595153Z Collecting black==26.5.1 (from trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:15.9627642Z   Downloading black-26.5.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (95 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:15.9857478Z Collecting httpx==0.28.1 (from trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:15.9894627Z   Downloading httpx-0.28.1-py3-none-any.whl.metadata (7.1 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:16.0175180Z Collecting PyYAML==6.0.3 (from trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:16.0207535Z   Downloading pyyaml-6.0.3-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.4 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:16.0580693Z Collecting types-PyYAML==6.0.12.20260724 (from trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:16.0640014Z   Downloading types_pyyaml-6.0.12.20260724-py3-none-any.whl.metadata (1.7 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:16.0800240Z Collecting pytest-httpserver==1.1.5 (from trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:16.0839441Z   Downloading pytest_httpserver-1.1.5-py3-none-any.whl.metadata (6.2 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:16.2288050Z Collecting numpy==2.5.1 (from trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:16.2332020Z   Downloading numpy-2.5.1-cp314-cp314-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (6.6 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:16.3413490Z Collecting pandas==3.0.5 (from trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:16.3448485Z   Downloading pandas-3.0.5-cp314-cp314-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata (79 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:16.3641693Z Collecting app-baseline-kit @ git+https://github.com/stranske/Workflows.git#subdirectory=packages/app-baseline-kit (from trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:16.3644649Z   Cloning https://github.com/stranske/Workflows.git to /tmp/pip-install-4vhqxul8/app-baseline-kit_3c0dfa07040347889aba26846b7c229f
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:16.3663916Z   Running command git clone --filter=blob:none --quiet https://github.com/stranske/Workflows.git /tmp/pip-install-4vhqxul8/app-baseline-kit_3c0dfa07040347889aba26846b7c229f
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:18.4393437Z   Resolved https://github.com/stranske/Workflows.git to commit 8d496543f5ead88a07d0fdc56f2c81cc965f37ed
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:18.4422125Z   Installing build dependencies: started
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:19.4229014Z   Installing build dependencies: finished with status 'done'
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:19.4234499Z   Getting requirements to build wheel: started
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:19.9481162Z   Getting requirements to build wheel: finished with status 'done'
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:19.9493512Z   Preparing metadata (pyproject.toml): started
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:20.1609824Z   Preparing metadata (pyproject.toml): finished with status 'done'
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:20.1956609Z Collecting pytest-regressions>=2.8 (from app-baseline-kit @ git+https://github.com/stranske/Workflows.git#subdirectory=packages/app-baseline-kit->trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:20.1994375Z   Downloading pytest_regressions-2.11.0-py3-none-any.whl.metadata (4.9 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:20.2471907Z Collecting Mako (from alembic==1.18.5->trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:20.2507534Z   Downloading mako-1.4.1-py3-none-any.whl.metadata (2.9 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:20.3959063Z Collecting typing-extensions>=4.12 (from alembic==1.18.5->trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:20.3993155Z   Downloading typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:20.4509647Z Collecting idna>=2.8 (from anyio==4.14.2->trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:20.4542380Z   Downloading idna-3.19-py3-none-any.whl.metadata (9.2 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:20.6321098Z Collecting click>=8.0.0 (from black==26.5.1->trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:20.6355266Z   Downloading click-8.5.0-py3-none-any.whl.metadata (2.6 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:20.7477954Z Collecting mypy-extensions>=0.4.3 (from black==26.5.1->trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:20.7511559Z   Downloading mypy_extensions-1.1.0-py3-none-any.whl.metadata (1.1 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:20.7877571Z Collecting packaging>=22.0 (from black==26.5.1->trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:20.7910369Z   Downloading packaging-26.3-py3-none-any.whl.metadata (3.5 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:20.8349529Z Collecting pathspec>=1.0.0 (from black==26.5.1->trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:20.8382618Z   Downloading pathspec-1.1.1-py3-none-any.whl.metadata (14 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:21.0898953Z Collecting platformdirs>=2 (from black==26.5.1->trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:21.0936519Z   Downloading platformdirs-4.11.7-py3-none-any.whl.metadata (5.5 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:21.3559990Z Collecting pytokens~=0.4.0 (from black==26.5.1->trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:21.3594851Z   Downloading pytokens-0.4.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (3.8 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:21.5111601Z Collecting pydantic>=2.9.0 (from fastapi==0.141.1->trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:21.5171888Z   Downloading pydantic-2.13.5-py3-none-any.whl.metadata (110 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:21.5323875Z Collecting typing-inspection>=0.4.2 (from fastapi==0.141.1->trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:21.5356072Z   Downloading typing_inspection-0.4.4-py3-none-any.whl.metadata (2.6 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:21.5455128Z Collecting annotated-doc>=0.0.2 (from fastapi==0.141.1->trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:21.5486696Z   Downloading annotated_doc-0.0.5-py3-none-any.whl.metadata (6.5 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:21.5653401Z Collecting certifi (from httpx==0.28.1->trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:21.5683686Z   Downloading certifi-2026.7.22-py3-none-any.whl.metadata (2.5 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:21.6032432Z Collecting httpcore==1.* (from httpx==0.28.1->trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:21.6064202Z   Downloading httpcore-1.0.9-py3-none-any.whl.metadata (21 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:21.6201446Z Collecting jsonpatch<2.0.0,>=1.33.0 (from langchain-core==1.5.3->trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:21.6235297Z   Downloading jsonpatch-1.33-py2.py3-none-any.whl.metadata (3.0 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:21.6329520Z Collecting langchain-protocol>=0.0.17 (from langchain-core==1.5.3->trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:21.6359936Z   Downloading langchain_protocol-0.0.19-py3-none-any.whl.metadata (2.4 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:21.6815119Z Collecting langsmith<1.0.0,>=0.3.45 (from langchain-core==1.5.3->trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:21.6846171Z   Downloading langsmith-0.12.2-py3-none-any.whl.metadata (22 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:21.7048329Z Collecting tenacity!=8.4.0,<10.0.0,>=8.1.0 (from langchain-core==1.5.3->trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:21.7081006Z   Downloading tenacity-9.1.4-py3-none-any.whl.metadata (1.2 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:21.7870236Z Collecting uuid-utils<1.0,>=0.12.0 (from langchain-core==1.5.3->trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:21.7904404Z   Downloading uuid_utils-0.17.0-cp314-cp314-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (6.4 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:21.8308308Z Collecting openai<3.0.0,>=2.45.0 (from langchain-openai==1.4.1->trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:21.8341286Z   Downloading openai-2.54.0-py3-none-any.whl.metadata (40 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:21.8808008Z Collecting tiktoken<1.0.0,>=0.7.0 (from langchain-openai==1.4.1->trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:21.8840156Z   Downloading tiktoken-0.14.0-cp314-cp314-manylinux_2_28_x86_64.whl.metadata (6.7 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:21.9802808Z Collecting librt>=0.13.0 (from mypy==2.3.1->trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:21.9835627Z   Downloading librt-0.15.0-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (1.3 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:22.0111051Z Collecting ast-serialize<1.0.0,>=0.6.0 (from mypy==2.3.1->trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:22.0142681Z   Downloading ast_serialize-0.10.0-cp39-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (1.4 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:22.0270783Z Collecting python-dateutil>=2.8.2 (from pandas==3.0.5->trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:22.0310032Z   Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl.metadata (8.4 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:22.1424331Z Collecting psycopg-binary==3.3.4 (from psycopg[binary]==3.3.4->trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:22.1460780Z   Downloading psycopg_binary-3.3.4-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (2.7 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:22.1574802Z Collecting iniconfig>=1.0.1 (from pytest==9.1.1->trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:22.1606852Z   Downloading iniconfig-2.3.0-py3-none-any.whl.metadata (2.5 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:22.1715789Z Collecting pluggy<2,>=1.5 (from pytest==9.1.1->trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:22.1746291Z   Downloading pluggy-1.6.0-py3-none-any.whl.metadata (4.8 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:22.1898751Z Collecting pygments>=2.7.2 (from pytest==9.1.1->trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:22.1929895Z   Downloading pygments-2.21.0-py3-none-any.whl.metadata (2.5 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:22.4845207Z Collecting coverage>=7.10.6 (from coverage[toml]>=7.10.6->pytest-cov==7.1.0->trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:22.4877856Z   Downloading coverage-7.16.0-cp314-cp314-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (8.6 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:22.5064179Z Collecting Werkzeug>=2.0.0 (from pytest-httpserver==1.1.5->trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:22.5098016Z   Downloading werkzeug-3.1.8-py3-none-any.whl.metadata (4.0 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:22.6190431Z Collecting greenlet>=1 (from sqlalchemy==2.0.51->trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:22.6234906Z   Downloading greenlet-3.5.5-cp314-cp314-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata (3.8 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:22.6596107Z Collecting h11>=0.8 (from uvicorn==0.52.0->trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:22.6629393Z   Downloading h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:22.6765780Z Collecting jsonpointer>=1.9 (from jsonpatch<2.0.0,>=1.33.0->langchain-core==1.5.3->trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:22.6802682Z   Downloading jsonpointer-3.1.1-py3-none-any.whl.metadata (2.4 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:22.6930774Z Collecting attrs>=22.2.0 (from jsonschema<4.27.0,>=4.26.0->trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:22.6963229Z   Downloading attrs-26.1.0-py3-none-any.whl.metadata (8.8 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:22.7075721Z Collecting jsonschema-specifications>=2023.03.6 (from jsonschema<4.27.0,>=4.26.0->trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:22.7109008Z   Downloading jsonschema_specifications-2025.9.1-py3-none-any.whl.metadata (2.9 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:22.7277624Z Collecting referencing>=0.28.4 (from jsonschema<4.27.0,>=4.26.0->trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:22.7309088Z   Downloading referencing-0.37.0-py3-none-any.whl.metadata (2.8 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:22.9209549Z Collecting rpds-py>=0.25.0 (from jsonschema<4.27.0,>=4.26.0->trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:22.9253631Z   Downloading rpds_py-2026.6.3-cp314-cp314-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.1 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:23.2124696Z Collecting distro>=1.7.0 (from langsmith<1.0.0,>=0.3.45->langchain-core==1.5.3->trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:23.2160001Z   Downloading distro-1.9.0-py3-none-any.whl.metadata (6.8 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:23.2630966Z Collecting httpx2<3,>=2 (from langsmith<1.0.0,>=0.3.45->langchain-core==1.5.3->trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:23.2665709Z   Downloading httpx2-2.12.0-py3-none-any.whl.metadata (9.5 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:23.7919452Z Collecting orjson>=3.9.14 (from langsmith<1.0.0,>=0.3.45->langchain-core==1.5.3->trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:23.7954275Z   Downloading orjson-3.12.0-cp314-cp314-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (41 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:23.8912970Z Collecting requests-toolbelt>=1.0.0 (from langsmith<1.0.0,>=0.3.45->langchain-core==1.5.3->trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:23.8945932Z   Downloading requests_toolbelt-1.0.0-py2.py3-none-any.whl.metadata (14 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:23.9905945Z Collecting requests>=2.0.0 (from langsmith<1.0.0,>=0.3.45->langchain-core==1.5.3->trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:23.9940972Z   Downloading requests-2.34.2-py3-none-any.whl.metadata (4.8 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:24.0908105Z Collecting sniffio>=1.1 (from langsmith<1.0.0,>=0.3.45->langchain-core==1.5.3->trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:24.0942007Z   Downloading sniffio-1.3.1-py3-none-any.whl.metadata (3.9 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:24.5654408Z Collecting websockets>=15.0 (from langsmith<1.0.0,>=0.3.45->langchain-core==1.5.3->trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:24.5688241Z   Downloading websockets-17.1-cp314-cp314-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (6.3 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:24.8470505Z Collecting xxhash>=3.0.0 (from langsmith<1.0.0,>=0.3.45->langchain-core==1.5.3->trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:24.8504899Z   Downloading xxhash-4.0.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (17 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:25.3418340Z Collecting zstandard>=0.23.0 (from langsmith<1.0.0,>=0.3.45->langchain-core==1.5.3->trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:25.3456742Z   Downloading zstandard-0.25.0-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (3.3 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:25.7154920Z Collecting httpcore2==2.12.0 (from httpx2<3,>=2->langsmith<1.0.0,>=0.3.45->langchain-core==1.5.3->trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:25.7190425Z   Downloading httpcore2-2.12.0-py3-none-any.whl.metadata (25 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:26.0177159Z Collecting truststore>=0.10 (from httpx2<3,>=2->langsmith<1.0.0,>=0.3.45->langchain-core==1.5.3->trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:26.0210461Z   Downloading truststore-0.10.4-py3-none-any.whl.metadata (4.4 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:26.5359206Z Collecting jiter<1,>=0.10.0 (from openai<3.0.0,>=2.45.0->langchain-openai==1.4.1->trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:26.5394338Z   Downloading jiter-0.16.0-cp314-cp314-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (5.2 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:26.8633703Z Collecting tqdm>4 (from openai<3.0.0,>=2.45.0->langchain-openai==1.4.1->trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:26.8668795Z   Downloading tqdm-4.70.0-py3-none-any.whl.metadata (57 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:27.2120199Z Collecting annotated-types>=0.6.0 (from pydantic>=2.9.0->fastapi==0.141.1->trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:27.2154489Z   Downloading annotated_types-0.8.0-py3-none-any.whl.metadata (15 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:28.0052899Z Collecting pydantic-core==2.46.5 (from pydantic>=2.9.0->fastapi==0.141.1->trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:28.0084849Z   Downloading pydantic_core-2.46.5-cp314-cp314-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (6.6 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:28.2899870Z Collecting regex (from tiktoken<1.0.0,>=0.7.0->langchain-openai==1.4.1->trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:28.2935374Z   Downloading regex-2026.9.3-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (40 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:28.3444303Z Collecting pytest-datadir>=1.7.0 (from pytest-regressions>=2.8->app-baseline-kit @ git+https://github.com/stranske/Workflows.git#subdirectory=packages/app-baseline-kit->trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:28.3488693Z   Downloading pytest_datadir-1.8.0-py3-none-any.whl.metadata (4.0 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:28.3700014Z Collecting six>=1.5 (from python-dateutil>=2.8.2->pandas==3.0.5->trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:28.3731052Z   Downloading six-1.17.0-py2.py3-none-any.whl.metadata (1.7 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:28.4646097Z Collecting charset_normalizer<4,>=2 (from requests>=2.0.0->langsmith<1.0.0,>=0.3.45->langchain-core==1.5.3->trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:28.4678764Z   Downloading charset_normalizer-3.5.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (45 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:28.4878055Z Collecting urllib3<3,>=1.26 (from requests>=2.0.0->langsmith<1.0.0,>=0.3.45->langchain-core==1.5.3->trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:28.4912773Z   Downloading urllib3-2.7.0-py3-none-any.whl.metadata (6.9 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:28.5416876Z Collecting markupsafe>=2.1.1 (from Werkzeug>=2.0.0->pytest-httpserver==1.1.5->trip-planner==0.1.0)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:28.5448391Z   Downloading markupsafe-3.0.3-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.7 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:28.5565001Z Downloading alembic-1.18.5-py3-none-any.whl (264 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:28.5645998Z Downloading anyio-4.14.2-py3-none-any.whl (125 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:28.5733916Z Downloading black-26.5.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (1.9 MB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:28.6195204Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.9/1.9 MB 37.3 MB/s  0:00:00
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:28.6231720Z Downloading fastapi-0.141.1-py3-none-any.whl (131 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:28.6308614Z Downloading httpx-0.28.1-py3-none-any.whl (73 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:28.6363913Z Downloading langchain_core-1.5.3-py3-none-any.whl (561 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:28.6443045Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 561.7/561.7 kB 61.7 MB/s  0:00:00
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:28.6479572Z Downloading pyyaml-6.0.3-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (794 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:28.6563735Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 794.2/794.2 kB 83.5 MB/s  0:00:00
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:28.6596755Z Downloading langchain_openai-1.4.1-py3-none-any.whl (122 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:28.6656694Z Downloading mypy-2.3.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (15.2 MB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:28.7823143Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 15.2/15.2 MB 130.9 MB/s  0:00:00
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:28.7866156Z Downloading numpy-2.5.1-cp314-cp314-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (16.7 MB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:28.9372174Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.7/16.7 MB 110.6 MB/s  0:00:00
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:28.9411095Z Downloading pandas-3.0.5-cp314-cp314-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl (11.0 MB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.0248674Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.0/11.0 MB 131.3 MB/s  0:00:00
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.0285126Z Downloading psycopg-3.3.4-py3-none-any.whl (213 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.0355175Z Downloading psycopg_binary-3.3.4-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (5.2 MB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.0759704Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.2/5.2 MB 128.5 MB/s  0:00:00
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.0794575Z Downloading pytest-9.1.1-py3-none-any.whl (386 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.0906799Z Downloading pytest_cov-7.1.0-py3-none-any.whl (22 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.0966747Z Downloading pytest_httpserver-1.1.5-py3-none-any.whl (23 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.1020847Z Downloading ruff-0.16.4-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (10.3 MB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.2040076Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 10.3/10.3 MB 100.7 MB/s  0:00:00
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.2076233Z Downloading sqlalchemy-2.0.51-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (3.3 MB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.2339847Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.3/3.3 MB 126.4 MB/s  0:00:00
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.2375182Z Downloading starlette-1.3.1-py3-none-any.whl (73 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.2431996Z Downloading types_pyyaml-6.0.12.20260724-py3-none-any.whl (20 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.2484275Z Downloading uvicorn-0.52.0-py3-none-any.whl (79 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.2539090Z Downloading ast_serialize-0.10.0-cp39-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (1.3 MB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.2656955Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.3/1.3 MB 109.4 MB/s  0:00:00
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.2694157Z Downloading httpcore-1.0.9-py3-none-any.whl (78 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.2763459Z Downloading jsonpatch-1.33-py2.py3-none-any.whl (12 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.2815198Z Downloading jsonschema-4.26.0-py3-none-any.whl (90 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.2870730Z Downloading langsmith-0.12.2-py3-none-any.whl (760 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.2954532Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 760.7/760.7 kB 81.8 MB/s  0:00:00
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.2986412Z Downloading httpx2-2.12.0-py3-none-any.whl (95 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.3042191Z Downloading httpcore2-2.12.0-py3-none-any.whl (83 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.3096175Z Downloading openai-2.54.0-py3-none-any.whl (1.7 MB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.3242362Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.7/1.7 MB 112.7 MB/s  0:00:00
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.3275010Z Downloading distro-1.9.0-py3-none-any.whl (20 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.3326995Z Downloading jiter-0.16.0-cp314-cp314-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (344 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.3493022Z Downloading pluggy-1.6.0-py3-none-any.whl (20 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.3548749Z Downloading pydantic-2.13.5-py3-none-any.whl (472 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.3624301Z Downloading pydantic_core-2.46.5-cp314-cp314-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.1 MB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.3804710Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.1/2.1 MB 114.5 MB/s  0:00:00
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.3839755Z Downloading pytokens-0.4.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (268 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.3901864Z Downloading tenacity-9.1.4-py3-none-any.whl (28 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.3955003Z Downloading tiktoken-0.14.0-cp314-cp314-manylinux_2_28_x86_64.whl (1.2 MB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.4070154Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.2/1.2 MB 100.9 MB/s  0:00:00
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.4101581Z Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.4156393Z Downloading uuid_utils-0.17.0-cp314-cp314-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (323 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.4221816Z Downloading annotated_doc-0.0.5-py3-none-any.whl (5.3 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.4276663Z Downloading annotated_types-0.8.0-py3-none-any.whl (13 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.4327893Z Downloading attrs-26.1.0-py3-none-any.whl (67 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.4380816Z Downloading click-8.5.0-py3-none-any.whl (125 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.4672405Z Downloading coverage-7.16.0-cp314-cp314-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (257 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.4731470Z Downloading greenlet-3.5.5-cp314-cp314-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl (670 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.4811309Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 670.8/670.8 kB 67.9 MB/s  0:00:00
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.4841568Z Downloading h11-0.16.0-py3-none-any.whl (37 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.4894960Z Downloading idna-3.19-py3-none-any.whl (68 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.5117355Z Downloading iniconfig-2.3.0-py3-none-any.whl (7.5 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.5169201Z Downloading jsonpointer-3.1.1-py3-none-any.whl (7.7 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.5222128Z Downloading jsonschema_specifications-2025.9.1-py3-none-any.whl (18 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.5274701Z Downloading langchain_protocol-0.0.19-py3-none-any.whl (7.3 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.5423467Z Downloading librt-0.15.0-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (523 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.5519692Z Downloading mypy_extensions-1.1.0-py3-none-any.whl (5.0 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.5574128Z Downloading orjson-3.12.0-cp314-cp314-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (131 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.5632142Z Downloading packaging-26.3-py3-none-any.whl (129 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.5688749Z Downloading pathspec-1.1.1-py3-none-any.whl (57 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.5743861Z Downloading platformdirs-4.11.7-py3-none-any.whl (23 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.5829951Z Downloading pygments-2.21.0-py3-none-any.whl (1.3 MB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.5941476Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.3/1.3 MB 108.9 MB/s  0:00:00
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.5972970Z Downloading pytest_regressions-2.11.0-py3-none-any.whl (25 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.6024533Z Downloading pytest_datadir-1.8.0-py3-none-any.whl (6.5 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.6073224Z Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl (229 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.6130254Z Downloading referencing-0.37.0-py3-none-any.whl (26 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.6179969Z Downloading requests-2.34.2-py3-none-any.whl (73 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.6231383Z Downloading charset_normalizer-3.5.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (251 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.6299961Z Downloading urllib3-2.7.0-py3-none-any.whl (131 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.6352491Z Downloading certifi-2026.7.22-py3-none-any.whl (136 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.6410857Z Downloading requests_toolbelt-1.0.0-py2.py3-none-any.whl (54 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.6524380Z Downloading rpds_py-2026.6.3-cp314-cp314-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (367 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.6590945Z Downloading six-1.17.0-py2.py3-none-any.whl (11 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.6646911Z Downloading sniffio-1.3.1-py3-none-any.whl (10 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.6700837Z Downloading tqdm-4.70.0-py3-none-any.whl (80 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.6752079Z Downloading truststore-0.10.4-py3-none-any.whl (18 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.6806959Z Downloading typing_inspection-0.4.4-py3-none-any.whl (14 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.6872055Z Downloading websockets-17.1-cp314-cp314-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (224 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.6936657Z Downloading werkzeug-3.1.8-py3-none-any.whl (226 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.6997460Z Downloading markupsafe-3.0.3-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (23 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.7291380Z Downloading xxhash-4.0.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (268 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.7362101Z Downloading zstandard-0.25.0-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (5.6 MB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.7801003Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.6/5.6 MB 127.0 MB/s  0:00:00
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.7836921Z Downloading mako-1.4.1-py3-none-any.whl (80 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.7900230Z Downloading regex-2026.9.3-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (801 kB)
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:29.7988701Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 801.4/801.4 kB 78.0 MB/s  0:00:00
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:30.0667603Z Building wheels for collected packages: trip-planner, app-baseline-kit
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:30.0673795Z   Building editable for trip-planner (pyproject.toml): started
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:30.3194275Z   Building editable for trip-planner (pyproject.toml): finished with status 'done'
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:30.3199060Z   Created wheel for trip-planner: filename=trip_planner-0.1.0-0.editable-py3-none-any.whl size=3287 sha256=e9af99a9005ebb8644513302399ae57fdfa5c67946607a26d2eff0f3cd1caa49
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:30.3201248Z   Stored in directory: /tmp/pip-ephem-wheel-cache-7bmov86z/wheels/57/dc/0c/f684319b3e1df1e2bb9b4fe1688674f17bdad9c2af77f98d4f
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:30.3223933Z   Building wheel for app-baseline-kit (pyproject.toml): started
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:30.5238945Z   Building wheel for app-baseline-kit (pyproject.toml): finished with status 'done'
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:30.5244929Z   Created wheel for app-baseline-kit: filename=app_baseline_kit-0.2.0-py3-none-any.whl size=9495 sha256=01489458a82f4ea3f679e41a173e6db1036f9d2b6e68a5006073d8b844f0847f
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:30.5247049Z   Stored in directory: /tmp/pip-ephem-wheel-cache-7bmov86z/wheels/5a/1f/ac/555bfafeb20d4bfb7929ca5a9f54a20a915738a84e8149b052
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:30.5259726Z Successfully built trip-planner app-baseline-kit
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:30.6746644Z Installing collected packages: zstandard, xxhash, websockets, uuid-utils, urllib3, typing-extensions, types-PyYAML, truststore, tqdm, tenacity, sniffio, six, ruff, rpds-py, regex, PyYAML, pytokens, pygments, psycopg-binary, psycopg, pluggy, platformdirs, pathspec, packaging, orjson, numpy, mypy-extensions, markupsafe, librt, jsonpointer, jiter, iniconfig, idna, h11, greenlet, distro, coverage, click, charset_normalizer, certifi, attrs, ast-serialize, annotated-types, annotated-doc, Werkzeug, uvicorn, typing-inspection, sqlalchemy, requests, referencing, python-dateutil, pytest, pydantic-core, mypy, Mako, langchain-protocol, jsonpatch, httpcore2, httpcore, black, anyio, tiktoken, starlette, requests-toolbelt, pytest-httpserver, pytest-datadir, pytest-cov, pydantic, pandas, jsonschema-specifications, httpx2, httpx, alembic, pytest-regressions, openai, langsmith, jsonschema, fastapi, langchain-core, app-baseline-kit, langchain-openai, trip-planner
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:49.5061468Z 
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:49.5125870Z Successfully installed Mako-1.4.1 PyYAML-6.0.3 Werkzeug-3.1.8 alembic-1.18.5 annotated-doc-0.0.5 annotated-types-0.8.0 anyio-4.14.2 app-baseline-kit-0.2.0 ast-serialize-0.10.0 attrs-26.1.0 black-26.5.1 certifi-2026.7.22 charset_normalizer-3.5.1 click-8.5.0 coverage-7.16.0 distro-1.9.0 fastapi-0.141.1 greenlet-3.5.5 h11-0.16.0 httpcore-1.0.9 httpcore2-2.12.0 httpx-0.28.1 httpx2-2.12.0 idna-3.19 iniconfig-2.3.0 jiter-0.16.0 jsonpatch-1.33 jsonpointer-3.1.1 jsonschema-4.26.0 jsonschema-specifications-2025.9.1 langchain-core-1.5.3 langchain-openai-1.4.1 langchain-protocol-0.0.19 langsmith-0.12.2 librt-0.15.0 markupsafe-3.0.3 mypy-2.3.1 mypy-extensions-1.1.0 numpy-2.5.1 openai-2.54.0 orjson-3.12.0 packaging-26.3 pandas-3.0.5 pathspec-1.1.1 platformdirs-4.11.7 pluggy-1.6.0 psycopg-3.3.4 psycopg-binary-3.3.4 pydantic-2.13.5 pydantic-core-2.46.5 pygments-2.21.0 pytest-9.1.1 pytest-cov-7.1.0 pytest-datadir-1.8.0 pytest-httpserver-1.1.5 pytest-regressions-2.11.0 python-dateutil-2.9.0.post0 pytokens-0.4.1 referencing-0.37.0 regex-2026.9.3 requests-2.34.2 requests-toolbelt-1.0.0 rpds-py-2026.6.3 ruff-0.16.4 six-1.17.0 sniffio-1.3.1 sqlalchemy-2.0.51 starlette-1.3.1 tenacity-9.1.4 tiktoken-0.14.0 tqdm-4.70.0 trip-planner-0.1.0 truststore-0.10.4 types-PyYAML-6.0.12.20260724 typing-extensions-4.16.0 typing-inspection-0.4.4 urllib3-2.7.0 uuid-utils-0.17.0 uvicorn-0.52.0 websockets-17.1 xxhash-4.0.1 zstandard-0.25.0
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:53.1965543Z 
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:53.1966666Z added 130 packages, and audited 131 packages in 3s
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:53.1967146Z 
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:53.1967524Z 28 packages are looking for funding
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:53.1968277Z   run `npm fund` for details
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:53.1991327Z 
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:53.1991980Z 1 high severity vulnerability
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:53.1992577Z 
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:53.1992840Z To address all issues, run:
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:53.1993335Z   npm audit fix
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:53.1993638Z 
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:53.1993907Z Run `npm audit` for details.
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:53.9882065Z Downloading Chrome for Testing 149.0.7827.55 (playwright chromium v1228) from https://cdn.playwright.dev/builds/cft/149.0.7827.55/linux64/chrome-linux64.zip
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:55.0191599Z |                                                                                |   0% of 177 MiB
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:55.1655657Z |■■■■■■■■                                                                        |  10% of 177 MiB
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:55.2523858Z |■■■■■■■■■■■■■■■■                                                                |  20% of 177 MiB
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:55.3292660Z |■■■■■■■■■■■■■■■■■■■■■■■■                                                        |  30% of 177 MiB
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:55.4127283Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                                |  40% of 177 MiB
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:55.4907602Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                        |  50% of 177 MiB
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:55.5709235Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                |  60% of 177 MiB
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:55.6552549Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                        |  70% of 177 MiB
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:55.7310798Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                |  80% of 177 MiB
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:55.8087876Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■        |  90% of 177 MiB
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:55.8936641Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■| 100% of 177 MiB
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:58.7485442Z Chrome for Testing 149.0.7827.55 (playwright chromium v1228) downloaded to /home/runner/.cache/ms-playwright/chromium-1228
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:58.7488157Z Downloading FFmpeg (playwright ffmpeg v1011) from https://cdn.playwright.dev/dbazure/download/playwright/builds/ffmpeg/1011/ffmpeg-linux.zip
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:59.6997236Z |                                                                                |   0% of 2.3 MiB
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:59.7047411Z |■■■■■■■■                                                                        |  10% of 2.3 MiB
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:59.7091181Z |■■■■■■■■■■■■■■■■                                                                |  20% of 2.3 MiB
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:59.7113523Z |■■■■■■■■■■■■■■■■■■■■■■■■                                                        |  30% of 2.3 MiB
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:59.7129308Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                                |  40% of 2.3 MiB
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:59.7150840Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                        |  50% of 2.3 MiB
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:59.7159658Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                |  60% of 2.3 MiB
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:59.7176753Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                        |  70% of 2.3 MiB
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:59.7187966Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                |  80% of 2.3 MiB
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:59.7197135Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■        |  90% of 2.3 MiB
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:59.7205836Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■| 100% of 2.3 MiB
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:59.7757849Z FFmpeg (playwright ffmpeg v1011) downloaded to /home/runner/.cache/ms-playwright/ffmpeg-1011
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:03:59.7760017Z Downloading Chrome Headless Shell 149.0.7827.55 (playwright chromium-headless-shell v1228) from https://cdn.playwright.dev/builds/cft/149.0.7827.55/linux64/chrome-headless-shell-linux64.zip
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:00.7645227Z |                                                                                |   0% of 114.2 MiB
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:00.8579209Z |■■■■■■■■                                                                        |  10% of 114.2 MiB
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:00.9090249Z |■■■■■■■■■■■■■■■■                                                                |  20% of 114.2 MiB
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:00.9586790Z |■■■■■■■■■■■■■■■■■■■■■■■■                                                        |  30% of 114.2 MiB
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:01.0087377Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                                |  40% of 114.2 MiB
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:01.0681112Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                        |  50% of 114.2 MiB
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:01.1219982Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                |  60% of 114.2 MiB
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:01.1765957Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                        |  70% of 114.2 MiB
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:01.2259860Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                |  80% of 114.2 MiB
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:01.2958147Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■        |  90% of 114.2 MiB
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:01.3554114Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■| 100% of 114.2 MiB
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:03.4218317Z Chrome Headless Shell 149.0.7827.55 (playwright chromium-headless-shell v1228) downloaded to /home/runner/.cache/ms-playwright/chromium_headless_shell-1228
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:03.4465594Z ##[group]Run ./scripts/run_two_trip_ui_canary.sh
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:03.4466060Z ^[[36;1m./scripts/run_two_trip_ui_canary.sh^[[0m
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:03.4490986Z shell: /usr/bin/bash -e {0}
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:03.4491425Z env:
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:03.4491818Z   pythonLocation: /opt/hostedtoolcache/Python/3.14.7/x64
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:03.4492378Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.14.7/x64/lib/pkgconfig
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:03.4492903Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.7/x64
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:03.4493331Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.7/x64
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:03.4493855Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.7/x64
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:03.4494303Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.14.7/x64/lib
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:03.4494824Z   UV_PYTHON_INSTALL_DIR: /home/runner/work/_temp/uv-python-dir
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:03.4495264Z   UV_CACHE_DIR: /home/runner/work/_temp/setup-uv-cache
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:03.4495635Z ##[endgroup]
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:18.8754371Z Two-trip UI canary failed. Backend log tail:
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:18.8894166Z Using CPython 3.14.7 interpreter at: /opt/hostedtoolcache/Python/3.14.7/x64/bin/python3.14
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:18.8895183Z Creating virtual environment at: .venv
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:18.8895847Z Frontend log tail:
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:18.8929898Z ##[error]Process completed with exit code 1.
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:18.9056599Z Post job cleanup.
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:18.9933437Z [command]/usr/bin/git version
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:18.9978201Z git version 2.55.0
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:19.0011600Z Temporarily overriding HOME='/home/runner/work/_temp/6249671d-af24-4bf0-8fe0-2065b9f1ead1' before making global git config changes
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:19.0012861Z Adding repository directory to the temporary git global config as a safe directory
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:19.0017584Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/trip-planner/trip-planner
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:19.0064040Z Removing SSH command configuration
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:19.0075546Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:19.0121367Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:19.0368512Z Removing HTTP extra header
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:19.0374445Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:19.0407835Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:19.0599407Z Removing includeIf entries pointing to credentials config files
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:19.0605087Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:19.0631043Z includeif.gitdir:/home/runner/work/trip-planner/trip-planner/.git.path
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:19.0632236Z includeif.gitdir:/home/runner/work/trip-planner/trip-planner/.git/worktrees/*.path
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:19.0633040Z includeif.gitdir:/github/workspace/.git.path
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:19.0633891Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:19.0638944Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/trip-planner/trip-planner/.git.path
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:19.0657644Z /home/runner/work/_temp/git-credentials-108c989b-8e6d-4711-b52f-1de4c2419eb9.config
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:19.0666543Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/trip-planner/trip-planner/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-108c989b\-8e6d\-4711\-b52f\-1de4c2419eb9\.config
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:19.0696455Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/trip-planner/trip-planner/.git/worktrees/*.path
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:19.0715918Z /home/runner/work/_temp/git-credentials-108c989b-8e6d-4711-b52f-1de4c2419eb9.config
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:19.0724110Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/trip-planner/trip-planner/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-108c989b\-8e6d\-4711\-b52f\-1de4c2419eb9\.config
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:19.0756734Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:19.0774657Z /github/runner_temp/git-credentials-108c989b-8e6d-4711-b52f-1de4c2419eb9.config
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:19.0780743Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-108c989b\-8e6d\-4711\-b52f\-1de4c2419eb9\.config
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:19.0805765Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:19.0824081Z /github/runner_temp/git-credentials-108c989b-8e6d-4711-b52f-1de4c2419eb9.config
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:19.0831095Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-108c989b\-8e6d\-4711\-b52f\-1de4c2419eb9\.config
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:19.0859737Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:19.1047065Z Removing credentials config '/home/runner/work/_temp/git-credentials-108c989b-8e6d-4711-b52f-1de4c2419eb9.config'
+Browser first-use canary	UNKNOWN STEP	2026-09-08T07:04:19.1227561Z Cleaning up orphan processes

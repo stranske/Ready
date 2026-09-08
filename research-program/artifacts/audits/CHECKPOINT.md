@@ -129,3 +129,15 @@ Resumed from unit checkpoint Phase 5 on remote tip 0ae9443cdb72ae4f0ccae10346bb5
 
 ## 2026-09-08T06:18:57.461069+00:00 — D-audit-learning-management-system--2026-09-08T05-06-08Z attempt 3 Phase 5 reconciliation
 Resumed retained Phase 5 without restart. Main 0ae9443 unchanged; six supported defect findings, one latent numeric weakness, #627 refuted by repeated-action HTTP 200 probes. Eight existing issues open, intake rows166–173 verified, no duplicates. Seven remote guard validation steps success, #626 unconfirmed. Exact live bodies8/8 local PASS; seven corrected bodies staged with zero advisories. OUT rewritten with evidence and coverage corrections; durable ledger/index updated. No source/remote issue changes or offloads. Ready for engine done.
+
+## 2026-09-08T17:13:52.286868+00:00 — D-audit-Counter_Risk--2026-09-08T17-11-36Z — Phases 0–1
+Dossier and prior audit read; scope inherited; clone pulled to e2a1bacf37503217e00e467aa72198988777afa4; preexisting untracked dossier-out/ and uv.lock retained. Baseline, CI and 120-issue dedup snapshot at /Users/teacher/.codex/automations/research-program/artifacts/audits/Counter_Risk-2026-09-08-evidence. High machine load; bounded probes preferred.
+
+## 2026-09-08T17:19:38.992906+00:00 — D-audit-Counter_Risk--2026-09-08T17-11-36Z — Phase 2 progress
+Orchestrator codex core review pending; cursor ops review nonempty. D2 AST scan found four exact function-body groups. Main CI exact-head success. 1738 tests collected; three web smoke tests passed. Static browser DOM/screenshot captured; explicit-config headless GUI discovery passed. UX panel running. Sources retrieved from BIS, PyInstaller, openpyxl, Hypothesis and DOJ.
+
+## 2026-09-08T17:24:32.018928+00:00 — D-audit-Counter_Risk--2026-09-08T17-11-36Z — Phases 2–3 complete
+Core report nonempty despite dispatcher exit1 OFFLOAD_INCOMPLETE detection; independently executed three matched-control probes and checked exact cited code. Five code defects retained (two packaging, three numeric/control); F3 frozen-config claim folded into missing-payload root cause; chat NaN latent, not staged. Four UX evaluators and adversary produced nonempty artifacts; scores apply to static page only. Six draft bodies planned including one dated HHI documentation correction.
+
+## 2026-09-08T17:28:42.209627+00:00 — D-audit-Counter_Risk--2026-09-08T17-11-36Z — Phases 4–5 complete
+Six research-only issue drafts passed actual repo validator with zero advisories; exact head still e2a1bacf37503217e00e467aa72198988777afa4. OUT written, canonical audit report/index/ledger reconciled, no filing/intake or code changes. Windows handoff and failed static-only UX gate documented. Ready for program.py done.

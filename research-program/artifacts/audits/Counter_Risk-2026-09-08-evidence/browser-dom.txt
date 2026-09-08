@@ -1,0 +1,20 @@
+- main:
+  - heading "Counter Risk Fixture Replay (Offline Browser Demo)" [level=1]
+  - paragraph: This page is a static browser entry for the synthetic demo path. It is intentionally fixture-only and no-egress.
+  - list:
+    - text: "Inputs: bundled files under"
+    - code: tests/fixtures/
+    - text: only
+    - text: "Pipeline helper:"
+    - code: counter_risk.web_demo.run_web_demo_pipeline
+    - text: "Entry API used by the helper:"
+    - code: run_pipeline_with_config(...)
+    - text: "Chat boundary:"
+    - code: COUNTER_RISK_CHAT_OFFLINE_MODE=1
+  - paragraph:
+    - text: The CI/browser artifact path emits
+    - code: manifest.json
+    - text: and
+    - code: DATA_QUALITY_SUMMARY.txt
+    - text: . Render these files in-browser after download.
+  - generic: "Ready: fixture-only browser demo contract loaded."

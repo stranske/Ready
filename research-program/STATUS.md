@@ -1,8 +1,8 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-08T08:13:34Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-08T22:05:05Z)
 
-Units: 75 — done 75
+Units: 77 — done 77
 Paused: False   Phase stops: []
-Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=warn vibe=ok aider=ok
+Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 Claude conservation: off (weekly window available)
 Owner inbox: https://github.com/stranske/Ready/issues/553
 
@@ -63,7 +63,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D3-unblock-sweep-2026-09-07T14 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D3-unblock-sweep-2026-09-07T22 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D3-unblock-sweep-2026-09-08T07 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
+| D3-unblock-sweep-2026-09-08T15 | D | D | done | cursor | codex | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D-audit-Counter_Risk--2026-09-07T04-47-32Z | D | D | done | codex | driver | Audit stranske/Counter_Risk and file issues (supply 2 <= 2) |
+| D-audit-Counter_Risk--2026-09-08T17-11-36Z | D | D | done | codex | codex | Audit stranske/Counter_Risk and file issues (supply 1 <= 2) |
 | D-audit-Fine-Art-Archive--2026-09-05T04-00-31Z | D | D | done | codex | codex | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 2) |
 | D-audit-Fine-Art-Archive--2026-09-06T04-25-53Z | D | D | done | codex | driver | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 3) |
 | D-audit-Manager-Mosaic--2026-09-05T04-00-25Z | D | D | done | codex | driver | Audit stranske/Manager-Mosaic and file issues (supply 2 <= 2) |
@@ -86,18 +88,18 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-08T06:18:57Z — D-audit-learning-management-system--2026-09-08T05-06-08Z — done — Reconciled eight existing LMS issues: six supported defects, one latent numeric weakness, one refuted finding; staged corrected guidance with verified evidence.
-- 2026-09-08T06:18:57Z — mirror — deferred — Ready#564 exact-head sync review; publication resumes by 2026-09-08T07:55:00+00:00; local work continues
-- 2026-09-08T06:33:53Z — mirror — deferred — Ready#564 exact-head sync review; publication resumes by 2026-09-08T07:55:00+00:00; local work continues
-- 2026-09-08T06:48:56Z — mirror — deferred — Ready#564 exact-head sync review; publication resumes by 2026-09-08T07:55:00+00:00; local work continues
-- 2026-09-08T07:03:59Z — unblock — enqueued D3-unblock-sweep-2026-09-08T07
-- 2026-09-08T07:03:59Z — D3-unblock-sweep-2026-09-08T07 — route — router picked cursor from ['codex', 'cursor']
-- 2026-09-08T07:03:59Z — D3-unblock-sweep-2026-09-08T07 — claimed by driver (agent cursor)
-- 2026-09-08T07:26:20Z — D3-unblock-sweep-2026-09-08T07 — done — gemini produced 1165 words at artifacts/sweeps/D3-unblock-sweep-2026-09-08T07.md in 1336s
 - 2026-09-08T07:41:37Z — citations — enqueued B1-citefix-R3-manager-mosaic-synthesis
 - 2026-09-08T07:41:37Z — B1-citefix-R3-manager-mosaic-synthesis — route — router picked gemini from ['codex', 'cursor', 'gemini']
 - 2026-09-08T07:41:37Z — B1-citefix-R3-manager-mosaic-synthesis — claimed by driver (agent gemini)
 - 2026-09-08T07:43:23Z — B1-citefix-R3-manager-mosaic-synthesis — done — gemini produced 2625 words at artifacts/research/R3-manager-mosaic-synthesis.md in 102s
+- 2026-09-08T15:11:04Z — unblock — enqueued D3-unblock-sweep-2026-09-08T15
+- 2026-09-08T15:11:04Z — D3-unblock-sweep-2026-09-08T15 — route — router picked cursor from ['codex', 'cursor']
+- 2026-09-08T15:11:04Z — D3-unblock-sweep-2026-09-08T15 — claimed by codex (agent cursor)
+- 2026-09-08T15:16:38Z — D3-unblock-sweep-2026-09-08T15 — done — Surveyed 15 fleet repos: 132 agent-ready issues, no owner holds or stalled agent PRs, and four current-head CI failures with verified staged follow-ups.
+- 2026-09-08T17:11:36Z — refill — Counter_Risk: open=1 <= 2 → audit queued
+- 2026-09-08T17:11:40Z — D-audit-Counter_Risk--2026-09-08T17-11-36Z — route — router picked codex from ['codex']
+- 2026-09-08T17:11:40Z — D-audit-Counter_Risk--2026-09-08T17-11-36Z — claimed by codex (agent codex)
+- 2026-09-08T17:28:54Z — D-audit-Counter_Risk--2026-09-08T17-11-36Z — done — Verified five code defects and one documentation correction at e2a1bacf; six format-valid issue bodies staged under research-only rules, with Windows verificati
 
 ## Questions
 
