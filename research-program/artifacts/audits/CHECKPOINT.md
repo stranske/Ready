@@ -113,3 +113,9 @@ Resumed on remote tip 59cb12be9d4b06434d41bc1b71612167ea6d9cfc. Scoped from doss
 
 ## 2026-09-07T17:05:00Z — D-audit-Portable-Alpha-Extension-Model--2026-09-07T17-01-44Z complete
 Phases 0–5 complete on remote tip 59cb12be9d4b06434d41bc1b71612167ea6d9cfc. Filed 10 verified issues #2278–#2287 (7 P1, 3 P2). Local issue_format.py 10/10 PASS (0 errors, 0 advisories, conforms strictly to docs/AGENT_ISSUE_FORMAT.md); remote Agents Issue Format Guard completed with 0 rejections and 0 failure comments. Intake log updated with 10 rows. OUT written to /Users/teacher/.codex/automations/research-program/artifacts/audits/Portable-Alpha-Extension-Model-2026-09-07.md. Durable audit ledger and repo README updated.
+
+## 2026-09-08T05:08:00Z — D-audit-learning-management-system--2026-09-08T05-06-08Z Phase 0
+Phase 0 scoping complete on clone tip 0ae9443cdb72ae4f0ccae10346bb5ab30033c2ca. Scoped to src/lms/, tests/, alembic/, scripts/, docs/ (app-owned); excluding synced .github/ and design-system/. Initialized run artifacts and advancing to Phase 1.
+
+## 2026-09-08T05:10:00Z — D-audit-learning-management-system--2026-09-08T05-06-08Z Phase 1
+Phase 1 cheap orientation complete on tip 0ae9443cdb72ae4f0ccae10346bb5ab30033c2ca. 1,431 tests collected, 30,661 src LOC, CI green on main. Wrote 2026-09-08-00-repo-map.md and 2026-09-08-audit-run.md. Advancing to Phase 2.
