@@ -1,0 +1,25 @@
+--- clones/Counter_Risk/src/counter_risk/writers/historical_update.py	2026-09-09 15:26:55.040626+00:00
++++ clones/Counter_Risk/src/counter_risk/writers/historical_update.py	2026-09-09 15:27:14.938961+00:00
+@@ -801,16 +801,16 @@
+                 source_row=append_target.last_dated_row,
+                 target_row=append_target.append_row,
+                 columns=tuple(range(1, preserve_through_column + 1)),
+             )
+ 
+-        worksheet.cell(
+-            row=append_target.append_row, column=append_target.date_column
+-        ).value = px_date
+-        worksheet.cell(
+-            row=append_target.append_row, column=append_target.wal_column
+-        ).value = parsed_wal
++        worksheet.cell(row=append_target.append_row, column=append_target.date_column).value = (
++            px_date
++        )
++        worksheet.cell(row=append_target.append_row, column=append_target.wal_column).value = (
++            parsed_wal
++        )
+         _validate_preserved_wal_cells(worksheet, preserve_snapshots)
+         # Trim AFTER validating preserved cells: deleting leading rows shifts every
+         # row index the snapshot was taken against.
+         _trim_wal_sheet_to_rolling_window(
+             worksheet,
