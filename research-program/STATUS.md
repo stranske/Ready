@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-09T15:11:43Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-09T15:21:32Z)
 
-Units: 82 — done 82
+Units: 83 — claimed 1, done 82
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 Claude conservation: off (weekly window available)
@@ -66,6 +66,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D3-unblock-sweep-2026-09-08T15 | D | D | done | cursor | codex | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D3-unblock-sweep-2026-09-08T23 | D | D | done | cursor | codex | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D3-unblock-sweep-2026-09-09T07 | D | D | done | cursor | codex | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
+| D3-unblock-sweep-2026-09-09T15 | D | D | claimed | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D-audit-Counter_Risk--2026-09-07T04-47-32Z | D | D | done | codex | driver | Audit stranske/Counter_Risk and file issues (supply 2 <= 2) |
 | D-audit-Counter_Risk--2026-09-08T17-11-36Z | D | D | done | codex | codex | Audit stranske/Counter_Risk and file issues (supply 1 <= 2) |
 | D-audit-Counter_Risk--2026-09-09T05-14-45Z | D | D | done | codex | driver | Audit stranske/Counter_Risk and file issues (supply 1 <= 2) |
@@ -93,9 +94,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-09T05:14:45Z — refill — Counter_Risk: open=1 <= 2 → audit queued
-- 2026-09-09T05:14:48Z — refill — learning-management-system: open=1 <= 2 → audit queued
-- 2026-09-09T05:14:49Z — D-audit-Counter_Risk--2026-09-09T05-14-45Z — route — router picked codex from ['codex']
 - 2026-09-09T05:14:49Z — D-audit-Counter_Risk--2026-09-09T05-14-45Z — claimed by driver (agent codex)
 - 2026-09-09T05:19:30Z — D-audit-Counter_Risk--2026-09-09T05-14-45Z — done — gemini produced 944 words at artifacts/audits/Counter_Risk-2026-09-09.md in 278s
 - 2026-09-09T05:34:38Z — D-audit-learning-management-system--2026-09-09T05-14-48Z — route — router picked codex from ['codex']
@@ -105,6 +103,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-09T07:12:07Z — D3-unblock-sweep-2026-09-09T07 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-09T07:12:07Z — D3-unblock-sweep-2026-09-09T07 — claimed by codex (agent cursor)
 - 2026-09-09T07:15:54Z — D3-unblock-sweep-2026-09-09T07 — done — Fifteen-repo sweep finds 131 agent-ready issues, no owner holds or stalled PRs, Inv-Man-Intake recovery and two formatting failures with staged repair specifica
+- 2026-09-09T15:21:32Z — unblock — enqueued D3-unblock-sweep-2026-09-09T15
+- 2026-09-09T15:21:32Z — D3-unblock-sweep-2026-09-09T15 — route — router picked cursor from ['codex', 'cursor']
+- 2026-09-09T15:21:32Z — D3-unblock-sweep-2026-09-09T15 — claimed by driver (agent cursor)
 
 ## Questions
 
