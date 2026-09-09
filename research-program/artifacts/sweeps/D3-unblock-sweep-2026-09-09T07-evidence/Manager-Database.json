@@ -1,0 +1,186 @@
+{
+  "repo": {
+    "defaultBranchRef": {
+      "name": "main"
+    },
+    "url": "https://github.com/stranske/Manager-Database"
+  },
+  "issues": [
+    {
+      "labels": [
+        {
+          "id": "LA_kwDOO4LcjM8AAAACCXfJHw",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        }
+      ],
+      "number": 1629,
+      "title": "[P2] Fail activism ingestion when campaign materialization fails",
+      "url": "https://github.com/stranske/Manager-Database/issues/1629"
+    },
+    {
+      "labels": [
+        {
+          "id": "LA_kwDOO4LcjM8AAAACCXfJHw",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        }
+      ],
+      "number": 1628,
+      "title": "[P2] Wire ingested filing documents to the active database and manager",
+      "url": "https://github.com/stranske/Manager-Database/issues/1628"
+    },
+    {
+      "labels": [
+        {
+          "id": "LA_kwDOO4LcjM8AAAACCXfJHw",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        }
+      ],
+      "number": 1627,
+      "title": "[P2] Make health probe timeout configuration finite and positive",
+      "url": "https://github.com/stranske/Manager-Database/issues/1627"
+    },
+    {
+      "labels": [
+        {
+          "id": "LA_kwDOO4LcjM8AAAACCXfJKQ",
+          "name": "enhancement",
+          "description": "New feature or request",
+          "color": "a2eeef"
+        }
+      ],
+      "number": 1626,
+      "title": "[P2] Consolidate alerts/db.py dialect helpers onto adapters/base.py",
+      "url": "https://github.com/stranske/Manager-Database/issues/1626"
+    },
+    {
+      "labels": [
+        {
+          "id": "LA_kwDOO4LcjM8AAAACCXfJHw",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        }
+      ],
+      "number": 1625,
+      "title": "[P2] Validate integer alert condition keys at API boundary",
+      "url": "https://github.com/stranske/Manager-Database/issues/1625"
+    },
+    {
+      "labels": [
+        {
+          "id": "LA_kwDOO4LcjM8AAAACCXfJKQ",
+          "name": "enhancement",
+          "description": "New feature or request",
+          "color": "a2eeef"
+        }
+      ],
+      "number": 1624,
+      "title": "[P2] Deduplicate filing-summary formatters onto chains/utils.py",
+      "url": "https://github.com/stranske/Manager-Database/issues/1624"
+    },
+    {
+      "labels": [
+        {
+          "id": "LA_kwDOO4LcjM8AAAACxDIKDg",
+          "name": "tracker:durable",
+          "description": "Permanently-open tracker; excluded from open-issue backlog counts",
+          "color": "c5def5"
+        }
+      ],
+      "number": 1164,
+      "title": "Dependency Dashboard",
+      "url": "https://github.com/stranske/Manager-Database/issues/1164"
+    },
+    {
+      "labels": [
+        {
+          "id": "LA_kwDOO4LcjM8AAAACxDIKDg",
+          "name": "tracker:durable",
+          "description": "Permanently-open tracker; excluded from open-issue backlog counts",
+          "color": "c5def5"
+        }
+      ],
+      "number": 927,
+      "title": "Agent metrics weekly summary",
+      "url": "https://github.com/stranske/Manager-Database/issues/927"
+    }
+  ],
+  "prs": [],
+  "head": "ef72a96225043e94ad596a3c53edec6dfd104f50",
+  "runs": [
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-09T07:09:08Z",
+      "databaseId": 34322415331,
+      "headSha": "ef72a96225043e94ad596a3c53edec6dfd104f50",
+      "status": "completed",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/34322415331",
+      "workflowName": "Agents PR Health"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-09T06:57:47Z",
+      "databaseId": 34321490061,
+      "headSha": "ef72a96225043e94ad596a3c53edec6dfd104f50",
+      "status": "completed",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/34321490061",
+      "workflowName": "Maint Coverage Guard"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-09T06:45:19Z",
+      "databaseId": 34320508751,
+      "headSha": "ef72a96225043e94ad596a3c53edec6dfd104f50",
+      "status": "completed",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/34320508751",
+      "workflowName": "Agents Keepalive Sweep"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-09T06:31:22Z",
+      "databaseId": 34319442221,
+      "headSha": "ef72a96225043e94ad596a3c53edec6dfd104f50",
+      "status": "completed",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/34319442221",
+      "workflowName": "Autofix"
+    },
+    {
+      "conclusion": "skipped",
+      "createdAt": "2026-09-09T06:29:41Z",
+      "databaseId": 34319307059,
+      "headSha": "ef72a96225043e94ad596a3c53edec6dfd104f50",
+      "status": "completed",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/34319307059",
+      "workflowName": "Keepalive Loop Reporter"
+    }
+  ],
+  "ci": [
+    {
+      "name": "CI",
+      "runs": [
+        {
+          "id": 34318982471,
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-09-09T06:25:20Z",
+          "head_sha": "ef72a96225043e94ad596a3c53edec6dfd104f50",
+          "html_url": "https://github.com/stranske/Manager-Database/actions/runs/34318982471"
+        }
+      ]
+    },
+    {
+      "name": "Gate",
+      "runs": []
+    }
+  ],
+  "supply": 6,
+  "frozen": [],
+  "stalled": [],
+  "observedAt": "2026-09-09T07:12:52.782570+00:00"
+}
