@@ -144,3 +144,41 @@ Six research-only issue drafts passed actual repo validator with zero advisories
 
 ## 2026-09-09T05:46:00Z — D-audit-learning-management-system--2026-09-09T05-14-48Z complete
 Phases 0–5 complete on clone tip 1015f28616fcfd6adb8acff50e1cb2998b17a7f5. Evaluated 137 src files (30,661 LOC) and 178 test files (30,845 LOC). Test baseline: 1,597 passed, 2 skipped, 8 deselected in 43.70s. Filed 7 verified issues #638–#644 (2xP1, 5xP2). Local issue_format.py 7/7 PASS (0 errors, 0 advisories, conforms strictly to docs/AGENT_ISSUE_FORMAT.md). Intake log updated with 7 rows. OUT written to /Users/teacher/.codex/automations/research-program/artifacts/audits/learning-management-system-2026-09-09.md. Durable audit ledger and repo README updated.
+
+## 2026-09-09T17:34:00Z — D-audit-Counter_Risk--2026-09-09T17-29-35Z — Phases 0–1
+Dossier, owner notes, and prior audits read; scope anchored on app code (`src/counter_risk/`), `config/`, `tests/`, `docs/`, `scripts/` (first-party), `Runner.xlsm`, `build/`. Clone updated to HEAD `cdfd281866fb5bf23fce6dd22eb4f7367e0876fc`. Baseline: 1,841 tests collected across 162 modules via `uv run pytest`, ruff clean (0 diagnostics). Open agent-ready issue supply confirmed: only #1023 ([P3] HHI doc) and #996 remain open after morning issues #1016-#1022 were resolved via PRs #1024-#1030. Supply 2 <= 2 triggered demand-driven Track D refill.
+
+## 2026-09-09T17:36:30Z — D-audit-Counter_Risk--2026-09-09T17-29-35Z — Phases 2–3
+Analyzed across 8 dimensions. Adversarially verified 6 candidate findings against local runtime:
+1. CR2-1 (09-png-glyph-currency-accounting): `src/counter_risk/renderers/table_png.py:576` pure-Python bitmap font dictionary `_GLYPHS` lacks `$`, `(`, `)`, causing currency and accounting formatted tables (`render_cprs_ch_png`, `render_cprs_fcm_png`) to render fallback `?` question marks.
+2. CR2-2 (10-concentration-limit-exposure-finite): `src/counter_risk/pipeline/run.py:2270, 2283, 2333, 2348` lacks finite numeric coercion for concentration and limit exposure builders, allowing `NaN`/`Inf` to reach rollups and limit checks.
+3. CR2-3 (11-dropin-breakdown-alias-finite): `src/counter_risk/pipeline/run.py:2610-2621` `_row_numeric_value` aborts alias checking on first `None` value without checking fallback aliases, and propagates non-finite floats to drop-in breakdown calculations.
+4. CR2-4 (12-historical-rollup-finite): `src/counter_risk/writers/historical_update.py:357-368` `_coerce_rollup_data` accepts non-finite floats (`NaN`, `Inf`) when updating historical 3-year workbook rollups.
+5. CR2-5 (13-manifest-schema-finite-number): `src/counter_risk/pipeline/manifest_schema.py:488-490` `_matches_type(value, "number")` accepts `NaN` and `Infinity` into JSON schema number validation.
+6. CR2-6 (14-chat-exposure-finite-sort): `src/counter_risk/chat/session.py:700-714` `_parse_float` accepts `NaN`/`Inf`, corrupting tolerance comparisons in `chat/utils.py:23` and violating strict weak ordering in top exposure ranking.
+
+All 6 candidate issue bodies validated against `issue_lint.py` with 0 errors and 0 advisories (PASS).
+
+## 2026-09-09T17:38:00Z — D-audit-Counter_Risk--2026-09-09T17-29-35Z — Phase 4
+Filed 6 verified issues to GitHub repository stranske/Counter_Risk with standard repo labels:
+- #1031 [P2] Support currency and accounting glyphs in pure-Python table PNG renderer (`bug,priority:normal`)
+- #1032 [P2] Coerce finite numeric values in pipeline concentration and limit exposure builders (`bug,priority:normal`)
+- #1033 [P2] Fix alias fallback and enforce finite floats in drop-in totals numeric extraction (`bug,priority:normal`)
+- #1034 [P2] Reject non-finite values during historical three-year workbook rollups (`bug,priority:normal`)
+- #1035 [P2] Reject NaN and Infinity in manifest schema number type validator (`bug,priority:normal`)
+- #1036 [P2] Enforce finite numeric extraction and valid sorting in chat session exposures (`bug,priority:normal`)
+
+Format guard verification: Checked Actions workflow runs on GitHub (`gh run list -R stranske/Counter_Risk --workflow "Agents Issue Format Guard"`). All 6 issues passed Agents Issue Format Guard with status `success`.
+
+## 2026-09-09T17:39:00Z — D-audit-Counter_Risk--2026-09-09T17-29-35Z — Phase 5
+Reconciliation complete:
+- Appended 6 filed URLs to `~/.codex/orchestrator/measurement/intake-2026-09-04.log` in `repo|body-file|url` format.
+- Stored canonical audit artifacts under `/Users/teacher/Library/CloudStorage/Dropbox/Learning/Code/Audits/Counter_Risk/`:
+  - `2026-09-09-02-audit-run.md`
+  - `2026-09-09-issue-bodies/` (09-14)
+  - `2026-09-09-02-AUDIT_REPORT.md`
+  - `2026-09-09-02-verification-log.md`
+  - `README.md`
+- Updated `/Users/teacher/Library/CloudStorage/Dropbox/Learning/Code/Audits/AUDIT_LEDGER.md`.
+- OUT report generated at `/Users/teacher/.codex/automations/research-program/artifacts/audits/Counter_Risk-2026-09-09.md`.
+Audit cycle complete. Supply replenished from 2 to 8 issues.

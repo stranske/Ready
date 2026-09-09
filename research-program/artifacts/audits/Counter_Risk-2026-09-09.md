@@ -1,86 +1,86 @@
-# Counter_Risk Refill Audit Run Report — 2026-09-09
+# Counter_Risk Audit Report — 2026-09-09 (Afternoon Refill Run 2)
 
-Unit: `D-audit-Counter_Risk--2026-09-09T05-14-45Z`
-Title: `Audit stranske/Counter_Risk and file issues (supply 1 <= 2)`
-Audited tip: `0cf9d1f93f18e95ae818a7c2be660893096b797f` (remote `main`)
-Audit date: 2026-09-09
+- **Unit ID**: `D-audit-Counter_Risk--2026-09-09T17-29-35Z`
+- **Repository**: `stranske/Counter_Risk`
+- **Tip Commit**: `cdfd281866fb5bf23fce6dd22eb4f7367e0876fc`
+- **Audit Type**: Track D demand-driven refill audit (supply dropped to 2 <= 2: #1023, #996)
+- **Auditor**: Gemini (Antigravity `repo-audit` skill)
+- **Status**: 6 verified findings, 6 issues filed (#1031-#1036), all passed GitHub Actions format guard.
 
-## Executive Summary
+---
 
-Track D demand-driven audit refill executed for repository `stranske/Counter_Risk`. The fleet's supply of agent-ready issues had fallen to 1 <= 2 (#996). A full 8-dimension repository audit was performed against the live codebase at commit `0cf9d1f`. Eight defects and documentation issues were adversarially verified against live source lines and executed tests, formatted into canonical `AGENT_ISSUE_FORMAT` work orders, linted against `.github/scripts/issue_format.py` (0 advisories), and filed directly to GitHub with `gh issue create`.
+## 1. Executive Summary
 
-All 8 filed issues passed GitHub Actions `Agents Issue Format Guard` without any format rejections or `needs-human` labels. All intake logs, durable audit records, repo READMEs, and the global `AUDIT_LEDGER.md` have been updated.
+A full 8-dimension audit was conducted on `stranske/Counter_Risk` at HEAD `cdfd281866fb5bf23fce6dd22eb4f7367e0876fc`. Following rapid resolution of the morning audit's 8 issues (#1016-#1022 merged in PRs #1024-#1030), open agent-ready issue supply dropped back to 2 (#1023 and #996), triggering this demand-driven refill audit.
 
-## Filed & Verified Issues
+Six distinct, reproducible defect areas were identified, adversarially verified against the codebase, drafted in accordance with `AGENT_ISSUE_FORMAT`, machine-linted via `issue_lint.py`, and filed to GitHub. All 6 issues passed the remote `Agents Issue Format Guard` with status `success`.
 
-| Finding ID | Priority | GitHub Issue | Title | Dimensions | Status |
-|---|---|---|---|---|---|
-| CR-1 | P1 | [#1018](https://github.com/stranske/Counter_Risk/issues/1018) | Reject infinite exposure limits before evaluation | 1, 3 | Filed & Verified |
-| CR-2 | P1 | [#1016](https://github.com/stranske/Counter_Risk/issues/1016) | Preserve the complete PyInstaller directory in assembled releases | 3, 7 | Filed & Verified |
-| CR-3 | P1 | [#1017](https://github.com/stranske/Counter_Risk/issues/1017) | Launch the GUI executable from the assembled bin directory | 3, 4 | Filed & Verified |
-| CR-4 | P2 | [#1019](https://github.com/stranske/Counter_Risk/issues/1019) | Collapse duplicate Repo rows when applying authoritative cash | 1, 2 | Filed & Verified |
-| CR-5 | P2 | [#1020](https://github.com/stranske/Counter_Risk/issues/1020) | Reconcile split current rows before matching prior attribution | 1, 2 | Filed & Verified |
-| CR-6 | P2 | [#1021](https://github.com/stranske/Counter_Risk/issues/1021) | Reject non-finite notional breakdown values in drop-in template writer | 1, 3 | Filed & Verified |
-| CR-7 | P2 | [#1022](https://github.com/stranske/Counter_Risk/issues/1022) | Validate finite and non-negative bounds for historical WAL row appends | 1, 3 | Filed & Verified |
-| CR-8 | P3 | [#1023](https://github.com/stranske/Counter_Risk/issues/1023) | Correct the dated HHI threshold attribution in operator guidance | 5 | Filed & Verified |
+---
 
-## Verification Details & Evidence
+## 2. Baseline & Verification Environment
 
-1. **CR-1 ([#1018](https://github.com/stranske/Counter_Risk/issues/1018)): Infinite configured limit accepted (`src/counter_risk/limits_config.py:23`, `src/counter_risk/compute/limits.py:277`)**
-   - *Mechanism*: `LimitEntry` specifies `limit_value: float = Field(gt=0)` with no `math.isfinite` check. Pydantic accepts `float("inf") > 0`. When evaluated in `check_limits`, `actual - inf` results in `-inf`, which drops the negative difference and produces zero breach findings even when exposure is massive.
-   - *Verification*: Tested loading YAML containing `limit_value: .inf`; 100 exposure against 50 produced 1 breach, whereas 100 exposure against infinity produced 0 breaches.
+- **Commit**: `cdfd281866fb5bf23fce6dd22eb4f7367e0876fc`
+- **Language**: Python 3.12+ (26,029 LOC in `src/counter_risk/` across 24 modules)
+- **Test Suite**: 1,841 unit & integration tests collected via `uv run pytest` across 162 modules
+- **Linter**: `ruff check src/` clean (0 diagnostics)
+- **Pre-submit Linter**: `issue_lint.py` verified 0 errors / 0 advisories on all 6 issue bodies
 
-2. **CR-2 ([#1016](https://github.com/stranske/Counter_Risk/issues/1016)): Release assembly drops companion runtime and data files (`src/counter_risk/build/release.py:268,284,374`, `release.spec:40,66`)**
-   - *Mechanism*: `release.spec` sets `exclude_binaries=True` on `EXE` and collects libraries, DLLs, and dependencies via `COLLECT` into a one-directory layout. However, `_copy_bundled_executable` in `release.py:284` copies only the standalone executable file into `bundle_dir/bin`, omitting the entire collected folder. The resulting binary cannot run on machines without external Python environments.
-   - *Verification*: Traced `shutil.copy2` execution; verified that companion DLLs and libraries produced by PyInstaller COLLECT are excluded from the release bundle.
+---
 
-3. **CR-3 ([#1017](https://github.com/stranske/Counter_Risk/issues/1017)): GUI launcher omits assembled bin path (`src/counter_risk/build/release.py:281,303`, `run_counter_risk_gui.cmd:19,24,30-60`)**
-   - *Mechanism*: `build/release.py:281` places the executable into `%~dp0bin\counter-risk.exe` and instructs operators to double-click `run_counter_risk_gui.cmd`. However, `run_counter_risk_gui.cmd` checks `%~dp0dist\counter-risk\counter-risk.exe` (dev path) and `%~dp0counter-risk.exe` (root), then falls back to python/venv/global commands. It never checks `%~dp0bin\counter-risk.exe`.
-   - *Verification*: Inspected batch script branch sequence; verified that no branch resolves the assembled release bin folder.
+## 3. Filed Issues & Verified Findings
 
-4. **CR-4 ([#1019](https://github.com/stranske/Counter_Risk/issues/1019)): Duplicate Repo rows inflate authoritative cash (`src/counter_risk/pipeline/run.py:1107,1120,1131,4097`)**
-   - *Mechanism*: `_inject_repo_cash_into_cprs_ch` builds `existing_repo_by_key` with `.setdefault()`, which captures only the first matching row for a normalized counterparty. When authoritative cash is applied, only the first row is updated, leaving duplicate normalized rows intact in `records`. Downstream `_aggregate_cprs_ch_series_totals` sums every row with the normalized name, inflating total Cash.
-   - *Verification*: Executed probe with duplicate rows (10 and 20 Cash) replaced by authoritative 100 Cash; aggregation produced 120 Cash instead of 100 Cash.
+| Issue ID | Priority | Category | Title | Affected Target Files |
+|---|---|---|---|---|
+| [#1031](https://github.com/stranske/Counter_Risk/issues/1031) | P2 | Wiring / Tooling | Support currency and accounting glyphs in pure-Python table PNG renderer | `src/counter_risk/renderers/table_png.py:576-619`, `src/counter_risk/renderers/table_png.py:371-374,544` |
+| [#1032](https://github.com/stranske/Counter_Risk/issues/1032) | P2 | Correctness | Coerce finite numeric values in pipeline concentration and limit exposure builders | `src/counter_risk/pipeline/run.py:2270,2283,2333,2348` |
+| [#1033](https://github.com/stranske/Counter_Risk/issues/1033) | P2 | Duplication / Correctness | Fix alias fallback and enforce finite floats in drop-in totals numeric extraction | `src/counter_risk/pipeline/run.py:2610-2621`, `src/counter_risk/writers/dropin_templates.py:108` |
+| [#1034](https://github.com/stranske/Counter_Risk/issues/1034) | P2 | Correctness | Reject non-finite values during historical three-year workbook rollups | `src/counter_risk/writers/historical_update.py:357-368,465` |
+| [#1035](https://github.com/stranske/Counter_Risk/issues/1035) | P2 | Standards / Correctness | Reject NaN and Infinity in manifest schema number type validator | `src/counter_risk/pipeline/manifest_schema.py:488-490,512` |
+| [#1036](https://github.com/stranske/Counter_Risk/issues/1036) | P2 | Design / UX | Enforce finite numeric extraction and valid sorting in chat session exposures | `src/counter_risk/chat/session.py:700-714`, `src/counter_risk/chat/utils.py:23-35` |
 
-5. **CR-5 ([#1020](https://github.com/stranske/Counter_Risk/issues/1020)): Split current attribution reuses prior balance (`src/counter_risk/reports/change_attribution.py:215,224,231`, `src/counter_risk/pipeline/run.py:2069`)**
-   - *Mechanism*: Prior rows are grouped and aggregated in `_index_prior_rows`, but current rows are iterated as unaggregated records. When current counterparty rows are split across multiple entries, every split row matches the same prior balance and deducts the full prior notional amount multiple times.
-   - *Verification*: Probe with total current notional 300 and prior 250 with change +50: split into 100 (+25) and 200 (+25) produced summed change -200 and prior 500.
+---
 
-6. **CR-6 ([#1021](https://github.com/stranske/Counter_Risk/issues/1021)): Drop-in template writer accepts non-finite breakdown values (`src/counter_risk/writers/dropin_templates.py:104,350,381,398`)**
-   - *Mechanism*: `_coerce_breakdown` parses float values without checking `math.isfinite`. When `fill_dropin_template` is called with NaN or Inf in the breakdown mapping, the non-finite values are accepted and written directly to openpyxl worksheet cells.
-   - *Verification*: Executed `_coerce_breakdown({"Total": float("nan"), "Cash": float("inf")})`; verified it returns `{'Total': nan, 'Cash': inf}` without raising ValueError.
+## 4. Technical Analysis of Findings
 
-7. **CR-7 ([#1022](https://github.com/stranske/Counter_Risk/issues/1022)): Validate finite and non-negative bounds for historical WAL appends (`src/counter_risk/writers/historical_update.py:732,798-800`)**
-   - *Mechanism*: `append_wal_row` casts `wal_value` directly to float and assigns it to the target worksheet cell without verifying that `wal_value` is non-negative and finite.
-   - *Verification*: Traced `append_wal_row` parameters and cell assignments; confirmed lack of boundary checks.
+### 1. Pure-Python Table PNG Glyph Support (`#1031`)
+- **Root Cause**: `_GLYPHS` at `src/counter_risk/renderers/table_png.py:576` defined alphanumeric characters, spaces, dashes, dots, and slashes, but omitted `$`, `(`, and `)`.
+- **Impact**: When table PNGs are rendered with `formatting_profile="currency"` or `"accounting"`, `_format_render_number` produces strings like `"$125.00"` or `"($15.00)"`. `_glyph_for()` falls back to `_GLYPHS["?"]`, rendering `$125.00` as `?125.00` and negative balances as `??15.00?`.
+- **Verification**: `_glyph_for('$') == _GLYPHS['?']` returns `True`.
 
-8. **CR-8 ([#1023](https://github.com/stranske/Counter_Risk/issues/1023)): Correct dated HHI threshold attribution in operator guidance (`docs/concentration_metrics.md:77-80`)**
-   - *Mechanism*: Concentration metrics guidance attributes 0.25 (2,500 HHI) to undated DOJ "highly concentrated" market standards. The 2023 DOJ/FTC Merger Guidelines lowered the threshold to 1,800.
-   - *Verification*: Cross-referenced text with current official DOJ antitrust merger guidelines.
+### 2. Pipeline Exposure Finite Numeric Coercion (`#1032`)
+- **Root Cause**: `_build_concentration_exposure_rows` and `_build_limit_exposure_rows` in `src/counter_risk/pipeline/run.py` convert record numbers using `float(record.get(...) or 0.0)` wrapped in `try...except (TypeError, ValueError)`.
+- **Impact**: `float('nan')` and `float('inf')` do not trigger `ValueError`, passing un-coerced into `compute_concentration_metrics` (`compute/rollups.py:575`) and `check_limits` (`compute/limits.py:95`), corrupting rollup metrics and bypassing limit checks.
+- **Verification**: `_to_float` at `src/counter_risk/pipeline/run.py:4752` provides `math.isfinite` validation; applying it to exposure builders prevents non-finite values from propagating.
 
-## Intake Log Entries Appended
+### 3. Drop-in Totals Extraction & Alias Fallback (`#1033`)
+- **Root Cause**: In `src/counter_risk/pipeline/run.py:2610-2621`, `_row_numeric_value` immediately executes `return 0.0` if an alias key exists with value `None`.
+- **Impact**: Given `row = {"cash": None, "Cash": 120.0}` with `aliases = ("cash", "Cash")`, the helper returns `0.0` rather than falling through to `"Cash"`. Additionally, it performs un-guarded `float(value)`, propagating `NaN` and `Inf` into drop-in template proportion calculations.
+- **Verification**: `_row_numeric_value({"cash": None, "Cash": 120.0}, aliases=("cash", "Cash"))` returned `0.0` instead of `120.0`.
 
-Appended to `~/.codex/orchestrator/measurement/intake-2026-09-04.log`:
-```text
-Counter_Risk|01-package-payload.md|https://github.com/stranske/Counter_Risk/issues/1016
-Counter_Risk|02-gui-release-launcher.md|https://github.com/stranske/Counter_Risk/issues/1017
-Counter_Risk|04-finite-limit.md|https://github.com/stranske/Counter_Risk/issues/1018
-Counter_Risk|05-repo-cash-duplicate.md|https://github.com/stranske/Counter_Risk/issues/1019
-Counter_Risk|06-current-attribution.md|https://github.com/stranske/Counter_Risk/issues/1020
-Counter_Risk|07-dropin-template-finite-breakdown.md|https://github.com/stranske/Counter_Risk/issues/1021
-Counter_Risk|08-historical-wal-bounds.md|https://github.com/stranske/Counter_Risk/issues/1022
-Counter_Risk|03-hhi-doc-reference.md|https://github.com/stranske/Counter_Risk/issues/1023
-```
+### 4. Historical Three-Year Rollup Update (`#1034`)
+- **Root Cause**: `_coerce_rollup_data` in `src/counter_risk/writers/historical_update.py:357` converts rollup entries using `float(raw_value)` without checking `math.isfinite(numeric_value)`.
+- **Impact**: `NaN` and `Inf` are accepted into normalized rollup dictionaries and written directly to historical Excel worksheets in `append_historical_row`.
+- **Verification**: `_coerce_rollup_data({'Total': float('nan'), 'TIPS': float('inf')})` returned `{'total': nan, 'tips': inf}` without raising `HistoricalUpdateError`.
 
-## Durable Audit Artifact Locations
+### 5. Manifest Schema Number Type Validator (`#1035`)
+- **Root Cause**: `_matches_type(value, "number")` in `src/counter_risk/pipeline/manifest_schema.py:488` evaluated `isinstance(value, (int, float)) and not isinstance(value, bool)`.
+- **Impact**: Because `isinstance(float('nan'), float)` is `True`, `validate_manifest` accepted `NaN` and `Infinity` in schema number fields, violating RFC 8259 JSON standards and failing in strict parsers.
+- **Verification**: `_matches_type(float('nan'), 'number')` returned `True`.
 
-- Checkpoint File: `/Users/teacher/.codex/automations/research-program/artifacts/audits/D-audit-Counter_Risk--2026-09-09T05-14-45Z.CHECKPOINT.md`
-- Run Report: `/Users/teacher/.codex/automations/research-program/artifacts/audits/Counter_Risk-2026-09-09.md`
-- Durable Audit Folder: `/Users/teacher/Library/CloudStorage/Dropbox/Learning/Code/Audits/Counter_Risk/`
-  - `2026-09-09-audit-run.md`
-  - `2026-09-09-00-repo-map.md`
-  - `2026-09-09-AUDIT_REPORT.md`
-  - `2026-09-09-verification-log.md`
-  - `2026-09-09-issue-bodies/` (01 through 08)
-  - `README.md`
-- Global Audit Ledger: `/Users/teacher/Library/CloudStorage/Dropbox/Learning/Code/Audits/AUDIT_LEDGER.md`
+### 6. Chat Session Exposure Extraction & Tolerance Sorting (`#1036`)
+- **Root Cause**: `_parse_float` in `src/counter_risk/chat/session.py:700` converted numeric strings/floats without checking `math.isfinite()`.
+- **Impact**: When `NaN` reaches `_sort_top_exposure_rows`, `cmp_with_tol` from `chat/utils.py:23` evaluates `cmp_with_tol(nan, 100) == 1` and `cmp_with_tol(100, nan) == 1`, violating strict weak ordering and corrupting exposure sorting.
+- **Verification**: Verified tolerance comparison antisymmetry violation directly in Python.
+
+---
+
+## 5. Artifacts & Reconciliation Summary
+
+- **Issue Bodies**: `/Users/teacher/Library/CloudStorage/Dropbox/Learning/Code/Audits/Counter_Risk/2026-09-09-issue-bodies/` (09-14)
+- **Canonical Audit Report**: `/Users/teacher/Library/CloudStorage/Dropbox/Learning/Code/Audits/Counter_Risk/2026-09-09-02-AUDIT_REPORT.md`
+- **Verification Log**: `/Users/teacher/Library/CloudStorage/Dropbox/Learning/Code/Audits/Counter_Risk/2026-09-09-02-verification-log.md`
+- **Audit Run Metadata**: `/Users/teacher/Library/CloudStorage/Dropbox/Learning/Code/Audits/Counter_Risk/2026-09-09-02-audit-run.md`
+- **Audit Ledger**: `/Users/teacher/Library/CloudStorage/Dropbox/Learning/Code/Audits/AUDIT_LEDGER.md`
+- **Intake Log**: `~/.codex/orchestrator/measurement/intake-2026-09-04.log`
+- **Checkpoints**: `D-audit-Counter_Risk--2026-09-09T17-29-35Z.CHECKPOINT.md` and `CHECKPOINT.md`
+- **Supply Balance**: Replenished from 2 open agent-ready issues to 8 open agent-ready issues.
