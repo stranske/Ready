@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-09T05:11:06Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-09T05:14:49Z)
 
-Units: 79 — done 79
+Units: 81 — claimed 1, done 79, queued 1
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 Claude conservation: off (weekly window available)
@@ -67,6 +67,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D3-unblock-sweep-2026-09-08T23 | D | D | done | cursor | codex | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D-audit-Counter_Risk--2026-09-07T04-47-32Z | D | D | done | codex | driver | Audit stranske/Counter_Risk and file issues (supply 2 <= 2) |
 | D-audit-Counter_Risk--2026-09-08T17-11-36Z | D | D | done | codex | codex | Audit stranske/Counter_Risk and file issues (supply 1 <= 2) |
+| D-audit-Counter_Risk--2026-09-09T05-14-45Z | D | D | claimed | codex | driver | Audit stranske/Counter_Risk and file issues (supply 1 <= 2) |
 | D-audit-Fine-Art-Archive--2026-09-05T04-00-31Z | D | D | done | codex | codex | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 2) |
 | D-audit-Fine-Art-Archive--2026-09-06T04-25-53Z | D | D | done | codex | driver | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 3) |
 | D-audit-Manager-Mosaic--2026-09-05T04-00-25Z | D | D | done | codex | driver | Audit stranske/Manager-Mosaic and file issues (supply 2 <= 2) |
@@ -81,6 +82,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-learning-management-system--2026-09-05T04-00-30Z | D | D | done | codex | driver | Audit stranske/learning-management-system and file issues (supply 2 <= |
 | D-audit-learning-management-system--2026-09-06T16-33-31Z | D | D | done | codex | driver | Audit stranske/learning-management-system and file issues (supply 1 <= |
 | D-audit-learning-management-system--2026-09-08T05-06-08Z | D | D | done | codex | codex | Audit stranske/learning-management-system and file issues (supply 1 <= |
+| D-audit-learning-management-system--2026-09-09T05-14-48Z | D | D | queued | claude |  | Audit stranske/learning-management-system and file issues (supply 1 <= |
 | D-audit-trip-planner--2026-09-07T04-47-34Z | D | D | done | codex | codex | Audit stranske/trip-planner and file issues (supply 2 <= 2) |
 | D4-verify-merged-2026-09-05T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
 | D4-verify-merged-2026-09-06T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
@@ -90,10 +92,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-08T17:11:36Z — refill — Counter_Risk: open=1 <= 2 → audit queued
-- 2026-09-08T17:11:40Z — D-audit-Counter_Risk--2026-09-08T17-11-36Z — route — router picked codex from ['codex']
-- 2026-09-08T17:11:40Z — D-audit-Counter_Risk--2026-09-08T17-11-36Z — claimed by codex (agent codex)
-- 2026-09-08T17:28:54Z — D-audit-Counter_Risk--2026-09-08T17-11-36Z — done — Verified five code defects and one documentation correction at e2a1bacf; six format-valid issue bodies staged under research-only rules, with Windows verificati
 - 2026-09-08T23:11:05Z — unblock — enqueued D3-unblock-sweep-2026-09-08T23
 - 2026-09-08T23:11:05Z — D3-unblock-sweep-2026-09-08T23 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-08T23:11:05Z — D3-unblock-sweep-2026-09-08T23 — claimed by codex (agent cursor)
@@ -102,6 +100,10 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-09T01:36:37Z — D4-verify-merged-2026-09-09T01 — route — router picked codex from ['codex', 'cursor']
 - 2026-09-09T01:36:37Z — D4-verify-merged-2026-09-09T01 — claimed by driver (agent codex)
 - 2026-09-09T01:42:43Z — D4-verify-merged-2026-09-09T01 — done — gemini produced 3320 words at artifacts/verification/D4-verify-merged-2026-09-09T01.md in 361s
+- 2026-09-09T05:14:45Z — refill — Counter_Risk: open=1 <= 2 → audit queued
+- 2026-09-09T05:14:48Z — refill — learning-management-system: open=1 <= 2 → audit queued
+- 2026-09-09T05:14:49Z — D-audit-Counter_Risk--2026-09-09T05-14-45Z — route — router picked codex from ['codex']
+- 2026-09-09T05:14:49Z — D-audit-Counter_Risk--2026-09-09T05-14-45Z — claimed by driver (agent codex)
 
 ## Questions
 
