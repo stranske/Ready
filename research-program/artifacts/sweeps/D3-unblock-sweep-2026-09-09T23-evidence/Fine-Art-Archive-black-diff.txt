@@ -1,0 +1,30 @@
+--- clones/Fine-Art-Archive/tests/test_gate_commit_status_fork_tolerance.py	2026-09-08 15:12:55.687917+00:00
++++ clones/Fine-Art-Archive/tests/test_gate_commit_status_fork_tolerance.py	2026-09-09 23:26:28.601317+00:00
+@@ -28,12 +28,11 @@
+ import yaml
+ 
+ WORKFLOW = Path(__file__).resolve().parents[1] / ".github" / "workflows" / "pr-00-gate.yml"
+ STEP_NAME = "Report Gate commit status"
+ 
+-RUNNER_JS = textwrap.dedent(
+-    """
++RUNNER_JS = textwrap.dedent("""
+     const fs = require('fs');
+     const vm = require('vm');
+     const src = fs.readFileSync(process.argv[2], 'utf8');
+ 
+     function makeError(status, message) {
+@@ -118,12 +117,11 @@
+         }),
+         happy_path: await runCase({ ...FORK, state: 'success', error: null }),
+       };
+       process.stdout.write(JSON.stringify(out));
+     })();
+-    """
+-).strip()
++    """).strip()
+ 
+ 
+ def _extract_step_script() -> str:
+     document = yaml.safe_load(WORKFLOW.read_text(encoding="utf-8"))
+     for job in document["jobs"].values():
