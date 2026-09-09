@@ -11,7 +11,7 @@
 | R3-manager-mosaic-synthesis.md | 12 | 12 | 0 |
 | R4-document-access-substrate.md | 15 | 10 | 5 |
 | R5-output-substrate.md | 10 | 8 | 2 |
-| R6-public-corpora-and-synthetic-data.md | 26 | 19 | 7 |
+| R6-public-corpora-and-synthetic-data.md | 26 | 18 | 8 |
 | R7-trip-planning-core.md | 28 | 23 | 5 |
 
 ## Unreachable in B3-interop-architecture.md
@@ -33,6 +33,7 @@
 
 ## Unreachable in R6-public-corpora-and-synthetic-data.md
 
+- https://www.bridgewater.com/research
 - https://www.sec.gov/Archives/edgar/data/1314152/000131415226000084/exhibit101-sixtharlpaofjll.htm
 - https://www.sec.gov/Archives/edgar/data/1711929/000119312526346339/ck0001711929-ex10_2.htm
 - https://www.sec.gov/data-research/sec-markets-data/information-about-registered-investment-advisers-exempt-reporting-advisers
