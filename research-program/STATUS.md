@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-09T01:21:30Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-09T01:36:37Z)
 
-Units: 78 — done 78
+Units: 79 — claimed 1, done 78
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 Claude conservation: off (weekly window available)
@@ -86,12 +86,10 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D4-verify-merged-2026-09-06T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
 | D4-verify-merged-2026-09-07T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
 | D4-verify-merged-2026-09-08T01 | D | D | done | codex | driver | Verify merged PRs against their issues' acceptance criteria |
+| D4-verify-merged-2026-09-09T01 | D | D | claimed | codex | driver | Verify merged PRs against their issues' acceptance criteria |
 
 ## Last checkpoints
 
-- 2026-09-08T15:11:04Z — unblock — enqueued D3-unblock-sweep-2026-09-08T15
-- 2026-09-08T15:11:04Z — D3-unblock-sweep-2026-09-08T15 — route — router picked cursor from ['codex', 'cursor']
-- 2026-09-08T15:11:04Z — D3-unblock-sweep-2026-09-08T15 — claimed by codex (agent cursor)
 - 2026-09-08T15:16:38Z — D3-unblock-sweep-2026-09-08T15 — done — Surveyed 15 fleet repos: 132 agent-ready issues, no owner holds or stalled agent PRs, and four current-head CI failures with verified staged follow-ups.
 - 2026-09-08T17:11:36Z — refill — Counter_Risk: open=1 <= 2 → audit queued
 - 2026-09-08T17:11:40Z — D-audit-Counter_Risk--2026-09-08T17-11-36Z — route — router picked codex from ['codex']
@@ -100,7 +98,10 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-08T23:11:05Z — unblock — enqueued D3-unblock-sweep-2026-09-08T23
 - 2026-09-08T23:11:05Z — D3-unblock-sweep-2026-09-08T23 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-08T23:11:05Z — D3-unblock-sweep-2026-09-08T23 — claimed by codex (agent cursor)
-- 2026-09-08T23:14:51Z — D3-unblock-sweep-2026-09-08T23 — done — Fifteen-repo sweep finds 122 ready issues, no frozen owner decisions or stalled agent PRs, trip-planner CI recovery and three remaining CI failures with staged
+- 2026-09-08T23:14:51Z — D3-unblock-sweep-2026-09-08T23 — done — Fifteen-repo sweep finds 122 ready issues, no frozen owner decisions or stalled agent PRs, trip-planner CI recovery and three remaining CI failures with staged 
+- 2026-09-09T01:36:37Z — verify — enqueued D4-verify-merged-2026-09-09T01
+- 2026-09-09T01:36:37Z — D4-verify-merged-2026-09-09T01 — route — router picked codex from ['codex', 'cursor']
+- 2026-09-09T01:36:37Z — D4-verify-merged-2026-09-09T01 — claimed by driver (agent codex)
 
 ## Questions
 
