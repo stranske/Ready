@@ -528,3 +528,8 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-10T15:49:55Z — D3-unblock-sweep-2026-09-10T15 — route — router picked cursor from ['codex', 'cursor']
 ## 2026-09-10T15:49:55Z — D3-unblock-sweep-2026-09-10T15 — claimed by driver (agent cursor)
 ## 2026-09-10T15:58:41Z — D3-unblock-sweep-2026-09-10T15 — done — gemini produced 442 words at artifacts/sweeps/D3-unblock-sweep-2026-09-10T15.md in 515s
+## 2026-09-10T17:45:12Z — refill — Counter_Risk: open=1 <= 2 → audit queued
+## 2026-09-10T17:45:13Z — refill — Manager-Database: open=0 <= 2 → audit queued
+## 2026-09-10T17:45:16Z — refill — learning-management-system: open=2 <= 2 → audit queued
+## 2026-09-10T17:45:17Z — D-audit-Counter_Risk--2026-09-10T17-45-12Z — route — router picked codex from ['codex']
+## 2026-09-10T17:45:17Z — D-audit-Counter_Risk--2026-09-10T17-45-12Z — claimed by driver (agent codex)
