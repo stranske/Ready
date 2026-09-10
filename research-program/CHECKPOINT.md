@@ -536,3 +536,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-10T17:55:33Z — D-audit-Counter_Risk--2026-09-10T17-45-12Z — done — gemini produced 1185 words at artifacts/audits/Counter_Risk-2026-09-10.md in 609s
 ## 2026-09-10T18:10:45Z — D-audit-Manager-Database--2026-09-10T17-45-13Z — route — router picked codex from ['codex']
 ## 2026-09-10T18:10:45Z — D-audit-Manager-Database--2026-09-10T17-45-13Z — claimed by driver (agent codex)
+## 2026-09-10T18:19:54Z — D-audit-Manager-Database--2026-09-10T17-45-13Z — fail — gemini produced 388 words at /Users/teacher/.codex/automations/research-program/artifacts/audits/Manager-Database-2026-09-10.md (min 400); rotating agent
+## 2026-09-10T18:35:00Z — D-audit-Manager-Database--2026-09-10T17-45-13Z — route — router picked codex from ['codex']
+## 2026-09-10T18:35:00Z — D-audit-Manager-Database--2026-09-10T17-45-13Z — claimed by driver (agent codex)
