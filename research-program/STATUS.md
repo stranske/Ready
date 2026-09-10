@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-10T01:43:12Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-10T01:48:32Z)
 
-Units: 86 — claimed 1, done 85
+Units: 86 — done 86
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 Claude conservation: off (weekly window available)
@@ -93,11 +93,10 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D4-verify-merged-2026-09-07T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
 | D4-verify-merged-2026-09-08T01 | D | D | done | codex | driver | Verify merged PRs against their issues' acceptance criteria |
 | D4-verify-merged-2026-09-09T01 | D | D | done | codex | driver | Verify merged PRs against their issues' acceptance criteria |
-| D4-verify-merged-2026-09-10T01 | D | D | claimed | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
+| D4-verify-merged-2026-09-10T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
 
 ## Last checkpoints
 
-- 2026-09-09T15:27:37Z — D3-unblock-sweep-2026-09-09T15 — done — gemini produced 460 words at artifacts/sweeps/D3-unblock-sweep-2026-09-09T15.md in 360s
 - 2026-09-09T17:29:35Z — refill — Counter_Risk: open=2 <= 2 → audit queued
 - 2026-09-09T17:29:39Z — D-audit-Counter_Risk--2026-09-09T17-29-35Z — route — router picked codex from ['codex']
 - 2026-09-09T17:29:39Z — D-audit-Counter_Risk--2026-09-09T17-29-35Z — claimed by driver (agent codex)
@@ -109,6 +108,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-10T01:43:11Z — verify — enqueued D4-verify-merged-2026-09-10T01
 - 2026-09-10T01:43:12Z — D4-verify-merged-2026-09-10T01 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-10T01:43:12Z — D4-verify-merged-2026-09-10T01 — claimed by driver (agent cursor)
+- 2026-09-10T01:48:32Z — D4-verify-merged-2026-09-10T01 — done — gemini produced 9518 words at artifacts/verification/D4-verify-merged-2026-09-10T01.md in 316s
 
 ## Questions
 
