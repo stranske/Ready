@@ -354,3 +354,34 @@
 - 2026-09-09T23:26:43.560305+00:00 D3-unblock-sweep-2026-09-09T23: Deliverable-Render complete; frozen/repaired 0 / 0, owner holds 0, reroutes 0, current-head CI Green, supply 6; evidence D3-unblock-sweep-2026-09-09T23-evidence/Deliverable-Render.json.
 
 - 2026-09-09T23:26:43.560305+00:00 D3-unblock-sweep-2026-09-09T23: Manager-Mosaic complete; frozen/repaired 0 / 0, owner holds 0, reroutes 0, current-head CI Green, supply 10; evidence D3-unblock-sweep-2026-09-09T23-evidence/Manager-Mosaic.json.
+
+- 2026-09-10T07:43:29.913413+00:00 D3-unblock-sweep-2026-09-10T07: Workflows complete; frozen/repaired 0 / 0, owner holds 0, reroutes 0, current-head CI Unverified¹, supply 28; evidence D3-unblock-sweep-2026-09-10T07-evidence/Workflows.json.
+
+- 2026-09-10T07:43:29.913413+00:00 D3-unblock-sweep-2026-09-10T07: Travel-Plan-Permission complete; frozen/repaired 0 / 0, owner holds 0, reroutes 0, current-head CI Green, supply 5; evidence D3-unblock-sweep-2026-09-10T07-evidence/Travel-Plan-Permission.json.
+
+- 2026-09-10T07:43:29.913413+00:00 D3-unblock-sweep-2026-09-10T07: Trend_Model_Project complete; frozen/repaired 0 / 0, owner holds 0, reroutes 0, current-head CI Green, supply 10; evidence D3-unblock-sweep-2026-09-10T07-evidence/Trend_Model_Project.json.
+
+- 2026-09-10T07:43:29.913413+00:00 D3-unblock-sweep-2026-09-10T07: Portable-Alpha-Extension-Model complete; frozen/repaired 0 / 0, owner holds 0, reroutes 0, current-head CI Green, supply 4; evidence D3-unblock-sweep-2026-09-10T07-evidence/Portable-Alpha-Extension-Model.json.
+
+- 2026-09-10T07:43:29.913413+00:00 D3-unblock-sweep-2026-09-10T07: Counter_Risk complete; frozen/repaired 0 / 0, owner holds 0, reroutes 0, current-head CI Green, supply 1; evidence D3-unblock-sweep-2026-09-10T07-evidence/Counter_Risk.json.
+
+- 2026-09-10T07:43:29.913413+00:00 D3-unblock-sweep-2026-09-10T07: Manager-Database complete; frozen/repaired 0 / 0, owner holds 0, reroutes 0, current-head CI Green, supply 4; evidence D3-unblock-sweep-2026-09-10T07-evidence/Manager-Database.json.
+
+- 2026-09-10T07:43:29.913413+00:00 D3-unblock-sweep-2026-09-10T07: Inv-Man-Intake complete; frozen/repaired 0 / 0, owner holds 0, reroutes 0, current-head CI Green, supply 5; evidence D3-unblock-sweep-2026-09-10T07-evidence/Inv-Man-Intake.json.
+
+- 2026-09-10T07:43:29.913413+00:00 D3-unblock-sweep-2026-09-10T07: Pension-Data complete; frozen/repaired 0 / 0, owner holds 0, reroutes 0, current-head CI Green, supply 8; evidence D3-unblock-sweep-2026-09-10T07-evidence/Pension-Data.json.
+
+- 2026-09-10T07:43:29.913413+00:00 D3-unblock-sweep-2026-09-10T07: Ready complete; frozen/repaired 0 / 0, owner holds 0, reroutes 0, current-head CI Red, supply 8; evidence D3-unblock-sweep-2026-09-10T07-evidence/Ready.json.
+
+- 2026-09-10T07:43:29.913413+00:00 D3-unblock-sweep-2026-09-10T07: trip-planner complete; frozen/repaired 0 / 0, owner holds 0, reroutes 0, current-head CI Green, supply 4; evidence D3-unblock-sweep-2026-09-10T07-evidence/trip-planner.json.
+
+- 2026-09-10T07:43:29.913413+00:00 D3-unblock-sweep-2026-09-10T07: learning-management-system complete; frozen/repaired 0 / 0, owner holds 0, reroutes 0, current-head CI Green, supply 8; evidence D3-unblock-sweep-2026-09-10T07-evidence/learning-management-system.json.
+
+- 2026-09-10T07:43:29.913413+00:00 D3-unblock-sweep-2026-09-10T07: Fine-Art-Archive complete; frozen/repaired 0 / 0, owner holds 0, reroutes 0, current-head CI Red, supply 7; evidence D3-unblock-sweep-2026-09-10T07-evidence/Fine-Art-Archive.json.
+
+- 2026-09-10T07:43:29.913413+00:00 D3-unblock-sweep-2026-09-10T07: Doc-Lineage complete; frozen/repaired 1 bot tracker / 0, owner holds 0, reroutes 0, current-head CI Green, supply 12; evidence D3-unblock-sweep-2026-09-10T07-evidence/Doc-Lineage.json.
+
+- 2026-09-10T07:43:29.913413+00:00 D3-unblock-sweep-2026-09-10T07: Deliverable-Render complete; frozen/repaired 0 / 0, owner holds 0, reroutes 0, current-head CI Green, supply 6; evidence D3-unblock-sweep-2026-09-10T07-evidence/Deliverable-Render.json.
+
+- 2026-09-10T07:43:29.913413+00:00 D3-unblock-sweep-2026-09-10T07: Manager-Mosaic complete; frozen/repaired 0 / 0, owner holds 0, reroutes 0, current-head CI Green, supply 10; evidence D3-unblock-sweep-2026-09-10T07-evidence/Manager-Mosaic.json.
+
