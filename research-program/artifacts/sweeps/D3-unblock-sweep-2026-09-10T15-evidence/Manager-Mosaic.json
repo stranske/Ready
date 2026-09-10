@@ -1,0 +1,1196 @@
+{
+  "repo": "Manager-Mosaic",
+  "main_sha": "250d41df48c490e0423eef6d40a9e209b0952c60",
+  "open_issues_count": 11,
+  "frozen_issues": [],
+  "stalled_prs": [],
+  "all_agent_prs": [],
+  "primary_run": {
+    "conclusion": "success",
+    "createdAt": "2026-09-08T15:53:22Z",
+    "databaseId": 34247636894,
+    "event": "push",
+    "headSha": "250d41df48c490e0423eef6d40a9e209b0952c60",
+    "name": "CI",
+    "status": "completed",
+    "url": "https://github.com/stranske/Manager-Mosaic/actions/runs/34247636894",
+    "workflowName": "CI"
+  },
+  "ci_status_str": "[Green](https://github.com/stranske/Manager-Mosaic/actions/runs/34247636894)",
+  "supply": 10,
+  "bot_tracker_count": 1,
+  "issues": [
+    {
+      "body": "Last successful write: 2026-09-07T06:28:41.989Z\n\n# Agent Metrics Summary\n\nGenerated: 2026-09-07T06:28:40Z\nRecords: 47 (keepalive 40, autofix 0, verifier 1, terminal dispositions 5, verifier follow-up ledgers 1, codex CLI freshness 0, autopilot 0, unknown 0)\nParse errors: 0\nRange: 2026-09-05T07:26:27.753000Z to 2026-09-06T19:06:21.402000Z\n\n## Keepalive\n- Runs: 40\n- PRs: 1\n- Avg iterations: 1.0\n- Stop reasons: missing workflow_run payload (19), ready (12), zero-activity-infrastructure (5), needs-human (2), upstream Gate succeeded (1), gate-pending (1)\n- Actions: run (12), stop (5), skip (2), wait (1)\n- Gate conclusions: success (19)\n- Tasks complete rate: 0.0% (0/40)\n\n## Autofix\n- Attempts: 0\n- PRs: 0\n- Fixes applied: n/a\n- Trigger reasons: n/a\n- Gate results after: n/a\n\n## Verifier\n- Runs: 1\n- PRs: 2\n- Verdicts: CONCERNS (1), concerns (1)\n- Issues created: 0\n- Avg acceptance criteria: 8.0\n- LangSmith trace coverage: 100.0% (1/1) (2 traces)\n- Terminal disposition records: 5\n- Terminal dispositions: unresolved-bot-comments (3), no-unresolved-bot-comments (1), needs-human (1)\n- Terminal disposition sources: review-thread:15 (3), review-thread:16 (1), source-issue:6 (1)\n- Terminal artifact families: review-thread-terminal-disposition: selected (4/4), verifier-terminal-disposition: selected (1/1)\n- Missing terminal artifact families: none\n- Verifier follow-up ledger records: 1\n- Verifier follow-up ledger dispositions: needs-human (1)\n- Verifier follow-up ledger PRs: 1\n- Verifier follow-up issues linked: 0\n- Verifier follow-up needs-human records: 1\n- Verifier follow-up avg chain depth: 0.0\n- Verifier follow-up max chain depth: 0\n- Verifier follow-up policy records: 1\n- Verifier follow-up policy actions: needs-human (1)\n- Verifier follow-up policy triggers: verifier-concerns (1)\n- Verifier follow-up depth-limit records: 0\n- Verifier models: gpt-6-astra (2)\n- Verifier CLI versions: codex-cli 0.153.2 (2)\n- Unsupported verifier models: n/a\n- Unsupported model dispositions: n/a\n- Missing verifier model metadata: n/a\n- Legacy missing verifier model metadata: n/a\n- Model selection reasons: default (2)\n- Verifier modes: compare (2)\n- Unknown verifier modes: n/a\n- Cost per verified success: unknown|unknown=n/a (0 pass, 6 unverified, modeled)\n\n## Codex CLI Freshness\n- Records: 0\n- Statuses: n/a\n- Packages: n/a\n- Pinned versions: n/a\n- Latest versions: n/a\n- Outdated records: 0\n- Latest unavailable records: 0\n- Max version delta: major 0, minor 0, patch 0\n- Update targets: n/a\n\n## Weekly Metrics Artifact Selection\n\n- Schema: workflows-weekly-metrics-artifact-selection/v1\n- Status: pass\n- Lookback days: 14\n- Scan cap: 5 pages x 100 artifacts\n- Priority producer scan cap: 3 runs per source workflow, 2 artifact pages per run\n- Download cap: 80 total, 20 per family\n- Scanned artifacts: 340\n- Candidate artifacts: 210\n- Selected artifacts: 50\n- Missing priority families: codex-cli-freshness, bot-comment-auth-coverage-wrapper, pr-source-context\n- Ignored: 0 old, 6 expired, 124 non-metrics, 160 over family cap, 0 over total cap\n\n| Artifact family | Candidates | Selected |\n|-----------------|------------|----------|\n| agents-autofix-metrics | 100 | 20 |\n| agents-verifier-metrics | 1 | 1 |\n| bot-comment-auth-coverage-reusable | 4 | 4 |\n| keepalive-metrics | 100 | 20 |\n| review-thread-terminal-disposition | 4 | 4 |\n| verifier-terminal-disposition | 1 | 1 |\n\n| Priority family | Status | Candidates | Selected artifact |\n|-----------------|--------|------------|-------------------|\n| codex-cli-freshness | missing | 0 | none |\n| verifier-terminal-disposition | selected | 1 | verifier-terminal-disposition-34049393269 |\n| review-thread-terminal-disposition | selected | 4 | review-thread-terminal-disposition-34053795415 |\n| bot-comment-auth-coverage-wrapper | missing | 0 | none |\n| bot-comment-auth-coverage-reusable | selected | 4 | bot-comment-auth-coverage-reusable-34053795415 |\n| pr-source-context | missing | 0 | none |\n\n## Weekly Metrics Artifact Downloads\n\n- Schema: workflows-weekly-metrics-artifact-download-manifest/v1\n- Status: pass\n- Selected artifacts: 50\n- Downloads: 50 passed, 0 failed\n- Unzip: 50 passed, 0 failed, 0 skipped\n\n| Artifact | ID | Download | Unzip | Path |\n|----------|----|----------|-------|------|\n| verifier-terminal-disposition-34049393269 | 9994120085 | pass | pass | artifacts/verifier-terminal-disposition-34049393269/9994120085 |\n| review-thread-terminal-disposition-34053795415 | 9995348448 | pass | pass | artifacts/review-thread-terminal-disposition-34053795415/9995348448 |\n| bot-comment-auth-coverage-reusable-34053795415 | 9995346117 | pass | pass | artifacts/bot-comment-auth-coverage-reusable-34053795415/9995346117 |\n| keepalive-metrics | 10005592470 | pass | pass | artifacts/keepalive-metrics/10005592470 |\n| agents-autofix-metrics | 10005588299 | pass | pass | artifacts/agents-autofix-metrics/10005588299 |\n| keepalive-metrics | 10005576649 | pass | pass | artifacts/keepalive-metrics/10005576649 |\n| agents-autofix-metrics | 10005576160 | pass | pass | artifacts/agents-autofix-metrics/10005576160 |\n| agents-autofix-metrics | 10004504099 | pass | pass | artifacts/agents-autofix-metrics/10004504099 |\n| keepalive-metrics | 10004500133 | pass | pass | artifacts/keepalive-metrics/10004500133 |\n| keepalive-metrics | 10003449944 | pass | pass | artifacts/keepalive-metrics/10003449944 |\n| agents-autofix-metrics | 10003447126 | pass | pass | artifacts/agents-autofix-metrics/10003447126 |\n| keepalive-metrics | 10003438691 | pass | pass | artifacts/keepalive-metrics/10003438691 |\n| agents-autofix-metrics | 10003436474 | pass | pass | artifacts/agents-autofix-metrics/10003436474 |\n| agents-autofix-metrics | 10002401849 | pass | pass | artifacts/agents-autofix-metrics/10002401849 |\n| keepalive-metrics | 10002401700 | pass | pass | artifacts/keepalive-metrics/10002401700 |\n| keepalive-metrics | 10001398041 | pass | pass | artifacts/keepalive-metrics/10001398041 |\n| agents-autofix-metrics | 10001395692 | pass | pass | artifacts/agents-autofix-metrics/10001395692 |\n| keepalive-metrics | 10001386383 | pass | pass | artifacts/keepalive-metrics/10001386383 |\n| agents-autofix-metrics | 10001384134 | pass | pass | artifacts/agents-autofix-metrics/10001384134 |\n| keepalive-metrics | 10000759847 | pass | pass | artifacts/keepalive-metrics/10000759847 |\n| agents-autofix-metrics | 10000757188 | pass | pass | artifacts/agents-autofix-metrics/10000757188 |\n| keepalive-metrics | 9999236083 | pass | pass | artifacts/keepalive-metrics/9999236083 |\n| agents-autofix-metrics | 9999233958 | pass | pass | artifacts/agents-autofix-metrics/9999233958 |\n| keepalive-metrics | 9999226197 | pass | pass | artifacts/keepalive-metrics/9999226197 |\n| agents-autofix-metrics | 9999224705 | pass | pass | artifacts/agents-autofix-metrics/9999224705 |\n| keepalive-metrics | 9998371655 | pass | pass | artifacts/keepalive-metrics/9998371655 |\n| agents-autofix-metrics | 9998371034 | pass | pass | artifacts/agents-autofix-metrics/9998371034 |\n| keepalive-metrics | 9997486775 | pass | pass | artifacts/keepalive-metrics/9997486775 |\n| agents-autofix-metrics | 9997483590 | pass | pass | artifacts/agents-autofix-metrics/9997483590 |\n| keepalive-metrics | 9997476120 | pass | pass | artifacts/keepalive-metrics/9997476120 |\n| agents-autofix-metrics | 9997474350 | pass | pass | artifacts/agents-autofix-metrics/9997474350 |\n| keepalive-metrics | 9996586964 | pass | pass | artifacts/keepalive-metrics/9996586964 |\n| agents-autofix-metrics | 9996584834 | pass | pass | artifacts/agents-autofix-metrics/9996584834 |\n| keepalive-metrics | 9995648517 | pass | pass | artifacts/keepalive-metrics/9995648517 |\n| agents-autofix-metrics | 9995646229 | pass | pass | artifacts/agents-autofix-metrics/9995646229 |\n| keepalive-metrics | 9995373985 | pass | pass | artifacts/keepalive-metrics/9995373985 |\n| agents-autofix-metrics | 9995347882 | pass | pass | artifacts/agents-autofix-metrics/9995347882 |\n| keepalive-metrics | 9995334889 | pass | pass | artifacts/keepalive-metrics/9995334889 |\n| agents-autofix-metrics | 9995332902 | pass | pass | artifacts/agents-autofix-metrics/9995332902 |\n| keepalive-metrics | 9994793960 | pass | pass | artifacts/keepalive-metrics/9994793960 |\n| agents-autofix-metrics | 9994791923 | pass | pass | artifacts/agents-autofix-metrics/9994791923 |\n| keepalive-metrics | 9994578062 | pass | pass | artifacts/keepalive-metrics/9994578062 |\n| agents-autofix-metrics | 9994575674 | pass | pass | artifacts/agents-autofix-metrics/9994575674 |\n| agents-verifier-metrics | 9994120302 | pass | pass | artifacts/agents-verifier-metrics/9994120302 |\n| review-thread-terminal-disposition-34040553959 | 9991537176 | pass | pass | artifacts/review-thread-terminal-disposition-34040553959/9991537176 |\n| bot-comment-auth-coverage-reusable-34040553959 | 9991535557 | pass | pass | artifacts/bot-comment-auth-coverage-reusable-34040553959/9991535557 |\n| review-thread-terminal-disposition-33952629192 | 9965327017 | pass | pass | artifacts/review-thread-terminal-disposition-33952629192/9965327017 |\n| bot-comment-auth-coverage-reusable-33952629192 | 9965324423 | pass | pass | artifacts/bot-comment-auth-coverage-reusable-33952629192/9965324423 |\n| review-thread-terminal-disposition-33952528870 | 9965290948 | pass | pass | artifacts/review-thread-terminal-disposition-33952528870/9965290948 |\n| bot-comment-auth-coverage-reusable-33952528870 | 9965289177 | pass | pass | artifacts/bot-comment-auth-coverage-reusable-33952528870/9965289177 |\n\n## Terminal Disposition Coverage Preflight\n\n- Mode: warning-only (does not block merges or automation)\n- Requested mode: warning-only\n- Status: pass\n- Coverage status: pass\n- Hard block eligible: true\n- Hard block active: false\n- Input files: 5\n- Scanned records: 5\n- Terminal disposition records: 5\n- Non-terminal records: 0\n- Observed sources: 3\n- Expected review-thread sources: 2\n- Missing review-thread sources: 0\n- Parse errors: 0\n- Artifact selector status: pass\n- Terminal artifacts selected: 5\n- Terminal artifacts candidates: 5\n- Verifier model compatibility: pass\n- Unsupported verifier model records: 0\n- Missing verifier model metadata records: 0\n- Missing verifier model metadata records with unknown mode: 0\n- Legacy missing verifier model metadata records: 0\n- Unsupported verifier models: gpt-5.2-codex, gpt-5.3-codex\n\n| Observed source | Records | Dispositions | PRs |\n|-----------------|---------|--------------|-----|\n| review-thread:15 | 3 | no-unresolved-bot-comments (1), unresolved-bot-comments (2) | #15 |\n| review-thread:16 | 1 | unresolved-bot-comments (1) | #16 |\n| source-issue:6 | 1 | needs-human (1) | #15 |\n\n| Terminal artifact family | Status | Candidates | Selected | Latest artifact |\n|--------------------------|--------|------------|----------|-----------------|\n| review-thread-terminal-disposition | selected | 4 | 4 | review-thread-terminal-disposition-34053795415 |\n| verifier-terminal-disposition | selected | 1 | 1 | verifier-terminal-disposition-34049393269 |\n\n## Bot Comment App Auth Coverage\n\n- Schema: workflows-bot-comment-auth-coverage-summary/v1\n- Status: warning\n- Coverage status: warning\n- Mode: warning-only\n- Hard block eligible: true\n- Hard block active: false\n- Input files: 4\n- Parsed JSON files: 4\n- Auth records: 4\n- Non-auth records: 0\n- Parse errors: 0\n- Read errors: 0\n- Artifact selection status: pass\n- Selected auth artifacts: 4\n- Required organic events: pull_request, workflow_run\n- Organic evidence status: warning\n- Missing organic requirements: agents-bot-comment-handler-wrapper/pull_request, agents-bot-comment-handler-wrapper/workflow_run, reusable-bot-comment-handler/pull_request\n- Blockers: missing-organic-agents-bot-comment-handler-wrapper-pull_request, missing-organic-agents-bot-comment-handler-wrapper-workflow_run, missing-organic-reusable-bot-comment-handler-pull_request, expected-client-id-organic-reusable-bot-comment-handler-workflow_run\n\n| Component | Latest mode | Records | Expected | Allowed | Blockers |\n|-----------|-------------|---------|----------|---------|----------|\n| agents-bot-comment-handler-wrapper | missing | 0 | client-id | client-id | missing-agents-bot-comment-handler-wrapper |\n| reusable-bot-comment-handler | none | 4 | any | client-id, none | none |\n",
+      "comments": [],
+      "createdAt": "2026-09-07T06:28:42Z",
+      "labels": [
+        {
+          "id": "LA_kwDOUOqI0s8AAAACz0cY1Q",
+          "name": "automated",
+          "description": "Automated sync from Workflows",
+          "color": "0e8a16"
+        },
+        {
+          "id": "LA_kwDOUOqI0s8AAAACz0cZeA",
+          "name": "tracker:durable",
+          "description": "Permanently-open tracker; excluded from open-issue backlog counts",
+          "color": "c5def5"
+        }
+      ],
+      "number": 17,
+      "title": "Agent metrics weekly summary",
+      "updatedAt": "2026-09-07T06:28:42Z",
+      "url": "https://github.com/stranske/Manager-Mosaic/issues/17"
+    },
+    {
+      "body": "## Why (verified evidence)\n\nDiscrepancy detection and thesis monitoring both require a shared, documented `fact_key` vocabulary, but `config/` contains only LLM and docs-drift entries \u2014 no fact registry exists.\n\n- `config/` on tip `02ffccf` lists `llm_slots.json`, `model_registry.json`, `model_selection_policy.json`, and `source_of_truth_docs.yml` only.\n- R3 synthesis (`artifacts/research/R3-manager-mosaic-synthesis.md` \u00a710 step 1) calls for a starter registry (fees, liquidity, team, performance, capacity keys) before cross-repo ingest.\n- Without a registry, each module will invent parallel keys and contradictions will never join (`R3-manager-mosaic-synthesis.md` \u00a72 row \"Contradiction detection\").\n\n## Scope\n\nAdd a versioned JSON registry of starter `fact_key` strings plus a test that every key referenced in synthetic fixtures appears in the registry.\n\n## Tasks\n\n- [ ] Add `config/fact_key_registry.json` with `\"schema_version\": \"fact-key-registry/v1\"` and at least 20 keys covering fees, liquidity, team turnover, net/gross IRR, capacity, and legal notice periods (use work-environment names from Ready grounding doc section D where they exist).\n- [ ] Add `src/manager_mosaic/fact_keys.py` with `load_fact_key_registry(path: Path | None = None) -> frozenset[str]` defaulting to `config/fact_key_registry.json`.\n- [ ] Add `tests/test_fact_key_registry.py::test_fact_key_registry_contains_core_performance_and_liquidity_keys` asserting keys such as `fund.net_irr` and `legal.withdrawal_notice_days` are present.\n\n## Acceptance Criteria\n\n- Named test: `tests/test_fact_key_registry.py::test_fact_key_registry_contains_core_performance_and_liquidity_keys` passes under `pytest tests/test_fact_key_registry.py`.\n- Deliberate-break \u2192 revert: remove `fund.net_irr` from the registry \u2192 confirm the named test FAILS \u2192 revert and confirm it passes.\n\n## Non-Goals\n\n- Do not wire the registry into LLM extraction pipelines (Doc-Lineage / Inv-Man-Intake own extraction).\n- Do not publish the registry to Workflows in this issue \u2014 local consumer copy first.\n- No scaffolding / TODO-only JSON without the loader and test above.\n\n_Surfaced by repo-audit Track D 2026-09-05; verified by listing `config/` and confirming no `fact_key_registry.json` on tip `02ffccf`._\n",
+      "comments": [
+        {
+          "id": "IC_kwDOUOqI0s8AAAABStHuWg",
+          "author": {
+            "login": "stranske-keepalive"
+          },
+          "authorAssociation": "NONE",
+          "body": "### \u26a0\ufe0f Capability Check: Some tasks may need human assistance\n\n**Recommendation:** REVIEW_NEEDED\n\n**\u26a0\ufe0f Partial Tasks (3):**\n- Add `config/fact_key_registry.json` with `\"schema_version\": \"fact-key-registry/v1\"` and at least 20 keys covering fees, liquidity, team turnover, net/gross IRR, capacity, and legal notice periods (use work-environment names from Ready grounding doc section D where they exist).\n  - *Limitation:* Task bundles multiple actions; split into smaller tasks.\n- Add `src/manager_mosaic/fact_keys.py` with `load_fact_key_registry(path: Path | None = None) -> frozenset[str]` defaulting to `config/fact_key_registry.json`.\n  - *Limitation:* Task bundles multiple actions; split into smaller tasks.\n- Add `tests/test_fact_key_registry.py::test_fact_key_registry_contains_core_performance_and_liquidity_keys` asserting keys such as `fund.net_irr` and `legal.withdrawal_notice_days` are present.\n  - *Limitation:* Task bundles multiple actions; split into smaller tasks.\n\n**\ud83d\udc64 Human Actions Needed:**\n- Split task into smaller steps: Add `config/fact_key_registry.json` with `\"schema_version\": \"fact-key-registry/v1\"` and at least 20 keys covering fees, liquidity, team turnover, net/gross IRR, capacity, and legal notice periods (use work-environment names from Ready grounding doc section D where they exist).\n- Split task into smaller steps: Add `src/manager_mosaic/fact_keys.py` with `load_fact_key_registry(path: Path | None = None) -> frozenset[str]` defaulting to `config/fact_key_registry.json`.\n- Split task into smaller steps: Add `tests/test_fact_key_registry.py::test_fact_key_registry_contains_core_performance_and_liquidity_keys` asserting keys such as `fund.net_irr` and `legal.withdrawal_notice_days` are present.\n- LLM provider unavailable\n\n---\n*Auto-generated by capability check*",
+          "createdAt": "2026-09-05T07:18:36Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Manager-Mosaic/issues/14#issuecomment-5550239322",
+          "viewerDidAuthor": false
+        }
+      ],
+      "createdAt": "2026-09-05T07:18:10Z",
+      "labels": [
+        {
+          "id": "LA_kwDOUOqI0s8AAAACz0b8Sg",
+          "name": "enhancement",
+          "description": "New feature or request",
+          "color": "a2eeef"
+        },
+        {
+          "id": "LA_kwDOUOqI0s8AAAACz0cZEw",
+          "name": "agent:codex",
+          "description": "Assign to Codex agent",
+          "color": "0e8a16"
+        }
+      ],
+      "number": 14,
+      "title": "[P2] Add config/fact_key_registry.json starter registry and loader",
+      "updatedAt": "2026-09-05T07:18:37Z",
+      "url": "https://github.com/stranske/Manager-Mosaic/issues/14"
+    },
+    {
+      "body": "## Why (verified evidence)\n\nInvestment thesis monitoring is explicit repo scope (`README.md:9`, `CLAUDE.md:109-113`) but no code evaluates thesis claims against incoming facts.\n\n- `README.md:3-4` states the mosaic monitors a written investment thesis against what documents actually say.\n- `src/manager_mosaic/__init__.py:1-33` has no thesis types or evaluators.\n- R3 synthesis (`artifacts/research/R3-manager-mosaic-synthesis.md` \u00a75.1) specifies a `ThesisCheck.verdict` enum (`supported`, `at_risk`, `contradicted`, `insufficient_evidence`) aligned with public thesis-monitor products \u2014 the fleet should encode that enum now so downstream renderers do not invent parallel vocabulary.\n\n## Scope\n\nAdd thesis claim/check datatypes and a deterministic evaluator for numeric `expected_pattern` rules (`min`, `max`). LLM narrative evaluation is out of scope.\n\n## Tasks\n\n- [ ] Add `src/manager_mosaic/thesis.py` defining `ThesisClaim(claim_id, claim_text, entity_ref, fact_key, expected_pattern: Literal[\"min\",\"max\"], threshold: float)` and `ThesisCheck(claim_id, verdict, evidence_ids: tuple[str, ...])` with `verdict` in `{supported, at_risk, contradicted, insufficient_evidence}`.\n- [ ] Implement `evaluate_claim(claim: ThesisClaim, facts: Sequence[FactRecord]) -> ThesisCheck` importing `FactRecord` from `manager_mosaic.discrepancy` (or a shared `facts.py` if created while implementing #7).\n- [ ] Return `insufficient_evidence` when no fact matches `(claim.entity_ref, claim.fact_key)`; return `contradicted` when the latest fact violates the pattern; return `supported` when it satisfies the pattern.\n- [ ] Add `tests/test_thesis_monitoring.py::test_evaluate_claim_marks_contradicted_when_irr_below_min_threshold` with a `min` pattern claim and a fact below threshold.\n\n## Acceptance Criteria\n\n- Named test: `tests/test_thesis_monitoring.py::test_evaluate_claim_marks_contradicted_when_irr_below_min_threshold` passes under `pytest tests/test_thesis_monitoring.py`.\n- Deliberate-break \u2192 revert: invert the comparison so a below-threshold fact returns `supported` \u2192 confirm the named test FAILS \u2192 revert and confirm it passes.\n\n## Non-Goals\n\n- Do not build alerting, scheduling, or HTML dashboards.\n- Do not auto-resolve discrepancies \u2014 human analyst only (`R3-manager-mosaic-synthesis.md` \u00a79 Q4 default).\n- No scaffolding / TODO-only enums without evaluator logic.\n\n_Surfaced by repo-audit Track D 2026-09-05; verified by reading `README.md:3-4` and confirming absence of `src/manager_mosaic/thesis.py` on tip `02ffccf`._\n",
+      "comments": [
+        {
+          "id": "IC_kwDOUOqI0s8AAAABStHubw",
+          "author": {
+            "login": "stranske-keepalive"
+          },
+          "authorAssociation": "NONE",
+          "body": "### \u26a0\ufe0f Capability Check: Some tasks may need human assistance\n\n**Recommendation:** REVIEW_NEEDED\n\n**\u26a0\ufe0f Partial Tasks (4):**\n- Add `src/manager_mosaic/thesis.py` defining `ThesisClaim(claim_id, claim_text, entity_ref, fact_key, expected_pattern: Literal[\"min\",\"max\"], threshold: float)` and `ThesisCheck(claim_id, verdict, evidence_ids: tuple[str, ...])` with `verdict` in `{supported, at_risk, contradicted, insufficient_evidence}`.\n  - *Limitation:* Task bundles multiple actions; split into smaller tasks.\n- Implement `evaluate_claim(claim: ThesisClaim, facts: Sequence[FactRecord]) -> ThesisCheck` importing `FactRecord` from `manager_mosaic.discrepancy` (or a shared `facts.py` if created while implementing #7).\n  - *Limitation:* Task bundles multiple actions; split into smaller tasks.\n- Return `insufficient_evidence` when no fact matches `(claim.entity_ref, claim.fact_key)`; return `contradicted` when the latest fact violates the pattern; return `supported` when it satisfies the pattern.\n  - *Limitation:* Task bundles multiple actions; split into smaller tasks.\n- Add `tests/test_thesis_monitoring.py::test_evaluate_claim_marks_contradicted_when_irr_below_min_threshold` with a `min` pattern claim and a fact below threshold.\n  - *Limitation:* Task bundles multiple actions; split into smaller tasks.\n\n**\ud83d\udc64 Human Actions Needed:**\n- Split task into smaller steps: Add `src/manager_mosaic/thesis.py` defining `ThesisClaim(claim_id, claim_text, entity_ref, fact_key, expected_pattern: Literal[\"min\",\"max\"], threshold: float)` and `ThesisCheck(claim_id, verdict, evidence_ids: tuple[str, ...])` with `verdict` in `{supported, at_risk, contradicted, insufficient_evidence}`.\n- Split task into smaller steps: Implement `evaluate_claim(claim: ThesisClaim, facts: Sequence[FactRecord]) -> ThesisCheck` importing `FactRecord` from `manager_mosaic.discrepancy` (or a shared `facts.py` if created while implementing #7).\n- Split task into smaller steps: Return `insufficient_evidence` when no fact matches `(claim.entity_ref, claim.fact_key)`; return `contradicted` when the latest fact violates the pattern; return `supported` when it satisfies the pattern.\n- Split task into smaller steps: Add `tests/test_thesis_monitoring.py::test_evaluate_claim_marks_contradicted_when_irr_below_min_threshold` with a `min` pattern claim and a fact below threshold.\n- LLM provider unavailable\n\n---\n*Auto-generated by capability check*",
+          "createdAt": "2026-09-05T07:18:37Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Manager-Mosaic/issues/13#issuecomment-5550239343",
+          "viewerDidAuthor": false
+        }
+      ],
+      "createdAt": "2026-09-05T07:18:09Z",
+      "labels": [
+        {
+          "id": "LA_kwDOUOqI0s8AAAACz0b8Sg",
+          "name": "enhancement",
+          "description": "New feature or request",
+          "color": "a2eeef"
+        },
+        {
+          "id": "LA_kwDOUOqI0s8AAAACz0cZEw",
+          "name": "agent:codex",
+          "description": "Assign to Codex agent",
+          "color": "0e8a16"
+        }
+      ],
+      "number": 13,
+      "title": "[P1] Add thesis monitoring evaluator with supported/at_risk/contradicted verdicts",
+      "updatedAt": "2026-09-05T07:18:37Z",
+      "url": "https://github.com/stranske/Manager-Mosaic/issues/13"
+    },
+    {
+      "body": "## Why (verified evidence)\n\nThe repo charter promises contradictions that \"surface on their own\" (`README.md:9`), but no discrepancy logic exists anywhere in `src/`.\n\n- `README.md:9-10` lists discrepancy detection as in-scope for Manager-Mosaic.\n- `src/manager_mosaic/__init__.py:1-33` contains only template arithmetic/greet helpers.\n- Inv-Man-Intake already ships a deterministic numeric conflict pattern in `performance/conflict_resolver.py:14-47` (threshold-based escalation) that this repo should mirror for normalized facts rather than reinventing LLM comparison.\n\nIssue #3 covers the hand-edited store shapes; this issue adds the **cross-fact comparator** that turns multiple evidence-backed facts with the same key into reviewable discrepancy records.\n\n## Scope\n\nImplement deterministic numeric discrepancy detection for normalized facts sharing `(fact_key, entity_ref, period)`. Narrative/LLM discrepancy detection is out of scope for v1.\n\n## Tasks\n\n- [ ] Add `src/manager_mosaic/discrepancy.py` with `@dataclass(frozen=True) FactRecord(fact_key, entity_ref, period, value: float, evidence_id: str)` and `@dataclass(frozen=True) DiscrepancyRecord(discrepancy_id, fact_key, entity_ref, period, values: tuple[float, ...], evidence_ids: tuple[str, ...], kind: Literal[\"numeric_delta\"])`.\n- [ ] Implement `detect_numeric_discrepancies(facts: Sequence[FactRecord], *, threshold_percent: float = 5.0) -> list[DiscrepancyRecord]` flagging groups where two or more facts share the same `(fact_key, entity_ref, period)` and relative difference exceeds `threshold_percent`.\n- [ ] Add `tests/test_discrepancy_detection.py::test_detect_numeric_discrepancies_flags_conflicting_irr_values` with two synthetic IRR facts at 12.0 and 18.0 for the same key/entity/period expecting one discrepancy.\n\n## Acceptance Criteria\n\n- Named test: `tests/test_discrepancy_detection.py::test_detect_numeric_discrepancies_flags_conflicting_irr_values` passes under `pytest tests/test_discrepancy_detection.py`.\n- Deliberate-break \u2192 revert: raise `threshold_percent` above the fixture spread so the function returns `[]` \u2192 confirm the named test FAILS \u2192 revert and confirm it passes.\n\n## Non-Goals\n\n- Do not implement narrative/LLM discrepancy classification in this issue.\n- Do not build HTML rendering (Deliverable-Render).\n- Do not duplicate #3 store validation \u2014 consume normalized facts only.\n- No scaffolding / TODO-only modules.\n\n_Surfaced by repo-audit Track D 2026-09-05; verified by reading `README.md:9` and confirming absence of `src/manager_mosaic/discrepancy.py` on tip `02ffccf`._\n",
+      "comments": [
+        {
+          "id": "IC_kwDOUOqI0s8AAAABStHsXA",
+          "author": {
+            "login": "stranske-keepalive"
+          },
+          "authorAssociation": "NONE",
+          "body": "### \u26a0\ufe0f Capability Check: Some tasks may need human assistance\n\n**Recommendation:** REVIEW_NEEDED\n\n**\u26a0\ufe0f Partial Tasks (3):**\n- Add `src/manager_mosaic/discrepancy.py` with `@dataclass(frozen=True) FactRecord(fact_key, entity_ref, period, value: float, evidence_id: str)` and `@dataclass(frozen=True) DiscrepancyRecord(discrepancy_id, fact_key, entity_ref, period, values: tuple[float, ...], evidence_ids: tuple[str, ...], kind: Literal[\"numeric_delta\"])`.\n  - *Limitation:* Task bundles multiple actions; split into smaller tasks.\n- Implement `detect_numeric_discrepancies(facts: Sequence[FactRecord], *, threshold_percent: float = 5.0) -> list[DiscrepancyRecord]` flagging groups where two or more facts share the same `(fact_key, entity_ref, period)` and relative difference exceeds `threshold_percent`.\n  - *Limitation:* Task bundles multiple actions; split into smaller tasks.\n- Add `tests/test_discrepancy_detection.py::test_detect_numeric_discrepancies_flags_conflicting_irr_values` with two synthetic IRR facts at 12.0 and 18.0 for the same key/entity/period expecting one discrepancy.\n  - *Limitation:* Task bundles multiple actions; split into smaller tasks.\n\n**\ud83d\udc64 Human Actions Needed:**\n- Split task into smaller steps: Add `src/manager_mosaic/discrepancy.py` with `@dataclass(frozen=True) FactRecord(fact_key, entity_ref, period, value: float, evidence_id: str)` and `@dataclass(frozen=True) DiscrepancyRecord(discrepancy_id, fact_key, entity_ref, period, values: tuple[float, ...], evidence_ids: tuple[str, ...], kind: Literal[\"numeric_delta\"])`.\n- Split task into smaller steps: Implement `detect_numeric_discrepancies(facts: Sequence[FactRecord], *, threshold_percent: float = 5.0) -> list[DiscrepancyRecord]` flagging groups where two or more facts share the same `(fact_key, entity_ref, period)` and relative difference exceeds `threshold_percent`.\n- Split task into smaller steps: Add `tests/test_discrepancy_detection.py::test_detect_numeric_discrepancies_flags_conflicting_irr_values` with two synthetic IRR facts at 12.0 and 18.0 for the same key/entity/period expecting one discrepancy.\n- LLM provider unavailable\n\n---\n*Auto-generated by capability check*",
+          "createdAt": "2026-09-05T07:18:33Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Manager-Mosaic/issues/12#issuecomment-5550238812",
+          "viewerDidAuthor": false
+        }
+      ],
+      "createdAt": "2026-09-05T07:18:08Z",
+      "labels": [
+        {
+          "id": "LA_kwDOUOqI0s8AAAACz0b8Sg",
+          "name": "enhancement",
+          "description": "New feature or request",
+          "color": "a2eeef"
+        },
+        {
+          "id": "LA_kwDOUOqI0s8AAAACz0cZEw",
+          "name": "agent:codex",
+          "description": "Assign to Codex agent",
+          "color": "0e8a16"
+        }
+      ],
+      "number": 12,
+      "title": "[P1] Add deterministic numeric discrepancy detection for shared fact_key groups",
+      "updatedAt": "2026-09-05T07:18:33Z",
+      "url": "https://github.com/stranske/Manager-Mosaic/issues/12"
+    },
+    {
+      "body": "## Why (verified evidence)\n\nFleet contracts require every evidence link to carry `method` and a present `excerpt`, but this repo only copies the JSON Schema \u2014 there is no Python validator in the product package agents import.\n\n- `docs/contracts/schemas/evidence-object-v1.schema.json:8-15` requires `schema_version`, `evidence_id`, `fact_ref`, `source_id`, `method`, and `excerpt`.\n- `docs/contracts/schemas/evidence-object-v1.schema.json:50-53` states `excerpt` must be present (string or explicit null) \u2014 positional anchors alone are insufficient.\n- `src/manager_mosaic/__init__.py:8-33` exports only scaffold helpers; no validation module exists under `src/manager_mosaic/`.\n- README invariant 4 (`README.md:20-21`) requires one-click navigation from a fact to quotable evidence \u2014 validation is the gate before facts enter the mosaic index.\n\n## Scope\n\nAdd a small, dependency-light validator module wrapping the checked-in schema. Complements #3 (store model) without implementing rendering or extraction.\n\n## Tasks\n\n- [ ] Add `src/manager_mosaic/evidence.py` with `validate_evidence_object(payload: dict) -> list[str]` returning all schema violations (empty list when valid) using `docs/contracts/schemas/evidence-object-v1.schema.json`.\n- [ ] Reject objects whose `excerpt` key is absent entirely, mirroring the schema description at `evidence-object-v1.schema.json:50-53`.\n- [ ] Export `validate_evidence_object` from `src/manager_mosaic/__init__.py`.\n- [ ] Add `tests/test_evidence_validation.py::test_validate_evidence_object_reports_missing_excerpt_key` using the invalid fixture from #5 or an inline dict missing `excerpt`.\n\n## Acceptance Criteria\n\n- Named test: `tests/test_evidence_validation.py::test_validate_evidence_object_reports_missing_excerpt_key` passes under `pytest tests/test_evidence_validation.py`.\n- Deliberate-break \u2192 revert: make `validate_evidence_object` return `[]` for a payload missing `excerpt` \u2192 confirm the named test FAILS \u2192 revert and confirm it passes.\n\n## Non-Goals\n\n- Do not implement PDF extraction or document identity (owned by Doc-Lineage).\n- Do not emit run-contract envelopes (consumer role only).\n- No scaffolding / TODO-only module stubs without the failing test above.\n\n_Surfaced by repo-audit Track D 2026-09-05; verified by reading `evidence-object-v1.schema.json:8-15` and confirming no `src/manager_mosaic/evidence.py` on tip `02ffccf`._\n",
+      "comments": [
+        {
+          "id": "IC_kwDOUOqI0s8AAAABStHqUg",
+          "author": {
+            "login": "stranske-keepalive"
+          },
+          "authorAssociation": "NONE",
+          "body": "### \u26a0\ufe0f Capability Check: Some tasks may need human assistance\n\n**Recommendation:** REVIEW_NEEDED\n\n**\u2705 Actionable Tasks (1):**\n- Export `validate_evidence_object` from `src/manager_mosaic/__init__.py`.\n\n**\u26a0\ufe0f Partial Tasks (3):**\n- Add `src/manager_mosaic/evidence.py` with `validate_evidence_object(payload: dict) -> list[str]` returning all schema violations (empty list when valid) using `docs/contracts/schemas/evidence-object-v1.schema.json`.\n  - *Limitation:* Task bundles multiple actions; split into smaller tasks.\n- Reject objects whose `excerpt` key is absent entirely, mirroring the schema description at `evidence-object-v1.schema.json:50-53`.\n  - *Limitation:* Task bundles multiple actions; split into smaller tasks.\n- Add `tests/test_evidence_validation.py::test_validate_evidence_object_reports_missing_excerpt_key` using the invalid fixture from #5 or an inline dict missing `excerpt`.\n  - *Limitation:* Task bundles multiple actions; split into smaller tasks.\n\n**\ud83d\udc64 Human Actions Needed:**\n- Split task into smaller steps: Add `src/manager_mosaic/evidence.py` with `validate_evidence_object(payload: dict) -> list[str]` returning all schema violations (empty list when valid) using `docs/contracts/schemas/evidence-object-v1.schema.json`.\n- Split task into smaller steps: Reject objects whose `excerpt` key is absent entirely, mirroring the schema description at `evidence-object-v1.schema.json:50-53`.\n- Split task into smaller steps: Add `tests/test_evidence_validation.py::test_validate_evidence_object_reports_missing_excerpt_key` using the invalid fixture from #5 or an inline dict missing `excerpt`.\n- LLM provider unavailable\n\n---\n*Auto-generated by capability check*",
+          "createdAt": "2026-09-05T07:18:30Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Manager-Mosaic/issues/11#issuecomment-5550238290",
+          "viewerDidAuthor": false
+        }
+      ],
+      "createdAt": "2026-09-05T07:18:07Z",
+      "labels": [
+        {
+          "id": "LA_kwDOUOqI0s8AAAACz0b8Sg",
+          "name": "enhancement",
+          "description": "New feature or request",
+          "color": "a2eeef"
+        },
+        {
+          "id": "LA_kwDOUOqI0s8AAAACz0cZEw",
+          "name": "agent:codex",
+          "description": "Assign to Codex agent",
+          "color": "0e8a16"
+        }
+      ],
+      "number": 11,
+      "title": "[P1] Add manager_mosaic.evidence validate_evidence_object schema wrapper",
+      "updatedAt": "2026-09-05T07:18:30Z",
+      "url": "https://github.com/stranske/Manager-Mosaic/issues/11"
+    },
+    {
+      "body": "## Why (verified evidence)\n\nOnce Manager-Mosaic declares itself a backplane consumer, the repo needs checked-in ingest fixtures so `scripts/validate_run_contract.py` can self-smoke consumer validation locally and in CI reference runs.\n\n- `scripts/validate_run_contract.py:395-409` documents fixtures under `tests/fixtures/backplane/` and uses that directory in `--self-smoke`.\n- That directory **does not exist** in this checkout (`ls tests/fixtures/backplane` \u2192 No such file).\n- `docs/contracts/schemas/evidence-object-v1.schema.json:8-15` lists required fields (`schema_version`, `evidence_id`, `fact_ref`, `source_id`, `method`, `excerpt`) that a minimal valid fixture must satisfy.\n\n## Scope\n\nAdd synthetic backplane fixtures and a test that validates them with the repo's local schema copies. Depends on #4 (registry entry) but can land in the same PR if both are open.\n\n## Tasks\n\n- [ ] Create `tests/fixtures/backplane/valid_evidence_object.json` satisfying `docs/contracts/schemas/evidence-object-v1.schema.json` using synthetic IDs only.\n- [ ] Create `tests/fixtures/backplane/invalid_evidence_object_missing_excerpt.json` omitting the required `excerpt` key for negative coverage.\n- [ ] Add `tests/test_backplane_fixtures.py::test_valid_evidence_object_fixture_loads` asserting the valid fixture parses as JSON and includes `\"schema_version\": \"evidence-object/v1\"`.\n- [ ] Add `jsonschema` to `[project.optional-dependencies].dev` in `pyproject.toml` and regenerate `requirements.lock` so fixture tests can validate against the schema offline.\n\n## Acceptance Criteria\n\n- Named test: `tests/test_backplane_fixtures.py::test_valid_evidence_object_fixture_loads` passes under `pytest tests/test_backplane_fixtures.py`.\n- Deliberate-break \u2192 revert: delete the `excerpt` field from the valid fixture \u2192 confirm the named test FAILS (or add a companion schema-validation test that fails) \u2192 revert and confirm green.\n\n## Non-Goals\n\n- Do not wire a producer `run.json` emitter \u2014 Manager-Mosaic is a consumer only.\n- Do not commit proprietary manager content in fixtures.\n- No scaffolding / TODO-only fixture directories without JSON files.\n\n_Surfaced by repo-audit Track D 2026-09-05; verified by reading `scripts/validate_run_contract.py:409` and confirming missing `tests/fixtures/backplane/` on tip `02ffccf`._\n",
+      "comments": [
+        {
+          "id": "IC_kwDOUOqI0s8AAAABStHoGA",
+          "author": {
+            "login": "stranske-keepalive"
+          },
+          "authorAssociation": "NONE",
+          "body": "### \u26a0\ufe0f Capability Check: Some tasks may need human assistance\n\n**Recommendation:** REVIEW_NEEDED\n\n**\u2705 Actionable Tasks (2):**\n- Create `tests/fixtures/backplane/valid_evidence_object.json` satisfying `docs/contracts/schemas/evidence-object-v1.schema.json` using synthetic IDs only.\n- Create `tests/fixtures/backplane/invalid_evidence_object_missing_excerpt.json` omitting the required `excerpt` key for negative coverage.\n\n**\u26a0\ufe0f Partial Tasks (2):**\n- Add `tests/test_backplane_fixtures.py::test_valid_evidence_object_fixture_loads` asserting the valid fixture parses as JSON and includes `\"schema_version\": \"evidence-object/v1\"`.\n  - *Limitation:* Task bundles multiple actions; split into smaller tasks.\n- Add `jsonschema` to `[project.optional-dependencies].dev` in `pyproject.toml` and regenerate `requirements.lock` so fixture tests can validate against the schema offline.\n  - *Limitation:* Task bundles multiple actions; split into smaller tasks.\n\n**\ud83d\udc64 Human Actions Needed:**\n- Split task into smaller steps: Add `tests/test_backplane_fixtures.py::test_valid_evidence_object_fixture_loads` asserting the valid fixture parses as JSON and includes `\"schema_version\": \"evidence-object/v1\"`.\n- Split task into smaller steps: Add `jsonschema` to `[project.optional-dependencies].dev` in `pyproject.toml` and regenerate `requirements.lock` so fixture tests can validate against the schema offline.\n- LLM provider unavailable\n\n---\n*Auto-generated by capability check*",
+          "createdAt": "2026-09-05T07:18:25Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Manager-Mosaic/issues/10#issuecomment-5550237720",
+          "viewerDidAuthor": false
+        }
+      ],
+      "createdAt": "2026-09-05T07:18:06Z",
+      "labels": [
+        {
+          "id": "LA_kwDOUOqI0s8AAAACz0b8Sg",
+          "name": "enhancement",
+          "description": "New feature or request",
+          "color": "a2eeef"
+        },
+        {
+          "id": "LA_kwDOUOqI0s8AAAACz0cZEw",
+          "name": "agent:codex",
+          "description": "Assign to Codex agent",
+          "color": "0e8a16"
+        }
+      ],
+      "number": 10,
+      "title": "[P2] Add tests/fixtures/backplane evidence-object fixtures for consumer validation",
+      "updatedAt": "2026-09-05T07:18:25Z",
+      "url": "https://github.com/stranske/Manager-Mosaic/issues/10"
+    },
+    {
+      "body": "## Why (verified evidence)\n\nThe mosaic is architecturally a **consumer** of sibling backplane artifacts (evidence objects, manifests, identity refs), but this repo ships no participant registry entry even though local docs and CI already watch for one.\n\n- `docs/contracts/run-contract-v1.md:166-195` documents `config/backplane_participants.json` as the opt-in registry and describes the `consumer` role validating only declared `ingests`.\n- `.github/workflows/backplane-conformance.yml:22` triggers on changes to `config/backplane_participants.json`.\n- `config/` contains only LLM and docs-drift files \u2014 **`config/backplane_participants.json` is absent** (verified with `ls config/` on tip `02ffccf`).\n- R3 synthesis (`artifacts/research/R3-manager-mosaic-synthesis.md` \u00a78 rank 2) designates Manager-Mosaic as the cross-source join home.\n\nWithout a registry row the conformance workflow cannot ever graduate from permanent skip to validating ingested evidence.\n\n## Scope\n\nAdd a consumer-local `config/backplane_participants.json` with a **planned** Manager-Mosaic entry. Do not edit Workflows' fleet registry in this issue.\n\n## Tasks\n\n- [ ] Add `config/backplane_participants.json` declaring `stranske/Manager-Mosaic` with `\"role\": \"consumer\"`, `\"status\": \"planned\"`, and `\"ingests\": [\"evidence-object/v1\", \"artifact-manifest/v1\", \"run-contract/v1\", \"identity-map-conventions\"]`.\n- [ ] Point `\"parent_issue\"` at this repo's mosaic charter issue (`stranske/Manager-Mosaic#3`) until a dedicated backplane rollout issue exists.\n- [ ] Add `tests/test_backplane_registry.py::test_manager_mosaic_consumer_entry_present` loading the JSON and asserting the repo entry exists with role `consumer` and the four ingest tokens above.\n\n## Acceptance Criteria\n\n- Named test: `tests/test_backplane_registry.py::test_manager_mosaic_consumer_entry_present` passes under `pytest tests/test_backplane_registry.py`.\n- Deliberate-break \u2192 revert: remove the Manager-Mosaic participant block \u2192 confirm the named test FAILS \u2192 revert and confirm it passes.\n\n## Non-Goals\n\n- Do not change synced `scripts/validate_run_contract.py` (fix upstream in Workflows if the validator API changes).\n- Do not register Manager-Mosaic in `stranske/Workflows/config/backplane_participants.json` here.\n- No scaffolding / TODO-only JSON stubs without the test above.\n\n_Surfaced by repo-audit Track D 2026-09-05; verified by reading `docs/contracts/run-contract-v1.md:166` and confirming `config/backplane_participants.json` missing on tip `02ffccf`._\n",
+      "comments": [
+        {
+          "id": "IC_kwDOUOqI0s8AAAABStHqRw",
+          "author": {
+            "login": "stranske-keepalive"
+          },
+          "authorAssociation": "NONE",
+          "body": "### \u26a0\ufe0f Capability Check: Some tasks may need human assistance\n\n**Recommendation:** REVIEW_NEEDED\n\n**\u26a0\ufe0f Partial Tasks (3):**\n- Add `config/backplane_participants.json` declaring `stranske/Manager-Mosaic` with `\"role\": \"consumer\"`, `\"status\": \"planned\"`, and `\"ingests\": [\"evidence-object/v1\", \"artifact-manifest/v1\", \"run-contract/v1\", \"identity-map-conventions\"]`.\n  - *Limitation:* Task bundles multiple actions; split into smaller tasks.\n- Point `\"parent_issue\"` at this repo's mosaic charter issue (`stranske/Manager-Mosaic#3`) until a dedicated backplane rollout issue exists.\n  - *Limitation:* Task bundles multiple actions; split into smaller tasks.\n- Add `tests/test_backplane_registry.py::test_manager_mosaic_consumer_entry_present` loading the JSON and asserting the repo entry exists with role `consumer` and the four ingest tokens above.\n  - *Limitation:* Task bundles multiple actions; split into smaller tasks.\n\n**\ud83d\udc64 Human Actions Needed:**\n- Split task into smaller steps: Add `config/backplane_participants.json` declaring `stranske/Manager-Mosaic` with `\"role\": \"consumer\"`, `\"status\": \"planned\"`, and `\"ingests\": [\"evidence-object/v1\", \"artifact-manifest/v1\", \"run-contract/v1\", \"identity-map-conventions\"]`.\n- Split task into smaller steps: Point `\"parent_issue\"` at this repo's mosaic charter issue (`stranske/Manager-Mosaic#3`) until a dedicated backplane rollout issue exists.\n- Split task into smaller steps: Add `tests/test_backplane_registry.py::test_manager_mosaic_consumer_entry_present` loading the JSON and asserting the repo entry exists with role `consumer` and the four ingest tokens above.\n- LLM provider unavailable\n\n---\n*Auto-generated by capability check*",
+          "createdAt": "2026-09-05T07:18:30Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Manager-Mosaic/issues/9#issuecomment-5550238279",
+          "viewerDidAuthor": false
+        }
+      ],
+      "createdAt": "2026-09-05T07:18:04Z",
+      "labels": [
+        {
+          "id": "LA_kwDOUOqI0s8AAAACz0b8Sg",
+          "name": "enhancement",
+          "description": "New feature or request",
+          "color": "a2eeef"
+        },
+        {
+          "id": "LA_kwDOUOqI0s8AAAACz0cZEw",
+          "name": "agent:codex",
+          "description": "Assign to Codex agent",
+          "color": "0e8a16"
+        }
+      ],
+      "number": 9,
+      "title": "[P1] Add config/backplane_participants.json consumer entry for Manager-Mosaic",
+      "updatedAt": "2026-09-05T07:18:30Z",
+      "url": "https://github.com/stranske/Manager-Mosaic/issues/9"
+    },
+    {
+      "body": "## Why (verified evidence)\n\n`Issues.txt` is the agent issue queue documented at repo root, but its example tasks still describe the Template package layout that this repo renamed away in #2.\n\n- `Issues.txt:37-38` instructs agents to create `src/my_project/__init__.py` and `src/my_project/main.py`.\n- `tests/test_package_identity.py:17-18` asserts `src/my_project` must not exist and the package is `manager_mosaic`.\n- An agent following `Issues.txt` will produce work that fails the existing identity test.\n\n## Scope\n\nRewrite the example issue block in `Issues.txt` so every path and import uses `manager_mosaic`.\n\n## Tasks\n\n- [ ] In `Issues.txt:37-39`, replace `src/my_project/...` paths with `src/manager_mosaic/...` and drop the obsolete `main.py` sample unless a real module is added.\n- [ ] Add `tests/test_issues_txt_no_template_paths.py::test_issues_txt_does_not_reference_my_project` asserting the file body does not contain the substring `my_project`.\n\n## Acceptance Criteria\n\n- Named test: `tests/test_issues_txt_no_template_paths.py::test_issues_txt_does_not_reference_my_project` passes under `pytest tests/test_issues_txt_no_template_paths.py`.\n- Deliberate-break \u2192 revert: reintroduce `my_project` into `Issues.txt` \u2192 confirm the named test FAILS \u2192 revert and confirm it passes.\n\n## Non-Goals\n\n- Do not delete `Issues.txt` or change automation labels documented in its header.\n- No scaffolding / TODO-only edits.\n\n_Surfaced by repo-audit Track D 2026-09-05; verified by reading `Issues.txt:37-38` and `tests/test_package_identity.py:17-18` on main tip `02ffccf`._\n",
+      "comments": [
+        {
+          "id": "IC_kwDOUOqI0s8AAAABStHnCg",
+          "author": {
+            "login": "stranske-keepalive"
+          },
+          "authorAssociation": "NONE",
+          "body": "### \u26a0\ufe0f Capability Check: Some tasks may need human assistance\n\n**Recommendation:** REVIEW_NEEDED\n\n**\u2705 Actionable Tasks (1):**\n- Add `tests/test_issues_txt_no_template_paths.py::test_issues_txt_does_not_reference_my_project` asserting the file body does not contain the substring `my_project`.\n\n**\u26a0\ufe0f Partial Tasks (1):**\n- In `Issues.txt:37-39`, replace `src/my_project/...` paths with `src/manager_mosaic/...` and drop the obsolete `main.py` sample unless a real module is added.\n  - *Limitation:* Task bundles multiple actions; split into smaller tasks.\n\n**\ud83d\udc64 Human Actions Needed:**\n- Split task into smaller steps: In `Issues.txt:37-39`, replace `src/my_project/...` paths with `src/manager_mosaic/...` and drop the obsolete `main.py` sample unless a real module is added.\n- LLM provider unavailable\n\n---\n*Auto-generated by capability check*",
+          "createdAt": "2026-09-05T07:18:24Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Manager-Mosaic/issues/8#issuecomment-5550237450",
+          "viewerDidAuthor": false
+        }
+      ],
+      "createdAt": "2026-09-05T07:18:03Z",
+      "labels": [
+        {
+          "id": "LA_kwDOUOqI0s8AAAACz0b8Sg",
+          "name": "enhancement",
+          "description": "New feature or request",
+          "color": "a2eeef"
+        },
+        {
+          "id": "LA_kwDOUOqI0s8AAAACz0cZEw",
+          "name": "agent:codex",
+          "description": "Assign to Codex agent",
+          "color": "0e8a16"
+        }
+      ],
+      "number": 8,
+      "title": "[P2] Issues.txt agent queue still documents src/my_project template paths",
+      "updatedAt": "2026-09-05T07:18:24Z",
+      "url": "https://github.com/stranske/Manager-Mosaic/issues/8"
+    },
+    {
+      "body": "## Why (verified evidence)\n\nPackaging metadata still carries the Template scaffold placeholder author, which propagates into installed distribution metadata and is visible to downstream tooling.\n\n- `pyproject.toml:12-14` lists `{name = \"Your Name\", email = \"your.email@example.com\"}`.\n- The repo README and GitHub org identify the owner as `stranske`; placeholder authors block credible releases.\n\n## Scope\n\nReplace the placeholder `[project.authors]` entry with the repository owner identity already used across the fleet.\n\n## Tasks\n\n- [ ] In `pyproject.toml:12-14`, replace the placeholder author with `{name = \"stranske\", email = \"noreply@users.noreply.github.com\"}` (or the org's published contact if one exists in repo docs).\n- [ ] Add `test_project_authors_are_not_template_placeholder()` to `tests/test_repo_metadata.py` asserting no author name or email contains `Your Name` or `your.email@example.com`.\n\n## Acceptance Criteria\n\n- Named test: `tests/test_repo_metadata.py::test_project_authors_are_not_template_placeholder` passes under `pytest tests/test_repo_metadata.py`.\n- Deliberate-break \u2192 revert: restore the placeholder author block \u2192 confirm the named test FAILS \u2192 revert and confirm it passes.\n\n## Non-Goals\n\n- Do not alter license, classifiers, or dependency tables.\n- No scaffolding / TODO-only edits.\n\n_Surfaced by repo-audit Track D 2026-09-05; verified by reading `pyproject.toml:12-14` on main tip `02ffccf`._\n",
+      "comments": [
+        {
+          "id": "IC_kwDOUOqI0s8AAAABStHpJw",
+          "author": {
+            "login": "stranske-keepalive"
+          },
+          "authorAssociation": "NONE",
+          "body": "### \u26a0\ufe0f Capability Check: Some tasks may need human assistance\n\n**Recommendation:** REVIEW_NEEDED\n\n**\u26a0\ufe0f Partial Tasks (2):**\n- In `pyproject.toml:12-14`, replace the placeholder author with `{name = \"stranske\", email = \"noreply@users.noreply.github.com\"}` (or the org's published contact if one exists in repo docs).\n  - *Limitation:* Task bundles multiple actions; split into smaller tasks.\n- Add `test_project_authors_are_not_template_placeholder()` to `tests/test_repo_metadata.py` asserting no author name or email contains `Your Name` or `your.email@example.com`.\n  - *Limitation:* Task bundles multiple actions; split into smaller tasks.\n\n**\ud83d\udc64 Human Actions Needed:**\n- Split task into smaller steps: In `pyproject.toml:12-14`, replace the placeholder author with `{name = \"stranske\", email = \"noreply@users.noreply.github.com\"}` (or the org's published contact if one exists in repo docs).\n- Split task into smaller steps: Add `test_project_authors_are_not_template_placeholder()` to `tests/test_repo_metadata.py` asserting no author name or email contains `Your Name` or `your.email@example.com`.\n- LLM provider unavailable\n\n---\n*Auto-generated by capability check*",
+          "createdAt": "2026-09-05T07:18:27Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Manager-Mosaic/issues/7#issuecomment-5550237991",
+          "viewerDidAuthor": false
+        }
+      ],
+      "createdAt": "2026-09-05T07:18:02Z",
+      "labels": [
+        {
+          "id": "LA_kwDOUOqI0s8AAAACz0b8Sg",
+          "name": "enhancement",
+          "description": "New feature or request",
+          "color": "a2eeef"
+        },
+        {
+          "id": "LA_kwDOUOqI0s8AAAACz0cZEw",
+          "name": "agent:codex",
+          "description": "Assign to Codex agent",
+          "color": "0e8a16"
+        }
+      ],
+      "number": 7,
+      "title": "[P2] pyproject.toml authors remain Template placeholder values",
+      "updatedAt": "2026-09-05T07:18:27Z",
+      "url": "https://github.com/stranske/Manager-Mosaic/issues/7"
+    },
+    {
+      "body": "## Why\n\nThe mosaic is the capability the owner's work environment does not have and cannot easily build there: one place where a fact drawn from any manager communication source carries its evidence, contradictions between sources surface on their own, and a written investment thesis is monitored against what the documents actually say. The response describes the nearest existing tool as phase one only, a hand-edited structured data file rendered to a single page, and names two failure modes that this repo has to design against rather than rediscover.\n\nThe two failures are specific and both are silent. A single mistyped internal identifier made an entire record vanish from the rendered view with no error at all. And a shell text substitution over the data file turned a dollar figure into a fragment while leaving the file syntactically valid, because the amount was read as a capture-group reference. Valid is not the same as undamaged. Separately, the response states the rule that must be an invariant here: **silence in a document is weak evidence, never proof that a position was exited** \u2014 inferring a removal from an absence has already produced a wrong finding.\n\nEvidence: response section D, the communication synthesis tool, and section D's field list (https://github.com/stranske/Ready/blob/main/research-program/artifacts/work-bundle/INFORMATION-REQUEST-RESPONSE.md).\n\n## Scope\n\nThe core data model plus its validator: facts with evidence, entities, periods, themes, thesis claims, and gaps. No rendering and no extraction.\n\n## Non-Goals\n\n- No renderer. Rendering belongs to `stranske/Deliverable-Render`.\n- No extraction. Document identity and text extraction belong to `stranske/Doc-Lineage`.\n- No new names where the existing tool has one. Adopt its field names.\n- No proprietary content. Fixtures are synthetic.\n\n## Tasks\n\n- [ ] Add `src/manager_mosaic/model.py` with the existing tool's shapes: `fund(name, manager, strategy, archetype, note)`; `period(id, sort, label, kind, title, author, attendees, verdict, note)`; `entry(id, name, ticker, counterparty, first, last, status, peak, flag, thesis)` carrying `pub(state, as_of, detail, src)` and `mentions[(period, text, bps, size, src, inferred)]`; `theme(id, name, desc, periods)`; `document(name, date, verdict, note)`; `gap(sev, title, desc)`.\n- [ ] Keep `pub.state` a closed set of `PENDING, COMPLETED, TERMINATED`, and make the entry status vocabulary configurable per position kind rather than hard-coded, since the response records two different vocabularies in use.\n- [ ] Require every `mention` to carry `src`, and make `inferred` explicit rather than defaulted, so an inference can never be read as an observation.\n- [ ] Add `validate(store)` that fails on: an identifier referenced but not defined; an identifier defined twice; a mention whose `src` names an unknown document; a numeric field that is not finite; and a value that looks like a truncated currency amount, meaning a bare currency suffix with no digits.\n- [ ] Make the validator report every violation in one pass with the record identifier, never the first one only.\n- [ ] Add `derive_gaps(store)` computing an absence of coverage as a `gap` record, and assert in tests that no code path converts a gap into a status change.\n- [ ] Publish JSON Schema for the store under `schemas/` and validate all fixtures against it.\n\n## Acceptance Criteria\n\n- [ ] A store with one mistyped entry identifier fails validation naming that identifier; the record does not silently disappear.\n- [ ] A store containing a currency value damaged to a bare suffix fails validation.\n- [ ] A mention without `src` fails validation.\n- [ ] A period in which an entry is not mentioned produces a `gap` and leaves the entry's `status` unchanged, asserted directly.\n- [ ] The validator returns all violations for a fixture seeded with four distinct defects.\n\n## Test Gate\n\n`tests/test_model_validation.py`, run by this repo's CI gate. Demonstrate it by deliberately making `derive_gaps` set an entry status to exited on an absence, confirming the silence invariant test fails, then reverting and confirming it passes. Record both outcomes in the pull request.\n\n## Implementation Notes\n\nThe store is meant to be edited by a person, so the validator is the safety net that makes hand editing viable. Prefer a format that survives hand editing and refuses ambiguity, and state in the module docstring that editing a rendered output instead of the store is a discarded edit.\n",
+      "comments": [
+        {
+          "id": "IC_kwDOUOqI0s8AAAABSpDwwg",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `Require every `mention` to carry `src`, and make `inferred` explicit rather than defaulted, so an inference can never be read as an observation.`.\n- `Acceptance Criteria` names no test, runnable command or observable verification gate \u2014 Definition of Ready / Quality Bar \u00a72 requires one.\n- None of the 4 paths this issue cites exist in this repository (`stranske/Deliverable-Render`, `stranske/Doc-Lineage`, `schemas/`, `tests/test_model_validation.py`). An agent cloning this repo has nothing to act on. File it against the repo that holds the code, or cite the evidence here.\n\nDispatched the Agents Issue Optimizer format phase (attempt 1 of 3).\n\n<!-- format-guard:b4a2f0163bd3:attempt:1 -->\n",
+          "createdAt": "2026-09-04T20:17:46Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Manager-Mosaic/issues/3#issuecomment-5545980098",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOqI0s8AAAABSpEn_Q",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Manager-Mosaic/actions/runs/33915510854)\n\n**Format validation report:**\n```text\nThis issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `Require every `mention` to carry `src`, and make `inferred` explicit rather than defaulted, so an inference can never be read as an observation.`.\n- None of the 4 paths this issue cites exist in this repository (`stranske/Deliverable-Render`, `stranske/Doc-Lineage`, `schemas/`, `tests/test_model_validation.py`). An agent cloning this repo has nothing to act on. File it against the repo that holds the code, or cite the evidence here.\n```\n",
+          "createdAt": "2026-09-04T20:19:15Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Manager-Mosaic/issues/3#issuecomment-5545994237",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOqI0s8AAAABSpEyHQ",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `Require every `mention` to carry `src`, and make `inferred` explicit rather than defaulted, so an inference can never be read as an observation.`.\n- `Acceptance Criteria` names no test, runnable command or observable verification gate \u2014 Definition of Ready / Quality Bar \u00a72 requires one.\n- None of the 4 paths this issue cites exist in this repository (`stranske/Deliverable-Render`, `stranske/Doc-Lineage`, `schemas/`, `tests/test_model_validation.py`). An agent cloning this repo has nothing to act on. File it against the repo that holds the code, or cite the evidence here.\n\nDispatched the Agents Issue Optimizer format phase (attempt 2 of 3).\n\n<!-- format-guard:b4a2f0163bd3:attempt:2 -->\n",
+          "createdAt": "2026-09-04T20:19:32Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Manager-Mosaic/issues/3#issuecomment-5545996829",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOqI0s8AAAABSpFVlA",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Manager-Mosaic/actions/runs/33915654744)\n\n**Format validation report:**\n```text\nThis issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `Require every `mention` to carry `src`, and make `inferred` explicit rather than defaulted, so an inference can never be read as an observation.`.\n- None of the 4 paths this issue cites exist in this repository (`stranske/Deliverable-Render`, `stranske/Doc-Lineage`, `schemas/`, `tests/test_model_validation.py`). An agent cloning this repo has nothing to act on. File it against the repo that holds the code, or cite the evidence here.\n```\n",
+          "createdAt": "2026-09-04T20:20:29Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Manager-Mosaic/issues/3#issuecomment-5546005908",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOqI0s8AAAABSpFgdg",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `Require every `mention` to carry `src`, and make `inferred` explicit rather than defaulted, so an inference can never be read as an observation.`.\n- `Acceptance Criteria` names no test, runnable command or observable verification gate \u2014 Definition of Ready / Quality Bar \u00a72 requires one.\n- None of the 4 paths this issue cites exist in this repository (`stranske/Deliverable-Render`, `stranske/Doc-Lineage`, `schemas/`, `tests/test_model_validation.py`). An agent cloning this repo has nothing to act on. File it against the repo that holds the code, or cite the evidence here.\n\nDispatched the Agents Issue Optimizer format phase (attempt 3 of 3).\n\n<!-- format-guard:b4a2f0163bd3:attempt:3 -->\n",
+          "createdAt": "2026-09-04T20:20:46Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Manager-Mosaic/issues/3#issuecomment-5546008694",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOqI0s8AAAABSpFpgQ",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "<!-- format-guard:attempt-cap -->\nAutomated formatting stopped after 3 optimizer attempts. Fix the issue body manually, then remove agents:auto-pilot-pause before retrying.\n",
+          "createdAt": "2026-09-04T20:21:00Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Manager-Mosaic/issues/3#issuecomment-5546011009",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOqI0s8AAAABSpGBOw",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Manager-Mosaic/actions/runs/33915757537)\n\n**Format validation report:**\n```text\nThis issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `Require every `mention` to carry `src`, and make `inferred` explicit rather than defaulted, so an inference can never be read as an observation.`.\n- None of the 4 paths this issue cites exist in this repository (`stranske/Deliverable-Render`, `stranske/Doc-Lineage`, `schemas/`, `tests/test_model_validation.py`). An agent cloning this repo has nothing to act on. File it against the repo that holds the code, or cite the evidence here.\n```\n",
+          "createdAt": "2026-09-04T20:21:39Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Manager-Mosaic/issues/3#issuecomment-5546017083",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOqI0s8AAAABSpGMkg",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "<!-- format-guard:attempt-cap -->\nAutomated formatting stopped after 3 optimizer attempts. Fix the issue body manually, then remove agents:auto-pilot-pause before retrying.\n",
+          "createdAt": "2026-09-04T20:21:56Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Manager-Mosaic/issues/3#issuecomment-5546019986",
+          "viewerDidAuthor": false
+        }
+      ],
+      "createdAt": "2026-09-04T20:17:28Z",
+      "labels": [
+        {
+          "id": "LA_kwDOUOqI0s8AAAACz0b8Sg",
+          "name": "enhancement",
+          "description": "New feature or request",
+          "color": "a2eeef"
+        }
+      ],
+      "number": 3,
+      "title": "Core model and validator: facts with evidence, and the invariant that silence is not a status change",
+      "updatedAt": "2026-09-04T20:21:57Z",
+      "url": "https://github.com/stranske/Manager-Mosaic/issues/3"
+    },
+    {
+      "body": "This issue lists Renovate updates and detected dependencies. Read the [Dependency Dashboard](https://docs.renovatebot.com/key-concepts/dashboard/) docs to learn more.<br>[View this repository on the Mend.io Web Portal](https://developer.mend.io/github/stranske/Manager-Mosaic).\n\n## Repository Problems\n\nThese problems occurred while renovating this repository. [View logs](https://developer.mend.io//github/stranske/Manager-Mosaic).\n\n - \u26a0\ufe0f WARN: pip-compile: dependency not found in lock file\n\n## Awaiting Schedule\n\nThe following updates are awaiting their schedule. To get an update now, click on a checkbox below.\n\n - [ ] <!-- unschedule-branch=renovate/lock-file-maintenance-weekly-lock-file-maintenance -->chore(deps): lock file maintenance\n\n## Detected Dependencies\n\n<details><summary>github-actions (35)</summary>\n<blockquote>\n\n<details><summary>.github/actions/agent-run-base/action.yml</summary>\n\n\n</details>\n\n<details><summary>.github/actions/artifact-cache/action.yml</summary>\n\n\n</details>\n\n<details><summary>.github/actions/resolve-default-branch/action.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-71-codex-belt-dispatcher.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-72-codex-belt-worker.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-73-codex-belt-conveyor.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-80-pr-event-hub.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-81-gate-followups.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-auto-label.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-auto-pilot.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-autofix-dispatcher.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-capability-check.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-decompose.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-dedup.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-guard.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-issue-format-guard.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-issue-intake.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-issue-optimizer.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-keepalive-loop-reporter.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-keepalive-sweep.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-pr-health.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-verifier.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-verify-to-new-pr.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-weekly-metrics.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/autofix.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/backplane-conformance.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/ci.yml (1)</summary>\n\n - `stranske/Workflows main`\n\n</details>\n\n<details><summary>.github/workflows/cross-repo-smoke.yml (1)</summary>\n\n - `stranske/Workflows main`\n\n</details>\n\n<details><summary>.github/workflows/list-llm-models.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/maint-76-claude-code-review.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/maint-87-docs-drift-fix-agent.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/maint-coverage-guard.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/pr-00-gate.yml (43)</summary>\n\n - `actions/create-github-app-token v3@bcd2ba49218906704ab6c1aa796996da409d3eb1`\n - `actions/checkout v7.0.1@3d3c42e5aac5ba805825da76410c181273ba90b1`\n - `actions/github-script v9@3a2844b7e9c422d3c10d287c895573f7108da1b3`\n - `stranske/Workflows main`\n - `actions/checkout v7.0.1@3d3c42e5aac5ba805825da76410c181273ba90b1`\n - `actions/setup-python v7@5fda3b95a4ea91299a34e894583c3862153e4b97`\n - `actions/checkout v7.0.1@3d3c42e5aac5ba805825da76410c181273ba90b1`\n - `actions/setup-node v7@820762786026740c76f36085b0efc47a31fe5020`\n - `actions/setup-python v7@5fda3b95a4ea91299a34e894583c3862153e4b97`\n - `actions/checkout v7.0.1@3d3c42e5aac5ba805825da76410c181273ba90b1`\n - `actions/setup-python v7@5fda3b95a4ea91299a34e894583c3862153e4b97`\n - `actions/checkout v7.0.1@3d3c42e5aac5ba805825da76410c181273ba90b1`\n - `actions/setup-python v7@5fda3b95a4ea91299a34e894583c3862153e4b97`\n - `actions/github-script v9@3a2844b7e9c422d3c10d287c895573f7108da1b3`\n - `stranske/Workflows main`\n - `actions/create-github-app-token v3@bcd2ba49218906704ab6c1aa796996da409d3eb1`\n - `actions/checkout v7.0.1@3d3c42e5aac5ba805825da76410c181273ba90b1`\n - `actions/setup-python v7@5fda3b95a4ea91299a34e894583c3862153e4b97`\n - `actions/create-github-app-token v3@bcd2ba49218906704ab6c1aa796996da409d3eb1`\n - `actions/checkout v7.0.1@3d3c42e5aac5ba805825da76410c181273ba90b1`\n - `actions/setup-node v7@820762786026740c76f36085b0efc47a31fe5020`\n - `actions/github-script v9@3a2844b7e9c422d3c10d287c895573f7108da1b3`\n - `actions/github-script v9@3a2844b7e9c422d3c10d287c895573f7108da1b3`\n - `actions/github-script v9@3a2844b7e9c422d3c10d287c895573f7108da1b3`\n - `actions/github-script v9@3a2844b7e9c422d3c10d287c895573f7108da1b3`\n - `actions/download-artifact v8@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c`\n - `actions/github-script v9@3a2844b7e9c422d3c10d287c895573f7108da1b3`\n - `actions/github-script v9@3a2844b7e9c422d3c10d287c895573f7108da1b3`\n - `actions/github-script v9@3a2844b7e9c422d3c10d287c895573f7108da1b3`\n - `actions/upload-artifact v7@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a`\n - `actions/upload-artifact v7@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a`\n - `actions/upload-artifact v7@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a`\n - `actions/upload-artifact v7@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a`\n - `actions/github-script v9@3a2844b7e9c422d3c10d287c895573f7108da1b3`\n - `actions/github-script v9@3a2844b7e9c422d3c10d287c895573f7108da1b3`\n - `actions/github-script v9@3a2844b7e9c422d3c10d287c895573f7108da1b3`\n - `python 3.14`\n - `node 24`\n - `python 3.14`\n - `python 3.14`\n - `python 3.14`\n - `python 3.14`\n - `node 24`\n\n</details>\n\n<details><summary>.github/workflows/pr-46-dependency-repair-contract.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/reusable-pr-context.yml</summary>\n\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>npm (1)</summary>\n<blockquote>\n\n<details><summary>.github/scripts/package.json</summary>\n\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>pip-compile (1)</summary>\n<blockquote>\n\n<details><summary>pyproject.toml (2)</summary>\n\n - `python >=3.12`\n - `setuptools >=82.0.1`\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>pip_requirements (1)</summary>\n<blockquote>\n\n<details><summary>tools/requirements-llm.txt</summary>\n\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>poetry (1)</summary>\n<blockquote>\n\n<details><summary>pyproject.toml</summary>\n\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>renovate-config (1)</summary>\n<blockquote>\n\n<details><summary>.github/renovate.json</summary>\n\n\n</details>\n\n</blockquote>\n</details>\n\n---\n\n- [ ] <!-- manual job -->Check this box to trigger a request for Renovate to run again on this repository\n\n",
+      "comments": [
+        {
+          "id": "IC_kwDOUOqI0s8AAAABSo57-g",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n**Missing required sections:** `Tasks`, `Acceptance Criteria`\n- None of the 4 paths this issue cites exist in this repository (`renovate/non-major-updates`, `renovate/github-actions`, `stranske/Workflows`, `renovate/lock-file-maintenance-weekly-lock-file-maintenance`). An agent cloning this repo has nothing to act on. File it against the repo that holds the code, or cite the evidence here.\n\n_Recommended but absent:_ `Why`, `Scope`, `Implementation Notes`, `Non-Goals`\n\nDispatched the Agents Issue Optimizer format phase (attempt 1 of 3).\n\n<!-- format-guard:cd093351904c:attempt:1 -->\n",
+          "createdAt": "2026-09-04T20:01:37Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Manager-Mosaic/issues/1#issuecomment-5545819130",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOqI0s8AAAABSo6dDw",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Manager-Mosaic/actions/runs/33914143464)\n\n**Format validation report:**\n```text\nThis issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `_Not provided._`.\n- `Acceptance Criteria` names no test, runnable command or observable verification gate \u2014 Definition of Ready / Quality Bar \u00a72 requires one.\n```\n",
+          "createdAt": "2026-09-04T20:02:28Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Manager-Mosaic/issues/1#issuecomment-5545827599",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOqI0s8AAAABSo6sTg",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n**Missing required sections:** `Tasks`, `Acceptance Criteria`\n- None of the 4 paths this issue cites exist in this repository (`renovate/non-major-updates`, `renovate/github-actions`, `stranske/Workflows`, `renovate/lock-file-maintenance-weekly-lock-file-maintenance`). An agent cloning this repo has nothing to act on. File it against the repo that holds the code, or cite the evidence here.\n\n_Recommended but absent:_ `Why`, `Scope`, `Implementation Notes`, `Non-Goals`\n\nDispatched the Agents Issue Optimizer format phase (attempt 2 of 3).\n\n<!-- format-guard:cd093351904c:attempt:2 -->\n",
+          "createdAt": "2026-09-04T20:02:53Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Manager-Mosaic/issues/1#issuecomment-5545831502",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOqI0s8AAAABSo7K9A",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n**Missing required sections:** `Tasks`, `Acceptance Criteria`\n- None of the 4 paths this issue cites exist in this repository (`renovate/non-major-updates`, `renovate/github-actions`, `stranske/Workflows`, `renovate/lock-file-maintenance-weekly-lock-file-maintenance`). An agent cloning this repo has nothing to act on. File it against the repo that holds the code, or cite the evidence here.\n\n_Recommended but absent:_ `Why`, `Scope`, `Implementation Notes`, `Non-Goals`\n\nDispatched the Agents Issue Optimizer format phase (attempt 1 of 3).\n\n<!-- format-guard:47f1a9e06965:attempt:1 -->\n",
+          "createdAt": "2026-09-04T20:03:42Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Manager-Mosaic/issues/1#issuecomment-5545839348",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOqI0s8AAAABSo7Y3Q",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Manager-Mosaic/actions/runs/33914250369)\n\n**Format validation report:**\n```text\nThis issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `_Not provided._`.\n- `Acceptance Criteria` names no test, runnable command or observable verification gate \u2014 Definition of Ready / Quality Bar \u00a72 requires one.\n```\n",
+          "createdAt": "2026-09-04T20:04:03Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Manager-Mosaic/issues/1#issuecomment-5545842909",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOqI0s8AAAABSo7n-A",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n**Missing required sections:** `Tasks`, `Acceptance Criteria`\n- None of the 4 paths this issue cites exist in this repository (`renovate/non-major-updates`, `renovate/github-actions`, `stranske/Workflows`, `renovate/lock-file-maintenance-weekly-lock-file-maintenance`). An agent cloning this repo has nothing to act on. File it against the repo that holds the code, or cite the evidence here.\n\n_Recommended but absent:_ `Why`, `Scope`, `Implementation Notes`, `Non-Goals`\n\nDispatched the Agents Issue Optimizer format phase (attempt 2 of 3).\n\n<!-- format-guard:47f1a9e06965:attempt:2 -->\n",
+          "createdAt": "2026-09-04T20:04:26Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Manager-Mosaic/issues/1#issuecomment-5545846776",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOqI0s8AAAABSo8PSQ",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "## \u26a0\ufe0f Optimizer Paused\n\n**Reason:** More than 3 optimizer runs detected in the last hour (4 runs).\n\nThis usually indicates:\n- Task decomposition spiral (creating too many subtasks)\n- Repeated failures causing retry loop\n\n**Next steps:**\n1. Check issue body for task explosion (hundreds of repeated tasks)\n2. Check recent workflow runs for errors\n3. If issue body is corrupted, close and recreate with clean body\n4. Remove `agents:auto-pilot-pause` label to retry after fixing\n\nAuto-pilot has been paused. See [recovery procedures](https://github.com/stranske/Manager-Mosaic/blob/main/WORKFLOW_USER_GUIDE.md#auto-pilot-recovery-procedures).\n",
+          "createdAt": "2026-09-04T20:05:26Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Manager-Mosaic/issues/1#issuecomment-5545856841",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOqI0s8AAAABSo8Qbg",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Manager-Mosaic/actions/runs/33914320426)\n",
+          "createdAt": "2026-09-04T20:05:28Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Manager-Mosaic/issues/1#issuecomment-5545857134",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOqI0s8AAAABSo8hMw",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n**Missing required sections:** `Tasks`, `Acceptance Criteria`\n- None of the 4 paths this issue cites exist in this repository (`renovate/non-major-updates`, `renovate/github-actions`, `stranske/Workflows`, `renovate/lock-file-maintenance-weekly-lock-file-maintenance`). An agent cloning this repo has nothing to act on. File it against the repo that holds the code, or cite the evidence here.\n\n_Recommended but absent:_ `Why`, `Scope`, `Implementation Notes`, `Non-Goals`\n\nDispatched the Agents Issue Optimizer format phase (attempt 3 of 3).\n\n<!-- format-guard:47f1a9e06965:attempt:3 -->\n",
+          "createdAt": "2026-09-04T20:05:53Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Manager-Mosaic/issues/1#issuecomment-5545861427",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOqI0s8AAAABSo8uqA",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "<!-- format-guard:attempt-cap -->\nAutomated formatting stopped after 3 optimizer attempts. Fix the issue body manually, then remove agents:auto-pilot-pause before retrying.\n",
+          "createdAt": "2026-09-04T20:06:13Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Manager-Mosaic/issues/1#issuecomment-5545864872",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOqI0s8AAAABSo9F3w",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "## \u26a0\ufe0f Optimizer Paused\n\n**Reason:** More than 3 optimizer runs detected in the last hour (5 runs).\n\nThis usually indicates:\n- Task decomposition spiral (creating too many subtasks)\n- Repeated failures causing retry loop\n\n**Next steps:**\n1. Check issue body for task explosion (hundreds of repeated tasks)\n2. Check recent workflow runs for errors\n3. If issue body is corrupted, close and recreate with clean body\n4. Remove `agents:auto-pilot-pause` label to retry after fixing\n\nAuto-pilot has been paused. See [recovery procedures](https://github.com/stranske/Manager-Mosaic/blob/main/WORKFLOW_USER_GUIDE.md#auto-pilot-recovery-procedures).\n",
+          "createdAt": "2026-09-04T20:06:51Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Manager-Mosaic/issues/1#issuecomment-5545870815",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOqI0s8AAAABSo9HuQ",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Manager-Mosaic/actions/runs/33914384524)\n",
+          "createdAt": "2026-09-04T20:06:53Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Manager-Mosaic/issues/1#issuecomment-5545871289",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOqI0s8AAAABSo9q7A",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "## \u26a0\ufe0f Optimizer Paused\n\n**Reason:** More than 3 optimizer runs detected in the last hour (5 runs).\n\nThis usually indicates:\n- Task decomposition spiral (creating too many subtasks)\n- Repeated failures causing retry loop\n\n**Next steps:**\n1. Check issue body for task explosion (hundreds of repeated tasks)\n2. Check recent workflow runs for errors\n3. If issue body is corrupted, close and recreate with clean body\n4. Remove `agents:auto-pilot-pause` label to retry after fixing\n\nAuto-pilot has been paused. See [recovery procedures](https://github.com/stranske/Manager-Mosaic/blob/main/WORKFLOW_USER_GUIDE.md#auto-pilot-recovery-procedures).\n",
+          "createdAt": "2026-09-04T20:07:47Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Manager-Mosaic/issues/1#issuecomment-5545880300",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOqI0s8AAAABSo9r4Q",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Manager-Mosaic/actions/runs/33914508184)\n",
+          "createdAt": "2026-09-04T20:07:49Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Manager-Mosaic/issues/1#issuecomment-5545880545",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOqI0s8AAAABSo9_GQ",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "<!-- format-guard:attempt-cap -->\nAutomated formatting stopped after 3 optimizer attempts. Fix the issue body manually, then remove agents:auto-pilot-pause before retrying.\n",
+          "createdAt": "2026-09-04T20:08:19Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Manager-Mosaic/issues/1#issuecomment-5545885465",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOqI0s8AAAABSo-rMw",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "<!-- format-guard:attempt-cap -->\nAutomated formatting stopped after 3 optimizer attempts. Fix the issue body manually, then remove agents:auto-pilot-pause before retrying.\n",
+          "createdAt": "2026-09-04T20:09:30Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Manager-Mosaic/issues/1#issuecomment-5545896755",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOqI0s8AAAABSpDF4w",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n**Missing required sections:** `Tasks`, `Acceptance Criteria`\n- None of the 4 paths this issue cites exist in this repository (`renovate/non-major-updates`, `renovate/github-actions`, `stranske/Workflows`, `renovate/lock-file-maintenance-weekly-lock-file-maintenance`). An agent cloning this repo has nothing to act on. File it against the repo that holds the code, or cite the evidence here.\n\n_Recommended but absent:_ `Why`, `Scope`, `Implementation Notes`, `Non-Goals`\n\nDispatched the Agents Issue Optimizer format phase (attempt 3 of 3).\n\n<!-- format-guard:cd093351904c:attempt:3 -->\n",
+          "createdAt": "2026-09-04T20:16:40Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Manager-Mosaic/issues/1#issuecomment-5545969123",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOqI0s8AAAABSpDeuw",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "## \u26a0\ufe0f Optimizer Paused\n\n**Reason:** More than 3 optimizer runs detected in the last hour (6 runs).\n\nThis usually indicates:\n- Task decomposition spiral (creating too many subtasks)\n- Repeated failures causing retry loop\n\n**Next steps:**\n1. Check issue body for task explosion (hundreds of repeated tasks)\n2. Check recent workflow runs for errors\n3. If issue body is corrupted, close and recreate with clean body\n4. Remove `agents:auto-pilot-pause` label to retry after fixing\n\nAuto-pilot has been paused. See [recovery procedures](https://github.com/stranske/Manager-Mosaic/blob/main/WORKFLOW_USER_GUIDE.md#auto-pilot-recovery-procedures).\n",
+          "createdAt": "2026-09-04T20:17:18Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Manager-Mosaic/issues/1#issuecomment-5545975483",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOqI0s8AAAABSpDgBQ",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Manager-Mosaic/actions/runs/33915421705)\n",
+          "createdAt": "2026-09-04T20:17:20Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Manager-Mosaic/issues/1#issuecomment-5545975813",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOqI0s8AAAABSpDtQw",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "<!-- format-guard:attempt-cap -->\nAutomated formatting stopped after 3 optimizer attempts. Fix the issue body manually, then remove agents:auto-pilot-pause before retrying.\n",
+          "createdAt": "2026-09-04T20:17:40Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Manager-Mosaic/issues/1#issuecomment-5545979203",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOqI0s8AAAABSpD7AA",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "<!-- format-guard:attempt-cap -->\nAutomated formatting stopped after 3 optimizer attempts. Fix the issue body manually, then remove agents:auto-pilot-pause before retrying.\n",
+          "createdAt": "2026-09-04T20:18:02Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Manager-Mosaic/issues/1#issuecomment-5545982720",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOqI0s8AAAABSrZW9Q",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n**Missing required sections:** `Tasks`, `Acceptance Criteria`\n\n_Advisory:_\n- 1 cited path(s) do not exist yet: `renovate/lock-file-maintenance-weekly-lock-file-maintenance` \u2014 expected when a task creates them; check for typos otherwise.\n\n_Recommended but absent:_ `Why`, `Scope`, `Implementation Notes`, `Non-Goals`\n\nDispatched the Agents Issue Optimizer format phase (attempt 1 of 3).\n\n<!-- format-guard:2fb102ca7bcf:attempt:1 -->\n",
+          "createdAt": "2026-09-05T01:31:37Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Manager-Mosaic/issues/1#issuecomment-5548431093",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOqI0s8AAAABSrZoXg",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Manager-Mosaic/actions/runs/33936429702)\n\n**Format validation report:**\n```text\nThis issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `_Not provided._`.\n- `Acceptance Criteria` names no test, runnable command or observable verification gate \u2014 Definition of Ready / Quality Bar \u00a72 requires one.\n```\n",
+          "createdAt": "2026-09-05T01:32:29Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Manager-Mosaic/issues/1#issuecomment-5548435550",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOqI0s8AAAABSrZuoA",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n**Missing required sections:** `Tasks`, `Acceptance Criteria`\n\n_Advisory:_\n- 1 cited path(s) do not exist yet: `renovate/lock-file-maintenance-weekly-lock-file-maintenance` \u2014 expected when a task creates them; check for typos otherwise.\n\n_Recommended but absent:_ `Why`, `Scope`, `Implementation Notes`, `Non-Goals`\n\nDispatched the Agents Issue Optimizer format phase (attempt 2 of 3).\n\n<!-- format-guard:2fb102ca7bcf:attempt:2 -->\n",
+          "createdAt": "2026-09-05T01:32:46Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Manager-Mosaic/issues/1#issuecomment-5548437152",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOqI0s8AAAABSraAgw",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Manager-Mosaic/actions/runs/33936486061)\n\n**Format validation report:**\n```text\nThis issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `_Not provided._`.\n- `Acceptance Criteria` names no test, runnable command or observable verification gate \u2014 Definition of Ready / Quality Bar \u00a72 requires one.\n```\n",
+          "createdAt": "2026-09-05T01:33:36Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Manager-Mosaic/issues/1#issuecomment-5548441731",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOqI0s8AAAABSraHmg",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n**Missing required sections:** `Tasks`, `Acceptance Criteria`\n\n_Advisory:_\n- 1 cited path(s) do not exist yet: `renovate/lock-file-maintenance-weekly-lock-file-maintenance` \u2014 expected when a task creates them; check for typos otherwise.\n\n_Recommended but absent:_ `Why`, `Scope`, `Implementation Notes`, `Non-Goals`\n\nDispatched the Agents Issue Optimizer format phase (attempt 3 of 3).\n\n<!-- format-guard:2fb102ca7bcf:attempt:3 -->\n",
+          "createdAt": "2026-09-05T01:33:56Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Manager-Mosaic/issues/1#issuecomment-5548443546",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOqI0s8AAAABSraOdA",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "<!-- format-guard:attempt-cap -->\nAutomated formatting stopped after 3 optimizer attempts. Fix the issue body manually, then remove agents:auto-pilot-pause before retrying.\n",
+          "createdAt": "2026-09-05T01:34:14Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Manager-Mosaic/issues/1#issuecomment-5548445300",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOqI0s8AAAABSracBw",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Manager-Mosaic/actions/runs/33936543809)\n\n**Format validation report:**\n```text\nThis issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `_Not provided._`.\n- `Acceptance Criteria` names no test, runnable command or observable verification gate \u2014 Definition of Ready / Quality Bar \u00a72 requires one.\n```\n",
+          "createdAt": "2026-09-05T01:34:50Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Manager-Mosaic/issues/1#issuecomment-5548448775",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOqI0s8AAAABSraijQ",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "<!-- format-guard:attempt-cap -->\nAutomated formatting stopped after 3 optimizer attempts. Fix the issue body manually, then remove agents:auto-pilot-pause before retrying.\n",
+          "createdAt": "2026-09-05T01:35:07Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Manager-Mosaic/issues/1#issuecomment-5548450445",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOqI0s8AAAABStW4sg",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n**Missing required sections:** `Tasks`, `Acceptance Criteria`\n\n_Advisory:_\n- 1 cited path(s) do not exist yet: `renovate/lock-file-maintenance-weekly-lock-file-maintenance` \u2014 expected when a task creates them; check for typos otherwise.\n\n_Recommended but absent:_ `Why`, `Scope`, `Implementation Notes`, `Non-Goals`\n\nDispatched the Agents Issue Optimizer format phase (attempt 1 of 3).\n\n<!-- format-guard:6d435dc32c96:attempt:1 -->\n",
+          "createdAt": "2026-09-05T08:08:18Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Manager-Mosaic/issues/1#issuecomment-5550487730",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOqI0s8AAAABStXOTQ",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Manager-Mosaic/actions/runs/33954442164)\n\n**Format validation report:**\n```text\nThis issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `_Not provided._`.\n- `Acceptance Criteria` names no test, runnable command or observable verification gate \u2014 Definition of Ready / Quality Bar \u00a72 requires one.\n```\n",
+          "createdAt": "2026-09-05T08:09:24Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Manager-Mosaic/issues/1#issuecomment-5550493261",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOqI0s8AAAABStXUTQ",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n**Missing required sections:** `Tasks`, `Acceptance Criteria`\n\n_Advisory:_\n- 1 cited path(s) do not exist yet: `renovate/lock-file-maintenance-weekly-lock-file-maintenance` \u2014 expected when a task creates them; check for typos otherwise.\n\n_Recommended but absent:_ `Why`, `Scope`, `Implementation Notes`, `Non-Goals`\n\nDispatched the Agents Issue Optimizer format phase (attempt 2 of 3).\n\n<!-- format-guard:6d435dc32c96:attempt:2 -->\n",
+          "createdAt": "2026-09-05T08:09:41Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Manager-Mosaic/issues/1#issuecomment-5550494797",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOqI0s8AAAABStXkDg",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Manager-Mosaic/actions/runs/33954500530)\n\n**Format validation report:**\n```text\nThis issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `_Not provided._`.\n- `Acceptance Criteria` names no test, runnable command or observable verification gate \u2014 Definition of Ready / Quality Bar \u00a72 requires one.\n```\n",
+          "createdAt": "2026-09-05T08:10:29Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Manager-Mosaic/issues/1#issuecomment-5550498830",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOqI0s8AAAABStXrtw",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n**Missing required sections:** `Tasks`, `Acceptance Criteria`\n\n_Advisory:_\n- 1 cited path(s) do not exist yet: `renovate/lock-file-maintenance-weekly-lock-file-maintenance` \u2014 expected when a task creates them; check for typos otherwise.\n\n_Recommended but absent:_ `Why`, `Scope`, `Implementation Notes`, `Non-Goals`\n\nDispatched the Agents Issue Optimizer format phase (attempt 3 of 3).\n\n<!-- format-guard:6d435dc32c96:attempt:3 -->\n",
+          "createdAt": "2026-09-05T08:10:51Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Manager-Mosaic/issues/1#issuecomment-5550500791",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOqI0s8AAAABStXxcQ",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "<!-- format-guard:attempt-cap -->\nAutomated formatting stopped after 3 optimizer attempts. Fix the issue body manually, then remove agents:auto-pilot-pause before retrying.\n",
+          "createdAt": "2026-09-05T08:11:09Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Manager-Mosaic/issues/1#issuecomment-5550502257",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOqI0s8AAAABStX7OA",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Manager-Mosaic/actions/runs/33954555885)\n\n**Format validation report:**\n```text\nThis issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `_Not provided._`.\n- `Acceptance Criteria` names no test, runnable command or observable verification gate \u2014 Definition of Ready / Quality Bar \u00a72 requires one.\n```\n",
+          "createdAt": "2026-09-05T08:11:38Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Manager-Mosaic/issues/1#issuecomment-5550504760",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOqI0s8AAAABStYCTA",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "<!-- format-guard:attempt-cap -->\nAutomated formatting stopped after 3 optimizer attempts. Fix the issue body manually, then remove agents:auto-pilot-pause before retrying.\n",
+          "createdAt": "2026-09-05T08:11:59Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Manager-Mosaic/issues/1#issuecomment-5550506572",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOqI0s8AAAABSupOHA",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "<!-- format-guard:attempt-cap -->\nAutomated formatting stopped after 3 optimizer attempts. Fix the issue body manually, then remove agents:auto-pilot-pause before retrying.\n",
+          "createdAt": "2026-09-05T12:31:35Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Manager-Mosaic/issues/1#issuecomment-5551836700",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOqI0s8AAAABS22HNg",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "<!-- format-guard:attempt-cap -->\nAutomated formatting stopped after 3 optimizer attempts. Fix the issue body manually, then remove agents:auto-pilot-pause before retrying.\n",
+          "createdAt": "2026-09-06T16:04:12Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Manager-Mosaic/issues/1#issuecomment-5560436534",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOqI0s8AAAABS3X_Ug",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "<!-- format-guard:attempt-cap -->\nAutomated formatting stopped after 3 optimizer attempts. Fix the issue body manually, then remove agents:auto-pilot-pause before retrying.\n",
+          "createdAt": "2026-09-06T17:41:58Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Manager-Mosaic/issues/1#issuecomment-5560991570",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOqI0s8AAAABTLCi0g",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "<!-- format-guard:attempt-cap -->\nAutomated formatting stopped after 3 optimizer attempts. Fix the issue body manually, then remove agents:auto-pilot-pause before retrying.\n",
+          "createdAt": "2026-09-08T08:13:45Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Manager-Mosaic/issues/1#issuecomment-5581611730",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOqI0s8AAAABTRImTw",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "<!-- format-guard:attempt-cap -->\nAutomated formatting stopped after 3 optimizer attempts. Fix the issue body manually, then remove agents:auto-pilot-pause before retrying.\n",
+          "createdAt": "2026-09-08T15:54:10Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Manager-Mosaic/issues/1#issuecomment-5588002383",
+          "viewerDidAuthor": false
+        }
+      ],
+      "createdAt": "2026-09-04T20:01:10Z",
+      "labels": [],
+      "number": 1,
+      "title": "Dependency Dashboard",
+      "updatedAt": "2026-09-08T15:54:10Z",
+      "url": "https://github.com/stranske/Manager-Mosaic/issues/1"
+    }
+  ],
+  "prs": [],
+  "ci_runs": [
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-08T15:53:22Z",
+      "databaseId": 34247636894,
+      "event": "push",
+      "headSha": "250d41df48c490e0423eef6d40a9e209b0952c60",
+      "name": "CI",
+      "status": "completed",
+      "url": "https://github.com/stranske/Manager-Mosaic/actions/runs/34247636894",
+      "workflowName": "CI"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-08T07:04:37Z",
+      "databaseId": 34197567246,
+      "event": "push",
+      "headSha": "ca513baa61a5bbc66bf3cd44e8e6b5c601de55a9",
+      "name": "CI",
+      "status": "completed",
+      "url": "https://github.com/stranske/Manager-Mosaic/actions/runs/34197567246",
+      "workflowName": "CI"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-06T17:41:14Z",
+      "databaseId": 34049379556,
+      "event": "push",
+      "headSha": "8bac896aadf5d1661be863fdd69590a54b876466",
+      "name": "CI",
+      "status": "completed",
+      "url": "https://github.com/stranske/Manager-Mosaic/actions/runs/34049379556",
+      "workflowName": "CI"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-05T12:30:23Z",
+      "databaseId": 33966226603,
+      "event": "push",
+      "headSha": "831e0cf97fe3ff217944911d50961f45b16fb48e",
+      "name": "CI",
+      "status": "completed",
+      "url": "https://github.com/stranske/Manager-Mosaic/actions/runs/33966226603",
+      "workflowName": "CI"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-05T01:30:12Z",
+      "databaseId": 33936354225,
+      "event": "push",
+      "headSha": "02ffccfd0f2bede33576c5109f90e723d1190705",
+      "name": "CI",
+      "status": "completed",
+      "url": "https://github.com/stranske/Manager-Mosaic/actions/runs/33936354225",
+      "workflowName": "CI"
+    }
+  ]
+}

@@ -1,0 +1,1403 @@
+{
+  "repo": "Deliverable-Render",
+  "main_sha": "909ec2f7b1d821a39d8f190f96409500b7ac4828",
+  "open_issues_count": 7,
+  "frozen_issues": [],
+  "stalled_prs": [],
+  "all_agent_prs": [],
+  "primary_run": {
+    "conclusion": "success",
+    "createdAt": "2026-09-08T19:52:48Z",
+    "databaseId": 34271520194,
+    "event": "push",
+    "headSha": "909ec2f7b1d821a39d8f190f96409500b7ac4828",
+    "name": "CI",
+    "status": "completed",
+    "url": "https://github.com/stranske/Deliverable-Render/actions/runs/34271520194",
+    "workflowName": "CI"
+  },
+  "ci_status_str": "[Green](https://github.com/stranske/Deliverable-Render/actions/runs/34271520194)",
+  "supply": 6,
+  "bot_tracker_count": 1,
+  "issues": [
+    {
+      "body": "Last successful write: 2026-09-07T06:40:31.556Z\n\n# Agent Metrics Summary\n\nGenerated: 2026-09-07T06:40:30Z\nRecords: 32 (keepalive 32, autofix 0, verifier 0, terminal dispositions 0, verifier follow-up ledgers 0, codex CLI freshness 0, autopilot 0, unknown 0)\nParse errors: 0\n\n## Keepalive\n- Runs: 32\n- PRs: 3\n- Avg iterations: 0.0\n- Stop reasons: missing-agent-label (16), missing workflow_run payload (5), generated_sync_pr (5), upstream Gate succeeded (4), head SHA drifted since Gate started (2)\n- Actions: wait (16)\n- Gate conclusions: cancelled (4), success (4), failure (3)\n- Tasks complete rate: 0.0% (0/32)\n\n## Autofix\n- Attempts: 0\n- PRs: 0\n- Fixes applied: n/a\n- Trigger reasons: n/a\n- Gate results after: n/a\n\n## Verifier\n- Runs: 0\n- PRs: 0\n- Verdicts: n/a\n- Issues created: 0\n- Avg acceptance criteria: 0.0\n- LangSmith trace coverage: n/a (0 traces)\n- Terminal disposition records: 0\n- Terminal dispositions: n/a\n- Terminal disposition sources: n/a\n- Terminal artifact families: review-thread-terminal-disposition: missing (0/0), verifier-terminal-disposition: missing (0/0)\n- Missing terminal artifact families: review-thread-terminal-disposition, verifier-terminal-disposition\n- Verifier follow-up ledger records: 0\n- Verifier follow-up ledger dispositions: n/a\n- Verifier follow-up ledger PRs: 0\n- Verifier follow-up issues linked: 0\n- Verifier follow-up needs-human records: 0\n- Verifier follow-up avg chain depth: 0.0\n- Verifier follow-up max chain depth: 0\n- Verifier follow-up policy records: 0\n- Verifier follow-up policy actions: n/a\n- Verifier follow-up policy triggers: n/a\n- Verifier follow-up depth-limit records: 0\n- Verifier models: n/a\n- Verifier CLI versions: n/a\n- Unsupported verifier models: n/a\n- Unsupported model dispositions: n/a\n- Missing verifier model metadata: n/a\n- Legacy missing verifier model metadata: n/a\n- Model selection reasons: n/a\n- Verifier modes: n/a\n- Unknown verifier modes: n/a\n- Cost per verified success: n/a\n\n## Codex CLI Freshness\n- Records: 0\n- Statuses: n/a\n- Packages: n/a\n- Pinned versions: n/a\n- Latest versions: n/a\n- Outdated records: 0\n- Latest unavailable records: 0\n- Max version delta: major 0, minor 0, patch 0\n- Update targets: n/a\n\n## Weekly Metrics Artifact Selection\n\n- Schema: workflows-weekly-metrics-artifact-selection/v1\n- Status: pass\n- Lookback days: 14\n- Scan cap: 5 pages x 100 artifacts\n- Priority producer scan cap: 3 runs per source workflow, 2 artifact pages per run\n- Download cap: 80 total, 20 per family\n- Scanned artifacts: 97\n- Candidate artifacts: 32\n- Selected artifacts: 32\n- Missing priority families: codex-cli-freshness, verifier-terminal-disposition, review-thread-terminal-disposition, bot-comment-auth-coverage-wrapper, bot-comment-auth-coverage-reusable, pr-source-context\n- Ignored: 0 old, 2 expired, 63 non-metrics, 0 over family cap, 0 over total cap\n\n| Artifact family | Candidates | Selected |\n|-----------------|------------|----------|\n| agents-autofix-metrics | 16 | 16 |\n| keepalive-metrics | 16 | 16 |\n\n| Priority family | Status | Candidates | Selected artifact |\n|-----------------|--------|------------|-------------------|\n| codex-cli-freshness | missing | 0 | none |\n| verifier-terminal-disposition | missing | 0 | none |\n| review-thread-terminal-disposition | missing | 0 | none |\n| bot-comment-auth-coverage-wrapper | missing | 0 | none |\n| bot-comment-auth-coverage-reusable | missing | 0 | none |\n| pr-source-context | missing | 0 | none |\n\n## Weekly Metrics Artifact Downloads\n\n- Schema: workflows-weekly-metrics-artifact-download-manifest/v1\n- Status: pass\n- Selected artifacts: 32\n- Downloads: 32 passed, 0 failed\n- Unzip: 32 passed, 0 failed, 0 skipped\n\n| Artifact | ID | Download | Unzip | Path |\n|----------|----|----------|-------|------|\n| agents-autofix-metrics | 9967420834 | pass | pass | artifacts/agents-autofix-metrics/9967420834 |\n| keepalive-metrics | 9967420492 | pass | pass | artifacts/keepalive-metrics/9967420492 |\n| keepalive-metrics | 9967393901 | pass | pass | artifacts/keepalive-metrics/9967393901 |\n| agents-autofix-metrics | 9967390506 | pass | pass | artifacts/agents-autofix-metrics/9967390506 |\n| keepalive-metrics | 9967050044 | pass | pass | artifacts/keepalive-metrics/9967050044 |\n| agents-autofix-metrics | 9967048392 | pass | pass | artifacts/agents-autofix-metrics/9967048392 |\n| keepalive-metrics | 9964699458 | pass | pass | artifacts/keepalive-metrics/9964699458 |\n| agents-autofix-metrics | 9964698802 | pass | pass | artifacts/agents-autofix-metrics/9964698802 |\n| keepalive-metrics | 9964660911 | pass | pass | artifacts/keepalive-metrics/9964660911 |\n| agents-autofix-metrics | 9964657290 | pass | pass | artifacts/agents-autofix-metrics/9964657290 |\n| keepalive-metrics | 9964033824 | pass | pass | artifacts/keepalive-metrics/9964033824 |\n| agents-autofix-metrics | 9964033320 | pass | pass | artifacts/agents-autofix-metrics/9964033320 |\n| agents-autofix-metrics | 9964026093 | pass | pass | artifacts/agents-autofix-metrics/9964026093 |\n| keepalive-metrics | 9964024376 | pass | pass | artifacts/keepalive-metrics/9964024376 |\n| agents-autofix-metrics | 9964003794 | pass | pass | artifacts/agents-autofix-metrics/9964003794 |\n| keepalive-metrics | 9964001013 | pass | pass | artifacts/keepalive-metrics/9964001013 |\n| keepalive-metrics | 9960123363 | pass | pass | artifacts/keepalive-metrics/9960123363 |\n| agents-autofix-metrics | 9960122130 | pass | pass | artifacts/agents-autofix-metrics/9960122130 |\n| keepalive-metrics | 9960080389 | pass | pass | artifacts/keepalive-metrics/9960080389 |\n| agents-autofix-metrics | 9960079065 | pass | pass | artifacts/agents-autofix-metrics/9960079065 |\n| keepalive-metrics | 9959676428 | pass | pass | artifacts/keepalive-metrics/9959676428 |\n| agents-autofix-metrics | 9959672500 | pass | pass | artifacts/agents-autofix-metrics/9959672500 |\n| keepalive-metrics | 9959663679 | pass | pass | artifacts/keepalive-metrics/9959663679 |\n| agents-autofix-metrics | 9959662467 | pass | pass | artifacts/agents-autofix-metrics/9959662467 |\n| keepalive-metrics | 9959638074 | pass | pass | artifacts/keepalive-metrics/9959638074 |\n| agents-autofix-metrics | 9959631542 | pass | pass | artifacts/agents-autofix-metrics/9959631542 |\n| keepalive-metrics | 9952821023 | pass | pass | artifacts/keepalive-metrics/9952821023 |\n| agents-autofix-metrics | 9952820117 | pass | pass | artifacts/agents-autofix-metrics/9952820117 |\n| keepalive-metrics | 9952699803 | pass | pass | artifacts/keepalive-metrics/9952699803 |\n| agents-autofix-metrics | 9952680149 | pass | pass | artifacts/agents-autofix-metrics/9952680149 |\n| keepalive-metrics | 9952582124 | pass | pass | artifacts/keepalive-metrics/9952582124 |\n| agents-autofix-metrics | 9952569388 | pass | pass | artifacts/agents-autofix-metrics/9952569388 |\n\n## Terminal Disposition Coverage Preflight\n\n- Mode: warning-only (does not block merges or automation)\n- Requested mode: warning-only\n- Status: no-data\n- Coverage status: no-data\n- Hard block eligible: false\n- Hard block active: false\n- Input files: 0\n- Scanned records: 0\n- Terminal disposition records: 0\n- Non-terminal records: 0\n- Observed sources: 0\n- Expected review-thread sources: 0\n- Missing review-thread sources: 0\n- Parse errors: 0\n- Artifact selector status: pass\n- Terminal artifacts selected: 0\n- Terminal artifacts candidates: 0\n- Missing terminal artifact families: review-thread-terminal-disposition, verifier-terminal-disposition\n- Verifier model compatibility: pass\n- Unsupported verifier model records: 0\n- Missing verifier model metadata records: 0\n- Missing verifier model metadata records with unknown mode: 0\n- Legacy missing verifier model metadata records: 0\n- Unsupported verifier models: gpt-5.2-codex, gpt-5.3-codex\n\n| Terminal artifact family | Status | Candidates | Selected | Latest artifact |\n|--------------------------|--------|------------|----------|-----------------|\n| review-thread-terminal-disposition | missing | 0 | 0 | n/a |\n| verifier-terminal-disposition | missing | 0 | 0 | n/a |\n\n_No terminal disposition records were found in the metrics input._\n\n## Bot Comment App Auth Coverage\n\n- Schema: workflows-bot-comment-auth-coverage-summary/v1\n- Status: no-data\n- Coverage status: no-data\n- Mode: warning-only\n- Hard block eligible: false\n- Hard block active: false\n- Input files: 0\n- Parsed JSON files: 0\n- Auth records: 0\n- Non-auth records: 0\n- Parse errors: 0\n- Read errors: 0\n- Artifact selection status: pass\n- Selected auth artifacts: 0\n- Required organic events: pull_request, workflow_run\n- Organic evidence status: no-data\n- Missing organic requirements: agents-bot-comment-handler-wrapper/pull_request, agents-bot-comment-handler-wrapper/workflow_run, reusable-bot-comment-handler/pull_request, reusable-bot-comment-handler/workflow_run\n- Blockers: missing-organic-agents-bot-comment-handler-wrapper-pull_request, missing-organic-agents-bot-comment-handler-wrapper-workflow_run, missing-organic-reusable-bot-comment-handler-pull_request, missing-organic-reusable-bot-comment-handler-workflow_run\n\n| Component | Latest mode | Records | Expected | Allowed | Blockers |\n|-----------|-------------|---------|----------|---------|----------|\n| agents-bot-comment-handler-wrapper | missing | 0 | client-id | client-id | missing-agents-bot-comment-handler-wrapper |\n| reusable-bot-comment-handler | missing | 0 | any | client-id, none | missing-reusable-bot-comment-handler |\n",
+      "comments": [],
+      "createdAt": "2026-09-07T06:40:32Z",
+      "labels": [
+        {
+          "id": "LA_kwDOUOpIZ88AAAACz0SANg",
+          "name": "automated",
+          "description": "Automated sync from Workflows",
+          "color": "0e8a16"
+        },
+        {
+          "id": "LA_kwDOUOpIZ88AAAACz0SBCA",
+          "name": "tracker:durable",
+          "description": "Permanently-open tracker; excluded from open-issue backlog counts",
+          "color": "c5def5"
+        }
+      ],
+      "number": 10,
+      "title": "Agent metrics weekly summary",
+      "updatedAt": "2026-09-07T06:40:32Z",
+      "url": "https://github.com/stranske/Deliverable-Render/issues/10"
+    },
+    {
+      "body": "## Why\n\nThe communication synthesis tool in the work environment documents two silent data-corruption modes that pass syntactic validation: (1) a single mistyped internal ID makes an entire record vanish from the rendered view with no error; (2) a shell text-substitution on the structured data file corrupted a `$36B` figure to `B` while leaving the file syntactically valid ([INFORMATION-REQUEST-RESPONSE.md \u00a7D, communication synthesis tool](https://github.com/stranske/Ready/blob/main/research-program/artifacts/work-bundle/INFORMATION-REQUEST-RESPONSE.md)). Deliverable-Render's README allocates `render/store` as the structured-store contract (`README.md:17`) and requires fleet evidence-object interoperability (`README.md:24-26`). Verified: `scripts/validate_run_contract.py:1-18` validates run-contract envelopes only \u2014 no structured-store semantic validator exists; `render/` is absent (`README.md:16-21` vs checkout). **Missing behavior:** no validator catches orphan IDs or shell-substitution dollar corruption; store fields are not aligned to `docs/contracts/schemas/evidence-object-v1.schema.json:8-15` required keys. **Latent fragility.**\n\n## Scope\n\nImplement `render/store` validation and align the structured-store contract with Workflows `evidence-object/v1` so stores produced by work tools render without a translation step ([response Appendix \u00a71 item 1 and \u00a73](https://github.com/stranske/Ready/blob/main/research-program/artifacts/work-bundle/INFORMATION-REQUEST-RESPONSE.md)).\n\n## Non-Goals\n\nDo not implement HTML/PPTX/DOCX renderers in this issue. Do not add server-side validation endpoints. Scaffold-only completion does not count: a validator that only checks JSON Schema syntax but misses orphan-ID vanish or `$`-corruption cases is a failure. Both deliberate-break gates below must be demonstrated.\n\n## Tasks\n\n- [ ] Create `src/deliverable_render/store/schema.py` documenting required top-level keys (`fund`, `periods`, `entries`, `themes`, `documents`, `gaps`) mirroring [response \u00a7D, communication synthesis tool](https://github.com/stranske/Ready/blob/main/research-program/artifacts/work-bundle/INFORMATION-REQUEST-RESPONSE.md) field names.\n- [ ] Create `src/deliverable_render/store/validate.py` with `validate_store(path: Path) -> ValidationReport` checking: (a) every `entries[].id` referenced from `mentions` resolves; (b) no `$`-only remnants in string fields that look like corrupted currency (`\\$?\\d` \u2192 lone letter); (c) each evidence pointer can project to `evidence-object/v1` required fields per `docs/contracts/schemas/evidence-object-v1.schema.json:8-15`.\n- [ ] Add `scripts/validate_structured_store.py` CLI and wire `pyproject.toml` `[project.scripts]` as `validate-structured-store`, exiting non-zero on semantic violations.\n- [ ] Add `tests/store/test_orphan_id_detection.py` with fixture `tests/fixtures/stores/orphan_entry_id.json`.\n- [ ] Add `tests/store/test_dollar_substitution_corruption.py` with fixture `tests/fixtures/stores/corrupted_dollar_amount.json` containing `B` where `$36B` was expected.\n- [ ] Add `tests/store/test_evidence_object_projection.py` asserting store evidence pointers validate against `evidence-object-v1.schema.json`.\n- [ ] Test the deliberate-break gates in `src/deliverable_render/store/validate.py`, capture FAIL output, and revert the temporary changes.\n\n## Acceptance Criteria\n\n- [ ] `tests/store/test_orphan_id_detection.py::test_mistyped_entry_id_fails_validation` passes; the validator reports the orphan reference and the CLI exits non-zero.\n- [ ] `tests/store/test_dollar_substitution_corruption.py::test_shell_substitution_corruption_fails_validation` passes; `$36B`\u2192`B` corruption is flagged even though JSON parses.\n- [ ] `tests/store/test_evidence_object_projection.py::test_store_evidence_projects_to_schema` passes against `docs/contracts/schemas/evidence-object-v1.schema.json`.\n- [ ] When the orphan-ID cross-reference check in `src/deliverable_render/store/validate.py` is temporarily commented out, `tests/store/test_orphan_id_detection.py::test_mistyped_entry_id_fails_validation` fails; revert after capturing the failure.\n- [ ] When the dollar-corruption heuristic in `src/deliverable_render/store/validate.py` is temporarily disabled, `tests/store/test_dollar_substitution_corruption.py::test_shell_substitution_corruption_fails_validation` fails; revert after capturing the failure.\n\n## Implementation Notes\n\nFailure modes sourced from [response \u00a7D, communication synthesis tool](https://github.com/stranske/Ready/blob/main/research-program/artifacts/work-bundle/INFORMATION-REQUEST-RESPONSE.md). Reuse the `jsonschema.Draft202012Validator` pattern from `scripts/validate_run_contract.py:30` for evidence-object projection. Confirmed-green local reproduction (scaffold baseline): `python -m pytest tests/test_main.py -q` passes today.\n\n<details>\n<summary>Original Issue</summary>\n\n```text\n## Why\n\nThe communication synthesis tool in the work environment documents two silent data-corruption modes that pass syntactic validation: (1) a single mistyped internal ID makes an entire record vanish from the rendered view with no error; (2) a shell text-substitution on the structured data file corrupted a `$36B` figure to `B` while leaving the file syntactically valid ([INFORMATION-REQUEST-RESPONSE.md \u00a7D, communication synthesis tool](https://github.com/stranske/Ready/blob/main/research-program/artifacts/work-bundle/INFORMATION-REQUEST-RESPONSE.md)). Deliverable-Render's README allocates `render/store` as the structured-store contract (`README.md:17`) and requires fleet evidence-object interoperability (`README.md:24-26`). Verified: `scripts/validate_run_contract.py:1-18` validates run-contract envelopes only \u2014 no structured-store semantic validator exists; `render/` is absent (`README.md:16-21` vs checkout). **Missing behavior:** no validator catches orphan IDs or shell-substitution dollar corruption; store fields are not aligned to `docs/contracts/schemas/evidence-object-v1.schema.json:8-15` required keys. **Latent fragility.**\n\n## Scope\n\nImplement `render/store` validation and align the structured-store contract with Workflows `evidence-object/v1` so stores produced by work tools render without a translation step ([response Appendix \u00a71 item 1 and \u00a73](https://github.com/stranske/Ready/blob/main/research-program/artifacts/work-bundle/INFORMATION-REQUEST-RESPONSE.md)).\n\n## Non-Goals\n\n- Do NOT implement HTML/PPTX/DOCX renderers in this issue.\n- Do NOT add server-side validation endpoints.\n- Scaffold-only completion does NOT count: a validator that only checks JSON Schema syntax but misses orphan-ID vanish or `$`-corruption cases is a failure. Both deliberate-break gates below must be demonstrated.\n\n## Tasks\n\n- [ ] Create `src/deliverable_render/store/schema.py` documenting required top-level keys (`fund`, `periods`, `entries`, `themes`, `documents`, `gaps`) mirroring [response \u00a7D, communication synthesis tool](https://github.com/stranske/Ready/blob/main/research-program/artifacts/work-bundle/INFORMATION-REQUEST-RESPONSE.md) field names.\n- [ ] Create `src/deliverable_render/store/validate.py` with `validate_store(path: Path) -> ValidationReport` checking: (a) every `entries[].id` referenced from `mentions` resolves; (b) no `$`-only remnants in string fields that look like corrupted currency (`\\$?\\d` \u2192 lone letter); (c) each evidence pointer can project to `evidence-object/v1` required fields per `docs/contracts/schemas/evidence-object-v1.schema.json:8-15`.\n- [ ] Add `scripts/validate_structured_store.py` CLI (wire in `pyproject.toml` `[project.scripts]` as `validate-structured-store`) exiting non-zero on semantic violations.\n- [ ] Add `tests/store/test_orphan_id_detection.py` with fixture `tests/fixtures/stores/orphan_entry_id.json`.\n- [ ] Add `tests/store/test_dollar_substitution_corruption.py` with fixture `tests/fixtures/stores/corrupted_dollar_amount.json` (contains `B` where `$36B` was expected).\n- [ ] Add `tests/store/test_evidence_object_projection.py` asserting store evidence pointers validate against `evidence-object-v1.schema.json`.\n- [ ] Perform deliberate-break verification (see Acceptance Criteria), capture FAIL output, then revert.\n\n## Acceptance Criteria\n\n- [ ] Named test: `tests/store/test_orphan_id_detection.py::test_mistyped_entry_id_fails_validation` passes \u2014 validator reports the orphan reference and exits non-zero via CLI.\n- [ ] Named test: `tests/store/test_dollar_substitution_corruption.py::test_shell_substitution_corruption_fails_validation` passes \u2014 `$36B`\u2192`B` corruption is flagged even though JSON parses.\n- [ ] Named test: `tests/store/test_evidence_object_projection.py::test_store_evidence_projects_to_schema` passes against `docs/contracts/schemas/evidence-object-v1.schema.json`.\n- [ ] **Deliberate-break gate:** temporarily comment out the orphan-ID cross-reference check in `src/deliverable_render/store/validate.py`. `tests/store/test_orphan_id_detection.py::test_mistyped_entry_id_fails_validation` **must FAIL**. Revert after capturing the failure.\n- [ ] **Deliberate-break gate:** temporarily disable the dollar-corruption heuristic in `validate.py`. `tests/store/test_dollar_substitution_corruption.py::test_shell_substitution_corruption_fails_validation` **must FAIL**. Revert after capturing the failure.\n\n## Implementation Notes\n\n- Failure modes sourced from [response \u00a7D, communication synthesis tool](https://github.com/stranske/Ready/blob/main/research-program/artifacts/work-bundle/INFORMATION-REQUEST-RESPONSE.md).\n- Reuse `jsonschema.Draft202012Validator` pattern from `scripts/validate_run_contract.py:30` for evidence-object projection.\n- Confirmed-green local reproduction (scaffold baseline): `python -m pytest tests/test_main.py -q` \u2192 passes today.\n```\n</details>\n\n<!-- issue-pr-context:formatted-body:v1 {\"sha256\":\"3128d4f78868d7dd7ef5f45ee2d1d9091161329b2ab5d33371df1ad7f3ea0443\",\"workflows\":[\"agents-auto-pilot\",\"agents-issue-optimizer\",\"agents-63-issue-intake\",\"issue_formatter\",\"issue_optimizer\"]} -->\n",
+      "comments": [
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSo024w",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `Perform deliberate-break verification (see Acceptance Criteria), capture FAIL output, then revert.`.\n\n_Advisory:_\n- 13 cited path(s) do not exist yet: `render/store`, `render/`, `evidence-object/v1`, `src/deliverable_render/store/schema.py`, `src/deliverable_render/store/validate.py`, `scripts/validate_structured_store.py`, \u2026 \u2014 expected when a task creates them; check for typos otherwise.\n\nDispatched the Agents Issue Optimizer format phase (attempt 1 of 3).\n\n<!-- format-guard:5ec12d134584:attempt:1 -->\n",
+          "createdAt": "2026-09-04T19:52:57Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/6#issuecomment-5545735907",
+          "viewerDidAuthor": false
+        }
+      ],
+      "createdAt": "2026-09-04T19:52:39Z",
+      "labels": [
+        {
+          "id": "LA_kwDOUOpIZ88AAAACz0Rzfw",
+          "name": "enhancement",
+          "description": "New feature or request",
+          "color": "a2eeef"
+        },
+        {
+          "id": "LA_kwDOUOpIZ88AAAACz0SAkQ",
+          "name": "agents:formatted",
+          "description": "Issue has been formatted to AGENT_ISSUE_TEMPLATE",
+          "color": "1D76DB"
+        }
+      ],
+      "number": 6,
+      "title": "Structured-store validator: catch orphan IDs and dollar-substitution corruption; align evidence-object contract",
+      "updatedAt": "2026-09-04T19:53:52Z",
+      "url": "https://github.com/stranske/Deliverable-Render/issues/6"
+    },
+    {
+      "body": "## Why\n\nThe work-environment inventory names Word memos as a first-class deliverable from the consultant-report comparison tool \u2014 change memo, continuity memo, cross-consultant memo \u2014 alongside the HTML hub and Excel ledgers ([INFORMATION-REQUEST-RESPONSE.md \u00a7D, consultant-report comparison tool](https://github.com/stranske/Ready/blob/main/research-program/artifacts/work-bundle/INFORMATION-REQUEST-RESPONSE.md)). Deliverable-Render's README already allocates `render/docx` for memo rendering (`README.md:20`) and states every output must be a local file with no server ([README.md:9](https://github.com/stranske/Ready/blob/main/research-program/artifacts/work-bundle/INFORMATION-REQUEST-RESPONSE.md) constraint echoed at `README.md:7-12`). Verified: `tests/test_main.py:23-27` only tests template `add()`; the `render/` tree described at `README.md:16-21` does not exist. **Missing behavior:** no `.docx` memo renderer. **Latent fragility** \u2014 HTML hub (#2) and deck builder (#3) are filed; memos remain unimplemented.\n\n## Scope\n\nImplement `render/docx` \u2014 a Word memo renderer that consumes the structured store (post store-contract work) and emits `.docx` change/continuity memos matching the consultant tracker's memo shapes from [response \u00a7D](https://github.com/stranske/Ready/blob/main/research-program/artifacts/work-bundle/INFORMATION-REQUEST-RESPONSE.md).\n\n## Non-Goals\n\nDo not require Word COM automation at runtime; write `.docx` via a pure-Python library. Do not implement the structured-store validator, server endpoints, or database dependencies (`README.md:9`). Scaffold-only completion does not count: emitting an empty `.docx` or a memo missing required sections is a failure. The deliberate-break gate must be demonstrated.\n\n## Tasks\n\n- [ ] Create `src/deliverable_render/docx/__init__.py` and `src/deliverable_render/docx/memo.py` with `render_change_memo(store: StructuredStore, output_path: Path) -> Path` writing sections for material `T1`/`T2` changes using ledger field names from the adopted schemas (Doc-Lineage #4).\n- [ ] Create `src/deliverable_render/docx/templates/change_memo.docx` (or equivalent programmatic styles) and `src/deliverable_render/docx/templates/continuity_memo.docx`.\n- [ ] Add `src/deliverable_render/cli/render_docx.py` CLI wired in `pyproject.toml` `[project.scripts]` as `render-docx-memo`.\n- [ ] Add `tests/docx/test_change_memo_renderer.py` using a committed synthetic store fixture under `tests/fixtures/stores/consultant_change_minimal.json`.\n- [ ] Add `tests/docx/test_continuity_memo_renderer.py` for the continuity ledger slice.\n- [ ] Test the deliberate break in `src/deliverable_render/docx/memo.py` by skipping `tier == \"T1\"` rows, capture the failing test output, then revert.\n\n## Acceptance Criteria\n\n- [ ] `tests/docx/test_change_memo_renderer.py::test_change_memo_includes_t1_sections` passes and asserts at least one `T1` change section with `canonical_section` and `change_type` text in the rendered `.docx`.\n- [ ] `render-docx-memo --store tests/fixtures/stores/consultant_change_minimal.json --out /tmp/memo.docx` exits 0 and produces a non-empty `.docx` file.\n- [ ] Temporarily skipping `tier == \"T1\"` rows in `src/deliverable_render/docx/memo.py` causes `tests/docx/test_change_memo_renderer.py::test_change_memo_includes_t1_sections` to fail; the change is reverted after capturing the failure.\n\n## Implementation Notes\n\nAlign section headings with consultant tracker ledger columns from [response \u00a7D](https://github.com/stranske/Ready/blob/main/research-program/artifacts/work-bundle/INFORMATION-REQUEST-RESPONSE.md) (`canonical_section`, `change_type`, `tier`, `prior_text`, `current_text`). Confirmed-green scaffold baseline: `python -m pytest tests/test_main.py -q` passes today. Depends on Deliverable-Render store contract alignment issue and Doc-Lineage #4 ledger schemas for field names.\n\n<details>\n<summary>Original Issue</summary>\n\n```text\n## Why\n\nThe work-environment inventory names Word memos as a first-class deliverable from the consultant-report comparison tool \u2014 change memo, continuity memo, cross-consultant memo \u2014 alongside the HTML hub and Excel ledgers ([INFORMATION-REQUEST-RESPONSE.md \u00a7D, consultant-report comparison tool](https://github.com/stranske/Ready/blob/main/research-program/artifacts/work-bundle/INFORMATION-REQUEST-RESPONSE.md)). Deliverable-Render's README already allocates `render/docx` for memo rendering (`README.md:20`) and states every output must be a local file with no server ([README.md:9](https://github.com/stranske/Ready/blob/main/research-program/artifacts/work-bundle/INFORMATION-REQUEST-RESPONSE.md) constraint echoed at `README.md:7-12`). Verified: `tests/test_main.py:23-27` only tests template `add()`; the `render/` tree described at `README.md:16-21` does not exist. **Missing behavior:** no `.docx` memo renderer. **Latent fragility** \u2014 HTML hub (#2) and deck builder (#3) are filed; memos remain unimplemented.\n\n## Scope\n\nImplement `render/docx` \u2014 a Word memo renderer that consumes the structured store (post store-contract work) and emits `.docx` change/continuity memos matching the consultant tracker's memo shapes from [response \u00a7D](https://github.com/stranske/Ready/blob/main/research-program/artifacts/work-bundle/INFORMATION-REQUEST-RESPONSE.md).\n\n## Non-Goals\n\n- Do NOT require Word COM automation at runtime \u2014 write `.docx` via a pure-Python library (the response confirms both COM and library paths exist in the target environment; this repo stays portable).\n- Do NOT implement the structured-store validator (separate issue).\n- Do NOT add server endpoints or database dependencies (`README.md:9`).\n- Scaffold-only completion does NOT count: emitting an empty `.docx` or a memo missing required sections is a failure. The deliberate-break gate below must be demonstrated.\n\n## Tasks\n\n- [ ] Create `src/deliverable_render/docx/__init__.py` and `src/deliverable_render/docx/memo.py` with `render_change_memo(store: StructuredStore, output_path: Path) -> Path` writing sections for material `T1`/`T2` changes using ledger field names from the adopted schemas (Doc-Lineage #4).\n- [ ] Create `src/deliverable_render/docx/templates/change_memo.docx` (or equivalent programmatic styles) and `src/deliverable_render/docx/templates/continuity_memo.docx`.\n- [ ] Add `src/deliverable_render/cli/render_docx.py` CLI entry wired in `pyproject.toml` `[project.scripts]` as `render-docx-memo`.\n- [ ] Add `tests/docx/test_change_memo_renderer.py` using a committed synthetic store fixture under `tests/fixtures/stores/consultant_change_minimal.json`.\n- [ ] Add `tests/docx/test_continuity_memo_renderer.py` for the continuity ledger slice.\n- [ ] Perform deliberate-break verification (see Acceptance Criteria), capture FAIL output, then revert.\n\n## Acceptance Criteria\n\n- [ ] Named test: `tests/docx/test_change_memo_renderer.py::test_change_memo_includes_t1_sections` passes \u2014 opens the rendered `.docx` and asserts at least one `T1` change section with `canonical_section` and `change_type` text present.\n- [ ] Named smoke command: `render-docx-memo --store tests/fixtures/stores/consultant_change_minimal.json --out /tmp/memo.docx` exits 0 and produces a non-empty `.docx` file.\n- [ ] **Deliberate-break gate:** temporarily edit `src/deliverable_render/docx/memo.py` to skip rendering any row where `tier == \"T1\"`. `tests/docx/test_change_memo_renderer.py::test_change_memo_includes_t1_sections` **must FAIL**. Revert after capturing the failure.\n\n## Implementation Notes\n\n- Align section headings with consultant tracker ledger columns from [response \u00a7D](https://github.com/stranske/Ready/blob/main/research-program/artifacts/work-bundle/INFORMATION-REQUEST-RESPONSE.md) (`canonical_section`, `change_type`, `tier`, `prior_text`, `current_text`).\n- Confirmed-green local reproduction (scaffold baseline): `python -m pytest tests/test_main.py -q` \u2192 passes today.\n- Depends on Deliverable-Render store contract alignment issue and Doc-Lineage #4 ledger schemas for field names.\n```\n</details>\n\n<!-- issue-pr-context:formatted-body:v1 {\"sha256\":\"0f15ed684ca769aa1b2d11e30b89a53fe83b011ac6533dc381008ed9b5a35541\",\"workflows\":[\"agents-auto-pilot\",\"agents-issue-optimizer\",\"agents-63-issue-intake\",\"issue_formatter\",\"issue_optimizer\"]} -->\n",
+      "comments": [
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSo02bw",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `Perform deliberate-break verification (see Acceptance Criteria), capture FAIL output, then revert.`.\n\n_Advisory:_\n- 10 cited path(s) do not exist yet: `render/docx`, `render/`, `src/deliverable_render/docx/__init__.py`, `src/deliverable_render/docx/memo.py`, `src/deliverable_render/docx/templates/change_memo.docx`, `src/deliverable_render/docx/templates/continuity_memo.docx`, \u2026 \u2014 expected when a task creates them; check for typos otherwise.\n\nDispatched the Agents Issue Optimizer format phase (attempt 1 of 3).\n\n<!-- format-guard:5bfa8bda2033:attempt:1 -->\n",
+          "createdAt": "2026-09-04T19:52:57Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/5#issuecomment-5545735791",
+          "viewerDidAuthor": false
+        }
+      ],
+      "createdAt": "2026-09-04T19:52:38Z",
+      "labels": [
+        {
+          "id": "LA_kwDOUOpIZ88AAAACz0Rzfw",
+          "name": "enhancement",
+          "description": "New feature or request",
+          "color": "a2eeef"
+        },
+        {
+          "id": "LA_kwDOUOpIZ88AAAACz0SAkQ",
+          "name": "agents:formatted",
+          "description": "Issue has been formatted to AGENT_ISSUE_TEMPLATE",
+          "color": "1D76DB"
+        }
+      ],
+      "number": 5,
+      "title": "Word memo renderer for change and continuity memos",
+      "updatedAt": "2026-09-04T19:53:48Z",
+      "url": "https://github.com/stranske/Deliverable-Render/issues/5"
+    },
+    {
+      "body": "## Why\n\nThe fleet has invested in WebAssembly-based offline applications (Pyodide and stlite bundles) as the delivery channel for locked-down environments. The work environment's answer to whether that runs there is **unknown**: ordinary JavaScript is confirmed working and in production use, but nothing has ever shipped a WebAssembly payload there to test it. Several tools' delivery strategy therefore rests on an untested assumption, and the cost of finding out is one small file an operator opens once.\n\nEvidence: response section A1, the WebAssembly row, which reads \"Unknown, ordinary JavaScript is confirmed working; no tool here has shipped a `.wasm` payload to test the specific case\" (https://github.com/stranske/Ready/blob/main/research-program/artifacts/work-bundle/INFORMATION-REQUEST-RESPONSE.md).\n\n## Scope\n\nA single self-contained probe page an operator opens in a locked-down environment, which reports what that environment actually supports and produces a result the operator can send back without exposing anything about their data.\n\n## Non-Goals\n\n- No telemetry, no network calls, no automatic reporting. The operator reads the result and copies it out deliberately.\n- No attempt to run a real application in the probe. It answers capability questions only.\n- No environment fingerprinting beyond what the capability answers require. The probe must not collect the machine name, user name, file paths or anything identifying.\n\n## Tasks\n\n- [ ] Add `src/deliverable_render/probe/build_probe.py` emitting one self-contained HTML file.\n- [ ] Probe, and report pass or fail for each: WebAssembly instantiation from an inlined module; a Web Worker; `SharedArrayBuffer`; `IndexedDB` write and read; `localStorage`; a `fetch` of a same-directory local file; opening a local-file link in a new tab; and the JavaScript baseline the renderer targets.\n- [ ] Include an optional second stage the operator can choose to run, loading a real Pyodide runtime from a local subdirectory, so the probe distinguishes \"WebAssembly works\" from \"a large runtime loads and initializes here\".\n- [ ] Render results as a table plus a copyable one-line summary string containing only the capability results and the browser's own user-agent-reported engine version.\n- [ ] State on the page, in plain language, exactly what the summary string contains and that nothing is transmitted.\n- [ ] Add a test that the built probe contains no external resource reference and no network call other than the operator-initiated local runtime load.\n\n## Acceptance Criteria\n\n- [ ] The built probe is one file, opens from a local path, and reports every capability above as pass, fail or blocked.\n- [ ] The page makes no request on load, asserted by a test that scans for external references and network calls.\n- [ ] The copyable summary contains no path, host name, user name or file listing, asserted by a test over a rendered sample.\n- [ ] Disabling WebAssembly in the test harness produces a clear fail rather than a hang or a blank page.\n\n## Test Gate\n\n`tests/test_probe_offline_and_minimal.py`, run by this repo's CI gate. Demonstrate it by deliberately adding a remote script tag to the probe template, confirming the no-external-resource test fails, then reverting and confirming it passes. Record both in the pull request.\n\n## Implementation Notes\n\nThis probe answers a question that gates other decisions, so keep it first-class rather than a scratch file: the fleet's Tier-A delivery strategy and this repository's own renderer constraints both depend on the answer. Ship a short operator instruction alongside it, written for someone who will open one file and paste one line back.\n",
+      "comments": [
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSowDsg",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `Include an optional second stage the operator can choose to run, loading a real Pyodide runtime from a local subdirectory, so the probe distinguishes \"WebAssemb`.\n- `Acceptance Criteria` names no test, runnable command or observable verification gate \u2014 Definition of Ready / Quality Bar \u00a72 requires one.\n\n_Advisory:_\n- 2 cited path(s) do not exist yet: `src/deliverable_render/probe/build_probe.py`, `tests/test_probe_offline_and_minimal.py` \u2014 expected when a task creates them; check for typos otherwise.\n\nDispatched the Agents Issue Optimizer format phase (attempt 1 of 3).\n\n<!-- format-guard:18712d614d92:attempt:1 -->\n",
+          "createdAt": "2026-09-04T19:45:08Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/4#issuecomment-5545657266",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSowx2w",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Deliverable-Render/actions/runs/33912759675)\n\n**Format validation report:**\n```text\nThis issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `Include an optional second stage the operator can choose to run, loading a real Pyodide runtime from a local subdirectory, so the probe distinguishes \"WebAssemb`.\n\n_Advisory:_\n- 2 cited path(s) do not exist yet: `src/deliverable_render/probe/build_probe.py`, `tests/test_probe_offline_and_minimal.py` \u2014 expected when a task creates them; check for typos otherwise.\n```\n",
+          "createdAt": "2026-09-04T19:46:16Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/4#issuecomment-5545669083",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSow-jw",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `Include an optional second stage the operator can choose to run, loading a real Pyodide runtime from a local subdirectory, so the probe distinguishes \"WebAssemb`.\n- `Acceptance Criteria` names no test, runnable command or observable verification gate \u2014 Definition of Ready / Quality Bar \u00a72 requires one.\n\n_Advisory:_\n- 2 cited path(s) do not exist yet: `src/deliverable_render/probe/build_probe.py`, `tests/test_probe_offline_and_minimal.py` \u2014 expected when a task creates them; check for typos otherwise.\n\nDispatched the Agents Issue Optimizer format phase (attempt 2 of 3).\n\n<!-- format-guard:18712d614d92:attempt:2 -->\n",
+          "createdAt": "2026-09-04T19:46:34Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/4#issuecomment-5545672335",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSoxgNg",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Deliverable-Render/actions/runs/33912882766)\n\n**Format validation report:**\n```text\nThis issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `Include an optional second stage the operator can choose to run, loading a real Pyodide runtime from a local subdirectory, so the probe distinguishes \"WebAssemb`.\n\n_Advisory:_\n- 2 cited path(s) do not exist yet: `src/deliverable_render/probe/build_probe.py`, `tests/test_probe_offline_and_minimal.py` \u2014 expected when a task creates them; check for typos otherwise.\n```\n",
+          "createdAt": "2026-09-04T19:47:24Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/4#issuecomment-5545680950",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSoxxDw",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `Include an optional second stage the operator can choose to run, loading a real Pyodide runtime from a local subdirectory, so the probe distinguishes \"WebAssemb`.\n- `Acceptance Criteria` names no test, runnable command or observable verification gate \u2014 Definition of Ready / Quality Bar \u00a72 requires one.\n\n_Advisory:_\n- 2 cited path(s) do not exist yet: `src/deliverable_render/probe/build_probe.py`, `tests/test_probe_offline_and_minimal.py` \u2014 expected when a task creates them; check for typos otherwise.\n\nDispatched the Agents Issue Optimizer format phase (attempt 3 of 3).\n\n<!-- format-guard:18712d614d92:attempt:3 -->\n",
+          "createdAt": "2026-09-04T19:47:48Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/4#issuecomment-5545685263",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSox8Cg",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "<!-- format-guard:attempt-cap -->\nAutomated formatting stopped after 3 optimizer attempts. Fix the issue body manually, then remove agents:auto-pilot-pause before retrying.\n",
+          "createdAt": "2026-09-04T19:48:06Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/4#issuecomment-5545688074",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSoyT4g",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Deliverable-Render/actions/runs/33912980044)\n\n**Format validation report:**\n```text\nThis issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `Include an optional second stage the operator can choose to run, loading a real Pyodide runtime from a local subdirectory, so the probe distinguishes \"WebAssemb`.\n\n_Advisory:_\n- 2 cited path(s) do not exist yet: `src/deliverable_render/probe/build_probe.py`, `tests/test_probe_offline_and_minimal.py` \u2014 expected when a task creates them; check for typos otherwise.\n```\n",
+          "createdAt": "2026-09-04T19:48:42Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/4#issuecomment-5545694178",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSoylHw",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "<!-- format-guard:attempt-cap -->\nAutomated formatting stopped after 3 optimizer attempts. Fix the issue body manually, then remove agents:auto-pilot-pause before retrying.\n",
+          "createdAt": "2026-09-04T19:49:08Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/4#issuecomment-5545698591",
+          "viewerDidAuthor": false
+        }
+      ],
+      "createdAt": "2026-09-04T19:44:50Z",
+      "labels": [
+        {
+          "id": "LA_kwDOUOpIZ88AAAACz0Rzfw",
+          "name": "enhancement",
+          "description": "New feature or request",
+          "color": "a2eeef"
+        }
+      ],
+      "number": 4,
+      "title": "Capability probe: settle whether WebAssembly and Pyodide actually load in the target environment",
+      "updatedAt": "2026-09-04T19:49:08Z",
+      "url": "https://github.com/stranske/Deliverable-Render/issues/4"
+    },
+    {
+      "body": "## Why\n\nThe response names recurring slide-deck generation as the least systematized area in the work environment and the single highest-leverage gap: for nearly every manager the recurring due-diligence deck is hand-copied and hand-edited each cycle, with exactly two exceptions. One of those exceptions is the pattern worth generalizing, a dedicated build script with a manifest-driven completeness gate that **deliberately fails the build if a prior year's slide has no successor and no recorded reason for dropping it**. That gate is the valuable part: it converts a silent omission into a build failure.\n\nEvidence: response appendix, the PowerPoint generation section and systematization item 6 (https://github.com/stranske/Ready/blob/main/research-program/artifacts/work-bundle/INFORMATION-REQUEST-RESPONSE.md).\n\n## Scope\n\nA deck builder that assembles a presentation slide by slide from a template plus a structured store, gated by a manifest that must account for every slide in the prior edition.\n\n## Non-Goals\n\n- No Office automation. Build the file directly so it works without PowerPoint installed, since the build may run outside the environment that has Office.\n- No design system or theming work. The template supplies the look.\n- No proprietary templates or content in this repository; fixtures are synthetic.\n\n## Tasks\n\n- [ ] Define the deck manifest in `src/deliverable_render/pptx/manifest.py`: an ordered list of `slide_id, title, layout, source` entries, where `source` names the store query or the static asset that fills the slide.\n- [ ] Implement `build_deck(template, manifest, store) -> bytes` assembling slides from the named template layouts.\n- [ ] Implement the completeness gate: for every `slide_id` present in a prior manifest, require either a successor entry in the current manifest or an explicit `dropped_reason`. Absent both, fail the build with the slide identifier named.\n- [ ] Report a build summary of `slides_built, slides_carried, slides_dropped_with_reason, slides_missing_source`, all four reported together.\n- [ ] Fail the build, rather than emitting a placeholder, when a slide's store query returns nothing, unless the manifest marks it `allow_empty`.\n- [ ] Commit a synthetic template, two manifest editions and a store fixture that exercises a carried slide, a dropped slide with a reason and a dropped slide without one.\n\n## Acceptance Criteria\n\n- [ ] Building the second edition with a prior slide absent and no `dropped_reason` fails, and the error message names that `slide_id`.\n- [ ] Adding a `dropped_reason` for the same slide makes the build succeed and increments `slides_dropped_with_reason`.\n- [ ] A slide whose query returns nothing fails the build unless `allow_empty` is set, in which case the summary counts it under `slides_missing_source`.\n- [ ] The produced file opens as a valid presentation, asserted by re-reading it and counting slides and titles.\n- [ ] The build runs with no presentation software installed.\n\n## Test Gate\n\n`tests/test_deck_completeness_gate.py`, run by this repo's CI gate. Demonstrate it by deliberately making the gate warn instead of fail, confirming the missing-successor test fails, then reverting and confirming it passes. Record both in the pull request.\n\n## Implementation Notes\n\nThe gate is a gate, so it owes the latched-gate answers. What clears it: adding a successor slide or a recorded `dropped_reason`, both of which an author can do while the gate is closed. What it measures and what drains it are the same population, the prior edition's slide identifiers. What it prints when fully satisfied: the four-count summary above, including zeros, so a clean build is distinguishable from a build that never checked.\n",
+      "comments": [
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSowFBw",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `Commit a synthetic template, two manifest editions and a store fixture that exercises a carried slide, a dropped slide with a reason and a dropped slide without`.\n- `Acceptance Criteria` names no test, runnable command or observable verification gate \u2014 Definition of Ready / Quality Bar \u00a72 requires one.\n\n_Advisory:_\n- 2 cited path(s) do not exist yet: `src/deliverable_render/pptx/manifest.py`, `tests/test_deck_completeness_gate.py` \u2014 expected when a task creates them; check for typos otherwise.\n\nDispatched the Agents Issue Optimizer format phase (attempt 1 of 3).\n\n<!-- format-guard:0cb6a221595a:attempt:1 -->\n",
+          "createdAt": "2026-09-04T19:45:10Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/3#issuecomment-5545657607",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSowxxA",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Deliverable-Render/actions/runs/33912762232)\n\n**Format validation report:**\n```text\nThis issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `Commit a synthetic template, two manifest editions and a store fixture that exercises a carried slide, a dropped slide with a reason and a dropped slide without`.\n\n_Advisory:_\n- 2 cited path(s) do not exist yet: `src/deliverable_render/pptx/manifest.py`, `tests/test_deck_completeness_gate.py` \u2014 expected when a task creates them; check for typos otherwise.\n```\n",
+          "createdAt": "2026-09-04T19:46:16Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/3#issuecomment-5545669060",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSoxEcA",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `Commit a synthetic template, two manifest editions and a store fixture that exercises a carried slide, a dropped slide with a reason and a dropped slide without`.\n- `Acceptance Criteria` names no test, runnable command or observable verification gate \u2014 Definition of Ready / Quality Bar \u00a72 requires one.\n\n_Advisory:_\n- 2 cited path(s) do not exist yet: `src/deliverable_render/pptx/manifest.py`, `tests/test_deck_completeness_gate.py` \u2014 expected when a task creates them; check for typos otherwise.\n\nDispatched the Agents Issue Optimizer format phase (attempt 2 of 3).\n\n<!-- format-guard:0cb6a221595a:attempt:2 -->\n",
+          "createdAt": "2026-09-04T19:46:43Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/3#issuecomment-5545673840",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSoxoCA",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Deliverable-Render/actions/runs/33912895064)\n\n**Format validation report:**\n```text\nThis issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `Commit a synthetic template, two manifest editions and a store fixture that exercises a carried slide, a dropped slide with a reason and a dropped slide without`.\n\n_Advisory:_\n- 2 cited path(s) do not exist yet: `src/deliverable_render/pptx/manifest.py`, `tests/test_deck_completeness_gate.py` \u2014 expected when a task creates them; check for typos otherwise.\n```\n",
+          "createdAt": "2026-09-04T19:47:35Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/3#issuecomment-5545682952",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSoybGA",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Deliverable-Render/actions/runs/33912995567)\n\n**Format validation report:**\n```text\nThis issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `Commit a synthetic template, two manifest editions and a store fixture that exercises a carried slide, a dropped slide with a reason and a dropped slide without`.\n\n_Advisory:_\n- 2 cited path(s) do not exist yet: `src/deliverable_render/pptx/manifest.py`, `tests/test_deck_completeness_gate.py` \u2014 expected when a task creates them; check for typos otherwise.\n```\n",
+          "createdAt": "2026-09-04T19:48:53Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/3#issuecomment-5545696024",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSoyoiQ",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `Commit a synthetic template, two manifest editions and a store fixture that exercises a carried slide, a dropped slide with a reason and a dropped slide without`.\n- `Acceptance Criteria` names no test, runnable command or observable verification gate \u2014 Definition of Ready / Quality Bar \u00a72 requires one.\n\n_Advisory:_\n- 2 cited path(s) do not exist yet: `src/deliverable_render/pptx/manifest.py`, `tests/test_deck_completeness_gate.py` \u2014 expected when a task creates them; check for typos otherwise.\n\nDispatched the Agents Issue Optimizer format phase (attempt 3 of 3).\n\n<!-- format-guard:0cb6a221595a:attempt:3 -->\n",
+          "createdAt": "2026-09-04T19:49:13Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/3#issuecomment-5545699465",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSoy0QA",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "<!-- format-guard:attempt-cap -->\nAutomated formatting stopped after 3 optimizer attempts. Fix the issue body manually, then remove agents:auto-pilot-pause before retrying.\n",
+          "createdAt": "2026-09-04T19:49:32Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/3#issuecomment-5545702464",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSozACA",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "## \u26a0\ufe0f Optimizer Paused\n\n**Reason:** More than 3 optimizer runs detected in the last hour (4 runs).\n\nThis usually indicates:\n- Task decomposition spiral (creating too many subtasks)\n- Repeated failures causing retry loop\n\n**Next steps:**\n1. Check issue body for task explosion (hundreds of repeated tasks)\n2. Check recent workflow runs for errors\n3. If issue body is corrupted, close and recreate with clean body\n4. Remove `agents:auto-pilot-pause` label to retry after fixing\n\nAuto-pilot has been paused. See [recovery procedures](https://github.com/stranske/Deliverable-Render/blob/main/WORKFLOW_USER_GUIDE.md#auto-pilot-recovery-procedures).\n",
+          "createdAt": "2026-09-04T19:49:50Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/3#issuecomment-5545705480",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSozApg",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Deliverable-Render/actions/runs/33913103061)\n",
+          "createdAt": "2026-09-04T19:49:52Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/3#issuecomment-5545705638",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSozLJQ",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "<!-- format-guard:attempt-cap -->\nAutomated formatting stopped after 3 optimizer attempts. Fix the issue body manually, then remove agents:auto-pilot-pause before retrying.\n",
+          "createdAt": "2026-09-04T19:50:07Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/3#issuecomment-5545708325",
+          "viewerDidAuthor": false
+        }
+      ],
+      "createdAt": "2026-09-04T19:44:49Z",
+      "labels": [
+        {
+          "id": "LA_kwDOUOpIZ88AAAACz0Rzfw",
+          "name": "enhancement",
+          "description": "New feature or request",
+          "color": "a2eeef"
+        }
+      ],
+      "number": 3,
+      "title": "Manifest-gated deck builder: a dropped slide must be accounted for or the build fails",
+      "updatedAt": "2026-09-04T19:50:07Z",
+      "url": "https://github.com/stranske/Deliverable-Render/issues/3"
+    },
+    {
+      "body": "## Why\n\nThree separate renderers that turn a structured store into a single deep-linked HTML page exist in the work environment today, written in two different languages, and a fourth is about to be written for the communication synthesis tool. The response names consolidating them as a systematization target and calls the fourth build the thing a proven renderer would directly de-risk. That environment also confirms the two facts this renderer depends on: static local HTML is in production use there, and local-file deep links to a specific page of a specific document do open.\n\nEvidence: response sections A1 and A3, and appendix systematization item 3 (https://github.com/stranske/Ready/blob/main/research-program/artifacts/work-bundle/INFORMATION-REQUEST-RESPONSE.md).\n\n## Scope\n\nOne renderer that takes a structured store and a view specification and writes a single self-contained HTML file with working deep links back to source documents.\n\n## Non-Goals\n\n- No server, no build step requiring a package manager at view time, and no database. The output is one file opened from a shared folder.\n- No WebAssembly, Pyodide or stlite. That capability is untested in the target environment and must not be a dependency until a probe proves it.\n- No external network calls from the rendered page, including web fonts and content-delivery-network scripts. A page that needs the internet fails in the target environment.\n\n## Tasks\n\n- [ ] Define the store contract in `src/deliverable_render/store.py`: a table of records, a list of evidence pointers `(stable_id, page, quote)`, and an entity and period index, loadable from JSON or SQLite.\n- [ ] Implement `render_html(store, spec) -> str` producing one file with inlined CSS and JavaScript and no external requests.\n- [ ] Support the grid view the existing tools use: rows by section or coverage area, columns by period, each cell linking to the source page.\n- [ ] Emit deep links in a configurable form so the same store renders with either a local-file path or a document-system link, chosen by a template variable rather than by editing the renderer.\n- [ ] Add a link-integrity check that fails the render when an evidence pointer names a `stable_id` absent from the store, rather than emitting a dead link.\n- [ ] Add filtering and search that work with JavaScript disabled degraded to a plain table.\n- [ ] Commit a synthetic store fixture and a golden expected HTML file, compared structurally rather than byte-for-byte.\n\n## Acceptance Criteria\n\n- [ ] The rendered file contains no `http://` or `https://` resource reference, asserted by a test that scans the output.\n- [ ] Every evidence pointer in the fixture produces exactly one link, and a pointer to a missing document fails the render with a named error.\n- [ ] Opening the golden file with JavaScript disabled still shows every row, asserted by parsing the static markup.\n- [ ] The same store renders under both link modes, and the only difference between outputs is the link prefix.\n\n## Test Gate\n\n`tests/test_render_html_offline.py`, run by this repo's CI gate. Demonstrate it by deliberately adding an external stylesheet reference to the template, confirming the no-external-resource test fails, then reverting and confirming it passes. Record both in the pull request.\n\n## Implementation Notes\n\nThe response records that a colleague's own machine and browser were never verified for these pages, only the author's. Keep the output to widely supported markup and avoid recent JavaScript syntax, and note the supported baseline in the module docstring.\n",
+      "comments": [
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSovq3A",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `Support the grid view the existing tools use: rows by section or coverage area, columns by period, each cell linking to the source page.`.\n- `Acceptance Criteria` names no test, runnable command or observable verification gate \u2014 Definition of Ready / Quality Bar \u00a72 requires one.\n\n_Advisory:_\n- 2 cited path(s) do not exist yet: `src/deliverable_render/store.py`, `tests/test_render_html_offline.py` \u2014 expected when a task creates them; check for typos otherwise.\n\nDispatched the Agents Issue Optimizer format phase (attempt 1 of 3).\n\n<!-- format-guard:faafcef83838:attempt:1 -->\n",
+          "createdAt": "2026-09-04T19:44:28Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/2#issuecomment-5545650908",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSowVSQ",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Deliverable-Render/actions/runs/33912703982)\n\n**Format validation report:**\n```text\nThis issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `Support the grid view the existing tools use: rows by section or coverage area, columns by period, each cell linking to the source page.`.\n\n_Advisory:_\n- 2 cited path(s) do not exist yet: `src/deliverable_render/store.py`, `tests/test_render_html_offline.py` \u2014 expected when a task creates them; check for typos otherwise.\n```\n",
+          "createdAt": "2026-09-04T19:45:35Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/2#issuecomment-5545661769",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSowgmQ",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `Support the grid view the existing tools use: rows by section or coverage area, columns by period, each cell linking to the source page.`.\n- `Acceptance Criteria` names no test, runnable command or observable verification gate \u2014 Definition of Ready / Quality Bar \u00a72 requires one.\n\n_Advisory:_\n- 2 cited path(s) do not exist yet: `src/deliverable_render/store.py`, `tests/test_render_html_offline.py` \u2014 expected when a task creates them; check for typos otherwise.\n\nDispatched the Agents Issue Optimizer format phase (attempt 2 of 3).\n\n<!-- format-guard:faafcef83838:attempt:2 -->\n",
+          "createdAt": "2026-09-04T19:45:51Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/2#issuecomment-5545664665",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSoxHWA",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Deliverable-Render/actions/runs/33912823931)\n\n**Format validation report:**\n```text\nThis issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `Support the grid view the existing tools use: rows by section or coverage area, columns by period, each cell linking to the source page.`.\n\n_Advisory:_\n- 2 cited path(s) do not exist yet: `src/deliverable_render/store.py`, `tests/test_render_html_offline.py` \u2014 expected when a task creates them; check for typos otherwise.\n```\n",
+          "createdAt": "2026-09-04T19:46:47Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/2#issuecomment-5545674584",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSoxU0g",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `Support the grid view the existing tools use: rows by section or coverage area, columns by period, each cell linking to the source page.`.\n- `Acceptance Criteria` names no test, runnable command or observable verification gate \u2014 Definition of Ready / Quality Bar \u00a72 requires one.\n\n_Advisory:_\n- 2 cited path(s) do not exist yet: `src/deliverable_render/store.py`, `tests/test_render_html_offline.py` \u2014 expected when a task creates them; check for typos otherwise.\n\nDispatched the Agents Issue Optimizer format phase (attempt 3 of 3).\n\n<!-- format-guard:faafcef83838:attempt:3 -->\n",
+          "createdAt": "2026-09-04T19:47:06Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/2#issuecomment-5545678034",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSoxfdg",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "<!-- format-guard:attempt-cap -->\nAutomated formatting stopped after 3 optimizer attempts. Fix the issue body manually, then remove agents:auto-pilot-pause before retrying.\n",
+          "createdAt": "2026-09-04T19:47:23Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/2#issuecomment-5545680758",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSox6Xw",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Deliverable-Render/actions/runs/33912927086)\n\n**Format validation report:**\n```text\nThis issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `Support the grid view the existing tools use: rows by section or coverage area, columns by period, each cell linking to the source page.`.\n\n_Advisory:_\n- 2 cited path(s) do not exist yet: `src/deliverable_render/store.py`, `tests/test_render_html_offline.py` \u2014 expected when a task creates them; check for typos otherwise.\n```\n",
+          "createdAt": "2026-09-04T19:48:03Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/2#issuecomment-5545687647",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSoyJqA",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "<!-- format-guard:attempt-cap -->\nAutomated formatting stopped after 3 optimizer attempts. Fix the issue body manually, then remove agents:auto-pilot-pause before retrying.\n",
+          "createdAt": "2026-09-04T19:48:26Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/2#issuecomment-5545691560",
+          "viewerDidAuthor": false
+        }
+      ],
+      "createdAt": "2026-09-04T19:44:07Z",
+      "labels": [
+        {
+          "id": "LA_kwDOUOpIZ88AAAACz0Rzfw",
+          "name": "enhancement",
+          "description": "New feature or request",
+          "color": "a2eeef"
+        }
+      ],
+      "number": 2,
+      "title": "Offline deep-linked HTML hub renderer with link-integrity enforcement",
+      "updatedAt": "2026-09-04T19:48:26Z",
+      "url": "https://github.com/stranske/Deliverable-Render/issues/2"
+    },
+    {
+      "body": "This issue lists Renovate updates and detected dependencies. Read the [Dependency Dashboard](https://docs.renovatebot.com/key-concepts/dashboard/) docs to learn more.<br>[View this repository on the Mend.io Web Portal](https://developer.mend.io/github/stranske/Deliverable-Render).\n\n## Repository Problems\n\nThese problems occurred while renovating this repository. [View logs](https://developer.mend.io//github/stranske/Deliverable-Render).\n\n - \u26a0\ufe0f WARN: pip-compile: dependency not found in lock file\n\n## Awaiting Schedule\n\nThe following updates are awaiting their schedule. To get an update now, click on a checkbox below.\n\n - [ ] <!-- unschedule-branch=renovate/lock-file-maintenance-weekly-lock-file-maintenance -->chore(deps): lock file maintenance\n\n## Detected Dependencies\n\n<details><summary>github-actions (35)</summary>\n<blockquote>\n\n<details><summary>.github/actions/agent-run-base/action.yml</summary>\n\n\n</details>\n\n<details><summary>.github/actions/artifact-cache/action.yml</summary>\n\n\n</details>\n\n<details><summary>.github/actions/resolve-default-branch/action.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-71-codex-belt-dispatcher.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-72-codex-belt-worker.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-73-codex-belt-conveyor.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-80-pr-event-hub.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-81-gate-followups.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-auto-label.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-auto-pilot.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-autofix-dispatcher.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-capability-check.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-decompose.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-dedup.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-guard.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-issue-format-guard.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-issue-intake.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-issue-optimizer.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-keepalive-loop-reporter.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-keepalive-sweep.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-pr-health.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-verifier.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-verify-to-new-pr.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-weekly-metrics.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/autofix.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/backplane-conformance.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/ci.yml (1)</summary>\n\n - `stranske/Workflows main`\n\n</details>\n\n<details><summary>.github/workflows/cross-repo-smoke.yml (1)</summary>\n\n - `stranske/Workflows main`\n\n</details>\n\n<details><summary>.github/workflows/list-llm-models.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/maint-76-claude-code-review.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/maint-87-docs-drift-fix-agent.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/maint-coverage-guard.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/pr-00-gate.yml (43)</summary>\n\n - `actions/create-github-app-token v3@bcd2ba49218906704ab6c1aa796996da409d3eb1`\n - `actions/checkout v7.0.1@3d3c42e5aac5ba805825da76410c181273ba90b1`\n - `actions/github-script v9@3a2844b7e9c422d3c10d287c895573f7108da1b3`\n - `stranske/Workflows main`\n - `actions/checkout v7.0.1@3d3c42e5aac5ba805825da76410c181273ba90b1`\n - `actions/setup-python v7@5fda3b95a4ea91299a34e894583c3862153e4b97`\n - `actions/checkout v7.0.1@3d3c42e5aac5ba805825da76410c181273ba90b1`\n - `actions/setup-node v7@820762786026740c76f36085b0efc47a31fe5020`\n - `actions/setup-python v7@5fda3b95a4ea91299a34e894583c3862153e4b97`\n - `actions/checkout v7.0.1@3d3c42e5aac5ba805825da76410c181273ba90b1`\n - `actions/setup-python v7@5fda3b95a4ea91299a34e894583c3862153e4b97`\n - `actions/checkout v7.0.1@3d3c42e5aac5ba805825da76410c181273ba90b1`\n - `actions/setup-python v7@5fda3b95a4ea91299a34e894583c3862153e4b97`\n - `actions/github-script v9@3a2844b7e9c422d3c10d287c895573f7108da1b3`\n - `stranske/Workflows main`\n - `actions/create-github-app-token v3@bcd2ba49218906704ab6c1aa796996da409d3eb1`\n - `actions/checkout v7.0.1@3d3c42e5aac5ba805825da76410c181273ba90b1`\n - `actions/setup-python v7@5fda3b95a4ea91299a34e894583c3862153e4b97`\n - `actions/create-github-app-token v3@bcd2ba49218906704ab6c1aa796996da409d3eb1`\n - `actions/checkout v7.0.1@3d3c42e5aac5ba805825da76410c181273ba90b1`\n - `actions/setup-node v7@820762786026740c76f36085b0efc47a31fe5020`\n - `actions/github-script v9@3a2844b7e9c422d3c10d287c895573f7108da1b3`\n - `actions/github-script v9@3a2844b7e9c422d3c10d287c895573f7108da1b3`\n - `actions/github-script v9@3a2844b7e9c422d3c10d287c895573f7108da1b3`\n - `actions/github-script v9@3a2844b7e9c422d3c10d287c895573f7108da1b3`\n - `actions/download-artifact v8@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c`\n - `actions/github-script v9@3a2844b7e9c422d3c10d287c895573f7108da1b3`\n - `actions/github-script v9@3a2844b7e9c422d3c10d287c895573f7108da1b3`\n - `actions/github-script v9@3a2844b7e9c422d3c10d287c895573f7108da1b3`\n - `actions/upload-artifact v7@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a`\n - `actions/upload-artifact v7@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a`\n - `actions/upload-artifact v7@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a`\n - `actions/upload-artifact v7@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a`\n - `actions/github-script v9@3a2844b7e9c422d3c10d287c895573f7108da1b3`\n - `actions/github-script v9@3a2844b7e9c422d3c10d287c895573f7108da1b3`\n - `actions/github-script v9@3a2844b7e9c422d3c10d287c895573f7108da1b3`\n - `python 3.14`\n - `node 24`\n - `python 3.14`\n - `python 3.14`\n - `python 3.14`\n - `python 3.14`\n - `node 24`\n\n</details>\n\n<details><summary>.github/workflows/pr-46-dependency-repair-contract.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/reusable-pr-context.yml</summary>\n\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>npm (1)</summary>\n<blockquote>\n\n<details><summary>.github/scripts/package.json</summary>\n\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>pip-compile (1)</summary>\n<blockquote>\n\n<details><summary>pyproject.toml (2)</summary>\n\n - `python >=3.12`\n - `setuptools >=82.0.1`\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>pip_requirements (1)</summary>\n<blockquote>\n\n<details><summary>tools/requirements-llm.txt</summary>\n\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>poetry (1)</summary>\n<blockquote>\n\n<details><summary>pyproject.toml</summary>\n\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>renovate-config (1)</summary>\n<blockquote>\n\n<details><summary>.github/renovate.json</summary>\n\n\n</details>\n\n</blockquote>\n</details>\n\n---\n\n- [ ] <!-- manual job -->Check this box to trigger a request for Renovate to run again on this repository\n\n",
+      "comments": [
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSot6VQ",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n**Missing required sections:** `Tasks`, `Acceptance Criteria`\n\n_Advisory:_\n- 4 cited path(s) do not exist yet: `renovate/non-major-updates`, `renovate/github-actions`, `stranske/Workflows`, `renovate/lock-file-maintenance-weekly-lock-file-maintenance` \u2014 expected when a task creates them; check for typos otherwise.\n\n_Recommended but absent:_ `Why`, `Scope`, `Implementation Notes`, `Non-Goals`\n\nDispatched the Agents Issue Optimizer format phase (attempt 1 of 3).\n\n<!-- format-guard:66ae2745970e:attempt:1 -->\n",
+          "createdAt": "2026-09-04T19:41:31Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/1#issuecomment-5545622101",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSouZfA",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Deliverable-Render/actions/runs/33912453784)\n\n**Format validation report:**\n```text\nThis issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `_Not provided._`.\n- `Acceptance Criteria` names no test, runnable command or observable verification gate \u2014 Definition of Ready / Quality Bar \u00a72 requires one.\n```\n",
+          "createdAt": "2026-09-04T19:42:20Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/1#issuecomment-5545630076",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSoujkA",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n**Missing required sections:** `Tasks`, `Acceptance Criteria`\n\n_Advisory:_\n- 4 cited path(s) do not exist yet: `renovate/non-major-updates`, `renovate/github-actions`, `stranske/Workflows`, `renovate/lock-file-maintenance-weekly-lock-file-maintenance` \u2014 expected when a task creates them; check for typos otherwise.\n\n_Recommended but absent:_ `Why`, `Scope`, `Implementation Notes`, `Non-Goals`\n\nDispatched the Agents Issue Optimizer format phase (attempt 2 of 3).\n\n<!-- format-guard:66ae2745970e:attempt:2 -->\n",
+          "createdAt": "2026-09-04T19:42:37Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/1#issuecomment-5545632656",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSovFvg",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Deliverable-Render/actions/runs/33912548119)\n\n**Format validation report:**\n```text\nThis issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `_Not provided._`.\n- `Acceptance Criteria` names no test, runnable command or observable verification gate \u2014 Definition of Ready / Quality Bar \u00a72 requires one.\n```\n",
+          "createdAt": "2026-09-04T19:43:31Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/1#issuecomment-5545641406",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSovQSg",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n**Missing required sections:** `Tasks`, `Acceptance Criteria`\n\n_Advisory:_\n- 4 cited path(s) do not exist yet: `renovate/non-major-updates`, `renovate/github-actions`, `stranske/Workflows`, `renovate/lock-file-maintenance-weekly-lock-file-maintenance` \u2014 expected when a task creates them; check for typos otherwise.\n\n_Recommended but absent:_ `Why`, `Scope`, `Implementation Notes`, `Non-Goals`\n\nDispatched the Agents Issue Optimizer format phase (attempt 3 of 3).\n\n<!-- format-guard:66ae2745970e:attempt:3 -->\n",
+          "createdAt": "2026-09-04T19:43:47Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/1#issuecomment-5545644106",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSovb_Q",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "<!-- format-guard:attempt-cap -->\nAutomated formatting stopped after 3 optimizer attempts. Fix the issue body manually, then remove agents:auto-pilot-pause before retrying.\n",
+          "createdAt": "2026-09-04T19:44:05Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/1#issuecomment-5545647101",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSovyOw",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Deliverable-Render/actions/runs/33912645323)\n\n**Format validation report:**\n```text\nThis issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `_Not provided._`.\n- `Acceptance Criteria` names no test, runnable command or observable verification gate \u2014 Definition of Ready / Quality Bar \u00a72 requires one.\n```\n",
+          "createdAt": "2026-09-04T19:44:41Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/1#issuecomment-5545652795",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSowAbw",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "<!-- format-guard:attempt-cap -->\nAutomated formatting stopped after 3 optimizer attempts. Fix the issue body manually, then remove agents:auto-pilot-pause before retrying.\n",
+          "createdAt": "2026-09-04T19:45:03Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/1#issuecomment-5545656431",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSo7NEQ",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n**Missing required sections:** `Tasks`, `Acceptance Criteria`\n- None of the 4 paths this issue cites exist in this repository (`renovate/non-major-updates`, `renovate/github-actions`, `stranske/Workflows`, `renovate/lock-file-maintenance-weekly-lock-file-maintenance`). An agent cloning this repo has nothing to act on. File it against the repo that holds the code, or cite the evidence here.\n\n_Recommended but absent:_ `Why`, `Scope`, `Implementation Notes`, `Non-Goals`\n\nDispatched the Agents Issue Optimizer format phase (attempt 1 of 3).\n\n<!-- format-guard:33f0aef1a623:attempt:1 -->\n",
+          "createdAt": "2026-09-04T20:03:45Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/1#issuecomment-5545839889",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSo78jw",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "## \u26a0\ufe0f Optimizer Paused\n\n**Reason:** More than 3 optimizer runs detected in the last hour (4 runs).\n\nThis usually indicates:\n- Task decomposition spiral (creating too many subtasks)\n- Repeated failures causing retry loop\n\n**Next steps:**\n1. Check issue body for task explosion (hundreds of repeated tasks)\n2. Check recent workflow runs for errors\n3. If issue body is corrupted, close and recreate with clean body\n4. Remove `agents:auto-pilot-pause` label to retry after fixing\n\nAuto-pilot has been paused. See [recovery procedures](https://github.com/stranske/Deliverable-Render/blob/main/WORKFLOW_USER_GUIDE.md#auto-pilot-recovery-procedures).\n",
+          "createdAt": "2026-09-04T20:04:57Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/1#issuecomment-5545852047",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSo79lg",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Deliverable-Render/actions/runs/33914324672)\n",
+          "createdAt": "2026-09-04T20:04:59Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/1#issuecomment-5545852310",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSo8WRQ",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n**Missing required sections:** `Tasks`, `Acceptance Criteria`\n- None of the 4 paths this issue cites exist in this repository (`renovate/non-major-updates`, `renovate/github-actions`, `stranske/Workflows`, `renovate/lock-file-maintenance-weekly-lock-file-maintenance`). An agent cloning this repo has nothing to act on. File it against the repo that holds the code, or cite the evidence here.\n\n_Recommended but absent:_ `Why`, `Scope`, `Implementation Notes`, `Non-Goals`\n\nDispatched the Agents Issue Optimizer format phase (attempt 2 of 3).\n\n<!-- format-guard:33f0aef1a623:attempt:2 -->\n",
+          "createdAt": "2026-09-04T20:05:37Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/1#issuecomment-5545858629",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSo8zbQ",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "## \u26a0\ufe0f Optimizer Paused\n\n**Reason:** More than 3 optimizer runs detected in the last hour (5 runs).\n\nThis usually indicates:\n- Task decomposition spiral (creating too many subtasks)\n- Repeated failures causing retry loop\n\n**Next steps:**\n1. Check issue body for task explosion (hundreds of repeated tasks)\n2. Check recent workflow runs for errors\n3. If issue body is corrupted, close and recreate with clean body\n4. Remove `agents:auto-pilot-pause` label to retry after fixing\n\nAuto-pilot has been paused. See [recovery procedures](https://github.com/stranske/Deliverable-Render/blob/main/WORKFLOW_USER_GUIDE.md#auto-pilot-recovery-procedures).\n",
+          "createdAt": "2026-09-04T20:06:21Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/1#issuecomment-5545866093",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSo80ag",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Deliverable-Render/actions/runs/33914485911)\n",
+          "createdAt": "2026-09-04T20:06:22Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/1#issuecomment-5545866346",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSo9Ihw",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n**Missing required sections:** `Tasks`, `Acceptance Criteria`\n- None of the 4 paths this issue cites exist in this repository (`renovate/non-major-updates`, `renovate/github-actions`, `stranske/Workflows`, `renovate/lock-file-maintenance-weekly-lock-file-maintenance`). An agent cloning this repo has nothing to act on. File it against the repo that holds the code, or cite the evidence here.\n\n_Recommended but absent:_ `Why`, `Scope`, `Implementation Notes`, `Non-Goals`\n\nDispatched the Agents Issue Optimizer format phase (attempt 3 of 3).\n\n<!-- format-guard:33f0aef1a623:attempt:3 -->\n",
+          "createdAt": "2026-09-04T20:06:55Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/1#issuecomment-5545871495",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSo9xLQ",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "## \u26a0\ufe0f Optimizer Paused\n\n**Reason:** More than 3 optimizer runs detected in the last hour (6 runs).\n\nThis usually indicates:\n- Task decomposition spiral (creating too many subtasks)\n- Repeated failures causing retry loop\n\n**Next steps:**\n1. Check issue body for task explosion (hundreds of repeated tasks)\n2. Check recent workflow runs for errors\n3. If issue body is corrupted, close and recreate with clean body\n4. Remove `agents:auto-pilot-pause` label to retry after fixing\n\nAuto-pilot has been paused. See [recovery procedures](https://github.com/stranske/Deliverable-Render/blob/main/WORKFLOW_USER_GUIDE.md#auto-pilot-recovery-procedures).\n",
+          "createdAt": "2026-09-04T20:07:58Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/1#issuecomment-5545881901",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSo9yMQ",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Deliverable-Render/actions/runs/33914596833)\n",
+          "createdAt": "2026-09-04T20:07:59Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/1#issuecomment-5545882161",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSo97XQ",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "<!-- format-guard:attempt-cap -->\nAutomated formatting stopped after 3 optimizer attempts. Fix the issue body manually, then remove agents:auto-pilot-pause before retrying.\n",
+          "createdAt": "2026-09-04T20:08:14Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/1#issuecomment-5545884509",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSo-HpA",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "<!-- format-guard:attempt-cap -->\nAutomated formatting stopped after 3 optimizer attempts. Fix the issue body manually, then remove agents:auto-pilot-pause before retrying.\n",
+          "createdAt": "2026-09-04T20:08:33Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/1#issuecomment-5545887652",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSpDLEg",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n**Missing required sections:** `Tasks`, `Acceptance Criteria`\n- None of the 4 paths this issue cites exist in this repository (`renovate/non-major-updates`, `renovate/github-actions`, `stranske/workflows`, `renovate/lock-file-maintenance-weekly-lock-file-maintenance`). An agent cloning this repo has nothing to act on. File it against the repo that holds the code, or cite the evidence here.\n\n_Recommended but absent:_ `Why`, `Scope`, `Implementation Notes`, `Non-Goals`\n\nDispatched the Agents Issue Optimizer format phase (attempt 1 of 3).\n\n<!-- format-guard:5fb9156de657:attempt:1 -->\n",
+          "createdAt": "2026-09-04T20:16:48Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/1#issuecomment-5545970450",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSpDmbQ",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "## \u26a0\ufe0f Optimizer Paused\n\n**Reason:** More than 3 optimizer runs detected in the last hour (7 runs).\n\nThis usually indicates:\n- Task decomposition spiral (creating too many subtasks)\n- Repeated failures causing retry loop\n\n**Next steps:**\n1. Check issue body for task explosion (hundreds of repeated tasks)\n2. Check recent workflow runs for errors\n3. If issue body is corrupted, close and recreate with clean body\n4. Remove `agents:auto-pilot-pause` label to retry after fixing\n\nAuto-pilot has been paused. See [recovery procedures](https://github.com/stranske/Deliverable-Render/blob/main/WORKFLOW_USER_GUIDE.md#auto-pilot-recovery-procedures).\n",
+          "createdAt": "2026-09-04T20:17:30Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/1#issuecomment-5545977453",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSpDnXQ",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Deliverable-Render/actions/runs/33915432234)\n",
+          "createdAt": "2026-09-04T20:17:31Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/1#issuecomment-5545977693",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSpDzAg",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n**Missing required sections:** `Tasks`, `Acceptance Criteria`\n- None of the 4 paths this issue cites exist in this repository (`renovate/non-major-updates`, `renovate/github-actions`, `stranske/workflows`, `renovate/lock-file-maintenance-weekly-lock-file-maintenance`). An agent cloning this repo has nothing to act on. File it against the repo that holds the code, or cite the evidence here.\n\n_Recommended but absent:_ `Why`, `Scope`, `Implementation Notes`, `Non-Goals`\n\nDispatched the Agents Issue Optimizer format phase (attempt 2 of 3).\n\n<!-- format-guard:5fb9156de657:attempt:2 -->\n",
+          "createdAt": "2026-09-04T20:17:49Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/1#issuecomment-5545980674",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSpEOLw",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "## \u26a0\ufe0f Optimizer Paused\n\n**Reason:** More than 3 optimizer runs detected in the last hour (8 runs).\n\nThis usually indicates:\n- Task decomposition spiral (creating too many subtasks)\n- Repeated failures causing retry loop\n\n**Next steps:**\n1. Check issue body for task explosion (hundreds of repeated tasks)\n2. Check recent workflow runs for errors\n3. If issue body is corrupted, close and recreate with clean body\n4. Remove `agents:auto-pilot-pause` label to retry after fixing\n\nAuto-pilot has been paused. See [recovery procedures](https://github.com/stranske/Deliverable-Render/blob/main/WORKFLOW_USER_GUIDE.md#auto-pilot-recovery-procedures).\n",
+          "createdAt": "2026-09-04T20:18:33Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/1#issuecomment-5545987631",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSpEPAA",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Deliverable-Render/actions/runs/33915516001)\n",
+          "createdAt": "2026-09-04T20:18:35Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/1#issuecomment-5545987840",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSpEeZw",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n**Missing required sections:** `Tasks`, `Acceptance Criteria`\n- None of the 4 paths this issue cites exist in this repository (`renovate/non-major-updates`, `renovate/github-actions`, `stranske/workflows`, `renovate/lock-file-maintenance-weekly-lock-file-maintenance`). An agent cloning this repo has nothing to act on. File it against the repo that holds the code, or cite the evidence here.\n\n_Recommended but absent:_ `Why`, `Scope`, `Implementation Notes`, `Non-Goals`\n\nDispatched the Agents Issue Optimizer format phase (attempt 3 of 3).\n\n<!-- format-guard:5fb9156de657:attempt:3 -->\n",
+          "createdAt": "2026-09-04T20:18:59Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/1#issuecomment-5545991783",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSpEm1w",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "<!-- format-guard:attempt-cap -->\nAutomated formatting stopped after 3 optimizer attempts. Fix the issue body manually, then remove agents:auto-pilot-pause before retrying.\n",
+          "createdAt": "2026-09-04T20:19:13Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/1#issuecomment-5545993943",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSpFE-Q",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "## \u26a0\ufe0f Optimizer Paused\n\n**Reason:** More than 3 optimizer runs detected in the last hour (9 runs).\n\nThis usually indicates:\n- Task decomposition spiral (creating too many subtasks)\n- Repeated failures causing retry loop\n\n**Next steps:**\n1. Check issue body for task explosion (hundreds of repeated tasks)\n2. Check recent workflow runs for errors\n3. If issue body is corrupted, close and recreate with clean body\n4. Remove `agents:auto-pilot-pause` label to retry after fixing\n\nAuto-pilot has been paused. See [recovery procedures](https://github.com/stranske/Deliverable-Render/blob/main/WORKFLOW_USER_GUIDE.md#auto-pilot-recovery-procedures).\n",
+          "createdAt": "2026-09-04T20:20:03Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/1#issuecomment-5546001657",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSpFF8g",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Deliverable-Render/actions/runs/33915609876)\n",
+          "createdAt": "2026-09-04T20:20:04Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/1#issuecomment-5546001906",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSpFQUw",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "<!-- format-guard:attempt-cap -->\nAutomated formatting stopped after 3 optimizer attempts. Fix the issue body manually, then remove agents:auto-pilot-pause before retrying.\n",
+          "createdAt": "2026-09-04T20:20:21Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/1#issuecomment-5546004563",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSrZZcQ",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n**Missing required sections:** `Tasks`, `Acceptance Criteria`\n\n_Advisory:_\n- 1 cited path(s) do not exist yet: `renovate/lock-file-maintenance-weekly-lock-file-maintenance` \u2014 expected when a task creates them; check for typos otherwise.\n\n_Recommended but absent:_ `Why`, `Scope`, `Implementation Notes`, `Non-Goals`\n\nDispatched the Agents Issue Optimizer format phase (attempt 1 of 3).\n\n<!-- format-guard:2de6f550edfd:attempt:1 -->\n",
+          "createdAt": "2026-09-05T01:31:44Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/1#issuecomment-5548431729",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSrZrWw",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Deliverable-Render/actions/runs/33936435188)\n\n**Format validation report:**\n```text\nThis issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `_Not provided._`.\n- `Acceptance Criteria` names no test, runnable command or observable verification gate \u2014 Definition of Ready / Quality Bar \u00a72 requires one.\n```\n",
+          "createdAt": "2026-09-05T01:32:37Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/1#issuecomment-5548436315",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSrZyVA",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n**Missing required sections:** `Tasks`, `Acceptance Criteria`\n\n_Advisory:_\n- 1 cited path(s) do not exist yet: `renovate/lock-file-maintenance-weekly-lock-file-maintenance` \u2014 expected when a task creates them; check for typos otherwise.\n\n_Recommended but absent:_ `Why`, `Scope`, `Implementation Notes`, `Non-Goals`\n\nDispatched the Agents Issue Optimizer format phase (attempt 2 of 3).\n\n<!-- format-guard:2de6f550edfd:attempt:2 -->\n",
+          "createdAt": "2026-09-05T01:32:56Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/1#issuecomment-5548438100",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSraFTQ",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Deliverable-Render/actions/runs/33936493972)\n\n**Format validation report:**\n```text\nThis issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `_Not provided._`.\n- `Acceptance Criteria` names no test, runnable command or observable verification gate \u2014 Definition of Ready / Quality Bar \u00a72 requires one.\n```\n",
+          "createdAt": "2026-09-05T01:33:50Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/1#issuecomment-5548442957",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSraMkQ",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n**Missing required sections:** `Tasks`, `Acceptance Criteria`\n\n_Advisory:_\n- 1 cited path(s) do not exist yet: `renovate/lock-file-maintenance-weekly-lock-file-maintenance` \u2014 expected when a task creates them; check for typos otherwise.\n\n_Recommended but absent:_ `Why`, `Scope`, `Implementation Notes`, `Non-Goals`\n\nDispatched the Agents Issue Optimizer format phase (attempt 3 of 3).\n\n<!-- format-guard:2de6f550edfd:attempt:3 -->\n",
+          "createdAt": "2026-09-05T01:34:09Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/1#issuecomment-5548444817",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSraTsw",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "<!-- format-guard:attempt-cap -->\nAutomated formatting stopped after 3 optimizer attempts. Fix the issue body manually, then remove agents:auto-pilot-pause before retrying.\n",
+          "createdAt": "2026-09-05T01:34:28Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/1#issuecomment-5548446643",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSradKQ",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Deliverable-Render/actions/runs/33936556205)\n\n**Format validation report:**\n```text\nThis issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `_Not provided._`.\n- `Acceptance Criteria` names no test, runnable command or observable verification gate \u2014 Definition of Ready / Quality Bar \u00a72 requires one.\n```\n",
+          "createdAt": "2026-09-05T01:34:54Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/1#issuecomment-5548449065",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSraiyQ",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "<!-- format-guard:attempt-cap -->\nAutomated formatting stopped after 3 optimizer attempts. Fix the issue body manually, then remove agents:auto-pilot-pause before retrying.\n",
+          "createdAt": "2026-09-05T01:35:08Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/1#issuecomment-5548450505",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABStvxpQ",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n**Missing required sections:** `Tasks`, `Acceptance Criteria`\n\n_Advisory:_\n- 1 cited path(s) do not exist yet: `renovate/lock-file-maintenance-weekly-lock-file-maintenance` \u2014 expected when a task creates them; check for typos otherwise.\n\n_Recommended but absent:_ `Why`, `Scope`, `Implementation Notes`, `Non-Goals`\n\nDispatched the Agents Issue Optimizer format phase (attempt 1 of 3).\n\n<!-- format-guard:269dc34d98f4:attempt:1 -->\n",
+          "createdAt": "2026-09-05T09:30:37Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/1#issuecomment-5550895525",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABStwJKw",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Deliverable-Render/actions/runs/33958176961)\n\n**Format validation report:**\n```text\nThis issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `_Not provided._`.\n- `Acceptance Criteria` names no test, runnable command or observable verification gate \u2014 Definition of Ready / Quality Bar \u00a72 requires one.\n```\n",
+          "createdAt": "2026-09-05T09:31:41Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/1#issuecomment-5550901547",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABStwOjQ",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n**Missing required sections:** `Tasks`, `Acceptance Criteria`\n\n_Advisory:_\n- 1 cited path(s) do not exist yet: `renovate/lock-file-maintenance-weekly-lock-file-maintenance` \u2014 expected when a task creates them; check for typos otherwise.\n\n_Recommended but absent:_ `Why`, `Scope`, `Implementation Notes`, `Non-Goals`\n\nDispatched the Agents Issue Optimizer format phase (attempt 2 of 3).\n\n<!-- format-guard:269dc34d98f4:attempt:2 -->\n",
+          "createdAt": "2026-09-05T09:31:55Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/1#issuecomment-5550902925",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABStwgFQ",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Deliverable-Render/actions/runs/33958237406)\n\n**Format validation report:**\n```text\nThis issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `_Not provided._`.\n- `Acceptance Criteria` names no test, runnable command or observable verification gate \u2014 Definition of Ready / Quality Bar \u00a72 requires one.\n```\n",
+          "createdAt": "2026-09-05T09:32:41Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/1#issuecomment-5550907413",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABStwl6g",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n**Missing required sections:** `Tasks`, `Acceptance Criteria`\n\n_Advisory:_\n- 1 cited path(s) do not exist yet: `renovate/lock-file-maintenance-weekly-lock-file-maintenance` \u2014 expected when a task creates them; check for typos otherwise.\n\n_Recommended but absent:_ `Why`, `Scope`, `Implementation Notes`, `Non-Goals`\n\nDispatched the Agents Issue Optimizer format phase (attempt 3 of 3).\n\n<!-- format-guard:269dc34d98f4:attempt:3 -->\n",
+          "createdAt": "2026-09-05T09:32:56Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/1#issuecomment-5550908906",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABStwuGQ",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "<!-- format-guard:attempt-cap -->\nAutomated formatting stopped after 3 optimizer attempts. Fix the issue body manually, then remove agents:auto-pilot-pause before retrying.\n",
+          "createdAt": "2026-09-05T09:33:17Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/1#issuecomment-5550911001",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABStw0oQ",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Deliverable-Render/actions/runs/33958284112)\n\n**Format validation report:**\n```text\nThis issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `_Not provided._`.\n- `Acceptance Criteria` names no test, runnable command or observable verification gate \u2014 Definition of Ready / Quality Bar \u00a72 requires one.\n```\n",
+          "createdAt": "2026-09-05T09:33:36Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/1#issuecomment-5550912673",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABStw8ew",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "<!-- format-guard:attempt-cap -->\nAutomated formatting stopped after 3 optimizer attempts. Fix the issue body manually, then remove agents:auto-pilot-pause before retrying.\n",
+          "createdAt": "2026-09-05T09:33:55Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/1#issuecomment-5550914683",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABSupATw",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "<!-- format-guard:attempt-cap -->\nAutomated formatting stopped after 3 optimizer attempts. Fix the issue body manually, then remove agents:auto-pilot-pause before retrying.\n",
+          "createdAt": "2026-09-05T12:30:54Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/1#issuecomment-5551833167",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABS2u4Qg",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "<!-- format-guard:attempt-cap -->\nAutomated formatting stopped after 3 optimizer attempts. Fix the issue body manually, then remove agents:auto-pilot-pause before retrying.\n",
+          "createdAt": "2026-09-06T15:42:52Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/1#issuecomment-5560318018",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABTKPvHw",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "<!-- format-guard:attempt-cap -->\nAutomated formatting stopped after 3 optimizer attempts. Fix the issue body manually, then remove agents:auto-pilot-pause before retrying.\n",
+          "createdAt": "2026-09-08T07:05:51Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/1#issuecomment-5580779295",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABTLQbwg",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "<!-- format-guard:attempt-cap -->\nAutomated formatting stopped after 3 optimizer attempts. Fix the issue body manually, then remove agents:auto-pilot-pause before retrying.\n",
+          "createdAt": "2026-09-08T08:31:58Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/1#issuecomment-5581839298",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDOUOpIZ88AAAABTT-JAQ",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "<!-- format-guard:attempt-cap -->\nAutomated formatting stopped after 3 optimizer attempts. Fix the issue body manually, then remove agents:auto-pilot-pause before retrying.\n",
+          "createdAt": "2026-09-08T19:53:34Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/1#issuecomment-5590976769",
+          "viewerDidAuthor": false
+        }
+      ],
+      "createdAt": "2026-09-04T19:41:12Z",
+      "labels": [],
+      "number": 1,
+      "title": "Dependency Dashboard",
+      "updatedAt": "2026-09-08T19:53:34Z",
+      "url": "https://github.com/stranske/Deliverable-Render/issues/1"
+    }
+  ],
+  "prs": [],
+  "ci_runs": [
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-08T19:52:48Z",
+      "databaseId": 34271520194,
+      "event": "push",
+      "headSha": "909ec2f7b1d821a39d8f190f96409500b7ac4828",
+      "name": "CI",
+      "status": "completed",
+      "url": "https://github.com/stranske/Deliverable-Render/actions/runs/34271520194",
+      "workflowName": "CI"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-08T07:04:27Z",
+      "databaseId": 34197553976,
+      "event": "push",
+      "headSha": "6354f9eecd9e87a3ee0e8f36bb8ccfb9a6a212fb",
+      "name": "CI",
+      "status": "completed",
+      "url": "https://github.com/stranske/Deliverable-Render/actions/runs/34197553976",
+      "workflowName": "CI"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-05T12:29:37Z",
+      "databaseId": 33966185691,
+      "event": "push",
+      "headSha": "5b86788e4fe25b2f6f41fdfc2ebd6e20113c43f3",
+      "name": "CI",
+      "status": "completed",
+      "url": "https://github.com/stranske/Deliverable-Render/actions/runs/33966185691",
+      "workflowName": "CI"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-05T01:30:01Z",
+      "databaseId": 33936343081,
+      "event": "push",
+      "headSha": "dda96be5dfeadb037388130a4d9e5d1377b29f8c",
+      "name": "CI",
+      "status": "completed",
+      "url": "https://github.com/stranske/Deliverable-Render/actions/runs/33936343081",
+      "workflowName": "CI"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-04T21:24:00Z",
+      "databaseId": 33920910915,
+      "event": "push",
+      "headSha": "109dfd7620218d6918820c28c1744f8d5eac9863",
+      "name": "CI",
+      "status": "completed",
+      "url": "https://github.com/stranske/Deliverable-Render/actions/runs/33920910915",
+      "workflowName": "CI"
+    }
+  ]
+}
