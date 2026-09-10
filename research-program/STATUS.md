@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-10T09:45:08Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-10T10:00:17Z)
 
 Units: 88 — done 88
 Paused: False   Phase stops: []
@@ -99,7 +99,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-10T01:43:11Z — verify — enqueued D4-verify-merged-2026-09-10T01
 - 2026-09-10T01:43:12Z — D4-verify-merged-2026-09-10T01 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-10T01:43:12Z — D4-verify-merged-2026-09-10T01 — claimed by driver (agent cursor)
 - 2026-09-10T01:48:32Z — D4-verify-merged-2026-09-10T01 — done — gemini produced 9518 words at artifacts/verification/D4-verify-merged-2026-09-10T01.md in 316s
@@ -111,6 +110,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-10T07:37:10Z — D3-unblock-sweep-2026-09-10T07 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-10T07:37:10Z — D3-unblock-sweep-2026-09-10T07 — claimed by driver (agent cursor)
 - 2026-09-10T07:43:41Z — D3-unblock-sweep-2026-09-10T07 — done — gemini produced 447 words at artifacts/sweeps/D3-unblock-sweep-2026-09-10T07.md in 386s
+- 2026-09-10T09:57:07Z — stall — reported to inbox
 
 ## Questions
 
