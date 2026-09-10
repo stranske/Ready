@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-10T19:10:43Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-10T19:23:31Z)
 
-Units: 92 — claimed 1, done 91
+Units: 92 — done 92
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 Claude conservation: off (weekly window available)
@@ -92,7 +92,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-learning-management-system--2026-09-08T05-06-08Z | D | D | done | codex | codex | Audit stranske/learning-management-system and file issues (supply 1 <= |
 | D-audit-learning-management-system--2026-09-09T05-14-48Z | D | D | done | codex | driver | Audit stranske/learning-management-system and file issues (supply 1 <= |
 | D-audit-learning-management-system--2026-09-10T05-35-47Z | D | D | done | codex | driver | Audit stranske/learning-management-system and file issues (supply 1 <= |
-| D-audit-learning-management-system--2026-09-10T17-45-16Z | D | D | claimed | codex | driver | Audit stranske/learning-management-system and file issues (supply 2 <= |
+| D-audit-learning-management-system--2026-09-10T17-45-16Z | D | D | done | codex | driver | Audit stranske/learning-management-system and file issues (supply 2 <= |
 | D-audit-trip-planner--2026-09-07T04-47-34Z | D | D | done | codex | codex | Audit stranske/trip-planner and file issues (supply 2 <= 2) |
 | D4-verify-merged-2026-09-05T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
 | D4-verify-merged-2026-09-06T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
@@ -103,7 +103,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-10T17:55:33Z — D-audit-Counter_Risk--2026-09-10T17-45-12Z — done — gemini produced 1185 words at artifacts/audits/Counter_Risk-2026-09-10.md in 609s
 - 2026-09-10T18:10:45Z — D-audit-Manager-Database--2026-09-10T17-45-13Z — route — router picked codex from ['codex']
 - 2026-09-10T18:10:45Z — D-audit-Manager-Database--2026-09-10T17-45-13Z — claimed by driver (agent codex)
 - 2026-09-10T18:19:54Z — D-audit-Manager-Database--2026-09-10T17-45-13Z — fail — gemini produced 388 words at /Users/teacher/.codex/automations/research-program/artifacts/audits/Manager-Database-2026-09-10.md (min 400); rotating agent
@@ -115,6 +114,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-10T18:55:30Z — D-audit-Manager-Database--2026-09-10T17-45-13Z — done — gemini produced 1167 words at artifacts/audits/Manager-Database-2026-09-10.md in 163s
 - 2026-09-10T19:10:43Z — D-audit-learning-management-system--2026-09-10T17-45-16Z — route — router picked codex from ['codex']
 - 2026-09-10T19:10:43Z — D-audit-learning-management-system--2026-09-10T17-45-16Z — claimed by driver (agent codex)
+- 2026-09-10T19:23:31Z — D-audit-learning-management-system--2026-09-10T17-45-16Z — done — gemini produced 786 words at artifacts/audits/learning-management-system-2026-09-10.md in 757s
 
 ## Questions
 

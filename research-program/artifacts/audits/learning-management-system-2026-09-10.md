@@ -1,62 +1,61 @@
 # learning-management-system Audit Run Report (2026-09-10)
 
 ## 1. Audit Metadata
-- **Unit**: `D-audit-learning-management-system--2026-09-10T05-35-47Z`
+- **Unit**: `D-audit-learning-management-system--2026-09-10T17-45-16Z`
 - **Target Repository**: `stranske/learning-management-system`
 - **Lead Agent**: Gemini via Antigravity (`agy`)
-- **Remote Tip / Base SHA**: `09d509e88aa5bdad244d4029737ea22b6f13a95d` on `main`
-- **Audit Trigger**: Track D refill (agent-ready open issue supply = 1 <= 2; issue #580 open; milestone/trackers #41, #292, #334 excluded)
+- **Remote Tip / Base SHA**: `6e299bdf6e44b8ee34f9a0c71fa9706306e685f4` on `main`
+- **Audit Trigger**: Track D refill (Open agent-ready supply = 2 <= 2; #666 and #580; trackers #41, #292, #334 excluded)
 - **Scope**: `src/lms/`, `alembic/`, `tests/`, `scripts/`, `docs/`, `config/` (excluding synced `.github/` workflows and `design-system/`)
 
 ## 2. Test Baseline & Environment
-- **Pytest**: `1,745 passed, 6 skipped in 75.81s` (`uv run pytest -n auto -m "not slow" -q --no-cov`)
+- **Pytest**: `2,070 passed, 6 skipped in 143.33s` (`uv run pytest -n auto -m "not slow" -q --no-cov`)
 - **Ruff**: `0 diagnostics` (`uv run ruff check .`)
-- **Git Status**: clean working tree on `main` tip `09d509e88aa5bdad244d4029737ea22b6f13a95d`
+- **Git Status**: clean working tree on `main` tip `6e299bd`
 
 ## 3. Findings & Categorization Across All 8 Dimensions
 
 ### Dimension 1: Code Quality & Correctness
-- **Finding LMS-02 [P2]**: `_select_passage` in `src/lms/sources/repository.py:388-400` fails on inverted line ranges like `"5-0"` by calculating `start - 1 == -1`, resulting in Python list slicing `lines[-1:5]` which extracts only `"line 5\n"` due to negative indexing. Filed as [#653](https://github.com/stranske/learning-management-system/issues/653).
-- **Finding LMS-03 [P2]**: `score_work_product` in `src/lms/cases/repository.py:386-395` lacks finite numeric validation for `score` and `max_score`, persisting `inf` and `nan` into evidence records. Filed as [#654](https://github.com/stranske/learning-management-system/issues/654).
-- **Finding LMS-04 [P2]**: `prepare_draft` in `src/lms/maintenance/drafts.py:59-65, 182-194` accepts `central_value=float("nan")`, computing `typical_low=nan, typical_high=nan` which bricks draft queues when validated. Filed as [#655](https://github.com/stranske/learning-management-system/issues/655).
+- **Finding LMS-01 [P2]**: `create_attempt` in `src/lms/evidence/repository.py:50-81` omits Python-level validation for `confidence_rating` (1..5), `support_level` (`SUPPORT_LEVELS`), and `elapsed_seconds` (>= 0), causing unhandled database `IntegrityError` exceptions on `session.flush()` when invalid inputs are provided. Filed as [#667](https://github.com/stranske/learning-management-system/issues/667).
+- **Finding LMS-02 [P2]**: `create_evidence_record` in `src/lms/evidence/repository.py:146-224` omits Python-level domain validation across score bounds (`raw_score >= 0`, `max_score > 0`), difficulty estimates (`0.0 <= item_difficulty_estimate <= 1.0`), duration fields, and categorical enums (`EVIDENCE_KINDS`, `DEMAND_LEVELS`, `KNOWLEDGE_TYPES`, `SCORER_TYPES`, `SCORING_METHODS`), crashing on `session.flush()` with unhandled database `IntegrityError`. Filed as [#668](https://github.com/stranske/learning-management-system/issues/668).
+- **Finding LMS-03 [P2]**: `create_source_reference` and `update_source_reference` in `src/lms/sources/repository.py:79-121, 148-182` accept raw string inputs for `source_type`, `source_visibility`, `multi_source_role`, and `drift_status` without verifying membership in domain tuples (`SOURCE_TYPES`, `SOURCE_VISIBILITIES`, `MULTI_SOURCE_ROLES`, `DRIFT_STATUSES`), crashing with unhandled `IntegrityError` on flush. Filed as [#669](https://github.com/stranske/learning-management-system/issues/669).
 
 ### Dimension 2: Duplication & Consolidation
-- **Finding LMS-05 [P2]**: `create_review_queue_item` and `create_remediation_trigger` in `src/lms/scheduling/repository.py:25-54, 328-365` lack Python-level validation for priority ranges [0.0, 1.0] and trigger type enum codes, deferring to DB CHECK constraints and crashing with raw `IntegrityError` instead of standard `ValueError`. Filed as [#656](https://github.com/stranske/learning-management-system/issues/656).
+- **Finding LMS-04 [P2]**: `set_item_tier` in `src/lms/maintenance/service.py:289-312` mutates `item.retention_tier` and `card.retention_tier` without checking `retention_tier in RETENTION_TIERS` (`'hot'`, `'warm'`, `'cold'`), bypassing application logic and failing with database `IntegrityError` on flush. Filed as [#670](https://github.com/stranske/learning-management-system/issues/670).
 
 ### Dimension 3: Functionality & Wiring
-- **Finding LMS-01 [P1]**: UI author rubric creation endpoint `POST /app/author/rubrics` (`src/lms/ui/api.py:794-823, 1976-1980` & `src/lms/feedback/repository.py:961-987`) crashes with HTTP 500 when submitted with `criterion_order="0"` or non-finite points (`"nan"`), because values violate SQLite CHECK constraints without Python-level pre-validation. Filed as [#652](https://github.com/stranske/learning-management-system/issues/652).
-- **Finding LMS-06 [P2]**: `update_knowledge_edge` in `src/lms/graphs/repository.py:419-450` allows changing `edge_type` to `"prerequisite"` without checking `_ordering_edge_closes_cycle`, permitting cycle creation in DAGs. Filed as [#657](https://github.com/stranske/learning-management-system/issues/657).
-- **Finding LMS-07 [P2]**: `create_hint` and `create_model_answer` in `src/lms/feedback/repository.py:623-648, 703-725` lack validation for `reveal_order >= 1` and enum constraints (`support_level`), crashing with DB `IntegrityError`. Filed as [#658](https://github.com/stranske/learning-management-system/issues/658).
+- **Finding LMS-05 [P2]**: `goal_progress_for_learner` in `src/lms/learners/repository.py:308-349` takes `mastery_threshold: float = MASTERY_THRESHOLD` without validating `math.isfinite(mastery_threshold)` or `0.0 <= mastery_threshold <= 1.0`. Passing `float('nan')` causes comparisons `estimate >= nan` to evaluate to `False` for all target nodes, silently reporting 0 mastered nodes and 0 progress. Filed as [#671](https://github.com/stranske/learning-management-system/issues/671).
+- **Finding LMS-06 [P2]**: `estimate_capacity` and `_weighted` in `src/lms/maintenance/budget.py:118-160` fail to validate that `active_items` and `tier_counts` values are non-negative integers. Negative counts distort weighted interval averages and inflate capacity headroom above sustainable intake. Filed as [#672](https://github.com/stranske/learning-management-system/issues/672).
+- **Finding LMS-07 [P2]**: `score_attempt_with_rubric` in `src/lms/feedback/scoring.py:77-165` accepts `feedback_threshold` and `remediation_threshold` without validating finite unit interval bounds or relative ordering (`remediation_threshold <= feedback_threshold`). Passing `NaN` marks 100% scores as incorrect (`correctness=False`) while suppressing feedback creation. Filed as [#673](https://github.com/stranske/learning-management-system/issues/673).
 
 ### Dimension 4: Design & UX
-- Authoring UI form error handling: invalid input crashes were identified in UI author rubric creation (LMS-01/Issue #652) and rectified by proposing clean input validation and client flash errors.
+- Evaluated learner feedback generation and mastery progress dashboards. Identified silent failure modes where invalid thresholds suppressed user feedback and produced false zero-mastery progress indications.
 
 ### Dimension 5: Approach vs Public Field
-- Investigated spaced repetition scheduling (FSRS-4.5) and DAG topological sort invariants. Evaluated prerequisite cycle detection guarantees (LMS-06/Issue #657).
+- Analyzed evidence logging contracts and FSRS scheduling pipelines against the database constraint layer. Identified that reliance on database-level CHECK constraints for basic domain validation violates standard clean architecture boundaries, causing HTTP/API handlers to crash with raw 500 errors instead of clean 422/ValueError responses.
 
 ### Dimension 6: Missed Opportunities
-- Identified lack of cycle checks on graph edge mutations and missing domain validation layers in low-level repository functions.
+- Identified opportunities to centralize domain enum membership validation helpers across repository modules (`evidence`, `sources`, `maintenance`, `feedback`).
 
 ### Dimension 7: Tools Worth Integrating
-- Identified value in automated linting / AST checks for SQLite CHECK constraints vs Python repository validation helpers.
+- Recommended extending pre-commit linting or schema-reflection checks to ensure every database CheckConstraint has a corresponding Python-level validation check in repository helpers.
 
 ### Dimension 8: Local Skills, Automations & Human Touchpoints
-- All 7 staged issue bodies validated 100% clean (0 errors, 0 advisories) against `docs/AGENT_ISSUE_FORMAT.md`.
+- All 7 staged issue bodies validated 100% clean (0 errors, 0 advisories) against `.github/scripts/issue_format.py` and `issue_lint.py`.
 
-## 4. Filed Issue Portfolio
+## 4. Filed Issue Portfolio (Refill Run)
 
 | Issue # | Severity | Subsystem | Title | URL |
 |---|---|---|---|---|
-| #652 | P1 (`priority:high`) | `ui/authoring`, `feedback` | Enforce finite positive points and order bounds in rubric creation to prevent unhandled 500 crashes | https://github.com/stranske/learning-management-system/issues/652 |
-| #653 | P2 (`priority:normal`) | `sources` | Fix negative line index wrap in source reference passage range extraction for inverted ranges | https://github.com/stranske/learning-management-system/issues/653 |
-| #654 | P2 (`priority:normal`) | `cases` | Enforce finite numeric bounds in transfer case work product scoring | https://github.com/stranske/learning-management-system/issues/654 |
-| #655 | P2 (`priority:normal`) | `maintenance` | Reject non-finite central values in maintenance draft preparation and default band calculation | https://github.com/stranske/learning-management-system/issues/655 |
-| #656 | P2 (`priority:normal`) | `scheduling` | Add Python-level validation for priority bounds and reason codes in review queue repository | https://github.com/stranske/learning-management-system/issues/656 |
-| #657 | P2 (`priority:normal`) | `graphs` | Prevent prerequisite cycle creation during knowledge edge type updates | https://github.com/stranske/learning-management-system/issues/657 |
-| #658 | P2 (`priority:normal`) | `feedback` | Enforce positive reveal orders and enum constraints in feedback hint and model answer repository helpers | https://github.com/stranske/learning-management-system/issues/658 |
+| [#667](https://github.com/stranske/learning-management-system/issues/667) | P2 (`priority:normal`) | `evidence` | Enforce Python-level validation for confidence rating, support level, and elapsed duration in attempt creation | https://github.com/stranske/learning-management-system/issues/667 |
+| [#668](https://github.com/stranske/learning-management-system/issues/668) | P2 (`priority:normal`) | `evidence` | Validate scores, difficulty estimates, durations, and categorical enums before evidence record persistence | https://github.com/stranske/learning-management-system/issues/668 |
+| [#669](https://github.com/stranske/learning-management-system/issues/669) | P2 (`priority:normal`) | `sources` | Enforce enum validation for source type, visibility, drift status, and role in source reference helpers | https://github.com/stranske/learning-management-system/issues/669 |
+| [#670](https://github.com/stranske/learning-management-system/issues/670) | P2 (`priority:normal`) | `maintenance` | Validate retention tier enum membership in maintenance item tier updates | https://github.com/stranske/learning-management-system/issues/670 |
+| [#671](https://github.com/stranske/learning-management-system/issues/671) | P2 (`priority:normal`) | `learners` | Enforce finite unit interval bounds for mastery threshold in goal progress calculation | https://github.com/stranske/learning-management-system/issues/671 |
+| [#672](https://github.com/stranske/learning-management-system/issues/672) | P2 (`priority:normal`) | `maintenance` | Reject negative item counts and negative tier distributions in maintenance capacity estimation | https://github.com/stranske/learning-management-system/issues/672 |
+| [#673](https://github.com/stranske/learning-management-system/issues/673) | P2 (`priority:normal`) | `feedback` | Validate finite bounds and relative ordering for feedback and remediation thresholds in rubric scoring | https://github.com/stranske/learning-management-system/issues/673 |
 
-## 5. Intake & Durable Records
-- **Intake Log**: 7 entries appended to `~/.codex/orchestrator/measurement/intake-2026-09-04.log`.
-- **Durable Audit Ledger**: Updated `Code/Audits/AUDIT_LEDGER.md` with 2026-09-10 index entry and full run record.
-- **Durable Audit Directory**: Updated `Code/Audits/learning-management-system/README.md`, written `2026-09-10-AUDIT_REPORT.md`, `2026-09-10-verification-log.md`, and `2026-09-10-audit-run.md`.
-- **Staged Issue Bodies**: Persisted under `Code/Audits/learning-management-system/2026-09-10-issue-bodies/`.
+## 5. Intake Log & Checkpoint Status
+- 7 URLs appended to `~/.codex/orchestrator/measurement/intake-2026-09-04.log`.
+- Dropbox audit directory updated: `README.md`, `2026-09-10-refill-verification-log.md`, `2026-09-10-refill-audit-run.md`, `2026-09-10-refill-AUDIT_REPORT.md`, and `2026-09-10-refill-issue-bodies/`.
+- Checkpoint file finalized at `/Users/teacher/.codex/automations/research-program/artifacts/audits/D-audit-learning-management-system--2026-09-10T17-45-16Z.CHECKPOINT.md`.
