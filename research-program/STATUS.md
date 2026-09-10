@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-10T18:35:00Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-10T18:52:40Z)
 
 Units: 92 — claimed 1, done 90, queued 1
 Paused: False   Phase stops: []
@@ -103,9 +103,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-10T15:58:41Z — D3-unblock-sweep-2026-09-10T15 — done — gemini produced 442 words at artifacts/sweeps/D3-unblock-sweep-2026-09-10T15.md in 515s
-- 2026-09-10T17:45:12Z — refill — Counter_Risk: open=1 <= 2 → audit queued
-- 2026-09-10T17:45:13Z — refill — Manager-Database: open=0 <= 2 → audit queued
 - 2026-09-10T17:45:16Z — refill — learning-management-system: open=2 <= 2 → audit queued
 - 2026-09-10T17:45:17Z — D-audit-Counter_Risk--2026-09-10T17-45-12Z — route — router picked codex from ['codex']
 - 2026-09-10T17:45:17Z — D-audit-Counter_Risk--2026-09-10T17-45-12Z — claimed by driver (agent codex)
@@ -115,6 +112,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-10T18:19:54Z — D-audit-Manager-Database--2026-09-10T17-45-13Z — fail — gemini produced 388 words at /Users/teacher/.codex/automations/research-program/artifacts/audits/Manager-Database-2026-09-10.md (min 400); rotating agent
 - 2026-09-10T18:35:00Z — D-audit-Manager-Database--2026-09-10T17-45-13Z — route — router picked codex from ['codex']
 - 2026-09-10T18:35:00Z — D-audit-Manager-Database--2026-09-10T17-45-13Z — claimed by driver (agent codex)
+- 2026-09-10T18:37:35Z — D-audit-Manager-Database--2026-09-10T17-45-13Z — fail — gemini did not write a fresh output artifact
+- 2026-09-10T18:52:40Z — D-audit-Manager-Database--2026-09-10T17-45-13Z — route — router picked codex from ['codex']
+- 2026-09-10T18:52:40Z — D-audit-Manager-Database--2026-09-10T17-45-13Z — claimed by driver (agent codex)
 
 ## Questions
 
