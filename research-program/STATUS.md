@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-11T17:10:18Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-11T17:10:27Z)
 
 Units: 96 — claimed 1, done 95
 Paused: False   Phase stops: []
@@ -107,7 +107,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-11T08:00:24Z — D3-unblock-sweep-2026-09-11T08 — claimed by driver (agent cursor)
 - 2026-09-11T08:18:09Z — D3-unblock-sweep-2026-09-11T08 — fail — vibe produced 223 words at /Users/teacher/.codex/automations/research-program/artifacts/sweeps/D3-unblock-sweep-2026-09-11T08.md (min 400); rotating agent
 - 2026-09-11T08:33:30Z — D3-unblock-sweep-2026-09-11T08 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-11T08:33:30Z — D3-unblock-sweep-2026-09-11T08 — claimed by driver (agent cursor)
@@ -119,6 +118,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-11T17:05:25Z — D3-unblock-sweep-2026-09-11T16 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-11T17:05:25Z — D3-unblock-sweep-2026-09-11T16 — claimed by claude (agent cursor)
 - 2026-09-11T17:10:17Z — D3-unblock-sweep-2026-09-11T16 — default recorded — q-D3-unblock-sweep-2026-09-11T16
+- 2026-09-11T17:10:26Z — D3-unblock-sweep-2026-09-11T16 — default recorded — q-D3-unblock-sweep-2026-09-11T16
 
 ## Questions
 
@@ -130,4 +130,8 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 ### q-D3-unblock-sweep-2026-09-11T16 (2026-09-11T17:10:17Z) — unit D3-unblock-sweep-2026-09-11T16
 **Question:** Track D's brief instructs this sweep to fix mechanical default-branch CI breaks in a pull request and to file issues for real defects, but the executor prompt for this role states 'Never touch other repos' code in this role (research and writing only; issue bodies are written as files, not filed).' Which governs for the unblock sweep? Two mechanical breaks (Ready, Fine-Art-Archive) have now been diagnosed but left unfixed on consecutive sweeps because no executor is permitted to drain them.
 **Default being followed:** Follow the executor prompt: do not open PRs or file issues from this role; record the exact one-command fix and write issue bodies as files under artifacts/sweeps/ for a lane to apply.
+
+### q-D3-unblock-sweep-2026-09-11T16 (2026-09-11T17:10:26Z) — unit D3-unblock-sweep-2026-09-11T16
+**Question:** Track D brief says fix mechanical default-branch CI breaks in a PR and file issues for real defects; the executor prompt says never touch other repos code in this role (research and writing only, issue bodies written as files not filed). Which governs? Two mechanical breaks (Ready, Fine-Art-Archive) are now diagnosed-but-undrained across consecutive sweeps because no executor may fix them.
+**Default being followed:** Follow the executor prompt: no PRs, no filed issues; record the exact one-command fix and write issue bodies as files for a lane to apply.
 
