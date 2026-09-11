@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-11T17:09:17Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-11T17:10:18Z)
 
 Units: 96 — claimed 1, done 95
 Paused: False   Phase stops: []
@@ -107,7 +107,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-11T08:00:24Z — D3-unblock-sweep-2026-09-11T08 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-11T08:00:24Z — D3-unblock-sweep-2026-09-11T08 — claimed by driver (agent cursor)
 - 2026-09-11T08:18:09Z — D3-unblock-sweep-2026-09-11T08 — fail — vibe produced 223 words at /Users/teacher/.codex/automations/research-program/artifacts/sweeps/D3-unblock-sweep-2026-09-11T08.md (min 400); rotating agent
 - 2026-09-11T08:33:30Z — D3-unblock-sweep-2026-09-11T08 — route — router picked cursor from ['codex', 'cursor']
@@ -119,6 +118,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-11T16:54:04Z — D3-unblock-sweep-2026-09-11T16 — fail — offload to cursor exited 1; retained artifact is not proof of success
 - 2026-09-11T17:05:25Z — D3-unblock-sweep-2026-09-11T16 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-11T17:05:25Z — D3-unblock-sweep-2026-09-11T16 — claimed by claude (agent cursor)
+- 2026-09-11T17:10:17Z — D3-unblock-sweep-2026-09-11T16 — default recorded — q-D3-unblock-sweep-2026-09-11T16
 
 ## Questions
 
@@ -126,4 +126,8 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 ### q-B7-program-plan-v3 (2026-09-04T19:53:40Z) — unit B7-program-plan-v3
 **Question:** Where should the manager-mosaic capability live: Manager-Database, Inv-Man-Intake, or a fourth new repo? (Orchestrator question q-f774f07b2a2d6ae7)
 **Default being followed:** Inv-Man-Intake, because it already enforces document-and-page provenance and no new repo is needed; the drafted bodies stay unfiled under artifacts/issues/Manager-Mosaic/ until you decide.
+
+### q-D3-unblock-sweep-2026-09-11T16 (2026-09-11T17:10:17Z) — unit D3-unblock-sweep-2026-09-11T16
+**Question:** Track D's brief instructs this sweep to fix mechanical default-branch CI breaks in a pull request and to file issues for real defects, but the executor prompt for this role states 'Never touch other repos' code in this role (research and writing only; issue bodies are written as files, not filed).' Which governs for the unblock sweep? Two mechanical breaks (Ready, Fine-Art-Archive) have now been diagnosed but left unfixed on consecutive sweeps because no executor is permitted to drain them.
+**Default being followed:** Follow the executor prompt: do not open PRs or file issues from this role; record the exact one-command fix and write issue bodies as files under artifacts/sweeps/ for a lane to apply.
 
