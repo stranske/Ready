@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-11T07:45:10Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-11T08:00:24Z)
 
-Units: 94 — done 94
+Units: 95 — claimed 1, done 94
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 Claude conservation: off (weekly window available)
@@ -71,6 +71,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D3-unblock-sweep-2026-09-10T07 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D3-unblock-sweep-2026-09-10T15 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D3-unblock-sweep-2026-09-10T23 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
+| D3-unblock-sweep-2026-09-11T08 | D | D | claimed | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D-audit-Counter_Risk--2026-09-07T04-47-32Z | D | D | done | codex | driver | Audit stranske/Counter_Risk and file issues (supply 2 <= 2) |
 | D-audit-Counter_Risk--2026-09-08T17-11-36Z | D | D | done | codex | codex | Audit stranske/Counter_Risk and file issues (supply 1 <= 2) |
 | D-audit-Counter_Risk--2026-09-09T05-14-45Z | D | D | done | codex | driver | Audit stranske/Counter_Risk and file issues (supply 1 <= 2) |
@@ -105,9 +106,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-10T18:55:30Z — D-audit-Manager-Database--2026-09-10T17-45-13Z — done — gemini produced 1167 words at artifacts/audits/Manager-Database-2026-09-10.md in 163s
-- 2026-09-10T19:10:43Z — D-audit-learning-management-system--2026-09-10T17-45-16Z — route — router picked codex from ['codex']
-- 2026-09-10T19:10:43Z — D-audit-learning-management-system--2026-09-10T17-45-16Z — claimed by driver (agent codex)
 - 2026-09-10T19:23:31Z — D-audit-learning-management-system--2026-09-10T17-45-16Z — done — gemini produced 786 words at artifacts/audits/learning-management-system-2026-09-10.md in 757s
 - 2026-09-10T23:57:25Z — unblock — enqueued D3-unblock-sweep-2026-09-10T23
 - 2026-09-10T23:57:26Z — D3-unblock-sweep-2026-09-10T23 — route — router picked cursor from ['codex', 'cursor']
@@ -117,6 +115,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-11T01:49:23Z — D4-verify-merged-2026-09-11T01 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-11T01:49:23Z — D4-verify-merged-2026-09-11T01 — claimed by driver (agent cursor)
 - 2026-09-11T01:55:43Z — D4-verify-merged-2026-09-11T01 — done — gemini produced 5807 words at artifacts/verification/D4-verify-merged-2026-09-11T01.md in 374s
+- 2026-09-11T08:00:23Z — unblock — enqueued D3-unblock-sweep-2026-09-11T08
+- 2026-09-11T08:00:24Z — D3-unblock-sweep-2026-09-11T08 — route — router picked cursor from ['codex', 'cursor']
+- 2026-09-11T08:00:24Z — D3-unblock-sweep-2026-09-11T08 — claimed by driver (agent cursor)
 
 ## Questions
 
