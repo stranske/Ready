@@ -1,4 +1,4 @@
-# Audit refill check 2026-09-11T05:58:48Z
+# Audit refill check 2026-09-11T18:10:01Z
 
 | repo | open agent-ready | last set | threshold | action |
 |---|---|---|---|---|
@@ -6,7 +6,7 @@
 | stranske/Manager-Mosaic | 10 | 9 | 3 | idle |
 | stranske/Workflows | 26 | 4 | 2 | idle |
 | stranske/Travel-Plan-Permission | 5 | 9 | 3 | idle |
-| stranske/Trend_Model_Project | 10 | 10 | 3 | idle |
+| stranske/Trend_Model_Project | 8 | 10 | 3 | idle |
 | stranske/Portable-Alpha-Extension-Model | 4 | 10 | 3 | idle |
 | stranske/Counter_Risk | 8 | 7 | 2 | idle |
 | stranske/Manager-Database | 7 | 7 | 2 | idle |
