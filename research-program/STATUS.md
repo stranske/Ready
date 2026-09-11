@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-11T01:49:23Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-11T01:55:43Z)
 
-Units: 94 — claimed 1, done 93
+Units: 94 — done 94
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 Claude conservation: off (weekly window available)
@@ -101,11 +101,10 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D4-verify-merged-2026-09-08T01 | D | D | done | codex | driver | Verify merged PRs against their issues' acceptance criteria |
 | D4-verify-merged-2026-09-09T01 | D | D | done | codex | driver | Verify merged PRs against their issues' acceptance criteria |
 | D4-verify-merged-2026-09-10T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
-| D4-verify-merged-2026-09-11T01 | D | D | claimed | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
+| D4-verify-merged-2026-09-11T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
 
 ## Last checkpoints
 
-- 2026-09-10T18:52:40Z — D-audit-Manager-Database--2026-09-10T17-45-13Z — claimed by driver (agent codex)
 - 2026-09-10T18:55:30Z — D-audit-Manager-Database--2026-09-10T17-45-13Z — done — gemini produced 1167 words at artifacts/audits/Manager-Database-2026-09-10.md in 163s
 - 2026-09-10T19:10:43Z — D-audit-learning-management-system--2026-09-10T17-45-16Z — route — router picked codex from ['codex']
 - 2026-09-10T19:10:43Z — D-audit-learning-management-system--2026-09-10T17-45-16Z — claimed by driver (agent codex)
@@ -117,6 +116,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-11T01:49:22Z — verify — enqueued D4-verify-merged-2026-09-11T01
 - 2026-09-11T01:49:23Z — D4-verify-merged-2026-09-11T01 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-11T01:49:23Z — D4-verify-merged-2026-09-11T01 — claimed by driver (agent cursor)
+- 2026-09-11T01:55:43Z — D4-verify-merged-2026-09-11T01 — done — gemini produced 5807 words at artifacts/verification/D4-verify-merged-2026-09-11T01.md in 374s
 
 ## Questions
 
