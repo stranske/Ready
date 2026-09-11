@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-11T08:00:24Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-11T08:33:30Z)
 
 Units: 95 — claimed 1, done 94
 Paused: False   Phase stops: []
@@ -106,9 +106,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-10T19:23:31Z — D-audit-learning-management-system--2026-09-10T17-45-16Z — done — gemini produced 786 words at artifacts/audits/learning-management-system-2026-09-10.md in 757s
-- 2026-09-10T23:57:25Z — unblock — enqueued D3-unblock-sweep-2026-09-10T23
-- 2026-09-10T23:57:26Z — D3-unblock-sweep-2026-09-10T23 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-10T23:57:26Z — D3-unblock-sweep-2026-09-10T23 — claimed by driver (agent cursor)
 - 2026-09-11T00:03:10Z — D3-unblock-sweep-2026-09-10T23 — done — gemini produced 447 words at artifacts/sweeps/D3-unblock-sweep-2026-09-10T23.md in 336s
 - 2026-09-11T01:49:22Z — verify — enqueued D4-verify-merged-2026-09-11T01
@@ -118,6 +115,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-11T08:00:23Z — unblock — enqueued D3-unblock-sweep-2026-09-11T08
 - 2026-09-11T08:00:24Z — D3-unblock-sweep-2026-09-11T08 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-11T08:00:24Z — D3-unblock-sweep-2026-09-11T08 — claimed by driver (agent cursor)
+- 2026-09-11T08:18:09Z — D3-unblock-sweep-2026-09-11T08 — fail — vibe produced 223 words at /Users/teacher/.codex/automations/research-program/artifacts/sweeps/D3-unblock-sweep-2026-09-11T08.md (min 400); rotating agent
+- 2026-09-11T08:33:30Z — D3-unblock-sweep-2026-09-11T08 — route — router picked cursor from ['codex', 'cursor']
+- 2026-09-11T08:33:30Z — D3-unblock-sweep-2026-09-11T08 — claimed by driver (agent cursor)
 
 ## Questions
 
