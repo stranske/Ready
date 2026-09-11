@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-11T17:10:27Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-11T17:12:05Z)
 
-Units: 96 — claimed 1, done 95
+Units: 96 — done 96
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 Claude conservation: off (weekly window available)
@@ -72,7 +72,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D3-unblock-sweep-2026-09-10T15 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D3-unblock-sweep-2026-09-10T23 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D3-unblock-sweep-2026-09-11T08 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
-| D3-unblock-sweep-2026-09-11T16 | D | D | claimed | cursor | claude | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
+| D3-unblock-sweep-2026-09-11T16 | D | D | done | cursor | claude | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D-audit-Counter_Risk--2026-09-07T04-47-32Z | D | D | done | codex | driver | Audit stranske/Counter_Risk and file issues (supply 2 <= 2) |
 | D-audit-Counter_Risk--2026-09-08T17-11-36Z | D | D | done | codex | codex | Audit stranske/Counter_Risk and file issues (supply 1 <= 2) |
 | D-audit-Counter_Risk--2026-09-09T05-14-45Z | D | D | done | codex | driver | Audit stranske/Counter_Risk and file issues (supply 1 <= 2) |
@@ -107,7 +107,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-11T08:18:09Z — D3-unblock-sweep-2026-09-11T08 — fail — vibe produced 223 words at /Users/teacher/.codex/automations/research-program/artifacts/sweeps/D3-unblock-sweep-2026-09-11T08.md (min 400); rotating agent
 - 2026-09-11T08:33:30Z — D3-unblock-sweep-2026-09-11T08 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-11T08:33:30Z — D3-unblock-sweep-2026-09-11T08 — claimed by driver (agent cursor)
 - 2026-09-11T08:37:54Z — D3-unblock-sweep-2026-09-11T08 — done — gemini produced 963 words at artifacts/sweeps/D3-unblock-sweep-2026-09-11T08.md in 258s
@@ -119,6 +118,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-11T17:05:25Z — D3-unblock-sweep-2026-09-11T16 — claimed by claude (agent cursor)
 - 2026-09-11T17:10:17Z — D3-unblock-sweep-2026-09-11T16 — default recorded — q-D3-unblock-sweep-2026-09-11T16
 - 2026-09-11T17:10:26Z — D3-unblock-sweep-2026-09-11T16 — default recorded — q-D3-unblock-sweep-2026-09-11T16
+- 2026-09-11T17:12:05Z — D3-unblock-sweep-2026-09-11T16 — done — Fleet has zero people-blockers and zero open PRs, but four default branches are red (Ready and Fine-Art-Archive on black formatting, Workflows on a real proxy T
 
 ## Questions
 
