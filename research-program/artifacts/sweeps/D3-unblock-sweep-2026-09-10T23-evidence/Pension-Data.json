@@ -1,0 +1,352 @@
+{
+  "repo": "Pension-Data",
+  "main_sha": "b1ab54323b2720835be80c98cb98ca6ef3380fd7",
+  "clone_sha": "ddda7b96aa8998780297f44cdca0f243f7ce598a",
+  "open_issues_count": 10,
+  "frozen_issues": [],
+  "bot_tracker_count": 0,
+  "stalled_prs": [],
+  "all_agent_prs": [],
+  "primary_run": {
+    "conclusion": "success",
+    "createdAt": "2026-09-08T18:53:57Z",
+    "databaseId": 34265771845,
+    "event": "push",
+    "headSha": "b1ab54323b2720835be80c98cb98ca6ef3380fd7",
+    "name": "CI",
+    "status": "completed",
+    "url": "https://github.com/stranske/Pension-Data/actions/runs/34265771845",
+    "workflowName": "CI"
+  },
+  "ci_status_str": "[Green](https://github.com/stranske/Pension-Data/actions/runs/34265771845)",
+  "ci_status_plain": "Green",
+  "supply": 8,
+  "issues": [
+    {
+      "body": "## Why\n\nConsultant vars should live beside actuarial facts \u2014 consume Doc-Lineage output, don't duplicate diff (R2 \u00a76). Verified: `src/pension_data/extract/common/evidence.py:89-96` builds internal evidence refs but no `staging/` import module exists for external `tracked-variable/v1` files. **Depends on:** B2-002.\n\n## Scope\n\nStaging table/import for `tracked-variable/v1` JSON from Doc-Lineage runs.\n\n## Non-Goals\n\n- Do NOT implement diff engine inside Pension-Data.\n- Scaffold-only completion does NOT count.\n\n## Tasks\n\n- [ ] Add `src/pension_data/staging/doc_lineage_vars.py`.\n- [ ] Add `tests/staging/test_doc_lineage_import.py` with synthetic variable file.\n\n## Acceptance Criteria\n\n- [ ] Named test: `tests/staging/test_doc_lineage_import.py::test_variable_staged_with_entity_ref` passes.\n- [ ] **Deliberate-break gate:** drop `ontology_key` \u2192 test **must FAIL** \u2192 revert.\n\n_Surfaced by B2-044._\n",
+      "createdAt": "2026-09-04T19:59:39Z",
+      "labels": [
+        {
+          "id": "LA_kwDORbgH9M8AAAACZuwwSg",
+          "name": "agents:formatted",
+          "description": "Issue has been formatted to AGENT_ISSUE_TEMPLATE",
+          "color": "1D76DB"
+        },
+        {
+          "id": "LA_kwDORbgH9M8AAAACZuxMlQ",
+          "name": "agents:auto-pilot",
+          "description": "Triggers end-to-end auto-pilot pipeline",
+          "color": "0052CC"
+        }
+      ],
+      "number": 885,
+      "title": "[P2] Doc-Lineage variable staging import (B2-044)",
+      "updatedAt": "2026-09-04T21:27:53Z",
+      "url": "https://github.com/stranske/Pension-Data/issues/885"
+    },
+    {
+      "body": "## Why\n\nExpand replay corpus after CalPERS harvester (B2-038). Verified: `tools/replay/runner.py:130-172` replays golden corpus but manifest entries from `public-doc-fixtures` are not referenced in replay config. **Missing behavior:** public PDFs not wired into replay gate. **Depends on:** B2-038.\n\n## Scope\n\nAdd harvested PDFs to test replay fixtures without bloating git (use manifest refs).\n\n## Non-Goals\n\n- Do NOT commit multi-GB blobs outside LFS.\n- Scaffold-only completion does NOT count.\n\n## Tasks\n\n- [ ] Add `config/replay_corpus_manifest.json` referencing Doc-Lineage `tests/fixtures/public_corpus/manifest.json` entries.\n- [ ] Add `tests/replay/test_corpus_manifest_wiring.py`.\n\n## Acceptance Criteria\n\n- [ ] Named test: `tests/replay/test_corpus_manifest_wiring.py::test_replay_loads_manifest_entry` passes.\n- [ ] **Deliberate-break gate:** break manifest sha \u2192 test **must FAIL** \u2192 revert.\n\n## Implementation Notes\n\nDepends on CalPERS harvester (B2-038) and Doc-Lineage public corpus manifest (B2-037).\n\n_Surfaced by B2-043._\n",
+      "createdAt": "2026-09-04T19:59:37Z",
+      "labels": [
+        {
+          "id": "LA_kwDORbgH9M8AAAACZuwwSg",
+          "name": "agents:formatted",
+          "description": "Issue has been formatted to AGENT_ISSUE_TEMPLATE",
+          "color": "1D76DB"
+        },
+        {
+          "id": "LA_kwDORbgH9M8AAAACZuxMlQ",
+          "name": "agents:auto-pilot",
+          "description": "Triggers end-to-end auto-pilot pipeline",
+          "color": "0052CC"
+        }
+      ],
+      "number": 884,
+      "title": "[P2] Replay corpus expansion for public PDF gate (B2-043)",
+      "updatedAt": "2026-09-04T21:27:50Z",
+      "url": "https://github.com/stranske/Pension-Data/issues/884"
+    },
+    {
+      "body": "## Why\n\nTabular drilldown pattern proven in `apps/web/data/workspace.json` (`tests/web/test_workspace_contract.py:135`) but not emitted from ingest runs. **Depends on:** B2-029.\n\n## Scope\n\nEmit `workspace-bundle.json` from extraction runs with `data_origin: generated`.\n\n## Non-Goals\n\n- Do NOT change fixture demo bundle semantics for local dev.\n- Scaffold-only completion does NOT count.\n\n## Tasks\n\n- [ ] Add `src/pension_data/export/workspace_bundle.py` matching `apps/contracts/runtime-contract.json`.\n- [ ] Add `tests/export/test_workspace_bundle.py`.\n\n## Acceptance Criteria\n\n- [ ] Named test: `tests/export/test_workspace_bundle.py::test_bundle_matches_runtime_contract` passes.\n- [ ] **Deliberate-break gate:** set invalid `data_origin` \u2192 test **must FAIL** \u2192 revert.\n\n_Surfaced by B2-030._\n",
+      "createdAt": "2026-09-04T19:59:36Z",
+      "labels": [
+        {
+          "id": "LA_kwDORbgH9M8AAAACZuwwSg",
+          "name": "agents:formatted",
+          "description": "Issue has been formatted to AGENT_ISSUE_TEMPLATE",
+          "color": "1D76DB"
+        },
+        {
+          "id": "LA_kwDORbgH9M8AAAACZuwwZA",
+          "name": "agents:apply-suggestions",
+          "description": "Applies optimization suggestions from agents:optimize",
+          "color": "0E8A16"
+        },
+        {
+          "id": "LA_kwDORbgH9M8AAAACZuxCWg",
+          "name": "agent:codex",
+          "description": "Assign to Codex agent",
+          "color": "0e8a16"
+        },
+        {
+          "id": "LA_kwDORbgH9M8AAAACZuxMlQ",
+          "name": "agents:auto-pilot",
+          "description": "Triggers end-to-end auto-pilot pipeline",
+          "color": "0052CC"
+        }
+      ],
+      "number": 883,
+      "title": "[P1] workspace-bundle.json contract wiring (B2-030)",
+      "updatedAt": "2026-09-04T21:43:23Z",
+      "url": "https://github.com/stranske/Pension-Data/issues/883"
+    },
+    {
+      "body": "## Why\n\n`apps/web/` is the embryonic fleet renderer (`apps/web/README.md:1-17`) but lives only in Pension-Data. **Depends on:** Workflows B2-028 `output-substrate/v1`.\n\n## Scope\n\nExtract `apps/web/static` shell to `packages/renderer-shell/` consumable by Template repo sync.\n\n## Non-Goals\n\n- Do NOT add external CDN deps (`tests/web/test_no_external_cdn.py` must stay green).\n- Scaffold-only completion does NOT count.\n\n## Tasks\n\n- [ ] Create `packages/renderer-shell/` with `index.html`, `app.js` entrypoints from `apps/web/`.\n- [ ] Keep Pension-Data `apps/web/` as thin wrapper importing shell.\n- [ ] Ensure `tests/web/test_no_external_cdn.py:6` `WEB_ROOT` still passes.\n- [ ] Add `tests/renderer/test_shell_import_smoke.py`.\n\n## Acceptance Criteria\n\n- [ ] Named test: `tests/web/test_no_external_cdn.py` passes unchanged behavior.\n- [ ] **Deliberate-break gate:** reintroduce external CDN script tag \u2192 test **must FAIL** \u2192 revert.\n\n_Surfaced by B2-029._\n",
+      "createdAt": "2026-09-04T19:59:35Z",
+      "labels": [
+        {
+          "id": "LA_kwDORbgH9M8AAAACZuwwSg",
+          "name": "agents:formatted",
+          "description": "Issue has been formatted to AGENT_ISSUE_TEMPLATE",
+          "color": "1D76DB"
+        },
+        {
+          "id": "LA_kwDORbgH9M8AAAACZuwwZA",
+          "name": "agents:apply-suggestions",
+          "description": "Applies optimization suggestions from agents:optimize",
+          "color": "0E8A16"
+        },
+        {
+          "id": "LA_kwDORbgH9M8AAAACZuxCWg",
+          "name": "agent:codex",
+          "description": "Assign to Codex agent",
+          "color": "0e8a16"
+        },
+        {
+          "id": "LA_kwDORbgH9M8AAAACZuxMlQ",
+          "name": "agents:auto-pilot",
+          "description": "Triggers end-to-end auto-pilot pipeline",
+          "color": "0052CC"
+        }
+      ],
+      "number": 882,
+      "title": "[P1] Factor renderer-shell from apps/web (B2-029)",
+      "updatedAt": "2026-09-07T15:11:40Z",
+      "url": "https://github.com/stranske/Pension-Data/issues/882"
+    },
+    {
+      "body": "## Why\n\nPension-Data has richest internal evidence (`build_evidence_reference` at `src/pension_data/extract/common/evidence.py:89-96`) but dossier notes no standalone `evidence-object/v1` files at manifest boundary. **Depends on:** B2-015.\n\n## Scope\n\nProject internal `EvidenceReference` to `evidence-object/v1` files; publish `identity-map/v1` for pension/fund/manager tokens per B3 \u00a76.1.\n\n## Non-Goals\n\n- Do NOT change internal DB schema.\n- Scaffold-only completion does NOT count.\n\n## Tasks\n\n- [ ] Add `src/pension_data/emit/evidence_object.py` mapping from `build_evidence_reference`.\n- [ ] Add `src/pension_data/emit/identity_map.py` per B3 \u00a71.5 sketch.\n- [ ] Wire into `backplane_emitter.py` manifest output.\n- [ ] Add `tests/emit/test_evidence_object_files.py` and `tests/emit/test_identity_map_export.py`.\n\n## Acceptance Criteria\n\n- [ ] Named test: `tests/emit/test_evidence_object_files.py::test_emitted_file_validates` passes.\n- [ ] **Deliberate-break gate:** omit `excerpt` in emitter \u2192 test **must FAIL** \u2192 revert.\n\n_Surfaced by B2-018; verified evidence.py:89._\n",
+      "createdAt": "2026-09-04T19:59:33Z",
+      "labels": [
+        {
+          "id": "LA_kwDORbgH9M8AAAACZuwwSg",
+          "name": "agents:formatted",
+          "description": "Issue has been formatted to AGENT_ISSUE_TEMPLATE",
+          "color": "1D76DB"
+        },
+        {
+          "id": "LA_kwDORbgH9M8AAAACZuwwZA",
+          "name": "agents:apply-suggestions",
+          "description": "Applies optimization suggestions from agents:optimize",
+          "color": "0E8A16"
+        },
+        {
+          "id": "LA_kwDORbgH9M8AAAACZuxCWg",
+          "name": "agent:codex",
+          "description": "Assign to Codex agent",
+          "color": "0e8a16"
+        },
+        {
+          "id": "LA_kwDORbgH9M8AAAACZuxMlQ",
+          "name": "agents:auto-pilot",
+          "description": "Triggers end-to-end auto-pilot pipeline",
+          "color": "0052CC"
+        }
+      ],
+      "number": 881,
+      "title": "[P1] Evidence + identity-map projection emitter (B2-018)",
+      "updatedAt": "2026-09-07T15:11:43Z",
+      "url": "https://github.com/stranske/Pension-Data/issues/881"
+    },
+    {
+      "body": "## Why\n\nAudited financials corpus lane (R6). Verified: `tools/replay/runner.py:1-17` implements golden corpus replay but no N-CSR harvest feeds the corpus (`src/pension_data/harvest/` absent). **Missing behavior:** no N-CSR sample ingest path.\n\n## Scope\n\nSingle N-CSR sample ingest path with manifest registration.\n\n## Non-Goals\n\n- Do NOT build full N-CSR bulk downloader.\n- Scaffold-only completion does NOT count.\n\n## Tasks\n\n- [ ] Add `src/pension_data/harvest/ncsr_sample.py`.\n- [ ] Add `tests/harvest/test_ncsr_sample_offline.py`.\n\n## Acceptance Criteria\n\n- [ ] Named test: `tests/harvest/test_ncsr_sample_offline.py::test_ncsr_fixture_ingests` passes.\n- [ ] **Deliberate-break gate:** skip filing date \u2192 test **must FAIL** \u2192 revert.\n\n_Surfaced by B2-042._\n",
+      "createdAt": "2026-09-04T19:59:28Z",
+      "labels": [
+        {
+          "id": "LA_kwDORbgH9M8AAAACZuwwSg",
+          "name": "agents:formatted",
+          "description": "Issue has been formatted to AGENT_ISSUE_TEMPLATE",
+          "color": "1D76DB"
+        },
+        {
+          "id": "LA_kwDORbgH9M8AAAACZuwwZA",
+          "name": "agents:apply-suggestions",
+          "description": "Applies optimization suggestions from agents:optimize",
+          "color": "0E8A16"
+        },
+        {
+          "id": "LA_kwDORbgH9M8AAAACZuxCWg",
+          "name": "agent:codex",
+          "description": "Assign to Codex agent",
+          "color": "0e8a16"
+        },
+        {
+          "id": "LA_kwDORbgH9M8AAAACZuxMlQ",
+          "name": "agents:auto-pilot",
+          "description": "Triggers end-to-end auto-pilot pipeline",
+          "color": "0052CC"
+        }
+      ],
+      "number": 880,
+      "title": "[P2] N-CSR sample ingest lane (B2-042)",
+      "updatedAt": "2026-09-07T15:11:47Z",
+      "url": "https://github.com/stranske/Pension-Data/issues/880"
+    },
+    {
+      "body": "## Why\n\nCalPERS seeded but IC items not crawled (R6). Verified: `dossier-out/DOSSIER.md:1-20` documents CalPERS source_map seeding but `grep -r calpers_ic src` returns no harvest module. Owner default #9: CalPERS-style per-item PDFs. **Missing behavior:** no IC packet crawler.\n\n## Scope\n\nHarvester registering items into public-doc-fixtures manifest format.\n\n## Non-Goals\n\n- Do NOT parallel SWIB consolidated books (owner default).\n- Scaffold-only completion does NOT count.\n\n## Tasks\n\n- [ ] Add `src/pension_data/harvest/calpers_ic.py` with offline test fixture.\n- [ ] Add `tests/harvest/test_calpers_ic_offline.py`.\n\n## Acceptance Criteria\n\n- [ ] Named test: `tests/harvest/test_calpers_ic_offline.py::test_ic_items_parsed` passes.\n- [ ] **Deliberate-break gate:** return zero items \u2192 test **must FAIL** \u2192 revert.\n\n_Surfaced by B2-038._\n",
+      "createdAt": "2026-09-04T19:59:26Z",
+      "labels": [
+        {
+          "id": "LA_kwDORbgH9M8AAAACZuwwSg",
+          "name": "agents:formatted",
+          "description": "Issue has been formatted to AGENT_ISSUE_TEMPLATE",
+          "color": "1D76DB"
+        },
+        {
+          "id": "LA_kwDORbgH9M8AAAACZuwwZA",
+          "name": "agents:apply-suggestions",
+          "description": "Applies optimization suggestions from agents:optimize",
+          "color": "0E8A16"
+        },
+        {
+          "id": "LA_kwDORbgH9M8AAAACZuxCWg",
+          "name": "agent:codex",
+          "description": "Assign to Codex agent",
+          "color": "0e8a16"
+        },
+        {
+          "id": "LA_kwDORbgH9M8AAAACZuxMlQ",
+          "name": "agents:auto-pilot",
+          "description": "Triggers end-to-end auto-pilot pipeline",
+          "color": "0052CC"
+        }
+      ],
+      "number": 879,
+      "title": "[P2] CalPERS IC document harvester (B2-038)",
+      "updatedAt": "2026-09-07T15:11:50Z",
+      "url": "https://github.com/stranske/Pension-Data/issues/879"
+    },
+    {
+      "body": "## Why\n\nThe work-environment appendix calls for **one shared PDF extraction library** instead of three overlapping implementations ([INFORMATION-REQUEST-RESPONSE.md Appendix \u00a7What looks worth systematizing, item 2](https://github.com/stranske/Ready/blob/main/research-program/artifacts/work-bundle/INFORMATION-REQUEST-RESPONSE.md)). Pension-Data maintains its own multi-stage fallback chain in `src/pension_data/parser/pdf_pipeline.py:492-519` (`table_primary` \u2192 `text_fallback` \u2192 `full_fallback` OCR) atop `pypdf` and `stranske_pdf_extract.orchestration` (`pdf_pipeline.py:10-12`). That is a fourth extraction surface alongside Inv-Man-Intake and the two work-side tools Doc-Lineage #3 replaces. **Missing behavior:** no adapter to consume Doc-Lineage #3 once it lands. **Latent fragility:** OCR fallback behavior will diverge across repos ([response \u00a7C Q8](https://github.com/stranske/Ready/blob/main/research-program/artifacts/work-bundle/INFORMATION-REQUEST-RESPONSE.md) scanned-image legal PDFs require mandatory OCR).\n\n## Scope\n\nRoute the one-PDF pilot and parser entry points through the Doc-Lineage extraction library ([Doc-Lineage #3](https://github.com/stranske/Doc-Lineage/issues/3)) instead of the bespoke `pdf_pipeline.py` fallback chain, preserving `PDFParserResult` shape for downstream actuarial extraction.\n\n## Non-Goals\n\nDo NOT change actuarial metric extraction logic in `src/pension_data/extract/actuarial/metrics.py`.\n\nDo NOT remove `stranske-pdf-extract` from the fleet \u2014 Doc-Lineage #3 should wrap or re-export it, not duplicate it.\n\nDo NOT implement consultant-report diffing (Doc-Lineage comparison engine).\n\nScaffold-only completion does NOT count: adding an unused adapter while `parse_pdf_to_funded_input()` still calls the old chain is a failure.\n\n## Tasks\n\n- [ ] Add `src/pension_data/parser/doc_lineage_backend.py` adapting Doc-Lineage #3 extraction output into `PDFParserInput`/`PDFParserResult` shapes used by `parse_pdf_to_funded_input()` at `pdf_pipeline.py:492`.\n- [ ] Add optional dependency `doc-lineage` in `pyproject.toml` referencing the Doc-Lineage package once #3 publishes `doc_lineage.extract`.\n- [ ] Update `parse_pdf_to_funded_input()` to call `doc_lineage_backend.extract()` when the extra is installed; retain the existing chain as a documented fallback until #3 is stable.\n- [ ] Update `src/pension_data/ops/one_pdf_pilot.py:282-335` to pass through the Doc-Lineage backend flag.\n- [ ] Add `tests/parser/test_doc_lineage_backend.py` with `tests/parser/fixtures/calpers_fy2024_excerpt.pdf` asserting page-attributed text and OCR escalation on a scanned-image fixture.\n- [ ] Extend `tests/golden/test_one_pdf_pilot_golden.py` to cover the Doc-Lineage backend path when installed.\n- [ ] Test the deliberate-break verification by forcing `enable_ocr=False`, capturing the failing test output, and reverting the change.\n\n## Acceptance Criteria\n\n- [ ] `tests/parser/test_doc_lineage_backend.py::test_scanned_fixture_triggers_ocr_path` passes; the scanned-image fixture does not return empty text without an OCR escalation event.\n- [ ] `tests/parser/test_doc_lineage_backend.py::test_text_pdf_emits_page_pointers` passes on `calpers_fy2024_excerpt.pdf`.\n- [ ] Temporarily forcing `enable_ocr=False` for all inputs in `doc_lineage_backend.py` causes `tests/parser/test_doc_lineage_backend.py::test_scanned_fixture_triggers_ocr_path` to fail; the change is reverted after capturing the failure.\n\n## Implementation Notes\n\nDepends on [Doc-Lineage #3](https://github.com/stranske/Doc-Lineage/issues/3) for the shared extraction API.\n\nOCR requirement grounded in [response \u00a7C Q8 and \u00a7Scope item 6](https://github.com/stranske/Ready/blob/main/research-program/artifacts/work-bundle/INFORMATION-REQUEST-RESPONSE.md) (20+ scanned legal documents silently skipped before recognition pass).\n\nConfirmed-green local reproduction: `python -m pytest tests/parser/test_pdf_pipeline.py -q` passes today on `main`.\n\n<details>\n<summary>Original Issue</summary>\n\n```text\n## Why\n\nThe work-environment appendix calls for **one shared PDF extraction library** instead of three overlapping implementations ([INFORMATION-REQUEST-RESPONSE.md Appendix \u00a7What looks worth systematizing, item 2](https://github.com/stranske/Ready/blob/main/research-program/artifacts/work-bundle/INFORMATION-REQUEST-RESPONSE.md)). Pension-Data maintains its own multi-stage fallback chain in `src/pension_data/parser/pdf_pipeline.py:492-519` (`table_primary` \u2192 `text_fallback` \u2192 `full_fallback` OCR) atop `pypdf` and `stranske_pdf_extract.orchestration` (`pdf_pipeline.py:10-12`). That is a fourth extraction surface alongside Inv-Man-Intake and the two work-side tools Doc-Lineage #3 replaces. **Missing behavior:** no adapter to consume Doc-Lineage #3 once it lands. **Latent fragility** \u2014 OCR fallback behavior will diverge across repos ([response \u00a7C Q8](https://github.com/stranske/Ready/blob/main/research-program/artifacts/work-bundle/INFORMATION-REQUEST-RESPONSE.md) scanned-image legal PDFs require mandatory OCR).\n\n## Scope\n\nRoute the one-PDF pilot and parser entry points through the Doc-Lineage extraction library ([Doc-Lineage #3](https://github.com/stranske/Doc-Lineage/issues/3)) instead of the bespoke `pdf_pipeline.py` fallback chain, preserving `PDFParserResult` shape for downstream actuarial extraction.\n\n## Non-Goals\n\n- Do NOT change actuarial metric extraction logic in `src/pension_data/extract/actuarial/metrics.py`.\n- Do NOT remove `stranske-pdf-extract` from the fleet \u2014 Doc-Lineage #3 should wrap or re-export it, not duplicate it.\n- Do NOT implement consultant-report diffing (Doc-Lineage comparison engine).\n- Scaffold-only completion does NOT count: adding an unused adapter while `parse_pdf_to_funded_input()` still calls the old chain is a failure.\n\n## Tasks\n\n- [ ] Add `src/pension_data/parser/doc_lineage_backend.py` adapting Doc-Lineage #3 extraction output into `PDFParserInput`/`PDFParserResult` shapes used by `parse_pdf_to_funded_input()` at `pdf_pipeline.py:492`.\n- [ ] Add optional dependency `doc-lineage` in `pyproject.toml` referencing the Doc-Lineage package once #3 publishes `doc_lineage.extract`.\n- [ ] Update `parse_pdf_to_funded_input()` to call `doc_lineage_backend.extract()` when the extra is installed; retain the existing chain as a documented fallback until #3 is stable, then remove in a follow-up.\n- [ ] Update `src/pension_data/ops/one_pdf_pilot.py:282-335` to pass through the Doc-Lineage backend flag.\n- [ ] Add `tests/parser/test_doc_lineage_backend.py` with `tests/parser/fixtures/calpers_fy2024_excerpt.pdf` asserting page-attributed text and OCR escalation on a scanned-image fixture.\n- [ ] Extend `tests/golden/test_one_pdf_pilot_golden.py` to cover the doc-lineage backend path when installed.\n- [ ] Perform deliberate-break verification (see Acceptance Criteria), capture FAIL output, then revert.\n\n## Acceptance Criteria\n\n- [ ] Named test: `tests/parser/test_doc_lineage_backend.py::test_scanned_fixture_triggers_ocr_path` passes \u2014 scanned-image PDF fixture must not return empty text without an OCR escalation event.\n- [ ] Named test: `tests/parser/test_doc_lineage_backend.py::test_text_pdf_emits_page_pointers` passes on `calpers_fy2024_excerpt.pdf`.\n- [ ] **Deliberate-break gate:** temporarily edit `doc_lineage_backend.py` to force `enable_ocr=False` for all inputs. `tests/parser/test_doc_lineage_backend.py::test_scanned_fixture_triggers_ocr_path` **must FAIL**. Revert after capturing the failure.\n\n## Implementation Notes\n\n- Depends on [Doc-Lineage #3](https://github.com/stranske/Doc-Lineage/issues/3) for the shared extraction API.\n- OCR requirement grounded in [response \u00a7C Q8 and \u00a7Scope item 6](https://github.com/stranske/Ready/blob/main/research-program/artifacts/work-bundle/INFORMATION-REQUEST-RESPONSE.md) (20+ scanned legal documents silently skipped before recognition pass).\n- Confirmed-green local reproduction: `python -m pytest tests/parser/test_pdf_pipeline.py -q` \u2192 passes today on `main`.\n```\n</details>\n\n<!-- issue-pr-context:formatted-body:v1 {\"sha256\":\"8527061dc9c751edf565b7e1b252c4d48a846b50bd6560e6303dc0b963a9b4f6\",\"workflows\":[\"agents-auto-pilot\",\"agents-issue-optimizer\",\"agents-63-issue-intake\",\"issue_formatter\",\"issue_optimizer\"]} -->\n",
+      "createdAt": "2026-09-04T19:52:41Z",
+      "labels": [
+        {
+          "id": "LA_kwDORbgH9M8AAAACZuwPrA",
+          "name": "enhancement",
+          "description": "New feature or request",
+          "color": "a2eeef"
+        },
+        {
+          "id": "LA_kwDORbgH9M8AAAACZuwwSg",
+          "name": "agents:formatted",
+          "description": "Issue has been formatted to AGENT_ISSUE_TEMPLATE",
+          "color": "1D76DB"
+        }
+      ],
+      "number": 878,
+      "title": "Route one-PDF parser through Doc-Lineage #3 shared extraction library",
+      "updatedAt": "2026-09-04T19:53:53Z",
+      "url": "https://github.com/stranske/Pension-Data/issues/878"
+    },
+    {
+      "body": "This issue lists Renovate updates and detected dependencies. Read the [Dependency Dashboard](https://docs.renovatebot.com/key-concepts/dashboard/) docs to learn more.<br>[View this repository on the Mend.io Web Portal](https://developer.mend.io/github/stranske/Pension-Data).\n\n## Repository Problems\n\nThese problems occurred while renovating this repository. [View logs](https://developer.mend.io//github/stranske/Pension-Data).\n\n - \u26a0\ufe0f WARN: pip-compile: dependency not found in lock file\n\n## Pending Approval\n\nThe following branches are pending approval. To create them, click on a checkbox below.\n\n - [ ] <!-- approve-branch=renovate/electron-44.x -->chore(deps): update dependency electron to v44\n\n## Awaiting Schedule\n\nThe following updates are awaiting their schedule. To get an update now, click on a checkbox below.\n\n - [ ] <!-- unschedule-branch=renovate/github-actions -->chore(deps): update postgres:18 docker digest to 7341002\n - [ ] <!-- unschedule-branch=renovate/lock-file-maintenance-weekly-lock-file-maintenance -->chore(deps): lock file maintenance\n - [ ] <!-- create-all-awaiting-schedule-prs -->\ud83d\udd10 **Create all awaiting schedule PRs at once** \ud83d\udd10\n\n## PR Closed (Blocked)\n\nThe following updates are blocked by an existing closed PR. To recreate the PR, click on a checkbox below.\n\n - [ ] <!-- recreate-branch=renovate/actions-setup-python-7.x -->[chore(deps): update actions/setup-python action to v7](../pull/741)\n\n## Detected Dependencies\n\n<details><summary>cargo (1)</summary>\n<blockquote>\n\n<details><summary>apps/mac-desktop/src-tauri/Cargo.toml (2)</summary>\n\n - `tauri 2`\n - `tauri-build 2`\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>github-actions (46)</summary>\n<blockquote>\n\n<details><summary>.github/actions/agent-run-base/action.yml</summary>\n\n\n</details>\n\n<details><summary>.github/actions/artifact-cache/action.yml</summary>\n\n\n</details>\n\n<details><summary>.github/actions/resolve-default-branch/action.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-71-codex-belt-dispatcher.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-72-codex-belt-worker.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-73-codex-belt-conveyor.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-80-pr-event-hub.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-81-gate-followups.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-auto-label.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-auto-pilot.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-autofix-dispatcher.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-capability-check.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-decompose.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-dedup.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-guard.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-issue-format-guard.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-issue-intake.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-issue-optimizer.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-keepalive-loop-reporter.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-keepalive-sweep.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-pr-health.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-verifier.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-verify-to-new-pr.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-weekly-metrics.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/autofix.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/backplane-conformance.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/ci.yml (1)</summary>\n\n - `stranske/Workflows main`\n\n</details>\n\n<details><summary>.github/workflows/cross-repo-smoke.yml (1)</summary>\n\n - `stranske/Workflows main`\n\n</details>\n\n<details><summary>.github/workflows/entity-regression.yml (4)</summary>\n\n - `actions/checkout v7`\n - `actions/setup-python v6` \u2192 [Updates: `v7`]\n - `actions/upload-artifact v7`\n - `python 3.14`\n\n</details>\n\n<details><summary>.github/workflows/extraction-golden-regression.yml (4)</summary>\n\n - `actions/checkout v7`\n - `actions/setup-python v6` \u2192 [Updates: `v7`]\n - `actions/upload-artifact v7`\n - `python 3.14`\n\n</details>\n\n<details><summary>.github/workflows/foundation-fixture-e2e.yml (6)</summary>\n\n - `actions/checkout v7`\n - `actions/setup-python v6` \u2192 [Updates: `v7`]\n - `actions/upload-artifact v7`\n - `actions/upload-artifact v7`\n - `actions/upload-artifact v7`\n - `python 3.14`\n\n</details>\n\n<details><summary>.github/workflows/list-llm-models.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/mac-desktop-tauri.yml (7)</summary>\n\n - `actions/checkout v7`\n - `actions/setup-node v7`\n - `actions/checkout v7`\n - `actions/setup-node v7`\n - `dtolnay/rust-toolchain stable`\n - `node 24`\n - `node 24`\n\n</details>\n\n<details><summary>.github/workflows/maint-76-claude-code-review.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/maint-87-docs-drift-fix-agent.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/maint-coverage-guard.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/maint-dependabot-auto-lock.yml (3)</summary>\n\n - `actions/checkout v7`\n - `actions/setup-python v6@ece7cb06caefa5fff74198d8649806c4678c61a1` \u2192 [Updates: `v7`]\n - `python 3.14`\n\n</details>\n\n<details><summary>.github/workflows/nl-sql-golden.yml (4)</summary>\n\n - `actions/checkout v7`\n - `actions/setup-python v6` \u2192 [Updates: `v7`]\n - `actions/upload-artifact v7`\n - `python 3.14`\n\n</details>\n\n<details><summary>.github/workflows/one-pdf-pilot-golden.yml (4)</summary>\n\n - `actions/checkout v7`\n - `actions/setup-python v6` \u2192 [Updates: `v7`]\n - `actions/upload-artifact v7`\n - `python 3.14`\n\n</details>\n\n<details><summary>.github/workflows/postgres-integration.yml (4)</summary>\n\n - `actions/checkout v7`\n - `actions/setup-python v6` \u2192 [Updates: `v7`]\n - `postgres 18@sha256:d93de42662696f278fb34354b06fdaa90ad7ca3106d6f72fbd01d16da006d2cf` \u2192 [Updates: `18`]\n - `python 3.14`\n\n</details>\n\n<details><summary>.github/workflows/pr-00-gate.yml (4)</summary>\n\n - `actions/checkout v7`\n - `stranske/Workflows main`\n - `actions/checkout v7`\n - `actions/github-script v9.0.0`\n\n</details>\n\n<details><summary>.github/workflows/pr-46-dependency-repair-contract.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/quality-replay.yml (4)</summary>\n\n - `actions/checkout v7`\n - `actions/setup-python v6` \u2192 [Updates: `v7`]\n - `actions/upload-artifact v7`\n - `python 3.14`\n\n</details>\n\n<details><summary>.github/workflows/quality-sla-check.yml (4)</summary>\n\n - `actions/checkout v7`\n - `actions/setup-python v6` \u2192 [Updates: `v7`]\n - `actions/upload-artifact v7`\n - `python 3.14`\n\n</details>\n\n<details><summary>.github/workflows/reusable-pr-context.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/web-cloudflare-pages.yml (7)</summary>\n\n - `actions/checkout v7`\n - `actions/setup-python v6` \u2192 [Updates: `v7`]\n - `actions/checkout v7`\n - `actions/setup-python v6` \u2192 [Updates: `v7`]\n - `cloudflare/pages-action v1`\n - `python 3.14`\n - `python 3.14`\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>npm (2)</summary>\n<blockquote>\n\n<details><summary>.github/scripts/package.json</summary>\n\n\n</details>\n\n<details><summary>apps/mac-desktop/package.json (2)</summary>\n\n - `@tauri-apps/cli ^2.0.0`\n - `electron ^43.0.0` \u2192 [Updates: `^44.0.0`]\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>pip-compile (1)</summary>\n<blockquote>\n\n<details><summary>pyproject.toml (19)</summary>\n\n - `python >=3.12`\n - `defusedxml >=0.7.1`\n - `fastapi >=0.116.0`\n - `jsonschema >=4.26.0,<4.27.0`\n - `pypdf >=5.4.0`\n - `uvicorn >=0.35.0`\n - `psycopg >=3.2.0`\n - `langchain >=0.3.27`\n - `langchain-core >=0.3.75`\n - `langchain-openai >=0.3.35`\n - `langchain-anthropic >=0.3.20`\n - `langsmith >=0.4.40`\n - `pandas >=2.2.0`\n - `openpyxl >=3.1.0`\n - `requests >=2.32.0`\n - `pytest-regressions ==2.11.0`\n - `numpy >=2.2.0`\n - `pandas >=2.2.0`\n - `setuptools >=61.0`\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>pip_requirements (1)</summary>\n<blockquote>\n\n<details><summary>tools/requirements-llm.txt</summary>\n\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>poetry (1)</summary>\n<blockquote>\n\n<details><summary>pyproject.toml (16)</summary>\n\n - `defusedxml >=0.7.1`\n - `fastapi >=0.116.0`\n - `jsonschema >=4.26.0,<4.27.0`\n - `pypdf >=5.4.0`\n - `uvicorn >=0.35.0`\n - `psycopg >=3.2.0`\n - `langchain >=0.3.27`\n - `langchain-core >=0.3.75`\n - `langchain-openai >=0.3.35`\n - `langchain-anthropic >=0.3.20`\n - `langsmith >=0.4.40`\n - `pandas >=2.2.0`\n - `openpyxl >=3.1.0`\n - `requests >=2.32.0`\n - `pytest-regressions ==2.11.0`\n - `numpy >=2.2.0`\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>renovate-config (1)</summary>\n<blockquote>\n\n<details><summary>.github/renovate.json</summary>\n\n\n</details>\n\n</blockquote>\n</details>\n\n---\n\n- [ ] <!-- manual job -->Check this box to trigger a request for Renovate to run again on this repository\n\n",
+      "createdAt": "2026-06-15T04:41:06Z",
+      "labels": [
+        {
+          "id": "LA_kwDORbgH9M8AAAACrdxv_w",
+          "name": "tracker:durable",
+          "description": "Permanently-open tracker; excluded from open-issue backlog counts",
+          "color": "c5def5"
+        }
+      ],
+      "number": 542,
+      "title": "Dependency Dashboard",
+      "updatedAt": "2026-09-10T23:10:38Z",
+      "url": "https://github.com/stranske/Pension-Data/issues/542"
+    },
+    {
+      "body": "Tracking issue for weekly agent workflow metrics.\n\n# Agent Metrics Summary\n\nGenerated: 2026-04-27T07:03:33Z\nRecords: 48 (keepalive 40, autofix 0, verifier 1, terminal dispositions 2, verifier follow-up ledgers 2, codex CLI freshness 0, autopilot 3, unknown 0)\nParse errors: 0\nRange: 2026-04-27T05:28:23.554000Z to 2026-04-27T06:31:56Z\n\n## Keepalive\n- Runs: 40\n- PRs: 5\n- Avg iterations: 0.0\n- Stop reasons: missing-agent-label (20), autofix disabled for this pull request (7), upstream Gate succeeded (7), missing workflow_run payload (6)\n- Actions: wait (20)\n- Gate conclusions: cancelled (9), success (7)\n- Tasks complete rate: 0.0% (0/40)\n\n## Autofix\n- Attempts: 0\n- PRs: 0\n- Fixes applied: n/a\n- Trigger reasons: n/a\n- Gate results after: n/a\n\n## Verifier\n- Runs: 1\n- PRs: 1\n- Verdicts: CONCERNS (1), concerns (1), FAIL (1)\n- Issues created: 0\n- Avg acceptance criteria: 7.0\n- Terminal disposition records: 2\n- Terminal dispositions: needs-human (1), follow-up-created (1)\n- Terminal disposition sources: pull-request:339 (1), source-issue:338 (1)\n- Terminal artifact families: review-thread-terminal-disposition: missing (0/0), verifier-terminal-disposition: selected (2/2)\n- Missing terminal artifact families: review-thread-terminal-disposition\n- Verifier follow-up ledger records: 2\n- Verifier follow-up ledger dispositions: needs-human (1), follow-up (1)\n- Verifier follow-up ledger PRs: 1\n- Verifier follow-up issues linked: 1\n- Verifier follow-up needs-human records: 1\n- Verifier follow-up avg chain depth: 0.0\n- Verifier follow-up max chain depth: 0\n- Verifier follow-up policy records: 2\n- Verifier follow-up policy actions: needs-human (1), create-follow-up (1)\n- Verifier follow-up policy triggers: verifier-concerns (2)\n- Verifier follow-up depth-limit records: 0\n- Verifier models: gpt-5.5 (2)\n- Verifier CLI versions: codex-cli 0.125.0 (2)\n- Unsupported verifier models: n/a\n- Unsupported model dispositions: n/a\n- Missing verifier model metadata: n/a\n- Legacy missing verifier model metadata: n/a\n- Model selection reasons: default (2)\n- Verifier modes: compare (2)\n\n## Codex CLI Freshness\n- Records: 0\n- Statuses: n/a\n- Packages: n/a\n- Pinned versions: n/a\n- Latest versions: n/a\n- Outdated records: 0\n- Latest unavailable records: 0\n- Max version delta: major 0, minor 0, patch 0\n- Update targets: n/a\n\n## Auto-Pilot Pipeline\n- Records: 3\n- Issues: 1\n- Total step executions: 3\n- Cycle records: 0\n- Cycle count distribution: n/a\n- Cycle step completion: n/a\n- Escalations: 0\n- Needs-human escalation rate: n/a\n- Escalation reasons: n/a\n- Failure reasons: step-failed (1)\n\n### Step Average Durations\n- apply: 34.8s avg (100.0% (1/1) success)\n- capability-check: 3.9s avg (0.0% (0/1) success)\n- optimize: 62.3s avg (100.0% (1/1) success)\n\n## Weekly Metrics Artifact Selection\n\n- Schema: workflows-weekly-metrics-artifact-selection/v1\n- Status: pass\n- Lookback days: 14\n- Scan cap: 5 pages x 100 artifacts\n- Priority producer scan cap: 10 runs per source workflow\n- Download cap: 80 total, 20 per family\n- Scanned artifacts: 500\n- Candidate artifacts: 178\n- Selected artifacts: 46\n- Missing priority families: codex-cli-freshness, review-thread-terminal-disposition, bot-comment-auth-coverage-wrapper, bot-comment-auth-coverage-reusable, pr-source-context\n- Ignored: 0 old, 0 expired, 322 non-metrics, 132 over family cap, 0 over total cap\n\n| Artifact family | Candidates | Selected |\n|-----------------|------------|----------|\n| agents-autofix-metrics | 86 | 20 |\n| agents-verifier-metrics | 1 | 1 |\n| autopilot-metrics | 3 | 3 |\n| keepalive-metrics | 86 | 20 |\n| verifier-terminal-disposition | 2 | 2 |\n\n| Priority family | Status | Candidates | Selected artifact |\n|-----------------|--------|------------|-------------------|\n| codex-cli-freshness | missing | 0 | none |\n| verifier-terminal-disposition | selected | 2 | verifier-terminal-disposition-24979883965 |\n| review-thread-terminal-disposition | missing | 0 | none |\n| bot-comment-auth-coverage-wrapper | missing | 0 | none |\n| bot-comment-auth-coverage-reusable | missing | 0 | none |\n| pr-source-context | missing | 0 | none |\n\n## Weekly Metrics Artifact Downloads\n\n- Schema: workflows-weekly-metrics-artifact-download-manifest/v1\n- Status: pass\n- Selected artifacts: 46\n- Downloads: 46 passed, 0 failed\n- Unzip: 46 passed, 0 failed, 0 skipped\n\n| Artifact | ID | Download | Unzip | Path |\n|----------|----|----------|-------|------|\n| verifier-terminal-disposition-24979883965 | 6654451878 | pass | pass | artifacts/verifier-terminal-disposition-24979883965/6654451878 |\n| keepalive-metrics | 6654675849 | pass | pass | artifacts/keepalive-metrics/6654675849 |\n| agents-autofix-metrics | 6654674128 | pass | pass | artifacts/agents-autofix-metrics/6654674128 |\n| keepalive-metrics | 6654661947 | pass | pass | artifacts/keepalive-metrics/6654661947 |\n| agents-autofix-metrics | 6654658310 | pass | pass | artifacts/agents-autofix-metrics/6654658310 |\n| keepalive-metrics | 6654649744 | pass | pass | artifacts/keepalive-metrics/6654649744 |\n| agents-autofix-metrics | 6654645009 | pass | pass | artifacts/agents-autofix-metrics/6654645009 |\n| agents-autofix-metrics | 6654609437 | pass | pass | artifacts/agents-autofix-metrics/6654609437 |\n| keepalive-metrics | 6654606061 | pass | pass | artifacts/keepalive-metrics/6654606061 |\n| autopilot-metrics-24980045325-1 | 6654505438 | pass | pass | artifacts/autopilot-metrics-24980045325-1/6654505438 |\n| autopilot-metrics-24979990682-1 | 6654491412 | pass | pass | artifacts/autopilot-metrics-24979990682-1/6654491412 |\n| autopilot-metrics-24979929934-1 | 6654472739 | pass | pass | artifacts/autopilot-metrics-24979929934-1/6654472739 |\n| keepalive-metrics | 6654463108 | pass | pass | artifacts/keepalive-metrics/6654463108 |\n| agents-autofix-metrics | 6654460233 | pass | pass | artifacts/agents-autofix-metrics/6654460233 |\n| agents-autofix-metrics | 6654440270 | pass | pass | artifacts/agents-autofix-metrics/6654440270 |\n| keepalive-metrics | 6654439985 | pass | pass | artifacts/keepalive-metrics/6654439985 |\n| keepalive-metrics | 6653838435 | pass | pass | artifacts/keepalive-metrics/6653838435 |\n| agents-autofix-metrics | 6653837606 | pass | pass | artifacts/agents-autofix-metrics/6653837606 |\n| keepalive-metrics | 6653827714 | pass | pass | artifacts/keepalive-metrics/6653827714 |\n| agents-autofix-metrics | 6653826970 | pass | pass | artifacts/agents-autofix-metrics/6653826970 |\n| keepalive-metrics | 6653825592 | pass | pass | artifacts/keepalive-metrics/6653825592 |\n| agents-autofix-metrics | 6653824971 | pass | pass | artifacts/agents-autofix-metrics/6653824971 |\n| agents-verifier-metrics | 6653817535 | pass | pass | artifacts/agents-verifier-metrics/6653817535 |\n| verifier-terminal-disposition-24978024987 | 6653817369 | pass | pass | artifacts/verifier-terminal-disposition-24978024987/6653817369 |\n| agents-autofix-metrics | 6653798884 | pass | pass | artifacts/agents-autofix-metrics/6653798884 |\n| keepalive-metrics | 6653797963 | pass | pass | artifacts/keepalive-metrics/6653797963 |\n| keepalive-metrics | 6653780928 | pass | pass | artifacts/keepalive-metrics/6653780928 |\n| agents-autofix-metrics | 6653771935 | pass | pass | artifacts/agents-autofix-metrics/6653771935 |\n| keepalive-metrics | 6653457874 | pass | pass | artifacts/keepalive-metrics/6653457874 |\n| agents-autofix-metrics | 6653457084 | pass | pass | artifacts/agents-autofix-metrics/6653457084 |\n| keepalive-metrics | 6653446621 | pass | pass | artifacts/keepalive-metrics/6653446621 |\n| agents-autofix-metrics | 6653445391 | pass | pass | artifacts/agents-autofix-metrics/6653445391 |\n| keepalive-metrics | 6653441390 | pass | pass | artifacts/keepalive-metrics/6653441390 |\n| agents-autofix-metrics | 6653441253 | pass | pass | artifacts/agents-autofix-metrics/6653441253 |\n| keepalive-metrics | 6653304799 | pass | pass | artifacts/keepalive-metrics/6653304799 |\n| agents-autofix-metrics | 6653302869 | pass | pass | artifacts/agents-autofix-metrics/6653302869 |\n| agents-autofix-metrics | 6653294874 | pass | pass | artifacts/agents-autofix-metrics/6653294874 |\n| keepalive-metrics | 6653292228 | pass | pass | artifacts/keepalive-metrics/6653292228 |\n| agents-autofix-metrics | 6653283291 | pass | pass | artifacts/agents-autofix-metrics/6653283291 |\n| keepalive-metrics | 6653281981 | pass | pass | artifacts/keepalive-metrics/6653281981 |\n| keepalive-metrics | 6653271512 | pass | pass | artifacts/keepalive-metrics/6653271512 |\n| agents-autofix-metrics | 6653267137 | pass | pass | artifacts/agents-autofix-metrics/6653267137 |\n| keepalive-metrics | 6653138232 | pass | pass | artifacts/keepalive-metrics/6653138232 |\n| agents-autofix-metrics | 6653137910 | pass | pass | artifacts/agents-autofix-metrics/6653137910 |\n| keepalive-metrics | 6653125824 | pass | pass | artifacts/keepalive-metrics/6653125824 |\n| agents-autofix-metrics | 6653124681 | pass | pass | artifacts/agents-autofix-metrics/6653124681 |\n\n## Terminal Disposition Coverage Preflight\n\n- Mode: warning-only (does not block merges or automation)\n- Requested mode: warning-only\n- Status: pass\n- Coverage status: pass\n- Hard block eligible: true\n- Hard block active: false\n- Input files: 2\n- Scanned records: 2\n- Terminal disposition records: 2\n- Non-terminal records: 0\n- Observed sources: 2\n- Expected review-thread sources: 0\n- Missing review-thread sources: 0\n- Parse errors: 0\n- Artifact selector status: pass\n- Terminal artifacts selected: 2\n- Terminal artifacts candidates: 2\n- Missing terminal artifact families: review-thread-terminal-disposition\n- Verifier model compatibility: pass\n- Unsupported verifier model records: 0\n- Missing verifier model metadata records: 0\n- Missing verifier model metadata records with unknown mode: 0\n- Legacy missing verifier model metadata records: 0\n- Unsupported verifier models: gpt-5.2-codex\n\n| Observed source | Records | Dispositions | PRs |\n|-----------------|---------|--------------|-----|\n| pull-request:339 | 1 | needs-human (1) | #339 |\n| source-issue:338 | 1 | follow-up-created (1) | #339 |\n\n| Terminal artifact family | Status | Candidates | Selected | Latest artifact |\n|--------------------------|--------|------------|----------|-----------------|\n| review-thread-terminal-disposition | missing | 0 | 0 | n/a |\n| verifier-terminal-disposition | selected | 2 | 2 | verifier-terminal-disposition-24979883965 |\n\n## Bot Comment App Auth Coverage\n\n- Schema: workflows-bot-comment-auth-coverage-summary/v1\n- Status: no-data\n- Coverage status: no-data\n- Mode: warning-only\n- Hard block eligible: false\n- Hard block active: false\n- Input files: 0\n- Parsed JSON files: 0\n- Auth records: 0\n- Non-auth records: 0\n- Parse errors: 0\n- Read errors: 0\n- Artifact selection status: pass\n- Selected auth artifacts: 0\n- Required organic events: pull_request, workflow_run\n- Organic evidence status: no-data\n- Missing organic requirements: agents-bot-comment-handler-wrapper/pull_request, agents-bot-comment-handler-wrapper/workflow_run, reusable-bot-comment-handler/pull_request, reusable-bot-comment-handler/workflow_run\n- Blockers: missing-organic-agents-bot-comment-handler-wrapper-pull_request, missing-organic-agents-bot-comment-handler-wrapper-workflow_run, missing-organic-reusable-bot-comment-handler-pull_request, missing-organic-reusable-bot-comment-handler-workflow_run\n\n| Component | Latest mode | Records | Expected | Allowed | Blockers |\n|-----------|-------------|---------|----------|---------|----------|\n| agents-bot-comment-handler-wrapper | missing | 0 | client-id | client-id | missing-agents-bot-comment-handler-wrapper |\n| reusable-bot-comment-handler | missing | 0 | any | client-id, none | missing-reusable-bot-comment-handler |\n",
+      "createdAt": "2026-04-27T07:03:35Z",
+      "labels": [
+        {
+          "id": "LA_kwDORbgH9M8AAAACrdxv_w",
+          "name": "tracker:durable",
+          "description": "Permanently-open tracker; excluded from open-issue backlog counts",
+          "color": "c5def5"
+        }
+      ],
+      "number": 343,
+      "title": "Agent metrics weekly summary",
+      "updatedAt": "2026-09-07T06:34:05Z",
+      "url": "https://github.com/stranske/Pension-Data/issues/343"
+    }
+  ],
+  "prs": [],
+  "ci_runs": [
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-08T18:53:57Z",
+      "databaseId": 34265771845,
+      "event": "push",
+      "headSha": "b1ab54323b2720835be80c98cb98ca6ef3380fd7",
+      "name": "CI",
+      "status": "completed",
+      "url": "https://github.com/stranske/Pension-Data/actions/runs/34265771845",
+      "workflowName": "CI"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-08T07:02:23Z",
+      "databaseId": 34197390876,
+      "event": "push",
+      "headSha": "43390307f75efed84ac79826755d260056da0e4c",
+      "name": "CI",
+      "status": "completed",
+      "url": "https://github.com/stranske/Pension-Data/actions/runs/34197390876",
+      "workflowName": "CI"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-05T19:24:51Z",
+      "databaseId": 33987034486,
+      "event": "push",
+      "headSha": "ec2d17345bf6e111a4c852cb63e2173b5e919184",
+      "name": "CI",
+      "status": "completed",
+      "url": "https://github.com/stranske/Pension-Data/actions/runs/33987034486",
+      "workflowName": "CI"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-05T16:39:07Z",
+      "databaseId": 33978530837,
+      "event": "push",
+      "headSha": "b28e804daa710f6174fa58594a09977d723006b4",
+      "name": "CI",
+      "status": "completed",
+      "url": "https://github.com/stranske/Pension-Data/actions/runs/33978530837",
+      "workflowName": "CI"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-05T16:25:41Z",
+      "databaseId": 33977829711,
+      "event": "push",
+      "headSha": "c3694e7cc6121801f7489e2c49cb151fb69fc387",
+      "name": "CI",
+      "status": "completed",
+      "url": "https://github.com/stranske/Pension-Data/actions/runs/33977829711",
+      "workflowName": "CI"
+    }
+  ]
+}

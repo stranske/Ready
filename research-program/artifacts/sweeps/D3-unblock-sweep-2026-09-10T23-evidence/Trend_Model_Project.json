@@ -1,0 +1,456 @@
+{
+  "repo": "Trend_Model_Project",
+  "main_sha": "7c3d00ac02b60a6e9f4fc97259250d6ef2cdb58e",
+  "clone_sha": "18616a82837411b35d1581e86daf726737cf2142",
+  "open_issues_count": 12,
+  "frozen_issues": [],
+  "bot_tracker_count": 0,
+  "stalled_prs": [],
+  "all_agent_prs": [
+    {
+      "createdAt": "2026-09-10T15:22:39Z",
+      "headRefName": "codex/issue-6018-canonical-signal",
+      "isDraft": false,
+      "labels": [
+        {
+          "id": "LA_kwDOO0LrSc8AAAACJq9TDg",
+          "name": "agent:codex",
+          "description": "Assign to Codex agent",
+          "color": "0e8a16"
+        },
+        {
+          "id": "LA_kwDOO0LrSc8AAAACK12ddA",
+          "name": "autofix",
+          "description": "Let bots format/lint automatically",
+          "color": "0366d6"
+        },
+        {
+          "id": "LA_kwDOO0LrSc8AAAACNrolsQ",
+          "name": "agents:keepalive",
+          "description": "Enable keepalive monitoring on PR",
+          "color": "1d76db"
+        }
+      ],
+      "number": 6032,
+      "title": "Delegate legacy signal calculation to the canonical trend engine",
+      "updatedAt": "2026-09-10T23:29:49Z",
+      "url": "https://github.com/stranske/Trend_Model_Project/pull/6032",
+      "idle_hours": 0.539789035
+    },
+    {
+      "createdAt": "2026-09-10T15:03:24Z",
+      "headRefName": "claude/issue-6017-dummy-streamlit",
+      "isDraft": false,
+      "labels": [
+        {
+          "id": "LA_kwDOO0LrSc8AAAACK12ddA",
+          "name": "autofix",
+          "description": "Let bots format/lint automatically",
+          "color": "0366d6"
+        },
+        {
+          "id": "LA_kwDOO0LrSc8AAAACNrolsQ",
+          "name": "agents:keepalive",
+          "description": "Enable keepalive monitoring on PR",
+          "color": "1d76db"
+        },
+        {
+          "id": "LA_kwDOO0LrSc8AAAACZZhWDA",
+          "name": "agent:claude",
+          "description": "Assign to Claude agent",
+          "color": "5319e7"
+        }
+      ],
+      "number": 6031,
+      "title": "tests: consolidate the four DummyStreamlit harnesses into one shared stub",
+      "updatedAt": "2026-09-10T23:26:42Z",
+      "url": "https://github.com/stranske/Trend_Model_Project/pull/6031",
+      "idle_hours": 0.5917335038888888
+    }
+  ],
+  "primary_run": {
+    "conclusion": "success",
+    "createdAt": "2026-09-08T20:53:51Z",
+    "databaseId": 34277455100,
+    "event": "push",
+    "headSha": "7c3d00ac02b60a6e9f4fc97259250d6ef2cdb58e",
+    "name": "CI",
+    "status": "completed",
+    "url": "https://github.com/stranske/Trend_Model_Project/actions/runs/34277455100",
+    "workflowName": "CI"
+  },
+  "ci_status_str": "[Green](https://github.com/stranske/Trend_Model_Project/actions/runs/34277455100)",
+  "ci_status_plain": "Green",
+  "supply": 10,
+  "issues": [
+    {
+      "body": "\n## Why\n\nCurrent break: `.gitignore:64` ignores every `*.csv`, while `tests/baseline/test_golden/test_baseline_derived_metrics.csv` is a versioned golden fixture. `git check-ignore -v tests/__audit_golden_probe__.csv` identifies `.gitignore:64` as the rule that ignores a new test CSV, so a newly created golden fixture can be absent from review and version control.\n\n## Scope\n\nPreserve the generated-output CSV ignore rule while exempting only the repository's versioned golden-fixture directory.\n\n## Implementation Notes\n\nPlace a narrow negated ignore pattern after the broad CSV rule. Add a static test that checks a hypothetical fixture path so the test does not create or remove a file.\n\n## Tasks\n\n- [ ] Update `.gitignore` with a narrow exception for CSV files under `tests/baseline/test_golden/`.\n- [ ] Add `tests/test_golden_csv_tracking.py` to verify that a hypothetical golden CSV path is not ignored.\n\n## Acceptance Criteria\n\n- `pytest tests/test_golden_csv_tracking.py::test_golden_fixture_pattern_is_not_ignored` passes and the broad generated-output CSV rule remains in `.gitignore`.\n- temporarily remove the golden-fixture exception and confirm tests/test_golden_csv_tracking.py::test_golden_fixture_pattern_is_not_ignored fails; revert.\n\n## Non-Goals\n\n- Do not unignore unrelated CSV outputs outside `tests/baseline/test_golden/`.\n- Scaffold-only completion does NOT count: adding a test while new golden CSV fixtures remain ignored is a failure of this issue.\n",
+      "createdAt": "2026-09-04T05:48:52Z",
+      "labels": [
+        {
+          "id": "LA_kwDOO0LrSc8AAAACBy9pXg",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        },
+        {
+          "id": "LA_kwDOO0LrSc8AAAACH_xJDw",
+          "name": "testing",
+          "description": "Unit/integration/e2e tests and test infrastructure",
+          "color": "17a2b8"
+        }
+      ],
+      "number": 6026,
+      "title": "[P2] Allow versioned golden CSV fixtures to be tracked",
+      "updatedAt": "2026-09-04T05:48:52Z",
+      "url": "https://github.com/stranske/Trend_Model_Project/issues/6026"
+    },
+    {
+      "body": "\n## Why\n\nCurrent break: `src/trend_analysis/regimes.py:53-57` converts regime numbers without checking finiteness, while `src/trend_analysis/regimes.py:72, 91-103` applies Python `bool()` to configuration flags and stores unchecked threshold and neutral-band values. `src/trend_analysis/pipeline_helpers.py:281-294` can pass a NaN fund-count multiplier to `int(round(...))`; `src/trend_analysis/pipeline_helpers.py:344-360` can emit NaN or infinity target volatility. As a result, `enabled: \"false\"` enables the subsystem and supplied non-finite controls either crash later or reach portfolio calculations.\n\n## Scope\n\nValidate regime flags as booleans and validate supplied regime numeric controls as finite before regime classification and risk-off overrides consume them.\n\n## Implementation Notes\n\nUse one documented boolean coercion rule for YAML-compatible flag values. Reject non-finite supplied values rather than treating them as defaults, including risk-off count and target-volatility modifiers.\n\n## Tasks\n\n- [ ] Update `src/trend_analysis/regimes.py` to reject string boolean flags and non-finite regime threshold or neutral-band values.\n- [ ] Update `src/trend_analysis/pipeline_helpers.py` to reject non-finite risk-off fund-count and target-volatility modifiers.\n- [ ] Extend `tests/test_regime_annualise.py` with invalid boolean and non-finite base-control coverage.\n- [ ] Extend `tests/test_pipeline_optional_features.py` with non-finite risk-off override coverage.\n\n## Acceptance Criteria\n\n- `pytest tests/test_regime_annualise.py::test_regime_control_values_reject_non_finite_and_string_boolean tests/test_pipeline_optional_features.py::test_regime_overrides_reject_non_finite_modifiers` passes.\n- temporarily remove the finite-value guard and confirm tests/test_regime_annualise.py::test_regime_control_values_reject_non_finite_and_string_boolean fails; revert.\n\n## Non-Goals\n\n- Do not change regime-label selection semantics in `src/trend_analysis/regimes.py`.\n- Scaffold-only completion does NOT count: accepting a string flag or non-finite modifier that reaches a regime calculation is a failure of this issue.\n",
+      "createdAt": "2026-09-04T05:48:49Z",
+      "labels": [
+        {
+          "id": "LA_kwDOO0LrSc8AAAACBy9pXg",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        },
+        {
+          "id": "LA_kwDOO0LrSc8AAAACH_wFiw",
+          "name": "engine",
+          "description": "",
+          "color": "FAE3A8"
+        }
+      ],
+      "number": 6025,
+      "title": "[P2] Validate regime control booleans and finite numeric values",
+      "updatedAt": "2026-09-04T05:48:49Z",
+      "url": "https://github.com/stranske/Trend_Model_Project/issues/6025"
+    },
+    {
+      "body": "\n## Why\n\nCurrent break: `src/trend_analysis/pipeline_helpers.py:231-240` raises `CoreConfigError` for an unrecognised regime cap key, and `tests/test_pipeline_helpers_additional.py:280-290` verifies that `mystery` is rejected. `src/trend_analysis/pipeline_runner.py:106-114` catches that error and substitutes `None`; `src/trend_analysis/risk.py:171-187` treats `None` as no cap. A misspelled configured regime can therefore produce an uncapped run.\n\n## Scope\n\nPreserve the parser's invalid-regime-cap error through the pipeline entrypoint and prevent execution with an omitted cap caused by that parsing failure.\n\n## Implementation Notes\n\nLet `CoreConfigError` surface as the established configuration failure type, or translate it once at the user-facing entrypoint. Do not conflate an invalid mapping with an absent `max_turnover` setting.\n\n## Tasks\n\n- [ ] Update `src/trend_analysis/pipeline_runner.py` to propagate an invalid regime turnover-cap parsing error instead of assigning `None`.\n- [ ] Extend `tests/test_pipeline_entrypoints.py` with an end-to-end invalid `portfolio.max_turnover` regime-key case.\n\n## Acceptance Criteria\n\n- `pytest tests/test_pipeline_entrypoints.py::test_run_from_config_rejects_invalid_regime_turnover_cap` passes and observes the parser error before portfolio weighting.\n- temporarily restore the CoreConfigError-to-None fallback and confirm tests/test_pipeline_entrypoints.py::test_run_from_config_rejects_invalid_regime_turnover_cap fails; revert.\n\n## Non-Goals\n\n- Do not change the recognised regime-label aliases in `src/trend_analysis/pipeline_helpers.py`.\n- Scaffold-only completion does NOT count: surfacing an error while still continuing with an uncapped portfolio is a failure of this issue.\n",
+      "createdAt": "2026-09-04T05:48:45Z",
+      "labels": [
+        {
+          "id": "LA_kwDOO0LrSc8AAAACBy9pXg",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        },
+        {
+          "id": "LA_kwDOO0LrSc8AAAACH_wFiw",
+          "name": "engine",
+          "description": "",
+          "color": "FAE3A8"
+        }
+      ],
+      "number": 6024,
+      "title": "[P2] Fail closed when regime turnover-cap parsing fails",
+      "updatedAt": "2026-09-04T05:48:45Z",
+      "url": "https://github.com/stranske/Trend_Model_Project/issues/6024"
+    },
+    {
+      "body": "\n## Why\n\nCurrent break: `src/trend_analysis/config/model.py:517-528` converts `portfolio.lambda_tc` with `float()` and checks only the numeric interval, so NaN passes both comparisons. `src/trend_analysis/risk.py:156-168` then uses that NaN in the turnover blend and returns NaN weights when previous weights are supplied. The fallback validator repeats the interval-only check at `src/trend_analysis/config/models.py:482-492`.\n\n## Scope\n\nReject NaN and both infinities for `portfolio.lambda_tc` in every supported configuration validation path while preserving finite values in the inclusive `[0, 1]` interval.\n\n## Implementation Notes\n\nPerform the finite check after numeric coercion and before the existing bounds check. Keep the present null and blank-value behaviour unless a compatibility review identifies a required change.\n\n## Tasks\n\n- [ ] Update `src/trend_analysis/config/model.py` to reject non-finite `portfolio.lambda_tc` after coercion.\n- [ ] Update `src/trend_analysis/config/models.py` to enforce the same rejection in runtime and fallback portfolio validation.\n- [ ] Extend `tests/test_config_turnover_validation.py` with NaN and infinity coverage for `portfolio.lambda_tc`.\n\n## Acceptance Criteria\n\n- `pytest tests/test_config_turnover_validation.py::test_lambda_tc_rejects_non_finite` passes while finite values from 0 through 1 remain accepted.\n- temporarily remove the finite check and confirm tests/test_config_turnover_validation.py::test_lambda_tc_rejects_non_finite fails; revert.\n\n## Non-Goals\n\n- Do not alter the turnover-penalty formula in `src/trend_analysis/risk.py`.\n- Scaffold-only completion does NOT count: adding coverage without rejecting non-finite values in both validation paths is a failure of this issue.\n",
+      "createdAt": "2026-09-04T05:48:42Z",
+      "labels": [
+        {
+          "id": "LA_kwDOO0LrSc8AAAACBy9pXg",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        },
+        {
+          "id": "LA_kwDOO0LrSc8AAAACH_wFiw",
+          "name": "engine",
+          "description": "",
+          "color": "FAE3A8"
+        }
+      ],
+      "number": 6023,
+      "title": "[P2] Reject non-finite portfolio.lambda_tc values before weighting",
+      "updatedAt": "2026-09-04T05:48:42Z",
+      "url": "https://github.com/stranske/Trend_Model_Project/issues/6023"
+    },
+    {
+      "body": "\n## Why\n\n`tests/streamlit/test_mc_page.py:246-251` reloads `streamlit_app.*` modules while `streamlit` is stubbed; `tests/baseline/test_streamlit_smoke.py:37-47` documents that `monkeypatch` does not restore reloaded page modules. This is a latent flake: AppTest smoke tests can render into a dummy and pass vacuously unless modules are evicted manually.\n\n## Scope\n\nShared pytest fixture/autouse teardown that removes `streamlit_app` entries from `sys.modules` after DummyStreamlit tests. Add an order-regression test that runs MC stub test then AppTest smoke without manual eviction.\n\n## Implementation Notes\n\n- Implement fixture in `tests/streamlit/conftest.py` or `tests/conftest.py`.\n- Reuse eviction list logic from `tests/baseline/test_streamlit_smoke.py:44-47`.\n- Do not remove DummyStreamlit unit tests; they remain valid for fast widget logic checks.\n- Coordinate with any existing `tests/baseline/harness.py` utilities.\n\n## Tasks\n\n- [ ] Add autouse teardown fixture in `tests/streamlit/conftest.py` evicting `streamlit_app*` from `sys.modules`\n- [ ] Add `test_stub_reload_does_not_break_apptest` in `tests/baseline/test_streamlit_smoke.py` that chains `_load_page` + `_run_page`\n- [ ] Import shared `_load_page` helper or duplicate minimal stub install in the regression test only if import cycles forbid sharing\n\n## Acceptance Criteria\n\n- [ ] `pytest tests/baseline/test_streamlit_smoke.py tests/streamlit/test_mc_page.py -q` passes\n- [ ] new regression test fails if teardown fixture is disabled\n- [ ] temporarily comment out the teardown fixture in `tests/streamlit/conftest.py` and confirm `test_stub_reload_does_not_break_apptest` fails; revert\n\n## Non-Goals\n\n- Migrating all Streamlit unit tests to AppTest\n- Fixing numpy collection errors in `tests/streamlit/test_mc_plots.py`\n\nScaffold-only completion does NOT count: a fixture that evicts modules but has no regression test proving AppTest still sees real Streamlit is a failure of this issue.\n",
+      "createdAt": "2026-09-04T05:42:19Z",
+      "labels": [
+        {
+          "id": "LA_kwDOO0LrSc8AAAACH_wFig",
+          "name": "ui",
+          "description": "",
+          "color": "BFD4F2"
+        },
+        {
+          "id": "LA_kwDOO0LrSc8AAAACH_xJDw",
+          "name": "testing",
+          "description": "Unit/integration/e2e tests and test infrastructure",
+          "color": "17a2b8"
+        }
+      ],
+      "number": 6022,
+      "title": "[P2] Add teardown for streamlit_app modules after DummyStreamlit reload tests",
+      "updatedAt": "2026-09-04T05:42:19Z",
+      "url": "https://github.com/stranske/Trend_Model_Project/issues/6022"
+    },
+    {
+      "body": "\n## Why\n\n`src/trend_analysis/config/model.py:658-665` rejects `signals.min_periods > signals.window` at config load, but `src/trend_analysis/signals.py:121-127` `TrendSpec.__post_init__` does not, and `tests/test_pipeline_helpers_additional.py:911-917` only guards `min_periods=0`. Runtime currently fails later with a pandas error message instead of the config-model contract.\n\n## Scope\n\nAdd the same guard to `TrendSpec` and `pipeline_helpers.compute_signal`. Mirror tests from `tests/test_trend_config_model.py:140-148` for runtime entry points.\n\n## Implementation Notes\n\n- Reuse error text `signals.min_periods cannot exceed signals.window.` for consistency.\n- `trend_spec_from_mapping` in `src/trend_analysis/signals.py:222-230` should inherit the guard via `TrendSpec`.\n- Do not change preset clamping behaviour in `tests/test_presets_extended.py:47-49` unless presets rely on silent clamping (verify first).\n\n## Tasks\n\n- [ ] Add `min_periods <= window` validation to `TrendSpec.__post_init__` in `src/trend_analysis/signals.py`\n- [ ] Add the same check to `compute_signal` in `src/trend_analysis/pipeline_helpers.py`\n- [ ] Add `test_trend_spec_rejects_min_periods_above_window` in `tests/test_trend_signals_validation.py`\n- [ ] Extend `test_compute_signal_error_paths` in `tests/test_pipeline_helpers_additional.py` for `min_periods > window`\n\n## Acceptance Criteria\n\n- [ ] `pytest tests/test_trend_config_model.py::test_signal_min_periods_cannot_exceed_window tests/test_trend_signals_validation.py tests/test_pipeline_helpers_additional.py::test_compute_signal_error_paths -q` passes\n- [ ] `TrendSpec(window=5, min_periods=6)` raises `ValueError` before any pandas rolling call\n- [ ] temporarily remove the new guard in `src/trend_analysis/signals.py` and confirm `test_trend_spec_rejects_min_periods_above_window` fails; revert\n\n## Non-Goals\n\n- Changing `SignalSettings` pydantic model fields\n- Altering default window/min_periods in shipped YAML configs\n\nScaffold-only completion does NOT count: a test that expects pandas' error string instead of the config-model message is a failure of this issue.\n",
+      "createdAt": "2026-09-04T05:42:15Z",
+      "labels": [
+        {
+          "id": "LA_kwDOO0LrSc8AAAACBy9pXg",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        },
+        {
+          "id": "LA_kwDOO0LrSc8AAAACH_wFiw",
+          "name": "engine",
+          "description": "",
+          "color": "FAE3A8"
+        }
+      ],
+      "number": 6021,
+      "title": "[P2] Align min_periods>window validation across SignalSettings and TrendSpec",
+      "updatedAt": "2026-09-04T05:42:15Z",
+      "url": "https://github.com/stranske/Trend_Model_Project/issues/6021"
+    },
+    {
+      "body": "\n## Why\n\n`src/trend_analysis/util/weights.py:35-40` only converts inputs when `sum(abs)` \u2248 100 or \u2248 1; otherwise weights pass through unchanged (e.g. `{A:30, B:20}` stays 30/20). Callers in `src/trend_analysis/api.py:340` and `src/trend_analysis/multi_period/engine.py:159` rely on this helper with no test for the ambiguous band in `tests/test_weights_utils.py`.\n\n## Scope\n\nDocument and enforce the intended behaviour for totals that are neither percent-like nor fraction-like. Add boundary tests; adjust implementation only if product owner wants rejection or sum-normalisation (default: divide by `total_abs` when `total_abs > 0` and not close to 1 or 100).\n\n## Implementation Notes\n\n- Existing tests at `tests/test_weights_utils.py:9-33` cover percent and fraction paths.\n- Preserve long-short percent case at `tests/test_weights_utils.py:43-47` (`120, -20` sums to 100).\n- Add explicit tests for `sum=0`, ambiguous mid-range, and negative totals not summing to 100.\n- Update docstring on `normalize_weights` to state the chosen rule.\n\n## Tasks\n\n- [ ] Decide and implement ambiguous-total handling in `src/trend_analysis/util/weights.py`\n- [ ] Add boundary tests in `tests/test_weights_utils.py` for ambiguous and zero-sum inputs\n- [ ] Verify `src/trend_analysis/api.py` callers still receive expected fractions in a smoke test if needed\n\n## Acceptance Criteria\n\n- [ ] `pytest tests/test_weights_utils.py -q` passes\n- [ ] new test `test_normalize_weights_ambiguous_total` documents the chosen rule with exact expected values\n- [ ] temporarily remove ambiguous-total handling in `src/trend_analysis/util/weights.py` and confirm `test_normalize_weights_ambiguous_total` fails; revert\n\n## Non-Goals\n\n- Changing portfolio optimisation weight constraints in `src/trend_analysis/stages/portfolio.py`\n- UI copy changes in Streamlit pages\n\nScaffold-only completion does NOT count: a docstring-only change without a failing-before/passing-after test is a failure of this issue.\n",
+      "createdAt": "2026-09-04T05:42:12Z",
+      "labels": [
+        {
+          "id": "LA_kwDOO0LrSc8AAAACBy9pXg",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        },
+        {
+          "id": "LA_kwDOO0LrSc8AAAACH_wFiw",
+          "name": "engine",
+          "description": "",
+          "color": "FAE3A8"
+        }
+      ],
+      "number": 6020,
+      "title": "[P2] Pin normalize_weights contract for ambiguous weight totals",
+      "updatedAt": "2026-09-04T05:42:12Z",
+      "url": "https://github.com/stranske/Trend_Model_Project/issues/6020"
+    },
+    {
+      "body": "\n## Why\n\n`tests/test_pipeline_run_cache_fallbacks.py:238` and `tests/test_pipeline_helpers_additional.py:1113` both define `test_compute_signal_uses_cache` (and paired `without_cache` tests) against the same `pipeline_helpers.compute_signal` behaviour. Duplicate names mask which file actually guards cache keying in `src/trend_analysis/pipeline_helpers.py:614-650`.\n\n## Scope\n\nRetain one parametrized cache test module; delete the redundant copy. No production code changes unless a uncovered branch is found while merging.\n\n## Implementation Notes\n\n- Prefer keeping tests in `tests/test_pipeline_helpers_additional.py` (already covers error paths at line 911).\n- If `tests/test_pipeline_run_cache_fallbacks.py` has unique assertions (dataset_hash tags), fold them into parametrized cases rather than duplicating entire functions.\n- Preserve monkeypatch targets on `pipeline.get_cache` / `pipeline_helpers` as today.\n\n## Tasks\n\n- [ ] Merge cache assertions into a single parametrized test in `tests/test_pipeline_helpers_additional.py`\n- [ ] Remove duplicate `test_compute_signal_uses_cache` from `tests/test_pipeline_run_cache_fallbacks.py`\n- [ ] Remove duplicate `test_compute_signal_without_cache` from `tests/test_pipeline_run_cache_fallbacks.py`\n- [ ] Verify remaining cache coverage in `tests/test_pipeline_run_cache_fallbacks.py` for other symbols is intact\n\n## Acceptance Criteria\n\n- [ ] `pytest tests/test_pipeline_helpers_additional.py -k compute_signal -q` passes\n- [ ] `pytest tests/test_pipeline_run_cache_fallbacks.py -q` passes\n- [ ] `rg 'def test_compute_signal_uses_cache' tests/` returns exactly one match\n- [ ] temporarily force `pipeline_helpers.compute_signal` to skip cache and confirm the surviving `test_compute_signal_uses_cache` fails; revert\n\n## Non-Goals\n\n- Rewriting unrelated tests in `tests/test_pipeline_run_cache_fallbacks.py`\n- Changing rolling-cache implementation in `src/trend_analysis/perf/rolling_cache.py`\n\nScaffold-only completion does NOT count: deleting both copies without a surviving cache regression test is a failure of this issue.\n",
+      "createdAt": "2026-09-04T05:42:08Z",
+      "labels": [
+        {
+          "id": "LA_kwDOO0LrSc8AAAACH_xIhw",
+          "name": "refactor",
+          "description": "Mechanical/codemod-style change; routes to the codemod lane",
+          "color": "5319e7"
+        },
+        {
+          "id": "LA_kwDOO0LrSc8AAAACH_xJDw",
+          "name": "testing",
+          "description": "Unit/integration/e2e tests and test infrastructure",
+          "color": "17a2b8"
+        }
+      ],
+      "number": 6019,
+      "title": "[P2] Deduplicate compute_signal cache unit tests",
+      "updatedAt": "2026-09-04T05:42:08Z",
+      "url": "https://github.com/stranske/Trend_Model_Project/issues/6019"
+    },
+    {
+      "body": "\n## Why\n\n`src/trend_analysis/signals.py:3-5` states all execution paths use one signal implementation, but `src/trend_analysis/pipeline_helpers.py:550-601` implements a separate rolling-mean `compute_signal` with fixed `shift(1)`. Equivalence is tested only for `window=4, min_periods=4` in `tests/test_trend_signals.py:69-74`. This is a latent divergence risk between the legacy helper and the engine path.\n\n## Scope\n\nMake `pipeline.compute_signal` a thin delegate to `compute_trend_signals` (or remove the duplicate and update callers). Expand tests so lag and multi-column frames cannot drift silently.\n\n## Implementation Notes\n\n- Production portfolio stages already call `compute_trend_signals`; `compute_signal` is only exported from `src/trend_analysis/pipeline.py` for tests/scripts.\n- Map parameters: `column` \u2192 single-column frame, `window`/`min_periods` \u2192 `TrendSpec`, honour `spec.lag` instead of hard-coded `shift(1)`.\n- Keep the public `pipeline.compute_signal` signature stable for downstream test imports.\n- Extend `tests/test_trend_signals.py` with at least one case where `lag=2` and multi-column input match between helpers.\n\n## Tasks\n\n- [ ] Refactor `src/trend_analysis/pipeline_helpers.py` `compute_signal` to delegate to `src/trend_analysis/signals.py` `compute_trend_signals`\n- [ ] Update `src/trend_analysis/pipeline.py` wrapper if signature mapping changes\n- [ ] Add lag/multi-column equivalence tests in `tests/test_trend_signals.py`\n- [ ] Run `tests/test_shift_safe_pipeline.py` and fix any regressions from unified implementation\n\n## Acceptance Criteria\n\n- [ ] `pytest tests/test_trend_signals.py tests/test_shift_safe_pipeline.py -q` passes\n- [ ] `rg 'rolling.*mean.*shift\\(1\\)' src/trend_analysis/pipeline_helpers.py` no longer matches inside `compute_signal`\n- [ ] temporarily change `TrendSpec.lag` default in `src/trend_analysis/signals.py` and confirm `tests/test_trend_signals.py::test_pipeline_compute_signal_uses_trend_engine` fails; revert\n\n## Non-Goals\n\n- Removing `compute_trend_signals` caching or vol-adjust/z-score behaviour\n- Refactoring unrelated pipeline helper functions\n\nScaffold-only completion does NOT count: a delegate that still duplicates rolling logic inline is a failure of this issue.\n",
+      "createdAt": "2026-09-04T05:42:05Z",
+      "labels": [
+        {
+          "id": "LA_kwDOO0LrSc8AAAACBy9pXg",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        },
+        {
+          "id": "LA_kwDOO0LrSc8AAAACH_wFiw",
+          "name": "engine",
+          "description": "",
+          "color": "FAE3A8"
+        }
+      ],
+      "number": 6018,
+      "title": "[P2] Reconcile pipeline compute_signal with canonical compute_trend_signals",
+      "updatedAt": "2026-09-04T05:42:05Z",
+      "url": "https://github.com/stranske/Trend_Model_Project/issues/6018"
+    },
+    {
+      "body": "\n## Why\n\n`tests/app/test_data_page.py:31`, `tests/app/test_results_page.py:20`, `tests/app/test_validation_page_renders.py:22`, and `tests/streamlit/test_mc_page.py:54` each define a separate `DummyStreamlit` class. This is a latent maintenance break: widget API drift in one page test will not fail the others until runtime.\n\n## Scope\n\nCreate one shared Streamlit stub for unit tests and migrate the four page test modules to import it. Preserve existing assertion behaviour in each test file.\n\n## Implementation Notes\n\n- Place the canonical stub under `tests/support/dummy_streamlit.py` (or `tests/conftest.py` if the repo already centralises fixtures there).\n- Merge capabilities from all four copies (column contexts, expanders, MC-specific widgets, session_state helpers).\n- Keep page-specific `_load_page` / `data_page` fixtures local; only the stub class moves.\n- Do not replace AppTest smoke tests in `tests/baseline/test_streamlit_smoke.py`.\n\n## Tasks\n\n- [ ] Add `tests/support/dummy_streamlit.py` with the merged `DummyStreamlit` implementation\n- [ ] Update `tests/app/test_data_page.py` to import the shared stub\n- [ ] Update `tests/app/test_results_page.py` to import the shared stub\n- [ ] Update `tests/app/test_validation_page_renders.py` to import the shared stub\n- [ ] Update `tests/streamlit/test_mc_page.py` to import the shared stub\n\n## Acceptance Criteria\n\n- [ ] `pytest tests/app/test_data_page.py tests/app/test_results_page.py tests/app/test_validation_page_renders.py tests/streamlit/test_mc_page.py -q` passes\n- [ ] `rg '^class DummyStreamlit' tests/` returns only `tests/support/dummy_streamlit.py`\n- [ ] temporarily add a no-op method to the shared `DummyStreamlit` and confirm `tests/app/test_data_page.py::test_data_page_renders_upload_controls` fails; revert\n\n## Non-Goals\n\n- Rewriting page tests to use AppTest end-to-end\n- Changing production `streamlit_app/` code\n\nScaffold-only completion does NOT count: a stub file that no test imports is a failure of this issue.\n",
+      "createdAt": "2026-09-04T05:42:01Z",
+      "labels": [
+        {
+          "id": "LA_kwDOO0LrSc8AAAACH_xIhw",
+          "name": "refactor",
+          "description": "Mechanical/codemod-style change; routes to the codemod lane",
+          "color": "5319e7"
+        },
+        {
+          "id": "LA_kwDOO0LrSc8AAAACH_xJDw",
+          "name": "testing",
+          "description": "Unit/integration/e2e tests and test infrastructure",
+          "color": "17a2b8"
+        }
+      ],
+      "number": 6017,
+      "title": "[P2] Consolidate duplicated DummyStreamlit test harnesses",
+      "updatedAt": "2026-09-04T05:42:01Z",
+      "url": "https://github.com/stranske/Trend_Model_Project/issues/6017"
+    },
+    {
+      "body": "This issue lists Renovate updates and detected dependencies. Read the [Dependency Dashboard](https://docs.renovatebot.com/key-concepts/dashboard/) docs to learn more.<br>[View this repository on the Mend.io Web Portal](https://developer.mend.io/github/stranske/Trend_Model_Project).\n\n## Repository Problems\n\nThese problems occurred while renovating this repository. [View logs](https://developer.mend.io//github/stranske/Trend_Model_Project).\n\n - \u26a0\ufe0f WARN: pip-compile error\n\n## Pending Approval\n\nThe following branches are pending approval. To create them, click on a checkbox below.\n\n - [ ] <!-- approve-branch=renovate/actions-configure-pages-6.x -->chore(deps): update actions/configure-pages action to v6\n - [ ] <!-- approve-branch=renovate/actions-upload-pages-artifact-5.x -->chore(deps): update actions/upload-pages-artifact action to v5\n - [ ] <!-- approve-branch=renovate/plotly-7.x -->fix(deps): update dependency plotly to v7\n - [ ] <!-- approve-all-pending-prs -->\ud83d\udd10 **Create all pending approval PRs at once** \ud83d\udd10\n\n## Awaiting Schedule\n\nThe following updates are awaiting their schedule. To get an update now, click on a checkbox below.\n\n - [ ] <!-- unschedule-branch=renovate/github-actions -->chore(deps): update github-actions (`actions/deploy-pages`, `python`)\n - [ ] <!-- unschedule-branch=renovate/non-major-updates -->fix(deps): update non-major updates (`fastapi`, `fpdf2`, `hypothesis`, `ipython`, `ipywidgets`, `joblib`, `langchain`, `langchain-anthropic`, `langchain-core`, `langsmith`, `matplotlib`, `nbformat`, `numpy`, `packaging`, `pandas`, `pandera`, `playwright`, `plotly`, `pre-commit`, `pyarrow`, `pydantic`, `pytest-rerunfailures`, `python`, `scipy`, `streamlit`, `tomlkit`, `types-pyyaml`, `types-requests`, `uvicorn`)\n - [ ] <!-- unschedule-branch=renovate/lock-file-maintenance-weekly-lock-file-maintenance -->chore(deps): lock file maintenance\n - [ ] <!-- create-all-awaiting-schedule-prs -->\ud83d\udd10 **Create all awaiting schedule PRs at once** \ud83d\udd10\n\n## Detected Dependencies\n\n<details><summary>devcontainer (1)</summary>\n<blockquote>\n\n<details><summary>.devcontainer/devcontainer.json (5)</summary>\n\n - `mcr.microsoft.com/devcontainers/python 3.14`\n - `ghcr.io/devcontainers/features/github-cli 1`\n - `ghcr.io/devcontainers/features/node 2`\n - `node 24`\n - `ghcr.io/devcontainers/features/docker-in-docker 4`\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>docker-compose (1)</summary>\n<blockquote>\n\n<details><summary>docker-compose.yml</summary>\n\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>dockerfile (1)</summary>\n<blockquote>\n\n<details><summary>Dockerfile (2)</summary>\n\n - `python 3.14.6-slim` \u2192 [Updates: `3.14.7-slim`]\n - `python 3.14.6-slim` \u2192 [Updates: `3.14.7-slim`]\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>github-actions (48)</summary>\n<blockquote>\n\n<details><summary>.github/actions/agent-run-base/action.yml</summary>\n\n\n</details>\n\n<details><summary>.github/actions/artifact-cache/action.yml</summary>\n\n\n</details>\n\n<details><summary>.github/actions/autofix/action.yml (1)</summary>\n\n - `actions/setup-python v7@5fda3b95a4ea91299a34e894583c3862153e4b97`\n\n</details>\n\n<details><summary>.github/actions/resolve-default-branch/action.yml</summary>\n\n\n</details>\n\n<details><summary>.github/actions/signature-verify/action.yml (2)</summary>\n\n - `actions/setup-python v7@5fda3b95a4ea91299a34e894583c3862153e4b97`\n - `python 3.14`\n\n</details>\n\n<details><summary>.github/workflows/agents-71-codex-belt-dispatcher.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-72-codex-belt-worker.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-73-codex-belt-conveyor.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-80-pr-event-hub.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-81-gate-followups.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-auto-label.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-auto-pilot.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-autofix-dispatcher.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-capability-check.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-decompose.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-dedup.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-guard.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-issue-format-guard.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-issue-intake.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-issue-optimizer.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-keepalive-loop-reporter.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-keepalive-sweep.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-pr-health.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-verifier.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-verify-to-new-pr.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-weekly-metrics.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/autofix.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/backplane-conformance.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/baseline-report.yml (3)</summary>\n\n - `actions/checkout v7@3d3c42e5aac5ba805825da76410c181273ba90b1`\n - `actions/setup-python v7@5fda3b95a4ea91299a34e894583c3862153e4b97`\n - `python 3.14`\n\n</details>\n\n<details><summary>.github/workflows/ci.yml (1)</summary>\n\n - `stranske/Workflows main`\n\n</details>\n\n<details><summary>.github/workflows/claude.yml (2)</summary>\n\n - `actions/checkout v7@3d3c42e5aac5ba805825da76410c181273ba90b1`\n - `anthropics/claude-code-action v1`\n\n</details>\n\n<details><summary>.github/workflows/cross-repo-smoke.yml (1)</summary>\n\n - `stranske/Workflows main`\n\n</details>\n\n<details><summary>.github/workflows/dependabot-auto-lock.yml (4)</summary>\n\n - `actions/checkout v7@3d3c42e5aac5ba805825da76410c181273ba90b1`\n - `actions/setup-python v7@5fda3b95a4ea91299a34e894583c3862153e4b97`\n - `actions/github-script v9.0.0@3a2844b7e9c422d3c10d287c895573f7108da1b3`\n - `python 3.14`\n\n</details>\n\n<details><summary>.github/workflows/list-llm-models.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/maint-76-claude-code-review.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/maint-87-docs-drift-fix-agent.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/maint-coverage-guard.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/pages-wasm-demo.yml (6)</summary>\n\n - `actions/checkout v7.0.1@3d3c42e5aac5ba805825da76410c181273ba90b1`\n - `actions/setup-python v7@5fda3b95a4ea91299a34e894583c3862153e4b97`\n - `actions/configure-pages v5@983d7736d9b0ae728b81ab479565c72886d7745b` \u2192 [Updates: `v6`]\n - `actions/upload-pages-artifact v4@7b1f4a764d45c48632c6b24a0339c27f5614fb0b` \u2192 [Updates: `v5`]\n - `actions/deploy-pages v5@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128` \u2192 [Updates: `v5`]\n - `python 3.12` \u2192 [Updates: `3.14`]\n\n</details>\n\n<details><summary>.github/workflows/pr-00-gate.yml (13)</summary>\n\n - `actions/checkout v7@3d3c42e5aac5ba805825da76410c181273ba90b1`\n - `stranske/Workflows main`\n - `actions/checkout v7@3d3c42e5aac5ba805825da76410c181273ba90b1`\n - `actions/setup-python v7@5fda3b95a4ea91299a34e894583c3862153e4b97`\n - `actions/checkout v7@3d3c42e5aac5ba805825da76410c181273ba90b1`\n - `actions/setup-python v7@5fda3b95a4ea91299a34e894583c3862153e4b97`\n - `actions/checkout v7@3d3c42e5aac5ba805825da76410c181273ba90b1`\n - `actions/setup-python v7@5fda3b95a4ea91299a34e894583c3862153e4b97`\n - `actions/checkout v7@3d3c42e5aac5ba805825da76410c181273ba90b1`\n - `actions/github-script v9.0.0@3a2844b7e9c422d3c10d287c895573f7108da1b3`\n - `python 3.14`\n - `python 3.13` \u2192 [Updates: `3.14`]\n - `python 3.14`\n\n</details>\n\n<details><summary>.github/workflows/pr-11-ci-smoke.yml (3)</summary>\n\n - `actions/checkout v7@3d3c42e5aac5ba805825da76410c181273ba90b1`\n - `actions/setup-python v7@5fda3b95a4ea91299a34e894583c3862153e4b97`\n - `python 3.14`\n\n</details>\n\n<details><summary>.github/workflows/pr-12-playwright.yml (6)</summary>\n\n - `actions/checkout v7@3d3c42e5aac5ba805825da76410c181273ba90b1`\n - `actions/setup-python v7@5fda3b95a4ea91299a34e894583c3862153e4b97`\n - `actions/setup-node v7`\n - `ubuntu 24.04`\n - `python 3.14`\n - `node 24`\n\n</details>\n\n<details><summary>.github/workflows/pr-13-mc-viz-integration.yml (1)</summary>\n\n - `stranske/Workflows main`\n\n</details>\n\n<details><summary>.github/workflows/pr-46-dependency-repair-contract.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/reusable-pr-context.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/settings-effectiveness.yml (4)</summary>\n\n - `actions/checkout v7@3d3c42e5aac5ba805825da76410c181273ba90b1`\n - `actions/setup-python v7@5fda3b95a4ea91299a34e894583c3862153e4b97`\n - `actions/upload-artifact v7`\n - `python 3.14`\n\n</details>\n\n<details><summary>.github/workflows/streamlit-param-sweep.yml (4)</summary>\n\n - `actions/checkout v7@3d3c42e5aac5ba805825da76410c181273ba90b1`\n - `actions/setup-python v7@5fda3b95a4ea91299a34e894583c3862153e4b97`\n - `actions/upload-artifact v7`\n - `python 3.14`\n\n</details>\n\n<details><summary>archives/github-actions/2025-11-30-apply-autofix/action.yml (2)</summary>\n\n - `actions/checkout v7@3d3c42e5aac5ba805825da76410c181273ba90b1`\n - `actions/upload-artifact v7`\n\n</details>\n\n<details><summary>archives/github-actions/2025-11-30-autofix-commit-push/action.yml (2)</summary>\n\n - `actions/checkout v7@3d3c42e5aac5ba805825da76410c181273ba90b1`\n - `actions/upload-artifact v7`\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>npm (2)</summary>\n<blockquote>\n\n<details><summary>.github/scripts/package.json</summary>\n\n\n</details>\n\n<details><summary>package.json (1)</summary>\n\n - `playwright ^1.55.1` \u2192 [Updates: `^1.55.1`]\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>pip_requirements (1)</summary>\n<blockquote>\n\n<details><summary>tools/requirements-llm.txt</summary>\n\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>poetry (1)</summary>\n<blockquote>\n\n<details><summary>pyproject.toml (40)</summary>\n\n - `PyYAML ==6.0.3`\n - `fpdf2 ==2.8.7` \u2192 [Updates: `==2.8.8`]\n - `hypothesis ==6.155.7` \u2192 [Updates: `==6.167.1`]\n - `ipywidgets ==8.1.8` \u2192 [Updates: `==8.1.9`]\n - `joblib ==1.5.3` \u2192 [Updates: `==1.6.0`]\n - `jsonschema >=4.26.0,<4.27.0`\n - `matplotlib ==3.11.0` \u2192 [Updates: `==3.11.1`]\n - `numpy ==2.5.0` \u2192 [Updates: `==2.5.3`]\n - `openpyxl ==3.1.5`\n - `pandas ==3.0.3` \u2192 [Updates: `==3.0.5`]\n - `pandera ==0.32.0` \u2192 [Updates: `==0.33.1`]\n - `plotly ==6.8.0` \u2192 [Updates: `==6.9.0`, `==7.0.0`]\n - `pyarrow ==25.0.0` \u2192 [Updates: `==25.0.1`]\n - `pydantic ==2.13.4` \u2192 [Updates: `==2.13.5`]\n - `requests ==2.34.2`\n - `scipy ==1.18.0` \u2192 [Updates: `==1.18.1`]\n - `xlsxwriter ==3.2.9`\n - `streamlit ==1.58.0` \u2192 [Updates: `==1.63.0`]\n - `streamlit-sortables ==0.3.1`\n - `fastapi ==0.138.1` \u2192 [Updates: `==0.141.1`]\n - `uvicorn ==0.49.0` \u2192 [Updates: `==0.52.4`]\n - `httpx ==0.28.1`\n - `langchain >=1.3,<1.4` \u2192 [Updates: `>=1.4,<1.5`]\n - `langchain-core >=1.4,<1.5` \u2192 [Updates: `>=1.6,<1.7`]\n - `langchain-community >=0.4,<0.5`\n - `langchain-openai >=1.3,<2`\n - `langchain-anthropic >=0.3,<1.6` \u2192 [Updates: `>=1.7,<2`]\n - `langchain-ollama >=1.1.0,<1.2`\n - `langsmith ==0.10.9` \u2192 [Updates: `==0.12.2`]\n - `ipyfilechooser ==0.6.0`\n - `nbformat ==5.10.4` \u2192 [Updates: `==5.11.1`]\n - `pre-commit ==4.6.0` \u2192 [Updates: `==4.6.2`]\n - `flake8 ==7.3.0`\n - `pytest-regressions ==2.11.0`\n - `pytest-rerunfailures ==16.3` \u2192 [Updates: `==16.6.1`]\n - `packaging ==26.2` \u2192 [Updates: `==26.3`]\n - `types-pyyaml ==6.0.12.20260518` \u2192 [Updates: `==6.0.12.20260906`]\n - `types-requests ==2.33.0.20260518` \u2192 [Updates: `==2.33.0.20260906`]\n - `tomlkit ==0.15.0` \u2192 [Updates: `==0.15.1`]\n - `ipython ==9.12.0` \u2192 [Updates: `==9.17.1`]\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>renovate-config (1)</summary>\n<blockquote>\n\n<details><summary>.github/renovate.json</summary>\n\n\n</details>\n\n</blockquote>\n</details>\n\n---\n\n- [ ] <!-- manual job -->Check this box to trigger a request for Renovate to run again on this repository\n\n",
+      "createdAt": "2026-06-15T04:42:23Z",
+      "labels": [
+        {
+          "id": "LA_kwDOO0LrSc8AAAACrdy4HQ",
+          "name": "tracker:durable",
+          "description": "Permanently-open tracker; excluded from open-issue backlog counts",
+          "color": "c5def5"
+        }
+      ],
+      "number": 5558,
+      "title": "Dependency Dashboard",
+      "updatedAt": "2026-09-10T20:53:50Z",
+      "url": "https://github.com/stranske/Trend_Model_Project/issues/5558"
+    },
+    {
+      "body": "Tracking issue for weekly agent workflow metrics.\n\n# Agent Metrics Summary\n\nGenerated: 2026-04-27T07:07:16Z\nRecords: 60 (keepalive 40, autofix 0, verifier 0, terminal dispositions 20, verifier follow-up ledgers 0, codex CLI freshness 0, autopilot 0, unknown 0)\nParse errors: 0\nRange: 2026-04-27T03:10:46.265000Z to 2026-04-27T06:50:10.956000Z\n\n## Keepalive\n- Runs: 40\n- PRs: 7\n- Avg iterations: 0.0\n- Stop reasons: missing-agent-label (20)\n- Actions: wait (20)\n- Gate conclusions: cancelled (9), success (7)\n- Tasks complete rate: 0.0% (0/40)\n\n## Autofix\n- Attempts: 0\n- PRs: 0\n- Fixes applied: n/a\n- Trigger reasons: n/a\n- Gate results after: n/a\n\n## Verifier\n- Runs: 0\n- PRs: 7\n- Verdicts: n/a\n- Issues created: 0\n- Avg acceptance criteria: 0.0\n- Terminal disposition records: 20\n- Terminal dispositions: wrapper-skipped (20)\n- Terminal disposition sources: review-thread:24974682389 (1), review-thread:24974717262 (1), review-thread:24974851101 (1), review-thread:24974891531 (1), review-thread:5185 (1), review-thread:5186 (1), review-thread:24975216182 (1), review-thread:24975285464 (1), review-thread:5187 (1), review-thread:24975976784 (1), review-thread:5188 (1), review-thread:24976428359 (1), review-thread:24976478882 (1), review-thread:5189 (1), review-thread:24978035495 (1), review-thread:24978092255 (1), review-thread:5190 (1), review-thread:24980326558 (1), review-thread:24980384637 (1), review-thread:5191 (1)\n- Terminal artifact families: review-thread-terminal-disposition: selected (20/78), verifier-terminal-disposition: missing (0/0)\n- Missing terminal artifact families: verifier-terminal-disposition\n- Verifier follow-up ledger records: 0\n- Verifier follow-up ledger dispositions: n/a\n- Verifier follow-up ledger PRs: 0\n- Verifier follow-up issues linked: 0\n- Verifier follow-up needs-human records: 0\n- Verifier follow-up avg chain depth: 0.0\n- Verifier follow-up max chain depth: 0\n- Verifier follow-up policy records: 0\n- Verifier follow-up policy actions: n/a\n- Verifier follow-up policy triggers: n/a\n- Verifier follow-up depth-limit records: 0\n- Verifier models: n/a\n- Verifier CLI versions: n/a\n- Unsupported verifier models: n/a\n- Unsupported model dispositions: n/a\n- Missing verifier model metadata: n/a\n- Legacy missing verifier model metadata: n/a\n- Model selection reasons: n/a\n- Verifier modes: n/a\n\n## Codex CLI Freshness\n- Records: 0\n- Statuses: n/a\n- Packages: n/a\n- Pinned versions: n/a\n- Latest versions: n/a\n- Outdated records: 0\n- Latest unavailable records: 0\n- Max version delta: major 0, minor 0, patch 0\n- Update targets: n/a\n\n## Weekly Metrics Artifact Selection\n\n- Schema: workflows-weekly-metrics-artifact-selection/v1\n- Status: pass\n- Lookback days: 14\n- Scan cap: 5 pages x 100 artifacts\n- Download cap: 80 total, 20 per family\n- Scanned artifacts: 500\n- Candidate artifacts: 320\n- Selected artifacts: 60\n- Missing priority families: codex-cli-freshness, verifier-terminal-disposition, bot-comment-auth-coverage-wrapper, bot-comment-auth-coverage-reusable, pr-source-context\n- Ignored: 0 old, 0 expired, 180 non-metrics, 260 over family cap, 0 over total cap\n\n| Artifact family | Candidates | Selected |\n|-----------------|------------|----------|\n| agents-autofix-metrics | 129 | 20 |\n| keepalive-metrics | 113 | 20 |\n| review-thread-terminal-disposition | 78 | 20 |\n\n| Priority family | Status | Candidates | Selected artifact |\n|-----------------|--------|------------|-------------------|\n| codex-cli-freshness | missing | 0 | none |\n| verifier-terminal-disposition | missing | 0 | none |\n| review-thread-terminal-disposition | selected | 78 | review-thread-terminal-disposition-24980714961 |\n| bot-comment-auth-coverage-wrapper | missing | 0 | none |\n| bot-comment-auth-coverage-reusable | missing | 0 | none |\n| pr-source-context | missing | 0 | none |\n\n## Weekly Metrics Artifact Downloads\n\n- Schema: workflows-weekly-metrics-artifact-download-manifest/v1\n- Status: pass\n- Selected artifacts: 60\n- Downloads: 60 passed, 0 failed\n- Unzip: 60 passed, 0 failed, 0 skipped\n\n| Artifact | ID | Download | Unzip | Path |\n|----------|----|----------|-------|------|\n| review-thread-terminal-disposition-24980714961 | 6654734673 | pass | pass | artifacts/review-thread-terminal-disposition-24980714961/6654734673 |\n| keepalive-metrics | 6654738827 | pass | pass | artifacts/keepalive-metrics/6654738827 |\n| agents-autofix-metrics | 6654732784 | pass | pass | artifacts/agents-autofix-metrics/6654732784 |\n| keepalive-metrics | 6654655137 | pass | pass | artifacts/keepalive-metrics/6654655137 |\n| review-thread-terminal-disposition-24980384637 | 6654622137 | pass | pass | artifacts/review-thread-terminal-disposition-24980384637/6654622137 |\n| keepalive-metrics | 6654619993 | pass | pass | artifacts/keepalive-metrics/6654619993 |\n| agents-autofix-metrics | 6654615751 | pass | pass | artifacts/agents-autofix-metrics/6654615751 |\n| agents-autofix-metrics | 6654611764 | pass | pass | artifacts/agents-autofix-metrics/6654611764 |\n| review-thread-terminal-disposition-24980326558 | 6654607298 | pass | pass | artifacts/review-thread-terminal-disposition-24980326558/6654607298 |\n| agents-autofix-metrics | 6654605280 | pass | pass | artifacts/agents-autofix-metrics/6654605280 |\n| keepalive-metrics | 6653890194 | pass | pass | artifacts/keepalive-metrics/6653890194 |\n| review-thread-terminal-disposition-24978338182 | 6653886474 | pass | pass | artifacts/review-thread-terminal-disposition-24978338182/6653886474 |\n| agents-autofix-metrics | 6653885913 | pass | pass | artifacts/agents-autofix-metrics/6653885913 |\n| keepalive-metrics | 6653823293 | pass | pass | artifacts/keepalive-metrics/6653823293 |\n| review-thread-terminal-disposition-24978092255 | 6653803499 | pass | pass | artifacts/review-thread-terminal-disposition-24978092255/6653803499 |\n| keepalive-metrics | 6653800137 | pass | pass | artifacts/keepalive-metrics/6653800137 |\n| agents-autofix-metrics | 6653798434 | pass | pass | artifacts/agents-autofix-metrics/6653798434 |\n| review-thread-terminal-disposition-24978035495 | 6653788003 | pass | pass | artifacts/review-thread-terminal-disposition-24978035495/6653788003 |\n| agents-autofix-metrics | 6653785265 | pass | pass | artifacts/agents-autofix-metrics/6653785265 |\n| agents-autofix-metrics | 6653775842 | pass | pass | artifacts/agents-autofix-metrics/6653775842 |\n| keepalive-metrics | 6653654308 | pass | pass | artifacts/keepalive-metrics/6653654308 |\n| keepalive-metrics | 6653345419 | pass | pass | artifacts/keepalive-metrics/6653345419 |\n| review-thread-terminal-disposition-24976704609 | 6653343322 | pass | pass | artifacts/review-thread-terminal-disposition-24976704609/6653343322 |\n| agents-autofix-metrics | 6653341954 | pass | pass | artifacts/agents-autofix-metrics/6653341954 |\n| keepalive-metrics | 6653286983 | pass | pass | artifacts/keepalive-metrics/6653286983 |\n| keepalive-metrics | 6653277984 | pass | pass | artifacts/keepalive-metrics/6653277984 |\n| review-thread-terminal-disposition-24976478882 | 6653275612 | pass | pass | artifacts/review-thread-terminal-disposition-24976478882/6653275612 |\n| agents-autofix-metrics | 6653275395 | pass | pass | artifacts/agents-autofix-metrics/6653275395 |\n| agents-autofix-metrics | 6653270962 | pass | pass | artifacts/agents-autofix-metrics/6653270962 |\n| keepalive-metrics | 6653266906 | pass | pass | artifacts/keepalive-metrics/6653266906 |\n| review-thread-terminal-disposition-24976428359 | 6653263519 | pass | pass | artifacts/review-thread-terminal-disposition-24976428359/6653263519 |\n| agents-autofix-metrics | 6653259105 | pass | pass | artifacts/agents-autofix-metrics/6653259105 |\n| keepalive-metrics | 6653173805 | pass | pass | artifacts/keepalive-metrics/6653173805 |\n| review-thread-terminal-disposition-24976184322 | 6653169663 | pass | pass | artifacts/review-thread-terminal-disposition-24976184322/6653169663 |\n| agents-autofix-metrics | 6653168692 | pass | pass | artifacts/agents-autofix-metrics/6653168692 |\n| keepalive-metrics | 6653116827 | pass | pass | artifacts/keepalive-metrics/6653116827 |\n| review-thread-terminal-disposition-24975976784 | 6653109378 | pass | pass | artifacts/review-thread-terminal-disposition-24975976784/6653109378 |\n| agents-autofix-metrics | 6653108693 | pass | pass | artifacts/agents-autofix-metrics/6653108693 |\n| keepalive-metrics | 6653107991 | pass | pass | artifacts/keepalive-metrics/6653107991 |\n| agents-autofix-metrics | 6653103777 | pass | pass | artifacts/agents-autofix-metrics/6653103777 |\n| agents-autofix-metrics | 6653097870 | pass | pass | artifacts/agents-autofix-metrics/6653097870 |\n| keepalive-metrics | 6652959455 | pass | pass | artifacts/keepalive-metrics/6652959455 |\n| review-thread-terminal-disposition-24975483371 | 6652957124 | pass | pass | artifacts/review-thread-terminal-disposition-24975483371/6652957124 |\n| agents-autofix-metrics | 6652956428 | pass | pass | artifacts/agents-autofix-metrics/6652956428 |\n| keepalive-metrics | 6652904563 | pass | pass | artifacts/keepalive-metrics/6652904563 |\n| agents-autofix-metrics | 6652897064 | pass | pass | artifacts/agents-autofix-metrics/6652897064 |\n| keepalive-metrics | 6652896459 | pass | pass | artifacts/keepalive-metrics/6652896459 |\n| review-thread-terminal-disposition-24975285464 | 6652895952 | pass | pass | artifacts/review-thread-terminal-disposition-24975285464/6652895952 |\n| keepalive-metrics | 6652886703 | pass | pass | artifacts/keepalive-metrics/6652886703 |\n| agents-autofix-metrics | 6652886275 | pass | pass | artifacts/agents-autofix-metrics/6652886275 |\n| review-thread-terminal-disposition-24975216182 | 6652878398 | pass | pass | artifacts/review-thread-terminal-disposition-24975216182/6652878398 |\n| agents-autofix-metrics | 6652875499 | pass | pass | artifacts/agents-autofix-metrics/6652875499 |\n| keepalive-metrics | 6652853103 | pass | pass | artifacts/keepalive-metrics/6652853103 |\n| review-thread-terminal-disposition-24975148266 | 6652851495 | pass | pass | artifacts/review-thread-terminal-disposition-24975148266/6652851495 |\n| keepalive-metrics | 6652799820 | pass | pass | artifacts/keepalive-metrics/6652799820 |\n| review-thread-terminal-disposition-24974989056 | 6652795667 | pass | pass | artifacts/review-thread-terminal-disposition-24974989056/6652795667 |\n| review-thread-terminal-disposition-24974891531 | 6652767335 | pass | pass | artifacts/review-thread-terminal-disposition-24974891531/6652767335 |\n| review-thread-terminal-disposition-24974851101 | 6652752189 | pass | pass | artifacts/review-thread-terminal-disposition-24974851101/6652752189 |\n| review-thread-terminal-disposition-24974717262 | 6652700785 | pass | pass | artifacts/review-thread-terminal-disposition-24974717262/6652700785 |\n| review-thread-terminal-disposition-24974682389 | 6652688517 | pass | pass | artifacts/review-thread-terminal-disposition-24974682389/6652688517 |\n\n## Terminal Disposition Coverage Preflight\n\n- Mode: warning-only (does not block merges or automation)\n- Requested mode: warning-only\n- Status: pass\n- Coverage status: pass\n- Hard block eligible: true\n- Hard block active: false\n- Input files: 20\n- Scanned records: 20\n- Terminal disposition records: 20\n- Non-terminal records: 0\n- Observed sources: 20\n- Expected review-thread sources: 7\n- Missing review-thread sources: 0\n- Parse errors: 0\n- Artifact selector status: pass\n- Terminal artifacts selected: 20\n- Terminal artifacts candidates: 78\n- Missing terminal artifact families: verifier-terminal-disposition\n- Verifier model compatibility: pass\n- Unsupported verifier model records: 0\n- Missing verifier model metadata records: 0\n- Missing verifier model metadata records with unknown mode: 0\n- Legacy missing verifier model metadata records: 0\n- Unsupported verifier models: gpt-5.2-codex\n\n| Observed source | Records | Dispositions | PRs |\n|-----------------|---------|--------------|-----|\n| review-thread:24974682389 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24974717262 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24974851101 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24974891531 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24975216182 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24975285464 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24975976784 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24976428359 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24976478882 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24978035495 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24978092255 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24980326558 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24980384637 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:5185 | 1 | wrapper-skipped (1) | #5185 |\n| review-thread:5186 | 1 | wrapper-skipped (1) | #5186 |\n| review-thread:5187 | 1 | wrapper-skipped (1) | #5187 |\n| review-thread:5188 | 1 | wrapper-skipped (1) | #5188 |\n| review-thread:5189 | 1 | wrapper-skipped (1) | #5189 |\n| review-thread:5190 | 1 | wrapper-skipped (1) | #5190 |\n| review-thread:5191 | 1 | wrapper-skipped (1) | #5191 |\n\n| Terminal artifact family | Status | Candidates | Selected | Latest artifact |\n|--------------------------|--------|------------|----------|-----------------|\n| review-thread-terminal-disposition | selected | 78 | 20 | review-thread-terminal-disposition-24980714961 |\n| verifier-terminal-disposition | missing | 0 | 0 | n/a |\n\n## Bot Comment App Auth Coverage\n\n- Schema: workflows-bot-comment-auth-coverage-summary/v1\n- Status: no-data\n- Coverage status: no-data\n- Mode: warning-only\n- Hard block eligible: false\n- Hard block active: false\n- Input files: 0\n- Parsed JSON files: 0\n- Auth records: 0\n- Non-auth records: 0\n- Parse errors: 0\n- Read errors: 0\n- Artifact selection status: pass\n- Selected auth artifacts: 0\n- Required organic events: pull_request, workflow_run\n- Organic evidence status: no-data\n- Missing organic requirements: agents-bot-comment-handler-wrapper/pull_request, agents-bot-comment-handler-wrapper/workflow_run, reusable-bot-comment-handler/pull_request, reusable-bot-comment-handler/workflow_run\n- Blockers: missing-organic-agents-bot-comment-handler-wrapper-pull_request, missing-organic-agents-bot-comment-handler-wrapper-workflow_run, missing-organic-reusable-bot-comment-handler-pull_request, missing-organic-reusable-bot-comment-handler-workflow_run\n\n| Component | Latest mode | Records | Expected | Allowed | Blockers |\n|-----------|-------------|---------|----------|---------|----------|\n| agents-bot-comment-handler-wrapper | missing | 0 | client-id | client-id | missing-agents-bot-comment-handler-wrapper |\n| reusable-bot-comment-handler | missing | 0 | any | client-id, none | missing-reusable-bot-comment-handler |\n",
+      "createdAt": "2026-04-27T07:07:18Z",
+      "labels": [
+        {
+          "id": "LA_kwDOO0LrSc8AAAACrdy4HQ",
+          "name": "tracker:durable",
+          "description": "Permanently-open tracker; excluded from open-issue backlog counts",
+          "color": "c5def5"
+        }
+      ],
+      "number": 5192,
+      "title": "Agent metrics weekly summary",
+      "updatedAt": "2026-09-07T06:38:05Z",
+      "url": "https://github.com/stranske/Trend_Model_Project/issues/5192"
+    }
+  ],
+  "prs": [
+    {
+      "createdAt": "2026-09-10T15:22:39Z",
+      "headRefName": "codex/issue-6018-canonical-signal",
+      "isDraft": false,
+      "labels": [
+        {
+          "id": "LA_kwDOO0LrSc8AAAACJq9TDg",
+          "name": "agent:codex",
+          "description": "Assign to Codex agent",
+          "color": "0e8a16"
+        },
+        {
+          "id": "LA_kwDOO0LrSc8AAAACK12ddA",
+          "name": "autofix",
+          "description": "Let bots format/lint automatically",
+          "color": "0366d6"
+        },
+        {
+          "id": "LA_kwDOO0LrSc8AAAACNrolsQ",
+          "name": "agents:keepalive",
+          "description": "Enable keepalive monitoring on PR",
+          "color": "1d76db"
+        }
+      ],
+      "number": 6032,
+      "title": "Delegate legacy signal calculation to the canonical trend engine",
+      "updatedAt": "2026-09-10T23:29:49Z",
+      "url": "https://github.com/stranske/Trend_Model_Project/pull/6032"
+    },
+    {
+      "createdAt": "2026-09-10T15:03:24Z",
+      "headRefName": "claude/issue-6017-dummy-streamlit",
+      "isDraft": false,
+      "labels": [
+        {
+          "id": "LA_kwDOO0LrSc8AAAACK12ddA",
+          "name": "autofix",
+          "description": "Let bots format/lint automatically",
+          "color": "0366d6"
+        },
+        {
+          "id": "LA_kwDOO0LrSc8AAAACNrolsQ",
+          "name": "agents:keepalive",
+          "description": "Enable keepalive monitoring on PR",
+          "color": "1d76db"
+        },
+        {
+          "id": "LA_kwDOO0LrSc8AAAACZZhWDA",
+          "name": "agent:claude",
+          "description": "Assign to Claude agent",
+          "color": "5319e7"
+        }
+      ],
+      "number": 6031,
+      "title": "tests: consolidate the four DummyStreamlit harnesses into one shared stub",
+      "updatedAt": "2026-09-10T23:26:42Z",
+      "url": "https://github.com/stranske/Trend_Model_Project/pull/6031"
+    }
+  ],
+  "ci_runs": [
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-08T20:53:51Z",
+      "databaseId": 34277455100,
+      "event": "push",
+      "headSha": "7c3d00ac02b60a6e9f4fc97259250d6ef2cdb58e",
+      "name": "CI",
+      "status": "completed",
+      "url": "https://github.com/stranske/Trend_Model_Project/actions/runs/34277455100",
+      "workflowName": "CI"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-08T07:03:34Z",
+      "databaseId": 34197484531,
+      "event": "push",
+      "headSha": "7059b502f007235f43131adfcb07a550e1db264b",
+      "name": "CI",
+      "status": "completed",
+      "url": "https://github.com/stranske/Trend_Model_Project/actions/runs/34197484531",
+      "workflowName": "CI"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-05T12:31:05Z",
+      "databaseId": 33966262437,
+      "event": "push",
+      "headSha": "b9bc99d36dfc1830db3b3080aa637f29a6e6b88b",
+      "name": "CI",
+      "status": "completed",
+      "url": "https://github.com/stranske/Trend_Model_Project/actions/runs/33966262437",
+      "workflowName": "CI"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-05T03:13:40Z",
+      "databaseId": 33941263032,
+      "event": "push",
+      "headSha": "74d49fae9bf20736172f4a32dc6f53e410eac65f",
+      "name": "CI",
+      "status": "completed",
+      "url": "https://github.com/stranske/Trend_Model_Project/actions/runs/33941263032",
+      "workflowName": "CI"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-05T02:34:16Z",
+      "databaseId": 33939445193,
+      "event": "push",
+      "headSha": "50d91ce9eadf863d4336ae60523911dc86c37ef4",
+      "name": "CI",
+      "status": "completed",
+      "url": "https://github.com/stranske/Trend_Model_Project/actions/runs/33939445193",
+      "workflowName": "CI"
+    }
+  ]
+}
