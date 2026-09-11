@@ -1,0 +1,278 @@
+{
+  "repo": "trip-planner",
+  "issues": [
+    {
+      "body": "## Why\n\nHonest lodging lane without OTA APIs (R7 \u00a75). Verified: `trip_planner/sources/adapters/__init__.py:3-5` lists only the base adapter \u2014 no lodging module. **Depends on:** provenance contracts (`docs/contracts/source-adapters.md:21`).\n\n## Scope\n\nCapture flow storing deep links + `ProvenanceReference` seeds per `source-adapters.md:21`.\n\n## Non-Goals\n\n- Do NOT implement live OTA search (B2-R24 reject).\n- Scaffold-only completion does NOT count.\n\n## Tasks\n\n- [ ] Add `trip_planner/sources/adapters/lodging_deep_link.py`.\n- [ ] Add `tests/sources/test_lodging_deep_link.py`.\n\n## Acceptance Criteria\n\n- [ ] Named test: `tests/sources/test_lodging_deep_link.py::test_provenance_seed_present` passes.\n- [ ] **Deliberate-break gate:** remove provenance \u2192 test **must FAIL** \u2192 revert.\n\n_Surfaced by B2-050._\n",
+      "createdAt": "2026-09-04T19:59:46Z",
+      "labels": [
+        {
+          "id": "LA_kwDOOzvyds8AAAACTcAVJw",
+          "name": "agent:codex",
+          "description": "Assign to Codex agent",
+          "color": "0e8a16"
+        },
+        {
+          "id": "LA_kwDOOzvyds8AAAACUHuizQ",
+          "name": "agents:apply-suggestions",
+          "description": "Applies optimization suggestions from agents:optimize",
+          "color": "0E8A16"
+        },
+        {
+          "id": "LA_kwDOOzvyds8AAAACUHui4Q",
+          "name": "agents:formatted",
+          "description": "Issue has been formatted to AGENT_ISSUE_TEMPLATE",
+          "color": "1D76DB"
+        },
+        {
+          "id": "LA_kwDOOzvyds8AAAACbnsevQ",
+          "name": "agents:auto-pilot",
+          "description": "Trigger agent auto-pilot workflow",
+          "color": "0E8A16"
+        }
+      ],
+      "number": 1787,
+      "title": "[P2] Lodging deep-link capture adapter (B2-050)",
+      "updatedAt": "2026-09-07T15:11:53Z"
+    },
+    {
+      "body": "## Why\n\nNeed ranking regression harness before live APIs (R7). Verified: `tests/sources/test_adapters.py:10-22` covers fixture adapters only \u2014 no `tests/eval/` directory. **Missing behavior:** no golden ranking scenarios. **Depends on:** B2-045, B2-046.\n\n## Scope\n\n`tests/eval/test_ranking_fixture.py` loading golden trip scenarios.\n\n## Non-Goals\n\n- Do NOT require live TPP service (B2-051 separate).\n- Scaffold-only completion does NOT count.\n\n## Tasks\n\n- [ ] Add `tests/eval/fixtures/` and `tests/eval/test_ranking_fixture.py`.\n- [ ] Update `docs/contracts/source-adapters.md` companion eval doc with the eval command.\n\n## Acceptance Criteria\n\n- [ ] Named test: `tests/eval/test_ranking_fixture.py::test_golden_scenario_scores` passes.\n- [ ] **Deliberate-break gate:** invert ranking weights \u2192 test **must FAIL** \u2192 revert.\n\n_Surfaced by B2-047._\n",
+      "createdAt": "2026-09-04T19:59:44Z",
+      "labels": [
+        {
+          "id": "LA_kwDOOzvyds8AAAACTcAVJw",
+          "name": "agent:codex",
+          "description": "Assign to Codex agent",
+          "color": "0e8a16"
+        },
+        {
+          "id": "LA_kwDOOzvyds8AAAACUHuizQ",
+          "name": "agents:apply-suggestions",
+          "description": "Applies optimization suggestions from agents:optimize",
+          "color": "0E8A16"
+        },
+        {
+          "id": "LA_kwDOOzvyds8AAAACUHui4Q",
+          "name": "agents:formatted",
+          "description": "Issue has been formatted to AGENT_ISSUE_TEMPLATE",
+          "color": "1D76DB"
+        },
+        {
+          "id": "LA_kwDOOzvyds8AAAACbnsevQ",
+          "name": "agents:auto-pilot",
+          "description": "Trigger agent auto-pilot workflow",
+          "color": "0E8A16"
+        }
+      ],
+      "number": 1786,
+      "title": "[P2] Ranking fixture eval harness (B2-047)",
+      "updatedAt": "2026-09-04T21:42:57Z"
+    },
+    {
+      "body": "## Why\n\ntrip-planner has `SourceAdapter` ABC (`trip_planner/sources/adapters/base.py:15`) but only fixture adapters in production path (`trip_planner/app/services/inventory.py:858` uses `PersistedTripInventoryFixtureAdapter`). Architecture ahead of data (R7).\n\n## Scope\n\n`DuffelFlightAdapter` implementing `SourceAdapter` with test-mode API + recorded fixture for CI.\n\n## Non-Goals\n\n- Do NOT scrape Google Flights (B2-R reject).\n- Scaffold-only completion does NOT count.\n\n## Tasks\n\n- [ ] Add `trip_planner/sources/adapters/duffel_flight.py` implementing `SourceAdapter`.\n- [ ] Add `tests/sources/test_duffel_adapter_offline.py` per `docs/contracts/source-adapters.md:23-30`.\n- [ ] Register adapter in `trip_planner/sources/__init__.py`.\n\n## Acceptance Criteria\n\n- [ ] Named test: `tests/sources/test_duffel_adapter_offline.py::test_emits_raw_snapshot` passes.\n- [ ] **Deliberate-break gate:** return empty `RawSnapshot.records` \u2192 test **must FAIL** \u2192 revert.\n\n_Surfaced by B2-045; owner needs Duffel test account for live verification only._\n",
+      "createdAt": "2026-09-04T19:59:43Z",
+      "labels": [
+        {
+          "id": "LA_kwDOOzvyds8AAAACTcAVJw",
+          "name": "agent:codex",
+          "description": "Assign to Codex agent",
+          "color": "0e8a16"
+        },
+        {
+          "id": "LA_kwDOOzvyds8AAAACUHuizQ",
+          "name": "agents:apply-suggestions",
+          "description": "Applies optimization suggestions from agents:optimize",
+          "color": "0E8A16"
+        },
+        {
+          "id": "LA_kwDOOzvyds8AAAACUHui4Q",
+          "name": "agents:formatted",
+          "description": "Issue has been formatted to AGENT_ISSUE_TEMPLATE",
+          "color": "1D76DB"
+        },
+        {
+          "id": "LA_kwDOOzvyds8AAAACbnsevQ",
+          "name": "agents:auto-pilot",
+          "description": "Trigger agent auto-pilot workflow",
+          "color": "0E8A16"
+        }
+      ],
+      "number": 1785,
+      "title": "[P2] Duffel flight source adapter (B2-045)",
+      "updatedAt": "2026-09-07T15:11:56Z"
+    },
+    {
+      "body": "## Why\n\nNEC rail schedules for US Northeast corridor (owner default #14). Verified: `trip_planner/sources/adapters/__init__.py:3-5` exports only `SourceAdapter` base \u2014 no GTFS adapter module. **Missing behavior:** no Amtrak schedule ingestion.\n\n## Scope\n\n`AmtrakGtfsAdapter` loading static GTFS ZIP fixture in CI.\n\n## Non-Goals\n\n- Do NOT depend on live GTFS download in CI.\n- Scaffold-only completion does NOT count.\n\n## Tasks\n\n- [ ] Add `trip_planner/sources/adapters/amtrak_gtfs.py`.\n- [ ] Add `tests/fixtures/gtfs/` minimal stop/route subset.\n- [ ] Add `tests/sources/test_amtrak_gtfs_adapter.py`.\n\n## Acceptance Criteria\n\n- [ ] Named test: `tests/sources/test_amtrak_gtfs_adapter.py::test_parses_fixture_trips` passes.\n- [ ] **Deliberate-break gate:** corrupt `stop_times.txt` \u2192 test **must FAIL** \u2192 revert.\n\n_Surfaced by B2-046._\n",
+      "createdAt": "2026-09-04T19:59:40Z",
+      "labels": [
+        {
+          "id": "LA_kwDOOzvyds8AAAACUHui4Q",
+          "name": "agents:formatted",
+          "description": "Issue has been formatted to AGENT_ISSUE_TEMPLATE",
+          "color": "1D76DB"
+        },
+        {
+          "id": "LA_kwDOOzvyds8AAAACbnsevQ",
+          "name": "agents:auto-pilot",
+          "description": "Trigger agent auto-pilot workflow",
+          "color": "0E8A16"
+        }
+      ],
+      "number": 1783,
+      "title": "[P2] Amtrak GTFS source adapter (B2-046)",
+      "updatedAt": "2026-09-04T21:42:51Z"
+    },
+    {
+      "body": "This issue lists Renovate updates and detected dependencies. Read the [Dependency Dashboard](https://docs.renovatebot.com/key-concepts/dashboard/) docs to learn more.<br>[View this repository on the Mend.io Web Portal](https://developer.mend.io/github/stranske/trip-planner).\n\n## Pending Approval\n\nThe following branches are pending approval. To create them, click on a checkbox below.\n\n - [ ] <!-- approve-branch=renovate/astral-sh-setup-uv-10.x -->chore(deps): update astral-sh/setup-uv action to v10\n - [ ] <!-- approve-branch=renovate/major-vitest-monorepo -->chore(deps): update dependency vitest to v5\n - [ ] <!-- approve-all-pending-prs -->\ud83d\udd10 **Create all pending approval PRs at once** \ud83d\udd10\n\n## Awaiting Schedule\n\nThe following updates are awaiting their schedule. To get an update now, click on a checkbox below.\n\n - [ ] <!-- unschedule-branch=renovate/github-actions -->chore(deps): update github-actions (`actions/setup-python`, `astral-sh/setup-uv`)\n - [ ] <!-- unschedule-branch=renovate/non-major-updates -->fix(deps): update non-major updates (`@octokit/auth-app`, `@playwright/test`, `@testing-library/jest-dom`, `@testing-library/react`, `@testing-library/user-event`, `@types/google.maps`, `@types/react-dom`, `@vitejs/plugin-react`, `alembic`, `anyio`, `langchain-core`, `langchain-openai`, `numpy`, `psycopg`, `react-router-dom`, `sqlalchemy`, `starlette`, `types-pyyaml`, `uvicorn`, `vite`, `vitest`)\n - [ ] <!-- unschedule-branch=renovate/lock-file-maintenance-weekly-lock-file-maintenance -->chore(deps): lock file maintenance\n - [ ] <!-- create-all-awaiting-schedule-prs -->\ud83d\udd10 **Create all awaiting schedule PRs at once** \ud83d\udd10\n\n## PR Closed (Blocked)\n\nThe following updates are blocked by an existing closed PR. To recreate the PR, click on a checkbox below.\n\n - [ ] <!-- recreate-branch=renovate/actions-setup-python-7.x -->[chore(deps): update actions/setup-python action to v7](../pull/1549)\n - [ ] <!-- recreate-branch=renovate/node-24.x -->[chore(deps): update dependency node to v24](../pull/1393)\n\n## Detected Dependencies\n\n<details><summary>github-actions (37)</summary>\n<blockquote>\n\n<details><summary>.github/actions/agent-run-base/action.yml</summary>\n\n\n</details>\n\n<details><summary>.github/actions/artifact-cache/action.yml</summary>\n\n\n</details>\n\n<details><summary>.github/actions/resolve-default-branch/action.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-71-codex-belt-dispatcher.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-72-codex-belt-worker.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-73-codex-belt-conveyor.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-80-pr-event-hub.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-81-gate-followups.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-auto-label.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-auto-pilot.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-autofix-dispatcher.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-capability-check.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-decompose.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-dedup.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-guard.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-issue-format-guard.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-issue-intake.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-issue-optimizer.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-keepalive-loop-reporter.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-keepalive-sweep.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-pr-health.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-verifier.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-verify-to-new-pr.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-weekly-metrics.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/autofix.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/backplane-conformance.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/baseline-report.yml (3)</summary>\n\n - `actions/checkout v7`\n - `actions/setup-python v6` \u2192 [Updates: `v7`]\n - `python 3.14`\n\n</details>\n\n<details><summary>.github/workflows/ci.yml (15)</summary>\n\n - `actions/checkout v7.0.1@3d3c42e5aac5ba805825da76410c181273ba90b1`\n - `actions/setup-python v7@5fda3b95a4ea91299a34e894583c3862153e4b97`\n - `stranske/Workflows main`\n - `actions/checkout v7`\n - `actions/setup-python v6` \u2192 [Updates: `v7`]\n - `actions/setup-node v7`\n - `actions/checkout v7.0.1@3d3c42e5aac5ba805825da76410c181273ba90b1`\n - `actions/setup-python v6@a309ff8b426b58ec0e2a45f0f869d46889d02405` \u2192 [Updates: `v7`, `v6`]\n - `astral-sh/setup-uv v7@94527f2e458b27549849d47d273a16bec83a01e9` \u2192 [Updates: `v10.0.1`, `v7`]\n - `actions/setup-node v7@820762786026740c76f36085b0efc47a31fe5020`\n - `python 3.14`\n - `python 3.14`\n - `node 22` \u2192 [Updates: `24`]\n - `python 3.14`\n - `node 22` \u2192 [Updates: `24`]\n\n</details>\n\n<details><summary>.github/workflows/cross-repo-smoke.yml (6)</summary>\n\n - `actions/checkout v7`\n - `actions/checkout v7`\n - `actions/setup-python v6` \u2192 [Updates: `v7`]\n - `actions/setup-node v7`\n - `python 3.14`\n - `node 22` \u2192 [Updates: `24`]\n\n</details>\n\n<details><summary>.github/workflows/list-llm-models.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/maint-76-claude-code-review.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/maint-87-docs-drift-fix-agent.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/maint-coverage-guard.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/maint-dependabot-auto-lock.yml (3)</summary>\n\n - `actions/checkout v7`\n - `actions/setup-python v6@a309ff8b426b58ec0e2a45f0f869d46889d02405` \u2192 [Updates: `v7`, `v6`]\n - `python 3.14`\n\n</details>\n\n<details><summary>.github/workflows/pr-00-gate.yml (12)</summary>\n\n - `actions/checkout v7`\n - `stranske/Workflows main`\n - `actions/checkout v7.0.1@3d3c42e5aac5ba805825da76410c181273ba90b1`\n - `actions/setup-python v7@5fda3b95a4ea91299a34e894583c3862153e4b97`\n - `actions/checkout v7`\n - `actions/setup-python v6` \u2192 [Updates: `v7`]\n - `actions/setup-node v7`\n - `actions/checkout v7`\n - `actions/github-script v9.0.0`\n - `python 3.14`\n - `python 3.14`\n - `node 22` \u2192 [Updates: `24`]\n\n</details>\n\n<details><summary>.github/workflows/pr-46-dependency-repair-contract.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/reusable-pr-context.yml</summary>\n\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>npm (2)</summary>\n<blockquote>\n\n<details><summary>.github/scripts/package.json (3)</summary>\n\n - `@octokit/auth-app ^8.0.0` \u2192 [Updates: `^8.0.0`]\n - `@octokit/rest ^22.0.0`\n - `minimatch ^10.0.1`\n\n</details>\n\n<details><summary>frontend/package.json (17)</summary>\n\n - `@googlemaps/js-api-loader ^2.1.1`\n - `react ^19.0.0` \u2192 [Updates: `^19.0.0`]\n - `react-dom ^19.0.0` \u2192 [Updates: `^19.0.0`]\n - `react-router-dom ^7.0.0` \u2192 [Updates: `^7.0.0`]\n - `@playwright/test 1.61.1` \u2192 [Updates: `1.63.0`]\n - `@testing-library/jest-dom ^7.0.0` \u2192 [Updates: `^7.0.0`]\n - `@testing-library/react ^16.3.0` \u2192 [Updates: `^16.3.0`]\n - `@testing-library/user-event ^14.6.1` \u2192 [Updates: `^14.6.1`]\n - `@types/google.maps ^3.65.5` \u2192 [Updates: `^3.65.5`]\n - `@types/react ^19.0.0` \u2192 [Updates: `^19.0.0`]\n - `@types/react-dom ^19.0.0` \u2192 [Updates: `^19.0.0`]\n - `@vitejs/plugin-react ^6.0.0` \u2192 [Updates: `^6.0.0`]\n - `jsdom ^30.0.0`\n - `typescript ^7.0.0`\n - `vite ^8.0.0` \u2192 [Updates: `^8.0.0`]\n - `vitest ^4.0.0` \u2192 [Updates: `^4.0.0`, `^5.0.0`]\n - `node >=22.13.0`\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>pip-compile (1)</summary>\n<blockquote>\n\n<details><summary>pyproject.toml (18)</summary>\n\n - `python >=3.12,<3.15`\n - `alembic ==1.18.5` \u2192 [Updates: `==1.19.2`]\n - `anyio ==4.14.2` \u2192 [Updates: `==4.15.1`]\n - `fastapi ==0.141.1`\n - `jsonschema >=4.26.0,<4.27.0`\n - `langchain-core ==1.5.3` \u2192 [Updates: `==1.6.2`]\n - `langchain-openai ==1.4.1` \u2192 [Updates: `==1.6.0`]\n - `psycopg ==3.3.4` \u2192 [Updates: `==3.3.5`]\n - `starlette ==1.3.1` \u2192 [Updates: `==1.6.0`]\n - `sqlalchemy ==2.0.51` \u2192 [Updates: `==2.0.52`]\n - `uvicorn ==0.52.0` \u2192 [Updates: `==0.52.4`]\n - `httpx ==0.28.1`\n - `pyyaml ==6.0.3`\n - `types-pyyaml ==6.0.12.20260724` \u2192 [Updates: `==6.0.12.20260906`]\n - `pytest-httpserver ==1.1.5`\n - `numpy ==2.5.1` \u2192 [Updates: `==2.5.3`]\n - `pandas ==3.0.5`\n - `setuptools >=82.0.1`\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>pip_requirements (2)</summary>\n<blockquote>\n\n<details><summary>requirements.txt (1)</summary>\n\n - `jsonschema >=4.26.0,<4.27.0`\n\n</details>\n\n<details><summary>tools/requirements-llm.txt</summary>\n\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>poetry (1)</summary>\n<blockquote>\n\n<details><summary>pyproject.toml (16)</summary>\n\n - `alembic ==1.18.5` \u2192 [Updates: `==1.19.2`]\n - `anyio ==4.14.2` \u2192 [Updates: `==4.15.1`]\n - `fastapi ==0.141.1`\n - `jsonschema >=4.26.0,<4.27.0`\n - `langchain-core ==1.5.3` \u2192 [Updates: `==1.6.2`]\n - `langchain-openai ==1.4.1` \u2192 [Updates: `==1.6.0`]\n - `psycopg ==3.3.4` \u2192 [Updates: `==3.3.5`]\n - `starlette ==1.3.1` \u2192 [Updates: `==1.6.0`]\n - `sqlalchemy ==2.0.51` \u2192 [Updates: `==2.0.52`]\n - `uvicorn ==0.52.0` \u2192 [Updates: `==0.52.4`]\n - `httpx ==0.28.1`\n - `pyyaml ==6.0.3`\n - `types-pyyaml ==6.0.12.20260724` \u2192 [Updates: `==6.0.12.20260906`]\n - `pytest-httpserver ==1.1.5`\n - `numpy ==2.5.1` \u2192 [Updates: `==2.5.3`]\n - `pandas ==3.0.5`\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>pyenv (1)</summary>\n<blockquote>\n\n<details><summary>.python-version (1)</summary>\n\n - `python 3.14`\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>renovate-config (1)</summary>\n<blockquote>\n\n<details><summary>.github/renovate.json</summary>\n\n\n</details>\n\n</blockquote>\n</details>\n\n---\n\n- [ ] <!-- manual job -->Check this box to trigger a request for Renovate to run again on this repository\n\n",
+      "createdAt": "2026-06-15T04:40:02Z",
+      "labels": [
+        {
+          "id": "LA_kwDOOzvyds8AAAACxDIKYw",
+          "name": "tracker:durable",
+          "description": "Permanently-open tracker; excluded from open-issue backlog counts",
+          "color": "c5def5"
+        }
+      ],
+      "number": 1384,
+      "title": "Dependency Dashboard",
+      "updatedAt": "2026-09-11T03:58:36Z"
+    },
+    {
+      "body": "Tracking issue for weekly agent workflow metrics.\n\n# Agent Metrics Summary\n\nGenerated: 2026-04-27T06:47:51Z\nRecords: 60 (keepalive 40, autofix 0, verifier 0, terminal dispositions 20, verifier follow-up ledgers 0, codex CLI freshness 0, autopilot 0, unknown 0)\nParse errors: 0\nRange: 2026-04-27T03:15:45.318000Z to 2026-04-27T06:45:06.409000Z\n\n## Keepalive\n- Runs: 40\n- PRs: 7\n- Avg iterations: 0.0\n- Stop reasons: missing-agent-label (20)\n- Actions: wait (20)\n- Gate conclusions: cancelled (11), failure (4), success (3)\n- Tasks complete rate: 0.0% (0/40)\n\n## Autofix\n- Attempts: 0\n- PRs: 0\n- Fixes applied: n/a\n- Trigger reasons: n/a\n- Gate results after: n/a\n\n## Verifier\n- Runs: 0\n- PRs: 3\n- Verdicts: n/a\n- Issues created: 0\n- Avg acceptance criteria: 0.0\n- Terminal disposition records: 20\n- Terminal dispositions: wrapper-skipped (20)\n- Terminal disposition sources: review-thread:24974822268 (1), review-thread:24974841613 (1), review-thread:24974902753 (1), review-thread:24974990156 (1), review-thread:24975215762 (1), review-thread:24975242364 (1), review-thread:24975325149 (1), review-thread:24975942919 (1), review-thread:24975944574 (1), review-thread:24975986889 (1), review-thread:24976067757 (1), review-thread:24976429922 (1), review-thread:24976460290 (1), review-thread:990 (1), review-thread:24978034275 (1), review-thread:24978066981 (1), review-thread:991 (1), review-thread:24980322459 (1), review-thread:24980409309 (1), review-thread:992 (1)\n- Terminal artifact families: review-thread-terminal-disposition: selected (20/79), verifier-terminal-disposition: missing (0/0)\n- Missing terminal artifact families: verifier-terminal-disposition\n- Verifier follow-up ledger records: 0\n- Verifier follow-up ledger dispositions: n/a\n- Verifier follow-up ledger PRs: 0\n- Verifier follow-up issues linked: 0\n- Verifier follow-up needs-human records: 0\n- Verifier follow-up avg chain depth: 0.0\n- Verifier follow-up max chain depth: 0\n- Verifier follow-up policy records: 0\n- Verifier follow-up policy actions: n/a\n- Verifier follow-up policy triggers: n/a\n- Verifier follow-up depth-limit records: 0\n- Verifier models: n/a\n- Verifier CLI versions: n/a\n- Unsupported verifier models: n/a\n- Unsupported model dispositions: n/a\n- Missing verifier model metadata: n/a\n- Legacy missing verifier model metadata: n/a\n- Model selection reasons: n/a\n- Verifier modes: n/a\n\n## Codex CLI Freshness\n- Records: 0\n- Statuses: n/a\n- Packages: n/a\n- Pinned versions: n/a\n- Latest versions: n/a\n- Outdated records: 0\n- Latest unavailable records: 0\n- Max version delta: major 0, minor 0, patch 0\n- Update targets: n/a\n\n## Weekly Metrics Artifact Selection\n\n- Schema: workflows-weekly-metrics-artifact-selection/v1\n- Status: pass\n- Lookback days: 14\n- Scan cap: 5 pages x 100 artifacts\n- Download cap: 80 total, 20 per family\n- Scanned artifacts: 500\n- Candidate artifacts: 292\n- Selected artifacts: 60\n- Missing priority families: codex-cli-freshness, verifier-terminal-disposition, bot-comment-auth-coverage-wrapper, bot-comment-auth-coverage-reusable, pr-source-context\n- Ignored: 0 old, 0 expired, 208 non-metrics, 232 over family cap, 0 over total cap\n\n| Artifact family | Candidates | Selected |\n|-----------------|------------|----------|\n| agents-autofix-metrics | 106 | 20 |\n| keepalive-metrics | 107 | 20 |\n| review-thread-terminal-disposition | 79 | 20 |\n\n| Priority family | Status | Candidates | Selected artifact |\n|-----------------|--------|------------|-------------------|\n| codex-cli-freshness | missing | 0 | none |\n| verifier-terminal-disposition | missing | 0 | none |\n| review-thread-terminal-disposition | selected | 79 | review-thread-terminal-disposition-24980537812 |\n| bot-comment-auth-coverage-wrapper | missing | 0 | none |\n| bot-comment-auth-coverage-reusable | missing | 0 | none |\n| pr-source-context | missing | 0 | none |\n\n## Weekly Metrics Artifact Downloads\n\n- Schema: workflows-weekly-metrics-artifact-download-manifest/v1\n- Status: pass\n- Selected artifacts: 60\n- Downloads: 60 passed, 0 failed\n- Unzip: 60 passed, 0 failed, 0 skipped\n\n| Artifact | ID | Download | Unzip | Path |\n|----------|----|----------|-------|------|\n| review-thread-terminal-disposition-24980537812 | 6654666009 | pass | pass | artifacts/review-thread-terminal-disposition-24980537812/6654666009 |\n| agents-autofix-metrics | 6654665153 | pass | pass | artifacts/agents-autofix-metrics/6654665153 |\n| keepalive-metrics | 6654652641 | pass | pass | artifacts/keepalive-metrics/6654652641 |\n| agents-autofix-metrics | 6654631682 | pass | pass | artifacts/agents-autofix-metrics/6654631682 |\n| review-thread-terminal-disposition-24980409309 | 6654626442 | pass | pass | artifacts/review-thread-terminal-disposition-24980409309/6654626442 |\n| keepalive-metrics | 6654618576 | pass | pass | artifacts/keepalive-metrics/6654618576 |\n| agents-autofix-metrics | 6654603037 | pass | pass | artifacts/agents-autofix-metrics/6654603037 |\n| review-thread-terminal-disposition-24980322459 | 6654597214 | pass | pass | artifacts/review-thread-terminal-disposition-24980322459/6654597214 |\n| agents-autofix-metrics | 6654590767 | pass | pass | artifacts/agents-autofix-metrics/6654590767 |\n| keepalive-metrics | 6653834337 | pass | pass | artifacts/keepalive-metrics/6653834337 |\n| review-thread-terminal-disposition-24978189458 | 6653833160 | pass | pass | artifacts/review-thread-terminal-disposition-24978189458/6653833160 |\n| agents-autofix-metrics | 6653832046 | pass | pass | artifacts/agents-autofix-metrics/6653832046 |\n| keepalive-metrics | 6653818529 | pass | pass | artifacts/keepalive-metrics/6653818529 |\n| agents-autofix-metrics | 6653801353 | pass | pass | artifacts/agents-autofix-metrics/6653801353 |\n| agents-autofix-metrics | 6653796962 | pass | pass | artifacts/agents-autofix-metrics/6653796962 |\n| review-thread-terminal-disposition-24978066981 | 6653793736 | pass | pass | artifacts/review-thread-terminal-disposition-24978066981/6653793736 |\n| keepalive-metrics | 6653786994 | pass | pass | artifacts/keepalive-metrics/6653786994 |\n| agents-autofix-metrics | 6653781451 | pass | pass | artifacts/agents-autofix-metrics/6653781451 |\n| review-thread-terminal-disposition-24978034275 | 6653778817 | pass | pass | artifacts/review-thread-terminal-disposition-24978034275/6653778817 |\n| keepalive-metrics | 6653603464 | pass | pass | artifacts/keepalive-metrics/6653603464 |\n| keepalive-metrics | 6653603070 | pass | pass | artifacts/keepalive-metrics/6653603070 |\n| keepalive-metrics | 6653601389 | pass | pass | artifacts/keepalive-metrics/6653601389 |\n| keepalive-metrics | 6653297649 | pass | pass | artifacts/keepalive-metrics/6653297649 |\n| review-thread-terminal-disposition-24976547476 | 6653295033 | pass | pass | artifacts/review-thread-terminal-disposition-24976547476/6653295033 |\n| agents-autofix-metrics | 6653294760 | pass | pass | artifacts/agents-autofix-metrics/6653294760 |\n| keepalive-metrics | 6653287447 | pass | pass | artifacts/keepalive-metrics/6653287447 |\n| agents-autofix-metrics | 6653276081 | pass | pass | artifacts/agents-autofix-metrics/6653276081 |\n| agents-autofix-metrics | 6653272156 | pass | pass | artifacts/agents-autofix-metrics/6653272156 |\n| keepalive-metrics | 6653271366 | pass | pass | artifacts/keepalive-metrics/6653271366 |\n| review-thread-terminal-disposition-24976460290 | 6653267898 | pass | pass | artifacts/review-thread-terminal-disposition-24976460290/6653267898 |\n| review-thread-terminal-disposition-24976429922 | 6653265059 | pass | pass | artifacts/review-thread-terminal-disposition-24976429922/6653265059 |\n| agents-autofix-metrics | 6653259104 | pass | pass | artifacts/agents-autofix-metrics/6653259104 |\n| review-thread-terminal-disposition-24975942919 | 6653170960 | pass | pass | artifacts/review-thread-terminal-disposition-24975942919/6653170960 |\n| keepalive-metrics | 6653133007 | pass | pass | artifacts/keepalive-metrics/6653133007 |\n| review-thread-terminal-disposition-24976067757 | 6653130550 | pass | pass | artifacts/review-thread-terminal-disposition-24976067757/6653130550 |\n| agents-autofix-metrics | 6653129750 | pass | pass | artifacts/agents-autofix-metrics/6653129750 |\n| keepalive-metrics | 6653123765 | pass | pass | artifacts/keepalive-metrics/6653123765 |\n| keepalive-metrics | 6653113101 | pass | pass | artifacts/keepalive-metrics/6653113101 |\n| agents-autofix-metrics | 6653112983 | pass | pass | artifacts/agents-autofix-metrics/6653112983 |\n| review-thread-terminal-disposition-24975986889 | 6653112089 | pass | pass | artifacts/review-thread-terminal-disposition-24975986889/6653112089 |\n| agents-autofix-metrics | 6653109850 | pass | pass | artifacts/agents-autofix-metrics/6653109850 |\n| agents-autofix-metrics | 6653105752 | pass | pass | artifacts/agents-autofix-metrics/6653105752 |\n| review-thread-terminal-disposition-24975944574 | 6653105490 | pass | pass | artifacts/review-thread-terminal-disposition-24975944574/6653105490 |\n| keepalive-metrics | 6652908195 | pass | pass | artifacts/keepalive-metrics/6652908195 |\n| review-thread-terminal-disposition-24975325149 | 6652906244 | pass | pass | artifacts/review-thread-terminal-disposition-24975325149/6652906244 |\n| agents-autofix-metrics | 6652905632 | pass | pass | artifacts/agents-autofix-metrics/6652905632 |\n| keepalive-metrics | 6652902163 | pass | pass | artifacts/keepalive-metrics/6652902163 |\n| keepalive-metrics | 6652892370 | pass | pass | artifacts/keepalive-metrics/6652892370 |\n| agents-autofix-metrics | 6652890843 | pass | pass | artifacts/agents-autofix-metrics/6652890843 |\n| review-thread-terminal-disposition-24975242364 | 6652887804 | pass | pass | artifacts/review-thread-terminal-disposition-24975242364/6652887804 |\n| agents-autofix-metrics | 6652882633 | pass | pass | artifacts/agents-autofix-metrics/6652882633 |\n| review-thread-terminal-disposition-24975215762 | 6652875590 | pass | pass | artifacts/review-thread-terminal-disposition-24975215762/6652875590 |\n| agents-autofix-metrics | 6652872721 | pass | pass | artifacts/agents-autofix-metrics/6652872721 |\n| keepalive-metrics | 6652798083 | pass | pass | artifacts/keepalive-metrics/6652798083 |\n| review-thread-terminal-disposition-24974990156 | 6652795853 | pass | pass | artifacts/review-thread-terminal-disposition-24974990156/6652795853 |\n| keepalive-metrics | 6652789284 | pass | pass | artifacts/keepalive-metrics/6652789284 |\n| review-thread-terminal-disposition-24974902753 | 6652765296 | pass | pass | artifacts/review-thread-terminal-disposition-24974902753/6652765296 |\n| keepalive-metrics | 6652762480 | pass | pass | artifacts/keepalive-metrics/6652762480 |\n| review-thread-terminal-disposition-24974841613 | 6652746489 | pass | pass | artifacts/review-thread-terminal-disposition-24974841613/6652746489 |\n| review-thread-terminal-disposition-24974822268 | 6652734097 | pass | pass | artifacts/review-thread-terminal-disposition-24974822268/6652734097 |\n\n## Terminal Disposition Coverage Preflight\n\n- Mode: warning-only (does not block merges or automation)\n- Requested mode: warning-only\n- Status: pass\n- Coverage status: pass\n- Hard block eligible: true\n- Hard block active: false\n- Input files: 20\n- Scanned records: 20\n- Terminal disposition records: 20\n- Non-terminal records: 0\n- Observed sources: 20\n- Expected review-thread sources: 3\n- Missing review-thread sources: 0\n- Parse errors: 0\n- Artifact selector status: pass\n- Terminal artifacts selected: 20\n- Terminal artifacts candidates: 79\n- Missing terminal artifact families: verifier-terminal-disposition\n- Verifier model compatibility: pass\n- Unsupported verifier model records: 0\n- Missing verifier model metadata records: 0\n- Missing verifier model metadata records with unknown mode: 0\n- Legacy missing verifier model metadata records: 0\n- Unsupported verifier models: gpt-5.2-codex\n\n| Observed source | Records | Dispositions | PRs |\n|-----------------|---------|--------------|-----|\n| review-thread:24974822268 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24974841613 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24974902753 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24974990156 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24975215762 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24975242364 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24975325149 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24975942919 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24975944574 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24975986889 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24976067757 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24976429922 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24976460290 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24978034275 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24978066981 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24980322459 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24980409309 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:990 | 1 | wrapper-skipped (1) | #990 |\n| review-thread:991 | 1 | wrapper-skipped (1) | #991 |\n| review-thread:992 | 1 | wrapper-skipped (1) | #992 |\n\n| Terminal artifact family | Status | Candidates | Selected | Latest artifact |\n|--------------------------|--------|------------|----------|-----------------|\n| review-thread-terminal-disposition | selected | 79 | 20 | review-thread-terminal-disposition-24980537812 |\n| verifier-terminal-disposition | missing | 0 | 0 | n/a |\n\n## Bot Comment App Auth Coverage\n\n- Schema: workflows-bot-comment-auth-coverage-summary/v1\n- Status: no-data\n- Coverage status: no-data\n- Mode: warning-only\n- Hard block eligible: false\n- Hard block active: false\n- Input files: 0\n- Parsed JSON files: 0\n- Auth records: 0\n- Non-auth records: 0\n- Parse errors: 0\n- Read errors: 0\n- Artifact selection status: pass\n- Selected auth artifacts: 0\n- Required organic events: pull_request, workflow_run\n- Organic evidence status: no-data\n- Missing organic requirements: agents-bot-comment-handler-wrapper/pull_request, agents-bot-comment-handler-wrapper/workflow_run, reusable-bot-comment-handler/pull_request, reusable-bot-comment-handler/workflow_run\n- Blockers: missing-organic-agents-bot-comment-handler-wrapper-pull_request, missing-organic-agents-bot-comment-handler-wrapper-workflow_run, missing-organic-reusable-bot-comment-handler-pull_request, missing-organic-reusable-bot-comment-handler-workflow_run\n\n| Component | Latest mode | Records | Expected | Allowed | Blockers |\n|-----------|-------------|---------|----------|---------|----------|\n| agents-bot-comment-handler-wrapper | missing | 0 | client-id | client-id | missing-agents-bot-comment-handler-wrapper |\n| reusable-bot-comment-handler | missing | 0 | any | client-id, none | missing-reusable-bot-comment-handler |\n",
+      "createdAt": "2026-04-27T06:47:53Z",
+      "labels": [
+        {
+          "id": "LA_kwDOOzvyds8AAAACxDIKYw",
+          "name": "tracker:durable",
+          "description": "Permanently-open tracker; excluded from open-issue backlog counts",
+          "color": "c5def5"
+        }
+      ],
+      "number": 993,
+      "title": "Agent metrics weekly summary",
+      "updatedAt": "2026-09-07T06:04:51Z"
+    }
+  ],
+  "prs": [],
+  "runs": [
+    {
+      "conclusion": "skipped",
+      "createdAt": "2026-06-25T21:03:34Z",
+      "databaseId": 28200364316,
+      "event": "schedule",
+      "headSha": "ffaed62c3367d9648043faecb3a40b2736a8d4f9",
+      "name": "Agents Keepalive Sweep",
+      "status": "completed",
+      "updatedAt": "2026-06-25T21:03:35Z",
+      "url": "https://github.com/stranske/trip-planner/actions/runs/28200364316",
+      "workflowName": "Agents Keepalive Sweep"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-06-25T20:39:05Z",
+      "databaseId": 28199041853,
+      "event": "schedule",
+      "headSha": "ffaed62c3367d9648043faecb3a40b2736a8d4f9",
+      "name": "Agents PR Health",
+      "status": "completed",
+      "updatedAt": "2026-06-25T20:39:33Z",
+      "url": "https://github.com/stranske/trip-planner/actions/runs/28199041853",
+      "workflowName": "Agents PR Health"
+    },
+    {
+      "conclusion": "skipped",
+      "createdAt": "2026-06-25T20:06:32Z",
+      "databaseId": 28197274897,
+      "event": "schedule",
+      "headSha": "ffaed62c3367d9648043faecb3a40b2736a8d4f9",
+      "name": "Agents Keepalive Sweep",
+      "status": "completed",
+      "updatedAt": "2026-06-25T20:06:33Z",
+      "url": "https://github.com/stranske/trip-planner/actions/runs/28197274897",
+      "workflowName": "Agents Keepalive Sweep"
+    },
+    {
+      "conclusion": "skipped",
+      "createdAt": "2026-06-25T19:47:49Z",
+      "databaseId": 28196246184,
+      "event": "workflow_run",
+      "headSha": "ffaed62c3367d9648043faecb3a40b2736a8d4f9",
+      "name": "Keepalive Loop Reporter",
+      "status": "completed",
+      "updatedAt": "2026-06-25T19:47:56Z",
+      "url": "https://github.com/stranske/trip-planner/actions/runs/28196246184",
+      "workflowName": "Keepalive Loop Reporter"
+    },
+    {
+      "conclusion": "skipped",
+      "createdAt": "2026-06-25T19:47:35Z",
+      "databaseId": 28196232821,
+      "event": "workflow_run",
+      "headSha": "ffaed62c3367d9648043faecb3a40b2736a8d4f9",
+      "name": "Agents PR Event Hub",
+      "status": "completed",
+      "updatedAt": "2026-06-25T19:47:37Z",
+      "url": "https://github.com/stranske/trip-planner/actions/runs/28196232821",
+      "workflowName": "Agents PR Event Hub"
+    },
+    {
+      "conclusion": "failure",
+      "createdAt": "2026-06-25T19:47:35Z",
+      "databaseId": 28196233101,
+      "event": "workflow_run",
+      "headSha": "ffaed62c3367d9648043faecb3a40b2736a8d4f9",
+      "name": "Agents Gate Followups",
+      "status": "completed",
+      "updatedAt": "2026-06-25T19:47:47Z",
+      "url": "https://github.com/stranske/trip-planner/actions/runs/28196233101",
+      "workflowName": "Agents Gate Followups"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-06-25T19:47:35Z",
+      "databaseId": 28196232704,
+      "event": "workflow_run",
+      "headSha": "ffaed62c3367d9648043faecb3a40b2736a8d4f9",
+      "name": "Autofix",
+      "status": "completed",
+      "updatedAt": "2026-06-25T19:47:43Z",
+      "url": "https://github.com/stranske/trip-planner/actions/runs/28196232704",
+      "workflowName": "Autofix"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-06-25T19:45:52Z",
+      "databaseId": 28196142100,
+      "event": "issues",
+      "headSha": "ffaed62c3367d9648043faecb3a40b2736a8d4f9",
+      "name": "Auto-Label Issues",
+      "status": "completed",
+      "updatedAt": "2026-06-25T19:46:08Z",
+      "url": "https://github.com/stranske/trip-planner/actions/runs/28196142100",
+      "workflowName": "Auto-Label Issues"
+    },
+    {
+      "conclusion": "skipped",
+      "createdAt": "2026-06-25T19:44:49Z",
+      "databaseId": 28196082702,
+      "event": "issue_comment",
+      "headSha": "ffaed62c3367d9648043faecb3a40b2736a8d4f9",
+      "name": "Agents PR Event Hub",
+      "status": "completed",
+      "updatedAt": "2026-06-25T19:44:50Z",
+      "url": "https://github.com/stranske/trip-planner/actions/runs/28196082702",
+      "workflowName": "Agents PR Event Hub"
+    },
+    {
+      "conclusion": "skipped",
+      "createdAt": "2026-06-25T19:44:41Z",
+      "databaseId": 28196075795,
+      "event": "issue_comment",
+      "headSha": "ffaed62c3367d9648043faecb3a40b2736a8d4f9",
+      "name": "Agents PR Event Hub",
+      "status": "completed",
+      "updatedAt": "2026-06-25T19:44:42Z",
+      "url": "https://github.com/stranske/trip-planner/actions/runs/28196075795",
+      "workflowName": "Agents PR Event Hub"
+    }
+  ]
+}

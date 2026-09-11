@@ -1,0 +1,311 @@
+{
+  "repo": "Inv-Man-Intake",
+  "issues": [
+    {
+      "body": "## Why\n\nDDQ extraction tests need synthetic fixtures (R6). Verified: `tests/fixtures/` has no `ddq_synthetic/` subtree (glob 2026-09-04) and `tests/intake/test_standard_element_library.py:1-20` only loads the bundled stub. **Missing behavior:** no ILPA DDQ golden packet for CI. **Depends on:** B2-010 ontology.\n\n## Scope\n\n`tests/fixtures/ddq_synthetic/` + loader for packet pipeline tests.\n\n## Non-Goals\n\n- Do NOT use real manager DDQ responses.\n- Scaffold-only completion does NOT count.\n\n## Tasks\n\n- [ ] Add synthetic DDQ JSON under `tests/fixtures/ddq_synthetic/`.\n- [ ] Add `tests/intake/test_ddq_synthetic_fill.py` running packet pipeline.\n\n## Acceptance Criteria\n\n- [ ] Named test: `tests/intake/test_ddq_synthetic_fill.py::test_ddq_fields_extracted` passes.\n- [ ] **Deliberate-break gate:** remove mandatory field from fixture \u2192 test **must FAIL** \u2192 revert.\n\n## Implementation Notes\n\nSynthetic fixtures only; depends on consultant section ontology (B2-010).\n\n_Surfaced by B2-040._\n",
+      "createdAt": "2026-09-04T19:59:32Z",
+      "labels": [
+        {
+          "id": "LA_kwDORbgIAs8AAAACZuwyEw",
+          "name": "agents:formatted",
+          "description": "Issue has been formatted to AGENT_ISSUE_TEMPLATE",
+          "color": "1D76DB"
+        },
+        {
+          "id": "LA_kwDORbgIAs8AAAACZuwyXA",
+          "name": "agents:apply-suggestions",
+          "description": "Applies optimization suggestions from agents:optimize",
+          "color": "0E8A16"
+        },
+        {
+          "id": "LA_kwDORbgIAs8AAAACZuxEEA",
+          "name": "agent:codex",
+          "description": "Assign to Codex agent",
+          "color": "0e8a16"
+        },
+        {
+          "id": "LA_kwDORbgIAs8AAAACZuxOUA",
+          "name": "agents:auto-pilot",
+          "description": "Triggers end-to-end auto-pilot pipeline",
+          "color": "0052CC"
+        }
+      ],
+      "number": 951,
+      "title": "[P2] ILPA DDQ synthetic fill harness (B2-040)",
+      "updatedAt": "2026-09-07T15:11:31Z"
+    },
+    {
+      "body": "## Why\n\nOnePagerModel is renderer-oriented but no `report-spec.json` fleet profile exists. Verified: `tests/export/test_one_pager.py:1-30` exercises one-pager export without any `report-spec.json` assertion, and `grep -r report-spec src` returns no matches. **Missing behavior:** no output-substrate profile emission. **Depends on:** Pension-Data B2-029 renderer-shell, Workflows B2-028.\n\n## Scope\n\nEmit `report-spec.json` alongside one-pager exports referencing output-substrate profile.\n\n## Non-Goals\n\n- Do NOT fork Pension-Data web app.\n- Scaffold-only completion does NOT count.\n\n## Tasks\n\n- [ ] Add `src/inv_man_intake/export/report_spec.py`.\n- [ ] Wire into existing one-pager export path (`tests/export/test_one_pager.py` reference).\n- [ ] Add `tests/export/test_report_spec.py`.\n\n## Acceptance Criteria\n\n- [ ] Named test: `tests/export/test_report_spec.py::test_report_spec_validates` passes.\n- [ ] **Deliberate-break gate:** remove `renderer_profile` \u2192 test **must FAIL** \u2192 revert.\n\n_Surfaced by B2-031._\n",
+      "createdAt": "2026-09-04T19:59:31Z",
+      "labels": [
+        {
+          "id": "LA_kwDORbgIAs8AAAACZuwyEw",
+          "name": "agents:formatted",
+          "description": "Issue has been formatted to AGENT_ISSUE_TEMPLATE",
+          "color": "1D76DB"
+        },
+        {
+          "id": "LA_kwDORbgIAs8AAAACZuwyXA",
+          "name": "agents:apply-suggestions",
+          "description": "Applies optimization suggestions from agents:optimize",
+          "color": "0E8A16"
+        },
+        {
+          "id": "LA_kwDORbgIAs8AAAACZuxEEA",
+          "name": "agent:codex",
+          "description": "Assign to Codex agent",
+          "color": "0e8a16"
+        },
+        {
+          "id": "LA_kwDORbgIAs8AAAACZuxOUA",
+          "name": "agents:auto-pilot",
+          "description": "Triggers end-to-end auto-pilot pipeline",
+          "color": "0052CC"
+        }
+      ],
+      "number": 950,
+      "title": "[P1] report-spec.json renderer contract (B2-031)",
+      "updatedAt": "2026-09-07T15:11:34Z"
+    },
+    {
+      "body": "## Why\n\nLargest provenance gap in fleet: `evidence_refs` are page-pointer strings, not evidence IDs (`src/inv_man_intake/run.py:113-118` builds `document:{id}#page={n}` strings). Dossier confirms no conformant emitter (`dossier-out/DOSSIER.md:56`). **Depends on:** B2-015.\n\n## Scope\n\nWrite standalone `evidence-object/v1` JSON files per extracted field; point `evidence_refs` at `evidence_id` values.\n\n## Non-Goals\n\n- Do NOT change scoring/threshold logic in run pipeline.\n- Scaffold-only completion does NOT count.\n\n## Tasks\n\n- [ ] Add `src/inv_man_intake/emit/evidence_objects.py` validating against `docs/contracts/schemas/evidence-object-v1.schema.json`.\n- [ ] Update `src/inv_man_intake/run.py:113-118` to emit sorted `evidence_id` list.\n- [ ] Add `tests/emit/test_evidence_object_emitter.py`.\n- [ ] Extend `scripts/validate_run_contract.py` to validate emitted evidence files.\n\n## Acceptance Criteria\n\n- [ ] Named test: `tests/emit/test_evidence_object_emitter.py::test_run_evidence_refs_are_evidence_ids` passes.\n- [ ] **Deliberate-break gate:** revert `src/inv_man_intake/run.py:113-118` to page-pointer strings \u2192 test **must FAIL** \u2192 revert.\n\n## Implementation Notes\n\nValidate emitted files against `docs/contracts/schemas/evidence-object-v1.schema.json`.\n\n_Surfaced by B2-017; verified at `src/inv_man_intake/run.py:113-118`._\n",
+      "createdAt": "2026-09-04T19:59:29Z",
+      "labels": [
+        {
+          "id": "LA_kwDORbgIAs8AAAACZuwyEw",
+          "name": "agents:formatted",
+          "description": "Issue has been formatted to AGENT_ISSUE_TEMPLATE",
+          "color": "1D76DB"
+        },
+        {
+          "id": "LA_kwDORbgIAs8AAAACZuwyXA",
+          "name": "agents:apply-suggestions",
+          "description": "Applies optimization suggestions from agents:optimize",
+          "color": "0E8A16"
+        },
+        {
+          "id": "LA_kwDORbgIAs8AAAACZuxEEA",
+          "name": "agent:codex",
+          "description": "Assign to Codex agent",
+          "color": "0e8a16"
+        },
+        {
+          "id": "LA_kwDORbgIAs8AAAACZuxOUA",
+          "name": "agents:auto-pilot",
+          "description": "Triggers end-to-end auto-pilot pipeline",
+          "color": "0052CC"
+        }
+      ],
+      "number": 949,
+      "title": "[P1] Evidence-object/v1 emitter replacing page-pointer refs (B2-017)",
+      "updatedAt": "2026-09-07T15:11:37Z"
+    },
+    {
+      "body": "## Why\n\nConsultant report sections need fleet `ontology_key` values aligned to B2-003. Verified: `docs/contracts/standard_element_library.md:12` requires bundled `_stub.json` keep `non_authoritative: true`; `src/inv_man_intake/intake/standard_elements.py:1-30` loads stub only with no consultant section keys.\n\n## Scope\n\nExtend stub data with `report.consultant_review` element keys mapping to `consultant.*` ontology keys; conformance tests.\n\n## Non-Goals\n\n- Do NOT set `non_authoritative: false` on bundled stub without external library.\n- Do NOT emit `tracked-variable/v1` yet (B2-017).\n- Scaffold-only completion does NOT count.\n\n## Tasks\n\n- [ ] Add `data/consultant_sections.json` with \u226515 section keys per R2 brief.\n- [ ] Extend `standard_elements.py` to load consultant sections when `doc_type` is `report.consultant_review`.\n- [ ] Add `tests/intake/test_consultant_section_ontology.py`.\n- [ ] Map keys in README cross-reference to Workflows `tracked-variable/v1` (after sync).\n\n## Acceptance Criteria\n\n- [ ] Named test: `tests/intake/test_consultant_section_ontology.py::test_sections_resolve_without_code_change` passes (data-only add).\n- [ ] **Deliberate-break gate:** remove one key from JSON \u2192 test **must FAIL** \u2192 revert.\n\n_Surfaced by B2-010; depends on Workflows B2-003._\n",
+      "createdAt": "2026-09-04T19:59:25Z",
+      "labels": [
+        {
+          "id": "LA_kwDORbgIAs8AAAACZuwyEw",
+          "name": "agents:formatted",
+          "description": "Issue has been formatted to AGENT_ISSUE_TEMPLATE",
+          "color": "1D76DB"
+        },
+        {
+          "id": "LA_kwDORbgIAs8AAAACZuwyXA",
+          "name": "agents:apply-suggestions",
+          "description": "Applies optimization suggestions from agents:optimize",
+          "color": "0E8A16"
+        },
+        {
+          "id": "LA_kwDORbgIAs8AAAACZuxEEA",
+          "name": "agent:codex",
+          "description": "Assign to Codex agent",
+          "color": "0e8a16"
+        },
+        {
+          "id": "LA_kwDORbgIAs8AAAACZuxOUA",
+          "name": "agents:auto-pilot",
+          "description": "Triggers end-to-end auto-pilot pipeline",
+          "color": "0052CC"
+        }
+      ],
+      "number": 948,
+      "title": "[P1] Consultant section ontology aligned to tracked-variable/v1 (B2-010)",
+      "updatedAt": "2026-09-04T21:43:26Z"
+    },
+    {
+      "body": "## Why\n\nThe work-environment appendix names one shared \u201cextract structured facts from a PDF, with page pointers\u201d library instead of three implementations, reducing three maintenance surfaces to one ([INFORMATION-REQUEST-RESPONSE.md Appendix \u00a7What looks worth systematizing, item 2](https://github.com/stranske/Ready/blob/main/research-program/artifacts/work-bundle/INFORMATION-REQUEST-RESPONSE.md)). Inv-Man-Intake currently uses `PdfPrimaryExtractionProvider` for pyodide-light (`src/inv_man_intake/extraction/providers/pdf_primary.py:20-26`) and optionally `stranske_pdf_extract` Docling (`src/inv_man_intake/extraction/service.py:104-115`, `118-128`); it lacks a Doc-Lineage adapter once [Doc-Lineage #3](https://github.com/stranske/Doc-Lineage/issues/3) lands.\n\n## Scope\n\nReplace the in-repo PDF primary-provider path with a thin adapter to the Doc-Lineage extraction library, including page pointers and mandatory OCR fallback, while retaining the `ExtractionService` port at `src/inv_man_intake/extraction/service.py:27-35`.\n\n## Non-Goals\n\nDo not block on Doc-Lineage #3 merging; use a feature flag or optional extra until a stable import path publishes, then remove `pdf-primary`. Do not remove `pptx_primary.py` or implement the Doc-Lineage comparison/lineage engine. An unused adapter while `build_pyodide_light_service()` defaults to `PdfPrimaryExtractionProvider` is not sufficient.\n\n## Tasks\n\n- [ ] Add `src/inv_man_intake/extraction/providers/doc_lineage_adapter.py` wrapping the Doc-Lineage #3 entry point and mapping results to `ExtractedDocumentResult` in `src/inv_man_intake/extraction/providers/base.py:8-13`.\n- [ ] Add the `extraction-doc-lineage` optional dependency group in `pyproject.toml` for the package exposing `doc_lineage.extract`.\n- [ ] Update `build_pyodide_light_service()` in `src/inv_man_intake/extraction/service.py:104-115` to select `DocLineageExtractionProvider` when installed and temporarily fall back to `PdfPrimaryExtractionProvider` otherwise.\n- [ ] Add `tests/extraction/providers/test_doc_lineage_adapter.py` with a synthetic PDF fixture and expected page pointers.\n- [ ] Update `tests/extraction/test_extraction_service.py` to assert Doc-Lineage selection when the extra is installed.\n- [ ] Test the deliberate break by returning `page=None` from `doc_lineage_adapter.py`, capture the failing test output, and revert the change.\n\n## Acceptance Criteria\n\n- [ ] `tests/extraction/providers/test_doc_lineage_adapter.py::test_adapter_emits_page_pointers` passes and verifies `SourceLocation.page` values from Doc-Lineage.\n- [ ] `tests/extraction/test_extraction_service.py::test_pyodide_light_prefers_doc_lineage_when_installed` passes with the `extraction-doc-lineage` extra installed.\n- [ ] Changing `doc_lineage_adapter.py` to return `page=None` causes `tests/extraction/providers/test_doc_lineage_adapter.py::test_adapter_emits_page_pointers` to fail; the change is reverted afterward.\n\n## Implementation Notes\n\nReference [Doc-Lineage #3](https://github.com/stranske/Doc-Lineage/issues/3) for page pointers and OCR fallback. The `stranske_pdf_extract` Docling path in `service.py:118-128` should delegate to Doc-Lineage after #3 to avoid two OCR implementations. Current baseline: `python -m pytest tests/extraction/test_pdf_primary_provider.py -q` passes on `main`.\n\n<details>\n<summary>Original Issue</summary>\n\n```text\n## Why\n\nThe work-environment appendix names **one shared \"extract structured facts from a PDF, with page pointers\" library** instead of three independently built implementations, and states consolidating would cut three maintenance surfaces to one ([INFORMATION-REQUEST-RESPONSE.md Appendix \u00a7What looks worth systematizing, item 2](https://github.com/stranske/Ready/blob/main/research-program/artifacts/work-bundle/INFORMATION-REQUEST-RESPONSE.md)). Inv-Man-Intake still routes PDFs through its own `PdfPrimaryExtractionProvider` for the default pyodide-light path \u2014 regex over content streams, explicitly *not production OCR* (`src/inv_man_intake/extraction/providers/pdf_primary.py:20-26`) \u2014 and only optionally through `stranske_pdf_extract` Docling (`src/inv_man_intake/extraction/service.py:104-115`, `118-128`). **Missing behavior:** no adapter to the Doc-Lineage extraction library once [Doc-Lineage #3](https://github.com/stranske/Doc-Lineage/issues/3) lands. **Latent fragility** \u2014 a fourth PDF extraction surface if left unchanged.\n\n## Scope\n\nReplace the in-repo PDF primary provider path with a thin adapter to the Doc-Lineage extraction library (page pointers + mandatory OCR fallback per Doc-Lineage #3), keeping the existing `ExtractionService` port at `src/inv_man_intake/extraction/service.py:27-35`.\n\n## Non-Goals\n\n- Do NOT block on Doc-Lineage #3 merging \u2014 land the adapter behind a feature flag or optional extra until #3 publishes a stable import path; remove `pdf-primary` once #3 is wired.\n- Do NOT remove PPTX extraction (`pptx_primary.py`) in this issue.\n- Do NOT implement the comparison/lineage engine (Doc-Lineage).\n- Scaffold-only completion does NOT count: leaving `build_pyodide_light_service()` on `PdfPrimaryExtractionProvider` as the default while adding an unused adapter module is a failure.\n\n## Tasks\n\n- [ ] Add `src/inv_man_intake/extraction/providers/doc_lineage_adapter.py` wrapping the Doc-Lineage extraction entry point from #3, mapping results to `ExtractedDocumentResult` at `src/inv_man_intake/extraction/providers/base.py:8-13`.\n- [ ] Add optional dependency group `extraction-doc-lineage` in `pyproject.toml` pointing at the Doc-Lineage package once #3 exposes `doc_lineage.extract`.\n- [ ] Update `build_pyodide_light_service()` at `src/inv_man_intake/extraction/service.py:104-115` to select `DocLineageExtractionProvider` when the extra is installed, falling back to `PdfPrimaryExtractionProvider` only when the extra is absent (document the fallback as temporary).\n- [ ] Add `tests/extraction/providers/test_doc_lineage_adapter.py` using a synthetic PDF fixture with expected page pointers.\n- [ ] Update `tests/extraction/test_extraction_service.py` to assert the doc-lineage backend is selected when the extra is present.\n- [ ] Perform deliberate-break verification (see Acceptance Criteria), capture FAIL output, then revert.\n\n## Acceptance Criteria\n\n- [ ] Named test: `tests/extraction/providers/test_doc_lineage_adapter.py::test_adapter_emits_page_pointers` passes \u2014 extracted fields include `SourceLocation.page` values from the Doc-Lineage library, not regex-only guesses.\n- [ ] Named test: `tests/extraction/test_extraction_service.py::test_pyodide_light_prefers_doc_lineage_when_installed` passes when the `extraction-doc-lineage` extra is installed.\n- [ ] **Deliberate-break gate:** temporarily edit `doc_lineage_adapter.py` to return `page=None` for all fields. `tests/extraction/providers/test_doc_lineage_adapter.py::test_adapter_emits_page_pointers` **must FAIL**. Revert after capturing the failure.\n\n## Implementation Notes\n\n- Reference [Doc-Lineage #3](https://github.com/stranske/Doc-Lineage/issues/3) for the shared extraction contract (page pointers + OCR fallback).\n- Existing Docling path via `stranske_pdf_extract` (`service.py:118-128`) should delegate to the same Doc-Lineage library after #3 to avoid two OCR implementations.\n- Confirmed-green local reproduction: `python -m pytest tests/extraction/test_pdf_primary_provider.py -q` \u2192 passes today on `main`.\n```\n</details>\n\n<!-- issue-pr-context:formatted-body:v1 {\"sha256\":\"dd59d22120e19d372ab070d22444e64c413482ee4eb01fe311c58c895cf468ca\",\"workflows\":[\"agents-auto-pilot\",\"agents-issue-optimizer\",\"agents-63-issue-intake\",\"issue_formatter\",\"issue_optimizer\"]} -->\n",
+      "createdAt": "2026-09-04T19:52:40Z",
+      "labels": [
+        {
+          "id": "LA_kwDORbgIAs8AAAACZuwQfA",
+          "name": "enhancement",
+          "description": "New feature or request",
+          "color": "a2eeef"
+        },
+        {
+          "id": "LA_kwDORbgIAs8AAAACZuwyEw",
+          "name": "agents:formatted",
+          "description": "Issue has been formatted to AGENT_ISSUE_TEMPLATE",
+          "color": "1D76DB"
+        }
+      ],
+      "number": 947,
+      "title": "Consume Doc-Lineage #3 shared PDF extraction instead of pdf-primary regex path",
+      "updatedAt": "2026-09-04T19:54:00Z"
+    },
+    {
+      "body": "This issue lists Renovate updates and detected dependencies. Read the [Dependency Dashboard](https://docs.renovatebot.com/key-concepts/dashboard/) docs to learn more.<br>[View this repository on the Mend.io Web Portal](https://developer.mend.io/github/stranske/Inv-Man-Intake).\n\n## Awaiting Schedule\n\nThe following updates are awaiting their schedule. To get an update now, click on a checkbox below.\n\n - [ ] <!-- unschedule-branch=renovate/non-major-updates -->fix(deps): update non-major updates (`pydantic`, `streamlit`)\n - [ ] <!-- unschedule-branch=renovate/lock-file-maintenance-weekly-lock-file-maintenance -->chore(deps): refresh pip-compile outputs\n - [ ] <!-- create-all-awaiting-schedule-prs -->\ud83d\udd10 **Create all awaiting schedule PRs at once** \ud83d\udd10\n\n## Detected Dependencies\n\n<details><summary>github-actions (36)</summary>\n<blockquote>\n\n<details><summary>.github/actions/agent-run-base/action.yml</summary>\n\n\n</details>\n\n<details><summary>.github/actions/artifact-cache/action.yml</summary>\n\n\n</details>\n\n<details><summary>.github/actions/resolve-default-branch/action.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-71-codex-belt-dispatcher.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-72-codex-belt-worker.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-73-codex-belt-conveyor.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-80-pr-event-hub.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-81-gate-followups.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-auto-label.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-auto-pilot.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-autofix-dispatcher.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-capability-check.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-decompose.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-dedup.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-guard.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-issue-format-guard.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-issue-intake.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-issue-optimizer.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-keepalive-loop-reporter.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-keepalive-sweep.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-pr-health.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-verifier.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-verify-to-new-pr.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-weekly-metrics.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/autofix.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/backplane-conformance.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/ci.yml (7)</summary>\n\n - `stranske/Workflows main`\n - `actions/checkout v7`\n - `actions/setup-python v7`\n - `actions/checkout v7`\n - `actions/setup-python v7`\n - `python 3.14`\n - `python 3.14`\n\n</details>\n\n<details><summary>.github/workflows/cross-repo-smoke.yml (1)</summary>\n\n - `stranske/Workflows main`\n\n</details>\n\n<details><summary>.github/workflows/list-llm-models.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/maint-76-claude-code-review.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/maint-87-docs-drift-fix-agent.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/maint-coverage-guard.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/maint-dependabot-auto-lock.yml (3)</summary>\n\n - `actions/checkout v7`\n - `actions/setup-python v7@5fda3b95a4ea91299a34e894583c3862153e4b97`\n - `python 3.14`\n\n</details>\n\n<details><summary>.github/workflows/pr-00-gate.yml (4)</summary>\n\n - `actions/checkout v7.0.1@3d3c42e5aac5ba805825da76410c181273ba90b1`\n - `stranske/Workflows main`\n - `actions/checkout v7.0.1@3d3c42e5aac5ba805825da76410c181273ba90b1`\n - `actions/github-script v9@3a2844b7e9c422d3c10d287c895573f7108da1b3`\n\n</details>\n\n<details><summary>.github/workflows/pr-46-dependency-repair-contract.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/reusable-pr-context.yml</summary>\n\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>npm (1)</summary>\n<blockquote>\n\n<details><summary>.github/scripts/package.json</summary>\n\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>pep621 (1)</summary>\n<blockquote>\n\n<details><summary>pyproject.toml (9)</summary>\n\n - `python >=3.12`\n - `langsmith >=0.4.59`\n - `openpyxl >=3.1.5`\n - `streamlit ==1.60.0` \u2192 [Updates: `==1.63.0`]\n - `playwright >=1.56.0`\n - `tomlkit ==0.15.1`\n - `pydantic ==2.13.4` \u2192 [Updates: `==2.13.5`]\n - `pytest-regressions ==2.11.0`\n - `setuptools >=68`\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>pip-compile (1)</summary>\n<blockquote>\n\n<details><summary>pyproject.toml (9)</summary>\n\n - `python >=3.12`\n - `langsmith >=0.4.59`\n - `openpyxl >=3.1.5`\n - `streamlit ==1.60.0` \u2192 [Updates: `==1.63.0`]\n - `playwright >=1.56.0`\n - `tomlkit ==0.15.1`\n - `pydantic ==2.13.4` \u2192 [Updates: `==2.13.5`]\n - `pytest-regressions ==2.11.0`\n - `setuptools >=68`\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>pip_requirements (1)</summary>\n<blockquote>\n\n<details><summary>tools/requirements-llm.txt</summary>\n\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>renovate-config (1)</summary>\n<blockquote>\n\n<details><summary>.github/renovate.json</summary>\n\n\n</details>\n\n</blockquote>\n</details>\n\n---\n\n- [ ] <!-- manual job -->Check this box to trigger a request for Renovate to run again on this repository\n\n",
+      "createdAt": "2026-06-15T04:40:56Z",
+      "labels": [
+        {
+          "id": "LA_kwDORbgIAs8AAAACrdqaLg",
+          "name": "tracker:durable",
+          "description": "Permanently-open tracker; excluded from open-issue backlog counts",
+          "color": "c5def5"
+        }
+      ],
+      "number": 559,
+      "title": "Dependency Dashboard",
+      "updatedAt": "2026-09-11T03:06:44Z"
+    },
+    {
+      "body": "Tracking issue for weekly agent workflow metrics.\n\n# Agent Metrics Summary\n\nGenerated: 2026-04-27T06:48:32Z\nRecords: 49 (keepalive 40, autofix 0, verifier 3, terminal dispositions 3, verifier follow-up ledgers 3, codex CLI freshness 0, autopilot 0, unknown 0)\nParse errors: 0\nRange: 2026-04-27T03:27:59.967000Z to 2026-04-27T06:30:51.992000Z\n\n## Keepalive\n- Runs: 40\n- PRs: 5\n- Avg iterations: 0.0\n- Stop reasons: missing-agent-label (20), autofix disabled for this pull request (7), upstream Gate succeeded (7), missing workflow_run payload (6)\n- Actions: wait (20)\n- Gate conclusions: cancelled (9), success (7)\n- Tasks complete rate: 0.0% (0/40)\n\n## Autofix\n- Attempts: 0\n- PRs: 0\n- Fixes applied: n/a\n- Trigger reasons: n/a\n- Gate results after: n/a\n\n## Verifier\n- Runs: 3\n- PRs: 3\n- Verdicts: CONCERNS (2), concerns (2), PASS (1), pass (1)\n- Issues created: 0\n- Avg acceptance criteria: 7.3\n- Terminal disposition records: 3\n- Terminal dispositions: needs-human (2), verified-pass (1)\n- Terminal disposition sources: pull-request:324 (1), pull-request:326 (1), pull-request:328 (1)\n- Terminal artifact families: review-thread-terminal-disposition: missing (0/0), verifier-terminal-disposition: selected (3/3)\n- Missing terminal artifact families: review-thread-terminal-disposition\n- Verifier follow-up ledger records: 3\n- Verifier follow-up ledger dispositions: needs-human (2), merge (1)\n- Verifier follow-up ledger PRs: 3\n- Verifier follow-up issues linked: 0\n- Verifier follow-up needs-human records: 2\n- Verifier follow-up avg chain depth: 0.0\n- Verifier follow-up max chain depth: 0\n- Verifier follow-up policy records: 3\n- Verifier follow-up policy actions: needs-human (2), no-op (1)\n- Verifier follow-up policy triggers: verifier-concerns (2), verifier-pass (1)\n- Verifier follow-up depth-limit records: 0\n- Verifier models: gpt-5.5 (6)\n- Verifier CLI versions: codex-cli 0.125.0 (6)\n- Unsupported verifier models: n/a\n- Unsupported model dispositions: n/a\n- Missing verifier model metadata: n/a\n- Legacy missing verifier model metadata: n/a\n- Model selection reasons: default (6)\n- Verifier modes: compare (6)\n\n## Codex CLI Freshness\n- Records: 0\n- Statuses: n/a\n- Packages: n/a\n- Pinned versions: n/a\n- Latest versions: n/a\n- Outdated records: 0\n- Latest unavailable records: 0\n- Max version delta: major 0, minor 0, patch 0\n- Update targets: n/a\n\n## Weekly Metrics Artifact Selection\n\n- Schema: workflows-weekly-metrics-artifact-selection/v1\n- Status: pass\n- Lookback days: 14\n- Scan cap: 5 pages x 100 artifacts\n- Priority producer scan cap: 10 runs per source workflow\n- Download cap: 80 total, 20 per family\n- Scanned artifacts: 500\n- Candidate artifacts: 228\n- Selected artifacts: 46\n- Missing priority families: codex-cli-freshness, review-thread-terminal-disposition, bot-comment-auth-coverage-wrapper, bot-comment-auth-coverage-reusable, pr-source-context\n- Ignored: 0 old, 0 expired, 272 non-metrics, 182 over family cap, 0 over total cap\n\n| Artifact family | Candidates | Selected |\n|-----------------|------------|----------|\n| agents-autofix-metrics | 111 | 20 |\n| agents-verifier-metrics | 3 | 3 |\n| keepalive-metrics | 111 | 20 |\n| verifier-terminal-disposition | 3 | 3 |\n\n| Priority family | Status | Candidates | Selected artifact |\n|-----------------|--------|------------|-------------------|\n| codex-cli-freshness | missing | 0 | none |\n| verifier-terminal-disposition | selected | 3 | verifier-terminal-disposition-24979936966 |\n| review-thread-terminal-disposition | missing | 0 | none |\n| bot-comment-auth-coverage-wrapper | missing | 0 | none |\n| bot-comment-auth-coverage-reusable | missing | 0 | none |\n| pr-source-context | missing | 0 | none |\n\n## Weekly Metrics Artifact Downloads\n\n- Schema: workflows-weekly-metrics-artifact-download-manifest/v1\n- Status: pass\n- Selected artifacts: 46\n- Downloads: 46 passed, 0 failed\n- Unzip: 46 passed, 0 failed, 0 skipped\n\n| Artifact | ID | Download | Unzip | Path |\n|----------|----|----------|-------|------|\n| verifier-terminal-disposition-24979936966 | 6654492945 | pass | pass | artifacts/verifier-terminal-disposition-24979936966/6654492945 |\n| keepalive-metrics | 6654665073 | pass | pass | artifacts/keepalive-metrics/6654665073 |\n| agents-autofix-metrics | 6654664048 | pass | pass | artifacts/agents-autofix-metrics/6654664048 |\n| keepalive-metrics | 6654645019 | pass | pass | artifacts/keepalive-metrics/6654645019 |\n| agents-autofix-metrics | 6654626589 | pass | pass | artifacts/agents-autofix-metrics/6654626589 |\n| keepalive-metrics | 6654612993 | pass | pass | artifacts/keepalive-metrics/6654612993 |\n| agents-autofix-metrics | 6654608653 | pass | pass | artifacts/agents-autofix-metrics/6654608653 |\n| agents-verifier-metrics | 6654493083 | pass | pass | artifacts/agents-verifier-metrics/6654493083 |\n| keepalive-metrics | 6654472102 | pass | pass | artifacts/keepalive-metrics/6654472102 |\n| agents-autofix-metrics | 6654470443 | pass | pass | artifacts/agents-autofix-metrics/6654470443 |\n| keepalive-metrics | 6654459796 | pass | pass | artifacts/keepalive-metrics/6654459796 |\n| agents-autofix-metrics | 6654459548 | pass | pass | artifacts/agents-autofix-metrics/6654459548 |\n| keepalive-metrics | 6653829842 | pass | pass | artifacts/keepalive-metrics/6653829842 |\n| agents-autofix-metrics | 6653828564 | pass | pass | artifacts/agents-autofix-metrics/6653828564 |\n| keepalive-metrics | 6653820949 | pass | pass | artifacts/keepalive-metrics/6653820949 |\n| agents-autofix-metrics | 6653816949 | pass | pass | artifacts/agents-autofix-metrics/6653816949 |\n| agents-autofix-metrics | 6653795242 | pass | pass | artifacts/agents-autofix-metrics/6653795242 |\n| keepalive-metrics | 6653793251 | pass | pass | artifacts/keepalive-metrics/6653793251 |\n| keepalive-metrics | 6653298534 | pass | pass | artifacts/keepalive-metrics/6653298534 |\n| agents-autofix-metrics | 6653297263 | pass | pass | artifacts/agents-autofix-metrics/6653297263 |\n| agents-autofix-metrics | 6653294137 | pass | pass | artifacts/agents-autofix-metrics/6653294137 |\n| keepalive-metrics | 6653288409 | pass | pass | artifacts/keepalive-metrics/6653288409 |\n| agents-autofix-metrics | 6653279262 | pass | pass | artifacts/agents-autofix-metrics/6653279262 |\n| keepalive-metrics | 6653278896 | pass | pass | artifacts/keepalive-metrics/6653278896 |\n| agents-autofix-metrics | 6653266557 | pass | pass | artifacts/agents-autofix-metrics/6653266557 |\n| keepalive-metrics | 6653266458 | pass | pass | artifacts/keepalive-metrics/6653266458 |\n| agents-verifier-metrics | 6653185280 | pass | pass | artifacts/agents-verifier-metrics/6653185280 |\n| verifier-terminal-disposition-24976147044 | 6653185167 | pass | pass | artifacts/verifier-terminal-disposition-24976147044/6653185167 |\n| keepalive-metrics | 6653167012 | pass | pass | artifacts/keepalive-metrics/6653167012 |\n| agents-autofix-metrics | 6653165792 | pass | pass | artifacts/agents-autofix-metrics/6653165792 |\n| keepalive-metrics | 6653158304 | pass | pass | artifacts/keepalive-metrics/6653158304 |\n| agents-autofix-metrics | 6653158173 | pass | pass | artifacts/agents-autofix-metrics/6653158173 |\n| keepalive-metrics | 6653134489 | pass | pass | artifacts/keepalive-metrics/6653134489 |\n| agents-autofix-metrics | 6653130389 | pass | pass | artifacts/agents-autofix-metrics/6653130389 |\n| keepalive-metrics | 6653125054 | pass | pass | artifacts/keepalive-metrics/6653125054 |\n| agents-autofix-metrics | 6653124566 | pass | pass | artifacts/agents-autofix-metrics/6653124566 |\n| agents-autofix-metrics | 6653116087 | pass | pass | artifacts/agents-autofix-metrics/6653116087 |\n| keepalive-metrics | 6653114957 | pass | pass | artifacts/keepalive-metrics/6653114957 |\n| agents-autofix-metrics | 6653103847 | pass | pass | artifacts/agents-autofix-metrics/6653103847 |\n| keepalive-metrics | 6653103556 | pass | pass | artifacts/keepalive-metrics/6653103556 |\n| keepalive-metrics | 6652909442 | pass | pass | artifacts/keepalive-metrics/6652909442 |\n| agents-autofix-metrics | 6652908761 | pass | pass | artifacts/agents-autofix-metrics/6652908761 |\n| agents-autofix-metrics | 6652901832 | pass | pass | artifacts/agents-autofix-metrics/6652901832 |\n| keepalive-metrics | 6652895092 | pass | pass | artifacts/keepalive-metrics/6652895092 |\n| agents-verifier-metrics | 6652842403 | pass | pass | artifacts/agents-verifier-metrics/6652842403 |\n| verifier-terminal-disposition-24975035866 | 6652842337 | pass | pass | artifacts/verifier-terminal-disposition-24975035866/6652842337 |\n\n## Terminal Disposition Coverage Preflight\n\n- Mode: warning-only (does not block merges or automation)\n- Requested mode: warning-only\n- Status: pass\n- Coverage status: pass\n- Hard block eligible: true\n- Hard block active: false\n- Input files: 3\n- Scanned records: 3\n- Terminal disposition records: 3\n- Non-terminal records: 0\n- Observed sources: 3\n- Expected review-thread sources: 0\n- Missing review-thread sources: 0\n- Parse errors: 0\n- Artifact selector status: pass\n- Terminal artifacts selected: 3\n- Terminal artifacts candidates: 3\n- Missing terminal artifact families: review-thread-terminal-disposition\n- Verifier model compatibility: pass\n- Unsupported verifier model records: 0\n- Missing verifier model metadata records: 0\n- Missing verifier model metadata records with unknown mode: 0\n- Legacy missing verifier model metadata records: 0\n- Unsupported verifier models: gpt-5.2-codex\n\n| Observed source | Records | Dispositions | PRs |\n|-----------------|---------|--------------|-----|\n| pull-request:324 | 1 | verified-pass (1) | #324 |\n| pull-request:326 | 1 | needs-human (1) | #326 |\n| pull-request:328 | 1 | needs-human (1) | #328 |\n\n| Terminal artifact family | Status | Candidates | Selected | Latest artifact |\n|--------------------------|--------|------------|----------|-----------------|\n| review-thread-terminal-disposition | missing | 0 | 0 | n/a |\n| verifier-terminal-disposition | selected | 3 | 3 | verifier-terminal-disposition-24979936966 |\n\n## Bot Comment App Auth Coverage\n\n- Schema: workflows-bot-comment-auth-coverage-summary/v1\n- Status: no-data\n- Coverage status: no-data\n- Mode: warning-only\n- Hard block eligible: false\n- Hard block active: false\n- Input files: 0\n- Parsed JSON files: 0\n- Auth records: 0\n- Non-auth records: 0\n- Parse errors: 0\n- Read errors: 0\n- Artifact selection status: pass\n- Selected auth artifacts: 0\n- Required organic events: pull_request, workflow_run\n- Organic evidence status: no-data\n- Missing organic requirements: agents-bot-comment-handler-wrapper/pull_request, agents-bot-comment-handler-wrapper/workflow_run, reusable-bot-comment-handler/pull_request, reusable-bot-comment-handler/workflow_run\n- Blockers: missing-organic-agents-bot-comment-handler-wrapper-pull_request, missing-organic-agents-bot-comment-handler-wrapper-workflow_run, missing-organic-reusable-bot-comment-handler-pull_request, missing-organic-reusable-bot-comment-handler-workflow_run\n\n| Component | Latest mode | Records | Expected | Allowed | Blockers |\n|-----------|-------------|---------|----------|---------|----------|\n| agents-bot-comment-handler-wrapper | missing | 0 | client-id | client-id | missing-agents-bot-comment-handler-wrapper |\n| reusable-bot-comment-handler | missing | 0 | any | client-id, none | missing-reusable-bot-comment-handler |\n",
+      "createdAt": "2026-04-27T06:48:34Z",
+      "labels": [
+        {
+          "id": "LA_kwDORbgIAs8AAAACrdqaLg",
+          "name": "tracker:durable",
+          "description": "Permanently-open tracker; excluded from open-issue backlog counts",
+          "color": "c5def5"
+        }
+      ],
+      "number": 330,
+      "title": "Agent metrics weekly summary",
+      "updatedAt": "2026-09-07T06:07:10Z"
+    }
+  ],
+  "prs": [],
+  "runs": [
+    {
+      "conclusion": "cancelled",
+      "createdAt": "2026-08-06T17:59:35Z",
+      "databaseId": 31124737177,
+      "event": "schedule",
+      "headSha": "96f016796ac7e46928da7daafaf7d0f5bb19152d",
+      "name": "Agents Keepalive Sweep",
+      "status": "completed",
+      "updatedAt": "2026-08-06T18:49:49Z",
+      "url": "https://github.com/stranske/Inv-Man-Intake/actions/runs/31124737177",
+      "workflowName": "Agents Keepalive Sweep"
+    },
+    {
+      "conclusion": "cancelled",
+      "createdAt": "2026-08-06T17:34:21Z",
+      "databaseId": 31123514966,
+      "event": "schedule",
+      "headSha": "96f016796ac7e46928da7daafaf7d0f5bb19152d",
+      "name": "Agents PR Health",
+      "status": "completed",
+      "updatedAt": "2026-08-06T18:32:00Z",
+      "url": "https://github.com/stranske/Inv-Man-Intake/actions/runs/31123514966",
+      "workflowName": "Agents PR Health"
+    },
+    {
+      "conclusion": "failure",
+      "createdAt": "2026-08-06T16:36:30Z",
+      "databaseId": 31120424703,
+      "event": "schedule",
+      "headSha": "96f016796ac7e46928da7daafaf7d0f5bb19152d",
+      "name": "Agents PR Health",
+      "status": "completed",
+      "updatedAt": "2026-08-06T17:25:27Z",
+      "url": "https://github.com/stranske/Inv-Man-Intake/actions/runs/31120424703",
+      "workflowName": "Agents PR Health"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-08-06T15:08:47Z",
+      "databaseId": 31114435615,
+      "event": "schedule",
+      "headSha": "96f016796ac7e46928da7daafaf7d0f5bb19152d",
+      "name": "Agents Keepalive Sweep",
+      "status": "completed",
+      "updatedAt": "2026-08-06T15:08:54Z",
+      "url": "https://github.com/stranske/Inv-Man-Intake/actions/runs/31114435615",
+      "workflowName": "Agents Keepalive Sweep"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-08-06T13:34:56Z",
+      "databaseId": 31106593662,
+      "event": "schedule",
+      "headSha": "96f016796ac7e46928da7daafaf7d0f5bb19152d",
+      "name": "Agents PR Health",
+      "status": "completed",
+      "updatedAt": "2026-08-06T13:35:27Z",
+      "url": "https://github.com/stranske/Inv-Man-Intake/actions/runs/31106593662",
+      "workflowName": "Agents PR Health"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-08-06T09:22:05Z",
+      "databaseId": 31088791566,
+      "event": "schedule",
+      "headSha": "96f016796ac7e46928da7daafaf7d0f5bb19152d",
+      "name": "Agents Keepalive Sweep",
+      "status": "completed",
+      "updatedAt": "2026-08-06T09:22:14Z",
+      "url": "https://github.com/stranske/Inv-Man-Intake/actions/runs/31088791566",
+      "workflowName": "Agents Keepalive Sweep"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-08-06T09:03:05Z",
+      "databaseId": 31087444915,
+      "event": "schedule",
+      "headSha": "96f016796ac7e46928da7daafaf7d0f5bb19152d",
+      "name": "Agents PR Health",
+      "status": "completed",
+      "updatedAt": "2026-08-06T09:03:31Z",
+      "url": "https://github.com/stranske/Inv-Man-Intake/actions/runs/31087444915",
+      "workflowName": "Agents PR Health"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-08-06T08:12:31Z",
+      "databaseId": 31083954291,
+      "event": "schedule",
+      "headSha": "96f016796ac7e46928da7daafaf7d0f5bb19152d",
+      "name": "Agents Keepalive Sweep",
+      "status": "completed",
+      "updatedAt": "2026-08-06T08:12:37Z",
+      "url": "https://github.com/stranske/Inv-Man-Intake/actions/runs/31083954291",
+      "workflowName": "Agents Keepalive Sweep"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-08-06T07:57:08Z",
+      "databaseId": 31082901696,
+      "event": "schedule",
+      "headSha": "96f016796ac7e46928da7daafaf7d0f5bb19152d",
+      "name": "Agents PR Health",
+      "status": "completed",
+      "updatedAt": "2026-08-06T07:57:40Z",
+      "url": "https://github.com/stranske/Inv-Man-Intake/actions/runs/31082901696",
+      "workflowName": "Agents PR Health"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-08-06T07:36:35Z",
+      "databaseId": 31081582356,
+      "event": "schedule",
+      "headSha": "96f016796ac7e46928da7daafaf7d0f5bb19152d",
+      "name": "Maint Coverage Guard",
+      "status": "completed",
+      "updatedAt": "2026-08-06T07:37:28Z",
+      "url": "https://github.com/stranske/Inv-Man-Intake/actions/runs/31081582356",
+      "workflowName": "Maint Coverage Guard"
+    }
+  ]
+}

@@ -1,0 +1,266 @@
+{
+  "repo": "Portable-Alpha-Extension-Model",
+  "issues": [
+    {
+      "body": "## Why\n\n`pyproject.toml:119` permits Plotly 7, but `pa_core/viz/export_backend.py:88` passes the removed engine keyword to to_image and line 100 passes it to write_image. A clean dependency solve installed Plotly 7.0.0; a real CLI sweep crashed with TypeError before manifest completion. The repository lock pins Plotly 6.9.0, and the same command succeeds under that pin. `pa_core/reporting/sweep_excel.py:96` skips the affected chart branch in CI, explaining why green CI does not refute this supported-install failure. Plotly documents this removal: https://plotly.com/python/static-image-generation-changes/ . This overturns the delegated environmental-only dismissal.\n\n## Scope\n\nSupport Plotly 7 image export or constrain installation. First-party infra behavior at main 59cb12be9d4b06434d41bc1b71612167ea6d9cfc.\n\n## Non-Goals\n\nNo unrelated refactors, synced workflow changes, new hosted service, or placeholder/scaffold-only implementation. Do not weaken the named regression to make it pass.\n\n## Tasks\n\n- [ ] Remove deprecated explicit engine arguments in `pa_core/viz/export_backend.py` with compatibility coverage, or add an explicit temporary supported-version constraint in `pyproject.toml` until migration is delivered.\n- [ ] Extend `tests/test_export_backend.py` to exercise actual supported Plotly signatures and add a real CLI export smoke outside the CI or PYTEST_CURRENT_TEST bypass in `pa_core/reporting/sweep_excel.py`.\n\n## Acceptance Criteria\n\n- [ ] A fresh installation cannot resolve an unsupported Plotly version, or a real PNG and CLI sweep export succeeds with Plotly7; the supported lock-version export still succeeds.\n- [ ] Run `pytest tests/test_export_backend.py -q` with the added regressions and retain output.\n- [ ] Deliberate-break check: Restore engine=\"kaleido\" without a dependency constraint; the real Plotly7 signature and export regression must fail; revert.\n\n## Implementation Notes\n\nSeverity P1. Source citations are relative to this repository. Preserve existing documented semantics outside the correction.\n",
+      "createdAt": "2026-09-07T17:04:46Z",
+      "labels": [
+        {
+          "id": "LA_kwDOO15QxM8AAAACCCn9ag",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        },
+        {
+          "id": "LA_kwDOO15QxM8AAAACHPI7Xg",
+          "name": "infra",
+          "description": "",
+          "color": "F9D0C4"
+        },
+        {
+          "id": "LA_kwDOO15QxM8AAAACHPJCEQ",
+          "name": "priority: high",
+          "description": "",
+          "color": "B60205"
+        }
+      ],
+      "number": 2287,
+      "title": "Support Plotly 7 image export or constrain installation",
+      "updatedAt": "2026-09-07T17:04:46Z"
+    },
+    {
+      "body": "## Why\n\n`dashboard/utils.py:146` resolves templates relative to site-packages, while `pyproject.toml:89` includes only data CSV package resources. In an actual non-editable installation, bundled_asset_timeseries_path points to a nonexistent templates file; bundled_sample_index_path exists. The same template resolver feeds the portfolio starter at `dashboard/utils.py:177`. Closed #2026 added checkout samples; the installed layout still lacks their files.\n\n## Scope\n\nShip asset and portfolio samples in installed packages. First-party ui behavior at main 59cb12be9d4b06434d41bc1b71612167ea6d9cfc.\n\n## Non-Goals\n\nNo unrelated refactors, synced workflow changes, new hosted service, or placeholder/scaffold-only implementation. Do not weaken the named regression to make it pass.\n\n## Tasks\n\n- [ ] Update package resources in `pyproject.toml` and the sample resolvers in `dashboard/utils.py` so asset CSV and portfolio YAML ship and resolve in a wheel install outside the source checkout.\n- [ ] Extend `tests/test_dashboard_sample_data.py` or add a packaging smoke helper wired into the existing package-validation test command to build and install a wheel and open all three samples.\n\n## Acceptance Criteria\n\n- [ ] A built non-editable wheel installed into an isolated environment outside the checkout exposes readable asset CSV, portfolio YAML and index CSV without relying on repository-relative templates.\n- [ ] Run `pytest tests/test_dashboard_sample_data.py -q` with the added regressions and retain output.\n- [ ] Deliberate-break check: Omit the asset and portfolio resources from package data; the named wheel-install smoke must fail; revert.\n\n## Implementation Notes\n\nSeverity P2. Source citations are relative to this repository. Preserve existing documented semantics outside the correction.\n",
+      "createdAt": "2026-09-07T17:04:44Z",
+      "labels": [
+        {
+          "id": "LA_kwDOO15QxM8AAAACCCn9ag",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        },
+        {
+          "id": "LA_kwDOO15QxM8AAAACHPIkSw",
+          "name": "ui",
+          "description": "",
+          "color": "BFD4F2"
+        },
+        {
+          "id": "LA_kwDOO15QxM8AAAACHPJGvA",
+          "name": "priority: medium",
+          "description": "",
+          "color": "D93F0B"
+        }
+      ],
+      "number": 2285,
+      "title": "Ship asset and portfolio samples in installed packages",
+      "updatedAt": "2026-09-07T17:04:44Z"
+    },
+    {
+      "body": "## Why\n\nWhen selected run-end metadata is absent, `dashboard/pages/7_Run_Logs.py:59` falls back to the working-directory manifest at line 61. A real Streamlit AppTest selects run-selected but displays a manifest identifying WRONG_UNRELATED_RUN. There is no identity check at the display point, line 68. Closed #1901 addressed session handoff; this is a separate incorrect-provenance fallback.\n\n## Scope\n\nKeep Run Logs provenance bound to the selected run. First-party ui behavior at main 59cb12be9d4b06434d41bc1b71612167ea6d9cfc.\n\n## Non-Goals\n\nNo unrelated refactors, synced workflow changes, new hosted service, or placeholder/scaffold-only implementation. Do not weaken the named regression to make it pass.\n\n## Tasks\n\n- [ ] In `dashboard/pages/7_Run_Logs.py`, only show a manifest explicitly attributable to the selected run; show the existing missing-manifest guidance when attribution cannot be established.\n- [ ] Extend `tests/test_dashboard_run_logs_page.py` using real AppTest or equivalent runtime observation: selected run without run_end, unrelated root manifest, valid linked manifest, missing linked file, and a malformed run_end.\n\n## Acceptance Criteria\n\n- [ ] Selecting a run without a valid linked manifest never displays an unrelated root manifest; a valid explicit link still displays its own provenance.\n- [ ] Run `pytest tests/test_dashboard_run_logs_page.py -q` with the added regressions and retain output.\n- [ ] Deliberate-break check: Restore the cwd glob fallback; the wrong-run marker test must fail; revert.\n\n## Implementation Notes\n\nSeverity P2. Source citations are relative to this repository. Preserve existing documented semantics outside the correction.\n",
+      "createdAt": "2026-09-07T17:04:43Z",
+      "labels": [
+        {
+          "id": "LA_kwDOO15QxM8AAAACCCn9ag",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        },
+        {
+          "id": "LA_kwDOO15QxM8AAAACHPIkSw",
+          "name": "ui",
+          "description": "",
+          "color": "BFD4F2"
+        },
+        {
+          "id": "LA_kwDOO15QxM8AAAACHPJGvA",
+          "name": "priority: medium",
+          "description": "",
+          "color": "D93F0B"
+        }
+      ],
+      "number": 2284,
+      "title": "Keep Run Logs provenance bound to the selected run",
+      "updatedAt": "2026-09-07T17:04:43Z"
+    },
+    {
+      "body": "## Why\n\n`pa_core/sweep.py:602` resets financing generators only when standard financing is not cached. InternalPA draws at `pa_core/sweep.py:703` still advance the original internal RNG even when the other financing series are cached. An ExternalPA theta sweep changes unrelated InternalPA annual returns by -0.000139485503 with 1% InternalPA financing volatility; zero-volatility control delta is exactly zero. Existing common-random-number coverage excludes this stream; related closed #1849 added it.\n\n## Scope\n\nPreserve common random draws for InternalPA sweep financing. First-party engine behavior at main 59cb12be9d4b06434d41bc1b71612167ea6d9cfc.\n\n## Non-Goals\n\nNo unrelated refactors, synced workflow changes, new hosted service, or placeholder/scaffold-only implementation. Do not weaken the named regression to make it pass.\n\n## Tasks\n\n- [ ] In `pa_core/sweep.py`, cache or reset InternalPA financing draws per combination while retaining deterministic parameter changes and avoiding accidental stream sharing.\n- [ ] Extend `tests/test_sweep_common_random_numbers.py` with duplicate combinations, reordered combinations and nonzero InternalPA financing volatility under a fixed seed.\n\n## Acceptance Criteria\n\n- [ ] Duplicate or reordered parameter combinations retain identical InternalPA metrics when that sleeve economics is unchanged; changed financing inputs still change the result.\n- [ ] Run `pytest tests/test_sweep_common_random_numbers.py tests/test_sweep_reproducibility.py -q` with the added regressions and retain output.\n- [ ] Deliberate-break check: Allow the original internal RNG to advance between duplicate cases; the new equality regression must fail; revert.\n\n## Implementation Notes\n\nSeverity P2. Source citations are relative to this repository. Preserve existing documented semantics outside the correction.\n",
+      "createdAt": "2026-09-07T17:04:40Z",
+      "labels": [
+        {
+          "id": "LA_kwDOO15QxM8AAAACCCn9ag",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        },
+        {
+          "id": "LA_kwDOO15QxM8AAAACHPIshw",
+          "name": "engine",
+          "description": "",
+          "color": "FAE3A8"
+        },
+        {
+          "id": "LA_kwDOO15QxM8AAAACHPJGvA",
+          "name": "priority: medium",
+          "description": "",
+          "color": "D93F0B"
+        }
+      ],
+      "number": 2281,
+      "title": "Preserve common random draws for InternalPA sweep financing",
+      "updatedAt": "2026-09-07T17:04:40Z"
+    },
+    {
+      "body": "This issue lists Renovate updates and detected dependencies. Read the [Dependency Dashboard](https://docs.renovatebot.com/key-concepts/dashboard/) docs to learn more.<br>[View this repository on the Mend.io Web Portal](https://developer.mend.io/github/stranske/Portable-Alpha-Extension-Model).\n\n## Awaiting Schedule\n\nThe following updates are awaiting their schedule. To get an update now, click on a checkbox below.\n\n - [ ] <!-- unschedule-branch=renovate/github-actions -->chore(deps): update actions/setup-python digest to ece7cb0\n - [ ] <!-- unschedule-branch=renovate/non-major-updates -->fix(deps): update non-major updates (`langchain`, `langchain-anthropic`, `langchain-core`, `langchain-openai`, `langsmith`, `pydantic`)\n - [ ] <!-- unschedule-branch=renovate/lock-file-maintenance-weekly-lock-file-maintenance -->chore(deps): refresh pip-compile outputs\n - [ ] <!-- create-all-awaiting-schedule-prs -->\ud83d\udd10 **Create all awaiting schedule PRs at once** \ud83d\udd10\n\n## PR Closed (Blocked)\n\nThe following updates are blocked by an existing closed PR. To recreate the PR, click on a checkbox below.\n\n - [ ] <!-- recreate-branch=renovate/actions-setup-python-7.x -->[chore(deps): update actions/setup-python action to v7](../pull/2130)\n\n## Detected Dependencies\n\n<details><summary>devcontainer (1)</summary>\n<blockquote>\n\n<details><summary>.devcontainer/devcontainer.json (5)</summary>\n\n - `mcr.microsoft.com/devcontainers/python 3.14`\n - `ghcr.io/devcontainers/features/git 1`\n - `ghcr.io/devcontainers/features/github-cli 1`\n - `ghcr.io/devcontainers/features/node 2`\n - `node 24`\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>github-actions (39)</summary>\n<blockquote>\n\n<details><summary>.github/actions/agent-run-base/action.yml</summary>\n\n\n</details>\n\n<details><summary>.github/actions/artifact-cache/action.yml</summary>\n\n\n</details>\n\n<details><summary>.github/actions/resolve-default-branch/action.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-71-codex-belt-dispatcher.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-72-codex-belt-worker.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-73-codex-belt-conveyor.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-80-pr-event-hub.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-81-gate-followups.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-auto-label.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-auto-pilot.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-autofix-dispatcher.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-capability-check.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-decompose.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-dedup.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-guard.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-issue-format-guard.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-issue-intake.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-issue-optimizer.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-keepalive-loop-reporter.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-keepalive-sweep.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-pr-health.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-verifier.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-verify-to-new-pr.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-weekly-metrics.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/autofix.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/backplane-conformance.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/ci.yml (1)</summary>\n\n - `stranske/Workflows main`\n\n</details>\n\n<details><summary>.github/workflows/cross-repo-smoke.yml (1)</summary>\n\n - `stranske/Workflows main`\n\n</details>\n\n<details><summary>.github/workflows/list-llm-models.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/maint-76-claude-code-review.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/maint-87-docs-drift-fix-agent.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/maint-coverage-guard.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/maint-dependabot-auto-lock.yml (3)</summary>\n\n - `actions/checkout v7`\n - `actions/setup-python v6@a309ff8b426b58ec0e2a45f0f869d46889d02405` \u2192 [Updates: `v7`, `v6`]\n - `python 3.14`\n\n</details>\n\n<details><summary>.github/workflows/pr-00-gate.yml (10)</summary>\n\n - `actions/checkout v7`\n - `stranske/Workflows main`\n - `actions/checkout v7`\n - `actions/checkout v7`\n - `actions/setup-python v6` \u2192 [Updates: `v7`]\n - `actions/checkout v7`\n - `actions/setup-python v6` \u2192 [Updates: `v7`]\n - `actions/github-script v9.0.0`\n - `python 3.14`\n - `python 3.14`\n\n</details>\n\n<details><summary>.github/workflows/pr-46-dependency-repair-contract.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/release-packaging.yml (5)</summary>\n\n - `actions/checkout v7`\n - `actions/setup-python v6` \u2192 [Updates: `v7`]\n - `actions/upload-artifact v7`\n - `softprops/action-gh-release v3`\n - `python 3.14`\n\n</details>\n\n<details><summary>.github/workflows/release.yml (10)</summary>\n\n - `actions/checkout v7`\n - `actions/setup-python v6` \u2192 [Updates: `v7`]\n - `actions/checkout v7`\n - `actions/setup-python v6` \u2192 [Updates: `v7`]\n - `actions/upload-artifact v7`\n - `actions/checkout v7`\n - `actions/download-artifact v8`\n - `softprops/action-gh-release v3`\n - `python 3.14`\n - `python 3.14`\n\n</details>\n\n<details><summary>.github/workflows/reusable-cursor-run.yml (1)</summary>\n\n - `stranske/Workflows main`\n\n</details>\n\n<details><summary>.github/workflows/reusable-pr-context.yml</summary>\n\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>npm (1)</summary>\n<blockquote>\n\n<details><summary>.github/scripts/package.json</summary>\n\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>pep621 (1)</summary>\n<blockquote>\n\n<details><summary>pyproject.toml (15)</summary>\n\n - `python >=3.12`\n - `plotly >=6.7.0`\n - `streamlit >=1.35`\n - `PyYAML >=6.0.3`\n - `langchain ==1.3.14` \u2192 [Updates: `==1.4.0`]\n - `langchain-core ==1.5.3` \u2192 [Updates: `==1.6.2`]\n - `langchain-community ==0.4.2`\n - `langchain-openai ==1.4.1` \u2192 [Updates: `==1.6.0`]\n - `langchain-anthropic ==1.5.3` \u2192 [Updates: `==1.7.1`]\n - `langsmith ==0.10.15` \u2192 [Updates: `==0.12.2`]\n - `pydantic ==2.13.4` \u2192 [Updates: `==2.13.5`]\n - `requests ==2.34.2`\n - `hypothesis >=6.115.1`\n - `sphinx-rtd-theme >=3.1.0`\n - `setuptools >=82.0.1`\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>pip-compile (1)</summary>\n<blockquote>\n\n<details><summary>pyproject.toml (15)</summary>\n\n - `python >=3.12`\n - `plotly >=6.7.0`\n - `streamlit >=1.35`\n - `PyYAML >=6.0.3`\n - `langchain ==1.3.14` \u2192 [Updates: `==1.4.0`]\n - `langchain-core ==1.5.3` \u2192 [Updates: `==1.6.2`]\n - `langchain-community ==0.4.2`\n - `langchain-openai ==1.4.1` \u2192 [Updates: `==1.6.0`]\n - `langchain-anthropic ==1.5.3` \u2192 [Updates: `==1.7.1`]\n - `langsmith ==0.10.15` \u2192 [Updates: `==0.12.2`]\n - `pydantic ==2.13.4` \u2192 [Updates: `==2.13.5`]\n - `requests ==2.34.2`\n - `hypothesis >=6.115.1`\n - `sphinx-rtd-theme >=3.1.0`\n - `setuptools >=82.0.1`\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>pip_requirements (3)</summary>\n<blockquote>\n\n<details><summary>requirements-dev.txt (3)</summary>\n\n - `PyYAML >=6`\n - `plotly >=5.19`\n - `streamlit >=1.35`\n\n</details>\n\n<details><summary>requirements.txt (3)</summary>\n\n - `PyYAML >=6`\n - `plotly >=5.19`\n - `streamlit >=1.35`\n\n</details>\n\n<details><summary>tools/requirements-llm.txt</summary>\n\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>renovate-config (1)</summary>\n<blockquote>\n\n<details><summary>.github/renovate.json</summary>\n\n\n</details>\n\n</blockquote>\n</details>\n\n---\n\n- [ ] <!-- manual job -->Check this box to trigger a request for Renovate to run again on this repository\n\n",
+      "createdAt": "2026-06-15T04:40:56Z",
+      "labels": [
+        {
+          "id": "LA_kwDOO15QxM8AAAACrdsv3g",
+          "name": "tracker:durable",
+          "description": "Permanently-open tracker; excluded from open-issue backlog counts",
+          "color": "c5def5"
+        }
+      ],
+      "number": 1958,
+      "title": "Dependency Dashboard",
+      "updatedAt": "2026-09-11T01:36:42Z"
+    },
+    {
+      "body": "Tracking issue for weekly agent workflow metrics.\n\n# Agent Metrics Summary\n\nGenerated: 2026-04-27T06:53:32Z\nRecords: 60 (keepalive 40, autofix 0, verifier 0, terminal dispositions 20, verifier follow-up ledgers 0, codex CLI freshness 0, autopilot 0, unknown 0)\nParse errors: 0\nRange: 2026-04-27T03:13:06.266000Z to 2026-04-27T06:45:35.682000Z\n\n## Keepalive\n- Runs: 40\n- PRs: 6\n- Avg iterations: 0.0\n- Stop reasons: missing-agent-label (20)\n- Actions: wait (20)\n- Gate conclusions: cancelled (12), success (6)\n- Tasks complete rate: 0.0% (0/40)\n\n## Autofix\n- Attempts: 0\n- PRs: 0\n- Fixes applied: n/a\n- Trigger reasons: n/a\n- Gate results after: n/a\n\n## Verifier\n- Runs: 0\n- PRs: 7\n- Verdicts: n/a\n- Issues created: 0\n- Avg acceptance criteria: 0.0\n- Terminal disposition records: 20\n- Terminal dispositions: wrapper-skipped (20)\n- Terminal disposition sources: review-thread:24974711435 (1), review-thread:1700 (1), review-thread:24974835973 (1), review-thread:24974880714 (1), review-thread:1701 (1), review-thread:24975215052 (1), review-thread:24975251206 (1), review-thread:1702 (1), review-thread:24975943671 (1), review-thread:24975984188 (1), review-thread:1703 (1), review-thread:24976427724 (1), review-thread:24976469890 (1), review-thread:1704 (1), review-thread:24978035357 (1), review-thread:24978102477 (1), review-thread:1705 (1), review-thread:24980326319 (1), review-thread:24980415937 (1), review-thread:1706 (1)\n- Terminal artifact families: review-thread-terminal-disposition: selected (20/80), verifier-terminal-disposition: missing (0/0)\n- Missing terminal artifact families: verifier-terminal-disposition\n- Verifier follow-up ledger records: 0\n- Verifier follow-up ledger dispositions: n/a\n- Verifier follow-up ledger PRs: 0\n- Verifier follow-up issues linked: 0\n- Verifier follow-up needs-human records: 0\n- Verifier follow-up avg chain depth: 0.0\n- Verifier follow-up max chain depth: 0\n- Verifier follow-up policy records: 0\n- Verifier follow-up policy actions: n/a\n- Verifier follow-up policy triggers: n/a\n- Verifier follow-up depth-limit records: 0\n- Verifier models: n/a\n- Verifier CLI versions: n/a\n- Unsupported verifier models: n/a\n- Unsupported model dispositions: n/a\n- Missing verifier model metadata: n/a\n- Legacy missing verifier model metadata: n/a\n- Model selection reasons: n/a\n- Verifier modes: n/a\n\n## Codex CLI Freshness\n- Records: 0\n- Statuses: n/a\n- Packages: n/a\n- Pinned versions: n/a\n- Latest versions: n/a\n- Outdated records: 0\n- Latest unavailable records: 0\n- Max version delta: major 0, minor 0, patch 0\n- Update targets: n/a\n\n## Weekly Metrics Artifact Selection\n\n- Schema: workflows-weekly-metrics-artifact-selection/v1\n- Status: pass\n- Lookback days: 14\n- Scan cap: 5 pages x 100 artifacts\n- Download cap: 80 total, 20 per family\n- Scanned artifacts: 500\n- Candidate artifacts: 426\n- Selected artifacts: 60\n- Missing priority families: codex-cli-freshness, verifier-terminal-disposition, bot-comment-auth-coverage-wrapper, bot-comment-auth-coverage-reusable, pr-source-context\n- Ignored: 0 old, 2 expired, 72 non-metrics, 366 over family cap, 0 over total cap\n\n| Artifact family | Candidates | Selected |\n|-----------------|------------|----------|\n| agents-autofix-metrics | 185 | 20 |\n| keepalive-metrics | 161 | 20 |\n| review-thread-terminal-disposition | 80 | 20 |\n\n| Priority family | Status | Candidates | Selected artifact |\n|-----------------|--------|------------|-------------------|\n| codex-cli-freshness | missing | 0 | none |\n| verifier-terminal-disposition | missing | 0 | none |\n| review-thread-terminal-disposition | selected | 80 | review-thread-terminal-disposition-24980556379 |\n| bot-comment-auth-coverage-wrapper | missing | 0 | none |\n| bot-comment-auth-coverage-reusable | missing | 0 | none |\n| pr-source-context | missing | 0 | none |\n\n## Weekly Metrics Artifact Downloads\n\n- Schema: workflows-weekly-metrics-artifact-download-manifest/v1\n- Status: pass\n- Selected artifacts: 60\n- Downloads: 60 passed, 0 failed\n- Unzip: 60 passed, 0 failed, 0 skipped\n\n| Artifact | ID | Download | Unzip | Path |\n|----------|----|----------|-------|------|\n| review-thread-terminal-disposition-24980556379 | 6654672035 | pass | pass | artifacts/review-thread-terminal-disposition-24980556379/6654672035 |\n| keepalive-metrics | 6654676174 | pass | pass | artifacts/keepalive-metrics/6654676174 |\n| agents-autofix-metrics | 6654671815 | pass | pass | artifacts/agents-autofix-metrics/6654671815 |\n| keepalive-metrics | 6654660705 | pass | pass | artifacts/keepalive-metrics/6654660705 |\n| keepalive-metrics | 6654645182 | pass | pass | artifacts/keepalive-metrics/6654645182 |\n| review-thread-terminal-disposition-24980415937 | 6654637171 | pass | pass | artifacts/review-thread-terminal-disposition-24980415937/6654637171 |\n| agents-autofix-metrics | 6654626037 | pass | pass | artifacts/agents-autofix-metrics/6654626037 |\n| agents-autofix-metrics | 6654620221 | pass | pass | artifacts/agents-autofix-metrics/6654620221 |\n| keepalive-metrics | 6654616302 | pass | pass | artifacts/keepalive-metrics/6654616302 |\n| review-thread-terminal-disposition-24980326319 | 6654603235 | pass | pass | artifacts/review-thread-terminal-disposition-24980326319/6654603235 |\n| agents-autofix-metrics | 6654595866 | pass | pass | artifacts/agents-autofix-metrics/6654595866 |\n| keepalive-metrics | 6653848809 | pass | pass | artifacts/keepalive-metrics/6653848809 |\n| review-thread-terminal-disposition-24978225186 | 6653845999 | pass | pass | artifacts/review-thread-terminal-disposition-24978225186/6653845999 |\n| agents-autofix-metrics | 6653844949 | pass | pass | artifacts/agents-autofix-metrics/6653844949 |\n| keepalive-metrics | 6653828834 | pass | pass | artifacts/keepalive-metrics/6653828834 |\n| keepalive-metrics | 6653815742 | pass | pass | artifacts/keepalive-metrics/6653815742 |\n| review-thread-terminal-disposition-24978102477 | 6653805287 | pass | pass | artifacts/review-thread-terminal-disposition-24978102477/6653805287 |\n| agents-autofix-metrics | 6653798452 | pass | pass | artifacts/agents-autofix-metrics/6653798452 |\n| keepalive-metrics | 6653792451 | pass | pass | artifacts/keepalive-metrics/6653792451 |\n| review-thread-terminal-disposition-24978035357 | 6653785998 | pass | pass | artifacts/review-thread-terminal-disposition-24978035357/6653785998 |\n| agents-autofix-metrics | 6653785651 | pass | pass | artifacts/agents-autofix-metrics/6653785651 |\n| agents-autofix-metrics | 6653776347 | pass | pass | artifacts/agents-autofix-metrics/6653776347 |\n| keepalive-metrics | 6653611000 | pass | pass | artifacts/keepalive-metrics/6653611000 |\n| keepalive-metrics | 6653301902 | pass | pass | artifacts/keepalive-metrics/6653301902 |\n| review-thread-terminal-disposition-24976561807 | 6653299665 | pass | pass | artifacts/review-thread-terminal-disposition-24976561807/6653299665 |\n| agents-autofix-metrics | 6653298662 | pass | pass | artifacts/agents-autofix-metrics/6653298662 |\n| keepalive-metrics | 6653285513 | pass | pass | artifacts/keepalive-metrics/6653285513 |\n| agents-autofix-metrics | 6653276865 | pass | pass | artifacts/agents-autofix-metrics/6653276865 |\n| keepalive-metrics | 6653275698 | pass | pass | artifacts/keepalive-metrics/6653275698 |\n| agents-autofix-metrics | 6653273471 | pass | pass | artifacts/agents-autofix-metrics/6653273471 |\n| review-thread-terminal-disposition-24976469890 | 6653270975 | pass | pass | artifacts/review-thread-terminal-disposition-24976469890/6653270975 |\n| keepalive-metrics | 6653266005 | pass | pass | artifacts/keepalive-metrics/6653266005 |\n| review-thread-terminal-disposition-24976427724 | 6653265839 | pass | pass | artifacts/review-thread-terminal-disposition-24976427724/6653265839 |\n| agents-autofix-metrics | 6653257387 | pass | pass | artifacts/agents-autofix-metrics/6653257387 |\n| keepalive-metrics | 6653144896 | pass | pass | artifacts/keepalive-metrics/6653144896 |\n| review-thread-terminal-disposition-24976105368 | 6653142931 | pass | pass | artifacts/review-thread-terminal-disposition-24976105368/6653142931 |\n| agents-autofix-metrics | 6653142205 | pass | pass | artifacts/agents-autofix-metrics/6653142205 |\n| keepalive-metrics | 6653123388 | pass | pass | artifacts/keepalive-metrics/6653123388 |\n| agents-autofix-metrics | 6653118659 | pass | pass | artifacts/agents-autofix-metrics/6653118659 |\n| review-thread-terminal-disposition-24975984188 | 6653113251 | pass | pass | artifacts/review-thread-terminal-disposition-24975984188/6653113251 |\n| keepalive-metrics | 6653113027 | pass | pass | artifacts/keepalive-metrics/6653113027 |\n| agents-autofix-metrics | 6653106825 | pass | pass | artifacts/agents-autofix-metrics/6653106825 |\n| review-thread-terminal-disposition-24975943671 | 6653102205 | pass | pass | artifacts/review-thread-terminal-disposition-24975943671/6653102205 |\n| agents-autofix-metrics | 6653099821 | pass | pass | artifacts/agents-autofix-metrics/6653099821 |\n| keepalive-metrics | 6652916302 | pass | pass | artifacts/keepalive-metrics/6652916302 |\n| review-thread-terminal-disposition-24975350693 | 6652914421 | pass | pass | artifacts/review-thread-terminal-disposition-24975350693/6652914421 |\n| agents-autofix-metrics | 6652913569 | pass | pass | artifacts/agents-autofix-metrics/6652913569 |\n| keepalive-metrics | 6652900924 | pass | pass | artifacts/keepalive-metrics/6652900924 |\n| agents-autofix-metrics | 6652894977 | pass | pass | artifacts/agents-autofix-metrics/6652894977 |\n| review-thread-terminal-disposition-24975251206 | 6652889992 | pass | pass | artifacts/review-thread-terminal-disposition-24975251206/6652889992 |\n| keepalive-metrics | 6652884815 | pass | pass | artifacts/keepalive-metrics/6652884815 |\n| agents-autofix-metrics | 6652884808 | pass | pass | artifacts/agents-autofix-metrics/6652884808 |\n| review-thread-terminal-disposition-24975215052 | 6652875355 | pass | pass | artifacts/review-thread-terminal-disposition-24975215052/6652875355 |\n| agents-autofix-metrics | 6652872013 | pass | pass | artifacts/agents-autofix-metrics/6652872013 |\n| keepalive-metrics | 6652799483 | pass | pass | artifacts/keepalive-metrics/6652799483 |\n| review-thread-terminal-disposition-24974992465 | 6652796638 | pass | pass | artifacts/review-thread-terminal-disposition-24974992465/6652796638 |\n| review-thread-terminal-disposition-24974880714 | 6652761734 | pass | pass | artifacts/review-thread-terminal-disposition-24974880714/6652761734 |\n| review-thread-terminal-disposition-24974835973 | 6652746342 | pass | pass | artifacts/review-thread-terminal-disposition-24974835973/6652746342 |\n| review-thread-terminal-disposition-24974816987 | 6652732574 | pass | pass | artifacts/review-thread-terminal-disposition-24974816987/6652732574 |\n| review-thread-terminal-disposition-24974711435 | 6652709350 | pass | pass | artifacts/review-thread-terminal-disposition-24974711435/6652709350 |\n\n## Terminal Disposition Coverage Preflight\n\n- Mode: warning-only (does not block merges or automation)\n- Requested mode: warning-only\n- Status: pass\n- Coverage status: pass\n- Hard block eligible: true\n- Hard block active: false\n- Input files: 20\n- Scanned records: 20\n- Terminal disposition records: 20\n- Non-terminal records: 0\n- Observed sources: 20\n- Expected review-thread sources: 7\n- Missing review-thread sources: 0\n- Parse errors: 0\n- Artifact selector status: pass\n- Terminal artifacts selected: 20\n- Terminal artifacts candidates: 80\n- Missing terminal artifact families: verifier-terminal-disposition\n- Verifier model compatibility: pass\n- Unsupported verifier model records: 0\n- Missing verifier model metadata records: 0\n- Missing verifier model metadata records with unknown mode: 0\n- Legacy missing verifier model metadata records: 0\n- Unsupported verifier models: gpt-5.2-codex\n\n| Observed source | Records | Dispositions | PRs |\n|-----------------|---------|--------------|-----|\n| review-thread:1700 | 1 | wrapper-skipped (1) | #1700 |\n| review-thread:1701 | 1 | wrapper-skipped (1) | #1701 |\n| review-thread:1702 | 1 | wrapper-skipped (1) | #1702 |\n| review-thread:1703 | 1 | wrapper-skipped (1) | #1703 |\n| review-thread:1704 | 1 | wrapper-skipped (1) | #1704 |\n| review-thread:1705 | 1 | wrapper-skipped (1) | #1705 |\n| review-thread:1706 | 1 | wrapper-skipped (1) | #1706 |\n| review-thread:24974711435 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24974835973 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24974880714 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24975215052 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24975251206 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24975943671 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24975984188 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24976427724 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24976469890 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24978035357 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24978102477 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24980326319 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24980415937 | 1 | wrapper-skipped (1) | n/a |\n\n| Terminal artifact family | Status | Candidates | Selected | Latest artifact |\n|--------------------------|--------|------------|----------|-----------------|\n| review-thread-terminal-disposition | selected | 80 | 20 | review-thread-terminal-disposition-24980556379 |\n| verifier-terminal-disposition | missing | 0 | 0 | n/a |\n\n## Bot Comment App Auth Coverage\n\n- Schema: workflows-bot-comment-auth-coverage-summary/v1\n- Status: no-data\n- Coverage status: no-data\n- Mode: warning-only\n- Hard block eligible: false\n- Hard block active: false\n- Input files: 0\n- Parsed JSON files: 0\n- Auth records: 0\n- Non-auth records: 0\n- Parse errors: 0\n- Read errors: 0\n- Artifact selection status: pass\n- Selected auth artifacts: 0\n- Required organic events: pull_request, workflow_run\n- Organic evidence status: no-data\n- Missing organic requirements: agents-bot-comment-handler-wrapper/pull_request, agents-bot-comment-handler-wrapper/workflow_run, reusable-bot-comment-handler/pull_request, reusable-bot-comment-handler/workflow_run\n- Blockers: missing-organic-agents-bot-comment-handler-wrapper-pull_request, missing-organic-agents-bot-comment-handler-wrapper-workflow_run, missing-organic-reusable-bot-comment-handler-pull_request, missing-organic-reusable-bot-comment-handler-workflow_run\n\n| Component | Latest mode | Records | Expected | Allowed | Blockers |\n|-----------|-------------|---------|----------|---------|----------|\n| agents-bot-comment-handler-wrapper | missing | 0 | client-id | client-id | missing-agents-bot-comment-handler-wrapper |\n| reusable-bot-comment-handler | missing | 0 | any | client-id, none | missing-reusable-bot-comment-handler |\n",
+      "createdAt": "2026-04-27T06:53:34Z",
+      "labels": [
+        {
+          "id": "LA_kwDOO15QxM8AAAACrdsv3g",
+          "name": "tracker:durable",
+          "description": "Permanently-open tracker; excluded from open-issue backlog counts",
+          "color": "c5def5"
+        }
+      ],
+      "number": 1707,
+      "title": "Agent metrics weekly summary",
+      "updatedAt": "2026-09-07T06:17:02Z"
+    }
+  ],
+  "prs": [],
+  "runs": [
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-11T08:09:09Z",
+      "databaseId": 34577774220,
+      "event": "schedule",
+      "headSha": "b636aedd7579242f25a83dfff9a7768ab22e0344",
+      "name": "Agents PR Health",
+      "status": "completed",
+      "updatedAt": "2026-09-11T08:09:40Z",
+      "url": "https://github.com/stranske/Portable-Alpha-Extension-Model/actions/runs/34577774220",
+      "workflowName": "Agents PR Health"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-11T07:31:39Z",
+      "databaseId": 34574796761,
+      "event": "schedule",
+      "headSha": "b636aedd7579242f25a83dfff9a7768ab22e0344",
+      "name": "Agents Keepalive Sweep",
+      "status": "completed",
+      "updatedAt": "2026-09-11T07:31:56Z",
+      "url": "https://github.com/stranske/Portable-Alpha-Extension-Model/actions/runs/34574796761",
+      "workflowName": "Agents Keepalive Sweep"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-11T07:07:16Z",
+      "databaseId": 34572919617,
+      "event": "schedule",
+      "headSha": "b636aedd7579242f25a83dfff9a7768ab22e0344",
+      "name": "Agents PR Health",
+      "status": "completed",
+      "updatedAt": "2026-09-11T07:07:43Z",
+      "url": "https://github.com/stranske/Portable-Alpha-Extension-Model/actions/runs/34572919617",
+      "workflowName": "Agents PR Health"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-11T06:56:35Z",
+      "databaseId": 34572107117,
+      "event": "schedule",
+      "headSha": "b636aedd7579242f25a83dfff9a7768ab22e0344",
+      "name": "Maint Coverage Guard",
+      "status": "completed",
+      "updatedAt": "2026-09-11T06:57:48Z",
+      "url": "https://github.com/stranske/Portable-Alpha-Extension-Model/actions/runs/34572107117",
+      "workflowName": "Maint Coverage Guard"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-11T06:43:55Z",
+      "databaseId": 34571185846,
+      "event": "schedule",
+      "headSha": "b636aedd7579242f25a83dfff9a7768ab22e0344",
+      "name": "Agents Keepalive Sweep",
+      "status": "completed",
+      "updatedAt": "2026-09-11T06:44:13Z",
+      "url": "https://github.com/stranske/Portable-Alpha-Extension-Model/actions/runs/34571185846",
+      "workflowName": "Agents Keepalive Sweep"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-11T06:11:36Z",
+      "databaseId": 34568901187,
+      "event": "schedule",
+      "headSha": "b636aedd7579242f25a83dfff9a7768ab22e0344",
+      "name": "Agents PR Health",
+      "status": "completed",
+      "updatedAt": "2026-09-11T06:12:07Z",
+      "url": "https://github.com/stranske/Portable-Alpha-Extension-Model/actions/runs/34568901187",
+      "workflowName": "Agents PR Health"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-11T05:29:58Z",
+      "databaseId": 34566186055,
+      "event": "schedule",
+      "headSha": "b636aedd7579242f25a83dfff9a7768ab22e0344",
+      "name": "Agents Keepalive Sweep",
+      "status": "completed",
+      "updatedAt": "2026-09-11T05:30:11Z",
+      "url": "https://github.com/stranske/Portable-Alpha-Extension-Model/actions/runs/34566186055",
+      "workflowName": "Agents Keepalive Sweep"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-11T05:06:54Z",
+      "databaseId": 34564708416,
+      "event": "schedule",
+      "headSha": "b636aedd7579242f25a83dfff9a7768ab22e0344",
+      "name": "Agents PR Health",
+      "status": "completed",
+      "updatedAt": "2026-09-11T05:07:20Z",
+      "url": "https://github.com/stranske/Portable-Alpha-Extension-Model/actions/runs/34564708416",
+      "workflowName": "Agents PR Health"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-11T04:33:52Z",
+      "databaseId": 34562667556,
+      "event": "schedule",
+      "headSha": "b636aedd7579242f25a83dfff9a7768ab22e0344",
+      "name": "Agents Keepalive Sweep",
+      "status": "completed",
+      "updatedAt": "2026-09-11T04:34:11Z",
+      "url": "https://github.com/stranske/Portable-Alpha-Extension-Model/actions/runs/34562667556",
+      "workflowName": "Agents Keepalive Sweep"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-11T04:08:51Z",
+      "databaseId": 34561089157,
+      "event": "schedule",
+      "headSha": "b636aedd7579242f25a83dfff9a7768ab22e0344",
+      "name": "Agents PR Health",
+      "status": "completed",
+      "updatedAt": "2026-09-11T04:09:22Z",
+      "url": "https://github.com/stranske/Portable-Alpha-Extension-Model/actions/runs/34561089157",
+      "workflowName": "Agents PR Health"
+    }
+  ]
+}

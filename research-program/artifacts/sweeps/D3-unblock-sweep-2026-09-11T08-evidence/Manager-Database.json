@@ -1,0 +1,347 @@
+{
+  "repo": "Manager-Database",
+  "issues": [
+    {
+      "body": "## Why\n\nIn `etl/manager_similarity_flow.py:27-47`, the function `ensure_manager_similarity_table(conn)` executes table creation DDL only when `isinstance(conn, sqlite3.Connection)`.\n\nWhen executed against a PostgreSQL connection, `ensure_manager_similarity_table(conn)` executes no statements and provides no fallback or table verification. This inconsistency contrasts with all other table ensure functions across the codebase (such as `etl/conviction_flow.py`, `alerts/db.py`, and `etl/activism_detection.py`), which provide PostgreSQL DDL branches.\n\n## Scope\n\n- Implement PostgreSQL DDL execution in `ensure_manager_similarity_table()` in `etl/manager_similarity_flow.py:27-47` matching dialect patterns used across `etl/`.\n- Add test coverage in `tests/test_manager_similarity_flow.py` verifying table creation DDL execution on PostgreSQL connections.\n\n## Implementation Notes\n\n- Mirror the PostgreSQL table creation schema in `etl/conviction_flow.py` using `BIGINT`, `TIMESTAMPTZ`, and `FLOAT` types.\n- Ensure idempotent execution using `CREATE TABLE IF NOT EXISTS manager_similarity (...)`.\n\n## Non-Goals\n\n- Modifying similarity computation algorithms or vector embedding distance metrics.\n- Adding scaffold-only stubs, mocks, or empty bypass functions without wiring up the real implementation does NOT count as done and constitutes a failure of this issue.\n\n## Tasks\n\n- [ ] Add PostgreSQL dialect DDL branch to function `ensure_manager_similarity_table()` in `etl/manager_similarity_flow.py`.\n- [ ] Add test cases in `tests/test_manager_similarity_flow.py` asserting PostgreSQL DDL executes on non-SQLite connection instances.\n\n## Acceptance Criteria\n\n- Running `pytest tests/test_manager_similarity_flow.py` executes without errors.\n- Calling `ensure_manager_similarity_table(pg_conn)` on a PostgreSQL mock connection executes DDL creating table `manager_similarity`.\n- Verification gate: deliberately break the implementation by omitting PostgreSQL handling in `etl/manager_similarity_flow.py` and verify `pytest tests/test_manager_similarity_flow.py` fails.\n",
+      "createdAt": "2026-09-10T18:18:49Z",
+      "labels": [
+        {
+          "id": "LA_kwDOO4LcjM8AAAACCXfJHw",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        },
+        {
+          "id": "LA_kwDOO4LcjM8AAAACg4nSog",
+          "name": "priority:normal",
+          "description": "Normal-priority weekly repo-review work",
+          "color": "fbca04"
+        },
+        {
+          "id": "LA_kwDOO4LcjM8AAAACpMAUyQ",
+          "name": "testing",
+          "description": "Tests or coverage work",
+          "color": "5319E7"
+        }
+      ],
+      "number": 1653,
+      "title": "fix(etl): implement Postgres schema check in ensure_manager_similarity_table",
+      "updatedAt": "2026-09-10T18:18:49Z"
+    },
+    {
+      "body": "## Why\n\nIn `adapters/prices.py:231-245`, the method `close_on_or_before(symbol, on)` evaluates `needs_refresh = not window or max(window) < on` to determine whether an external market data fetch is required.\n\nWhen requesting market prices for a non-trading date (such as a weekend Saturday or Sunday), `max(window) < on` remains True even after fetching because markets are closed on `on`. Because `window` contains Friday's quote (non-empty), `(symbol, on)` is never added to `self._missing`. On subsequent calls for the same symbol and weekend date, `needs_refresh` evaluates to True again, triggering redundant external HTTP network requests on every invocation.\n\n## Scope\n\n- Update `close_on_or_before()` in `adapters/prices.py:231-245` to record evaluated `(symbol, on)` dates in a refreshed/checked set once a lookup window has been queried.\n- Add unit test coverage in `tests/test_adapter_base.py` asserting that repeated calls to `close_on_or_before()` for non-trading weekend dates do not trigger duplicate network fetches.\n\n## Implementation Notes\n\n- Track queried date windows using `self._checked_dates: set[tuple[str, date]] = set()`.\n- If `(symbol, on)` has already been evaluated and the cache contains the latest available quote before `on`, skip redundant network calls.\n\n## Non-Goals\n\n- Modifying external market data provider endpoints or rate limiter throttling logic.\n- Adding scaffold-only stubs, mocks, or empty bypass functions without wiring up the real implementation does NOT count as done and constitutes a failure of this issue.\n\n## Tasks\n\n- [ ] Implement checked date caching in method `close_on_or_before()` in `adapters/prices.py` to prevent redundant network fetches on non-trading dates.\n- [ ] Add unit test in `tests/test_adapter_base.py` verifying that multiple lookups for weekend dates invoke the mock provider exactly once.\n\n## Acceptance Criteria\n\n- Running `pytest tests/test_adapter_base.py` executes without errors.\n- Querying `close_on_or_before(\"AAPL\", saturday_date)` multiple times results in exactly 1 call to the underlying provider fetch method.\n- Verification gate: deliberately break the implementation by removing the checked date cache in `adapters/prices.py` and verify `pytest tests/test_adapter_base.py` fails on redundant call assertions.\n",
+      "createdAt": "2026-09-10T18:18:48Z",
+      "labels": [
+        {
+          "id": "LA_kwDOO4LcjM8AAAACCXfJHw",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        },
+        {
+          "id": "LA_kwDOO4LcjM8AAAACg4nSog",
+          "name": "priority:normal",
+          "description": "Normal-priority weekly repo-review work",
+          "color": "fbca04"
+        },
+        {
+          "id": "LA_kwDOO4LcjM8AAAACpMAUyQ",
+          "name": "testing",
+          "description": "Tests or coverage work",
+          "color": "5319E7"
+        }
+      ],
+      "number": 1652,
+      "title": "fix(prices): eliminate redundant HTTP requests for weekend and holiday dates in PriceAdapter",
+      "updatedAt": "2026-09-10T18:18:48Z"
+    },
+    {
+      "body": "## Why\n\nIn `api/activism.py:195, 255, 365, 432, 515`, query functions (`query_activism_filings`, `query_activism_events`, `query_active_campaigns`, `query_activism_timeline`, `query_manager_campaigns`) execute SQL containing `LEFT JOIN managers m ON m.manager_id = ...`.\n\nIn SQLite databases where table `managers` defines primary key column `id` (standard across local SQLite schemas), executing any of these activism queries raises `sqlite3.OperationalError: no such column: m.manager_id`, breaking activism API endpoints in local development and offline inspection workflows.\n\n## Scope\n\n- Resolve the manager table join column dynamically in `api/activism.py:195, 255, 365, 432, 515` using dialect helper `manager_id_column(conn)` or `resolve_manager_id_column(conn)`.\n- Add test coverage in `tests/test_activism_dialect_portability.py` executing activism queries against SQLite databases where table `managers` has column `id`.\n\n## Implementation Notes\n\n- Use `manager_id_column(conn)` or `resolve_manager_id_column(conn)` to dynamically format `LEFT JOIN managers m ON m.{manager_col} = ...`.\n- Ensure parameter bindings remain parameterized and only the validated column identifier is formatted into the SQL clause.\n\n## Non-Goals\n\n- Changing activism endpoint schemas or modifying PostgreSQL schema definitions.\n- Adding scaffold-only stubs, mocks, or empty bypass functions without wiring up the real implementation does NOT count as done and constitutes a failure of this issue.\n\n## Tasks\n\n- [ ] Update SQL query templates in `api/activism.py` to resolve dialect-specific manager column names in table joins.\n- [ ] Add regression tests in `tests/test_activism_dialect_portability.py` executing activism queries against SQLite connections with `id` PK columns.\n\n## Acceptance Criteria\n\n- Running `pytest tests/test_activism_dialect_portability.py` executes without errors.\n- Query functions in `api/activism.py` return valid records when queried against SQLite schemas without raising `OperationalError`.\n- Verification gate: deliberately break the implementation by hardcoding `m.manager_id` in `api/activism.py` joins and verify `pytest tests/test_activism_dialect_portability.py` fails on SQLite schemas.\n",
+      "createdAt": "2026-09-10T18:18:47Z",
+      "labels": [
+        {
+          "id": "LA_kwDOO4LcjM8AAAACCXfJHw",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        },
+        {
+          "id": "LA_kwDOO4LcjM8AAAACg4nSog",
+          "name": "priority:normal",
+          "description": "Normal-priority weekly repo-review work",
+          "color": "fbca04"
+        },
+        {
+          "id": "LA_kwDOO4LcjM8AAAACpMAUyQ",
+          "name": "testing",
+          "description": "Tests or coverage work",
+          "color": "5319E7"
+        }
+      ],
+      "number": 1651,
+      "title": "fix(api-activism): resolve SQLite column error for managers table join in activism queries",
+      "updatedAt": "2026-09-10T18:18:47Z"
+    },
+    {
+      "body": "## Why\n\nIn `alerts/models.py:33-35`, the rule condition `similar_manager_count_gte` is listed in `_NUMERIC_CONDITION_BOUNDS` as a floating-point number with range `(1.0, None)`, rather than in `_INTEGER_CONDITION_KEYS` alongside `manager_count_gte` and `news_count_gt`.\n\nBecause `similar_manager_count_gte` represents a discrete count of similar investment managers, fractional values such as `2.5` should be rejected during validation. Furthermore, in `alerts/engine.py:100-105`, event payload matching evaluates `_as_int(payload.get(\"similar_manager_count\"))` while comparing against `_as_float(expected)`.\n\n## Scope\n\n- Move `similar_manager_count_gte` to `_INTEGER_CONDITION_KEYS` in `alerts/models.py:33-35` and set integer lower bound `similar_manager_count_gte: (1, None)`.\n- Update threshold extraction in function `evaluate_rule()` in `alerts/engine.py:100-105` to parse discrete count thresholds.\n- Add test cases in `tests/test_alert_engine.py` verifying that fractional values for `similar_manager_count_gte` raise validation errors.\n\n## Implementation Notes\n\n- In `alerts/models.py`, add `\"similar_manager_count_gte\"` to `_INTEGER_CONDITION_KEYS` and `_INTEGER_CONDITION_BOUNDS = {\"similar_manager_count_gte\": (1, None)}`.\n- In `alerts/engine.py`, ensure count condition evaluation checks integer thresholds consistently across event evaluation flows.\n\n## Non-Goals\n\n- Modifying threshold bounds for continuous financial metrics such as `value_usd_gt` or `pct_change_gte`.\n- Adding scaffold-only stubs, mocks, or empty bypass functions without wiring up the real implementation does NOT count as done and constitutes a failure of this issue.\n\n## Tasks\n\n- [ ] Relocate `similar_manager_count_gte` to integer condition collections in `alerts/models.py`.\n- [ ] Align rule evaluation in function `evaluate_rule()` in `alerts/engine.py` to parse count thresholds as integers.\n- [ ] Add test cases in `tests/test_alert_engine.py` validating that fractional threshold configurations are rejected with validation errors.\n\n## Acceptance Criteria\n\n- Running `pytest tests/test_alert_engine.py` executes without errors.\n- Constructing `AlertRuleCreate(name=\"test\", event_type=\"similarity_cluster\", conditions={\"similar_manager_count_gte\": 2.5})` raises `ValueError`.\n- Verification gate: deliberately break the implementation by allowing float inputs for `similar_manager_count_gte` in `alerts/models.py` and verify `pytest tests/test_alert_engine.py` fails.\n",
+      "createdAt": "2026-09-10T18:18:46Z",
+      "labels": [
+        {
+          "id": "LA_kwDOO4LcjM8AAAACCXfJHw",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        },
+        {
+          "id": "LA_kwDOO4LcjM8AAAACg4nSog",
+          "name": "priority:normal",
+          "description": "Normal-priority weekly repo-review work",
+          "color": "fbca04"
+        },
+        {
+          "id": "LA_kwDOO4LcjM8AAAACpMAUyQ",
+          "name": "testing",
+          "description": "Tests or coverage work",
+          "color": "5319E7"
+        }
+      ],
+      "number": 1650,
+      "title": "fix(alerts): enforce integer validation for similar_manager_count_gte rule condition",
+      "updatedAt": "2026-09-10T18:18:46Z"
+    },
+    {
+      "body": "## Why\n\nIn `ui/upload.py:43-44`, the function `_load_managers(conn)` executes SQL `SELECT manager_id, name FROM managers ORDER BY name ASC`.\n\nOn SQLite database instances created via `_ensure_manager_table()` or `scripts/seed_managers.py`, the primary key column on table `managers` is named `id`, not `manager_id`. Executing `_load_managers(conn)` raises `sqlite3.OperationalError: no such column: manager_id`, which is caught by the exception block, causing `_load_managers(conn)` to silently return an empty list `[]` and rendering the manager selector empty during manual filing uploads.\n\n## Scope\n\n- Update `_load_managers()` in `ui/upload.py:43-44` to resolve the manager primary key column dynamically using `resolve_manager_id_column(conn)` from `adapters.base`.\n- Add test coverage in `tests/test_upload.py` ensuring `_load_managers()` successfully loads manager records from SQLite databases with `id` column schemas.\n\n## Implementation Notes\n\n- Use `from adapters.base import resolve_manager_id_column` in `ui/upload.py` to dynamically construct `SELECT {id_col}, name FROM managers ORDER BY name ASC`.\n- Verify exception handling logs unexpected database errors while keeping graceful empty list fallbacks for uninitialized databases.\n\n## Non-Goals\n\n- Refactoring CSV or PDF parsing pipelines in `ui/upload.py`.\n- Adding scaffold-only stubs, mocks, or empty bypass functions without wiring up the real implementation does NOT count as done and constitutes a failure of this issue.\n\n## Tasks\n\n- [ ] Import `resolve_manager_id_column` and update SQL column resolution in function `_load_managers()` in `ui/upload.py`.\n- [ ] Add regression test in `tests/test_upload.py` verifying `_load_managers()` queries SQLite tables configured with `id` primary keys.\n\n## Acceptance Criteria\n\n- Running `pytest tests/test_upload.py` executes without errors.\n- Calling `_load_managers(conn)` on an SQLite connection containing table `managers(id, name)` returns populated `[(1, \"Manager Name\")]` rows.\n- Verification gate: deliberately break the implementation by querying hardcoded `SELECT manager_id, name FROM managers` in `ui/upload.py` and confirm `pytest tests/test_upload.py` fails with `OperationalError`.\n",
+      "createdAt": "2026-09-10T18:18:45Z",
+      "labels": [
+        {
+          "id": "LA_kwDOO4LcjM8AAAACCXfJHw",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        },
+        {
+          "id": "LA_kwDOO4LcjM8AAAACg4nSog",
+          "name": "priority:normal",
+          "description": "Normal-priority weekly repo-review work",
+          "color": "fbca04"
+        },
+        {
+          "id": "LA_kwDOO4LcjM8AAAACpMAUyQ",
+          "name": "testing",
+          "description": "Tests or coverage work",
+          "color": "5319E7"
+        }
+      ],
+      "number": 1649,
+      "title": "fix(upload-ui): resolve manager_id column dialect error in upload manager loader",
+      "updatedAt": "2026-09-10T18:18:45Z"
+    },
+    {
+      "body": "## Why\n\nIn `ui/alerts.py:75-80`, the helper function `_load_managers(api_url)` queries `GET /managers` and filters the returned items using `if item.get(\"id\") is not None and item.get(\"name\")` to extract `(int(item[\"id\"]), str(item[\"name\"]))`.\n\nThe API endpoint `GET /managers` (defined in `api/managers.py:48-62`) returns manager entities serialized with field name `manager_id`, not `id`. As a result, `item.get(\"id\")` is always `None`, causing `_load_managers()` to discard all managers and return an empty list `[]`. Consequently, the manager selector dropdown in the alert creation and subscription interface remains completely empty.\n\n## Scope\n\n- Update `_load_managers()` in `ui/alerts.py:75-80` to retrieve the manager identifier via `item.get(\"manager_id\") or item.get(\"id\")`.\n- Add test coverage in `tests/test_ui_alerts.py` to verify that `_load_managers()` parses manager dictionaries containing `manager_id`.\n\n## Implementation Notes\n\n- In `ui/alerts.py`, support both `item.get(\"manager_id\")` and `item.get(\"id\")` to maintain backward and forward compatibility with various backend manager schemas.\n- Ensure manager integer conversion handles valid string or integer IDs safely.\n\n## Non-Goals\n\n- Modifying alert channel notifications or altering alert rule dispatch logic in `alerts/engine.py`.\n- Adding scaffold-only stubs, mocks, or empty bypass functions without wiring up the real implementation does NOT count as done and constitutes a failure of this issue.\n\n## Tasks\n\n- [ ] Update manager ID resolution in function `_load_managers()` in `ui/alerts.py` to accept `manager_id` keys from API payloads.\n- [ ] Add regression test in `tests/test_ui_alerts.py` asserting `_load_managers()` returns manager ID and name tuples when given `manager_id` responses.\n\n## Acceptance Criteria\n\n- Running `pytest tests/test_ui_alerts.py` executes without errors.\n- Invoking `_load_managers()` with API payload `[{\"manager_id\": 1, \"name\": \"Elliott\"}]` returns `[(1, \"Elliott\")]`.\n- Verification gate: deliberately break the implementation by requiring `item[\"id\"]` in `ui/alerts.py` and confirm `pytest tests/test_ui_alerts.py` fails.\n",
+      "createdAt": "2026-09-10T18:18:44Z",
+      "labels": [
+        {
+          "id": "LA_kwDOO4LcjM8AAAACCXfJHw",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        },
+        {
+          "id": "LA_kwDOO4LcjM8AAAACg4nSog",
+          "name": "priority:normal",
+          "description": "Normal-priority weekly repo-review work",
+          "color": "fbca04"
+        },
+        {
+          "id": "LA_kwDOO4LcjM8AAAACpMAUyQ",
+          "name": "testing",
+          "description": "Tests or coverage work",
+          "color": "5319E7"
+        }
+      ],
+      "number": 1648,
+      "title": "fix(alerts-ui): fix manager selector empty list caused by manager_id key mismatch",
+      "updatedAt": "2026-09-10T18:18:44Z"
+    },
+    {
+      "body": "## Why\n\nIn `ui/dashboard.py:50-55`, the helper function `load_delta(engine)` executes SQL `SELECT filed as date, COUNT(*) AS filings FROM holdings GROUP BY filed ORDER BY filed`.\n\nThe `holdings` table schema does not possess a column named `filed` (filing dates are stored in `filings.filed_date` or as timestamp metadata in `holdings.knowledge_time` / `holdings.created_at`). When a user accesses the dashboard and expands the `Historical Filing Trend` section in `ui/dashboard.py:1184`, the database query raises `pandas.errors.DatabaseError: Execution failed on sql ...: no such column: filed`, causing the Streamlit application to crash at runtime.\n\n## Scope\n\n- Update the SQL query in function `load_delta()` in `ui/dashboard.py:50-55` to query `filings.filed_date` from the `filings` table (or join `holdings` to `filings` on `filing_id` when grouping by filing date).\n- Add regression testing in `tests/test_dashboard.py` verifying that `load_delta()` executes successfully against database engines with valid filing records.\n\n## Implementation Notes\n\n- In `ui/dashboard.py`, `load_delta(engine)` can query `SELECT filed_date as date, COUNT(*) AS filings FROM filings GROUP BY filed_date ORDER BY filed_date`.\n- Ensure column aliasing produces `date` and `filings` columns so downstream plotting in `ui/dashboard.py` functions without modifications.\n\n## Non-Goals\n\n- Redesigning dashboard chart visualizations or altering other summary metrics in `ui/dashboard.py`.\n- Adding scaffold-only stubs, mocks, or empty bypass functions without wiring up the real implementation does NOT count as done and constitutes a failure of this issue.\n\n## Tasks\n\n- [ ] Update SQL query in function `load_delta()` in `ui/dashboard.py` to aggregate filing dates from `filings.filed_date` instead of table `holdings`.\n- [ ] Add regression test in `tests/test_dashboard.py` asserting `load_delta()` executes without SQL syntax or column errors and returns grouped counts.\n\n## Acceptance Criteria\n\n- Running `pytest tests/test_dashboard.py` executes without errors.\n- Invoking `load_delta(engine)` against a seeded database returns a DataFrame containing `date` and `filings` columns.\n- Verification gate: deliberately break the implementation by referencing `holdings.filed` in `ui/dashboard.py` and confirm `pytest tests/test_dashboard.py` fails with a database missing column error.\n",
+      "createdAt": "2026-09-10T18:18:08Z",
+      "labels": [
+        {
+          "id": "LA_kwDOO4LcjM8AAAACCXfJHw",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        },
+        {
+          "id": "LA_kwDOO4LcjM8AAAACg4nSYg",
+          "name": "priority:high",
+          "description": "High-priority weekly repo-review work",
+          "color": "b60205"
+        },
+        {
+          "id": "LA_kwDOO4LcjM8AAAACpMAUyQ",
+          "name": "testing",
+          "description": "Tests or coverage work",
+          "color": "5319E7"
+        }
+      ],
+      "number": 1647,
+      "title": "fix(dashboard): resolve crash in load_delta on missing filed column",
+      "updatedAt": "2026-09-10T18:18:08Z"
+    },
+    {
+      "body": "This issue lists Renovate updates and detected dependencies. Read the [Dependency Dashboard](https://docs.renovatebot.com/key-concepts/dashboard/) docs to learn more.<br>[View this repository on the Mend.io Web Portal](https://developer.mend.io/github/stranske/Manager-Database).\n\n## Awaiting Schedule\n\nThe following updates are awaiting their schedule. To get an update now, click on a checkbox below.\n\n - [ ] <!-- unschedule-branch=renovate/non-major-updates -->fix(deps): update dependency edgartools to >=5.56,<5.57\n - [ ] <!-- unschedule-branch=renovate/lock-file-maintenance-weekly-lock-file-maintenance -->chore(deps): lock file maintenance\n - [ ] <!-- create-all-awaiting-schedule-prs -->\ud83d\udd10 **Create all awaiting schedule PRs at once** \ud83d\udd10\n\n## PR Closed (Blocked)\n\nThe following updates are blocked by an existing closed PR. To recreate the PR, click on a checkbox below.\n\n - [ ] <!-- recreate-branch=renovate/actions-setup-python-7.x -->[chore(deps): update actions/setup-python action to v7](../pull/1441)\n\n## Detected Dependencies\n\n<details><summary>docker-compose (1)</summary>\n<blockquote>\n\n<details><summary>docker-compose.yml</summary>\n\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>dockerfile (3)</summary>\n<blockquote>\n\n<details><summary>api/Dockerfile (1)</summary>\n\n - `python 3.14-slim`\n\n</details>\n\n<details><summary>etl/Dockerfile (1)</summary>\n\n - `python 3.14-slim`\n\n</details>\n\n<details><summary>ui/Dockerfile (1)</summary>\n\n - `python 3.14-slim`\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>github-actions (39)</summary>\n<blockquote>\n\n<details><summary>.github/actions/agent-run-base/action.yml</summary>\n\n\n</details>\n\n<details><summary>.github/actions/artifact-cache/action.yml</summary>\n\n\n</details>\n\n<details><summary>.github/actions/resolve-default-branch/action.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-71-codex-belt-dispatcher.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-72-codex-belt-worker.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-73-codex-belt-conveyor.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-80-pr-event-hub.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-81-gate-followups.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-auto-label.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-auto-pilot.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-autofix-dispatcher.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-capability-check.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-decompose.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-dedup.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-guard.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-issue-format-guard.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-issue-intake.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-issue-optimizer.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-keepalive-loop-reporter.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-keepalive-sweep.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-pr-health.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-verifier.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-verify-to-new-pr.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-weekly-metrics.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/autofix.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/backplane-conformance.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/ci.yml (14)</summary>\n\n - `stranske/Workflows main`\n - `actions/checkout v7`\n - `actions/setup-python v6` \u2192 [Updates: `v7`]\n - `actions/checkout v7`\n - `actions/setup-python v6` \u2192 [Updates: `v7`]\n - `actions/checkout v7`\n - `actions/setup-python v6` \u2192 [Updates: `v7`]\n - `actions/checkout v7@3d3c42e5aac5ba805825da76410c181273ba90b1`\n - `actions/setup-python v6@ece7cb06caefa5fff74198d8649806c4678c61a1` \u2192 [Updates: `v7`]\n - `actions/upload-artifact v7@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a`\n - `python 3.14`\n - `python 3.14`\n - `python 3.14`\n - `python 3.14`\n\n</details>\n\n<details><summary>.github/workflows/cross-repo-smoke.yml (1)</summary>\n\n - `stranske/Workflows main`\n\n</details>\n\n<details><summary>.github/workflows/database-snapshot.yml (3)</summary>\n\n - `actions/checkout v7`\n - `actions/setup-python v6` \u2192 [Updates: `v7`]\n - `python 3.14`\n\n</details>\n\n<details><summary>.github/workflows/list-llm-models.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/maint-76-claude-code-review.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/maint-87-docs-drift-fix-agent.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/maint-coverage-guard.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/maint-dependabot-auto-lock.yml (3)</summary>\n\n - `actions/checkout v7`\n - `actions/setup-python v6@ece7cb06caefa5fff74198d8649806c4678c61a1` \u2192 [Updates: `v7`]\n - `python 3.14`\n\n</details>\n\n<details><summary>.github/workflows/nightly.yml (3)</summary>\n\n - `actions/checkout v7`\n - `actions/setup-python v6` \u2192 [Updates: `v7`]\n - `python 3.14`\n\n</details>\n\n<details><summary>.github/workflows/pr-00-gate.yml (4)</summary>\n\n - `actions/checkout v7`\n - `stranske/Workflows main`\n - `actions/checkout v7`\n - `actions/github-script v9.0.0`\n\n</details>\n\n<details><summary>.github/workflows/pr-46-dependency-repair-contract.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/reusable-pr-context.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/schema-idempotence.yml (1)</summary>\n\n - `actions/checkout v7@3d3c42e5aac5ba805825da76410c181273ba90b1`\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>npm (1)</summary>\n<blockquote>\n\n<details><summary>.github/scripts/package.json</summary>\n\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>pip-compile (1)</summary>\n<blockquote>\n\n<details><summary>pyproject.toml (15)</summary>\n\n - `python >=3.12`\n - `edgartools >=5.44,<5.45` \u2192 [Updates: `>=5.56,<5.57`]\n - `jsonschema >=4.26.0,<4.27.0`\n - `langchain >=1.2,<2.0`\n - `langchain-core >=1.2,<2.0`\n - `langchain-openai >=0.3,<2.0`\n - `langchain-anthropic >=0.3,<2.0`\n - `langsmith >=0.7.30,<1.0`\n - `langchain >=1.2,<2.0`\n - `langchain-core >=1.2,<2.0`\n - `langchain-openai >=0.3,<2.0`\n - `langchain-anthropic >=0.3,<2.0`\n - `langsmith >=0.7.30,<1.0`\n - `pytest-regressions >=2.8`\n - `setuptools >=82.0.1`\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>pip_requirements (2)</summary>\n<blockquote>\n\n<details><summary>requirements.txt (6)</summary>\n\n - `edgartools >=5.44,<5.45` \u2192 [Updates: `>=5.56,<5.57`]\n - `langchain >=1.2,<2.0`\n - `langchain-core >=1.2,<2.0`\n - `langchain-openai >=0.3,<2.0`\n - `langchain-anthropic >=0.3,<2.0`\n - `langsmith >=0.7.30,<1.0`\n\n</details>\n\n<details><summary>tools/requirements-llm.txt</summary>\n\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>poetry (1)</summary>\n<blockquote>\n\n<details><summary>pyproject.toml (8)</summary>\n\n - `edgartools >=5.44,<5.45` \u2192 [Updates: `>=5.56,<5.57`]\n - `jsonschema >=4.26.0,<4.27.0`\n - `langchain >=1.2,<2.0`\n - `langchain-core >=1.2,<2.0`\n - `langchain-openai >=0.3,<2.0`\n - `langchain-anthropic >=0.3,<2.0`\n - `langsmith >=0.7.30,<1.0`\n - `pytest-regressions >=2.8`\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>renovate-config (1)</summary>\n<blockquote>\n\n<details><summary>.github/renovate.json</summary>\n\n\n</details>\n\n</blockquote>\n</details>\n\n---\n\n- [ ] <!-- manual job -->Check this box to trigger a request for Renovate to run again on this repository\n\n",
+      "createdAt": "2026-06-15T04:41:00Z",
+      "labels": [
+        {
+          "id": "LA_kwDOO4LcjM8AAAACxDIKDg",
+          "name": "tracker:durable",
+          "description": "Permanently-open tracker; excluded from open-issue backlog counts",
+          "color": "c5def5"
+        }
+      ],
+      "number": 1164,
+      "title": "Dependency Dashboard",
+      "updatedAt": "2026-09-10T23:39:01Z"
+    },
+    {
+      "body": "Tracking issue for weekly agent workflow metrics.\n\n# Agent Metrics Summary\n\nGenerated: 2026-04-27T07:03:19Z\nRecords: 63 (keepalive 40, autofix 0, verifier 1, terminal dispositions 21, verifier follow-up ledgers 1, codex CLI freshness 0, autopilot 0, unknown 0)\nParse errors: 0\nRange: 2026-04-27T03:20:16.888000Z to 2026-04-27T06:45:52.355000Z\n\n## Keepalive\n- Runs: 40\n- PRs: 6\n- Avg iterations: 0.0\n- Stop reasons: missing-agent-label (20)\n- Actions: wait (20)\n- Gate conclusions: cancelled (9), success (7)\n- Tasks complete rate: 0.0% (0/40)\n\n## Autofix\n- Attempts: 0\n- PRs: 0\n- Fixes applied: n/a\n- Trigger reasons: n/a\n- Gate results after: n/a\n\n## Verifier\n- Runs: 1\n- PRs: 7\n- Verdicts: CONCERNS (1), concerns (1)\n- Issues created: 0\n- Avg acceptance criteria: 6.0\n- Terminal disposition records: 21\n- Terminal dispositions: wrapper-skipped (20), needs-human (1)\n- Terminal disposition sources: review-thread:920 (1), review-thread:24974899837 (1), review-thread:921 (1), review-thread:24975254372 (1), review-thread:922 (1), review-thread:24975940138 (1), review-thread:24975941597 (1), review-thread:24975991984 (1), review-thread:923 (1), review-thread:24976250651 (1), review-thread:24976298404 (1), review-thread:24976425920 (1), review-thread:24976452850 (1), review-thread:924 (1), review-thread:24978034550 (1), review-thread:24978090691 (1), review-thread:925 (1), review-thread:24980327187 (1), review-thread:24980443575 (1), review-thread:926 (1), pull-request:923 (1)\n- Terminal artifact families: review-thread-terminal-disposition: selected (20/81), verifier-terminal-disposition: selected (1/1)\n- Missing terminal artifact families: none\n- Verifier follow-up ledger records: 1\n- Verifier follow-up ledger dispositions: needs-human (1)\n- Verifier follow-up ledger PRs: 1\n- Verifier follow-up issues linked: 0\n- Verifier follow-up needs-human records: 1\n- Verifier follow-up avg chain depth: 0.0\n- Verifier follow-up max chain depth: 0\n- Verifier follow-up policy records: 1\n- Verifier follow-up policy actions: needs-human (1)\n- Verifier follow-up policy triggers: verifier-concerns (1)\n- Verifier follow-up depth-limit records: 0\n- Verifier models: gpt-5.5 (2)\n- Verifier CLI versions: codex-cli 0.125.0 (2)\n- Unsupported verifier models: n/a\n- Unsupported model dispositions: n/a\n- Missing verifier model metadata: n/a\n- Legacy missing verifier model metadata: n/a\n- Model selection reasons: default (2)\n- Verifier modes: compare (2)\n\n## Codex CLI Freshness\n- Records: 0\n- Statuses: n/a\n- Packages: n/a\n- Pinned versions: n/a\n- Latest versions: n/a\n- Outdated records: 0\n- Latest unavailable records: 0\n- Max version delta: major 0, minor 0, patch 0\n- Update targets: n/a\n\n## Weekly Metrics Artifact Selection\n\n- Schema: workflows-weekly-metrics-artifact-selection/v1\n- Status: pass\n- Lookback days: 14\n- Scan cap: 5 pages x 100 artifacts\n- Priority producer scan cap: 10 runs per source workflow\n- Download cap: 80 total, 20 per family\n- Scanned artifacts: 500\n- Candidate artifacts: 335\n- Selected artifacts: 62\n- Missing priority families: codex-cli-freshness, bot-comment-auth-coverage-wrapper, bot-comment-auth-coverage-reusable, pr-source-context\n- Ignored: 0 old, 0 expired, 165 non-metrics, 273 over family cap, 0 over total cap\n\n| Artifact family | Candidates | Selected |\n|-----------------|------------|----------|\n| agents-autofix-metrics | 135 | 20 |\n| agents-verifier-metrics | 1 | 1 |\n| keepalive-metrics | 117 | 20 |\n| review-thread-terminal-disposition | 81 | 20 |\n| verifier-terminal-disposition | 1 | 1 |\n\n| Priority family | Status | Candidates | Selected artifact |\n|-----------------|--------|------------|-------------------|\n| codex-cli-freshness | missing | 0 | none |\n| verifier-terminal-disposition | selected | 1 | verifier-terminal-disposition-24976250601 |\n| review-thread-terminal-disposition | selected | 81 | review-thread-terminal-disposition-24980566098 |\n| bot-comment-auth-coverage-wrapper | missing | 0 | none |\n| bot-comment-auth-coverage-reusable | missing | 0 | none |\n| pr-source-context | missing | 0 | none |\n\n## Weekly Metrics Artifact Downloads\n\n- Schema: workflows-weekly-metrics-artifact-download-manifest/v1\n- Status: pass\n- Selected artifacts: 62\n- Downloads: 62 passed, 0 failed\n- Unzip: 62 passed, 0 failed, 0 skipped\n\n| Artifact | ID | Download | Unzip | Path |\n|----------|----|----------|-------|------|\n| verifier-terminal-disposition-24976250601 | 6653222101 | pass | pass | artifacts/verifier-terminal-disposition-24976250601/6653222101 |\n| review-thread-terminal-disposition-24980566098 | 6654675663 | pass | pass | artifacts/review-thread-terminal-disposition-24980566098/6654675663 |\n| keepalive-metrics | 6654682547 | pass | pass | artifacts/keepalive-metrics/6654682547 |\n| agents-autofix-metrics | 6654674995 | pass | pass | artifacts/agents-autofix-metrics/6654674995 |\n| keepalive-metrics | 6654645301 | pass | pass | artifacts/keepalive-metrics/6654645301 |\n| agents-autofix-metrics | 6654639279 | pass | pass | artifacts/agents-autofix-metrics/6654639279 |\n| review-thread-terminal-disposition-24980443575 | 6654634535 | pass | pass | artifacts/review-thread-terminal-disposition-24980443575/6654634535 |\n| keepalive-metrics | 6654630127 | pass | pass | artifacts/keepalive-metrics/6654630127 |\n| agents-autofix-metrics | 6654619681 | pass | pass | artifacts/agents-autofix-metrics/6654619681 |\n| review-thread-terminal-disposition-24980327187 | 6654615836 | pass | pass | artifacts/review-thread-terminal-disposition-24980327187/6654615836 |\n| agents-autofix-metrics | 6654610936 | pass | pass | artifacts/agents-autofix-metrics/6654610936 |\n| keepalive-metrics | 6653827499 | pass | pass | artifacts/keepalive-metrics/6653827499 |\n| review-thread-terminal-disposition-24978163910 | 6653825402 | pass | pass | artifacts/review-thread-terminal-disposition-24978163910/6653825402 |\n| agents-autofix-metrics | 6653822560 | pass | pass | artifacts/agents-autofix-metrics/6653822560 |\n| keepalive-metrics | 6653815621 | pass | pass | artifacts/keepalive-metrics/6653815621 |\n| agents-autofix-metrics | 6653813907 | pass | pass | artifacts/agents-autofix-metrics/6653813907 |\n| review-thread-terminal-disposition-24978090691 | 6653799378 | pass | pass | artifacts/review-thread-terminal-disposition-24978090691/6653799378 |\n| agents-autofix-metrics | 6653797228 | pass | pass | artifacts/agents-autofix-metrics/6653797228 |\n| keepalive-metrics | 6653794545 | pass | pass | artifacts/keepalive-metrics/6653794545 |\n| review-thread-terminal-disposition-24978034550 | 6653783684 | pass | pass | artifacts/review-thread-terminal-disposition-24978034550/6653783684 |\n| agents-autofix-metrics | 6653777259 | pass | pass | artifacts/agents-autofix-metrics/6653777259 |\n| keepalive-metrics | 6653620509 | pass | pass | artifacts/keepalive-metrics/6653620509 |\n| keepalive-metrics | 6653296062 | pass | pass | artifacts/keepalive-metrics/6653296062 |\n| review-thread-terminal-disposition-24976539789 | 6653292645 | pass | pass | artifacts/review-thread-terminal-disposition-24976539789/6653292645 |\n| agents-autofix-metrics | 6653291966 | pass | pass | artifacts/agents-autofix-metrics/6653291966 |\n| keepalive-metrics | 6653281287 | pass | pass | artifacts/keepalive-metrics/6653281287 |\n| review-thread-terminal-disposition-24976452850 | 6653270010 | pass | pass | artifacts/review-thread-terminal-disposition-24976452850/6653270010 |\n| keepalive-metrics | 6653267604 | pass | pass | artifacts/keepalive-metrics/6653267604 |\n| agents-autofix-metrics | 6653267042 | pass | pass | artifacts/agents-autofix-metrics/6653267042 |\n| agents-autofix-metrics | 6653259631 | pass | pass | artifacts/agents-autofix-metrics/6653259631 |\n| review-thread-terminal-disposition-24976425920 | 6653258809 | pass | pass | artifacts/review-thread-terminal-disposition-24976425920/6653258809 |\n| agents-autofix-metrics | 6653253922 | pass | pass | artifacts/agents-autofix-metrics/6653253922 |\n| agents-verifier-metrics | 6653222233 | pass | pass | artifacts/agents-verifier-metrics/6653222233 |\n| keepalive-metrics | 6653212713 | pass | pass | artifacts/keepalive-metrics/6653212713 |\n| review-thread-terminal-disposition-24976298404 | 6653209905 | pass | pass | artifacts/review-thread-terminal-disposition-24976298404/6653209905 |\n| agents-autofix-metrics | 6653209902 | pass | pass | artifacts/agents-autofix-metrics/6653209902 |\n| keepalive-metrics | 6653195729 | pass | pass | artifacts/keepalive-metrics/6653195729 |\n| review-thread-terminal-disposition-24976250651 | 6653193091 | pass | pass | artifacts/review-thread-terminal-disposition-24976250651/6653193091 |\n| agents-autofix-metrics | 6653192729 | pass | pass | artifacts/agents-autofix-metrics/6653192729 |\n| review-thread-terminal-disposition-24975940138 | 6653171085 | pass | pass | artifacts/review-thread-terminal-disposition-24975940138/6653171085 |\n| keepalive-metrics | 6653136617 | pass | pass | artifacts/keepalive-metrics/6653136617 |\n| agents-autofix-metrics | 6653135790 | pass | pass | artifacts/agents-autofix-metrics/6653135790 |\n| review-thread-terminal-disposition-24976078494 | 6653135135 | pass | pass | artifacts/review-thread-terminal-disposition-24976078494/6653135135 |\n| keepalive-metrics | 6653127936 | pass | pass | artifacts/keepalive-metrics/6653127936 |\n| keepalive-metrics | 6653120803 | pass | pass | artifacts/keepalive-metrics/6653120803 |\n| agents-autofix-metrics | 6653113695 | pass | pass | artifacts/agents-autofix-metrics/6653113695 |\n| review-thread-terminal-disposition-24975991984 | 6653112289 | pass | pass | artifacts/review-thread-terminal-disposition-24975991984/6653112289 |\n| keepalive-metrics | 6653108482 | pass | pass | artifacts/keepalive-metrics/6653108482 |\n| agents-autofix-metrics | 6653103646 | pass | pass | artifacts/agents-autofix-metrics/6653103646 |\n| review-thread-terminal-disposition-24975941597 | 6653101053 | pass | pass | artifacts/review-thread-terminal-disposition-24975941597/6653101053 |\n| agents-autofix-metrics | 6653097123 | pass | pass | artifacts/agents-autofix-metrics/6653097123 |\n| keepalive-metrics | 6652914167 | pass | pass | artifacts/keepalive-metrics/6652914167 |\n| review-thread-terminal-disposition-24975342859 | 6652912315 | pass | pass | artifacts/review-thread-terminal-disposition-24975342859/6652912315 |\n| agents-autofix-metrics | 6652911294 | pass | pass | artifacts/agents-autofix-metrics/6652911294 |\n| keepalive-metrics | 6652904564 | pass | pass | artifacts/keepalive-metrics/6652904564 |\n| keepalive-metrics | 6652893737 | pass | pass | artifacts/keepalive-metrics/6652893737 |\n| agents-autofix-metrics | 6652890133 | pass | pass | artifacts/agents-autofix-metrics/6652890133 |\n| review-thread-terminal-disposition-24975254372 | 6652886410 | pass | pass | artifacts/review-thread-terminal-disposition-24975254372/6652886410 |\n| keepalive-metrics | 6652796189 | pass | pass | artifacts/keepalive-metrics/6652796189 |\n| review-thread-terminal-disposition-24974977631 | 6652792410 | pass | pass | artifacts/review-thread-terminal-disposition-24974977631/6652792410 |\n| review-thread-terminal-disposition-24974899837 | 6652780097 | pass | pass | artifacts/review-thread-terminal-disposition-24974899837/6652780097 |\n| review-thread-terminal-disposition-24974895867 | 6652776472 | pass | pass | artifacts/review-thread-terminal-disposition-24974895867/6652776472 |\n\n## Terminal Disposition Coverage Preflight\n\n- Mode: warning-only (does not block merges or automation)\n- Requested mode: warning-only\n- Status: pass\n- Coverage status: pass\n- Hard block eligible: true\n- Hard block active: false\n- Input files: 21\n- Scanned records: 21\n- Terminal disposition records: 21\n- Non-terminal records: 0\n- Observed sources: 21\n- Expected review-thread sources: 7\n- Missing review-thread sources: 0\n- Parse errors: 0\n- Artifact selector status: pass\n- Terminal artifacts selected: 21\n- Terminal artifacts candidates: 82\n- Verifier model compatibility: pass\n- Unsupported verifier model records: 0\n- Missing verifier model metadata records: 0\n- Missing verifier model metadata records with unknown mode: 0\n- Legacy missing verifier model metadata records: 0\n- Unsupported verifier models: gpt-5.2-codex\n\n| Observed source | Records | Dispositions | PRs |\n|-----------------|---------|--------------|-----|\n| pull-request:923 | 1 | needs-human (1) | #923 |\n| review-thread:24974899837 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24975254372 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24975940138 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24975941597 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24975991984 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24976250651 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24976298404 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24976425920 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24976452850 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24978034550 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24978090691 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24980327187 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24980443575 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:920 | 1 | wrapper-skipped (1) | #920 |\n| review-thread:921 | 1 | wrapper-skipped (1) | #921 |\n| review-thread:922 | 1 | wrapper-skipped (1) | #922 |\n| review-thread:923 | 1 | wrapper-skipped (1) | #923 |\n| review-thread:924 | 1 | wrapper-skipped (1) | #924 |\n| review-thread:925 | 1 | wrapper-skipped (1) | #925 |\n| review-thread:926 | 1 | wrapper-skipped (1) | #926 |\n\n| Terminal artifact family | Status | Candidates | Selected | Latest artifact |\n|--------------------------|--------|------------|----------|-----------------|\n| review-thread-terminal-disposition | selected | 81 | 20 | review-thread-terminal-disposition-24980566098 |\n| verifier-terminal-disposition | selected | 1 | 1 | verifier-terminal-disposition-24976250601 |\n\n## Bot Comment App Auth Coverage\n\n- Schema: workflows-bot-comment-auth-coverage-summary/v1\n- Status: no-data\n- Coverage status: no-data\n- Mode: warning-only\n- Hard block eligible: false\n- Hard block active: false\n- Input files: 0\n- Parsed JSON files: 0\n- Auth records: 0\n- Non-auth records: 0\n- Parse errors: 0\n- Read errors: 0\n- Artifact selection status: pass\n- Selected auth artifacts: 0\n- Required organic events: pull_request, workflow_run\n- Organic evidence status: no-data\n- Missing organic requirements: agents-bot-comment-handler-wrapper/pull_request, agents-bot-comment-handler-wrapper/workflow_run, reusable-bot-comment-handler/pull_request, reusable-bot-comment-handler/workflow_run\n- Blockers: missing-organic-agents-bot-comment-handler-wrapper-pull_request, missing-organic-agents-bot-comment-handler-wrapper-workflow_run, missing-organic-reusable-bot-comment-handler-pull_request, missing-organic-reusable-bot-comment-handler-workflow_run\n\n| Component | Latest mode | Records | Expected | Allowed | Blockers |\n|-----------|-------------|---------|----------|---------|----------|\n| agents-bot-comment-handler-wrapper | missing | 0 | client-id | client-id | missing-agents-bot-comment-handler-wrapper |\n| reusable-bot-comment-handler | missing | 0 | any | client-id, none | missing-reusable-bot-comment-handler |\n",
+      "createdAt": "2026-04-27T07:03:21Z",
+      "labels": [
+        {
+          "id": "LA_kwDOO4LcjM8AAAACxDIKDg",
+          "name": "tracker:durable",
+          "description": "Permanently-open tracker; excluded from open-issue backlog counts",
+          "color": "c5def5"
+        }
+      ],
+      "number": 927,
+      "title": "Agent metrics weekly summary",
+      "updatedAt": "2026-09-07T06:33:37Z"
+    }
+  ],
+  "prs": [],
+  "runs": [
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-11T08:11:18Z",
+      "databaseId": 34577951918,
+      "event": "schedule",
+      "headSha": "5681c1b8ed41911599a19014147300637a9c3b5f",
+      "name": "Agents PR Health",
+      "status": "completed",
+      "updatedAt": "2026-09-11T08:11:50Z",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/34577951918",
+      "workflowName": "Agents PR Health"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-11T07:32:18Z",
+      "databaseId": 34574846562,
+      "event": "schedule",
+      "headSha": "5681c1b8ed41911599a19014147300637a9c3b5f",
+      "name": "Agents Keepalive Sweep",
+      "status": "completed",
+      "updatedAt": "2026-09-11T07:32:29Z",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/34574846562",
+      "workflowName": "Agents Keepalive Sweep"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-11T07:09:01Z",
+      "databaseId": 34573045714,
+      "event": "schedule",
+      "headSha": "5681c1b8ed41911599a19014147300637a9c3b5f",
+      "name": "Agents PR Health",
+      "status": "completed",
+      "updatedAt": "2026-09-11T07:09:32Z",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/34573045714",
+      "workflowName": "Agents PR Health"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-11T06:57:09Z",
+      "databaseId": 34572148445,
+      "event": "schedule",
+      "headSha": "5681c1b8ed41911599a19014147300637a9c3b5f",
+      "name": "Maint Coverage Guard",
+      "status": "completed",
+      "updatedAt": "2026-09-11T06:58:44Z",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/34572148445",
+      "workflowName": "Maint Coverage Guard"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-11T06:44:22Z",
+      "databaseId": 34571219054,
+      "event": "schedule",
+      "headSha": "5681c1b8ed41911599a19014147300637a9c3b5f",
+      "name": "Agents Keepalive Sweep",
+      "status": "completed",
+      "updatedAt": "2026-09-11T06:44:33Z",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/34571219054",
+      "workflowName": "Agents Keepalive Sweep"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-11T06:14:01Z",
+      "databaseId": 34569067038,
+      "event": "schedule",
+      "headSha": "5681c1b8ed41911599a19014147300637a9c3b5f",
+      "name": "Agents PR Health",
+      "status": "completed",
+      "updatedAt": "2026-09-11T06:14:31Z",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/34569067038",
+      "workflowName": "Agents PR Health"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-11T05:30:32Z",
+      "databaseId": 34566227203,
+      "event": "schedule",
+      "headSha": "5681c1b8ed41911599a19014147300637a9c3b5f",
+      "name": "Agents Keepalive Sweep",
+      "status": "completed",
+      "updatedAt": "2026-09-11T05:30:46Z",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/34566227203",
+      "workflowName": "Agents Keepalive Sweep"
+    },
+    {
+      "conclusion": "failure",
+      "createdAt": "2026-09-11T05:23:28Z",
+      "databaseId": 34565774427,
+      "event": "schedule",
+      "headSha": "5681c1b8ed41911599a19014147300637a9c3b5f",
+      "name": "Database Snapshot",
+      "status": "completed",
+      "updatedAt": "2026-09-11T05:23:42Z",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/34565774427",
+      "workflowName": "Database Snapshot"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-11T05:08:19Z",
+      "databaseId": 34564799796,
+      "event": "schedule",
+      "headSha": "5681c1b8ed41911599a19014147300637a9c3b5f",
+      "name": "Agents PR Health",
+      "status": "completed",
+      "updatedAt": "2026-09-11T05:08:45Z",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/34564799796",
+      "workflowName": "Agents PR Health"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-11T04:36:10Z",
+      "databaseId": 34562812708,
+      "event": "schedule",
+      "headSha": "5681c1b8ed41911599a19014147300637a9c3b5f",
+      "name": "Schema Idempotence",
+      "status": "completed",
+      "updatedAt": "2026-09-11T04:37:01Z",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/34562812708",
+      "workflowName": "Schema Idempotence"
+    }
+  ]
+}
