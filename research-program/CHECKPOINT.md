@@ -550,3 +550,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-10T23:57:26Z — D3-unblock-sweep-2026-09-10T23 — route — router picked cursor from ['codex', 'cursor']
 ## 2026-09-10T23:57:26Z — D3-unblock-sweep-2026-09-10T23 — claimed by driver (agent cursor)
 ## 2026-09-11T00:03:10Z — D3-unblock-sweep-2026-09-10T23 — done — gemini produced 447 words at artifacts/sweeps/D3-unblock-sweep-2026-09-10T23.md in 336s
+## 2026-09-11T01:49:22Z — verify — enqueued D4-verify-merged-2026-09-11T01
+## 2026-09-11T01:49:23Z — D4-verify-merged-2026-09-11T01 — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-11T01:49:23Z — D4-verify-merged-2026-09-11T01 — claimed by driver (agent cursor)

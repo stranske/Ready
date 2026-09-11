@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-11T01:34:13Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-11T01:49:23Z)
 
-Units: 93 — done 93
+Units: 94 — claimed 1, done 93
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 Claude conservation: off (weekly window available)
@@ -101,12 +101,10 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D4-verify-merged-2026-09-08T01 | D | D | done | codex | driver | Verify merged PRs against their issues' acceptance criteria |
 | D4-verify-merged-2026-09-09T01 | D | D | done | codex | driver | Verify merged PRs against their issues' acceptance criteria |
 | D4-verify-merged-2026-09-10T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
+| D4-verify-merged-2026-09-11T01 | D | D | claimed | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
 
 ## Last checkpoints
 
-- 2026-09-10T18:35:00Z — D-audit-Manager-Database--2026-09-10T17-45-13Z — claimed by driver (agent codex)
-- 2026-09-10T18:37:35Z — D-audit-Manager-Database--2026-09-10T17-45-13Z — fail — gemini did not write a fresh output artifact
-- 2026-09-10T18:52:40Z — D-audit-Manager-Database--2026-09-10T17-45-13Z — route — router picked codex from ['codex']
 - 2026-09-10T18:52:40Z — D-audit-Manager-Database--2026-09-10T17-45-13Z — claimed by driver (agent codex)
 - 2026-09-10T18:55:30Z — D-audit-Manager-Database--2026-09-10T17-45-13Z — done — gemini produced 1167 words at artifacts/audits/Manager-Database-2026-09-10.md in 163s
 - 2026-09-10T19:10:43Z — D-audit-learning-management-system--2026-09-10T17-45-16Z — route — router picked codex from ['codex']
@@ -116,6 +114,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-10T23:57:26Z — D3-unblock-sweep-2026-09-10T23 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-10T23:57:26Z — D3-unblock-sweep-2026-09-10T23 — claimed by driver (agent cursor)
 - 2026-09-11T00:03:10Z — D3-unblock-sweep-2026-09-10T23 — done — gemini produced 447 words at artifacts/sweeps/D3-unblock-sweep-2026-09-10T23.md in 336s
+- 2026-09-11T01:49:22Z — verify — enqueued D4-verify-merged-2026-09-11T01
+- 2026-09-11T01:49:23Z — D4-verify-merged-2026-09-11T01 — route — router picked cursor from ['codex', 'cursor']
+- 2026-09-11T01:49:23Z — D4-verify-merged-2026-09-11T01 — claimed by driver (agent cursor)
 
 ## Questions
 
