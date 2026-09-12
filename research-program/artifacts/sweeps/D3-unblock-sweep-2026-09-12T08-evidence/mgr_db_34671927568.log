@@ -1,0 +1,896 @@
+nightly	UNKNOWN STEP	﻿2026-09-12T04:02:04.1840890Z Current runner version: '2.337.0'
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.1866156Z ##[group]Runner Image Provisioner
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.1867147Z Hosted Compute Agent
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.1867744Z Version: 20260828.587
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.1868524Z Commit: abac92662cab4cc7352de4f9f9d2e2419aad9c29
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.1869291Z Build Date: 2026-08-28T16:44:25Z
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.1870029Z Worker ID: {158a93e4-0a93-4b45-9543-54ffb02bb656}
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.1870792Z Azure Region: westcentralus
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.1871469Z ##[endgroup]
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.1873223Z ##[group]Operating System
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.1874080Z Ubuntu
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.1874735Z 24.04.5
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.1875340Z LTS
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.1875898Z ##[endgroup]
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.1876533Z ##[group]Runner Image
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.1877163Z Image: ubuntu-24.04
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.1877740Z Version: 20260907.300.1
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.1879159Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260907.300/images/ubuntu/Ubuntu2404-Readme.md
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.1880820Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260907.300
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.1881845Z ##[endgroup]
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.1885321Z ##[group]GITHUB_TOKEN Permissions
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.1887822Z Actions: write
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.1888522Z ArtifactMetadata: write
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.1889192Z Attestations: write
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.1889800Z Checks: write
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.1890477Z CodeQuality: write
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.1891073Z Contents: write
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.1891652Z CopilotRequests: write
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.1892337Z Deployments: write
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.1892922Z Discussions: write
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.1893632Z Drives: write
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.1894350Z Issues: write
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.1894901Z Metadata: read
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.1895609Z Models: read
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.1896177Z Packages: write
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.1897131Z Pages: write
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.1897729Z PullRequests: write
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.1898353Z RepositoryProjects: write
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.1899039Z SecurityEvents: write
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.1899690Z Statuses: write
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.1900345Z VulnerabilityAlerts: read
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.1901124Z ##[endgroup]
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.1903258Z Secret source: Actions
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.1904443Z Cache mode: write
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.1905439Z Prepare workflow directory
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.2240958Z Prepare all required actions
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.2288907Z Getting action download info
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.4997818Z Download action repository 'actions/checkout@v7' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.5882528Z Download action repository 'actions/setup-python@v6' (SHA:ece7cb06caefa5fff74198d8649806c4678c61a1)
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.7727996Z Complete job name: nightly
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.8484564Z ##[group]Run actions/checkout@v7
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.8485514Z with:
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.8485978Z   repository: stranske/Manager-Database
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.8490195Z   token: ***
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.8490646Z   ssh-strict: true
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.8491125Z   ssh-user: git
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.8491586Z   persist-credentials: true
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.8492073Z   clean: true
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.8492520Z   sparse-checkout-cone-mode: true
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.8493037Z   fetch-depth: 1
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.8493467Z   fetch-tags: false
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.8494226Z   show-progress: true
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.8494683Z   lfs: false
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.8495099Z   submodules: false
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.8495550Z   set-safe-directory: true
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.8496062Z   allow-unsafe-pr-checkout: false
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.8496839Z ##[endgroup]
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.9504020Z Syncing repository: stranske/Manager-Database
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.9506736Z ##[group]Getting Git version info
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.9507920Z Working directory is '/home/runner/work/Manager-Database/Manager-Database'
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.9509130Z [command]/usr/bin/git version
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.9547776Z git version 2.55.0
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.9567121Z ##[endgroup]
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.9578074Z Temporarily overriding HOME='/home/runner/work/_temp/51bad6b6-1617-4d57-9fcf-031d444cac13' before making global git config changes
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.9580285Z Adding repository directory to the temporary git global config as a safe directory
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.9584414Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/Manager-Database/Manager-Database
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.9628897Z Deleting the contents of '/home/runner/work/Manager-Database/Manager-Database'
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.9635758Z ##[group]Determining repository object format
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.9637187Z ##[endgroup]
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.9638373Z ##[group]Initializing the repository
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.9639700Z [command]/usr/bin/git init /home/runner/work/Manager-Database/Manager-Database
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.9716673Z hint: Using 'master' as the name for the initial branch. This default branch name
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.9718281Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.9719793Z hint: to use in all of your new repositories, which will suppress this warning,
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.9720943Z hint: call:
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.9721529Z hint:
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.9722323Z hint: 	git config --global init.defaultBranch <name>
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.9723316Z hint:
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.9724375Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.9725568Z hint: 'development'. The just-created branch can be renamed via this command:
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.9726336Z hint:
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.9726768Z hint: 	git branch -m <name>
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.9727249Z hint:
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.9727992Z hint: Disable this message with "git config set advice.defaultBranchName false"
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.9729348Z Initialized empty Git repository in /home/runner/work/Manager-Database/Manager-Database/.git/
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.9731096Z [command]/usr/bin/git remote add origin https://github.com/stranske/Manager-Database
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.9773230Z ##[endgroup]
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.9774305Z ##[group]Disabling automatic garbage collection
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.9776514Z [command]/usr/bin/git config --local gc.auto 0
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.9807316Z ##[endgroup]
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.9808227Z ##[group]Setting up auth
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.9808779Z Removing SSH command configuration
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.9813173Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+nightly	UNKNOWN STEP	2026-09-12T04:02:04.9845858Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+nightly	UNKNOWN STEP	2026-09-12T04:02:05.0159644Z Removing HTTP extra header
+nightly	UNKNOWN STEP	2026-09-12T04:02:05.0166230Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+nightly	UNKNOWN STEP	2026-09-12T04:02:05.0198135Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+nightly	UNKNOWN STEP	2026-09-12T04:02:05.0424098Z Removing includeIf entries pointing to credentials config files
+nightly	UNKNOWN STEP	2026-09-12T04:02:05.0429354Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+nightly	UNKNOWN STEP	2026-09-12T04:02:05.0462806Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+nightly	UNKNOWN STEP	2026-09-12T04:02:05.0707636Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-33d79c29-300b-4d2a-ae75-b5ba821e5e9c.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+nightly	UNKNOWN STEP	2026-09-12T04:02:05.0746236Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/Manager-Database/Manager-Database/.git.path /home/runner/work/_temp/git-credentials-33d79c29-300b-4d2a-ae75-b5ba821e5e9c.config
+nightly	UNKNOWN STEP	2026-09-12T04:02:05.0777025Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/Manager-Database/Manager-Database/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-33d79c29-300b-4d2a-ae75-b5ba821e5e9c.config
+nightly	UNKNOWN STEP	2026-09-12T04:02:05.0810130Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-33d79c29-300b-4d2a-ae75-b5ba821e5e9c.config
+nightly	UNKNOWN STEP	2026-09-12T04:02:05.0842056Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-33d79c29-300b-4d2a-ae75-b5ba821e5e9c.config
+nightly	UNKNOWN STEP	2026-09-12T04:02:05.0870175Z ##[endgroup]
+nightly	UNKNOWN STEP	2026-09-12T04:02:05.0871254Z ##[group]Fetching the repository
+nightly	UNKNOWN STEP	2026-09-12T04:02:05.0876583Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +0d3007a00323f3b6ffc7e5a45299ab5782fbaf5c:refs/remotes/origin/main
+nightly	UNKNOWN STEP	2026-09-12T04:02:06.9389817Z From https://github.com/stranske/Manager-Database
+nightly	UNKNOWN STEP	2026-09-12T04:02:06.9391625Z  * [new ref]         0d3007a00323f3b6ffc7e5a45299ab5782fbaf5c -> origin/main
+nightly	UNKNOWN STEP	2026-09-12T04:02:06.9415184Z [command]/usr/bin/git branch --list --remote origin/main
+nightly	UNKNOWN STEP	2026-09-12T04:02:06.9427004Z   origin/main
+nightly	UNKNOWN STEP	2026-09-12T04:02:06.9436825Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
+nightly	UNKNOWN STEP	2026-09-12T04:02:06.9460269Z 0d3007a00323f3b6ffc7e5a45299ab5782fbaf5c
+nightly	UNKNOWN STEP	2026-09-12T04:02:06.9465459Z ##[endgroup]
+nightly	UNKNOWN STEP	2026-09-12T04:02:06.9466700Z ##[group]Determining the checkout info
+nightly	UNKNOWN STEP	2026-09-12T04:02:06.9468060Z ##[endgroup]
+nightly	UNKNOWN STEP	2026-09-12T04:02:06.9470953Z [command]/usr/bin/git sparse-checkout disable
+nightly	UNKNOWN STEP	2026-09-12T04:02:06.9517873Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+nightly	UNKNOWN STEP	2026-09-12T04:02:06.9549904Z ##[group]Checking out the ref
+nightly	UNKNOWN STEP	2026-09-12T04:02:06.9550774Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+nightly	UNKNOWN STEP	2026-09-12T04:02:07.3983957Z Switched to a new branch 'main'
+nightly	UNKNOWN STEP	2026-09-12T04:02:07.3986226Z branch 'main' set up to track 'origin/main'.
+nightly	UNKNOWN STEP	2026-09-12T04:02:07.4045560Z ##[endgroup]
+nightly	UNKNOWN STEP	2026-09-12T04:02:07.4049543Z [command]/usr/bin/git log -1 --format=%H
+nightly	UNKNOWN STEP	2026-09-12T04:02:07.4076166Z 0d3007a00323f3b6ffc7e5a45299ab5782fbaf5c
+nightly	UNKNOWN STEP	2026-09-12T04:02:07.4459354Z ##[group]Run actions/setup-python@v6
+nightly	UNKNOWN STEP	2026-09-12T04:02:07.4460686Z with:
+nightly	UNKNOWN STEP	2026-09-12T04:02:07.4461672Z   python-version: 3.14
+nightly	UNKNOWN STEP	2026-09-12T04:02:07.4462776Z   check-latest: false
+nightly	UNKNOWN STEP	2026-09-12T04:02:07.4473309Z   token: ***
+nightly	UNKNOWN STEP	2026-09-12T04:02:07.4474441Z   update-environment: true
+nightly	UNKNOWN STEP	2026-09-12T04:02:07.4475636Z   allow-prereleases: false
+nightly	UNKNOWN STEP	2026-09-12T04:02:07.4476813Z   freethreaded: false
+nightly	UNKNOWN STEP	2026-09-12T04:02:07.4477859Z ##[endgroup]
+nightly	UNKNOWN STEP	2026-09-12T04:02:07.5838017Z ##[group]Installed versions
+nightly	UNKNOWN STEP	2026-09-12T04:02:07.5921653Z Successfully set up CPython (3.14.7)
+nightly	UNKNOWN STEP	2026-09-12T04:02:07.5924622Z ##[endgroup]
+nightly	UNKNOWN STEP	2026-09-12T04:02:07.6166230Z ##[group]Run python -m pip install --upgrade pip
+nightly	UNKNOWN STEP	2026-09-12T04:02:07.6167843Z ^[[36;1mpython -m pip install --upgrade pip^[[0m
+nightly	UNKNOWN STEP	2026-09-12T04:02:07.6169258Z ^[[36;1mpython -m pip install -e ".[dev]"^[[0m
+nightly	UNKNOWN STEP	2026-09-12T04:02:07.6222037Z shell: /usr/bin/bash -e {0}
+nightly	UNKNOWN STEP	2026-09-12T04:02:07.6223145Z env:
+nightly	UNKNOWN STEP	2026-09-12T04:02:07.6224405Z   pythonLocation: /opt/hostedtoolcache/Python/3.14.7/x64
+nightly	UNKNOWN STEP	2026-09-12T04:02:07.6226283Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.14.7/x64/lib/pkgconfig
+nightly	UNKNOWN STEP	2026-09-12T04:02:07.6228091Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.7/x64
+nightly	UNKNOWN STEP	2026-09-12T04:02:07.6229729Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.7/x64
+nightly	UNKNOWN STEP	2026-09-12T04:02:07.6231372Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.7/x64
+nightly	UNKNOWN STEP	2026-09-12T04:02:07.6233046Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.14.7/x64/lib
+nightly	UNKNOWN STEP	2026-09-12T04:02:07.6234581Z ##[endgroup]
+nightly	UNKNOWN STEP	2026-09-12T04:02:08.2229321Z Requirement already satisfied: pip in /opt/hostedtoolcache/Python/3.14.7/x64/lib/python3.14/site-packages (26.2.1)
+nightly	UNKNOWN STEP	2026-09-12T04:02:08.8123437Z Obtaining file:///home/runner/work/Manager-Database/Manager-Database
+nightly	UNKNOWN STEP	2026-09-12T04:02:08.8142982Z   Installing build dependencies: started
+nightly	UNKNOWN STEP	2026-09-12T04:02:09.7535411Z   Installing build dependencies: finished with status 'done'
+nightly	UNKNOWN STEP	2026-09-12T04:02:09.7542278Z   Checking if build backend supports build_editable: started
+nightly	UNKNOWN STEP	2026-09-12T04:02:10.1988532Z   Checking if build backend supports build_editable: finished with status 'done'
+nightly	UNKNOWN STEP	2026-09-12T04:02:10.1997029Z   Getting requirements to build editable: started
+nightly	UNKNOWN STEP	2026-09-12T04:02:10.6259544Z   Getting requirements to build editable: finished with status 'done'
+nightly	UNKNOWN STEP	2026-09-12T04:02:10.6269345Z   Preparing editable metadata (pyproject.toml): started
+nightly	UNKNOWN STEP	2026-09-12T04:02:10.8455211Z   Preparing editable metadata (pyproject.toml): finished with status 'done'
+nightly	UNKNOWN STEP	2026-09-12T04:02:10.9717915Z Collecting alembic (from manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:11.0637113Z   Downloading alembic-1.20.0-py3-none-any.whl.metadata (7.3 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:11.1463184Z Collecting edgartools<5.45,>=5.44 (from manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:11.1666639Z   Downloading edgartools-5.44.1-py3-none-any.whl.metadata (18 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:11.2106851Z Collecting httpx (from manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:11.2299270Z   Downloading httpx-0.28.1-py3-none-any.whl.metadata (7.1 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:11.2615305Z Collecting feedparser (from manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:11.2806206Z   Downloading feedparser-6.0.14-py3-none-any.whl.metadata (2.7 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:11.4115831Z Collecting prefect (from manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:11.4323065Z   Downloading prefect-3.8.5-py3-none-any.whl.metadata (14 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:11.4760086Z Collecting jsonschema<4.27.0,>=4.26.0 (from manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:11.4954861Z   Downloading jsonschema-4.26.0-py3-none-any.whl.metadata (7.6 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:11.5283536Z Collecting beautifulsoup4 (from manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:11.5473154Z   Downloading beautifulsoup4-4.15.0-py3-none-any.whl.metadata (3.8 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:11.8099447Z Collecting boto3 (from manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:11.8290596Z   Downloading boto3-1.43.93-py3-none-any.whl.metadata (6.6 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:11.8587570Z Collecting python-json-logger (from manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:11.8779959Z   Downloading python_json_logger-4.2.0-py3-none-any.whl.metadata (2.9 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:11.9088898Z Collecting psycopg[binary] (from manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:11.9280504Z   Downloading psycopg-3.3.5-py3-none-any.whl.metadata (4.3 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:11.9799399Z Collecting streamlit (from manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:12.0002971Z   Downloading streamlit-1.63.0-py3-none-any.whl.metadata (10 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:12.1151932Z Collecting pandas (from manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:12.1362339Z   Downloading pandas-3.0.5-cp314-cp314-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata (79 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:12.2345072Z Collecting streamlit-authenticator (from manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:12.2548786Z   Downloading streamlit_authenticator-0.4.2-py3-none-any.whl.metadata (30 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:12.2878663Z Collecting altair (from manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:12.3069873Z   Downloading altair-6.2.2-py3-none-any.whl.metadata (11 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:12.3661863Z Collecting fastapi (from manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:12.3853722Z   Downloading fastapi-0.141.1-py3-none-any.whl.metadata (27 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:12.4265973Z Collecting uvicorn (from manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:12.4454601Z   Downloading uvicorn-0.52.4-py3-none-any.whl.metadata (6.6 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:12.4515770Z Collecting stranske-pdf-extract @ git+https://github.com/stranske/Workflows.git@pdf-extract-v0.1.0#subdirectory=packages/stranske_pdf_extract (from stranske-pdf-extract[baseline] @ git+https://github.com/stranske/Workflows.git@pdf-extract-v0.1.0#subdirectory=packages/stranske_pdf_extract->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:12.4519063Z   Cloning https://github.com/stranske/Workflows.git (to revision pdf-extract-v0.1.0) to /tmp/pip-install-smimkvlc/stranske-pdf-extract_71850d04e8484de8868df57945196878
+nightly	UNKNOWN STEP	2026-09-12T04:02:12.4541442Z   Running command git clone --filter=blob:none --quiet https://github.com/stranske/Workflows.git /tmp/pip-install-smimkvlc/stranske-pdf-extract_71850d04e8484de8868df57945196878
+nightly	UNKNOWN STEP	2026-09-12T04:02:15.2683593Z   Running command git checkout -q ccfea3511cd5bc1a44f9fc8d35ed6b060873d44c
+nightly	UNKNOWN STEP	2026-09-12T04:02:16.5389764Z   Resolved https://github.com/stranske/Workflows.git to commit ccfea3511cd5bc1a44f9fc8d35ed6b060873d44c
+nightly	UNKNOWN STEP	2026-09-12T04:02:16.5428990Z   Installing build dependencies: started
+nightly	UNKNOWN STEP	2026-09-12T04:02:17.6663720Z   Installing build dependencies: finished with status 'done'
+nightly	UNKNOWN STEP	2026-09-12T04:02:17.6669103Z   Getting requirements to build wheel: started
+nightly	UNKNOWN STEP	2026-09-12T04:02:17.8626830Z   Getting requirements to build wheel: finished with status 'done'
+nightly	UNKNOWN STEP	2026-09-12T04:02:17.8634423Z   Preparing metadata (pyproject.toml): started
+nightly	UNKNOWN STEP	2026-09-12T04:02:18.0608341Z   Preparing metadata (pyproject.toml): finished with status 'done'
+nightly	UNKNOWN STEP	2026-09-12T04:02:18.1240162Z Collecting langchain<2.0,>=1.2 (from manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:18.1432733Z   Downloading langchain-1.4.0-py3-none-any.whl.metadata (6.2 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:18.1977290Z Collecting langchain-core<2.0,>=1.2 (from manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:18.2176730Z   Downloading langchain_core-1.6.3-py3-none-any.whl.metadata (4.8 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:18.2575983Z Collecting langchain-openai<2.0,>=0.3 (from manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:18.2768537Z   Downloading langchain_openai-1.6.2-py3-none-any.whl.metadata (3.4 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:18.3130219Z Collecting langchain-anthropic<2.0,>=0.3 (from manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:18.3334323Z   Downloading langchain_anthropic-1.7.2-py3-none-any.whl.metadata (3.5 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:18.4005615Z Collecting langsmith<1.0,>=0.7.30 (from manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:18.4197528Z   Downloading langsmith-0.12.4-py3-none-any.whl.metadata (22 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:18.4632190Z Collecting pytest==9.1.1 (from manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:18.4823166Z   Downloading pytest-9.1.1-py3-none-any.whl.metadata (7.6 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:18.5163113Z Collecting pytest-asyncio (from manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:18.5353445Z   Downloading pytest_asyncio-1.4.0-py3-none-any.whl.metadata (4.1 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:18.5659645Z Collecting pytest-cov==7.1.0 (from manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:18.5851011Z   Downloading pytest_cov-7.1.0-py3-none-any.whl.metadata (32 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:18.6477580Z Collecting black==26.5.1 (from manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:18.6677983Z   Downloading black-26.5.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (95 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:19.0311151Z Collecting ruff==0.16.6 (from manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:19.0512286Z   Downloading ruff-0.16.6-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (26 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:19.0974986Z Collecting pre-commit (from manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:19.1171848Z   Downloading pre_commit-4.6.2-py2.py3-none-any.whl.metadata (1.2 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:19.2173268Z Collecting mypy==2.3.1 (from manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:19.2394140Z   Downloading mypy-2.3.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.4 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:19.2728669Z Collecting types-PyYAML (from manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:19.2933439Z   Downloading types_pyyaml-6.0.12.20260906-py3-none-any.whl.metadata (1.8 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:19.6435608Z Collecting coverage==7.16.0 (from manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:19.6640969Z   Downloading coverage-7.16.0-cp314-cp314-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (8.6 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:19.7085058Z Collecting referencing (from manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:19.7273978Z   Downloading referencing-0.37.0-py3-none-any.whl.metadata (2.8 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:19.7750947Z Collecting PyYAML (from manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:19.7954669Z   Downloading pyyaml-6.0.3-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.4 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:19.8346282Z Collecting fakeredis (from manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:19.8538124Z   Downloading fakeredis-2.38.0-py3-none-any.whl.metadata (7.2 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:19.8589310Z Collecting app-baseline-kit @ git+https://github.com/stranske/Workflows.git#subdirectory=packages/app-baseline-kit (from manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:19.8593389Z   Cloning https://github.com/stranske/Workflows.git to /tmp/pip-install-smimkvlc/app-baseline-kit_182f18f50dc5451fbbef1a77daa0d490
+nightly	UNKNOWN STEP	2026-09-12T04:02:19.8617457Z   Running command git clone --filter=blob:none --quiet https://github.com/stranske/Workflows.git /tmp/pip-install-smimkvlc/app-baseline-kit_182f18f50dc5451fbbef1a77daa0d490
+nightly	UNKNOWN STEP	2026-09-12T04:02:22.8626541Z   Resolved https://github.com/stranske/Workflows.git to commit afb75079055d61f864dc76ecedfde06aea9dd562
+nightly	UNKNOWN STEP	2026-09-12T04:02:22.8658237Z   Installing build dependencies: started
+nightly	UNKNOWN STEP	2026-09-12T04:02:23.4035478Z   Installing build dependencies: finished with status 'done'
+nightly	UNKNOWN STEP	2026-09-12T04:02:23.4040966Z   Getting requirements to build wheel: started
+nightly	UNKNOWN STEP	2026-09-12T04:02:23.9925788Z   Getting requirements to build wheel: finished with status 'done'
+nightly	UNKNOWN STEP	2026-09-12T04:02:23.9934304Z   Preparing metadata (pyproject.toml): started
+nightly	UNKNOWN STEP	2026-09-12T04:02:24.1994635Z   Preparing metadata (pyproject.toml): finished with status 'done'
+nightly	UNKNOWN STEP	2026-09-12T04:02:24.2282656Z Collecting pytest-regressions>=2.8 (from manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:24.2488416Z   Downloading pytest_regressions-2.11.0-py3-none-any.whl.metadata (4.9 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:24.2826206Z Collecting pdfplumber>=0.11 (from stranske-pdf-extract @ git+https://github.com/stranske/Workflows.git@pdf-extract-v0.1.0#subdirectory=packages/stranske_pdf_extract->stranske-pdf-extract[baseline] @ git+https://github.com/stranske/Workflows.git@pdf-extract-v0.1.0#subdirectory=packages/stranske_pdf_extract->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:24.3016293Z   Downloading pdfplumber-0.11.10-py3-none-any.whl.metadata (43 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:24.3392500Z Collecting pypdf>=5.4 (from stranske-pdf-extract @ git+https://github.com/stranske/Workflows.git@pdf-extract-v0.1.0#subdirectory=packages/stranske_pdf_extract->stranske-pdf-extract[baseline] @ git+https://github.com/stranske/Workflows.git@pdf-extract-v0.1.0#subdirectory=packages/stranske_pdf_extract->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:24.3581668Z   Downloading pypdf-6.18.1-py3-none-any.whl.metadata (7.5 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:24.3909909Z Collecting click>=8.0.0 (from black==26.5.1->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:24.4100223Z   Downloading click-8.5.0-py3-none-any.whl.metadata (2.6 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:24.4357360Z Collecting mypy-extensions>=0.4.3 (from black==26.5.1->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:24.4545907Z   Downloading mypy_extensions-1.1.0-py3-none-any.whl.metadata (1.1 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:24.4632559Z Collecting packaging>=22.0 (from black==26.5.1->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:24.4644011Z   Using cached packaging-26.3-py3-none-any.whl.metadata (3.5 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:24.4696030Z Collecting pathspec>=1.0.0 (from black==26.5.1->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:24.4706803Z   Using cached pathspec-1.1.1-py3-none-any.whl.metadata (14 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:24.5018749Z Collecting platformdirs>=2 (from black==26.5.1->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:24.5207846Z   Downloading platformdirs-4.11.8-py3-none-any.whl.metadata (5.5 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:24.5525308Z Collecting pytokens~=0.4.0 (from black==26.5.1->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:24.5729621Z   Downloading pytokens-0.4.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (3.8 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:24.6044225Z Collecting typing_extensions>=4.6.0 (from mypy==2.3.1->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:24.6234019Z   Downloading typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:24.7446818Z Collecting librt>=0.13.0 (from mypy==2.3.1->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:24.7671728Z   Downloading librt-0.15.0-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (1.3 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:24.8217869Z Collecting ast-serialize<1.0.0,>=0.6.0 (from mypy==2.3.1->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:24.8410491Z   Downloading ast_serialize-0.11.1-cp39-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (1.4 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:24.8676916Z Collecting iniconfig>=1.0.1 (from pytest==9.1.1->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:24.8880999Z   Downloading iniconfig-2.3.0-py3-none-any.whl.metadata (2.5 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:24.8951331Z Collecting pluggy<2,>=1.5 (from pytest==9.1.1->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:24.8962826Z   Using cached pluggy-1.6.0-py3-none-any.whl.metadata (4.8 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:24.9263253Z Collecting pygments>=2.7.2 (from pytest==9.1.1->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:24.9457892Z   Downloading pygments-2.21.0-py3-none-any.whl.metadata (2.5 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:24.9786375Z Collecting httpxthrottlecache<0.5.0,>=0.3.0 (from edgartools<5.45,>=5.44->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:24.9985153Z   Downloading httpxthrottlecache-0.3.5-py3-none-any.whl.metadata (6.9 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:25.0283440Z Collecting humanize>=4.0.0 (from edgartools<5.45,>=5.44->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:25.0474707Z   Downloading humanize-4.16.0-py3-none-any.whl.metadata (8.0 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:25.0763622Z Collecting jinja2>=3.1.0 (from edgartools<5.45,>=5.44->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:25.0954195Z   Downloading jinja2-3.1.6-py3-none-any.whl.metadata (2.9 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:25.3109109Z Collecting lxml>=4.4 (from edgartools<5.45,>=5.44->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:25.3311411Z   Downloading lxml-6.1.3-cp314-cp314-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl.metadata (3.3 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:25.3605011Z Collecting nest-asyncio>=1.5.1 (from edgartools<5.45,>=5.44->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:25.3794736Z   Downloading nest_asyncio-1.6.0-py3-none-any.whl.metadata (2.8 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:25.5960229Z Collecting orjson>=3.6.0 (from edgartools<5.45,>=5.44->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:25.6169283Z   Downloading orjson-3.12.0-cp314-cp314-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (41 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:25.7037085Z Collecting pyarrow>=17.0.0 (from edgartools<5.45,>=5.44->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:25.7248999Z   Downloading pyarrow-25.0.1-cp314-cp314-manylinux_2_28_x86_64.whl.metadata (3.0 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:25.8262430Z Collecting pydantic>=2.0.0 (from edgartools<5.45,>=5.44->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:25.8459458Z   Downloading pydantic-2.13.5-py3-none-any.whl.metadata (110 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:25.8857387Z Collecting pyrate-limiter>=3.0.0 (from edgartools<5.45,>=5.44->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:25.9060320Z   Downloading pyrate_limiter-4.5.0-py3-none-any.whl.metadata (27 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:25.9364014Z Collecting rank-bm25>=0.2.1 (from edgartools<5.45,>=5.44->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:25.9571464Z   Downloading rank_bm25-0.2.2-py3-none-any.whl.metadata (3.2 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:26.4504912Z Collecting rapidfuzz>=3.5.0 (from edgartools<5.45,>=5.44->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:26.4706946Z   Downloading rapidfuzz-3.14.6-cp314-cp314-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (12 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:26.5107005Z Collecting rich>=13.8.0 (from edgartools<5.45,>=5.44->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:26.5297509Z   Downloading rich-15.0.0-py3-none-any.whl.metadata (18 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:26.5579847Z Collecting stamina>=24.2.0 (from edgartools<5.45,>=5.44->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:26.5789524Z   Downloading stamina-26.1.0-py3-none-any.whl.metadata (4.6 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:26.6053450Z Collecting tabulate>=0.9.0 (from edgartools<5.45,>=5.44->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:26.6247161Z   Downloading tabulate-0.10.0-py3-none-any.whl.metadata (40 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:26.6553523Z Collecting textdistance>=4.5.0 (from edgartools<5.45,>=5.44->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:26.6764351Z   Downloading textdistance-4.6.3-py3-none-any.whl.metadata (18 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:26.7211352Z Collecting tqdm>=4.62.0 (from edgartools<5.45,>=5.44->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:26.7525615Z   Downloading tqdm-4.70.1-py3-none-any.whl.metadata (57 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:26.7839296Z Collecting truststore>=0.9.0 (from edgartools<5.45,>=5.44->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:26.8030815Z   Downloading truststore-0.10.4-py3-none-any.whl.metadata (4.4 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:26.8326684Z Collecting unidecode>=1.2.0 (from edgartools<5.45,>=5.44->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:26.8518299Z   Downloading Unidecode-1.4.0-py3-none-any.whl.metadata (13 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:26.8801109Z Collecting aiofiles>=24.1.0 (from httpxthrottlecache<0.5.0,>=0.3.0->edgartools<5.45,>=5.44->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:26.8994784Z   Downloading aiofiles-25.1.0-py3-none-any.whl.metadata (6.3 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:26.9332864Z Collecting filelock>=3.18.0 (from httpxthrottlecache<0.5.0,>=0.3.0->edgartools<5.45,>=5.44->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:26.9524305Z   Downloading filelock-3.32.6-py3-none-any.whl.metadata (2.0 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:26.9843999Z Collecting attrs>=22.2.0 (from jsonschema<4.27.0,>=4.26.0->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:27.0033579Z   Downloading attrs-26.1.0-py3-none-any.whl.metadata (8.8 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:27.0306042Z Collecting jsonschema-specifications>=2023.03.6 (from jsonschema<4.27.0,>=4.26.0->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:27.0497455Z   Downloading jsonschema_specifications-2025.9.1-py3-none-any.whl.metadata (2.9 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:27.2845960Z Collecting rpds-py>=0.25.0 (from jsonschema<4.27.0,>=4.26.0->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:27.3062120Z   Downloading rpds_py-2026.6.3-cp314-cp314-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.1 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:27.3559081Z Collecting langgraph<1.3.0,>=1.2.11 (from langchain<2.0,>=1.2->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:27.3751630Z   Downloading langgraph-1.2.11-py3-none-any.whl.metadata (4.9 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:27.4199923Z Collecting anthropic<2.0.0,>=0.120.0 (from langchain-anthropic<2.0,>=0.3->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:27.4391637Z   Downloading anthropic-1.5.0-py3-none-any.whl.metadata (3.3 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:27.4753480Z Collecting anyio<5,>=3.5.0 (from anthropic<2.0.0,>=0.120.0->langchain-anthropic<2.0,>=0.3->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:27.4942873Z   Downloading anyio-4.15.1-py3-none-any.whl.metadata (4.7 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:27.5226718Z Collecting docstring-parser<1,>=0.15 (from anthropic<2.0.0,>=0.120.0->langchain-anthropic<2.0,>=0.3->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:27.5416601Z   Downloading docstring_parser-0.18.0-py3-none-any.whl.metadata (3.5 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:27.5685158Z Collecting httpx2<3,>=2.0.0 (from anthropic<2.0.0,>=0.120.0->langchain-anthropic<2.0,>=0.3->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:27.5878888Z   Downloading httpx2-2.12.0-py3-none-any.whl.metadata (9.5 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:27.6761951Z Collecting jiter<1,>=0.4.0 (from anthropic<2.0.0,>=0.120.0->langchain-anthropic<2.0,>=0.3->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:27.6971566Z   Downloading jiter-0.16.0-cp314-cp314-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (5.2 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:27.7258263Z Collecting sniffio<2,>=1 (from anthropic<2.0.0,>=0.120.0->langchain-anthropic<2.0,>=0.3->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:27.7463419Z   Downloading sniffio-1.3.1-py3-none-any.whl.metadata (3.9 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:27.7760349Z Collecting idna>=2.8 (from anyio<5,>=3.5.0->anthropic<2.0.0,>=0.120.0->langchain-anthropic<2.0,>=0.3->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:27.7953205Z   Downloading idna-3.19-py3-none-any.whl.metadata (9.2 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:27.8260779Z Collecting httpcore2==2.12.0 (from httpx2<3,>=2.0.0->anthropic<2.0.0,>=0.120.0->langchain-anthropic<2.0,>=0.3->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:27.8451797Z   Downloading httpcore2-2.12.0-py3-none-any.whl.metadata (25 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:27.8751899Z Collecting h11>=0.16 (from httpcore2==2.12.0->httpx2<3,>=2.0.0->anthropic<2.0.0,>=0.120.0->langchain-anthropic<2.0,>=0.3->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:27.8943366Z   Downloading h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:27.9254170Z Collecting jsonpatch<2.0.0,>=1.33.0 (from langchain-core<2.0,>=1.2->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:27.9442595Z   Downloading jsonpatch-1.33-py2.py3-none-any.whl.metadata (3.0 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:27.9702791Z Collecting langchain-protocol>=0.0.17 (from langchain-core<2.0,>=1.2->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:27.9892069Z   Downloading langchain_protocol-0.0.19-py3-none-any.whl.metadata (2.4 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:28.0259103Z Collecting tenacity!=8.4.0,<10.0.0,>=8.1.0 (from langchain-core<2.0,>=1.2->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:28.0450956Z   Downloading tenacity-9.1.4-py3-none-any.whl.metadata (1.2 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:28.1579033Z Collecting uuid-utils<1.0,>=0.12.0 (from langchain-core<2.0,>=1.2->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:28.1786560Z   Downloading uuid_utils-0.17.1-cp314-cp314-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (6.4 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:28.2119799Z Collecting certifi (from httpx->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:28.2316037Z   Downloading certifi-2026.7.22-py3-none-any.whl.metadata (2.5 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:28.2614597Z Collecting httpcore==1.* (from httpx->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:28.2811295Z   Downloading httpcore-1.0.9-py3-none-any.whl.metadata (21 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:28.3161092Z Collecting jsonpointer>=1.9 (from jsonpatch<2.0.0,>=1.33.0->langchain-core<2.0,>=1.2->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:28.3359608Z   Downloading jsonpointer-3.1.1-py3-none-any.whl.metadata (2.4 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:28.3912408Z Collecting openai<4.0.0,>=2.45.0 (from langchain-openai<2.0,>=0.3->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:28.4108508Z   Downloading openai-3.13.0-py3-none-any.whl.metadata (41 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:28.4664515Z Collecting tiktoken<1.0.0,>=0.7.0 (from langchain-openai<2.0,>=0.3->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:28.4865168Z   Downloading tiktoken-0.14.0-cp314-cp314-manylinux_2_28_x86_64.whl.metadata (6.7 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:28.5204447Z Collecting langgraph-checkpoint<5.0.0,>=4.1.0 (from langgraph<1.3.0,>=1.2.11->langchain<2.0,>=1.2->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:28.5394235Z   Downloading langgraph_checkpoint-4.2.0-py3-none-any.whl.metadata (6.7 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:28.5711158Z Collecting langgraph-prebuilt<1.2.0,>=1.1.0 (from langgraph<1.3.0,>=1.2.11->langchain<2.0,>=1.2->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:28.5901375Z   Downloading langgraph_prebuilt-1.1.0-py3-none-any.whl.metadata (5.2 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:28.6239047Z Collecting langgraph-sdk<0.5.0,>=0.4.2 (from langgraph<1.3.0,>=1.2.11->langchain<2.0,>=1.2->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:28.6429664Z   Downloading langgraph_sdk-0.4.4-py3-none-any.whl.metadata (5.1 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:28.7714069Z Collecting xxhash>=3.5.0 (from langgraph<1.3.0,>=1.2.11->langchain<2.0,>=1.2->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:28.7916400Z   Downloading xxhash-4.0.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (17 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:28.8548129Z Collecting ormsgpack>=1.12.0 (from langgraph-checkpoint<5.0.0,>=4.1.0->langgraph<1.3.0,>=1.2.11->langchain<2.0,>=1.2->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:28.8759191Z   Downloading ormsgpack-1.12.2-cp314-cp314-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (3.2 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:28.9922530Z Collecting websockets<17,>=14 (from langgraph-sdk<0.5.0,>=0.4.2->langgraph<1.3.0,>=1.2.11->langchain<2.0,>=1.2->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:29.0126384Z   Downloading websockets-16.1.1-cp314-cp314-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (6.8 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:29.0407736Z Collecting distro>=1.7.0 (from langsmith<1.0,>=0.7.30->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:29.0605198Z   Downloading distro-1.9.0-py3-none-any.whl.metadata (6.8 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:29.0898433Z Collecting requests-toolbelt>=1.0.0 (from langsmith<1.0,>=0.7.30->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:29.1091404Z   Downloading requests_toolbelt-1.0.0-py2.py3-none-any.whl.metadata (14 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:29.1472616Z Collecting requests>=2.0.0 (from langsmith<1.0,>=0.7.30->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:29.1686140Z   Downloading requests-2.34.2-py3-none-any.whl.metadata (4.8 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:29.2449205Z Collecting zstandard>=0.23.0 (from langsmith<1.0,>=0.7.30->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:29.2643336Z   Downloading zstandard-0.25.0-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (3.3 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:29.2998126Z Collecting annotated-types>=0.6.0 (from pydantic>=2.0.0->edgartools<5.45,>=5.44->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:29.3187643Z   Downloading annotated_types-0.8.0-py3-none-any.whl.metadata (15 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:29.8898383Z Collecting pydantic-core==2.46.5 (from pydantic>=2.0.0->edgartools<5.45,>=5.44->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:29.9091270Z   Downloading pydantic_core-2.46.5-cp314-cp314-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (6.6 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:29.9360173Z Collecting typing-inspection>=0.4.2 (from pydantic>=2.0.0->edgartools<5.45,>=5.44->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:29.9557812Z   Downloading typing_inspection-0.4.4-py3-none-any.whl.metadata (2.6 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:30.3894675Z Collecting regex (from tiktoken<1.0.0,>=0.7.0->langchain-openai<2.0,>=0.3->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:30.4095620Z   Downloading regex-2026.9.10-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (40 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:30.4489114Z Collecting soupsieve>=1.6.1 (from beautifulsoup4->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:30.4678557Z   Downloading soupsieve-2.9.2-py3-none-any.whl.metadata (4.6 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:30.5340279Z Collecting MarkupSafe>=2.0 (from jinja2>=3.1.0->edgartools<5.45,>=5.44->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:30.5532958Z   Downloading markupsafe-3.0.3-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.7 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:30.7492114Z Collecting numpy>=2.3.3 (from pandas->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:30.7696811Z   Downloading numpy-2.5.3-cp314-cp314-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (6.6 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:30.7973072Z Collecting python-dateutil>=2.8.2 (from pandas->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:30.8166354Z   Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl.metadata (8.4 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:30.8489521Z Collecting pdfminer.six==20260107 (from pdfplumber>=0.11->stranske-pdf-extract @ git+https://github.com/stranske/Workflows.git@pdf-extract-v0.1.0#subdirectory=packages/stranske_pdf_extract->stranske-pdf-extract[baseline] @ git+https://github.com/stranske/Workflows.git@pdf-extract-v0.1.0#subdirectory=packages/stranske_pdf_extract->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:30.8679099Z   Downloading pdfminer_six-20260107-py3-none-any.whl.metadata (4.3 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:31.0252037Z Collecting Pillow>=12.2.0 (from pdfplumber>=0.11->stranske-pdf-extract @ git+https://github.com/stranske/Workflows.git@pdf-extract-v0.1.0#subdirectory=packages/stranske_pdf_extract->stranske-pdf-extract[baseline] @ git+https://github.com/stranske/Workflows.git@pdf-extract-v0.1.0#subdirectory=packages/stranske_pdf_extract->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:31.0447544Z   Downloading pillow-12.3.0-cp314-cp314-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (9.1 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:31.1326135Z Collecting pypdfium2>=5.9.0 (from pdfplumber>=0.11->stranske-pdf-extract @ git+https://github.com/stranske/Workflows.git@pdf-extract-v0.1.0#subdirectory=packages/stranske_pdf_extract->stranske-pdf-extract[baseline] @ git+https://github.com/stranske/Workflows.git@pdf-extract-v0.1.0#subdirectory=packages/stranske_pdf_extract->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:31.1517106Z   Downloading pypdfium2-5.13.0-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (66 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:31.2769635Z Collecting charset-normalizer>=2.0.0 (from pdfminer.six==20260107->pdfplumber>=0.11->stranske-pdf-extract @ git+https://github.com/stranske/Workflows.git@pdf-extract-v0.1.0#subdirectory=packages/stranske_pdf_extract->stranske-pdf-extract[baseline] @ git+https://github.com/stranske/Workflows.git@pdf-extract-v0.1.0#subdirectory=packages/stranske_pdf_extract->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:31.2966333Z   Downloading charset_normalizer-3.5.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (45 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:31.4717573Z Collecting cryptography>=36.0.0 (from pdfminer.six==20260107->pdfplumber>=0.11->stranske-pdf-extract @ git+https://github.com/stranske/Workflows.git@pdf-extract-v0.1.0#subdirectory=packages/stranske_pdf_extract->stranske-pdf-extract[baseline] @ git+https://github.com/stranske/Workflows.git@pdf-extract-v0.1.0#subdirectory=packages/stranske_pdf_extract->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:31.4911264Z   Downloading cryptography-50.0.1-cp311-abi3-manylinux_2_34_x86_64.whl.metadata (4.3 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:31.5967878Z Collecting cffi>=2.0.0 (from cryptography>=36.0.0->pdfminer.six==20260107->pdfplumber>=0.11->stranske-pdf-extract @ git+https://github.com/stranske/Workflows.git@pdf-extract-v0.1.0#subdirectory=packages/stranske_pdf_extract->stranske-pdf-extract[baseline] @ git+https://github.com/stranske/Workflows.git@pdf-extract-v0.1.0#subdirectory=packages/stranske_pdf_extract->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:31.6168898Z   Downloading cffi-2.1.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (2.5 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:31.6449875Z Collecting pycparser (from cffi>=2.0.0->cryptography>=36.0.0->pdfminer.six==20260107->pdfplumber>=0.11->stranske-pdf-extract @ git+https://github.com/stranske/Workflows.git@pdf-extract-v0.1.0#subdirectory=packages/stranske_pdf_extract->stranske-pdf-extract[baseline] @ git+https://github.com/stranske/Workflows.git@pdf-extract-v0.1.0#subdirectory=packages/stranske_pdf_extract->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:31.6639346Z   Downloading pycparser-3.0-py3-none-any.whl.metadata (8.2 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:31.7336134Z Collecting pytest-datadir>=1.7.0 (from pytest-regressions>=2.8->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:31.7528282Z   Downloading pytest_datadir-1.8.0-py3-none-any.whl.metadata (4.0 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:31.7837860Z Collecting six>=1.5 (from python-dateutil>=2.8.2->pandas->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:31.8030245Z   Downloading six-1.17.0-py2.py3-none-any.whl.metadata (1.7 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:31.8465556Z Collecting urllib3<3,>=1.26 (from requests>=2.0.0->langsmith<1.0,>=0.7.30->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:31.8657261Z   Downloading urllib3-2.7.0-py3-none-any.whl.metadata (6.9 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:31.9035118Z Collecting markdown-it-py>=2.2.0 (from rich>=13.8.0->edgartools<5.45,>=5.44->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:31.9224727Z   Downloading markdown_it_py-4.2.0-py3-none-any.whl.metadata (7.4 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:31.9525008Z Collecting mdurl~=0.1 (from markdown-it-py>=2.2.0->rich>=13.8.0->edgartools<5.45,>=5.44->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:31.9715386Z   Downloading mdurl-0.1.2-py3-none-any.whl.metadata (1.6 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:32.2441681Z Collecting SQLAlchemy>=2.0 (from alembic->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:32.2637539Z   Downloading sqlalchemy-2.0.52-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (9.6 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:32.2976424Z Collecting Mako (from alembic->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:32.3167123Z   Downloading mako-1.4.1-py3-none-any.whl.metadata (2.9 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:32.4566045Z Collecting greenlet>=1 (from SQLAlchemy>=2.0->alembic->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:32.4759603Z   Downloading greenlet-3.5.5-cp314-cp314-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata (3.8 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:32.5232757Z Collecting narwhals>=2.4.0 (from altair->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:32.5432214Z   Downloading narwhals-2.26.0-py3-none-any.whl.metadata (15 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:32.8796442Z Collecting botocore<1.44.0,>=1.43.93 (from boto3->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:32.8993595Z   Downloading botocore-1.43.93-py3-none-any.whl.metadata (5.6 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:32.9306084Z Collecting jmespath<2.0.0,>=0.7.1 (from boto3->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:32.9496000Z   Downloading jmespath-1.1.0-py3-none-any.whl.metadata (7.6 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:32.9813554Z Collecting s3transfer<0.20.0,>=0.19.0 (from boto3->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:33.0009960Z   Downloading s3transfer-0.19.2-py3-none-any.whl.metadata (1.7 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:33.0595926Z Collecting redis>=4.3 (from fakeredis->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:33.0786312Z   Downloading redis-8.1.0-py3-none-any.whl.metadata (16 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:33.1088400Z Collecting sortedcontainers>=2 (from fakeredis->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:33.1278287Z   Downloading sortedcontainers-2.4.0-py2.py3-none-any.whl.metadata (10 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:33.1684992Z Collecting starlette>=0.46.0 (from fastapi->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:33.1876001Z   Downloading starlette-1.6.0-py3-none-any.whl.metadata (6.4 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:33.2193585Z Collecting annotated-doc>=0.0.2 (from fastapi->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:33.2387684Z   Downloading annotated_doc-0.0.5-py3-none-any.whl.metadata (6.5 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:33.2727404Z Collecting feedparser-sgmllib<3,>=2 (from feedparser->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:33.2916670Z   Downloading feedparser_sgmllib-2.1.0-py3-none-any.whl.metadata (926 bytes)
+nightly	UNKNOWN STEP	2026-09-12T04:02:33.3260950Z Collecting cfgv>=2.0.0 (from pre-commit->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:33.3451995Z   Downloading cfgv-3.5.0-py2.py3-none-any.whl.metadata (8.9 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:33.3889934Z Collecting identify>=1.0.0 (from pre-commit->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:33.4088379Z   Downloading identify-2.6.19-py2.py3-none-any.whl.metadata (4.4 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:33.4369020Z Collecting nodeenv>=0.11.1 (from pre-commit->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:33.4561627Z   Downloading nodeenv-1.10.0-py2.py3-none-any.whl.metadata (24 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:33.5073627Z Collecting virtualenv>=20.10.0 (from pre-commit->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:33.5268287Z   Downloading virtualenv-21.7.9-py3-none-any.whl.metadata (3.5 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:33.5584353Z Collecting distlib<1,>=0.3.7 (from virtualenv>=20.10.0->pre-commit->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:33.5775712Z   Downloading distlib-0.4.3-py2.py3-none-any.whl.metadata (5.3 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:33.6106220Z Collecting python-discovery>=1.6 (from virtualenv>=20.10.0->pre-commit->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:33.6299302Z   Downloading python_discovery-1.6.0-py3-none-any.whl.metadata (5.1 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:33.6640400Z Collecting aiosqlite<1.0.0,>=0.17.0 (from prefect->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:33.6831814Z   Downloading aiosqlite-0.22.1-py3-none-any.whl.metadata (4.3 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:33.7135435Z Collecting amplitude-analytics<2.0.0,>=1.2.1 (from prefect->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:33.7354202Z   Downloading amplitude_analytics-1.2.3-py3-none-any.whl.metadata (3.3 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:33.7736788Z Collecting apprise<2.0.0,>=1.13.0 (from prefect->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:33.7941946Z   Downloading apprise-1.13.1-py3-none-any.whl.metadata (63 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:33.8269489Z Collecting asgi-lifespan<3.0,>=1.0 (from prefect->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:33.8468485Z   Downloading asgi_lifespan-2.1.0-py3-none-any.whl.metadata (10 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:33.9012371Z Collecting asyncpg<1.0.0,>=0.23 (from prefect->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:33.9203578Z   Downloading asyncpg-0.31.0-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (4.4 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:33.9513327Z Collecting cachetools<8.0,>=5.3 (from prefect->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:33.9703502Z   Downloading cachetools-7.1.8-py3-none-any.whl.metadata (5.5 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:34.0003208Z Collecting cloudpickle<4.0,>=2.0 (from prefect->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:34.0194788Z   Downloading cloudpickle-3.1.2-py3-none-any.whl.metadata (7.1 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:34.0464850Z Collecting coolname<6.0.0,>=1.0.4 (from prefect->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:34.0662661Z   Downloading coolname-5.0.0-py3-none-any.whl.metadata (4.9 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:34.1125269Z Collecting cyclopts>=4.8.0 (from prefect->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:34.1318626Z   Downloading cyclopts-4.25.2-py3-none-any.whl.metadata (12 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:34.1658985Z Collecting dateparser<2.0.0,>=1.1.1 (from prefect->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:34.1872710Z   Downloading dateparser-1.4.3-py3-none-any.whl.metadata (25 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:34.2209030Z Collecting docker<8.0,>=4.0 (from prefect->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:34.2400138Z   Downloading docker-7.2.0-py3-none-any.whl.metadata (3.8 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:34.2679570Z Collecting exceptiongroup>=1.0.0 (from prefect->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:34.2870703Z   Downloading exceptiongroup-1.3.1-py3-none-any.whl.metadata (6.7 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:34.3277071Z Collecting fsspec>=2022.5.0 (from prefect->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:34.3467716Z   Downloading fsspec-2026.7.0-py3-none-any.whl.metadata (10 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:34.3932282Z Collecting graphviz>=0.20.1 (from prefect->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:34.4121534Z   Downloading graphviz-0.21-py3-none-any.whl.metadata (12 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:34.4497775Z Collecting griffe<3.0.0,>=0.49.0 (from prefect->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:34.4700928Z   Downloading griffe-2.3.0-py3-none-any.whl.metadata (11 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:34.5006815Z Collecting jinja2-humanize-extension>=0.4.0 (from prefect->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:34.5219240Z   Downloading jinja2_humanize_extension-0.4.0-py3-none-any.whl.metadata (3.6 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:34.5569350Z Collecting opentelemetry-api<2.0.0,>=1.27.0 (from prefect->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:34.5759933Z   Downloading opentelemetry_api-1.44.0-py3-none-any.whl.metadata (1.4 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:34.6102585Z Collecting prometheus-client>=0.20.0 (from prefect->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:34.6293536Z   Downloading prometheus_client-0.26.0-py3-none-any.whl.metadata (2.1 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:34.6627282Z Collecting pydantic-extra-types<3.0.0,>=2.8.2 (from prefect->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:34.6816021Z   Downloading pydantic_extra_types-2.11.1-py3-none-any.whl.metadata (4.2 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:34.7164973Z Collecting pydantic-settings<3.0.0,>=2.9.1 (from prefect->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:34.7358940Z   Downloading pydantic_settings-2.15.0-py3-none-any.whl.metadata (3.9 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:34.7718318Z Collecting pydocket>=0.19.0 (from prefect->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:34.7920504Z   Downloading pydocket-0.25.2-py3-none-any.whl.metadata (6.8 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:34.8220844Z Collecting python-slugify<9.0,>=5.0 (from prefect->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:34.8415813Z   Downloading python_slugify-8.0.4-py2.py3-none-any.whl.metadata (8.5 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:34.8884570Z Collecting pytz<2027,>=2021.1 (from prefect->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:34.9076588Z   Downloading pytz-2026.3.post1-py2.py3-none-any.whl.metadata (22 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:34.9388138Z Collecting readchar<5.0.0,>=4.0.0 (from prefect->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:34.9577195Z   Downloading readchar-4.2.2-py3-none-any.whl.metadata (7.5 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:34.9842257Z Collecting rfc3339-validator<0.2.0,>=0.1.4 (from prefect->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:35.0033915Z   Downloading rfc3339_validator-0.1.4-py2.py3-none-any.whl.metadata (1.5 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:35.0509060Z Collecting ruamel-yaml-clib>=0.2.8 (from prefect->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:35.0762872Z   Downloading ruamel_yaml_clib-0.2.15-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (3.5 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:35.1905514Z Collecting ruamel-yaml>=0.17.0 (from prefect->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:35.2097836Z   Downloading ruamel_yaml-0.19.1-py3-none-any.whl.metadata (16 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:35.2411535Z Collecting semver>=3.0.4 (from prefect->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:35.2605201Z   Downloading semver-3.0.4-py3-none-any.whl.metadata (6.8 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:35.2923484Z Collecting toml>=0.10.0 (from prefect->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:35.3117903Z   Downloading toml-0.10.2-py2.py3-none-any.whl.metadata (7.1 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:35.5590049Z Collecting whenever<0.11.0,>=0.7.3 (from prefect->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:35.5798281Z   Downloading whenever-0.10.5-cp314-cp314-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (11 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:35.6131755Z Collecting requests-oauthlib (from apprise<2.0.0,>=1.13.0->prefect->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:35.6321179Z   Downloading requests_oauthlib-2.0.0-py2.py3-none-any.whl.metadata (11 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:35.6649994Z Collecting markdown (from apprise<2.0.0,>=1.13.0->prefect->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:35.6842805Z   Downloading markdown-3.10.3-py3-none-any.whl.metadata (5.1 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:35.7290597Z Collecting tzlocal>=0.2 (from dateparser<2.0.0,>=1.1.1->prefect->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:35.7484083Z   Downloading tzlocal-5.4.4-py3-none-any.whl.metadata (7.7 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:35.7818710Z Collecting griffecli==2.3.0 (from griffe<3.0.0,>=0.49.0->prefect->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:35.8024337Z   Downloading griffecli-2.3.0-py3-none-any.whl.metadata (1.2 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:35.8290221Z Collecting griffelib==2.3.0 (from griffe<3.0.0,>=0.49.0->prefect->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:35.8481352Z   Downloading griffelib-2.3.0-py3-none-any.whl.metadata (1.3 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:35.8779279Z Collecting colorama>=0.4 (from griffecli==2.3.0->griffe<3.0.0,>=0.49.0->prefect->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:35.8973694Z   Downloading colorama-0.4.6-py2.py3-none-any.whl.metadata (17 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:35.9429821Z Collecting python-dotenv>=0.21.0 (from pydantic-settings<3.0.0,>=2.9.1->prefect->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:35.9620708Z   Downloading python_dotenv-1.2.3-py3-none-any.whl.metadata (29 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:35.9915310Z Collecting text-unidecode>=1.3 (from python-slugify<9.0,>=5.0->prefect->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:36.0104795Z   Downloading text_unidecode-1.3-py2.py3-none-any.whl.metadata (2.4 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:36.0497256Z Collecting rich-rst<3.0.0,>=1.3.1 (from cyclopts>=4.8.0->prefect->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:36.0704899Z   Downloading rich_rst-2.1.0-py3-none-any.whl.metadata (4.7 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:36.1448159Z Collecting h2<5,>=3 (from httpx[http2]!=0.23.2,>=0.23->prefect->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:36.1642688Z   Downloading h2-4.4.1-py3-none-any.whl.metadata (3.8 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:36.1931692Z Collecting hyperframe<7,>=6.1 (from h2<5,>=3->httpx[http2]!=0.23.2,>=0.23->prefect->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:36.2121656Z   Downloading hyperframe-6.1.0-py3-none-any.whl.metadata (4.3 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:36.2385174Z Collecting hpack<5,>=4.2 (from h2<5,>=3->httpx[http2]!=0.23.2,>=0.23->prefect->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:36.2578050Z   Downloading hpack-4.2.0-py3-none-any.whl.metadata (3.3 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:36.2944823Z Collecting burner-redis>=0.1.7 (from pydocket>=0.19.0->prefect->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:36.3149498Z   Downloading burner_redis-0.1.7-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.8 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:36.3421157Z Collecting cronsim>=2.6 (from pydocket>=0.19.0->prefect->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:36.3620628Z   Downloading cronsim-2.7-py3-none-any.whl.metadata (6.9 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:36.3924626Z Collecting py-key-value-aio>=0.3.0 (from py-key-value-aio[memory,redis]>=0.3.0->pydocket>=0.19.0->prefect->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:36.4116234Z   Downloading py_key_value_aio-0.4.5-py3-none-any.whl.metadata (16 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:36.4549771Z Collecting typer>=0.15.1 (from pydocket>=0.19.0->prefect->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:36.4760148Z   Downloading typer-0.27.2-py3-none-any.whl.metadata (16 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:36.5031882Z Collecting uncalled-for>=0.4.0 (from pydocket>=0.19.0->prefect->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:36.5221078Z   Downloading uncalled_for-0.4.0-py3-none-any.whl.metadata (4.4 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:36.5574716Z Collecting beartype>=0.20.0 (from py-key-value-aio>=0.3.0->py-key-value-aio[memory,redis]>=0.3.0->pydocket>=0.19.0->prefect->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:36.5768427Z   Downloading beartype-0.22.9-py3-none-any.whl.metadata (37 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:36.6363343Z Collecting shellingham>=1.3.0 (from typer>=0.15.1->pydocket>=0.19.0->prefect->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:36.6552147Z   Downloading shellingham-1.5.4-py2.py3-none-any.whl.metadata (3.5 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:36.8143464Z Collecting psycopg-binary==3.3.5 (from psycopg[binary]->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:36.8349151Z   Downloading psycopg_binary-3.3.5-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (2.7 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:36.8714092Z Collecting oauthlib>=3.0.0 (from requests-oauthlib->apprise<2.0.0,>=1.13.0->prefect->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:36.8906018Z   Downloading oauthlib-3.3.1-py3-none-any.whl.metadata (7.9 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:36.9298999Z Collecting pydeck<1,>=0.8.0b4 (from streamlit->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:36.9514274Z   Downloading pydeck-0.9.3-py2.py3-none-any.whl.metadata (4.2 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:37.0883646Z Collecting protobuf<8,>=5.26.1 (from streamlit->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:37.1078393Z   Downloading protobuf-7.36.1-cp310-abi3-manylinux2014_x86_64.whl.metadata (595 bytes)
+nightly	UNKNOWN STEP	2026-09-12T04:02:37.1580973Z Collecting httptools<1,>=0.6.3 (from streamlit->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:37.1772359Z   Downloading httptools-0.8.0-cp314-cp314-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (3.5 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:37.2077425Z Collecting python-multipart<1,>=0.0.10 (from streamlit->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:37.2267477Z   Downloading python_multipart-0.0.32-py3-none-any.whl.metadata (2.1 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:37.2539408Z Collecting itsdangerous<3,>=2.1.2 (from streamlit->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:37.2730132Z   Downloading itsdangerous-2.2.0-py3-none-any.whl.metadata (1.9 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:37.3274190Z Collecting watchdog<7,>=2.1.5 (from streamlit->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:37.3468836Z   Downloading watchdog-6.0.0-py3-none-manylinux2014_x86_64.whl.metadata (44 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:37.4116634Z Collecting bcrypt>=3.1.7 (from streamlit-authenticator->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:37.4311332Z   Downloading bcrypt-5.0.0-cp39-abi3-manylinux_2_34_x86_64.whl.metadata (10 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:37.4591912Z Collecting captcha>=0.5.0 (from streamlit-authenticator->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:37.4792277Z   Downloading captcha-0.7.1-py3-none-any.whl.metadata (2.2 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:37.5147412Z Collecting extra-streamlit-components>=0.1.70 (from streamlit-authenticator->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:37.5394946Z   Downloading extra_streamlit_components-0.1.81-py3-none-any.whl.metadata (5.4 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:37.5693301Z Collecting PyJWT>=2.3.0 (from streamlit-authenticator->manager-database==0.1.0)
+nightly	UNKNOWN STEP	2026-09-12T04:02:37.5890797Z   Downloading pyjwt-2.14.0-py3-none-any.whl.metadata (3.4 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:37.6292476Z Downloading black-26.5.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (1.9 MB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:37.7076960Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.9/1.9 MB 28.2 MB/s  0:00:00
+nightly	UNKNOWN STEP	2026-09-12T04:02:37.7296528Z Downloading coverage-7.16.0-cp314-cp314-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (257 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:37.7565474Z Downloading mypy-2.3.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (15.2 MB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:37.8760609Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 15.2/15.2 MB 128.5 MB/s  0:00:00
+nightly	UNKNOWN STEP	2026-09-12T04:02:37.8955785Z Downloading pytest-9.1.1-py3-none-any.whl (386 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:37.9177552Z Downloading pytest_cov-7.1.0-py3-none-any.whl (22 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:37.9388601Z Downloading ruff-0.16.6-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (10.3 MB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:37.9730621Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 10.3/10.3 MB 318.5 MB/s  0:00:00
+nightly	UNKNOWN STEP	2026-09-12T04:02:37.9923460Z Downloading ast_serialize-0.11.1-cp39-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (1.3 MB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:37.9990992Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.3/1.3 MB 239.3 MB/s  0:00:00
+nightly	UNKNOWN STEP	2026-09-12T04:02:38.0202938Z Downloading edgartools-5.44.1-py3-none-any.whl (3.4 MB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:38.0468444Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.4/3.4 MB 146.2 MB/s  0:00:00
+nightly	UNKNOWN STEP	2026-09-12T04:02:38.0681649Z Downloading httpxthrottlecache-0.3.5-py3-none-any.whl (12 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:38.0893336Z Downloading jsonschema-4.26.0-py3-none-any.whl (90 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:38.1124890Z Downloading langchain-1.4.0-py3-none-any.whl (161 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:38.1357829Z Downloading langchain_anthropic-1.7.2-py3-none-any.whl (60 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:38.1566743Z Downloading anthropic-1.5.0-py3-none-any.whl (1.2 MB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:38.1633321Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.2/1.2 MB 228.1 MB/s  0:00:00
+nightly	UNKNOWN STEP	2026-09-12T04:02:38.1824073Z Downloading anyio-4.15.1-py3-none-any.whl (132 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:38.2037885Z Downloading docstring_parser-0.18.0-py3-none-any.whl (22 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:38.2245723Z Downloading httpx2-2.12.0-py3-none-any.whl (95 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:38.2459286Z Downloading httpcore2-2.12.0-py3-none-any.whl (83 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:38.2673186Z Downloading jiter-0.16.0-cp314-cp314-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (344 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:38.2890188Z Downloading langchain_core-1.6.3-py3-none-any.whl (571 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:38.2937330Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 571.8/571.8 kB 121.8 MB/s  0:00:00
+nightly	UNKNOWN STEP	2026-09-12T04:02:38.3128499Z Downloading httpx-0.28.1-py3-none-any.whl (73 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:38.3340102Z Downloading httpcore-1.0.9-py3-none-any.whl (78 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:38.3554390Z Downloading jsonpatch-1.33-py2.py3-none-any.whl (12 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:38.3767481Z Downloading langchain_openai-1.6.2-py3-none-any.whl (125 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:38.3978470Z Downloading langgraph-1.2.11-py3-none-any.whl (248 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:38.4189216Z Downloading langgraph_checkpoint-4.2.0-py3-none-any.whl (56 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:38.4399916Z Downloading langgraph_prebuilt-1.1.0-py3-none-any.whl (41 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:38.4608399Z Downloading langgraph_sdk-0.4.4-py3-none-any.whl (162 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:38.4823702Z Downloading langsmith-0.12.4-py3-none-any.whl (767 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:38.4872232Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 767.5/767.5 kB 176.7 MB/s  0:00:00
+nightly	UNKNOWN STEP	2026-09-12T04:02:38.5064502Z Downloading openai-3.13.0-py3-none-any.whl (2.0 MB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:38.5143463Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.0/2.0 MB 303.1 MB/s  0:00:00
+nightly	UNKNOWN STEP	2026-09-12T04:02:38.5156067Z Using cached pluggy-1.6.0-py3-none-any.whl (20 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:38.5355315Z Downloading pydantic-2.13.5-py3-none-any.whl (472 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:38.5585245Z Downloading pydantic_core-2.46.5-cp314-cp314-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.1 MB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:38.5665051Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.1/2.1 MB 316.9 MB/s  0:00:00
+nightly	UNKNOWN STEP	2026-09-12T04:02:38.5864655Z Downloading pytokens-0.4.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (268 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:38.6113303Z Downloading pyyaml-6.0.3-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (794 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:38.6172345Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 794.2/794.2 kB 137.8 MB/s  0:00:00
+nightly	UNKNOWN STEP	2026-09-12T04:02:38.6363958Z Downloading sniffio-1.3.1-py3-none-any.whl (10 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:38.6587129Z Downloading tenacity-9.1.4-py3-none-any.whl (28 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:38.6802956Z Downloading tiktoken-0.14.0-cp314-cp314-manylinux_2_28_x86_64.whl (1.2 MB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:38.6863316Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.2/1.2 MB 244.8 MB/s  0:00:00
+nightly	UNKNOWN STEP	2026-09-12T04:02:38.7054090Z Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:38.7261485Z Downloading uuid_utils-0.17.1-cp314-cp314-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (325 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:38.7484727Z Downloading websockets-16.1.1-cp314-cp314-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (187 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:38.7696382Z Downloading aiofiles-25.1.0-py3-none-any.whl (14 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:38.7904717Z Downloading annotated_types-0.8.0-py3-none-any.whl (13 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:38.8109926Z Downloading attrs-26.1.0-py3-none-any.whl (67 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:38.8321559Z Downloading beautifulsoup4-4.15.0-py3-none-any.whl (109 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:38.8532663Z Downloading certifi-2026.7.22-py3-none-any.whl (136 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:38.8744903Z Downloading click-8.5.0-py3-none-any.whl (125 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:38.8956555Z Downloading distro-1.9.0-py3-none-any.whl (20 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:38.9164023Z Downloading filelock-3.32.6-py3-none-any.whl (100 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:38.9375748Z Downloading h11-0.16.0-py3-none-any.whl (37 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:38.9590848Z Downloading humanize-4.16.0-py3-none-any.whl (137 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:38.9808362Z Downloading idna-3.19-py3-none-any.whl (68 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:39.0035875Z Downloading iniconfig-2.3.0-py3-none-any.whl (7.5 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:39.0225618Z Downloading jinja2-3.1.6-py3-none-any.whl (134 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:39.0446785Z Downloading jsonpointer-3.1.1-py3-none-any.whl (7.7 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:39.0652330Z Downloading jsonschema_specifications-2025.9.1-py3-none-any.whl (18 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:39.0867228Z Downloading langchain_protocol-0.0.19-py3-none-any.whl (7.3 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:39.1081502Z Downloading librt-0.15.0-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (523 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:39.1303929Z Downloading lxml-6.1.3-cp314-cp314-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl (5.2 MB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:39.1512755Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.2/5.2 MB 273.4 MB/s  0:00:00
+nightly	UNKNOWN STEP	2026-09-12T04:02:39.1706495Z Downloading markupsafe-3.0.3-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (23 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:39.1915476Z Downloading mypy_extensions-1.1.0-py3-none-any.whl (5.0 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:39.2121390Z Downloading nest_asyncio-1.6.0-py3-none-any.whl (5.2 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:39.2334246Z Downloading orjson-3.12.0-cp314-cp314-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (131 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:39.2543557Z Downloading ormsgpack-1.12.2-cp314-cp314-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (212 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:39.2576450Z Using cached packaging-26.3-py3-none-any.whl (129 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:39.2769525Z Downloading pandas-3.0.5-cp314-cp314-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl (11.0 MB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:39.3097441Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.0/11.0 MB 354.0 MB/s  0:00:00
+nightly	UNKNOWN STEP	2026-09-12T04:02:39.3290241Z Downloading numpy-2.5.3-cp314-cp314-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (16.7 MB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:39.3897481Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.7/16.7 MB 282.9 MB/s  0:00:00
+nightly	UNKNOWN STEP	2026-09-12T04:02:39.3910470Z Using cached pathspec-1.1.1-py3-none-any.whl (57 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:39.4102769Z Downloading pdfplumber-0.11.10-py3-none-any.whl (60 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:39.4317358Z Downloading pdfminer_six-20260107-py3-none-any.whl (6.6 MB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:39.4522829Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.6/6.6 MB 357.6 MB/s  0:00:00
+nightly	UNKNOWN STEP	2026-09-12T04:02:39.4713157Z Downloading charset_normalizer-3.5.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (251 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:39.4927093Z Downloading cryptography-50.0.1-cp311-abi3-manylinux_2_34_x86_64.whl (4.7 MB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:39.5071457Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.7/4.7 MB 369.2 MB/s  0:00:00
+nightly	UNKNOWN STEP	2026-09-12T04:02:39.5264491Z Downloading cffi-2.1.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (221 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:39.5481461Z Downloading pillow-12.3.0-cp314-cp314-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (6.9 MB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:39.5702014Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.9/6.9 MB 361.4 MB/s  0:00:00
+nightly	UNKNOWN STEP	2026-09-12T04:02:39.5891905Z Downloading platformdirs-4.11.8-py3-none-any.whl (24 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:39.6118520Z Downloading pyarrow-25.0.1-cp314-cp314-manylinux_2_28_x86_64.whl (50.1 MB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:39.7930825Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 50.1/50.1 MB 279.4 MB/s  0:00:00
+nightly	UNKNOWN STEP	2026-09-12T04:02:39.8125574Z Downloading pygments-2.21.0-py3-none-any.whl (1.3 MB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:39.8190578Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.3/1.3 MB 232.5 MB/s  0:00:00
+nightly	UNKNOWN STEP	2026-09-12T04:02:39.8381610Z Downloading pypdf-6.18.1-py3-none-any.whl (394 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:39.8602660Z Downloading pypdfium2-5.13.0-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (3.7 MB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:39.8725082Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.7/3.7 MB 351.6 MB/s  0:00:00
+nightly	UNKNOWN STEP	2026-09-12T04:02:39.8915933Z Downloading pyrate_limiter-4.5.0-py3-none-any.whl (57 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:39.9135215Z Downloading pytest_regressions-2.11.0-py3-none-any.whl (25 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:39.9341552Z Downloading pytest_datadir-1.8.0-py3-none-any.whl (6.5 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:39.9558319Z Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl (229 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:39.9774084Z Downloading rank_bm25-0.2.2-py3-none-any.whl (8.6 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:39.9995268Z Downloading rapidfuzz-3.14.6-cp314-cp314-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (3.2 MB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:40.0115870Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.2/3.2 MB 299.3 MB/s  0:00:00
+nightly	UNKNOWN STEP	2026-09-12T04:02:40.0312219Z Downloading referencing-0.37.0-py3-none-any.whl (26 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:40.0522293Z Downloading requests-2.34.2-py3-none-any.whl (73 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:40.0744828Z Downloading urllib3-2.7.0-py3-none-any.whl (131 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:40.0955594Z Downloading requests_toolbelt-1.0.0-py2.py3-none-any.whl (54 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:40.1169049Z Downloading rich-15.0.0-py3-none-any.whl (310 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:40.1386572Z Downloading markdown_it_py-4.2.0-py3-none-any.whl (91 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:40.1595382Z Downloading mdurl-0.1.2-py3-none-any.whl (10.0 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:40.1891620Z Downloading rpds_py-2026.6.3-cp314-cp314-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (367 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:40.2120774Z Downloading six-1.17.0-py2.py3-none-any.whl (11 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:40.2329664Z Downloading soupsieve-2.9.2-py3-none-any.whl (37 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:40.2581961Z Downloading stamina-26.1.0-py3-none-any.whl (18 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:40.2798335Z Downloading tabulate-0.10.0-py3-none-any.whl (39 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:40.3012027Z Downloading textdistance-4.6.3-py3-none-any.whl (31 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:40.3353480Z Downloading tqdm-4.70.1-py3-none-any.whl (80 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:40.3578525Z Downloading truststore-0.10.4-py3-none-any.whl (18 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:40.3786003Z Downloading typing_inspection-0.4.4-py3-none-any.whl (14 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:40.3999623Z Downloading Unidecode-1.4.0-py3-none-any.whl (235 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:40.4218602Z Downloading xxhash-4.0.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (268 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:40.4435089Z Downloading zstandard-0.25.0-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (5.6 MB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:40.4617986Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.6/5.6 MB 327.8 MB/s  0:00:00
+nightly	UNKNOWN STEP	2026-09-12T04:02:40.4815266Z Downloading alembic-1.20.0-py3-none-any.whl (268 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:40.5033261Z Downloading sqlalchemy-2.0.52-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (3.3 MB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:40.5170924Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.3/3.3 MB 272.5 MB/s  0:00:00
+nightly	UNKNOWN STEP	2026-09-12T04:02:40.5371546Z Downloading greenlet-3.5.5-cp314-cp314-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl (670 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:40.5420508Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 670.8/670.8 kB 149.2 MB/s  0:00:00
+nightly	UNKNOWN STEP	2026-09-12T04:02:40.5610168Z Downloading altair-6.2.2-py3-none-any.whl (797 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:40.5659200Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 797.6/797.6 kB 185.2 MB/s  0:00:00
+nightly	UNKNOWN STEP	2026-09-12T04:02:40.5848247Z Downloading narwhals-2.26.0-py3-none-any.whl (474 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:40.6067394Z Downloading boto3-1.43.93-py3-none-any.whl (140 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:40.6281171Z Downloading botocore-1.43.93-py3-none-any.whl (15.8 MB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:40.6807337Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 15.8/15.8 MB 314.5 MB/s  0:00:00
+nightly	UNKNOWN STEP	2026-09-12T04:02:40.6998800Z Downloading jmespath-1.1.0-py3-none-any.whl (20 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:40.7234179Z Downloading s3transfer-0.19.2-py3-none-any.whl (90 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:40.7447690Z Downloading fakeredis-2.38.0-py3-none-any.whl (167 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:40.7663548Z Downloading redis-8.1.0-py3-none-any.whl (560 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:40.7711339Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 560.6/560.6 kB 114.6 MB/s  0:00:00
+nightly	UNKNOWN STEP	2026-09-12T04:02:40.7902476Z Downloading sortedcontainers-2.4.0-py2.py3-none-any.whl (29 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:40.8134350Z Downloading fastapi-0.141.1-py3-none-any.whl (131 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:40.8343439Z Downloading annotated_doc-0.0.5-py3-none-any.whl (5.3 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:40.8552524Z Downloading starlette-1.6.0-py3-none-any.whl (75 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:40.8777049Z Downloading feedparser-6.0.14-py3-none-any.whl (80 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:40.8989337Z Downloading feedparser_sgmllib-2.1.0-py3-none-any.whl (11 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:40.9206447Z Downloading mako-1.4.1-py3-none-any.whl (80 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:40.9415223Z Downloading pre_commit-4.6.2-py2.py3-none-any.whl (226 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:40.9634801Z Downloading cfgv-3.5.0-py2.py3-none-any.whl (7.4 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:40.9844432Z Downloading identify-2.6.19-py2.py3-none-any.whl (99 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:41.0056458Z Downloading nodeenv-1.10.0-py2.py3-none-any.whl (23 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:41.0265165Z Downloading virtualenv-21.7.9-py3-none-any.whl (5.3 MB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:41.0426731Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.3/5.3 MB 367.1 MB/s  0:00:00
+nightly	UNKNOWN STEP	2026-09-12T04:02:41.0624772Z Downloading distlib-0.4.3-py2.py3-none-any.whl (470 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:41.0854280Z Downloading python_discovery-1.6.0-py3-none-any.whl (38 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:41.1102984Z Downloading prefect-3.8.5-py3-none-any.whl (15.6 MB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:41.2339205Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 15.6/15.6 MB 126.3 MB/s  0:00:00
+nightly	UNKNOWN STEP	2026-09-12T04:02:41.2533714Z Downloading aiosqlite-0.22.1-py3-none-any.whl (17 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:41.2745652Z Downloading amplitude_analytics-1.2.3-py3-none-any.whl (24 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:41.2969037Z Downloading apprise-1.13.1-py3-none-any.whl (1.8 MB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:41.3047030Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.8/1.8 MB 286.1 MB/s  0:00:00
+nightly	UNKNOWN STEP	2026-09-12T04:02:41.3239304Z Downloading asgi_lifespan-2.1.0-py3-none-any.whl (10 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:41.3458560Z Downloading asyncpg-0.31.0-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (3.5 MB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:41.3574756Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.5/3.5 MB 343.2 MB/s  0:00:00
+nightly	UNKNOWN STEP	2026-09-12T04:02:41.3767551Z Downloading cachetools-7.1.8-py3-none-any.whl (16 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:41.3985038Z Downloading cloudpickle-3.1.2-py3-none-any.whl (22 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:41.4203619Z Downloading coolname-5.0.0-py3-none-any.whl (47 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:41.4429470Z Downloading dateparser-1.4.3-py3-none-any.whl (322 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:41.4648048Z Downloading docker-7.2.0-py3-none-any.whl (148 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:41.4864110Z Downloading griffe-2.3.0-py3-none-any.whl (5.1 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:41.5071139Z Downloading griffecli-2.3.0-py3-none-any.whl (11 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:41.5280112Z Downloading griffelib-2.3.0-py3-none-any.whl (169 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:41.5497091Z Downloading opentelemetry_api-1.44.0-py3-none-any.whl (60 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:41.5704821Z Downloading pydantic_extra_types-2.11.1-py3-none-any.whl (79 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:41.5926582Z Downloading pydantic_settings-2.15.0-py3-none-any.whl (69 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:41.6138773Z Downloading python_slugify-8.0.4-py2.py3-none-any.whl (10 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:41.6348868Z Downloading pytz-2026.3.post1-py2.py3-none-any.whl (508 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:41.6571596Z Downloading readchar-4.2.2-py3-none-any.whl (9.4 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:41.6781490Z Downloading rfc3339_validator-0.1.4-py2.py3-none-any.whl (3.5 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:41.6995985Z Downloading whenever-0.10.5-cp314-cp314-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (602 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:41.7044136Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 602.9/602.9 kB 128.1 MB/s  0:00:00
+nightly	UNKNOWN STEP	2026-09-12T04:02:41.7234255Z Downloading colorama-0.4.6-py2.py3-none-any.whl (25 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:41.7444904Z Downloading cyclopts-4.25.2-py3-none-any.whl (242 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:41.7660088Z Downloading rich_rst-2.1.0-py3-none-any.whl (272 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:41.7876144Z Downloading exceptiongroup-1.3.1-py3-none-any.whl (16 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:41.8089030Z Downloading fsspec-2026.7.0-py3-none-any.whl (206 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:41.8324345Z Downloading graphviz-0.21-py3-none-any.whl (47 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:41.8534927Z Downloading h2-4.4.1-py3-none-any.whl (62 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:41.8754860Z Downloading hpack-4.2.0-py3-none-any.whl (34 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:41.8969029Z Downloading hyperframe-6.1.0-py3-none-any.whl (13 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:41.9188588Z Downloading jinja2_humanize_extension-0.4.0-py3-none-any.whl (4.8 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:41.9418438Z Downloading prometheus_client-0.26.0-py3-none-any.whl (64 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:41.9685340Z Downloading pydocket-0.25.2-py3-none-any.whl (140 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:41.9911899Z Downloading burner_redis-0.1.7-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (1.4 MB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:41.9978665Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.4/1.4 MB 261.2 MB/s  0:00:00
+nightly	UNKNOWN STEP	2026-09-12T04:02:42.0173383Z Downloading cronsim-2.7-py3-none-any.whl (14 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:42.0389405Z Downloading py_key_value_aio-0.4.5-py3-none-any.whl (170 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:42.0614651Z Downloading beartype-0.22.9-py3-none-any.whl (1.3 MB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:42.0682033Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.3/1.3 MB 235.3 MB/s  0:00:00
+nightly	UNKNOWN STEP	2026-09-12T04:02:42.0885708Z Downloading python_dotenv-1.2.3-py3-none-any.whl (22 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:42.1114584Z Downloading python_json_logger-4.2.0-py3-none-any.whl (14 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:42.1349033Z Downloading regex-2026.9.10-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (803 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:42.1402082Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 803.7/803.7 kB 169.1 MB/s  0:00:00
+nightly	UNKNOWN STEP	2026-09-12T04:02:42.1609834Z Downloading ruamel_yaml-0.19.1-py3-none-any.whl (118 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:42.1864374Z Downloading ruamel_yaml_clib-0.2.15-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (778 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:42.1914553Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 778.2/778.2 kB 176.5 MB/s  0:00:00
+nightly	UNKNOWN STEP	2026-09-12T04:02:42.2108943Z Downloading semver-3.0.4-py3-none-any.whl (17 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:42.2316623Z Downloading text_unidecode-1.3-py2.py3-none-any.whl (78 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:42.2529410Z Downloading toml-0.10.2-py2.py3-none-any.whl (16 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:42.2744532Z Downloading typer-0.27.2-py3-none-any.whl (123 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:42.2962363Z Downloading shellingham-1.5.4-py2.py3-none-any.whl (9.8 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:42.3174274Z Downloading tzlocal-5.4.4-py3-none-any.whl (18 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:42.3383618Z Downloading uncalled_for-0.4.0-py3-none-any.whl (15 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:42.3595173Z Downloading uvicorn-0.52.4-py3-none-any.whl (79 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:42.3815239Z Downloading markdown-3.10.3-py3-none-any.whl (110 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:42.4029089Z Downloading psycopg-3.3.5-py3-none-any.whl (213 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:42.4254053Z Downloading psycopg_binary-3.3.5-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (5.2 MB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:42.4951301Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.2/5.2 MB 75.3 MB/s  0:00:00
+nightly	UNKNOWN STEP	2026-09-12T04:02:42.5146992Z Downloading pycparser-3.0-py3-none-any.whl (48 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:42.5358603Z Downloading pytest_asyncio-1.4.0-py3-none-any.whl (16 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:42.5568635Z Downloading requests_oauthlib-2.0.0-py2.py3-none-any.whl (24 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:42.5779909Z Downloading oauthlib-3.3.1-py3-none-any.whl (160 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:42.5999417Z Downloading streamlit-1.63.0-py3-none-any.whl (10.5 MB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:42.6370980Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 10.5/10.5 MB 310.0 MB/s  0:00:00
+nightly	UNKNOWN STEP	2026-09-12T04:02:42.6568668Z Downloading httptools-0.8.0-cp314-cp314-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (481 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:42.6789967Z Downloading itsdangerous-2.2.0-py3-none-any.whl (16 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:42.7032216Z Downloading protobuf-7.36.1-cp310-abi3-manylinux2014_x86_64.whl (343 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:42.7251629Z Downloading pydeck-0.9.3-py2.py3-none-any.whl (11.4 MB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:42.7625779Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.4/11.4 MB 321.4 MB/s  0:00:00
+nightly	UNKNOWN STEP	2026-09-12T04:02:42.7817903Z Downloading python_multipart-0.0.32-py3-none-any.whl (30 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:42.8025471Z Downloading watchdog-6.0.0-py3-none-manylinux2014_x86_64.whl (79 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:42.8238124Z Downloading streamlit_authenticator-0.4.2-py3-none-any.whl (43 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:42.8446821Z Downloading bcrypt-5.0.0-cp39-abi3-manylinux_2_34_x86_64.whl (278 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:42.8673047Z Downloading captcha-0.7.1-py3-none-any.whl (147 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:42.8902360Z Downloading extra_streamlit_components-0.1.81-py3-none-any.whl (2.3 MB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:42.9027839Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.3/2.3 MB 196.8 MB/s  0:00:00
+nightly	UNKNOWN STEP	2026-09-12T04:02:42.9219050Z Downloading pyjwt-2.14.0-py3-none-any.whl (32 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:42.9427161Z Downloading types_pyyaml-6.0.12.20260906-py3-none-any.whl (21 kB)
+nightly	UNKNOWN STEP	2026-09-12T04:02:43.6657513Z Building wheels for collected packages: manager-database, app-baseline-kit, stranske-pdf-extract
+nightly	UNKNOWN STEP	2026-09-12T04:02:43.6665740Z   Building editable for manager-database (pyproject.toml): started
+nightly	UNKNOWN STEP	2026-09-12T04:02:43.9127162Z   Building editable for manager-database (pyproject.toml): finished with status 'done'
+nightly	UNKNOWN STEP	2026-09-12T04:02:43.9132451Z   Created wheel for manager-database: filename=manager_database-0.1.0-0.editable-py3-none-any.whl size=4683 sha256=ddeeea51e99b8a8d55065c1818562bbb75490b3ad2ab51517444aba47d7c508b
+nightly	UNKNOWN STEP	2026-09-12T04:02:43.9133995Z   Stored in directory: /tmp/pip-ephem-wheel-cache-0kldgqts/wheels/17/43/ed/106f9d01057fe5ea36a3c823ed6a5d05e8301823cf668254e1
+nightly	UNKNOWN STEP	2026-09-12T04:02:43.9159736Z   Building wheel for app-baseline-kit (pyproject.toml): started
+nightly	UNKNOWN STEP	2026-09-12T04:02:44.1410673Z   Building wheel for app-baseline-kit (pyproject.toml): finished with status 'done'
+nightly	UNKNOWN STEP	2026-09-12T04:02:44.1415893Z   Created wheel for app-baseline-kit: filename=app_baseline_kit-0.2.0-py3-none-any.whl size=9495 sha256=78660057c4dbe29c328abd4a5668d612725a1c93f828fae88b9a6acb137eaef3
+nightly	UNKNOWN STEP	2026-09-12T04:02:44.1417312Z   Stored in directory: /tmp/pip-ephem-wheel-cache-0kldgqts/wheels/5a/1f/ac/555bfafeb20d4bfb7929ca5a9f54a20a915738a84e8149b052
+nightly	UNKNOWN STEP	2026-09-12T04:02:44.1458841Z   Building wheel for stranske-pdf-extract (pyproject.toml): started
+nightly	UNKNOWN STEP	2026-09-12T04:02:44.2029605Z   Building wheel for stranske-pdf-extract (pyproject.toml): finished with status 'done'
+nightly	UNKNOWN STEP	2026-09-12T04:02:44.2035631Z   Created wheel for stranske-pdf-extract: filename=stranske_pdf_extract-0.1.0-py3-none-any.whl size=18613 sha256=2b389b85b94e532863bcc98308c73670f471b16b7de812d965b05e2b67436ee9
+nightly	UNKNOWN STEP	2026-09-12T04:02:44.2037798Z   Stored in directory: /tmp/pip-ephem-wheel-cache-0kldgqts/wheels/15/49/96/8b5bd519097b0260249ebf95817413c29a467f6a305650c1dd
+nightly	UNKNOWN STEP	2026-09-12T04:02:44.2053589Z Successfully built manager-database app-baseline-kit stranske-pdf-extract
+nightly	UNKNOWN STEP	2026-09-12T04:02:44.5796907Z Installing collected packages: text-unidecode, sortedcontainers, pytz, distlib, zstandard, xxhash, whenever, websockets, watchdog, uuid-utils, urllib3, unidecode, uncalled-for, tzlocal, typing_extensions, types-PyYAML, truststore, tqdm, toml, textdistance, tenacity, tabulate, stranske-pdf-extract, soupsieve, sniffio, six, shellingham, semver, ruff, ruamel-yaml-clib, ruamel-yaml, rpds-py, regex, redis, readchar, rapidfuzz, PyYAML, pytokens, python-slugify, python-multipart, python-json-logger, python-dotenv, pyrate-limiter, pypdfium2, pypdf, PyJWT, pygments, pycparser, pyarrow, psycopg-binary, psycopg, protobuf, prometheus-client, pluggy, platformdirs, Pillow, pathspec, packaging, ormsgpack, orjson, oauthlib, numpy, nodeenv, nest-asyncio, narwhals, mypy-extensions, mdurl, MarkupSafe, markdown, lxml, librt, jsonpointer, jmespath, jiter, itsdangerous, iniconfig, idna, identify, hyperframe, humanize, httptools, hpack, h11, griffelib, greenlet, graphviz, fsspec, filelock, feedparser-sgmllib, exceptiongroup, docstring-parser, distro, cronsim, coverage, coolname, colorama, cloudpickle, click, charset-normalizer, cfgv, certifi, cachetools, burner-redis, beartype, bcrypt, attrs, asyncpg, ast-serialize, annotated-types, annotated-doc, amplitude-analytics, aiosqlite, aiofiles, uvicorn, typing-inspection, stamina, SQLAlchemy, rfc3339-validator, requests, referencing, rank-bm25, python-discovery, python-dateutil, pytest, pydantic-core, py-key-value-aio, opentelemetry-api, mypy, markdown-it-py, Mako, langchain-protocol, jsonpatch, jinja2, httpcore2, httpcore, h2, griffecli, feedparser, fakeredis, cffi, captcha, black, beautifulsoup4, asgi-lifespan, anyio, virtualenv, tiktoken, starlette, rich, requests-toolbelt, requests-oauthlib, pytest-datadir, pytest-cov, pytest-asyncio, pydeck, pydantic, pandas, jsonschema-specifications, jinja2-humanize-extension, httpx2, httpx, griffe, docker, dateparser, cryptography, botocore, alembic, typer, s3transfer, rich-rst, pytest-regressions, pydantic-settings, pydantic-extra-types, pre-commit, pdfminer.six, openai, langsmith, jsonschema, httpxthrottlecache, fastapi, apprise, anthropic, pydocket, pdfplumber, langchain-core, edgartools, cyclopts, boto3, app-baseline-kit, altair, streamlit, prefect, langgraph-sdk, langgraph-checkpoint, langchain-openai, langchain-anthropic, langgraph-prebuilt, extra-streamlit-components, streamlit-authenticator, langgraph, langchain, manager-database
+nightly	UNKNOWN STEP	2026-09-12T04:03:24.8652275Z 
+nightly	UNKNOWN STEP	2026-09-12T04:03:24.8803914Z Successfully installed Mako-1.4.1 MarkupSafe-3.0.3 Pillow-12.3.0 PyJWT-2.14.0 PyYAML-6.0.3 SQLAlchemy-2.0.52 aiofiles-25.1.0 aiosqlite-0.22.1 alembic-1.20.0 altair-6.2.2 amplitude-analytics-1.2.3 annotated-doc-0.0.5 annotated-types-0.8.0 anthropic-1.5.0 anyio-4.15.1 app-baseline-kit-0.2.0 apprise-1.13.1 asgi-lifespan-2.1.0 ast-serialize-0.11.1 asyncpg-0.31.0 attrs-26.1.0 bcrypt-5.0.0 beartype-0.22.9 beautifulsoup4-4.15.0 black-26.5.1 boto3-1.43.93 botocore-1.43.93 burner-redis-0.1.7 cachetools-7.1.8 captcha-0.7.1 certifi-2026.7.22 cffi-2.1.1 cfgv-3.5.0 charset-normalizer-3.5.1 click-8.5.0 cloudpickle-3.1.2 colorama-0.4.6 coolname-5.0.0 coverage-7.16.0 cronsim-2.7 cryptography-50.0.1 cyclopts-4.25.2 dateparser-1.4.3 distlib-0.4.3 distro-1.9.0 docker-7.2.0 docstring-parser-0.18.0 edgartools-5.44.1 exceptiongroup-1.3.1 extra-streamlit-components-0.1.81 fakeredis-2.38.0 fastapi-0.141.1 feedparser-6.0.14 feedparser-sgmllib-2.1.0 filelock-3.32.6 fsspec-2026.7.0 graphviz-0.21 greenlet-3.5.5 griffe-2.3.0 griffecli-2.3.0 griffelib-2.3.0 h11-0.16.0 h2-4.4.1 hpack-4.2.0 httpcore-1.0.9 httpcore2-2.12.0 httptools-0.8.0 httpx-0.28.1 httpx2-2.12.0 httpxthrottlecache-0.3.5 humanize-4.16.0 hyperframe-6.1.0 identify-2.6.19 idna-3.19 iniconfig-2.3.0 itsdangerous-2.2.0 jinja2-3.1.6 jinja2-humanize-extension-0.4.0 jiter-0.16.0 jmespath-1.1.0 jsonpatch-1.33 jsonpointer-3.1.1 jsonschema-4.26.0 jsonschema-specifications-2025.9.1 langchain-1.4.0 langchain-anthropic-1.7.2 langchain-core-1.6.3 langchain-openai-1.6.2 langchain-protocol-0.0.19 langgraph-1.2.11 langgraph-checkpoint-4.2.0 langgraph-prebuilt-1.1.0 langgraph-sdk-0.4.4 langsmith-0.12.4 librt-0.15.0 lxml-6.1.3 manager-database-0.1.0 markdown-3.10.3 markdown-it-py-4.2.0 mdurl-0.1.2 mypy-2.3.1 mypy-extensions-1.1.0 narwhals-2.26.0 nest-asyncio-1.6.0 nodeenv-1.10.0 numpy-2.5.3 oauthlib-3.3.1 openai-3.13.0 opentelemetry-api-1.44.0 orjson-3.12.0 ormsgpack-1.12.2 packaging-26.3 pandas-3.0.5 pathspec-1.1.1 pdfminer.six-20260107 pdfplumber-0.11.10 platformdirs-4.11.8 pluggy-1.6.0 pre-commit-4.6.2 prefect-3.8.5 prometheus-client-0.26.0 protobuf-7.36.1 psycopg-3.3.5 psycopg-binary-3.3.5 py-key-value-aio-0.4.5 pyarrow-25.0.1 pycparser-3.0 pydantic-2.13.5 pydantic-core-2.46.5 pydantic-extra-types-2.11.1 pydantic-settings-2.15.0 pydeck-0.9.3 pydocket-0.25.2 pygments-2.21.0 pypdf-6.18.1 pypdfium2-5.13.0 pyrate-limiter-4.5.0 pytest-9.1.1 pytest-asyncio-1.4.0 pytest-cov-7.1.0 pytest-datadir-1.8.0 pytest-regressions-2.11.0 python-dateutil-2.9.0.post0 python-discovery-1.6.0 python-dotenv-1.2.3 python-json-logger-4.2.0 python-multipart-0.0.32 python-slugify-8.0.4 pytokens-0.4.1 pytz-2026.3.post1 rank-bm25-0.2.2 rapidfuzz-3.14.6 readchar-4.2.2 redis-8.1.0 referencing-0.37.0 regex-2026.9.10 requests-2.34.2 requests-oauthlib-2.0.0 requests-toolbelt-1.0.0 rfc3339-validator-0.1.4 rich-15.0.0 rich-rst-2.1.0 rpds-py-2026.6.3 ruamel-yaml-0.19.1 ruamel-yaml-clib-0.2.15 ruff-0.16.6 s3transfer-0.19.2 semver-3.0.4 shellingham-1.5.4 six-1.17.0 sniffio-1.3.1 sortedcontainers-2.4.0 soupsieve-2.9.2 stamina-26.1.0 starlette-1.6.0 stranske-pdf-extract-0.1.0 streamlit-1.63.0 streamlit-authenticator-0.4.2 tabulate-0.10.0 tenacity-9.1.4 text-unidecode-1.3 textdistance-4.6.3 tiktoken-0.14.0 toml-0.10.2 tqdm-4.70.1 truststore-0.10.4 typer-0.27.2 types-PyYAML-6.0.12.20260906 typing-inspection-0.4.4 typing_extensions-4.16.0 tzlocal-5.4.4 uncalled-for-0.4.0 unidecode-1.4.0 urllib3-2.7.0 uuid-utils-0.17.1 uvicorn-0.52.4 virtualenv-21.7.9 watchdog-6.0.0 websockets-16.1.1 whenever-0.10.5 xxhash-4.0.1 zstandard-0.25.0
+nightly	UNKNOWN STEP	2026-09-12T04:03:26.0667952Z ##[group]Run docker compose up -d
+nightly	UNKNOWN STEP	2026-09-12T04:03:26.0668280Z ^[[36;1mdocker compose up -d^[[0m
+nightly	UNKNOWN STEP	2026-09-12T04:03:26.0710688Z shell: /usr/bin/bash -e {0}
+nightly	UNKNOWN STEP	2026-09-12T04:03:26.0710975Z env:
+nightly	UNKNOWN STEP	2026-09-12T04:03:26.0711262Z   pythonLocation: /opt/hostedtoolcache/Python/3.14.7/x64
+nightly	UNKNOWN STEP	2026-09-12T04:03:26.0711692Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.14.7/x64/lib/pkgconfig
+nightly	UNKNOWN STEP	2026-09-12T04:03:26.0712109Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.7/x64
+nightly	UNKNOWN STEP	2026-09-12T04:03:26.0712476Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.7/x64
+nightly	UNKNOWN STEP	2026-09-12T04:03:26.0712841Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.7/x64
+nightly	UNKNOWN STEP	2026-09-12T04:03:26.0713221Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.14.7/x64/lib
+nightly	UNKNOWN STEP	2026-09-12T04:03:26.0713544Z ##[endgroup]
+nightly	UNKNOWN STEP	2026-09-12T04:03:26.3005050Z  db Pulling 
+nightly	UNKNOWN STEP	2026-09-12T04:03:26.3011185Z  minio Pulling 
+nightly	UNKNOWN STEP	2026-09-12T04:03:26.9179779Z  minio Error pull access denied for minio/minio, repository does not exist or may require 'docker login': denied: requested access to the resource is denied
+nightly	UNKNOWN STEP	2026-09-12T04:03:26.9180845Z  db  Interrupted
+nightly	UNKNOWN STEP	2026-09-12T04:03:26.9181881Z Error response from daemon: pull access denied for minio/minio, repository does not exist or may require 'docker login': denied: requested access to the resource is denied
+nightly	UNKNOWN STEP	2026-09-12T04:03:26.9249788Z ##[error]Process completed with exit code 1.
+nightly	UNKNOWN STEP	2026-09-12T04:03:26.9401825Z Post job cleanup.
+nightly	UNKNOWN STEP	2026-09-12T04:03:27.0254874Z [command]/usr/bin/git version
+nightly	UNKNOWN STEP	2026-09-12T04:03:27.0292520Z git version 2.55.0
+nightly	UNKNOWN STEP	2026-09-12T04:03:27.0332797Z Temporarily overriding HOME='/home/runner/work/_temp/344da873-072c-4e2c-94ff-fabc806e22be' before making global git config changes
+nightly	UNKNOWN STEP	2026-09-12T04:03:27.0333642Z Adding repository directory to the temporary git global config as a safe directory
+nightly	UNKNOWN STEP	2026-09-12T04:03:27.0336605Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/Manager-Database/Manager-Database
+nightly	UNKNOWN STEP	2026-09-12T04:03:27.0367989Z Removing SSH command configuration
+nightly	UNKNOWN STEP	2026-09-12T04:03:27.0373537Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+nightly	UNKNOWN STEP	2026-09-12T04:03:27.0409877Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+nightly	UNKNOWN STEP	2026-09-12T04:03:27.0664354Z Removing HTTP extra header
+nightly	UNKNOWN STEP	2026-09-12T04:03:27.0666942Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+nightly	UNKNOWN STEP	2026-09-12T04:03:27.0705388Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+nightly	UNKNOWN STEP	2026-09-12T04:03:27.0947318Z Removing includeIf entries pointing to credentials config files
+nightly	UNKNOWN STEP	2026-09-12T04:03:27.0953582Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+nightly	UNKNOWN STEP	2026-09-12T04:03:27.0981125Z includeif.gitdir:/home/runner/work/Manager-Database/Manager-Database/.git.path
+nightly	UNKNOWN STEP	2026-09-12T04:03:27.0982013Z includeif.gitdir:/home/runner/work/Manager-Database/Manager-Database/.git/worktrees/*.path
+nightly	UNKNOWN STEP	2026-09-12T04:03:27.0983079Z includeif.gitdir:/github/workspace/.git.path
+nightly	UNKNOWN STEP	2026-09-12T04:03:27.0983629Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+nightly	UNKNOWN STEP	2026-09-12T04:03:27.0990758Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/Manager-Database/Manager-Database/.git.path
+nightly	UNKNOWN STEP	2026-09-12T04:03:27.1012848Z /home/runner/work/_temp/git-credentials-33d79c29-300b-4d2a-ae75-b5ba821e5e9c.config
+nightly	UNKNOWN STEP	2026-09-12T04:03:27.1022579Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/Manager-Database/Manager-Database/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-33d79c29\-300b\-4d2a\-ae75\-b5ba821e5e9c\.config
+nightly	UNKNOWN STEP	2026-09-12T04:03:27.1057297Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/Manager-Database/Manager-Database/.git/worktrees/*.path
+nightly	UNKNOWN STEP	2026-09-12T04:03:27.1080696Z /home/runner/work/_temp/git-credentials-33d79c29-300b-4d2a-ae75-b5ba821e5e9c.config
+nightly	UNKNOWN STEP	2026-09-12T04:03:27.1090270Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/Manager-Database/Manager-Database/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-33d79c29\-300b\-4d2a\-ae75\-b5ba821e5e9c\.config
+nightly	UNKNOWN STEP	2026-09-12T04:03:27.1131556Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+nightly	UNKNOWN STEP	2026-09-12T04:03:27.1154969Z /github/runner_temp/git-credentials-33d79c29-300b-4d2a-ae75-b5ba821e5e9c.config
+nightly	UNKNOWN STEP	2026-09-12T04:03:27.1161932Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-33d79c29\-300b\-4d2a\-ae75\-b5ba821e5e9c\.config
+nightly	UNKNOWN STEP	2026-09-12T04:03:27.1194430Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+nightly	UNKNOWN STEP	2026-09-12T04:03:27.1216814Z /github/runner_temp/git-credentials-33d79c29-300b-4d2a-ae75-b5ba821e5e9c.config
+nightly	UNKNOWN STEP	2026-09-12T04:03:27.1225591Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-33d79c29\-300b\-4d2a\-ae75\-b5ba821e5e9c\.config
+nightly	UNKNOWN STEP	2026-09-12T04:03:27.1261238Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+nightly	UNKNOWN STEP	2026-09-12T04:03:27.1495069Z Removing credentials config '/home/runner/work/_temp/git-credentials-33d79c29-300b-4d2a-ae75-b5ba821e5e9c.config'
+nightly	UNKNOWN STEP	2026-09-12T04:03:27.1648292Z Cleaning up orphan processes

@@ -1,0 +1,225 @@
+{
+  "Workflows": {
+    "repo": "Workflows",
+    "full_repo": "stranske/Workflows",
+    "sha": "afb75079055d61f864dc76ecedfde06aea9dd562",
+    "commit_msg": "Merge pull request #3416 from stranske/release-please--branches--main",
+    "commit_date": "2026-09-09T00:43:51Z",
+    "total_check_runs": 100,
+    "failed_check_runs": [
+      {
+        "id": 103524896686,
+        "name": "Execute / Scan belt promotion queue",
+        "conclusion": "failure",
+        "html_url": "https://github.com/stranske/Workflows/actions/runs/34682931898/job/103524896686"
+      },
+      {
+        "id": 103520070435,
+        "name": "Execute / Scan belt promotion queue",
+        "conclusion": "failure",
+        "html_url": "https://github.com/stranske/Workflows/actions/runs/34681141851/job/103520070435"
+      },
+      {
+        "id": 103517519711,
+        "name": "Execute / Scan belt promotion queue",
+        "conclusion": "failure",
+        "html_url": "https://github.com/stranske/Workflows/actions/runs/34680213107/job/103517519711"
+      }
+    ],
+    "recent_ci_runs": []
+  },
+  "Travel-Plan-Permission": {
+    "repo": "Travel-Plan-Permission",
+    "full_repo": "stranske/Travel-Plan-Permission",
+    "sha": "3a4cd366edcdc64577a8d1f19280977ab9ee2c24",
+    "commit_msg": "deps: sync dev tool versions",
+    "commit_date": "2026-09-08T11:02:06Z",
+    "total_check_runs": 100,
+    "failed_check_runs": [],
+    "recent_ci_runs": []
+  },
+  "Trend_Model_Project": {
+    "repo": "Trend_Model_Project",
+    "full_repo": "stranske/Trend_Model_Project",
+    "sha": "71022c1b5e4f71853b77ebf958db88c2597409b7",
+    "commit_msg": "tests: consolidate the four DummyStreamlit harnesses into one shared stub (#6031)",
+    "commit_date": "2026-09-11T15:23:08Z",
+    "total_check_runs": 100,
+    "failed_check_runs": [],
+    "recent_ci_runs": []
+  },
+  "Portable-Alpha-Extension-Model": {
+    "repo": "Portable-Alpha-Extension-Model",
+    "full_repo": "stranske/Portable-Alpha-Extension-Model",
+    "sha": "b636aedd7579242f25a83dfff9a7768ab22e0344",
+    "commit_msg": "deps: sync dev tool versions",
+    "commit_date": "2026-09-08T22:10:55Z",
+    "total_check_runs": 100,
+    "failed_check_runs": [],
+    "recent_ci_runs": []
+  },
+  "Counter_Risk": {
+    "repo": "Counter_Risk",
+    "full_repo": "stranske/Counter_Risk",
+    "sha": "a846d4b098137ea098dfdf62e3c6f0572fb9d18b",
+    "commit_msg": "Date DOJ HHI threshold guidance and distinguish portfolio limits (#1043)",
+    "commit_date": "2026-09-10T05:28:50Z",
+    "total_check_runs": 100,
+    "failed_check_runs": [],
+    "recent_ci_runs": []
+  },
+  "Manager-Database": {
+    "repo": "Manager-Database",
+    "full_repo": "stranske/Manager-Database",
+    "sha": "0d3007a00323f3b6ffc7e5a45299ab5782fbaf5c",
+    "commit_msg": "fix(dashboard): count filings by filings.filed_date in load_delta (#1654)",
+    "commit_date": "2026-09-11T15:30:50Z",
+    "total_check_runs": 100,
+    "failed_check_runs": [
+      {
+        "id": 103504287777,
+        "name": "postgres-snapshot",
+        "conclusion": "failure",
+        "html_url": "https://github.com/stranske/Manager-Database/actions/runs/34675414140/job/103504287777"
+      },
+      {
+        "id": 103494777902,
+        "name": "nightly",
+        "conclusion": "failure",
+        "html_url": "https://github.com/stranske/Manager-Database/actions/runs/34671927568/job/103494777902"
+      }
+    ],
+    "recent_ci_runs": []
+  },
+  "Inv-Man-Intake": {
+    "repo": "Inv-Man-Intake",
+    "full_repo": "stranske/Inv-Man-Intake",
+    "sha": "6055dfbd50ebd709863036be5d147bacd0c9cbb7",
+    "commit_msg": "fix: validate provider results before packet aggregation (#964)",
+    "commit_date": "2026-09-09T04:36:37Z",
+    "total_check_runs": 100,
+    "failed_check_runs": [],
+    "recent_ci_runs": []
+  },
+  "Pension-Data": {
+    "repo": "Pension-Data",
+    "full_repo": "stranske/Pension-Data",
+    "sha": "b1ab54323b2720835be80c98cb98ca6ef3380fd7",
+    "commit_msg": "deps: sync dev tool versions",
+    "commit_date": "2026-09-08T18:53:49Z",
+    "total_check_runs": 100,
+    "failed_check_runs": [],
+    "recent_ci_runs": []
+  },
+  "Ready": {
+    "repo": "Ready",
+    "full_repo": "stranske/Ready",
+    "sha": "584c3aee8f216efd9404307bbe1301198285f9e7",
+    "commit_msg": "research-program: scheduled status",
+    "commit_date": "2026-09-12T08:16:13Z",
+    "total_check_runs": 12,
+    "failed_check_runs": [
+      {
+        "id": 103524537836,
+        "name": "Python CI / lint-format",
+        "conclusion": "failure",
+        "html_url": "https://github.com/stranske/Ready/actions/runs/34682839706/job/103524537836"
+      }
+    ],
+    "recent_ci_runs": [
+      {
+        "conclusion": "failure",
+        "databaseId": 34682839706,
+        "event": "push",
+        "headSha": "584c3aee8f216efd9404307bbe1301198285f9e7",
+        "name": "CI",
+        "status": "completed",
+        "updatedAt": "2026-09-12T08:17:24Z",
+        "url": "https://github.com/stranske/Ready/actions/runs/34682839706",
+        "workflowName": "CI"
+      },
+      {
+        "conclusion": "failure",
+        "databaseId": 34682626817,
+        "event": "push",
+        "headSha": "a1c552e0ad487ac1e09d00a9e33f7398758d9e62",
+        "name": "CI",
+        "status": "completed",
+        "updatedAt": "2026-09-12T08:12:17Z",
+        "url": "https://github.com/stranske/Ready/actions/runs/34682626817",
+        "workflowName": "CI"
+      },
+      {
+        "conclusion": "failure",
+        "databaseId": 34682192211,
+        "event": "push",
+        "headSha": "9479a8bc620233344e06d99c8a7a37caf62128fb",
+        "name": "CI",
+        "status": "completed",
+        "updatedAt": "2026-09-12T08:02:17Z",
+        "url": "https://github.com/stranske/Ready/actions/runs/34682192211",
+        "workflowName": "CI"
+      }
+    ]
+  },
+  "trip-planner": {
+    "repo": "trip-planner",
+    "full_repo": "stranske/trip-planner",
+    "sha": "989df72df2b1d307099322b55ccd4427986ed4a4",
+    "commit_msg": "fix(preview): use saved scenario labels for exception warnings (#1816)",
+    "commit_date": "2026-09-08T16:29:34Z",
+    "total_check_runs": 100,
+    "failed_check_runs": [],
+    "recent_ci_runs": []
+  },
+  "learning-management-system": {
+    "repo": "learning-management-system",
+    "full_repo": "stranske/learning-management-system",
+    "sha": "6e299bd914f3aa7951b7eb225ba2897052ae6b1d",
+    "commit_msg": "Prevent prerequisite cycles in knowledge edge updates (#664)",
+    "commit_date": "2026-09-10T15:49:37Z",
+    "total_check_runs": 100,
+    "failed_check_runs": [],
+    "recent_ci_runs": []
+  },
+  "Fine-Art-Archive": {
+    "repo": "Fine-Art-Archive",
+    "full_repo": "stranske/Fine-Art-Archive",
+    "sha": "92408eec81b1825f07390485700ddfb85de53c20",
+    "commit_msg": "test: preserve attested artist names during suffix extraction (#721)",
+    "commit_date": "2026-09-08T21:31:29Z",
+    "total_check_runs": 100,
+    "failed_check_runs": [],
+    "recent_ci_runs": []
+  },
+  "Doc-Lineage": {
+    "repo": "Doc-Lineage",
+    "full_repo": "stranske/Doc-Lineage",
+    "sha": "20d605dc6e60f760a5b530ddcd141233a0bb7862",
+    "commit_msg": "deps: sync dev tool versions",
+    "commit_date": "2026-09-08T12:53:38Z",
+    "total_check_runs": 100,
+    "failed_check_runs": [],
+    "recent_ci_runs": []
+  },
+  "Deliverable-Render": {
+    "repo": "Deliverable-Render",
+    "full_repo": "stranske/Deliverable-Render",
+    "sha": "909ec2f7b1d821a39d8f190f96409500b7ac4828",
+    "commit_msg": "deps: sync dev tool versions",
+    "commit_date": "2026-09-08T19:52:44Z",
+    "total_check_runs": 100,
+    "failed_check_runs": [],
+    "recent_ci_runs": []
+  },
+  "Manager-Mosaic": {
+    "repo": "Manager-Mosaic",
+    "full_repo": "stranske/Manager-Mosaic",
+    "sha": "250d41df48c490e0423eef6d40a9e209b0952c60",
+    "commit_msg": "deps: sync dev tool versions",
+    "commit_date": "2026-09-08T15:53:18Z",
+    "total_check_runs": 100,
+    "failed_check_runs": [],
+    "recent_ci_runs": []
+  }
+}
