@@ -1,0 +1,24 @@
+> Retained draft from the 2026-09-12T08 sweep; historical run IDs below are not this run. See ../DIAGNOSIS.md for fresh evidence and validation. Not filed.
+
+# Fine-Art-Archive `main` red: one unformatted test file
+
+## Context
+`Python CI / lint-format` fails on `main` (job 102245751229, run 34281083724, head `92408ee`, 2026-09-08T21:31Z).
+The head has not moved since, so `main` has been red for 3+ days.
+
+## Evidence
+```
+black --check --line-length 100 --exclude '(\.venv|\.workflows-lib|node_modules)' .
+would reformat tests/test_gate_commit_status_fork_tolerance.py
+1 file would be reformatted, 332 files would be left unchanged.
+```
+
+## Tasks
+- [ ] Run `black --line-length 100 tests/test_gate_commit_status_fork_tolerance.py` and commit the result.
+
+## Acceptance criteria
+- [ ] `black --check --line-length 100 --exclude '(\.venv|\.workflows-lib|node_modules)' .` exits 0.
+- [ ] `Python CI / lint-format` is green on `main`.
+
+## Test gate
+Named gate: `lint-format` job of `Python CI`.

@@ -589,3 +589,4 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-12T17:09:03Z — D3-unblock-sweep-2026-09-12T16 — fail — offload to cursor exited 1; retained artifact is not proof of success
 ## 2026-09-12T17:11:09Z — D3-unblock-sweep-2026-09-12T16 — route — router picked cursor from ['codex', 'cursor']
 ## 2026-09-12T17:11:09Z — D3-unblock-sweep-2026-09-12T16 — claimed by codex (agent cursor)
+## 2026-09-12T17:17:46Z — D3-unblock-sweep-2026-09-12T16 — done — Scanned 15 repos: 124 agent-ready issues, validated two mechanical patches and a frozen-issue body repair; documented CI and scheduled-workflow failures.

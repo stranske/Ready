@@ -1,0 +1,898 @@
+Execute / Scan belt promotion queue	UNKNOWN STEP	﻿2026-09-12T16:36:33.1160455Z Current runner version: '2.337.0'
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:33.1188401Z ##[group]Runner Image Provisioner
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:33.1189573Z Hosted Compute Agent
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:33.1190627Z Version: 20260828.587
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:33.1191532Z Commit: abac92662cab4cc7352de4f9f9d2e2419aad9c29
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:33.1192500Z Build Date: 2026-08-28T16:44:25Z
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:33.1193433Z Worker ID: {81030ca8-3b3f-4ff7-aa81-f0363e5201b4}
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:33.1194370Z Azure Region: westus3
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:33.1195218Z ##[endgroup]
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:33.1197023Z ##[group]Operating System
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:33.1197915Z Ubuntu
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:33.1198674Z 24.04.5
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:33.1199399Z LTS
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:33.1200272Z ##[endgroup]
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:33.1201105Z ##[group]Runner Image
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:33.1201892Z Image: ubuntu-24.04
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:33.1202723Z Version: 20260907.300.1
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:33.1204208Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260907.300/images/ubuntu/Ubuntu2404-Readme.md
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:33.1206016Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260907.300
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:33.1207179Z ##[endgroup]
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:33.1208880Z ##[group]GITHUB_TOKEN Permissions
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:33.1211455Z Actions: write
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:33.1212333Z Contents: write
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:33.1213110Z Issues: write
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:33.1213919Z Metadata: read
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:33.1214701Z PullRequests: write
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:33.1215478Z ##[endgroup]
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:33.1217808Z Secret source: Actions
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:33.1219044Z Cache mode: write
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:33.1219919Z Prepare workflow directory
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:33.1747725Z Prepare all required actions
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:33.1796110Z Getting action download info
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:33.4671334Z Download action repository 'actions/checkout@v7' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:33.5525929Z Download action repository 'actions/github-script@v9' (SHA:3a2844b7e9c422d3c10d287c895573f7108da1b3)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.2442651Z Uses: stranske/Workflows/.github/workflows/reusable-70-orchestrator-main.yml@refs/heads/main (55075a2be16576012c69e5ef88e8c2c520d6ad60)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.2447980Z ##[group] Inputs
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.2449096Z   init_success: success
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.2450300Z   enable_readiness: false
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.2451348Z   readiness_agents: copilot,codex
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.2452352Z   readiness_custom_logins: 
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.2453351Z   require_all: false
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.2454364Z   enable_preflight: false
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.2455272Z   codex_user: 
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.2456210Z   codex_command_phrase: 
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.2457174Z   enable_diagnostic: false
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.2458163Z   diagnostic_attempt_branch: false
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.2459248Z   diagnostic_dry_run: true
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.2460389Z   enable_verify_issue: false
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.2461397Z   verify_issue_number: 
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.2462389Z   enable_watchdog: true
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.2463365Z   enable_keepalive: true
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.2464426Z   keepalive_pause_label: keepalive:paused
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.2465482Z   keepalive_max_retries: 5
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.2466506Z   enable_bootstrap: false
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.2467473Z   bootstrap_issues_label: agent:codex
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.2468500Z   draft_pr: 
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.2469847Z   verify_issue_valid_assignees: copilot,chatgpt-codex-connector,stranske-automation-bot
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.2471496Z   dry_run: true
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.2483018Z   options_json: {"keepalive_instruction":"@codex ## Pre-Commit Formatting Gate (Black)\n\n**Before you commit or push any Python (`.py`) changes, you MUST:**\n1. Run Black to format the relevant files (line length 100).\n2. Verify formatting passes CI by running: `black --check --line-length 100 --exclude '(\\.workflows-lib|node_modules)' .`\n3. If the check fails, do NOT commit/push; format again until it passes.\n\nYour objective is to satisfy the **Acceptance Criteria** by completing each **Task** within the defined **Scope**.\n\n**This round you MUST:**\n1. Implement actual code or test changes that advance at least one incomplete task toward acceptance.\n2. Commit meaningful source code (.py, .yml, .js, etc.)—not just status/docs updates.\n3. **UPDATE THE CHECKBOXES** in the Tasks and Acceptance Criteria sections below to mark completed items.\n4. Change `- [ ]` to `- [x]` for items you have completed and verified.\n\n**CRITICAL - Checkbox Updates:**\nWhen you complete a task or acceptance criterion, update its checkbox directly in this prompt file.\nChange the `[ ]` to `[x]` for completed items. The automation will read these checkboxes and update the PR status summary.\n\n**Example:**\nBefore: `- [ ] Add validation for user input`\nAfter:  `- [x] Add validation for user input`\n\n**DO NOT:**\n- Commit only status files, markdown summaries, or documentation when tasks require code.\n- Mark checkboxes complete without actually implementing and verifying the work.\n- Close the round without source-code changes when acceptance criteria require them.\n- Change the text of checkboxes—only change `[ ]` to `[x]`.\n\nReview the Scope/Tasks/Acceptance below, identify the next incomplete task that requires code, implement it, then **update the checkboxes** to mark completed items."}
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.2495048Z   dispatcher_force_issue: 
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.2495982Z   worker_max_parallel: 2
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.2497203Z   conveyor_max_merges: 2
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.2498154Z   keepalive_trace: mtylxb4zrg7ijx
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.2499211Z   keepalive_round: 1
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.2500316Z   keepalive_pr: 
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.2501302Z   token_source: APP_TOKEN
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.2502250Z ##[endgroup]
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.2503430Z Complete job name: Execute / Scan belt promotion queue
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.3364580Z ##[group]Run actions/checkout@v7
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.3365852Z with:
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.3366818Z   sparse-checkout: .github/actions/setup-api-client
+Execute / Scan belt promotion queue	UNKNOWN STEP	.github/scripts
+Execute / Scan belt promotion queue	UNKNOWN STEP	
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.3367940Z   sparse-checkout-cone-mode: false
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.3368835Z   fetch-depth: 1
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.3369589Z   repository: stranske/Workflows
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.3374177Z   token: ***
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.3374918Z   ssh-strict: true
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.3375650Z   ssh-user: git
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.3376402Z   persist-credentials: true
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.3377207Z   clean: true
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.3377930Z   fetch-tags: false
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.3378677Z   show-progress: true
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.3379434Z   lfs: false
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.3380231Z   submodules: false
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.3380997Z   set-safe-directory: true
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.3382330Z   allow-unsafe-pr-checkout: false
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.3384436Z env:
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.3386366Z   MAX_PROMOTIONS: 2
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.3387646Z ##[endgroup]
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.4428535Z Syncing repository: stranske/Workflows
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.4431401Z ##[group]Getting Git version info
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.4432518Z Working directory is '/home/runner/work/Workflows/Workflows'
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.4434205Z [command]/usr/bin/git version
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.4482916Z git version 2.55.0
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.4505133Z ##[endgroup]
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.4515344Z Temporarily overriding HOME='/home/runner/work/_temp/aa78d485-4a51-45b5-9a90-4bf31f185542' before making global git config changes
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.4518977Z Adding repository directory to the temporary git global config as a safe directory
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.4522398Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/Workflows/Workflows
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.4571737Z Deleting the contents of '/home/runner/work/Workflows/Workflows'
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.4576180Z ##[group]Determining repository object format
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.4579796Z ##[endgroup]
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.4583386Z ##[group]Initializing the repository
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.4586130Z [command]/usr/bin/git init /home/runner/work/Workflows/Workflows
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.4690607Z hint: Using 'master' as the name for the initial branch. This default branch name
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.4692169Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.4695338Z hint: to use in all of your new repositories, which will suppress this warning,
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.4697695Z hint: call:
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.4699347Z hint:
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.4701491Z hint: 	git config --global init.defaultBranch <name>
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.4703483Z hint:
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.4705530Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.4708261Z hint: 'development'. The just-created branch can be renamed via this command:
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.4710891Z hint:
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.4711665Z hint: 	git branch -m <name>
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.4712449Z hint:
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.4713442Z hint: Disable this message with "git config set advice.defaultBranchName false"
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.4715108Z Initialized empty Git repository in /home/runner/work/Workflows/Workflows/.git/
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.4718853Z [command]/usr/bin/git remote add origin https://github.com/stranske/Workflows
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.4750464Z ##[endgroup]
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.4751770Z ##[group]Disabling automatic garbage collection
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.4753298Z [command]/usr/bin/git config --local gc.auto 0
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.4775880Z ##[endgroup]
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.4777098Z ##[group]Setting up auth
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.4777943Z Removing SSH command configuration
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.4780987Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.4806479Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.5107218Z Removing HTTP extra header
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.5112184Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.5139199Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.5303977Z Removing includeIf entries pointing to credentials config files
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.5308326Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.5335251Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.5519167Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-86131332-22be-4acf-9127-47d8f9965f1c.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.5551320Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/Workflows/Workflows/.git.path /home/runner/work/_temp/git-credentials-86131332-22be-4acf-9127-47d8f9965f1c.config
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.5576715Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/Workflows/Workflows/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-86131332-22be-4acf-9127-47d8f9965f1c.config
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.5607027Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-86131332-22be-4acf-9127-47d8f9965f1c.config
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.5636956Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-86131332-22be-4acf-9127-47d8f9965f1c.config
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.5659502Z ##[endgroup]
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.5662838Z ##[group]Fetching the repository
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:34.5667258Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --filter=blob:none --depth=1 origin +55075a2be16576012c69e5ef88e8c2c520d6ad60:refs/remotes/origin/main
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:35.0749418Z From https://github.com/stranske/Workflows
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:35.0752444Z  * [new ref]         55075a2be16576012c69e5ef88e8c2c520d6ad60 -> origin/main
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:35.0759593Z [command]/usr/bin/git branch --list --remote origin/main
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:35.0781461Z   origin/main
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:35.0788853Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:35.0809058Z 55075a2be16576012c69e5ef88e8c2c520d6ad60
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:35.0816212Z ##[endgroup]
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:35.0820635Z ##[group]Determining the checkout info
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:35.0824961Z ##[endgroup]
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:35.0828108Z ##[group]Setting up sparse checkout
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:35.0831257Z [command]/usr/bin/git config core.sparseCheckout true
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:35.0846553Z [command]/usr/bin/git rev-parse --git-path info/sparse-checkout
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:35.0870244Z .git/info/sparse-checkout
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:35.0878433Z ##[endgroup]
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:35.0882719Z ##[group]Checking out the ref
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:35.0886952Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3642435Z Updating files:   0% (1/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3643464Z Updating files:   1% (3/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3644293Z Updating files:   2% (6/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3645060Z Updating files:   3% (9/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3645809Z Updating files:   4% (12/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3646566Z Updating files:   5% (15/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3647306Z Updating files:   6% (18/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3648065Z Updating files:   7% (21/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3648818Z Updating files:   8% (24/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3649555Z Updating files:   9% (27/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3650835Z Updating files:  10% (30/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3651716Z Updating files:  11% (33/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3652623Z Updating files:  12% (36/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3653503Z Updating files:  13% (39/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3671478Z Updating files:  14% (42/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3674276Z Updating files:  15% (45/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3675040Z Updating files:  16% (48/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3675770Z Updating files:  17% (51/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3676493Z Updating files:  18% (54/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3677420Z Updating files:  19% (57/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3678208Z Updating files:  20% (60/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3678930Z Updating files:  21% (63/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3680205Z Updating files:  22% (66/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3681211Z Updating files:  23% (69/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3681893Z Updating files:  24% (72/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3682768Z Updating files:  25% (74/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3683743Z Updating files:  26% (77/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3684557Z Updating files:  27% (80/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3685346Z Updating files:  28% (83/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3686106Z Updating files:  29% (86/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3686900Z Updating files:  30% (89/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3691767Z Updating files:  31% (92/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3692810Z Updating files:  32% (95/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3693782Z Updating files:  33% (98/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3694753Z Updating files:  34% (101/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3699579Z Updating files:  35% (104/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3700910Z Updating files:  36% (107/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3703166Z Updating files:  37% (110/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3705905Z Updating files:  38% (113/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3708426Z Updating files:  39% (116/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3710613Z Updating files:  40% (119/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3715748Z Updating files:  41% (122/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3717998Z Updating files:  42% (125/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3719042Z Updating files:  43% (128/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3720819Z Updating files:  44% (131/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3722501Z Updating files:  45% (134/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3730248Z Updating files:  46% (137/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3741451Z Updating files:  47% (140/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3751939Z Updating files:  48% (143/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3752645Z Updating files:  49% (146/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3753465Z Updating files:  50% (148/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3754062Z Updating files:  51% (151/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3754823Z Updating files:  52% (154/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3755801Z Updating files:  53% (157/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3756959Z Updating files:  54% (160/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3757727Z Updating files:  55% (163/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3758477Z Updating files:  56% (166/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3759348Z Updating files:  57% (169/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3760261Z Updating files:  58% (172/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3767285Z Updating files:  59% (175/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3781651Z Updating files:  60% (178/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3782465Z Updating files:  61% (181/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3783169Z Updating files:  62% (184/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3783896Z Updating files:  63% (187/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3784614Z Updating files:  64% (190/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3785305Z Updating files:  65% (193/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3786070Z Updating files:  66% (196/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3786763Z Updating files:  67% (199/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3787458Z Updating files:  68% (202/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3788099Z Updating files:  69% (205/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3788777Z Updating files:  70% (208/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3790896Z Updating files:  71% (211/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3795302Z Updating files:  72% (214/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3811753Z Updating files:  73% (217/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3812531Z Updating files:  74% (220/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3813251Z Updating files:  75% (222/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3813931Z Updating files:  76% (225/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3814660Z Updating files:  77% (228/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3815300Z Updating files:  78% (231/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3815928Z Updating files:  79% (234/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3816625Z Updating files:  80% (237/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3817323Z Updating files:  81% (240/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3817953Z Updating files:  82% (243/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3818826Z Updating files:  83% (246/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3819553Z Updating files:  84% (249/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3820792Z Updating files:  85% (252/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3823643Z Updating files:  86% (255/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3831616Z Updating files:  87% (258/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3841607Z Updating files:  88% (261/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3842357Z Updating files:  89% (264/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3843070Z Updating files:  90% (267/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3843689Z Updating files:  91% (270/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3844347Z Updating files:  92% (273/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3845052Z Updating files:  93% (276/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3845726Z Updating files:  94% (279/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3849644Z Updating files:  95% (282/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3854126Z Updating files:  96% (285/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3856309Z Updating files:  97% (288/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3859554Z Updating files:  98% (291/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3861353Z Updating files:  99% (294/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3861993Z Updating files: 100% (296/296)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3862605Z Updating files: 100% (296/296), done.
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3895146Z Switched to a new branch 'main'
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3900456Z branch 'main' set up to track 'origin/main'.
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3918729Z ##[endgroup]
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3949851Z [command]/usr/bin/git log -1 --format=%H
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.3972911Z 55075a2be16576012c69e5ef88e8c2c520d6ad60
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.4536103Z Prepare all required actions
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.4869747Z ##[group]Run ./.github/actions/setup-api-client
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.4870421Z with:
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.4872944Z   github_token: ***
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.4873377Z   service_bot_pat: ***
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.4873977Z   actions_bot_pat: ***
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.4874572Z   owner_pr_pat: ***
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.4874890Z   workflows_app_id: ***
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.4881782Z   workflows_app_private_key: ***
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.4882141Z   skip_deps: false
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.4882446Z   verbose: false
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.4882725Z env:
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.4883002Z   MAX_PROMOTIONS: 2
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.4883286Z ##[endgroup]
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.4944447Z ##[start-action display=Install API client dependencies;id=__self.__run]
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5013974Z ##[group]Run set -euo pipefail
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5015131Z ^[[36;1mset -euo pipefail^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5015492Z ^[[36;1m^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5015934Z ^[[36;1m# Use dedicated scripts dir, create if needed^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5016411Z ^[[36;1mINSTALL_DIR=""^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5016791Z ^[[36;1mif [ -z "$INSTALL_DIR" ]; then^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5017223Z ^[[36;1m  INSTALL_DIR="${GITHUB_WORKSPACE}/.github/scripts"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5017655Z ^[[36;1mfi^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5018006Z ^[[36;1mmkdir -p "$INSTALL_DIR"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5018349Z ^[[36;1m^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5018757Z ^[[36;1mecho "📦 Installing @octokit dependencies in $INSTALL_DIR..."^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5019228Z ^[[36;1mcd "$INSTALL_DIR"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5019546Z ^[[36;1m^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5019864Z ^[[36;1mdeclare -a VENDORED_ALIAS_DIRS=()^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5020561Z ^[[36;1m^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5020877Z ^[[36;1mcleanup_vendor_aliases() {^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5021288Z ^[[36;1m  if [ "${#VENDORED_ALIAS_DIRS[@]}" -eq 0 ]; then^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5021710Z ^[[36;1m    return 0^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5022006Z ^[[36;1m  fi^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5022289Z ^[[36;1m^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5022599Z ^[[36;1m  local cleanup_dir="$INSTALL_DIR"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5023001Z ^[[36;1m  if [ -z "$cleanup_dir" ]; then^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5023497Z ^[[36;1m    echo "::warning::Install dir is empty, skipping vendored alias cleanup"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5023986Z ^[[36;1m    return 0^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5024296Z ^[[36;1m  fi^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5024574Z ^[[36;1m^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5024906Z ^[[36;1m  if ! pushd "$cleanup_dir" >/dev/null 2>&1; then^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5025512Z ^[[36;1m    echo "::warning::Failed to enter install dir \"$cleanup_dir\"; skipping vendored alias cleanup"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5026063Z ^[[36;1m    return 0^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5026364Z ^[[36;1m  fi^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5026655Z ^[[36;1m^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5027009Z ^[[36;1m  for vendored_alias in "${VENDORED_ALIAS_DIRS[@]}"; do^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5027477Z ^[[36;1m    if [ -z "$vendored_alias" ]; then^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5027850Z ^[[36;1m      continue^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5028165Z ^[[36;1m    fi^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5028484Z ^[[36;1m    rm -rf -- "$vendored_alias" || true^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5028882Z ^[[36;1m    local parent_dir^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5029249Z ^[[36;1m    parent_dir=$(dirname "$vendored_alias")^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5029815Z ^[[36;1m    # Remove empty parent directories that may have been created for scoped packages^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5030546Z ^[[36;1m    while [ "$parent_dir" != "." ] && [ "$parent_dir" != "/" ]; do^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5031037Z ^[[36;1m      rmdir -- "$parent_dir" 2>/dev/null || break^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5031476Z ^[[36;1m      parent_dir=$(dirname "$parent_dir")^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5031863Z ^[[36;1m    done^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5032159Z ^[[36;1m  done^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5032439Z ^[[36;1m^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5032739Z ^[[36;1m  popd >/dev/null 2>&1 || true^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5033101Z ^[[36;1m}^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5033382Z ^[[36;1m^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5033681Z ^[[36;1mtrap cleanup_vendor_aliases EXIT^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5034240Z ^[[36;1m^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5034542Z ^[[36;1mcreate_vendor_aliases() {^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5034932Z ^[[36;1m  if [ ! -f "package.json" ]; then^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5035300Z ^[[36;1m    return 0^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5035612Z ^[[36;1m  fi^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5035898Z ^[[36;1m^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5036195Z ^[[36;1m  local alias_tmp^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5036528Z ^[[36;1m  alias_tmp=$(mktemp)^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5036862Z ^[[36;1m^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5037349Z ^[[36;1m  local helper_root="${GITHUB_ACTION_PATH:-${GITHUB_WORKSPACE}/.github/actions/setup-api-client}"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5038009Z ^[[36;1m  local alias_helper="${helper_root}/create_vendor_aliases.js"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5038481Z ^[[36;1m  if [ ! -f "$alias_helper" ]; then^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5038949Z ^[[36;1m    echo "::error::Missing vendored alias helper: $alias_helper"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5039487Z ^[[36;1m    rm -f "$alias_tmp"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5039821Z ^[[36;1m    return 1^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5040217Z ^[[36;1m  fi^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5040502Z ^[[36;1m^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5040886Z ^[[36;1m  if node "$alias_helper" "$INSTALL_DIR" >"$alias_tmp"; then^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5041322Z ^[[36;1m    :^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5041617Z ^[[36;1m  else^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5042011Z ^[[36;1m    echo "::error::Failed to prepare vendored dependency aliases"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5042476Z ^[[36;1m    rm -f "$alias_tmp"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5042813Z ^[[36;1m    return 1^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5043122Z ^[[36;1m  fi^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5043394Z ^[[36;1m^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5043711Z ^[[36;1m  while IFS= read -r vendored_alias; do^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5044143Z ^[[36;1m    if [ -z "$vendored_alias" ]; then^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5044518Z ^[[36;1m      continue^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5044833Z ^[[36;1m    fi^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5045157Z ^[[36;1m    VENDORED_ALIAS_DIRS+=("$vendored_alias")^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5045567Z ^[[36;1m  done <"$alias_tmp"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5045883Z ^[[36;1m^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5046173Z ^[[36;1m  rm -f "$alias_tmp"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5046483Z ^[[36;1m}^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5046761Z ^[[36;1m^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5047046Z ^[[36;1mcreate_vendor_aliases^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5047373Z ^[[36;1m^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5047795Z ^[[36;1m# Strip unresolvable file: dependencies from package.json so npm install^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5048415Z ^[[36;1m# doesn't choke when vendored packages are missing (e.g. sparse checkout^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5049012Z ^[[36;1m# that doesn't include node_modules/).  Back up the original first so we^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5049599Z ^[[36;1m# can restore it after npm install — avoids leaking modified state into^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5050215Z ^[[36;1m# downstream steps that expect a clean workspace.^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5050650Z ^[[36;1mSTRIPPED_PKG_JSON=false^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5051031Z ^[[36;1mif [ -f "package.json" ]; then^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5051418Z ^[[36;1m  node -e '^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5051771Z ^[[36;1m    const fs = require("fs");^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5052162Z ^[[36;1m    const path = require("path");^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5052623Z ^[[36;1m    const raw = fs.readFileSync("package.json", "utf8");^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5053076Z ^[[36;1m    const pkg = JSON.parse(raw);^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5053468Z ^[[36;1m    let changed = false;^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5053923Z ^[[36;1m    for (const section of ["dependencies", "devDependencies"]) {^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5054395Z ^[[36;1m      if (!pkg[section]) continue;^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5054865Z ^[[36;1m      for (const [name, spec] of Object.entries(pkg[section])) {^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5055392Z ^[[36;1m        if (typeof spec === "string" && spec.startsWith("file:")) {^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5055905Z ^[[36;1m          const target = path.resolve(spec.slice(5));^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5056342Z ^[[36;1m          if (!fs.existsSync(target)) {^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5056758Z ^[[36;1m            delete pkg[section][name];^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5057274Z ^[[36;1m            changed = true;^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5057851Z ^[[36;1m            console.log("::notice::Stripped unresolvable vendored dep: " + name + " (" + spec + ")");^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5058399Z ^[[36;1m          }^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5058712Z ^[[36;1m        }^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5059009Z ^[[36;1m      }^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5059413Z ^[[36;1m      if (pkg[section] && Object.keys(pkg[section]).length === 0) {^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5059904Z ^[[36;1m        delete pkg[section];^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5060516Z ^[[36;1m      }^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5060806Z ^[[36;1m    }^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5061109Z ^[[36;1m    if (changed) {^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5061528Z ^[[36;1m      fs.copyFileSync("package.json", "package.json.bak");^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5062110Z ^[[36;1m      fs.writeFileSync("package.json", JSON.stringify(pkg, null, 2) + "\n");^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5062643Z ^[[36;1m      process.stdout.write("STRIPPED");^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5063173Z ^[[36;1m    }^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5063464Z ^[[36;1m  '^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5063815Z ^[[36;1m  if [ -f "package.json.bak" ]; then^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5064231Z ^[[36;1m    STRIPPED_PKG_JSON=true^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5064610Z ^[[36;1m  fi^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5064888Z ^[[36;1mfi^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5065175Z ^[[36;1m^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5065640Z ^[[36;1m# Vendored packages often ship lifecycle scripts (tshy builds, custom bundlers, etc.)^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5066360Z ^[[36;1m# that expect repo-specific tooling. Disable lifecycle scripts globally so npm install^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5066926Z ^[[36;1m# never invokes those hooks inside CI.^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5067338Z ^[[36;1mexport npm_config_ignore_scripts=true^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5067711Z ^[[36;1m^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5068068Z ^[[36;1m# Track if we create package.json so we can clean it up^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5068517Z ^[[36;1mCREATED_PACKAGE_JSON=false^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5068893Z ^[[36;1mif [ ! -f "package.json" ]; then^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5069311Z ^[[36;1m  echo '{"private":true}' > package.json^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5069714Z ^[[36;1m  CREATED_PACKAGE_JSON=true^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5070185Z ^[[36;1mfi^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5070476Z ^[[36;1m^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5070887Z ^[[36;1m# Check if already installed (including lru-cache@10.4.3, a required^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5071493Z ^[[36;1m# transitive dep of @octokit/auth-app used for GitHub App token minting).^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5072140Z ^[[36;1mif [ -d "node_modules/@octokit/rest" ] && [ -d "node_modules/lru-cache" ]; then^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5072688Z ^[[36;1m  echo "✅ @octokit/rest already installed"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5073078Z ^[[36;1melse^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5073471Z ^[[36;1m  # Snapshot vendored package metadata before npm install.^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5074016Z ^[[36;1m  # npm may overwrite transitive deps (e.g. minimatch) that are^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5074577Z ^[[36;1m  # committed as vendored packages with intentional version pins.^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5075054Z ^[[36;1m  VENDORED_SNAPSHOT=""^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5075484Z ^[[36;1m  if [ -f "node_modules/minimatch/package.json" ]; then^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5075939Z ^[[36;1m    VENDORED_SNAPSHOT=$(mktemp -d)^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5076349Z ^[[36;1m    for pkg_dir in node_modules/*/; do^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5076776Z ^[[36;1m      if [ -f "${pkg_dir}package.json" ]; then^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5077211Z ^[[36;1m        pkg_name=$(basename "$pkg_dir")^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5077644Z ^[[36;1m        mkdir -p "${VENDORED_SNAPSHOT}/${pkg_name}"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5078202Z ^[[36;1m        cp "${pkg_dir}package.json" "${VENDORED_SNAPSHOT}/${pkg_name}/package.json"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5078692Z ^[[36;1m      fi^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5078985Z ^[[36;1m    done^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5079350Z ^[[36;1m    echo "📸 Snapshotted vendored package metadata"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5079751Z ^[[36;1m  fi^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5080124Z ^[[36;1m^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5080468Z ^[[36;1m  # Install with pinned versions for consistency.^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5081138Z ^[[36;1m  # lru-cache is an explicit transitive dep of @octokit/auth-app required for^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5081781Z ^[[36;1m  # GitHub App token minting; pin it here so npm always hoists a specific version^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5082388Z ^[[36;1m  # even if a prior cached node_modules state is missing it.^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5082829Z ^[[36;1m  #^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5083270Z ^[[36;1m  # Retry with exponential backoff to survive transient npm registry errors^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5083901Z ^[[36;1m  # (e.g. 403 Forbidden from CDN/rate-limit on safe-buffer, undici, etc.).^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5084385Z ^[[36;1m  NPM_PACKAGES=(^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5084734Z ^[[36;1m    @octokit/rest@20.0.2^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5085105Z ^[[36;1m    @octokit/plugin-retry@6.0.1^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5085522Z ^[[36;1m    @octokit/plugin-paginate-rest@9.1.5^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5085920Z ^[[36;1m    @octokit/auth-app@6.0.3^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5086387Z ^[[36;1m    lru-cache@10.4.3^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5086716Z ^[[36;1m  )^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5087034Z ^[[36;1m  NPM_MAX_RETRIES=3^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5087431Z ^[[36;1m  NPM_BACKOFF=5  # seconds; doubles each retry (5, 10)^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5087872Z ^[[36;1m  npm_installed=false^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5088203Z ^[[36;1m^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5088588Z ^[[36;1m  for (( attempt=1; attempt<=NPM_MAX_RETRIES; attempt++ )); do^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5089043Z ^[[36;1m    npm_output=$(mktemp)^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5089389Z ^[[36;1m^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5089857Z ^[[36;1m    if npm install --no-save --location=project "${NPM_PACKAGES[@]}" 2>"$npm_output"; then^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5090486Z ^[[36;1m      rm -f "$npm_output"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5090862Z ^[[36;1m      npm_installed=true^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5091209Z ^[[36;1m      break^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5091518Z ^[[36;1m    fi^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5091806Z ^[[36;1m^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5092122Z ^[[36;1m    npm_err=$(cat "$npm_output")^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5092501Z ^[[36;1m    rm -f "$npm_output"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5093022Z ^[[36;1m    echo "::warning::npm install attempt $attempt/$NPM_MAX_RETRIES failed (see logs)"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5093589Z ^[[36;1m    echo "::group::npm stderr (attempt $attempt)"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5094008Z ^[[36;1m    echo "$npm_err"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5094347Z ^[[36;1m    echo "::endgroup::"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5094687Z ^[[36;1m^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5095083Z ^[[36;1m    # On peer-dep / ERESOLVE failures, also try --legacy-peer-deps^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5095720Z ^[[36;1m    if echo "$npm_err" | grep -qiE 'ERESOLVE|peer dep|Could not resolve dependency'; then^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5096423Z ^[[36;1m      echo "::warning::Detected peer dependency conflict, retrying with --legacy-peer-deps"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5096970Z ^[[36;1m      npm_output=$(mktemp)^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5097577Z ^[[36;1m      if npm install --no-save --legacy-peer-deps --location=project "${NPM_PACKAGES[@]}" 2>"$npm_output"; then^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5098185Z ^[[36;1m        rm -f "$npm_output"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5098565Z ^[[36;1m        npm_installed=true^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5098912Z ^[[36;1m        break^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5099224Z ^[[36;1m      fi^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5099557Z ^[[36;1m      npm_err_legacy=$(cat "$npm_output")^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5099962Z ^[[36;1m      rm -f "$npm_output"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5100677Z ^[[36;1m      echo "::warning::npm install with --legacy-peer-deps failed (see logs)"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5101237Z ^[[36;1m      echo "::group::npm stderr (--legacy-peer-deps)"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5101673Z ^[[36;1m      echo "$npm_err_legacy"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5102056Z ^[[36;1m      echo "::endgroup::"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5102407Z ^[[36;1m    fi^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5102703Z ^[[36;1m^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5103042Z ^[[36;1m    if [ "$attempt" -lt "$NPM_MAX_RETRIES" ]; then^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5103546Z ^[[36;1m      echo "::notice::Waiting ${NPM_BACKOFF}s before retry..."^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5104019Z ^[[36;1m      sleep "$NPM_BACKOFF"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5104516Z ^[[36;1m      NPM_BACKOFF=$((NPM_BACKOFF * 2))^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5104927Z ^[[36;1m    fi^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5105230Z ^[[36;1m  done^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5105545Z ^[[36;1m^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5105869Z ^[[36;1m  if [ "$npm_installed" != "true" ]; then^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5106377Z ^[[36;1m    echo "::error::npm install failed after $NPM_MAX_RETRIES attempts"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5106833Z ^[[36;1m    exit 1^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5107129Z ^[[36;1m  fi^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5107404Z ^[[36;1m^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5107798Z ^[[36;1m  # Restore vendored package metadata that npm may have overwritten^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5108370Z ^[[36;1m  if [ -n "${VENDORED_SNAPSHOT:-}" ] && [ -d "${VENDORED_SNAPSHOT}" ]; then^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5108895Z ^[[36;1m    for pkg_backup in "${VENDORED_SNAPSHOT}"/*/; do^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5109335Z ^[[36;1m      pkg_name=$(basename "$pkg_backup")^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5109868Z ^[[36;1m      if [ -f "node_modules/${pkg_name}/package.json" ] && \^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5110452Z ^[[36;1m         [ -f "${pkg_backup}package.json" ]; then^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5110990Z ^[[36;1m        cp "${pkg_backup}package.json" "node_modules/${pkg_name}/package.json"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5111475Z ^[[36;1m      fi^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5111770Z ^[[36;1m    done^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5112099Z ^[[36;1m    rm -rf "${VENDORED_SNAPSHOT}"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5112535Z ^[[36;1m    echo "📸 Restored vendored package metadata"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5112944Z ^[[36;1m  fi^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5113222Z ^[[36;1m^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5113557Z ^[[36;1m  echo "✅ @octokit dependencies installed"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5113941Z ^[[36;1mfi^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5114235Z ^[[36;1m^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5114628Z ^[[36;1m# Restore original package.json if we stripped file: deps earlier,^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5115158Z ^[[36;1m# so downstream steps see an unmodified workspace.^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5115712Z ^[[36;1mif [ "$STRIPPED_PKG_JSON" = "true" ] && [ -f "package.json.bak" ]; then^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5116222Z ^[[36;1m  mv "package.json.bak" "package.json"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5116599Z ^[[36;1mfi^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5116874Z ^[[36;1m^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5117163Z ^[[36;1mcleanup_vendor_aliases^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5117498Z ^[[36;1mtrap - EXIT^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5145421Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5145883Z env:
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5146194Z   MAX_PROMOTIONS: 2
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5146504Z ##[endgroup]
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.5229052Z 📦 Installing @octokit dependencies in /home/runner/work/Workflows/Workflows/.github/scripts...
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:36.8031297Z 📸 Snapshotted vendored package metadata
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3442816Z 
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3443942Z added 66 packages, changed 1 package, and audited 70 packages in 4s
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3444852Z 
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3445583Z 2 packages are looking for funding
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3446257Z   run `npm fund` for details
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3462899Z 
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3463470Z 2 vulnerabilities (1 moderate, 1 high)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3463894Z 
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3464097Z To address issues that do not require attention, run:
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3464530Z   npm audit fix
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3464705Z 
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3464849Z To address all issues, run:
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3465191Z   npm audit fix --force
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3465384Z 
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3465531Z Run `npm audit` for details.
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3798580Z 📸 Restored vendored package metadata
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3799935Z ✅ @octokit dependencies installed
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3842336Z ##[end-action id=__self.__run;outcome=success;conclusion=success;duration_ms=4889]
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3845549Z ##[start-action display=Export NODE_PATH for shared deps;id=__self.__run_2]
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3864524Z ##[group]Run set -euo pipefail
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3864928Z ^[[36;1mset -euo pipefail^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3865300Z ^[[36;1mINSTALL_DIR=""^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3865638Z ^[[36;1mif [ -z "$INSTALL_DIR" ]; then^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3866227Z ^[[36;1m  INSTALL_DIR="${GITHUB_WORKSPACE}/.github/scripts"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3866656Z ^[[36;1mfi^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3866999Z ^[[36;1mif [ -d "${INSTALL_DIR}/node_modules" ]; then^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3867419Z ^[[36;1m  if [ -n "${NODE_PATH:-}" ]; then^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3867946Z ^[[36;1m    echo "NODE_PATH=${INSTALL_DIR}/node_modules:${NODE_PATH}" >> "$GITHUB_ENV"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3868442Z ^[[36;1m  else^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3868845Z ^[[36;1m    echo "NODE_PATH=${INSTALL_DIR}/node_modules" >> "$GITHUB_ENV"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3869292Z ^[[36;1m  fi^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3869584Z ^[[36;1melse^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3870323Z ^[[36;1m  echo "::notice::setup-api-client: ${INSTALL_DIR}/node_modules not found; skipping NODE_PATH export."^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3870903Z ^[[36;1mfi^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3891999Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3892545Z env:
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3892850Z   MAX_PROMOTIONS: 2
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3893176Z ##[endgroup]
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3940234Z ##[end-action id=__self.__run_2;outcome=success;conclusion=success;duration_ms=9]
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3946870Z ##[start-action display=Export load balancer tokens;id=__self.export-tokens]
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3961772Z ##[group]Run set -euo pipefail
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3962481Z ^[[36;1mset -euo pipefail^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3962814Z ^[[36;1m^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3963104Z ^[[36;1mtoken_count=0^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3963438Z ^[[36;1mavailable_tokens=""^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3963760Z ^[[36;1m^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3964088Z ^[[36;1m# Export a variable to GITHUB_ENV^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3964602Z ^[[36;1m# Note: Empty values are intentionally not counted as available tokens^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3965096Z ^[[36;1mexport_var() {^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3965420Z ^[[36;1m  local name="$1"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3965767Z ^[[36;1m  local value="${2-}"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3966121Z ^[[36;1m  if [ -z "${value}" ]; then^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3966504Z ^[[36;1m    return 0^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3966813Z ^[[36;1m  fi^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3967109Z ^[[36;1m^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3967441Z ^[[36;1m  # Handle multiline values (like private keys)^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3967881Z ^[[36;1m  if [[ "${value}" == *$'\n'* ]]; then^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3968256Z ^[[36;1m    {^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3968567Z ^[[36;1m      echo "${name}<<EOF"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3968934Z ^[[36;1m      printf '%s\n' "${value}"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3969306Z ^[[36;1m      echo "EOF"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3969630Z ^[[36;1m    } >>"${GITHUB_ENV}"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3969969Z ^[[36;1m  else^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3970532Z ^[[36;1m    printf '%s=%s\n' "${name}" "${value}" >>"${GITHUB_ENV}"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3970968Z ^[[36;1m  fi^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3971263Z ^[[36;1m^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3971570Z ^[[36;1m  token_count=$((token_count + 1))^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3971988Z ^[[36;1m  if [ -n "$available_tokens" ]; then^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3972431Z ^[[36;1m    available_tokens="${available_tokens},${name}"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3972855Z ^[[36;1m  else^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3973164Z ^[[36;1m    available_tokens="${name}"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3973526Z ^[[36;1m  fi^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3973812Z ^[[36;1m^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3974136Z ^[[36;1m  if [ "${INPUT_VERBOSE}" = "true" ]; then^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3974548Z ^[[36;1m    echo "  ✅ ${name} exported"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3974912Z ^[[36;1m  fi^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3975193Z ^[[36;1m}^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3975474Z ^[[36;1m^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3996893Z ^[[36;1mecho "🔐 Exporting tokens to environment..."^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3997413Z ^[[36;1m^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3997798Z ^[[36;1m# Try to extract from JSON secrets first (requires jq)^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3998451Z ^[[36;1mif [ -n "${INPUT_SECRETS:-}" ] && [ "${INPUT_SECRETS}" != "null" ]; then^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3999051Z ^[[36;1m  if ! command -v jq >/dev/null 2>&1; then^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.3999918Z ^[[36;1m    echo "::warning::'jq' is not installed; falling back to individual token inputs instead of parsing JSON secrets."^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4000799Z ^[[36;1m    # Fall back to individual inputs when jq is unavailable^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4001313Z ^[[36;1m    SERVICE_BOT_PAT="${INPUT_SERVICE_BOT_PAT:-}"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4001839Z ^[[36;1m    ACTIONS_BOT_PAT="${INPUT_ACTIONS_BOT_PAT:-}"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4002380Z ^[[36;1m    OWNER_PR_PAT="${INPUT_OWNER_PR_PAT:-}"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4002874Z ^[[36;1m    AGENTS_AUTOMATION_PAT="${INPUT_AGENTS_AUTOMATION_PAT:-}"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4003377Z ^[[36;1m    WORKFLOWS_APP_ID="${INPUT_WORKFLOWS_APP_ID:-}"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4003907Z ^[[36;1m    WORKFLOWS_APP_PRIVATE_KEY="${INPUT_WORKFLOWS_APP_PRIVATE_KEY:-}"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4004429Z ^[[36;1m    KEEPALIVE_APP_ID="${INPUT_KEEPALIVE_APP_ID:-}"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4004952Z ^[[36;1m    KEEPALIVE_APP_PRIVATE_KEY="${INPUT_KEEPALIVE_APP_PRIVATE_KEY:-}"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4005535Z ^[[36;1m    GH_APP_ID="${INPUT_GH_APP_ID:-}"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4005979Z ^[[36;1m    GH_APP_PRIVATE_KEY="${INPUT_GH_APP_PRIVATE_KEY:-}"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4006434Z ^[[36;1m    APP_1_ID="${INPUT_APP_1_ID:-}"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4006862Z ^[[36;1m    APP_1_PRIVATE_KEY="${INPUT_APP_1_PRIVATE_KEY:-}"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4007302Z ^[[36;1m    APP_2_ID="${INPUT_APP_2_ID:-}"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4007723Z ^[[36;1m    APP_2_PRIVATE_KEY="${INPUT_APP_2_PRIVATE_KEY:-}"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4008133Z ^[[36;1m  else^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4008449Z ^[[36;1m    # Parse JSON secrets using jq^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4008837Z ^[[36;1m    extract_secret() {^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4009179Z ^[[36;1m      local key="$1"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4009645Z ^[[36;1m      echo "${INPUT_SECRETS}" | jq -r ".${key} // empty" 2>/dev/null || echo ""^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4010341Z ^[[36;1m    }^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4010678Z ^[[36;1m^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4011047Z ^[[36;1m    SERVICE_BOT_PAT=$(extract_secret "SERVICE_BOT_PAT")^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4011567Z ^[[36;1m    ACTIONS_BOT_PAT=$(extract_secret "ACTIONS_BOT_PAT")^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4012048Z ^[[36;1m    OWNER_PR_PAT=$(extract_secret "OWNER_PR_PAT")^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4012584Z ^[[36;1m    AGENTS_AUTOMATION_PAT=$(extract_secret "AGENTS_AUTOMATION_PAT")^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4013148Z ^[[36;1m    WORKFLOWS_APP_ID=$(extract_secret "WORKFLOWS_APP_ID")^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4013717Z ^[[36;1m    WORKFLOWS_APP_PRIVATE_KEY=$(extract_secret "WORKFLOWS_APP_PRIVATE_KEY")^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4014304Z ^[[36;1m    KEEPALIVE_APP_ID=$(extract_secret "KEEPALIVE_APP_ID")^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4014869Z ^[[36;1m    KEEPALIVE_APP_PRIVATE_KEY=$(extract_secret "KEEPALIVE_APP_PRIVATE_KEY")^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4015412Z ^[[36;1m    GH_APP_ID=$(extract_secret "GH_APP_ID")^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4015881Z ^[[36;1m    GH_APP_PRIVATE_KEY=$(extract_secret "GH_APP_PRIVATE_KEY")^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4016355Z ^[[36;1m    APP_1_ID=$(extract_secret "APP_1_ID")^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4016830Z ^[[36;1m    APP_1_PRIVATE_KEY=$(extract_secret "APP_1_PRIVATE_KEY")^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4017298Z ^[[36;1m    APP_2_ID=$(extract_secret "APP_2_ID")^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4017757Z ^[[36;1m    APP_2_PRIVATE_KEY=$(extract_secret "APP_2_PRIVATE_KEY")^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4018185Z ^[[36;1m  fi^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4018470Z ^[[36;1melse^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4018817Z ^[[36;1m  # Fall back to individual inputs^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4019251Z ^[[36;1m  SERVICE_BOT_PAT="${INPUT_SERVICE_BOT_PAT:-}"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4019707Z ^[[36;1m  ACTIONS_BOT_PAT="${INPUT_ACTIONS_BOT_PAT:-}"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4020309Z ^[[36;1m  OWNER_PR_PAT="${INPUT_OWNER_PR_PAT:-}"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4020790Z ^[[36;1m  AGENTS_AUTOMATION_PAT="${INPUT_AGENTS_AUTOMATION_PAT:-}"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4021296Z ^[[36;1m  WORKFLOWS_APP_ID="${INPUT_WORKFLOWS_APP_ID:-}"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4021836Z ^[[36;1m  WORKFLOWS_APP_PRIVATE_KEY="${INPUT_WORKFLOWS_APP_PRIVATE_KEY:-}"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4022377Z ^[[36;1m  KEEPALIVE_APP_ID="${INPUT_KEEPALIVE_APP_ID:-}"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4023005Z ^[[36;1m  KEEPALIVE_APP_PRIVATE_KEY="${INPUT_KEEPALIVE_APP_PRIVATE_KEY:-}"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4023518Z ^[[36;1m  GH_APP_ID="${INPUT_GH_APP_ID:-}"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4023974Z ^[[36;1m  GH_APP_PRIVATE_KEY="${INPUT_GH_APP_PRIVATE_KEY:-}"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4024432Z ^[[36;1m  APP_1_ID="${INPUT_APP_1_ID:-}"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4024885Z ^[[36;1m  APP_1_PRIVATE_KEY="${INPUT_APP_1_PRIVATE_KEY:-}"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4025325Z ^[[36;1m  APP_2_ID="${INPUT_APP_2_ID:-}"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4025750Z ^[[36;1m  APP_2_PRIVATE_KEY="${INPUT_APP_2_PRIVATE_KEY:-}"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4026154Z ^[[36;1mfi^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4026434Z ^[[36;1m^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4026826Z ^[[36;1m# Export GITHUB_TOKEN (GH_TOKEN is the same value, only count once)^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4027337Z ^[[36;1mif [ -n "${INPUT_GITHUB_TOKEN:-}" ]; then^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4027779Z ^[[36;1m  export_var "GITHUB_TOKEN" "${INPUT_GITHUB_TOKEN}"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4028316Z ^[[36;1m  # GH_TOKEN is exported but not double-counted^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4028836Z ^[[36;1m  printf '%s=%s\n' "GH_TOKEN" "${INPUT_GITHUB_TOKEN}" >>"${GITHUB_ENV}"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4029288Z ^[[36;1mfi^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4029574Z ^[[36;1m^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4029861Z ^[[36;1m# Export PATs^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4030413Z ^[[36;1mexport_var "SERVICE_BOT_PAT" "${SERVICE_BOT_PAT:-}"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4030912Z ^[[36;1mexport_var "ACTIONS_BOT_PAT" "${ACTIONS_BOT_PAT:-}"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4031395Z ^[[36;1mexport_var "OWNER_PR_PAT" "${OWNER_PR_PAT:-}"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4031919Z ^[[36;1mexport_var "AGENTS_AUTOMATION_PAT" "${AGENTS_AUTOMATION_PAT:-}"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4032381Z ^[[36;1m^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4032676Z ^[[36;1m# Export App credentials^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4033110Z ^[[36;1mexport_var "WORKFLOWS_APP_ID" "${WORKFLOWS_APP_ID:-}"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4033673Z ^[[36;1mexport_var "WORKFLOWS_APP_PRIVATE_KEY" "${WORKFLOWS_APP_PRIVATE_KEY:-}"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4034248Z ^[[36;1mexport_var "KEEPALIVE_APP_ID" "${KEEPALIVE_APP_ID:-}"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4034808Z ^[[36;1mexport_var "KEEPALIVE_APP_PRIVATE_KEY" "${KEEPALIVE_APP_PRIVATE_KEY:-}"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4035335Z ^[[36;1mexport_var "GH_APP_ID" "${GH_APP_ID:-}"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4035807Z ^[[36;1mexport_var "GH_APP_PRIVATE_KEY" "${GH_APP_PRIVATE_KEY:-}"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4036279Z ^[[36;1mexport_var "APP_1_ID" "${APP_1_ID:-}"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4036746Z ^[[36;1mexport_var "APP_1_PRIVATE_KEY" "${APP_1_PRIVATE_KEY:-}"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4037198Z ^[[36;1mexport_var "APP_2_ID" "${APP_2_ID:-}"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4037666Z ^[[36;1mexport_var "APP_2_PRIVATE_KEY" "${APP_2_PRIVATE_KEY:-}"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4038091Z ^[[36;1m^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4038383Z ^[[36;1m# Output summary^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4038772Z ^[[36;1mecho "token_count=${token_count}" >> "$GITHUB_OUTPUT"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4039301Z ^[[36;1mecho "available_tokens=${available_tokens}" >> "$GITHUB_OUTPUT"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4039752Z ^[[36;1m^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4040181Z ^[[36;1minstall_dir="${INPUT_INSTALL_DIR:-}"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4040680Z ^[[36;1mif [ -z "$install_dir" ]; then^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4041114Z ^[[36;1m  install_dir="${GITHUB_WORKSPACE}/.github/scripts"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4041541Z ^[[36;1mfi^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4041840Z ^[[36;1msetup_contract="$(^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4042211Z ^[[36;1m  AVAILABLE_TOKENS="${available_tokens}" \^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4042690Z ^[[36;1m  TOKEN_COUNT="${token_count}" \^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4043248Z ^[[36;1m  INSTALL_DIR="${install_dir}" \^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4043613Z ^[[36;1m  node <<'NODE'^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4043950Z ^[[36;1mconst fs = require('node:fs');^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4044339Z ^[[36;1mconst path = require('node:path');^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4044710Z ^[[36;1m^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4045061Z ^[[36;1mconst installDir = process.env.INSTALL_DIR || '';^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4045586Z ^[[36;1mconst tokenNames = (process.env.AVAILABLE_TOKENS || '')^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4046023Z ^[[36;1m  .split(',')^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4046482Z ^[[36;1m  .map((value) => value.trim())^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4046891Z ^[[36;1m  .filter(Boolean);^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4047266Z ^[[36;1mconst tokenSet = new Set(tokenNames);^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4047689Z ^[[36;1mconst appPairs = [^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4048139Z ^[[36;1m  ['WORKFLOWS_APP', 'WORKFLOWS_APP_ID', 'WORKFLOWS_APP_PRIVATE_KEY'],^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4048723Z ^[[36;1m  ['KEEPALIVE_APP', 'KEEPALIVE_APP_ID', 'KEEPALIVE_APP_PRIVATE_KEY'],^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4049236Z ^[[36;1m  ['GH_APP', 'GH_APP_ID', 'GH_APP_PRIVATE_KEY'],^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4049688Z ^[[36;1m  ['APP_1', 'APP_1_ID', 'APP_1_PRIVATE_KEY'],^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4050284Z ^[[36;1m  ['APP_2', 'APP_2_ID', 'APP_2_PRIVATE_KEY'],^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4050674Z ^[[36;1m];^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4050966Z ^[[36;1mconst authModes = [];^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4051342Z ^[[36;1mif (tokenSet.has('GITHUB_TOKEN')) {^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4051900Z ^[[36;1m  authModes.push({ source: 'GITHUB_TOKEN', mode: 'github-token' });^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4052364Z ^[[36;1m}^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4052676Z ^[[36;1mfor (const name of tokenNames) {^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4053071Z ^[[36;1m  if (name.endsWith('_PAT')) {^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4053497Z ^[[36;1m    authModes.push({ source: name, mode: 'pat' });^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4053900Z ^[[36;1m  }^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4054190Z ^[[36;1m}^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4054540Z ^[[36;1mfor (const [source, idName, keyName] of appPairs) {^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4055038Z ^[[36;1m  if (tokenSet.has(idName) && tokenSet.has(keyName)) {^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4055473Z ^[[36;1m    authModes.push({^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4055809Z ^[[36;1m      source,^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4056129Z ^[[36;1m      mode: 'github-app',^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4056529Z ^[[36;1m      credential_names: [idName, keyName],^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4056915Z ^[[36;1m    });^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4057210Z ^[[36;1m  }^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4057489Z ^[[36;1m}^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4057766Z ^[[36;1m^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4058137Z ^[[36;1mconst moduleDir = path.join(installDir, 'node_modules');^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4058760Z ^[[36;1mconst hasModule = (name) => fs.existsSync(path.join(moduleDir, ...name.split('/')));^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4059290Z ^[[36;1mconst contract = {^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4059672Z ^[[36;1m  schema: 'workflows-api-client-setup/v1',^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4060388Z ^[[36;1m  token_count: Number.parseInt(process.env.TOKEN_COUNT || '0', 10) || 0,^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4060907Z ^[[36;1m  available_token_names: tokenNames,^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4061310Z ^[[36;1m  auth_modes: authModes,^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4061666Z ^[[36;1m  dependency_state: {^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4062062Z ^[[36;1m    node_path_ready: fs.existsSync(moduleDir),^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4062519Z ^[[36;1m    octokit_rest_ready: hasModule('@octokit/rest'),^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4063032Z ^[[36;1m    octokit_auth_app_ready: hasModule('@octokit/auth-app'),^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4063515Z ^[[36;1m    lru_cache_ready: hasModule('lru-cache'),^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4063912Z ^[[36;1m  },^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4064194Z ^[[36;1m};^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4064556Z ^[[36;1mprocess.stdout.write(JSON.stringify(contract));^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4064973Z ^[[36;1mNODE^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4065259Z ^[[36;1m)"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4065667Z ^[[36;1mprintf 'setup_contract=%s\n' "$setup_contract" >> "$GITHUB_OUTPUT"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4066141Z ^[[36;1m^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4066415Z ^[[36;1mecho ""^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4066746Z ^[[36;1mecho "📊 Token Setup Summary:"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4067161Z ^[[36;1mecho "  Total tokens exported: ${token_count}"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4067674Z ^[[36;1mecho "  Setup contract schema: workflows-api-client-setup/v1"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4068164Z ^[[36;1mif [ "${INPUT_VERBOSE}" = "true" ]; then^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4068583Z ^[[36;1m  echo "  Available: ${available_tokens}"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4069028Z ^[[36;1m  echo "  Setup contract: ${setup_contract}"^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4069406Z ^[[36;1mfi^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4069785Z ^[[36;1m^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4070267Z ^[[36;1m# Warn if no tokens were exported^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4070674Z ^[[36;1mif [ "${token_count}" -eq 0 ]; then^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4071139Z ^[[36;1m  echo "::warning::No tokens were exported! API calls may fail."^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4071693Z ^[[36;1m  echo "::warning::Ensure secrets are passed to this action."^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4072121Z ^[[36;1mfi^[[0m
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4092647Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4093107Z env:
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4093401Z   MAX_PROMOTIONS: 2
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4093858Z   NODE_PATH: /home/runner/work/Workflows/Workflows/.github/scripts/node_modules
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4094355Z   INPUT_SECRETS: 
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4096900Z   INPUT_GITHUB_TOKEN: ***
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4097347Z   INPUT_SERVICE_BOT_PAT: ***
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4098116Z   INPUT_ACTIONS_BOT_PAT: ***
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4098762Z   INPUT_OWNER_PR_PAT: ***
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4099102Z   INPUT_AGENTS_AUTOMATION_PAT: 
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4099477Z   INPUT_WORKFLOWS_APP_ID: ***
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4106488Z   INPUT_WORKFLOWS_APP_PRIVATE_KEY: ***
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4106880Z   INPUT_KEEPALIVE_APP_ID: 
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4107233Z   INPUT_KEEPALIVE_APP_PRIVATE_KEY: 
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4107588Z   INPUT_GH_APP_ID: 
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4107895Z   INPUT_GH_APP_PRIVATE_KEY: 
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4108217Z   INPUT_APP_1_ID: 
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4108520Z   INPUT_APP_1_PRIVATE_KEY: 
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4108841Z   INPUT_APP_2_ID: 
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4109141Z   INPUT_APP_2_PRIVATE_KEY: 
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4109464Z   INPUT_INSTALL_DIR: 
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4109776Z   INPUT_VERBOSE: false
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4110220Z ##[endgroup]
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4150355Z 🔐 Exporting tokens to environment...
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4436417Z 
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4437218Z 📊 Token Setup Summary:
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4437756Z   Total tokens exported: 6
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4438365Z   Setup contract schema: workflows-api-client-setup/v1
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4462607Z ##[end-action id=__self.export-tokens;outcome=success;conclusion=success;duration_ms=51]
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4563417Z ##[group]Run actions/github-script@v9
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4563794Z with:
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4568054Z   script: // Do not remove checkout; local helper is required.
+Execute / Scan belt promotion queue	UNKNOWN STEP	const { ensureRateLimitWrapped } = require(
+Execute / Scan belt promotion queue	UNKNOWN STEP	  './.github/scripts/github-rate-limited-wrapper.js'
+Execute / Scan belt promotion queue	UNKNOWN STEP	);
+Execute / Scan belt promotion queue	UNKNOWN STEP	const { checkRateLimitStatus } = require('./.github/scripts/github-api-with-retry.js');
+Execute / Scan belt promotion queue	UNKNOWN STEP	const { identifyReadyCodexPRs } = require('./.github/scripts/agents_belt_scan.js');
+Execute / Scan belt promotion queue	UNKNOWN STEP	const api = await ensureRateLimitWrapped({ github, core, env: process.env });
+Execute / Scan belt promotion queue	UNKNOWN STEP	const status = await checkRateLimitStatus(api, {
+Execute / Scan belt promotion queue	UNKNOWN STEP	  threshold: 0,
+Execute / Scan belt promotion queue	UNKNOWN STEP	  reserveFraction: Number(process.env.API_RESERVE_FRACTION || '0.15'),
+Execute / Scan belt promotion queue	UNKNOWN STEP	  estimatedCost: Number.parseInt(process.env.API_FORECAST_CALLS || '200', 10),
+Execute / Scan belt promotion queue	UNKNOWN STEP	  core,
+Execute / Scan belt promotion queue	UNKNOWN STEP	  env: process.env,
+Execute / Scan belt promotion queue	UNKNOWN STEP	  failOpen: false,
+Execute / Scan belt promotion queue	UNKNOWN STEP	});
+Execute / Scan belt promotion queue	UNKNOWN STEP	core.setOutput('credential_pool_id', status.credentialPoolId || 'unknown');
+Execute / Scan belt promotion queue	UNKNOWN STEP	core.setOutput('rate_limit_state', status.state || 'unknown');
+Execute / Scan belt promotion queue	UNKNOWN STEP	if (!status.safe || status.state !== 'safe') {
+Execute / Scan belt promotion queue	UNKNOWN STEP	  core.setOutput('items', '[]');
+Execute / Scan belt promotion queue	UNKNOWN STEP	  const detail = status.error
+Execute / Scan belt promotion queue	UNKNOWN STEP	    ? `probe failed for pool ${status.credentialPoolId || 'unknown'}: ${status.error}`
+Execute / Scan belt promotion queue	UNKNOWN STEP	    : `pool ${status.credentialPoolId || 'unknown'} has ${status.remaining}/` +
+Execute / Scan belt promotion queue	UNKNOWN STEP	      `${status.limit}; ${status.requiredRemaining} required for reserve + forecast`;
+Execute / Scan belt promotion queue	UNKNOWN STEP	  core.setFailed(`Belt scan deferred — ${detail}`);
+Execute / Scan belt promotion queue	UNKNOWN STEP	  return;
+Execute / Scan belt promotion queue	UNKNOWN STEP	}
+Execute / Scan belt promotion queue	UNKNOWN STEP	await identifyReadyCodexPRs({ github: api, context, core, env: process.env });
+Execute / Scan belt promotion queue	UNKNOWN STEP	
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4574911Z   github-token: ***
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4575214Z   debug: false
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4575527Z   user-agent: actions/github-script
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4575889Z   result-encoding: json
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4576212Z   retries: 0
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4576531Z   retry-exempt-status-codes: 400,401,403,404,422
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4576922Z env:
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4577206Z   MAX_PROMOTIONS: 2
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4577640Z   NODE_PATH: /home/runner/work/Workflows/Workflows/.github/scripts/node_modules
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4580404Z   GITHUB_TOKEN: ***
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4582721Z   GH_TOKEN: ***
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4583126Z   SERVICE_BOT_PAT: ***
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4583712Z   ACTIONS_BOT_PAT: ***
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4584286Z   OWNER_PR_PAT: ***
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4584609Z   WORKFLOWS_APP_ID: ***
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4591442Z   WORKFLOWS_APP_PRIVATE_KEY: ***
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4591804Z   API_RESERVE_FRACTION: 0.15
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4592152Z   API_FORECAST_CALLS: 200
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.4592471Z ##[endgroup]
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:41.5614894Z Token registry initialized with 5 tokens
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:42.9780733Z Selected token: WORKFLOWS_APP (5014 remaining, 99.3% capacity)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:42.9835707Z TypeError: 'get' on proxy: property '__getTokenSource' is a read-only and non-configurable data property on the proxy target but the proxy did not return its actual value (expected '() => currentTokenSource' but got 'function () { [native code] }')
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:42.9838125Z     at checkRateLimitStatus (/home/runner/work/Workflows/Workflows/.github/scripts/github-api-with-retry.js:1002:31)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:42.9839569Z     at eval (eval at callAsyncFunction (/home/runner/work/_actions/actions/github-script/v9/dist/index.js:64949:16), <anonymous>:10:22)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:42.9841055Z     at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:42.9842157Z     at async main (/home/runner/work/_actions/actions/github-script/v9/dist/index.js:65100:20)
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:42.9872991Z ##[error]Unhandled error: TypeError: 'get' on proxy: property '__getTokenSource' is a read-only and non-configurable data property on the proxy target but the proxy did not return its actual value (expected '() => currentTokenSource' but got 'function () { [native code] }')
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:43.0028961Z Post job cleanup.
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:43.0834905Z [command]/usr/bin/git version
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:43.0869902Z git version 2.55.0
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:43.0902449Z Temporarily overriding HOME='/home/runner/work/_temp/2486aad7-eb3b-4f02-8bf1-65c235ec821b' before making global git config changes
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:43.0903936Z Adding repository directory to the temporary git global config as a safe directory
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:43.0916021Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/Workflows/Workflows
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:43.0945178Z Removing SSH command configuration
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:43.0951730Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:43.0984239Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:43.1167545Z Removing HTTP extra header
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:43.1173326Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:43.1202838Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:43.1380562Z Removing includeIf entries pointing to credentials config files
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:43.1387086Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:43.1410556Z includeif.gitdir:/home/runner/work/Workflows/Workflows/.git.path
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:43.1411650Z includeif.gitdir:/home/runner/work/Workflows/Workflows/.git/worktrees/*.path
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:43.1412561Z includeif.gitdir:/github/workspace/.git.path
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:43.1413349Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:43.1417831Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/Workflows/Workflows/.git.path
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:43.1436589Z /home/runner/work/_temp/git-credentials-86131332-22be-4acf-9127-47d8f9965f1c.config
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:43.1445229Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/Workflows/Workflows/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-86131332\-22be\-4acf\-9127\-47d8f9965f1c\.config
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:43.1476657Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/Workflows/Workflows/.git/worktrees/*.path
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:43.1495147Z /home/runner/work/_temp/git-credentials-86131332-22be-4acf-9127-47d8f9965f1c.config
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:43.1502940Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/Workflows/Workflows/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-86131332\-22be\-4acf\-9127\-47d8f9965f1c\.config
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:43.1537596Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:43.1555420Z /github/runner_temp/git-credentials-86131332-22be-4acf-9127-47d8f9965f1c.config
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:43.1561876Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-86131332\-22be\-4acf\-9127\-47d8f9965f1c\.config
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:43.1588882Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:43.1606385Z /github/runner_temp/git-credentials-86131332-22be-4acf-9127-47d8f9965f1c.config
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:43.1614446Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-86131332\-22be\-4acf\-9127\-47d8f9965f1c\.config
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:43.1641548Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:43.1810420Z Removing credentials config '/home/runner/work/_temp/git-credentials-86131332-22be-4acf-9127-47d8f9965f1c.config'
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:43.1936332Z Evaluate and set job outputs
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:43.1949024Z Set output 'items'
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:43.1951316Z Set output 'credential_pool_id'
+Execute / Scan belt promotion queue	UNKNOWN STEP	2026-09-12T16:36:43.1952734Z Cleaning up orphan processes
