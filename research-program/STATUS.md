@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-12T01:52:25Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-12T01:56:40Z)
 
-Units: 98 — claimed 1, done 97
+Units: 98 — done 98
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 Claude conservation: off (weekly window available)
@@ -105,11 +105,10 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D4-verify-merged-2026-09-09T01 | D | D | done | codex | driver | Verify merged PRs against their issues' acceptance criteria |
 | D4-verify-merged-2026-09-10T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
 | D4-verify-merged-2026-09-11T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
-| D4-verify-merged-2026-09-12T01 | D | D | claimed | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
+| D4-verify-merged-2026-09-12T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
 
 ## Last checkpoints
 
-- 2026-09-11T17:05:25Z — D3-unblock-sweep-2026-09-11T16 — claimed by claude (agent cursor)
 - 2026-09-11T17:10:17Z — D3-unblock-sweep-2026-09-11T16 — default recorded — q-D3-unblock-sweep-2026-09-11T16
 - 2026-09-11T17:10:26Z — D3-unblock-sweep-2026-09-11T16 — default recorded — q-D3-unblock-sweep-2026-09-11T16
 - 2026-09-11T17:12:05Z — D3-unblock-sweep-2026-09-11T16 — done — Fleet has zero people-blockers and zero open PRs, but four default branches are red (Ready and Fine-Art-Archive on black formatting, Workflows on a real proxy T
@@ -121,6 +120,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-12T01:52:25Z — verify — enqueued D4-verify-merged-2026-09-12T01
 - 2026-09-12T01:52:25Z — D4-verify-merged-2026-09-12T01 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-12T01:52:25Z — D4-verify-merged-2026-09-12T01 — claimed by driver (agent cursor)
+- 2026-09-12T01:56:40Z — D4-verify-merged-2026-09-12T01 — done — gemini produced 3103 words at artifacts/verification/D4-verify-merged-2026-09-12T01.md in 247s
 
 ## Questions
 
