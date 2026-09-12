@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-12T16:13:44Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-12T16:28:54Z)
 
-Units: 99 — done 99
+Units: 100 — claimed 1, done 99
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=warn vibe=ok aider=ok
 Claude conservation: off (weekly window available)
@@ -75,6 +75,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D3-unblock-sweep-2026-09-11T16 | D | D | done | cursor | claude | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D3-unblock-sweep-2026-09-12T00 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D3-unblock-sweep-2026-09-12T08 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
+| D3-unblock-sweep-2026-09-12T16 | D | D | claimed | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D-audit-Counter_Risk--2026-09-07T04-47-32Z | D | D | done | codex | driver | Audit stranske/Counter_Risk and file issues (supply 2 <= 2) |
 | D-audit-Counter_Risk--2026-09-08T17-11-36Z | D | D | done | codex | codex | Audit stranske/Counter_Risk and file issues (supply 1 <= 2) |
 | D-audit-Counter_Risk--2026-09-09T05-14-45Z | D | D | done | codex | driver | Audit stranske/Counter_Risk and file issues (supply 1 <= 2) |
@@ -110,9 +111,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-12T00:15:25Z — unblock — enqueued D3-unblock-sweep-2026-09-12T00
-- 2026-09-12T00:15:26Z — D3-unblock-sweep-2026-09-12T00 — route — router picked cursor from ['codex', 'cursor']
-- 2026-09-12T00:15:26Z — D3-unblock-sweep-2026-09-12T00 — claimed by driver (agent cursor)
 - 2026-09-12T00:21:15Z — D3-unblock-sweep-2026-09-12T00 — done — gemini produced 1264 words at artifacts/sweeps/D3-unblock-sweep-2026-09-12T00.md in 342s
 - 2026-09-12T01:52:25Z — verify — enqueued D4-verify-merged-2026-09-12T01
 - 2026-09-12T01:52:25Z — D4-verify-merged-2026-09-12T01 — route — router picked cursor from ['codex', 'cursor']
@@ -122,6 +120,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-12T08:16:10Z — D3-unblock-sweep-2026-09-12T08 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-12T08:16:10Z — D3-unblock-sweep-2026-09-12T08 — claimed by driver (agent cursor)
 - 2026-09-12T08:22:51Z — D3-unblock-sweep-2026-09-12T08 — done — gemini produced 1262 words at artifacts/sweeps/D3-unblock-sweep-2026-09-12T08.md in 396s
+- 2026-09-12T16:28:53Z — unblock — enqueued D3-unblock-sweep-2026-09-12T16
+- 2026-09-12T16:28:54Z — D3-unblock-sweep-2026-09-12T16 — route — router picked cursor from ['codex', 'cursor']
+- 2026-09-12T16:28:54Z — D3-unblock-sweep-2026-09-12T16 — claimed by driver (agent cursor)
 
 ## Questions
 
