@@ -597,3 +597,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-13T01:11:45Z — D3-unblock-sweep-2026-09-13T00 — route — router picked cursor from ['codex', 'cursor']
 ## 2026-09-13T01:11:45Z — D3-unblock-sweep-2026-09-13T00 — claimed by codex (agent cursor)
 ## 2026-09-13T01:16:25Z — D3-unblock-sweep-2026-09-13T00 — done — 15-repo sweep finds 123 agent-ready issues, no owner holds or stalled agent PRs; Inv-Man-Intake 965 resolved elsewhere, two mechanical patches revalidated, CI a
+## 2026-09-13T01:55:51Z — verify — enqueued D4-verify-merged-2026-09-13T01
+## 2026-09-13T01:55:51Z — D4-verify-merged-2026-09-13T01 — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-13T01:55:51Z — D4-verify-merged-2026-09-13T01 — claimed by driver (agent cursor)
