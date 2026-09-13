@@ -627,3 +627,5 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-13T18:41:41Z — refill — Counter_Risk: open=1 <= 2 → audit queued
 ## 2026-09-13T18:41:46Z — D3-unblock-sweep-2026-09-13T16 — route — router picked cursor from ['codex', 'cursor']
 ## 2026-09-13T18:41:46Z — D3-unblock-sweep-2026-09-13T16 — claimed by driver (agent cursor)
+## 2026-09-13T19:12:21Z — D-audit-Counter_Risk--2026-09-13T18-41-41Z — route — router picked codex from ['codex']
+## 2026-09-13T19:12:21Z — D-audit-Counter_Risk--2026-09-13T18-41-41Z — claimed by codex (agent codex)
