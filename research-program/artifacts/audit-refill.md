@@ -1,4 +1,4 @@
-# Audit refill check 2026-09-12T18:24:58Z
+# Audit refill check 2026-09-13T06:28:17Z
 
 | repo | open agent-ready | last set | threshold | action |
 |---|---|---|---|---|
@@ -10,10 +10,10 @@
 | stranske/Portable-Alpha-Extension-Model | 4 | 10 | 3 | idle |
 | stranske/Counter_Risk | 3 | 7 | 2 | idle |
 | stranske/Manager-Database | 6 | 7 | 2 | idle |
-| stranske/Inv-Man-Intake | 6 | 8 | 2 | idle |
+| stranske/Inv-Man-Intake | 5 | 8 | 2 | idle |
 | stranske/Pension-Data | 8 | 8 | 2 | idle |
 | stranske/Ready | 8 | 7 | 2 | idle |
 | stranske/trip-planner | 4 | 8 | 2 | idle |
 | stranske/learning-management-system | 9 | 7 | 2 | idle |
 | stranske/Fine-Art-Archive | 7 | 8 | 2 | idle |
-| stranske/Doc-Lineage | 11 | 4 | 2 | excluded until 2026-09-12 |
+| stranske/Doc-Lineage | 11 | 4 | 2 | idle |
