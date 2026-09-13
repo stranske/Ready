@@ -25,3 +25,27 @@ Everything outside `research-program/` is ordinary repository code and is yours 
 ## Why the artifacts deserve a guard
 
 Two defect classes have already reached this tree and both are invisible on a casual read: a scan once printed token prefixes into a working file, and a batch of issue bodies carried a drafting agent's private working-directory paths, which made the issues unactionable. The work bundle in particular is prepared to be handed to colleagues, so a leaked path or credential fragment here is a real disclosure rather than an untidiness. That is what the publication guard exists to prevent.
+
+Run `python scripts/check_publication_safety.py` with Python 3.12 or later before
+publishing. It scans bytes in every file under `research-program/`, including
+binary files and the allowlist. Diagnostics contain the relative file, line,
+and rule, never the matched content. Missing or empty trees, unreadable entries,
+and symlinks fail the check. The final line reports files scanned, unallowed hits
+for every rule (including zeros), allowed hits, and errors. This mechanical check
+does not establish that proprietary content is safe to publish.
+
+For an intentional example, add an exact path relative to `research-program/`
+to `.publication-allow`, in the form `example.md:credential # Synthetic example
+reviewed for publication.` Each entry needs a reason and one of `home-path`,
+`credential`, `private-key`, `scratch-path`, or `internal-host`. Wildcards and
+paths outside the research tree are rejected. An exception covers only that
+file and rule; it does not suppress other rules or files. No findings are
+automatically redacted or allowlisted. Correct the source that produces an
+artifact so subsequent publication does not restore a removed finding.
+
+The Publication guard workflow runs on PRs and pushes to `main`. The required
+Gate also calls it unconditionally, including for documentation-only changes;
+a failed, cancelled, or skipped scan prevents a successful `Gate / gate` status.
+Existing published findings must be removed or individually justified before
+the guard can pass. `python -m pytest tests/test_publication_safety.py` tests the
+scanner and Gate aggregation against synthetic trees without exposing real hits.

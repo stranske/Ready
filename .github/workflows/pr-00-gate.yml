@@ -76,9 +76,16 @@ jobs:
       enable-soft-gate: true
     secrets: inherit
 
+  # Repo-specific exception: Ready #554 requires every publication to pass this
+  # guard, including documentation-only PRs. Keep it in the required Gate status.
+  publication-safety:
+    uses: ./.github/workflows/publication-guard.yml
+    permissions:
+      contents: read
+
   summary:
     name: gate-summary
-    needs: [detect, python-ci]
+    needs: [detect, python-ci, publication-safety]
     if: ${{ always() }}
     runs-on: ubuntu-latest
     permissions:
@@ -101,6 +108,7 @@ jobs:
         env:
           DETECT_RESULT: ${{ needs.detect.result || 'skipped' }}
           PYTHON_RESULT: ${{ needs.python-ci.result || 'skipped' }}
+          PUBLICATION_RESULT: ${{ needs.publication-safety.result || 'skipped' }}
         run: |
           set -euo pipefail
 
@@ -143,6 +151,11 @@ jobs:
               state="pending"
               description="Path classification status unknown"
             fi
+          fi
+
+          if [[ "${PUBLICATION_RESULT:-skipped}" != "success" ]]; then
+            state="failure"
+            description="Publication guard did not pass"
           fi
 
           echo "state=${state}" >> "$GITHUB_OUTPUT"
