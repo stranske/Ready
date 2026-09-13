@@ -1,0 +1,69 @@
+{
+  "improvements": [
+    {
+      "dimension": "workflow_productivity",
+      "failure_mode": "efficiency_trap",
+      "severity": 4,
+      "corroboration": 3,
+      "element": "Retrieval of available change facts",
+      "fix_hints": [
+        "Connect the existing delta computation to request assembly so the user's request can use the available facts.",
+        "Wire computed_context_answer delta facts into the invoke payload so chat is a viable delta lookup path",
+        "Confirm effective CLI date in-run summary or pre-run confirmation dialog",
+        "Fix the LangChain message construction pipeline so the model has the context required to fulfill queries efficiently."
+      ]
+    },
+    {
+      "dimension": "wired",
+      "failure_mode": "false_success",
+      "severity": 4,
+      "corroboration": 3,
+      "element": "LangChain invoke message assembly",
+      "fix_hints": [
+        "Serialize computed delta facts into UNTRUSTED_RUN_DATA (or a dedicated trusted block) before invoke instead of offline fake transport",
+        "Pass the selected GUI date through unchanged or block non-month-end picks and reflect normalization in the control state before run",
+        "Ensure the computed_context_answer is properly injected into the UNTRUSTED_RUN_DATA block or system message before transport.",
+        "Wire the computed delta values into the final transport message payload"
+      ]
+    },
+    {
+      "dimension": "wired",
+      "failure_mode": "confusion",
+      "severity": 3,
+      "corroboration": 4,
+      "element": "Delta context passed to the model",
+      "fix_hints": [
+        "Include computed delta facts in the actual transport context and verify their presence at the invoke boundary.",
+        "Explain month-end normalization beside the date control and show the effective run date before execution.",
+        "State that the deck was generated and link refresh was skipped; retain the warning where appropriate.",
+        "Include computed delta table/facts in the chat context payload shown to the model",
+        "Display the normalized as-of date in the UI before run or prevent silent date substitution",
+        "Add tooltip/label text stating month-end normalization rules and show the effective CLI date",
+        "Update the UI help text to explicitly state that dates are normalized to month-end, or fix the underlying command to respect selected off-cycle dates.",
+        "Reword the status warning to specify 'PPT link-refresh skipped' rather than 'generation skipped' to prevent misleading the user.",
+        "Either support true off-cycle dates or remove the off-cycle option to avoid mismatch with normalization behavior",
+        "Update help text to explicitly state that dates are normalized to month-end, removing the off-cycle date claim"
+      ]
+    }
+  ],
+  "coverage_gaps": [
+    "Scores apply only to supplied function and command evidence; application-wide readiness cannot be judged.",
+    "No accessibility trees, DOM captures, or screenshots were supplied; browser connection attempts timed out.",
+    "No Windows frozen GUI, Runner.xlsm, Excel, or PowerPoint COM runtime observations were available.",
+    "GUI observations used function-level controls and a fake runner, leaving native navigation and end-to-end task usability unobserved.",
+    "Chat transport was intercepted without an external API call; the actual model response and user-visible recovery behavior were not observed.",
+    "No interaction counts or timings were supplied for judging broader workflow efficiency.",
+    "Browser static fixture page: connection timed out twice; no DOM, screenshots, or click/assert transcripts",
+    "Windows frozen GUI, Runner.xlsm, and Excel/PowerPoint COM surfaces: no Windows host runtime observation",
+    "Primary Windows and browser application-wide readiness: bundle wired.ok=false with no end-to-end operator workflow evidence",
+    "Visual/Tkinter layout and first-time Windows GUI navigation beyond function-control stubs",
+    "Primary Windows and browser surfaces unobserved; no application-wide readiness verdict possible",
+    "Browser connection timed out twice; no DOM or screenshots obtained to evaluate HTML static fixture page",
+    "No Windows host; no runtime observation for Windows frozen GUI, Runner.xlsm, or Excel/PowerPoint COM",
+    "Primary Windows and browser surfaces unobserved; no DOM/screenshots or runtime observation available",
+    "No Windows/Tk/Excel end-to-end workflow observation (no Windows host)",
+    "No application-wide readiness verdict possible for native surfaces"
+  ],
+  "n_findings": 3,
+  "n_with_hints": 3
+}

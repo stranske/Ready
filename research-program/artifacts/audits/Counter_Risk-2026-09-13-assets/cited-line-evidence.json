@@ -1,0 +1,116 @@
+[
+  {
+    "issue": "01.md",
+    "path": "src/counter_risk/compute/limits.py",
+    "line": 263,
+    "text": "262:                 continue\n263:             if _normalize_entity_key(entity_name) != limit.entity_name:\n264:                 continue\n265:             found_match = True\n266:             matched_abs_notional += _exposure_magnitude(_find_notional(row))"
+  },
+  {
+    "issue": "01.md",
+    "path": "config/limits.yml",
+    "line": 15,
+    "text": "14: #   Valid values: counterparty | fcm | clearing_house | segment | custom_group\n15: # - entity_name (required string): canonical key for the grouped target.\n16: #   Example canonical keys: citibank, cme, trend_energy\n17: # - limit_value (required number): numeric threshold value for limit evaluation.\n18: #   Must be > 0."
+  },
+  {
+    "issue": "02.md",
+    "path": "src/counter_risk/compute/rollups.py",
+    "line": 575,
+    "text": "574: \n575:     for row in rows:\n576:         key = tuple(str(row.get(col, \"\")).strip() for col in group_by)\n577:         notional = _find_numeric(row, _NOTIONAL_KEYS, field=\"notional\")\n578:         if key not in seen_keys:"
+  },
+  {
+    "issue": "02.md",
+    "path": "docs/concentration_metrics.md",
+    "line": 28,
+    "text": "27: | `segment` | string | Asset-class slice within the variant. Individual asset classes (`TIPS`, `Treasury`, `Equity`, `Commodity`, `Currency`, `Cash`) plus the synthetic `total` segment, which aggregates the per-counterparty `Notional` column across all asset classes. |\n28: | `top5_share` | float in `[0.0, 1.0]` | Fraction of group notional concentrated in the five largest counterparties in the group. When the group has fewer than five counterparties, all counterparties are summed and the value is `1.0`. |\n29: | `top10_share` | float in `[0.0, 1.0]` | Same as `top5_share` but for the ten largest counterparties. Equals `top5_share` when the group has five or fewer counterparties. |\n30: | `hhi` | float in `[0.0, 1.0]` | Herfindahl-Hirschman Index \u2014 see scaling note below. |\n31: "
+  },
+  {
+    "issue": "03.md",
+    "path": "src/counter_risk/parsers/exposure_maturity_schedule.py",
+    "line": 247,
+    "text": "246:         started = True\n247:         raw_total = _cell(worksheet, row, total_col)\n248:         try:\n249:             total = (\n250:                 coerce_accounting_float(raw_total, strip_percent=False)"
+  },
+  {
+    "issue": "03.md",
+    "path": "src/counter_risk/parsers/exposure_maturity_schedule.py",
+    "line": 226,
+    "text": "225: \n226:     A \"Total\" summary row (or a run of empty date cells) ends the block. Blank\n227:     Total cells are treated as zero (per the procedures' \"add zeros where there\n228:     are blanks\").\n229:     \"\"\""
+  },
+  {
+    "issue": "04.md",
+    "path": "src/counter_risk/chat/session.py",
+    "line": 292,
+    "text": "291:         context_answer = self._answer_from_context(clean_question)\n292:         messages = self._build_provider_messages(prompt=prompt, question=clean_question)\n293:         provider_response_metadata: dict[str, object] = {}\n294:         answer = provider_client.generate(\n295:             messages=messages,"
+  },
+  {
+    "issue": "04.md",
+    "path": "src/counter_risk/chat/session.py",
+    "line": 404,
+    "text": "403: # Safeguards reduce injection risk but do not replace model-side safety systems.\n404: def build_guarded_prompt(context: RunContext, question: str) -> str:\n405:     \"\"\"Build prompt with explicit trusted/untrusted delimiters.\"\"\"\n406: \n407:     validate_user_query(question)"
+  },
+  {
+    "issue": "04.md",
+    "path": "src/counter_risk/chat/providers/base.py",
+    "line": 133,
+    "text": "132:                 continue\n133:             try:\n134:                 client = cast(_LangChainInvokeClient, client_info.client)\n135:                 response = client.invoke(messages, config=metadata)\n136:             except Exception as exc:"
+  },
+  {
+    "issue": "05.md",
+    "path": "src/counter_risk/pipeline/data_quality.py",
+    "line": 217,
+    "text": "216: \n217:     normalized_ppt_status = str(ppt_status).strip().lower()\n218:     if normalized_ppt_status == \"failed\":\n219:         findings.append(\n220:             _make_finding("
+  },
+  {
+    "issue": "05.md",
+    "path": "src/counter_risk/pipeline/run.py",
+    "line": 2867,
+    "text": "2866:     LOGGER.info(\"write_outputs_complete output_count=%s\", len(output_paths))\n2867:     return output_paths, PptProcessingResult(\n2868:         status=refresh_result.status,\n2869:         error_detail=refresh_result.error_detail,\n2870:         ppt_outputs=manifest_ppt_outputs,"
+  },
+  {
+    "issue": "06.md",
+    "path": "src/counter_risk/pipeline/run.py",
+    "line": 2757,
+    "text": "2756:         )\n2757:     elif not config.enable_distribution_output:\n2758:         if refresh_result.status == PptProcessingStatus.SKIPPED:\n2759:             manifest_ppt_outputs[\"master\"][\"status\"] = \"skipped\"\n2760:             if refresh_result.error_detail:"
+  },
+  {
+    "issue": "06.md",
+    "path": "src/counter_risk/pipeline/run.py",
+    "line": 2835,
+    "text": "2834:                 output_paths.append(static_output_path)\n2835:         post_distribution_generators = registry.load(\n2836:             output_generators=config.output_generators,\n2837:             stage=\"ppt_post_distribution\",\n2838:             context=OutputGeneratorRegistryContext("
+  },
+  {
+    "issue": "07.md",
+    "path": "src/counter_risk/pipeline/run.py",
+    "line": 917,
+    "text": "916: \n917: def _resolve_input_paths(config: WorkflowConfig) -> dict[str, Path]:\n918:     paths: dict[str, Path] = {\n919:         \"hist_all_programs_3yr_xlsx\": config.hist_all_programs_3yr_xlsx,\n920:         \"hist_ex_llc_3yr_xlsx\": config.hist_ex_llc_3yr_xlsx,"
+  },
+  {
+    "issue": "07.md",
+    "path": "src/counter_risk/pipeline/run.py",
+    "line": 3843,
+    "text": "3842:             ),\n3843:             \"historical_wal_workbook\": lambda registry_context: (\n3844:                 _build_historical_wal_workbook_output_generator(\n3845:                     exposure_summary_path=_require_exposure_summary_path(\n3846:                         config.exposure_summary_xlsx if config is not None else None"
+  },
+  {
+    "issue": "07.md",
+    "path": "src/counter_risk/pipeline/run.py",
+    "line": 3157,
+    "text": "3156: \n3157: def _resolve_screenshot_input_mapping(config: WorkflowConfig) -> dict[str, Path]:\n3158:     raw_inputs = config.screenshot_inputs\n3159:     normalized_pairs: list[tuple[str, Path]] = []\n3160:     seen_keys: set[str] = set()"
+  },
+  {
+    "issue": "08.md",
+    "path": "src/counter_risk/pipeline/run.py",
+    "line": 2835,
+    "text": "2834:                 output_paths.append(static_output_path)\n2835:         post_distribution_generators = registry.load(\n2836:             output_generators=config.output_generators,\n2837:             stage=\"ppt_post_distribution\",\n2838:             context=OutputGeneratorRegistryContext("
+  },
+  {
+    "issue": "08.md",
+    "path": "src/counter_risk/pipeline/run.py",
+    "line": 647,
+    "text": "646: \n647:     if runtime_config.include_concentration_table_in_ppt and concentration_metrics_records:\n648:         dist_ppt_path = run_dir / resolve_ppt_output_names(as_of_date).distribution_filename\n649:         if dist_ppt_path.exists():\n650:             try:"
+  },
+  {
+    "issue": "08.md",
+    "path": "src/counter_risk/pipeline/run.py",
+    "line": 2807,
+    "text": "2806:         try:\n2807:             distribution_validation = validate_distribution_ppt_standalone(target_distribution_ppt)\n2808:         except RuntimeError as exc:\n2809:             warnings.append(\n2810:                 \"Distribution PPT standalone validation skipped; unable to parse generated deck\""
+  }
+]

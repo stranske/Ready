@@ -629,3 +629,5 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-13T18:41:46Z — D3-unblock-sweep-2026-09-13T16 — claimed by driver (agent cursor)
 ## 2026-09-13T19:12:21Z — D-audit-Counter_Risk--2026-09-13T18-41-41Z — route — router picked codex from ['codex']
 ## 2026-09-13T19:12:21Z — D-audit-Counter_Risk--2026-09-13T18-41-41Z — claimed by codex (agent codex)
+## 2026-09-13T19:21:55Z — D3-unblock-sweep-2026-09-13T16 — fail — offload to gemini exited 1; retained artifact is not proof of success
+## 2026-09-13T19:31:10Z — D-audit-Counter_Risk--2026-09-13T18-41-41Z — done — Eight verified Counter_Risk defects documented with reproducible evidence and validated issue drafts; Windows/browser coverage remains explicitly unverified.

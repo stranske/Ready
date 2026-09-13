@@ -191,3 +191,21 @@ Phases 0–5 complete on clone tip a846d4b098137ea098dfdf62e3c6f0572fb9d18b. Eva
 
 ## 2026-09-10T18:35:00Z — D-audit-Manager-Database--2026-09-10T17-45-13Z complete
 Phases 0–5 complete on clone tip 5681c1b8ed41911599a19014147300637a9c3b5f. Evaluated ~51K LOC across api/, etl/, alerts/, adapters/, ui/, web/. Test baseline: green on main. Filed 7 verified issues #1647–#1653 (1xP1, 6xP2). Local issue_lint.py 7/7 PASS (0 errors, 0 advisories, conforms strictly to docs/AGENT_ISSUE_FORMAT.md). Intake log updated with 7 rows. OUT written to /Users/teacher/.codex/automations/research-program/artifacts/audits/Manager-Database-2026-09-10.md. Durable audit ledger and repo README updated.
+
+## 2026-09-13T19:14:08.213970+00:00 D-audit-Counter_Risk--2026-09-13T18-41-41Z Phase 0 complete
+Dossier and owner guidance read; scope recorded. Research-only takes precedence over filing language in brief.
+
+## 2026-09-13T19:15:11.265932+00:00 D-audit-Counter_Risk--2026-09-13T18-41-41Z Phase 1 complete
+Refreshed main at 6e2a87b; source AST/LOC digest, 2109 tests collected, live issues retained. Claims reaper empty; bounded offloads next.
+
+## 2026-09-13T19:26:43.140872+00:00 D-audit-Counter_Risk--2026-09-13T18-41-41Z Phase 2 complete
+Eight dimensions considered. Two scoped offloads yielded8 candidates plus lead chat transport defect; operator fixture/GUI/chat tests145 passed. Function-only UX panel4 evaluators plus Cursor critic; browser/Windows coverage blocked. Corrected numerical Top5 arithmetic.
+
+## 2026-09-13T19:28:24.074489+00:00 D-audit-Counter_Risk--2026-09-13T18-41-41Z Phase 3 complete
+All retained defects independently rechecked at unchanged6e2a87b. Corrected concentration expected Top5 to160/220; confirmed real XLSX invalid amounts, valid PNG provenance omission, actual alias reshaper and chat transport. Reframed post-append validation candidate as exported23 slides versus final24. Deferred original config snapshot divergence as an enhancement, not a proven contract break.
+
+## 2026-09-13T19:28:24.074489+00:00 D-audit-Counter_Risk--2026-09-13T18-41-41Z Phase 4 complete
+Eight bodies (2 P1,6 P2) staged,8/8 actual repo format checks pass without advisories. No issue creation/labels/PRs/intake rows under executor research-only rule.
+
+## 2026-09-13T19:30:49.576074+00:00 D-audit-Counter_Risk--2026-09-13T18-41-41Z Phase 5 complete
+OUT and Code/Audits report/index/ledger,8 bodies, source extracts, dedup inventory, verification dispositions, roadmap, UX panel and platform handoff written. Source unchanged at remote6e2a87b. Research complete; close unit next.

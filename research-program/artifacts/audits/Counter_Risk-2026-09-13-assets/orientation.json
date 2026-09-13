@@ -1,0 +1,114 @@
+{
+  "sha": "6e2a87b27be9a23d388155e37ed01675b1e27dc7",
+  "source_loc_by_parent": {
+    "counter_risk": 2276,
+    "renderers": 630,
+    "pipeline": 8235,
+    "parsers": 2643,
+    "chat": 1227,
+    "writers": 1617,
+    "io": 1091,
+    "workflows": 51,
+    "cli": 714,
+    "observability": 438,
+    "integrations": 612,
+    "compute": 1547,
+    "gui": 782,
+    "calculations": 123,
+    "mosers": 722,
+    "ppt": 747,
+    "build": 738,
+    "outputs": 559,
+    "reports": 624,
+    "providers": 743
+  },
+  "largest_files": [
+    [
+      5585,
+      "src/counter_risk/pipeline/run.py"
+    ],
+    [
+      851,
+      "src/counter_risk/chat/session.py"
+    ],
+    [
+      850,
+      "src/counter_risk/writers/historical_update.py"
+    ],
+    [
+      777,
+      "src/counter_risk/gui/runner.py"
+    ],
+    [
+      632,
+      "src/counter_risk/compute/rollups.py"
+    ],
+    [
+      625,
+      "src/counter_risk/renderers/table_png.py"
+    ],
+    [
+      613,
+      "src/counter_risk/pipeline/manifest_schema.py"
+    ],
+    [
+      592,
+      "src/counter_risk/mosers/workbook_generation.py"
+    ],
+    [
+      565,
+      "src/counter_risk/parsers/cprs_ch.py"
+    ],
+    [
+      556,
+      "src/counter_risk/pipeline/manifest.py"
+    ],
+    [
+      550,
+      "src/counter_risk/compute/futures_delta.py"
+    ],
+    [
+      522,
+      "src/counter_risk/pipeline/data_quality.py"
+    ],
+    [
+      518,
+      "src/counter_risk/cli/__init__.py"
+    ],
+    [
+      510,
+      "src/counter_risk/pipeline/reconciliation.py"
+    ],
+    [
+      497,
+      "src/counter_risk/io/mosers_workbook.py"
+    ]
+  ],
+  "todo": [],
+  "duplicate_function_bodies": [
+    [
+      "src/counter_risk/demo_artifact.py:23 _resolve_config_path",
+      "src/counter_risk/web_demo.py:23 _resolve_config_path"
+    ],
+    [
+      "src/counter_risk/demo_artifact.py:71 _fixture_sources",
+      "src/counter_risk/web_demo.py:71 _fixture_sources"
+    ],
+    [
+      "src/counter_risk/demo_artifact.py:116 _write_data_quality_summary",
+      "src/counter_risk/web_demo.py:136 _write_data_quality_summary"
+    ],
+    [
+      "src/counter_risk/demo_artifact.py:141 _artifact_relative_path",
+      "src/counter_risk/web_demo.py:161 _artifact_relative_path"
+    ],
+    [
+      "src/counter_risk/demo_artifact.py:163 _normalize_manifest_paths",
+      "src/counter_risk/web_demo.py:183 _normalize_manifest_paths"
+    ],
+    [
+      "src/counter_risk/compute/limits.py:49 _iter_rows",
+      "src/counter_risk/compute/rollups.py:78 _iter_rows"
+    ]
+  ]
+}

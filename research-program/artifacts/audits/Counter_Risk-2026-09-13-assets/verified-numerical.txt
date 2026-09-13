@@ -1,0 +1,10 @@
+duplicate-counterparty concentration
+ actual: {'variant': 'all', 'segment': 'total', 'top5_share': 0.6818181818181818, 'top10_share': 0.9090909090909091, 'hhi': 0.16942148760330578}
+ expected after counterparty aggregation: {'top5_share': 1.0, 'hhi': 0.3181818181818181}
+limit-registry bypass
+ registry canonical key: bank_of_america
+ missing entities: [{'entity_type': 'counterparty', 'entity_name': 'bank_of_america'}]
+ breaches: []
+invalid-maturity-total
+ parsed rows: [ExposureMaturityRow(maturity_date=datetime.date(2026, 1, 1), total=0.0)]
+all current-code proofs reproduced

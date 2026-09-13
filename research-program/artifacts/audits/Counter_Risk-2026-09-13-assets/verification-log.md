@@ -1,0 +1,16 @@
+- 01 Registry alias skips a fail-severity cap: STAGED, priority P1; proof lead-numerical-seams.json; no GitHub issue created.
+- 02 Split counterparties understate concentration: STAGED, priority P1; proof lead-numerical-seams.json; no GitHub issue created.
+- 03 Malformed maturity amount becomes zero: STAGED, priority P2; proof lead-numerical-seams.json; no GitHub issue created.
+- 04 Live chat loses change-delta facts: STAGED, priority P2; proof lead-chat-delta-proof.json; no GitHub issue created.
+- 05 PPT status confuses refresh with generation: STAGED, priority P2; proof verified-ppt-status.txt; no GitHub issue created.
+- 06 PDF request disappears under conflicting flags: STAGED, priority P2; proof verified-export-pdf.txt; no GitHub issue created.
+- 07 Optional source hashes are missing: STAGED, priority P2; proof lead-numerical-seams.json; no GitHub issue created.
+- 08 PDF export precedes concentration-slide append: STAGED, priority P2; proof lead-final-deck-proof.json; no GitHub issue created.
+- W-1: DEFERRED with reason; original config preserves user input and raw NISA already hashed; additive lineage needs a defined contract.
+- W-5: REPLACED by draft08 with final export-boundary proof.
+- AST duplicate helpers: DEFERRED, no observed behavior divergence.
+- Old finite/bool/mixed-sign/packaging/gui/discovery findings: REFUTED or DUPLICATE against current source.
+- Risk proxy prior-volatility and signed unused breakdown helper: INSUFFICIENT evidence of a current contract failure.
+- GUI date guidance: DEFERRED wording correction; keep month-end semantics.
+- Browser and Windows visual/platform checks: HANDOFF, environment unavailable.
+- No candidate was silently dropped; raw offload reports are subordinate to this adjudication.

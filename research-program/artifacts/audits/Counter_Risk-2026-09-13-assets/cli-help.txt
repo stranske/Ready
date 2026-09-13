@@ -1,0 +1,16 @@
+usage: counter-risk [-h] [--log-level LOG_LEVEL] [--log-file LOG_FILE]
+                    {run,gui} ...
+
+positional arguments:
+  {run,gui}
+    run                 Run the Counter Risk pipeline
+    gui                 Launch the Tkinter operator runner
+
+options:
+  -h, --help            show this help message and exit
+  --log-level LOG_LEVEL
+                        Logging level for this invocation (default: INFO).
+                        Accepts any standard level name, e.g. DEBUG, INFO,
+                        WARNING, ERROR.
+  --log-file LOG_FILE   Optional path to also write JSON-formatted log records
+                        to, in addition to the console.

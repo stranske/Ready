@@ -1,0 +1,38 @@
+{
+  "split_concentration": {
+    "variant": "all",
+    "segment": "total",
+    "top5_share": 0.6818181818181818,
+    "top10_share": 0.9090909090909091,
+    "hhi": 0.16942148760330578
+  },
+  "aggregated_control": {
+    "variant": "all",
+    "segment": "total",
+    "top5_share": 0.7272727272727273,
+    "top10_share": 0.9545454545454546,
+    "hhi": 0.3181818181818181
+  },
+  "canonical_alias_missing": [
+    {
+      "entity_type": "counterparty",
+      "entity_name": "bank_of_america"
+    }
+  ],
+  "alias_breaches": [],
+  "canonical_control_breaches": [
+    {
+      "entity_type": "counterparty",
+      "entity_name": "bank_of_america",
+      "limit_kind": "absolute_notional",
+      "severity": "fail",
+      "actual_value": 200.0,
+      "limit_value": 100.0,
+      "breach_amount": 100.0,
+      "notes": null
+    }
+  ],
+  "real_xlsx_invalid_total_parsed": 0.0,
+  "valid_png_and_maturity_xlsx_in_input_hash_mapping": false,
+  "correction": "Raw offload expected Top5=1.0 was wrong; correct Top5 is160/220=0.7272727. HHI remains0.3181818."
+}
