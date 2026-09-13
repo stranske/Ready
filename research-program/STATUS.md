@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-13T04:10:16Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-13T04:41:49Z)
 
-Units: 102 — claimed 1, done 101
+Units: 102 — done 101, failed 1
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 Claude conservation: off (weekly window available)
@@ -109,11 +109,10 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D4-verify-merged-2026-09-10T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
 | D4-verify-merged-2026-09-11T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
 | D4-verify-merged-2026-09-12T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
-| D4-verify-merged-2026-09-13T01 | D | D | claimed | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
+| D4-verify-merged-2026-09-13T01 | D | D | failed | cursor |  | Verify merged PRs against their issues' acceptance criteria |
 
 ## Last checkpoints
 
-- 2026-09-13T01:11:45Z — D3-unblock-sweep-2026-09-13T00 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-13T01:11:45Z — D3-unblock-sweep-2026-09-13T00 — claimed by codex (agent cursor)
 - 2026-09-13T01:16:25Z — D3-unblock-sweep-2026-09-13T00 — done — 15-repo sweep finds 123 agent-ready issues, no owner holds or stalled agent PRs; Inv-Man-Intake 965 resolved elsewhere, two mechanical patches revalidated, CI a
 - 2026-09-13T01:55:51Z — verify — enqueued D4-verify-merged-2026-09-13T01
@@ -125,6 +124,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-13T03:31:15Z — D4-verify-merged-2026-09-13T01 — fail — offload to gemini exited 1; retained artifact is not proof of success
 - 2026-09-13T03:46:33Z — D4-verify-merged-2026-09-13T01 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-13T03:46:33Z — D4-verify-merged-2026-09-13T01 — claimed by driver (agent cursor)
+- 2026-09-13T04:26:44Z — D4-verify-merged-2026-09-13T01 — fail — offload to gemini exited 1; retained artifact is not proof of success
 
 ## Questions
 
