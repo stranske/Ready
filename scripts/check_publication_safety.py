@@ -37,12 +37,15 @@ def load_allowlist(root: Path) -> tuple[set[tuple[str, str]], list[str]]:
         name, colon, rule = entry.strip().rpartition(":")
         valid_path = (
             bool(name)
+            and name != ".publication-allow"
             and not PurePosixPath(name).is_absolute()
             and ".." not in PurePosixPath(name).parts
             and not any(char in name for char in "*?[]\\")
             and PurePosixPath(name).as_posix() == name
         )
-        if not separator or not reason.strip() or not colon or not valid_path or rule not in RULES:
+        if name == ".publication-allow":
+            errors.append(f".publication-allow:{number}: cannot allowlist the allowlist file itself")
+        elif not separator or not reason.strip() or not colon or not valid_path or rule not in RULES:
             errors.append(f".publication-allow:{number}: expected exact path:rule # reason")
         elif not (root / name).is_file():
             errors.append(f".publication-allow:{number}: target file does not exist")

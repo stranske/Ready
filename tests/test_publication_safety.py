@@ -131,6 +131,18 @@ def test_allowlist_itself_is_scanned(tmp_path):
     assert ".publication-allow:1: credential" in result.stdout
 
 
+def test_allowlist_cannot_self_allow(tmp_path):
+    (tmp_path / ".publication-allow").write_text(
+        ".publication-allow:credential # attempt to bypass self-scan\n"
+    )
+    result = run_guard(tmp_path)
+    assert result.returncode == 1
+    assert (
+        "ERROR: .publication-allow:1: cannot allowlist the allowlist file itself"
+        in result.stdout
+    )
+
+
 @pytest.mark.parametrize("directory", [False, True])
 def test_symlinks_cannot_hide_or_import_content(tmp_path, directory):
     root = tmp_path / "research"
