@@ -620,3 +620,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-13T16:51:03Z — unblock — enqueued D3-unblock-sweep-2026-09-13T16
 ## 2026-09-13T16:51:04Z — D3-unblock-sweep-2026-09-13T16 — route — router picked cursor from ['codex', 'cursor']
 ## 2026-09-13T16:51:04Z — D3-unblock-sweep-2026-09-13T16 — claimed by driver (agent cursor)
+## 2026-09-13T17:31:17Z — D3-unblock-sweep-2026-09-13T16 — fail — offload to gemini exited 1; retained artifact is not proof of success
+## 2026-09-13T17:46:23Z — D3-unblock-sweep-2026-09-13T16 — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-13T17:46:23Z — D3-unblock-sweep-2026-09-13T16 — claimed by driver (agent cursor)
