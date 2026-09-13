@@ -600,3 +600,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-13T01:55:51Z — verify — enqueued D4-verify-merged-2026-09-13T01
 ## 2026-09-13T01:55:51Z — D4-verify-merged-2026-09-13T01 — route — router picked cursor from ['codex', 'cursor']
 ## 2026-09-13T01:55:51Z — D4-verify-merged-2026-09-13T01 — claimed by driver (agent cursor)
+## 2026-09-13T02:36:00Z — D4-verify-merged-2026-09-13T01 — fail — offload to gemini exited 1; retained artifact is not proof of success
+## 2026-09-13T02:51:05Z — D4-verify-merged-2026-09-13T01 — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-13T02:51:05Z — D4-verify-merged-2026-09-13T01 — claimed by driver (agent cursor)

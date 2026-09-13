@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-13T02:11:14Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-13T02:51:05Z)
 
 Units: 102 — claimed 1, done 101
 Paused: False   Phase stops: []
@@ -113,9 +113,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-12T17:11:09Z — D3-unblock-sweep-2026-09-12T16 — claimed by codex (agent cursor)
-- 2026-09-12T17:17:46Z — D3-unblock-sweep-2026-09-12T16 — done — Scanned 15 repos: 124 agent-ready issues, validated two mechanical patches and a frozen-issue body repair; documented CI and scheduled-workflow failures.
-- 2026-09-13T00:30:08Z — unblock — enqueued D3-unblock-sweep-2026-09-13T00
 - 2026-09-13T00:30:09Z — D3-unblock-sweep-2026-09-13T00 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-13T00:30:09Z — D3-unblock-sweep-2026-09-13T00 — claimed by driver (agent cursor)
 - 2026-09-13T01:10:19Z — D3-unblock-sweep-2026-09-13T00 — fail — offload to gemini exited 1; retained artifact is not proof of success
@@ -125,6 +122,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-13T01:55:51Z — verify — enqueued D4-verify-merged-2026-09-13T01
 - 2026-09-13T01:55:51Z — D4-verify-merged-2026-09-13T01 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-13T01:55:51Z — D4-verify-merged-2026-09-13T01 — claimed by driver (agent cursor)
+- 2026-09-13T02:36:00Z — D4-verify-merged-2026-09-13T01 — fail — offload to gemini exited 1; retained artifact is not proof of success
+- 2026-09-13T02:51:05Z — D4-verify-merged-2026-09-13T01 — route — router picked cursor from ['codex', 'cursor']
+- 2026-09-13T02:51:05Z — D4-verify-merged-2026-09-13T01 — claimed by driver (agent cursor)
 
 ## Questions
 
