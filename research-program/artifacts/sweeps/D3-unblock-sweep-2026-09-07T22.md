@@ -27,10 +27,10 @@ Completed 2026-09-07 22:58 UTC; 15 repos discovered from `SUPPORTED_REPOS`; Orch
 ### 1. Frozen Issues Disposition
 - **Workflows #3405** (`[P1] status:in-progress is write-only: the belt claim cannot be released without a PR`):
   - **Prior status**: Carried `agents:auto-pilot-pause` due to format optimizer validation failures on missing concrete file targets in task list and relative workflow path citations (`agents-73-codex-belt-conveyor.yml` instead of `.github/workflows/agents-73-codex-belt-conveyor.yml`).
-  - **Resolution**: Updated issue body to cite exact repo-relative paths (`.github/workflows/...`), explicitly bound all tasks to concrete files, added recommended `## Scope` and `## Implementation Notes` sections, validated clean pass via `clones/Workflows/.github/scripts/issue_format.py` (`OK: True`), updated issue body on GitHub, and removed `agents:auto-pilot-pause`.
+  - **Resolution**: Updated issue body to cite exact repo-relative paths (`.github/workflows/...`), explicitly bound all tasks to concrete files, added recommended `## Scope` and `## Implementation Notes` sections, validated clean pass via `[LOCAL_WORKSPACE]/Workflows/.github/scripts/issue_format.py` (`OK: True`), updated issue body on GitHub, and removed `agents:auto-pilot-pause`.
 - **Workflows #3406** (`[P1] Belt queue-selection filters on status:ready, which no code path ever applies`):
   - **Prior status**: Carried `agents:auto-pilot-pause` due to format optimizer validation failures on task target formatting and workflow path citations.
-  - **Resolution**: Updated issue body to cite exact repo-relative paths (`.github/workflows/...`, `scripts/cleanup_labels.py`, `.github/workflows/maint-69-sync-labels.yml`), bound tasks to concrete targets, added `## Scope` and `## Implementation Notes`, verified via `clones/Workflows/.github/scripts/issue_format.py` (`OK: True`), updated issue body on GitHub, and removed `agents:auto-pilot-pause`.
+  - **Resolution**: Updated issue body to cite exact repo-relative paths (`.github/workflows/...`, `scripts/cleanup_labels.py`, `.github/workflows/maint-69-sync-labels.yml`), bound tasks to concrete targets, added `## Scope` and `## Implementation Notes`, verified via `[LOCAL_WORKSPACE]/Workflows/.github/scripts/issue_format.py` (`OK: True`), updated issue body on GitHub, and removed `agents:auto-pilot-pause`.
 - **Doc-Lineage #1** (`Dependency Dashboard`): Carrying label `agents:auto-pilot-pause` due to format-guard attempt-cap (3 optimizer attempts exhausted). This is Renovate's bot-maintained dependency tracker. Per protocol, bot trackers are non-work orders and are left alone.
 - **Genuinely needs the owner**: **None**. No open issues across the fleet carry `needs-human`.
 
@@ -100,5 +100,5 @@ Counted open issues excluding the 7 blocking labels (`needs-human`, `agents:paus
 ### 5. Execution Summary
 - All 15 repositories scanned live via GitHub API (`with-gh-auth.sh gh`).
 - 2 frozen issues repaired and unblocked (`Workflows #3405`, `Workflows #3406`).
-- Checkpoints appended to [CHECKPOINT.md](file:///Users/teacher/.codex/automations/research-program/artifacts/sweeps/CHECKPOINT.md) and [D3-unblock-sweep-2026-09-07T22.CHECKPOINT.md](file:///Users/teacher/.codex/automations/research-program/artifacts/sweeps/D3-unblock-sweep-2026-09-07T22.CHECKPOINT.md).
+- Checkpoints appended to [CHECKPOINT.md](file://[LOCAL_HOME]/.codex/automations/research-program/artifacts/sweeps/CHECKPOINT.md) and [D3-unblock-sweep-2026-09-07T22.CHECKPOINT.md](file://[LOCAL_HOME]/.codex/automations/research-program/artifacts/sweeps/D3-unblock-sweep-2026-09-07T22.CHECKPOINT.md).
 - Offload non-git workspace constraints respected (no branch/push/PR mutations performed).

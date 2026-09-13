@@ -1,6 +1,6 @@
 ## Why
 
-CalPERS seeded but IC items not crawled (R6). Verified: `clones/Pension-Data/dossier-out/DOSSIER.md:1-20` documents CalPERS source_map seeding but `grep -r calpers_ic clones/Pension-Data/src` returns no harvest module. Owner default #9: CalPERS-style per-item PDFs. **Missing behavior:** no IC packet crawler.
+CalPERS seeded but IC items not crawled (R6). Verified: `[LOCAL_WORKSPACE]/Pension-Data/dossier-out/DOSSIER.md:1-20` documents CalPERS source_map seeding but `grep -r calpers_ic [LOCAL_WORKSPACE]/Pension-Data/src` returns no harvest module. Owner default #9: CalPERS-style per-item PDFs. **Missing behavior:** no IC packet crawler.
 
 ## Scope
 

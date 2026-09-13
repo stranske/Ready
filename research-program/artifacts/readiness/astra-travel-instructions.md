@@ -105,8 +105,8 @@ attempt), `fail --reason "<why>"` (anything else). Between 12:00–13:59 UTC, al
 
 Hard limits in this role: **never edit `program.py` or the briefs**; never touch other
 repos' code (research and writing only — issue bodies are written as *files*, not filed);
-never print secrets. Repo reads come from `clones/<Repo>`; offloads run with
-`--cwd /Users/teacher/.codex/automations/research-program` because an offload agent can
+never print secrets. Repo reads come from `[LOCAL_WORKSPACE]/<Repo>`; offloads run with
+`--cwd [LOCAL_HOME]/.codex/automations/research-program` because an offload agent can
 only write inside its cwd.
 
 **Capacity.** `policy.json` holds `claude_conserve_until` (currently `2026-09-06T12:00:00Z`).
@@ -157,7 +157,7 @@ downstream of a documented pipeline, and its surface signal usually means someth
 than it looks like alone. Name the doc that grounds a system-level claim; if you can't,
 read `Workflows/README.md` and `Workflows/docs/ops/REPO_REVIEW_PROCESS.md` first.
 
-**Issue bodies cite repo-relative paths.** Never `clones/<Repo>/…`, never a scratchpad
+**Issue bodies cite repo-relative paths.** Never `[LOCAL_WORKSPACE]/<Repo>/…`, never a scratchpad
 path — that makes an issue unactionable and the format guard freezes it with
 `needs-human`. Findings need verified `file:line` evidence, concrete tasks, and a named
 test gate.

@@ -1,6 +1,6 @@
 ## Why
 
-NEC rail schedules for US Northeast corridor (owner default #14). Verified: `clones/trip-planner/trip_planner/sources/adapters/__init__.py:3-5` exports only `SourceAdapter` base — no GTFS adapter module. **Missing behavior:** no Amtrak schedule ingestion.
+NEC rail schedules for US Northeast corridor (owner default #14). Verified: `[LOCAL_WORKSPACE]/trip-planner/trip_planner/sources/adapters/__init__.py:3-5` exports only `SourceAdapter` base — no GTFS adapter module. **Missing behavior:** no Amtrak schedule ingestion.
 
 ## Scope
 

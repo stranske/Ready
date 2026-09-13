@@ -1,10 +1,10 @@
 from pathlib import Path
 from datetime import datetime,timezone
 import json,subprocess,shutil
-base=Path('/Users/teacher/.codex/automations/research-program');out=base/'artifacts/audits/Fine-Art-Archive-2026-09-05-resume'
-canonical=Path('/Users/teacher/Library/CloudStorage/Dropbox/Learning/Code/Audits/Fine-Art-Archive')
+base=Path('[LOCAL_HOME]/.codex/automations/research-program');out=base/'artifacts/audits/Fine-Art-Archive-2026-09-05-resume'
+canonical=Path('[LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Fine-Art-Archive')
 now=datetime.now(timezone.utc).isoformat();unit='D-audit-Fine-Art-Archive--2026-09-05T04-00-31Z'
-root=base/'clones/Fine-Art-Archive'
+root=base/'[LOCAL_WORKSPACE]/Fine-Art-Archive'
 validation=[]
 for f in sorted((out/'corrected-issue-bodies').glob('*.md')):
  p=subprocess.run([str(root/'.venv/bin/python'),'.github/scripts/issue_format.py',str(f)],cwd=root,capture_output=True,text=True,check=True)

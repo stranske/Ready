@@ -58,4 +58,4 @@
 ## 5. Intake Log & Checkpoint Status
 - 7 URLs appended to `~/.codex/orchestrator/measurement/intake-2026-09-04.log`.
 - Dropbox audit directory updated: `README.md`, `2026-09-10-refill-verification-log.md`, `2026-09-10-refill-audit-run.md`, `2026-09-10-refill-AUDIT_REPORT.md`, and `2026-09-10-refill-issue-bodies/`.
-- Checkpoint file finalized at `/Users/teacher/.codex/automations/research-program/artifacts/audits/D-audit-learning-management-system--2026-09-10T17-45-16Z.CHECKPOINT.md`.
+- Checkpoint file finalized at `[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/D-audit-learning-management-system--2026-09-10T17-45-16Z.CHECKPOINT.md`.

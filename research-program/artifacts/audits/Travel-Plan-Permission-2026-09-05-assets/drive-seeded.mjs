@@ -1,4 +1,4 @@
-import {chromium} from '/Users/teacher/.codex/orchestrator/frontend-verify/node_modules/playwright/index.mjs';import fs from 'node:fs';
+import {chromium} from '[LOCAL_HOME]/.codex/orchestrator/frontend-verify/node_modules/playwright/index.mjs';import fs from 'node:fs';
 const out=new URL('./',import.meta.url).pathname;const browser=await chromium.connectOverCDP('http://127.0.0.1:9222');const context=await browser.newContext();const page=await context.newPage();const screens=[];
 async function snap(name){const a11y=await page.locator('body').ariaSnapshot();const screenshot_path=out+name+'.png';await page.screenshot({path:screenshot_path,fullPage:true});screens.push({name,a11y,screenshot_path,url:page.url()});}
 await page.goto('http://127.0.0.1:38474/portal/expenses/new');const data=JSON.parse(fs.readFileSync(out+'synthetic-expense.json','utf8'));for(const [name,value]of Object.entries(data)){const field=page.locator('[name="'+name+'"]');if(!await field.count())continue;if(await field.evaluate(e=>e.tagName)==='SELECT')await field.selectOption(String(value));else await field.fill(String(value));}

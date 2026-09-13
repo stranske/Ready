@@ -1,6 +1,6 @@
 ## Why
 
-R1/R2/R3 converge on one wire shape for clauses, consultant sections, and thesis claims (`artifacts/research/B3-interop-architecture.md` §3.1), but Workflows ships only the three backplane schemas today. Verified: `clones/Workflows/tests/contracts/test_backplane_schemas.py:17-21` parametrizes exactly `run-contract-v1`, `artifact-manifest-v1`, and `evidence-object-v1` — no `tracked-variable-v1.schema.json`. Verified: `clones/Workflows/docs/contracts/schemas/` contains seven JSON schemas and none named `tracked-variable-v1.schema.json`. **Latent fragility:** downstream Doc-Lineage and Inv-Man-Intake cannot validate extracted variables against a fleet-owned schema.
+R1/R2/R3 converge on one wire shape for clauses, consultant sections, and thesis claims (`artifacts/research/B3-interop-architecture.md` §3.1), but Workflows ships only the three backplane schemas today. Verified: `[LOCAL_WORKSPACE]/Workflows/tests/contracts/test_backplane_schemas.py:17-21` parametrizes exactly `run-contract-v1`, `artifact-manifest-v1`, and `evidence-object-v1` — no `tracked-variable-v1.schema.json`. Verified: `[LOCAL_WORKSPACE]/Workflows/docs/contracts/schemas/` contains seven JSON schemas and none named `tracked-variable-v1.schema.json`. **Latent fragility:** downstream Doc-Lineage and Inv-Man-Intake cannot validate extracted variables against a fleet-owned schema.
 
 ## Scope
 
@@ -32,4 +32,4 @@ Add `tracked-variable/v1` JSON Schema, normative spec markdown, golden fixtures 
 
 Confirmed-green baseline: `python -m pytest tests/contracts/test_backplane_schemas.py -q` passes today with three schemas only.
 
-_Surfaced by B2-003 / B3 §6.3; verified against `clones/Workflows` checkout 2026-09-04._
+_Surfaced by B2-003 / B3 §6.3; verified against `[LOCAL_WORKSPACE]/Workflows` checkout 2026-09-04._

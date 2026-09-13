@@ -9,7 +9,7 @@ from counter_risk.pipeline.run import _build_concentration_exposure_rows,_build_
 from counter_risk.parsers.exposure_maturity_schedule import parse_exposure_maturity_schedule
 from counter_risk.config import load_config
 art=Path(__file__).resolve().parent
-os.chdir(art.parents[2]/'clones/Counter_Risk')
+os.chdir(art.parents[2]/'[LOCAL_WORKSPACE]/Counter_Risk')
 split=[{'counterparty':'Alpha','Notional':60},{'counterparty':'Alpha','Notional':60}]+[{'counterparty':f'Beta-{i}','Notional':10} for i in range(10)]
 merged=[{'counterparty':'Alpha','Notional':120}]+split[2:]
 def concentration(rows):return compute_concentration_metrics(_build_concentration_exposure_rows({'all':{'totals':rows}})).to_dict('records')[0]

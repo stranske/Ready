@@ -102,7 +102,7 @@ Seven concrete, reproducible defect areas were identified, adversarially verifie
 
 The 7 filed issues have been recorded in:
 - `~/.codex/orchestrator/measurement/intake-2026-09-04.log`
-- `/Users/teacher/Library/CloudStorage/Dropbox/Learning/Code/Audits/Counter_Risk/README.md`
-- `/Users/teacher/Library/CloudStorage/Dropbox/Learning/Code/Audits/AUDIT_LEDGER.md`
-- `/Users/teacher/Library/CloudStorage/Dropbox/Learning/Code/Audits/Counter_Risk/2026-09-10-02-AUDIT_REPORT.md`
-- `/Users/teacher/Library/CloudStorage/Dropbox/Learning/Code/Audits/Counter_Risk/2026-09-10-02-verification-log.md`
+- `[LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Counter_Risk/README.md`
+- `[LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/AUDIT_LEDGER.md`
+- `[LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Counter_Risk/2026-09-10-02-AUDIT_REPORT.md`
+- `[LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Counter_Risk/2026-09-10-02-verification-log.md`

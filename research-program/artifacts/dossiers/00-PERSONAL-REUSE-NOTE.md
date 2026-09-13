@@ -9,37 +9,37 @@
 ## Fine-Art-Archive
 
 ### Sidecar schema + field provenance ledger
-**Path:** `clones/Fine-Art-Archive/src/fine_art_archive/sidecar.py`, `provenance.py`, `schemas/meta.schema.json`  
+**Path:** `[LOCAL_WORKSPACE]/Fine-Art-Archive/src/fine_art_archive/sidecar.py`, `provenance.py`, `schemas/meta.schema.json`  
 **What it does:** One JSON record per entity with `schema_version`, strict validation, and an additive `field_provenance` ledger (status, source, note, `prior_value`) per fact.  
 **Lift vs pattern:** **Copy the pattern.** Pension-Data and Inv-Man-Intake already have field-level provenance tables; Doc-Lineage should adopt the same status vocabulary (`not_researched`, `available`, `conflicting`, …) for clause variables.  
 **Adoption:** In Doc-Lineage, define `tracked-variable/v1` rows with a `field_provenance` block mirroring FAA; wire `provenance.completeness_report()` logic as a CI gate on synthetic EDGAR fixtures before first blackline ship.
 
 ### Registration confirms sameness (never refutes it)
-**Path:** `clones/Fine-Art-Archive/src/fine_art_archive/identity/work_qid_uniqueness.py` (`WorkQidClaims`)  
+**Path:** `[LOCAL_WORKSPACE]/Fine-Art-Archive/src/fine_art_archive/identity/work_qid_uniqueness.py` (`WorkQidClaims`)  
 **What it does:** Before assigning a canonical ID, scan incumbents; on collision, **decline** the write and record a note naming the holder. Registration can only confirm sameness; dedup passes adjudicate merges.  
 **Lift vs pattern:** **Copy the pattern.**  
 **Adoption:** In Pension-Data `entities/service.py`, add a pre-write guard on `manager:` / `fund:` canonical IDs: collision → queue row, never silent overwrite. In Inv-Man-Intake `register_intake_bundle`, treat duplicate firm/fund alias resolution the same way.
 
 ### Verification cascade (layered, blocking)
-**Path:** `clones/Fine-Art-Archive/src/fine_art_archive/collect/verify.py`  
+**Path:** `[LOCAL_WORKSPACE]/Fine-Art-Archive/src/fine_art_archive/collect/verify.py`  
 **What it does:** Composes checks (aspect ratio, perceptual hash, optional CLIP) into a `VerificationReport` with per-check `PASS`/`FAIL`/`SKIP` and an overall gate before acquisition commits.  
 **Lift vs pattern:** **Copy the pattern** (interface + report shape).  
 **Adoption:** Doc-Lineage M1 ingest: Layer 1 = PDF byte-hash + page count; Layer 2 = section-ID fingerprint; Layer 3 = semantic alignment score. Block blackline emit on `FAIL`. Inv-Man-Intake extraction orchestrator already has escalation records—map them to the same report struct.
 
 ### Concurrent-writer discipline
-**Path:** `clones/Fine-Art-Archive/src/fine_art_archive/fixity.py` (`_sidecar_file_lock`, `_write_sidecar_atomic`); `api/main.py` (JSONL compaction under lock)  
+**Path:** `[LOCAL_WORKSPACE]/Fine-Art-Archive/src/fine_art_archive/fixity.py` (`_sidecar_file_lock`, `_write_sidecar_atomic`); `api/main.py` (JSONL compaction under lock)  
 **What it does:** Per-file `fcntl` locks, temp-file atomic replace, read errors propagate (writers cannot compact a log they failed to load). Manifest rebuild is separate from per-sidecar mutation.  
 **Lift vs pattern:** **Lift the lock/atomic-write helpers** into Workflows `packages/` as `stranske_atomic_io` (≈40 lines); **copy the one-writer policy** elsewhere.  
 **Adoption:** Manager-Database offline WASM demo and Inv-Man-Intake Pyodide operator app: document single-writer SQLite like Reader. Doc-Lineage artifact dir: one run writer per `run_id/`.
 
 ### Manifest gate (catalog ≠ corpus)
-**Path:** `clones/Fine-Art-Archive/scripts/build_manifest.py`, `api/store.py`  
+**Path:** `[LOCAL_WORKSPACE]/Fine-Art-Archive/scripts/build_manifest.py`, `api/store.py`  
 **What it does:** UI and batch jobs list only works present in `manifest.csv`; promotion requires explicit rebuild.  
 **Lift vs pattern:** **Copy the pattern.**  
 **Adoption:** Pension-Data review PWA: separate `published_facts.csv` manifest from raw staging tables; Inv-Man-Intake `run_manifest.py` already hashes outputs—add an explicit "analyst-visible" manifest slice the static app reads.
 
 ### Run-contract validator (opt-in)
-**Path:** `clones/Fine-Art-Archive/scripts/validate_run_contract.py`  
+**Path:** `[LOCAL_WORKSPACE]/Fine-Art-Archive/scripts/validate_run_contract.py`  
 **What it does:** Role-aware validation of `run-contract/v1` and `artifact-manifest/v1`; SKIP when repo not registered.  
 **Lift vs pattern:** **Already lifted** via Workflows sync—do not fork.  
 **Adoption:** Register FAA as `candidate` producer in Workflows `config/backplane_participants.json`; emit from one enrichment batch script to close the scaffold gap noted in the FAA dossier §8.
@@ -77,31 +77,31 @@
 ## trip-planner
 
 ### Data-zone egress gate
-**Path:** `clones/trip-planner/trip_planner/app/services/planner_runtime_config.py` (`TRIP_PLANNER_DATA_ZONE`)  
+**Path:** `[LOCAL_WORKSPACE]/trip-planner/trip_planner/app/services/planner_runtime_config.py` (`TRIP_PLANNER_DATA_ZONE`)  
 **What it does:** `proprietary` zone blocks OpenAI unless endpoint is explicitly authorized; defaults to deterministic fallback.  
 **Lift vs pattern:** **Lift code** (small module) into Workflows `tools/data_zone.py`; wire per repo.  
 **Adoption:** Inv-Man-Intake and Manager-Database: gate LangSmith and remote extraction behind `*_DATA_ZONE=proprietary`; CI runs with `synthetic` only.
 
 ### Source quality scorer
-**Path:** `clones/trip-planner/trip_planner/sources/quality.py` (`SourceQualityScorer`)  
+**Path:** `[LOCAL_WORKSPACE]/trip-planner/trip_planner/sources/quality.py` (`SourceQualityScorer`)  
 **What it does:** Fuses freshness, channel fit, provenance strength, and conflict state into a bounded confidence label for ranking explanations.  
 **Lift vs pattern:** **Lift code** with renamed category priors (replace `managed_travel_policy` → `regulatory_filing`, etc.).  
 **Adoption:** Inv-Man-Intake `extraction/confidence.py`: delegate duplicate-source resolution weights to shared scorer; Pension-Data `sources/ppd` and `sources/edgar` adapters attach `SourceRecord` metadata.
 
 ### HTTP circuit breaker
-**Path:** `clones/trip-planner/trip_planner/integrations/tpp/client.py` (`_CircuitBreaker`)  
+**Path:** `[LOCAL_WORKSPACE]/trip-planner/trip_planner/integrations/tpp/client.py` (`_CircuitBreaker`)  
 **What it does:** Host-keyed breaker with exponential backoff and typed error taxonomy for remote policy calls.  
 **Lift vs pattern:** **Lift code** to Workflows `packages/` (already mirrored in Manager-Database dossier §10).  
 **Adoption:** Manager-Database `adapters/edgar.py` and Pension-Data HTTP clients: wrap SEC/PPD calls; open breaker → fixture fallback in CI.
 
 ### Multicriteria ranking engine
-**Path:** `clones/trip-planner/trip_planner/ranking/base.py` (`BaseRankingEngine`)  
+**Path:** `[LOCAL_WORKSPACE]/trip-planner/trip_planner/ranking/base.py` (`BaseRankingEngine`)  
 **What it does:** Weighted attribute scoring with explanation payloads for ranked scenarios.  
 **Lift vs pattern:** **Copy the pattern** (engine interface + explanation dict), not leisure/business profiles.  
 **Adoption:** Inv-Man-Intake `scoring/`: emit per-dimension contributions matching `RankedResultSet` shape for manager prioritization dashboards.
 
 ### Complexity ceiling enforcer
-**Path:** `clones/trip-planner/scripts/measure_complexity.py`  
+**Path:** `[LOCAL_WORKSPACE]/trip-planner/scripts/measure_complexity.py`  
 **What it does:** AST-based cyclomatic complexity gate (ceiling 25) in CI.  
 **Lift vs pattern:** **Lift code** via Workflows sync to all Python repos missing it.  
 **Adoption:** Add to Workflows `reusable-10-ci-python.yml` optional job; enable in Doc-Lineage from day one.
@@ -135,4 +135,4 @@
 
 **Would change my mind:** If Workflows `stranske_pdf_extract` ships first, Doc-Lineage and Inv-Man-Intake should prefer its `EvidenceRef` contract over FAA sidecar fields for page citations—FAA provenance becomes a pattern reference only.
 
-Verified against dossiers and clone paths under `research-program/clones/` and Reader at `~/Library/CloudStorage/Dropbox/Learning/Code/Reader` on 2026-09-04.
+Verified against dossiers and clone paths under `research-program/[LOCAL_WORKSPACE]/` and Reader at `~/Library/CloudStorage/Dropbox/Learning/Code/Reader` on 2026-09-04.

@@ -99,9 +99,9 @@ A comprehensive, adversarial repository audit was conducted on `stranske/Manager
 
 ## Verification & Compliance Checklist
 
-- [x] **Path Citations**: All paths cited relative to target repo root (`ui/dashboard.py`, `ui/alerts.py`, etc.). No `clones/...` references.
-- [x] **Adversarial Verification**: Each finding verified by opening exact lines and tracing execution in `clones/Manager-Database` @ `5681c1b`.
+- [x] **Path Citations**: All paths cited relative to target repo root (`ui/dashboard.py`, `ui/alerts.py`, etc.). No `[LOCAL_WORKSPACE]/...` references.
+- [x] **Adversarial Verification**: Each finding verified by opening exact lines and tracing execution in `[LOCAL_WORKSPACE]/Manager-Database` @ `5681c1b`.
 - [x] **Format Guard Conformance**: Staged issue bodies validated with `issue_format.py` (7/7 PASS, 0 errors, 0 advisories).
 - [x] **Intake Logging**: Appended to `~/.codex/orchestrator/measurement/intake-2026-09-04.log`.
-- [x] **Durable Audit Storage**: Staged under `/Users/teacher/Library/CloudStorage/Dropbox/Learning/Code/Audits/Manager-Database/` and indexed in `AUDIT_LEDGER.md`.
+- [x] **Durable Audit Storage**: Staged under `[LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Manager-Database/` and indexed in `AUDIT_LEDGER.md`.
 

@@ -19,6 +19,6 @@ with TemporaryDirectory(prefix='counter-risk-audit-') as d:
   print('COMPLETE_TREE_CONFIG_CONTROL:',resolve_runtime_path('config/all_programs.yml').read_text())
  print('CHAT_PARSE_NAN:',session._parse_float(float('nan')))
  print('CHAT_FORMAT_NAN:',session._format_exposure_value(float('nan')))
-launcher=Path('clones/Counter_Risk/run_counter_risk_gui.cmd').read_text()
+launcher=Path('[LOCAL_WORKSPACE]/Counter_Risk/run_counter_risk_gui.cmd').read_text()
 print('GUI_BIN_LOOKUP_PRESENT:',r'%~dp0bin\counter-risk.exe' in launcher)
-print('CLI_BIN_LOOKUP_PRESENT:',r'bin\counter-risk.exe' in Path('clones/Counter_Risk/src/counter_risk/build/release.py').read_text().replace('\\\\','\\'))
+print('CLI_BIN_LOOKUP_PRESENT:',r'bin\counter-risk.exe' in Path('[LOCAL_WORKSPACE]/Counter_Risk/src/counter_risk/build/release.py').read_text().replace('\\\\','\\'))

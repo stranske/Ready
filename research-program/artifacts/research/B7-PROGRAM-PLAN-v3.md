@@ -30,7 +30,7 @@ Each row is a **decision to proceed**, not a research finding. Dates are artifac
 | D8 | **Static deep-linked HTML** primary at work; Word sign-off; Excel tabular refresh | R5 §3.2–3.3; work env §D | 2026-09-04 | Partial | Deliverable-Render #2 link-integrity CI |
 | D9 | **Local-first when possible; hosted when required** — LMS #580 and TPP #1513 file accommodation cases alongside local exports | `OWNER_NOTES.md`; B5 `WORK-ENV-WAVE-REPORT.md` | 2026-09-04 | Yes | IT response to accommodation brief |
 | D10 | **stlite/WASM unverified at work** — not a publish path until probe passes | `INFORMATION-REQUEST-RESPONSE.md` §A1; Deliverable-Render #4 | 2026-09-04 | Yes | Deliverable-Render #4 probe |
-| D11 | **Manager-Mosaic is its own repo** — cross-source join, discrepancy, thesis monitoring | Owner answer q-B7; `clones/Manager-Mosaic/README.md`; #3 filed | 2026-09-04 | Partial | #3 merged; Gate 3 bundle ingests three manifests |
+| D11 | **Manager-Mosaic is its own repo** — cross-source join, discrepancy, thesis monitoring | Owner answer q-B7; `[LOCAL_WORKSPACE]/Manager-Mosaic/README.md`; #3 filed | 2026-09-04 | Partial | #3 merged; Gate 3 bundle ingests three manifests |
 | D12 | **Demand-driven audits** — refill at ≤25% agent-ready supply | `02-PLAN-v2.md` §4 | 2026-09-04 | No | — |
 | D13 | **Trip vertical parallel** — fixtures + Duffel/GTFS; does not gate investment stack | B2 §3 Tier 4; R7 | 2026-09-04 | Partial | Duffel test account (trip-planner #1785) |
 
@@ -175,7 +175,7 @@ Horizon: 2026-09-04 → 2026-12-03 (~90 days). Each metric reads from a **real s
 
 | Metric | 90-day target | Sink | Rationale |
 |--------|---------------|------|-----------|
-| Backplane producers at `emitting` or `conformant` | **≥4 repos** (from 1 today) | `clones/Workflows/config/backplane_participants.json` `status` field | Direct read of interoperability adoption (`00-INDEX.md` §2.2) |
+| Backplane producers at `emitting` or `conformant` | **≥4 repos** (from 1 today) | `[LOCAL_WORKSPACE]/Workflows/config/backplane_participants.json` `status` field | Direct read of interoperability adoption (`00-INDEX.md` §2.2) |
 | P0 schema validators green | **5/5** satellite schemas in CI | Workflows `backplane-conformance.yml` + `tests/fixtures/backplane/` | Proves contracts landed, not just markdown |
 | Filed B2/B5 issues closed | **≥20** merges linked to #3371–#3375, Doc-Lineage #2–#15, B5 wave | GitHub API `closedAt` + `intake-2026-09-04.log` | Fleet drain ~5.3/day baseline (`00-PROPOSAL.md` §3) |
 

@@ -1,7 +1,7 @@
 """Executable, read-only numerical audit probes for PAEM main 59cb12b.
 
 Run exactly as:
-PYTHONPATH=/Users/teacher/.codex/automations/research-program/clones/Portable-Alpha-Extension-Model \
+PYTHONPATH=[LOCAL_HOME]/.codex/automations/research-program/[LOCAL_WORKSPACE]/Portable-Alpha-Extension-Model \
   /tmp/paem-audit-20260907-venv/bin/python numeric_repro.py
 """
 

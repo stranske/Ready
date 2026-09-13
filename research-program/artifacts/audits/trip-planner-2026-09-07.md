@@ -77,7 +77,7 @@ Exact live issue bodies passed the repository's actual format validator **8/8**,
 
 ### Evidence and limits
 
-- Reopened all explicit file-and-line citations in the current issue bodies; source patterns remain at the audited tip. Evidence snapshots and exact bodies: [trip-planner-2026-09-07-evidence](/Users/teacher/.codex/automations/research-program/artifacts/audits/trip-planner-2026-09-07-evidence).
+- Reopened all explicit file-and-line citations in the current issue bodies; source patterns remain at the audited tip. Evidence snapshots and exact bodies: [trip-planner-2026-09-07-evidence]([LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/trip-planner-2026-09-07-evidence).
 - **#1798 reproduced at function level:** explicit pass plus one blocking issue returns compliant with no failure reasons. Freshness was patched to fresh to isolate this branch; this is not a full persisted-reload test.
 - **#1800 reproduced through real TPP contract normalization:** injected budget rule `max_trip_total_usd=100` disappears from the serialized imported constraint set.
 - **#1801 reproduced through real scenario preview:** configured lodging cap plus absent nightly breakdown returns compliant and an empty violation list.

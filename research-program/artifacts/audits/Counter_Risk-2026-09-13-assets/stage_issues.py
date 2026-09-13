@@ -1,7 +1,7 @@
 from pathlib import Path
 from datetime import datetime,timezone
 import json,subprocess
-b=Path('/Users/teacher/.codex/automations/research-program'); repo=b/'clones/Counter_Risk'; art=b/'artifacts/audits/Counter_Risk-2026-09-13-assets'; bodies=art/'issue-bodies';bodies.mkdir(exist_ok=True)
+b=Path('[LOCAL_HOME]/.codex/automations/research-program'); repo=b/'[LOCAL_WORKSPACE]/Counter_Risk'; art=b/'artifacts/audits/Counter_Risk-2026-09-13-assets'; bodies=art/'issue-bodies';bodies.mkdir(exist_ok=True)
 # Each entry is a verified work order, never posted by this executor.
 entries=[
 ('01','P1','Resolve registry aliases when matching counterparty limits','src/counter_risk/compute/limits.py',263,'tests/compute/test_limits.py','test_registered_alias_triggers_canonical_limit',

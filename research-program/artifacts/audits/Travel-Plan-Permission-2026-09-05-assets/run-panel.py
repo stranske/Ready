@@ -1,6 +1,6 @@
 import sys,json
 from pathlib import Path
-sys.path.insert(0,'/Users/teacher/.codex/orchestrator-mirror')
+sys.path.insert(0,'[LOCAL_HOME]/.codex/orchestrator-mirror')
 import ux_review
 p=Path(__file__).resolve().parent
 bundle=json.loads((p/'bundle.json').read_text())

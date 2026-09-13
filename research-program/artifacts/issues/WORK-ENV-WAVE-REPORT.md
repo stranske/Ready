@@ -32,7 +32,7 @@ All bodies written under `artifacts/issues/B5-wave/`:
 
 ## Intake log
 
-Eight entries appended to `/Users/teacher/.codex/orchestrator/measurement/intake-2026-09-04.log` in `repo|body-file|url` form.
+Eight entries appended to `[LOCAL_HOME]/.codex/orchestrator/measurement/intake-2026-09-04.log` in `repo|body-file|url` form.
 
 ## Not filed (per instructions)
 

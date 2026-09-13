@@ -1,6 +1,6 @@
 ## Why
 
-OnePagerModel is renderer-oriented but no `report-spec.json` fleet profile exists. Verified: `clones/Inv-Man-Intake/tests/export/test_one_pager.py:1-30` exercises one-pager export without any `report-spec.json` assertion, and `grep -r report-spec clones/Inv-Man-Intake/src` returns no matches. **Missing behavior:** no output-substrate profile emission. **Depends on:** Pension-Data B2-029 renderer-shell, Workflows B2-028.
+OnePagerModel is renderer-oriented but no `report-spec.json` fleet profile exists. Verified: `[LOCAL_WORKSPACE]/Inv-Man-Intake/tests/export/test_one_pager.py:1-30` exercises one-pager export without any `report-spec.json` assertion, and `grep -r report-spec [LOCAL_WORKSPACE]/Inv-Man-Intake/src` returns no matches. **Missing behavior:** no output-substrate profile emission. **Depends on:** Pension-Data B2-029 renderer-shell, Workflows B2-028.
 
 ## Scope
 

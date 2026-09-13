@@ -67,7 +67,7 @@ All 10 findings were verified with isolated deterministic reproductions, compile
 
 ## Reconciliation & Quality Proofs
 
-- **Local Format Validator:** All 10 issue bodies validated using `python3 .github/scripts/issue_format.py` inside `clones/Portable-Alpha-Extension-Model/` — **10/10 PASS** with 0 errors and 0 advisories.
+- **Local Format Validator:** All 10 issue bodies validated using `python3 .github/scripts/issue_format.py` inside `[LOCAL_WORKSPACE]/Portable-Alpha-Extension-Model/` — **10/10 PASS** with 0 errors and 0 advisories.
 - **Remote Format Guard:** Monitored GitHub Actions runs for workflow `agents-issue-format-guard.yml` across all 10 issues (#2278–#2287). All runs completed with 0 rejections, 0 failure comments, and clean format acceptance.
 - **Intake Logging:** Appended 10 records to `~/.codex/orchestrator/measurement/intake-2026-09-04.log`.
-- **Continuity Artifacts:** Updated `/Users/teacher/Library/CloudStorage/Dropbox/Learning/Code/Audits/AUDIT_LEDGER.md` and `/Users/teacher/Library/CloudStorage/Dropbox/Learning/Code/Audits/Portable-Alpha-Extension-Model/README.md`.
+- **Continuity Artifacts:** Updated `[LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/AUDIT_LEDGER.md` and `[LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Portable-Alpha-Extension-Model/README.md`.

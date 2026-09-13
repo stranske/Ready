@@ -87,5 +87,5 @@ Counted open issues excluding the 7 blocking labels (`needs-human`, `agents:paus
 
 ### 5. Execution Summary
 - All 15 repositories scanned live via GitHub API (`detached-net.sh`).
-- Checkpoints appended to [CHECKPOINT.md](file:///Users/teacher/.codex/automations/research-program/artifacts/sweeps/CHECKPOINT.md) and [D3-unblock-sweep-2026-09-06T22.CHECKPOINT.md](file:///Users/teacher/.codex/automations/research-program/artifacts/sweeps/D3-unblock-sweep-2026-09-06T22.CHECKPOINT.md).
+- Checkpoints appended to [CHECKPOINT.md](file://[LOCAL_HOME]/.codex/automations/research-program/artifacts/sweeps/CHECKPOINT.md) and [D3-unblock-sweep-2026-09-06T22.CHECKPOINT.md](file://[LOCAL_HOME]/.codex/automations/research-program/artifacts/sweeps/D3-unblock-sweep-2026-09-06T22.CHECKPOINT.md).
 - Offload non-git workspace constraints respected (no branch/push/PR mutations performed).

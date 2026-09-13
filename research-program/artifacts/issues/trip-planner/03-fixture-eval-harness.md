@@ -1,6 +1,6 @@
 ## Why
 
-Need ranking regression harness before live APIs (R7). Verified: `clones/trip-planner/tests/` has `tests/sources/test_adapters.py:10-22` for fixture adapters only — no `tests/eval/` directory. **Missing behavior:** no golden ranking scenarios. **Depends on:** B2-045, B2-046.
+Need ranking regression harness before live APIs (R7). Verified: `[LOCAL_WORKSPACE]/trip-planner/tests/` has `tests/sources/test_adapters.py:10-22` for fixture adapters only — no `tests/eval/` directory. **Missing behavior:** no golden ranking scenarios. **Depends on:** B2-045, B2-046.
 
 ## Scope
 

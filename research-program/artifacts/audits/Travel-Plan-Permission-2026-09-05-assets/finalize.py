@@ -3,7 +3,7 @@ from datetime import datetime,timezone
 import json,shutil,subprocess
 root=Path(__file__).resolve().parents[3];assets=Path(__file__).resolve().parent
 unit='D-audit-Travel-Plan-Permission--2026-09-05T16-11-36Z';sha='3ba14a8541b97338586ab6c253ea30e2aed7b86e';now=datetime.now(timezone.utc).isoformat()
-audit=Path('/Users/teacher/Library/CloudStorage/Dropbox/Learning/Code/Audits/Travel-Plan-Permission')
+audit=Path('[LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Travel-Plan-Permission')
 manifest=json.loads((assets/'issue-manifest.json').read_text());panel=json.loads((assets/'report.json').read_text());gate=json.loads((assets/'gate.json').read_text())
 for name in ['correctness.md','breadth.md','issue-manifest.json','format-validation.json','independent-repros.json','citation-verification.json']:
  assert (assets/name).stat().st_size>0,name
@@ -88,7 +88,7 @@ ux=f'''# Observed UX audit — Travel-Plan-Permission
 
 Review {panel['review_id']}; commit {sha}; completed {now}.
 
-The four declared evaluators produced nonempty rubric outputs (Codex, Cursor, Gemini, Vibe), followed by the Cursor critic. Raw reports remain in /Users/teacher/.codex/orchestrator-mirror/ux_reviews/{panel['review_id']}/. Overall median {panel['overall_median']}; dimension medians {json.dumps(panel['dimension_medians'])}; consensus flags {json.dumps(panel['consensus_flags'])}. Gate {json.dumps(gate)}. This scores a local captured subset, not the whole product. Additional seeded captures were taken after the panel and were not silently folded into its scores.
+The four declared evaluators produced nonempty rubric outputs (Codex, Cursor, Gemini, Vibe), followed by the Cursor critic. Raw reports remain in [LOCAL_HOME]/.codex/orchestrator-mirror/ux_reviews/{panel['review_id']}/. Overall median {panel['overall_median']}; dimension medians {json.dumps(panel['dimension_medians'])}; consensus flags {json.dumps(panel['consensus_flags'])}. Gate {json.dumps(gate)}. This scores a local captured subset, not the whole product. Additional seeded captures were taken after the panel and were not silently folded into its scores.
 
 | Surface or scenario | Driven | Observed outcome | Evidence |
 | --- | --- | --- | --- |

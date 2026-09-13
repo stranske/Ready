@@ -15,7 +15,7 @@
 
 ## Baseline Environment & Codebase Verification
 
-- **Workspace Path**: `/Users/teacher/.codex/automations/research-program/clones/learning-management-system`
+- **Workspace Path**: `[LOCAL_HOME]/.codex/automations/research-program/[LOCAL_WORKSPACE]/learning-management-system`
 - **Python / Dependencies**: Python 3.12, FastAPI, SQLAlchemy 2.0 ORM, Alembic, Pydantic v2, pytest-xdist
 - **Codebase Scope**:
   - `src/lms/`: 137 files / 30,661 LOC

@@ -1,8 +1,8 @@
 import json,subprocess,os
 from pathlib import Path
 import yaml
-b=Path('/Users/teacher/.codex/automations/research-program')
-r=b/'clones/Portable-Alpha-Extension-Model'
+b=Path('[LOCAL_HOME]/.codex/automations/research-program')
+r=b/'[LOCAL_WORKSPACE]/Portable-Alpha-Extension-Model'
 out=b/'artifacts/audits/paem-20260907/cli-bundle-proof';out.mkdir(exist_ok=True)
 config={'N_SIMULATIONS':100,'N_MONTHS':12,'financing_mode':'per_path','sweep':{'method':'grid','parameters':{'theta_extpa':{'values':[0.5]}}}}
 (out/'config.yaml').write_text(yaml.safe_dump(config))

@@ -1,7 +1,7 @@
 # D3 Unblock Sweep — 2026-09-11T16
 
 Owner away until 2026-09-14. Scanned all 15 lane repos from `SUPPORTED_REPOS` in
-`/Users/teacher/.codex/bin/handoff.sh` (Orchestrator excluded per brief).
+`[LOCAL_HOME]/.codex/bin/handoff.sh` (Orchestrator excluded per brief).
 
 **Headline:** the fleet is quiet on people-blockers (0 `needs-human`, 0 open PRs at all), but
 **4 default branches are red, not 2** — the previous two sweeps under-counted because

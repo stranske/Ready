@@ -1,6 +1,6 @@
 ## Why
 
-Owner requires one-click page navigation (B3 §3.2 `provenance.document`). Verified: `clones/Doc-Lineage/design-system/README.md:1-10` ships CSS tokens only — no `render/links.py` or HTML output module. **Missing behavior:** triple-link resolver. **Depends on:** Workflows B2-023 `document-mirror/v1`.
+Owner requires one-click page navigation (B3 §3.2 `provenance.document`). Verified: `[LOCAL_WORKSPACE]/Doc-Lineage/design-system/README.md:1-10` ships CSS tokens only — no `render/links.py` or HTML output module. **Missing behavior:** triple-link resolver. **Depends on:** Workflows B2-023 `document-mirror/v1`.
 
 ## Scope
 

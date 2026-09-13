@@ -1,7 +1,7 @@
 import os,sys,tempfile,json
 from pathlib import Path
 from unittest.mock import patch
-root=Path('/Users/teacher/.codex/automations/research-program/clones/Fine-Art-Archive')
+root=Path('[LOCAL_HOME]/.codex/automations/research-program/[LOCAL_WORKSPACE]/Fine-Art-Archive')
 sys.path[:0]=[str(root/'src'),str(root)]
 # Keep any API initialization and rendering inside disposable synthetic storage.
 with tempfile.TemporaryDirectory(prefix='faa-audit-resume-') as tmp:

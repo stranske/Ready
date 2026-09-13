@@ -10,19 +10,19 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 |---|---|---|---|---|---|---|
 | readiness-dossier-consistency-20260904 | A | A | done | cursor | driver | Reconcile recovered dossier corrections into existing downstream artif |
 | A-verify-Trend_Model_Project | A | A1 | done | cursor | driver | Verify dossier artifacts/dossiers/Trend_Model_Project.md against ../cl |
-| A-verify-Workflows | A | A1 | done | cursor | driver | Verify dossier artifacts/dossiers/Workflows.md against ../clones/Workf |
+| A-verify-Workflows | A | A1 | done | cursor | driver | Verify dossier artifacts/dossiers/Workflows.md against ../[LOCAL_WORKSPACE]/Workf |
 | A-verify-learning-management-system | A | A1 | done | cursor | driver | Verify dossier artifacts/dossiers/learning-management-system.md agains |
-| A-verify-Collab-Admin | A | A1 | done | codex | claude | Verify dossier artifacts/dossiers/Collab-Admin.md against ../clones/Co |
-| A-verify-Counter_Risk | A | A1 | done | gemini | driver | Verify dossier artifacts/dossiers/Counter_Risk.md against ../clones/Co |
+| A-verify-Collab-Admin | A | A1 | done | codex | claude | Verify dossier artifacts/dossiers/Collab-Admin.md against ../[LOCAL_WORKSPACE]/Co |
+| A-verify-Counter_Risk | A | A1 | done | gemini | driver | Verify dossier artifacts/dossiers/Counter_Risk.md against ../[LOCAL_WORKSPACE]/Co |
 | A-verify-Fine-Art-Archive | A | A1 | done | gemini | codex | Verify dossier artifacts/dossiers/Fine-Art-Archive.md against ../clone |
-| A-verify-Inv-Man-Intake | A | A1 | done | gemini | driver | Verify dossier artifacts/dossiers/Inv-Man-Intake.md against ../clones/ |
+| A-verify-Inv-Man-Intake | A | A1 | done | gemini | driver | Verify dossier artifacts/dossiers/Inv-Man-Intake.md against ../[LOCAL_WORKSPACE]/ |
 | A-verify-Manager-Database | A | A1 | done | gemini | driver | Verify dossier artifacts/dossiers/Manager-Database.md against ../clone |
-| A-verify-Orchestrator | A | A1 | done | gemini | driver | Verify dossier artifacts/dossiers/Orchestrator.md against ../clones/Or |
-| A-verify-Pension-Data | A | A1 | done | cursor | driver | Verify dossier artifacts/dossiers/Pension-Data.md against ../clones/Pe |
+| A-verify-Orchestrator | A | A1 | done | gemini | driver | Verify dossier artifacts/dossiers/Orchestrator.md against ../[LOCAL_WORKSPACE]/Or |
+| A-verify-Pension-Data | A | A1 | done | cursor | driver | Verify dossier artifacts/dossiers/Pension-Data.md against ../[LOCAL_WORKSPACE]/Pe |
 | A-verify-Portable-Alpha-Extension-Model | A | A1 | done | cursor | codex | Verify dossier artifacts/dossiers/Portable-Alpha-Extension-Model.md ag |
-| A-verify-Template | A | A1 | done | gemini | driver | Verify dossier artifacts/dossiers/Template.md against ../clones/Templa |
+| A-verify-Template | A | A1 | done | gemini | driver | Verify dossier artifacts/dossiers/Template.md against ../[LOCAL_WORKSPACE]/Templa |
 | A-verify-Travel-Plan-Permission | A | A1 | done | cursor | driver | Verify dossier artifacts/dossiers/Travel-Plan-Permission.md against .. |
-| A-verify-trip-planner | A | A1 | done | cursor | driver | Verify dossier artifacts/dossiers/trip-planner.md against ../clones/tr |
+| A-verify-trip-planner | A | A1 | done | cursor | driver | Verify dossier artifacts/dossiers/trip-planner.md against ../[LOCAL_WORKSPACE]/tr |
 | A-dossier-index | A | A2 | done | cursor | driver | Fleet index and shared vocabulary from verified dossiers (needs >=12 v |
 | A-personal-reuse-note | A | A2 | done | cursor | driver | Reuse note across personal repos (FAA, Reader, trip-planner) |
 | A-memo-correction | A | A3 | done | cursor | driver | Correct cover-memo maturity labels against the audit ledger and open i |

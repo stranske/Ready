@@ -1,6 +1,6 @@
 # D3 Unblock Sweep — 2026-09-05T21 (attempt 1)
 
-Owner away until 2026-09-14. Scanned 15 repos from `SUPPORTED_REPOS` in `/Users/teacher/.codex/bin/handoff.sh` (skipped Orchestrator).
+Owner away until 2026-09-14. Scanned 15 repos from `SUPPORTED_REPOS` in `[LOCAL_HOME]/.codex/bin/handoff.sh` (skipped Orchestrator).
 
 ## Summary
 

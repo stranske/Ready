@@ -35,7 +35,7 @@
 ## 2026-09-04T16:11:56Z — auto — added A-verify-.wrap-Collab-Admin
 ## 2026-09-04T16:11:56Z — auto — added A-verify-Collab-Admin.CHECKPOINT
 ## 2026-09-04T16:11:57Z — A-verify-.wrap-Collab-Admin — claimed by codex (agent codex)
-## 2026-09-04T16:12:16Z — A-verify-.wrap-Collab-Admin — fail — not-ready: required clone /Users/teacher/.codex/automations/research-program/clones/.wrap-Collab-Admin is missing
+## 2026-09-04T16:12:16Z — A-verify-.wrap-Collab-Admin — fail — not-ready: required clone [LOCAL_HOME]/.codex/automations/research-program/[LOCAL_WORKSPACE]/.wrap-Collab-Admin is missing
 ## 2026-09-04T16:15:19Z — A-verify-Collab-Admin — done — Collab-Admin dossier verified: 36 claims checked against the clone, corrections applied in place, verification table written
 ## 2026-09-04T16:48:15Z — inbox — applied — recorded as a note: "I can see this"
 ## 2026-09-04T17:04:55Z — A-verify-Counter_Risk — route — router picked gemini from ['codex', 'cursor', 'gemini']
@@ -81,7 +81,7 @@
 ## 2026-09-04T17:31:24Z — A-verify-Trend_Model_Project — route — router picked gemini from ['codex', 'cursor', 'gemini']
 ## 2026-09-04T17:31:24Z — A-verify-Trend_Model_Project — claimed by driver (agent gemini)
 ## 2026-09-04T17:31:29Z — A-verify-Portable-Alpha-Extension-Model — done — gemini produced 2173 words at artifacts/dossiers/Portable-Alpha-Extension-Model.md in 367s
-## 2026-09-04T17:31:31Z — A-dossier-index — fail — gemini produced 0 words at /Users/teacher/.codex/automations/research-program/artifacts/dossiers/00-INDEX.md (min 400); rotating agent
+## 2026-09-04T17:31:31Z — A-dossier-index — fail — gemini produced 0 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/dossiers/00-INDEX.md (min 400); rotating agent
 ## 2026-09-04T17:31:31Z — A-dossier-index — route — router picked cursor from ['codex', 'cursor']
 ## 2026-09-04T17:31:31Z — A-dossier-index — claimed by driver (agent cursor)
 ## 2026-09-04T17:31:31Z — A-verify-Template — done — vibe produced 1394 words at artifacts/dossiers/Template.md in 369s
@@ -95,7 +95,7 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-04T17:31:34Z — A-verify-learning-management-system — claimed by driver (agent gemini)
 ## 2026-09-04T17:31:37Z — A-verify-Orchestrator — done — gemini produced 2300 words at artifacts/dossiers/Orchestrator.md in 387s
 ## 2026-09-04T17:31:38Z — A-verify-Workflows — done — gemini produced 1598 words at artifacts/dossiers/Workflows.md in 6s
-## 2026-09-04T17:31:39Z — A-dossier-index — fail — gemini produced 0 words at /Users/teacher/.codex/automations/research-program/artifacts/dossiers/00-INDEX.md (min 400); rotating agent
+## 2026-09-04T17:31:39Z — A-dossier-index — fail — gemini produced 0 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/dossiers/00-INDEX.md (min 400); rotating agent
 ## 2026-09-04T17:31:40Z — mirror — push FAILED — remote: Bypassed rule violations for refs/heads/main:        
 remote: 
 remote: - Required status check "Gate / gate" is 
@@ -127,7 +127,7 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-04T17:46:23Z — C-skill-curriculum — claimed by driver (agent codex)
 ## 2026-09-04T17:46:24Z — R5-output-substrate — route — router picked cursor from ['codex', 'cursor']
 ## 2026-09-04T17:46:24Z — R5-output-substrate — claimed by driver (agent cursor)
-## 2026-09-04T17:46:26Z — C-skill-curriculum — fail — cursor produced 0 words at /Users/teacher/.codex/automations/research-program/artifacts/research/C-skill-curriculum.md (min 400); rotating agent
+## 2026-09-04T17:46:26Z — C-skill-curriculum — fail — cursor produced 0 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/research/C-skill-curriculum.md (min 400); rotating agent
 ## 2026-09-04T17:46:26Z — C-skill-curriculum — route — router picked codex from ['codex', 'gemini']
 ## 2026-09-04T17:46:26Z — C-skill-curriculum — claimed by driver (agent codex)
 ## 2026-09-04T17:46:52Z — citations — enqueued B1-citefix-R1-legal-decomposition
@@ -161,7 +161,7 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-04T17:58:47Z — A-work-side-bundle-refresh — route — router picked cursor from ['codex', 'cursor']
 ## 2026-09-04T17:58:47Z — A-work-side-bundle-refresh — claimed by driver (agent cursor)
 ## 2026-09-04T17:59:12Z — R7-trip-planning-core — done — cursor produced 2185 words at artifacts/research/R7-trip-planning-core.md in 103s
-## 2026-09-04T18:00:09Z — A-dossier-docx — fail — cursor produced 197 words at /Users/teacher/.codex/automations/research-program/artifacts/dossiers/00-DOCX-MANIFEST.md (min 400); rotating agent
+## 2026-09-04T18:00:09Z — A-dossier-docx — fail — cursor produced 197 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/dossiers/00-DOCX-MANIFEST.md (min 400); rotating agent
 ## 2026-09-04T18:02:38Z — A-work-side-bundle-refresh — done — cursor produced 434 words at logs/work-bundle/00-RUN-REPORT-2.md in 230s
 ## 2026-09-04T18:02:41Z — B2-gap-analysis — route — router picked codex from ['codex', 'gemini']
 ## 2026-09-04T18:02:41Z — B2-gap-analysis — claimed by driver (agent codex)
@@ -172,10 +172,10 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-04T18:09:30Z — B3-interop-architecture — claimed by driver (agent codex)
 ## 2026-09-04T18:09:30Z — A-dossier-docx — route — router picked cursor from ['codex', 'cursor']
 ## 2026-09-04T18:09:30Z — A-dossier-docx — claimed by driver (agent cursor)
-## 2026-09-04T18:09:33Z — B3-interop-architecture — fail — cursor produced 0 words at /Users/teacher/.codex/automations/research-program/artifacts/research/B3-interop-architecture.md (min 400); rotating agent
+## 2026-09-04T18:09:33Z — B3-interop-architecture — fail — cursor produced 0 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/research/B3-interop-architecture.md (min 400); rotating agent
 ## 2026-09-04T18:09:33Z — B3-interop-architecture — route — router picked codex from ['codex', 'gemini']
 ## 2026-09-04T18:09:33Z — B3-interop-architecture — claimed by driver (agent codex)
-## 2026-09-04T18:10:35Z — A-dossier-docx — fail — cursor produced 230 words at /Users/teacher/.codex/automations/research-program/artifacts/dossiers/00-DOCX-MANIFEST.md (min 400); rotating agent
+## 2026-09-04T18:10:35Z — A-dossier-docx — fail — cursor produced 230 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/dossiers/00-DOCX-MANIFEST.md (min 400); rotating agent
 ## 2026-09-04T18:10:57Z — A-dossier-docx — route — router picked cursor from ['codex', 'cursor']
 ## 2026-09-04T18:10:57Z — A-dossier-docx — claimed by codex (agent cursor)
 ## 2026-09-04T18:11:08Z — B3-interop-architecture — done — cursor produced 3022 words at artifacts/research/B3-interop-architecture.md in 95s
@@ -196,7 +196,7 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-04T19:52:36Z — citations — enqueued B1-citefix-R5-output-substrate
 ## 2026-09-04T19:52:36Z — citations — enqueued B1-citefix-R6-public-corpora-and-synthetic-data
 ## 2026-09-04T19:52:36Z — citations — enqueued B1-citefix-R7-trip-planning-core
-## 2026-09-04T19:53:05Z — B5-work-env-issue-wave — fail — cursor produced 334 words at /Users/teacher/.codex/automations/research-program/artifacts/issues/WORK-ENV-WAVE-REPORT.md (min 400); rotating agent
+## 2026-09-04T19:53:05Z — B5-work-env-issue-wave — fail — cursor produced 334 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/issues/WORK-ENV-WAVE-REPORT.md (min 400); rotating agent
 ## 2026-09-04T19:53:40Z — B7-program-plan-v3 — parked — q-B7-program-plan-v3
 ## 2026-09-04T19:54:12Z — B5-work-env-issue-wave — route — router picked cursor from ['codex', 'cursor']
 ## 2026-09-04T19:54:12Z — B5-work-env-issue-wave — claimed by driver (agent cursor)
@@ -271,7 +271,7 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-05T04:00:31Z — refill — Fine-Art-Archive: open=1 <= 2 → audit queued
 ## 2026-09-05T04:00:31Z — D-audit-Fine-Art-Archive--2026-09-05T04-00-31Z — route — router picked codex from ['codex']
 ## 2026-09-05T04:00:31Z — D-audit-Fine-Art-Archive--2026-09-05T04-00-31Z — claimed by driver (agent codex)
-## 2026-09-05T04:08:08Z — D-audit-Fine-Art-Archive--2026-09-05T04-00-31Z — fail — gemini produced 348 words at /Users/teacher/.codex/automations/research-program/artifacts/audits/Fine-Art-Archive-2026-09-05.md (min 400); rotating agent
+## 2026-09-05T04:08:08Z — D-audit-Fine-Art-Archive--2026-09-05T04-00-31Z — fail — gemini produced 348 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Fine-Art-Archive-2026-09-05.md (min 400); rotating agent
 ## 2026-09-05T04:12:00Z — D-audit-Fine-Art-Archive--2026-09-05T04-00-31Z — route — router picked codex from ['codex']
 ## 2026-09-05T04:12:00Z — D-audit-Fine-Art-Archive--2026-09-05T04-00-31Z — claimed by codex (agent codex)
 ## 2026-09-05T04:17:16Z — D-audit-Fine-Art-Archive--2026-09-05T04-00-31Z — done — Reconciled nine existing Fine-Art-Archive audit issues, reproduced defects, staged corrected bodies, and documented eight remote guard passes plus the remaining
@@ -283,7 +283,7 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-05T05:12:20Z — D-audit-Manager-Mosaic--2026-09-05T04-00-25Z — fail — not-ready: required Phase 0 input artifacts/dossiers/Manager-Mosaic.md does not exist
 ## 2026-09-05T05:18:16Z — D-audit-learning-management-system--2026-09-05T04-00-30Z — route — router picked codex from ['codex']
 ## 2026-09-05T05:18:16Z — D-audit-learning-management-system--2026-09-05T04-00-30Z — claimed by driver (agent codex)
-## 2026-09-05T05:23:12Z — D-audit-learning-management-system--2026-09-05T04-00-30Z — fail — cursor produced 373 words at /Users/teacher/.codex/automations/research-program/artifacts/audits/learning-management-system-2026-09-05.md (min 400); rotating ag
+## 2026-09-05T05:23:12Z — D-audit-learning-management-system--2026-09-05T04-00-30Z — fail — cursor produced 373 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/learning-management-system-2026-09-05.md (min 400); rotating ag
 ## 2026-09-05T05:38:13Z — unblock — enqueued D3-unblock-sweep-2026-09-05T05
 ## 2026-09-05T05:38:14Z — D3-unblock-sweep-2026-09-05T05 — route — router picked codex from ['codex', 'cursor']
 ## 2026-09-05T05:38:14Z — D3-unblock-sweep-2026-09-05T05 — claimed by driver (agent codex)
@@ -405,7 +405,7 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-07T06:33:13Z — D3-unblock-sweep-2026-09-07T06 — done — gemini produced 769 words at artifacts/sweeps/D3-unblock-sweep-2026-09-07T06.md in 387s
 ## 2026-09-07T06:48:18Z — D-audit-Travel-Plan-Permission--2026-09-07T04-47-30Z — route — router picked codex from ['codex']
 ## 2026-09-07T06:48:18Z — D-audit-Travel-Plan-Permission--2026-09-07T04-47-30Z — claimed by driver (agent codex)
-## 2026-09-07T06:56:17Z — D-audit-Travel-Plan-Permission--2026-09-07T04-47-30Z — fail — cursor produced 397 words at /Users/teacher/.codex/automations/research-program/artifacts/audits/Travel-Plan-Permission-2026-09-07.md (min 400); rotating agent
+## 2026-09-07T06:56:17Z — D-audit-Travel-Plan-Permission--2026-09-07T04-47-30Z — fail — cursor produced 397 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Travel-Plan-Permission-2026-09-07.md (min 400); rotating agent
 ## 2026-09-07T07:11:32Z — D-audit-Travel-Plan-Permission--2026-09-07T04-47-30Z — route — router picked codex from ['codex']
 ## 2026-09-07T07:11:32Z — D-audit-Travel-Plan-Permission--2026-09-07T04-47-30Z — claimed by codex (agent codex)
 ## 2026-09-07T07:11:32Z — D-audit-trip-planner--2026-09-07T04-47-34Z — route — router picked codex from ['codex']
@@ -444,8 +444,8 @@ remote: - Required status check "Gate / gate" is
 
 ## Unit D4-verify-merged-2026-09-08T01 Completed
 - Total PRs verified: 20
-- OUT: /Users/teacher/.codex/automations/research-program/artifacts/verification/D4-verify-merged-2026-09-08T01.md
-- Checkpoint: /Users/teacher/.codex/automations/research-program/artifacts/verification/D4-verify-merged-2026-09-08T01.CHECKPOINT.md
+- OUT: [LOCAL_HOME]/.codex/automations/research-program/artifacts/verification/D4-verify-merged-2026-09-08T01.md
+- Checkpoint: [LOCAL_HOME]/.codex/automations/research-program/artifacts/verification/D4-verify-merged-2026-09-08T01.CHECKPOINT.md
 ## 2026-09-08T01:34:39Z — D4-verify-merged-2026-09-08T01 — done — gemini produced 2701 words at artifacts/verification/D4-verify-merged-2026-09-08T01.md in 278s
 ## 2026-09-08T05:06:08Z — refill — learning-management-system: open=1 <= 3 → audit queued
 ## 2026-09-08T05:06:09Z — D-audit-learning-management-system--2026-09-08T05-06-08Z — route — router picked codex from ['codex']
@@ -536,7 +536,7 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-10T17:55:33Z — D-audit-Counter_Risk--2026-09-10T17-45-12Z — done — gemini produced 1185 words at artifacts/audits/Counter_Risk-2026-09-10.md in 609s
 ## 2026-09-10T18:10:45Z — D-audit-Manager-Database--2026-09-10T17-45-13Z — route — router picked codex from ['codex']
 ## 2026-09-10T18:10:45Z — D-audit-Manager-Database--2026-09-10T17-45-13Z — claimed by driver (agent codex)
-## 2026-09-10T18:19:54Z — D-audit-Manager-Database--2026-09-10T17-45-13Z — fail — gemini produced 388 words at /Users/teacher/.codex/automations/research-program/artifacts/audits/Manager-Database-2026-09-10.md (min 400); rotating agent
+## 2026-09-10T18:19:54Z — D-audit-Manager-Database--2026-09-10T17-45-13Z — fail — gemini produced 388 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Manager-Database-2026-09-10.md (min 400); rotating agent
 ## 2026-09-10T18:35:00Z — D-audit-Manager-Database--2026-09-10T17-45-13Z — route — router picked codex from ['codex']
 ## 2026-09-10T18:35:00Z — D-audit-Manager-Database--2026-09-10T17-45-13Z — claimed by driver (agent codex)
 ## 2026-09-10T18:37:35Z — D-audit-Manager-Database--2026-09-10T17-45-13Z — fail — gemini did not write a fresh output artifact
@@ -557,7 +557,7 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-11T08:00:23Z — unblock — enqueued D3-unblock-sweep-2026-09-11T08
 ## 2026-09-11T08:00:24Z — D3-unblock-sweep-2026-09-11T08 — route — router picked cursor from ['codex', 'cursor']
 ## 2026-09-11T08:00:24Z — D3-unblock-sweep-2026-09-11T08 — claimed by driver (agent cursor)
-## 2026-09-11T08:18:09Z — D3-unblock-sweep-2026-09-11T08 — fail — vibe produced 223 words at /Users/teacher/.codex/automations/research-program/artifacts/sweeps/D3-unblock-sweep-2026-09-11T08.md (min 400); rotating agent
+## 2026-09-11T08:18:09Z — D3-unblock-sweep-2026-09-11T08 — fail — vibe produced 223 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/sweeps/D3-unblock-sweep-2026-09-11T08.md (min 400); rotating agent
 ## 2026-09-11T08:33:30Z — D3-unblock-sweep-2026-09-11T08 — route — router picked cursor from ['codex', 'cursor']
 ## 2026-09-11T08:33:30Z — D3-unblock-sweep-2026-09-11T08 — claimed by driver (agent cursor)
 ## 2026-09-11T08:37:54Z — D3-unblock-sweep-2026-09-11T08 — done — gemini produced 963 words at artifacts/sweeps/D3-unblock-sweep-2026-09-11T08.md in 258s

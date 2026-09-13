@@ -1,6 +1,6 @@
 ## Why
 
-Audited financials corpus lane (R6). Verified: `clones/Pension-Data/tools/replay/runner.py:1-17` implements golden corpus replay but no N-CSR harvest feeds the corpus (`src/pension_data/harvest/` absent). **Missing behavior:** no N-CSR sample ingest path.
+Audited financials corpus lane (R6). Verified: `[LOCAL_WORKSPACE]/Pension-Data/tools/replay/runner.py:1-17` implements golden corpus replay but no N-CSR harvest feeds the corpus (`src/pension_data/harvest/` absent). **Missing behavior:** no N-CSR sample ingest path.
 
 ## Scope
 

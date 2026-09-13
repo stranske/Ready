@@ -1,6 +1,6 @@
 ## Why
 
-Counsel sign-off requires Word redlines (B2 owner decision #12). Verified: `clones/Doc-Lineage/pyproject.toml:1-20` has no `python-redlines` dependency; `clones/Doc-Lineage/src/my_project/__init__.py:1-5` has no export module. **Missing behavior:** no DOCX tracked-changes export. **Depends on:** python-redlines adopt (B2-011), B2-002 pipeline.
+Counsel sign-off requires Word redlines (B2 owner decision #12). Verified: `[LOCAL_WORKSPACE]/Doc-Lineage/pyproject.toml:1-20` has no `python-redlines` dependency; `[LOCAL_WORKSPACE]/Doc-Lineage/src/my_project/__init__.py:1-5` has no export module. **Missing behavior:** no DOCX tracked-changes export. **Depends on:** python-redlines adopt (B2-011), B2-002 pipeline.
 
 ## Scope
 

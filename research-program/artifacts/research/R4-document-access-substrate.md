@@ -12,7 +12,7 @@ Work documents live in **Backstop** (ION Analytics). At work the confirmed runti
 
 The document library is **already a mirror**: one folder per manager, then per document category (~3,800 PDFs, 480+ Excel, 170+ Word in the manager portion). There are **no stable document IDs** — filename is the de facto key; supersession is an ad hoc numeric-prefix convention; one tool already keys OCR side-files by **content hash** because path-based keys orphaned data on rename (same source, §C9–10).
 
-Three HTML tools (consultant blackline, legal lineage, manager-comms thesis monitor) ship today with named schemas that must anchor any shared design (same source, §D). Fleet contracts require stable `source_id` plus `locator.page` on evidence (`clones/Workflows/docs/contracts/schemas/evidence-object-v1.schema.json`) and per-run `artifact-manifest/v1` outputs (`clones/Workflows/docs/contracts/schemas/artifact-manifest-v1.schema.json`). Doc-Lineage’s README now pins scope to identity, OCR-mandatory extraction, and those work-side field names (`clones/Doc-Lineage/README.md`).
+Three HTML tools (consultant blackline, legal lineage, manager-comms thesis monitor) ship today with named schemas that must anchor any shared design (same source, §D). Fleet contracts require stable `source_id` plus `locator.page` on evidence (`[LOCAL_WORKSPACE]/Workflows/docs/contracts/schemas/evidence-object-v1.schema.json`) and per-run `artifact-manifest/v1` outputs (`[LOCAL_WORKSPACE]/Workflows/docs/contracts/schemas/artifact-manifest-v1.schema.json`). Doc-Lineage’s README now pins scope to identity, OCR-mandatory extraction, and those work-side field names (`[LOCAL_WORKSPACE]/Doc-Lineage/README.md`).
 
 The assistant’s position to test: **“plan for the mirror as the working substrate; treat MCP as ingestion and back-link source.”**
 
@@ -80,7 +80,7 @@ The assistant’s position to test: **“plan for the mirror as the working subs
 
 ## 5. Mirror substrate — fleet-aligned pattern
 
-Pension-Data’s artifact ingest is the closest fleet implementation: content keyed with **sha256** dedupe, supersession chain, deterministic `artifact:<digest>` IDs (`clones/Pension-Data/src/pension_data/ingest/artifacts.py`).
+Pension-Data’s artifact ingest is the closest fleet implementation: content keyed with **sha256** dedupe, supersession chain, deterministic `artifact:<digest>` IDs (`[LOCAL_WORKSPACE]/Pension-Data/src/pension_data/ingest/artifacts.py`).
 
 **JUDGMENT:** The work mirror should **add** this logic without relocating files: content-addressed blob references (or hash-verified paths into the existing tree), logical keys for supersession, `artifact-manifest/v1` for derived runs. OCR text sidecars keyed by `sha256` (already practiced at work) become a first-class `derived/ocr/` convention with `method: "ocr"` on evidence objects.
 
@@ -176,7 +176,7 @@ Build at home on **synthetic/public folders only**; same binary validates real e
 
 4. **Git on shared drive:** Is a git working tree on the synced library permitted? *(Default: no — sync churn risk flagged at work, §E16.)*
 
-5. **`entity_refs` authority:** With Manager-Database no longer absolute, carry optional `entity_refs` with `confidence` until identity authority is decided? *(Default: yes — per `clones/Workflows/docs/contracts/identity-map-conventions.md`.)*
+5. **`entity_refs` authority:** With Manager-Database no longer absolute, carry optional `entity_refs` with `confidence` until identity authority is decided? *(Default: yes — per `[LOCAL_WORKSPACE]/Workflows/docs/contracts/identity-map-conventions.md`.)*
 
 ---
 

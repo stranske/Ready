@@ -73,8 +73,8 @@ _No exact title collisions filed._ Checked open/recent issues (`gh issue list --
 
 ## Citation verification
 
-All bodies re-verified against pulled `clones/<repo>` checkouts 2026-09-04. Corrections: `test_main.py:1-33`, `src/inv_man_intake/run.py:113-118`, `trip_planner/app/services/inventory.py:858`, cross-repo Pension-Data paths in Workflows/03, Inv-Man-Intake vocabulary reference.
+All bodies re-verified against pulled `[LOCAL_WORKSPACE]/<repo>` checkouts 2026-09-04. Corrections: `test_main.py:1-33`, `src/inv_man_intake/run.py:113-118`, `trip_planner/app/services/inventory.py:858`, cross-repo Pension-Data paths in Workflows/03, Inv-Man-Intake vocabulary reference.
 
 ## Intake log
 
-Appended 31 entries to `/Users/teacher/.codex/orchestrator/measurement/intake-2026-09-04.log`.
+Appended 31 entries to `[LOCAL_HOME]/.codex/orchestrator/measurement/intake-2026-09-04.log`.

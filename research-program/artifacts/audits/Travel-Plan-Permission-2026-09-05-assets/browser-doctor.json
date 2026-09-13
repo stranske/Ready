@@ -2,7 +2,7 @@
   "ok": true,
   "status": "ready",
   "helper": {
-    "path": "/Users/teacher/.codex/orchestrator/frontend-verify/verify.mjs",
+    "path": "[LOCAL_HOME]/.codex/orchestrator/frontend-verify/verify.mjs",
     "exists": true,
     "diagnostic": "helper_ready"
   },
@@ -29,8 +29,8 @@
     "diagnostic": "browser_started",
     "pid": 20635,
     "browser_path": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
-    "profile_dir": "/Users/teacher/.codex/orchestrator/frontend-verify/chrome-cdp",
-    "command": "'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' --remote-debugging-port=9222 --user-data-dir=/Users/teacher/.codex/orchestrator/frontend-verify/chrome-cdp --no-first-run --no-default-browser-check",
+    "profile_dir": "[LOCAL_HOME]/.codex/orchestrator/frontend-verify/chrome-cdp",
+    "command": "'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' --remote-debugging-port=9222 --user-data-dir=[LOCAL_HOME]/.codex/orchestrator/frontend-verify/chrome-cdp --no-first-run --no-default-browser-check",
     "probe": {
       "configured": true,
       "endpoint": "http://127.0.0.1:9222",

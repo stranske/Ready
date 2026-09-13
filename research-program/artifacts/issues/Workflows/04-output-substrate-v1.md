@@ -1,6 +1,6 @@
 ## Why
 
-Hand-built HTML drifts across repos (B2-gap-analysis §1.1). Pension-Data's `apps/web/` is the embryonic standard (`clones/Pension-Data/apps/web/README.md:7-17` documents workspace bundle, drilldowns, PWA) but Workflows has no `output-substrate/v1` schema to generalize it. Verified: no `output-substrate` file under `clones/Workflows/docs/contracts/`. **Latent fragility:** each product reinvents renderer wiring.
+Hand-built HTML drifts across repos (B2-gap-analysis §1.1). Pension-Data's `apps/web/` is the embryonic standard (`[LOCAL_WORKSPACE]/Pension-Data/apps/web/README.md:7-17` documents workspace bundle, drilldowns, PWA) but Workflows has no `output-substrate/v1` schema to generalize it. Verified: no `output-substrate` file under `[LOCAL_WORKSPACE]/Workflows/docs/contracts/`. **Latent fragility:** each product reinvents renderer wiring.
 
 ## Scope
 
@@ -29,6 +29,6 @@ Define `output-substrate/v1` schema describing `renderer_profile`, `workspace_bu
 
 ## Implementation Notes
 
-Read `clones/Pension-Data/tests/web/test_workspace_contract.py:135` for workspace bundle shape constraints.
+Read `[LOCAL_WORKSPACE]/Pension-Data/tests/web/test_workspace_contract.py:135` for workspace bundle shape constraints.
 
 _Surfaced by B2-028; verified absent from Workflows contracts._

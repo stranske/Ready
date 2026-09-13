@@ -1,6 +1,6 @@
 # Counter_Risk dossier — verification table
 
-Verified against clone `clones/Counter_Risk` at HEAD `3f3ae3df95a0f826f0f3a7c8bc0a71f5cd3092d5` (2026-09-04 14:35 UTC).
+Verified against clone `[LOCAL_WORKSPACE]/Counter_Risk` at HEAD `3f3ae3df95a0f826f0f3a7c8bc0a71f5cd3092d5` (2026-09-04 14:35 UTC).
 Method: every cited file:line/symbol opened. Zip-inspected `Runner.xlsm` parts directly. No claim marked WRONG without reading the current code.
 
 ## Summary

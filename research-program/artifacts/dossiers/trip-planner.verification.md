@@ -1,6 +1,6 @@
 # trip-planner dossier verification (2026-09-04)
 
-Adversarial cite-check of `artifacts/dossiers/trip-planner.md` against `clones/trip-planner`.
+Adversarial cite-check of `artifacts/dossiers/trip-planner.md` against `[LOCAL_WORKSPACE]/trip-planner`.
 
 | Section | Claim | Status | Evidence / correction |
 | :--- | :--- | :--- | :--- |

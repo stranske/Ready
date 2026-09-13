@@ -1,6 +1,6 @@
 ## Why
 
-Consultant vars should live beside actuarial facts — consume Doc-Lineage output, don't duplicate diff (R2 §6). Verified: `clones/Pension-Data/src/pension_data/extract/common/evidence.py:89-96` builds internal evidence refs but no `staging/` import module exists for external `tracked-variable/v1` files. **Depends on:** B2-002.
+Consultant vars should live beside actuarial facts — consume Doc-Lineage output, don't duplicate diff (R2 §6). Verified: `[LOCAL_WORKSPACE]/Pension-Data/src/pension_data/extract/common/evidence.py:89-96` builds internal evidence refs but no `staging/` import module exists for external `tracked-variable/v1` files. **Depends on:** B2-002.
 
 ## Scope
 

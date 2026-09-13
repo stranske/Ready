@@ -121,7 +121,7 @@
   - text: 200MB per file • YAML, YML
 - alert:
   - text: "ValueError: insufficient data for ids: FUND_A, FUND_B, SP500_TR Traceback:"
-  - code: "File \"/Users/teacher/.codex/automations/research-program/clones/Portable-Alpha-Extension-Model/dashboard/pages/1_Asset_Library.py\", line 313, in <module> main() File \"/Users/teacher/.codex/automations/research-program/clones/Portable-Alpha-Extension-Model/dashboard/pages/1_Asset_Library.py\", line 204, in main df = importer.load(tmp_path) ^^^^^^^^^^^^^^^^^^^^^^^ File \"/Users/teacher/.codex/automations/research-program/clones/Portable-Alpha-Extension-Model/pa_core/data/importer.py\", line 174, in load raise ValueError(f\"insufficient data for ids: {ids_str}\")"
+  - code: "File \"[LOCAL_HOME]/.codex/automations/research-program/[LOCAL_WORKSPACE]/Portable-Alpha-Extension-Model/dashboard/pages/1_Asset_Library.py\", line 313, in <module> main() File \"[LOCAL_HOME]/.codex/automations/research-program/[LOCAL_WORKSPACE]/Portable-Alpha-Extension-Model/dashboard/pages/1_Asset_Library.py\", line 204, in main df = importer.load(tmp_path) ^^^^^^^^^^^^^^^^^^^^^^^ File \"[LOCAL_HOME]/.codex/automations/research-program/[LOCAL_WORKSPACE]/Portable-Alpha-Extension-Model/pa_core/data/importer.py\", line 174, in load raise ValueError(f\"insufficient data for ids: {ids_str}\")"
   - button "Copy"
   - link "Ask Google":
     - /url: https://www.google.com/search?q=ValueError%3A%20insufficient%20data%20for%20ids%3A%20FUND_A%2C%20FUND_B%2C%20SP500_TR

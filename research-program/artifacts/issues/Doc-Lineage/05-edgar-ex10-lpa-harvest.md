@@ -1,6 +1,6 @@
 ## Why
 
-Public legal lineage without proprietary LPAs (R6). Verified: `clones/Doc-Lineage/pyproject.toml:1-20` lists no `edgartools` dependency; `clones/Doc-Lineage/src/my_project/__init__.py:1-5` confirms no harvest package. **Missing behavior:** no SEC EX-10 ingest path. **Depends on:** edgartools adopt, B2-037 manifest for registration.
+Public legal lineage without proprietary LPAs (R6). Verified: `[LOCAL_WORKSPACE]/Doc-Lineage/pyproject.toml:1-20` lists no `edgartools` dependency; `[LOCAL_WORKSPACE]/Doc-Lineage/src/my_project/__init__.py:1-5` confirms no harvest package. **Missing behavior:** no SEC EX-10 ingest path. **Depends on:** edgartools adopt, B2-037 manifest for registration.
 
 ## Scope
 

@@ -1,6 +1,6 @@
 # Orchestrator dossier — verification table
 
-Verified against clone `clones/Orchestrator` at HEAD `e63a541f84c911a26e9f163ffc111b12629be151` (2026-09-04).
+Verified against clone `[LOCAL_WORKSPACE]/Orchestrator` at HEAD `e63a541f84c911a26e9f163ffc111b12629be151` (2026-09-04).
 Method: every cited file:line and symbol was opened and verified against the repository code, schema, and documentation.
 
 ## Summary
@@ -29,7 +29,7 @@ Method: every cited file:line and symbol was opened and verified against the rep
 3. **§2 & §7 Inventory & count drift:**
    - **MCP Tools Count:** `src/mcp_server.py:50-219` defines exactly 10 tools (`capacity_status`, `fleet_summary`, `route_weights`, `capability_advice`, `capability_decline`, `capability_associations`, `owner_questions`, `answer_owner_question`, `record_owner_question`, `resume_hint`), not 9.
    - **Selftests Count:** `verify.selftest_modules()` discovers 94 selftest modules at HEAD, not 88 (88 was the historical count from 2026-08-26 recorded in `.verify-floor.json`).
-   - **`src/` Python Module Count:** `src/` contains 107 flat `.py` files at HEAD (`ls clones/Orchestrator/src/*.py | wc -l`), not 99.
+   - **`src/` Python Module Count:** `src/` contains 107 flat `.py` files at HEAD (`ls [LOCAL_WORKSPACE]/Orchestrator/src/*.py | wc -l`), not 99.
    - **Feedback Store Tables:** `src/feedback.py:48-155` defines 15 tables in SQLite (the dossier text listed all 15 names but stated "fourteen tables").
 
 4. **§2 & §9 Route weights export target:**
@@ -110,7 +110,7 @@ Method: every cited file:line and symbol was opened and verified against the rep
 | 39 | §2 | Route export entry point and publish gating behind `ORCH_ROUTE_WEIGHTS_PUBLISH=1` | `src/route_weights_export.py`, `docs/ROUTE_WEIGHTS_EXPORT.md:1-40` | **WRONG (target path)** | Target branch is `exports/route-weights` at `config/route-weights.json`; local path is `$ORCH_STATE_DIR/route-weights-export.json`. |
 | 40 | §2 | Presentation UI: `design-system/ds_streamlit.py` is inactive synced template boilerplate | `design-system/README.md:49-51` | CONFIRMED | Synced from `stranske/Workflows`; no Streamlit app in repo. |
 | 41 | §2 | Excel/Spreadsheets: absent | None in `src/` | CONFIRMED | Zero spreadsheet libraries or generators in repository. |
-| 42 | §3 | `src/` directory contains 99 flat Python modules | `src/` | **WRONG (count)** | `src/` contains 107 flat Python modules at HEAD (`ls clones/Orchestrator/src/*.py | wc -l`), not 99. |
+| 42 | §3 | `src/` directory contains 99 flat Python modules | `src/` | **WRONG (count)** | `src/` contains 107 flat Python modules at HEAD (`ls [LOCAL_WORKSPACE]/Orchestrator/src/*.py | wc -l`), not 99. |
 | 43 | §3 | Structure tree files and directories exist as described | Tree paths in §3 | CONFIRMED | `orchestrate.sh`, `pyproject.toml`, `.verify-floor.json`, `tests/` (48 items), `docs/contracts/`, etc. confirmed. |
 | 44 | §6 | Data sources: queries GitHub REST/GraphQL; LangSmith REST API at `https://api.smith.langchain.com`; ccusage session files | `src/langsmith_direct.py:52` | CONFIRMED | URL and CLI invocations verified. |
 | 45 | §6 | LLM/Agent tooling: executes external CLIs as subprocesses; no LangChain/LangGraph imports in `src/`; pure stdio MCP server | `adapters.py`, `src/mcp_server.py` | CONFIRMED | Subprocess execution verified; zero third-party framework dependencies in `src/`. |

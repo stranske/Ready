@@ -1,6 +1,6 @@
 ## Why
 
-Largest provenance gap in fleet: `evidence_refs` are page-pointer strings, not evidence IDs (`src/inv_man_intake/run.py:113-118` builds `document:{id}#page={n}` strings; verified in `clones/Inv-Man-Intake/src/inv_man_intake/run.py`). Dossier confirms no conformant emitter (`dossier-out/DOSSIER.md:56`). **Depends on:** B2-015.
+Largest provenance gap in fleet: `evidence_refs` are page-pointer strings, not evidence IDs (`src/inv_man_intake/run.py:113-118` builds `document:{id}#page={n}` strings; verified in `[LOCAL_WORKSPACE]/Inv-Man-Intake/src/inv_man_intake/run.py`). Dossier confirms no conformant emitter (`dossier-out/DOSSIER.md:56`). **Depends on:** B2-015.
 
 ## Scope
 

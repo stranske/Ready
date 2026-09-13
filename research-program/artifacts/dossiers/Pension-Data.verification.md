@@ -1,6 +1,6 @@
 # Pension-Data dossier — verification table
 
-Verified against clone `clones/Pension-Data` at HEAD `ddda7b96aa8998780297f44cdca0f243f7ce598a` (2026-09-04, attempt 2).
+Verified against clone `[LOCAL_WORKSPACE]/Pension-Data` at HEAD `ddda7b96aa8998780297f44cdca0f243f7ce598a` (2026-09-04, attempt 2).
 Method: every cited file:line/symbol opened and verified against current code and documentation.
 
 ## Summary

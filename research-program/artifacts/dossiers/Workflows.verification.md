@@ -1,6 +1,6 @@
 # Workflows dossier — verification table
 
-Verified against clone `clones/Workflows` at HEAD `8f03e5696e342f2ed77194531fc244be5c1764ca` (2026-09-04).
+Verified against clone `[LOCAL_WORKSPACE]/Workflows` at HEAD `8f03e5696e342f2ed77194531fc244be5c1764ca` (2026-09-04).
 Method: every cited file:line/symbol in sections 4, 5, 8, and 9 opened and checked against current code and documentation.
 
 ## Summary

@@ -1,6 +1,6 @@
 # Travel-Plan-Permission dossier — verification table
 
-Verified against clone `clones/Travel-Plan-Permission` at HEAD `d67298fb1928ffd6084602a0b3454bc190ed79cf` (2026-09-04).
+Verified against clone `[LOCAL_WORKSPACE]/Travel-Plan-Permission` at HEAD `d67298fb1928ffd6084602a0b3454bc190ed79cf` (2026-09-04).
 Method: every cited file:line/symbol opened and verified against current code and documentation.
 Attempt 2 resumed from retained artifact; prior pass corrections re-checked and five additional citation/claim defects found.
 

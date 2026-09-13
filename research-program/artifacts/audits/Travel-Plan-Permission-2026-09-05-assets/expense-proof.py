@@ -1,6 +1,6 @@
 from pathlib import Path
 import sys,json,re,csv,io
-root=Path(__file__).resolve().parents[3];repo=root/'clones/Travel-Plan-Permission'
+root=Path(__file__).resolve().parents[3];repo=root/'[LOCAL_WORKSPACE]/Travel-Plan-Permission'
 sys.path[:0]=[str(repo),str(repo/'src')]
 from fastapi.testclient import TestClient
 from tests.python.test_http_service import _seed_manager_review,_expense_form_payload

@@ -15,7 +15,7 @@ from lms.llm.models import LLMSession
 from lms.llm.proposals import LLMProposal
 from lms.export_import import MODEL_BY_TYPE
 
-root = Path(__file__).resolve().parents[3] / 'clones/learning-management-system'
+root = Path(__file__).resolve().parents[3] / '[LOCAL_WORKSPACE]/learning-management-system'
 spec = importlib.util.spec_from_file_location('ownership_fixture', root / 'tests/api/test_deployed_learner_ownership.py')
 module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(module)

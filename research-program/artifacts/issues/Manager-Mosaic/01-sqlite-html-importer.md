@@ -1,6 +1,6 @@
 ## Why
 
-Fleet lacks cross-source join for investment mosaic (R3). Verified: `clones/Workflows/config/backplane_participants.json:200-208` lists Inv-Man-Intake as `planned` with `reference_state: missing` — no fleet mosaic importer exists. **Depends on:** B2-015 mosaic-core schemas. Owner default: port work-side data model, not greenfield UX (`B2-gap-analysis` owner decision #4).
+Fleet lacks cross-source join for investment mosaic (R3). Verified: `[LOCAL_WORKSPACE]/Workflows/config/backplane_participants.json:200-208` lists Inv-Man-Intake as `planned` with `reference_state: missing` — no fleet mosaic importer exists. **Depends on:** B2-015 mosaic-core schemas. Owner default: port work-side data model, not greenfield UX (`B2-gap-analysis` owner decision #4).
 
 ## Scope
 

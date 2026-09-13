@@ -2,7 +2,7 @@
 
 Run from the target clone:
 PYTHONPATH="$PWD/src" .venv/bin/python \
-  /Users/teacher/.codex/automations/research-program/artifacts/audits/Counter_Risk-2026-09-13-assets/numerical-proofs.py
+  [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Counter_Risk-2026-09-13-assets/numerical-proofs.py
 """
 
 from __future__ import annotations

@@ -25,10 +25,10 @@
 **Genuinely needs the owner: none among the frozen issues.** [Doc-Lineage #1](https://github.com/stranske/Doc-Lineage/issues/1) is Renovate's dependency dashboard, paused after format-optimizer exhaustion. Its guard comments were read; the bot tracker remains untouched. No agent-labelled PR exceeded four hours idle.
 
 **CI follow-ups:**
-- Ready: Black still scans mirrored proof scripts. Existing [#557](https://github.com/stranske/Ready/issues/557) owns the exclusion repair; [refreshed repair specification](/Users/teacher/.codex/automations/research-program/artifacts/sweeps/D3-unblock-sweep-2026-09-09T07-evidence/Ready-repair.md).
-- Fine-Art-Archive: pinned Black 26.5.1 reproduces the single-file formatting failure in tests/test_gate_commit_status_fork_tolerance.py. [Repair specification and retained diff](/Users/teacher/.codex/automations/research-program/artifacts/sweeps/D3-unblock-sweep-2026-09-09T07-evidence/Fine-Art-Archive-repair.md). No open PR or matching issue owns it.
+- Ready: Black still scans mirrored proof scripts. Existing [#557](https://github.com/stranske/Ready/issues/557) owns the exclusion repair; [refreshed repair specification]([LOCAL_HOME]/.codex/automations/research-program/artifacts/sweeps/D3-unblock-sweep-2026-09-09T07-evidence/Ready-repair.md).
+- Fine-Art-Archive: pinned Black 26.5.1 reproduces the single-file formatting failure in tests/test_gate_commit_status_fork_tolerance.py. [Repair specification and retained diff]([LOCAL_HOME]/.codex/automations/research-program/artifacts/sweeps/D3-unblock-sweep-2026-09-09T07-evidence/Fine-Art-Archive-repair.md). No open PR or matching issue owns it.
 - Inv-Man-Intake: current-head CI is green, retiring the previous sweep's browser-failure draft as an active branch blocker. This does not independently establish the root cause of the older failures.
 
 Two diagnosis clones refreshed and both failing logs read. Repairs remain staged under this executor's research-only instruction: no source edits, new issues, PRs, label changes or offloads. Supply follows the brief's seven-label rule and includes the bot tracker (130 excluding it). Changes since 23 UTC: Workflows −1, Portable-Alpha +1, Counter_Risk +8, Inv-Man-Intake −6, LMS +7.
 
-[Evidence snapshots, failure logs and clone SHAs](/Users/teacher/.codex/automations/research-program/artifacts/sweeps/D3-unblock-sweep-2026-09-09T07-evidence); append-only CHECKPOINT.md records each repo.
+[Evidence snapshots, failure logs and clone SHAs]([LOCAL_HOME]/.codex/automations/research-program/artifacts/sweeps/D3-unblock-sweep-2026-09-09T07-evidence); append-only CHECKPOINT.md records each repo.

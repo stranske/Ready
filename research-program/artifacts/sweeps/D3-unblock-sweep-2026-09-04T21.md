@@ -33,7 +33,7 @@ Owner away until 2026-09-14. Scanned 15 repos from `SUPPORTED_REPOS` (skipped Or
 **Attempt 1 (verified still unblocked):** trip-planner #1783–1787, Inv-Man-Intake #948, Pension-Data #881–883, Counter_Risk #978/#996, Manager-Database #1633, Portable-Alpha #2273, Fine-Art-Archive #665, Workflows #3343/#3365 bodies only.
 
 **Attempt 2 (this run):**
-- **Workflows #3343, #3365** — retained artifact claimed repair but `agents:auto-pilot-pause` was still present. Bodies and all 12 cited template paths verified in `./clones/Workflows`; pause labels removed.
+- **Workflows #3343, #3365** — retained artifact claimed repair but `agents:auto-pilot-pause` was still present. Bodies and all 12 cited template paths verified in `./[LOCAL_WORKSPACE]/Workflows`; pause labels removed.
 - **Fine-Art-Archive #686** — filed in A1 for black CI failure but paused by format-guard (AC lacked runnable test). Body fixed with `black --check …` gate; pause removed; `agent:codex` + `agents:auto-pilot` added. All four cited paths verified in clone.
 
 ### Genuinely needs the owner (2 — left labelled)

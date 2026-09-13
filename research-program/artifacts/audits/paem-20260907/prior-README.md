@@ -3,7 +3,7 @@
 Known audit artifacts:
 
 - `2026-06-13-summary.md`
-- Claude memory: `/Users/teacher/.claude/projects/-Users-teacher-Library-CloudStorage-Dropbox-Learning-Code-Portable-Alpha-Extension-Model/memory/paem-audit-2026-06.md`
+- Claude memory: `[LOCAL_HOME]/.claude/projects/-Users-teacher-Library-CloudStorage-Dropbox-Learning-Code-Portable-Alpha-Extension-Model/memory/paem-audit-2026-06.md`
 - Weekly review artifacts under `../../Workflows-steward/docs/reports/repo-review/repos/stranske__Portable-Alpha-Extension-Model/`
 
 Status:

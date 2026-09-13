@@ -6,7 +6,7 @@
 
 **JUDGMENT:** Decomposing PPM/LPA/side-letter families into tracked clause variables with page-level provenance is **buildable at home on public data** using a staged pipeline: structure-aware PDF parse → clause segmentation → vocabulary-keyed extraction → clause-aligned diff → corpus rarity scoring. Commercial tools (Kira, Luminance, Ontra, Harvey-class) solve the same problem with proprietary ML + enterprise hosting; they are useful **design references only** and do not fit the owner's no-install, static-output constraint on the work PC.
 
-**JUDGMENT:** The fleet already has the right *containers* (`Doc-Lineage` repo intent, `evidence-object/v1`, `stranske_pdf_extract` provenance model) but **no product code yet** — `clones/Doc-Lineage/README.md` explicitly waits for this brief. Entity lineage in `Pension-Data` and intake lineage in `Inv-Man-Intake` are **entity/run** lineage, not **document-family** lineage; reuse the event-graph *pattern*, not the code.
+**JUDGMENT:** The fleet already has the right *containers* (`Doc-Lineage` repo intent, `evidence-object/v1`, `stranske_pdf_extract` provenance model) but **no product code yet** — `[LOCAL_WORKSPACE]/Doc-Lineage/README.md` explicitly waits for this brief. Entity lineage in `Pension-Data` and intake lineage in `Inv-Man-Intake` are **entity/run** lineage, not **document-family** lineage; reuse the event-graph *pattern*, not the code.
 
 **Confidence:** High on architecture and public-data feasibility; medium on extraction accuracy for fund-specific terms (gates, key-person, MFN) without a labeled fund-LPA corpus. **Would change my mind:** A labeled evaluation set of 20+ real LP-side redlines showing >90% clause-alignment F1 with the proposed MVP.
 
@@ -18,7 +18,7 @@
 
 **FACTS:** Fund legal stacks form typed families: PPM (offering), LPA (governing), side letters (LP-specific overlays), subscription docs, amendments/restated agreements. Supersession is explicit in text ("amends and restates the Original Agreement dated…") and in filing metadata. EDGAR Exhibit-10 and charter exhibits routinely file amended-and-restated LPAs ([SEC EX-10.5 example](https://web.archive.org/web/20250101000000/https://www.sec.gov/Archives/edgar/data/1393818/000119312524249809/d896208dex105.htm)).
 
-**JUDGMENT:** Family detection is **two-signal**: (a) metadata — document type label, fund name, effective date, parties; (b) textual — high paragraph-level overlap with a prior version (template lineage) or shared defined-term block. Do **not** rely on filename or Backstop folder structure alone. Model supersession as a directed acyclic graph of `document_version` nodes with typed edges: `replaces`, `amends`, `side_letter_of`, `incorporates_by_reference`. This mirrors `successor` events in `clones/Pension-Data/src/pension_data/entities/lineage.py` but applies to **documents**, not entities.
+**JUDGMENT:** Family detection is **two-signal**: (a) metadata — document type label, fund name, effective date, parties; (b) textual — high paragraph-level overlap with a prior version (template lineage) or shared defined-term block. Do **not** rely on filename or Backstop folder structure alone. Model supersession as a directed acyclic graph of `document_version` nodes with typed edges: `replaces`, `amends`, `side_letter_of`, `incorporates_by_reference`. This mirrors `successor` events in `[LOCAL_WORKSPACE]/Pension-Data/src/pension_data/entities/lineage.py` but applies to **documents**, not entities.
 
 ### 1.2 Clause and defined-term variables
 
@@ -72,7 +72,7 @@ Cross-manager comparison reuses the same alignment against a **canonical variabl
 | **Docling** | PDF/DOCX → structured Markdown/JSON with layout, tables, reading order ([GitHub](https://github.com/docling-project/docling)) | Home dev: yes. Work PC delivery: pre-run; ship static JSON/HTML only |
 | **LexNLP** | Rule-based legal segmentation, amounts, dates ([GitHub](https://github.com/LexPredict/lexpredict-lexnlp)) | AGPL; good for deterministic features; heavy deps |
 | **ContractEx** | CUAD classification, comparison task, pipeline composability ([PyPI](https://pypi.org/project/contractex/)) | Alpha; useful patterns; not production-proven |
-| **stranske_pdf_extract** | Fleet provenance contract: `SourceLocation`, `EvidenceRef`, bbox ([contract.py](clones/Workflows/packages/stranske_pdf_extract/src/stranske_pdf_extract/contract.py)) | Scaffold per `DESIGN.md`; right target for Doc-Lineage adoption |
+| **stranske_pdf_extract** | Fleet provenance contract: `SourceLocation`, `EvidenceRef`, bbox ([contract.py]([LOCAL_WORKSPACE]/Workflows/packages/stranske_pdf_extract/src/stranske_pdf_extract/contract.py)) | Scaffold per `DESIGN.md`; right target for Doc-Lineage adoption |
 
 **JUDGMENT:** Docling + fleet `evidence-object/v1` + custom fund vocabulary beats adopting LexNLP wholesale (license, divergence from fleet contracts).
 
@@ -94,7 +94,7 @@ Cross-manager comparison reuses the same alignment against a **canonical variabl
 
 **JUDGMENT:** Reject any design requiring runtime LLM on the work PC for v1. Pre-compute extractions; HTML is the API.
 
-**FACTS:** `evidence-object/v1` requires `schema_version`, `evidence_id`, `fact_ref`, `source_id`, `method`, `excerpt`, optional `locator.page` ([schema](clones/Workflows/docs/contracts/schemas/evidence-object-v1.schema.json)).
+**FACTS:** `evidence-object/v1` requires `schema_version`, `evidence_id`, `fact_ref`, `source_id`, `method`, `excerpt`, optional `locator.page` ([schema]([LOCAL_WORKSPACE]/Workflows/docs/contracts/schemas/evidence-object-v1.schema.json)).
 
 ---
 
@@ -147,7 +147,7 @@ Cross-manager comparison reuses the same alignment against a **canonical variabl
 
 ## 5. Minimum viable Doc-Lineage pipeline
 
-Per `clones/Doc-Lineage/README.md`, the repo is scaffold-only. **JUDGMENT:** MVP in four phases:
+Per `[LOCAL_WORKSPACE]/Doc-Lineage/README.md`, the repo is scaffold-only. **JUDGMENT:** MVP in four phases:
 
 | Phase | Deliverable | Depends on |
 |-------|-------------|------------|
@@ -157,9 +157,9 @@ Per `clones/Doc-Lineage/README.md`, the repo is scaffold-only. **JUDGMENT:** MVP
 | **M3** | `diff` — pairwise blackline HTML between versions; `lineage.ndjson` from supersession heuristics | M2 |
 | **M4** | `corpus` — rarity scores across ingested EDGAR set; uniqueness column in comparison view | M2 + public corpus |
 
-**Emit** `run-contract/v1` envelope per pipeline run for fleet interoperability ([run-contract-v1.md](clones/Workflows/docs/contracts/run-contract-v1.md)).
+**Emit** `run-contract/v1` envelope per pipeline run for fleet interoperability ([run-contract-v1.md]([LOCAL_WORKSPACE]/Workflows/docs/contracts/run-contract-v1.md)).
 
-**Reuse:** `Inv-Man-Intake` `build_lineage_packet` pattern for run assembly ([lineage.py](clones/Inv-Man-Intake/src/inv_man_intake/audit/lineage.py)); Pension-Data `successor` edge validation for DAG checks ([lineage.py](clones/Pension-Data/src/pension_data/entities/lineage.py)).
+**Reuse:** `Inv-Man-Intake` `build_lineage_packet` pattern for run assembly ([lineage.py]([LOCAL_WORKSPACE]/Inv-Man-Intake/src/inv_man_intake/audit/lineage.py)); Pension-Data `successor` edge validation for DAG checks ([lineage.py]([LOCAL_WORKSPACE]/Pension-Data/src/pension_data/entities/lineage.py)).
 
 **Out of MVP:** Side-letter ↔ LPA conflict resolution, MFN propagation, automated legal advice, real-time Backstop sync.
 

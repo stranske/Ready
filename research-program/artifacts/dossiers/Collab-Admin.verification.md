@@ -1,6 +1,6 @@
 # Collab-Admin dossier verification
 
-Scope: adversarial source check of every claim in dossier sections 4, 5, 8, and 9 against `clones/Collab-Admin`. “Unverifiable” means cited local evidence does not establish the proposition; it does not prove it false.
+Scope: adversarial source check of every claim in dossier sections 4, 5, 8, and 9 against `[LOCAL_WORKSPACE]/Collab-Admin`. “Unverifiable” means cited local evidence does not establish the proposition; it does not prove it false.
 
 | # | Section | Claim checked | Result | Evidence / correction |
 |---:|---|---|---|---|

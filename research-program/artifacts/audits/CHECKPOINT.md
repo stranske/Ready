@@ -58,7 +58,7 @@ Phases 0–5 complete on clone tip fd0ea516100d6022029a6ed0b4659e95badb189b. Eva
 Phases 0–5 complete on clone tip aa3173e. Evaluated 106 src files (25,911 LOC) and 177 test files (39,437 LOC). Filed 7 verified issues #1000–#1006 (2xP1, 5xP2). Local issue_format.py 7/7 PASS (0 advisories, conforms strictly to docs/AGENT_ISSUE_FORMAT.md). Intake log updated with 7 rows. OUT written to artifacts/audits/Counter_Risk-2026-09-07.md. Durable audit ledger and repo README updated.
 
 ## 2026-09-07T05:13:54.121796+00:00 D-audit-Portable-Alpha-Extension-Model--2026-09-07T04-47-31Z Phase 0-1
-Scope and orientation saved at /Users/teacher/.codex/automations/research-program/artifacts/audits/paem-20260907/scope.md. Live issue snapshot captured.
+Scope and orientation saved at [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/paem-20260907/scope.md. Live issue snapshot captured.
 
 ## 2026-09-07T05:17:50.479301+00:00 PAEM Phase 2 progress
 Two bounded read-only offloads running. 1465 tests collected/2 deselected; Ruff pass; focused 31 pass. Primary-source comparator scan and CVaR calibration proof saved. Browser home observed; remaining pages in progress.
@@ -76,7 +76,7 @@ All retained claims independently verified at unchanged head; candidate disposit
 Ten issue bodies staged, zero format advisories; filing prohibited by executor rule, no intake rows.
 
 ## 2026-09-07T05:29:22.129286+00:00 D-audit-Portable-Alpha-Extension-Model--2026-09-07T04-47-31Z Phase 5
-OUT and canonical audit ledger/index/reconciliation written. /Users/teacher/.codex/automations/research-program/artifacts/audits/Portable-Alpha-Extension-Model-2026-09-07.md
+OUT and canonical audit ledger/index/reconciliation written. [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Portable-Alpha-Extension-Model-2026-09-07.md
 
 ## 2026-09-07T06:12:00Z — D-audit-Ready--2026-09-07T04-47-33Z attempt 2
 Resumed from unit checkpoint Phase 5 on remote tip 1023302cd1556018fa594081c89439c4fc9d913f (base code identical to 1d7c8d1c). Re-verified all 7 candidate defects on live clone. Re-validated all 7 staged issue bodies in Code/Audits/Ready/2026-09-07-issue-bodies/ with issue_format.py (7/7 PASS, 0 errors, 0 problems). Confirmed 7 open issue URLs (#557–#563) and intake log entries. Verified durable ledger and index. OUT report verified and written. No repository edits, new issue filing, or duplicate intake writes.
@@ -102,7 +102,7 @@ Resumed completed checkpoint; tip unchanged at 8077785. Re-verified key cited pa
 Resumed completed checkpoint without restarting. Remote main matches clone 37f7ed8afbfb4d6e16ffc613c9856421605ad359. Opened all three cited implementation paths; all three issues remain open, #1557 has open PR #1560. Remote CI success on this head. Exact live issue bodies pass local validator with advisories. #1557/#1559 have successful format workflow runs; #1558 only skipped/cancelled among available runs. Coverage corrections and bounded runtime reproductions in progress. No issue filing or repo edits.
 
 ## 2026-09-07T07:16:25.145626+00:00 — D-audit-Travel-Plan-Permission--2026-09-07T04-47-30Z attempt 2 completed reconciliation
-Three existing open findings reverified at unchanged main 37f7ed8. Model/store reproductions passed; exact live bodies 3/3 local validator PASS with advisories. Remote format success #1557/#1559; #1558 unconfirmed (only skipped/cancelled). Main CI success; PR #1560 open for #1557. Existing intake rows verified, none added. Coverage corrected: focused D1/D3; static D4 is not observed UX; prior test/coverage claims qualified. See /Users/teacher/.codex/automations/research-program/artifacts/audits/Travel-Plan-Permission-2026-09-07.md and /Users/teacher/Library/CloudStorage/Dropbox/Learning/Code/Audits/Travel-Plan-Permission/2026-09-07-recovery-report.md. No code changes or new filing.
+Three existing open findings reverified at unchanged main 37f7ed8. Model/store reproductions passed; exact live bodies 3/3 local validator PASS with advisories. Remote format success #1557/#1559; #1558 unconfirmed (only skipped/cancelled). Main CI success; PR #1560 open for #1557. Existing intake rows verified, none added. Coverage corrected: focused D1/D3; static D4 is not observed UX; prior test/coverage claims qualified. See [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Travel-Plan-Permission-2026-09-07.md and [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Travel-Plan-Permission/2026-09-07-recovery-report.md. No code changes or new filing.
 
 
 ## 2026-09-07T08:16:10.742185+00:00 — D-audit-trip-planner--2026-09-07T04-47-34Z attempt 3 Phase 5 reconciliation
@@ -112,7 +112,7 @@ Resumed retained completion. Main 8077785 unchanged; all eight existing issues o
 Resumed on remote tip 59cb12be9d4b06434d41bc1b71612167ea6d9cfc. Scoped from dossier and AUDIT_LEDGER. Cheap bash orientation confirmed clean working tree and remote tip match. Adversarially verified all 10 candidate findings against the codebase at cited lines; local issue_format.py validation 10/10 PASS (0 errors, 0 advisories). Authorized filing lane active. Advancing to Phase 4 issue filing.
 
 ## 2026-09-07T17:05:00Z — D-audit-Portable-Alpha-Extension-Model--2026-09-07T17-01-44Z complete
-Phases 0–5 complete on remote tip 59cb12be9d4b06434d41bc1b71612167ea6d9cfc. Filed 10 verified issues #2278–#2287 (7 P1, 3 P2). Local issue_format.py 10/10 PASS (0 errors, 0 advisories, conforms strictly to docs/AGENT_ISSUE_FORMAT.md); remote Agents Issue Format Guard completed with 0 rejections and 0 failure comments. Intake log updated with 10 rows. OUT written to /Users/teacher/.codex/automations/research-program/artifacts/audits/Portable-Alpha-Extension-Model-2026-09-07.md. Durable audit ledger and repo README updated.
+Phases 0–5 complete on remote tip 59cb12be9d4b06434d41bc1b71612167ea6d9cfc. Filed 10 verified issues #2278–#2287 (7 P1, 3 P2). Local issue_format.py 10/10 PASS (0 errors, 0 advisories, conforms strictly to docs/AGENT_ISSUE_FORMAT.md); remote Agents Issue Format Guard completed with 0 rejections and 0 failure comments. Intake log updated with 10 rows. OUT written to [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Portable-Alpha-Extension-Model-2026-09-07.md. Durable audit ledger and repo README updated.
 
 ## 2026-09-08T05:08:00Z — D-audit-learning-management-system--2026-09-08T05-06-08Z Phase 0
 Phase 0 scoping complete on clone tip 0ae9443cdb72ae4f0ccae10346bb5ab30033c2ca. Scoped to src/lms/, tests/, alembic/, scripts/, docs/ (app-owned); excluding synced .github/ and design-system/. Initialized run artifacts and advancing to Phase 1.
@@ -121,7 +121,7 @@ Phase 0 scoping complete on clone tip 0ae9443cdb72ae4f0ccae10346bb5ab30033c2ca. 
 Phase 1 cheap orientation complete on tip 0ae9443cdb72ae4f0ccae10346bb5ab30033c2ca. 1,431 tests collected, 30,661 src LOC, CI green on main. Wrote 2026-09-08-00-repo-map.md and 2026-09-08-audit-run.md. Advancing to Phase 2.
 
 ## 2026-09-08T05:16:00Z — D-audit-learning-management-system--2026-09-08T05-06-08Z complete
-Phases 0–5 complete on clone tip 0ae9443cdb72ae4f0ccae10346bb5ab30033c2ca. Evaluated 137 src files (30,661 LOC) and 178 test files (30,845 LOC). Filed 8 verified issues #620–#627 (3xP1, 5xP2). Local issue_format.py 8/8 PASS (0 errors, 0 advisories, conforms strictly to docs/AGENT_ISSUE_FORMAT.md); remote Agents Issue Format Guard completed with SUCCESS on all 8 issues. Intake log updated with 8 rows. OUT written to /Users/teacher/.codex/automations/research-program/artifacts/audits/learning-management-system-2026-09-08.md. Durable audit ledger and repo README updated.
+Phases 0–5 complete on clone tip 0ae9443cdb72ae4f0ccae10346bb5ab30033c2ca. Evaluated 137 src files (30,661 LOC) and 178 test files (30,845 LOC). Filed 8 verified issues #620–#627 (3xP1, 5xP2). Local issue_format.py 8/8 PASS (0 errors, 0 advisories, conforms strictly to docs/AGENT_ISSUE_FORMAT.md); remote Agents Issue Format Guard completed with SUCCESS on all 8 issues. Intake log updated with 8 rows. OUT written to [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/learning-management-system-2026-09-08.md. Durable audit ledger and repo README updated.
 
 ## 2026-09-08T06:05:00Z — D-audit-learning-management-system--2026-09-08T05-06-08Z attempt 2
 Resumed from unit checkpoint Phase 5 on remote tip 0ae9443cdb72ae4f0ccae10346bb5ab30033c2ca. Re-verified all 8 cited source files and lines against live clone. 8/8 staged issue bodies in Code/Audits/learning-management-system/2026-09-08-issue-bodies/ pass issue_format.py with 0 errors and 0 advisories. Confirmed 8 open issue URLs (#620–#627) and intake log rows. Reconciled durable audit ledger AUDIT_LEDGER.md and repo README. OUT report verified at artifacts/audits/learning-management-system-2026-09-08.md. No repository edits, new issue filing, or duplicate intake writes.
@@ -131,7 +131,7 @@ Resumed from unit checkpoint Phase 5 on remote tip 0ae9443cdb72ae4f0ccae10346bb5
 Resumed retained Phase 5 without restart. Main 0ae9443 unchanged; six supported defect findings, one latent numeric weakness, #627 refuted by repeated-action HTTP 200 probes. Eight existing issues open, intake rows166–173 verified, no duplicates. Seven remote guard validation steps success, #626 unconfirmed. Exact live bodies8/8 local PASS; seven corrected bodies staged with zero advisories. OUT rewritten with evidence and coverage corrections; durable ledger/index updated. No source/remote issue changes or offloads. Ready for engine done.
 
 ## 2026-09-08T17:13:52.286868+00:00 — D-audit-Counter_Risk--2026-09-08T17-11-36Z — Phases 0–1
-Dossier and prior audit read; scope inherited; clone pulled to e2a1bacf37503217e00e467aa72198988777afa4; preexisting untracked dossier-out/ and uv.lock retained. Baseline, CI and 120-issue dedup snapshot at /Users/teacher/.codex/automations/research-program/artifacts/audits/Counter_Risk-2026-09-08-evidence. High machine load; bounded probes preferred.
+Dossier and prior audit read; scope inherited; clone pulled to e2a1bacf37503217e00e467aa72198988777afa4; preexisting untracked dossier-out/ and uv.lock retained. Baseline, CI and 120-issue dedup snapshot at [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Counter_Risk-2026-09-08-evidence. High machine load; bounded probes preferred.
 
 ## 2026-09-08T17:19:38.992906+00:00 — D-audit-Counter_Risk--2026-09-08T17-11-36Z — Phase 2 progress
 Orchestrator codex core review pending; cursor ops review nonempty. D2 AST scan found four exact function-body groups. Main CI exact-head success. 1738 tests collected; three web smoke tests passed. Static browser DOM/screenshot captured; explicit-config headless GUI discovery passed. UX panel running. Sources retrieved from BIS, PyInstaller, openpyxl, Hypothesis and DOJ.
@@ -143,7 +143,7 @@ Core report nonempty despite dispatcher exit1 OFFLOAD_INCOMPLETE detection; inde
 Six research-only issue drafts passed actual repo validator with zero advisories; exact head still e2a1bacf37503217e00e467aa72198988777afa4. OUT written, canonical audit report/index/ledger reconciled, no filing/intake or code changes. Windows handoff and failed static-only UX gate documented. Ready for program.py done.
 
 ## 2026-09-09T05:46:00Z — D-audit-learning-management-system--2026-09-09T05-14-48Z complete
-Phases 0–5 complete on clone tip 1015f28616fcfd6adb8acff50e1cb2998b17a7f5. Evaluated 137 src files (30,661 LOC) and 178 test files (30,845 LOC). Test baseline: 1,597 passed, 2 skipped, 8 deselected in 43.70s. Filed 7 verified issues #638–#644 (2xP1, 5xP2). Local issue_format.py 7/7 PASS (0 errors, 0 advisories, conforms strictly to docs/AGENT_ISSUE_FORMAT.md). Intake log updated with 7 rows. OUT written to /Users/teacher/.codex/automations/research-program/artifacts/audits/learning-management-system-2026-09-09.md. Durable audit ledger and repo README updated.
+Phases 0–5 complete on clone tip 1015f28616fcfd6adb8acff50e1cb2998b17a7f5. Evaluated 137 src files (30,661 LOC) and 178 test files (30,845 LOC). Test baseline: 1,597 passed, 2 skipped, 8 deselected in 43.70s. Filed 7 verified issues #638–#644 (2xP1, 5xP2). Local issue_format.py 7/7 PASS (0 errors, 0 advisories, conforms strictly to docs/AGENT_ISSUE_FORMAT.md). Intake log updated with 7 rows. OUT written to [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/learning-management-system-2026-09-09.md. Durable audit ledger and repo README updated.
 
 ## 2026-09-09T17:34:00Z — D-audit-Counter_Risk--2026-09-09T17-29-35Z — Phases 0–1
 Dossier, owner notes, and prior audits read; scope anchored on app code (`src/counter_risk/`), `config/`, `tests/`, `docs/`, `scripts/` (first-party), `Runner.xlsm`, `build/`. Clone updated to HEAD `cdfd281866fb5bf23fce6dd22eb4f7367e0876fc`. Baseline: 1,841 tests collected across 162 modules via `uv run pytest`, ruff clean (0 diagnostics). Open agent-ready issue supply confirmed: only #1023 ([P3] HHI doc) and #996 remain open after morning issues #1016-#1022 were resolved via PRs #1024-#1030. Supply 2 <= 2 triggered demand-driven Track D refill.
@@ -173,24 +173,24 @@ Format guard verification: Checked Actions workflow runs on GitHub (`gh run list
 ## 2026-09-09T17:39:00Z — D-audit-Counter_Risk--2026-09-09T17-29-35Z — Phase 5
 Reconciliation complete:
 - Appended 6 filed URLs to `~/.codex/orchestrator/measurement/intake-2026-09-04.log` in `repo|body-file|url` format.
-- Stored canonical audit artifacts under `/Users/teacher/Library/CloudStorage/Dropbox/Learning/Code/Audits/Counter_Risk/`:
+- Stored canonical audit artifacts under `[LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Counter_Risk/`:
   - `2026-09-09-02-audit-run.md`
   - `2026-09-09-issue-bodies/` (09-14)
   - `2026-09-09-02-AUDIT_REPORT.md`
   - `2026-09-09-02-verification-log.md`
   - `README.md`
-- Updated `/Users/teacher/Library/CloudStorage/Dropbox/Learning/Code/Audits/AUDIT_LEDGER.md`.
-- OUT report generated at `/Users/teacher/.codex/automations/research-program/artifacts/audits/Counter_Risk-2026-09-09.md`.
+- Updated `[LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/AUDIT_LEDGER.md`.
+- OUT report generated at `[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Counter_Risk-2026-09-09.md`.
 Audit cycle complete. Supply replenished from 2 to 8 issues.
 
 ## 2026-09-10T05:51:00Z — D-audit-learning-management-system--2026-09-10T05-35-47Z complete
-Phases 0–5 complete on clone tip 09d509e88aa5bdad244d4029737ea22b6f13a95d. Evaluated 137 src files (30,661 LOC) and 178 test files (30,845 LOC). Test baseline: 1,745 passed, 6 skipped in 75.81s. Filed 7 verified issues #652–#658 (1xP1, 6xP2). Local issue_format.py 7/7 PASS (0 errors, 0 advisories, conforms strictly to docs/AGENT_ISSUE_FORMAT.md). Intake log updated with 7 rows. OUT written to /Users/teacher/.codex/automations/research-program/artifacts/audits/learning-management-system-2026-09-10.md. Durable audit ledger and repo README updated.
+Phases 0–5 complete on clone tip 09d509e88aa5bdad244d4029737ea22b6f13a95d. Evaluated 137 src files (30,661 LOC) and 178 test files (30,845 LOC). Test baseline: 1,745 passed, 6 skipped in 75.81s. Filed 7 verified issues #652–#658 (1xP1, 6xP2). Local issue_format.py 7/7 PASS (0 errors, 0 advisories, conforms strictly to docs/AGENT_ISSUE_FORMAT.md). Intake log updated with 7 rows. OUT written to [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/learning-management-system-2026-09-10.md. Durable audit ledger and repo README updated.
 
 ## 2026-09-10T17:55:00Z — D-audit-Counter_Risk--2026-09-10T17-45-12Z complete
-Phases 0–5 complete on clone tip a846d4b098137ea098dfdf62e3c6f0572fb9d18b. Evaluated 106 src files (26,050 LOC) and 180 test files (41,249 LOC). Test baseline: 2,012 tests collected via uv run pytest, ruff 0 diagnostics. Filed 7 verified issues #1044–#1050 (7xP2). Local issue_lint.py 7/7 PASS (0 errors, 0 advisories). Remote Agents Issue Format Guard completed with SUCCESS on all seven issues. Intake log updated with 7 rows. OUT written to /Users/teacher/.codex/automations/research-program/artifacts/audits/Counter_Risk-2026-09-10.md. Durable audit ledger and repo README updated.
+Phases 0–5 complete on clone tip a846d4b098137ea098dfdf62e3c6f0572fb9d18b. Evaluated 106 src files (26,050 LOC) and 180 test files (41,249 LOC). Test baseline: 2,012 tests collected via uv run pytest, ruff 0 diagnostics. Filed 7 verified issues #1044–#1050 (7xP2). Local issue_lint.py 7/7 PASS (0 errors, 0 advisories). Remote Agents Issue Format Guard completed with SUCCESS on all seven issues. Intake log updated with 7 rows. OUT written to [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Counter_Risk-2026-09-10.md. Durable audit ledger and repo README updated.
 
 ## 2026-09-10T18:35:00Z — D-audit-Manager-Database--2026-09-10T17-45-13Z complete
-Phases 0–5 complete on clone tip 5681c1b8ed41911599a19014147300637a9c3b5f. Evaluated ~51K LOC across api/, etl/, alerts/, adapters/, ui/, web/. Test baseline: green on main. Filed 7 verified issues #1647–#1653 (1xP1, 6xP2). Local issue_lint.py 7/7 PASS (0 errors, 0 advisories, conforms strictly to docs/AGENT_ISSUE_FORMAT.md). Intake log updated with 7 rows. OUT written to /Users/teacher/.codex/automations/research-program/artifacts/audits/Manager-Database-2026-09-10.md. Durable audit ledger and repo README updated.
+Phases 0–5 complete on clone tip 5681c1b8ed41911599a19014147300637a9c3b5f. Evaluated ~51K LOC across api/, etl/, alerts/, adapters/, ui/, web/. Test baseline: green on main. Filed 7 verified issues #1647–#1653 (1xP1, 6xP2). Local issue_lint.py 7/7 PASS (0 errors, 0 advisories, conforms strictly to docs/AGENT_ISSUE_FORMAT.md). Intake log updated with 7 rows. OUT written to [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Manager-Database-2026-09-10.md. Durable audit ledger and repo README updated.
 
 ## 2026-09-13T19:14:08.213970+00:00 D-audit-Counter_Risk--2026-09-13T18-41-41Z Phase 0 complete
 Dossier and owner guidance read; scope recorded. Research-only takes precedence over filing language in brief.

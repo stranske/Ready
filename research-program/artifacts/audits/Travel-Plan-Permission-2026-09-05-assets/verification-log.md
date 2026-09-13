@@ -1,6 +1,6 @@
 # Verification and reconciliation — D-audit-Travel-Plan-Permission--2026-09-05T16-11-36Z
 
-Time 2026-09-05T16:38:56.584615+00:00; baseline and final remote tip 3ba14a8541b97338586ab6c253ea30e2aed7b86e. All eight draft bodies passed `.github/scripts/issue_format.py` without advisories after the lead corrected line references and slash-delimited prose that looked like paths. Citation text is preserved in /Users/teacher/.codex/automations/research-program/artifacts/audits/Travel-Plan-Permission-2026-09-05-assets/citation-verification.json. The generic body-generation script is a provenance artifact; final validated issue bodies are authoritative.
+Time 2026-09-05T16:38:56.584615+00:00; baseline and final remote tip 3ba14a8541b97338586ab6c253ea30e2aed7b86e. All eight draft bodies passed `.github/scripts/issue_format.py` without advisories after the lead corrected line references and slash-delimited prose that looked like paths. Citation text is preserved in [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Travel-Plan-Permission-2026-09-05-assets/citation-verification.json. The generic body-generation script is a provenance artifact; final validated issue bodies are authoritative.
 
 ## Candidate dispositions
 

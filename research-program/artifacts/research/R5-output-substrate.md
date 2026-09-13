@@ -12,7 +12,7 @@ The owner produces consultant blacklines, legal clause trackers, manager-comms t
 
 **FACTS (work environment, 2026-09-04):** A real local Python interpreter exists (not on `PATH`, but usable by absolute path, including `pip` for pure-Python packages). Excel and Word are driven via COM today. Static local HTML pages are in **production use**, and **local-file deep links to specific pages of local documents work** — defects were path-configuration bugs, not platform refusal (`artifacts/work-bundle/INFORMATION-REQUEST-RESPONSE.md` §A1, §A3). WebAssembly/stlite has **never been tested** there. Nothing server-hosted or database-backed runs in that environment. Proprietary data never leaves the work perimeter; every derived fact must link in one click to the primary document and page.
 
-**FACTS (fleet contracts):** Workflows `evidence-object/v1` requires `source_id`, `method`, `excerpt`, and optional `locator.page` (`clones/Workflows/docs/contracts/schemas/evidence-object-v1.schema.json`). `artifact-manifest/v1` names hashed run artifacts with kinds including `report`, `data`, and `evidence` (`clones/Workflows/docs/contracts/schemas/artifact-manifest-v1.schema.json`).
+**FACTS (fleet contracts):** Workflows `evidence-object/v1` requires `source_id`, `method`, `excerpt`, and optional `locator.page` (`[LOCAL_WORKSPACE]/Workflows/docs/contracts/schemas/evidence-object-v1.schema.json`). `artifact-manifest/v1` names hashed run artifacts with kinds including `report`, `data`, and `evidence` (`[LOCAL_WORKSPACE]/Workflows/docs/contracts/schemas/artifact-manifest-v1.schema.json`).
 
 **JUDGMENT:** The failure mode is not "HTML vs something else" — it is **HTML whose data and presentation are fused**. The fix is separating **regenerable data artifacts** from a **small, shared renderer** the owner never hand-edits. The earlier "browser-only, no Python" model was too pessimistic; the earlier "standardize on stlite because the fleet uses Pyodide" model was too optimistic for the work PC.
 
@@ -38,12 +38,12 @@ Three production tools already implement the target pattern incompletely: struct
 
 | Repo / surface | Pattern | Evidence | Fit for R5 |
 |----------------|---------|----------|------------|
-| **Deliverable-Render** | New repo: structured store → HTML hub + manifest-gated PPTX + DOCX; WASM forbidden until probed | `clones/Deliverable-Render/README.md` | **Implementation home** for the shared renderer the work env needs |
-| **Pension-Data** | Pipeline emits `workspace.json`; static `apps/web/` with Load Local Bundle, PWA, vendored Plotly | `clones/Pension-Data/apps/web/README.md`, `apps/contracts/runtime-contract.json` | **Reference renderer** — data-driven, offline-capable; evidence links via `artifactBaseUrl` (`app.js:498-504`) |
-| **Inv-Man-Intake** | Headless run writes `run.json` + manifest; `OnePagerModel.as_dict()` for renderers without HTML (`one_pager.py:44-47`) | `clones/Inv-Man-Intake/docs/design/operator-application.md` | Right **narrative content model**; Tier-A Pyodide path unverified at work |
-| **Manager-Database / Trend_Model** | stlite/Pyodide static demos, vendored wheels, no CDN | `clones/Manager-Database/scripts/build_wasm_demo.py`, `Trend_Model_Project/demo/wasm/README.md` | Proven **home** interactive demos; **unverified** at work |
-| **Portable-Alpha-Extension-Model** | Streamlit + Codespaces primary; `web/index.html` mounts full dashboard via stlite with vendored wheels (README disclaims support; runtime unverified at work) | `clones/Portable-Alpha-Extension-Model/README.md:19`, `web/index.html:271-322` | Local Python path is the work-default per owner guidance; stlite publish path unverified |
-| **Design system** | `tokens.css` + `components.css` synced from Workflows Template | `clones/Template/design-system/README.md` | Shared visual contract for static HTML renderers |
+| **Deliverable-Render** | New repo: structured store → HTML hub + manifest-gated PPTX + DOCX; WASM forbidden until probed | `[LOCAL_WORKSPACE]/Deliverable-Render/README.md` | **Implementation home** for the shared renderer the work env needs |
+| **Pension-Data** | Pipeline emits `workspace.json`; static `apps/web/` with Load Local Bundle, PWA, vendored Plotly | `[LOCAL_WORKSPACE]/Pension-Data/apps/web/README.md`, `apps/contracts/runtime-contract.json` | **Reference renderer** — data-driven, offline-capable; evidence links via `artifactBaseUrl` (`app.js:498-504`) |
+| **Inv-Man-Intake** | Headless run writes `run.json` + manifest; `OnePagerModel.as_dict()` for renderers without HTML (`one_pager.py:44-47`) | `[LOCAL_WORKSPACE]/Inv-Man-Intake/docs/design/operator-application.md` | Right **narrative content model**; Tier-A Pyodide path unverified at work |
+| **Manager-Database / Trend_Model** | stlite/Pyodide static demos, vendored wheels, no CDN | `[LOCAL_WORKSPACE]/Manager-Database/scripts/build_wasm_demo.py`, `Trend_Model_Project/demo/wasm/README.md` | Proven **home** interactive demos; **unverified** at work |
+| **Portable-Alpha-Extension-Model** | Streamlit + Codespaces primary; `web/index.html` mounts full dashboard via stlite with vendored wheels (README disclaims support; runtime unverified at work) | `[LOCAL_WORKSPACE]/Portable-Alpha-Extension-Model/README.md:19`, `web/index.html:271-322` | Local Python path is the work-default per owner guidance; stlite publish path unverified |
+| **Design system** | `tokens.css` + `components.css` synced from Workflows Template | `[LOCAL_WORKSPACE]/Template/design-system/README.md` | Shared visual contract for static HTML renderers |
 
 ---
 

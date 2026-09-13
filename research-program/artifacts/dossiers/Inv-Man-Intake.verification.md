@@ -1,6 +1,6 @@
 # Inv-Man-Intake dossier — verification table
 
-Verified against clone `clones/Inv-Man-Intake` at HEAD `8778d10c1e3240c9e008c2a223e910e05bf631f2` (2026-09-04).
+Verified against clone `[LOCAL_WORKSPACE]/Inv-Man-Intake` at HEAD `8778d10c1e3240c9e008c2a223e910e05bf631f2` (2026-09-04).
 Method: every cited file:line/symbol opened and verified against current code and documentation.
 
 ## Summary

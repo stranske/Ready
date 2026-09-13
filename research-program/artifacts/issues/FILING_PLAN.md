@@ -2,7 +2,7 @@
 
 **Date:** 2026-09-04 · **Author:** Cursor (Composer) · **Status:** Draft bodies ready; do not file until lint pass  
 **Inputs:** `artifacts/research/B2-gap-analysis.md`, `artifacts/research/B3-interop-architecture.md`, `artifacts/research/C-skill-curriculum.md`  
-**Format:** `clones/Workflows/templates/consumer-repo/docs/AGENT_ISSUE_FORMAT.md`
+**Format:** `[LOCAL_WORKSPACE]/Workflows/templates/consumer-repo/docs/AGENT_ISSUE_FORMAT.md`
 
 ---
 

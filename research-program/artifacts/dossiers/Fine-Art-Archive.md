@@ -10,7 +10,7 @@ Fine-Art-Archive is the version-controlled **code and policy layer** for a perso
 |--------|-------------|-------------|-------------------|
 | **CLI** (71 Python scripts) | `scripts/*.py` — e.g. `build_manifest.py`, `visual_dedupe.py`, `apply_lens_recovery.py` | Owner / local agents | **Working** — 125 `test_*.py` modules |
 | **CLI launcher** | `scripts/run_companion_app.sh` | Owner starting browse UI | **Working** — rebuilds `manifest.csv` on launch (`README.md` L48–52) |
-| **HTTP API + HTML UI** | `src/fine_art_archive/api/main.py`; `src/fine_art_archive/ui/index.html` | Owner at `http://localhost:8401/` | **Working** — works, ratings, dossiers, e-ink, review routes; `tests/test_companion_app_api.py` |
+| **HTTP API + HTML UI** | `src/fine_art_archive/api/main.py`; `src/fine_art_archive/ui/index.html` | Owner at `http://[LOCAL_HOST]/` | **Working** — works, ratings, dossiers, e-ink, review routes; `tests/test_companion_app_api.py` |
 | **File artifacts (external)** | `Art/works/<work_id>/meta.json`, `manifest.csv` | All surfaces via `api/store.py` | **Working when workspace mounted** — one fixture in `staging_sidecars/test-wid/` |
 | **JSONL logs** | `data/ratings_log.jsonl`, `data/research_requests.jsonl` | Companion App | **Working** — append-only (`api/main.py` L3–5) |
 | **Backplane contracts** | `docs/contracts/*`, `scripts/validate_run_contract.py` | Fleet (planned) | **Scaffold** — validator only; no emitter (`backplane-conformance.yml` L49–55) |

@@ -1,6 +1,6 @@
 ## Why
 
-Work PC has Excel preinstalled; tabular manifest export avoids WASM renderer deps (B2-gap-analysis §4). `output-substrate/v1` (issue 04) will define renderer profiles but no CSV export slice exists yet. Verified: `clones/Pension-Data/apps/web/README.md:11` mentions "Filtered export to JSON or CSV" for the web app only — not a fleet manifest contract. **Depends on:** Workflows issue 04 (`output-substrate-v1`).
+Work PC has Excel preinstalled; tabular manifest export avoids WASM renderer deps (B2-gap-analysis §4). `output-substrate/v1` (issue 04) will define renderer profiles but no CSV export slice exists yet. Verified: `[LOCAL_WORKSPACE]/Pension-Data/apps/web/README.md:11` mentions "Filtered export to JSON or CSV" for the web app only — not a fleet manifest contract. **Depends on:** Workflows issue 04 (`output-substrate-v1`).
 
 ## Scope
 

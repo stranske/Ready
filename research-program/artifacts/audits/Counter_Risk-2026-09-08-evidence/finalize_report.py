@@ -1,6 +1,6 @@
 from pathlib import Path
 import json,datetime,shutil
-b=Path.cwd();e=b/'artifacts/audits/Counter_Risk-2026-09-08-evidence';out=b/'artifacts/audits/Counter_Risk-2026-09-08.md';a=Path('/Users/teacher/Library/CloudStorage/Dropbox/Learning/Code/Audits');d=a/'Counter_Risk';u='D-audit-Counter_Risk--2026-09-08T17-11-36Z';now=datetime.datetime.now(datetime.timezone.utc).isoformat();sha=(e/'head.txt').read_text().strip()
+b=Path.cwd();e=b/'artifacts/audits/Counter_Risk-2026-09-08-evidence';out=b/'artifacts/audits/Counter_Risk-2026-09-08.md';a=Path('[LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits');d=a/'Counter_Risk';u='D-audit-Counter_Risk--2026-09-08T17-11-36Z';now=datetime.datetime.now(datetime.timezone.utc).isoformat();sha=(e/'head.txt').read_text().strip()
 labels={x['name'] for x in json.loads((e/'labels.txt').read_text())};print('Applicable labels:',sorted(labels&{'bug','documentation','priority:high','priority:normal','codex','codex-automation'}))
 (e/'WINDOWS_TEST_BRIEF.md').write_text('''# Windows operator verification handoff
 
@@ -27,7 +27,7 @@ Only the static browser page and headless discovery were observed; Windows Tk/Ex
 | Source launch from unrelated cwd without config | Yes | Readable missing-config error; source resolver intentionally keeps relative paths | {e}/gui-discovery.txt |
 | Windows Tk, XLSM, Office COM, assembled binary | No | Platform unavailable here | {e}/WINDOWS_TEST_BRIEF.md |
 
-Four nonempty evaluator rubrics (codex/cursor/gemini/vibe), plus cursor adversary, are retained under /Users/teacher/.codex/orchestrator-mirror/ux_reviews/stranske/Counter_Risk_uxreview_2026-09-08-research/. Static-page medians: wiring 5.5, usability 3, help clarity 5, productivity 2.5; overall 3. Consensus flags all true. Gate result is false: no full Gate 1, low static-page median, panel blockers. Scores do not describe the production Tk GUI.
+Four nonempty evaluator rubrics (codex/cursor/gemini/vibe), plus cursor adversary, are retained under [LOCAL_HOME]/.codex/orchestrator-mirror/ux_reviews/stranske/Counter_Risk_uxreview_2026-09-08-research/. Static-page medians: wiring 5.5, usability 3, help clarity 5, productivity 2.5; overall 3. Consensus flags all true. Gate result is false: no full Gate 1, low static-page median, panel blockers. Scores do not describe the production Tk GUI.
 
 Lead adjudication: the three panel findings are one retrieval-handoff problem, already known as August 24 D4-1 and adjacent to closed #645. Retain as a known follow-up, not a new issue. Accept a precise fixture-artifact location/link or documented handoff. Reject a mandatory browser execution engine or unrestricted upload as scope expansion; fixture-only static labeling is explicit. The high blocker rating is downgraded to a secondary demo usability gap. The headless success line supports command wiring only, not GUI screen quality. Improvements and raw scores are saved without rewriting the panel's conclusions.
 

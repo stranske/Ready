@@ -16,12 +16,12 @@
 
 | Repo | Existing sources / adapters | Gap vs owner's documents |
 |------|----------------------------|--------------------------|
-| **Pension-Data** | PPD API client (`clones/Pension-Data/src/pension_data/sources/ppd/client.py`); EDGAR 13F-HR client (`.../sources/edgar/client.py`); Form 5500 Schedule SB/MB fixture adapter (`.../sources/form5500.py`); pension plan source map with CalPERS/NYSLRS/TX ERS seeds (`config/sources/source_map_v1.csv`); `scripts/source_collection/build_pension_sources.py` for plan annual-report discovery | No IAPD ADV, no EX-10 LPA harvest, no IC agenda/consultant PDF crawl, no DDQ templates, no manager letters |
+| **Pension-Data** | PPD API client (`[LOCAL_WORKSPACE]/Pension-Data/src/pension_data/sources/ppd/client.py`); EDGAR 13F-HR client (`.../sources/edgar/client.py`); Form 5500 Schedule SB/MB fixture adapter (`.../sources/form5500.py`); pension plan source map with CalPERS/NYSLRS/TX ERS seeds (`config/sources/source_map_v1.csv`); `scripts/source_collection/build_pension_sources.py` for plan annual-report discovery | No IAPD ADV, no EX-10 LPA harvest, no IC agenda/consultant PDF crawl, no DDQ templates, no manager letters |
 | **Manager-Database** | EDGAR 13F/13D/G via `adapters/edgar.py`; Companies House (`adapters/uk.py`); news/RSS; OpenFIGI; price scrapers; synthetic fixtures in `data/raw/parsed.json` | No Form ADV, no fund legal docs, no pension board materials; dossier flags missing HTML filing regression corpus (issue #1151) |
 | **Inv-Man-Intake** | Fixture PDF/PPTX extraction (`src/inv_man_intake/extraction/providers/`); Standard Element Library stub (`docs/contracts/standard_element_library.md`) | No real manager DDQ corpus; `non_authoritative: true` stub only |
-| **Doc-Lineage** | Intent only (`clones/Doc-Lineage/README.md`); replay/benchmark tooling copied from Workflows scaffold | Zero document fixtures |
+| **Doc-Lineage** | Intent only (`[LOCAL_WORKSPACE]/Doc-Lineage/README.md`); replay/benchmark tooling copied from Workflows scaffold | Zero document fixtures |
 
-**FACTS:** Pension-Data's replay harness expects golden JSON/JSONL corpora with `document_id`, `content`, and evaluation metadata (`clones/Pension-Data/tools/replay/harness.py`). Manager-Database stores raw filings in MinIO in production but tests use mocks (`clones/Manager-Database/tests/data/`).
+**FACTS:** Pension-Data's replay harness expects golden JSON/JSONL corpora with `document_id`, `content`, and evaluation metadata (`[LOCAL_WORKSPACE]/Pension-Data/tools/replay/harness.py`). Manager-Database stores raw filings in MinIO in production but tests use mocks (`[LOCAL_WORKSPACE]/Manager-Database/tests/data/`).
 
 ---
 

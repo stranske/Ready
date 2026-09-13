@@ -1,6 +1,6 @@
 # Trend_Model_Project — verification table (2026-09-04)
 
-Adversarial cite-check of dossier sections **4**, **5**, **8**, and **9** against clone `./clones/Trend_Model_Project`.
+Adversarial cite-check of dossier sections **4**, **5**, **8**, and **9** against clone `./[LOCAL_WORKSPACE]/Trend_Model_Project`.
 
 | Section | Claim (summary) | Verdict | Notes / correct citation |
 | :--- | :--- | :--- | :--- |

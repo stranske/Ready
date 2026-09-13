@@ -1,7 +1,7 @@
 from pathlib import Path
 from datetime import datetime,timezone
 import json,shutil
-b=Path('/Users/teacher/.codex/automations/research-program');p=b/'artifacts/audits/Counter_Risk-2026-09-13-assets';out=b/'artifacts/audits/Counter_Risk-2026-09-13.md';aud=Path('/Users/teacher/Library/CloudStorage/Dropbox/Learning/Code/Audits');dest=aud/'Counter_Risk';unit='D-audit-Counter_Risk--2026-09-13T18-41-41Z';now=datetime.now(timezone.utc).isoformat();sha='6e2a87b27be9a23d388155e37ed01675b1e27dc7'
+b=Path('[LOCAL_HOME]/.codex/automations/research-program');p=b/'artifacts/audits/Counter_Risk-2026-09-13-assets';out=b/'artifacts/audits/Counter_Risk-2026-09-13.md';aud=Path('[LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits');dest=aud/'Counter_Risk';unit='D-audit-Counter_Risk--2026-09-13T18-41-41Z';now=datetime.now(timezone.utc).isoformat();sha='6e2a87b27be9a23d388155e37ed01675b1e27dc7'
 issues=json.load(open(p/'staged-issues.json'));loc=sum(json.load(open(p/'orientation.json'))['source_loc_by_parent'].values())
 rows=[('01','P1','Registry alias skips a fail-severity cap','200 exposure /100 cap: alias has no breach; canonical spelling breaches by100.','lead-numerical-seams.json'),('02','P1','Split counterparties understate concentration','HHI0.16942149 vs0.31818182; Top5 0.68181818 vs0.72727273 after consolidation.','lead-numerical-seams.json'),('03','P2','Malformed maturity amount becomes zero','Real XLSX Total=not-a-number parses as0.0 instead of rejecting input.','lead-numerical-seams.json'),('04','P2','Live chat loses change-delta facts','Computed DeltaOnlyBank876543.21 is absent from actual LangChain invoke messages.','lead-chat-delta-proof.json'),('05','P2','PPT status confuses refresh with generation','Distribution exists and succeeds while summary says generation skipped; yellow refresh warning itself remains justified.','verified-ppt-status.txt'),('06','P2','PDF request disappears under conflicting flags','export_pdf=True + distribution=False yields no PDF and no warning.','verified-export-pdf.txt'),('07','P2','Optional source hashes are missing','Valid PNG and maturity XLSX missing from provenance enumeration; production consumers confirmed.','lead-numerical-seams.json'),('08','P2','PDF export precedes concentration-slide append','Real fixture pipeline export source has23 slides; final PPTX has24. PDF rendering intercepted, not exercised.','lead-final-deck-proof.json')]
 table='\n'.join(f'| {i} | {pr} | {title} | {proof} | [evidence]({p/evidence}) / [body]({p/"issue-bodies"/(i+".md")}) |' for i,pr,title,proof,evidence in rows)
@@ -68,7 +68,7 @@ Automation inspection: current branch checked via direct remote SHA and current 
 (p/'roadmap-and-tools.md').write_text(roadmap);(dest/'2026-09-13-roadmap-and-tools.md').write_text(roadmap)
 ux=f'''# Counter_Risk UX evidence and handoff
 
-Coverage is partial. [Bundle]({p/'bundle.json'}), [panel]({p/'report.json'}), [improvement hints]({p/'improvements.json'}), [gate]({p/'gate.json'}). Four evaluator rubric files and the critic are nonempty under /Users/teacher/.codex/orchestrator-mirror/ux_reviews/stranske_Counter_Risk_uxreview_2026-09-13-function-surfaces.
+Coverage is partial. [Bundle]({p/'bundle.json'}), [panel]({p/'report.json'}), [improvement hints]({p/'improvements.json'}), [gate]({p/'gate.json'}). Four evaluator rubric files and the critic are nonempty under [LOCAL_HOME]/.codex/orchestrator-mirror/ux_reviews/stranske_Counter_Risk_uxreview_2026-09-13-function-surfaces.
 
 | Surface | Driven | Evidence or blocker |
 | --- | --- | --- |

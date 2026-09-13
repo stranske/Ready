@@ -171,6 +171,6 @@ and neither covers parser error handling.
 ## Verification record
 
 - Frozen clone HEAD: `6e2a87b27be9a23d388155e37ed01675b1e27dc7`; only pre-existing `dossier-out/` and `uv.lock` were untracked before analysis.
-- Reproduction: `PYTHONPATH="$PWD/src" .venv/bin/python /Users/teacher/.codex/automations/research-program/artifacts/audits/Counter_Risk-2026-09-13-assets/numerical-proofs.py` from the clone. All three current-code proofs reproduced.
+- Reproduction: `PYTHONPATH="$PWD/src" .venv/bin/python [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Counter_Risk-2026-09-13-assets/numerical-proofs.py` from the clone. All three current-code proofs reproduced.
 - Focused baseline: `PYTHONPATH="$PWD/src" .venv/bin/python -m pytest tests/compute/test_concentration_metrics.py tests/compute/test_limits.py tests/parsers/test_exposure_maturity_schedule.py tests/test_wal.py -q -m 'not slow and not release'` -> `92 passed in 1.42s`.
 - No source, test, clone, issue, git, or remote changes were made.

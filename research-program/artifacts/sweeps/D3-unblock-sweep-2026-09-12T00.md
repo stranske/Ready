@@ -1,7 +1,7 @@
 # D3 Unblock Sweep — 2026-09-12T00
 
 Owner away until 2026-09-14. Scanned all 15 lane repos from `SUPPORTED_REPOS` in
-`/Users/teacher/.codex/bin/handoff.sh` (Orchestrator excluded per brief).
+`[LOCAL_HOME]/.codex/bin/handoff.sh` (Orchestrator excluded per brief).
 
 **Headline:**
 - **0 `needs-human` issues** and **0 open pull requests** fleet-wide (0 stall re-routes applicable).

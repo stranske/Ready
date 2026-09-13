@@ -1,7 +1,7 @@
 import concurrent.futures,datetime,json,pathlib,re,subprocess
-root=pathlib.Path('/Users/teacher/.codex/automations/research-program')
+root=pathlib.Path('[LOCAL_HOME]/.codex/automations/research-program')
 out=root/'artifacts/sweeps/D3-unblock-sweep-2026-09-06T14-evidence'
-repos=re.search(r'SUPPORTED_REPOS=\(([^)]*)\)',pathlib.Path('/Users/teacher/.codex/bin/handoff.sh').read_text()).group(1).split()
+repos=re.search(r'SUPPORTED_REPOS=\(([^)]*)\)',pathlib.Path('[LOCAL_HOME]/.codex/bin/handoff.sh').read_text()).group(1).split()
 repos=[r for r in repos if r!='Orchestrator']
 def gh(args):
  p=subprocess.run(['gh',*args],cwd='/tmp',capture_output=True,text=True,timeout=90)

@@ -1,4 +1,4 @@
-import { chromium } from '/Users/teacher/.codex/orchestrator/frontend-verify/node_modules/playwright/index.mjs';
+import { chromium } from '[LOCAL_HOME]/.codex/orchestrator/frontend-verify/node_modules/playwright/index.mjs';
 import fs from 'node:fs';
 const out=new URL('./',import.meta.url).pathname;
 const browser=await chromium.connectOverCDP('http://127.0.0.1:9222');

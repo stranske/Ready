@@ -26,9 +26,9 @@
 
 **CI follow-ups:**
 - **Counter_Risk**: Recovered to green via merge commit `f66b276` (PR #1031), which resolved the Black 26.5.1 formatting issue on `src/counter_risk/writers/historical_update.py`.
-- **Ready**: Black scans mirrored proof scripts under `research-program/artifacts/audits/`. Existing [#557](https://github.com/stranske/Ready/issues/557) owns the pyproject.toml exclusion repair; [repair specification](/Users/teacher/.codex/automations/research-program/artifacts/sweeps/D3-unblock-sweep-2026-09-09T23-evidence/Ready-repair.md).
-- **Fine-Art-Archive**: Black 26.5.1 formatting failure in `tests/test_gate_commit_status_fork_tolerance.py`. [Repair specification and diff](/Users/teacher/.codex/automations/research-program/artifacts/sweeps/D3-unblock-sweep-2026-09-09T23-evidence/Fine-Art-Archive-repair.md).
+- **Ready**: Black scans mirrored proof scripts under `research-program/artifacts/audits/`. Existing [#557](https://github.com/stranske/Ready/issues/557) owns the pyproject.toml exclusion repair; [repair specification]([LOCAL_HOME]/.codex/automations/research-program/artifacts/sweeps/D3-unblock-sweep-2026-09-09T23-evidence/Ready-repair.md).
+- **Fine-Art-Archive**: Black 26.5.1 formatting failure in `tests/test_gate_commit_status_fork_tolerance.py`. [Repair specification and diff]([LOCAL_HOME]/.codex/automations/research-program/artifacts/sweeps/D3-unblock-sweep-2026-09-09T23-evidence/Fine-Art-Archive-repair.md).
 
 Supply follows the brief's seven-label filter and includes the bot tracker (118 excluding it). Changes since 15 UTC: Counter_Risk +3, learning-management-system −5; overall fleet net change: −2.
 
-[Evidence snapshots, failure logs and clone SHAs](/Users/teacher/.codex/automations/research-program/artifacts/sweeps/D3-unblock-sweep-2026-09-09T23-evidence); append-only CHECKPOINT.md records each repo.
+[Evidence snapshots, failure logs and clone SHAs]([LOCAL_HOME]/.codex/automations/research-program/artifacts/sweeps/D3-unblock-sweep-2026-09-09T23-evidence); append-only CHECKPOINT.md records each repo.

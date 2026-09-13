@@ -1,6 +1,6 @@
 ## Why
 
-Manager-Mosaic discrepancy engine consumes `fact_key` joins (B2-gap-analysis B2-020). Verified: `clones/Workflows/config/backplane_participants.json:236-238` excludes trip-planner from backplane; no Doc-Lineage participant entry emits `tracked_variable_refs`. **Missing behavior:** no `fact_key_map` export artifact. **Depends on:** B2-002, B2-015.
+Manager-Mosaic discrepancy engine consumes `fact_key` joins (B2-gap-analysis B2-020). Verified: `[LOCAL_WORKSPACE]/Workflows/config/backplane_participants.json:236-238` excludes trip-planner from backplane; no Doc-Lineage participant entry emits `tracked_variable_refs`. **Missing behavior:** no `fact_key_map` export artifact. **Depends on:** B2-002, B2-015.
 
 ## Scope
 

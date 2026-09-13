@@ -48,7 +48,7 @@
 **Repro:** `repros/repro_bundle_manifest_stale.py`
 
 ```bash
-PYTHONPATH=clones/Portable-Alpha-Extension-Model /tmp/paem-audit-20260907-venv/bin/python \
+PYTHONPATH=[LOCAL_WORKSPACE]/Portable-Alpha-Extension-Model /tmp/paem-audit-20260907-venv/bin/python \
   artifacts/audits/paem-20260907/repros/repro_bundle_manifest_stale.py
 ```
 

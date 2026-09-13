@@ -1,6 +1,6 @@
 import os,sys,json
 from pathlib import Path
-root=Path(__file__).resolve().parents[3];repo=root/'clones/Travel-Plan-Permission';sys.path[:0]=[str(repo),str(repo/'src')]
+root=Path(__file__).resolve().parents[3];repo=root/'[LOCAL_WORKSPACE]/Travel-Plan-Permission';sys.path[:0]=[str(repo),str(repo/'src')]
 os.environ.update(TPP_BASE_URL='http://127.0.0.1:38474',TPP_OIDC_PROVIDER='google',TPP_AUTH_MODE='bootstrap-token',TPP_BOOTSTRAP_SIGNING_SECRET='bootstrap-secret-123',TPP_HANDOFF_SIGNING_SECRET='synthetic-audit-signing-material')
 from travel_plan_permission.http_service import create_app,PlannerProposalStore
 from travel_plan_permission.planner_auth import mint_bootstrap_token

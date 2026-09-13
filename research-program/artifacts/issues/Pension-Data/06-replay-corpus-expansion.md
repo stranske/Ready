@@ -1,6 +1,6 @@
 ## Why
 
-Expand replay corpus after CalPERS harvester (B2-038). Verified: `clones/Pension-Data/tools/replay/runner.py:130-172` replays golden corpus but manifest entries from `public-doc-fixtures` are not referenced in replay config. **Missing behavior:** public PDFs not wired into replay gate. **Depends on:** B2-038.
+Expand replay corpus after CalPERS harvester (B2-038). Verified: `[LOCAL_WORKSPACE]/Pension-Data/tools/replay/runner.py:130-172` replays golden corpus but manifest entries from `public-doc-fixtures` are not referenced in replay config. **Missing behavior:** public PDFs not wired into replay gate. **Depends on:** B2-038.
 
 ## Scope
 

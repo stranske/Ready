@@ -1,6 +1,6 @@
-import {chromium} from '/Users/teacher/.codex/orchestrator/frontend-verify/node_modules/playwright/index.mjs';
+import {chromium} from '[LOCAL_HOME]/.codex/orchestrator/frontend-verify/node_modules/playwright/index.mjs';
 import fs from 'node:fs';
-const out='/Users/teacher/.codex/automations/research-program/artifacts/audits/paem-20260907';
+const out='[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/paem-20260907';
 const browser=await chromium.connectOverCDP('http://127.0.0.1:9237');
 const context=await browser.newContext({viewport:{width:1365,height:900}});
 const page=await context.newPage();

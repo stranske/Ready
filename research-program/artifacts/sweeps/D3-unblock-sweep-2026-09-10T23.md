@@ -25,9 +25,9 @@
 **Genuinely needs the owner: none among the frozen issues.** [Doc-Lineage #1](https://github.com/stranske/Doc-Lineage/issues/1) is Renovate's dependency dashboard carrying `agents:auto-pilot-pause` after optimizer attempt cap. The bot tracker was read and left untouched as non-work. No agent-labelled PR exceeded four hours idle (Trend_Model_Project #6032 and #6031 are active with ages < 0.6h).
 
 **CI follow-ups:**
-- **Ready**: Black scans mirrored proof scripts under `research-program/artifacts/audits/`. Existing [#557](https://github.com/stranske/Ready/issues/557) owns the pyproject.toml exclusion repair; [repair specification](/Users/teacher/.codex/automations/research-program/artifacts/sweeps/D3-unblock-sweep-2026-09-10T23-evidence/Ready-repair.md).
-- **Fine-Art-Archive**: Black 26.5.1 formatting failure in `tests/test_gate_commit_status_fork_tolerance.py`. [Repair specification and diff](/Users/teacher/.codex/automations/research-program/artifacts/sweeps/D3-unblock-sweep-2026-09-10T23-evidence/Fine-Art-Archive-repair.md).
+- **Ready**: Black scans mirrored proof scripts under `research-program/artifacts/audits/`. Existing [#557](https://github.com/stranske/Ready/issues/557) owns the pyproject.toml exclusion repair; [repair specification]([LOCAL_HOME]/.codex/automations/research-program/artifacts/sweeps/D3-unblock-sweep-2026-09-10T23-evidence/Ready-repair.md).
+- **Fine-Art-Archive**: Black 26.5.1 formatting failure in `tests/test_gate_commit_status_fork_tolerance.py`. [Repair specification and diff]([LOCAL_HOME]/.codex/automations/research-program/artifacts/sweeps/D3-unblock-sweep-2026-09-10T23-evidence/Fine-Art-Archive-repair.md).
 
 Supply follows the brief's seven-label filter and includes the bot tracker (130 excluding it). Changes since 15 UTC: Counter_Risk +7, Manager-Database +7, learning-management-system +7; overall fleet net change: +21.
 
-[Evidence snapshots, failure logs and clone SHAs](/Users/teacher/.codex/automations/research-program/artifacts/sweeps/D3-unblock-sweep-2026-09-10T23-evidence); append-only CHECKPOINT.md records each repo.
+[Evidence snapshots, failure logs and clone SHAs]([LOCAL_HOME]/.codex/automations/research-program/artifacts/sweeps/D3-unblock-sweep-2026-09-10T23-evidence); append-only CHECKPOINT.md records each repo.

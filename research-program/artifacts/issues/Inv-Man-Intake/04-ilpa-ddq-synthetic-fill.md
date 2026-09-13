@@ -1,6 +1,6 @@
 ## Why
 
-DDQ extraction tests need synthetic fixtures (R6). Verified: `clones/Inv-Man-Intake/tests/fixtures/` has no `ddq_synthetic/` subtree (glob 2026-09-04) and `tests/intake/test_standard_element_library.py:1-20` only loads the bundled stub. **Missing behavior:** no ILPA DDQ golden packet for CI. **Depends on:** B2-010 ontology.
+DDQ extraction tests need synthetic fixtures (R6). Verified: `[LOCAL_WORKSPACE]/Inv-Man-Intake/tests/fixtures/` has no `ddq_synthetic/` subtree (glob 2026-09-04) and `tests/intake/test_standard_element_library.py:1-20` only loads the bundled stub. **Missing behavior:** no ILPA DDQ golden packet for CI. **Depends on:** B2-010 ontology.
 
 ## Scope
 

@@ -1,6 +1,6 @@
 ## Why
 
-Workflows DESIGN positions `stranske_pdf_extract` as fleet PDF contract; Doc-Lineage must emit conformant `evidence-object/v1` at manifest boundary (B2-gap-analysis B2-004). Verified: `clones/Doc-Lineage/docs/contracts/schemas/evidence-object-v1.schema.json:18` requires `schema_version` const `evidence-object/v1`, but `clones/Doc-Lineage/src/my_project/__init__.py:1-5` exports only template stubs — no `emit/` module. **Latent fragility:** ingest cannot produce attributable facts. **Depends on:** B2-003 (Workflows), B2-002 M1.
+Workflows DESIGN positions `stranske_pdf_extract` as fleet PDF contract; Doc-Lineage must emit conformant `evidence-object/v1` at manifest boundary (B2-gap-analysis B2-004). Verified: `[LOCAL_WORKSPACE]/Doc-Lineage/docs/contracts/schemas/evidence-object-v1.schema.json:18` requires `schema_version` const `evidence-object/v1`, but `[LOCAL_WORKSPACE]/Doc-Lineage/src/my_project/__init__.py:1-5` exports only template stubs — no `emit/` module. **Latent fragility:** ingest cannot produce attributable facts. **Depends on:** B2-003 (Workflows), B2-002 M1.
 
 ## Scope
 

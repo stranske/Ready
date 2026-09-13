@@ -1,6 +1,6 @@
 ## Why
 
-Epic #519 option contracts need constraint envelope on bundles (candidates.jsonl B2-048 prereq). Verified: `clones/trip-planner/docs/contracts/source-adapters.md:14` documents `NormalizationHandoff` but `grep -r constraint_evaluation clones/trip-planner` returns no matches in source or tests. **Missing behavior:** inventory bundles lack `constraint_evaluation` block.
+Epic #519 option contracts need constraint envelope on bundles (candidates.jsonl B2-048 prereq). Verified: `[LOCAL_WORKSPACE]/trip-planner/docs/contracts/source-adapters.md:14` documents `NormalizationHandoff` but `grep -r constraint_evaluation [LOCAL_WORKSPACE]/trip-planner` returns no matches in source or tests. **Missing behavior:** inventory bundles lack `constraint_evaluation` block.
 
 ## Scope
 

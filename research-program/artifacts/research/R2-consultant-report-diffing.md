@@ -8,7 +8,7 @@
 
 ## 1. Problem framing
 
-Recurring investment documents — consultant trust-level reviews, manager quarterly letters, DDQs, board agenda attachments — share a template skeleton but drift in layout, pagination, and wording. The owner’s work-side **Consultant Tracker** already blacklines consultant reports and turns recurring sections into comparable variables (HTML output). R2 asks what is buildable at home on public data, interoperable with the fleet, and portable to the planned **Doc-Lineage** repo (`clones/Doc-Lineage/README.md`).
+Recurring investment documents — consultant trust-level reviews, manager quarterly letters, DDQs, board agenda attachments — share a template skeleton but drift in layout, pagination, and wording. The owner’s work-side **Consultant Tracker** already blacklines consultant reports and turns recurring sections into comparable variables (HTML output). R2 asks what is buildable at home on public data, interoperable with the fleet, and portable to the planned **Doc-Lineage** repo (`[LOCAL_WORKSPACE]/Doc-Lineage/README.md`).
 
 **Hard constraint (assumed default):** work PC is browser + Office + file system, no terminal installs; outputs must link any derived fact to source document + page in one click; proprietary data never leaves the work perimeter.
 
@@ -56,9 +56,9 @@ Recurring investment documents — consultant trust-level reviews, manager quart
 | **Docling** ([github.com/docling-project/docling](https://github.com/docling-project/docling), [arxiv.org/html/2501.17887v1](https://arxiv.org/html/2501.17887v1)) | Layout model + TableFormer; emits `DoclingDocument` with `SECTION_HEADER`, `PARAGRAPH`, `TABLE`, reading order. | **JUDGMENT: default PDF segmenter** for public-corpus development. |
 | **PyMuPDF structure** | Page text with coordinates; no native section hierarchy. | Needed for bbox locators in `evidence-object/v1`; insufficient alone for section IDs. |
 | **unstructured** | Multi-format partition API. | Heavier ops surface; Docling already covers PDF+DOCX in one model stack. |
-| **Pension-Data PDF pipeline** (`clones/Pension-Data/src/pension_data/parser/pdf_pipeline.py`) | Deterministic text/table/OCR fallback via `stranske_pdf_extract`; tuned for actuarial metrics, not narrative sections. | Reuse **parser stages and evidence anchors**, not section ontology. |
+| **Pension-Data PDF pipeline** (`[LOCAL_WORKSPACE]/Pension-Data/src/pension_data/parser/pdf_pipeline.py`) | Deterministic text/table/OCR fallback via `stranske_pdf_extract`; tuned for actuarial metrics, not narrative sections. | Reuse **parser stages and evidence anchors**, not section ontology. |
 
-**JUDGMENT:** Segment into **ontology keyed blocks** (e.g., `consultant.performance_attribution`, `consultant.recommendation`, `manager.market_commentary`) using Docling headers + a data-file mapping table. Inv-Man-Intake’s **Standard Element Library** contract (`clones/Inv-Man-Intake/docs/contracts/standard_element_library.md`) is the right pattern: element IDs are data, detectors are pluggable — extend it from manager DDQ elements to consultant report sections.
+**JUDGMENT:** Segment into **ontology keyed blocks** (e.g., `consultant.performance_attribution`, `consultant.recommendation`, `manager.market_commentary`) using Docling headers + a data-file mapping table. Inv-Man-Intake’s **Standard Element Library** contract (`[LOCAL_WORKSPACE]/Inv-Man-Intake/docs/contracts/standard_element_library.md`) is the right pattern: element IDs are data, detectors are pluggable — extend it from manager DDQ elements to consultant report sections.
 
 ---
 
@@ -73,7 +73,7 @@ Proposed taxonomy (maps to owner’s boilerplate / substantive / numeric):
 | **numeric** | numeric token delta with stable surrounding text; table cell coordinate match | IRR, AUM, benchmark return |
 | **substantive** | aligned block embedding similarity below threshold *and* token edit beyond stopwords | New recommendation language |
 
-**JUDGMENT:** Classify **after alignment**, not on raw diff hunks. Numeric and boilerplate classes can be rule-first (fast, explainable); substantive needs embedding confirmation to avoid flagging synonym swaps as major. Pension-Data already normalizes consultant recommendation fields and board-decision status (`clones/Pension-Data/src/pension_data/extract/governance/consultants.py`) — reuse those normalizers when the section ontology key matches.
+**JUDGMENT:** Classify **after alignment**, not on raw diff hunks. Numeric and boilerplate classes can be rule-first (fast, explainable); substantive needs embedding confirmation to avoid flagging synonym swaps as major. Pension-Data already normalizes consultant recommendation fields and board-decision status (`[LOCAL_WORKSPACE]/Pension-Data/src/pension_data/extract/governance/consultants.py`) — reuse those normalizers when the section ontology key matches.
 
 ---
 
@@ -105,7 +105,7 @@ Two composable layers:
 - **Alignment service:** DOCX redline path + PDF semantic alignment path.
 - **Variable extraction:** ontology-driven section spans → `evidence-object/v1` payloads.
 - **Review artifacts:** static HTML blackline + CSV/JSON variable ledger with `file://` or SharePoint page anchors.
-- **Run envelope:** `run-contract/v1` + `artifact-manifest/v1` per Workflows contracts (`clones/Workflows/docs/contracts/schemas/evidence-object-v1.schema.json`).
+- **Run envelope:** `run-contract/v1` + `artifact-manifest/v1` per Workflows contracts (`[LOCAL_WORKSPACE]/Workflows/docs/contracts/schemas/evidence-object-v1.schema.json`).
 
 **JUDGMENT:** Pension-Data should **not** grow a second diff engine; it should **consume** Doc-Lineage outputs into staging tables. Inv-Man-Intake should register manager letters/DDQs and attach Doc-Lineage variable IDs to `extracted_fields`. Counter_Risk stays out of narrative diff unless counterparty narrative letters are in scope later.
 
@@ -140,7 +140,7 @@ A single JSON/CSV row shape satisfies legal clauses and report sections:
 }
 ```
 
-**FACTS:** Workflows `evidence-object/v1` already requires `method`, `excerpt`, and structured `locator.page` (`clones/Workflows/docs/contracts/schemas/evidence-object-v1.schema.json`). Pension-Data’s local `EvidenceReference` supports page and section hints but does not yet emit standalone evidence objects (`src/pension_data/extract/common/evidence.py`).
+**FACTS:** Workflows `evidence-object/v1` already requires `method`, `excerpt`, and structured `locator.page` (`[LOCAL_WORKSPACE]/Workflows/docs/contracts/schemas/evidence-object-v1.schema.json`). Pension-Data’s local `EvidenceReference` supports page and section hints but does not yet emit standalone evidence objects (`src/pension_data/extract/common/evidence.py`).
 
 **JUDGMENT:** Doc-Lineage owns `tracked-variable/v1` as a thin wrapper around one evidence object + lineage fields. R1 and R2 differ only in **ontology_key vocabulary files**, not wire format. Publish vocabularies as JSON data in Doc-Lineage; Workflows registry references them.
 

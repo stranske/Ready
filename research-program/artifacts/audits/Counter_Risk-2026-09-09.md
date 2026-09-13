@@ -76,11 +76,11 @@ Six distinct, reproducible defect areas were identified, adversarially verified 
 
 ## 5. Artifacts & Reconciliation Summary
 
-- **Issue Bodies**: `/Users/teacher/Library/CloudStorage/Dropbox/Learning/Code/Audits/Counter_Risk/2026-09-09-issue-bodies/` (09-14)
-- **Canonical Audit Report**: `/Users/teacher/Library/CloudStorage/Dropbox/Learning/Code/Audits/Counter_Risk/2026-09-09-02-AUDIT_REPORT.md`
-- **Verification Log**: `/Users/teacher/Library/CloudStorage/Dropbox/Learning/Code/Audits/Counter_Risk/2026-09-09-02-verification-log.md`
-- **Audit Run Metadata**: `/Users/teacher/Library/CloudStorage/Dropbox/Learning/Code/Audits/Counter_Risk/2026-09-09-02-audit-run.md`
-- **Audit Ledger**: `/Users/teacher/Library/CloudStorage/Dropbox/Learning/Code/Audits/AUDIT_LEDGER.md`
+- **Issue Bodies**: `[LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Counter_Risk/2026-09-09-issue-bodies/` (09-14)
+- **Canonical Audit Report**: `[LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Counter_Risk/2026-09-09-02-AUDIT_REPORT.md`
+- **Verification Log**: `[LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Counter_Risk/2026-09-09-02-verification-log.md`
+- **Audit Run Metadata**: `[LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Counter_Risk/2026-09-09-02-audit-run.md`
+- **Audit Ledger**: `[LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/AUDIT_LEDGER.md`
 - **Intake Log**: `~/.codex/orchestrator/measurement/intake-2026-09-04.log`
 - **Checkpoints**: `D-audit-Counter_Risk--2026-09-09T17-29-35Z.CHECKPOINT.md` and `CHECKPOINT.md`
 - **Supply Balance**: Replenished from 2 open agent-ready issues to 8 open agent-ready issues.

@@ -1,5 +1,5 @@
---- clones/Fine-Art-Archive/tests/test_gate_commit_status_fork_tolerance.py	2026-09-08 15:12:55.687917+00:00
-+++ clones/Fine-Art-Archive/tests/test_gate_commit_status_fork_tolerance.py	2026-09-08 15:14:37.135790+00:00
+--- [LOCAL_WORKSPACE]/Fine-Art-Archive/tests/test_gate_commit_status_fork_tolerance.py	2026-09-08 15:12:55.687917+00:00
++++ [LOCAL_WORKSPACE]/Fine-Art-Archive/tests/test_gate_commit_status_fork_tolerance.py	2026-09-08 15:14:37.135790+00:00
 @@ -28,12 +28,11 @@
  import yaml
  
@@ -28,7 +28,7 @@
  def _extract_step_script() -> str:
      document = yaml.safe_load(WORKFLOW.read_text(encoding="utf-8"))
      for job in document["jobs"].values():
-would reformat clones/Fine-Art-Archive/tests/test_gate_commit_status_fork_tolerance.py
+would reformat [LOCAL_WORKSPACE]/Fine-Art-Archive/tests/test_gate_commit_status_fork_tolerance.py
 
 Oh no! 💥 💔 💥
 1 file would be reformatted.

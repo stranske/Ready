@@ -9,7 +9,7 @@ The prior executor's unit-specific checkpoint had reached Phase 5 and already fi
 
 All nine recorded issue URLs exist and are open. All nine intake-log rows exist exactly once. The prior full SHA `d149861e60f089868be5aa28373bdf5d3513a290` was incorrect; the SHA above is verified with git and remote Actions. The tracked checkout remains unchanged; the pre-existing untracked dossier-out directory was preserved.
 
-Synthetic read-only probes reproduced the NaN allocator exceptions (#689), offset-naive timestamp exception (#690), missing canonical artist URI (#691), tenfold 3D millimetre parsing error (#692), max=0 resize HTTP 500 plus missing query bounds (#693), missing canonical conflict kept value (#694), missing-only CLI exit 2 despite FAA_WORKS_DIR (#695), blank manifest year despite year_min (#696), and explicit None strength TypeError / NaN first-pair retention (#697). Evidence and reproducible probe source are in `/Users/teacher/.codex/automations/research-program/artifacts/audits/Fine-Art-Archive-2026-09-05-resume`.
+Synthetic read-only probes reproduced the NaN allocator exceptions (#689), offset-naive timestamp exception (#690), missing canonical artist URI (#691), tenfold 3D millimetre parsing error (#692), max=0 resize HTTP 500 plus missing query bounds (#693), missing canonical conflict kept value (#694), missing-only CLI exit 2 despite FAA_WORKS_DIR (#695), blank manifest year despite year_min (#696), and explicit None strength TypeError / NaN first-pair retention (#697). Evidence and reproducible probe source are in `[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Fine-Art-Archive-2026-09-05-resume`.
 
 Material corrections:
 - #689: zero shares do not establish a crash and retain documented lens-floor behavior. Corrected body targets non-finite/negative inputs without prohibiting valid zero weights.
@@ -42,6 +42,6 @@ The retained checkpoint claimed all eight dimensions and 1,899 passing tests. No
 
 ## Handoff
 
-Use the corrected bodies in `/Users/teacher/.codex/automations/research-program/artifacts/audits/Fine-Art-Archive-2026-09-05-resume/corrected-issue-bodies` when a publishing-capable lane next reconciles existing issues #689–697. Prioritize #689/#690 correctness; treat #697 as optional defensive hardening. Confirm #689's remote guard when an authorized lane next edits/revalidates it. The audit is research-complete with these explicit limitations; implementation and publishing of corrections are separate work.
+Use the corrected bodies in `[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Fine-Art-Archive-2026-09-05-resume/corrected-issue-bodies` when a publishing-capable lane next reconciles existing issues #689–697. Prioritize #689/#690 correctness; treat #697 as optional defensive hardening. Confirm #689's remote guard when an authorized lane next edits/revalidates it. The audit is research-complete with these explicit limitations; implementation and publishing of corrections are separate work.
 
-Canonical recovery report: `/Users/teacher/Library/CloudStorage/Dropbox/Learning/Code/Audits/Fine-Art-Archive/2026-09-05-resume-reconciliation.md`.
+Canonical recovery report: `[LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Fine-Art-Archive/2026-09-05-resume-reconciliation.md`.

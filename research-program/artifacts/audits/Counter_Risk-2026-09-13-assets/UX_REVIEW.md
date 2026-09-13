@@ -1,6 +1,6 @@
 # Counter_Risk UX evidence and handoff
 
-Coverage is partial. [Bundle](/Users/teacher/.codex/automations/research-program/artifacts/audits/Counter_Risk-2026-09-13-assets/bundle.json), [panel](/Users/teacher/.codex/automations/research-program/artifacts/audits/Counter_Risk-2026-09-13-assets/report.json), [improvement hints](/Users/teacher/.codex/automations/research-program/artifacts/audits/Counter_Risk-2026-09-13-assets/improvements.json), [gate](/Users/teacher/.codex/automations/research-program/artifacts/audits/Counter_Risk-2026-09-13-assets/gate.json). Four evaluator rubric files and the critic are nonempty under /Users/teacher/.codex/orchestrator-mirror/ux_reviews/stranske_Counter_Risk_uxreview_2026-09-13-function-surfaces.
+Coverage is partial. [Bundle]([LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Counter_Risk-2026-09-13-assets/bundle.json), [panel]([LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Counter_Risk-2026-09-13-assets/report.json), [improvement hints]([LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Counter_Risk-2026-09-13-assets/improvements.json), [gate]([LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Counter_Risk-2026-09-13-assets/gate.json). Four evaluator rubric files and the critic are nonempty under [LOCAL_HOME]/.codex/orchestrator-mirror/ux_reviews/stranske_Counter_Risk_uxreview_2026-09-13-function-surfaces.
 
 | Surface | Driven | Evidence or blocker |
 | --- | --- | --- |

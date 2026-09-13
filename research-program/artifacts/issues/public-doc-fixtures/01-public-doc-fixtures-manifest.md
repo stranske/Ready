@@ -1,6 +1,6 @@
 ## Why
 
-R6 requires single golden catalog so home development does not re-download per repo (`B2-gap-analysis` B2-037). Verified: no `clones/public-doc-fixtures` directory exists in the research-program workspace (2026-09-04). Pension-Data replay gate (`artifacts/research/B2-gap-analysis.md:95` B2-043) needs corpus entries. **Missing behavior:** no fleet-wide `artifact-manifest/v1` catalog repo.
+R6 requires single golden catalog so home development does not re-download per repo (`B2-gap-analysis` B2-037). Verified: no `[LOCAL_WORKSPACE]/public-doc-fixtures` directory exists in the research-program workspace (2026-09-04). Pension-Data replay gate (`artifacts/research/B2-gap-analysis.md:95` B2-043) needs corpus entries. **Missing behavior:** no fleet-wide `artifact-manifest/v1` catalog repo.
 
 ## Scope
 

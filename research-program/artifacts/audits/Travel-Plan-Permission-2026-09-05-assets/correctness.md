@@ -14,7 +14,7 @@ Focused verification: `uv run --no-sync pytest -q -p no:cacheprovider tests/pyth
 
 **Evidence.** `src/travel_plan_permission/security.py:14-21` defines `Permission.EXPORT`, and `src/travel_plan_permission/security.py:55-61` grants it to finance administrators. The API permission map assigns expense exports that permission at `src/travel_plan_permission/security.py:84-95`. In contrast, the portal expense artifact handler begins at `src/travel_plan_permission/http_service.py:2253-2257` without an authorization parameter or authorization call, then returns the artifact at `src/travel_plan_permission/http_service.py:2278-2295`.
 
-**Minimal repro.** From the target-repo root: `uv run --no-sync python /Users/teacher/.codex/automations/research-program/artifacts/audits/Travel-Plan-Permission-2026-09-05-assets/repro_expense_export_without_auth.py`. It receives HTTP 200 without `Authorization`.
+**Minimal repro.** From the target-repo root: `uv run --no-sync python [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Travel-Plan-Permission-2026-09-05-assets/repro_expense_export_without_auth.py`. It receives HTTP 200 without `Authorization`.
 
 **Fix direction.** Require `Permission.EXPORT` for the expense-detail and artifact endpoints, or explicitly issue a short-lived, draft-scoped capability with the narrowly documented export right. Bind the export audit actor to the authenticated/capability subject. Add missing-token, view-only-token, export-token, and expired-capability cases.
 
@@ -26,7 +26,7 @@ Focused verification: `uv run --no-sync pytest -q -p no:cacheprovider tests/pyth
 
 **Evidence.** `src/travel_plan_permission/http_service.py:1815-1819` declares the mutating route with only request and draft ID; `src/travel_plan_permission/http_service.py:1820-1825` accepts any existing draft; `src/travel_plan_permission/http_service.py:1864-1870` assigns `requestor` from saved draft data; and `src/travel_plan_permission/http_service.py:1884-1888` persists it. The scoped handoff contract says a capability is limited to one saved draft and only `view` permission at `docs/security-model.md:143-150`; this route enforces neither normal authentication nor that capability.
 
-**Minimal repro.** From the target-repo root: `uv run --no-sync python /Users/teacher/.codex/automations/research-program/artifacts/audits/Travel-Plan-Permission-2026-09-05-assets/repro_exception_request_without_auth.py`. It receives HTTP 303 and creates the request without credentials.
+**Minimal repro.** From the target-repo root: `uv run --no-sync python [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Travel-Plan-Permission-2026-09-05-assets/repro_exception_request_without_auth.py`. It receives HTTP 303 and creates the request without credentials.
 
 **Fix direction.** Require authenticated `create` permission, or allow only a valid handoff capability whose subject equals the draft ID; record the authenticated subject separately from the traveler/requestor. Cover absent, expired, wrong-draft, create-capable, and successful scoped-handoff cases.
 
@@ -38,7 +38,7 @@ Focused verification: `uv run --no-sync pytest -q -p no:cacheprovider tests/pyth
 
 **Evidence.** Threshold escalation selects board at `src/travel_plan_permission/models.py:194-211`; a request stores that derived level at `src/travel_plan_permission/models.py:247-250`. Its `approve` method accepts the level without an authorization check and changes status to approved at `src/travel_plan_permission/models.py:252-272`. The endpoint requires only generic approval at `src/travel_plan_permission/http_service.py:2106-2118`, takes the body-supplied actor at `src/travel_plan_permission/http_service.py:2119-2135`, and delegates without a level/principal check. The role model gives both an ordinary approver and finance administrator generic `approve` at `src/travel_plan_permission/security.py:47-62`.
 
-**Minimal repro.** From the target-repo root: `uv run --no-sync python /Users/teacher/.codex/automations/research-program/artifacts/audits/Travel-Plan-Permission-2026-09-05-assets/repro_board_exception_approved_by_generic_approver.py`. A bootstrap token containing only `approve` receives HTTP 303 and changes a board-level exception to approved.
+**Minimal repro.** From the target-repo root: `uv run --no-sync python [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Travel-Plan-Permission-2026-09-05-assets/repro_board_exception_approved_by_generic_approver.py`. A bootstrap token containing only `approve` receives HTTP 303 and changes a board-level exception to approved.
 
 **Fix direction.** Model the authority required for manager/director/board exception decisions, derive the actor's authority from the authenticated identity (not form data), reject insufficient authority, and preserve the actual authority in the audit event. Test manager/director/board boundaries and both amount- and escalation-derived board routing.
 
@@ -50,7 +50,7 @@ Focused verification: `uv run --no-sync pytest -q -p no:cacheprovider tests/pyth
 
 **Evidence.** Manager decisions authenticate at `src/travel_plan_permission/http_service.py:2026-2037`, read the body actor at `src/travel_plan_permission/http_service.py:2039-2042`, and forward it to the transition at `src/travel_plan_permission/http_service.py:2069-2076`. The exception route similarly accepts body `actor_id` at `src/travel_plan_permission/http_service.py:2114-2135`. The persisted approval event accepts that caller-provided identifier at `src/travel_plan_permission/review_workflow.py:95-145` and `src/travel_plan_permission/models.py:446-498`.
 
-**Minimal repro.** From the target-repo root: `uv run --no-sync python /Users/teacher/.codex/automations/research-program/artifacts/audits/Travel-Plan-Permission-2026-09-05-assets/repro_manager_decision_actor_spoof.py`. A token for `authenticated-approver` produces an approval history entry for `forged-manager-id`.
+**Minimal repro.** From the target-repo root: `uv run --no-sync python [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Travel-Plan-Permission-2026-09-05-assets/repro_manager_decision_actor_spoof.py`. A token for `authenticated-approver` produces an approval history entry for `forged-manager-id`.
 
 **Fix direction.** Use `auth_context.subject` as the immutable actor for all authorization-sensitive transitions and audit records. If a delegate/principal distinction is needed, model it explicitly as a separately authorized `on_behalf_of` field with both identities recorded. Reject arbitrary form actor IDs. Add regression tests with mismatched token subject/body actor.
 
@@ -62,7 +62,7 @@ Focused verification: `uv run --no-sync pytest -q -p no:cacheprovider tests/pyth
 
 **Evidence.** The default base URL and absent signer are at `src/travel_plan_permission/export.py:22-29`; the fallback simply constructs the URL plus `expires_at` at `src/travel_plan_permission/export.py:40-47`; and each export emits it at `src/travel_plan_permission/export.py:49-67`. The portal uses the default constructor at `src/travel_plan_permission/http_service.py:1289-1308`. The documented contract promises a signed URL at `docs/accounting-integration.md:9-16` and `docs/accounting-integration.md:30-32`. Existing tests verify only the timestamp/scheme, not that a real signer or receipt host is configured, at `tests/python/test_export_service.py:91-105`.
 
-**Minimal repro.** From the target-repo root: `uv run --no-sync python /Users/teacher/.codex/automations/research-program/artifacts/audits/Travel-Plan-Permission-2026-09-05-assets/repro_unsigned_receipt_link.py`. The emitted CSV contains `receipts.example.com` and no signature.
+**Minimal repro.** From the target-repo root: `uv run --no-sync python [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Travel-Plan-Permission-2026-09-05-assets/repro_unsigned_receipt_link.py`. The emitted CSV contains `receipts.example.com` and no signature.
 
 **Fix direction.** Make a production receipt signer and storage-origin configuration mandatory when an expense has a receipt URL; fail closed with a visible review error if unavailable. Define an allowed internal reference format, verify the signer output is HTTPS and origin-allowed, and test a real signed-link adapter plus missing/malformed configuration.
 

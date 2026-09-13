@@ -26,7 +26,7 @@ Track A dossiers → A-verify → 00-INDEX → docx; Track B briefs R1–R7 → 
 ## 2026-09-04 readiness repair
 
 The launchd driver runs one unit per invocation every 15 minutes, through the local
-Orchestrator mirror. `clones/` is now a durable directory under this engine, not a
+Orchestrator mirror. `[LOCAL_WORKSPACE]/` is now a durable directory under this engine, not a
 temporary-session symlink. Phase stops are enforced at claim time. Offload process
 status, dispatcher result status, and fresh output are all required for completion.
 The inbox is paginated; mirror delivery is serialized and pending pushes retry on

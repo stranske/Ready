@@ -1,6 +1,6 @@
 ## Why
 
-Manager-Mosaic and thesis monitoring need a fleet wire format for cross-source facts and discrepancies (`artifacts/research/B2-gap-analysis.md` B2-015). Verified: no `mosaic` string appears in `clones/Workflows/docs/contracts/schemas/` (seven files, grep 2026-09-04). Verified: `config/backplane_participants.json` has no mosaic artifact kinds in `ingests` arrays (`clones/Workflows/config/backplane_participants.json:218-221` shows only `evidence-object/v1` and `identity-map-conventions` for LMS). **Missing behavior:** repos cannot emit conformant discrepancy objects.
+Manager-Mosaic and thesis monitoring need a fleet wire format for cross-source facts and discrepancies (`artifacts/research/B2-gap-analysis.md` B2-015). Verified: no `mosaic` string appears in `[LOCAL_WORKSPACE]/Workflows/docs/contracts/schemas/` (seven files, grep 2026-09-04). Verified: `config/backplane_participants.json` has no mosaic artifact kinds in `ingests` arrays (`[LOCAL_WORKSPACE]/Workflows/config/backplane_participants.json:218-221` shows only `evidence-object/v1` and `identity-map-conventions` for LMS). **Missing behavior:** repos cannot emit conformant discrepancy objects.
 
 ## Scope
 

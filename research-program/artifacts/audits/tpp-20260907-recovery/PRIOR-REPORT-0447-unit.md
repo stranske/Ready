@@ -1,7 +1,7 @@
 # Travel-Plan-Permission audit reconciliation — 2026-09-07
 
 Unit: `D-audit-Travel-Plan-Permission--2026-09-07T04-47-30Z`; attempt 2; verified 2026-09-07T07:16:25.145626+00:00.
-OUT: `/Users/teacher/.codex/automations/research-program/artifacts/audits/Travel-Plan-Permission-2026-09-07.md`.
+OUT: `[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Travel-Plan-Permission-2026-09-07.md`.
 Current clone and remote main: `37f7ed8afbfb4d6e16ffc613c9856421605ad359`.
 
 Resumed the retained Phase 5 checkpoint; no audit restart, new filing, code edits, or offloads. The previous executor filed three P1 issues. All three remain open and the underlying defects remain present on main. This run independently verified the cited code, reproduced the model/store behaviors, validated the exact live issue bodies, and reconciled delivery evidence.
@@ -12,7 +12,7 @@ Resumed the retained Phase 5 checkpoint; no audit restart, new filing, code edit
 | [#1558](https://github.com/stranske/Travel-Plan-Permission/issues/1558) overdue escalation is unwired | `docs/exception-policy.md:68` promises escalation after 48 hours. `models.py:279-293` implements it; search finds the definition but no production calls. The 49-hour synthetic request stays pending/manager until the helper is explicitly invoked, then becomes escalated/director. Decision route `http_service.py:2187-2205` authorizes the unchanged tier. Remains open. |
 | [#1559](https://github.com/stranske/Travel-Plan-Permission/issues/1559) manager resubmit retains stale data | `review_workflow.py:188-209` returns the stored review without refreshing new inputs. Reproduced create → request changes → resubmit: submitted CHANGED-TRAVELER, stored Jordan Lee, status still changes_requested. `http_service.py:735-751,2025` wires this store into portal submit. Remains open. |
 
-All shortened source paths in this table are under `src/travel_plan_permission/` except the explicit docs path. All cited source lines were opened in the target clone. Runtime evidence is at `/Users/teacher/.codex/automations/research-program/artifacts/audits/tpp-20260907-recovery/reproduction.txt`; its executable reproduction uses synthetic inputs and the repository fixtures. These are model/store reproductions plus static route tracing, not end-to-end browser tests.
+All shortened source paths in this table are under `src/travel_plan_permission/` except the explicit docs path. All cited source lines were opened in the target clone. Runtime evidence is at `[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/tpp-20260907-recovery/reproduction.txt`; its executable reproduction uses synthetic inputs and the repository fixtures. These are model/store reproductions plus static route tracing, not end-to-end browser tests.
 
 ## Format and delivery evidence
 
@@ -22,7 +22,7 @@ All shortened source paths in this table are under `src/travel_plan_permission/`
 - #1558: only cancelled/skipped runs in the available workflow inventory; remote validation is UNCONFIRMED. Latest observed [34092976957](https://github.com/stranske/Travel-Plan-Permission/actions/runs/34092976957) skipped. Local validation is a separate positive result.
 - Current-head CI succeeded: [34082936960](https://github.com/stranske/Travel-Plan-Permission/actions/runs/34082936960).
 - Existing intake log contains exactly one row for each issue (#1557–1559, lines 136–138 at inspection). No duplicate rows added. Original staged issue bodies and audit records remain intact.
-- Raw remote snapshots and format outputs: `/Users/teacher/.codex/automations/research-program/artifacts/audits/tpp-20260907-recovery`.
+- Raw remote snapshots and format outputs: `[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/tpp-20260907-recovery`.
 
 ## Coverage and corrections
 

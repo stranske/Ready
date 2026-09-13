@@ -1,6 +1,6 @@
 ## Why
 
-R4 requires a standalone mirror tool reusing Pension-Data supersession pattern without SQLAlchemy (`B2-gap-analysis` §2.3). Repo does not exist yet. Verified: no `clones/doc-mirror` directory in research-program workspace. Pension-Data pattern at `ingest/artifacts.py:52-56` is the behavioral reference.
+R4 requires a standalone mirror tool reusing Pension-Data supersession pattern without SQLAlchemy (`B2-gap-analysis` §2.3). Repo does not exist yet. Verified: no `[LOCAL_WORKSPACE]/doc-mirror` directory in research-program workspace. Pension-Data pattern at `ingest/artifacts.py:52-56` is the behavioral reference.
 
 ## Scope
 

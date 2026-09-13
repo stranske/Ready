@@ -1,6 +1,6 @@
 # Manager-Database dossier — verification table
 
-Verified against clone `clones/Manager-Database` at HEAD `68baf3f5f1678427cb36f0e1b2c9a97f38175b67` (2026-09-04 17:30 UTC).
+Verified against clone `[LOCAL_WORKSPACE]/Manager-Database` at HEAD `68baf3f5f1678427cb36f0e1b2c9a97f38175b67` (2026-09-04 17:30 UTC).
 Method: every cited file:line/symbol opened and verified against current code and documentation.
 
 ## Summary

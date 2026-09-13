@@ -895,7 +895,7 @@ a round for the staggered `action_required` cohort.
 **Source/automation**: `~/.claude/skills/repo-audit` (SKILL + playbook + orchestration + audit-storage
 + ux-review-overlay, all read in full), phases 1-5, headless agent seat, **no agent fan-out** — scope
 was one subsystem (~5k LOC), so `orchestration.md`'s own warning against unscoped fan-out applied.
-**Base**: `6b45762` (remote tip), fresh scratch clone at `/private/tmp/.../scratchpad/faa`; the
+**Base**: `6b45762` (remote tip), fresh scratch clone at `[LOCAL_WORKSPACE]/.../[LOCAL_WORKSPACE]/faa`; the
 canonical `Code/` clone was never touched and the Orchestrator repo was neither edited nor synced.
 **Scope**: display / presentation surface + its data pipeline — `api/` (43 routes), `ui/`, `display/`,
 `eink/`, `design-system/`, `scripts/render_weekly_review.py`, `make_review_thumbs.py`,
@@ -1326,7 +1326,7 @@ not a Trend_Model_Project one, and it is the highest-leverage thing this round f
 
 
 ## 2026-09-05T04:17:16.604641+00:00 — Codex attempt-2 reconciliation
-Continued D-audit-Fine-Art-Archive--2026-09-05T04-00-31Z from completed Phase 5; nine existing issues verified, eight remote guard passes (four with path advisories), #689 remote guard unproven. Corrected full SHA to d149861964fa4093d4228ef424853fa5de1dced0. Nine corrected local bodies pass actual repo validator without advisories. Narrowed #689/#693/#694/#697 claims; no new filing, dispatch, code change, or duplicate intake entry. Full-suite and comprehensive UX/field/tool/fleet claims remain unverified. The current qualification of the prior report is [resume reconciliation](/Users/teacher/Library/CloudStorage/Dropbox/Learning/Code/Audits/Fine-Art-Archive/2026-09-05-resume-reconciliation.md). Next: publishing-capable lane applies staged corrections and validates #689 remotely.
+Continued D-audit-Fine-Art-Archive--2026-09-05T04-00-31Z from completed Phase 5; nine existing issues verified, eight remote guard passes (four with path advisories), #689 remote guard unproven. Corrected full SHA to d149861964fa4093d4228ef424853fa5de1dced0. Nine corrected local bodies pass actual repo validator without advisories. Narrowed #689/#693/#694/#697 claims; no new filing, dispatch, code change, or duplicate intake entry. Full-suite and comprehensive UX/field/tool/fleet claims remain unverified. The current qualification of the prior report is [resume reconciliation]([LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Fine-Art-Archive/2026-09-05-resume-reconciliation.md). Next: publishing-capable lane applies staged corrections and validates #689 remotely.
 
 ## 2026-09-05T16:14:54.536097+00:00 — Travel-Plan-Permission research refill (in progress)
 

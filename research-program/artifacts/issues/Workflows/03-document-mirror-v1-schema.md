@@ -1,6 +1,6 @@
 ## Why
 
-R4 document-access substrate requires a cross-system mirror manifest (`artifacts/research/B2-gap-analysis.md` B2-023). Pension-Data implements checksum supersession internally (`clones/Pension-Data/src/pension_data/ingest/artifacts.py:52-56` `ingest_raw_artifacts`) but no fleet `document-mirror/v1` schema exists. Verified: `clones/Workflows/docs/contracts/schemas/` has no `document-mirror-v1.schema.json`. **Missing behavior:** doc-mirror CLI and HTML triple-link resolver cannot validate catalogs.
+R4 document-access substrate requires a cross-system mirror manifest (`artifacts/research/B2-gap-analysis.md` B2-023). Pension-Data implements checksum supersession internally (`[LOCAL_WORKSPACE]/Pension-Data/src/pension_data/ingest/artifacts.py:52-56` `ingest_raw_artifacts`) but no fleet `document-mirror/v1` schema exists. Verified: `[LOCAL_WORKSPACE]/Workflows/docs/contracts/schemas/` has no `document-mirror-v1.schema.json`. **Missing behavior:** doc-mirror CLI and HTML triple-link resolver cannot validate catalogs.
 
 ## Scope
 
@@ -29,6 +29,6 @@ Add `document-mirror/v1` JSON Schema, spec, golden fixture, validator flag, sync
 
 ## Implementation Notes
 
-Reference Pension-Data supersession pattern at `clones/Pension-Data/src/pension_data/ingest/artifacts.py:32-35` for `artifact:` ID shape only — do not import Pension-Data code.
+Reference Pension-Data supersession pattern at `[LOCAL_WORKSPACE]/Pension-Data/src/pension_data/ingest/artifacts.py:32-35` for `artifact:` ID shape only — do not import Pension-Data code.
 
 _Surfaced by B2-023 / R4; verified absent from Workflows schemas dir._

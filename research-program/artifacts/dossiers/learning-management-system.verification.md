@@ -1,6 +1,6 @@
 # learning-management-system dossier — verification table
 
-Verified against clone `clones/learning-management-system` at HEAD `f069a881312ba2abf7a5f2f59ca8e2eb01b1b379` (2026-09-04).
+Verified against clone `[LOCAL_WORKSPACE]/learning-management-system` at HEAD `f069a881312ba2abf7a5f2f59ca8e2eb01b1b379` (2026-09-04).
 Method: every cited file:line/symbol in sections 4, 5, 8, and 9 opened and checked against current code and documentation.
 
 ## Summary

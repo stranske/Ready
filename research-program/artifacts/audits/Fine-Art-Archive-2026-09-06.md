@@ -103,7 +103,7 @@ All 8 candidate findings were directly reproduced and adversarially validated on
 
 ## 5. Artifacts and Audit Trail
 
-- **Target Checkout:** `clones/Fine-Art-Archive` @ `9d6d61918cf2153d043c298b1ba3b1cb2aa7f6af`
+- **Target Checkout:** `[LOCAL_WORKSPACE]/Fine-Art-Archive` @ `9d6d61918cf2153d043c298b1ba3b1cb2aa7f6af`
 - **Durable Ledger:** `Code/Audits/AUDIT_LEDGER.md` (updated)
 - **Repo History:** `Code/Audits/Fine-Art-Archive/README.md` (updated)
 - **Repo Map:** `Code/Audits/Fine-Art-Archive/2026-09-06-00-repo-map.md`

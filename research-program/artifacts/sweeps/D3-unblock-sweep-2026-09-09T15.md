@@ -25,10 +25,10 @@
 **Genuinely needs the owner: none among the frozen issues.** [Doc-Lineage #1](https://github.com/stranske/Doc-Lineage/issues/1) is Renovate's dependency dashboard carrying `agents:auto-pilot-pause` after optimizer attempt cap. The bot tracker was read and left untouched as non-work. No agent-labelled PR exceeded four hours idle (LMS #647 and #648 are active, age < 0.1h).
 
 **CI follow-ups:**
-- **Counter_Risk**: Black 26.5.1 format check failed on `src/counter_risk/writers/historical_update.py` following merge commit `cdfd281` (PR #1030). [Repair specification and diff](/Users/teacher/.codex/automations/research-program/artifacts/sweeps/D3-unblock-sweep-2026-09-09T15-evidence/Counter_Risk-repair.md).
-- **Ready**: Black scans mirrored proof scripts under `research-program/artifacts/audits/`. Existing [#557](https://github.com/stranske/Ready/issues/557) owns the pyproject.toml exclusion repair; [repair specification](/Users/teacher/.codex/automations/research-program/artifacts/sweeps/D3-unblock-sweep-2026-09-09T15-evidence/Ready-repair.md).
-- **Fine-Art-Archive**: Black 26.5.1 formatting failure in `tests/test_gate_commit_status_fork_tolerance.py`. [Repair specification](/Users/teacher/.codex/automations/research-program/artifacts/sweeps/D3-unblock-sweep-2026-09-09T15-evidence/Fine-Art-Archive-repair.md).
+- **Counter_Risk**: Black 26.5.1 format check failed on `src/counter_risk/writers/historical_update.py` following merge commit `cdfd281` (PR #1030). [Repair specification and diff]([LOCAL_HOME]/.codex/automations/research-program/artifacts/sweeps/D3-unblock-sweep-2026-09-09T15-evidence/Counter_Risk-repair.md).
+- **Ready**: Black scans mirrored proof scripts under `research-program/artifacts/audits/`. Existing [#557](https://github.com/stranske/Ready/issues/557) owns the pyproject.toml exclusion repair; [repair specification]([LOCAL_HOME]/.codex/automations/research-program/artifacts/sweeps/D3-unblock-sweep-2026-09-09T15-evidence/Ready-repair.md).
+- **Fine-Art-Archive**: Black 26.5.1 formatting failure in `tests/test_gate_commit_status_fork_tolerance.py`. [Repair specification]([LOCAL_HOME]/.codex/automations/research-program/artifacts/sweeps/D3-unblock-sweep-2026-09-09T15-evidence/Fine-Art-Archive-repair.md).
 
 Supply follows the brief's seven-label filter and includes the bot tracker (120 excluding it). Changes since 07 UTC: Portable-Alpha −1, Counter_Risk −6, Manager-Database −1, LMS −2; overall fleet net change: −10.
 
-[Evidence snapshots, failure logs and clone SHAs](/Users/teacher/.codex/automations/research-program/artifacts/sweeps/D3-unblock-sweep-2026-09-09T15-evidence); append-only CHECKPOINT.md records each repo.
+[Evidence snapshots, failure logs and clone SHAs]([LOCAL_HOME]/.codex/automations/research-program/artifacts/sweeps/D3-unblock-sweep-2026-09-09T15-evidence); append-only CHECKPOINT.md records each repo.

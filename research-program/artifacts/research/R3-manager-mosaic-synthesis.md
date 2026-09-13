@@ -17,7 +17,7 @@ The non-negotiable product standard: **one-click navigation from any derived sta
 
 | Requirement | Minimum viable representation | Failure mode to avoid |
 |---|---|---|
-| Primary-source link | `source_id` + structured `locator.page` + bounded `excerpt` | Positional anchors like `text:3` with no quoted text (called out in `clones/Workflows/docs/contracts/schemas/evidence-object-v1.schema.json`) |
+| Primary-source link | `source_id` + structured `locator.page` + bounded `excerpt` | Positional anchors like `text:3` with no quoted text (called out in `[LOCAL_WORKSPACE]/Workflows/docs/contracts/schemas/evidence-object-v1.schema.json`) |
 | Contradiction detection | Normalized **fact key** + comparable value + multiple `evidence_id`s | Treating every extraction as a new fact with no join key |
 | Thesis monitoring | **Thesis claim** objects with expected evidence patterns and verdict enum | Price-triggered or filing-exists alerts without criterion-level verdicts |
 | Local-first, no server | Single-file SQLite (+ content-addressed blobs) and static HTML review | Requiring PostgreSQL/MinIO for the analyst path (Manager-Database's production shape) |
@@ -52,7 +52,7 @@ The non-negotiable product standard: **one-click navigation from any derived sta
 
 ### 4.1 Workflows — contracts (owner, not runtime)
 
-`clones/Workflows/docs/contracts/` already defines the interchange layer:
+`[LOCAL_WORKSPACE]/Workflows/docs/contracts/` already defines the interchange layer:
 
 - **`evidence-object/v1`** — requires `evidence_id`, `fact_ref`, `source_id`, `method`, `excerpt`, optional `locator.page` and `entity_ref` (`schemas/evidence-object-v1.schema.json`).
 - **`identity-map-conventions.md`** — canonical ID shape `entity_type:normalized_identity` and alias/merge discipline.
@@ -84,7 +84,7 @@ The non-negotiable product standard: **one-click navigation from any derived sta
 
 ### 4.5 Doc-Lineage — recurring legal/consultant diffing (scaffold)
 
-- Repo intent: blackline, lineage, tracked variables for PPM/LPA/consultant reports (`clones/Doc-Lineage/README.md`).
+- Repo intent: blackline, lineage, tracked variables for PPM/LPA/consultant reports (`[LOCAL_WORKSPACE]/Doc-Lineage/README.md`).
 - Created 2026-09-04; scope arrives from R1/R2 — **no product code yet**, only Workflows consumer scaffold.
 
 ### 4.6 Owner work-side tools (not in clones)
