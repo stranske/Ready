@@ -1,5 +1,6 @@
 """Exercise the publication guard through its dependency-free command line."""
 
+import importlib.util
 import os
 import subprocess
 import sys
@@ -11,13 +12,27 @@ REPO = Path(__file__).resolve().parents[1]
 SCRIPT = REPO / "scripts/check_publication_safety.py"
 
 
-def run_guard(root):
+def allowlist_for(root: Path) -> Path:
+    return root.parent / ".publication-allow"
+
+
+def run_guard(root, allowlist=None):
+    cmd = [sys.executable, str(SCRIPT), "--root", str(root)]
+    if allowlist is not None:
+        cmd.extend(["--allowlist", str(allowlist)])
     return subprocess.run(
-        [sys.executable, str(SCRIPT), "--root", str(root)],
+        cmd,
         capture_output=True,
         text=True,
         check=False,
     )
+
+
+def load_scanner():
+    spec = importlib.util.spec_from_file_location("check_publication_safety", SCRIPT)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
 
 
 @pytest.mark.parametrize(
@@ -89,7 +104,7 @@ def test_empty_or_missing_tree_fails(tmp_path, missing):
 
 def test_allowlist_is_exact_and_rule_specific(tmp_path):
     (tmp_path / "fixture").write_text("ghp_synthetic\n")
-    (tmp_path / ".publication-allow").write_text(
+    allowlist_for(tmp_path).write_text(
         "fixture:credential # Synthetic scanner regression example.\n"
     )
     result = run_guard(tmp_path)
@@ -117,7 +132,7 @@ def test_allowlist_is_exact_and_rule_specific(tmp_path):
 )
 def test_invalid_allowlist_fails(tmp_path, entry):
     (tmp_path / "fixture").write_text("Public content\n")
-    (tmp_path / ".publication-allow").write_text(entry + "\n")
+    allowlist_for(tmp_path).write_text(entry + "\n")
     result = run_guard(tmp_path)
     assert result.returncode == 1
     assert "ERROR: .publication-allow:1:" in result.stdout
@@ -125,21 +140,20 @@ def test_invalid_allowlist_fails(tmp_path, entry):
 
 def test_allowlist_itself_is_scanned(tmp_path):
     (tmp_path / "fixture").write_text("Public content\n")
-    (tmp_path / ".publication-allow").write_text("fixture:credential # ghp_synthetic\n")
+    allowlist_for(tmp_path).write_text("fixture:credential # ghp_synthetic\n")
     result = run_guard(tmp_path)
     assert result.returncode == 1
     assert ".publication-allow:1: credential" in result.stdout
 
 
 def test_allowlist_cannot_self_allow(tmp_path):
-    (tmp_path / ".publication-allow").write_text(
+    allowlist_for(tmp_path).write_text(
         ".publication-allow:credential # attempt to bypass self-scan\n"
     )
     result = run_guard(tmp_path)
     assert result.returncode == 1
     assert (
-        "ERROR: .publication-allow:1: cannot allowlist the allowlist file itself"
-        in result.stdout
+        "ERROR: .publication-allow:1: cannot allowlist the allowlist file itself" in result.stdout
     )
 
 
@@ -184,3 +198,40 @@ def test_gate_summary_enforces_publication_even_when_python_skips(tmp_path, resu
     subprocess.run(["bash", "-c", script], env=env, check=True, capture_output=True)
     assert f"state={expected}\n" in output.read_text()
     assert "needs: [detect, python-ci, publication-safety]" in workflow
+
+
+def test_unreadable_directory_fails_closed(tmp_path, monkeypatch, capsys):
+    scanner = load_scanner()
+    (tmp_path / "report.md").write_text("Public content\n")
+    real_walk = Path.walk
+
+    def walk_with_error(self, *, on_error=None, follow_symlinks=True):
+        if self == tmp_path and on_error is not None:
+            on_error(OSError(13, "Permission denied"))
+            return iter(())
+        return real_walk(self, on_error=on_error, follow_symlinks=follow_symlinks)
+
+    monkeypatch.setattr(Path, "walk", walk_with_error)
+    allowlist = tmp_path / "allowlist"
+    result = scanner.scan(tmp_path, allowlist)
+    output = capsys.readouterr().out
+    assert result == 1
+    assert "ERROR: research tree contains an unreadable directory" in output
+
+
+def test_unreadable_file_fails_closed(tmp_path, monkeypatch, capsys):
+    scanner = load_scanner()
+    (tmp_path / "report.md").write_text("Public content\n")
+    real_read_bytes = Path.read_bytes
+
+    def read_bytes_with_error(self):
+        if self.name == "report.md":
+            raise OSError(13, "Permission denied")
+        return real_read_bytes(self)
+
+    monkeypatch.setattr(Path, "read_bytes", read_bytes_with_error)
+    allowlist = tmp_path / "allowlist"
+    result = scanner.scan(tmp_path, allowlist)
+    output = capsys.readouterr().out
+    assert result == 1
+    assert "ERROR: report.md: cannot read file" in output
