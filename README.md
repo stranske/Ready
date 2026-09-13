@@ -41,9 +41,14 @@ form `example.md:credential # Synthetic example reviewed for publication.` Each
 entry needs a reason and one of `home-path`,
 `credential`, `private-key`, `scratch-path`, or `internal-host`. Wildcards and
 paths outside the research tree are rejected. An exception covers only that
-file and rule; it does not suppress other rules or files. No findings are
-automatically redacted or allowlisted. Correct the source that produces an
-artifact so subsequent publication does not restore a removed finding.
+file and rule; it does not suppress other rules or files. No findings are automatically allowlisted. The upstream engine prepares a public
+copy with `scripts/prepare_publication.py` before this guard runs: private path,
+credential and host references become explicit redaction markers. Local evidence
+is preserved. JSON and JSONL remain parseable; ambiguous keys, invalid structured
+data, unreadable files and links stop preparation. Binary files remain intact
+and must pass the byte scanner. This export step is not a confidentiality review
+and never substitutes for the guard. Correct the source or export policy when
+a finding remains; subsequent publication must not restore it.
 
 The Publication guard workflow runs on PRs and pushes to `main`. The required
 Gate also calls it unconditionally, including for documentation-only changes;
@@ -51,3 +56,9 @@ a failed, cancelled, or skipped scan prevents a successful `Gate / gate` status.
 Existing published findings must be removed or individually justified before
 the guard can pass. `python -m pytest tests/test_publication_safety.py` tests the
 scanner and Gate aggregation against synthetic trees without exposing real hits.
+
+The engine installs the two scripts from this reviewed repository into its local
+`tools/publication/` directory and runs preparation followed by the guard after
+copying artifacts, before staging a commit. The original engine queue and
+artifacts are never rewritten by this export step. Redaction markers identify
+local evidence references; they are not repository paths to use for edits.
