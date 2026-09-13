@@ -1,0 +1,449 @@
+{
+  "unit": "D3-unblock-sweep-2026-09-13T20",
+  "repos": [
+    "Workflows",
+    "Travel-Plan-Permission",
+    "Trend_Model_Project",
+    "Portable-Alpha-Extension-Model",
+    "Counter_Risk",
+    "Manager-Database",
+    "Inv-Man-Intake",
+    "Pension-Data"
+  ],
+  "deferred": [
+    "Ready",
+    "trip-planner",
+    "learning-management-system",
+    "Fine-Art-Archive",
+    "Doc-Lineage",
+    "Deliverable-Render",
+    "Manager-Mosaic"
+  ],
+  "results": [
+    {
+      "repo": "Workflows",
+      "head": "e4b6ade",
+      "frozen_found": 0,
+      "frozen_repaired": 0,
+      "frozen_found_nums": [],
+      "owner_holds": [],
+      "silent_claims": [
+        {
+          "number": 3392,
+          "title": "fix: expose provider availability to consumer keepalive auto-routing",
+          "age_h": 149.1,
+          "labels": [
+            "agent:codex",
+            "agents:auto-pilot",
+            "agents:formatted",
+            "verify:evaluate"
+          ]
+        },
+        {
+          "number": 3389,
+          "title": "Raise test coverage toward 90% (autopilot round 8, low blast radius only)",
+          "age_h": 149.1,
+          "labels": [
+            "agent:codex",
+            "agents:auto-pilot",
+            "agents:formatted",
+            "verify:evaluate"
+          ]
+        },
+        {
+          "number": 3375,
+          "title": "[P1] Extend output-substrate/v1 with manifest CSV export slice (B2-032)",
+          "age_h": 214.8,
+          "labels": [
+            "agent:codex",
+            "agents:apply-suggestions",
+            "agents:auto-pilot",
+            "agents:formatted"
+          ]
+        },
+        {
+          "number": 3374,
+          "title": "[P0] Add output-substrate/v1 contract schema (B2-028)",
+          "age_h": 149.1,
+          "labels": [
+            "agent:codex",
+            "agents:apply-suggestions",
+            "agents:auto-pilot",
+            "agents:formatted"
+          ]
+        },
+        {
+          "number": 3373,
+          "title": "[P0] Add document-mirror/v1 schema and validator hook (B2-023)",
+          "age_h": 214.8,
+          "labels": [
+            "agent:codex",
+            "agents:apply-suggestions",
+            "agents:auto-pilot",
+            "agents:formatted"
+          ]
+        }
+      ],
+      "claim_released": [
+        {
+          "number": 3392,
+          "removed": [
+            "agents:auto-pilot"
+          ]
+        },
+        {
+          "number": 3389,
+          "removed": [
+            "agents:auto-pilot"
+          ]
+        },
+        {
+          "number": 3375,
+          "removed": [
+            "agents:auto-pilot"
+          ]
+        },
+        {
+          "number": 3374,
+          "removed": [
+            "agents:auto-pilot"
+          ]
+        },
+        {
+          "number": 3373,
+          "removed": [
+            "agents:auto-pilot"
+          ]
+        }
+      ],
+      "stalled": [],
+      "rerouted": [],
+      "branch_state": "red",
+      "branch_detail": "Execute / Scan belt promotion queue: failure",
+      "failures": [
+        [
+          "Execute / Scan belt promotion queue",
+          "failure",
+          "https://github.com/stranske/Workflows/actions/runs/34780146193/job/103785717774"
+        ],
+        [
+          "dedup",
+          "failure",
+          "https://github.com/stranske/Workflows/actions/runs/34780176581/job/103785630884"
+        ]
+      ],
+      "supply": 30,
+      "open_count": 39,
+      "priority_count": 0,
+      "open_prs": 0
+    },
+    {
+      "repo": "Travel-Plan-Permission",
+      "head": "3a4cd36",
+      "frozen_found": 0,
+      "frozen_repaired": 0,
+      "frozen_found_nums": [],
+      "owner_holds": [],
+      "silent_claims": [],
+      "claim_released": [],
+      "stalled": [],
+      "rerouted": [],
+      "branch_state": "green",
+      "branch_detail": "CI green",
+      "failures": [],
+      "supply": 5,
+      "open_count": 9,
+      "priority_count": 0,
+      "open_prs": 0
+    },
+    {
+      "repo": "Trend_Model_Project",
+      "head": "71022c1",
+      "frozen_found": 0,
+      "frozen_repaired": 0,
+      "frozen_found_nums": [],
+      "owner_holds": [],
+      "silent_claims": [],
+      "claim_released": [],
+      "stalled": [],
+      "rerouted": [],
+      "branch_state": "red",
+      "branch_detail": "Python CI / python 3.13: failure",
+      "failures": [
+        [
+          "Python CI / python 3.13",
+          "failure",
+          "https://github.com/stranske/Trend_Model_Project/actions/runs/34615809783/job/103317389863"
+        ],
+        [
+          "evaluate",
+          "failure",
+          "https://github.com/stranske/Trend_Model_Project/actions/runs/34733065841/job/103659361177"
+        ]
+      ],
+      "supply": 8,
+      "open_count": 10,
+      "priority_count": 0,
+      "open_prs": 0
+    },
+    {
+      "repo": "Portable-Alpha-Extension-Model",
+      "head": "b636aed",
+      "frozen_found": 0,
+      "frozen_repaired": 0,
+      "frozen_found_nums": [],
+      "owner_holds": [],
+      "silent_claims": [],
+      "claim_released": [],
+      "stalled": [],
+      "rerouted": [],
+      "branch_state": "green",
+      "branch_detail": "CI green",
+      "failures": [],
+      "supply": 4,
+      "open_count": 6,
+      "priority_count": 4,
+      "open_prs": 0
+    },
+    {
+      "repo": "Counter_Risk",
+      "head": "6e2a87b",
+      "frozen_found": 0,
+      "frozen_repaired": 0,
+      "frozen_found_nums": [],
+      "owner_holds": [],
+      "silent_claims": [],
+      "claim_released": [],
+      "stalled": [],
+      "rerouted": [],
+      "branch_state": "green",
+      "branch_detail": "CI green",
+      "failures": [],
+      "supply": 1,
+      "open_count": 3,
+      "priority_count": 0,
+      "open_prs": 0
+    },
+    {
+      "repo": "Manager-Database",
+      "head": "e946f52",
+      "frozen_found": 0,
+      "frozen_repaired": 0,
+      "frozen_found_nums": [],
+      "owner_holds": [],
+      "silent_claims": [],
+      "claim_released": [],
+      "stalled": [],
+      "rerouted": [],
+      "branch_state": "green",
+      "branch_detail": "CI green",
+      "failures": [],
+      "supply": 4,
+      "open_count": 6,
+      "priority_count": 4,
+      "open_prs": 1
+    },
+    {
+      "repo": "Inv-Man-Intake",
+      "head": "7ffcceb",
+      "frozen_found": 0,
+      "frozen_repaired": 0,
+      "frozen_found_nums": [],
+      "owner_holds": [],
+      "silent_claims": [
+        {
+          "number": 951,
+          "title": "[P2] ILPA DDQ synthetic fill harness (B2-040)",
+          "age_h": 149.1,
+          "labels": [
+            "agent:codex",
+            "agents:apply-suggestions",
+            "agents:auto-pilot",
+            "agents:formatted"
+          ]
+        },
+        {
+          "number": 950,
+          "title": "[P1] report-spec.json renderer contract (B2-031)",
+          "age_h": 149.1,
+          "labels": [
+            "agent:codex",
+            "agents:apply-suggestions",
+            "agents:auto-pilot",
+            "agents:formatted"
+          ]
+        },
+        {
+          "number": 949,
+          "title": "[P1] Evidence-object/v1 emitter replacing page-pointer refs (B2-017)",
+          "age_h": 149.1,
+          "labels": [
+            "agent:codex",
+            "agents:apply-suggestions",
+            "agents:auto-pilot",
+            "agents:formatted"
+          ]
+        },
+        {
+          "number": 948,
+          "title": "[P1] Consultant section ontology aligned to tracked-variable/v1 (B2-010)",
+          "age_h": 214.6,
+          "labels": [
+            "agent:codex",
+            "agents:apply-suggestions",
+            "agents:auto-pilot",
+            "agents:formatted"
+          ]
+        }
+      ],
+      "claim_released": [
+        {
+          "number": 951,
+          "removed": [
+            "agents:auto-pilot"
+          ]
+        },
+        {
+          "number": 950,
+          "removed": [
+            "agents:auto-pilot"
+          ]
+        },
+        {
+          "number": 949,
+          "removed": [
+            "agents:auto-pilot"
+          ]
+        },
+        {
+          "number": 948,
+          "removed": [
+            "agents:auto-pilot"
+          ]
+        }
+      ],
+      "stalled": [],
+      "rerouted": [],
+      "branch_state": "green (scheduled failures only)",
+      "branch_detail": "non-gate failures: 1",
+      "failures": [
+        [
+          "Keepalive next task (Claude) / Claude (keepalive)",
+          "failure",
+          "https://github.com/stranske/Inv-Man-Intake/actions/runs/34717997578/job/103618671286"
+        ]
+      ],
+      "supply": 5,
+      "open_count": 7,
+      "priority_count": 0,
+      "open_prs": 0
+    },
+    {
+      "repo": "Pension-Data",
+      "head": "b1ab543",
+      "frozen_found": 0,
+      "frozen_repaired": 0,
+      "frozen_found_nums": [],
+      "owner_holds": [],
+      "silent_claims": [
+        {
+          "number": 883,
+          "title": "[P1] workspace-bundle.json contract wiring (B2-030)",
+          "age_h": 214.6,
+          "labels": [
+            "agent:codex",
+            "agents:apply-suggestions",
+            "agents:auto-pilot",
+            "agents:formatted"
+          ]
+        },
+        {
+          "number": 882,
+          "title": "[P1] Factor renderer-shell from apps/web (B2-029)",
+          "age_h": 149.1,
+          "labels": [
+            "agent:codex",
+            "agents:apply-suggestions",
+            "agents:auto-pilot",
+            "agents:formatted"
+          ]
+        },
+        {
+          "number": 881,
+          "title": "[P1] Evidence + identity-map projection emitter (B2-018)",
+          "age_h": 149.1,
+          "labels": [
+            "agent:codex",
+            "agents:apply-suggestions",
+            "agents:auto-pilot",
+            "agents:formatted"
+          ]
+        },
+        {
+          "number": 880,
+          "title": "[P2] N-CSR sample ingest lane (B2-042)",
+          "age_h": 149.1,
+          "labels": [
+            "agent:codex",
+            "agents:apply-suggestions",
+            "agents:auto-pilot",
+            "agents:formatted"
+          ]
+        },
+        {
+          "number": 879,
+          "title": "[P2] CalPERS IC document harvester (B2-038)",
+          "age_h": 149.1,
+          "labels": [
+            "agent:codex",
+            "agents:apply-suggestions",
+            "agents:auto-pilot",
+            "agents:formatted"
+          ]
+        }
+      ],
+      "claim_released": [
+        {
+          "number": 883,
+          "removed": [
+            "agents:auto-pilot"
+          ]
+        },
+        {
+          "number": 882,
+          "removed": [
+            "agents:auto-pilot"
+          ]
+        },
+        {
+          "number": 881,
+          "removed": [
+            "agents:auto-pilot"
+          ]
+        },
+        {
+          "number": 880,
+          "removed": [
+            "agents:auto-pilot"
+          ]
+        },
+        {
+          "number": 879,
+          "removed": [
+            "agents:auto-pilot"
+          ]
+        }
+      ],
+      "stalled": [],
+      "rerouted": [],
+      "branch_state": "green",
+      "branch_detail": "CI green",
+      "failures": [],
+      "supply": 8,
+      "open_count": 10,
+      "priority_count": 0,
+      "open_prs": 0
+    }
+  ],
+  "observed_at": "2026-09-13T20:16:51.135959+00:00"
+}
