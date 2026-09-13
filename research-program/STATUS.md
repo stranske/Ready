@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-13T01:11:45Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-13T01:16:25Z)
 
-Units: 101 — claimed 1, done 100
+Units: 101 — done 101
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 Claude conservation: off (weekly window available)
@@ -76,7 +76,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D3-unblock-sweep-2026-09-12T00 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D3-unblock-sweep-2026-09-12T08 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D3-unblock-sweep-2026-09-12T16 | D | D | done | cursor | codex | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
-| D3-unblock-sweep-2026-09-13T00 | D | D | claimed | cursor | codex | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
+| D3-unblock-sweep-2026-09-13T00 | D | D | done | cursor | codex | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D-audit-Counter_Risk--2026-09-07T04-47-32Z | D | D | done | codex | driver | Audit stranske/Counter_Risk and file issues (supply 2 <= 2) |
 | D-audit-Counter_Risk--2026-09-08T17-11-36Z | D | D | done | codex | codex | Audit stranske/Counter_Risk and file issues (supply 1 <= 2) |
 | D-audit-Counter_Risk--2026-09-09T05-14-45Z | D | D | done | codex | driver | Audit stranske/Counter_Risk and file issues (supply 1 <= 2) |
@@ -112,7 +112,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-12T16:28:54Z — D3-unblock-sweep-2026-09-12T16 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-12T16:28:54Z — D3-unblock-sweep-2026-09-12T16 — claimed by driver (agent cursor)
 - 2026-09-12T17:09:03Z — D3-unblock-sweep-2026-09-12T16 — fail — offload to cursor exited 1; retained artifact is not proof of success
 - 2026-09-12T17:11:09Z — D3-unblock-sweep-2026-09-12T16 — route — router picked cursor from ['codex', 'cursor']
@@ -124,6 +123,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-13T01:10:19Z — D3-unblock-sweep-2026-09-13T00 — fail — offload to gemini exited 1; retained artifact is not proof of success
 - 2026-09-13T01:11:45Z — D3-unblock-sweep-2026-09-13T00 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-13T01:11:45Z — D3-unblock-sweep-2026-09-13T00 — claimed by codex (agent cursor)
+- 2026-09-13T01:16:25Z — D3-unblock-sweep-2026-09-13T00 — done — 15-repo sweep finds 123 agent-ready issues, no owner holds or stalled agent PRs; Inv-Man-Intake 965 resolved elsewhere, two mechanical patches revalidated, CI a
 
 ## Questions
 

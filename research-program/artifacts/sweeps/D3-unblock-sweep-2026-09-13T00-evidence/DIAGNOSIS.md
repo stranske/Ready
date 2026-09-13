@@ -1,0 +1,27 @@
+# Evidence and dispositions — D3-unblock-sweep-2026-09-13T00
+
+Observed 2026-09-13T01:16:17.814642+00:00. API inventory and logs were fetched during this attempt. All source links below correspond to saved checks; no offload was needed.
+
+## Ready: mechanical formatting scope
+Head `15975117a8572d8b74b2c18d868ea4e0cf27f992`. [Current failing run](https://github.com/stranske/Ready/actions/runs/34729921221) reports 29 mirrored artifact files requiring Black formatting. Revalidated the previous patch adding `extend-exclude = "research-program/artifacts"` under `[tool.black]`; the analogous Ruff exclusion already exists. Refreshed clone matches snapshot head. `git apply --check` passes; Black using the proposed config and the workflow's line-length/exclude arguments returns zero, 74 files unchanged. Exact results: [mechanical validation](/Users/teacher/.codex/automations/research-program/artifacts/sweeps/D3-unblock-sweep-2026-09-13T00-evidence/mechanical-validation.json). No source files were edited.
+
+## Fine-Art-Archive: mechanical formatting
+Head `92408eec81b1825f07390485700ddfb85de53c20`. [Failing CI](https://github.com/stranske/Fine-Art-Archive/actions/runs/34281083724) identifies only `tests/test_gate_commit_status_fork_tolerance.py`. Previous patch still applies; newly computed Black output at line length 100 preserves the original AST. This remains a formatting failure; tests in the current-head Python suite are green. Full tests were not rerun for this staged formatting patch.
+
+## Trend_Model_Project: unresolved Python 3.13 test
+Head `71022c1b5e4f71853b77ebf958db88c2597409b7`. [Failing CI](https://github.com/stranske/Trend_Model_Project/actions/runs/34615809783) fails `tests/workflows/test_keepalive_post_work.py::test_keepalive_sync_detects_head_change_without_actions` at line 66 (expected initial-poll branch-advanced assertion). Python 3.12 succeeds. Log confirms 5935 passed, 6 skipped, 1 failed. Classify as an unresolved regression or test race; the historical isolated-pass claim is not revalidated here. Existing issue draft in the prior sweep remains historical input for a writer lane; no rerun or issue filing in this execution.
+
+## Workflows: recurring proxy defect, Gate unverified
+Head `55075a2be16576012c69e5ef88e8c2c520d6ad60`. [Latest belt failure](https://github.com/stranske/Workflows/actions/runs/34728923293) again throws a proxy invariant TypeError: the get trap substitutes a bound function for frozen `__getTokenSource`. The prior source diagnosis points to `.github/scripts/github-rate-limited-wrapper.js` (function binding and frozen property definition) and `.github/scripts/github-api-with-retry.js` (property read). Head unchanged from the previous source inspection; source inspection is retained evidence, while the failure log is fresh. Preserve frozen property identity and add a focused regression in the owning writer lane. Helper lint/Python checks pass, but there is no current-head Gate result; do not equate helper success with Gate. Separate Dependabot failure retained in inventory, outside the CI diagnosis.
+
+## Manager-Database: scheduled setup failures
+Head `0d3007a00323f3b6ffc7e5a45299ab5782fbaf5c`; Python CI green. [Nightly](https://github.com/stranske/Manager-Database/actions/runs/34671927568) fails pulling `minio/minio` with access-denied/repository-unavailable text. [Snapshot](https://github.com/stranske/Manager-Database/actions/runs/34675414140) fails because apt has no installation candidate for `awscli`. Confirm an available image and supported AWS CLI installation in a writer lane; generic Docker text does not establish a credential problem. An older failed keepalive tried checking out deleted branch `claude/issue-1647-load-delta-filed`; it is not evidence of a currently stalled open PR.
+
+## Inv-Man-Intake: prior hold resolved, obsolete keepalive
+[Issue #965](https://github.com/stranske/Inv-Man-Intake/issues/965) is CLOSED; [PR #966](https://github.com/stranske/Inv-Man-Intake/pull/966) is MERGED at `7ffcceb536ed6255719973b3d5d5ab254734b080`. Saved issue/PR JSON records the closer's acceptance disposition. Current Python CI succeeds. [Failed keepalive](https://github.com/stranske/Inv-Man-Intake/actions/runs/34717997578) attempted checkout of deleted branch `codex/issue-965` after the merge. No reroute or draft-body publication is warranted; there is no open PR or frozen issue in this repo.
+
+## Other observations
+[Doc-Lineage dashboard](https://github.com/stranske/Doc-Lineage/issues/1) has `agents:auto-pilot-pause` but is a bot-maintained tracker; body and comments read, no owner decision. trip-planner's older reconciler failure is token access to a dispatch; learning-management-system's older keepalive could not download `keepalive-task-appendix-664`. Their current Python CI is green. Fine-Art-Archive's separate old keepalive failure is recorded in logs. No open PR carries an agent label in the entire fleet.
+
+## Delivery and verification boundary
+Each repo has full current-head checks, issue/PR lists, frozen-issue comments, timestamp and SHA in its JSON; all 15 were checkpointed after inventory and disposition. Local validation proves patch applicability and formatting behavior only. Apply patches in a writer lane with fresh branch/head checks; this research executor did not publish source changes or new issues. Prior body repair for #965 is superseded and deliberately not copied forward. Refreshing Ready during publication changes its head, so this is a timestamped snapshot rather than a claim about future checks.

@@ -1,0 +1,142 @@
+Wake generated delivery reconciler	UNKNOWN STEP	﻿2026-09-08T21:56:12.3045576Z Current runner version: '2.337.0'
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:12.3063740Z ##[group]Runner Image Provisioner
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:12.3064483Z Hosted Compute Agent
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:12.3064951Z Version: 20260828.587
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:12.3065396Z Commit: abac92662cab4cc7352de4f9f9d2e2419aad9c29
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:12.3065934Z Build Date: 2026-08-28T16:44:25Z
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:12.3066438Z Worker ID: {1e49988e-2795-4cc3-b247-ec8d6519c186}
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:12.3066924Z Azure Region: centralus
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:12.3067439Z ##[endgroup]
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:12.3068396Z ##[group]Operating System
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:12.3068804Z Ubuntu
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:12.3069184Z 24.04.4
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:12.3069574Z LTS
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:12.3069938Z ##[endgroup]
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:12.3070334Z ##[group]Runner Image
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:12.3070881Z Image: ubuntu-24.04
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:12.3071437Z Version: 20260831.293.1
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:12.3072489Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260831.293/images/ubuntu/Ubuntu2404-Readme.md
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:12.3073623Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260831.293
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:12.3074294Z ##[endgroup]
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:12.3075125Z ##[group]GITHUB_TOKEN Permissions
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:12.3077079Z Contents: read
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:12.3077494Z Metadata: read
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:12.3077899Z ##[endgroup]
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:12.3079390Z Secret source: Actions
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:12.3080320Z Prepare workflow directory
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:12.3433698Z Prepare all required actions
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:12.3469206Z Getting action download info
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:12.5606131Z Download action repository 'actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3' (SHA:3a2844b7e9c422d3c10d287c895573f7108da1b3)
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.2313940Z Complete job name: Wake generated delivery reconciler
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.2755147Z ##[group]Run actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.2756032Z with:
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.2756981Z   github-token: ***
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.2762393Z   script: const branch = String(context.payload.workflow_run?.head_branch || '');
+Wake generated delivery reconciler	UNKNOWN STEP	const activeSyncHash = branch === 'sync/workflows-candidate'
+Wake generated delivery reconciler	UNKNOWN STEP	  ? 'candidate'
+Wake generated delivery reconciler	UNKNOWN STEP	  : branch === 'sync/workflows-delivery'
+Wake generated delivery reconciler	UNKNOWN STEP	    ? 'delivery'
+Wake generated delivery reconciler	UNKNOWN STEP	    : 'dev-tool';
+Wake generated delivery reconciler	UNKNOWN STEP	const clientPayload = {
+Wake generated delivery reconciler	UNKNOWN STEP	  source_repository: `${context.repo.owner}/${context.repo.repo}`,
+Wake generated delivery reconciler	UNKNOWN STEP	  source_run_id: String(context.payload.workflow_run?.id || ''),
+Wake generated delivery reconciler	UNKNOWN STEP	};
+Wake generated delivery reconciler	UNKNOWN STEP	clientPayload.active_sync_hash = activeSyncHash;
+Wake generated delivery reconciler	UNKNOWN STEP	const withRetry = async (operation) => {
+Wake generated delivery reconciler	UNKNOWN STEP	  let lastError;
+Wake generated delivery reconciler	UNKNOWN STEP	  for (let attempt = 0; attempt < 3; attempt += 1) {
+Wake generated delivery reconciler	UNKNOWN STEP	    try {
+Wake generated delivery reconciler	UNKNOWN STEP	      return await operation();
+Wake generated delivery reconciler	UNKNOWN STEP	    } catch (error) {
+Wake generated delivery reconciler	UNKNOWN STEP	      lastError = error;
+Wake generated delivery reconciler	UNKNOWN STEP	      if (![429, 500, 502, 503, 504].includes(Number(error?.status))) throw error;
+Wake generated delivery reconciler	UNKNOWN STEP	      await new Promise((resolve) => setTimeout(resolve, 1000 * (attempt + 1)));
+Wake generated delivery reconciler	UNKNOWN STEP	    }
+Wake generated delivery reconciler	UNKNOWN STEP	  }
+Wake generated delivery reconciler	UNKNOWN STEP	  core.setFailed(
+Wake generated delivery reconciler	UNKNOWN STEP	    `Generated-delivery wakeup failed: ${lastError?.message || lastError}`,
+Wake generated delivery reconciler	UNKNOWN STEP	  );
+Wake generated delivery reconciler	UNKNOWN STEP	  throw lastError;
+Wake generated delivery reconciler	UNKNOWN STEP	};
+Wake generated delivery reconciler	UNKNOWN STEP	await withRetry(() => github.rest.repos.createDispatchEvent({
+Wake generated delivery reconciler	UNKNOWN STEP	  owner: 'stranske',
+Wake generated delivery reconciler	UNKNOWN STEP	  repo: 'Workflows',
+Wake generated delivery reconciler	UNKNOWN STEP	  event_type: 'merge-sync-prs',
+Wake generated delivery reconciler	UNKNOWN STEP	  client_payload: clientPayload,
+Wake generated delivery reconciler	UNKNOWN STEP	}));
+Wake generated delivery reconciler	UNKNOWN STEP	core.notice(`Woke Maint 71 lane ${activeSyncHash} from ${branch}`);
+Wake generated delivery reconciler	UNKNOWN STEP	
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.2767956Z   debug: false
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.2768459Z   user-agent: actions/github-script
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.2768964Z   result-encoding: json
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.2769407Z   retries: 0
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.2769877Z   retry-exempt-status-codes: 400,401,403,404,422
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.2770606Z env:
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.2771648Z   WRITE_TOKEN: ***
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.2772080Z ##[endgroup]
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5411176Z POST /repos/stranske/Workflows/dispatches - 403 with id 1C20:275EF4:6B0727:15481F3:6AA0847D in 181ms
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5432755Z RequestError [HttpError]: Resource not accessible by personal access token - https://docs.github.com/rest/repos/repos#create-a-repository-dispatch-event
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5472070Z ##[error]Unhandled error: HttpError: Resource not accessible by personal access token - https://docs.github.com/rest/repos/repos#create-a-repository-dispatch-event
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5483879Z     at fetchWrapper (/home/runner/work/_actions/actions/github-script/3a2844b7e9c422d3c10d287c895573f7108da1b3/dist/index.js:61509:11)
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5486405Z     at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5488716Z     at async withRetry (eval at callAsyncFunction (/home/runner/work/_actions/actions/github-script/3a2844b7e9c422d3c10d287c895573f7108da1b3/dist/index.js:64949:16), <anonymous>:18:14)
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5491733Z     at async eval (eval at callAsyncFunction (/home/runner/work/_actions/actions/github-script/3a2844b7e9c422d3c10d287c895573f7108da1b3/dist/index.js:64949:16), <anonymous>:30:1)
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5494619Z     at async main (/home/runner/work/_actions/actions/github-script/3a2844b7e9c422d3c10d287c895573f7108da1b3/dist/index.js:65100:20) {
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5496351Z   status: 403,
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5497322Z   request: {
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5498328Z     method: 'POST',
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5499524Z     url: 'https://api.github.com/repos/stranske/Workflows/dispatches',
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5500945Z     headers: {
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5502446Z       accept: 'application/vnd.github.v3+json',
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5504454Z       'user-agent': 'actions/github-script actions_orchestration_id/68f41b9b-b182-43c0-9455-15ec967b83c9.generated-delivery-wakeup.__default octokit-core.js/7.0.6 Node.js/24',
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5506448Z       authorization: 'token [REDACTED]',
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5507716Z       'content-type': 'application/json; charset=utf-8'
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5508890Z     },
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5509871Z     body: [Object: null prototype] {
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5511101Z       event_type: 'merge-sync-prs',
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5512499Z       client_payload: [Object]
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5513504Z     },
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5514409Z     request: {
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5515351Z       agent: [Agent],
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5516428Z       fetch: [Function: proxyFetch],
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5517698Z       hook: [Function: bound bound register]
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5518842Z     }
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5519644Z   },
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5520620Z   response: {
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5521898Z     url: 'https://api.github.com/repos/stranske/Workflows/dispatches',
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5523198Z     status: 403,
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5524174Z     headers: {
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5525161Z       'access-control-allow-origin': '*',
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5528401Z       'access-control-expose-headers': 'ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset, Warning',
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5531735Z       'content-encoding': 'gzip',
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5532999Z       'content-security-policy': "default-src 'none'",
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5534251Z       'content-type': 'application/json; charset=utf-8',
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5535492Z       date: 'Tue, 08 Sep 2026 21:56:13 GMT',
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5536812Z       'referrer-policy': 'origin-when-cross-origin, strict-origin-when-cross-origin',
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5538186Z       server: 'github.com',
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5539475Z       'strict-transport-security': 'max-age=31536000; includeSubdomains; preload',
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5540771Z       'transfer-encoding': 'chunked',
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5542143Z       vary: 'Accept-Encoding, Accept, X-Requested-With',
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5543379Z       'x-accepted-github-permissions': 'contents=write',
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5544615Z       'x-content-type-options': 'nosniff',
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5545792Z       'x-frame-options': 'deny',
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5546852Z       'x-github-api-version-selected': '2022-11-28',
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5548031Z       'x-github-edge-region': 'iad',
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5549184Z       'x-github-media-type': 'github.v3; format=json',
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5550747Z       'x-github-request-id': '1C20:275EF4:6B0727:15481F3:6AA0847D',
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5551940Z       'x-ratelimit-limit': '5000',
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5552725Z       'x-ratelimit-remaining': '4981',
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5553462Z       'x-ratelimit-reset': '1788907386',
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5554180Z       'x-ratelimit-resource': 'core',
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5555085Z       'x-ratelimit-used': '19',
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5555771Z       'x-xss-protection': '0'
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5556437Z     },
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5557013Z     data: {
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5557753Z       message: 'Resource not accessible by personal access token',
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5559046Z       documentation_url: 'https://docs.github.com/rest/repos/repos#create-a-repository-dispatch-event',
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5560182Z       status: '403'
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5560839Z     }
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5561617Z   },
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5562206Z   [cause]: undefined
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5562856Z }
+Wake generated delivery reconciler	UNKNOWN STEP	2026-09-08T21:56:13.5793236Z Cleaning up orphan processes

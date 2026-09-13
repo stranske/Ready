@@ -1,0 +1,327 @@
+{
+  "comments": [
+    {
+      "id": "IC_kwDORbgIAs8AAAABUJ41Ew",
+      "author": {
+        "login": "agents-workflows-bot"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "<!-- agent-activation-marker -->\nAgent worker (codex) activated for branch `codex/issue-965`.\n\n@codex start\n**Focus on this task first:** `task-01` \u2014 Refactor the conditional logic in `_resolve_performance_series` to create separate code paths for smoke mode versus production mode\n\nImplement **only** this task in your first commit.\nEnsure the code compiles and existing tests pass before moving on.\nThe keepalive loop will assign subsequent tasks after this one is complete.",
+      "createdAt": "2026-09-12T17:29:06Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Inv-Man-Intake/pull/966#issuecomment-5647512851",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDORbgIAs8AAAABUJ42Cg",
+      "author": {
+        "login": "coderabbitai"
+      },
+      "authorAssociation": "NONE",
+      "body": "<!-- This is an auto-generated comment: summarize by coderabbit.ai -->\n<!-- review_stack_entry_start -->\n\n<a href=\"https://app.coderabbit.ai/change-stack/stranske/Inv-Man-Intake/pull/966#gh-light-mode-only\"><img src=\"https://storage.googleapis.com/coderabbit_public_assets/review-stack-in-coderabbit-ui.svg\" alt=\"Review Change Stack\" width=\"202\" height=\"32\"></a><a href=\"https://app.coderabbit.ai/change-stack/stranske/Inv-Man-Intake/pull/966#gh-dark-mode-only\"><img src=\"https://storage.googleapis.com/coderabbit_public_assets/review-stack-in-coderabbit-ui-dark.svg\" alt=\"Review Change Stack\" width=\"202\" height=\"32\"></a>\n\n<!-- review_stack_entry_end -->\n<!-- walkthrough_start -->\n\n<details>\n<summary>\ud83d\udcdd Walkthrough</summary>\n\n## Walkthrough\n\nThe ingest pipeline now reads production performance from submitted XLSX workbooks, reports unavailable data when parsing fails, preserves smoke fixture behavior, and exposes performance data with nullable scoring in run results.\n\n### Changes\n\n**Performance ingestion**\n\n|Layer / File(s)|Summary|\n|---|---|\n|**Unavailable performance result contract** <br> `src/inv_man_intake/run.py`|`RunResult` now supports nullable final scores, stores performance data, serializes it, and reports unavailable scoring or monthly performance.|\n|**Production workbook resolution and processing** <br> `src/inv_man_intake/v1_smoke.py`|Production resolution uses `content_root` and submitted workbook bytes. Canonical XLSX tables support required headers, optional frequency, ISO dates, and Excel dates. Invalid or unavailable data skips production scoring components.|\n|**Ingest regression coverage and documented rules** <br> `tests/cli/test_ingest_entrypoint.py`, `README.md`, `.agents/issue-965-ledger.yml`|Tests cover external workbooks, invalid rows, unsupported or ambiguous workbooks, unavailable results, and preserved smoke fixture values. Documentation and the task ledger record the ingestion behavior.|\n\n**Suggested reviewers:** `stranske`\n\n<!-- change_assessment_start -->\n**Priority:** \u2796 Normal\n\n\n\n\n\n**Estimated code review effort:** 4 (Complex) | ~45 minutes\n\n<!-- change_assessment_commit:\"07fd623225098f1468f2fd758e0c16db309f3c9d\" -->\n**Change:** Bug fix \u00b7 **Severity of issue fixed:** Medium\n<!-- change_assessment_end -->\n\n### Sequence Diagram(s)\n\n```mermaid\nsequenceDiagram\n  participant IngestEntrypoint\n  participant _resolve_performance_series\n  participant SubmittedWorkbook\n  participant RunResult\n  IngestEntrypoint->>_resolve_performance_series: pass content_root\n  _resolve_performance_series->>SubmittedWorkbook: load and parse XLSX performance table\n  SubmittedWorkbook-->>_resolve_performance_series: performance series or unavailable result\n  _resolve_performance_series->>RunResult: store performance data and nullable score\n  RunResult-->>IngestEntrypoint: serialize performance and warnings\n```\n\n</details>\n\n<!-- walkthrough_end -->\n<!-- final_review_risk_start -->\n**Merge Risk:** _\ud83d\udfe1 Moderate_ \u00b7 up to `07fd6`\n<!-- final_review_risk_coverage:{\"sourceCommitId\":\"07fd623225098f1468f2fd758e0c16db309f3c9d\",\"coveredCommitId\":\"07fd623225098f1468f2fd758e0c16db309f3c9d\",\"kind\":\"reviewed\"} -->\n\nProduction run output can show different dates than those used to calculate its performance metrics, making reported results internally inconsistent. Align the serialized series with normalization before merging; clarify the workbook header placement for submitters.\n<!-- final_review_risk_end -->\n<!-- pre_merge_checks_walkthrough_start -->\n\n<details>\n<summary>\ud83d\udea5 Pre-merge checks | \u2705 4 | \u274c 1</summary>\n\n### \u274c Failed checks (1 warning)\n\n|     Check name     | Status     | Explanation                                                                                                                                                                                               | Resolution                                                                         |\n| :----------------: | :--------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------- |\n| Docstring Coverage | \u26a0\ufe0f Warning | Docstring coverage is 23.53% which is insufficient. The required threshold is 80.00%. Docstring coverage is scoped to functions touched by this diff. Analyzed 17 functions across 3 files. (2 skipped: \u2026 | Write docstrings for the functions missing them to satisfy the coverage threshold. |\n\n<details>\n<summary>\u2705 Passed checks (4 passed)</summary>\n\n|         Check name         | Status   | Explanation                                                                                                                                                                                               |\n| :------------------------: | :------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |\n|     Linked Issues check    | \u2705 Passed | The PR meets the coding requirements in [`#965`]. `run.py` passes the bundle directory as `content_root`. `_run_pipeline_core` creates a non-smoke resolver from that root, while smoke mode retains fixtu\u2026 |\n| Out of Scope Changes check | \u2705 Passed | The reviewed changes stay within [`#965`]. Changes to `v1_smoke.py`, `run.py`, and `tests/cli/test_ingest_entrypoint.py` implement production workbook extraction, unavailable-data handling, artifact out\u2026 |\n|      Description Check     | \u2705 Passed | Check skipped - CodeRabbit\u2019s high-level summary is enabled.                                                                                                                                               |\n|         Title check        | \u2705 Passed | The title clearly and concisely describes the primary change: deriving production performance from the submitted workbook.                                                                                |\n\n</details>\n\n<details>\n<summary>Full details: Docstring Coverage</summary>\n\n**Explanation**\n\nDocstring coverage is 23.53% which is insufficient. The required threshold is 80.00%. Docstring coverage is scoped to functions touched by this diff. Analyzed 17 functions across 3 files. (2 skipped: 2 unsupported.)\n\n</details>\n\n</details>\n\n<!-- pre_merge_checks_walkthrough_end -->\n\n- [ ] <!-- {\"checkboxId\":\"585bb3f6-faf5-4dbf-96d2-74e382adf19a\"} --> Fix all pre-merge checks with AI\n<!-- finishing_touch_checkbox_start -->\n\n<details>\n<summary>\u2728 Finishing Touches \ud83d\udca1 1</summary>\n\n<!-- finishing_touch_suggestion:docstrings -->\n<details>\n<summary>\ud83d\udcdd Generate docstrings \ud83d\udca1</summary>\n\n- [ ] <!-- {\"checkboxId\":\"7962f53c-55bc-4827-bfbf-6a18da830691\"} --> Create stacked PR\n- [ ] <!-- {\"checkboxId\":\"3e1879ae-f29b-4d0d-8e06-d12b7ba33d98\"} --> Commit on current branch\n\n</details>\n<details>\n<summary>\ud83e\uddea Generate unit tests (beta)</summary>\n\n- [ ] <!-- {\"checkboxId\": \"f47ac10b-58cc-4372-a567-0e02b2c3d479\", \"radioGroupId\": \"utg-output-choice-group-5647880812\"} -->   Create PR with unit tests\n- [ ] <!-- {\"checkboxId\": \"6ba7b810-9dad-11d1-80b4-00c04fd430c8\", \"radioGroupId\": \"utg-output-choice-group-5647880812\"} -->   Commit unit tests in branch `codex/issue-965`\n\n</details>\n\n</details>\n\n<!-- finishing_touch_checkbox_end -->\n<!-- tips_start -->\n\n---\n\n\n\n\n<sub>Comment `@coderabbitai help` to get the list of available commands.</sub>\n\n<!-- tips_end -->",
+      "createdAt": "2026-09-12T17:29:09Z",
+      "includesCreatedEdit": true,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Inv-Man-Intake/pull/966#issuecomment-5647513098",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDORbgIAs8AAAABUJ45Nw",
+      "author": {
+        "login": "github-actions"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "Workflow state fingerprint for Keepalive Loop Reporter. Do not edit.\n\n<!-- fingerprint:Keepalive Loop Reporter:v1 {\"hash\":\"a1c6e3379c5b5c5ef11e7e959601ffcd57aff714fb1dee50ebd9b537989bf1b7\",\"ts\":\"2026-09-12T17:29:28Z\"} -->",
+      "createdAt": "2026-09-12T17:29:18Z",
+      "includesCreatedEdit": true,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Inv-Man-Intake/pull/966#issuecomment-5647513911",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDORbgIAs8AAAABUJ5B4Q",
+      "author": {
+        "login": "stranske-keepalive"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "<!-- keepalive-loop-summary -->\n## \ud83e\udd16 Keepalive Loop Status\n\n**PR #966** | Agent: **Claude** | Iteration 3/12\n\n### Current State\n| Metric | Value |\n|--------|-------|\n| Iteration progress | [###-------] 3/12 |\n| Action | run (agent-run-failed) |\n| Agent status | \u2705 ALL TASKS COMPLETE |\n| Gate | success |\n| Tasks | 20/20 complete |\n| Timeout | 45 min (default) |\n| Timeout usage | 1m elapsed (4%, 44m remaining) |\n| Keepalive | \u2705 enabled |\n| Autofix | \u274c disabled |\n\n### Last Claude Run\n| Result | Value |\n|--------|-------|\n| Status | \u274c AGENT FAILED |\n| Reason | agent-run-failed |\n| Exit code | 1 |\n| Failures | 2/3 before pause |\n\n**To retry immediately:**\n- Add the `agent:retry` label to this PR\n\n_Or wait for the next successful Gate run to automatically retry._\n\n**Claude output:**\n> Prompt preparation failed (missing prompt file).\n\n### \ud83d\udd0d Failure Classification\n| Error type | agent |\n| Error category | resource |\n| Suggested recovery | Confirm the referenced resource exists (repo, PR, branch, workflow, or file). |\n\n### \u26a0\ufe0f Failure Tracking\n| Consecutive failures | 2/3 |\n| Reason | agent-run-failed |\n\n<!-- keepalive-state:v1 {\"trace\":\"\",\"pr_number\":966,\"iteration\":3,\"max_iterations\":12,\"last_action\":\"run\",\"last_reason\":\"agent-run-failed\",\"failure\":{\"reason\":\"agent-run-failed\",\"count\":2},\"error_type\":\"agent\",\"error_category\":\"resource\",\"tasks\":{\"total\":20,\"unchecked\":0},\"gate_conclusion\":\"success\",\"failure_threshold\":3,\"running\":false,\"needs_task_reconciliation\":false,\"last_files_changed\":0,\"prev_files_changed\":0,\"rounds_without_task_completion\":0,\"consecutive_zero_activity_rounds\":1,\"complete_gate_failure_rounds\":0,\"complete_gate_failure_rounds_max\":3,\"consecutive_fix_rounds\":0,\"total_tasks_completed\":20,\"last_effort_score\":0,\"last_data_quality\":\"\",\"attempted_tasks\":[{\"task\":\"Implement workbook-derived performance extraction logic that reads performance data directly from the submitted workbook in production mode in `src/inv_man_intake/v1_smoke.py`.\",\"key\":\"implement workbook-derived performance extraction logic that reads performance data directly from the submitted workbook in production mode in `src/inv_man_intake/v1_smoke.py`.\",\"iteration\":2,\"timestamp\":\"2026-09-12T18:43:41.166Z\"},{\"task\":\"Refactor the conditional logic in `_resolve_performance_series` to create separate code paths for smoke mode versus production mode\",\"key\":\"refactor the conditional logic in `_resolve_performance_series` to create separate code paths for smoke mode versus production mode\",\"iteration\":3,\"timestamp\":\"2026-09-12T19:27:11.419Z\"},{\"task\":\"Add explicit unavailable or no-data result handling when performance rows cannot be parsed from the workbook in `src/inv_man_intake/v1_smoke.py`.\",\"key\":\"add explicit unavailable or no-data result handling when performance rows cannot be parsed from the workbook in `src/inv_man_intake/v1_smoke.py`.\",\"iteration\":3,\"timestamp\":\"2026-09-12T19:35:32.090Z\"},{\"task\":\"no-focus\",\"key\":\"no-focus\",\"iteration\":4,\"timestamp\":\"2026-09-12T20:46:37.997Z\"}],\"last_focus\":\"\",\"verification\":{\"status\":\"failed\",\"iteration\":3,\"attempt_count\":2,\"last_result\":\"failure\",\"updated_at\":\"2026-09-12T20:46:37.997Z\"},\"keepalive_enabled\":true,\"autofix_enabled\":false,\"timeout\":{\"resolved_minutes\":45,\"default_minutes\":45,\"extended_minutes\":90,\"override_minutes\":null,\"source\":\"default\",\"label\":null,\"elapsed_minutes\":1,\"remaining_minutes\":44,\"usage_ratio\":0.03591925925925926,\"warning\":null},\"attempts\":[{\"iteration\":0,\"action\":\"wait\",\"reason\":\"gate-pending-transient\",\"run_result\":\"skipped\",\"prompt_mode\":\"normal\",\"prompt_file\":\".github/codex/prompts/keepalive_next_task.md\",\"error_category\":\"unknown\",\"error_type\":\"infrastructure\",\"tasks_total\":20,\"tasks_unchecked\":20,\"tasks_completed_delta\":0,\"all_complete\":false},{\"iteration\":1,\"action\":\"run\",\"reason\":\"ready\",\"run_result\":\"success\",\"prompt_mode\":\"normal\",\"prompt_file\":\".github/codex/prompts/keepalive_next_task.md\",\"gate\":\"success\",\"tasks_total\":20,\"tasks_unchecked\":20,\"tasks_completed_delta\":0,\"all_complete\":false},{\"iteration\":2,\"action\":\"run\",\"reason\":\"agent-run-skipped\",\"run_result\":\"skipped\",\"prompt_mode\":\"normal\",\"prompt_file\":\".github/codex/prompts/keepalive_next_task.md\",\"gate\":\"cancelled\",\"error_category\":\"transient\",\"error_type\":\"infrastructure\",\"tasks_total\":20,\"tasks_unchecked\":20,\"tasks_completed_delta\":0,\"all_complete\":false},{\"iteration\":1,\"action\":\"stop\",\"reason\":\"zero-activity-infrastructure\",\"run_result\":\"skipped\",\"prompt_mode\":\"normal\",\"prompt_file\":\".github/codex/prompts/keepalive_next_task.md\",\"gate\":\"success\",\"error_category\":\"unknown\",\"error_type\":\"infrastructure\",\"tasks_total\":20,\"tasks_unchecked\":20,\"tasks_completed_delta\":0,\"all_complete\":false},{\"iteration\":2,\"action\":\"run\",\"reason\":\"ready\",\"run_result\":\"success\",\"prompt_mode\":\"normal\",\"prompt_file\":\".github/codex/prompts/keepalive_next_task.md\",\"gate\":\"success\",\"tasks_total\":20,\"tasks_unchecked\":20,\"tasks_completed_delta\":0,\"all_complete\":false},{\"iteration\":3,\"action\":\"run\",\"reason\":\"agent-run-skipped\",\"run_result\":\"skipped\",\"prompt_mode\":\"normal\",\"prompt_file\":\".github/codex/prompts/keepalive_next_task.md\",\"gate\":\"success\",\"error_category\":\"transient\",\"error_type\":\"infrastructure\",\"tasks_total\":20,\"tasks_unchecked\":20,\"tasks_completed_delta\":0,\"all_complete\":false},{\"iteration\":3,\"action\":\"run\",\"reason\":\"ready\",\"run_result\":\"success\",\"prompt_mode\":\"normal\",\"prompt_file\":\".github/codex/prompts/keepalive_next_task.md\",\"gate\":\"success\",\"tasks_total\":20,\"tasks_unchecked\":20,\"tasks_completed_delta\":0,\"all_complete\":false},{\"iteration\":3,\"action\":\"wait\",\"reason\":\"gate-not-success\",\"run_result\":\"skipped\",\"prompt_mode\":\"normal\",\"prompt_file\":\".github/codex/prompts/keepalive_next_task.md\",\"error_category\":\"unknown\",\"error_type\":\"infrastructure\",\"tasks_total\":20,\"tasks_unchecked\":0,\"tasks_completed_delta\":20,\"all_complete\":true},{\"iteration\":3,\"action\":\"wait\",\"reason\":\"gate-cancelled-transient\",\"run_result\":\"skipped\",\"prompt_mode\":\"normal\",\"prompt_file\":\".github/codex/prompts/keepalive_next_task.md\",\"gate\":\"cancelled\",\"error_category\":\"transient\",\"error_type\":\"infrastructure\",\"tasks_total\":20,\"tasks_unchecked\":0,\"tasks_completed_delta\":0,\"all_complete\":true},{\"iteration\":4,\"action\":\"run\",\"reason\":\"agent-run-failed\",\"run_result\":\"failure\",\"prompt_mode\":\"verify\",\"prompt_file\":\".github/codex/prompts/verifier_acceptance_check.md\",\"gate\":\"success\",\"error_category\":\"resource\",\"error_type\":\"agent\",\"tasks_total\":20,\"tasks_unchecked\":0,\"tasks_completed_delta\":0,\"all_complete\":true}],\"attention\":{\"key\":\"agent-run-failed|failure|resource|agent|1|2d9a7e6a8daf997e715697c18320b7abadf2e6debb3d25d9d1006e34b694c427\",\"disposition\":\"automation-retry\",\"owner\":\"automation\",\"first_seen_at\":\"2026-09-12T20:44:58.988Z\",\"challenge_due_at\":null,\"boundary_fingerprint\":\"\",\"boundary_detail\":\"\",\"next_action\":\"Route to automation retry/backoff, CI repair, alternate agent, or review fallback.\"},\"version\":\"v1\"} -->",
+      "createdAt": "2026-09-12T17:29:44Z",
+      "includesCreatedEdit": true,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Inv-Man-Intake/pull/966#issuecomment-5647516129",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDORbgIAs8AAAABUJ5CLQ",
+      "author": {
+        "login": "stranske-keepalive"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "<!-- keepalive-work-log -->\n<details><summary><strong>Keepalive Work Log</strong> (click to expand)</summary>\n\n| # | Time (UTC) | Agent | Action | Result | Files | Tasks | Progress | Commit | Gate |\n|---|------------|-------|--------|--------|-------|-------|----------|--------|------|\n| 0 | 2026-09-12 17:29:44 | Codex | wait (gate-pending-transient) | skipped | \u2014 | 0 | 0/20 | \u2014 | \u2014 |\n| 1 | 2026-09-12 17:34:06 | Codex | run (ready) | success | 32 file(s) | 0 | 0/20 | \u2014 | success |\n| 1 | 2026-09-12 17:34:52 | Codex | run (agent-run-skipped) | skipped | \u2014 | 0 | 0/20 | \u2014 | success |\n| 1 | 2026-09-12 18:31:10 | Codex | run (agent-run-skipped) | skipped | \u2014 | 0 | 0/20 | \u2014 | cancelled |\n| 1 | 2026-09-12 18:39:24 | Codex | stop (zero-activity-infrastructure) | skipped | \u2014 | 0 | 0/20 | \u2014 | success |\n| 2 | 2026-09-12 18:43:41 | Codex | run (ready) **retry** | success | 32 file(s) | 0 | 0/20 | \u2014 | success |\n| 2 | 2026-09-12 19:27:11 | Codex | run (agent-run-skipped) | skipped | \u2014 | 0 | 0/20 | \u2014 | success |\n| 3 | 2026-09-12 19:35:32 | Codex | run (ready) | success | 32 file(s) | 0 | 0/20 | \u2014 | success |\n| 3 | 2026-09-12 20:35:50 | Codex | wait (gate-not-success) | skipped | \u2014 | +20 | 20/20 | \u2014 | \u2014 |\n| 3 | 2026-09-12 20:37:02 | Codex | wait (gate-cancelled-transient) | skipped | \u2014 | 0 | 20/20 | \u2014 | cancelled |\n| 3 | 2026-09-12 20:44:59 | Claude | run (agent-run-failed) | failure | \u2014 | 0 | 20/20 | \u2014 | success |\n| 3 | 2026-09-12 20:46:38 | Claude | run (agent-run-failed) **retry** | failure | \u2014 | 0 | 20/20 | \u2014 | success |\n</details>",
+      "createdAt": "2026-09-12T17:29:45Z",
+      "includesCreatedEdit": true,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Inv-Man-Intake/pull/966#issuecomment-5647516205",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDORbgIAs8AAAABUJ5Cjg",
+      "author": {
+        "login": "github-actions"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "Workflow state fingerprint for Agents Gate Followups. Do not edit.\n\n<!-- fingerprint:Agents Gate Followups:v1 {\"hash\":\"e422387c5b0cef170b2db1d320196f96b166326bf54a5b26c542777f5572ece7\",\"ts\":\"2026-09-12T20:35:50Z\"} -->",
+      "createdAt": "2026-09-12T17:29:46Z",
+      "includesCreatedEdit": true,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Inv-Man-Intake/pull/966#issuecomment-5647516302",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDORbgIAs8AAAABUJ5Jjg",
+      "author": {
+        "login": "github-actions"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "Runner dispatch state for codex on PR #966. Do not edit.\n\n<!-- runner-dispatch:codex:966:v1 base64:eyJjb21wbGV0ZWRfYXQiOiIyMDI2LTA5LTEyVDE5OjM1OjIzWiIsImhlYWRfc2hhIjoiZmIyNmIzODZiNmMxOTIzNTVlNTA1NTA4Mzg4NWRjODRlODRkNWIwMCIsImtleSI6ImQwOTFlNmM3OGU4ZWI5ODViMGNiYzc2ZDJkNDZlMjUzNTM4MDE5ZDkxYzFiNjUxMWM1NTNiNTQ0NmEyYTc1NDgiLCJwcl9udW1iZXIiOjk2NiwicHJvdmlkZXIiOiJjb2RleCIsInJlc3VsdCI6eyJlcnJvciI6IiIsImZpbmFsX21lc3NhZ2VfY2hhcnMiOjM0MiwiZmluYWxfbWVzc2FnZV9zaGEyNTYiOiJlNDBjNzlmNzZmZTgxNTc4YTZjMDM3NDVmZTBhMDRiZTY4ZmVjOGIzZjE4OTM1ZjczNzM3YzY1NDEwMDhkMGNkIiwicHJvdmlkZXIiOiJjb2RleCIsInNjaGVtYSI6InJ1bm5lci1yZXN1bHQtc3VtbWFyeS92MSIsInN1Y2Nlc3MiOnRydWUsInN1bW1hcnkiOiJCbG9ja2VkIGJ5IHRoZSBleGVjdXRpb24gZW52aXJvbm1lbnQ6IGV2ZW4gYHB3ZGAgZmFpbHMgd2l0aCBgYndyYXA6IGxvb3BiYWNrOiBGYWlsZWQgUlRNX05FV0FERFI6IE9wZXJhdGlvbiBub3QgcGVybWl0dGVkYC4gSSBjb3VsZG5cdTIwMTl0IGluc3BlY3QgdGhlIGNoZWNrb3V0LCBlZGl0IGNvZGUsIHJ1biB0ZXN0cyBvciBCbGFjaywgb3IgY3JlYXRlIHRoZSByZXF1aXJlZCBjb21taXQuIE5vIHRhc2tzIHdlcmUgbWFya2VkIGNvbXBsZXRlLiBQbGVhc2UgcmVydW4gd2l0aCBhIGZ1bmN0aW9uaW5nIHNhbmRib3ggc28gSSBjYW4gaW1wbGVtZW50IGFuZCB2ZXJpZnkgdGhlIHJlbWFpbmluZyBjaGFuZ2VzLiIsInRydW5jYXRlZCI6ZmFsc2V9LCJzdGFydGVkX2F0IjoiMjAyNi0wOS0xMlQxOTozMDo1NloiLCJzdGF0dXMiOiJjb21wbGV0ZWQifQ== -->",
+      "createdAt": "2026-09-12T17:30:07Z",
+      "includesCreatedEdit": true,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Inv-Man-Intake/pull/966#issuecomment-5647518094",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDORbgIAs8AAAABUJ5dCQ",
+      "author": {
+        "login": "stranske"
+      },
+      "authorAssociation": "OWNER",
+      "body": "Closer handoff for follow-up #965, parent #942 and merged #955: recovery worker 34708330522 succeeded and opened this ready PR. Current head `078c29091b05561cf3676f446c68bbcd786bd453` contains only `.agents/issue-965-ledger.yml`; it is bootstrap, not completed product implementation. Keepalive is enabled, autofix is present, and exactly one concrete route (`agent:codex`) is retained. The runner-dispatch marker at 2026-09-12T17:30:06Z reports a pending Codex runner for this exact head. Do not duplicate the worker/PR while it is active.\n\nImplement and test workbook-derived performance or explicit unavailable output, with no production fixture fallback and no fabricated deck/benchmark comparison series. The issue body now passes the live canonical validator and uses the actual fixture return values from main. No native auto-merge is armed. Do not merge bootstrap-only work: after the final implementation push, require seven full minutes on its unchanged head, complete expected/required CI and zero active non-outdated review threads, then verify:compare and disposition both #965 and #942. Next closer review is due by 2026-09-12T18:20:00Z or peer relay.\n",
+      "createdAt": "2026-09-12T17:31:03Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Inv-Man-Intake/pull/966#issuecomment-5647523081",
+      "viewerDidAuthor": true
+    },
+    {
+      "id": "IC_kwDORbgIAs8AAAABUKPSbA",
+      "author": {
+        "login": "stranske"
+      },
+      "authorAssociation": "OWNER",
+      "body": "Closer recovered this existing PR locally after runner 34708378494 reported success but its durable result admitted that every shell command failed with `bwrap: loopback: Failed RTM_NEWADDR: Operation not permitted`. The prior head was bootstrap-only; no live worker was raced and no duplicate PR was created.\n\nThe implementation now extracts canonical workbook rows from persisted submitted bytes, emits monthly values and metrics (or explicit unavailable output) in run.json, and keeps fixture returns and reference scores smoke-only. No production deck or benchmark series is fabricated. The README documents supported headers, decimal units and null score semantics.\n\nValidation: 960 backend tests passed, 1 skipped; 17 CLI tests passed; mypy on changed source files, repository Ruff and Black passed. The named external-layout test fails under each deliberate break (fixture-performance fallback and fixed workbook filename), then passes restored. Browser wrappers cannot collect their Playwright target in this local environment; a shell mock test reproduces the host heredoc hang. Those checks still require CI; no all-checks-green claim is made.\n\nKeep #965 and parent #942 open until exact-head CI/review and post-merge verify:compare disposition. The seven-minute review floor starts with this push; native auto-merge remains disabled. Next closer wake: inspect the unchanged head, required/expected checks and all active non-outdated review threads, repair any findings, then merge and verify if eligible.\n\n@coderabbitai review\n",
+      "createdAt": "2026-09-12T18:35:26Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Inv-Man-Intake/pull/966#issuecomment-5647880812",
+      "viewerDidAuthor": true
+    },
+    {
+      "id": "IC_kwDORbgIAs8AAAABUKPa1A",
+      "author": {
+        "login": "coderabbitai"
+      },
+      "authorAssociation": "NONE",
+      "body": "<!-- This is an auto-generated reply by CodeRabbit -->\n<!-- CodeRabbit review command invocation: v2:11dd71a3eb131e33dc285930236ca18034c29b7539ef2582d2fe4069df863f53 -->\n`@stranske` I will review pull request `#966` against the stated production-path and regression requirements.\n\n<details>\n<summary>\u2705 Action performed</summary>\n\nReview finished.\n\n> Note: CodeRabbit is an incremental review system and does not re-review already reviewed commits. This command is applicable only when automatic reviews are paused.\n\n</details>",
+      "createdAt": "2026-09-12T18:35:49Z",
+      "includesCreatedEdit": true,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Inv-Man-Intake/pull/966#issuecomment-5647882964",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDORbgIAs8AAAABUKheWQ",
+      "author": {
+        "login": "stranske"
+      },
+      "authorAssociation": "OWNER",
+      "body": "Addressed both CodeRabbit findings in `fb26b386b6c192355e5055083885dc84e84d5b00`: `run.json` now emits the normalized month-end series used by `compute_metrics`, and README explicitly requires first-row workbook headers.\n\nThe external-layout CLI regression now covers period-end and mid-month Excel/ISO dates. Before the fix it failed on `2024-01-15` versus expected `2024-01-31`; after the fix, all 88 CLI/performance tests pass. Ruff, Black, source mypy and diff checks pass. The initial targeted red run also reported the global coverage floor because it was a subset; the concrete date assertion failed independently. Focused validation used `--no-cov`; full coverage remains required in CI.\n\nPrior full CI `34711659436` passed all ten jobs, including Static SPA browser E2E, on old head `07fd6232`. New full CI was dispatched exactly once as [34714283262](https://github.com/stranske/Inv-Man-Intake/actions/runs/34714283262), targeting `fb26b386`; Gate is also running. Old-head success is not new-head merge evidence.\n\nPush confirmed at 2026-09-12T19:28:06.079442Z; earliest permissible merge is 2026-09-12T19:35:06.079442Z. Native auto-merge remains disabled. Next closer wake (by 20:20 UTC or peer relay): re-read the exact head, all required/expected checks and review threads; handle new findings, then merge only after the window and clean gates, apply `verify:compare`, and disposition follow-up #965 and parent #942 from the actual durable report. Both issues remain open. No human decision is required.\n\nThe two original threads are now outdated and have thread-specific fix evidence. Please independently confirm the fixes before resolving them.\n\n@coderabbitai resolve\n",
+      "createdAt": "2026-09-12T19:30:13Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Inv-Man-Intake/pull/966#issuecomment-5648178777",
+      "viewerDidAuthor": true
+    },
+    {
+      "id": "IC_kwDORbgIAs8AAAABUKhuQg",
+      "author": {
+        "login": "coderabbitai"
+      },
+      "authorAssociation": "NONE",
+      "body": "<!-- This is an auto-generated reply by CodeRabbit -->\n<details>\n<summary>\ud83e\udde9 Analysis chain</summary>\n\n\ud83c\udfc1 Script executed:\n\n```shell\n#!/bin/bash\nset -euo pipefail\n\necho '== HEAD =='\ngit rev-parse HEAD\ngit status --short\ngit diff --check HEAD^ HEAD\n\necho '== Changed files =='\ngit diff --name-only HEAD^ HEAD\n\necho '== Relevant patch =='\ngit diff --unified=80 HEAD^ HEAD -- README.md src/inv_man_intake/run.py src/inv_man_intake/v1_smoke.py tests/cli/test_ingest_entrypoint.py\n\necho '== CodeRabbit review threads =='\ngh api graphql -F owner='stranske' -F name='Inv-Man-Intake' -F number=966 -f query='\nquery($owner: String!, $name: String!, $number: Int!) {\n  repository(owner: $owner, name: $name) {\n    pullRequest(number: $number) {\n      reviewThreads(first: 100) {\n        nodes {\n          id\n          isResolved\n          isOutdated\n          comments(first: 20) {\n            nodes {\n              id\n              author { login }\n              body\n              path\n              line\n              originalLine\n              commit { oid }\n            }\n          }\n        }\n      }\n    }\n  }\n}' --jq '.data.repository.pullRequest.reviewThreads.nodes[] | select(.comments.nodes[]?.author.login == \"coderabbitai\")'\n\necho '== Check status for exact HEAD =='\ngh pr checks 966 --repo strakske/Inv-Man-Intake || true\n```\n\nLength of output: 35623\n\n---\n\n</details>\n\n`@stranske` The current diff verifies both fixes.\n\n`README.md` now requires `as_of` and `value` in the worksheet first row.\n\n`run.json` now serializes `normalized.monthly.points`. The updated CLI test checks period-end and mid-month dates.\n\nThe exact-head check query was inconclusive because the repository name contained a typo. Please use the new-head CI results for merge eligibility.\n\n<details>\n<summary>\u2705 Action performed</summary>\n\nComments resolved. Approval is disabled; enable `reviews.request_changes_workflow` to allow explicit top-level `@coderabbitai resolve` or `@coderabbitai approve` commands.\n\n</details>",
+      "createdAt": "2026-09-12T19:30:56Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Inv-Man-Intake/pull/966#issuecomment-5648182850",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDORbgIAs8AAAABUK1BMw",
+      "author": {
+        "login": "stranske"
+      },
+      "authorAssociation": "OWNER",
+      "body": "Exact-head merge audit for `fb26b386b6c192355e5055083885dc84e84d5b00`: full [CI 34714283262](https://github.com/stranske/Inv-Man-Intake/actions/runs/34714283262) passed all ten jobs, including Observability Smoke, Static SPA browser E2E, lint/format, Ruff, mypy and Python 3.12/3.13. Required `Gate / gate` passed in [34714247416](https://github.com/stranske/Inv-Man-Intake/actions/runs/34714247416). Both CodeRabbit threads are independently resolved; head is MERGEABLE/CLEAN, and the recorded seven-minute floor was 19:35:06 UTC.\n\nThe absent-check reporter lives under `scripts/`, not the documented mirror root. Its repository binding was set to Inv-Man-Intake for a read-only run, with this repository's ratchet path; no ratchet was changed. It found 50 reported check names and 11 historical absences. Each is accounted for against the unchanged workflow files on this head:\n\n- `Fetch PR context` and `PR meta handler` are reusable-workflow caller names in `agents-80-pr-event-hub.yml`. Actual children reported as `Fetch PR context / Fetch PR Context` and `PR meta handler / ...`; context fetch and body update passed, and the other lifecycle children explicitly skipped. Event Hub 34717117902 also passed on this exact head.\n- `Resolve Context`, `autofix`, and `Record autofix dispatch completion` belong to `autofix.yml`, triggered on workflow completion or a label, not synchronize. The actual post-CI Autofix run [34714437722](https://github.com/stranske/Inv-Man-Intake/actions/runs/34714437722) succeeded on default-branch SHA `6055dfbd`, as expected for `workflow_run`; these are repair automation, not unexecuted product checks on the PR head.\n- `gate` and `auto-pilot` belong to `agents-auto-pilot.yml`, whose PR triggers are labeled/closed, not synchronize. The required CI `Gate / gate` is a distinct check and passed.\n- `check`, `verifier / Run post-merge verifier`, and `Persist verifier state fingerprint` are Agents Verifier lifecycle jobs. Its trigger is a verification label or manual dispatch for a merged PR; no verification label is present yet. The other generic `check` job is issue-format guard, triggered by issue events, not PR synchronize.\n- `create-new-pr` belongs to `agents-verify-to-new-pr.yml`, gated by `verify:create-new-pr` on an already merged PR. This existing follow-up has no such label; it is not a prerequisite for merging it.\n\nThese are explicit lifecycle/caller-name absences, not missing validation. No checks, permissions or workflows were changed or bypassed. The five-file diff implements the stated submitted-workbook/unavailable contract and the regression tests; the status checklist is restored to reflect that implementation and the recorded red/green mutation evidence. After the final live gate re-query, merge is eligible, followed by `verify:compare`. Keep #965 and parent #942 open until the durable verifier report is dispositioned.\n",
+      "createdAt": "2026-09-12T20:29:16Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Inv-Man-Intake/pull/966#issuecomment-5648498995",
+      "viewerDidAuthor": true
+    },
+    {
+      "id": "IC_kwDORbgIAs8AAAABUK1taA",
+      "author": {
+        "login": "stranske"
+      },
+      "authorAssociation": "OWNER",
+      "body": "Merged #966 at 2026-09-12T20:29:22Z as `7ffcceb536ed6255719973b3d5d5ab254734b080`, from unchanged head `fb26b386b6c192355e5055083885dc84e84d5b00`. The final live re-query found 62 successful or explicitly skipped contexts, required Gate PASS, MERGEABLE/CLEAN and zero active unresolved review threads, after the 19:35:06 UTC review floor. [The premerge evidence](https://github.com/stranske/Inv-Man-Intake/pull/966#issuecomment-5648498995) explicitly accounts for historical check-name absences.\n\nApplied `verify:compare` once. Agents Verifier runs [34717251551](https://github.com/stranske/Inv-Man-Intake/actions/runs/34717251551) and [34717285964](https://github.com/stranske/Inv-Man-Intake/actions/runs/34717285964) are queued on this head after label events; no manual workflow redispatch was made. There is no new durable report yet. Source #965 was reopened after GitHub auto-closed it; parent #942 remains open.\n\nNext closer wake, by 21:20 UTC or peer relay: inspect these runs and the actual provider report, adjudicate any concrete findings against the merged five-file diff and recorded regression evidence, then close #965 and #942 when their acceptance and verification debt are resolved. Do not duplicate the existing follow-up or treat a workflow fingerprint as PASS. No human decision is required.\n",
+      "createdAt": "2026-09-12T20:31:29Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Inv-Man-Intake/pull/966#issuecomment-5648510312",
+      "viewerDidAuthor": true
+    },
+    {
+      "id": "IC_kwDORbgIAs8AAAABUK5qEA",
+      "author": {
+        "login": "github-actions"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "Runner dispatch state for claude on PR #966. Do not edit.\n\n<!-- runner-dispatch:claude:966:v1 base64:eyJjb21wbGV0ZWRfYXQiOiIyMDI2LTA5LTEyVDIwOjQ2OjI5WiIsImhlYWRfc2hhIjoiZmIyNmIzODZiNmMxOTIzNTVlNTA1NTA4Mzg4NWRjODRlODRkNWIwMCIsImtleSI6IjYzZDU0NWI1ODczMzEzNjg5NGQ0NzJjYzk0MGFhZGQ3NTZiNDk1NWNiY2ZlNTc3NDdhMTkyMTZkMTNlMTgwODYiLCJwcl9udW1iZXIiOjk2NiwicHJvdmlkZXIiOiJjbGF1ZGUiLCJyZXN1bHQiOnsiZXJyb3IiOiJQcm9tcHQgcHJlcGFyYXRpb24gZmFpbGVkIChtaXNzaW5nIHByb21wdCBmaWxlKS4iLCJmaW5hbF9tZXNzYWdlX2NoYXJzIjo0OCwiZmluYWxfbWVzc2FnZV9zaGEyNTYiOiIwZjJlOGI3NjEzOTI1YjM0Njc4YzNmMmIzNzk2OWFkMmZmNzA3ZmM2MWQ5NzZmYjg4YTMxNjYxYWIwOTU1NDNlIiwicHJvdmlkZXIiOiJjbGF1ZGUiLCJzY2hlbWEiOiJydW5uZXItcmVzdWx0LXN1bW1hcnkvdjEiLCJzdWNjZXNzIjpmYWxzZSwic3VtbWFyeSI6IlByb21wdCBwcmVwYXJhdGlvbiBmYWlsZWQgKG1pc3NpbmcgcHJvbXB0IGZpbGUpLiIsInRydW5jYXRlZCI6ZmFsc2V9LCJzdGFydGVkX2F0IjoiMjAyNi0wOS0xMlQyMDo0NToxOFoiLCJzdGF0dXMiOiJlcnJvciJ9 -->",
+      "createdAt": "2026-09-12T20:43:41Z",
+      "includesCreatedEdit": true,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Inv-Man-Intake/pull/966#issuecomment-5648574992",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDORbgIAs8AAAABUK53ag",
+      "author": {
+        "login": "github-actions"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "## LLM Evaluation Report\n\n**Verdict:** PASS\n\n**Summary:** The follow-up addresses the prior production-versus-smoke leakage concern. Production ingestion resolves workbook input through the supplied content root and derives performance from the submitted workbook, with an unavailable/null outcome when usable performance rows cannot be obtained. Smoke behavior remains isolated to the fixture-performance path. The change also documents the workbook contract and adds regression coverage for a non-fixture production bundle, unavailable parsing behavior, and retained smoke fixture values. This provides an enforceable guard against reintroducing fixed fixture workbook/path fallback into non-smoke ingestion.\n\n### Scores\n| Criterion | Score |\n|-----------|-------|\n| Correctness | 9.0/10 |\n| Completeness | 9.0/10 |\n| Quality | 9.0/10 |\n| Testing | 9.0/10 |\n| Risks | 9.0/10 |\n\n### \ud83d\udd0d LangSmith Trace\n[View detailed evaluation trace](https://smith.langchain.com/r/lc_run--01a0975d-04d2-7ee3-bf76-4ae112375d7c-0)\n",
+      "createdAt": "2026-09-12T20:44:21Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Inv-Man-Intake/pull/966#issuecomment-5648578410",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDORbgIAs8AAAABUK57sw",
+      "author": {
+        "login": "github-actions"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "Workflow state fingerprint for Agents Verifier. Do not edit.\n\n<!-- fingerprint:Agents Verifier:v1 {\"hash\":\"abd072756aa08420bdafff4c03b90a300518a24257072ed964b4b2e6f2106f48\",\"ts\":\"2026-09-12T21:29:12Z\"} -->",
+      "createdAt": "2026-09-12T20:44:34Z",
+      "includesCreatedEdit": true,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Inv-Man-Intake/pull/966#issuecomment-5648579507",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDORbgIAs8AAAABUK5-tQ",
+      "author": {
+        "login": "github-actions"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "<!-- claude-failure-notification -->\n## Claude keepalive run failed\n\n| Field | Value |\n|-------|-------|\n| Exit Code | `1` |\n| Error Category | `unknown` |\n| Error Type | `unknown` |\n| Run | [View logs](https://github.com/stranske/Inv-Man-Intake/actions/runs/34717997578) |\n\n### Suggested Recovery\n\nretry\n\n### What to do\n\n1. Check the [workflow logs](https://github.com/stranske/Inv-Man-Intake/actions/runs/34717997578) for detailed error output\n2. If this is a configuration issue, update the relevant settings\n3. If the error persists, consider adding the `needs-human` label for manual review\n4. Re-run the workflow once the issue is resolved\n\n<details>\n<summary>Output summary</summary>\n\n```\nPrompt preparation failed (missing prompt file).\n```\n\n</details>",
+      "createdAt": "2026-09-12T20:44:43Z",
+      "includesCreatedEdit": true,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Inv-Man-Intake/pull/966#issuecomment-5648580277",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDORbgIAs8AAAABULHhcQ",
+      "author": {
+        "login": "stranske"
+      },
+      "authorAssociation": "OWNER",
+      "body": "Closer verifier recovery for #966, follow-up #965 and parent #942:\n\nThe durable [LLM evaluation](https://github.com/stranske/Inv-Man-Intake/pull/966#issuecomment-5648578410) is PASS. The intended comparison run [34717251551](https://github.com/stranske/Inv-Man-Intake/actions/runs/34717251551) was cancelled at the checkbox step; its comparison and report steps never ran. Later evaluation run 34717285964 succeeded. These are different modes, so the evaluation PASS does not establish that the requested provider comparison completed.\n\nRe-read both source bodies, the current five-file PR diff, review-thread state and prior exact-head CI/mutation evidence. Production now reads submitted workbook bytes through content_root, returns explicit unavailable data for unsupported rows, and preserves smoke-only fixture returns. The external-layout test forbids fixture helpers, renames the submitted workbook and verifies that changed workbook returns change output artifacts. Prior CodeRabbit findings are independently resolved. The post-merge Claude keepalive failure is a missing-prompt error, not a product finding or human decision.\n\nAfter confirming no verifier run remained active, dispatched exactly one manual compare recovery: [34719937922](https://github.com/stranske/Inv-Man-Intake/actions/runs/34719937922), inputs pr_number=966, mode=compare, provider=auto. It is in progress on main merge SHA 7ffcceb536ed6255719973b3d5d5ab254734b080 and verifies PR head fb26b386b6c192355e5055083885dc84e84d5b00. The fingerprint includes verification mode, so the evaluate fingerprint does not substitute for compare. No label cycling, duplicated implementation PR, source change or credential change.\n\nKeep #965 and #942 open. Next closer wake, by 2026-09-12T22:20:00Z or peer relay: inspect this existing run and its durable Provider Comparison Report, audit any concrete findings against the merged implementation and recorded tests, then close both sources if disposition is complete. Do not redispatch while this run is active or interpret fingerprint-only success as PASS. No human action is required.\n",
+      "createdAt": "2026-09-12T21:27:32Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Inv-Man-Intake/pull/966#issuecomment-5648802161",
+      "viewerDidAuthor": true
+    },
+    {
+      "id": "IC_kwDORbgIAs8AAAABULH-lw",
+      "author": {
+        "login": "github-actions"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "## Provider Comparison Report\n\n### Provider Summary\n| Provider | Model | Verdict | Confidence | Summary |\n| --- | --- | --- | --- | --- |\n| openai | gpt-5.6-terra | PASS | 90% | The follow-up addresses the prior production-path leakage concern. Performance resolution now separates smoke behavior from non-smoke ingestion: smoke mode retains the known fixture series, while p... |\n| anthropic | claude-sonnet-5 | PASS | 62% | This follow-up PR (chain depth 1) targets the specific concerns raised in the prior CONCERNS verdict on PR #955: separating smoke-mode and production-mode logic in _resolve_performance_series, deri... |\n\n<details>\n<summary>\ud83d\udccb Full Provider Details (click to expand)</summary>\n\n#### openai\n- **Model:** gpt-5.6-terra\n- **Verdict:** PASS\n- **Confidence:** 90%\n- **Scores:**\n  - Correctness: 9.0/10\n  - Completeness: 9.0/10\n  - Quality: 9.0/10\n  - Testing: 9.0/10\n  - Risks: 9.0/10\n- **Summary:** The follow-up addresses the prior production-path leakage concern. Performance resolution now separates smoke behavior from non-smoke ingestion: smoke mode retains the known fixture series, while production mode derives performance from the workbook resolved under the content_root supplied by run.py and returns no performance data when parsing is unavailable. The production resolution changes remove fixture-directory, fixed-filename, and repository-relative fallback behavior. Regression coverage adds a non-fixture bundle outside the repository fixture layout, verifies workbook-derived artifact values rather than the hard-coded fixture series, covers unavailable workbook performance parsing, and confirms smoke-mode fixture values remain unchanged. The implementation and tests collectively satisfy the stated acceptance criteria without introducing material compatibility, security, or maintainability risks.\n\n#### anthropic\n- **Model:** claude-sonnet-5\n- **Verdict:** PASS\n- **Confidence:** 62%\n- **Scores:**\n  - Correctness: 7.0/10\n  - Completeness: 8.0/10\n  - Quality: 7.0/10\n  - Testing: 7.0/10\n  - Risks: 6.0/10\n- **Summary:** This follow-up PR (chain depth 1) targets the specific concerns raised in the prior CONCERNS verdict on PR #955: separating smoke-mode and production-mode logic in _resolve_performance_series, deriving performance data from the submitted workbook via content_root (not fixture paths/filenames), and adding regression tests to guard against fixture-value/fixture-path regressions in production ingestion. The file changes (v1_smoke.py +133/-44, run.py +10/-5, tests +135/-6, plus README and ledger additions) are consistent with the scope of work described in the task list, and all PR-level acceptance criteria are marked complete. CI (ci.yml and pr-00-gate.yml) passed successfully on the merge commit, which is corroborating evidence of no regressions. Per instructions, testing gaps alone do not block a PASS, and the correctness/completeness of the targeted fix is the primary criterion \u2014 the available evidence (task completion, file diff shape, and passing CI) supports that the concerns from the prior iteration were addressed. Confidence is moderate rather than high because the full diff content (actual code text) was not available for direct line-by-line verification of the removal of fixture fallback logic and the correctness of workbook-parsing behavior; this assessment relies substantially on the PR's own checklist and diff statistics rather than raw code inspection. The unchecked state of the mirrored tracking issue #965 is noted as an external/metadata discrepancy rather than a functional defect in this PR's code.\n- **Concerns:**\n  - Only a diff summary (not full diff content) was available for this review, so line-level verification that _fixture_performance_series() calls and hardcoded fixture paths/filenames were fully removed from the production code path in v1_smoke.py could not be directly confirmed \u2014 this is inferred from the checklist and file-size changes rather than direct code inspection.\n  - The linked tracking issue #965 still shows all tasks as unchecked, which is inconsistent with the PR's own checklist (all checked) and merged status; this is likely a metadata/sync gap on the issue rather than a code defect, but it introduces ambiguity about whether the issue should be closed (external evidence/action, not a code defect in this diff).\n  - v1_smoke.py received a substantial refactor (+133/-44 lines) touching core ingestion logic; while the PR description and task list indicate this was scoped correctly (separate smoke vs. production code paths, workbook-derived extraction, content_root-only resolution), a full audit of edge cases (e.g., partially valid workbooks, malformed performance rows) is not fully verifiable from the summary alone.\n  - Test additions (+135/-6 lines in test_ingest_entrypoint.py) appear to match the required regression scenarios (non-fixture bundle, fixture-value absence assertions, smoke-mode unchanged behavior, unavailable/None handling), but exact assertion correctness against real extracted values could not be independently verified without full test source.\n\n</details>\n\n### Agreement\n- Verdict: PASS (all providers)\n- Completeness: scores within 1 point (avg 8.5/10, range 8.0-9.0)\n\n### Disagreement\n| Dimension | openai | anthropic |\n| --- | --- | --- |\n| Correctness | 9.0/10 | 7.0/10 |\n| Quality | 9.0/10 | 7.0/10 |\n| Testing | 9.0/10 | 7.0/10 |\n| Risks | 9.0/10 | 6.0/10 |\n\n### Unique Insights\n- openai: The follow-up addresses the prior production-path leakage concern. Performance resolution now separates smoke behavior from non-smoke ingestion: smoke mode retains the known fixture series, while production mode derives performance from the workbook resolved under the content_root supplied by run...\n- anthropic: Only a diff summary (not full diff content) was available for this review, so line-level verification that _fixture_performance_series() calls and hardcoded fixture paths/filenames were fully removed from the production code path in v1_smoke.py could not be directly confirmed \u2014 this is inferred from the checklist and file-size changes rather than direct code inspection.; The linked tracking issue #965 still shows all tasks as unchecked, which is inconsistent with the PR's own checklist (all checked) and merged status; this is likely a metadata/sync gap on the issue rather than a code defect, but it introduces ambiguity about whether the issue should be closed (external evidence/action, not a code defect in this diff).; v1_smoke.py received a substantial refactor (+133/-44 lines) touching core ingestion logic; while the PR description and task list indicate this was scoped correctly (separate smoke vs. production code paths, workbook-derived extraction, content_root-only resolution), a full audit of edge cases (e.g., partially valid workbooks, malformed performance rows) is not fully verifiable from the summary alone.; Test additions (+135/-6 lines in test_ingest_entrypoint.py) appear to match the required regression scenarios (non-fixture bundle, fixture-value absence assertions, smoke-mode unchanged behavior, unavailable/None handling), but exact assertion correctness against real extracted values could not be independently verified without full test source.\n\n### \ud83d\udd0d LangSmith Traces\n- [openai](https://smith.langchain.com/r/lc_run--01a09785-a25c-7f93-9514-cc8efb606903-0)\n- [anthropic](https://smith.langchain.com/r/lc_run--01a09785-c376-72f3-9127-60fd4b2da185-0)\n\n",
+      "createdAt": "2026-09-12T21:29:00Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Inv-Man-Intake/pull/966#issuecomment-5648809623",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDORbgIAs8AAAABULbJ1A",
+      "author": {
+        "login": "stranske"
+      },
+      "authorAssociation": "OWNER",
+      "body": "Closer acceptance disposition for #966, follow-up #965 and parent #942.\n\nThe requested [comparison run 34719937922](https://github.com/stranske/Inv-Man-Intake/actions/runs/34719937922) completed successfully. Its durable [Provider Comparison Report](https://github.com/stranske/Inv-Man-Intake/pull/966#issuecomment-5648809623) reports PASS from both providers (OpenAI 90%, Anthropic 62%). The earlier standalone evaluation also passed. This is actual report evidence, not the workflow fingerprint.\n\nI audited the lower-confidence provider's caveats directly against raw source. GitHub contents at merge 7ffcceb536ed6255719973b3d5d5ab254734b080 exactly match tested head fb26b386b6c192355e5055083885dc84e84d5b00 for run.py, v1_smoke.py and test_ingest_entrypoint.py. run_pipeline supplies the submitted bundle directory as content_root; production document bytes come from registered persisted inputs. The fixed secondary filename and _fixture_performance_series call remain isolated behind smoke_mode. Production reads the submitted workbook, emits workbook-derived normalized monthly returns and metrics, and returns explicit unavailable data for absent, invalid or ambiguous tables. It does not fabricate comparison, benchmark or score inputs.\n\nFresh validation: PYTHONPATH=src /opt/anaconda3/bin/python3 -m pytest tests/cli/test_ingest_entrypoint.py -q --no-cov: 18 passed. This includes both named external-layout date cases, workbook-value mutation reflected in artifacts, forbidden fixture helpers, malformed/empty/duplicate/unsupported rows, missing or ambiguous tables, and preserved smoke returns. The historical September 12 mutation evidence also shows the named external-layout test failing when fixed-filename lookup or fixture returns were deliberately restored, then passing after restoration; this round did not rerun those source mutations. The prior exact-head full CI and independent CodeRabbit resolution remain recorded above; the fresh paginated review-thread query confirms both threads resolved and zero active unresolved threads.\n\nThe unchecked issue tasks and bootstrap ledger were stale tracking metadata, not evidence of unfinished implementation. The issue checklists are being reconciled to the verified implementation without rewriting historical bootstrap commits. The provider's raw-diff/test-access caveats are resolved by this direct inspection and fresh test execution. No product, credential or deployment decision remains. Follow-up #965 and parent #942 are complete through merged #955 plus #966 and can close without another PR.\n",
+      "createdAt": "2026-09-12T22:31:37Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Inv-Man-Intake/pull/966#issuecomment-5649123796",
+      "viewerDidAuthor": true
+    }
+  ],
+  "mergeCommit": {
+    "oid": "7ffcceb536ed6255719973b3d5d5ab254734b080"
+  },
+  "mergedAt": "2026-09-12T20:29:22Z",
+  "number": 966,
+  "state": "MERGED",
+  "title": "fix: derive production performance from submitted workbook",
+  "url": "https://github.com/stranske/Inv-Man-Intake/pull/966"
+}
