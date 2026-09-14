@@ -1,0 +1,47 @@
+03:26:06.200 | INFO    | etl.news_flow - Persisted news items
+{"asctime": "2026-09-14 03:26:06,200", "levelname": "INFO", "name": "etl.news_flow", "service": "news_flow", "message": "Persisted news items", "attempted": 2, "inserted": 1, "duplicates": 1}
+{
+  "pit": {
+    "returned": [
+      "ORIGINAL"
+    ],
+    "diff_selector": [
+      [
+        "2024-03-31",
+        1
+      ]
+    ]
+  },
+  "documents": {
+    "ids": [
+      1,
+      1
+    ],
+    "owners": [
+      [
+        1
+      ]
+    ],
+    "manager2_results": 0
+  },
+  "news": {
+    "candidates": 2,
+    "stored": 1,
+    "alert_payload": [
+      {
+        "news_count": 2,
+        "headlines": [
+          "duplicate",
+          "duplicate"
+        ],
+        "sources": [
+          "rss"
+        ]
+      }
+    ]
+  },
+  "edgar": {
+    "documents": 1,
+    "filings": 0
+  }
+}

@@ -1,0 +1,69 @@
+- log
+- log
+- list:
+  - link "Dashboard":
+    - /url: http://127.0.0.1:8537/
+    - generic: 📈
+    - paragraph: Dashboard
+  - link "Daily Report":
+    - /url: http://127.0.0.1:8537/daily-report
+    - generic: 🗞️
+    - paragraph: Daily Report
+  - link "Search":
+    - /url: http://127.0.0.1:8537/search
+    - generic: 🔎
+    - paragraph: Search
+  - link "Upload":
+    - /url: http://127.0.0.1:8537/upload
+    - generic: 📝
+    - paragraph: Upload
+  - link "🔬 Research":
+    - /url: http://127.0.0.1:8537/research
+    - generic: 🔬
+    - paragraph: 🔬 Research
+- heading "Navigation" [level=3]
+- generic: Alerts
+- generic: "0"
+- paragraph: Unacknowledged Alerts
+- paragraph: "0"
+- banner:
+  - button "keyboard_double_arrow_right":
+    - generic: keyboard_double_arrow_right
+  - button "Deploy":
+    - generic: Deploy
+  - button "Main menu":
+- heading "Holdings Delta" [level=2]:
+  - text: Holdings Delta
+  - link "Link to heading":
+    - /url: "#holdings-delta"
+- paragraph: Manager
+- combobox "Manager": Elliott Investment Management L.P.
+- button "Open":
+- tablist:
+  - tab "Portfolio":
+    - paragraph: Portfolio
+  - tab "Activism":
+    - paragraph: Activism
+  - tab "Conviction & Signals" [selected]:
+    - paragraph: Conviction & Signals
+- tabpanel "Conviction & Signals":
+  - status:
+    - paragraph: No conviction scores found for the selected manager.
+  - separator
+  - status:
+    - paragraph: No crowded trades overlap found for the selected manager.
+  - status:
+    - paragraph: No contrarian signals found for the selected manager.
+- button "Scroll tabs right":
+- generic "keyboard_arrow_down Historical Filing Trend" [active]:
+  - generic: keyboard_arrow_down
+  - paragraph: Historical Filing Trend
+- button "Show data":
+- button "Download as PNG":
+- button "Copy Vega-Lite spec":
+- button "Fullscreen":
+- generic "Vega visualization":
+- button "Show/hide columns":
+- button "Download as CSV":
+- button "Search":
+- button "Fullscreen":

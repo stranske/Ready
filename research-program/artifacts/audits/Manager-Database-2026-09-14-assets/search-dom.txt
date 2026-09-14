@@ -1,0 +1,101 @@
+- button "keyboard_double_arrow_left":
+  - generic: keyboard_double_arrow_left
+- list:
+  - link "Dashboard":
+    - /url: http://127.0.0.1:8537/
+    - generic: 📈
+    - paragraph: Dashboard
+  - link "Daily Report":
+    - /url: http://127.0.0.1:8537/daily-report
+    - generic: 🗞️
+    - paragraph: Daily Report
+  - link "Search":
+    - /url: http://127.0.0.1:8537/search
+    - generic: 🔎
+    - paragraph: Search
+  - link "Upload":
+    - /url: http://127.0.0.1:8537/upload
+    - generic: 📝
+    - paragraph: Upload
+  - link "🔬 Research":
+    - /url: http://127.0.0.1:8537/research
+    - generic: 🔬
+    - paragraph: 🔬 Research
+- banner:
+  - button "Deploy":
+    - generic: Deploy
+  - button "Main menu":
+- heading "Universal Search" [level=2]:
+  - text: Universal Search
+  - link "Link to heading":
+    - /url: "#universal-search"
+- paragraph: Search managers, filings, holdings, news, and documents
+- textbox "Search managers, filings, holdings, news, and documents" [active]:
+  - /placeholder: ""
+  - text: Elliott
+- paragraph: Result limit
+- spinbutton "Result limit": "20"
+- button "Decrement":
+- button "Increment":
+- heading "Summary" [level=3]:
+  - text: Summary
+  - link "Link to heading":
+    - /url: "#summary"
+- paragraph: Total
+- paragraph: "4"
+- paragraph: Managers
+- paragraph: "1"
+- paragraph: Filings
+- paragraph: "1"
+- paragraph: News
+- paragraph: "1"
+- paragraph: Documents
+- paragraph: "1"
+- heading "Results" [level=3]:
+  - text: Results
+  - link "Link to heading":
+    - /url: "#results"
+- paragraph: Results are sorted by relevance and grouped by entity type.
+- generic "keyboard_arrow_down News (1)":
+  - generic: keyboard_arrow_down
+  - paragraph: News (1)
+- paragraph:
+  - strong: Elliott synthetic portfolio briefing ready
+- paragraph:
+  - generic: NEWS
+  - text: "Relevance 0.90 | Manager: Elliott Investment Management L.P. | 2026-03-15T10:00:00"
+- paragraph: "Readiness smoke deterministic fact: manager universe bootstrap is healthy."
+- link "Open source":
+  - /url: https://example.invalid/synthetic-briefing
+  - paragraph: Open source
+- separator
+- generic "keyboard_arrow_down Filings (1)":
+  - generic: keyboard_arrow_down
+  - paragraph: Filings (1)
+- paragraph:
+  - strong: 13F-HR filing
+- paragraph:
+  - generic: FILING
+  - text: "Relevance 0.85 | Manager: Elliott Investment Management L.P. | 2025-12-31"
+- paragraph: "Manager: Elliott Investment Management L.P. | Raw key: seed/elliott/13f | Period end: 2025-12-31"
+- separator
+- generic "keyboard_arrow_down Documents (1)":
+  - generic: keyboard_arrow_down
+  - paragraph: Documents (1)
+- paragraph:
+  - strong: readiness-smoke-note.txt
+- paragraph:
+  - generic: DOCUMENT
+  - text: Relevance 0.59 | 2026-09-14 08:17:25
+- paragraph: "Readiness smoke deterministic fact: manager universe bootstrap is healthy."
+- separator
+- generic "keyboard_arrow_down Managers (1)":
+  - generic: keyboard_arrow_down
+  - paragraph: Managers (1)
+- paragraph:
+  - strong: Elliott Investment Management L.P.
+- paragraph:
+  - generic: MANAGER
+  - text: "Relevance 0.55 | Manager: Elliott Investment Management L.P."
+- paragraph: Elliott Management
+- separator

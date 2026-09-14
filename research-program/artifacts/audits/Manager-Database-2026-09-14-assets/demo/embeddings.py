@@ -1,0 +1,366 @@
+"""Simple text embedding utilities for Stage 4."""
+
+from __future__ import annotations
+
+import hashlib
+import heapq
+import json
+import math
+import os
+import sqlite3
+from collections import Counter
+from typing import Any
+
+from adapters.base import connect_db
+
+MODEL: Any | None
+PGVECTOR_DIMENSIONS = 384
+
+if os.getenv("USE_SIMPLE_EMBED") == "1":
+    MODEL = None
+else:
+    try:  # heavy optional dependency
+        from sentence_transformers import SentenceTransformer
+
+        MODEL = SentenceTransformer("all-MiniLM-L6-v2")
+    except Exception:  # pragma: no cover - optional
+        MODEL = None
+
+try:  # optional PGVector integration
+    from pgvector.psycopg import Vector, register_vector
+except Exception:  # pragma: no cover - optional
+    register_vector = None
+    Vector = list  # type: ignore[misc]
+
+
+def _simple_embed(text: str) -> list[float]:
+    letters = Counter(c.lower() for c in text if c.isalpha())
+    vec = [letters.get(chr(i + 97), 0) for i in range(26)]
+    norm = sum(vec) or 1
+    return [v / norm for v in vec]
+
+
+def embed_text(text: str) -> list[float]:
+    """Return an embedding for ``text``.
+
+    Uses ``sentence-transformers`` if available and ``USE_SIMPLE_EMBED`` is not
+    set; otherwise falls back to a letter-frequency vector for fast tests.
+    """
+    if os.getenv("USE_SIMPLE_EMBED") == "1" or MODEL is None:
+        return _simple_embed(text)
+    vec = MODEL.encode(text)
+    return vec.tolist()
+
+
+def _pgvector_embedding(text: str) -> list[float]:
+    """Return an embedding that matches the Postgres documents vector width."""
+    vec = embed_text(text)
+    if len(vec) == PGVECTOR_DIMENSIONS:
+        return vec
+    if len(vec) > PGVECTOR_DIMENSIONS:
+        return vec[:PGVECTOR_DIMENSIONS]
+    return [*vec, *([0.0] * (PGVECTOR_DIMENSIONS - len(vec)))]
+
+
+def _is_postgres_connection(conn: Any) -> bool:
+    return not isinstance(conn, sqlite3.Connection)
+
+
+def _sqlite_columns(conn: sqlite3.Connection, table: str) -> set[str]:
+    pragma_table_info = "PRAGMA table_" + "info"
+    rows = conn.execute(f"{pragma_table_info}({table})").fetchall()
+    return {str(row[1]) for row in rows}
+
+
+def _postgres_columns(conn: Any, table: str) -> set[str]:
+    rows = conn.execute(
+        (
+            "SELECT column_name FROM information_schema.columns "
+            "WHERE table_schema = current_schema() AND table_name = %s"
+        ),
+        (table,),
+    ).fetchall()
+    return {str(row[0]) for row in rows}
+
+
+def _postgres_documents_contract(columns: set[str]) -> tuple[str, str]:
+    id_col = "doc_id" if "doc_id" in columns else "id" if "id" in columns else ""
+    text_col = "text" if "text" in columns else "content" if "content" in columns else ""
+    required = {"embedding", "sha256"}
+    missing = sorted(required - columns)
+    if not id_col:
+        missing.append("doc_id or id")
+    if not text_col:
+        missing.append("text or content")
+    if missing:
+        raise RuntimeError(
+            "Postgres documents schema is not migrated; missing required columns: "
+            + ", ".join(missing)
+        )
+    return id_col, text_col
+
+
+def store_document(
+    text: str,
+    db_path: str | None = None,
+    manager_id: int | None = None,
+    kind: str = "note",
+    filename: str | None = None,
+    *,
+    connection: Any | None = None,
+) -> int:
+    """Store text and its embedding in the documents table.
+
+    Args:
+        text: Document text content
+        db_path: Database path (optional, uses default)
+        manager_id: FK to managers table (optional)
+        kind: Document type ('memo', 'note', 'pdf', 'filing_text')
+        filename: Original filename (optional)
+        connection: Existing connection; caller owns commit, rollback and close.
+            When supplied, db_path is not used to open another connection.
+
+    Returns:
+        doc_id of the inserted/existing document
+    """
+    if connection is not None:
+        return _store_document_on_connection(text, connection, manager_id, kind, filename)
+    conn = connect_db(db_path)
+    try:
+        doc_id = _store_document_on_connection(text, conn, manager_id, kind, filename)
+        conn.commit()
+        return doc_id
+    finally:
+        conn.close()
+
+
+def _store_document_on_connection(
+    text: str,
+    conn: Any,
+    manager_id: int | None,
+    kind: str,
+    filename: str | None,
+) -> int:
+    is_pg = _is_postgres_connection(conn)
+    sha256 = hashlib.sha256(text.encode("utf-8")).hexdigest()
+    if is_pg:
+        if register_vector:
+            register_vector(conn)
+        columns = _postgres_columns(conn, "documents")
+        id_col, text_col = _postgres_documents_contract(columns)
+        emb_vec = _pgvector_embedding(text)
+        emb = Vector(emb_vec) if register_vector else emb_vec
+        insert_cols: list[str] = []
+        insert_values: list[Any] = []
+        if "manager_id" in columns:
+            insert_cols.append("manager_id")
+            insert_values.append(manager_id)
+        if "kind" in columns:
+            insert_cols.append("kind")
+            insert_values.append(kind)
+        if "filename" in columns:
+            insert_cols.append("filename")
+            insert_values.append(filename)
+        if "sha256" in columns:
+            insert_cols.append("sha256")
+            insert_values.append(sha256)
+        insert_cols.append(text_col)
+        insert_values.append(text)
+        insert_cols.append("embedding")
+        insert_values.append(emb)
+        placeholders = ",".join("%s" for _ in insert_cols)
+        result = conn.execute(
+            (
+                f"INSERT INTO documents({', '.join(insert_cols)}) "
+                f"VALUES ({placeholders}) "
+                "ON CONFLICT (sha256) WHERE sha256 IS NOT NULL DO NOTHING "
+                f"RETURNING {id_col}"
+            ),
+            tuple(insert_values),
+        )
+        row = result.fetchone()
+        if row is not None:
+            doc_id = int(row[0])
+        else:
+            existing = conn.execute(
+                f"SELECT {id_col} FROM documents WHERE sha256 = %s",
+                (sha256,),
+            ).fetchone()
+            if existing is None:
+                raise RuntimeError("Failed to insert or resolve existing document")
+            doc_id = int(existing[0])
+    else:
+        sqlite_pk = "INTEGER PRIMARY KEY " + "AUTO" + "INCREMENT"
+        conn.execute(f"""CREATE TABLE IF NOT EXISTS documents (
+                doc_id {sqlite_pk},
+                manager_id INTEGER,
+                kind TEXT NOT NULL DEFAULT 'note',
+                filename TEXT,
+                sha256 TEXT,
+                text TEXT,
+                embedding TEXT,
+                created_at TEXT DEFAULT (datetime('now'))
+            )""")
+        columns = _sqlite_columns(conn, "documents")
+        id_col = "doc_id" if "doc_id" in columns else "id"
+        text_col = "text" if "text" in columns else "content"
+        if "sha256" in columns:
+            conn.execute(
+                "CREATE UNIQUE INDEX IF NOT EXISTS idx_documents_sha256_unique "
+                "ON documents (sha256) WHERE sha256 IS NOT NULL"
+            )
+        emb = json.dumps(embed_text(text))
+        sqlite_insert_cols: list[str] = []
+        sqlite_insert_values: list[Any] = []
+        if "manager_id" in columns:
+            sqlite_insert_cols.append("manager_id")
+            sqlite_insert_values.append(manager_id)
+        if "kind" in columns:
+            sqlite_insert_cols.append("kind")
+            sqlite_insert_values.append(kind)
+        if "filename" in columns:
+            sqlite_insert_cols.append("filename")
+            sqlite_insert_values.append(filename)
+        if "sha256" in columns:
+            sqlite_insert_cols.append("sha256")
+            sqlite_insert_values.append(sha256)
+        sqlite_insert_cols.append(text_col)
+        sqlite_insert_values.append(text)
+        sqlite_insert_cols.append("embedding")
+        sqlite_insert_values.append(emb)
+        placeholders = ",".join("?" for _ in sqlite_insert_cols)
+        insert_statement = (
+            f"INSERT INTO documents({', '.join(sqlite_insert_cols)}) VALUES ({placeholders})"
+        )
+        if "sha256" in columns:
+            insert_or_ignore = "INSERT OR " + "IGNORE"
+            insert_statement = (
+                f"{insert_or_ignore} INTO documents({', '.join(sqlite_insert_cols)}) "
+                f"VALUES ({placeholders})"
+            )
+        cur = conn.execute(insert_statement, sqlite_insert_values)
+        if "sha256" in columns:
+            existing = conn.execute(
+                f"SELECT {id_col} FROM documents WHERE sha256 = ?",
+                (sha256,),
+            ).fetchone()
+            if existing is None:
+                raise RuntimeError("Failed to insert or resolve existing document")
+            doc_id = int(existing[0])
+        else:
+            doc_id = int(cur.lastrowid)
+    return doc_id
+
+
+def search_documents(
+    query: str,
+    db_path: str | None = None,
+    k: int = 3,
+    manager_id: int | None = None,
+) -> list[dict[str, Any]]:
+    """Return top ``k`` docs similar to ``query``, optionally filtered by manager."""
+    if k <= 0:
+        return []
+    conn = connect_db(db_path)
+    is_pg = _is_postgres_connection(conn)
+    if is_pg:
+        if register_vector:
+            register_vector(conn)
+            qvec = Vector(_pgvector_embedding(query))
+        else:
+            qvec = _pgvector_embedding(query)
+        where_clause = ""
+        params: list[Any] = [qvec]
+        if manager_id is not None:
+            where_clause = "WHERE d.manager_id = %s"
+            params.append(manager_id)
+        params.append(k)
+        rows = conn.execute(
+            (
+                "SELECT d.doc_id, d.text, d.kind, d.filename, m.name, d.embedding <=> %s::vector AS dist "
+                "FROM documents d LEFT JOIN managers m ON d.manager_id = m.manager_id "
+                f"{where_clause} "
+                "ORDER BY dist LIMIT %s"
+            ),
+            tuple(params),
+        ).fetchall()
+        conn.close()
+        return [
+            {
+                "doc_id": doc_id,
+                "content": content,
+                "kind": kind,
+                "filename": filename,
+                "manager_name": manager_name,
+                "distance": dist,
+            }
+            for doc_id, content, kind, filename, manager_name, dist in rows
+        ]
+    # Process documents one at a time to avoid loading entire dataset into memory
+    # Use a heap to keep only top k results, bounding memory to O(k) instead of O(n)
+    columns = _sqlite_columns(conn, "documents")
+    if not columns:
+        conn.close()
+        return []
+    id_col = "doc_id" if "doc_id" in columns else "id"
+    text_col = "text" if "text" in columns else "content"
+    has_manager_id = "manager_id" in columns
+    manager_pk_col = None
+    manager_columns: set[str] = set()
+    if has_manager_id:
+        manager_columns = _sqlite_columns(conn, "managers")
+        if "manager_id" in manager_columns:
+            manager_pk_col = "manager_id"
+        elif "id" in manager_columns:
+            manager_pk_col = "id"
+    if manager_id is not None and not has_manager_id:
+        conn.close()
+        return []
+    where_clause = ""
+    sqlite_params: list[Any] = []
+    if manager_id is not None:
+        where_clause = "WHERE d.manager_id = ?"
+        sqlite_params.append(manager_id)
+    kind_expr = "COALESCE(d.kind, 'note')" if "kind" in columns else "'note'"
+    filename_expr = "d.filename" if "filename" in columns else "NULL"
+    manager_name_expr = "m.name" if manager_pk_col and "name" in manager_columns else "NULL"
+    join_clause = (
+        f"LEFT JOIN managers m ON d.manager_id = m.{manager_pk_col}" if manager_pk_col else ""
+    )
+    cur = conn.execute(
+        (
+            f"SELECT d.{id_col}, d.{text_col}, "
+            f"{kind_expr}, {filename_expr}, "
+            f"{manager_name_expr}, d.embedding "
+            f"FROM documents d {join_clause} {where_clause}"
+        ),
+        tuple(sqlite_params),
+    )
+    qvec = embed_text(query)
+    # Use a max heap (negate distances for heapq which is a min heap)
+    heap: list[tuple[float, int, dict[str, Any]]] = []
+    for doc_id, content, kind, filename, manager_name, emb_json in cur:
+        if not emb_json:
+            continue
+        emb = json.loads(emb_json)
+        dist = math.sqrt(sum((a - b) ** 2 for a, b in zip(qvec, emb, strict=False)))
+        result = {
+            "doc_id": doc_id,
+            "content": content,
+            "kind": kind,
+            "filename": filename,
+            "manager_name": manager_name,
+            "distance": dist,
+        }
+        # Break equal-distance ties by ID, never by comparing result dictionaries.
+        # Negating both keys keeps the worst retained document at the root.
+        entry = (-dist, -int(doc_id), result)
+        if len(heap) < k:
+            heapq.heappush(heap, entry)
+        elif entry[:2] > heap[0][:2]:
+            heapq.heapreplace(heap, entry)
+    conn.close()
+    # Extract results and sort by distance (ascending)
+    results = [item[2] for item in heap]
+    results.sort(key=lambda r: (r["distance"], r["doc_id"]))
+    return results

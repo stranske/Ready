@@ -1,0 +1,106 @@
+{
+  "improvements": [
+    {
+      "dimension": "wired",
+      "failure_mode": "recovery_failure",
+      "severity": 4,
+      "corroboration": 4,
+      "element": "Login initialization",
+      "fix_hints": [
+        "Update password hashing to the supported authentication API and verify the configured login path.",
+        "Restore the login form and provide a recoverable error state if authentication initialization fails.",
+        "Fix streamlit-authenticator Hasher API usage (password hashing init signature) so require_login() completes and renders the form",
+        "Repair auth bootstrap so users see a login form instead of a traceback alert",
+        "Fix Hasher init so login completes in one form submission",
+        "Update the streamlit-authenticator Hasher initialization code to pass the correct arguments expected by the library.",
+        "Start research backend to enable upload persistence",
+        "Enable backend for upload persistence to close the upload loop"
+      ]
+    },
+    {
+      "dimension": "wired",
+      "failure_mode": "confusion",
+      "severity": 4,
+      "corroboration": 4,
+      "element": "Alerts navigation",
+      "fix_hints": [
+        "Provide an Alerts destination with review and acknowledgement controls.",
+        "Use tab-specific availability checks and avoid recommending the currently selected empty date.",
+        "Make Alerts interactive (link to list) or hide the metric until alerts workflow exists",
+        "Clarify copy when selected date equals nearest report but dataset is empty; distinguish no trades vs loader failure",
+        "Display a clear error state or warning banner when the backend is disconnected instead of silently disabling inputs.",
+        "Fix authentication initialization to prevent crash on page load",
+        "Either implement Alerts functionality or remove the badge to avoid user confusion"
+      ]
+    },
+    {
+      "dimension": "workflow_productivity",
+      "failure_mode": "efficiency_trap",
+      "severity": 4,
+      "corroboration": 4,
+      "element": "Manager result navigation",
+      "fix_hints": [
+        "Add an Open portfolio action that carries the selected manager into the dashboard.",
+        "Add Manager/Portfolio to sidebar or link manager names in search/daily-report rows to Holdings Delta with manager preselected",
+        "Implement Alerts list with bulk acknowledge and wire sidebar badge",
+        "Drive end-to-end upload test and show success toast plus Recent Uploads row",
+        "Wire quick-action buttons to prefilled prompts and ensure backend availability with loading/error states",
+        "Wire the upload widget to a functional backend endpoint to complete the workflow.",
+        "Fix authentication system initialization to unblock all downstream workflows"
+      ]
+    },
+    {
+      "dimension": "wired",
+      "failure_mode": "false_success",
+      "severity": 4,
+      "corroboration": 3,
+      "element": "Alerts badge / Unacknowledged Alerts count",
+      "fix_hints": [
+        "Add Alerts route to shell navigation and wire badge to it, or remove the non-interactive badge until alerts CRUD exists",
+        "Verify upload handler persists files and refreshes Recent Uploads; add success/error feedback on submit",
+        "Start research backend in review harness and enable Send when input is valid; surface backend-unavailable state if service is down",
+        "Remove the false affordance or implement the Alerts destination page.",
+        "Fix Hasher instantiation in auth initialization code",
+        "Implement Alerts page and wire badge to navigate to it"
+      ]
+    },
+    {
+      "dimension": "help_clarity",
+      "failure_mode": "missing_help",
+      "severity": 4,
+      "corroboration": 3,
+      "element": "Alerts label without explanation",
+      "fix_hints": [
+        "Add help tooltip or empty-state copy describing alert types and link to management UI",
+        "Extend empty states with actionable guidance (e.g., pick another manager, check Daily Report date range)",
+        "Add Help popover defining 120d SLA and ETL stale window, or rewrite labels in plain language",
+        "Catch initialization errors globally and show a generic, user-friendly 'Service Unavailable' message.",
+        "Add actionable links or instructions (e.g., 'Upload an activism filing to populate this view').",
+        "Add actionable guidance to empty states (e.g., 'Upload filings to populate activism data')",
+        "Add contextual help explaining data refresh schedule and how to generate reports"
+      ]
+    }
+  ],
+  "coverage_gaps": [
+    "Research submission and response behavior were not exercised because the research backend was not started.",
+    "No file submission was performed; upload validation, persistence, and recovery remain unverified.",
+    "Alert creation and acknowledgement behavior were not exercised.",
+    "Production Postgres behavior was not tested; captures use a small synthetic dataset.",
+    "Download outcomes, populated activism and signals workflows, and keyboard task completion were not supplied.",
+    "Observed upload submit success/failure and Recent Uploads population after file pick",
+    "Research assistant response after message send with backend running",
+    "Deploy banner button behavior and whether it is intentional for end users",
+    "Production Postgres data freshness and auth behavior outside synthetic local dataset",
+    "Interactive outcomes for Vega chart controls (Show data, Download PNG, Fullscreen) beyond render presence",
+    "Screenshot/visual confirmation for crowded, news-pulse, activism, and signals captures (a11y only for some surfaces)",
+    "Could not evaluate workflow productivity for Research or Upload as the backend services were not running and submission was broken.",
+    "Could not test production database states, performance, or realistic data volume as the environment used a static synthetic dataset.",
+    "No observation of successful end-to-end login flow",
+    "No observation of upload success or persistence verification",
+    "No observation of research query execution or response",
+    "No observation of Alerts page navigation or functionality",
+    "Missing screenshots for crowded, news-pulse, activism, and signals screens"
+  ],
+  "n_findings": 5,
+  "n_with_hints": 5
+}

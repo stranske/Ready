@@ -1,0 +1,57 @@
+- log
+- log
+- list:
+  - link "Dashboard":
+    - /url: http://127.0.0.1:8537/
+    - generic: 📈
+    - paragraph: Dashboard
+  - link "Daily Report":
+    - /url: http://127.0.0.1:8537/daily-report
+    - generic: 🗞️
+    - paragraph: Daily Report
+  - link "Search":
+    - /url: http://127.0.0.1:8537/search
+    - generic: 🔎
+    - paragraph: Search
+  - link "Upload":
+    - /url: http://127.0.0.1:8537/upload
+    - generic: 📝
+    - paragraph: Upload
+  - link "🔬 Research":
+    - /url: http://127.0.0.1:8537/research
+    - generic: 🔬
+    - paragraph: 🔬 Research
+- heading "Navigation" [level=3]
+- generic: Alerts
+- generic: "0"
+- paragraph: Unacknowledged Alerts
+- paragraph: "0"
+- banner:
+  - button "Deploy":
+    - generic: Deploy
+  - button "Main menu":
+- heading "Holdings Delta" [level=2]:
+  - text: Holdings Delta
+  - link "Link to heading":
+    - /url: "#holdings-delta"
+- paragraph: Manager
+- combobox "Manager": Elliott Investment Management L.P.
+- button "Open":
+- tablist:
+  - tab "Portfolio":
+    - paragraph: Portfolio
+  - tab "Activism" [active] [selected]:
+    - paragraph: Activism
+  - tab "Conviction & Signals":
+    - paragraph: Conviction & Signals
+- tabpanel "Activism":
+  - status:
+    - paragraph: No activism filings or events found for the selected manager.
+  - separator
+  - status:
+    - paragraph: No activism stakes found for the selected manager.
+  - status:
+    - paragraph: No activism ownership history found for the selected manager.
+- generic "keyboard_arrow_right Historical Filing Trend":
+  - generic: keyboard_arrow_right
+  - paragraph: Historical Filing Trend

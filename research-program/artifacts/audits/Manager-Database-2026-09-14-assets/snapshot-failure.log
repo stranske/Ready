@@ -1,0 +1,244 @@
+postgres-snapshot	UNKNOWN STEP	﻿2026-09-14T05:25:32.3408296Z Current runner version: '2.337.0'
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.3446179Z ##[group]Runner Image Provisioner
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.3447623Z Hosted Compute Agent
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.3448650Z Version: 20260828.587
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.3449789Z Commit: abac92662cab4cc7352de4f9f9d2e2419aad9c29
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.3451024Z Build Date: 2026-08-28T16:44:25Z
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.3452243Z Worker ID: {e9ee3a43-09e9-40c3-a8a5-433455d34fa8}
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.3453492Z Azure Region: eastus
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.3454974Z ##[endgroup]
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.3457770Z ##[group]Operating System
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.3458772Z Ubuntu
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.3459721Z 24.04.5
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.3460637Z LTS
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.3461726Z ##[endgroup]
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.3462686Z ##[group]Runner Image
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.3463760Z Image: ubuntu-24.04
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.3465116Z Version: 20260907.300.1
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.3467372Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260907.300/images/ubuntu/Ubuntu2404-Readme.md
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.3470253Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260907.300
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.3472011Z ##[endgroup]
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.3477891Z ##[group]GITHUB_TOKEN Permissions
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.3481907Z Actions: write
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.3482951Z ArtifactMetadata: write
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.3484118Z Attestations: write
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.3485371Z Checks: write
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.3486299Z CodeQuality: write
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.3487465Z Contents: write
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.3488455Z CopilotRequests: write
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.3489501Z Deployments: write
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.3490591Z Discussions: write
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.3491592Z Drives: write
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.3492483Z Issues: write
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.3494732Z Metadata: read
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.3495935Z Models: read
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.3496893Z Packages: write
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.3497788Z Pages: write
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.3498779Z PullRequests: write
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.3499945Z RepositoryProjects: write
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.3501171Z SecurityEvents: write
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.3502103Z Statuses: write
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.3503119Z VulnerabilityAlerts: read
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.3504182Z ##[endgroup]
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.3507925Z Secret source: Actions
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.3509572Z Cache mode: write
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.3511128Z Prepare workflow directory
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.4139129Z Prepare all required actions
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.4190288Z Getting action download info
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.5721820Z Download action repository 'actions/checkout@v7' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.7006932Z Download action repository 'actions/setup-python@v6' (SHA:ece7cb06caefa5fff74198d8649806c4678c61a1)
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.9173636Z Complete job name: postgres-snapshot
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.9901867Z ##[group]Run actions/checkout@v7
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.9902819Z with:
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.9903351Z   repository: stranske/Manager-Database
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.9907644Z   token: ***
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.9908111Z   ssh-strict: true
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.9908593Z   ssh-user: git
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.9909057Z   persist-credentials: true
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.9909557Z   clean: true
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.9910023Z   sparse-checkout-cone-mode: true
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.9910554Z   fetch-depth: 1
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.9910993Z   fetch-tags: false
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.9911458Z   show-progress: true
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.9911925Z   lfs: false
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.9912352Z   submodules: false
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.9912824Z   set-safe-directory: true
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.9913349Z   allow-unsafe-pr-checkout: false
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.9914134Z env:
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.9915036Z   DB_SNAPSHOT_DATABASE_URL: 
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.9915565Z   DB_SNAPSHOT_S3_URI: 
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.9916051Z   DB_SNAPSHOT_KMS_KEY_ID: 
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:32.9916587Z ##[endgroup]
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:33.0979054Z Syncing repository: stranske/Manager-Database
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:33.0982034Z ##[group]Getting Git version info
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:33.0983395Z Working directory is '/home/runner/work/Manager-Database/Manager-Database'
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:33.0986291Z [command]/usr/bin/git version
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:33.1055358Z git version 2.55.0
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:33.1078015Z ##[endgroup]
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:33.1089794Z Temporarily overriding HOME='/home/runner/work/_temp/45abe442-f836-45fc-acf0-790fd47252cd' before making global git config changes
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:33.1091526Z Adding repository directory to the temporary git global config as a safe directory
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:33.1096627Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/Manager-Database/Manager-Database
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:33.1161885Z Deleting the contents of '/home/runner/work/Manager-Database/Manager-Database'
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:33.1165692Z ##[group]Determining repository object format
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:33.1167664Z ##[endgroup]
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:33.1168746Z ##[group]Initializing the repository
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:33.1171772Z [command]/usr/bin/git init /home/runner/work/Manager-Database/Manager-Database
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:33.1291566Z hint: Using 'master' as the name for the initial branch. This default branch name
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:33.1293379Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:33.1294662Z hint: to use in all of your new repositories, which will suppress this warning,
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:33.1295572Z hint: call:
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:33.1296057Z hint:
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:33.1296677Z hint: 	git config --global init.defaultBranch <name>
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:33.1297443Z hint:
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:33.1298157Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:33.1299333Z hint: 'development'. The just-created branch can be renamed via this command:
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:33.1300256Z hint:
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:33.1300769Z hint: 	git branch -m <name>
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:33.1301359Z hint:
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:33.1302134Z hint: Disable this message with "git config set advice.defaultBranchName false"
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:33.1308121Z Initialized empty Git repository in /home/runner/work/Manager-Database/Manager-Database/.git/
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:33.1318686Z [command]/usr/bin/git remote add origin https://github.com/stranske/Manager-Database
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:33.1369017Z ##[endgroup]
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:33.1369871Z ##[group]Disabling automatic garbage collection
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:33.1373004Z [command]/usr/bin/git config --local gc.auto 0
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:33.1405633Z ##[endgroup]
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:33.1406733Z ##[group]Setting up auth
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:33.1407359Z Removing SSH command configuration
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:33.1412900Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:33.1447177Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:33.1798084Z Removing HTTP extra header
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:33.1804190Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:33.1839888Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:33.2063178Z Removing includeIf entries pointing to credentials config files
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:33.2069633Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:33.2102790Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:33.2336938Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-e5b679d8-bb59-44eb-a844-1edb4445c043.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:33.2375084Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/Manager-Database/Manager-Database/.git.path /home/runner/work/_temp/git-credentials-e5b679d8-bb59-44eb-a844-1edb4445c043.config
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:33.2405086Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/Manager-Database/Manager-Database/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-e5b679d8-bb59-44eb-a844-1edb4445c043.config
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:33.2438096Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-e5b679d8-bb59-44eb-a844-1edb4445c043.config
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:33.2468438Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-e5b679d8-bb59-44eb-a844-1edb4445c043.config
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:33.2494064Z ##[endgroup]
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:33.2495312Z ##[group]Fetching the repository
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:33.2501626Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +4523cf50dac3f3fe2ba338b8243e630940c54fd0:refs/remotes/origin/main
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:34.4803731Z From https://github.com/stranske/Manager-Database
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:34.4806648Z  * [new ref]         4523cf50dac3f3fe2ba338b8243e630940c54fd0 -> origin/main
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:34.4812342Z [command]/usr/bin/git branch --list --remote origin/main
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:34.4839732Z   origin/main
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:34.4848395Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:34.4870879Z 4523cf50dac3f3fe2ba338b8243e630940c54fd0
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:34.4876055Z ##[endgroup]
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:34.4877261Z ##[group]Determining the checkout info
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:34.4878947Z ##[endgroup]
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:34.4880323Z [command]/usr/bin/git sparse-checkout disable
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:34.4929935Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:34.4959910Z ##[group]Checking out the ref
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:34.4962594Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:34.9061514Z Switched to a new branch 'main'
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:34.9067730Z branch 'main' set up to track 'origin/main'.
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:34.9082996Z ##[endgroup]
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:34.9128859Z [command]/usr/bin/git log -1 --format=%H
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:34.9154157Z 4523cf50dac3f3fe2ba338b8243e630940c54fd0
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:34.9430600Z ##[group]Run actions/setup-python@v6
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:34.9431010Z with:
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:34.9431266Z   python-version: 3.14
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:34.9431577Z   check-latest: false
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:34.9434840Z   token: ***
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:34.9435130Z   update-environment: true
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:34.9435434Z   allow-prereleases: false
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:34.9435726Z   freethreaded: false
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:34.9435980Z env:
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:34.9436220Z   DB_SNAPSHOT_DATABASE_URL: 
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:34.9436541Z   DB_SNAPSHOT_S3_URI: 
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:34.9436833Z   DB_SNAPSHOT_KMS_KEY_ID: 
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:34.9437139Z ##[endgroup]
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:35.0765845Z ##[group]Installed versions
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:35.0863066Z Successfully set up CPython (3.14.7)
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:35.0864233Z ##[endgroup]
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:35.1082407Z ##[group]Run sudo apt-get update
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:35.1082946Z ^[[36;1msudo apt-get update^[[0m
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:35.1083373Z ^[[36;1msudo apt-get install -y postgresql-client awscli^[[0m
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:35.1135040Z shell: /usr/bin/bash -e {0}
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:35.1135445Z env:
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:35.1135744Z   DB_SNAPSHOT_DATABASE_URL: 
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:35.1136084Z   DB_SNAPSHOT_S3_URI: 
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:35.1136396Z   DB_SNAPSHOT_KMS_KEY_ID: 
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:35.1136785Z   pythonLocation: /opt/hostedtoolcache/Python/3.14.7/x64
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:35.1137331Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.14.7/x64/lib/pkgconfig
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:35.1137865Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.7/x64
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:35.1138367Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.7/x64
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:35.1138859Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.7/x64
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:35.1139344Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.14.7/x64/lib
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:35.1140100Z ##[endgroup]
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:35.2261464Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:35.2583641Z Get:6 https://packages.microsoft.com/ubuntu/24.04/prod noble InRelease [3600 B]
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:35.2720889Z Hit:2 http://azure.archive.ubuntu.com/ubuntu noble InRelease
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:35.2742228Z Get:3 http://azure.archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:35.2795938Z Get:4 http://azure.archive.ubuntu.com/ubuntu noble-backports InRelease [126 kB]
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:35.2822727Z Get:5 http://azure.archive.ubuntu.com/ubuntu noble-security InRelease [126 kB]
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:35.3354222Z Get:7 https://dl.google.com/linux/chrome-stable/deb stable InRelease [2548 B]
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:35.3487163Z Get:8 https://packages.microsoft.com/ubuntu/24.04/prod noble/main arm64 Packages [414 kB]
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:35.3636409Z Get:9 https://packages.microsoft.com/ubuntu/24.04/prod noble/main amd64 Packages [463 kB]
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:35.4588667Z Get:10 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages [1263 kB]
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:35.4675910Z Get:11 http://azure.archive.ubuntu.com/ubuntu noble-updates/main Translation-en [292 kB]
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:35.4695458Z Get:12 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 Components [181 kB]
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:35.4701845Z Get:13 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe amd64 Packages [1691 kB]
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:35.4798437Z Get:14 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe Translation-en [339 kB]
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:35.4821890Z Get:15 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe amd64 Components [388 kB]
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:35.4853886Z Get:16 http://azure.archive.ubuntu.com/ubuntu noble-updates/restricted amd64 Packages [1544 kB]
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:35.4936689Z Get:17 http://azure.archive.ubuntu.com/ubuntu noble-updates/restricted Translation-en [354 kB]
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:35.4955901Z Get:18 http://azure.archive.ubuntu.com/ubuntu noble-updates/multiverse amd64 Components [940 B]
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:35.5248045Z Get:19 http://azure.archive.ubuntu.com/ubuntu noble-backports/main amd64 Components [5772 B]
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:35.5691107Z Get:20 http://azure.archive.ubuntu.com/ubuntu noble-backports/universe amd64 Components [12.6 kB]
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:35.5783273Z Get:21 http://azure.archive.ubuntu.com/ubuntu noble-security/main amd64 Packages [1006 kB]
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:35.5841317Z Get:22 http://azure.archive.ubuntu.com/ubuntu noble-security/main Translation-en [213 kB]
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:35.5860045Z Get:23 http://azure.archive.ubuntu.com/ubuntu noble-security/main amd64 Components [46.4 kB]
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:35.5870062Z Get:24 http://azure.archive.ubuntu.com/ubuntu noble-security/universe amd64 Packages [1206 kB]
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:35.5932088Z Get:25 http://azure.archive.ubuntu.com/ubuntu noble-security/universe Translation-en [242 kB]
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:35.5950478Z Get:26 http://azure.archive.ubuntu.com/ubuntu noble-security/universe amd64 Components [76.3 kB]
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:35.5968231Z Get:27 http://azure.archive.ubuntu.com/ubuntu noble-security/restricted amd64 Packages [1445 kB]
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:35.6049219Z Get:28 http://azure.archive.ubuntu.com/ubuntu noble-security/restricted Translation-en [336 kB]
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:35.6486644Z Get:29 https://dl.google.com/linux/chrome-stable/deb stable/main amd64 Packages [1413 B]
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:40.1305277Z Fetched 11.9 MB in 1s (8816 kB/s)
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:41.0094881Z Reading package lists...
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:41.0465551Z Reading package lists...
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:41.2688579Z Building dependency tree...
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:41.2696467Z Reading state information...
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:41.2932317Z Package awscli is not available, but is referred to by another package.
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:41.2933748Z This may mean that the package is missing, has been obsoleted, or
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:41.2934949Z is only available from another source
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:41.2935321Z 
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:41.2942868Z E: Package 'awscli' has no installation candidate
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:41.2977249Z ##[error]Process completed with exit code 100.
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:41.3146554Z Post job cleanup.
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:41.4022044Z [command]/usr/bin/git version
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:41.4065578Z git version 2.55.0
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:41.4111122Z Temporarily overriding HOME='/home/runner/work/_temp/7e6940cd-8607-4a7e-803a-0408f1f082e6' before making global git config changes
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:41.4112561Z Adding repository directory to the temporary git global config as a safe directory
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:41.4116680Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/Manager-Database/Manager-Database
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:41.4151084Z Removing SSH command configuration
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:41.4157958Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:41.4196740Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:41.4457543Z Removing HTTP extra header
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:41.4458316Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:41.4496196Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:41.4723165Z Removing includeIf entries pointing to credentials config files
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:41.4729415Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:41.4786531Z includeif.gitdir:/home/runner/work/Manager-Database/Manager-Database/.git.path
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:41.4787759Z includeif.gitdir:/home/runner/work/Manager-Database/Manager-Database/.git/worktrees/*.path
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:41.4788761Z includeif.gitdir:/github/workspace/.git.path
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:41.4789456Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:41.4796499Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/Manager-Database/Manager-Database/.git.path
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:41.4818834Z /home/runner/work/_temp/git-credentials-e5b679d8-bb59-44eb-a844-1edb4445c043.config
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:41.4830250Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/Manager-Database/Manager-Database/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-e5b679d8\-bb59\-44eb\-a844\-1edb4445c043\.config
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:41.4865045Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/Manager-Database/Manager-Database/.git/worktrees/*.path
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:41.4887987Z /home/runner/work/_temp/git-credentials-e5b679d8-bb59-44eb-a844-1edb4445c043.config
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:41.4897360Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/Manager-Database/Manager-Database/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-e5b679d8\-bb59\-44eb\-a844\-1edb4445c043\.config
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:41.4939906Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:41.4962939Z /github/runner_temp/git-credentials-e5b679d8-bb59-44eb-a844-1edb4445c043.config
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:41.4971509Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-e5b679d8\-bb59\-44eb\-a844\-1edb4445c043\.config
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:41.5004728Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:41.5027963Z /github/runner_temp/git-credentials-e5b679d8-bb59-44eb-a844-1edb4445c043.config
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:41.5036066Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-e5b679d8\-bb59\-44eb\-a844\-1edb4445c043\.config
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:41.5072467Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:41.5300587Z Removing credentials config '/home/runner/work/_temp/git-credentials-e5b679d8-bb59-44eb-a844-1edb4445c043.config'
+postgres-snapshot	UNKNOWN STEP	2026-09-14T05:25:41.5453311Z Cleaning up orphan processes

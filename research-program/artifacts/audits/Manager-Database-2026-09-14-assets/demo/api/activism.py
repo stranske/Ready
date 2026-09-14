@@ -1,0 +1,702 @@
+"""FastAPI endpoints and shared queries for activism filings and events."""
+
+from __future__ import annotations
+
+import math
+from datetime import date, datetime
+from typing import Any
+
+try:
+    from fastapi import APIRouter, Query
+    from pydantic import BaseModel, Field
+except ModuleNotFoundError:
+    from api._compat import offline_api_imports
+
+    APIRouter, BaseModel, Field, Query = offline_api_imports()
+
+from adapters.base import (
+    connect_db,
+    get_placeholder,
+    is_sqlite,
+    resolve_manager_id_column,
+    table_exists,
+)
+
+router = APIRouter()
+
+
+class ActivismFilingResponse(BaseModel):
+    filing_id: int
+    manager_name: str | None
+    filing_type: str
+    subject_company: str
+    subject_cusip: str | None
+    ownership_pct: float | None
+    shares: int | None
+    filed_date: date
+    url: str | None
+
+
+class ActivismEventResponse(BaseModel):
+    event_id: int
+    manager_name: str | None
+    event_type: str
+    subject_company: str
+    subject_cusip: str | None
+    ownership_pct: float | None
+    previous_pct: float | None
+    delta_pct: float | None
+    threshold_crossed: float | None
+    detected_at: datetime
+
+
+class ActivismTimelineEntry(BaseModel):
+    date: date
+    type: str
+    description: str
+    ownership_pct: float | None
+    event_types: list[str] = Field(default_factory=list)
+
+
+class ActiveCampaignResponse(BaseModel):
+    manager_name: str | None
+    subject_company: str
+    cusip: str | None
+    current_ownership_pct: float | None
+    latest_filing_date: date
+    event_count: int
+    latest_event_type: str | None
+
+
+class ActivismCampaignResponse(BaseModel):
+    campaign_id: int
+    manager_id: int
+    manager_name: str | None
+    target_identifier: str
+    target_company: str
+    first_filed: date
+    last_filed: date
+    status: str
+    peak_ownership_pct: float | None
+    latest_ownership_pct: float | None
+    filing_count: int
+    event_count: int
+    latest_event_type: str | None
+    data_quality_flags: list[str] = Field(default_factory=list)
+
+
+class ActivismCampaignTimelineResponse(BaseModel):
+    filing_id: int
+    event_id: int | None
+    event_date: date
+    event_type: str
+    form_type: str
+    ownership_pct: float | None
+    summary: str
+    source_url: str | None
+
+
+class ActivismDocumentResponse(BaseModel):
+    document_id: int
+    filing_id: int
+    doc_type: str
+    source_url: str | None
+    raw_key: str | None
+    filed_date: date
+
+
+class ManagerActivismProfileResponse(BaseModel):
+    manager_id: int
+    manager_name: str | None
+    campaign_count: int
+    average_window_return: float | None
+    sectors: list[str] = Field(default_factory=list)
+
+
+def _to_float(value: Any) -> float | None:
+    if value is None:
+        return None
+    try:
+        number = float(value)
+    except (TypeError, ValueError):
+        return None
+    # SQLite REAL columns can hold Infinity/NaN, which Starlette cannot serialize.
+    return number if math.isfinite(number) else None
+
+
+def _to_int(value: Any) -> int | None:
+    if value is None:
+        return None
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def _to_date(value: Any) -> date:
+    if isinstance(value, date) and not isinstance(value, datetime):
+        return value
+    if isinstance(value, datetime):
+        return value.date()
+    return date.fromisoformat(str(value))
+
+
+def _to_datetime(value: Any) -> datetime:
+    if isinstance(value, datetime):
+        return value
+    text = str(value).strip()
+    if text.endswith("Z"):
+        text = f"{text[:-1]}+00:00"
+    return datetime.fromisoformat(text)
+
+
+def _json_strings(value: Any) -> list[str]:
+    if isinstance(value, list):
+        return [str(item) for item in value]
+    if value in (None, ""):
+        return []
+    try:
+        parsed = __import__("json").loads(str(value))
+    except (TypeError, ValueError):
+        return []
+    return [str(item) for item in parsed] if isinstance(parsed, list) else []
+
+
+# Keep the SQL-building logic in one place so API and Streamlit views stay aligned.
+def query_activism_filings(
+    conn: Any,
+    *,
+    manager_id: int | None = None,
+    cusip: str | None = None,
+    filing_type: str | None = None,
+    since: date | None = None,
+    limit: int = 100,
+) -> list[ActivismFilingResponse]:
+    if not table_exists(conn, "activism_filings"):
+        return []
+
+    ph = get_placeholder(conn)
+    manager_col = resolve_manager_id_column(conn)
+    filters: list[str] = []
+    params: list[Any] = []
+
+    if manager_id is not None:
+        filters.append(f"af.manager_id = {ph}")
+        params.append(manager_id)
+    if cusip:
+        filters.append(f"upper(COALESCE(af.subject_cusip, '')) = upper({ph})")
+        params.append(cusip)
+    if filing_type:
+        filters.append(f"af.filing_type = {ph}")
+        params.append(filing_type)
+    if since is not None:
+        filters.append(f"af.filed_date >= {ph}")
+        params.append(since)
+
+    where_clause = f"WHERE {' AND '.join(filters)}" if filters else ""
+    params.append(limit)
+    rows = conn.execute(
+        "SELECT af.filing_id, m.name, af.filing_type, af.subject_company, af.subject_cusip, "
+        "af.ownership_pct, af.shares, af.filed_date, af.url "
+        "FROM activism_filings af "
+        f"LEFT JOIN managers m ON m.{manager_col} = af.manager_id "
+        f"{where_clause} "
+        "ORDER BY af.filed_date DESC, af.filing_id DESC "
+        f"LIMIT {ph}",
+        tuple(params),
+    ).fetchall()
+    return [
+        ActivismFilingResponse(
+            filing_id=int(row[0]),
+            manager_name=str(row[1]) if row[1] is not None else None,
+            filing_type=str(row[2]),
+            subject_company=str(row[3]),
+            subject_cusip=str(row[4]) if row[4] is not None else None,
+            ownership_pct=_to_float(row[5]),
+            shares=_to_int(row[6]),
+            filed_date=_to_date(row[7]),
+            url=str(row[8]) if row[8] is not None else None,
+        )
+        for row in rows
+    ]
+
+
+def query_activism_events(
+    conn: Any,
+    *,
+    manager_id: int | None = None,
+    event_type: str | None = None,
+    cusip: str | None = None,
+    since: date | None = None,
+    limit: int = 100,
+) -> list[ActivismEventResponse]:
+    if not table_exists(conn, "activism_events"):
+        return []
+
+    ph = get_placeholder(conn)
+    manager_col = resolve_manager_id_column(conn)
+    filters: list[str] = []
+    params: list[Any] = []
+
+    if manager_id is not None:
+        filters.append(f"ae.manager_id = {ph}")
+        params.append(manager_id)
+    if event_type:
+        filters.append(f"ae.event_type = {ph}")
+        params.append(event_type)
+    if cusip:
+        filters.append(f"upper(COALESCE(ae.subject_cusip, '')) = upper({ph})")
+        params.append(cusip)
+    if since is not None:
+        if is_sqlite(conn):
+            filters.append(f"date(ae.detected_at) >= date({ph})")
+        else:
+            filters.append(f"ae.detected_at::date >= {ph}")
+        params.append(since)
+
+    where_clause = f"WHERE {' AND '.join(filters)}" if filters else ""
+    params.append(limit)
+    rows = conn.execute(
+        "SELECT ae.event_id, m.name, ae.event_type, ae.subject_company, ae.subject_cusip, "
+        "ae.ownership_pct, ae.previous_pct, ae.delta_pct, ae.threshold_crossed, ae.detected_at "
+        "FROM activism_events ae "
+        f"LEFT JOIN managers m ON m.{manager_col} = ae.manager_id "
+        f"{where_clause} "
+        "ORDER BY ae.detected_at DESC, ae.event_id DESC "
+        f"LIMIT {ph}",
+        tuple(params),
+    ).fetchall()
+    return [
+        ActivismEventResponse(
+            event_id=int(row[0]),
+            manager_name=str(row[1]) if row[1] is not None else None,
+            event_type=str(row[2]),
+            subject_company=str(row[3]),
+            subject_cusip=str(row[4]) if row[4] is not None else None,
+            ownership_pct=_to_float(row[5]),
+            previous_pct=_to_float(row[6]),
+            delta_pct=_to_float(row[7]),
+            threshold_crossed=_to_float(row[8]),
+            detected_at=_to_datetime(row[9]),
+        )
+        for row in rows
+    ]
+
+
+def query_activism_timeline(conn: Any, manager_id: int) -> list[ActivismTimelineEntry]:
+    if not table_exists(conn, "activism_filings"):
+        return []
+
+    ph = get_placeholder(conn)
+    event_cte = (
+        ", event_entries AS ("
+        "    SELECT "
+        + ("date(ae.detected_at)" if is_sqlite(conn) else "ae.detected_at::date")
+        + " AS entry_date, 'event' AS entry_type, "
+        "           ae.event_type || ' on ' || ae.subject_company || "
+        "           CASE WHEN ae.threshold_crossed IS NOT NULL THEN ' (threshold ' || ae.threshold_crossed || '%)' ELSE '' END AS description, "
+        "           ae.ownership_pct AS ownership_pct, ae.event_type AS event_type, ae.event_id AS sort_id "
+        "    FROM activism_events ae "
+        f"    WHERE ae.manager_id = {ph} "
+        ") "
+    )
+    union_source = "SELECT * FROM filing_entries"
+    params: tuple[Any, ...]
+    if table_exists(conn, "activism_events"):
+        union_source = "SELECT * FROM filing_entries UNION ALL SELECT * FROM event_entries"
+        params = (manager_id, manager_id)
+    else:
+        event_cte = ""
+        params = (manager_id,)
+
+    rows = conn.execute(
+        "WITH filing_entries AS ("
+        "    SELECT af.filed_date AS entry_date, 'filing' AS entry_type, "
+        "           'Filed ' || af.filing_type || ' for ' || af.subject_company || "
+        "           CASE WHEN af.ownership_pct IS NOT NULL THEN ' at ' || af.ownership_pct || '% ownership' ELSE '' END AS description, "
+        "           af.ownership_pct AS ownership_pct, '' AS event_type, af.filing_id AS sort_id "
+        "    FROM activism_filings af "
+        f"    WHERE af.manager_id = {ph} "
+        ") " + event_cte + "SELECT entry_date, entry_type, description, ownership_pct, event_type "
+        f"FROM ({union_source}) timeline "
+        "ORDER BY entry_date ASC, entry_type ASC, sort_id ASC",
+        params,
+    ).fetchall()
+    return [
+        ActivismTimelineEntry(
+            date=_to_date(row[0]),
+            type=str(row[1]),
+            description=str(row[2]),
+            ownership_pct=_to_float(row[3]),
+            event_types=[str(row[4])] if row[4] else [],
+        )
+        for row in rows
+    ]
+
+
+def query_active_campaigns(
+    conn: Any,
+    *,
+    min_ownership_pct: float = 5.0,
+    limit: int = 100,
+) -> list[ActiveCampaignResponse]:
+    if not table_exists(conn, "activism_filings"):
+        return []
+
+    ph = get_placeholder(conn)
+    manager_col = resolve_manager_id_column(conn)
+    if table_exists(conn, "activism_events"):
+        event_count_sql = (
+            "COALESCE((SELECT COUNT(*) FROM activism_events ae "
+            "WHERE ae.manager_id = ranked.manager_id "
+            "AND COALESCE(ae.subject_cusip, '') = COALESCE(ranked.subject_cusip, '') "
+            "AND ae.subject_company = ranked.subject_company), 0)"
+        )
+        latest_event_sql = (
+            "(SELECT ae.event_type FROM activism_events ae "
+            "WHERE ae.manager_id = ranked.manager_id "
+            "AND COALESCE(ae.subject_cusip, '') = COALESCE(ranked.subject_cusip, '') "
+            "AND ae.subject_company = ranked.subject_company "
+            "ORDER BY ae.detected_at DESC, ae.event_id DESC LIMIT 1)"
+        )
+    else:
+        event_count_sql = "0"
+        latest_event_sql = "NULL"
+    rows = conn.execute(
+        "WITH ranked AS ("
+        "    SELECT af.filing_id, af.manager_id, af.subject_company, af.subject_cusip, "
+        "           af.ownership_pct, af.filed_date, m.name AS manager_name, "
+        "           ROW_NUMBER() OVER ("
+        "               PARTITION BY af.manager_id, COALESCE(af.subject_cusip, af.subject_company) "
+        "               ORDER BY af.filed_date DESC, af.filing_id DESC"
+        "           ) AS row_number "
+        "    FROM activism_filings af "
+        f"    LEFT JOIN managers m ON m.{manager_col} = af.manager_id"
+        ") "
+        "SELECT ranked.manager_name, ranked.subject_company, ranked.subject_cusip, "
+        "       ranked.ownership_pct, ranked.filed_date, "
+        f"       {event_count_sql} AS event_count, "
+        f"       {latest_event_sql} AS latest_event_type "
+        "FROM ranked "
+        "WHERE ranked.row_number = 1 AND COALESCE(ranked.ownership_pct, 0) >= "
+        f"{ph} "
+        "ORDER BY ranked.filed_date DESC, ranked.ownership_pct DESC "
+        f"LIMIT {ph}",
+        (min_ownership_pct, limit),
+    ).fetchall()
+    return [
+        ActiveCampaignResponse(
+            manager_name=str(row[0]) if row[0] is not None else None,
+            subject_company=str(row[1]),
+            cusip=str(row[2]) if row[2] is not None else None,
+            current_ownership_pct=_to_float(row[3]),
+            latest_filing_date=_to_date(row[4]),
+            event_count=int(row[5] or 0),
+            latest_event_type=str(row[6]) if row[6] is not None else None,
+        )
+        for row in rows
+    ]
+
+
+def query_activism_campaigns(
+    conn: Any,
+    *,
+    campaign_id: int | None = None,
+    manager_id: int | None = None,
+    target_identifier: str | None = None,
+    status: str | None = None,
+    filed_from: date | None = None,
+    filed_to: date | None = None,
+    limit: int = 25,
+) -> list[ActivismCampaignResponse]:
+    if not table_exists(conn, "activism_campaigns"):
+        return []
+    ph = get_placeholder(conn)
+    manager_col = resolve_manager_id_column(conn)
+    filters: list[str] = []
+    params: list[Any] = []
+    if campaign_id is not None:
+        filters.append(f"ac.campaign_id = {ph}")
+        params.append(campaign_id)
+    if manager_id is not None:
+        filters.append(f"ac.manager_id = {ph}")
+        params.append(manager_id)
+    if target_identifier:
+        filters.append(f"upper(ac.target_identifier) = upper({ph})")
+        params.append(target_identifier)
+    if status:
+        filters.append(f"ac.status = {ph}")
+        params.append(status)
+    if filed_from is not None:
+        filters.append(f"ac.last_filed >= {ph}")
+        params.append(filed_from)
+    if filed_to is not None:
+        filters.append(f"ac.first_filed <= {ph}")
+        params.append(filed_to)
+    where = f"WHERE {' AND '.join(filters)}" if filters else ""
+    params.append(limit)
+    rows = conn.execute(
+        "SELECT ac.campaign_id, ac.manager_id, m.name, ac.target_identifier, ac.target_company, "
+        "ac.first_filed, ac.last_filed, ac.status, ac.peak_ownership_pct, ac.latest_ownership_pct, "
+        "ac.filing_count, ac.event_count, ac.latest_event_type, ac.data_quality_flags "
+        f"FROM activism_campaigns ac LEFT JOIN managers m ON m.{manager_col} = ac.manager_id "
+        f"{where} ORDER BY ac.last_filed DESC, ac.campaign_id DESC LIMIT {ph}",
+        tuple(params),
+    ).fetchall()
+    return [
+        ActivismCampaignResponse(
+            campaign_id=int(row[0]),
+            manager_id=int(row[1]),
+            manager_name=str(row[2]) if row[2] is not None else None,
+            target_identifier=str(row[3]),
+            target_company=str(row[4]),
+            first_filed=_to_date(row[5]),
+            last_filed=_to_date(row[6]),
+            status=str(row[7]),
+            peak_ownership_pct=_to_float(row[8]),
+            latest_ownership_pct=_to_float(row[9]),
+            filing_count=int(row[10]),
+            event_count=int(row[11]),
+            latest_event_type=str(row[12]) if row[12] is not None else None,
+            data_quality_flags=_json_strings(row[13]),
+        )
+        for row in rows
+    ]
+
+
+def query_activism_campaign_timeline(
+    conn: Any, campaign_id: int
+) -> list[ActivismCampaignTimelineResponse]:
+    if not table_exists(conn, "activism_campaign_timeline"):
+        return []
+    ph = get_placeholder(conn)
+    rows = conn.execute(
+        "SELECT filing_id, event_id, event_date, event_type, form_type, ownership_pct, summary, source_url "
+        "FROM activism_campaign_timeline WHERE campaign_id = " + ph + " "
+        "ORDER BY event_date ASC, form_type ASC, filing_id ASC, event_id ASC",
+        (campaign_id,),
+    ).fetchall()
+    return [
+        ActivismCampaignTimelineResponse(
+            filing_id=int(row[0]),
+            event_id=_to_int(row[1]),
+            event_date=_to_date(row[2]),
+            event_type=str(row[3]),
+            form_type=str(row[4]),
+            ownership_pct=_to_float(row[5]),
+            summary=str(row[6]),
+            source_url=str(row[7]) if row[7] is not None else None,
+        )
+        for row in rows
+    ]
+
+
+def query_activism_documents(conn: Any, campaign_id: int) -> list[ActivismDocumentResponse]:
+    if not table_exists(conn, "activism_documents"):
+        return []
+    ph = get_placeholder(conn)
+    rows = conn.execute(
+        "SELECT document_id, filing_id, doc_type, source_url, raw_key, filed_date "
+        f"FROM activism_documents WHERE campaign_id = {ph} "
+        "ORDER BY filed_date ASC, filing_id ASC, document_id ASC",
+        (campaign_id,),
+    ).fetchall()
+    return [
+        ActivismDocumentResponse(
+            document_id=int(row[0]),
+            filing_id=int(row[1]),
+            doc_type=str(row[2]),
+            source_url=str(row[3]) if row[3] is not None else None,
+            raw_key=str(row[4]) if row[4] is not None else None,
+            filed_date=_to_date(row[5]),
+        )
+        for row in rows
+    ]
+
+
+def query_manager_activism_profile(
+    conn: Any, manager_id: int
+) -> ManagerActivismProfileResponse | None:
+    if not table_exists(conn, "activism_campaigns"):
+        return None
+    ph = get_placeholder(conn)
+    manager_col = resolve_manager_id_column(conn)
+    row = conn.execute(
+        "SELECT ac.manager_id, m.name, COUNT(*), AVG(ac.window_return) "
+        f"FROM activism_campaigns ac LEFT JOIN managers m ON m.{manager_col} = ac.manager_id "
+        f"WHERE ac.manager_id = {ph} GROUP BY ac.manager_id, m.name",
+        (manager_id,),
+    ).fetchone()
+    if row is None:
+        return None
+    return ManagerActivismProfileResponse(
+        manager_id=int(row[0]),
+        manager_name=str(row[1]) if row[1] is not None else None,
+        campaign_count=int(row[2]),
+        average_window_return=_to_float(row[3]),
+        sectors=[],
+    )
+
+
+@router.get(
+    "/api/activism/filings",
+    response_model=list[ActivismFilingResponse],
+    summary="List activism filings",
+)
+async def list_activism_filings(
+    manager_id: int | None = None,
+    cusip: str | None = None,
+    filing_type: str | None = None,
+    since: date | None = None,
+    limit: int = Query(100, ge=1, le=500),
+) -> list[ActivismFilingResponse]:
+    conn = connect_db()
+    try:
+        return query_activism_filings(
+            conn,
+            manager_id=manager_id,
+            cusip=cusip,
+            filing_type=filing_type,
+            since=since,
+            limit=limit,
+        )
+    finally:
+        conn.close()
+
+
+@router.get(
+    "/api/activism/events",
+    response_model=list[ActivismEventResponse],
+    summary="List activism events",
+)
+async def list_activism_events(
+    manager_id: int | None = None,
+    event_type: str | None = None,
+    cusip: str | None = None,
+    since: date | None = None,
+    limit: int = Query(100, ge=1, le=500),
+) -> list[ActivismEventResponse]:
+    conn = connect_db()
+    try:
+        return query_activism_events(
+            conn,
+            manager_id=manager_id,
+            event_type=event_type,
+            cusip=cusip,
+            since=since,
+            limit=limit,
+        )
+    finally:
+        conn.close()
+
+
+@router.get(
+    "/api/activism/timeline/{manager_id}",
+    response_model=list[ActivismTimelineEntry],
+    summary="Return a manager activism timeline",
+)
+async def activism_timeline(manager_id: int) -> list[ActivismTimelineEntry]:
+    conn = connect_db()
+    try:
+        return query_activism_timeline(conn, manager_id)
+    finally:
+        conn.close()
+
+
+@router.get(
+    "/api/activism/active-campaigns",
+    response_model=list[ActiveCampaignResponse],
+    summary="List active activism campaigns",
+)
+async def active_campaigns(
+    min_ownership_pct: float = Query(5.0, ge=0.0),
+    limit: int = Query(100, ge=1, le=500),
+) -> list[ActiveCampaignResponse]:
+    conn = connect_db()
+    try:
+        return query_active_campaigns(conn, min_ownership_pct=min_ownership_pct, limit=limit)
+    finally:
+        conn.close()
+
+
+@router.get(
+    "/api/activism/campaigns",
+    response_model=list[ActivismCampaignResponse],
+    summary="List materialized activism campaigns",
+)
+async def list_activism_campaigns(
+    manager_id: int | None = None,
+    target_identifier: str | None = None,
+    status: str | None = None,
+    filed_from: date | None = None,
+    filed_to: date | None = None,
+    limit: int = Query(25, ge=1, le=100),
+) -> list[ActivismCampaignResponse]:
+    conn = connect_db()
+    try:
+        return query_activism_campaigns(
+            conn,
+            manager_id=manager_id,
+            target_identifier=target_identifier,
+            status=status,
+            filed_from=filed_from,
+            filed_to=filed_to,
+            limit=limit,
+        )
+    finally:
+        conn.close()
+
+
+@router.get(
+    "/api/activism/campaigns/{campaign_id}",
+    response_model=ActivismCampaignResponse | None,
+    summary="Get an activism campaign",
+)
+async def get_activism_campaign(campaign_id: int) -> ActivismCampaignResponse | None:
+    conn = connect_db()
+    try:
+        campaigns = query_activism_campaigns(conn, campaign_id=campaign_id, limit=1)
+        return campaigns[0] if campaigns else None
+    finally:
+        conn.close()
+
+
+@router.get(
+    "/api/activism/campaigns/{campaign_id}/timeline",
+    response_model=list[ActivismCampaignTimelineResponse],
+    summary="Get a deterministic activism campaign timeline",
+)
+async def get_activism_campaign_timeline(
+    campaign_id: int,
+) -> list[ActivismCampaignTimelineResponse]:
+    conn = connect_db()
+    try:
+        return query_activism_campaign_timeline(conn, campaign_id)
+    finally:
+        conn.close()
+
+
+@router.get(
+    "/api/activism/campaigns/{campaign_id}/documents",
+    response_model=list[ActivismDocumentResponse],
+    summary="List campaign document references",
+)
+async def get_activism_campaign_documents(campaign_id: int) -> list[ActivismDocumentResponse]:
+    conn = connect_db()
+    try:
+        return query_activism_documents(conn, campaign_id)
+    finally:
+        conn.close()
+
+
+@router.get(
+    "/api/activism/managers/{manager_id}/profile",
+    response_model=ManagerActivismProfileResponse | None,
+    summary="Get an activist manager campaign profile",
+)
+async def get_manager_activism_profile(manager_id: int) -> ManagerActivismProfileResponse | None:
+    conn = connect_db()
+    try:
+        return query_manager_activism_profile(conn, manager_id)
+    finally:
+        conn.close()
