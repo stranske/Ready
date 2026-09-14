@@ -687,3 +687,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-14T19:00:22Z — refill — Manager-Database: open=2 <= 2 → audit queued
 ## 2026-09-14T19:00:26Z — D-audit-Manager-Database--2026-09-14T19-00-22Z — route — router picked codex from ['codex']
 ## 2026-09-14T19:00:26Z — D-audit-Manager-Database--2026-09-14T19-00-22Z — claimed by driver (agent codex)
+## 2026-09-14T19:10:08Z — D-audit-Manager-Database--2026-09-14T19-00-22Z — fail — offload to codex exited 1; retained artifact is not proof of success
+## 2026-09-14T19:11:43Z — D-audit-Manager-Database--2026-09-14T19-00-22Z — route — router picked codex from ['codex']
+## 2026-09-14T19:11:43Z — D-audit-Manager-Database--2026-09-14T19-00-22Z — claimed by codex (agent codex)

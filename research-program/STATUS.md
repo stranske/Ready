@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-14T19:00:26Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-14T19:11:43Z)
 
 Units: 114 — claimed 1, done 109, failed 4
 Paused: False   Phase stops: []
@@ -95,7 +95,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Fine-Art-Archive--2026-09-06T04-25-53Z | D | D | done | codex | driver | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 3) |
 | D-audit-Manager-Database--2026-09-10T17-45-13Z | D | D | done | codex | driver | Audit stranske/Manager-Database and file issues (supply 0 <= 2) |
 | D-audit-Manager-Database--2026-09-14T06-49-50Z | D | D | done | codex | codex | Audit stranske/Manager-Database and file issues (supply 2 <= 2) |
-| D-audit-Manager-Database--2026-09-14T19-00-22Z | D | D | claimed | codex | driver | Audit stranske/Manager-Database and file issues (supply 2 <= 2) |
+| D-audit-Manager-Database--2026-09-14T19-00-22Z | D | D | claimed | codex | codex | Audit stranske/Manager-Database and file issues (supply 2 <= 2) |
 | D-audit-Manager-Mosaic--2026-09-05T04-00-25Z | D | D | done | codex | driver | Audit stranske/Manager-Mosaic and file issues (supply 2 <= 2) |
 | D-audit-Portable-Alpha-Extension-Model--2026-09-07T04-47-31Z | D | D | done | codex | codex | Audit stranske/Portable-Alpha-Extension-Model and file issues (supply  |
 | D-audit-Portable-Alpha-Extension-Model--2026-09-07T17-01-44Z | D | D | done | codex | driver | Audit stranske/Portable-Alpha-Extension-Model and file issues (supply  |
@@ -125,9 +125,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-14T17:08:59Z — mirror — deferred — Ready#573 exact-head sync review; publication resumes by 2026-09-14T17:32:47+00:00; local work continues
-- 2026-09-14T17:10:43Z — mirror — deferred — Ready#573 exact-head sync review; publication resumes by 2026-09-14T17:32:47+00:00; local work continues
-- 2026-09-14T17:24:01Z — unblock — enqueued D3-unblock-sweep-2026-09-14T17
 - 2026-09-14T17:24:02Z — D3-unblock-sweep-2026-09-14T17 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-14T17:24:02Z — D3-unblock-sweep-2026-09-14T17 — claimed by driver (agent cursor)
 - 2026-09-14T17:24:02Z — mirror — deferred — Ready#573 exact-head sync review; publication resumes by 2026-09-14T17:32:47+00:00; local work continues
@@ -137,6 +134,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-14T19:00:22Z — refill — Manager-Database: open=2 <= 2 → audit queued
 - 2026-09-14T19:00:26Z — D-audit-Manager-Database--2026-09-14T19-00-22Z — route — router picked codex from ['codex']
 - 2026-09-14T19:00:26Z — D-audit-Manager-Database--2026-09-14T19-00-22Z — claimed by driver (agent codex)
+- 2026-09-14T19:10:08Z — D-audit-Manager-Database--2026-09-14T19-00-22Z — fail — offload to codex exited 1; retained artifact is not proof of success
+- 2026-09-14T19:11:43Z — D-audit-Manager-Database--2026-09-14T19-00-22Z — route — router picked codex from ['codex']
+- 2026-09-14T19:11:43Z — D-audit-Manager-Database--2026-09-14T19-00-22Z — claimed by codex (agent codex)
 
 ## Questions
 

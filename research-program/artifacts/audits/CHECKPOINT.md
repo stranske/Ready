@@ -234,3 +234,17 @@ Resumed Phase 5 only. Clone and remote main remain `7c01963cb4173128c806347e622e
 2026-09-14T08:34:22.126758+00:00 — D-audit-Manager-Database--2026-09-14T06-49-50Z — Phase 2 complete: all eight dimensions reviewed; Phase 3 complete: 9 findings retained after independent runtime/source verification; locked Streamlit target tests 133 passed, 1 skipped; Phase 4: 9 AGENT_ISSUE_FORMAT bodies staged, all validate without advisories and 37 cited lines checked. Research-only constraint prohibits filing.
 
 2026-09-14T08:36:27.770705+00:00 — D-audit-Manager-Database--2026-09-14T06-49-50Z — Phase 5 complete: OUT and canonical report/verification/UX/platform brief plus nine bodies written; README and root ledger reconciled; 0 filed. Queue close and sanitized mirror verification next.
+
+## 2026-09-14T19:02:41Z — D-audit-Manager-Database--2026-09-14T19-00-22Z — Phase 0–1
+
+Authorized publication lane resumed the same-day research audit at unchanged remote `main` `4523cf50dac3f3fe2ba338b8243e630940c54fd0`. All nine staged bodies have repository-relative current-tip citations. Fresh authenticated issue inventory has four open issues and no title duplicates; #1647–#1662 fixes are closed and excluded. Pre-existing clone `uv.lock` preserved.
+
+## 2026-09-14T19:02:41Z — D-audit-Manager-Database--2026-09-14T19-00-22Z — Phase 2–3
+
+The authorized publication review retained all 9 same-SHA findings after direct current-clone citation checks and fresh open/recent-closed/PR dedup. All 9 bodies pass the target repository's issue-format validator with no advisories. Ready to file using existing non-routing labels only.
+
+## 2026-09-14T19:07:33Z — D-audit-Manager-Database--2026-09-14T19-00-22Z — Phase 4–5 complete
+
+Filed and read back #1667–#1675 at unchanged main `4523cf50dac3f3fe2ba338b8243e630940c54fd0`; nine intake rows appended. Issue-format guard passed all: opened-event successes for #1667–#1673/#1675 and supported manual recheck success 34884950733 for #1674 after its event run cancellation. OUT report saved; no source edits.
+
+Required Dropbox `Code/Audits` README/verification/ledger writes were attempted and rejected as outside this workspace's writable roots. The existing research audit is preserved; the unit checkpoint and OUT report retain the exact publication reconciliation.
