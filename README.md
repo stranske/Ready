@@ -25,3 +25,51 @@ Everything outside `research-program/` is ordinary repository code and is yours 
 ## Why the artifacts deserve a guard
 
 Two defect classes have already reached this tree and both are invisible on a casual read: a scan once printed token prefixes into a working file, and a batch of issue bodies carried a drafting agent's private working-directory paths, which made the issues unactionable. The work bundle in particular is prepared to be handed to colleagues, so a leaked path or credential fragment here is a real disclosure rather than an untidiness. That is what the publication guard exists to prevent.
+
+Run `python scripts/check_publication_safety.py` with Python 3.12 or later before
+publishing. It scans bytes in every file under `research-program/`, including
+binary files, and separately scans the repo-root allowlist. JSON and JSONL string
+values and keys are also scanned after decoding escapes once, with findings
+attributed to their physical source lines. Diagnostics contain
+the relative file, line, and rule, never the matched content. Missing or empty
+trees, unreadable entries, and symlinks fail the check. The final line reports
+files scanned, unallowed hits for every rule (including zeros), allowed hits,
+and errors. This mechanical check does not establish that proprietary content is
+safe to publish.
+
+For an intentional example, add an exact path relative to `research-program/`
+to the repo-root `.publication-allow` (outside the machine-owned tree), in the
+form `example.md:credential # Synthetic example reviewed for publication.` Each
+entry needs a reason and one of `home-path`,
+`credential`, `private-key`, `scratch-path`, or `internal-host`. Wildcards and
+paths outside the research tree are rejected. An exception covers only that
+file and rule; it does not suppress other rules or files. No findings are automatically allowlisted.
+
+Preparation is an explicit operator step; CI runs only the scanner and does not
+redact files. On a separate staging copy, run
+`python scripts/prepare_publication.py --staging-root <staging-copy>` followed by
+`python scripts/check_publication_safety.py --root <staging-copy> --allowlist <reviewed-allowlist>`.
+Publish only after both commands succeed. Preparation replaces private path,
+credential and host references with explicit redaction markers. Local evidence
+is preserved. Affected JSON and JSONL must remain parseable; ambiguous keys, invalid structured
+data requiring redaction, unreadable files and links stop preparation. Clean
+historical process captures retain their original bytes. Binary files remain intact
+and must pass the byte scanner. This export step is not a confidentiality review
+and never substitutes for the guard. Correct the source or export policy when
+a finding remains; subsequent publication must not restore it.
+
+The Publication guard workflow runs on PRs and pushes to `main`. The required
+Gate also calls it unconditionally, including for documentation-only changes;
+a failed, cancelled, or skipped scan prevents a successful `Gate / gate` status.
+Existing published findings must be removed or individually justified before
+the guard can pass. `python -m pytest tests/test_publication_safety.py` tests the
+scanner and Gate aggregation against synthetic trees without exposing real hits.
+
+External exporters must install both scripts and their shared
+`scripts/publication_patterns.py` module together, then explicitly run preparation
+and the guard on the staging copy. This repository does not establish that an
+external engine has that integration. Keep original evidence outside the staging
+copy. Complete PEM private-key blocks (including PKCS#8, encrypted, RSA, OpenSSH,
+EC and DSA forms) are removed in full; incomplete or mismatched blocks stop
+preparation. Redaction markers identify local evidence references; they are not
+repository paths to use for edits.
