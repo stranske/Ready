@@ -1,0 +1,126 @@
+.......................................................s................ [ 66%]
+.....................F..............                                     [100%]
+=================================== FAILURES ===================================
+_________ test_real_streamlit_navigation_constructs_without_exception __________
+
+tmp_path = PosixPath('/private/var/folders/qm/w0dtc0j132gd6ymf1hxtd2p00000gp/T/pytest-of-teacher/pytest-1831/test_real_streamlit_navigation0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x15f7fa060>
+
+>   ???
+
+[LOCAL_WORKSPACE]/claude-502/-Users-teacher-Library-CloudStorage-Dropbox-Learning-Code/c64fe1f0-bc5f-447a-8036-f0ab618d7129/[LOCAL_WORKSPACE]/[LOCAL_WORKSPACE]/Manager-Database/tests/test_ui_navigation.py:100: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+cls = <class 'streamlit.testing.v1.app_test.AppTest'>
+script_path = PosixPath('ui/app.py'), default_timeout = 3
+
+    @classmethod
+    def from_file(
+        cls, script_path: str | Path, *, default_timeout: float = 3
+    ) -> AppTest:
+        """
+        Create an ``AppTest`` for an app entrypoint defined in a file.
+    
+        This option is most convenient for CI workflows and testing of
+        published apps. The script must be executable on its own and so must
+        contain all necessary imports. For a multipage app, pass the main
+        script that you would supply to ``streamlit run``. To test a
+        file-based child page, initialize from the main script and use
+        ``AppTest.switch_page()``.
+    
+        Parameters
+        ----------
+        script_path: str | Path
+            Path to the app's entrypoint script. An absolute path is used as
+            given. A relative path is resolved against the Python file that
+            calls ``AppTest.from_file()``.
+    
+        default_timeout: float
+            Default time in seconds before a script run is timed out. Can be
+            overridden for individual ``.run()`` calls.
+    
+        Returns
+        -------
+        AppTest
+            A simulated Streamlit app for testing. The simulated app can be
+            executed via ``.run()``.
+    
+        Raises
+        ------
+        FileNotFoundError
+            If ``script_path`` does not point to an existing file.
+    
+        Examples
+        --------
+        Initialize a multipage app from its entrypoint, then switch to a page:
+    
+        >>> at = AppTest.from_file("app.py").run()
+        >>> at.switch_page("pages/settings.py").run()
+        """
+        script_path = Path(script_path)
+        if script_path.is_absolute():
+            path = script_path
+        else:
+            stack = traceback.StackSummary.extract(traceback.walk_stack(None))
+            caller_file = Path(stack[1].filename)
+            path = caller_file.parent / script_path
+    
+        if not path.is_file():
+>           raise FileNotFoundError(
+                f"AppTest script not found at {path.resolve()}. Relative paths are "
+                "resolved against the file that calls AppTest.from_file()."
+            )
+E           FileNotFoundError: AppTest script not found at [LOCAL_WORKSPACE]/claude-502/-Users-teacher-Library-CloudStorage-Dropbox-Learning-Code/c64fe1f0-bc5f-447a-8036-f0ab618d7129/[LOCAL_WORKSPACE]/[LOCAL_WORKSPACE]/Manager-Database/tests/ui/app.py. Relative paths are resolved against the file that calls AppTest.from_file().
+
+.venv/lib/python3.12/site-packages/streamlit/testing/v1/app_test.py:348: FileNotFoundError
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/langsmith/evaluation/_key_extraction.py:20
+  [LOCAL_HOME]/.codex/automations/research-program/[LOCAL_WORKSPACE]/Manager-Database/.venv/lib/python3.12/site-packages/langsmith/evaluation/_key_extraction.py:20: DeprecationWarning: ast.Str is deprecated and will be removed in Python 3.14; use ast.Constant instead
+    (ast.Str, ast.Constant) if hasattr(ast, "Str") else (ast.Constant,)
+
+api/chat.py:1501
+  [LOCAL_HOME]/.codex/automations/research-program/[LOCAL_WORKSPACE]/Manager-Database/api/chat.py:1501: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    @app.on_event("startup")
+
+.venv/lib/python3.12/site-packages/fastapi/applications.py:4681
+.venv/lib/python3.12/site-packages/fastapi/applications.py:4681
+.venv/lib/python3.12/site-packages/fastapi/applications.py:4681
+  [LOCAL_HOME]/.codex/automations/research-program/[LOCAL_WORKSPACE]/Manager-Database/.venv/lib/python3.12/site-packages/fastapi/applications.py:4681: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    return self.router.on_event(event_type)  # ty: ignore[deprecated]
+
+api/chat.py:1801
+  [LOCAL_HOME]/.codex/automations/research-program/[LOCAL_WORKSPACE]/Manager-Database/api/chat.py:1801: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    @app.on_event("shutdown")
+
+api/chat.py:1808
+  [LOCAL_HOME]/.codex/automations/research-program/[LOCAL_WORKSPACE]/Manager-Database/api/chat.py:1808: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    @app.on_event("shutdown")
+
+.venv/lib/python3.12/site-packages/pythonjsonlogger/jsonlogger.py:11
+  [LOCAL_HOME]/.codex/automations/research-program/[LOCAL_WORKSPACE]/Manager-Database/.venv/lib/python3.12/site-packages/pythonjsonlogger/jsonlogger.py:11: DeprecationWarning: pythonjsonlogger.jsonlogger has been moved to pythonjsonlogger.json
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_ui_navigation.py::test_real_streamlit_navigation_constructs_without_exception
+1 failed, 106 passed, 1 skipped, 8 warnings in 2.46s

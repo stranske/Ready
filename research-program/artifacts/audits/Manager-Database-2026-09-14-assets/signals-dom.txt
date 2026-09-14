@@ -1,0 +1,57 @@
+- log
+- log
+- list:
+  - link "Dashboard":
+    - /url: http://127.0.0.1:8537/
+    - generic: 📈
+    - paragraph: Dashboard
+  - link "Daily Report":
+    - /url: http://127.0.0.1:8537/daily-report
+    - generic: 🗞️
+    - paragraph: Daily Report
+  - link "Search":
+    - /url: http://127.0.0.1:8537/search
+    - generic: 🔎
+    - paragraph: Search
+  - link "Upload":
+    - /url: http://127.0.0.1:8537/upload
+    - generic: 📝
+    - paragraph: Upload
+  - link "🔬 Research":
+    - /url: http://127.0.0.1:8537/research
+    - generic: 🔬
+    - paragraph: 🔬 Research
+- heading "Navigation" [level=3]
+- generic: Alerts
+- generic: "0"
+- paragraph: Unacknowledged Alerts
+- paragraph: "0"
+- banner:
+  - button "Deploy":
+    - generic: Deploy
+  - button "Main menu":
+- heading "Holdings Delta" [level=2]:
+  - text: Holdings Delta
+  - link "Link to heading":
+    - /url: "#holdings-delta"
+- paragraph: Manager
+- combobox "Manager": Elliott Investment Management L.P.
+- button "Open":
+- tablist:
+  - tab "Portfolio":
+    - paragraph: Portfolio
+  - tab "Activism":
+    - paragraph: Activism
+  - tab "Conviction & Signals" [active] [selected]:
+    - paragraph: Conviction & Signals
+- tabpanel "Conviction & Signals":
+  - status:
+    - paragraph: No conviction scores found for the selected manager.
+  - separator
+  - status:
+    - paragraph: No crowded trades overlap found for the selected manager.
+  - status:
+    - paragraph: No contrarian signals found for the selected manager.
+- generic "keyboard_arrow_right Historical Filing Trend":
+  - generic: keyboard_arrow_right
+  - paragraph: Historical Filing Trend

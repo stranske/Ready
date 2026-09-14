@@ -1,0 +1,49 @@
+- button "keyboard_double_arrow_left":
+  - generic: keyboard_double_arrow_left
+- list:
+  - link "Dashboard":
+    - /url: http://127.0.0.1:8537/
+    - generic: 📈
+    - paragraph: Dashboard
+  - link "Daily Report":
+    - /url: http://127.0.0.1:8537/daily-report
+    - generic: 🗞️
+    - paragraph: Daily Report
+  - link "Search":
+    - /url: http://127.0.0.1:8537/search
+    - generic: 🔎
+    - paragraph: Search
+  - link "Upload" [active]:
+    - /url: http://127.0.0.1:8537/upload
+    - generic: 📝
+    - paragraph: Upload
+  - link "🔬 Research":
+    - /url: http://127.0.0.1:8537/research
+    - generic: 🔬
+    - paragraph: 🔬 Research
+- banner:
+  - button "Deploy":
+    - generic: Deploy
+  - button "Main menu":
+- heading "Upload Document" [level=2]:
+  - text: Upload Document
+  - link "Link to heading":
+    - /url: "#upload-document"
+- paragraph: Optional manager link
+- combobox "Optional manager link": None
+- button "Open":
+- paragraph: Upload
+- region "Upload":
+  - button "file upload"
+  - button "upload Upload":
+    - generic: upload
+    - paragraph: Upload
+  - generic: 200MB per file • TXT, MD, PDF
+- heading "Recent Uploads" [level=3]:
+  - text: Recent Uploads
+  - link "Link to heading":
+    - /url: "#recent-uploads"
+- button "Show/hide columns":
+- button "Download as CSV":
+- button "Search":
+- button "Fullscreen":

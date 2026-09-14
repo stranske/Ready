@@ -1,0 +1,23 @@
+[
+  {
+    "id": "imi-merge-verify-closer",
+    "name": "Reviewed Repo Merge Verify Closer",
+    "status": "ACTIVE",
+    "rrule": "FREQ=HOURLY;INTERVAL=1;BYMINUTE=20",
+    "path": "[LOCAL_HOME]/.codex/automations/imi-merge-verify-closer/automation.toml"
+  },
+  {
+    "id": "pd-workloop-resume",
+    "name": "Reviewed Repo Backlog Opener",
+    "status": "ACTIVE",
+    "rrule": "FREQ=HOURLY;INTERVAL=1;BYMINUTE=0",
+    "path": "[LOCAL_HOME]/.codex/automations/pd-workloop-resume/automation.toml"
+  },
+  {
+    "id": "research-program",
+    "name": "Research Program worker (hourly)",
+    "status": "ACTIVE",
+    "rrule": "FREQ=HOURLY;INTERVAL=1;BYMINUTE=10",
+    "path": "[LOCAL_HOME]/.codex/automations/research-program/automation.toml"
+  }
+]

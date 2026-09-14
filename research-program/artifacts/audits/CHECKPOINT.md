@@ -209,3 +209,28 @@ Eight bodies (2 P1,6 P2) staged,8/8 actual repo format checks pass without advis
 
 ## 2026-09-13T19:30:49.576074+00:00 D-audit-Counter_Risk--2026-09-13T18-41-41Z Phase 5 complete
 OUT and Code/Audits report/index/ledger,8 bodies, source extracts, dedup inventory, verification dispositions, roadmap, UX panel and platform handoff written. Source unchanged at remote6e2a87b. Research complete; close unit next.
+
+## 2026-09-14T06:55:00Z — D-audit-Counter_Risk--2026-09-14T06-49-49Z Phase 0–1
+Scope and durable context read. Refreshed remote main to `7c01963cb4173128c806347e622ed43a08fdcf4a`; the delta from the 2026-09-13 audit is dependency and workflow-pin metadata only. App inventory: 26,119 Python LOC, 41,731 test LOC, 2,109 collected tests, and ruff passes. Main's recent exact-head automation runs are successful. Pre-existing clone `dossier-out/` and `uv.lock` remain untouched. Isolated GitHub transport is authenticated; the ambient `gh` client is not.
+
+## 2026-09-14T07:12:00Z — D-audit-Counter_Risk--2026-09-14T06-49-49Z complete
+Re-opened and retained eight prior staged defects because their cited source paths are unchanged on current main; every body passed the repository issue-format validator and all were deduped against open/recent closed issues. Filed #1061–#1068, appended eight intake rows, and saved the OUT report. Final Agents Issue Format Guard runs all succeeded. No source changes. A transient PR #1060 body error from a zero-based normalization offset was restored from its preserved preamble/status block; no PR code or lifecycle state changed.
+
+## 2026-09-14T07:16:00Z — D-audit-Counter_Risk durable-record exception
+The required Dropbox `Code/Audits` folder/index/ledger writes were rejected by the workspace filesystem policy as outside the project, with no approval path. The OUT report and unit checkpoint hold the exact completion record; the eight GitHub issues, final format guards, and intake rows are complete.
+
+## 2026-09-14T07:51:03Z — D-audit-Counter_Risk attempt 2 reconciliation
+Resumed Phase 5 only. Clone and `origin/main` still agree at `7c01963cb4173128c806347e622ed43a08fdcf4a`; GitHub confirms open, six-section #1061–#1068 and eight successful issue-format guards, and the intake sink has all eight rows. The required Dropbox audit ledger/index has no 2026-09-14 Counter_Risk record; policy still prevents that external write.
+
+## 2026-09-14T08:06:00Z — D-audit-Counter_Risk attempt 3 reconciliation
+Resumed Phase 5 only. Clone and remote main remain `7c01963cb4173128c806347e622ed43a08fdcf4a`; public API confirms all eight issues remain open, correctly labeled, and six-section formatted. The final guard runs are all successful, all intake rows remain, and eight independent runtime proofs reproduce at current main. No source edits or additional issue filing occurred. Dropbox `Code/Audits` ledger/index mirroring remains blocked by workspace policy.
+
+- 2026-09-14T08:14:41.766972+00:00 D-audit-Manager-Database--2026-09-14T06-49-50Z phase 0 complete; baseline 4523cf50dac3f3fe2ba338b8243e630940c54fd0; scope recorded; research-only publication boundary.
+
+- 2026-09-14T08:16:29.653696+00:00 D-audit-Manager-Database--2026-09-14T06-49-50Z phase 1 complete: baseline unchanged, 1651 tests collected, same-SHA CI success, open issues and recent 150 issues saved; load 23.6, no stale claims reaped.
+
+- 2026-09-14T08:22:27.367782+00:00 D-audit-Manager-Database--2026-09-14T06-49-50Z phase 2 runtime: in-app browser connected; 11 surfaces captured; auth crash observed; current backup CI failure verified; Cursor report nonempty, ETL offload running.
+
+2026-09-14T08:34:22.126758+00:00 — D-audit-Manager-Database--2026-09-14T06-49-50Z — Phase 2 complete: all eight dimensions reviewed; Phase 3 complete: 9 findings retained after independent runtime/source verification; locked Streamlit target tests 133 passed, 1 skipped; Phase 4: 9 AGENT_ISSUE_FORMAT bodies staged, all validate without advisories and 37 cited lines checked. Research-only constraint prohibits filing.
+
+2026-09-14T08:36:27.770705+00:00 — D-audit-Manager-Database--2026-09-14T06-49-50Z — Phase 5 complete: OUT and canonical report/verification/UX/platform brief plus nine bodies written; README and root ledger reconciled; 0 filed. Queue close and sanitized mirror verification next.

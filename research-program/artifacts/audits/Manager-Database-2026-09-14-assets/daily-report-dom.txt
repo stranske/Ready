@@ -1,0 +1,92 @@
+- button "keyboard_double_arrow_left":
+  - generic: keyboard_double_arrow_left
+- list:
+  - link "Dashboard":
+    - /url: http://127.0.0.1:8537/
+    - generic: 📈
+    - paragraph: Dashboard
+  - link "Daily Report" [active]:
+    - /url: http://127.0.0.1:8537/daily-report
+    - generic: 🗞️
+    - paragraph: Daily Report
+  - link "Search":
+    - /url: http://127.0.0.1:8537/search
+    - generic: 🔎
+    - paragraph: Search
+  - link "Upload":
+    - /url: http://127.0.0.1:8537/upload
+    - generic: 📝
+    - paragraph: Upload
+  - link "🔬 Research":
+    - /url: http://127.0.0.1:8537/research
+    - generic: 🔬
+    - paragraph: 🔬 Research
+- banner:
+  - button "Deploy":
+    - generic: Deploy
+  - button "Main menu":
+- paragraph: Date
+- group "Date":
+  - spinbutton "year, Date": "2026"
+  - generic: /
+  - spinbutton "month, Date": "03"
+  - generic: /
+  - spinbutton "day, Date": "15"
+- textbox: 2026-03-15
+- tablist:
+  - tab "Filings & Diffs" [selected]:
+    - paragraph: Filings & Diffs
+  - tab "Crowded Trades":
+    - paragraph: Crowded Trades
+  - tab "News Pulse":
+    - paragraph: News Pulse
+- tabpanel "Filings & Diffs":
+  - paragraph: Managers w/ changes
+  - paragraph: "1"
+  - paragraph: 2 positions
+  - paragraph: Added
+  - paragraph: "1"
+  - paragraph: 50.0%
+  - paragraph: Exited
+  - paragraph: "0"
+  - paragraph: 0.0%
+  - paragraph: Increased
+  - paragraph: "1"
+  - paragraph: 50.0%
+  - paragraph: Decreased
+  - paragraph: "0"
+  - paragraph: 0.0%
+  - table:
+    - rowgroup:
+      - row "manager_name cusip name_of_issuer Shares Δ Value Δ % Δ Signals":
+        - columnheader "manager_name"
+        - columnheader "cusip"
+        - columnheader "name_of_issuer"
+        - columnheader "Shares Δ"
+        - columnheader "Value Δ"
+        - columnheader "% Δ"
+        - columnheader "Signals"
+    - rowgroup:
+      - row "Elliott Investment Management L.P. 222222222 Example Cloud Systems ↑ +840 ↑ +$2,250,000.00 n/a -":
+        - cell "Elliott Investment Management L.P."
+        - cell "222222222"
+        - cell "Example Cloud Systems"
+        - cell "↑ +840"
+        - cell "↑ +$2,250,000.00"
+        - cell "n/a"
+        - cell "-"
+      - row "Elliott Investment Management L.P. 111111111 Synthetic Energy Holdings ↑ +300 ↑ +$1,150,000.00 +38.3% -":
+        - cell "Elliott Investment Management L.P."
+        - cell "111111111"
+        - cell "Synthetic Energy Holdings"
+        - cell "↑ +300"
+        - cell "↑ +$1,150,000.00"
+        - cell "+38.3%"
+        - cell "-"
+  - button "Download CSV":
+    - paragraph: Download CSV
+  - heading "Activism Alerts" [level=3]:
+    - text: Activism Alerts
+    - link "Link to heading":
+      - /url: "#activism-alerts"
+  - paragraph: No data for this date — nearest report is 2026-03-15.

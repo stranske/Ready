@@ -1,0 +1,168 @@
+{
+  "app": "stranske/Manager-Database",
+  "review_id": "stranske/Manager-Database:uxreview:2026-09-14-research",
+  "url": "http://127.0.0.1:8537",
+  "commit": "4523cf50dac3f3fe2ba338b8243e630940c54fd0",
+  "wired": {
+    "ok": false,
+    "findings": [
+      "Configured login crashes before form with Hasher TypeError.",
+      "Alerts badge is static text; full app navigation exposes no Alerts page."
+    ]
+  },
+  "coverage": [
+    {
+      "surface": "dashboard",
+      "driven": true,
+      "note": "rendered browser capture"
+    },
+    {
+      "surface": "portfolio",
+      "driven": true,
+      "note": "rendered browser capture"
+    },
+    {
+      "surface": "daily-report",
+      "driven": true,
+      "note": "rendered browser capture"
+    },
+    {
+      "surface": "crowded",
+      "driven": true,
+      "note": "rendered browser capture"
+    },
+    {
+      "surface": "news-pulse",
+      "driven": true,
+      "note": "rendered browser capture"
+    },
+    {
+      "surface": "search",
+      "driven": true,
+      "note": "rendered browser capture"
+    },
+    {
+      "surface": "upload",
+      "driven": true,
+      "note": "rendered browser capture"
+    },
+    {
+      "surface": "research",
+      "driven": true,
+      "note": "rendered browser capture"
+    },
+    {
+      "surface": "activism",
+      "driven": true,
+      "note": "rendered browser capture"
+    },
+    {
+      "surface": "signals",
+      "driven": true,
+      "note": "rendered browser capture"
+    },
+    {
+      "surface": "auth",
+      "driven": true,
+      "note": "rendered browser capture"
+    },
+    {
+      "surface": "research submission, upload persistence, alert CRUD, production Postgres",
+      "driven": false,
+      "note": "Research backend not started; upload picker rendered but no file submission; Alerts page absent from shell; no production database used."
+    }
+  ],
+  "screens": [
+    {
+      "name": "dashboard",
+      "a11y": "- list:\n  - link \"Dashboard\":\n    - /url: http://127.0.0.1:8537/\n    - generic: 📈\n    - paragraph: Dashboard\n  - link \"Daily Report\":\n    - /url: http://127.0.0.1:8537/daily-report\n    - generic: 🗞️\n    - paragraph: Daily Report\n  - link \"Search\":\n    - /url: http://127.0.0.1:8537/search\n    - generic: 🔎\n    - paragraph: Search\n  - link \"Upload\":\n    - /url: http://127.0.0.1:8537/upload\n    - generic: 📝\n    - paragraph: Upload\n  - link \"🔬 Research\":\n    - /url: http://127.0.0.1:8537/research\n    - generic: 🔬\n    - paragraph: 🔬 Research\n- heading \"Navigation\" [level=3]\n- generic: Alerts\n- generic: \"0\"\n- paragraph: Unacknowledged Alerts\n- paragraph: \"0\"\n- banner:\n  - button \"Deploy\":\n    - generic: Deploy\n  - button \"Main menu\":\n- heading \"Holdings Delta\" [level=2]:\n  - text: Holdings Delta\n  - link \"Link to heading\":\n    - /url: \"#holdings-delta\"\n- paragraph: Manager\n- combobox \"Manager\": All Managers\n- button \"Open\":\n- generic \"keyboard_arrow_down All Managers Summary\":\n  - generic: keyboard_arrow_down\n  - paragraph: All Managers Summary\n- paragraph: Total Managers\n- paragraph: \"2\"\n- paragraph: Total Filings\n- paragraph: \"1\"\n- paragraph: Total Holdings\n- paragraph: \"2\"\n- paragraph: Total News Items\n- paragraph: \"1\"\n- paragraph: No active activism campaigns.\n- paragraph: Recent Activity (30 days)\n- paragraph: Filings\n- button \"Show data\":\n- button \"Download as PNG\":\n- button \"Copy Vega-Lite spec\":\n- button \"Fullscreen\":\n- generic \"Vega visualization\":\n- paragraph: Holdings\n- button \"Show data\":\n- button \"Download as PNG\":\n- button \"Copy Vega-Lite spec\":\n- button \"Fullscreen\":\n- generic \"Vega visualization\":\n- paragraph: News\n- button \"Show data\":\n- button \"Download as PNG\":\n- button \"Copy Vega-Lite spec\":\n- button \"Fullscreen\":\n- generic \"Vega visualization\":\n- paragraph: Managers with QC Warnings\n- button \"Show/hide columns\":\n- button \"Download as CSV\":\n- button \"Search\":\n- button \"Fullscreen\":\n- generic \"keyboard_arrow_down News\":\n  - generic: keyboard_arrow_down\n  - paragraph: News\n- list:\n  - text: 2026-03-15 10:00 | Elliott Investment Management L.P. |\n  - link \"Elliott synthetic portfolio briefing ready\":\n    - /url: https://example.invalid/synthetic-briefing\n  - code: readiness\n  - code: demo\n- generic \"keyboard_arrow_right Historical Filing Trend\":\n  - generic: keyboard_arrow_right\n  - paragraph: Historical Filing Trend",
+      "screenshot_path": "[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Manager-Database-2026-09-14-assets/dashboard.png",
+      "notes": "Observed synthetic local dataset; no production credentials or external LLM calls."
+    },
+    {
+      "name": "portfolio",
+      "a11y": "- log\n- log\n- list:\n  - link \"Dashboard\":\n    - /url: http://127.0.0.1:8537/\n    - generic: 📈\n    - paragraph: Dashboard\n  - link \"Daily Report\":\n    - /url: http://127.0.0.1:8537/daily-report\n    - generic: 🗞️\n    - paragraph: Daily Report\n  - link \"Search\":\n    - /url: http://127.0.0.1:8537/search\n    - generic: 🔎\n    - paragraph: Search\n  - link \"Upload\":\n    - /url: http://127.0.0.1:8537/upload\n    - generic: 📝\n    - paragraph: Upload\n  - link \"🔬 Research\":\n    - /url: http://127.0.0.1:8537/research\n    - generic: 🔬\n    - paragraph: 🔬 Research\n- heading \"Navigation\" [level=3]\n- generic: Alerts\n- generic: \"0\"\n- paragraph: Unacknowledged Alerts\n- paragraph: \"0\"\n- banner:\n  - button \"Deploy\":\n    - generic: Deploy\n  - button \"Main menu\":\n- heading \"Holdings Delta\" [level=2]:\n  - text: Holdings Delta\n  - link \"Link to heading\":\n    - /url: \"#holdings-delta\"\n- paragraph: Manager\n- combobox \"Manager\" [active]: Elliott Investment Management L.P.\n- button \"Open\":\n- tablist:\n  - tab \"Portfolio\" [selected]:\n    - paragraph: Portfolio\n  - tab \"Activism\":\n    - paragraph: Activism\n  - tab \"Conviction & Signals\":\n    - paragraph: Conviction & Signals\n- tabpanel \"Portfolio\":\n  - generic \"keyboard_arrow_down Filing Timeline\":\n    - generic: keyboard_arrow_down\n    - paragraph: Filing Timeline\n  - button \"Show data\":\n  - button \"Download as PNG\":\n  - button \"Copy Vega-Lite spec\":\n  - button \"Fullscreen\":\n  - generic \"Vega visualization\":\n  - button \"Show/hide columns\":\n  - button \"Download as CSV\":\n  - button \"Search\":\n  - button \"Fullscreen\":\n  - generic \"keyboard_arrow_down Latest Holdings Snapshot\":\n    - generic: keyboard_arrow_down\n    - paragraph: Latest Holdings Snapshot\n  - paragraph: Total Positions\n  - paragraph: \"2\"\n  - paragraph: Total AUM (USD)\n  - paragraph: $6,400,000\n  - button \"Show/hide columns\":\n  - button \"Download as CSV\":\n  - button \"Search\":\n  - button \"Fullscreen\":\n  - generic \"keyboard_arrow_down Top Deltas\":\n    - generic: keyboard_arrow_down\n    - paragraph: Top Deltas\n  - button \"Show data\":\n  - button \"Download as PNG\":\n  - button \"Copy Vega-Lite spec\":\n  - button \"Fullscreen\":\n  - generic \"Vega visualization\":\n  - button \"Show/hide columns\":\n  - button \"Download as CSV\":\n  - button \"Search\":\n  - button \"Fullscreen\":\n  - generic \"keyboard_arrow_down News\":\n    - generic: keyboard_arrow_down\n    - paragraph: News\n  - list:\n    - text: 2026-03-15 10:00 |\n    - link \"Elliott synthetic portfolio briefing ready\":\n      - /url: https://example.invalid/synthetic-briefing\n    - code: readiness\n    - code: demo\n  - generic \"keyboard_arrow_down QC Flags\":\n    - generic: keyboard_arrow_down\n    - paragraph: QC Flags\n  - paragraph: Last Filing Date\n  - paragraph: 2026-03-15\n  - paragraph: +63d past 120d SLA\n  - paragraph: Holdings in Latest Filing\n  - paragraph: \"2\"\n  - paragraph: \"-0 empty filing warnings\"\n  - paragraph: News Items (30d)\n  - paragraph: \"0\"\n  - paragraph: +1 no news in last 30d\n  - paragraph: Data Freshness (ETL)\n  - paragraph: 2026-09-14 08:17 UTC\n  - paragraph: \"-23h to stale\"\n- generic \"keyboard_arrow_right Historical Filing Trend\":\n  - generic: keyboard_arrow_right\n  - paragraph: Historical Filing Trend",
+      "screenshot_path": "[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Manager-Database-2026-09-14-assets/portfolio.png",
+      "notes": "Observed synthetic local dataset; no production credentials or external LLM calls."
+    },
+    {
+      "name": "daily-report",
+      "a11y": "- button \"keyboard_double_arrow_left\":\n  - generic: keyboard_double_arrow_left\n- list:\n  - link \"Dashboard\":\n    - /url: http://127.0.0.1:8537/\n    - generic: 📈\n    - paragraph: Dashboard\n  - link \"Daily Report\" [active]:\n    - /url: http://127.0.0.1:8537/daily-report\n    - generic: 🗞️\n    - paragraph: Daily Report\n  - link \"Search\":\n    - /url: http://127.0.0.1:8537/search\n    - generic: 🔎\n    - paragraph: Search\n  - link \"Upload\":\n    - /url: http://127.0.0.1:8537/upload\n    - generic: 📝\n    - paragraph: Upload\n  - link \"🔬 Research\":\n    - /url: http://127.0.0.1:8537/research\n    - generic: 🔬\n    - paragraph: 🔬 Research\n- banner:\n  - button \"Deploy\":\n    - generic: Deploy\n  - button \"Main menu\":\n- paragraph: Date\n- group \"Date\":\n  - spinbutton \"year, Date\": \"2026\"\n  - generic: /\n  - spinbutton \"month, Date\": \"03\"\n  - generic: /\n  - spinbutton \"day, Date\": \"15\"\n- textbox: 2026-03-15\n- tablist:\n  - tab \"Filings & Diffs\" [selected]:\n    - paragraph: Filings & Diffs\n  - tab \"Crowded Trades\":\n    - paragraph: Crowded Trades\n  - tab \"News Pulse\":\n    - paragraph: News Pulse\n- tabpanel \"Filings & Diffs\":\n  - paragraph: Managers w/ changes\n  - paragraph: \"1\"\n  - paragraph: 2 positions\n  - paragraph: Added\n  - paragraph: \"1\"\n  - paragraph: 50.0%\n  - paragraph: Exited\n  - paragraph: \"0\"\n  - paragraph: 0.0%\n  - paragraph: Increased\n  - paragraph: \"1\"\n  - paragraph: 50.0%\n  - paragraph: Decreased\n  - paragraph: \"0\"\n  - paragraph: 0.0%\n  - table:\n    - rowgroup:\n      - row \"manager_name cusip name_of_issuer Shares Δ Value Δ % Δ Signals\":\n        - columnheader \"manager_name\"\n        - columnheader \"cusip\"\n        - columnheader \"name_of_issuer\"\n        - columnheader \"Shares Δ\"\n        - columnheader \"Value Δ\"\n        - columnheader \"% Δ\"\n        - columnheader \"Signals\"\n    - rowgroup:\n      - row \"Elliott Investment Management L.P. 222222222 Example Cloud Systems ↑ +840 ↑ +$2,250,000.00 n/a -\":\n        - cell \"Elliott Investment Management L.P.\"\n        - cell \"222222222\"\n        - cell \"Example Cloud Systems\"\n        - cell \"↑ +840\"\n        - cell \"↑ +$2,250,000.00\"\n        - cell \"n/a\"\n        - cell \"-\"\n      - row \"Elliott Investment Management L.P. 111111111 Synthetic Energy Holdings ↑ +300 ↑ +$1,150,000.00 +38.3% -\":\n        - cell \"Elliott Investment Management L.P.\"\n        - cell \"111111111\"\n        - cell \"Synthetic Energy Holdings\"\n        - cell \"↑ +300\"\n        - cell \"↑ +$1,150,000.00\"\n        - cell \"+38.3%\"\n        - cell \"-\"\n  - button \"Download CSV\":\n    - paragraph: Download CSV\n  - heading \"Activism Alerts\" [level=3]:\n    - text: Activism Alerts\n    - link \"Link to heading\":\n      - /url: \"#activism-alerts\"\n  - paragraph: No data for this date — nearest report is 2026-03-15.",
+      "screenshot_path": "[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Manager-Database-2026-09-14-assets/daily-report.png",
+      "notes": "Observed synthetic local dataset; no production credentials or external LLM calls."
+    },
+    {
+      "name": "crowded",
+      "a11y": "- list:\n  - link \"Dashboard\":\n    - /url: http://127.0.0.1:8537/\n    - generic: 📈\n    - paragraph: Dashboard\n  - link \"Daily Report\":\n    - /url: http://127.0.0.1:8537/daily-report\n    - generic: 🗞️\n    - paragraph: Daily Report\n  - link \"Search\":\n    - /url: http://127.0.0.1:8537/search\n    - generic: 🔎\n    - paragraph: Search\n  - link \"Upload\":\n    - /url: http://127.0.0.1:8537/upload\n    - generic: 📝\n    - paragraph: Upload\n  - link \"🔬 Research\":\n    - /url: http://127.0.0.1:8537/research\n    - generic: 🔬\n    - paragraph: 🔬 Research\n- banner:\n  - button \"Deploy\":\n    - generic: Deploy\n  - button \"Main menu\":\n- paragraph: Date\n- group \"Date\":\n  - spinbutton \"year, Date\": \"2026\"\n  - generic: /\n  - spinbutton \"month, Date\": \"03\"\n  - generic: /\n  - spinbutton \"day, Date\": \"15\"\n- textbox: 2026-03-15\n- tablist:\n  - tab \"Filings & Diffs\":\n    - paragraph: Filings & Diffs\n  - tab \"Crowded Trades\" [active] [selected]:\n    - paragraph: Crowded Trades\n  - tab \"News Pulse\":\n    - paragraph: News Pulse\n- tabpanel \"Crowded Trades\":\n  - status:\n    - paragraph: No data for this date — nearest report is 2026-03-15.",
+      "screenshot_path": "",
+      "notes": "Observed synthetic local dataset; no production credentials or external LLM calls."
+    },
+    {
+      "name": "news-pulse",
+      "a11y": "- list:\n  - link \"Dashboard\":\n    - /url: http://127.0.0.1:8537/\n    - generic: 📈\n    - paragraph: Dashboard\n  - link \"Daily Report\":\n    - /url: http://127.0.0.1:8537/daily-report\n    - generic: 🗞️\n    - paragraph: Daily Report\n  - link \"Search\":\n    - /url: http://127.0.0.1:8537/search\n    - generic: 🔎\n    - paragraph: Search\n  - link \"Upload\":\n    - /url: http://127.0.0.1:8537/upload\n    - generic: 📝\n    - paragraph: Upload\n  - link \"🔬 Research\":\n    - /url: http://127.0.0.1:8537/research\n    - generic: 🔬\n    - paragraph: 🔬 Research\n- banner:\n  - button \"Deploy\":\n    - generic: Deploy\n  - button \"Main menu\":\n- paragraph: Date\n- group \"Date\":\n  - spinbutton \"year, Date\": \"2026\"\n  - generic: /\n  - spinbutton \"month, Date\": \"03\"\n  - generic: /\n  - spinbutton \"day, Date\": \"15\"\n- textbox: 2026-03-15\n- tablist:\n  - tab \"Filings & Diffs\":\n    - paragraph: Filings & Diffs\n  - tab \"Crowded Trades\":\n    - paragraph: Crowded Trades\n  - tab \"News Pulse\" [active] [selected]:\n    - paragraph: News Pulse\n- tabpanel \"News Pulse\":\n  - paragraph: Filter by topic\n  - combobox \"Filter by topic\": All topics\n  - button \"Open\":\n  - button \"Show/hide columns\":\n  - button \"Download as CSV\":\n  - button \"Search\":\n  - button \"Fullscreen\":\n  - heading \"Linked Headlines\" [level=4]:\n    - text: Linked Headlines\n    - link \"Link to heading\":\n      - /url: \"#linked-headlines\"\n  - paragraph:\n    - strong: 10:00\n    - text: \"|\"\n    - strong: Elliott Investment Management L.P.\n    - text: \"|\"\n    - link \"Elliott synthetic portfolio briefing ready\":\n      - /url: https://example.invalid/synthetic-briefing\n    - text: \"|\"\n    - emphasis: synthetic-fixture\n    - generic: readiness\n    - generic: demo\n  - button \"Download News CSV\":\n    - paragraph: Download News CSV",
+      "screenshot_path": "",
+      "notes": "Observed synthetic local dataset; no production credentials or external LLM calls."
+    },
+    {
+      "name": "search",
+      "a11y": "- button \"keyboard_double_arrow_left\":\n  - generic: keyboard_double_arrow_left\n- list:\n  - link \"Dashboard\":\n    - /url: http://127.0.0.1:8537/\n    - generic: 📈\n    - paragraph: Dashboard\n  - link \"Daily Report\":\n    - /url: http://127.0.0.1:8537/daily-report\n    - generic: 🗞️\n    - paragraph: Daily Report\n  - link \"Search\":\n    - /url: http://127.0.0.1:8537/search\n    - generic: 🔎\n    - paragraph: Search\n  - link \"Upload\":\n    - /url: http://127.0.0.1:8537/upload\n    - generic: 📝\n    - paragraph: Upload\n  - link \"🔬 Research\":\n    - /url: http://127.0.0.1:8537/research\n    - generic: 🔬\n    - paragraph: 🔬 Research\n- banner:\n  - button \"Deploy\":\n    - generic: Deploy\n  - button \"Main menu\":\n- heading \"Universal Search\" [level=2]:\n  - text: Universal Search\n  - link \"Link to heading\":\n    - /url: \"#universal-search\"\n- paragraph: Search managers, filings, holdings, news, and documents\n- textbox \"Search managers, filings, holdings, news, and documents\" [active]:\n  - /placeholder: \"\"\n  - text: Elliott\n- paragraph: Result limit\n- spinbutton \"Result limit\": \"20\"\n- button \"Decrement\":\n- button \"Increment\":\n- heading \"Summary\" [level=3]:\n  - text: Summary\n  - link \"Link to heading\":\n    - /url: \"#summary\"\n- paragraph: Total\n- paragraph: \"4\"\n- paragraph: Managers\n- paragraph: \"1\"\n- paragraph: Filings\n- paragraph: \"1\"\n- paragraph: News\n- paragraph: \"1\"\n- paragraph: Documents\n- paragraph: \"1\"\n- heading \"Results\" [level=3]:\n  - text: Results\n  - link \"Link to heading\":\n    - /url: \"#results\"\n- paragraph: Results are sorted by relevance and grouped by entity type.\n- generic \"keyboard_arrow_down News (1)\":\n  - generic: keyboard_arrow_down\n  - paragraph: News (1)\n- paragraph:\n  - strong: Elliott synthetic portfolio briefing ready\n- paragraph:\n  - generic: NEWS\n  - text: \"Relevance 0.90 | Manager: Elliott Investment Management L.P. | 2026-03-15T10:00:00\"\n- paragraph: \"Readiness smoke deterministic fact: manager universe bootstrap is healthy.\"\n- link \"Open source\":\n  - /url: https://example.invalid/synthetic-briefing\n  - paragraph: Open source\n- separator\n- generic \"keyboard_arrow_down Filings (1)\":\n  - generic: keyboard_arrow_down\n  - paragraph: Filings (1)\n- paragraph:\n  - strong: 13F-HR filing\n- paragraph:\n  - generic: FILING\n  - text: \"Relevance 0.85 | Manager: Elliott Investment Management L.P. | 2025-12-31\"\n- paragraph: \"Manager: Elliott Investment Management L.P. | Raw key: seed/elliott/13f | Period end: 2025-12-31\"\n- separator\n- generic \"keyboard_arrow_down Documents (1)\":\n  - generic: keyboard_arrow_down\n  - paragraph: Documents (1)\n- paragraph:\n  - strong: readiness-smoke-note.txt\n- paragraph:\n  - generic: DOCUMENT\n  - text: Relevance 0.59 | 2026-09-14 08:17:25\n- paragraph: \"Readiness smoke deterministic fact: manager universe bootstrap is healthy.\"\n- separator\n- generic \"keyboard_arrow_down Managers (1)\":\n  - generic: keyboard_arrow_down\n  - paragraph: Managers (1)\n- paragraph:\n  - strong: Elliott Investment Management L.P.\n- paragraph:\n  - generic: MANAGER\n  - text: \"Relevance 0.55 | Manager: Elliott Investment Management L.P.\"\n- paragraph: Elliott Management\n- separator",
+      "screenshot_path": "[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Manager-Database-2026-09-14-assets/search.png",
+      "notes": "Observed synthetic local dataset; no production credentials or external LLM calls."
+    },
+    {
+      "name": "upload",
+      "a11y": "- button \"keyboard_double_arrow_left\":\n  - generic: keyboard_double_arrow_left\n- list:\n  - link \"Dashboard\":\n    - /url: http://127.0.0.1:8537/\n    - generic: 📈\n    - paragraph: Dashboard\n  - link \"Daily Report\":\n    - /url: http://127.0.0.1:8537/daily-report\n    - generic: 🗞️\n    - paragraph: Daily Report\n  - link \"Search\":\n    - /url: http://127.0.0.1:8537/search\n    - generic: 🔎\n    - paragraph: Search\n  - link \"Upload\" [active]:\n    - /url: http://127.0.0.1:8537/upload\n    - generic: 📝\n    - paragraph: Upload\n  - link \"🔬 Research\":\n    - /url: http://127.0.0.1:8537/research\n    - generic: 🔬\n    - paragraph: 🔬 Research\n- banner:\n  - button \"Deploy\":\n    - generic: Deploy\n  - button \"Main menu\":\n- heading \"Upload Document\" [level=2]:\n  - text: Upload Document\n  - link \"Link to heading\":\n    - /url: \"#upload-document\"\n- paragraph: Optional manager link\n- combobox \"Optional manager link\": None\n- button \"Open\":\n- paragraph: Upload\n- region \"Upload\":\n  - button \"file upload\"\n  - button \"upload Upload\":\n    - generic: upload\n    - paragraph: Upload\n  - generic: 200MB per file • TXT, MD, PDF\n- heading \"Recent Uploads\" [level=3]:\n  - text: Recent Uploads\n  - link \"Link to heading\":\n    - /url: \"#recent-uploads\"\n- button \"Show/hide columns\":\n- button \"Download as CSV\":\n- button \"Search\":\n- button \"Fullscreen\":",
+      "screenshot_path": "[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Manager-Database-2026-09-14-assets/upload.png",
+      "notes": "Observed synthetic local dataset; no production credentials or external LLM calls."
+    },
+    {
+      "name": "research",
+      "a11y": "- log\n- log\n- button \"keyboard_double_arrow_left\":\n  - generic: keyboard_double_arrow_left\n- list:\n  - link \"Dashboard\":\n    - /url: http://127.0.0.1:8537/\n    - generic: 📈\n    - paragraph: Dashboard\n  - link \"Daily Report\":\n    - /url: http://127.0.0.1:8537/daily-report\n    - generic: 🗞️\n    - paragraph: Daily Report\n  - link \"Search\":\n    - /url: http://127.0.0.1:8537/search\n    - generic: 🔎\n    - paragraph: Search\n  - link \"Upload\":\n    - /url: http://127.0.0.1:8537/upload\n    - generic: 📝\n    - paragraph: Upload\n  - link \"🔬 Research\" [active]:\n    - /url: http://127.0.0.1:8537/research\n    - generic: 🔬\n    - paragraph: 🔬 Research\n- paragraph: Chain Mode\n- button \"Help for Chain Mode\":\n- combobox \"Chain Mode\": Auto (recommended)\n- button \"Open\":\n- generic \"keyboard_arrow_right Context Filters\":\n  - generic: keyboard_arrow_right\n  - paragraph: Context Filters\n- banner:\n  - button \"Deploy\":\n    - generic: Deploy\n  - button \"Main menu\":\n- heading \"🔬 Research Assistant\" [level=1]:\n  - text: 🔬 Research Assistant\n  - link \"Link to heading\":\n    - /url: \"#research-assistant\"\n- separator\n- paragraph: \"Quick actions:\"\n- button \"📊 Summarize latest filing\":\n  - generic \"📊 Summarize latest filing\":\n    - paragraph: 📊 Summarize latest filing\n- button \"🔍 Top crowded trades\":\n  - generic \"🔍 Top crowded trades\":\n    - paragraph: 🔍 Top crowded trades\n- button \"📈 Recent activism\":\n  - generic \"📈 Recent activism\":\n    - paragraph: 📈 Recent activism\n- button \"🗑️ Clear chat\":\n  - generic \"🗑️ Clear chat\":\n    - paragraph: 🗑️ Clear chat\n- textbox \"Ask about your manager universe...\"\n- button \"Send message\" [disabled]:",
+      "screenshot_path": "[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Manager-Database-2026-09-14-assets/research.png",
+      "notes": "Observed synthetic local dataset; no production credentials or external LLM calls."
+    },
+    {
+      "name": "activism",
+      "a11y": "- log\n- log\n- list:\n  - link \"Dashboard\":\n    - /url: http://127.0.0.1:8537/\n    - generic: 📈\n    - paragraph: Dashboard\n  - link \"Daily Report\":\n    - /url: http://127.0.0.1:8537/daily-report\n    - generic: 🗞️\n    - paragraph: Daily Report\n  - link \"Search\":\n    - /url: http://127.0.0.1:8537/search\n    - generic: 🔎\n    - paragraph: Search\n  - link \"Upload\":\n    - /url: http://127.0.0.1:8537/upload\n    - generic: 📝\n    - paragraph: Upload\n  - link \"🔬 Research\":\n    - /url: http://127.0.0.1:8537/research\n    - generic: 🔬\n    - paragraph: 🔬 Research\n- heading \"Navigation\" [level=3]\n- generic: Alerts\n- generic: \"0\"\n- paragraph: Unacknowledged Alerts\n- paragraph: \"0\"\n- banner:\n  - button \"Deploy\":\n    - generic: Deploy\n  - button \"Main menu\":\n- heading \"Holdings Delta\" [level=2]:\n  - text: Holdings Delta\n  - link \"Link to heading\":\n    - /url: \"#holdings-delta\"\n- paragraph: Manager\n- combobox \"Manager\": Elliott Investment Management L.P.\n- button \"Open\":\n- tablist:\n  - tab \"Portfolio\":\n    - paragraph: Portfolio\n  - tab \"Activism\" [active] [selected]:\n    - paragraph: Activism\n  - tab \"Conviction & Signals\":\n    - paragraph: Conviction & Signals\n- tabpanel \"Activism\":\n  - status:\n    - paragraph: No activism filings or events found for the selected manager.\n  - separator\n  - status:\n    - paragraph: No activism stakes found for the selected manager.\n  - status:\n    - paragraph: No activism ownership history found for the selected manager.\n- generic \"keyboard_arrow_right Historical Filing Trend\":\n  - generic: keyboard_arrow_right\n  - paragraph: Historical Filing Trend",
+      "screenshot_path": "",
+      "notes": "Observed synthetic local dataset; no production credentials or external LLM calls."
+    },
+    {
+      "name": "signals",
+      "a11y": "- log\n- log\n- list:\n  - link \"Dashboard\":\n    - /url: http://127.0.0.1:8537/\n    - generic: 📈\n    - paragraph: Dashboard\n  - link \"Daily Report\":\n    - /url: http://127.0.0.1:8537/daily-report\n    - generic: 🗞️\n    - paragraph: Daily Report\n  - link \"Search\":\n    - /url: http://127.0.0.1:8537/search\n    - generic: 🔎\n    - paragraph: Search\n  - link \"Upload\":\n    - /url: http://127.0.0.1:8537/upload\n    - generic: 📝\n    - paragraph: Upload\n  - link \"🔬 Research\":\n    - /url: http://127.0.0.1:8537/research\n    - generic: 🔬\n    - paragraph: 🔬 Research\n- heading \"Navigation\" [level=3]\n- generic: Alerts\n- generic: \"0\"\n- paragraph: Unacknowledged Alerts\n- paragraph: \"0\"\n- banner:\n  - button \"Deploy\":\n    - generic: Deploy\n  - button \"Main menu\":\n- heading \"Holdings Delta\" [level=2]:\n  - text: Holdings Delta\n  - link \"Link to heading\":\n    - /url: \"#holdings-delta\"\n- paragraph: Manager\n- combobox \"Manager\": Elliott Investment Management L.P.\n- button \"Open\":\n- tablist:\n  - tab \"Portfolio\":\n    - paragraph: Portfolio\n  - tab \"Activism\":\n    - paragraph: Activism\n  - tab \"Conviction & Signals\" [active] [selected]:\n    - paragraph: Conviction & Signals\n- tabpanel \"Conviction & Signals\":\n  - status:\n    - paragraph: No conviction scores found for the selected manager.\n  - separator\n  - status:\n    - paragraph: No crowded trades overlap found for the selected manager.\n  - status:\n    - paragraph: No contrarian signals found for the selected manager.\n- generic \"keyboard_arrow_right Historical Filing Trend\":\n  - generic: keyboard_arrow_right\n  - paragraph: Historical Filing Trend",
+      "screenshot_path": "",
+      "notes": "Observed synthetic local dataset; no production credentials or external LLM calls."
+    },
+    {
+      "name": "auth",
+      "a11y": "- list:\n  - link \"Dashboard\":\n    - /url: http://127.0.0.1:8538/\n    - generic: 📈\n    - paragraph: Dashboard\n  - link \"Daily Report\":\n    - /url: http://127.0.0.1:8538/daily-report\n    - generic: 🗞️\n    - paragraph: Daily Report\n  - link \"Search\":\n    - /url: http://127.0.0.1:8538/search\n    - generic: 🔎\n    - paragraph: Search\n  - link \"Upload\":\n    - /url: http://127.0.0.1:8538/upload\n    - generic: 📝\n    - paragraph: Upload\n  - link \"🔬 Research\":\n    - /url: http://127.0.0.1:8538/research\n    - generic: 🔬\n    - paragraph: 🔬 Research\n- banner:\n  - button \"Deploy\":\n    - generic: Deploy\n  - button \"Main menu\":\n- alert:\n  - generic: \"TypeError: Hasher.__init__() takes 1 positional argument but 2 were given\"\n  - generic: \"Traceback:\"\n  - code:\n    - generic: File \"[LOCAL_HOME]/.codex/automations/research-program/[LOCAL_WORKSPACE]/Manager-Database/ui/app.py\", line 29, in <module> main()\n    - generic: File \"[LOCAL_HOME]/.codex/automations/research-program/[LOCAL_WORKSPACE]/Manager-Database/ui/app.py\", line 25, in main navigation.run()\n    - generic: File \"[LOCAL_HOME]/.codex/automations/research-program/[LOCAL_WORKSPACE]/Manager-Database/.venv/lib/python3.12/site-packages/streamlit/navigation/page.py\", line 498, in run self._page()\n    - generic: \"File \\\"[LOCAL_HOME]/.codex/automations/research-program/[LOCAL_WORKSPACE]/Manager-Database/ui/dashboard.py\\\", line 1204, in main if not require_login(): ^^^^^^^^^^^^^^^\"\n    - generic: File \"[LOCAL_HOME]/.codex/automations/research-program/[LOCAL_WORKSPACE]/Manager-Database/ui/__init__.py\", line 40, in require_login passwords = stauth.Hasher([password]).generate() ^^^^^^^^^^^^^^^^^^^^^^^^^\n  - button \"Copy\"\n",
+      "screenshot_path": "[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Manager-Database-2026-09-14-assets/auth.png",
+      "notes": "Observed synthetic local dataset; no production credentials or external LLM calls."
+    }
+  ],
+  "scenarios": [
+    {
+      "name": "search",
+      "goal": "Find synthetic Elliott records",
+      "steps": [
+        {
+          "action": "Search Elliott",
+          "observed": "4 results across managers, filings, news, documents with source metadata."
+        }
+      ],
+      "goal_achieved": true
+    },
+    {
+      "name": "login",
+      "goal": "Open credential-protected dashboard",
+      "steps": [
+        {
+          "action": "Launch with synthetic UI credentials",
+          "observed": "Hasher TypeError before login form"
+        }
+      ],
+      "goal_achieved": false
+    }
+  ],
+  "help_surfaces": "Search metadata and source links observed; upload advertises 200MB (no upload boundary driven); multiple empty states offer no next action. Assess only observed captures; do not speculate from source or claim unobserved flows work."
+}

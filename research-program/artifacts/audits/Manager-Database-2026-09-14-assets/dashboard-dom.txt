@@ -1,0 +1,85 @@
+- list:
+  - link "Dashboard":
+    - /url: http://127.0.0.1:8537/
+    - generic: 📈
+    - paragraph: Dashboard
+  - link "Daily Report":
+    - /url: http://127.0.0.1:8537/daily-report
+    - generic: 🗞️
+    - paragraph: Daily Report
+  - link "Search":
+    - /url: http://127.0.0.1:8537/search
+    - generic: 🔎
+    - paragraph: Search
+  - link "Upload":
+    - /url: http://127.0.0.1:8537/upload
+    - generic: 📝
+    - paragraph: Upload
+  - link "🔬 Research":
+    - /url: http://127.0.0.1:8537/research
+    - generic: 🔬
+    - paragraph: 🔬 Research
+- heading "Navigation" [level=3]
+- generic: Alerts
+- generic: "0"
+- paragraph: Unacknowledged Alerts
+- paragraph: "0"
+- banner:
+  - button "Deploy":
+    - generic: Deploy
+  - button "Main menu":
+- heading "Holdings Delta" [level=2]:
+  - text: Holdings Delta
+  - link "Link to heading":
+    - /url: "#holdings-delta"
+- paragraph: Manager
+- combobox "Manager": All Managers
+- button "Open":
+- generic "keyboard_arrow_down All Managers Summary":
+  - generic: keyboard_arrow_down
+  - paragraph: All Managers Summary
+- paragraph: Total Managers
+- paragraph: "2"
+- paragraph: Total Filings
+- paragraph: "1"
+- paragraph: Total Holdings
+- paragraph: "2"
+- paragraph: Total News Items
+- paragraph: "1"
+- paragraph: No active activism campaigns.
+- paragraph: Recent Activity (30 days)
+- paragraph: Filings
+- button "Show data":
+- button "Download as PNG":
+- button "Copy Vega-Lite spec":
+- button "Fullscreen":
+- generic "Vega visualization":
+- paragraph: Holdings
+- button "Show data":
+- button "Download as PNG":
+- button "Copy Vega-Lite spec":
+- button "Fullscreen":
+- generic "Vega visualization":
+- paragraph: News
+- button "Show data":
+- button "Download as PNG":
+- button "Copy Vega-Lite spec":
+- button "Fullscreen":
+- generic "Vega visualization":
+- paragraph: Managers with QC Warnings
+- button "Show/hide columns":
+- button "Download as CSV":
+- button "Search":
+- button "Fullscreen":
+- generic "keyboard_arrow_down News":
+  - generic: keyboard_arrow_down
+  - paragraph: News
+- list:
+  - text: 2026-03-15 10:00 | Elliott Investment Management L.P. |
+  - link "Elliott synthetic portfolio briefing ready":
+    - /url: https://example.invalid/synthetic-briefing
+  - code: readiness
+  - code: demo
+- generic "keyboard_arrow_right Historical Filing Trend":
+  - generic: keyboard_arrow_right
+  - paragraph: Historical Filing Trend
