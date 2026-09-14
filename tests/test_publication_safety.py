@@ -202,6 +202,25 @@ def test_symlinks_cannot_hide_or_import_content(tmp_path, directory):
     assert "symlinks are not allowed" in result.stdout
 
 
+def test_named_pipe_fails_without_blocking_other_findings(tmp_path):
+    os.mkfifo(tmp_path / "a-pipe")
+    (tmp_path / "report.md").write_text("Public introduction\nclones/example\n")
+
+    result = subprocess.run(
+        [sys.executable, str(SCRIPT), "--root", str(tmp_path)],
+        capture_output=True,
+        text=True,
+        check=False,
+        timeout=5,
+    )
+
+    assert result.returncode == 1
+    assert "ERROR: a-pipe: not a regular file" in result.stdout
+    assert "report.md:2: scratch-path (1 hit(s))" in result.stdout
+    assert "files_scanned=1" in result.stdout
+    assert "errors=1" in result.stdout
+
+
 @pytest.mark.parametrize(
     "result,expected",
     [

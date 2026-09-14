@@ -117,6 +117,9 @@ def scan(root: Path, allowlist: Path | None = None) -> int:
                 if path.is_symlink():
                     errors.append(f"{name}: symlinks are not allowed")
                     continue
+                if not path.is_file():
+                    errors.append(f"{name}: not a regular file")
+                    continue
                 try:
                     content = path.read_bytes()
                 except OSError:
