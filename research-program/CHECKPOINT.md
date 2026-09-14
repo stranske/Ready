@@ -683,3 +683,4 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-14T17:24:02Z — mirror — deferred — Ready#573 exact-head sync review; publication resumes by 2026-09-14T17:32:47+00:00; local work continues
 ## 2026-09-14T17:28:14Z — D3-unblock-sweep-2026-09-14T17 — done — cursor produced 477 words at artifacts/sweeps/D3-unblock-sweep-2026-09-14T17.md in 251s
 ## 2026-09-14T17:28:14Z — mirror — deferred — Ready#573 exact-head sync review; publication resumes by 2026-09-14T17:32:47+00:00; local work continues
+## 2026-09-14T18:29:28Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas

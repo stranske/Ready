@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-14T18:14:05Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-14T18:29:28Z)
 
 Units: 113 — done 109, failed 4
 Paused: False   Phase stops: []
@@ -124,7 +124,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-14T16:23:37Z — mirror — deferred — Ready#573 exact-head sync review; publication resumes by 2026-09-14T17:32:47+00:00; local work continues
 - 2026-09-14T16:38:41Z — mirror — deferred — Ready#573 exact-head sync review; publication resumes by 2026-09-14T17:32:47+00:00; local work continues
 - 2026-09-14T16:53:56Z — mirror — deferred — Ready#573 exact-head sync review; publication resumes by 2026-09-14T17:32:47+00:00; local work continues
 - 2026-09-14T17:04:56Z — mirror — deferred — Ready#573 exact-head sync review; publication resumes by 2026-09-14T17:32:47+00:00; local work continues
@@ -136,6 +135,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-14T17:24:02Z — mirror — deferred — Ready#573 exact-head sync review; publication resumes by 2026-09-14T17:32:47+00:00; local work continues
 - 2026-09-14T17:28:14Z — D3-unblock-sweep-2026-09-14T17 — done — cursor produced 477 words at artifacts/sweeps/D3-unblock-sweep-2026-09-14T17.md in 251s
 - 2026-09-14T17:28:14Z — mirror — deferred — Ready#573 exact-head sync review; publication resumes by 2026-09-14T17:32:47+00:00; local work continues
+- 2026-09-14T18:29:28Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 
 ## Questions
 
