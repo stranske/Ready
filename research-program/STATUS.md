@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-14T08:41:59Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-14T09:16:05Z)
 
-Units: 111 — done 107, failed 4
+Units: 112 — done 108, failed 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 Claude conservation: off (weekly window available)
@@ -81,6 +81,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D3-unblock-sweep-2026-09-13T16 | D | D | failed | cursor |  | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D3-unblock-sweep-2026-09-13T20 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D3-unblock-sweep-2026-09-14T01 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
+| D3-unblock-sweep-2026-09-14T09 | D | D | done | cursor | codex | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D3-unblock-sweep-pass2-20260913T2023 | D | D | done | cursor | driver | Unblock sweep pass 2: the seven repos the budgeted first pass deferred |
 | D-audit-Counter_Risk--2026-09-07T04-47-32Z | D | D | done | codex | driver | Audit stranske/Counter_Risk and file issues (supply 2 <= 2) |
 | D-audit-Counter_Risk--2026-09-08T17-11-36Z | D | D | done | codex | codex | Audit stranske/Counter_Risk and file issues (supply 1 <= 2) |
@@ -122,10 +123,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-14T07:03:08Z — D-audit-Counter_Risk--2026-09-14T06-49-49Z — fail — offload to codex exited 1; retained artifact is not proof of success
-- 2026-09-14T07:49:04Z — D-audit-Counter_Risk--2026-09-14T06-49-49Z — route — router picked codex from ['codex']
-- 2026-09-14T07:49:04Z — D-audit-Counter_Risk--2026-09-14T06-49-49Z — claimed by driver (agent codex)
-- 2026-09-14T07:51:51Z — D-audit-Counter_Risk--2026-09-14T06-49-49Z — fail — offload to codex exited 1; retained artifact is not proof of success
 - 2026-09-14T08:06:53Z — D-audit-Counter_Risk--2026-09-14T06-49-49Z — route — router picked codex from ['codex']
 - 2026-09-14T08:06:53Z — D-audit-Counter_Risk--2026-09-14T06-49-49Z — claimed by driver (agent codex)
 - 2026-09-14T08:11:36Z — D-audit-Counter_Risk--2026-09-14T06-49-49Z — fail — offload to codex exited 1; retained artifact is not proof of success
@@ -134,6 +131,10 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-14T08:26:58Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
 - 2026-09-14T08:36:40Z — D-audit-Manager-Database--2026-09-14T06-49-50Z — done — Audited Manager-Database main across eight dimensions; staged nine verified issue bodies, with pinned focused tests passing and publication deferred by the rese
 - 2026-09-14T08:36:57Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+- 2026-09-14T09:12:06Z — unblock — enqueued D3-unblock-sweep-2026-09-14T09
+- 2026-09-14T09:12:07Z — D3-unblock-sweep-2026-09-14T09 — route — router picked cursor from ['codex', 'cursor']
+- 2026-09-14T09:12:07Z — D3-unblock-sweep-2026-09-14T09 — claimed by codex (agent cursor)
+- 2026-09-14T09:16:05Z — D3-unblock-sweep-2026-09-14T09 — done — Swept eight repositories: no frozen issues or stale agent PRs, seven current-main CIs pass, twelve already-released residual agent labels and priority gaps in a
 
 ## Questions
 
