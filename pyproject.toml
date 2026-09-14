@@ -106,4 +106,6 @@ target-version = ["py312"]
 # scripts and reports, rsynced in with deletion enabled on every worker tick. Formatting them here
 # is churn that the next sync discards, and leaving them unformatted reddens the default branch.
 # ruff already excludes the same path (see [tool.ruff] extend-exclude); this makes black agree.
-extend-exclude = 'research-program/artifacts'
+# force-exclude rather than extend-exclude, because CI passes explicit paths and extend-exclude
+# does not apply to those.
+force-exclude = "research-program/artifacts/"
