@@ -126,6 +126,28 @@ def test_allowlist_is_exact_and_rule_specific(tmp_path):
     assert "other:1: credential" in result.stdout
 
 
+@pytest.mark.parametrize("reason", [" # Synthetic regression fixture.", "", " # "])
+def test_explicit_allowlist_overrides_default_and_requires_reason(tmp_path, reason):
+    (tmp_path / "fixture").write_text("clones/example\n")
+    # A valid default must not mask an invalid explicitly selected allowlist.
+    allowlist_for(tmp_path).write_text("fixture:scratch-path # Default fixture exception.\n")
+    explicit = tmp_path.parent / "reviewed-allowlist"
+    explicit.write_text(f"fixture:scratch-path{reason}\n")
+
+    result = run_guard(tmp_path, explicit)
+
+    assert "files_scanned=1" in result.stdout
+    if reason.strip() == "# Synthetic regression fixture.":
+        assert result.returncode == 0
+        assert "allowed_hits=1" in result.stdout
+        assert "scratch-path=0" in result.stdout
+    else:
+        assert result.returncode == 1
+        assert "expected exact path:rule # reason" in result.stdout
+        assert "fixture:1: scratch-path" in result.stdout
+        assert "allowed_hits=0" in result.stdout
+
+
 @pytest.mark.parametrize(
     "entry",
     [
