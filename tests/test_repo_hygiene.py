@@ -96,6 +96,7 @@ def test_generated_dirs_untracked_and_vendored_preserved() -> None:
 def test_black_config_excludes_published_artifacts() -> None:
     """Keep the repository's artifact exclusion in Black's configuration."""
     config = tomllib.loads((Path(__file__).resolve().parents[1] / "pyproject.toml").read_text())
+    assert config["tool"]["black"]["extend-exclude"] == "research-program/artifacts"
     assert config["tool"]["black"]["force-exclude"] == "research-program/artifacts/"
 
 
