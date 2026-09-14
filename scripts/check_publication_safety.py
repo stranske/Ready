@@ -114,6 +114,8 @@ def scan(root: Path, allowlist: Path | None = None) -> int:
     """Scan bytes in every file; fail closed for missing, unreadable, or linked files."""
     allowlist_path = resolve_allowlist(root, allowlist)
     allowed, errors = load_allowlist(root, allowlist_path)
+    if allowlist is not None and not allowlist_path.exists() and not allowlist_path.is_symlink():
+        errors.append(".publication-allow: explicitly selected allowlist does not exist")
     counts: Counter[str] = Counter()
     files_scanned = 0
     exceptions = 0

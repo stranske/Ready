@@ -181,6 +181,23 @@ def test_allowlist_itself_is_scanned(tmp_path):
     assert ".publication-allow:1: credential" in result.stdout
 
 
+@pytest.mark.parametrize("has_hit", [False, True])
+def test_missing_explicit_allowlist_fails_and_continues_scan(tmp_path, has_hit):
+    content = "clones/example\n" if has_hit else "Public content\n"
+    (tmp_path / "report.md").write_text(content)
+    allowlist_for(tmp_path).write_text("report.md:scratch-path # Reviewed fixture.\n")
+
+    result = run_guard(tmp_path, tmp_path.parent / "missing-policy")
+
+    assert result.returncode == 1
+    assert "explicitly selected allowlist does not exist" in result.stdout
+    assert "files_scanned=1" in result.stdout
+    assert "allowed_hits=0" in result.stdout
+    assert "errors=1" in result.stdout
+    if has_hit:
+        assert "report.md:1: scratch-path (1 hit(s))" in result.stdout
+
+
 def test_allowlist_cannot_self_allow(tmp_path):
     allowlist_for(tmp_path).write_text(
         ".publication-allow:credential # attempt to bypass self-scan\n"
