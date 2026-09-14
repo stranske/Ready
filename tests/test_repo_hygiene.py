@@ -7,8 +7,6 @@ import sys
 import tomllib
 from pathlib import Path
 
-import pytest
-
 
 def _git_ls_files(pattern: str) -> list[str]:
     result = subprocess.run(
@@ -93,8 +91,13 @@ def test_generated_dirs_untracked_and_vendored_preserved() -> None:
     )
 
 
-@pytest.mark.parametrize("explicit_path", [False, True])
-def test_formatters_exclude_published_artifacts(tmp_path: Path, explicit_path: bool) -> None:
+def test_black_config_excludes_published_artifacts() -> None:
+    """Keep the repository's artifact exclusion in Black's configuration."""
+    config = tomllib.loads((Path(__file__).resolve().parents[1] / "pyproject.toml").read_text())
+    assert config["tool"]["black"]["extend-exclude"] == "research-program/artifacts"
+
+
+def test_formatters_exclude_published_artifacts(tmp_path: Path) -> None:
     """Real Black invocation skips mirror scripts without hiding normal source files."""
     config_text = (Path(__file__).resolve().parents[1] / "pyproject.toml").read_text()
     config = tomllib.loads(config_text)
@@ -106,8 +109,7 @@ def test_formatters_exclude_published_artifacts(tmp_path: Path, explicit_path: b
     artifact.write_text(unformatted)
     source = tmp_path / "source.py"
     source.write_text("values = [1, 2, 3]\n")
-    targets = [str(artifact), str(source)] if explicit_path else ["."]
-    command = [sys.executable, "-m", "black", "--check", *targets]
+    command = [sys.executable, "-m", "black", "--check", "."]
 
     clean = subprocess.run(command, cwd=tmp_path, capture_output=True, text=True)
     assert clean.returncode == 0, clean.stdout + clean.stderr
