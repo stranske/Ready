@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-14T08:36:40Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-14T08:41:59Z)
 
 Units: 111 — done 107, failed 4
 Paused: False   Phase stops: []
@@ -122,7 +122,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-14T06:49:55Z — D-audit-Counter_Risk--2026-09-14T06-49-49Z — claimed by driver (agent codex)
 - 2026-09-14T07:03:08Z — D-audit-Counter_Risk--2026-09-14T06-49-49Z — fail — offload to codex exited 1; retained artifact is not proof of success
 - 2026-09-14T07:49:04Z — D-audit-Counter_Risk--2026-09-14T06-49-49Z — route — router picked codex from ['codex']
 - 2026-09-14T07:49:04Z — D-audit-Counter_Risk--2026-09-14T06-49-49Z — claimed by driver (agent codex)
@@ -134,6 +133,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-14T08:12:36Z — D-audit-Manager-Database--2026-09-14T06-49-50Z — claimed by codex (agent codex)
 - 2026-09-14T08:26:58Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
 - 2026-09-14T08:36:40Z — D-audit-Manager-Database--2026-09-14T06-49-50Z — done — Audited Manager-Database main across eight dimensions; staged nine verified issue bodies, with pinned focused tests passing and publication deferred by the rese
+- 2026-09-14T08:36:57Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
 
 ## Questions
 
