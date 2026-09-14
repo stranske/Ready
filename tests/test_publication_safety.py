@@ -14,14 +14,14 @@ SCRIPT = REPO / "scripts/check_publication_safety.py"
 
 @pytest.fixture
 def tmp_path(tmp_path):
-    """Give each synthetic research tree its own repo-root allowlist directory."""
+    """Give each synthetic research tree an isolated parent directory."""
     root = tmp_path / "research"
     root.mkdir()
     return root
 
 
 def allowlist_for(root: Path) -> Path:
-    return root.parent / ".publication-allow"
+    return root / ".publication-allow"
 
 
 def run_guard(root, allowlist=None):
@@ -141,7 +141,8 @@ def test_explicit_allowlist_overrides_default_and_requires_reason(tmp_path, reas
 
     result = run_guard(tmp_path, explicit)
 
-    assert "files_scanned=1" in result.stdout
+    # The unselected local policy is still scanned as publication content.
+    assert "files_scanned=2" in result.stdout
     if reason.strip() == "# Synthetic regression fixture.":
         assert result.returncode == 0
         assert "allowed_hits=1" in result.stdout
@@ -191,7 +192,7 @@ def test_missing_explicit_allowlist_fails_and_continues_scan(tmp_path, has_hit):
 
     assert result.returncode == 1
     assert "explicitly selected allowlist does not exist" in result.stdout
-    assert "files_scanned=1" in result.stdout
+    assert "files_scanned=2" in result.stdout
     assert "allowed_hits=0" in result.stdout
     assert "errors=1" in result.stdout
     if has_hit:
@@ -243,12 +244,11 @@ def test_named_pipe_fails_without_blocking_other_findings(tmp_path):
     assert "errors=1" in result.stdout
 
 
-@pytest.mark.parametrize("location", ["legacy", "local", "explicit"])
+@pytest.mark.parametrize("location", ["local", "explicit"])
 @pytest.mark.parametrize("kind", ["pipe", "directory"])
 def test_nonregular_allowlist_fails_without_blocking_scan(tmp_path, location, kind):
     (tmp_path / "report.md").write_text("Public introduction\nclones/example\n")
     policy = {
-        "legacy": allowlist_for(tmp_path),
         "local": tmp_path / ".publication-allow",
         "explicit": tmp_path.parent / "reviewed-policy",
     }[location]
@@ -427,7 +427,7 @@ def test_research_allowlist_contract_overrides_legacy(tmp_path, reason):
     (tmp_path / "fixture").write_text("ghp_SYNTHETIC\n")
     # The supported research-local policy wins, even when invalid; the legacy
     # policy must never silently rescue a missing justification.
-    allowlist_for(tmp_path).write_text("fixture:credential # Legacy fixture.\n")
+    (tmp_path.parent / ".publication-allow").write_text("fixture:credential # Legacy fixture.\n")
     (tmp_path / ".publication-allow").write_text(f"fixture:credential{reason}\n")
     result = run_guard(tmp_path)
     assert "files_scanned=1" in result.stdout
@@ -483,9 +483,56 @@ def test_explicit_policy_parent_components_do_not_count_as_content(tmp_path, has
 
 def test_dangling_research_policy_does_not_fall_back(tmp_path):
     (tmp_path / "fixture").write_text("ghp_SYNTHETIC\n")
-    allowlist_for(tmp_path).write_text("fixture:credential # Legacy fixture.\n")
+    (tmp_path.parent / ".publication-allow").write_text("fixture:credential # Legacy fixture.\n")
     (tmp_path / ".publication-allow").symlink_to(tmp_path.parent / "missing-policy")
     result = run_guard(tmp_path)
     assert result.returncode == 1
     assert "symlinks are not allowed" in result.stdout
     assert "allowed_hits=0" in result.stdout
+
+
+@pytest.mark.parametrize("nested", [False, True])
+def test_custom_root_does_not_inherit_parent_exceptions(tmp_path, nested):
+    root = tmp_path / "export" if nested else tmp_path
+    root.mkdir(exist_ok=True)
+    (root / "report.md").write_text("clones/example\n")
+    parent_policy = root.parent / ".publication-allow"
+    parent_policy.write_text("report.md:scratch-path # Reviewed for the parent tree only.\n")
+
+    result = run_guard(root)
+
+    assert result.returncode == 1
+    assert "report.md:1: scratch-path (1 hit(s))" in result.stdout
+    assert "allowed_hits=0" in result.stdout
+    assert "errors=0" in result.stdout
+    # The operator can still deliberately select a policy for an exported tree.
+    assert run_guard(root, parent_policy).returncode == 0
+
+
+@pytest.mark.parametrize("kind", ["valid", "pipe", "directory", "invalid-local", "linked-local"])
+def test_canonical_root_retains_legacy_policy_validation(tmp_path, monkeypatch, capsys, kind):
+    scanner = load_scanner()
+    monkeypatch.setattr(scanner, "DEFAULT_ROOT", tmp_path)
+    monkeypatch.setattr(scanner, "REPO_ROOT", tmp_path.parent)
+    (tmp_path / "report.md").write_text("clones/example\n")
+    legacy = tmp_path.parent / ".publication-allow"
+    if kind == "pipe":
+        os.mkfifo(legacy)
+    elif kind == "directory":
+        legacy.mkdir()
+    else:
+        legacy.write_text("report.md:scratch-path # Reviewed canonical research example.\n")
+    if kind == "invalid-local":
+        (tmp_path / ".publication-allow").write_text("report.md:scratch-path\n")
+    elif kind == "linked-local":
+        (tmp_path / ".publication-allow").symlink_to(tmp_path.parent / "missing-policy")
+
+    result = scanner.scan(tmp_path)
+    output = capsys.readouterr().out
+
+    assert result == (0 if kind == "valid" else 1)
+    assert "files_scanned=1" in output
+    assert f"allowed_hits={int(kind == 'valid')}" in output
+    if kind != "valid":
+        assert "report.md:1: scratch-path (1 hit(s))" in output
+        assert "ERROR: .publication-allow:" in output

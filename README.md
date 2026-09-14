@@ -47,7 +47,10 @@ file and rule; it does not suppress other rules or files. No findings are automa
 
 An explicit `--allowlist` path takes precedence. Otherwise the scanner uses
 `<root>/.publication-allow` when present, then the repo-root `.publication-allow`
-as a compatibility fallback. This repository retains that fallback outside the
+as a compatibility fallback only for the default `research-program/` root.
+Custom scan roots require a local policy or an explicit `--allowlist`; they do
+not inherit exceptions from their parent directory.
+This repository retains that fallback outside the
 machine-owned tree so publication refreshes preserve its reviewed policy. The
 policies are never combined: an invalid or linked local policy fails rather than
 falling back to a permissive parent policy. The selected policy is scanned for

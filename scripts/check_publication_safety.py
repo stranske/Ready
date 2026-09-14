@@ -33,7 +33,11 @@ def resolve_allowlist(root: Path, allowlist: Path | None) -> Path:
     # A dangling policy link is still a selected policy and must fail closed.
     if local.exists() or local.is_symlink():
         return local
-    return root.parent / ".publication-allow"
+    # Legacy exceptions are relative to the canonical research tree. Applying
+    # them to another root could suppress findings in unrelated files.
+    if root.absolute() == DEFAULT_ROOT:
+        return REPO_ROOT / ".publication-allow"
+    return local
 
 
 def load_allowlist(root: Path, allowlist: Path) -> tuple[set[tuple[str, str]], list[str]]:
@@ -199,7 +203,7 @@ def main() -> int:
         "--allowlist",
         type=Path,
         default=None,
-        help="policy path (default: <root>/.publication-allow, then repo-root fallback)",
+        help="policy path (default: <root>/.publication-allow; repo fallback only for default root)",
     )
     args = parser.parse_args()
     return scan(args.root, args.allowlist)
