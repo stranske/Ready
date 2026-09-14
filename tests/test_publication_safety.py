@@ -46,7 +46,15 @@ def load_scanner():
         ("/Users/example/file", "home-path"),
         *[
             (prefix + "SENSITIVE_SENTINEL", "credential")
-            for prefix in ("sk-ant-", "sk-proj-", "ghp_", "github_pat_", "lsv2_", "crsr_", "AIza")
+            for prefix in (
+                "sk-ant-",
+                "sk-proj-",
+                "ghp_",
+                "github_pat_",
+                "lsv2_",
+                "crsr_",
+                "AIza",
+            )
         ],
         ("-----BEGIN RSA PRIVATE KEY-----", "private-key"),
         ("-----BEGIN OPENSSH PRIVATE KEY-----", "private-key"),
@@ -346,3 +354,57 @@ def test_all_private_key_formats_are_rejected(tmp_path, label, suffix):
     assert f"evidence{suffix}:1: private-key (1 hit(s))" in result.stdout
     assert "files_scanned=1" in result.stdout
     assert "SYNTHETIC_MATERIAL" not in result.stdout + result.stderr
+
+
+@pytest.mark.parametrize("reason", [" # Reviewed synthetic fixture.", "", " # "])
+def test_research_allowlist_contract_overrides_legacy(tmp_path, reason):
+    (tmp_path / "fixture").write_text("ghp_SYNTHETIC\n")
+    # The supported research-local policy wins, even when invalid; the legacy
+    # policy must never silently rescue a missing justification.
+    allowlist_for(tmp_path).write_text("fixture:credential # Legacy fixture.\n")
+    (tmp_path / ".publication-allow").write_text(f"fixture:credential{reason}\n")
+    result = run_guard(tmp_path)
+    assert "files_scanned=1" in result.stdout
+    assert result.returncode == (0 if reason.strip() == "# Reviewed synthetic fixture." else 1)
+    if result.returncode:
+        assert "expected exact path:rule # reason" in result.stdout
+    else:
+        assert "allowed_hits=1" in result.stdout
+
+
+def test_explicit_policy_overrides_research_local_policy(tmp_path):
+    (tmp_path / "fixture").write_text("ghp_SYNTHETIC\n")
+    (tmp_path / ".publication-allow").write_text("fixture:credential # Local fixture.\n")
+    explicit = tmp_path.parent / "explicit-policy"
+    explicit.write_text("# No exceptions.\n")
+    result = run_guard(tmp_path, explicit)
+    assert result.returncode == 1
+    assert "fixture:1: credential" in result.stdout
+    assert "allowed_hits=0" in result.stdout
+
+
+def test_research_allowlist_is_scanned_once(tmp_path):
+    (tmp_path / "fixture").write_text("Public content\n")
+    (tmp_path / ".publication-allow").write_text("# ghp_SYNTHETIC\n")
+    result = run_guard(tmp_path)
+    assert result.returncode == 1
+    assert result.stdout.count(".publication-allow:1: credential") == 1
+    assert "credential=1" in result.stdout
+    assert "files_scanned=1" in result.stdout
+
+
+def test_policy_only_is_not_publication_content(tmp_path):
+    (tmp_path / ".publication-allow").write_text("# No exceptions.\n")
+    result = run_guard(tmp_path)
+    assert result.returncode == 1
+    assert "zero files scanned" in result.stdout
+
+
+def test_dangling_research_policy_does_not_fall_back(tmp_path):
+    (tmp_path / "fixture").write_text("ghp_SYNTHETIC\n")
+    allowlist_for(tmp_path).write_text("fixture:credential # Legacy fixture.\n")
+    (tmp_path / ".publication-allow").symlink_to(tmp_path.parent / "missing-policy")
+    result = run_guard(tmp_path)
+    assert result.returncode == 1
+    assert "symlinks are not allowed" in result.stdout
+    assert "allowed_hits=0" in result.stdout

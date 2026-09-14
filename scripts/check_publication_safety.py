@@ -27,7 +27,13 @@ DEFAULT_ROOT = REPO_ROOT / "research-program"
 
 
 def resolve_allowlist(root: Path, allowlist: Path | None) -> Path:
-    return allowlist or root.parent / ".publication-allow"
+    if allowlist is not None:
+        return allowlist
+    local = root / ".publication-allow"
+    # A dangling policy link is still a selected policy and must fail closed.
+    if local.exists() or local.is_symlink():
+        return local
+    return root.parent / ".publication-allow"
 
 
 def load_allowlist(root: Path, allowlist: Path) -> tuple[set[tuple[str, str]], list[str]]:
@@ -74,7 +80,7 @@ def load_allowlist(root: Path, allowlist: Path) -> tuple[set[tuple[str, str]], l
 def scan_allowlist_bytes(
     content: bytes, allowed: set[tuple[str, str]], counts: Counter[str]
 ) -> None:
-    """Scan the repo-root allowlist itself; it is not under the research tree."""
+    """Scan the selected policy without counting it as publication content."""
     for number, line in enumerate(content.splitlines(), 1):
         for rule, pattern in RULES.items():
             hits = len(pattern.findall(line))
@@ -119,6 +125,10 @@ def scan(root: Path, allowlist: Path | None = None) -> int:
             for filename in sorted(filenames):
                 path = directory / filename
                 name = path.relative_to(root).as_posix()
+                # Scan the selected policy separately, exactly once. Policy alone
+                # must not make an otherwise empty publication tree pass.
+                if path.absolute() == allowlist_path.absolute():
+                    continue
                 if path.is_symlink():
                     errors.append(f"{name}: symlinks are not allowed")
                     continue
@@ -171,7 +181,7 @@ def main() -> int:
         "--allowlist",
         type=Path,
         default=None,
-        help="repo-root allowlist path (default: <root>/../.publication-allow)",
+        help="policy path (default: <root>/.publication-allow, then repo-root fallback)",
     )
     args = parser.parse_args()
     return scan(args.root, args.allowlist)
