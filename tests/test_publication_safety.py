@@ -108,6 +108,31 @@ def test_clean_tree_and_zeros(tmp_path):
         assert expected in result.stdout
 
 
+def test_hidden_nested_files_are_scanned_alongside_root_findings(tmp_path):
+    nested = tmp_path / ".archive" / "exports"
+    nested.mkdir(parents=True)
+    (nested / ".report.bin").write_bytes(
+        b"\xff\x00Public introduction\nclones/example localhost:8000\n"
+    )
+    (tmp_path / "report.md").write_text("Public introduction\n/Users/example/report\n")
+    (nested / "clean.md").write_text("Public content\n")
+
+    result = run_guard(tmp_path)
+
+    assert result.returncode == 1
+    for expected in (
+        ".archive/exports/.report.bin:2: scratch-path (1 hit(s))",
+        ".archive/exports/.report.bin:2: internal-host (1 hit(s))",
+        "report.md:2: home-path (1 hit(s))",
+        "files_scanned=3",
+        "home-path=1 credential=0 private-key=0 scratch-path=1 internal-host=1",
+        "allowed_hits=0 errors=0",
+    ):
+        assert expected in result.stdout
+    assert "example" not in result.stdout + result.stderr
+    assert not result.stderr
+
+
 @pytest.mark.parametrize("missing", [False, True])
 def test_empty_or_missing_tree_fails(tmp_path, missing):
     result = run_guard(tmp_path / "missing" if missing else tmp_path)
