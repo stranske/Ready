@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import importlib
 import json
+import os
 import shutil
 from pathlib import Path
 
@@ -297,3 +298,20 @@ def test_nested_private_key_header_cannot_hide_incomplete_block(tmp_path):
     with pytest.raises(ValueError):
         prepare.prepare_copy(tmp_path)
     assert path.read_text() == original
+
+
+def test_preparation_rejects_a_named_pipe_instead_of_hanging(tmp_path):
+    """A FIFO in the staging tree must fail closed, not block preparation forever.
+
+    `read_bytes()` on a FIFO waits for a writer that never arrives, so without a
+    regular-file check this hangs rather than refusing. The scanner already rejects
+    non-regular files; preparation disagreeing with it means the stricter of the two is
+    the one that never gets to run.
+    """
+    stage = tmp_path / "stage"
+    stage.mkdir()
+    (stage / "clean.txt").write_text("nothing sensitive here\n", encoding="utf-8")
+    os.mkfifo(stage / "capture")
+
+    with pytest.raises(ValueError, match="not a regular file"):
+        prepare.prepare_copy(stage)

@@ -117,6 +117,13 @@ def prepare_copy(root: Path) -> Counter[str]:
                 raise ValueError("publication copy contains a symlink")
         for name in filenames:
             path = directory / name
+            if not path.is_file():
+                # read_bytes() on a FIFO BLOCKS FOREVER waiting for a writer, so an unsafe
+                # staging tree would hang preparation instead of being rejected by it. The
+                # guard already refuses non-regular files (check_publication_safety.py);
+                # preparation has to fail closed the same way, or the two disagree about what
+                # is publishable and the safer one is the one that never runs.
+                raise ValueError(f"{path.relative_to(root).as_posix()}: not a regular file")
             original = path.read_bytes()
             files += 1
             try:
