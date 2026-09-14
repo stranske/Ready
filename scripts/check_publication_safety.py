@@ -8,10 +8,15 @@ import re
 from collections import Counter
 from pathlib import Path, PurePosixPath
 
+if __package__:
+    from .publication_patterns import PRIVATE_KEY_HEADER_BYTES
+else:
+    from publication_patterns import PRIVATE_KEY_HEADER_BYTES
+
 RULES = {
     "home-path": re.compile(rb"/Users/"),
     "credential": re.compile(rb"sk-ant-|sk-proj-|ghp_|github_pat_|lsv2_|crsr_|AIza"),
-    "private-key": re.compile(rb"BEGIN (?:RSA|OPENSSH) PRIVATE KEY"),
+    "private-key": PRIVATE_KEY_HEADER_BYTES,
     "scratch-path": re.compile(rb"clones/|/private/tmp/|scratchpad/"),
     "internal-host": re.compile(rb"\.local:|\blocalhost:[0-9]+"),
 }

@@ -1,6 +1,6 @@
 """Exercise the publication guard through its dependency-free command line."""
 
-import importlib.util
+import importlib
 import os
 import subprocess
 import sys
@@ -37,10 +37,7 @@ def run_guard(root, allowlist=None):
 
 
 def load_scanner():
-    spec = importlib.util.spec_from_file_location("check_publication_safety", SCRIPT)
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
+    return importlib.import_module("scripts.check_publication_safety")
 
 
 @pytest.mark.parametrize(
@@ -322,3 +319,30 @@ def test_json_literal_escape_is_not_decoded_twice(tmp_path):
         r'{"example": "ghp\\u005fEXAMPLE", "quote": "say \"hello\"", "n": 42}'
     )
     assert run_guard(tmp_path).returncode == 0
+
+
+@pytest.mark.parametrize(
+    "label",
+    [
+        "PRIVATE KEY",
+        "ENCRYPTED PRIVATE KEY",
+        "RSA PRIVATE KEY",
+        "OPENSSH PRIVATE KEY",
+        "EC PRIVATE KEY",
+        "DSA PRIVATE KEY",
+        "FUTURE PRIVATE KEY",
+    ],
+)
+@pytest.mark.parametrize("suffix", [".txt", ".json", ".jsonl"])
+def test_all_private_key_formats_are_rejected(tmp_path, label, suffix):
+    import json
+
+    content = f"-----BEGIN {label}-----\nSYNTHETIC_MATERIAL\n-----END {label}-----"
+    if suffix != ".txt":
+        content = json.dumps({"key": content}).replace("PRIVATE", r"PRIV\u0041TE")
+    (tmp_path / ("evidence" + suffix)).write_text(content)
+    result = run_guard(tmp_path)
+    assert result.returncode == 1
+    assert f"evidence{suffix}:1: private-key (1 hit(s))" in result.stdout
+    assert "files_scanned=1" in result.stdout
+    assert "SYNTHETIC_MATERIAL" not in result.stdout + result.stderr

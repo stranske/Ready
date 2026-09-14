@@ -43,9 +43,14 @@ form `example.md:credential # Synthetic example reviewed for publication.` Each
 entry needs a reason and one of `home-path`,
 `credential`, `private-key`, `scratch-path`, or `internal-host`. Wildcards and
 paths outside the research tree are rejected. An exception covers only that
-file and rule; it does not suppress other rules or files. No findings are automatically allowlisted. The upstream engine prepares a public
-copy with `scripts/prepare_publication.py` before this guard runs: private path,
-credential and host references become explicit redaction markers. Local evidence
+file and rule; it does not suppress other rules or files. No findings are automatically allowlisted.
+
+Preparation is an explicit operator step; CI runs only the scanner and does not
+redact files. On a separate staging copy, run
+`python scripts/prepare_publication.py --staging-root <staging-copy>` followed by
+`python scripts/check_publication_safety.py --root <staging-copy> --allowlist <reviewed-allowlist>`.
+Publish only after both commands succeed. Preparation replaces private path,
+credential and host references with explicit redaction markers. Local evidence
 is preserved. Affected JSON and JSONL must remain parseable; ambiguous keys, invalid structured
 data requiring redaction, unreadable files and links stop preparation. Clean
 historical process captures retain their original bytes. Binary files remain intact
@@ -60,8 +65,11 @@ Existing published findings must be removed or individually justified before
 the guard can pass. `python -m pytest tests/test_publication_safety.py` tests the
 scanner and Gate aggregation against synthetic trees without exposing real hits.
 
-The engine installs the two scripts from this reviewed repository into its local
-`tools/publication/` directory and runs preparation followed by the guard after
-copying artifacts, before staging a commit. The original engine queue and
-artifacts are never rewritten by this export step. Redaction markers identify
-local evidence references; they are not repository paths to use for edits.
+External exporters must install both scripts and their shared
+`scripts/publication_patterns.py` module together, then explicitly run preparation
+and the guard on the staging copy. This repository does not establish that an
+external engine has that integration. Keep original evidence outside the staging
+copy. Complete PEM private-key blocks (including PKCS#8, encrypted, RSA, OpenSSH,
+EC and DSA forms) are removed in full; incomplete or mismatched blocks stop
+preparation. Redaction markers identify local evidence references; they are not
+repository paths to use for edits.

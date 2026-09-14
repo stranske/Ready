@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import importlib.util
+import importlib
 import json
 import shutil
 from pathlib import Path
@@ -13,10 +13,7 @@ SCRIPTS = Path(__file__).resolve().parents[1] / "scripts"
 
 
 def module(name):
-    spec = importlib.util.spec_from_file_location(name, SCRIPTS / f"{name}.py")
-    result = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(result)
-    return result
+    return importlib.import_module(f"scripts.{name}")
 
 
 prepare = module("prepare_publication")
@@ -150,11 +147,22 @@ def test_encoded_json_is_redacted_before_clean_shortcut(tmp_path, suffix, capsys
 
 
 @pytest.mark.parametrize("suffix", [".json", ".jsonl"])
-def test_clean_structured_bytes_preserved(tmp_path, suffix):
+def test_clean_structured_bytes_preserved(tmp_path, suffix, monkeypatch):
     path = tmp_path / ("clean" + suffix)
     original = b'{ "example": "ghp\\\\u005fEXAMPLE", "public": "caf\\u00e9", "n": 42 }\n'
     path.write_bytes(original)
-    assert prepare.prepare_copy(tmp_path)["files_redacted"] == 0
+    examined = []
+    real_read = Path.read_bytes
+
+    def record_read(self):
+        examined.append(self)
+        return real_read(self)
+
+    monkeypatch.setattr(Path, "read_bytes", record_read)
+    counts = prepare.prepare_copy(tmp_path)
+    assert examined == [path]
+    assert counts["files_scanned"] == 1
+    assert counts["files_redacted"] == 0
     assert path.read_bytes() == original
 
 
@@ -167,19 +175,30 @@ def test_malformed_json_with_escaped_findings_fails_before_any_write(tmp_path):
     assert path.read_text() == "ghp_SYNTHETIC_ONLY"
 
 
-def test_clean_historical_process_capture_is_preserved(tmp_path):
+def test_clean_historical_process_capture_is_preserved(tmp_path, monkeypatch):
     path = tmp_path / "capture.json"
     original = b'[ {"ok": true} ]\n[ {"public": "caf\\u00e9"} ]\n'
     path.write_bytes(original)
-    assert prepare.prepare_copy(tmp_path)["files_redacted"] == 0
+    examined = []
+    real_read = Path.read_bytes
+
+    def record_read(self):
+        examined.append(self)
+        return real_read(self)
+
+    monkeypatch.setattr(Path, "read_bytes", record_read)
+    counts = prepare.prepare_copy(tmp_path)
+    assert examined == [path]
+    assert counts["files_scanned"] == 1
+    assert counts["files_redacted"] == 0
     assert path.read_bytes() == original
 
 
 @pytest.mark.parametrize("suffix", [".txt", ".json", ".jsonl"])
-@pytest.mark.parametrize("kind", ["RSA", "OPENSSH"])
+@pytest.mark.parametrize("kind", ["", "ENCRYPTED ", "RSA ", "OPENSSH ", "EC ", "DSA "])
 @pytest.mark.parametrize("footer", ["", "\n-----END OTHER PRIVATE KEY-----"])
 def test_incomplete_private_key_fails_before_any_write(tmp_path, monkeypatch, suffix, kind, footer):
-    content = f"-----BEGIN {kind} PRIVATE KEY-----\nSYNTHETIC_KEY_MATERIAL{footer}"
+    content = f"-----BEGIN {kind}PRIVATE KEY-----\nSYNTHETIC_KEY_MATERIAL{footer}"
     if suffix != ".txt":
         content = json.dumps({"key": content})
     first = tmp_path / "a.txt"
@@ -241,3 +260,40 @@ def test_duplicate_json_keys_fail_before_any_write(tmp_path, monkeypatch, suffix
         prepare.prepare_copy(tmp_path)
     assert first.read_text() == "clones/example"
     assert invalid.read_text() == content
+
+
+@pytest.mark.parametrize(
+    "label",
+    [
+        "PRIVATE KEY",
+        "ENCRYPTED PRIVATE KEY",
+        "RSA PRIVATE KEY",
+        "OPENSSH PRIVATE KEY",
+        "EC PRIVATE KEY",
+        "DSA PRIVATE KEY",
+        "FUTURE PRIVATE KEY",
+    ],
+)
+@pytest.mark.parametrize("suffix", [".txt", ".json", ".jsonl"])
+def test_full_private_key_blocks_are_removed(tmp_path, label, suffix):
+    path = tmp_path / ("evidence" + suffix)
+    content = f"before\n-----BEGIN {label}-----\nSYNTHETIC_MATERIAL\n-----END {label}-----\nafter"
+    if suffix != ".txt":
+        content = json.dumps({"key": content}).replace("PRIVATE", r"PRIV\u0041TE")
+    path.write_text(content)
+    assert guard.scan(tmp_path) == 1
+    counts = prepare.prepare_copy(tmp_path)
+    assert counts["files_scanned"] == 1
+    assert counts["private-key"] == 1
+    exported = path.read_text() if suffix == ".txt" else json.loads(path.read_text())["key"]
+    assert exported == "before\n[REDACTED_PRIVATE_KEY]\nafter"
+    assert guard.scan(tmp_path) == 0
+
+
+def test_nested_private_key_header_cannot_hide_incomplete_block(tmp_path):
+    path = tmp_path / "evidence.txt"
+    original = "-----BEGIN PRIVATE KEY-----\n-----BEGIN RSA PRIVATE KEY-----\nSYNTHETIC\n-----END PRIVATE KEY-----"
+    path.write_text(original)
+    with pytest.raises(ValueError):
+        prepare.prepare_copy(tmp_path)
+    assert path.read_text() == original

@@ -13,14 +13,15 @@ import re
 from collections import Counter
 from pathlib import Path
 
-PRIVATE_KEY_HEADER = re.compile(r"BEGIN (?:RSA|OPENSSH) PRIVATE KEY")
+if __package__:
+    from .publication_patterns import PRIVATE_KEY_BLOCK, PRIVATE_KEY_HEADER
+else:
+    from publication_patterns import PRIVATE_KEY_BLOCK, PRIVATE_KEY_HEADER
 
 REPLACEMENTS = (
     (
         "private-key",
-        re.compile(
-            r"-----BEGIN (RSA|OPENSSH) PRIVATE KEY-----.*?-----END \1 PRIVATE KEY-----", re.S
-        ),
+        PRIVATE_KEY_BLOCK,
         "[REDACTED_PRIVATE_KEY]",
     ),
     (
