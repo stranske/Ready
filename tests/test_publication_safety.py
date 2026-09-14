@@ -12,6 +12,14 @@ REPO = Path(__file__).resolve().parents[1]
 SCRIPT = REPO / "scripts/check_publication_safety.py"
 
 
+@pytest.fixture
+def tmp_path(tmp_path):
+    """Give each synthetic research tree its own repo-root allowlist directory."""
+    root = tmp_path / "research"
+    root.mkdir()
+    return root
+
+
 def allowlist_for(root: Path) -> Path:
     return root.parent / ".publication-allow"
 
@@ -235,3 +243,41 @@ def test_unreadable_file_fails_closed(tmp_path, monkeypatch, capsys):
     output = capsys.readouterr().out
     assert result == 1
     assert "ERROR: report.md: cannot read file" in output
+
+
+@pytest.mark.parametrize("suffix", [".json", ".jsonl"])
+@pytest.mark.parametrize(
+    "encoded,rule",
+    [
+        (r"ghp\u005fSYNTHETIC_ONLY", "credential"),
+        (r"\/Users\/example/file", "home-path"),
+        (r"BEGIN RSA\u0020PRIVATE KEY", "private-key"),
+        (r"clones\u002fRepo/file", "scratch-path"),
+        (r"worker\u002elocal:8080", "internal-host"),
+    ],
+)
+def test_encoded_json_strings_report_physical_location(tmp_path, suffix, encoded, rule):
+    root = tmp_path / "research"
+    root.mkdir()
+    tmp_path = root
+    path = tmp_path / ("report" + suffix)
+    # Include a visible hit too: semantic scanning must not double-count it.
+    line = r'{"visible": "ghp_VISIBLE", "nested": [{"' + encoded + r'": "' + encoded + r'"}]}'
+    path.write_text("\n" + line + "\n")
+    result = run_guard(tmp_path)
+    assert result.returncode == 1
+    expected = 3 if rule == "credential" else 2
+    assert f"{path.name}:2: {rule} ({expected} hit(s))" in result.stdout
+    assert "SYNTHETIC_ONLY" not in result.stdout + result.stderr
+    allowlist_for(tmp_path).write_text(
+        f"{path.name}:{rule} # Synthetic escaped fixture.\n"
+        + (f"{path.name}:credential # Synthetic visible fixture.\n" if rule != "credential" else "")
+    )
+    assert run_guard(tmp_path).returncode == 0
+
+
+def test_json_literal_escape_is_not_decoded_twice(tmp_path):
+    (tmp_path / "safe.json").write_text(
+        r'{"example": "ghp\\u005fEXAMPLE", "quote": "say \"hello\"", "n": 42}'
+    )
+    assert run_guard(tmp_path).returncode == 0

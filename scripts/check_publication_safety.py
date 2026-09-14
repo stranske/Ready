@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import re
 from collections import Counter
 from pathlib import Path, PurePosixPath
@@ -14,6 +15,8 @@ RULES = {
     "scratch-path": re.compile(rb"clones/|/private/tmp/|scratchpad/"),
     "internal-host": re.compile(rb"\.local:|\blocalhost:[0-9]+"),
 }
+# Decode individual JSON strings so diagnostics retain physical source line numbers.
+JSON_STRING = re.compile(rb'"(?:[^"\\]|\\.)*"')
 REPO_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_ROOT = REPO_ROOT / "research-program"
 
@@ -78,6 +81,21 @@ def scan_allowlist_bytes(
             print(f".publication-allow:{number}: {rule} ({hits} hit(s))")
 
 
+def line_hits(line: bytes, structured: bool) -> Counter[str]:
+    counts = Counter({rule: len(pattern.findall(line)) for rule, pattern in RULES.items()})
+    if structured:
+        for match in JSON_STRING.finditer(line):
+            raw = match.group()
+            if b"\\" not in raw:
+                continue
+            # Decode once, including keys; a literal backslash is not a second escape.
+            value = json.loads(raw).encode("utf-8", errors="surrogatepass")
+            for rule, pattern in RULES.items():
+                # Raw findings already counted above must not be counted twice.
+                counts[rule] += max(0, len(pattern.findall(value)) - len(pattern.findall(raw)))
+    return counts
+
+
 def scan(root: Path, allowlist: Path | None = None) -> int:
     """Scan bytes in every file; fail closed for missing, unreadable, or linked files."""
     allowlist_path = resolve_allowlist(root, allowlist)
@@ -106,8 +124,12 @@ def scan(root: Path, allowlist: Path | None = None) -> int:
                     continue
                 files_scanned += 1
                 for number, line in enumerate(content.splitlines(), 1):
-                    for rule, pattern in RULES.items():
-                        hits = len(pattern.findall(line))
+                    try:
+                        hits_by_rule = line_hits(line, path.suffix.lower() in {".json", ".jsonl"})
+                    except (ValueError, UnicodeError):
+                        errors.append(f"{name}:{number}: invalid structured string")
+                        hits_by_rule = line_hits(line, False)
+                    for rule, hits in hits_by_rule.items():
                         if not hits:
                             continue
                         if (name, rule) in allowed:

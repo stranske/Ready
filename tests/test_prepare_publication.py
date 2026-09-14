@@ -127,3 +127,49 @@ def test_unreadable_traversal_stops_export_before_writes(tmp_path, monkeypatch):
     with pytest.raises(OSError):
         prepare.prepare_copy(tmp_path)
     assert path.read_text() == "clones/a"
+
+
+@pytest.mark.parametrize("suffix", [".json", ".jsonl"])
+def test_encoded_json_is_redacted_before_clean_shortcut(tmp_path, suffix, capsys):
+    path = tmp_path / ("evidence" + suffix)
+    path.write_text(
+        r'{"ghp\u005fSYNTHETIC_KEY": [{"path": "\/Users\/example", "token": "ghp\u005fSYNTHETIC_ONLY", "number": 42}]}'
+    )
+    counts = prepare.prepare_copy(tmp_path)
+    value = json.loads(path.read_text())
+    assert list(value) == ["[REDACTED_CREDENTIAL]"]
+    assert value["[REDACTED_CREDENTIAL]"][0] == {
+        "path": "[LOCAL_HOME]/",
+        "token": "[REDACTED_CREDENTIAL]",
+        "number": 42,
+    }
+    assert counts["credential"] == 2
+    assert counts["files_redacted"] == 1
+    assert guard.scan(tmp_path) == 0
+    assert "SYNTHETIC_ONLY" not in capsys.readouterr().out
+
+
+@pytest.mark.parametrize("suffix", [".json", ".jsonl"])
+def test_clean_structured_bytes_preserved(tmp_path, suffix):
+    path = tmp_path / ("clean" + suffix)
+    original = b'{ "example": "ghp\\\\u005fEXAMPLE", "public": "caf\\u00e9", "n": 42 }\n'
+    path.write_bytes(original)
+    assert prepare.prepare_copy(tmp_path)["files_redacted"] == 0
+    assert path.read_bytes() == original
+
+
+def test_malformed_json_with_escaped_findings_fails_before_any_write(tmp_path):
+    path = tmp_path / "a.txt"
+    path.write_text("ghp_SYNTHETIC_ONLY")
+    (tmp_path / "invalid.json").write_text(r'{"token": "ghp\u005fSYNTHETIC_ONLY"')
+    with pytest.raises(ValueError, match="structured data"):
+        prepare.prepare_copy(tmp_path)
+    assert path.read_text() == "ghp_SYNTHETIC_ONLY"
+
+
+def test_clean_historical_process_capture_is_preserved(tmp_path):
+    path = tmp_path / "capture.json"
+    original = b'[ {"ok": true} ]\n[ {"public": "caf\\u00e9"} ]\n'
+    path.write_bytes(original)
+    assert prepare.prepare_copy(tmp_path)["files_redacted"] == 0
+    assert path.read_bytes() == original

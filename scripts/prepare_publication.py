@@ -70,6 +70,18 @@ def redact_value(value: object, counts: Counter[str]) -> object:
     return value
 
 
+def needs_redaction(text: str, structured: bool) -> bool:
+    """Inspect decoded JSON strings before the clean-file shortcut, including keys."""
+    if any(pattern.search(text) for _, pattern, _ in REPLACEMENTS):
+        return True
+    if structured:
+        for match in re.finditer(r'"(?:[^"\\]|\\.)*"', text):
+            value = json.loads(match.group())
+            if any(pattern.search(value) for _, pattern, _ in REPLACEMENTS):
+                return True
+    return False
+
+
 def prepare_copy(root: Path) -> Counter[str]:
     """Operate only on the caller's staging tree; fail before writing on errors."""
     if not root.is_dir() or root.is_symlink():
@@ -94,25 +106,28 @@ def prepare_copy(root: Path) -> Counter[str]:
             except UnicodeError:
                 # Binary artifacts are preserved; the byte scanner remains authoritative.
                 continue
-            if not any(pattern.search(text) for _, pattern, _ in REPLACEMENTS):
-                continue
+            file_counts: Counter[str] = Counter()
             try:
+                # Historical process captures may not be complete JSON documents.
+                # Preserve their clean bytes; affected structured files must parse.
+                if not needs_redaction(text, path.suffix.lower() in {".json", ".jsonl"}):
+                    continue
                 value: object
-                if path.suffix == ".json":
+                if path.suffix.lower() == ".json":
                     if path.relative_to(root).as_posix() in TEXT_CAPTURE_JSON:
                         value = {
                             "capture_format": "raw-process-output",
-                            "text": redact_text(text, counts),
+                            "text": redact_text(text, file_counts),
                         }
                     else:
-                        value = redact_value(json.loads(text), counts)
+                        value = redact_value(json.loads(text), file_counts)
                     replacement = json.dumps(value, ensure_ascii=False, indent=2) + "\n"
-                elif path.suffix == ".jsonl":
+                elif path.suffix.lower() == ".jsonl":
                     replacement = (
                         "\n".join(
                             (
                                 json.dumps(
-                                    redact_value(json.loads(line), counts), ensure_ascii=False
+                                    redact_value(json.loads(line), file_counts), ensure_ascii=False
                                 )
                                 if line.strip()
                                 else ""
@@ -122,12 +137,14 @@ def prepare_copy(root: Path) -> Counter[str]:
                         + "\n"
                     )
                 else:
-                    replacement = redact_text(text, counts)
+                    replacement = redact_text(text, file_counts)
             except (ValueError, TypeError) as exc:
                 raise ValueError(
                     "publication copy has invalid or ambiguous structured data"
                 ) from exc
-            pending.append((path, replacement.encode("utf-8")))
+            if any(file_counts.values()):
+                counts.update(file_counts)
+                pending.append((path, replacement.encode("utf-8")))
     if files == 0:
         raise ValueError("publication copy is empty")
     for path, content in pending:

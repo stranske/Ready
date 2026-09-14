@@ -28,7 +28,9 @@ Two defect classes have already reached this tree and both are invisible on a ca
 
 Run `python scripts/check_publication_safety.py` with Python 3.12 or later before
 publishing. It scans bytes in every file under `research-program/`, including
-binary files, and separately scans the repo-root allowlist. Diagnostics contain
+binary files, and separately scans the repo-root allowlist. JSON and JSONL string
+values and keys are also scanned after decoding escapes once, with findings
+attributed to their physical source lines. Diagnostics contain
 the relative file, line, and rule, never the matched content. Missing or empty
 trees, unreadable entries, and symlinks fail the check. The final line reports
 files scanned, unallowed hits for every rule (including zeros), allowed hits,
@@ -44,8 +46,9 @@ paths outside the research tree are rejected. An exception covers only that
 file and rule; it does not suppress other rules or files. No findings are automatically allowlisted. The upstream engine prepares a public
 copy with `scripts/prepare_publication.py` before this guard runs: private path,
 credential and host references become explicit redaction markers. Local evidence
-is preserved. JSON and JSONL remain parseable; ambiguous keys, invalid structured
-data, unreadable files and links stop preparation. Binary files remain intact
+is preserved. Affected JSON and JSONL must remain parseable; ambiguous keys, invalid structured
+data requiring redaction, unreadable files and links stop preparation. Clean
+historical process captures retain their original bytes. Binary files remain intact
 and must pass the byte scanner. This export step is not a confidentiality review
 and never substitutes for the guard. Correct the source or export policy when
 a finding remains; subsequent publication must not restore it.
