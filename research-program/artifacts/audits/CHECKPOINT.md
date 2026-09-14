@@ -209,3 +209,12 @@ Eight bodies (2 P1,6 P2) staged,8/8 actual repo format checks pass without advis
 
 ## 2026-09-13T19:30:49.576074+00:00 D-audit-Counter_Risk--2026-09-13T18-41-41Z Phase 5 complete
 OUT and Code/Audits report/index/ledger,8 bodies, source extracts, dedup inventory, verification dispositions, roadmap, UX panel and platform handoff written. Source unchanged at remote6e2a87b. Research complete; close unit next.
+
+## 2026-09-14T06:55:00Z — D-audit-Counter_Risk--2026-09-14T06-49-49Z Phase 0–1
+Scope and durable context read. Refreshed remote main to `7c01963cb4173128c806347e622ed43a08fdcf4a`; the delta from the 2026-09-13 audit is dependency and workflow-pin metadata only. App inventory: 26,119 Python LOC, 41,731 test LOC, 2,109 collected tests, and ruff passes. Main's recent exact-head automation runs are successful. Pre-existing clone `dossier-out/` and `uv.lock` remain untouched. Isolated GitHub transport is authenticated; the ambient `gh` client is not.
+
+## 2026-09-14T07:12:00Z — D-audit-Counter_Risk--2026-09-14T06-49-49Z complete
+Re-opened and retained eight prior staged defects because their cited source paths are unchanged on current main; every body passed the repository issue-format validator and all were deduped against open/recent closed issues. Filed #1061–#1068, appended eight intake rows, and saved the OUT report. Final Agents Issue Format Guard runs all succeeded. No source changes. A transient PR #1060 body error from a zero-based normalization offset was restored from its preserved preamble/status block; no PR code or lifecycle state changed.
+
+## 2026-09-14T07:16:00Z — D-audit-Counter_Risk durable-record exception
+The required Dropbox `Code/Audits` folder/index/ledger writes were rejected by the workspace filesystem policy as outside the project, with no approval path. The OUT report and unit checkpoint hold the exact completion record; the eight GitHub issues, final format guards, and intake rows are complete.

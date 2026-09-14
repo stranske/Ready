@@ -1,8 +1,8 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-14T06:49:55Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-14T07:11:34Z)
 
-Units: 111 — claimed 1, done 106, failed 3, queued 1
+Units: 111 — done 106, failed 3, queued 2
 Paused: False   Phase stops: []
-Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
+Capacity (Orchestrator): capacity.json unreadable
 Claude conservation: off (weekly window available)
 Owner inbox: https://github.com/stranske/Ready/issues/553
 
@@ -88,7 +88,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Counter_Risk--2026-09-09T17-29-35Z | D | D | done | codex | driver | Audit stranske/Counter_Risk and file issues (supply 2 <= 2) |
 | D-audit-Counter_Risk--2026-09-10T17-45-12Z | D | D | done | codex | driver | Audit stranske/Counter_Risk and file issues (supply 1 <= 2) |
 | D-audit-Counter_Risk--2026-09-13T18-41-41Z | D | D | done | codex | codex | Audit stranske/Counter_Risk and file issues (supply 1 <= 2) |
-| D-audit-Counter_Risk--2026-09-14T06-49-49Z | D | D | claimed | codex | driver | Audit stranske/Counter_Risk and file issues (supply 1 <= 2) |
+| D-audit-Counter_Risk--2026-09-14T06-49-49Z | D | D | queued | codex |  | Audit stranske/Counter_Risk and file issues (supply 1 <= 2) |
 | D-audit-Fine-Art-Archive--2026-09-05T04-00-31Z | D | D | done | codex | codex | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 2) |
 | D-audit-Fine-Art-Archive--2026-09-06T04-25-53Z | D | D | done | codex | driver | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 3) |
 | D-audit-Manager-Database--2026-09-10T17-45-13Z | D | D | done | codex | driver | Audit stranske/Manager-Database and file issues (supply 0 <= 2) |
@@ -122,7 +122,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-14T01:00:14Z — unblock — enqueued D3-unblock-sweep-2026-09-14T01
 - 2026-09-14T01:00:15Z — D3-unblock-sweep-2026-09-14T01 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-14T01:00:15Z — D3-unblock-sweep-2026-09-14T01 — claimed by driver (agent cursor)
 - 2026-09-14T01:05:24Z — D3-unblock-sweep-2026-09-14T01 — done — cursor produced 539 words at artifacts/sweeps/D3-unblock-sweep-2026-09-14T01.md in 288s
@@ -134,6 +133,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-14T06:49:50Z — refill — Manager-Database: open=2 <= 2 → audit queued
 - 2026-09-14T06:49:55Z — D-audit-Counter_Risk--2026-09-14T06-49-49Z — route — router picked codex from ['codex']
 - 2026-09-14T06:49:55Z — D-audit-Counter_Risk--2026-09-14T06-49-49Z — claimed by driver (agent codex)
+- 2026-09-14T07:03:08Z — D-audit-Counter_Risk--2026-09-14T06-49-49Z — fail — offload to codex exited 1; retained artifact is not proof of success
 
 ## Questions
 
