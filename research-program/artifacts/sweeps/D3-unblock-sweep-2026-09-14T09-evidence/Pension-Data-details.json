@@ -1,0 +1,1320 @@
+{
+  "head": "6b80679a8dc26745f78d0e6aefb266381ea9d97d",
+  "ci": [
+    {
+      "workflow": {
+        "id": 240018734,
+        "node_id": "W_kwDORbgH9M4OTmUu",
+        "name": "CI",
+        "path": ".github/workflows/ci.yml",
+        "state": "active",
+        "created_at": "2026-02-28T21:49:34.000-06:00",
+        "updated_at": "2026-02-28T21:49:34.000-06:00",
+        "url": "https://api.github.com/repos/stranske/Pension-Data/actions/workflows/240018734",
+        "html_url": "https://github.com/stranske/Pension-Data/blob/main/.github/workflows/ci.yml",
+        "badge_url": "https://github.com/stranske/Pension-Data/workflows/CI/badge.svg"
+      },
+      "runs": {
+        "total_count": 452,
+        "workflow_runs": [
+          {
+            "id": 34791007949,
+            "name": "CI",
+            "node_id": "WFR_kwLORbgH9M8AAAAIGbSmzQ",
+            "head_branch": "main",
+            "head_sha": "6b80679a8dc26745f78d0e6aefb266381ea9d97d",
+            "path": ".github/workflows/ci.yml",
+            "display_title": "deps: sync dev tool versions",
+            "run_number": 1392,
+            "event": "push",
+            "status": "completed",
+            "conclusion": "success",
+            "workflow_id": 240018734,
+            "check_suite_id": 94218686931,
+            "check_suite_node_id": "CS_kwDORbgH9M8AAAAV798R0w",
+            "url": "https://api.github.com/repos/stranske/Pension-Data/actions/runs/34791007949",
+            "html_url": "https://github.com/stranske/Pension-Data/actions/runs/34791007949",
+            "pull_requests": [],
+            "created_at": "2026-09-13T23:53:59Z",
+            "updated_at": "2026-09-13T23:58:48Z",
+            "actor": {
+              "login": "stranske",
+              "id": 23046322,
+              "node_id": "MDQ6VXNlcjIzMDQ2MzIy",
+              "avatar_url": "https://avatars.githubusercontent.com/u/23046322?v=4",
+              "gravatar_id": "",
+              "url": "https://api.github.com/users/stranske",
+              "html_url": "https://github.com/stranske",
+              "followers_url": "https://api.github.com/users/stranske/followers",
+              "following_url": "https://api.github.com/users/stranske/following{/other_user}",
+              "gists_url": "https://api.github.com/users/stranske/gists{/gist_id}",
+              "starred_url": "https://api.github.com/users/stranske/starred{/owner}{/repo}",
+              "subscriptions_url": "https://api.github.com/users/stranske/subscriptions",
+              "organizations_url": "https://api.github.com/users/stranske/orgs",
+              "repos_url": "https://api.github.com/users/stranske/repos",
+              "events_url": "https://api.github.com/users/stranske/events{/privacy}",
+              "received_events_url": "https://api.github.com/users/stranske/received_events",
+              "type": "User",
+              "user_view_type": "public",
+              "site_admin": false
+            },
+            "run_attempt": 1,
+            "referenced_workflows": [
+              {
+                "path": "stranske/Workflows/.github/workflows/reusable-10-ci-python.yml@main",
+                "sha": "569875fea7d2956d35c45ff83766b65e47bfb23a",
+                "ref": "refs/heads/main"
+              }
+            ],
+            "run_started_at": "2026-09-13T23:53:59Z",
+            "triggering_actor": {
+              "login": "stranske",
+              "id": 23046322,
+              "node_id": "MDQ6VXNlcjIzMDQ2MzIy",
+              "avatar_url": "https://avatars.githubusercontent.com/u/23046322?v=4",
+              "gravatar_id": "",
+              "url": "https://api.github.com/users/stranske",
+              "html_url": "https://github.com/stranske",
+              "followers_url": "https://api.github.com/users/stranske/followers",
+              "following_url": "https://api.github.com/users/stranske/following{/other_user}",
+              "gists_url": "https://api.github.com/users/stranske/gists{/gist_id}",
+              "starred_url": "https://api.github.com/users/stranske/starred{/owner}{/repo}",
+              "subscriptions_url": "https://api.github.com/users/stranske/subscriptions",
+              "organizations_url": "https://api.github.com/users/stranske/orgs",
+              "repos_url": "https://api.github.com/users/stranske/repos",
+              "events_url": "https://api.github.com/users/stranske/events{/privacy}",
+              "received_events_url": "https://api.github.com/users/stranske/received_events",
+              "type": "User",
+              "user_view_type": "public",
+              "site_admin": false
+            },
+            "jobs_url": "https://api.github.com/repos/stranske/Pension-Data/actions/runs/34791007949/jobs",
+            "logs_url": "https://api.github.com/repos/stranske/Pension-Data/actions/runs/34791007949/logs",
+            "check_suite_url": "https://api.github.com/repos/stranske/Pension-Data/check-suites/94218686931",
+            "artifacts_url": "https://api.github.com/repos/stranske/Pension-Data/actions/runs/34791007949/artifacts",
+            "cancel_url": "https://api.github.com/repos/stranske/Pension-Data/actions/runs/34791007949/cancel",
+            "rerun_url": "https://api.github.com/repos/stranske/Pension-Data/actions/runs/34791007949/rerun",
+            "previous_attempt_url": null,
+            "workflow_url": "https://api.github.com/repos/stranske/Pension-Data/actions/workflows/240018734",
+            "head_commit": {
+              "id": "6b80679a8dc26745f78d0e6aefb266381ea9d97d",
+              "tree_id": "80516834ce016428d73477d9d35dacec41d28686",
+              "message": "deps: sync dev tool versions\n\nAutomated merge of sync PR\n\nSync hash: dev-tool\nDelivery generation: da45be92183d",
+              "timestamp": "2026-09-13T23:53:55Z",
+              "author": {
+                "name": "stranske",
+                "email": "stranske@gmail.com"
+              },
+              "committer": {
+                "name": "GitHub",
+                "email": "noreply@github.com"
+              }
+            },
+            "repository": {
+              "id": 1169688564,
+              "node_id": "R_kgDORbgH9A",
+              "name": "Pension-Data",
+              "full_name": "stranske/Pension-Data",
+              "private": false,
+              "owner": {
+                "login": "stranske",
+                "id": 23046322,
+                "node_id": "MDQ6VXNlcjIzMDQ2MzIy",
+                "avatar_url": "https://avatars.githubusercontent.com/u/23046322?v=4",
+                "gravatar_id": "",
+                "url": "https://api.github.com/users/stranske",
+                "html_url": "https://github.com/stranske",
+                "followers_url": "https://api.github.com/users/stranske/followers",
+                "following_url": "https://api.github.com/users/stranske/following{/other_user}",
+                "gists_url": "https://api.github.com/users/stranske/gists{/gist_id}",
+                "starred_url": "https://api.github.com/users/stranske/starred{/owner}{/repo}",
+                "subscriptions_url": "https://api.github.com/users/stranske/subscriptions",
+                "organizations_url": "https://api.github.com/users/stranske/orgs",
+                "repos_url": "https://api.github.com/users/stranske/repos",
+                "events_url": "https://api.github.com/users/stranske/events{/privacy}",
+                "received_events_url": "https://api.github.com/users/stranske/received_events",
+                "type": "User",
+                "user_view_type": "public",
+                "site_admin": false
+              },
+              "html_url": "https://github.com/stranske/Pension-Data",
+              "description": null,
+              "fork": false,
+              "url": "https://api.github.com/repos/stranske/Pension-Data",
+              "forks_url": "https://api.github.com/repos/stranske/Pension-Data/forks",
+              "keys_url": "https://api.github.com/repos/stranske/Pension-Data/keys{/key_id}",
+              "collaborators_url": "https://api.github.com/repos/stranske/Pension-Data/collaborators{/collaborator}",
+              "teams_url": "https://api.github.com/repos/stranske/Pension-Data/teams",
+              "hooks_url": "https://api.github.com/repos/stranske/Pension-Data/hooks",
+              "issue_events_url": "https://api.github.com/repos/stranske/Pension-Data/issues/events{/number}",
+              "events_url": "https://api.github.com/repos/stranske/Pension-Data/events",
+              "assignees_url": "https://api.github.com/repos/stranske/Pension-Data/assignees{/user}",
+              "branches_url": "https://api.github.com/repos/stranske/Pension-Data/branches{/branch}",
+              "tags_url": "https://api.github.com/repos/stranske/Pension-Data/tags",
+              "blobs_url": "https://api.github.com/repos/stranske/Pension-Data/git/blobs{/sha}",
+              "git_tags_url": "https://api.github.com/repos/stranske/Pension-Data/git/tags{/sha}",
+              "git_refs_url": "https://api.github.com/repos/stranske/Pension-Data/git/refs{/sha}",
+              "trees_url": "https://api.github.com/repos/stranske/Pension-Data/git/trees{/sha}",
+              "statuses_url": "https://api.github.com/repos/stranske/Pension-Data/statuses/{sha}",
+              "languages_url": "https://api.github.com/repos/stranske/Pension-Data/languages",
+              "stargazers_url": "https://api.github.com/repos/stranske/Pension-Data/stargazers",
+              "contributors_url": "https://api.github.com/repos/stranske/Pension-Data/contributors",
+              "subscribers_url": "https://api.github.com/repos/stranske/Pension-Data/subscribers",
+              "subscription_url": "https://api.github.com/repos/stranske/Pension-Data/subscription",
+              "commits_url": "https://api.github.com/repos/stranske/Pension-Data/commits{/sha}",
+              "git_commits_url": "https://api.github.com/repos/stranske/Pension-Data/git/commits{/sha}",
+              "comments_url": "https://api.github.com/repos/stranske/Pension-Data/comments{/number}",
+              "issue_comment_url": "https://api.github.com/repos/stranske/Pension-Data/issues/comments{/number}",
+              "contents_url": "https://api.github.com/repos/stranske/Pension-Data/contents/{+path}",
+              "compare_url": "https://api.github.com/repos/stranske/Pension-Data/compare/{base}...{head}",
+              "merges_url": "https://api.github.com/repos/stranske/Pension-Data/merges",
+              "archive_url": "https://api.github.com/repos/stranske/Pension-Data/{archive_format}{/ref}",
+              "downloads_url": "https://api.github.com/repos/stranske/Pension-Data/downloads",
+              "issues_url": "https://api.github.com/repos/stranske/Pension-Data/issues{/number}",
+              "pulls_url": "https://api.github.com/repos/stranske/Pension-Data/pulls{/number}",
+              "milestones_url": "https://api.github.com/repos/stranske/Pension-Data/milestones{/number}",
+              "notifications_url": "https://api.github.com/repos/stranske/Pension-Data/notifications{?since,all,participating}",
+              "labels_url": "https://api.github.com/repos/stranske/Pension-Data/labels{/name}",
+              "releases_url": "https://api.github.com/repos/stranske/Pension-Data/releases{/id}",
+              "deployments_url": "https://api.github.com/repos/stranske/Pension-Data/deployments"
+            },
+            "head_repository": {
+              "id": 1169688564,
+              "node_id": "R_kgDORbgH9A",
+              "name": "Pension-Data",
+              "full_name": "stranske/Pension-Data",
+              "private": false,
+              "owner": {
+                "login": "stranske",
+                "id": 23046322,
+                "node_id": "MDQ6VXNlcjIzMDQ2MzIy",
+                "avatar_url": "https://avatars.githubusercontent.com/u/23046322?v=4",
+                "gravatar_id": "",
+                "url": "https://api.github.com/users/stranske",
+                "html_url": "https://github.com/stranske",
+                "followers_url": "https://api.github.com/users/stranske/followers",
+                "following_url": "https://api.github.com/users/stranske/following{/other_user}",
+                "gists_url": "https://api.github.com/users/stranske/gists{/gist_id}",
+                "starred_url": "https://api.github.com/users/stranske/starred{/owner}{/repo}",
+                "subscriptions_url": "https://api.github.com/users/stranske/subscriptions",
+                "organizations_url": "https://api.github.com/users/stranske/orgs",
+                "repos_url": "https://api.github.com/users/stranske/repos",
+                "events_url": "https://api.github.com/users/stranske/events{/privacy}",
+                "received_events_url": "https://api.github.com/users/stranske/received_events",
+                "type": "User",
+                "user_view_type": "public",
+                "site_admin": false
+              },
+              "html_url": "https://github.com/stranske/Pension-Data",
+              "description": null,
+              "fork": false,
+              "url": "https://api.github.com/repos/stranske/Pension-Data",
+              "forks_url": "https://api.github.com/repos/stranske/Pension-Data/forks",
+              "keys_url": "https://api.github.com/repos/stranske/Pension-Data/keys{/key_id}",
+              "collaborators_url": "https://api.github.com/repos/stranske/Pension-Data/collaborators{/collaborator}",
+              "teams_url": "https://api.github.com/repos/stranske/Pension-Data/teams",
+              "hooks_url": "https://api.github.com/repos/stranske/Pension-Data/hooks",
+              "issue_events_url": "https://api.github.com/repos/stranske/Pension-Data/issues/events{/number}",
+              "events_url": "https://api.github.com/repos/stranske/Pension-Data/events",
+              "assignees_url": "https://api.github.com/repos/stranske/Pension-Data/assignees{/user}",
+              "branches_url": "https://api.github.com/repos/stranske/Pension-Data/branches{/branch}",
+              "tags_url": "https://api.github.com/repos/stranske/Pension-Data/tags",
+              "blobs_url": "https://api.github.com/repos/stranske/Pension-Data/git/blobs{/sha}",
+              "git_tags_url": "https://api.github.com/repos/stranske/Pension-Data/git/tags{/sha}",
+              "git_refs_url": "https://api.github.com/repos/stranske/Pension-Data/git/refs{/sha}",
+              "trees_url": "https://api.github.com/repos/stranske/Pension-Data/git/trees{/sha}",
+              "statuses_url": "https://api.github.com/repos/stranske/Pension-Data/statuses/{sha}",
+              "languages_url": "https://api.github.com/repos/stranske/Pension-Data/languages",
+              "stargazers_url": "https://api.github.com/repos/stranske/Pension-Data/stargazers",
+              "contributors_url": "https://api.github.com/repos/stranske/Pension-Data/contributors",
+              "subscribers_url": "https://api.github.com/repos/stranske/Pension-Data/subscribers",
+              "subscription_url": "https://api.github.com/repos/stranske/Pension-Data/subscription",
+              "commits_url": "https://api.github.com/repos/stranske/Pension-Data/commits{/sha}",
+              "git_commits_url": "https://api.github.com/repos/stranske/Pension-Data/git/commits{/sha}",
+              "comments_url": "https://api.github.com/repos/stranske/Pension-Data/comments{/number}",
+              "issue_comment_url": "https://api.github.com/repos/stranske/Pension-Data/issues/comments{/number}",
+              "contents_url": "https://api.github.com/repos/stranske/Pension-Data/contents/{+path}",
+              "compare_url": "https://api.github.com/repos/stranske/Pension-Data/compare/{base}...{head}",
+              "merges_url": "https://api.github.com/repos/stranske/Pension-Data/merges",
+              "archive_url": "https://api.github.com/repos/stranske/Pension-Data/{archive_format}{/ref}",
+              "downloads_url": "https://api.github.com/repos/stranske/Pension-Data/downloads",
+              "issues_url": "https://api.github.com/repos/stranske/Pension-Data/issues{/number}",
+              "pulls_url": "https://api.github.com/repos/stranske/Pension-Data/pulls{/number}",
+              "milestones_url": "https://api.github.com/repos/stranske/Pension-Data/milestones{/number}",
+              "notifications_url": "https://api.github.com/repos/stranske/Pension-Data/notifications{?since,all,participating}",
+              "labels_url": "https://api.github.com/repos/stranske/Pension-Data/labels{/name}",
+              "releases_url": "https://api.github.com/repos/stranske/Pension-Data/releases{/id}",
+              "deployments_url": "https://api.github.com/repos/stranske/Pension-Data/deployments"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "workflow": {
+        "id": 240018747,
+        "node_id": "W_kwDORbgH9M4OTmU7",
+        "name": "Gate",
+        "path": ".github/workflows/pr-00-gate.yml",
+        "state": "active",
+        "created_at": "2026-02-28T21:49:34.000-06:00",
+        "updated_at": "2026-02-28T21:49:34.000-06:00",
+        "url": "https://api.github.com/repos/stranske/Pension-Data/actions/workflows/240018747",
+        "html_url": "https://github.com/stranske/Pension-Data/blob/main/.github/workflows/pr-00-gate.yml",
+        "badge_url": "https://github.com/stranske/Pension-Data/workflows/Gate/badge.svg"
+      },
+      "runs": {
+        "total_count": 0,
+        "workflow_runs": []
+      }
+    }
+  ],
+  "stale_candidates": [
+    {
+      "body": "## Why\n\nTabular drilldown pattern proven in `apps/web/data/workspace.json` (`tests/web/test_workspace_contract.py:135`) but not emitted from ingest runs. **Depends on:** B2-029.\n\n## Scope\n\nEmit `workspace-bundle.json` from extraction runs with `data_origin: generated`.\n\n## Non-Goals\n\n- Do NOT change fixture demo bundle semantics for local dev.\n- Scaffold-only completion does NOT count.\n\n## Tasks\n\n- [ ] Add `src/pension_data/export/workspace_bundle.py` matching `apps/contracts/runtime-contract.json`.\n- [ ] Add `tests/export/test_workspace_bundle.py`.\n\n## Acceptance Criteria\n\n- [ ] Named test: `tests/export/test_workspace_bundle.py::test_bundle_matches_runtime_contract` passes.\n- [ ] **Deliberate-break gate:** set invalid `data_origin` → test **must FAIL** → revert.\n\n_Surfaced by B2-030._\n",
+      "comments": [
+        {
+          "id": "IC_kwDORbgH9M8AAAABSo6Jlw",
+          "author": {
+            "login": "stranske-keepalive"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "🤖 **Auto-pilot step $((STEP_COUNT + 1))**: Starting issue formatting...\n\nRunning formatter inline (not via label trigger).\n",
+          "createdAt": "2026-09-04T20:01:58Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Pension-Data/issues/883#issuecomment-5545822615",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgH9M8AAAABSo7M_Q",
+          "author": {
+            "login": "stranske-keepalive"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "🤖 **Auto-pilot step $((STEP_COUNT + 1))**: Analyzing issue for improvements...\n\nRunning optimizer inline (not via label trigger).\n",
+          "createdAt": "2026-09-04T20:03:45Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Pension-Data/issues/883#issuecomment-5545839869",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgH9M8AAAABSo7g9g",
+          "author": {
+            "login": "stranske-keepalive"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "## Issue Optimization Suggestions\n\nReview the suggestions below. If you want the agent to apply them, add the\n`agents:apply-suggestions` label to this issue.\n\n### Task splitting\n- Add `tests/export/test_workspace_bundle.py` with a contract test that validates emitted `workspace-bundle.json` against `apps/contracts/runtime-contract.json`, and verify the test fails for invalid `data_origin` and passes when restored. (This task combines three distinct activities: creating the test file, implementing contract validation logic, and performing deliberate-break verification. Each requires different implementation steps and could be completed independently.). Suggested split: Create the test file `tests/export/test_workspace_bundle.py` with the test function `test_bundle_matches_runtime_contract`, Implement contract validation logic that loads and validates the emitted workspace-bundle.json against the runtime-contract.json schema, Verify the test fails when data_origin is set to an invalid value and passes when corrected.\n\n### Blocked tasks\n- None\n\n### Objective acceptance criteria\n- Setting invalid `data_origin` causes the test to fail, and reverting restores a passing test run. (This is a manual verification step rather than an automated acceptance criterion. It requires the developer to deliberately break the code, observe failure, then revert. | Rephrase as: 'The test `test_bundle_matches_runtime_contract` includes assertions that validate `data_origin` field matches expected values from the contract.' The deliberate-break verification can remain in Implementation Notes as a recommended validation step.)\n\n### Missing sections\n- None\n\n### Formatting issues\n- The 'Non-Goals' section uses a mix of bullet points and inline text. The first item 'Do NOT change fixture demo bundle semantics for local dev.' appears as a bullet, while 'Scaffold-only completion does NOT count.' appears as a separate bullet. Consider consistent formatting with all non-goals as bullets or all as a single paragraph.\n- The 'Implementation Notes' section contains only '_Surfaced by B2-030._' which is metadata rather than implementation guidance. Consider adding actual implementation notes or moving this reference to a different section like 'Context' or 'Related Issues'.\n\n### Notes\n- This issue is well-structured and agent-compatible overall. The Why, Scope, Non-Goals, Tasks, and Acceptance Criteria sections are all present. The main improvement area is splitting the second task into more granular steps to make progress tracking clearer. The deliberate-break verification pattern is good practice but should be clarified as a verification step rather than a pass/fail acceptance criterion. No tasks are blocked by agent limitations since all work involves code creation and testing within the repository.\n\n<!-- suggestions-json: {\"task_splitting\": [{\"task\": \"Add `tests/export/test_workspace_bundle.py` with a contract test that validates emitted `workspace-bundle.json` against `apps/contracts/runtime-contract.json`, and verify the test fails for invalid `data_origin` and passes when restored.\", \"reason\": \"This task combines three distinct activities: creating the test file, implementing contract validation logic, and performing deliberate-break verification. Each requires different implementation steps and could be completed independently.\", \"split_suggestions\": [\"Create the test file `tests/export/test_workspace_bundle.py` with the test function `test_bundle_matches_runtime_contract`\", \"Implement contract validation logic that loads and validates the emitted workspace-bundle.json against the runtime-contract.json schema\", \"Verify the test fails when data_origin is set to an invalid value and passes when corrected\"]}], \"blocked_tasks\": [], \"objective_criteria\": [{\"criterion\": \"Setting invalid `data_origin` causes the test to fail, and reverting restores a passing test run.\", \"issue\": \"This is a manual verification step rather than an automated acceptance criterion. It requires the developer to deliberately break the code, observe failure, then revert.\", \"suggestion\": \"Rephrase as: 'The test `test_bundle_matches_runtime_contract` includes assertions that validate `data_origin` field matches expected values from the contract.' The deliberate-break verification can remain in Implementation Notes as a recommended validation step.\"}], \"missing_sections\": [], \"formatting_issues\": [\"The 'Non-Goals' section uses a mix of bullet points and inline text. The first item 'Do NOT change fixture demo bundle semantics for local dev.' appears as a bullet, while 'Scaffold-only completion does NOT count.' appears as a separate bullet. Consider consistent formatting with all non-goals as bullets or all as a single paragraph.\", \"The 'Implementation Notes' section contains only '_Surfaced by B2-030._' which is metadata rather than implementation guidance. Consider adding actual implementation notes or moving this reference to a different section like 'Context' or 'Related Issues'.\"], \"overall_notes\": \"This issue is well-structured and agent-compatible overall. The Why, Scope, Non-Goals, Tasks, and Acceptance Criteria sections are all present. The main improvement area is splitting the second task into more granular steps to make progress tracking clearer. The deliberate-break verification pattern is good practice but should be clarified as a verification step rather than a pass/fail acceptance criterion. No tasks are blocked by agent limitations since all work involves code creation and testing within the repository.\"} -->",
+          "createdAt": "2026-09-04T20:04:16Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Pension-Data/issues/883#issuecomment-5545844982",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgH9M8AAAABSo8MdQ",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "⚠️ **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Pension-Data/actions/runs/33914377161)\n",
+          "createdAt": "2026-09-04T20:05:21Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Pension-Data/issues/883#issuecomment-5545856117",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgH9M8AAAABSo8ezQ",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "🤖 **Auto-pilot step $((STEP_COUNT + 1))**: Applying optimization suggestions...\n\nRunning apply inline (not via label trigger).\n",
+          "createdAt": "2026-09-04T20:05:49Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Pension-Data/issues/883#issuecomment-5545860813",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgH9M8AAAABSo9AMw",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `Implement contract validation logic that loads (verify: confirm completion in repo)`.\n\n_Advisory:_\n- 4 cited path(s) do not exist yet: `workspace-bundle.json`, `src/pension_data/export/workspace_bundle.py`, `tests/export/test_workspace_bundle.py`, `runtime-contract.json` — expected when a task creates them; check for typos otherwise.\n\nDispatched the Agents Issue Optimizer format phase (attempt 1 of 3).\n\n<!-- format-guard:999810f46605:attempt:1 -->\n",
+          "createdAt": "2026-09-04T20:06:42Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Pension-Data/issues/883#issuecomment-5545869363",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgH9M8AAAABSo-F6Q",
+          "author": {
+            "login": "stranske-keepalive"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "🤖 **Auto-pilot step 1**: Issue prepared! Assigning to agent...\n\nAdding `agent:codex` label. The capability check will run automatically.\n\n⏳ Agent will create a PR shortly.",
+          "createdAt": "2026-09-04T20:08:31Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Pension-Data/issues/883#issuecomment-5545887209",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgH9M8AAAABSo-rSg",
+          "author": {
+            "login": "stranske-keepalive"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "### ✅ Capability Check: Agent can proceed\n\n**Recommendation:** PROCEED\n\n**✅ Actionable Tasks (9):**\n- Add `src/pension_data/export/workspace_bundle.py` matching `apps/contracts/runtime-contract.json`.\n- Add `tests/export/test_workspace_bundle.py` with a contract test that validates emitted `workspace-bundle.json` against `apps/contracts/runtime-contract.json`, and verify the test fails for invalid `data_origin` and passes when restored.\n- Create the test file `tests/export/test_workspace_bundle.py` with the test function `test_bundle_matches_runtime_contract` (verify: tests pass).\n- Implement contract validation logic that loads.\n- validates the emitted workspace-bundle.json against the runtime-contract.json schema (verify: confirm completion in repo).\n- Verify the test fails when data_origin is set to an invalid value.\n- passes when corrected (verify: confirm completion in repo).\n- `tests/export/test_workspace_bundle.py::test_bundle_matches_runtime_contract` passes.\n- Setting invalid `data_origin` causes the test to fail, and reverting restores a passing test run.\n\n---\n*Auto-generated by capability check*",
+          "createdAt": "2026-09-04T20:09:31Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Pension-Data/issues/883#issuecomment-5545896778",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgH9M8AAAABSpAKqw",
+          "author": {
+            "login": "stranske-keepalive"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "🤖 **Auto-pilot step $((STEP_COUNT + 1))**: Starting issue formatting...\n\nRunning formatter inline (not via label trigger).\n",
+          "createdAt": "2026-09-04T20:11:54Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Pension-Data/issues/883#issuecomment-5545921195",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgH9M8AAAABSpAOfw",
+          "author": {
+            "login": "stranske-keepalive"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "⚠️ **Auto-pilot paused during formatting.**\n\nFormatter output does not satisfy the canonical issue-format contract.",
+          "createdAt": "2026-09-04T20:12:00Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Pension-Data/issues/883#issuecomment-5545922175",
+          "viewerDidAuthor": false
+        }
+      ],
+      "labels": [
+        {
+          "id": "LA_kwDORbgH9M8AAAACZuwwSg",
+          "name": "agents:formatted",
+          "description": "Issue has been formatted to AGENT_ISSUE_TEMPLATE",
+          "color": "1D76DB"
+        },
+        {
+          "id": "LA_kwDORbgH9M8AAAACZuwwZA",
+          "name": "agents:apply-suggestions",
+          "description": "Applies optimization suggestions from agents:optimize",
+          "color": "0E8A16"
+        },
+        {
+          "id": "LA_kwDORbgH9M8AAAACZuxCWg",
+          "name": "agent:codex",
+          "description": "Assign to Codex agent",
+          "color": "0e8a16"
+        }
+      ],
+      "number": 883,
+      "title": "[P1] workspace-bundle.json contract wiring (B2-030)",
+      "updatedAt": "2026-09-13T20:18:04Z",
+      "url": "https://github.com/stranske/Pension-Data/issues/883"
+    },
+    {
+      "body": "## Why\n\n`apps/web/` is the embryonic fleet renderer (`apps/web/README.md:1-17`) but lives only in Pension-Data. **Depends on:** Workflows B2-028 `output-substrate/v1`.\n\n## Scope\n\nExtract `apps/web/static` shell to `packages/renderer-shell/` consumable by Template repo sync.\n\n## Non-Goals\n\n- Do NOT add external CDN deps (`tests/web/test_no_external_cdn.py` must stay green).\n- Scaffold-only completion does NOT count.\n\n## Tasks\n\n- [ ] Create `packages/renderer-shell/` with `index.html`, `app.js` entrypoints from `apps/web/`.\n- [ ] Keep Pension-Data `apps/web/` as thin wrapper importing shell.\n- [ ] Ensure `tests/web/test_no_external_cdn.py:6` `WEB_ROOT` still passes.\n- [ ] Add `tests/renderer/test_shell_import_smoke.py`.\n\n## Acceptance Criteria\n\n- [ ] Named test: `tests/web/test_no_external_cdn.py` passes unchanged behavior.\n- [ ] **Deliberate-break gate:** reintroduce external CDN script tag → test **must FAIL** → revert.\n\n_Surfaced by B2-029._\n",
+      "comments": [
+        {
+          "id": "IC_kwDORbgH9M8AAAABSo5yXw",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "🤖 **Auto-pilot step $((STEP_COUNT + 1))**: Starting issue formatting...\n\nRunning formatter inline (not via label trigger).\n",
+          "createdAt": "2026-09-04T20:01:21Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Pension-Data/issues/882#issuecomment-5545816671",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgH9M8AAAABSo7LKw",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "🤖 **Auto-pilot step $((STEP_COUNT + 1))**: Analyzing issue for improvements...\n\nRunning optimizer inline (not via label trigger).\n",
+          "createdAt": "2026-09-04T20:03:42Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Pension-Data/issues/882#issuecomment-5545839403",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgH9M8AAAABSo7mxA",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "## Issue Optimization Suggestions\n\nReview the suggestions below. If you want the agent to apply them, add the\n`agents:apply-suggestions` label to this issue.\n\n### Task splitting\n- Create `packages/renderer-shell/` with `index.html` and `app.js` entrypoints from `apps/web/`. (This task combines directory creation, file extraction, and potentially refactoring logic. It's unclear what 'entrypoints from' means - copy, move, or extract shared code.). Suggested split: Create the directory structure for `packages/renderer-shell/` with appropriate package configuration files, Extract the core HTML structure from `apps/web/static/index.html` into `packages/renderer-shell/index.html`, Extract the core JavaScript logic from `apps/web/static/app.js` into `packages/renderer-shell/app.js`, Define the public API or export interface that the shell package will expose to consumers.\n- Update Pension-Data `apps/web/` to be a thin wrapper importing the shell. (This is vague about what 'thin wrapper' means architecturally. It doesn't specify how the import mechanism works or what remains in apps/web/.). Suggested split: Modify `apps/web/static/index.html` to import and instantiate the renderer shell from the package, Update `apps/web/static/app.js` to delegate core rendering logic to the imported shell package, Remove duplicated code from `apps/web/` that now exists in the renderer shell package, Verify that `apps/web/` retains only Pension-Data-specific configuration and initialization code.\n- Add `tests/renderer/test_shell_import_smoke.py` to verify `packages/renderer-shell/` can be imported by the Pension-Data `apps/web/` wrapper and passes under the test suite. (This combines test file creation with multiple verification goals. 'Passes under the test suite' is ambiguous about what specific behaviors to test.). Suggested split: Create `tests/renderer/test_shell_import_smoke.py` with basic import verification for the renderer shell package, Add a test case that verifies the shell package exports the expected public interface, Add a test case that verifies `apps/web/` can successfully instantiate the imported shell, Add a test case that verifies basic rendering functionality works through the wrapper integration.\n\n### Blocked tasks\n- None\n\n### Objective acceptance criteria\n- Reintroducing an external CDN script tag causes `tests/web/test_no_external_cdn.py` to fail, and reverting it restores passing. (This is a manual verification step that requires human judgment about what constitutes 'reintroducing' and 'reverting'. An agent cannot autonomously perform deliberate-break testing. | Move this to Implementation Notes as a manual verification step for the human reviewer. Replace with: 'The test file `tests/web/test_no_external_cdn.py` contains assertions that detect external CDN script tags in the rendered HTML output.')\n\n### Missing sections\n- None\n\n### Formatting issues\n- The 'Non-Goals' section uses a bullet list format ('- Do NOT...') when it should use plain paragraphs or a single paragraph with inline separators, since these are constraints rather than actionable items.\n- The second bullet in 'Non-Goals' ('Scaffold-only completion does NOT count') is unclear without context - consider moving to Implementation Notes with explanation of what 'scaffold-only' means.\n- The 'Implementation Notes' section only contains '_Surfaced by B2-029._' which is metadata, not implementation guidance. Either add actual implementation notes or remove this section.\n- The collapsed 'Original Issue' details section duplicates the current issue content with minor wording changes, creating confusion about which version is authoritative. Consider removing it entirely.\n\n### Notes\n- This issue has good structure with clear sections and specific test requirements. The main improvements needed are: (1) breaking down the broad refactoring tasks into specific file operations, (2) clarifying what the 'thin wrapper' architecture should look like, and (3) making the deliberate-break acceptance criterion into a testable assertion rather than a manual verification step. The dependency on B2-028 is noted but not explained - consider adding a sentence about what 'output-substrate/v1' provides. The issue is generally agent-compatible after task splitting, as it involves code extraction, file creation, and test writing without requiring protected file modifications or subjective design decisions.\n\n<!-- suggestions-json: {\"task_splitting\": [{\"task\": \"Create `packages/renderer-shell/` with `index.html` and `app.js` entrypoints from `apps/web/`.\", \"reason\": \"This task combines directory creation, file extraction, and potentially refactoring logic. It's unclear what 'entrypoints from' means - copy, move, or extract shared code.\", \"split_suggestions\": [\"Create the directory structure for `packages/renderer-shell/` with appropriate package configuration files\", \"Extract the core HTML structure from `apps/web/static/index.html` into `packages/renderer-shell/index.html`\", \"Extract the core JavaScript logic from `apps/web/static/app.js` into `packages/renderer-shell/app.js`\", \"Define the public API or export interface that the shell package will expose to consumers\"]}, {\"task\": \"Update Pension-Data `apps/web/` to be a thin wrapper importing the shell.\", \"reason\": \"This is vague about what 'thin wrapper' means architecturally. It doesn't specify how the import mechanism works or what remains in apps/web/.\", \"split_suggestions\": [\"Modify `apps/web/static/index.html` to import and instantiate the renderer shell from the package\", \"Update `apps/web/static/app.js` to delegate core rendering logic to the imported shell package\", \"Remove duplicated code from `apps/web/` that now exists in the renderer shell package\", \"Verify that `apps/web/` retains only Pension-Data-specific configuration and initialization code\"]}, {\"task\": \"Add `tests/renderer/test_shell_import_smoke.py` to verify `packages/renderer-shell/` can be imported by the Pension-Data `apps/web/` wrapper and passes under the test suite.\", \"reason\": \"This combines test file creation with multiple verification goals. 'Passes under the test suite' is ambiguous about what specific behaviors to test.\", \"split_suggestions\": [\"Create `tests/renderer/test_shell_import_smoke.py` with basic import verification for the renderer shell package\", \"Add a test case that verifies the shell package exports the expected public interface\", \"Add a test case that verifies `apps/web/` can successfully instantiate the imported shell\", \"Add a test case that verifies basic rendering functionality works through the wrapper integration\"]}], \"blocked_tasks\": [], \"objective_criteria\": [{\"criterion\": \"Reintroducing an external CDN script tag causes `tests/web/test_no_external_cdn.py` to fail, and reverting it restores passing.\", \"issue\": \"This is a manual verification step that requires human judgment about what constitutes 'reintroducing' and 'reverting'. An agent cannot autonomously perform deliberate-break testing.\", \"suggestion\": \"Move this to Implementation Notes as a manual verification step for the human reviewer. Replace with: 'The test file `tests/web/test_no_external_cdn.py` contains assertions that detect external CDN script tags in the rendered HTML output.'\"}], \"missing_sections\": [], \"formatting_issues\": [\"The 'Non-Goals' section uses a bullet list format ('- Do NOT...') when it should use plain paragraphs or a single paragraph with inline separators, since these are constraints rather than actionable items.\", \"The second bullet in 'Non-Goals' ('Scaffold-only completion does NOT count') is unclear without context - consider moving to Implementation Notes with explanation of what 'scaffold-only' means.\", \"The 'Implementation Notes' section only contains '_Surfaced by B2-029._' which is metadata, not implementation guidance. Either add actual implementation notes or remove this section.\", \"The collapsed 'Original Issue' details section duplicates the current issue content with minor wording changes, creating confusion about which version is authoritative. Consider removing it entirely.\"], \"overall_notes\": \"This issue has good structure with clear sections and specific test requirements. The main improvements needed are: (1) breaking down the broad refactoring tasks into specific file operations, (2) clarifying what the 'thin wrapper' architecture should look like, and (3) making the deliberate-break acceptance criterion into a testable assertion rather than a manual verification step. The dependency on B2-028 is noted but not explained - consider adding a sentence about what 'output-substrate/v1' provides. The issue is generally agent-compatible after task splitting, as it involves code extraction, file creation, and test writing without requiring protected file modifications or subjective design decisions.\"} -->",
+          "createdAt": "2026-09-04T20:04:24Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Pension-Data/issues/882#issuecomment-5545846468",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgH9M8AAAABSo8gow",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "⚠️ **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Pension-Data/actions/runs/33914389879)\n",
+          "createdAt": "2026-09-04T20:05:52Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Pension-Data/issues/882#issuecomment-5545861283",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgH9M8AAAABSo8wpQ",
+          "author": {
+            "login": "stranske-keepalive"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "🤖 **Auto-pilot step $((STEP_COUNT + 1))**: Applying optimization suggestions...\n\nRunning apply inline (not via label trigger).\n",
+          "createdAt": "2026-09-04T20:06:16Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Pension-Data/issues/882#issuecomment-5545865381",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgH9M8AAAABSo-FzA",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `Define the public API or export interface that the shell package will expose to consumers (verify: confirm completion in repo)`.\n\n_Advisory:_\n- 10 cited path(s) do not exist yet: `output-substrate/v1`, `apps/web/static`, `packages/renderer-shell/`, `index.html`, `app.js`, `apps/web/static/index.html`, … — expected when a task creates them; check for typos otherwise.\n\nDispatched the Agents Issue Optimizer format phase (attempt 1 of 3).\n\n<!-- format-guard:46ade533e8c3:attempt:1 -->\n",
+          "createdAt": "2026-09-04T20:08:30Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Pension-Data/issues/882#issuecomment-5545887180",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgH9M8AAAABSo-b7g",
+          "author": {
+            "login": "stranske-keepalive"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "🤖 **Auto-pilot step 1**: Issue prepared! Assigning to agent...\n\nAdding `agent:codex` label. The capability check will run automatically.\n\n⏳ Agent will create a PR shortly.",
+          "createdAt": "2026-09-04T20:09:06Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Pension-Data/issues/882#issuecomment-5545892846",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgH9M8AAAABSo_TAw",
+          "author": {
+            "login": "stranske-keepalive"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "### ✅ Capability Check: Agent can proceed\n\n**Recommendation:** PROCEED\n\n**✅ Actionable Tasks (18):**\n- Create `packages/renderer-shell/` with `index.html` and `app.js` entrypoints from `apps/web/`.\n- Create the directory structure for `packages/renderer-shell/` with appropriate package configuration files (verify: config validated).\n- Extract the core HTML structure from `apps/web/static/index.html` into `packages/renderer-shell/index.html` (verify: confirm completion in repo).\n- Extract the core JavaScript logic from `apps/web/static/app.js` into `packages/renderer-shell/app.js` (verify: confirm completion in repo).\n- Update Pension-Data `apps/web/` to be a thin wrapper importing the shell.\n- Modify `apps/web/static/index.html` to import (verify: confirm completion in repo).\n- Instantiate the renderer shell from the package (verify: confirm completion in repo).\n- Update `apps/web/static/app.js` to delegate core rendering logic to the imported shell package (verify: confirm completion in repo).\n- Remove duplicated code from `apps/web/` that now exists in the renderer shell package (verify: confirm completion in repo).\n- Verify that `apps/web/` retains only Pension-Data-specific configuration.\n- Initialization code (verify: confirm completion in repo).\n- Ensure `tests/web/test_no_external_cdn.py:6` `WEB_ROOT` still passes.\n- Add `tests/renderer/test_shell_import_smoke.py` to verify `packages/renderer-shell/` can be imported by the Pension-Data `apps/web/` wrapper and passes under the test suite.\n- Create `tests/renderer/test_shell_import_smoke.py` with basic import verification for the renderer shell package (verify: tests pass).\n- Add a test case that verifies the shell package exports the expected public interface (verify: confirm completion in repo).\n- Add a test case that verifies `apps/web/` can successfully instantiate the imported shell (verify: confirm completion in repo).\n- Add a test case that verifies basic rendering functionality works through the wrapper integration (verify: confirm completion in repo).\n- `tests/web/test_no_external_cdn.py` passes with unchanged behavior.\n\n**⚠️ Partial Tasks (2):**\n- Define the public API or export interface that the shell package will expose to consumers (verify: confirm completion in repo).\n  - *Limitation:* An agent can implement a reasonable export interface, but if multiple valid API shapes exist, choosing among them may require human product or architectural input.\n- Reintroducing an external CDN script tag causes `tests/web/test_no_external_cdn.py` to fail, and reverting it restores passing.\n  - *Limitation:* The agent can add or preserve a test that should enforce this behavior, but cannot fully prove the mutation-based acceptance criterion unless it intentionally modifies the code to simulate the regression and reruns tests. It can validate locally if the environment supports tests, but cannot guarantee external CI behavior.\n\n**👤 Human Actions Needed:**\n- Confirm the desired public API for `packages/renderer-shell/` if there are architectural preferences not obvious from the current codebase.\n- Review the extracted shell boundary to ensure the split between reusable renderer logic and Pension-Data-specific wrapper behavior matches product intent.\n- If required by your process, manually verify the regression scenario for the CDN guard by temporarily reintroducing a CDN script tag and confirming the test fails, then reverting.\n\n---\n*Auto-generated by capability check*",
+          "createdAt": "2026-09-04T20:10:31Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Pension-Data/issues/882#issuecomment-5545906947",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgH9M8AAAABSo_XQQ",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Codex belt dispatcher queued this issue and created branch `codex/issue-882`.",
+          "createdAt": "2026-09-04T20:10:37Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Pension-Data/issues/882#issuecomment-5545908033",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgH9M8AAAABSpAMWA",
+          "author": {
+            "login": "stranske-keepalive"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "🤖 **Auto-pilot step $((STEP_COUNT + 1))**: Starting issue formatting...\n\nRunning formatter inline (not via label trigger).\n",
+          "createdAt": "2026-09-04T20:11:57Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Pension-Data/issues/882#issuecomment-5545921624",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgH9M8AAAABSpAPag",
+          "author": {
+            "login": "stranske-keepalive"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "⚠️ **Auto-pilot paused during formatting.**\n\nFormatter output does not satisfy the canonical issue-format contract.",
+          "createdAt": "2026-09-04T20:12:02Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Pension-Data/issues/882#issuecomment-5545922410",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgH9M8AAAABTCdlkw",
+          "author": {
+            "login": "stranske"
+          },
+          "authorAssociation": "OWNER",
+          "body": "Closer lane reclaim: removing the stale `status:in-progress` claim.\n\n**Evidence (checked live, 2026-09-07):** this issue was labelled `status:in-progress` by the belt dispatcher in the 2026-09-04/05 dispatch burst. Since then: no linked PR, no commits, and no belt-dispatcher run in this repo since 2026-09-05T05:55Z. The claim is false — nothing is in progress.\n\n**Why it could not clear itself.** `status:in-progress` is added by `agents-71-codex-belt-dispatcher.yml:435` and `agents-72-codex-belt-worker.yml:1044`. The only code that removes it is `agents-73-codex-belt-conveyor.yml:530`, which is `workflow_call`-only and takes `pr_number` as a **required** input (reached via `reusable-70-orchestrator-main.yml:3259`). So clearing the claim requires the very PR whose absence is the problem: a claim that never produced a PR can never be released. `docs/LABELS.md:730` states Agents 81 also clears it after merging the linked PR — `agents-81-gate-followups.yml` contains no reference to the label, so that documented drain does not exist in code either.\n\nThe mechanism defect is tracked separately; this comment only releases the claim so the issue is selectable again. No scope or acceptance criteria changed.\n",
+          "createdAt": "2026-09-07T15:11:40Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Pension-Data/issues/882#issuecomment-5572617619",
+          "viewerDidAuthor": true
+        },
+        {
+          "id": "IC_kwDORbgH9M8AAAABUR2Lxg",
+          "author": {
+            "login": "stranske"
+          },
+          "authorAssociation": "OWNER",
+          "body": "## Issue bridge: cannot open PR — branch has no commits ahead of base\n\n- Base: `main`\n- Head: `codex/issue-882`\n- ahead_by: 0\n\nLikely causes:\n- Bootstrap marker already exists on base at `agents/codex-882.md`\n- Reused branch is stale/empty and seeding did not produce a new commit\n\nNo PR was created. Remove poison markers from base or delete the empty branch, then re-run.",
+          "createdAt": "2026-09-13T20:19:15Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Pension-Data/issues/882#issuecomment-5655858118",
+          "viewerDidAuthor": true
+        }
+      ],
+      "labels": [
+        {
+          "id": "LA_kwDORbgH9M8AAAACZuwwSg",
+          "name": "agents:formatted",
+          "description": "Issue has been formatted to AGENT_ISSUE_TEMPLATE",
+          "color": "1D76DB"
+        },
+        {
+          "id": "LA_kwDORbgH9M8AAAACZuwwZA",
+          "name": "agents:apply-suggestions",
+          "description": "Applies optimization suggestions from agents:optimize",
+          "color": "0E8A16"
+        },
+        {
+          "id": "LA_kwDORbgH9M8AAAACZuxCWg",
+          "name": "agent:codex",
+          "description": "Assign to Codex agent",
+          "color": "0e8a16"
+        }
+      ],
+      "number": 882,
+      "title": "[P1] Factor renderer-shell from apps/web (B2-029)",
+      "updatedAt": "2026-09-13T20:19:15Z",
+      "url": "https://github.com/stranske/Pension-Data/issues/882"
+    },
+    {
+      "body": "## Why\n\nPension-Data has richest internal evidence (`build_evidence_reference` at `src/pension_data/extract/common/evidence.py:89-96`) but dossier notes no standalone `evidence-object/v1` files at manifest boundary. **Depends on:** B2-015.\n\n## Scope\n\nProject internal `EvidenceReference` to `evidence-object/v1` files; publish `identity-map/v1` for pension/fund/manager tokens per B3 §6.1.\n\n## Non-Goals\n\n- Do NOT change internal DB schema.\n- Scaffold-only completion does NOT count.\n\n## Tasks\n\n- [ ] Add `src/pension_data/emit/evidence_object.py` mapping from `build_evidence_reference`.\n- [ ] Add `src/pension_data/emit/identity_map.py` per B3 §1.5 sketch.\n- [ ] Wire into `backplane_emitter.py` manifest output.\n- [ ] Add `tests/emit/test_evidence_object_files.py` and `tests/emit/test_identity_map_export.py`.\n\n## Acceptance Criteria\n\n- [ ] Named test: `tests/emit/test_evidence_object_files.py::test_emitted_file_validates` passes.\n- [ ] **Deliberate-break gate:** omit `excerpt` in emitter → test **must FAIL** → revert.\n\n_Surfaced by B2-018; verified evidence.py:89._\n",
+      "comments": [
+        {
+          "id": "IC_kwDORbgH9M8AAAABSo595A",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "🤖 **Auto-pilot step $((STEP_COUNT + 1))**: Starting issue formatting...\n\nRunning formatter inline (not via label trigger).\n",
+          "createdAt": "2026-09-04T20:01:39Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Pension-Data/issues/881#issuecomment-5545819620",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgH9M8AAAABSo7F8g",
+          "author": {
+            "login": "stranske-keepalive"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "🤖 **Auto-pilot step $((STEP_COUNT + 1))**: Analyzing issue for improvements...\n\nRunning optimizer inline (not via label trigger).\n",
+          "createdAt": "2026-09-04T20:03:34Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Pension-Data/issues/881#issuecomment-5545838066",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgH9M8AAAABSo7YEg",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "## Issue Optimization Suggestions\n\nReview the suggestions below. If you want the agent to apply them, add the\n`agents:apply-suggestions` label to this issue.\n\n### Task splitting\n- Update `backplane_emitter.py` to wire manifest output. (Too broad - doesn't specify what changes are needed to wire the new emitters into the manifest). Suggested split: Import the evidence_object and identity_map modules into backplane_emitter.py, Add method calls to emit evidence-object/v1 files during manifest generation, Add method calls to emit identity-map/v1 files during manifest generation, Update the manifest metadata to include references to the new file types.\n\n### Blocked tasks\n- None\n\n### Objective acceptance criteria\n- Omitting `excerpt` in the emitter causes the relevant test to fail, and restoring it makes the test pass again. (This is a manual verification step that requires human judgment about what 'the relevant test' means and manual intervention to omit/restore code | Add a parametrized test `test_evidence_object_missing_excerpt_fails` that validates schema rejection when excerpt field is omitted from the evidence object structure)\n\n### Missing sections\n- None\n\n### Formatting issues\n- Non-Goals section uses inconsistent formatting - first item uses 'Do NOT' while second item uses 'Scaffold-only' without the imperative prefix\n- The 'Wire into' phrasing in the third task is inconsistent with other tasks that use 'Add' or 'Update' - should be 'Update backplane_emitter.py to wire manifest output' for consistency\n\n### Notes\n- This issue is well-structured with all required sections present (Why, Scope, Non-Goals, Tasks, Acceptance Criteria, Implementation Notes). The tasks are mostly agent-compatible - they involve creating new Python modules, writing tests, and updating existing code, all of which are within agent capabilities. The dependency on B2-015 is clearly stated. The main concerns are: (1) one task needs splitting for clarity, (2) one acceptance criterion requires conversion from a manual verification step to an automated test, and (3) minor formatting inconsistencies in Non-Goals and task phrasing. The reference to B3 §6.1 and §1.5 assumes access to external documentation, but the context from evidence.py:89-96 provides enough grounding for implementation.\n\n<!-- suggestions-json: {\"task_splitting\": [{\"task\": \"Update `backplane_emitter.py` to wire manifest output.\", \"reason\": \"Too broad - doesn't specify what changes are needed to wire the new emitters into the manifest\", \"split_suggestions\": [\"Import the evidence_object and identity_map modules into backplane_emitter.py\", \"Add method calls to emit evidence-object/v1 files during manifest generation\", \"Add method calls to emit identity-map/v1 files during manifest generation\", \"Update the manifest metadata to include references to the new file types\"]}], \"blocked_tasks\": [], \"objective_criteria\": [{\"criterion\": \"Omitting `excerpt` in the emitter causes the relevant test to fail, and restoring it makes the test pass again.\", \"issue\": \"This is a manual verification step that requires human judgment about what 'the relevant test' means and manual intervention to omit/restore code\", \"suggestion\": \"Add a parametrized test `test_evidence_object_missing_excerpt_fails` that validates schema rejection when excerpt field is omitted from the evidence object structure\"}], \"missing_sections\": [], \"formatting_issues\": [\"Non-Goals section uses inconsistent formatting - first item uses 'Do NOT' while second item uses 'Scaffold-only' without the imperative prefix\", \"The 'Wire into' phrasing in the third task is inconsistent with other tasks that use 'Add' or 'Update' - should be 'Update backplane_emitter.py to wire manifest output' for consistency\"], \"overall_notes\": \"This issue is well-structured with all required sections present (Why, Scope, Non-Goals, Tasks, Acceptance Criteria, Implementation Notes). The tasks are mostly agent-compatible - they involve creating new Python modules, writing tests, and updating existing code, all of which are within agent capabilities. The dependency on B2-015 is clearly stated. The main concerns are: (1) one task needs splitting for clarity, (2) one acceptance criterion requires conversion from a manual verification step to an automated test, and (3) minor formatting inconsistencies in Non-Goals and task phrasing. The reference to B3 \\u00a76.1 and \\u00a71.5 assumes access to external documentation, but the context from evidence.py:89-96 provides enough grounding for implementation.\"} -->",
+          "createdAt": "2026-09-04T20:04:02Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Pension-Data/issues/881#issuecomment-5545842706",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgH9M8AAAABSo8L7Q",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "⚠️ **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Pension-Data/actions/runs/33914356948)\n",
+          "createdAt": "2026-09-04T20:05:21Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Pension-Data/issues/881#issuecomment-5545855981",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgH9M8AAAABSo8fMA",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "🤖 **Auto-pilot step $((STEP_COUNT + 1))**: Applying optimization suggestions...\n\nRunning apply inline (not via label trigger).\n",
+          "createdAt": "2026-09-04T20:05:50Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Pension-Data/issues/881#issuecomment-5545860912",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgH9M8AAAABSo94qA",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `Import the evidence_object (verify: confirm completion in repo)`.\n\n_Advisory:_\n- 7 cited path(s) do not exist yet: `evidence-object/v1`, `identity-map/v1`, `src/pension_data/emit/evidence_object.py`, `src/pension_data/emit/identity_map.py`, `backplane_emitter.py`, `tests/emit/test_evidence_object_files.py`, … — expected when a task creates them; check for typos otherwise.\n\nDispatched the Agents Issue Optimizer format phase (attempt 1 of 3).\n\n<!-- format-guard:f83670a2f522:attempt:1 -->\n",
+          "createdAt": "2026-09-04T20:08:10Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Pension-Data/issues/881#issuecomment-5545883816",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgH9M8AAAABSo-VLw",
+          "author": {
+            "login": "stranske-keepalive"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "🤖 **Auto-pilot step 1**: Issue prepared! Assigning to agent...\n\nAdding `agent:codex` label. The capability check will run automatically.\n\n⏳ Agent will create a PR shortly.",
+          "createdAt": "2026-09-04T20:08:55Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Pension-Data/issues/881#issuecomment-5545891119",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgH9M8AAAABSo-7_A",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Codex belt dispatcher queued this issue and created branch `codex/issue-881`.",
+          "createdAt": "2026-09-04T20:09:56Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Pension-Data/issues/881#issuecomment-5545901052",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgH9M8AAAABSo_Bzg",
+          "author": {
+            "login": "stranske-keepalive"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "### ✅ Capability Check: Agent can proceed\n\n**Recommendation:** PROCEED\n\n**✅ Actionable Tasks (11):**\n- Add `src/pension_data/emit/evidence_object.py` mapping from `build_evidence_reference`.\n- Add `src/pension_data/emit/identity_map.py` per B3 §1.5 sketch.\n- Update `backplane_emitter.py` to wire manifest output.\n- Import the evidence_object into `backplane_emitter.py`.\n- Import the identity_map modules into `backplane_emitter.py`.\n- Add method calls to emit evidence-object/v1 files during manifest generation.\n- Add method calls to emit identity-map/v1 files during manifest generation.\n- Update the manifest metadata to include references to the new file types.\n- Add `tests/emit/test_evidence_object_files.py` and `tests/emit/test_identity_map_export.py`.\n- Acceptance criterion: `tests/emit/test_evidence_object_files.py::test_emitted_file_validates` passes.\n- Acceptance criterion: Omitting `excerpt` in the emitter causes the relevant test to fail, and restoring it makes the test pass again.\n\n**⚠️ Partial Tasks (8):**\n- Add `src/pension_data/emit/identity_map.py` per B3 §1.5 sketch.\n  - *Limitation:* Implementation is possible if the referenced B3 §1.5 sketch is available in-repo or otherwise clearly specified. If that sketch is ambiguous or external-only, the agent can draft the module but may need human confirmation on schema/details.\n- Import the evidence_object (verify: confirm completion in repo)\n  - *Limitation:* The code change is actionable, but 'verify: confirm completion in repo' depends on inspecting the current repository state. The agent can verify within the checked-out repo, but cannot guarantee confirmation beyond the available workspace state.\n- identity_map modules into backplane_emitter.py (verify: confirm completion in repo)\n  - *Limitation:* The import/update is actionable, but confirmation is limited to the repository contents available to the agent.\n- Add method calls to emit evidence-object/v1 files during manifest generation (verify: confirm completion in repo)\n  - *Limitation:* The wiring is actionable, but final verification depends on local code/test inspection; the agent cannot guarantee remote CI execution.\n- Add method calls to emit identity-map/v1 files during manifest generation (verify: confirm completion in repo)\n  - *Limitation:* The wiring is actionable, but final verification depends on local code/test inspection; the agent cannot guarantee remote CI execution.\n- Update the manifest metadata to include references to the new file types (verify: confirm completion in repo)\n  - *Limitation:* The metadata update is actionable, but verification is limited to the local repository state and available tests.\n- Acceptance criterion: `tests/emit/test_evidence_object_files.py::test_emitted_file_validates` passes.\n  - *Limitation:* The agent can implement code/tests and run them locally if the environment supports it, but cannot guarantee pass status in external CI/CD or environments it cannot access.\n- Acceptance criterion: Omitting `excerpt` in the emitter causes the relevant test to fail, and restoring it makes the test pass again.\n  - *Limitation:* The agent can write a regression test that enforces this behavior, but cannot fully prove the historical remove/restore sequence unless it can run iterative local test changes in the repo environment.\n\n**👤 Human Actions Needed:**\n- Provide or confirm the exact B3 §1.5 identity-map specification if it is not fully present in the repository.\n- Review any ambiguous schema or manifest-format decisions if the repo does not already define them clearly.\n- Run CI/CD or protected-environment validation if required for final merge confidence.\n\n---\n*Auto-generated by capability check*",
+          "createdAt": "2026-09-04T20:10:05Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Pension-Data/issues/881#issuecomment-5545902542",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgH9M8AAAABSpBA8Q",
+          "author": {
+            "login": "stranske-keepalive"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "🤖 **Auto-pilot step $((STEP_COUNT + 1))**: Starting issue formatting...\n\nRunning formatter inline (not via label trigger).\n",
+          "createdAt": "2026-09-04T20:13:16Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Pension-Data/issues/881#issuecomment-5545935089",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgH9M8AAAABSpBD4w",
+          "author": {
+            "login": "stranske-keepalive"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "⚠️ **Auto-pilot paused during formatting.**\n\nFormatter output does not satisfy the canonical issue-format contract.",
+          "createdAt": "2026-09-04T20:13:21Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Pension-Data/issues/881#issuecomment-5545935843",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgH9M8AAAABTCdoHg",
+          "author": {
+            "login": "stranske"
+          },
+          "authorAssociation": "OWNER",
+          "body": "Closer lane reclaim: removing the stale `status:in-progress` claim.\n\n**Evidence (checked live, 2026-09-07):** this issue was labelled `status:in-progress` by the belt dispatcher in the 2026-09-04/05 dispatch burst. Since then: no linked PR, no commits, and no belt-dispatcher run in this repo since 2026-09-05T05:55Z. The claim is false — nothing is in progress.\n\n**Why it could not clear itself.** `status:in-progress` is added by `agents-71-codex-belt-dispatcher.yml:435` and `agents-72-codex-belt-worker.yml:1044`. The only code that removes it is `agents-73-codex-belt-conveyor.yml:530`, which is `workflow_call`-only and takes `pr_number` as a **required** input (reached via `reusable-70-orchestrator-main.yml:3259`). So clearing the claim requires the very PR whose absence is the problem: a claim that never produced a PR can never be released. `docs/LABELS.md:730` states Agents 81 also clears it after merging the linked PR — `agents-81-gate-followups.yml` contains no reference to the label, so that documented drain does not exist in code either.\n\nThe mechanism defect is tracked separately; this comment only releases the claim so the issue is selectable again. No scope or acceptance criteria changed.\n",
+          "createdAt": "2026-09-07T15:11:43Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Pension-Data/issues/881#issuecomment-5572618270",
+          "viewerDidAuthor": true
+        }
+      ],
+      "labels": [
+        {
+          "id": "LA_kwDORbgH9M8AAAACZuwwSg",
+          "name": "agents:formatted",
+          "description": "Issue has been formatted to AGENT_ISSUE_TEMPLATE",
+          "color": "1D76DB"
+        },
+        {
+          "id": "LA_kwDORbgH9M8AAAACZuwwZA",
+          "name": "agents:apply-suggestions",
+          "description": "Applies optimization suggestions from agents:optimize",
+          "color": "0E8A16"
+        },
+        {
+          "id": "LA_kwDORbgH9M8AAAACZuxCWg",
+          "name": "agent:codex",
+          "description": "Assign to Codex agent",
+          "color": "0e8a16"
+        }
+      ],
+      "number": 881,
+      "title": "[P1] Evidence + identity-map projection emitter (B2-018)",
+      "updatedAt": "2026-09-13T20:18:06Z",
+      "url": "https://github.com/stranske/Pension-Data/issues/881"
+    },
+    {
+      "body": "## Why\n\nAudited financials corpus lane (R6). Verified: `tools/replay/runner.py:1-17` implements golden corpus replay but no N-CSR harvest feeds the corpus (`src/pension_data/harvest/` absent). **Missing behavior:** no N-CSR sample ingest path.\n\n## Scope\n\nSingle N-CSR sample ingest path with manifest registration.\n\n## Non-Goals\n\n- Do NOT build full N-CSR bulk downloader.\n- Scaffold-only completion does NOT count.\n\n## Tasks\n\n- [ ] Add `src/pension_data/harvest/ncsr_sample.py`.\n- [ ] Add `tests/harvest/test_ncsr_sample_offline.py`.\n\n## Acceptance Criteria\n\n- [ ] Named test: `tests/harvest/test_ncsr_sample_offline.py::test_ncsr_fixture_ingests` passes.\n- [ ] **Deliberate-break gate:** skip filing date → test **must FAIL** → revert.\n\n_Surfaced by B2-042._\n",
+      "comments": [
+        {
+          "id": "IC_kwDORbgH9M8AAAABSo5ukA",
+          "author": {
+            "login": "stranske-keepalive"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "🤖 **Auto-pilot step $((STEP_COUNT + 1))**: Starting issue formatting...\n\nRunning formatter inline (not via label trigger).\n",
+          "createdAt": "2026-09-04T20:01:15Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Pension-Data/issues/880#issuecomment-5545815696",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgH9M8AAAABSo6w-Q",
+          "author": {
+            "login": "stranske-keepalive"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "🤖 **Auto-pilot step $((STEP_COUNT + 1))**: Analyzing issue for improvements...\n\nRunning optimizer inline (not via label trigger).\n",
+          "createdAt": "2026-09-04T20:03:00Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Pension-Data/issues/880#issuecomment-5545832697",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgH9M8AAAABSo7GUA",
+          "author": {
+            "login": "stranske-keepalive"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "## Issue Optimization Suggestions\n\nReview the suggestions below. If you want the agent to apply them, add the\n`agents:apply-suggestions` label to this issue.\n\n### Task splitting\n- Add `src/pension_data/harvest/ncsr_sample.py` implementing a single offline N-CSR sample ingest path that registers the sample in the manifest and is exercised by `tests/harvest/test_ncsr_sample_offline.py::test_ncsr_fixture_ingests`. (This task combines implementation of the module, manifest registration logic, and test integration. These are distinct concerns that should be verified separately.). Suggested split: Create the ncsr_sample.py module with a function that accepts an N-CSR filing path and returns parsed data, Implement manifest registration logic that records the filing date and sample metadata, Add fixture data representing a sample N-CSR filing for offline testing, Ensure the ingest function can be called from the test suite with the fixture data.\n- Add `tests/harvest/test_ncsr_sample_offline.py` with `test_ncsr_fixture_ingests` verifying the offline N-CSR sample ingest succeeds, and that omitting the filing date causes the test to fail until restored. (This task combines test creation, positive verification, and negative verification (deliberate-break gate). The deliberate-break requirement should be a separate acceptance criterion, not embedded in the task.). Suggested split: Create the test file with test_ncsr_fixture_ingests that calls the ingest function with fixture data, Verify that the test confirms successful manifest registration with expected metadata, Verify that the test checks the filing date is present in the registered manifest entry.\n\n### Blocked tasks\n- None\n\n### Objective acceptance criteria\n- Skipping filing date causes the test to fail, then reverting restores pass. (This is a procedural verification step rather than a measurable outcome. It requires the agent to intentionally break code, observe failure, then fix it—which is a manual workflow verification. | Rephrase as: 'The test includes an assertion that verifies the filing_date field is present in the manifest entry. Commenting out this assertion or the filing_date registration logic causes the test to fail.')\n\n### Missing sections\n- None\n\n### Formatting issues\n- The 'Implementation Notes' section only contains 'Surfaced by B2-042' which is a reference ID, not actual implementation guidance. Consider adding technical details about manifest format, expected N-CSR structure, or integration points.\n- The 'Original Issue' details section duplicates most of the current issue content. If this represents an evolution of requirements, consider documenting what changed instead of including the full original text.\n\n### Notes\n- This issue is well-structured with clear sections and specific file paths. The main concerns are: (1) tasks that bundle multiple implementation steps together, making incremental verification difficult, and (2) the deliberate-break acceptance criterion which describes a manual verification workflow rather than a testable outcome. The agent can complete all tasks, but splitting them would improve clarity and allow for better progress tracking. The issue correctly includes Why, Scope, Non-Goals, Tasks, Acceptance Criteria, and Implementation Notes sections.\n\n<!-- suggestions-json: {\"task_splitting\": [{\"task\": \"Add `src/pension_data/harvest/ncsr_sample.py` implementing a single offline N-CSR sample ingest path that registers the sample in the manifest and is exercised by `tests/harvest/test_ncsr_sample_offline.py::test_ncsr_fixture_ingests`.\", \"reason\": \"This task combines implementation of the module, manifest registration logic, and test integration. These are distinct concerns that should be verified separately.\", \"split_suggestions\": [\"Create the ncsr_sample.py module with a function that accepts an N-CSR filing path and returns parsed data\", \"Implement manifest registration logic that records the filing date and sample metadata\", \"Add fixture data representing a sample N-CSR filing for offline testing\", \"Ensure the ingest function can be called from the test suite with the fixture data\"]}, {\"task\": \"Add `tests/harvest/test_ncsr_sample_offline.py` with `test_ncsr_fixture_ingests` verifying the offline N-CSR sample ingest succeeds, and that omitting the filing date causes the test to fail until restored.\", \"reason\": \"This task combines test creation, positive verification, and negative verification (deliberate-break gate). The deliberate-break requirement should be a separate acceptance criterion, not embedded in the task.\", \"split_suggestions\": [\"Create the test file with test_ncsr_fixture_ingests that calls the ingest function with fixture data\", \"Verify that the test confirms successful manifest registration with expected metadata\", \"Verify that the test checks the filing date is present in the registered manifest entry\"]}], \"blocked_tasks\": [], \"objective_criteria\": [{\"criterion\": \"Skipping filing date causes the test to fail, then reverting restores pass.\", \"issue\": \"This is a procedural verification step rather than a measurable outcome. It requires the agent to intentionally break code, observe failure, then fix it\\u2014which is a manual workflow verification.\", \"suggestion\": \"Rephrase as: 'The test includes an assertion that verifies the filing_date field is present in the manifest entry. Commenting out this assertion or the filing_date registration logic causes the test to fail.'\"}], \"missing_sections\": [], \"formatting_issues\": [\"The 'Implementation Notes' section only contains 'Surfaced by B2-042' which is a reference ID, not actual implementation guidance. Consider adding technical details about manifest format, expected N-CSR structure, or integration points.\", \"The 'Original Issue' details section duplicates most of the current issue content. If this represents an evolution of requirements, consider documenting what changed instead of including the full original text.\"], \"overall_notes\": \"This issue is well-structured with clear sections and specific file paths. The main concerns are: (1) tasks that bundle multiple implementation steps together, making incremental verification difficult, and (2) the deliberate-break acceptance criterion which describes a manual verification workflow rather than a testable outcome. The agent can complete all tasks, but splitting them would improve clarity and allow for better progress tracking. The issue correctly includes Why, Scope, Non-Goals, Tasks, Acceptance Criteria, and Implementation Notes sections.\"} -->",
+          "createdAt": "2026-09-04T20:03:34Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Pension-Data/issues/880#issuecomment-5545838160",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgH9M8AAAABSo74cQ",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "⚠️ **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Pension-Data/actions/runs/33914319886)\n",
+          "createdAt": "2026-09-04T20:04:51Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Pension-Data/issues/880#issuecomment-5545850993",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgH9M8AAAABSo8DJA",
+          "author": {
+            "login": "stranske-keepalive"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "🤖 **Auto-pilot step $((STEP_COUNT + 1))**: Applying optimization suggestions...\n\nRunning apply inline (not via label trigger).\n",
+          "createdAt": "2026-09-04T20:05:07Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Pension-Data/issues/880#issuecomment-5545853732",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgH9M8AAAABSo8jzA",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `Implement manifest registration logic that records the filing date (verify: confirm completion in repo)`.\n\n_Advisory:_\n- 5 cited path(s) do not exist yet: `[LOCAL_WORKSPACE]/Pension-Data/tools/replay/runner.py`, `src/pension_data/harvest/`, `src/pension_data/harvest/ncsr_sample.py`, `tests/harvest/test_ncsr_sample_offline.py`, `ncsr_sample.py` — expected when a task creates them; check for typos otherwise.\n\nDispatched the Agents Issue Optimizer format phase (attempt 1 of 3).\n\n<!-- format-guard:5dfc3bd7fb36:attempt:1 -->\n",
+          "createdAt": "2026-09-04T20:05:57Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Pension-Data/issues/880#issuecomment-5545862092",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgH9M8AAAABSo9Epg",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "🤖 **Auto-pilot step 1**: Issue prepared! Assigning to agent...\n\nAdding `agent:codex` label. The capability check will run automatically.\n\n⏳ Agent will create a PR shortly.",
+          "createdAt": "2026-09-04T20:06:49Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Pension-Data/issues/880#issuecomment-5545870502",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgH9M8AAAABSo9lcA",
+          "author": {
+            "login": "stranske-keepalive"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "### ✅ Capability Check: Agent can proceed\n\n**Recommendation:** PROCEED\n\n**✅ Actionable Tasks (12):**\n- Add `src/pension_data/harvest/ncsr_sample.py` implementing a single offline N-CSR sample ingest path that registers the sample in the manifest and is exercised by `tests/harvest/test_ncsr_sample_offline.py::test_ncsr_fixture_ingests`.\n- Create the ncsr_sample.py module with a function that accepts an N-CSR filing path (verify: confirm completion in repo)\n- Create the ncsr_sample.py module with returns parsed data (verify: confirm completion in repo)\n- Implement manifest registration logic that records the filing date (verify: confirm completion in repo)\n- sample metadata (verify: confirm completion in repo)\n- Add fixture data representing a sample N-CSR filing for offline testing (verify: confirm completion in repo)\n- Ensure the ingest function can be called from the test suite with the fixture data (verify: confirm completion in repo)\n- Add `tests/harvest/test_ncsr_sample_offline.py` with `test_ncsr_fixture_ingests` verifying the offline N-CSR sample ingest succeeds, and that omitting the filing date causes the test to fail until restored.\n- Create the test file with test_ncsr_fixture_ingests that calls the ingest function with fixture data (verify: confirm completion in repo)\n- Verify that the test confirms successful manifest registration with expected metadata\n- Verify that the test checks the filing date is present in the registered manifest entry\n- Acceptance Criterion: `tests/harvest/test_ncsr_sample_offline.py::test_ncsr_fixture_ingests` passes.\n\n**⚠️ Partial Tasks (1):**\n- Acceptance Criterion: Skipping filing date causes the test to fail, then reverting restores pass.\n  - *Limitation:* An agent can implement a test that asserts failure when filing date is omitted and success when restored, but it cannot independently demonstrate the manual edit-then-revert workflow beyond making the code and test behavior support it. If CI/environment differences exist, the agent cannot guarantee execution outcomes outside the repository state it modifies.\n\n**👤 Human Actions Needed:**\n- Confirm the intended manifest schema and expected metadata fields if they are not already established elsewhere in the repo.\n- Review whether the filing-date omission check should be encoded as a separate negative test or handled within `test_ncsr_fixture_ingests` exactly as requested.\n- Run the targeted test locally/CI to validate that removing the filing date from fixture or registration logic fails as expected, then restore and confirm pass.\n\n---\n*Auto-generated by capability check*",
+          "createdAt": "2026-09-04T20:07:39Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Pension-Data/issues/880#issuecomment-5545878896",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgH9M8AAAABSo91iw",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Codex belt dispatcher queued this issue and created branch `codex/issue-880`.",
+          "createdAt": "2026-09-04T20:08:05Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Pension-Data/issues/880#issuecomment-5545883019",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgH9M8AAAABSo-ezQ",
+          "author": {
+            "login": "stranske-keepalive"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "🤖 **Auto-pilot step $((STEP_COUNT + 1))**: Starting issue formatting...\n\nRunning formatter inline (not via label trigger).\n",
+          "createdAt": "2026-09-04T20:09:10Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Pension-Data/issues/880#issuecomment-5545893581",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgH9M8AAAABSo-hKw",
+          "author": {
+            "login": "stranske-keepalive"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "⚠️ **Auto-pilot paused during formatting.**\n\nFormatter output does not satisfy the canonical issue-format contract.",
+          "createdAt": "2026-09-04T20:09:14Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Pension-Data/issues/880#issuecomment-5545894187",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgH9M8AAAABTCdqhQ",
+          "author": {
+            "login": "stranske"
+          },
+          "authorAssociation": "OWNER",
+          "body": "Closer lane reclaim: removing the stale `status:in-progress` claim.\n\n**Evidence (checked live, 2026-09-07):** this issue was labelled `status:in-progress` by the belt dispatcher in the 2026-09-04/05 dispatch burst. Since then: no linked PR, no commits, and no belt-dispatcher run in this repo since 2026-09-05T05:55Z. The claim is false — nothing is in progress.\n\n**Why it could not clear itself.** `status:in-progress` is added by `agents-71-codex-belt-dispatcher.yml:435` and `agents-72-codex-belt-worker.yml:1044`. The only code that removes it is `agents-73-codex-belt-conveyor.yml:530`, which is `workflow_call`-only and takes `pr_number` as a **required** input (reached via `reusable-70-orchestrator-main.yml:3259`). So clearing the claim requires the very PR whose absence is the problem: a claim that never produced a PR can never be released. `docs/LABELS.md:730` states Agents 81 also clears it after merging the linked PR — `agents-81-gate-followups.yml` contains no reference to the label, so that documented drain does not exist in code either.\n\nThe mechanism defect is tracked separately; this comment only releases the claim so the issue is selectable again. No scope or acceptance criteria changed.\n",
+          "createdAt": "2026-09-07T15:11:46Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Pension-Data/issues/880#issuecomment-5572618885",
+          "viewerDidAuthor": true
+        }
+      ],
+      "labels": [
+        {
+          "id": "LA_kwDORbgH9M8AAAACZuwwSg",
+          "name": "agents:formatted",
+          "description": "Issue has been formatted to AGENT_ISSUE_TEMPLATE",
+          "color": "1D76DB"
+        },
+        {
+          "id": "LA_kwDORbgH9M8AAAACZuwwZA",
+          "name": "agents:apply-suggestions",
+          "description": "Applies optimization suggestions from agents:optimize",
+          "color": "0E8A16"
+        },
+        {
+          "id": "LA_kwDORbgH9M8AAAACZuxCWg",
+          "name": "agent:codex",
+          "description": "Assign to Codex agent",
+          "color": "0e8a16"
+        }
+      ],
+      "number": 880,
+      "title": "[P2] N-CSR sample ingest lane (B2-042)",
+      "updatedAt": "2026-09-13T20:18:08Z",
+      "url": "https://github.com/stranske/Pension-Data/issues/880"
+    },
+    {
+      "body": "## Why\n\nCalPERS seeded but IC items not crawled (R6). Verified: `dossier-out/DOSSIER.md:1-20` documents CalPERS source_map seeding but `grep -r calpers_ic src` returns no harvest module. Owner default #9: CalPERS-style per-item PDFs. **Missing behavior:** no IC packet crawler.\n\n## Scope\n\nHarvester registering items into public-doc-fixtures manifest format.\n\n## Non-Goals\n\n- Do NOT parallel SWIB consolidated books (owner default).\n- Scaffold-only completion does NOT count.\n\n## Tasks\n\n- [ ] Add `src/pension_data/harvest/calpers_ic.py` with offline test fixture.\n- [ ] Add `tests/harvest/test_calpers_ic_offline.py`.\n\n## Acceptance Criteria\n\n- [ ] Named test: `tests/harvest/test_calpers_ic_offline.py::test_ic_items_parsed` passes.\n- [ ] **Deliberate-break gate:** return zero items → test **must FAIL** → revert.\n\n_Surfaced by B2-038._\n",
+      "comments": [
+        {
+          "id": "IC_kwDORbgH9M8AAAABSo5j1w",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "🤖 **Auto-pilot step $((STEP_COUNT + 1))**: Starting issue formatting...\n\nRunning formatter inline (not via label trigger).\n",
+          "createdAt": "2026-09-04T20:00:58Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Pension-Data/issues/879#issuecomment-5545812951",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgH9M8AAAABSo6noA",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "🤖 **Auto-pilot step $((STEP_COUNT + 1))**: Analyzing issue for improvements...\n\nRunning optimizer inline (not via label trigger).\n",
+          "createdAt": "2026-09-04T20:02:45Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Pension-Data/issues/879#issuecomment-5545830304",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgH9M8AAAABSo62Zw",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "## Issue Optimization Suggestions\n\nReview the suggestions below. If you want the agent to apply them, add the\n`agents:apply-suggestions` label to this issue.\n\n### Task splitting\n- Add `tests/harvest/test_calpers_ic_offline.py` with an offline fixture-based test `test_ic_items_parsed` that verifies the CalPERS IC harvester returns at least one parsed item and fails when zero items are returned. (This task combines creating a test file, implementing a specific test function, verifying positive behavior, and verifying negative behavior (deliberate-break gate). These are distinct implementation steps.). Suggested split: Create the test file `tests/harvest/test_calpers_ic_offline.py` with necessary imports and test structure, Implement the `test_ic_items_parsed` function that calls the CalPERS IC harvester with an offline fixture, Add assertions to verify that the harvester returns at least one parsed item from the fixture, Add a deliberate-break verification step that confirms the test fails when the harvester returns zero items.\n\n### Blocked tasks\n- None\n\n### Objective acceptance criteria\n- None\n\n### Missing sections\n- None\n\n### Formatting issues\n- Non-Goals section uses inconsistent formatting: first item is a bullet point ('Do NOT parallel...') while second item ('Scaffold-only completion...') lacks a bullet marker\n- The 'Original Issue' details section contains redundant information already present in the main issue body, creating unnecessary duplication\n\n### Notes\n- The issue is well-structured with all required sections present (Why, Scope, Non-Goals, Tasks, Acceptance Criteria, Implementation Notes). The tasks are specific and actionable. The acceptance criteria are objective and testable, including a deliberate-break gate to verify test robustness. The main improvement needed is splitting the second task into smaller, independently completable steps. The agent can complete all tasks as they involve creating Python modules and tests, which are within agent capabilities. Minor formatting inconsistency in Non-Goals section should be corrected for consistency.\n\n<!-- suggestions-json: {\"task_splitting\": [{\"task\": \"Add `tests/harvest/test_calpers_ic_offline.py` with an offline fixture-based test `test_ic_items_parsed` that verifies the CalPERS IC harvester returns at least one parsed item and fails when zero items are returned.\", \"reason\": \"This task combines creating a test file, implementing a specific test function, verifying positive behavior, and verifying negative behavior (deliberate-break gate). These are distinct implementation steps.\", \"split_suggestions\": [\"Create the test file `tests/harvest/test_calpers_ic_offline.py` with necessary imports and test structure\", \"Implement the `test_ic_items_parsed` function that calls the CalPERS IC harvester with an offline fixture\", \"Add assertions to verify that the harvester returns at least one parsed item from the fixture\", \"Add a deliberate-break verification step that confirms the test fails when the harvester returns zero items\"]}], \"blocked_tasks\": [], \"objective_criteria\": [], \"missing_sections\": [], \"formatting_issues\": [\"Non-Goals section uses inconsistent formatting: first item is a bullet point ('Do NOT parallel...') while second item ('Scaffold-only completion...') lacks a bullet marker\", \"The 'Original Issue' details section contains redundant information already present in the main issue body, creating unnecessary duplication\"], \"overall_notes\": \"The issue is well-structured with all required sections present (Why, Scope, Non-Goals, Tasks, Acceptance Criteria, Implementation Notes). The tasks are specific and actionable. The acceptance criteria are objective and testable, including a deliberate-break gate to verify test robustness. The main improvement needed is splitting the second task into smaller, independently completable steps. The agent can complete all tasks as they involve creating Python modules and tests, which are within agent capabilities. Minor formatting inconsistency in Non-Goals section should be corrected for consistency.\"} -->",
+          "createdAt": "2026-09-04T20:03:09Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Pension-Data/issues/879#issuecomment-5545834087",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgH9M8AAAABSo7r4w",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "⚠️ **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Pension-Data/actions/runs/33914284065)\n",
+          "createdAt": "2026-09-04T20:04:32Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Pension-Data/issues/879#issuecomment-5545847779",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgH9M8AAAABSo8JGg",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "🤖 **Auto-pilot step $((STEP_COUNT + 1))**: Applying optimization suggestions...\n\nRunning apply inline (not via label trigger).\n",
+          "createdAt": "2026-09-04T20:05:16Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Pension-Data/issues/879#issuecomment-5545855258",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgH9M8AAAABSo8taA",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `Add assertions to verify that the harvester returns at least one parsed item from the fixture`.\n\n_Advisory:_\n- 3 cited path(s) do not exist yet: `[LOCAL_WORKSPACE]/Pension-Data/dossier-out/DOSSIER.md`, `src/pension_data/harvest/calpers_ic.py`, `tests/harvest/test_calpers_ic_offline.py` — expected when a task creates them; check for typos otherwise.\n\nDispatched the Agents Issue Optimizer format phase (attempt 1 of 3).\n\n<!-- format-guard:88fc268622ca:attempt:1 -->\n",
+          "createdAt": "2026-09-04T20:06:11Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Pension-Data/issues/879#issuecomment-5545864552",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgH9M8AAAABSo9Xeg",
+          "author": {
+            "login": "stranske-keepalive"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "🤖 **Auto-pilot step 1**: Issue prepared! Assigning to agent...\n\nAdding `agent:codex` label. The capability check will run automatically.\n\n⏳ Agent will create a PR shortly.",
+          "createdAt": "2026-09-04T20:07:18Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Pension-Data/issues/879#issuecomment-5545875322",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgH9M8AAAABSo93qQ",
+          "author": {
+            "login": "stranske-keepalive"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "### ✅ Capability Check: Agent can proceed\n\n**Recommendation:** PROCEED\n\n**✅ Actionable Tasks (6):**\n- Add `src/pension_data/harvest/calpers_ic.py` with offline test fixture.\n- Add `tests/harvest/test_calpers_ic_offline.py` with an offline fixture-based test `test_ic_items_parsed` that verifies the CalPERS IC harvester returns at least one parsed item and fails when zero items are returned.\n- Create the test file `tests/harvest/test_calpers_ic_offline.py` with necessary imports (verify: tests pass)\n- Create the test file `tests/harvest/test_calpers_ic_offline.py` with test structure (verify: tests pass)\n- Implement the `test_ic_items_parsed` function that calls the CalPERS IC harvester with an offline fixture (verify: confirm completion in repo)\n- Add assertions to verify that the harvester returns at least one parsed item from the fixture\n\n**⚠️ Partial Tasks (3):**\n- Add a deliberate-break verification step that confirms the test fails when the harvester returns zero items (verify: confirm completion in repo)\n  - *Limitation:* An agent can write the test so that it would fail if the harvester returns zero items, and can locally validate this by temporarily changing code or using a mock. However, it cannot permanently commit a deliberate break in the repo while also keeping acceptance criteria passing. This is best satisfied by demonstrating the assertion logic or by temporary local verification.\n- Acceptance Criteria: `tests/harvest/test_calpers_ic_offline.py::test_ic_items_parsed` passes.\n  - *Limitation:* The agent can implement the code and test to make this likely and can run tests if execution is available, but cannot absolutely guarantee pass status in all environments without full repository/runtime validation.\n- Acceptance Criteria: Returning zero items causes `tests/harvest/test_calpers_ic_offline.py::test_ic_items_parsed` to fail.\n  - *Limitation:* The agent can encode this behavior directly via assertions such as `assert items`, but proving the negative requires a temporary break, mock, or local test mutation rather than a persistent repo state.\n\n**👤 Human Actions Needed:**\n- Review whether `calpers_ic.py` API shape and fixture format match existing harvester conventions in the repository.\n- Optionally perform a temporary/manual deliberate-break check to confirm the test fails when zero items are returned.\n- Run the relevant test suite in the target environment to confirm the new offline test passes consistently.\n\n---\n*Auto-generated by capability check*",
+          "createdAt": "2026-09-04T20:08:08Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Pension-Data/issues/879#issuecomment-5545883561",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgH9M8AAAABSo-XSA",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Codex belt dispatcher queued this issue and created branch `codex/issue-879`.",
+          "createdAt": "2026-09-04T20:08:58Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Pension-Data/issues/879#issuecomment-5545891656",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgH9M8AAAABSo_O2Q",
+          "author": {
+            "login": "stranske-keepalive"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "🤖 **Auto-pilot step $((STEP_COUNT + 1))**: Starting issue formatting...\n\nRunning formatter inline (not via label trigger).\n",
+          "createdAt": "2026-09-04T20:10:25Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Pension-Data/issues/879#issuecomment-5545905881",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgH9M8AAAABSo_Sqg",
+          "author": {
+            "login": "stranske-keepalive"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "⚠️ **Auto-pilot paused during formatting.**\n\nFormatter output does not satisfy the canonical issue-format contract.",
+          "createdAt": "2026-09-04T20:10:30Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Pension-Data/issues/879#issuecomment-5545906858",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgH9M8AAAABTCdtJw",
+          "author": {
+            "login": "stranske"
+          },
+          "authorAssociation": "OWNER",
+          "body": "Closer lane reclaim: removing the stale `status:in-progress` claim.\n\n**Evidence (checked live, 2026-09-07):** this issue was labelled `status:in-progress` by the belt dispatcher in the 2026-09-04/05 dispatch burst. Since then: no linked PR, no commits, and no belt-dispatcher run in this repo since 2026-09-05T05:55Z. The claim is false — nothing is in progress.\n\n**Why it could not clear itself.** `status:in-progress` is added by `agents-71-codex-belt-dispatcher.yml:435` and `agents-72-codex-belt-worker.yml:1044`. The only code that removes it is `agents-73-codex-belt-conveyor.yml:530`, which is `workflow_call`-only and takes `pr_number` as a **required** input (reached via `reusable-70-orchestrator-main.yml:3259`). So clearing the claim requires the very PR whose absence is the problem: a claim that never produced a PR can never be released. `docs/LABELS.md:730` states Agents 81 also clears it after merging the linked PR — `agents-81-gate-followups.yml` contains no reference to the label, so that documented drain does not exist in code either.\n\nThe mechanism defect is tracked separately; this comment only releases the claim so the issue is selectable again. No scope or acceptance criteria changed.\n",
+          "createdAt": "2026-09-07T15:11:50Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Pension-Data/issues/879#issuecomment-5572619559",
+          "viewerDidAuthor": true
+        },
+        {
+          "id": "IC_kwDORbgH9M8AAAABUR1-Xw",
+          "author": {
+            "login": "stranske"
+          },
+          "authorAssociation": "OWNER",
+          "body": "## Issue bridge: cannot open PR — branch has no commits ahead of base\n\n- Base: `main`\n- Head: `codex/issue-879`\n- ahead_by: 0\n\nLikely causes:\n- Bootstrap marker already exists on base at `agents/codex-879.md`\n- Reused branch is stale/empty and seeding did not produce a new commit\n\nNo PR was created. Remove poison markers from base or delete the empty branch, then re-run.",
+          "createdAt": "2026-09-13T20:18:41Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Pension-Data/issues/879#issuecomment-5655854687",
+          "viewerDidAuthor": true
+        }
+      ],
+      "labels": [
+        {
+          "id": "LA_kwDORbgH9M8AAAACZuwwSg",
+          "name": "agents:formatted",
+          "description": "Issue has been formatted to AGENT_ISSUE_TEMPLATE",
+          "color": "1D76DB"
+        },
+        {
+          "id": "LA_kwDORbgH9M8AAAACZuwwZA",
+          "name": "agents:apply-suggestions",
+          "description": "Applies optimization suggestions from agents:optimize",
+          "color": "0E8A16"
+        },
+        {
+          "id": "LA_kwDORbgH9M8AAAACZuxCWg",
+          "name": "agent:codex",
+          "description": "Assign to Codex agent",
+          "color": "0e8a16"
+        }
+      ],
+      "number": 879,
+      "title": "[P2] CalPERS IC document harvester (B2-038)",
+      "updatedAt": "2026-09-13T20:18:41Z",
+      "url": "https://github.com/stranske/Pension-Data/issues/879"
+    }
+  ],
+  "observedAt": "2026-09-14T09:14:09.712974+00:00"
+}

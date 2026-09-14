@@ -1,0 +1,872 @@
+{
+  "head": "dcc5fdc1e87d0daeada4f77d026486ba01025e8b",
+  "ci": [
+    {
+      "workflow": {
+        "id": 240018784,
+        "node_id": "W_kwDORbgIAs4OTmVg",
+        "name": "CI",
+        "path": ".github/workflows/ci.yml",
+        "state": "active",
+        "created_at": "2026-02-28T21:49:35.000-06:00",
+        "updated_at": "2026-02-28T21:49:35.000-06:00",
+        "url": "https://api.github.com/repos/stranske/Inv-Man-Intake/actions/workflows/240018784",
+        "html_url": "https://github.com/stranske/Inv-Man-Intake/blob/main/.github/workflows/ci.yml",
+        "badge_url": "https://github.com/stranske/Inv-Man-Intake/workflows/CI/badge.svg"
+      },
+      "runs": {
+        "total_count": 475,
+        "workflow_runs": [
+          {
+            "id": 34790967895,
+            "name": "CI",
+            "node_id": "WFR_kwLORbgIAs8AAAAIGbQKVw",
+            "head_branch": "main",
+            "head_sha": "dcc5fdc1e87d0daeada4f77d026486ba01025e8b",
+            "path": ".github/workflows/ci.yml",
+            "display_title": "deps: sync dev tool versions",
+            "run_number": 1603,
+            "event": "push",
+            "status": "completed",
+            "conclusion": "success",
+            "workflow_id": 240018784,
+            "check_suite_id": 94218588806,
+            "check_suite_node_id": "CS_kwDORbgIAs8AAAAV792Shg",
+            "url": "https://api.github.com/repos/stranske/Inv-Man-Intake/actions/runs/34790967895",
+            "html_url": "https://github.com/stranske/Inv-Man-Intake/actions/runs/34790967895",
+            "pull_requests": [],
+            "created_at": "2026-09-13T23:53:06Z",
+            "updated_at": "2026-09-13T23:56:04Z",
+            "actor": {
+              "login": "stranske",
+              "id": 23046322,
+              "node_id": "MDQ6VXNlcjIzMDQ2MzIy",
+              "avatar_url": "https://avatars.githubusercontent.com/u/23046322?v=4",
+              "gravatar_id": "",
+              "url": "https://api.github.com/users/stranske",
+              "html_url": "https://github.com/stranske",
+              "followers_url": "https://api.github.com/users/stranske/followers",
+              "following_url": "https://api.github.com/users/stranske/following{/other_user}",
+              "gists_url": "https://api.github.com/users/stranske/gists{/gist_id}",
+              "starred_url": "https://api.github.com/users/stranske/starred{/owner}{/repo}",
+              "subscriptions_url": "https://api.github.com/users/stranske/subscriptions",
+              "organizations_url": "https://api.github.com/users/stranske/orgs",
+              "repos_url": "https://api.github.com/users/stranske/repos",
+              "events_url": "https://api.github.com/users/stranske/events{/privacy}",
+              "received_events_url": "https://api.github.com/users/stranske/received_events",
+              "type": "User",
+              "user_view_type": "public",
+              "site_admin": false
+            },
+            "run_attempt": 1,
+            "referenced_workflows": [
+              {
+                "path": "stranske/Workflows/.github/workflows/reusable-10-ci-python.yml@main",
+                "sha": "569875fea7d2956d35c45ff83766b65e47bfb23a",
+                "ref": "refs/heads/main"
+              }
+            ],
+            "run_started_at": "2026-09-13T23:53:06Z",
+            "triggering_actor": {
+              "login": "stranske",
+              "id": 23046322,
+              "node_id": "MDQ6VXNlcjIzMDQ2MzIy",
+              "avatar_url": "https://avatars.githubusercontent.com/u/23046322?v=4",
+              "gravatar_id": "",
+              "url": "https://api.github.com/users/stranske",
+              "html_url": "https://github.com/stranske",
+              "followers_url": "https://api.github.com/users/stranske/followers",
+              "following_url": "https://api.github.com/users/stranske/following{/other_user}",
+              "gists_url": "https://api.github.com/users/stranske/gists{/gist_id}",
+              "starred_url": "https://api.github.com/users/stranske/starred{/owner}{/repo}",
+              "subscriptions_url": "https://api.github.com/users/stranske/subscriptions",
+              "organizations_url": "https://api.github.com/users/stranske/orgs",
+              "repos_url": "https://api.github.com/users/stranske/repos",
+              "events_url": "https://api.github.com/users/stranske/events{/privacy}",
+              "received_events_url": "https://api.github.com/users/stranske/received_events",
+              "type": "User",
+              "user_view_type": "public",
+              "site_admin": false
+            },
+            "jobs_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/actions/runs/34790967895/jobs",
+            "logs_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/actions/runs/34790967895/logs",
+            "check_suite_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/check-suites/94218588806",
+            "artifacts_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/actions/runs/34790967895/artifacts",
+            "cancel_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/actions/runs/34790967895/cancel",
+            "rerun_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/actions/runs/34790967895/rerun",
+            "previous_attempt_url": null,
+            "workflow_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/actions/workflows/240018784",
+            "head_commit": {
+              "id": "dcc5fdc1e87d0daeada4f77d026486ba01025e8b",
+              "tree_id": "a3a86324a75bcbc16c4aeac77c5622ce5f9258c5",
+              "message": "deps: sync dev tool versions\n\nAutomated merge of sync PR\n\nSync hash: dev-tool\nDelivery generation: da45be92183d",
+              "timestamp": "2026-09-13T23:53:03Z",
+              "author": {
+                "name": "stranske",
+                "email": "stranske@gmail.com"
+              },
+              "committer": {
+                "name": "GitHub",
+                "email": "noreply@github.com"
+              }
+            },
+            "repository": {
+              "id": 1169688578,
+              "node_id": "R_kgDORbgIAg",
+              "name": "Inv-Man-Intake",
+              "full_name": "stranske/Inv-Man-Intake",
+              "private": false,
+              "owner": {
+                "login": "stranske",
+                "id": 23046322,
+                "node_id": "MDQ6VXNlcjIzMDQ2MzIy",
+                "avatar_url": "https://avatars.githubusercontent.com/u/23046322?v=4",
+                "gravatar_id": "",
+                "url": "https://api.github.com/users/stranske",
+                "html_url": "https://github.com/stranske",
+                "followers_url": "https://api.github.com/users/stranske/followers",
+                "following_url": "https://api.github.com/users/stranske/following{/other_user}",
+                "gists_url": "https://api.github.com/users/stranske/gists{/gist_id}",
+                "starred_url": "https://api.github.com/users/stranske/starred{/owner}{/repo}",
+                "subscriptions_url": "https://api.github.com/users/stranske/subscriptions",
+                "organizations_url": "https://api.github.com/users/stranske/orgs",
+                "repos_url": "https://api.github.com/users/stranske/repos",
+                "events_url": "https://api.github.com/users/stranske/events{/privacy}",
+                "received_events_url": "https://api.github.com/users/stranske/received_events",
+                "type": "User",
+                "user_view_type": "public",
+                "site_admin": false
+              },
+              "html_url": "https://github.com/stranske/Inv-Man-Intake",
+              "description": null,
+              "fork": false,
+              "url": "https://api.github.com/repos/stranske/Inv-Man-Intake",
+              "forks_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/forks",
+              "keys_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/keys{/key_id}",
+              "collaborators_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/collaborators{/collaborator}",
+              "teams_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/teams",
+              "hooks_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/hooks",
+              "issue_events_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/issues/events{/number}",
+              "events_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/events",
+              "assignees_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/assignees{/user}",
+              "branches_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/branches{/branch}",
+              "tags_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/tags",
+              "blobs_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/git/blobs{/sha}",
+              "git_tags_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/git/tags{/sha}",
+              "git_refs_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/git/refs{/sha}",
+              "trees_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/git/trees{/sha}",
+              "statuses_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/statuses/{sha}",
+              "languages_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/languages",
+              "stargazers_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/stargazers",
+              "contributors_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/contributors",
+              "subscribers_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/subscribers",
+              "subscription_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/subscription",
+              "commits_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/commits{/sha}",
+              "git_commits_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/git/commits{/sha}",
+              "comments_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/comments{/number}",
+              "issue_comment_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/issues/comments{/number}",
+              "contents_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/contents/{+path}",
+              "compare_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/compare/{base}...{head}",
+              "merges_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/merges",
+              "archive_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/{archive_format}{/ref}",
+              "downloads_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/downloads",
+              "issues_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/issues{/number}",
+              "pulls_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/pulls{/number}",
+              "milestones_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/milestones{/number}",
+              "notifications_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/notifications{?since,all,participating}",
+              "labels_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/labels{/name}",
+              "releases_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/releases{/id}",
+              "deployments_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/deployments"
+            },
+            "head_repository": {
+              "id": 1169688578,
+              "node_id": "R_kgDORbgIAg",
+              "name": "Inv-Man-Intake",
+              "full_name": "stranske/Inv-Man-Intake",
+              "private": false,
+              "owner": {
+                "login": "stranske",
+                "id": 23046322,
+                "node_id": "MDQ6VXNlcjIzMDQ2MzIy",
+                "avatar_url": "https://avatars.githubusercontent.com/u/23046322?v=4",
+                "gravatar_id": "",
+                "url": "https://api.github.com/users/stranske",
+                "html_url": "https://github.com/stranske",
+                "followers_url": "https://api.github.com/users/stranske/followers",
+                "following_url": "https://api.github.com/users/stranske/following{/other_user}",
+                "gists_url": "https://api.github.com/users/stranske/gists{/gist_id}",
+                "starred_url": "https://api.github.com/users/stranske/starred{/owner}{/repo}",
+                "subscriptions_url": "https://api.github.com/users/stranske/subscriptions",
+                "organizations_url": "https://api.github.com/users/stranske/orgs",
+                "repos_url": "https://api.github.com/users/stranske/repos",
+                "events_url": "https://api.github.com/users/stranske/events{/privacy}",
+                "received_events_url": "https://api.github.com/users/stranske/received_events",
+                "type": "User",
+                "user_view_type": "public",
+                "site_admin": false
+              },
+              "html_url": "https://github.com/stranske/Inv-Man-Intake",
+              "description": null,
+              "fork": false,
+              "url": "https://api.github.com/repos/stranske/Inv-Man-Intake",
+              "forks_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/forks",
+              "keys_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/keys{/key_id}",
+              "collaborators_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/collaborators{/collaborator}",
+              "teams_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/teams",
+              "hooks_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/hooks",
+              "issue_events_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/issues/events{/number}",
+              "events_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/events",
+              "assignees_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/assignees{/user}",
+              "branches_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/branches{/branch}",
+              "tags_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/tags",
+              "blobs_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/git/blobs{/sha}",
+              "git_tags_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/git/tags{/sha}",
+              "git_refs_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/git/refs{/sha}",
+              "trees_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/git/trees{/sha}",
+              "statuses_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/statuses/{sha}",
+              "languages_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/languages",
+              "stargazers_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/stargazers",
+              "contributors_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/contributors",
+              "subscribers_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/subscribers",
+              "subscription_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/subscription",
+              "commits_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/commits{/sha}",
+              "git_commits_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/git/commits{/sha}",
+              "comments_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/comments{/number}",
+              "issue_comment_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/issues/comments{/number}",
+              "contents_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/contents/{+path}",
+              "compare_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/compare/{base}...{head}",
+              "merges_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/merges",
+              "archive_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/{archive_format}{/ref}",
+              "downloads_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/downloads",
+              "issues_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/issues{/number}",
+              "pulls_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/pulls{/number}",
+              "milestones_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/milestones{/number}",
+              "notifications_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/notifications{?since,all,participating}",
+              "labels_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/labels{/name}",
+              "releases_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/releases{/id}",
+              "deployments_url": "https://api.github.com/repos/stranske/Inv-Man-Intake/deployments"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "workflow": {
+        "id": 240018792,
+        "node_id": "W_kwDORbgIAs4OTmVo",
+        "name": "Gate",
+        "path": ".github/workflows/pr-00-gate.yml",
+        "state": "active",
+        "created_at": "2026-02-28T21:49:35.000-06:00",
+        "updated_at": "2026-02-28T21:49:35.000-06:00",
+        "url": "https://api.github.com/repos/stranske/Inv-Man-Intake/actions/workflows/240018792",
+        "html_url": "https://github.com/stranske/Inv-Man-Intake/blob/main/.github/workflows/pr-00-gate.yml",
+        "badge_url": "https://github.com/stranske/Inv-Man-Intake/workflows/Gate/badge.svg"
+      },
+      "runs": {
+        "total_count": 0,
+        "workflow_runs": []
+      }
+    }
+  ],
+  "stale_candidates": [
+    {
+      "body": "## Why\n\nOnePagerModel is renderer-oriented but no `report-spec.json` fleet profile exists. Verified: `tests/export/test_one_pager.py:1-30` exercises one-pager export without any `report-spec.json` assertion, and `grep -r report-spec src` returns no matches. **Missing behavior:** no output-substrate profile emission. **Depends on:** Pension-Data B2-029 renderer-shell, Workflows B2-028.\n\n## Scope\n\nEmit `report-spec.json` alongside one-pager exports referencing output-substrate profile.\n\n## Non-Goals\n\n- Do NOT fork Pension-Data web app.\n- Scaffold-only completion does NOT count.\n\n## Tasks\n\n- [ ] Add `src/inv_man_intake/export/report_spec.py`.\n- [ ] Wire into existing one-pager export path (`tests/export/test_one_pager.py` reference).\n- [ ] Add `tests/export/test_report_spec.py`.\n\n## Acceptance Criteria\n\n- [ ] Named test: `tests/export/test_report_spec.py::test_report_spec_validates` passes.\n- [ ] **Deliberate-break gate:** remove `renderer_profile` → test **must FAIL** → revert.\n\n_Surfaced by B2-031._\n",
+      "comments": [
+        {
+          "id": "IC_kwDORbgIAs8AAAABSo5-Aw",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "🤖 **Auto-pilot step $((STEP_COUNT + 1))**: Starting issue formatting...\n\nRunning formatter inline (not via label trigger).\n",
+          "createdAt": "2026-09-04T20:01:40Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Inv-Man-Intake/issues/950#issuecomment-5545819651",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgIAs8AAAABSo7Azw",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "🤖 **Auto-pilot step $((STEP_COUNT + 1))**: Analyzing issue for improvements...\n\nRunning optimizer inline (not via label trigger).\n",
+          "createdAt": "2026-09-04T20:03:26Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Inv-Man-Intake/issues/950#issuecomment-5545836751",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgIAs8AAAABSo7ejw",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "## Issue Optimization Suggestions\n\nReview the suggestions below. If you want the agent to apply them, add the\n`agents:apply-suggestions` label to this issue.\n\n### Task splitting\n- Create `src/inv_man_intake/export/report_spec.py` defining the report-spec schema or builder with a required `renderer_profile` field, and verify it is importable by the one-pager export path. (This task combines schema definition, implementation, and integration verification. These are distinct steps that should be completed and verified separately.). Suggested split: Define the report-spec schema or builder class in `src/inv_man_intake/export/report_spec.py` with a required `renderer_profile` field, Add validation logic to ensure the `renderer_profile` field is present and non-empty in the schema, Import the report-spec module in the one-pager export path and verify no import errors occur.\n- Wire `report-spec.json` emission into the existing one-pager export path referenced by `tests/export/test_one_pager.py`. (This task is vague about what 'wiring' means and doesn't specify the integration points or expected behavior.). Suggested split: Identify the export function in the one-pager export path that should emit the report-spec file, Add code to generate the report-spec JSON structure with the renderer_profile field populated, Write the report-spec JSON to a file named `report-spec.json` in the same directory as the one-pager export output.\n- Add `tests/export/test_report_spec.py` with `test_report_spec_validates`, verifying emitted `report-spec.json` includes `renderer_profile` and validation fails when that field is removed. (This task combines test file creation, positive validation testing, and negative validation testing. These should be separate verifiable steps.). Suggested split: Create the test file `tests/export/test_report_spec.py` with necessary imports and test fixtures, Implement `test_report_spec_validates` to verify that emitted `report-spec.json` contains the `renderer_profile` field, Add assertions to verify that validation fails when the `renderer_profile` field is removed from the report-spec.\n\n### Blocked tasks\n- None\n\n### Objective acceptance criteria\n- Removing `renderer_profile` causes the validation test to fail; reverting restores the passing test. (This is a manual verification step that requires human intervention to remove code, run tests, and revert. The agent cannot perform deliberate code breakage and restoration as a test criterion. | Replace with: 'The test `test_report_spec_validates` includes a sub-test or assertion that explicitly validates a report-spec missing `renderer_profile` raises a validation error or returns False.' This makes it a programmatic test rather than a manual verification gate.)\n\n### Missing sections\n- None\n\n### Formatting issues\n- The 'Implementation Notes' section uses 'Depends on' language that could be clearer. Consider: 'This work requires completion of Pension-Data B2-029 (renderer-shell) and Workflows B2-028 before implementation can begin.'\n- The 'Non-Goals' section uses inconsistent formatting: 'Do not fork' vs 'Scaffold-only completion does not count'. Consider parallel structure: 'Do not fork Pension-Data web app' and 'Do not accept scaffold-only completion without functional implementation.'\n\n### Notes\n- This issue is well-structured with all required sections present. The main concerns are: (1) tasks that bundle multiple implementation steps together, making them harder to verify atomically; (2) an acceptance criterion that requires manual code-breaking rather than programmatic validation; (3) minor formatting inconsistencies. The issue provides good context with file paths and grep verification, making it actionable. The dependency tracking is clear. Consider splitting the broader tasks into more granular steps and converting the manual 'deliberate-break gate' into a programmatic negative test case.\n\n<!-- suggestions-json: {\"task_splitting\": [{\"task\": \"Create `src/inv_man_intake/export/report_spec.py` defining the report-spec schema or builder with a required `renderer_profile` field, and verify it is importable by the one-pager export path.\", \"reason\": \"This task combines schema definition, implementation, and integration verification. These are distinct steps that should be completed and verified separately.\", \"split_suggestions\": [\"Define the report-spec schema or builder class in `src/inv_man_intake/export/report_spec.py` with a required `renderer_profile` field\", \"Add validation logic to ensure the `renderer_profile` field is present and non-empty in the schema\", \"Import the report-spec module in the one-pager export path and verify no import errors occur\"]}, {\"task\": \"Wire `report-spec.json` emission into the existing one-pager export path referenced by `tests/export/test_one_pager.py`.\", \"reason\": \"This task is vague about what 'wiring' means and doesn't specify the integration points or expected behavior.\", \"split_suggestions\": [\"Identify the export function in the one-pager export path that should emit the report-spec file\", \"Add code to generate the report-spec JSON structure with the renderer_profile field populated\", \"Write the report-spec JSON to a file named `report-spec.json` in the same directory as the one-pager export output\"]}, {\"task\": \"Add `tests/export/test_report_spec.py` with `test_report_spec_validates`, verifying emitted `report-spec.json` includes `renderer_profile` and validation fails when that field is removed.\", \"reason\": \"This task combines test file creation, positive validation testing, and negative validation testing. These should be separate verifiable steps.\", \"split_suggestions\": [\"Create the test file `tests/export/test_report_spec.py` with necessary imports and test fixtures\", \"Implement `test_report_spec_validates` to verify that emitted `report-spec.json` contains the `renderer_profile` field\", \"Add assertions to verify that validation fails when the `renderer_profile` field is removed from the report-spec\"]}], \"blocked_tasks\": [], \"objective_criteria\": [{\"criterion\": \"Removing `renderer_profile` causes the validation test to fail; reverting restores the passing test.\", \"issue\": \"This is a manual verification step that requires human intervention to remove code, run tests, and revert. The agent cannot perform deliberate code breakage and restoration as a test criterion.\", \"suggestion\": \"Replace with: 'The test `test_report_spec_validates` includes a sub-test or assertion that explicitly validates a report-spec missing `renderer_profile` raises a validation error or returns False.' This makes it a programmatic test rather than a manual verification gate.\"}], \"missing_sections\": [], \"formatting_issues\": [\"The 'Implementation Notes' section uses 'Depends on' language that could be clearer. Consider: 'This work requires completion of Pension-Data B2-029 (renderer-shell) and Workflows B2-028 before implementation can begin.'\", \"The 'Non-Goals' section uses inconsistent formatting: 'Do not fork' vs 'Scaffold-only completion does not count'. Consider parallel structure: 'Do not fork Pension-Data web app' and 'Do not accept scaffold-only completion without functional implementation.'\"], \"overall_notes\": \"This issue is well-structured with all required sections present. The main concerns are: (1) tasks that bundle multiple implementation steps together, making them harder to verify atomically; (2) an acceptance criterion that requires manual code-breaking rather than programmatic validation; (3) minor formatting inconsistencies. The issue provides good context with file paths and grep verification, making it actionable. The dependency tracking is clear. Consider splitting the broader tasks into more granular steps and converting the manual 'deliberate-break gate' into a programmatic negative test case.\"} -->",
+          "createdAt": "2026-09-04T20:04:12Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Inv-Man-Intake/issues/950#issuecomment-5545844367",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgIAs8AAAABSo8Nqw",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "⚠️ **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Inv-Man-Intake/actions/runs/33914371983)\n",
+          "createdAt": "2026-09-04T20:05:23Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Inv-Man-Intake/issues/950#issuecomment-5545856427",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgIAs8AAAABSo8pUw",
+          "author": {
+            "login": "stranske-keepalive"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "🤖 **Auto-pilot step $((STEP_COUNT + 1))**: Applying optimization suggestions...\n\nRunning apply inline (not via label trigger).\n",
+          "createdAt": "2026-09-04T20:06:05Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Inv-Man-Intake/issues/950#issuecomment-5545863507",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgIAs8AAAABSo9SFg",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `non-empty in the schema (verify: confirm completion in repo)`.\n\n_Advisory:_\n- 4 cited path(s) do not exist yet: `report-spec.json`, `[LOCAL_WORKSPACE]/Inv-Man-Intake/tests/export/test_one_pager.py`, `src/inv_man_intake/export/report_spec.py`, `tests/export/test_report_spec.py` — expected when a task creates them; check for typos otherwise.\n\nDispatched the Agents Issue Optimizer format phase (attempt 1 of 3).\n\n<!-- format-guard:648a495b7c0e:attempt:1 -->\n",
+          "createdAt": "2026-09-04T20:07:09Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Inv-Man-Intake/issues/950#issuecomment-5545873942",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgIAs8AAAABSo-HiA",
+          "author": {
+            "login": "stranske-keepalive"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "🤖 **Auto-pilot step 1**: Issue prepared! Assigning to agent...\n\nAdding `agent:codex` label. The capability check will run automatically.\n\n⏳ Agent will create a PR shortly.",
+          "createdAt": "2026-09-04T20:08:33Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Inv-Man-Intake/issues/950#issuecomment-5545887624",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgIAs8AAAABSo-jNw",
+          "author": {
+            "login": "stranske-keepalive"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "### ⚠️ Capability Check: Some tasks may need human assistance\n\n**Recommendation:** REVIEW_NEEDED\n\n**✅ Actionable Tasks (6):**\n- non-empty in the schema (verify: confirm completion in repo)\n- verify no import errors occur\n- Wire `report-spec.json` emission into the existing one-pager export path referenced by `tests/export/test_one_pager.py`.\n- Create the test file `tests/export/test_report_spec.py` with necessary imports (verify: tests pass)\n- Create the test file `tests/export/test_report_spec.py` with test fixtures (verify: tests pass)\n- Implement `test_report_spec_validates` to verify that emitted `report-spec.json` contains the `renderer_profile` field\n\n**⚠️ Partial Tasks (9):**\n- Create `src/inv_man_intake/export/report_spec.py` defining the report-spec schema or builder with a required `renderer_profile` field, and verify it is importable by the one-pager export path.\n  - *Limitation:* Task bundles multiple actions; split into smaller tasks.\n- Define the report-spec schema or builder class in `src/inv_man_intake/export/report_spec.py` with a required `renderer_profile` field (verify: confirm completion in repo)\n  - *Limitation:* Task bundles multiple actions; split into smaller tasks.\n- Add validation logic to ensure the `renderer_profile` field is present (verify: confirm completion in repo)\n  - *Limitation:* Task bundles multiple actions; split into smaller tasks.\n- Import the report-spec module in the one-pager export path (verify: confirm completion in repo)\n  - *Limitation:* Task bundles multiple actions; split into smaller tasks.\n- Identify the export function in the one-pager export path that should emit the report-spec file (verify: confirm completion in repo)\n  - *Limitation:* Task bundles multiple actions; split into smaller tasks.\n- Add code to generate the report-spec JSON structure with the renderer_profile field populated (verify: confirm completion in repo)\n  - *Limitation:* Task bundles multiple actions; split into smaller tasks.\n- Write the report-spec JSON to a file named `report-spec.json` in the same directory as the one-pager export output (verify: confirm completion in repo)\n  - *Limitation:* Task bundles multiple actions; split into smaller tasks.\n- Add `tests/export/test_report_spec.py` with `test_report_spec_validates`, verifying emitted `report-spec.json` includes `renderer_profile` and validation fails when that field is removed.\n  - *Limitation:* Task bundles multiple actions; split into smaller tasks.\n- Add assertions to verify that validation fails when the `renderer_profile` field is removed from the report-spec\n  - *Limitation:* Task bundles multiple actions; split into smaller tasks.\n\n**👤 Human Actions Needed:**\n- Split task into smaller steps: Create `src/inv_man_intake/export/report_spec.py` defining the report-spec schema or builder with a required `renderer_profile` field, and verify it is importable by the one-pager export path.\n- Split task into smaller steps: Define the report-spec schema or builder class in `src/inv_man_intake/export/report_spec.py` with a required `renderer_profile` field (verify: confirm completion in repo)\n- Split task into smaller steps: Add validation logic to ensure the `renderer_profile` field is present (verify: confirm completion in repo)\n- Split task into smaller steps: Import the report-spec module in the one-pager export path (verify: confirm completion in repo)\n- Split task into smaller steps: Identify the export function in the one-pager export path that should emit the report-spec file (verify: confirm completion in repo)\n- Split task into smaller steps: Add code to generate the report-spec JSON structure with the renderer_profile field populated (verify: confirm completion in repo)\n- Split task into smaller steps: Write the report-spec JSON to a file named `report-spec.json` in the same directory as the one-pager export output (verify: confirm completion in repo)\n- Split task into smaller steps: Add `tests/export/test_report_spec.py` with `test_report_spec_validates`, verifying emitted `report-spec.json` includes `renderer_profile` and validation fails when that field is removed.\n- Split task into smaller steps: Add assertions to verify that validation fails when the `renderer_profile` field is removed from the report-spec\n- LLM provider unavailable\n\n---\n*Auto-generated by capability check*",
+          "createdAt": "2026-09-04T20:09:18Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Inv-Man-Intake/issues/950#issuecomment-5545894711",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgIAs8AAAABSo-96g",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Codex belt dispatcher queued this issue and created branch `codex/issue-950`.",
+          "createdAt": "2026-09-04T20:09:59Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Inv-Man-Intake/issues/950#issuecomment-5545901546",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgIAs8AAAABSo_6fA",
+          "author": {
+            "login": "stranske-keepalive"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "🤖 **Auto-pilot step $((STEP_COUNT + 1))**: Starting issue formatting...\n\nRunning formatter inline (not via label trigger).\n",
+          "createdAt": "2026-09-04T20:11:29Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Inv-Man-Intake/issues/950#issuecomment-5545917052",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgIAs8AAAABSo_-hw",
+          "author": {
+            "login": "stranske-keepalive"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "⚠️ **Auto-pilot paused during formatting.**\n\nFormatter output does not satisfy the canonical issue-format contract.",
+          "createdAt": "2026-09-04T20:11:35Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Inv-Man-Intake/issues/950#issuecomment-5545918087",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgIAs8AAAABTCdguQ",
+          "author": {
+            "login": "stranske"
+          },
+          "authorAssociation": "OWNER",
+          "body": "Closer lane reclaim: removing the stale `status:in-progress` claim.\n\n**Evidence (checked live, 2026-09-07):** this issue was labelled `status:in-progress` by the belt dispatcher in the 2026-09-04/05 dispatch burst. Since then: no linked PR, no commits, and no belt-dispatcher run in this repo since 2026-09-05T05:55Z. The claim is false — nothing is in progress.\n\n**Why it could not clear itself.** `status:in-progress` is added by `agents-71-codex-belt-dispatcher.yml:435` and `agents-72-codex-belt-worker.yml:1044`. The only code that removes it is `agents-73-codex-belt-conveyor.yml:530`, which is `workflow_call`-only and takes `pr_number` as a **required** input (reached via `reusable-70-orchestrator-main.yml:3259`). So clearing the claim requires the very PR whose absence is the problem: a claim that never produced a PR can never be released. `docs/LABELS.md:730` states Agents 81 also clears it after merging the linked PR — `agents-81-gate-followups.yml` contains no reference to the label, so that documented drain does not exist in code either.\n\nThe mechanism defect is tracked separately; this comment only releases the claim so the issue is selectable again. No scope or acceptance criteria changed.\n",
+          "createdAt": "2026-09-07T15:11:34Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Inv-Man-Intake/issues/950#issuecomment-5572616377",
+          "viewerDidAuthor": true
+        }
+      ],
+      "labels": [
+        {
+          "id": "LA_kwDORbgIAs8AAAACZuwyEw",
+          "name": "agents:formatted",
+          "description": "Issue has been formatted to AGENT_ISSUE_TEMPLATE",
+          "color": "1D76DB"
+        },
+        {
+          "id": "LA_kwDORbgIAs8AAAACZuwyXA",
+          "name": "agents:apply-suggestions",
+          "description": "Applies optimization suggestions from agents:optimize",
+          "color": "0E8A16"
+        },
+        {
+          "id": "LA_kwDORbgIAs8AAAACZuxEEA",
+          "name": "agent:codex",
+          "description": "Assign to Codex agent",
+          "color": "0e8a16"
+        }
+      ],
+      "number": 950,
+      "title": "[P1] report-spec.json renderer contract (B2-031)",
+      "updatedAt": "2026-09-13T20:17:51Z",
+      "url": "https://github.com/stranske/Inv-Man-Intake/issues/950"
+    },
+    {
+      "body": "## Why\n\nLargest provenance gap in fleet: `evidence_refs` are page-pointer strings, not evidence IDs (`src/inv_man_intake/run.py:113-118` builds `document:{id}#page={n}` strings). Dossier confirms no conformant emitter (`dossier-out/DOSSIER.md:56`). **Depends on:** B2-015.\n\n## Scope\n\nWrite standalone `evidence-object/v1` JSON files per extracted field; point `evidence_refs` at `evidence_id` values.\n\n## Non-Goals\n\n- Do NOT change scoring/threshold logic in run pipeline.\n- Scaffold-only completion does NOT count.\n\n## Tasks\n\n- [ ] Add `src/inv_man_intake/emit/evidence_objects.py` validating against `docs/contracts/schemas/evidence-object-v1.schema.json`.\n- [ ] Update `src/inv_man_intake/run.py:113-118` to emit sorted `evidence_id` list.\n- [ ] Add `tests/emit/test_evidence_object_emitter.py`.\n- [ ] Extend `scripts/validate_run_contract.py` to validate emitted evidence files.\n\n## Acceptance Criteria\n\n- [ ] Named test: `tests/emit/test_evidence_object_emitter.py::test_run_evidence_refs_are_evidence_ids` passes.\n- [ ] **Deliberate-break gate:** revert `src/inv_man_intake/run.py:113-118` to page-pointer strings → test **must FAIL** → revert.\n\n## Implementation Notes\n\nValidate emitted files against `docs/contracts/schemas/evidence-object-v1.schema.json`.\n\n_Surfaced by B2-017; verified at `src/inv_man_intake/run.py:113-118`._\n",
+      "comments": [
+        {
+          "id": "IC_kwDORbgIAs8AAAABSo5kwg",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "🤖 **Auto-pilot step $((STEP_COUNT + 1))**: Starting issue formatting...\n\nRunning formatter inline (not via label trigger).\n",
+          "createdAt": "2026-09-04T20:01:00Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Inv-Man-Intake/issues/949#issuecomment-5545813186",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgIAs8AAAABSo6uaQ",
+          "author": {
+            "login": "stranske-keepalive"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "🤖 **Auto-pilot step $((STEP_COUNT + 1))**: Analyzing issue for improvements...\n\nRunning optimizer inline (not via label trigger).\n",
+          "createdAt": "2026-09-04T20:02:56Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Inv-Man-Intake/issues/949#issuecomment-5545832041",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgIAs8AAAABSo7ENQ",
+          "author": {
+            "login": "stranske-keepalive"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "## Issue Optimization Suggestions\n\nReview the suggestions below. If you want the agent to apply them, add the\n`agents:apply-suggestions` label to this issue.\n\n### Task splitting\n- Add `tests/emit/test_evidence_object_emitter.py` with tests that run the pipeline and verify emitted `evidence_refs` are sorted `evidence_id` values rather than page-pointer strings; ensure `test_run_evidence_refs_are_evidence_ids` passes and fails if `run.py` reverts to page-pointer references. (This task combines multiple responsibilities: creating the test file, writing pipeline integration tests, verifying sorting behavior, and implementing the deliberate-break gate test. Each requires different setup and assertions.). Suggested split: Create the test file `tests/emit/test_evidence_object_emitter.py` with appropriate imports and fixtures for pipeline testing, Implement `test_run_evidence_refs_are_evidence_ids` that runs the pipeline and verifies emitted evidence_refs contain evidence_id values instead of page-pointer strings, Add assertions to verify that evidence_refs lists are sorted in the test_run_evidence_refs_are_evidence_ids test, Implement a deliberate-break test that temporarily reverts run.py to page-pointer format and confirms the main test fails.\n\n### Blocked tasks\n- None\n\n### Objective acceptance criteria\n- Reverting `src/inv_man_intake/run.py:113-118` to page-pointer strings causes `tests/emit/test_evidence_object_emitter.py::test_run_evidence_refs_are_evidence_ids` to fail. (This requires the agent to manually revert code, run tests, observe failure, then revert again - a multi-step manual verification process that cannot be automated within a single PR. | Rephrase as: 'The test `test_run_evidence_refs_are_evidence_ids` includes assertions that specifically check for evidence_id format (not page-pointer format) and would fail if evidence_refs contained strings matching the pattern `document:{id}#page={n}`' or implement as a separate parameterized test case that validates rejection of page-pointer format.)\n\n### Missing sections\n- None\n\n### Formatting issues\n- The 'Non-Goals' section uses a bullet list format in the original issue (visible in the details section) but has been converted to a paragraph format in the main body. For consistency with other sections using bullets (Tasks, Acceptance Criteria), consider maintaining bullet format.\n- The Implementation Notes section contains 'Surfaced by B2-017; verified at `run.py:113-118`' which duplicates information already in the Why section. Consider removing redundant verification statement or adding unique implementation guidance.\n\n### Notes\n- This issue is well-structured with clear provenance tracking and specific file/line references. The dependency on B2-015 is explicitly stated. The main concern is the second acceptance criterion requiring manual revert-test-revert cycles, which is difficult for an agent to execute atomically. The task list could benefit from splitting the complex test task into discrete steps. All required sections are present, though some minor formatting inconsistencies exist between the original and reformatted versions.\n\n<!-- suggestions-json: {\"task_splitting\": [{\"task\": \"Add `tests/emit/test_evidence_object_emitter.py` with tests that run the pipeline and verify emitted `evidence_refs` are sorted `evidence_id` values rather than page-pointer strings; ensure `test_run_evidence_refs_are_evidence_ids` passes and fails if `run.py` reverts to page-pointer references.\", \"reason\": \"This task combines multiple responsibilities: creating the test file, writing pipeline integration tests, verifying sorting behavior, and implementing the deliberate-break gate test. Each requires different setup and assertions.\", \"split_suggestions\": [\"Create the test file `tests/emit/test_evidence_object_emitter.py` with appropriate imports and fixtures for pipeline testing\", \"Implement `test_run_evidence_refs_are_evidence_ids` that runs the pipeline and verifies emitted evidence_refs contain evidence_id values instead of page-pointer strings\", \"Add assertions to verify that evidence_refs lists are sorted in the test_run_evidence_refs_are_evidence_ids test\", \"Implement a deliberate-break test that temporarily reverts run.py to page-pointer format and confirms the main test fails\"]}], \"blocked_tasks\": [], \"objective_criteria\": [{\"criterion\": \"Reverting `src/inv_man_intake/run.py:113-118` to page-pointer strings causes `tests/emit/test_evidence_object_emitter.py::test_run_evidence_refs_are_evidence_ids` to fail.\", \"issue\": \"This requires the agent to manually revert code, run tests, observe failure, then revert again - a multi-step manual verification process that cannot be automated within a single PR.\", \"suggestion\": \"Rephrase as: 'The test `test_run_evidence_refs_are_evidence_ids` includes assertions that specifically check for evidence_id format (not page-pointer format) and would fail if evidence_refs contained strings matching the pattern `document:{id}#page={n}`' or implement as a separate parameterized test case that validates rejection of page-pointer format.\"}], \"missing_sections\": [], \"formatting_issues\": [\"The 'Non-Goals' section uses a bullet list format in the original issue (visible in the details section) but has been converted to a paragraph format in the main body. For consistency with other sections using bullets (Tasks, Acceptance Criteria), consider maintaining bullet format.\", \"The Implementation Notes section contains 'Surfaced by B2-017; verified at `run.py:113-118`' which duplicates information already in the Why section. Consider removing redundant verification statement or adding unique implementation guidance.\"], \"overall_notes\": \"This issue is well-structured with clear provenance tracking and specific file/line references. The dependency on B2-015 is explicitly stated. The main concern is the second acceptance criterion requiring manual revert-test-revert cycles, which is difficult for an agent to execute atomically. The task list could benefit from splitting the complex test task into discrete steps. All required sections are present, though some minor formatting inconsistencies exist between the original and reformatted versions.\"} -->",
+          "createdAt": "2026-09-04T20:03:31Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Inv-Man-Intake/issues/949#issuecomment-5545837621",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgIAs8AAAABSo760w",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "⚠️ **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Inv-Man-Intake/actions/runs/33914313984)\n",
+          "createdAt": "2026-09-04T20:04:55Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Inv-Man-Intake/issues/949#issuecomment-5545851603",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgIAs8AAAABSo8Ikw",
+          "author": {
+            "login": "stranske-keepalive"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "🤖 **Auto-pilot step $((STEP_COUNT + 1))**: Applying optimization suggestions...\n\nRunning apply inline (not via label trigger).\n",
+          "createdAt": "2026-09-04T20:05:16Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Inv-Man-Intake/issues/949#issuecomment-5545855123",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgIAs8AAAABSo8nvw",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `verifies emitted evidence_refs contain evidence_id values instead of page-pointer strings (verify: confirm completion in repo)`.\n\n_Advisory:_\n- 5 cited path(s) do not exist yet: `[LOCAL_WORKSPACE]/Inv-Man-Intake/src/inv_man_intake/run.py`, `dossier-out/DOSSIER.md`, `evidence-object/v1`, `src/inv_man_intake/emit/evidence_objects.py`, `tests/emit/test_evidence_object_emitter.py` — expected when a task creates them; check for typos otherwise.\n\nDispatched the Agents Issue Optimizer format phase (attempt 1 of 3).\n\n<!-- format-guard:bb796366d879:attempt:1 -->\n",
+          "createdAt": "2026-09-04T20:06:03Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Inv-Man-Intake/issues/949#issuecomment-5545863103",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgIAs8AAAABSo9MZw",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "🤖 **Auto-pilot step 1**: Issue prepared! Assigning to agent...\n\nAdding `agent:codex` label. The capability check will run automatically.\n\n⏳ Agent will create a PR shortly.",
+          "createdAt": "2026-09-04T20:07:01Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Inv-Man-Intake/issues/949#issuecomment-5545872487",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgIAs8AAAABSo9mlw",
+          "author": {
+            "login": "stranske-keepalive"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "### ⚠️ Capability Check: Some tasks may need human assistance\n\n**Recommendation:** REVIEW_NEEDED\n\n**✅ Actionable Tasks (7):**\n- Add `src/inv_man_intake/emit/evidence_objects.py` validating against `docs/contracts/schemas/evidence-object-v1.schema.json`.\n- Update `src/inv_man_intake/run.py:113-118` to emit a sorted `evidence_id` list.\n- Create the test file `tests/emit/test_evidence_object_emitter.py` with appropriate imports (verify: tests pass)\n- Create the test file `tests/emit/test_evidence_object_emitter.py` with fixtures for pipeline testing (verify: tests pass)\n- Implement `test_run_evidence_refs_are_evidence_ids` that runs the pipeline (verify: confirm completion in repo)\n- Add assertions to verify that evidence_refs lists are sorted in the test_run_evidence_refs_are_evidence_ids test\n- Extend `scripts/validate_run_contract.py` to validate emitted evidence files.\n\n**⚠️ Partial Tasks (3):**\n- Add `tests/emit/test_evidence_object_emitter.py` with tests that run the pipeline and verify emitted `evidence_refs` are sorted `evidence_id` values rather than page-pointer strings; ensure `test_run_evidence_refs_are_evidence_ids` passes and fails if `run.py` reverts to page-pointer references.\n  - *Limitation:* Task bundles multiple actions; split into smaller tasks.\n- verifies emitted evidence_refs contain evidence_id values instead of page-pointer strings (verify: confirm completion in repo)\n  - *Limitation:* Task bundles multiple actions; split into smaller tasks.\n- _(2 further sub-tasks elided; split this issue)_\n  - *Limitation:* Task bundles multiple actions; split into smaller tasks.\n\n**👤 Human Actions Needed:**\n- Split task into smaller steps: Add `tests/emit/test_evidence_object_emitter.py` with tests that run the pipeline and verify emitted `evidence_refs` are sorted `evidence_id` values rather than page-pointer strings; ensure `test_run_evidence_refs_are_evidence_ids` passes and fails if `run.py` reverts to page-pointer references.\n- Split task into smaller steps: verifies emitted evidence_refs contain evidence_id values instead of page-pointer strings (verify: confirm completion in repo)\n- Split task into smaller steps: _(2 further sub-tasks elided; split this issue)_\n- LLM provider unavailable\n\n---\n*Auto-generated by capability check*",
+          "createdAt": "2026-09-04T20:07:41Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Inv-Man-Intake/issues/949#issuecomment-5545879191",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgIAs8AAAABSo984w",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Codex belt dispatcher queued this issue and created branch `codex/issue-949`.",
+          "createdAt": "2026-09-04T20:08:16Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Inv-Man-Intake/issues/949#issuecomment-5545884899",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgIAs8AAAABSo-s8g",
+          "author": {
+            "login": "stranske-keepalive"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "🤖 **Auto-pilot step $((STEP_COUNT + 1))**: Starting issue formatting...\n\nRunning formatter inline (not via label trigger).\n",
+          "createdAt": "2026-09-04T20:09:33Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Inv-Man-Intake/issues/949#issuecomment-5545897202",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgIAs8AAAABSo-vlA",
+          "author": {
+            "login": "stranske-keepalive"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "⚠️ **Auto-pilot paused during formatting.**\n\nFormatter output does not satisfy the canonical issue-format contract.",
+          "createdAt": "2026-09-04T20:09:37Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Inv-Man-Intake/issues/949#issuecomment-5545897876",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgIAs8AAAABTCdjIg",
+          "author": {
+            "login": "stranske"
+          },
+          "authorAssociation": "OWNER",
+          "body": "Closer lane reclaim: removing the stale `status:in-progress` claim.\n\n**Evidence (checked live, 2026-09-07):** this issue was labelled `status:in-progress` by the belt dispatcher in the 2026-09-04/05 dispatch burst. Since then: no linked PR, no commits, and no belt-dispatcher run in this repo since 2026-09-05T05:55Z. The claim is false — nothing is in progress.\n\n**Why it could not clear itself.** `status:in-progress` is added by `agents-71-codex-belt-dispatcher.yml:435` and `agents-72-codex-belt-worker.yml:1044`. The only code that removes it is `agents-73-codex-belt-conveyor.yml:530`, which is `workflow_call`-only and takes `pr_number` as a **required** input (reached via `reusable-70-orchestrator-main.yml:3259`). So clearing the claim requires the very PR whose absence is the problem: a claim that never produced a PR can never be released. `docs/LABELS.md:730` states Agents 81 also clears it after merging the linked PR — `agents-81-gate-followups.yml` contains no reference to the label, so that documented drain does not exist in code either.\n\nThe mechanism defect is tracked separately; this comment only releases the claim so the issue is selectable again. No scope or acceptance criteria changed.\n",
+          "createdAt": "2026-09-07T15:11:37Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Inv-Man-Intake/issues/949#issuecomment-5572616994",
+          "viewerDidAuthor": true
+        }
+      ],
+      "labels": [
+        {
+          "id": "LA_kwDORbgIAs8AAAACZuwyEw",
+          "name": "agents:formatted",
+          "description": "Issue has been formatted to AGENT_ISSUE_TEMPLATE",
+          "color": "1D76DB"
+        },
+        {
+          "id": "LA_kwDORbgIAs8AAAACZuwyXA",
+          "name": "agents:apply-suggestions",
+          "description": "Applies optimization suggestions from agents:optimize",
+          "color": "0E8A16"
+        },
+        {
+          "id": "LA_kwDORbgIAs8AAAACZuxEEA",
+          "name": "agent:codex",
+          "description": "Assign to Codex agent",
+          "color": "0e8a16"
+        }
+      ],
+      "number": 949,
+      "title": "[P1] Evidence-object/v1 emitter replacing page-pointer refs (B2-017)",
+      "updatedAt": "2026-09-13T20:17:52Z",
+      "url": "https://github.com/stranske/Inv-Man-Intake/issues/949"
+    },
+    {
+      "body": "## Why\n\nConsultant report sections need fleet `ontology_key` values aligned to B2-003. Verified: `docs/contracts/standard_element_library.md:12` requires bundled `_stub.json` keep `non_authoritative: true`; `src/inv_man_intake/intake/standard_elements.py:1-30` loads stub only with no consultant section keys.\n\n## Scope\n\nExtend stub data with `report.consultant_review` element keys mapping to `consultant.*` ontology keys; conformance tests.\n\n## Non-Goals\n\n- Do NOT set `non_authoritative: false` on bundled stub without external library.\n- Do NOT emit `tracked-variable/v1` yet (B2-017).\n- Scaffold-only completion does NOT count.\n\n## Tasks\n\n- [ ] Add `data/consultant_sections.json` with ≥15 section keys per R2 brief.\n- [ ] Extend `standard_elements.py` to load consultant sections when `doc_type` is `report.consultant_review`.\n- [ ] Add `tests/intake/test_consultant_section_ontology.py`.\n- [ ] Map keys in README cross-reference to Workflows `tracked-variable/v1` (after sync).\n\n## Acceptance Criteria\n\n- [ ] Named test: `tests/intake/test_consultant_section_ontology.py::test_sections_resolve_without_code_change` passes (data-only add).\n- [ ] **Deliberate-break gate:** remove one key from JSON → test **must FAIL** → revert.\n\n_Surfaced by B2-010; depends on Workflows B2-003._\n",
+      "comments": [
+        {
+          "id": "IC_kwDORbgIAs8AAAABSo5ltA",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "🤖 **Auto-pilot step $((STEP_COUNT + 1))**: Starting issue formatting...\n\nRunning formatter inline (not via label trigger).\n",
+          "createdAt": "2026-09-04T20:01:02Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Inv-Man-Intake/issues/948#issuecomment-5545813428",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgIAs8AAAABSo65kA",
+          "author": {
+            "login": "stranske-keepalive"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "🤖 **Auto-pilot step $((STEP_COUNT + 1))**: Analyzing issue for improvements...\n\nRunning optimizer inline (not via label trigger).\n",
+          "createdAt": "2026-09-04T20:03:14Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Inv-Man-Intake/issues/948#issuecomment-5545834896",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgIAs8AAAABSo7REA",
+          "author": {
+            "login": "stranske-keepalive"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "## Issue Optimization Suggestions\n\nReview the suggestions below. If you want the agent to apply them, add the\n`agents:apply-suggestions` label to this issue.\n\n### Task splitting\n- Add `tests/intake/test_consultant_section_ontology.py` with `test_sections_resolve_without_code_change`, verifying every required consultant section key resolves to its expected `consultant.*` ontology key from `data/consultant_sections.json`; ensure the test passes with complete data and fails if a required key is removed. (This task combines test file creation, test implementation, verification logic, and failure mode testing. It's too broad for a single atomic task.). Suggested split: Create the test file `tests/intake/test_consultant_section_ontology.py` with appropriate imports and test structure, Implement `test_sections_resolve_without_code_change` to load consultant sections from the JSON data file, Add assertions that verify each section key resolves to its expected consultant ontology key, Verify the test passes when all required keys are present in the data file, Verify the test fails when any required key is removed from the data file.\n\n### Blocked tasks\n- None\n\n### Objective acceptance criteria\n- Add `data/consultant_sections.json` with ≥15 section keys per R2 brief. (The reference to 'R2 brief' is external and may not be accessible to the agent. The specific section keys required are not defined in the issue. | Either include the list of required section keys in the issue, provide a link to the R2 brief document, or specify the exact format and required fields for each section key entry (e.g., 'Each entry must have fields: key, ontology_key, description').)\n- Update the README cross-reference to map keys to Workflows `tracked-variable/v1` after sync. (The term 'after sync' is vague and the specific format/location for the cross-reference mapping is not defined. | Specify the exact section in the README where the mapping should be added, provide an example of the expected format, and clarify what 'after sync' means (e.g., 'Add a table in README.md section 3.2 mapping each consultant section key to its corresponding tracked-variable/v1 workflow identifier').)\n\n### Missing sections\n- None\n\n### Formatting issues\n- The 'Implementation Notes' section uses a semicolon-separated list format ('Surfaced by B2-010; depends on Workflows B2-003') instead of proper bullet points or sentences, which reduces readability.\n- The third task bullet contains a very long run-on sentence with multiple semicolons that should be split into separate sub-bullets or a clearer structure.\n- The acceptance criteria section mixes test execution requirements with a 'deliberate-break gate' pattern that could be formatted as a nested checklist for clarity.\n\n### Notes\n- This issue is well-structured with all required sections present (Why, Scope, Non-Goals, Tasks, Acceptance Criteria, Implementation Notes). The agent should be able to complete most tasks, though the reference to 'R2 brief' may require clarification. The main issues are: (1) one task is too broad and should be split into 5 sub-tasks, (2) two acceptance criteria need more objective specifications, and (3) minor formatting improvements would enhance readability. The issue correctly avoids agent limitations (no workflow modifications, no subjective design decisions). The 'deliberate-break gate' pattern in acceptance criteria is actually a good practice for ensuring test robustness.\n\n<!-- suggestions-json: {\"task_splitting\": [{\"task\": \"Add `tests/intake/test_consultant_section_ontology.py` with `test_sections_resolve_without_code_change`, verifying every required consultant section key resolves to its expected `consultant.*` ontology key from `data/consultant_sections.json`; ensure the test passes with complete data and fails if a required key is removed.\", \"reason\": \"This task combines test file creation, test implementation, verification logic, and failure mode testing. It's too broad for a single atomic task.\", \"split_suggestions\": [\"Create the test file `tests/intake/test_consultant_section_ontology.py` with appropriate imports and test structure\", \"Implement `test_sections_resolve_without_code_change` to load consultant sections from the JSON data file\", \"Add assertions that verify each section key resolves to its expected consultant ontology key\", \"Verify the test passes when all required keys are present in the data file\", \"Verify the test fails when any required key is removed from the data file\"]}], \"blocked_tasks\": [], \"objective_criteria\": [{\"criterion\": \"Add `data/consultant_sections.json` with \\u226515 section keys per R2 brief.\", \"issue\": \"The reference to 'R2 brief' is external and may not be accessible to the agent. The specific section keys required are not defined in the issue.\", \"suggestion\": \"Either include the list of required section keys in the issue, provide a link to the R2 brief document, or specify the exact format and required fields for each section key entry (e.g., 'Each entry must have fields: key, ontology_key, description').\"}, {\"criterion\": \"Update the README cross-reference to map keys to Workflows `tracked-variable/v1` after sync.\", \"issue\": \"The term 'after sync' is vague and the specific format/location for the cross-reference mapping is not defined.\", \"suggestion\": \"Specify the exact section in the README where the mapping should be added, provide an example of the expected format, and clarify what 'after sync' means (e.g., 'Add a table in README.md section 3.2 mapping each consultant section key to its corresponding tracked-variable/v1 workflow identifier').\"}], \"missing_sections\": [], \"formatting_issues\": [\"The 'Implementation Notes' section uses a semicolon-separated list format ('Surfaced by B2-010; depends on Workflows B2-003') instead of proper bullet points or sentences, which reduces readability.\", \"The third task bullet contains a very long run-on sentence with multiple semicolons that should be split into separate sub-bullets or a clearer structure.\", \"The acceptance criteria section mixes test execution requirements with a 'deliberate-break gate' pattern that could be formatted as a nested checklist for clarity.\"], \"overall_notes\": \"This issue is well-structured with all required sections present (Why, Scope, Non-Goals, Tasks, Acceptance Criteria, Implementation Notes). The agent should be able to complete most tasks, though the reference to 'R2 brief' may require clarification. The main issues are: (1) one task is too broad and should be split into 5 sub-tasks, (2) two acceptance criteria need more objective specifications, and (3) minor formatting improvements would enhance readability. The issue correctly avoids agent limitations (no workflow modifications, no subjective design decisions). The 'deliberate-break gate' pattern in acceptance criteria is actually a good practice for ensuring test robustness.\"} -->",
+          "createdAt": "2026-09-04T20:03:51Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Inv-Man-Intake/issues/948#issuecomment-5545840912",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgIAs8AAAABSo8J0w",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "⚠️ **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Inv-Man-Intake/actions/runs/33914341022)\n",
+          "createdAt": "2026-09-04T20:05:18Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Inv-Man-Intake/issues/948#issuecomment-5545855443",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgIAs8AAAABSo8ZJg",
+          "author": {
+            "login": "agents-workflows-bot"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "🤖 **Auto-pilot step $((STEP_COUNT + 1))**: Applying optimization suggestions...\n\nRunning apply inline (not via label trigger).\n",
+          "createdAt": "2026-09-04T20:05:41Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Inv-Man-Intake/issues/948#issuecomment-5545859366",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgIAs8AAAABSo9DyQ",
+          "author": {
+            "login": "github-actions"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `Add assertions that verify each section key resolves to its expected consultant ontology key`.\n\n_Advisory:_\n- 5 cited path(s) do not exist yet: `_stub.json`, `tracked-variable/v1`, `data/consultant_sections.json`, `standard_elements.py`, `tests/intake/test_consultant_section_ontology.py` — expected when a task creates them; check for typos otherwise.\n\nDispatched the Agents Issue Optimizer format phase (attempt 1 of 3).\n\n<!-- format-guard:42812564ddd0:attempt:1 -->\n",
+          "createdAt": "2026-09-04T20:06:48Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Inv-Man-Intake/issues/948#issuecomment-5545870281",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgIAs8AAAABSo9oLA",
+          "author": {
+            "login": "stranske-keepalive"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "🤖 **Auto-pilot step 1**: Issue prepared! Assigning to agent...\n\nAdding `agent:codex` label. The capability check will run automatically.\n\n⏳ Agent will create a PR shortly.",
+          "createdAt": "2026-09-04T20:07:43Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Inv-Man-Intake/issues/948#issuecomment-5545879596",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgIAs8AAAABSo-kkw",
+          "author": {
+            "login": "stranske-keepalive"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "### ⚠️ Capability Check: Some tasks may need human assistance\n\n**Recommendation:** REVIEW_NEEDED\n\n**✅ Actionable Tasks (5):**\n- Add `data/consultant_sections.json` with ≥15 section keys per R2 brief.\n- Extend `standard_elements.py` to load consultant sections when `doc_type` is `report.consultant_review`.\n- Create the test file `tests/intake/test_consultant_section_ontology.py` with appropriate imports (verify: tests pass)\n- Create the test file `tests/intake/test_consultant_section_ontology.py` with test structure (verify: tests pass)\n- Update the README cross-reference to map keys to Workflows `tracked-variable/v1` after sync.\n\n**⚠️ Partial Tasks (5):**\n- Add `tests/intake/test_consultant_section_ontology.py` with `test_sections_resolve_without_code_change`, verifying every required consultant section key resolves to its expected `consultant.*` ontology key from `data/consultant_sections.json`; ensure the test passes with complete data and fails if a required key is removed.\n  - *Limitation:* Task bundles multiple actions; split into smaller tasks.\n- Implement `test_sections_resolve_without_code_change` to load consultant sections from the JSON data file (verify: confirm completion in repo)\n  - *Limitation:* Task bundles multiple actions; split into smaller tasks.\n- Add assertions that verify each section key resolves to its expected consultant ontology key\n  - *Limitation:* Task bundles multiple actions; split into smaller tasks.\n- Verify the test passes when all required keys are present in the data file\n  - *Limitation:* Task bundles multiple actions; split into smaller tasks.\n- Verify the test fails when any required key is removed from the data file\n  - *Limitation:* Task bundles multiple actions; split into smaller tasks.\n\n**👤 Human Actions Needed:**\n- Split task into smaller steps: Add `tests/intake/test_consultant_section_ontology.py` with `test_sections_resolve_without_code_change`, verifying every required consultant section key resolves to its expected `consultant.*` ontology key from `data/consultant_sections.json`; ensure the test passes with complete data and fails if a required key is removed.\n- Split task into smaller steps: Implement `test_sections_resolve_without_code_change` to load consultant sections from the JSON data file (verify: confirm completion in repo)\n- Split task into smaller steps: Add assertions that verify each section key resolves to its expected consultant ontology key\n- Split task into smaller steps: Verify the test passes when all required keys are present in the data file\n- Split task into smaller steps: Verify the test fails when any required key is removed from the data file\n- LLM provider unavailable\n\n---\n*Auto-generated by capability check*",
+          "createdAt": "2026-09-04T20:09:20Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Inv-Man-Intake/issues/948#issuecomment-5545895059",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgIAs8AAAABSo_W2g",
+          "author": {
+            "login": "stranske-keepalive"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "🤖 **Auto-pilot step $((STEP_COUNT + 1))**: Starting issue formatting...\n\nRunning formatter inline (not via label trigger).\n",
+          "createdAt": "2026-09-04T20:10:36Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Inv-Man-Intake/issues/948#issuecomment-5545907930",
+          "viewerDidAuthor": false
+        },
+        {
+          "id": "IC_kwDORbgIAs8AAAABSo_aqg",
+          "author": {
+            "login": "stranske-keepalive"
+          },
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "⚠️ **Auto-pilot paused during formatting.**\n\nFormatter output does not satisfy the canonical issue-format contract.",
+          "createdAt": "2026-09-04T20:10:42Z",
+          "includesCreatedEdit": false,
+          "isMinimized": false,
+          "minimizedReason": "",
+          "reactionGroups": [],
+          "url": "https://github.com/stranske/Inv-Man-Intake/issues/948#issuecomment-5545908906",
+          "viewerDidAuthor": false
+        }
+      ],
+      "labels": [
+        {
+          "id": "LA_kwDORbgIAs8AAAACZuwyEw",
+          "name": "agents:formatted",
+          "description": "Issue has been formatted to AGENT_ISSUE_TEMPLATE",
+          "color": "1D76DB"
+        },
+        {
+          "id": "LA_kwDORbgIAs8AAAACZuwyXA",
+          "name": "agents:apply-suggestions",
+          "description": "Applies optimization suggestions from agents:optimize",
+          "color": "0E8A16"
+        },
+        {
+          "id": "LA_kwDORbgIAs8AAAACZuxEEA",
+          "name": "agent:codex",
+          "description": "Assign to Codex agent",
+          "color": "0e8a16"
+        }
+      ],
+      "number": 948,
+      "title": "[P1] Consultant section ontology aligned to tracked-variable/v1 (B2-010)",
+      "updatedAt": "2026-09-13T20:17:53Z",
+      "url": "https://github.com/stranske/Inv-Man-Intake/issues/948"
+    }
+  ],
+  "observedAt": "2026-09-14T09:14:09.712974+00:00"
+}
