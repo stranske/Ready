@@ -45,6 +45,9 @@ def load_allowlist(root: Path, allowlist: Path) -> tuple[set[tuple[str, str]], l
         return allowed, errors
     if path.is_symlink():
         return allowed, [".publication-allow: symlinks are not allowed"]
+    # A FIFO can block read_text indefinitely; reject special files before reading.
+    if not path.is_file():
+        return allowed, [".publication-allow: not a regular file"]
     try:
         lines = path.read_text(encoding="utf-8").splitlines()
     except (OSError, UnicodeError):

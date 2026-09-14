@@ -226,6 +226,33 @@ def test_named_pipe_fails_without_blocking_other_findings(tmp_path):
     assert "errors=1" in result.stdout
 
 
+@pytest.mark.parametrize("location", ["legacy", "local", "explicit"])
+@pytest.mark.parametrize("kind", ["pipe", "directory"])
+def test_nonregular_allowlist_fails_without_blocking_scan(tmp_path, location, kind):
+    (tmp_path / "report.md").write_text("Public introduction\nclones/example\n")
+    policy = {
+        "legacy": allowlist_for(tmp_path),
+        "local": tmp_path / ".publication-allow",
+        "explicit": tmp_path.parent / "reviewed-policy",
+    }[location]
+    if kind == "pipe":
+        os.mkfifo(policy)
+    else:
+        policy.mkdir()
+    cmd = [sys.executable, str(SCRIPT), "--root", str(tmp_path)]
+    if location == "explicit":
+        cmd.extend(["--allowlist", str(policy)])
+
+    result = subprocess.run(cmd, capture_output=True, text=True, check=False, timeout=5)
+
+    assert result.returncode == 1
+    assert "ERROR: .publication-allow: not a regular file" in result.stdout
+    assert "report.md:2: scratch-path (1 hit(s))" in result.stdout
+    assert "files_scanned=1" in result.stdout
+    assert "allowed_hits=0" in result.stdout
+    assert "errors=1" in result.stdout
+
+
 @pytest.mark.parametrize(
     "result,expected",
     [
