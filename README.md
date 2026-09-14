@@ -37,8 +37,12 @@ files scanned, unallowed hits for every rule (including zeros), allowed hits,
 and errors. This mechanical check does not establish that proprietary content is
 safe to publish.
 
-For an intentional example, add an exact path relative to `research-program/`
-to `research-program/.publication-allow`, in the
+For an intentional example, manage the policy in the upstream engine that
+publishes `research-program/.publication-allow`; do not hand-edit that generated
+mirror, because the next refresh overwrites it. Alternatively, keep reviewed
+policy in the preserved repo-root `.publication-allow` fallback (when no local
+policy is published) or pass an explicit `--allowlist` file. Entries name an exact
+path relative to `research-program/`, in the
 form `example.md:credential # Synthetic example reviewed for publication.` Each
 entry needs a reason and one of `home-path`,
 `credential`, `private-key`, `scratch-path`, or `internal-host`. Wildcards and
