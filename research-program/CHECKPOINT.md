@@ -646,3 +646,16 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-14T02:07:47Z — D4-verify-merged-2026-09-14T02 — route — router picked cursor from ['codex', 'cursor']
 ## 2026-09-14T02:07:47Z — D4-verify-merged-2026-09-14T02 — claimed by driver (agent cursor)
 ## 2026-09-14T02:12:18Z — D4-verify-merged-2026-09-14T02 — done — cursor produced 1116 words at artifacts/verification/D4-verify-merged-2026-09-14T02.md in 250s
+## 2026-09-14T06:49:49Z — refill — Counter_Risk: open=1 <= 2 → audit queued
+## 2026-09-14T06:49:50Z — refill — Manager-Database: open=2 <= 2 → audit queued
+## 2026-09-14T06:49:55Z — D-audit-Counter_Risk--2026-09-14T06-49-49Z — route — router picked codex from ['codex']
+## 2026-09-14T06:49:55Z — D-audit-Counter_Risk--2026-09-14T06-49-49Z — claimed by driver (agent codex)
+## 2026-09-14T07:03:08Z — D-audit-Counter_Risk--2026-09-14T06-49-49Z — fail — offload to codex exited 1; retained artifact is not proof of success
+## 2026-09-14T07:49:04Z — D-audit-Counter_Risk--2026-09-14T06-49-49Z — route — router picked codex from ['codex']
+## 2026-09-14T07:49:04Z — D-audit-Counter_Risk--2026-09-14T06-49-49Z — claimed by driver (agent codex)
+## 2026-09-14T07:51:51Z — D-audit-Counter_Risk--2026-09-14T06-49-49Z — fail — offload to codex exited 1; retained artifact is not proof of success
+## 2026-09-14T08:06:53Z — D-audit-Counter_Risk--2026-09-14T06-49-49Z — route — router picked codex from ['codex']
+## 2026-09-14T08:06:53Z — D-audit-Counter_Risk--2026-09-14T06-49-49Z — claimed by driver (agent codex)
+## 2026-09-14T08:11:36Z — D-audit-Counter_Risk--2026-09-14T06-49-49Z — fail — offload to codex exited 1; retained artifact is not proof of success
+## 2026-09-14T08:12:36Z — D-audit-Manager-Database--2026-09-14T06-49-50Z — route — router picked codex from ['codex']
+## 2026-09-14T08:12:36Z — D-audit-Manager-Database--2026-09-14T06-49-50Z — claimed by codex (agent codex)

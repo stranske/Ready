@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-14T05:17:12Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-14T08:12:36Z)
 
-Units: 109 — done 106, failed 3
+Units: 111 — claimed 1, done 106, failed 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 Claude conservation: off (weekly window available)
@@ -88,9 +88,11 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Counter_Risk--2026-09-09T17-29-35Z | D | D | done | codex | driver | Audit stranske/Counter_Risk and file issues (supply 2 <= 2) |
 | D-audit-Counter_Risk--2026-09-10T17-45-12Z | D | D | done | codex | driver | Audit stranske/Counter_Risk and file issues (supply 1 <= 2) |
 | D-audit-Counter_Risk--2026-09-13T18-41-41Z | D | D | done | codex | codex | Audit stranske/Counter_Risk and file issues (supply 1 <= 2) |
+| D-audit-Counter_Risk--2026-09-14T06-49-49Z | D | D | failed | codex |  | Audit stranske/Counter_Risk and file issues (supply 1 <= 2) |
 | D-audit-Fine-Art-Archive--2026-09-05T04-00-31Z | D | D | done | codex | codex | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 2) |
 | D-audit-Fine-Art-Archive--2026-09-06T04-25-53Z | D | D | done | codex | driver | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 3) |
 | D-audit-Manager-Database--2026-09-10T17-45-13Z | D | D | done | codex | driver | Audit stranske/Manager-Database and file issues (supply 0 <= 2) |
+| D-audit-Manager-Database--2026-09-14T06-49-50Z | D | D | claimed | codex | codex | Audit stranske/Manager-Database and file issues (supply 2 <= 2) |
 | D-audit-Manager-Mosaic--2026-09-05T04-00-25Z | D | D | done | codex | driver | Audit stranske/Manager-Mosaic and file issues (supply 2 <= 2) |
 | D-audit-Portable-Alpha-Extension-Model--2026-09-07T04-47-31Z | D | D | done | codex | codex | Audit stranske/Portable-Alpha-Extension-Model and file issues (supply  |
 | D-audit-Portable-Alpha-Extension-Model--2026-09-07T17-01-44Z | D | D | done | codex | driver | Audit stranske/Portable-Alpha-Extension-Model and file issues (supply  |
@@ -120,18 +122,18 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-13T20:18:40Z — D3-unblock-sweep-2026-09-13T20 — done — cursor produced 510 words at artifacts/sweeps/D3-unblock-sweep-2026-09-13T20.md in 178s
-- 2026-09-13T20:23:28Z — D3-unblock-sweep-pass2-20260913T2023 — route — router picked cursor from ['codex', 'cursor']
-- 2026-09-13T20:23:28Z — D3-unblock-sweep-pass2-20260913T2023 — claimed by driver (agent cursor)
-- 2026-09-13T20:26:12Z — D3-unblock-sweep-pass2-20260913T2023 — done — cursor produced 517 words at artifacts/sweeps/D3-unblock-sweep-pass2-20260913T2023.md in 160s
-- 2026-09-14T01:00:14Z — unblock — enqueued D3-unblock-sweep-2026-09-14T01
-- 2026-09-14T01:00:15Z — D3-unblock-sweep-2026-09-14T01 — route — router picked cursor from ['codex', 'cursor']
-- 2026-09-14T01:00:15Z — D3-unblock-sweep-2026-09-14T01 — claimed by driver (agent cursor)
-- 2026-09-14T01:05:24Z — D3-unblock-sweep-2026-09-14T01 — done — cursor produced 539 words at artifacts/sweeps/D3-unblock-sweep-2026-09-14T01.md in 288s
-- 2026-09-14T02:07:46Z — verify — enqueued D4-verify-merged-2026-09-14T02
-- 2026-09-14T02:07:47Z — D4-verify-merged-2026-09-14T02 — route — router picked cursor from ['codex', 'cursor']
-- 2026-09-14T02:07:47Z — D4-verify-merged-2026-09-14T02 — claimed by driver (agent cursor)
-- 2026-09-14T02:12:18Z — D4-verify-merged-2026-09-14T02 — done — cursor produced 1116 words at artifacts/verification/D4-verify-merged-2026-09-14T02.md in 250s
+- 2026-09-14T06:49:50Z — refill — Manager-Database: open=2 <= 2 → audit queued
+- 2026-09-14T06:49:55Z — D-audit-Counter_Risk--2026-09-14T06-49-49Z — route — router picked codex from ['codex']
+- 2026-09-14T06:49:55Z — D-audit-Counter_Risk--2026-09-14T06-49-49Z — claimed by driver (agent codex)
+- 2026-09-14T07:03:08Z — D-audit-Counter_Risk--2026-09-14T06-49-49Z — fail — offload to codex exited 1; retained artifact is not proof of success
+- 2026-09-14T07:49:04Z — D-audit-Counter_Risk--2026-09-14T06-49-49Z — route — router picked codex from ['codex']
+- 2026-09-14T07:49:04Z — D-audit-Counter_Risk--2026-09-14T06-49-49Z — claimed by driver (agent codex)
+- 2026-09-14T07:51:51Z — D-audit-Counter_Risk--2026-09-14T06-49-49Z — fail — offload to codex exited 1; retained artifact is not proof of success
+- 2026-09-14T08:06:53Z — D-audit-Counter_Risk--2026-09-14T06-49-49Z — route — router picked codex from ['codex']
+- 2026-09-14T08:06:53Z — D-audit-Counter_Risk--2026-09-14T06-49-49Z — claimed by driver (agent codex)
+- 2026-09-14T08:11:36Z — D-audit-Counter_Risk--2026-09-14T06-49-49Z — fail — offload to codex exited 1; retained artifact is not proof of success
+- 2026-09-14T08:12:36Z — D-audit-Manager-Database--2026-09-14T06-49-50Z — route — router picked codex from ['codex']
+- 2026-09-14T08:12:36Z — D-audit-Manager-Database--2026-09-14T06-49-50Z — claimed by codex (agent codex)
 
 ## Questions
 
