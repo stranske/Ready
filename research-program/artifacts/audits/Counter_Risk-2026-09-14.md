@@ -36,3 +36,11 @@ The required Dropbox `Code/Audits/Counter_Risk/` and `Code/Audits/AUDIT_LEDGER.m
 ## Attempt 2 reconciliation
 
 At `2026-09-14T07:51:03Z`, `git pull --ff-only` confirmed that the clone and `origin/main` remain at `7c01963cb4173128c806347e622ed43a08fdcf4a`. Live GitHub reads confirmed #1061–#1068 are open with the intended six issue-format sections and only `bug` plus the applicable repository priority label. The eight corresponding Agents Issue Format Guard runs all have `conclusion=success`. The required eight intake rows remain present. A read-only check of the Dropbox ledger and repo index found no #1061–#1068 or 2026-09-14 Counter_Risk entry, so the durable-record exception remains real rather than resolved.
+
+## Attempt 3 reconciliation
+
+At `2026-09-14T08:06Z`, a fresh `git pull --ff-only` again left the clone and `origin/main` at `7c01963cb4173128c806347e622ed43a08fdcf4a`; pre-existing untracked `dossier-out/` and `uv.lock` were not touched. Public GitHub API reads confirmed that #1061–#1068 remain open, have all six required issue-format headings, and retain exactly `bug` plus `priority:high` (P1) or `priority:normal` (P2). The final matching format-guard runs are successful: 34815783575, 34815783690, 34815785952, 34815787152, 34815788415, 34815790525, 34815790506, and 34815792439. All eight intake URLs remain in the required sink.
+
+The original proof scripts were rerun at that exact main tip. They reproduced all eight behavioral claims: alias-limit bypass, split-row concentration understatement, malformed XLSX total coercion to zero, delta omission at the final chat transport, skipped-link status skew, silent PDF suppression, optional-input hash omission, and export at 23 slides before the final deck reaches 24. The only comparison difference between issued bodies and their pre-filing drafts is intentional filing normalization (the current-main SHA and filed-status note); each remote body still matches the verified finding and format contract.
+
+The durable-record exception is still the only unmet directive. The Dropbox `Code/Audits` record remains read-only under this sandbox, so this run deliberately did not claim that it was updated.
