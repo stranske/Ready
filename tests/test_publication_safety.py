@@ -384,6 +384,39 @@ def test_unreadable_file_fails_closed(tmp_path, monkeypatch, capsys):
     assert "ERROR: report.md: cannot read file" in output
 
 
+@pytest.mark.parametrize("explicit", [False, True])
+@pytest.mark.parametrize("read_method", ["read_text", "read_bytes"])
+def test_policy_read_failure_preserves_findings(
+    tmp_path, monkeypatch, capsys, explicit, read_method
+):
+    scanner = load_scanner()
+    (tmp_path / "report.md").write_text("Public introduction\nclones/example\n")
+    policy = tmp_path.parent / "reviewed-policy" if explicit else allowlist_for(tmp_path)
+    policy.write_text("# No exceptions.\n")
+    original_read = getattr(Path, read_method)
+
+    def fail_policy_read(self, *args, **kwargs):
+        if self == policy:
+            raise PermissionError("PRIVATE_ERROR_SENTINEL")
+        return original_read(self, *args, **kwargs)
+
+    monkeypatch.setattr(Path, read_method, fail_policy_read)
+
+    result = scanner.scan(tmp_path, policy if explicit else None)
+    captured = capsys.readouterr()
+
+    assert result == 1
+    error = "cannot read UTF-8 allowlist" if read_method == "read_text" else "cannot read file"
+    assert f"ERROR: .publication-allow: {error}" in captured.out
+    assert "report.md:2: scratch-path (1 hit(s))" in captured.out
+    assert captured.out.splitlines()[-1] == (
+        "files_scanned=1 home-path=0 credential=0 private-key=0 "
+        "scratch-path=1 internal-host=0 allowed_hits=0 errors=1"
+    )
+    assert "PRIVATE_ERROR_SENTINEL" not in captured.out + captured.err
+    assert not captured.err
+
+
 @pytest.mark.parametrize("suffix", [".json", ".jsonl"])
 @pytest.mark.parametrize(
     "encoded,rule",
