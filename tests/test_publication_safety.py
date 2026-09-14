@@ -423,6 +423,27 @@ def test_json_literal_escape_is_not_decoded_twice(tmp_path):
 
 
 @pytest.mark.parametrize("suffix", [".json", ".jsonl"])
+@pytest.mark.parametrize("malformed", [r'"bad\q"', '"unfinished'])
+def test_allowlisted_findings_do_not_suppress_structured_errors(tmp_path, suffix, malformed):
+    path = tmp_path / ("report" + suffix)
+    path.write_text(r'{"example": "clones\/SYNTHETIC_ONLY", "invalid": ' + malformed + "\n")
+    allowlist_for(tmp_path).write_text(
+        f"{path.name}:scratch-path # Reviewed synthetic path example.\n"
+    )
+
+    result = run_guard(tmp_path)
+
+    assert result.returncode == 1
+    assert f"ERROR: {path.name}:1: invalid structured string" in result.stdout
+    assert result.stdout.splitlines()[-1] == (
+        "files_scanned=1 home-path=0 credential=0 private-key=0 "
+        "scratch-path=0 internal-host=0 allowed_hits=1 errors=1"
+    )
+    assert "SYNTHETIC_ONLY" not in result.stdout + result.stderr
+    assert not result.stderr
+
+
+@pytest.mark.parametrize("suffix", [".json", ".jsonl"])
 def test_invalid_json_string_does_not_hide_other_findings(tmp_path, suffix):
     path = tmp_path / ("report" + suffix)
     path.write_text(
