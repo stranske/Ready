@@ -92,6 +92,41 @@ def test_all_hits_and_rule_totals_are_reported(tmp_path):
         assert expected in result.stdout
 
 
+def test_all_rules_on_one_line_are_reported_even_with_an_exception(tmp_path):
+    (tmp_path / "report.txt").write_text(
+        "Public introduction\n"
+        "/Users/example clones/example localhost:8000 "
+        "BEGIN RSA PRIVATE KEY ghp_SYNTHETIC\n"
+    )
+    expected_rules = ("home-path", "credential", "private-key", "scratch-path", "internal-host")
+
+    result = run_guard(tmp_path)
+
+    assert result.returncode == 1
+    for rule in expected_rules:
+        assert result.stdout.count(f"report.txt:2: {rule} (1 hit(s))") == 1
+    assert result.stdout.splitlines()[-1] == (
+        "files_scanned=1 home-path=1 credential=1 private-key=1 "
+        "scratch-path=1 internal-host=1 allowed_hits=0 errors=0"
+    )
+
+    allowlist_for(tmp_path).write_text(
+        "report.txt:home-path # Reviewed synthetic documentation example.\n"
+    )
+    result = run_guard(tmp_path)
+
+    assert result.returncode == 1
+    assert "report.txt:2: home-path" not in result.stdout
+    for rule in expected_rules[1:]:
+        assert result.stdout.count(f"report.txt:2: {rule} (1 hit(s))") == 1
+    assert result.stdout.splitlines()[-1] == (
+        "files_scanned=1 home-path=0 credential=1 private-key=1 "
+        "scratch-path=1 internal-host=1 allowed_hits=1 errors=0"
+    )
+    assert "SYNTHETIC" not in result.stdout + result.stderr
+    assert not result.stderr
+
+
 def test_clean_tree_and_zeros(tmp_path):
     (tmp_path / "report.md").write_text("Public research report.\n")
     result = run_guard(tmp_path)
