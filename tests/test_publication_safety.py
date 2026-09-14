@@ -366,22 +366,34 @@ def test_unreadable_directory_fails_closed(tmp_path, monkeypatch, capsys):
     assert "ERROR: research tree contains an unreadable directory" in output
 
 
-def test_unreadable_file_fails_closed(tmp_path, monkeypatch, capsys):
+@pytest.mark.parametrize("failed_name", ["a-unreadable.md", "z-unreadable.md"])
+def test_unreadable_file_preserves_other_findings(tmp_path, monkeypatch, capsys, failed_name):
     scanner = load_scanner()
-    (tmp_path / "report.md").write_text("Public content\n")
+    (tmp_path / failed_name).write_text("Public content\n")
+    (tmp_path / "report.md").write_text("Public introduction\nclones/PRIVATE_SENTINEL\n")
+    (tmp_path / "second.md").write_text("localhost:8000 localhost:9000\n")
     real_read_bytes = Path.read_bytes
 
     def read_bytes_with_error(self):
-        if self.name == "report.md":
-            raise OSError(13, "Permission denied")
+        if self.name == failed_name:
+            raise OSError(13, "PRIVATE_ERROR_SENTINEL")
         return real_read_bytes(self)
 
     monkeypatch.setattr(Path, "read_bytes", read_bytes_with_error)
-    allowlist = tmp_path / "allowlist"
-    result = scanner.scan(tmp_path, allowlist)
-    output = capsys.readouterr().out
+    result = scanner.scan(tmp_path)
+    captured = capsys.readouterr()
+    output = captured.out
     assert result == 1
-    assert "ERROR: report.md: cannot read file" in output
+    assert f"ERROR: {failed_name}: cannot read file" in output
+    assert "report.md:2: scratch-path (1 hit(s))" in output
+    assert "second.md:1: internal-host (2 hit(s))" in output
+    assert output.splitlines()[-1] == (
+        "files_scanned=2 home-path=0 credential=0 private-key=0 "
+        "scratch-path=1 internal-host=2 allowed_hits=0 errors=1"
+    )
+    assert "PRIVATE_SENTINEL" not in output + captured.err
+    assert "PRIVATE_ERROR_SENTINEL" not in output + captured.err
+    assert not captured.err
 
 
 @pytest.mark.parametrize("explicit", [False, True])
