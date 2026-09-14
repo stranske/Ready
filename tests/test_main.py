@@ -31,3 +31,27 @@ def test_add_negative() -> None:
     """Add should handle negative numbers."""
     assert add(-5, -3) == -8
     assert add(-10, 5) == -5
+
+
+def test_local_fallback_embedding_preserves_empty_string_positions() -> None:
+    """Empty and whitespace-only inputs keep index-aligned vectors."""
+    from tools.embedding_provider import LocalFallbackEmbeddingProvider
+
+    provider = LocalFallbackEmbeddingProvider()
+    response = provider.embed(["a", "", "b", "   "])
+
+    assert len(response.vectors) == 4
+    assert all(len(vector) == response.metadata.dimensions for vector in response.vectors)
+    assert response.vectors[0] != response.vectors[2]
+    assert response.vectors[1] == [0.0] * response.metadata.dimensions
+    assert response.vectors[3] == [0.0] * response.metadata.dimensions
+
+
+def test_local_fallback_embedding_all_empty_inputs_stay_aligned() -> None:
+    from tools.embedding_provider import LocalFallbackEmbeddingProvider
+
+    provider = LocalFallbackEmbeddingProvider()
+    response = provider.embed(["", " "])
+
+    assert len(response.vectors) == 2
+    assert all(vector == [0.0] * response.metadata.dimensions for vector in response.vectors)
