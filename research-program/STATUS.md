@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-14T01:51:31Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-14T02:07:47Z)
 
-Units: 108 — done 105, failed 3
+Units: 109 — claimed 1, done 105, failed 3
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 Claude conservation: off (weekly window available)
@@ -116,12 +116,10 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D4-verify-merged-2026-09-11T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
 | D4-verify-merged-2026-09-12T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
 | D4-verify-merged-2026-09-13T01 | D | D | failed | cursor |  | Verify merged PRs against their issues' acceptance criteria |
+| D4-verify-merged-2026-09-14T02 | D | D | claimed | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
 
 ## Last checkpoints
 
-- 2026-09-13T19:31:10Z — D-audit-Counter_Risk--2026-09-13T18-41-41Z — done — Eight verified Counter_Risk defects documented with reproducible evidence and validated issue drafts; Windows/browser coverage remains explicitly unverified.
-- 2026-09-13T20:15:37Z — unblock — enqueued D3-unblock-sweep-2026-09-13T20
-- 2026-09-13T20:15:37Z — D3-unblock-sweep-2026-09-13T20 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-13T20:15:37Z — D3-unblock-sweep-2026-09-13T20 — claimed by driver (agent cursor)
 - 2026-09-13T20:18:40Z — D3-unblock-sweep-2026-09-13T20 — done — cursor produced 510 words at artifacts/sweeps/D3-unblock-sweep-2026-09-13T20.md in 178s
 - 2026-09-13T20:23:28Z — D3-unblock-sweep-pass2-20260913T2023 — route — router picked cursor from ['codex', 'cursor']
@@ -131,6 +129,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-14T01:00:15Z — D3-unblock-sweep-2026-09-14T01 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-14T01:00:15Z — D3-unblock-sweep-2026-09-14T01 — claimed by driver (agent cursor)
 - 2026-09-14T01:05:24Z — D3-unblock-sweep-2026-09-14T01 — done — cursor produced 539 words at artifacts/sweeps/D3-unblock-sweep-2026-09-14T01.md in 288s
+- 2026-09-14T02:07:46Z — verify — enqueued D4-verify-merged-2026-09-14T02
+- 2026-09-14T02:07:47Z — D4-verify-merged-2026-09-14T02 — route — router picked cursor from ['codex', 'cursor']
+- 2026-09-14T02:07:47Z — D4-verify-merged-2026-09-14T02 — claimed by driver (agent cursor)
 
 ## Questions
 
