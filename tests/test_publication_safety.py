@@ -373,6 +373,28 @@ def test_json_literal_escape_is_not_decoded_twice(tmp_path):
     assert run_guard(tmp_path).returncode == 0
 
 
+@pytest.mark.parametrize("suffix", [".json", ".jsonl"])
+def test_invalid_json_string_does_not_hide_other_findings(tmp_path, suffix):
+    path = tmp_path / ("report" + suffix)
+    path.write_text(
+        "\n"
+        r'{"before": "clones\u002fexample", "invalid": "\q", '
+        r'"after": "localhost\u003a8000", "raw": "scratchpad/example"}'
+        "\n"
+    )
+
+    result = run_guard(tmp_path)
+
+    assert result.returncode == 1
+    assert f"ERROR: {path.name}:2: invalid structured string" in result.stdout
+    assert f"{path.name}:2: scratch-path (2 hit(s))" in result.stdout
+    assert f"{path.name}:2: internal-host (1 hit(s))" in result.stdout
+    assert "files_scanned=1" in result.stdout
+    assert "errors=1" in result.stdout
+    assert "example" not in result.stdout + result.stderr
+    assert not result.stderr
+
+
 @pytest.mark.parametrize(
     "label",
     [

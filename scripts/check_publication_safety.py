@@ -95,19 +95,25 @@ def scan_allowlist_bytes(
             print(f".publication-allow:{number}: {rule} ({hits} hit(s))")
 
 
-def line_hits(line: bytes, structured: bool) -> Counter[str]:
+def line_hits(line: bytes, structured: bool) -> tuple[Counter[str], bool]:
     counts = Counter({rule: len(pattern.findall(line)) for rule, pattern in RULES.items()})
+    invalid_string = False
     if structured:
         for match in JSON_STRING.finditer(line):
             raw = match.group()
             if b"\\" not in raw:
                 continue
             # Decode once, including keys; a literal backslash is not a second escape.
-            value = json.loads(raw).encode("utf-8", errors="surrogatepass")
+            try:
+                value = json.loads(raw).encode("utf-8", errors="surrogatepass")
+            except (ValueError, UnicodeError):
+                # Retain earlier findings and inspect the remaining strings.
+                invalid_string = True
+                continue
             for rule, pattern in RULES.items():
                 # Raw findings already counted above must not be counted twice.
                 counts[rule] += max(0, len(pattern.findall(value)) - len(pattern.findall(raw)))
-    return counts
+    return counts, invalid_string
 
 
 def scan(root: Path, allowlist: Path | None = None) -> int:
@@ -154,11 +160,11 @@ def scan(root: Path, allowlist: Path | None = None) -> int:
                     continue
                 files_scanned += 1
                 for number, line in enumerate(content.splitlines(), 1):
-                    try:
-                        hits_by_rule = line_hits(line, path.suffix.lower() in {".json", ".jsonl"})
-                    except (ValueError, UnicodeError):
+                    hits_by_rule, invalid_string = line_hits(
+                        line, path.suffix.lower() in {".json", ".jsonl"}
+                    )
+                    if invalid_string:
                         errors.append(f"{name}:{number}: invalid structured string")
-                        hits_by_rule = line_hits(line, False)
                     for rule, hits in hits_by_rule.items():
                         if not hits:
                             continue
