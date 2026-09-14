@@ -197,6 +197,28 @@ def test_incomplete_private_key_fails_before_any_write(tmp_path, monkeypatch, su
 
 @pytest.mark.parametrize("suffix", [".json", ".jsonl"])
 @pytest.mark.parametrize(
+    "number",
+    ["NaN", "Infinity", "-Infinity", "1e400"],
+)
+def test_non_finite_json_numbers_fail_before_any_write(tmp_path, monkeypatch, suffix, number):
+    first = tmp_path / "a.txt"
+    first.write_text("clones/example")
+    invalid = tmp_path / ("z" + suffix)
+    payload = f'{{"path": "clones/example", "value": {number}}}'
+    if suffix == ".jsonl":
+        payload = '{"path": "clones/earlier-record"}\n' + payload + "\n"
+    invalid.write_text(payload)
+    monkeypatch.setattr(
+        Path, "walk", lambda self, **kwargs: iter([(self, [], [first.name, invalid.name])])
+    )
+    with pytest.raises(ValueError, match="structured data"):
+        prepare.prepare_copy(tmp_path)
+    assert first.read_text() == "clones/example"
+    assert invalid.read_text() == payload
+
+
+@pytest.mark.parametrize("suffix", [".json", ".jsonl"])
+@pytest.mark.parametrize(
     "content",
     [
         '{"duplicate": 1, "duplicate": 2, "path": "clones/example"}',

@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import re
 from collections import Counter
 from pathlib import Path
@@ -68,6 +69,8 @@ def unique_json_object(pairs: list[tuple[str, object]]) -> dict[str, object]:
 
 
 def redact_value(value: object, counts: Counter[str]) -> object:
+    if isinstance(value, float) and not math.isfinite(value):
+        raise ValueError("non-finite JSON number")
     if isinstance(value, str):
         return redact_text(value, counts)
     if isinstance(value, list):
