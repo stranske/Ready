@@ -12,6 +12,8 @@ import re
 from collections import Counter
 from pathlib import Path
 
+PRIVATE_KEY_HEADER = re.compile(r"BEGIN (?:RSA|OPENSSH) PRIVATE KEY")
+
 REPLACEMENTS = (
     (
         "private-key",
@@ -20,7 +22,6 @@ REPLACEMENTS = (
         ),
         "[REDACTED_PRIVATE_KEY]",
     ),
-    ("private-key", re.compile(r"BEGIN (?:RSA|OPENSSH) PRIVATE KEY"), "[PRIVATE_KEY_HEADER]"),
     (
         "credential",
         re.compile(r"(?:sk-ant-|sk-proj-|ghp_|github_pat_|lsv2_|crsr_|AIza)[A-Za-z0-9_-]*"),
@@ -51,7 +52,19 @@ def redact_text(text: str, counts: Counter[str]) -> str:
     for rule, pattern, replacement in REPLACEMENTS:
         text, count = pattern.subn(replacement, text)
         counts[rule] += count
+    if PRIVATE_KEY_HEADER.search(text):
+        raise ValueError("incomplete private-key block cannot be safely redacted")
     return text
+
+
+def unique_json_object(pairs: list[tuple[str, object]]) -> dict[str, object]:
+    """Reject ambiguous input before JSON decoding can discard earlier values."""
+    result: dict[str, object] = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError("duplicate JSON object key")
+        result[key] = value
+    return result
 
 
 def redact_value(value: object, counts: Counter[str]) -> object:
@@ -72,12 +85,13 @@ def redact_value(value: object, counts: Counter[str]) -> object:
 
 def needs_redaction(text: str, structured: bool) -> bool:
     """Inspect decoded JSON strings before the clean-file shortcut, including keys."""
-    if any(pattern.search(text) for _, pattern, _ in REPLACEMENTS):
+    patterns = [PRIVATE_KEY_HEADER, *(pattern for _, pattern, _ in REPLACEMENTS)]
+    if any(pattern.search(text) for pattern in patterns):
         return True
     if structured:
         for match in re.finditer(r'"(?:[^"\\]|\\.)*"', text):
             value = json.loads(match.group())
-            if any(pattern.search(value) for _, pattern, _ in REPLACEMENTS):
+            if any(pattern.search(value) for pattern in patterns):
                 return True
     return False
 
@@ -120,14 +134,20 @@ def prepare_copy(root: Path) -> Counter[str]:
                             "text": redact_text(text, file_counts),
                         }
                     else:
-                        value = redact_value(json.loads(text), file_counts)
+                        value = redact_value(
+                            json.loads(text, object_pairs_hook=unique_json_object), file_counts
+                        )
                     replacement = json.dumps(value, ensure_ascii=False, indent=2) + "\n"
                 elif path.suffix.lower() == ".jsonl":
                     replacement = (
                         "\n".join(
                             (
                                 json.dumps(
-                                    redact_value(json.loads(line), file_counts), ensure_ascii=False
+                                    redact_value(
+                                        json.loads(line, object_pairs_hook=unique_json_object),
+                                        file_counts,
+                                    ),
+                                    ensure_ascii=False,
                                 )
                                 if line.strip()
                                 else ""

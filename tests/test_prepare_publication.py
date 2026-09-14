@@ -173,3 +173,49 @@ def test_clean_historical_process_capture_is_preserved(tmp_path):
     path.write_bytes(original)
     assert prepare.prepare_copy(tmp_path)["files_redacted"] == 0
     assert path.read_bytes() == original
+
+
+@pytest.mark.parametrize("suffix", [".txt", ".json", ".jsonl"])
+@pytest.mark.parametrize("kind", ["RSA", "OPENSSH"])
+@pytest.mark.parametrize("footer", ["", "\n-----END OTHER PRIVATE KEY-----"])
+def test_incomplete_private_key_fails_before_any_write(tmp_path, monkeypatch, suffix, kind, footer):
+    content = f"-----BEGIN {kind} PRIVATE KEY-----\nSYNTHETIC_KEY_MATERIAL{footer}"
+    if suffix != ".txt":
+        content = json.dumps({"key": content})
+    first = tmp_path / "a.txt"
+    first.write_text("clones/example")
+    invalid = tmp_path / ("z" + suffix)
+    invalid.write_text(content)
+    monkeypatch.setattr(
+        Path, "walk", lambda self, **kwargs: iter([(self, [], [first.name, invalid.name])])
+    )
+    with pytest.raises(ValueError):
+        prepare.prepare_copy(tmp_path)
+    assert first.read_text() == "clones/example"
+    assert invalid.read_text() == content
+
+
+@pytest.mark.parametrize("suffix", [".json", ".jsonl"])
+@pytest.mark.parametrize(
+    "content",
+    [
+        '{"duplicate": 1, "duplicate": 2, "path": "clones/example"}',
+        r'{"duplicate": "ghp\u005fSYNTHETIC", "duplicate": "public"}',
+        '{"nested": [{"duplicate": 1, "duplicate": 2}], "path": "clones/example"}',
+        r'{"duplicate": 1, "dupli\u0063ate": 2, "path": "clones/example"}',
+    ],
+)
+def test_duplicate_json_keys_fail_before_any_write(tmp_path, monkeypatch, suffix, content):
+    first = tmp_path / "a.txt"
+    first.write_text("clones/example")
+    invalid = tmp_path / ("z" + suffix)
+    if suffix == ".jsonl":
+        content = '{"path": "clones/earlier-record"}\n' + content + "\n"
+    invalid.write_text(content)
+    monkeypatch.setattr(
+        Path, "walk", lambda self, **kwargs: iter([(self, [], [first.name, invalid.name])])
+    )
+    with pytest.raises(ValueError, match="structured data"):
+        prepare.prepare_copy(tmp_path)
+    assert first.read_text() == "clones/example"
+    assert invalid.read_text() == content
