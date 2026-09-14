@@ -31,3 +31,10 @@
 - Total PRs verified: 9
 - OUT: [LOCAL_HOME]/.codex/automations/research-program/artifacts/verification/D4-verify-merged-2026-09-12T01.md
 - Checkpoint: [LOCAL_HOME]/.codex/automations/research-program/artifacts/verification/D4-verify-merged-2026-09-12T01.CHECKPOINT.md
+
+## Unit D4-verify-merged-2026-09-14T02 Completed
+- Total PRs verified: 20
+- Verdicts: 19 VERIFIED, 1 PARTIAL, 0 NOT IMPLEMENTED
+- Follow-ups filed: 0
+- OUT: [LOCAL_HOME]/.codex/automations/research-program/artifacts/verification/D4-verify-merged-2026-09-14T02.md
+- Checkpoint: [LOCAL_HOME]/.codex/automations/research-program/artifacts/verification/D4-verify-merged-2026-09-14T02.CHECKPOINT.md
