@@ -182,6 +182,30 @@ def test_allowlist_itself_is_scanned(tmp_path):
     assert ".publication-allow:1: credential" in result.stdout
 
 
+@pytest.mark.parametrize("explicit", [False, True])
+def test_invalid_utf8_policy_fails_and_preserves_all_findings(tmp_path, explicit):
+    (tmp_path / "report.md").write_text("Public introduction\nclones/example\n")
+    policy = tmp_path.parent / "reviewed-policy" if explicit else allowlist_for(tmp_path)
+    policy.write_bytes(
+        b"report.md:scratch-path # Reviewed example.\n"
+        b"# Invalid UTF-8: \xff\n"
+        b"# scratchpad/POLICY_SENTINEL\n"
+    )
+
+    result = run_guard(tmp_path, policy if explicit else None)
+
+    assert result.returncode == 1
+    assert "ERROR: .publication-allow: cannot read UTF-8 allowlist" in result.stdout
+    assert "report.md:2: scratch-path (1 hit(s))" in result.stdout
+    assert ".publication-allow:3: scratch-path (1 hit(s))" in result.stdout
+    assert "files_scanned=1" in result.stdout
+    assert "scratch-path=2" in result.stdout
+    assert "allowed_hits=0" in result.stdout
+    assert "errors=1" in result.stdout
+    assert "POLICY_SENTINEL" not in result.stdout + result.stderr
+    assert not result.stderr
+
+
 @pytest.mark.parametrize("has_hit", [False, True])
 def test_missing_explicit_allowlist_fails_and_continues_scan(tmp_path, has_hit):
     content = "clones/example\n" if has_hit else "Public content\n"
