@@ -1,0 +1,109 @@
+- log
+- log
+- list:
+  - link "Dashboard":
+    - /url: http://127.0.0.1:8537/
+    - generic: 📈
+    - paragraph: Dashboard
+  - link "Daily Report":
+    - /url: http://127.0.0.1:8537/daily-report
+    - generic: 🗞️
+    - paragraph: Daily Report
+  - link "Search":
+    - /url: http://127.0.0.1:8537/search
+    - generic: 🔎
+    - paragraph: Search
+  - link "Upload":
+    - /url: http://127.0.0.1:8537/upload
+    - generic: 📝
+    - paragraph: Upload
+  - link "🔬 Research":
+    - /url: http://127.0.0.1:8537/research
+    - generic: 🔬
+    - paragraph: 🔬 Research
+- heading "Navigation" [level=3]
+- generic: Alerts
+- generic: "0"
+- paragraph: Unacknowledged Alerts
+- paragraph: "0"
+- banner:
+  - button "Deploy":
+    - generic: Deploy
+  - button "Main menu":
+- heading "Holdings Delta" [level=2]:
+  - text: Holdings Delta
+  - link "Link to heading":
+    - /url: "#holdings-delta"
+- paragraph: Manager
+- combobox "Manager" [active]: Elliott Investment Management L.P.
+- button "Open":
+- tablist:
+  - tab "Portfolio" [selected]:
+    - paragraph: Portfolio
+  - tab "Activism":
+    - paragraph: Activism
+  - tab "Conviction & Signals":
+    - paragraph: Conviction & Signals
+- tabpanel "Portfolio":
+  - generic "keyboard_arrow_down Filing Timeline":
+    - generic: keyboard_arrow_down
+    - paragraph: Filing Timeline
+  - button "Show data":
+  - button "Download as PNG":
+  - button "Copy Vega-Lite spec":
+  - button "Fullscreen":
+  - generic "Vega visualization":
+  - button "Show/hide columns":
+  - button "Download as CSV":
+  - button "Search":
+  - button "Fullscreen":
+  - generic "keyboard_arrow_down Latest Holdings Snapshot":
+    - generic: keyboard_arrow_down
+    - paragraph: Latest Holdings Snapshot
+  - paragraph: Total Positions
+  - paragraph: "2"
+  - paragraph: Total AUM (USD)
+  - paragraph: $6,400,000
+  - button "Show/hide columns":
+  - button "Download as CSV":
+  - button "Search":
+  - button "Fullscreen":
+  - generic "keyboard_arrow_down Top Deltas":
+    - generic: keyboard_arrow_down
+    - paragraph: Top Deltas
+  - button "Show data":
+  - button "Download as PNG":
+  - button "Copy Vega-Lite spec":
+  - button "Fullscreen":
+  - generic "Vega visualization":
+  - button "Show/hide columns":
+  - button "Download as CSV":
+  - button "Search":
+  - button "Fullscreen":
+  - generic "keyboard_arrow_down News":
+    - generic: keyboard_arrow_down
+    - paragraph: News
+  - list:
+    - text: 2026-03-15 10:00 |
+    - link "Elliott synthetic portfolio briefing ready":
+      - /url: https://example.invalid/synthetic-briefing
+    - code: readiness
+    - code: demo
+  - generic "keyboard_arrow_down QC Flags":
+    - generic: keyboard_arrow_down
+    - paragraph: QC Flags
+  - paragraph: Last Filing Date
+  - paragraph: 2026-03-15
+  - paragraph: +63d past 120d SLA
+  - paragraph: Holdings in Latest Filing
+  - paragraph: "2"
+  - paragraph: "-0 empty filing warnings"
+  - paragraph: News Items (30d)
+  - paragraph: "0"
+  - paragraph: +1 no news in last 30d
+  - paragraph: Data Freshness (ETL)
+  - paragraph: 2026-09-14 08:17 UTC
+  - paragraph: "-23h to stale"
+- generic "keyboard_arrow_right Historical Filing Trend":
+  - generic: keyboard_arrow_right
+  - paragraph: Historical Filing Trend

@@ -1,0 +1,261 @@
+[
+  {
+    "body": "01-restore-configured-login-with-the-pinned-authenticator-api.md",
+    "path": "ui/__init__.py",
+    "line": 40,
+    "valid": true,
+    "context": "39:     usernames = [username]\n40:     passwords = stauth.Hasher([password]).generate()\n41: \n42:     authenticator = stauth.Authenticate("
+  },
+  {
+    "body": "01-restore-configured-login-with-the-pinned-authenticator-api.md",
+    "path": "ui/__init__.py",
+    "line": 42,
+    "valid": true,
+    "context": "41: \n42:     authenticator = stauth.Authenticate(\n43:         {\n44:             \"usernames\": usernames,"
+  },
+  {
+    "body": "01-restore-configured-login-with-the-pinned-authenticator-api.md",
+    "path": "ui/__init__.py",
+    "line": 52,
+    "valid": true,
+    "context": "51:     )\n52:     name, auth_status, _ = authenticator.login(\"Login\", \"main\")\n53:     if auth_status:\n54:         authenticator.logout(\"Logout\", \"sidebar\")"
+  },
+  {
+    "body": "01-restore-configured-login-with-the-pinned-authenticator-api.md",
+    "path": "requirements.lock",
+    "line": 583,
+    "valid": true,
+    "context": "582:     #   streamlit-authenticator\n583: streamlit-authenticator==0.4.2\n584:     # via manager-database (pyproject.toml)\n585: tabulate==0.10.0"
+  },
+  {
+    "body": "01-restore-configured-login-with-the-pinned-authenticator-api.md",
+    "path": "tests/test_ui_auth.py",
+    "line": 28,
+    "valid": true,
+    "context": "27:     def __init__(self, _passwords):\n28:         pass\n29: \n30:     def generate(self):"
+  },
+  {
+    "body": "02-align-point-in-time-same-day-amendment-authority-with-holdings-diffs.md",
+    "path": "etl/point_in_time.py",
+    "line": 101,
+    "valid": true,
+    "context": "100:     # per period in Python so SQLite/Postgres stay aligned without dialect SQL.\n101:     filing_sql = (\n102:         f\"SELECT f.filing_id, f.filed_date, {period_expr} AS event_time \"\n103:         f\"FROM filings f \""
+  },
+  {
+    "body": "02-align-point-in-time-same-day-amendment-authority-with-holdings-diffs.md",
+    "path": "etl/point_in_time.py",
+    "line": 135,
+    "valid": true,
+    "context": "134:         prev_fid = int(prev[0])\n135:         if filed_key > prev_filed or (filed_key == prev_filed and int(filing_id) > prev_fid):\n136:             latest_by_period[period_key] = (filing_id, filed_key, event_time)\n137: "
+  },
+  {
+    "body": "02-align-point-in-time-same-day-amendment-authority-with-holdings-diffs.md",
+    "path": "diff_holdings.py",
+    "line": 62,
+    "valid": true,
+    "context": "61:             continue\n62:         existing_rank = (\n63:             _sort_key(existing[1]),\n64:             _is_amendment(existing[2]),"
+  },
+  {
+    "body": "02-align-point-in-time-same-day-amendment-authority-with-holdings-diffs.md",
+    "path": "etl/backtest_flow.py",
+    "line": 247,
+    "valid": true,
+    "context": "246:     \"\"\"Holdings knowable by the end of ``as_of``, with the look-ahead guard reapplied.\"\"\"\n247:     rows = holdings_as_of(conn, manager_id, decision_cutoff(as_of))\n248:     return enforce_no_lookahead(rows, as_of)\n249: "
+  },
+  {
+    "body": "03-preserve-manager-associations-when-document-content-is-deduplicated.md",
+    "path": "schema.sql",
+    "line": 395,
+    "valid": true,
+    "context": "394:     doc_id bigserial PRIMARY KEY,\n395:     manager_id bigint REFERENCES managers(manager_id),\n396:     kind text NOT NULL DEFAULT 'note',\n397:     filename text,"
+  },
+  {
+    "body": "03-preserve-manager-associations-when-document-content-is-deduplicated.md",
+    "path": "schema.sql",
+    "line": 404,
+    "valid": true,
+    "context": "403: \n404: CREATE UNIQUE INDEX IF NOT EXISTS idx_documents_sha256_unique\n405:     ON documents (sha256)\n406:     WHERE sha256 IS NOT NULL;"
+  },
+  {
+    "body": "03-preserve-manager-associations-when-document-content-is-deduplicated.md",
+    "path": "embeddings.py",
+    "line": 185,
+    "valid": true,
+    "context": "184:         else:\n185:             existing = conn.execute(\n186:                 f\"SELECT {id_col} FROM documents WHERE sha256 = %s\",\n187:                 (sha256,),"
+  },
+  {
+    "body": "03-preserve-manager-associations-when-document-content-is-deduplicated.md",
+    "path": "embeddings.py",
+    "line": 243,
+    "valid": true,
+    "context": "242:         if \"sha256\" in columns:\n243:             existing = conn.execute(\n244:                 f\"SELECT {id_col} FROM documents WHERE sha256 = ?\",\n245:                 (sha256,),"
+  },
+  {
+    "body": "03-preserve-manager-associations-when-document-content-is-deduplicated.md",
+    "path": "embeddings.py",
+    "line": 274,
+    "valid": true,
+    "context": "273:         params: list[Any] = [qvec]\n274:         if manager_id is not None:\n275:             where_clause = \"WHERE d.manager_id = %s\"\n276:             params.append(manager_id)"
+  },
+  {
+    "body": "04-make-scheduled-edgar-indexing-atomic-with-filing-writes.md",
+    "path": "etl/edgar_flow.py",
+    "line": 395,
+    "valid": true,
+    "context": "394:             try:\n395:                 store_document(\n396:                     raw,\n397:                     db_path=DB_PATH,"
+  },
+  {
+    "body": "04-make-scheduled-edgar-indexing-atomic-with-filing-writes.md",
+    "path": "etl/edgar_flow.py",
+    "line": 405,
+    "valid": true,
+    "context": "404: \n405:         parsed_rows = await ADAPTER.parse(raw)\n406:         filing_id = _upsert_filing_legacy(\n407:             conn,"
+  },
+  {
+    "body": "04-make-scheduled-edgar-indexing-atomic-with-filing-writes.md",
+    "path": "embeddings.py",
+    "line": 131,
+    "valid": true,
+    "context": "130:         doc_id = _store_document_on_connection(text, conn, manager_id, kind, filename)\n131:         conn.commit()\n132:         return doc_id\n133:     finally:"
+  },
+  {
+    "body": "04-make-scheduled-edgar-indexing-atomic-with-filing-writes.md",
+    "path": "etl/edgar_flow.py",
+    "line": 449,
+    "valid": true,
+    "context": "448:         resolved_since = since or _latest_filed_date_for_cik(cik) or fallback_since\n449:         return await fetch_and_store(cik, resolved_since)\n450: \n451:     all_rows = await ingest_callable("
+  },
+  {
+    "body": "05-resolve-sqlite-manager-keys-across-dashboard-and-daily-report-queries.md",
+    "path": "scripts/seed_managers.py",
+    "line": 48,
+    "valid": true,
+    "context": "47:         CREATE TABLE IF NOT EXISTS managers (\n48:             id INTEGER PRIMARY KEY,\n49:             name TEXT NOT NULL,\n50:             cik TEXT,"
+  },
+  {
+    "body": "05-resolve-sqlite-manager-keys-across-dashboard-and-daily-report-queries.md",
+    "path": "ui/dashboard.py",
+    "line": 364,
+    "valid": true,
+    "context": "363:         df = pd.read_sql_query(\n364:             \"SELECT manager_id, name FROM managers ORDER BY name\",\n365:             conn,\n366:         )"
+  },
+  {
+    "body": "05-resolve-sqlite-manager-keys-across-dashboard-and-daily-report-queries.md",
+    "path": "ui/dashboard.py",
+    "line": 1023,
+    "valid": true,
+    "context": "1022: \n1023:         managers_df = pd.read_sql_query(\"SELECT manager_id, name FROM managers\", conn)\n1024:         filings_df = pd.read_sql_query(\n1025:             \"SELECT manager_id, filing_id, type, filed_date FROM filings\", conn"
+  },
+  {
+    "body": "05-resolve-sqlite-manager-keys-across-dashboard-and-daily-report-queries.md",
+    "path": "ui/daily_report.py",
+    "line": 32,
+    "valid": true,
+    "context": "31:   FROM daily_diffs d\n32:   JOIN managers m ON m.manager_id = d.manager_id\n33:   WHERE d.report_date = {placeholder}\n34:   ORDER BY manager_name, d.delta_type\"\"\""
+  },
+  {
+    "body": "05-resolve-sqlite-manager-keys-across-dashboard-and-daily-report-queries.md",
+    "path": "ui/daily_report.py",
+    "line": 57,
+    "valid": true,
+    "context": "56:                 \"m.name AS manager_name \"\n57:                 \"FROM news_items n \"\n58:                 \"LEFT JOIN managers m ON m.manager_id = n.manager_id \"\n59:                 \"WHERE date(n.published_at) = ? \""
+  },
+  {
+    "body": "05-resolve-sqlite-manager-keys-across-dashboard-and-daily-report-queries.md",
+    "path": "ui/daily_report.py",
+    "line": 102,
+    "valid": true,
+    "context": "101:             \"JOIN activism_filings af ON af.filing_id = ae.filing_id \"\n102:             \"LEFT JOIN managers m ON m.manager_id = ae.manager_id \"\n103:             f\"WHERE af.filed_date = {placeholder} \"\n104:             \"ORDER BY af.filed_date DESC, ae.detected_at DESC\""
+  },
+  {
+    "body": "06-resolve-sqlite-manager-identity-in-rag-context-extraction.md",
+    "path": "chains/rag_search.py",
+    "line": 87,
+    "valid": true,
+    "context": "86:         try:\n87:             cursor = conn.execute(\"SELECT manager_id, name, cik FROM managers\")\n88:             rows = cursor.fetchall()\n89:             return ["
+  },
+  {
+    "body": "06-resolve-sqlite-manager-identity-in-rag-context-extraction.md",
+    "path": "chains/rag_search.py",
+    "line": 197,
+    "valid": true,
+    "context": "196:                 manager_rows = conn.execute(\n197:                     f\"SELECT manager_id, name, cik FROM managers WHERE manager_id IN ({placeholders})\",\n198:                     tuple(manager_ids),\n199:                 ).fetchall()"
+  },
+  {
+    "body": "06-resolve-sqlite-manager-identity-in-rag-context-extraction.md",
+    "path": "scripts/seed_managers.py",
+    "line": 48,
+    "valid": true,
+    "context": "47:         CREATE TABLE IF NOT EXISTS managers (\n48:             id INTEGER PRIMARY KEY,\n49:             name TEXT NOT NULL,\n50:             cik TEXT,"
+  },
+  {
+    "body": "07-expose-existing-alerts-management-through-the-full-ui-shell.md",
+    "path": "ui/app.py",
+    "line": 9,
+    "valid": true,
+    "context": "8: \n9: from ui import daily_report, dashboard, research, search, upload\n10: \n11: "
+  },
+  {
+    "body": "07-expose-existing-alerts-management-through-the-full-ui-shell.md",
+    "path": "ui/app.py",
+    "line": 14,
+    "valid": true,
+    "context": "13:     \"\"\"Define sidebar navigation and URL paths for all UI pages.\"\"\"\n14:     return [\n15:         st.Page(dashboard.main, title=\"Dashboard\", icon=\"\ud83d\udcc8\", url_path=\"\", default=True),\n16:         st.Page(daily_report.main, title=\"Daily Report\", icon=\"\ud83d\uddde\ufe0f\", url_path=\"daily-report\"),"
+  },
+  {
+    "body": "07-expose-existing-alerts-management-through-the-full-ui-shell.md",
+    "path": "ui/alerts.py",
+    "line": 462,
+    "valid": true,
+    "context": "461: \n462: def main() -> None:\n463:     if not require_login():\n464:         st.stop()"
+  },
+  {
+    "body": "07-expose-existing-alerts-management-through-the-full-ui-shell.md",
+    "path": "ui/dashboard.py",
+    "line": 1208,
+    "valid": true,
+    "context": "1207:     st.sidebar.markdown(\"### Navigation\")\n1208:     st.sidebar.markdown(\n1209:         (\n1210:             \"<div style='display:flex;align-items:center;gap:8px;'>\""
+  },
+  {
+    "body": "08-count-only-persisted-news-identities-in-spike-alerts.md",
+    "path": "etl/news_flow.py",
+    "line": 334,
+    "valid": true,
+    "context": "333: \n334: def inserted_news_items(items: list[dict[str, Any]], conn: Any) -> list[dict[str, Any]]:\n335:     \"\"\"Return only rows that are new to the table before writing this batch.\"\"\"\n336:     ph = get_placeholder(conn)"
+  },
+  {
+    "body": "08-count-only-persisted-news-identities-in-spike-alerts.md",
+    "path": "etl/news_flow.py",
+    "line": 375,
+    "valid": true,
+    "context": "374:             matched_items = match_entities.fn(fetched_items, conn)\n375:             new_items = inserted_news_items(matched_items, conn)\n376:             inserted = persist_news.fn(matched_items, conn)\n377:             total_inserted += inserted"
+  },
+  {
+    "body": "08-count-only-persisted-news-identities-in-spike-alerts.md",
+    "path": "etl/news_flow.py",
+    "line": 302,
+    "valid": true,
+    "context": "301:         f\"VALUES ({ph}, {ph}, {ph}, {ph}, {ph}, {ph}, {ph}, {ph}) \"\n302:         \"ON CONFLICT(url, published_at) DO NOTHING\"\n303:     )\n304: "
+  },
+  {
+    "body": "08-count-only-persisted-news-identities-in-spike-alerts.md",
+    "path": "etl/news_flow.py",
+    "line": 202,
+    "valid": true,
+    "context": "201:         )\n202:         entry[\"news_count\"] += 1\n203:         if item.get(\"headline\"):\n204:             entry[\"headlines\"].append(str(item[\"headline\"]))"
+  },
+  {
+    "body": "09-repair-aws-cli-installation-in-the-scheduled-snapshot-job.md",
+    "path": ".github/workflows/database-snapshot.yml",
+    "line": 23,
+    "valid": true,
+    "context": "22:           sudo apt-get update\n23:           sudo apt-get install -y postgresql-client awscli\n24:       - name: Validate backup contract without production credentials\n25:         env:"
+  },
+  {
+    "body": "09-repair-aws-cli-installation-in-the-scheduled-snapshot-job.md",
+    "path": ".github/workflows/database-snapshot.yml",
+    "line": 28,
+    "valid": true,
+    "context": "27:           DB_SNAPSHOT_S3_URI: s3://manager-db-backups/dry-run\n28:         run: python scripts/db_snapshot_restore.py backup --dry-run\n29:       - name: Run encrypted Postgres snapshot\n30:         if: ${{ env.DB_SNAPSHOT_DATABASE_URL != '' && env.DB_SNAPSHOT_S3_URI != '' }}"
+  }
+]

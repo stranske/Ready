@@ -1,0 +1,59 @@
+{
+  "manager_id": {
+    "manager_rows": 2,
+    "qc_rows": 2,
+    "news_rows": 1,
+    "diff_rows": 2,
+    "rag_catalog": [
+      {
+        "manager_id": 1,
+        "name": "Elliott Investment Management L.P.",
+        "cik": "0001791786"
+      },
+      {
+        "manager_id": 2,
+        "name": "SIR Capital Management L.P.",
+        "cik": "0001434997"
+      }
+    ],
+    "entities": {
+      "manager_ids": [
+        1
+      ],
+      "manager_names": [
+        "Elliott Investment Management L.P."
+      ],
+      "cusips": [],
+      "date_range": null,
+      "keywords": [
+        "What",
+        "does",
+        "Elliott",
+        "Investment",
+        "Management",
+        "hold"
+      ]
+    }
+  },
+  "id": {
+    "manager_rows": 0,
+    "qc_rows": 0,
+    "news_rows": 0,
+    "diff_error": "Execution failed on sql 'SELECT m.name AS manager_name, d.cusip, d.name_of_issuer, d.delta_type,\n         d.shares_prev, d.shares_curr, d.value_prev, d.value_curr\n  FROM daily_diffs d\n  JOIN managers m ON m.manager_id = d.manager_id\n  WHERE d.report_date = ?\n  ORDER BY manager_name, d.delta_type': no such column: m.manager_id",
+    "rag_catalog": [],
+    "entities": {
+      "manager_ids": [],
+      "manager_names": [],
+      "cusips": [],
+      "date_range": null,
+      "keywords": [
+        "What",
+        "does",
+        "Elliott",
+        "Investment",
+        "Management",
+        "hold"
+      ]
+    }
+  }
+}

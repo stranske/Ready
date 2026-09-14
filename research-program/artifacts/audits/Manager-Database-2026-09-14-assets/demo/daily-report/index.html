@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <base href="../" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Manager-Database Offline Demo</title>
+    <link rel="stylesheet" href="./design-system/tokens.css" />
+    <link rel="stylesheet" href="./design-system/components.css" />
+    <script type="module">
+      import { mount } from "./vendor/stlite/browser-0.80.4/build/stlite.js";
+
+      const textFiles = [
+        "wasm_app.py",
+        "embeddings.py",
+        "ui/__init__.py",
+        "ui/dashboard.py",
+        "ui/daily_report.py",
+        "ui/search.py",
+        "ui/upload.py",
+        "api/__init__.py",
+        "api/_compat.py",
+        "api/activism.py",
+        "api/search.py",
+        "api/signals.py",
+        "adapters/__init__.py",
+        "adapters/base.py",
+        "utils/__init__.py",
+        "utils/extract.py"
+      ];
+
+      const files = {};
+      for (const path of textFiles) {
+        files[path] = await fetch(path).then((response) => response.text());
+      }
+      files["manager_demo.sqlite"] = {
+        url: "manager_demo.sqlite",
+        encoding: "binary"
+      };
+
+      await mount(
+        {
+          entrypoint: "wasm_app.py",
+          files,
+          requirements: [],
+          prebuiltPackageNames: ["pandas", "altair", "httpx", "sqlite3"],
+          // Absolute URL anchored to the page: stlite's worker resolves a bare
+          // relative pyodideUrl against its own nested build/assets/ script
+          // location, which 404s. Anchoring to window.location.href keeps the
+          // vendored Pyodide same-origin/local so the demo boots offline.
+          pyodideUrl: new URL("./vendor/pyodide/v0.27.3/full/pyodide.mjs", window.location.href).href,
+          // Absolute URLs anchored to the page: micropip runs inside the worker
+          // and resolves a bare relative wheel URL as a file:// path
+          // ("Cannot download from a non-remote location"), so the vendored
+          // wheels must be passed as same-origin http(s) URLs.
+          wheelUrls: {
+            stliteLib: new URL("./vendor/stlite/browser-0.80.4/build/wheels/stlite_lib-0.1.0-py3-none-any.whl", window.location.href).href,
+            streamlit: new URL("./vendor/stlite/browser-0.80.4/build/wheels/streamlit-1.41.0-cp312-none-any.whl", window.location.href).href
+          },
+          env: {
+            UI_OFFLINE: "1",
+            USE_SIMPLE_EMBED: "1"
+          }
+        },
+        document.getElementById("root")
+      );
+    </script>
+  </head>
+  <body class="ds theme-air">
+    <div id="root"></div>
+  </body>
+</html>

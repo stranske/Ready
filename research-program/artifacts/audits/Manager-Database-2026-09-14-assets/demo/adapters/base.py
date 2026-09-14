@@ -1,0 +1,330 @@
+"""Utility helpers for adapters."""
+
+from __future__ import annotations
+
+import logging
+import os
+import sqlite3
+import time
+from collections.abc import Callable
+from contextlib import asynccontextmanager
+from importlib import import_module
+from types import ModuleType
+from typing import Any, Protocol
+
+from config import load_runtime_config
+
+try:
+    import psycopg as _psycopg
+except ImportError:  # pragma: no cover - optional dependency
+    psycopg: ModuleType | None = None
+else:  # pragma: no cover - imported above when available
+    psycopg = _psycopg
+
+logger = logging.getLogger(__name__)
+DEFAULT_SQLITE_DB_PATH = "manager_database.db"
+
+
+class AdapterProtocol(Protocol):
+    async def list_new_filings(self, *args, **kwargs): ...
+
+    async def download(self, *args, **kwargs): ...
+
+    async def parse(self, *args, **kwargs): ...
+
+
+def _db_retry_config(
+    retries: int | None,
+    retry_delay: float | None,
+) -> tuple[int, float]:
+    if retries is None:
+        retries = int(os.getenv("DB_CONNECT_RETRIES", "3"))
+    if retry_delay is None:
+        retry_delay = float(os.getenv("DB_CONNECT_RETRY_DELAY", "0.5"))
+    return max(0, retries), max(0.0, retry_delay)
+
+
+def connect_db(
+    db_path: str | None = None,
+    *,
+    connect_timeout: float | None = None,
+    retries: int | None = None,
+    retry_delay: float | None = None,
+):
+    """Return a database connection to SQLite or Postgres."""
+    config = load_runtime_config()
+    url = config.db_url
+    retries, retry_delay = _db_retry_config(retries, retry_delay)
+    attempt = 0
+    if url:
+        if not url.startswith("postgres"):
+            raise RuntimeError(
+                "Unsupported DB_URL scheme; unset DB_URL for SQLite or use a "
+                "postgres:// or postgresql:// URL."
+            )
+        if psycopg is None:
+            raise RuntimeError(
+                "DB_URL is configured for Postgres, but psycopg is not installed. "
+                "Install psycopg[binary] or unset DB_URL for SQLite."
+            )
+        # psycopg connections require autocommit for DDL during tests.
+        # Allow health checks to cap connection time.
+        connect_kwargs: dict[str, Any] = {"autocommit": True}
+        if connect_timeout is not None:
+            connect_kwargs["connect_timeout"] = connect_timeout
+        while True:
+            try:
+                return psycopg.connect(url, **connect_kwargs)
+            except psycopg.Error:
+                # Retry a few times to let the database recover before failing.
+                if attempt >= retries:
+                    raise
+                time.sleep(retry_delay * (2**attempt))
+                attempt += 1
+    path = db_path or config.db_path
+    # SQLite timeout prevents long waits on locked files during health checks.
+    sqlite_kwargs: dict[str, Any] = {}
+    if connect_timeout is not None:
+        sqlite_kwargs["timeout"] = connect_timeout
+    while True:
+        try:
+            return sqlite3.connect(str(path), **sqlite_kwargs)
+        except sqlite3.Error:
+            # Retry a few times to allow transient filesystem/db startup issues.
+            if attempt >= retries:
+                raise
+            time.sleep(retry_delay * (2**attempt))
+            attempt += 1
+
+
+def is_sqlite(conn: Any) -> bool:
+    """Return whether a DB connection is SQLite-backed."""
+    return isinstance(conn, sqlite3.Connection)
+
+
+def is_postgres(conn: Any) -> bool:
+    """Return whether a DB connection is Postgres-backed."""
+    return not is_sqlite(conn) and hasattr(conn, "execute")
+
+
+def get_placeholder(conn: Any) -> str:
+    """Return the parameter placeholder for the active DB connection."""
+    return "?" if is_sqlite(conn) else "%s"
+
+
+def table_exists(conn: Any, table_name: str) -> bool:
+    """Return whether a table exists on SQLite or Postgres."""
+    if is_sqlite(conn):
+        row = conn.execute(
+            "SELECT 1 FROM sqlite_master WHERE type='table' AND name = ?",
+            (table_name,),
+        ).fetchone()
+        return row is not None
+    row = conn.execute("SELECT to_regclass(%s)", (table_name,)).fetchone()
+    return bool(row and row[0])
+
+
+def _column_introspection_errors() -> tuple[type[BaseException], ...]:
+    errors: tuple[type[BaseException], ...] = (
+        sqlite3.Error,
+        RuntimeError,
+        TypeError,
+        ValueError,
+    )
+    if psycopg is not None:
+        errors = (*errors, psycopg.Error)
+    return errors
+
+
+def get_table_columns(conn: Any, table_name: str) -> set[str]:
+    """Return table column names for SQLite or Postgres."""
+    try:
+        if is_sqlite(conn):
+            rows = conn.execute(
+                "SELECT name FROM pragma_table_info(:table_name)",
+                {"table_name": table_name},
+            ).fetchall()
+            return {str(row[0]) for row in rows if row and row[0] is not None}
+        rows = conn.execute(
+            "SELECT column_name FROM information_schema.columns "
+            "WHERE table_schema = current_schema() AND table_name = %s",
+            (table_name,),
+        ).fetchall()
+        return {str(row[0]) for row in rows if row and row[0] is not None}
+    except _column_introspection_errors():
+        logger.debug("Failed to introspect columns for table %s", table_name, exc_info=True)
+        return set()
+
+
+def manager_id_column(conn: Any, *, require_table: bool = False) -> str | None:
+    """Return the manager primary-key column used by the active schema."""
+    if require_table and not table_exists(conn, "managers"):
+        return None
+    columns = get_table_columns(conn, "managers")
+    if "manager_id" in columns:
+        return "manager_id"
+    if "id" in columns:
+        return "id"
+    return None
+
+
+def resolve_manager_id_column(conn: Any) -> str:
+    """Return the manager primary-key column with a dialect fallback."""
+    if not is_sqlite(conn):
+        return "manager_id"
+    return manager_id_column(conn) or "id"
+
+
+def _ensure_sqlite_usage_schema(conn: sqlite3.Connection) -> None:
+    conn.execute("""CREATE TABLE IF NOT EXISTS api_usage (
+            id INTEGER PRIMARY KEY,
+            ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            source TEXT,
+            endpoint TEXT,
+            status INT,
+            bytes INT,
+            latency_ms INT,
+            cost_usd REAL
+        )""")
+    conn.execute(
+        "CREATE VIEW IF NOT EXISTS monthly_usage AS "
+        "SELECT substr(ts, 1, 7) || '-01' AS month, source, "
+        "COUNT(*) AS calls, SUM(bytes) AS mb, SUM(cost_usd) AS cost "
+        "FROM api_usage GROUP BY 1,2"
+    )
+
+
+def _ensure_postgres_usage_schema(conn: Any) -> None:
+    conn.execute("""CREATE TABLE IF NOT EXISTS api_usage (
+            id BIGSERIAL PRIMARY KEY,
+            ts TIMESTAMPTZ DEFAULT now(),
+            source TEXT,
+            endpoint TEXT,
+            status INT,
+            bytes INT,
+            latency_ms INT,
+            cost_usd NUMERIC(10,4)
+        )""")
+    conn.execute("SELECT to_regclass('api_usage')")
+    conn.execute("""
+        DO $$
+        BEGIN
+          IF NOT EXISTS (
+            SELECT 1 FROM pg_matviews
+            WHERE schemaname = current_schema() AND matviewname = 'monthly_usage'
+          ) THEN
+            EXECUTE $mv$
+              CREATE MATERIALIZED VIEW monthly_usage AS
+              SELECT date_trunc('month', ts) AS month,
+                     source,
+                     count(*)        AS calls,
+                     sum(bytes)      AS mb,
+                     sum(cost_usd)   AS cost
+              FROM api_usage
+              GROUP BY 1, 2
+            $mv$;
+          END IF;
+        END
+        $$;
+        """)
+
+
+def ensure_api_usage_schema(conn: Any) -> None:
+    """Ensure the api_usage table and monthly_usage view exist for the active dialect."""
+    if is_sqlite(conn):
+        _ensure_sqlite_usage_schema(conn)
+        return
+    _ensure_postgres_usage_schema(conn)
+
+
+@asynccontextmanager
+async def tracked_call(
+    source: str,
+    endpoint: str,
+    *,
+    db_path: str | None = None,
+    cost_usd: float | Callable[[Any], float] | None = None,
+):
+    """Record API usage metrics in the ``api_usage`` table.
+
+    Parameters
+    ----------
+    source:
+        Identifier for the calling adapter, e.g. ``"edgar"``.
+    endpoint:
+        Endpoint or URL being hit.
+    db_path:
+        Optional path to a database. If ``DB_URL`` is set and points to
+        a Postgres instance, that URL is used instead; otherwise defaults
+        to ``DB_PATH`` or ``manager_database.db``.
+    cost_usd:
+        Optional per-call cost. A ``float`` is recorded directly; a callable is
+        invoked with the logged response and must return a ``float`` (e.g. a
+        per-byte or per-token rate). When no rate is configured, or no response
+        was logged before the call failed, the recorded cost is ``0.0``.
+
+    Usage::
+
+        async with tracked_call("edgar", url) as log:
+            resp = await client.get(url)
+            log(resp)
+    """
+
+    start = time.perf_counter()
+    container: dict[str, Any] = {}
+
+    def _store(resp: Any) -> None:
+        container["resp"] = resp
+
+    try:
+        yield _store
+    finally:
+        resp = container.get("resp")
+        latency = int((time.perf_counter() - start) * 1000)
+        conn: Any | None = None
+        try:
+            status = getattr(resp, "status_code", 0)
+            size = len(getattr(resp, "content", b""))
+            if callable(cost_usd):
+                computed_cost = float(cost_usd(resp)) if resp is not None else 0.0
+            elif cost_usd is not None:
+                computed_cost = float(cost_usd)
+            else:
+                computed_cost = 0.0
+            conn = connect_db(db_path)
+            ensure_api_usage_schema(conn)
+            placeholder = get_placeholder(conn)
+            values_clause = ",".join([placeholder] * 6)
+            sql = (
+                "INSERT INTO api_usage(source, endpoint, status, bytes, latency_ms, cost_usd)"
+                f" VALUES ({values_clause})"
+            )
+            conn.execute(sql, (source, endpoint, status, size, latency, computed_cost))
+            conn.commit()
+        except Exception:
+            logger.warning(
+                "Failed to record API usage metrics",
+                extra={"source": source, "endpoint": endpoint},
+                exc_info=True,
+            )
+        finally:
+            if conn is not None:
+                try:
+                    conn.close()
+                except Exception:
+                    logger.warning(
+                        "Failed to close API usage metrics connection",
+                        extra={"source": source, "endpoint": endpoint},
+                        exc_info=True,
+                    )
+
+
+ADAPTERS: dict[str, AdapterProtocol] = {}
+
+
+def get_adapter(jurisdiction: str) -> AdapterProtocol:
+    """Return an adapter module for the given jurisdiction."""
+    if jurisdiction not in ADAPTERS:
+        module = import_module(f"adapters.{jurisdiction}")
+        ADAPTERS[jurisdiction] = module  # type: ignore[assignment]
+    return ADAPTERS[jurisdiction]

@@ -1,0 +1,56 @@
+- log
+- log
+- button "keyboard_double_arrow_left":
+  - generic: keyboard_double_arrow_left
+- list:
+  - link "Dashboard":
+    - /url: http://127.0.0.1:8537/
+    - generic: 📈
+    - paragraph: Dashboard
+  - link "Daily Report":
+    - /url: http://127.0.0.1:8537/daily-report
+    - generic: 🗞️
+    - paragraph: Daily Report
+  - link "Search":
+    - /url: http://127.0.0.1:8537/search
+    - generic: 🔎
+    - paragraph: Search
+  - link "Upload":
+    - /url: http://127.0.0.1:8537/upload
+    - generic: 📝
+    - paragraph: Upload
+  - link "🔬 Research" [active]:
+    - /url: http://127.0.0.1:8537/research
+    - generic: 🔬
+    - paragraph: 🔬 Research
+- paragraph: Chain Mode
+- button "Help for Chain Mode":
+- combobox "Chain Mode": Auto (recommended)
+- button "Open":
+- generic "keyboard_arrow_right Context Filters":
+  - generic: keyboard_arrow_right
+  - paragraph: Context Filters
+- banner:
+  - button "Deploy":
+    - generic: Deploy
+  - button "Main menu":
+- heading "🔬 Research Assistant" [level=1]:
+  - text: 🔬 Research Assistant
+  - link "Link to heading":
+    - /url: "#research-assistant"
+- separator
+- paragraph: "Quick actions:"
+- button "📊 Summarize latest filing":
+  - generic "📊 Summarize latest filing":
+    - paragraph: 📊 Summarize latest filing
+- button "🔍 Top crowded trades":
+  - generic "🔍 Top crowded trades":
+    - paragraph: 🔍 Top crowded trades
+- button "📈 Recent activism":
+  - generic "📈 Recent activism":
+    - paragraph: 📈 Recent activism
+- button "🗑️ Clear chat":
+  - generic "🗑️ Clear chat":
+    - paragraph: 🗑️ Clear chat
+- textbox "Ask about your manager universe..."
+- button "Send message" [disabled]:

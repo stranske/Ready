@@ -1,0 +1,75 @@
+2026-09-14 03:32:57.270 WARNING streamlit.runtime.scriptrunner_utils.script_run_context: Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-09-14 03:32:57.634 WARNING streamlit.config: 
+Warning: the config option 'server.enableCORS=false' is not compatible with
+'server.enableXsrfProtection=true'.
+As a result, 'server.enableCORS' is being overridden to 'true'.
+
+More information:
+In order to protect against CSRF attacks, we send a cookie with each request.
+To do so, we must specify allowable origins, which places a restriction on
+cross-origin resource sharing.
+
+If cross origin resource sharing is required, please disable server.enableXsrfProtection.
+            
+2026-09-14 03:32:57.635 DEBUG   streamlit.runtime.scriptrunner.script_runner: Running script
+2026-09-14 03:32:57.635 DEBUG   streamlit.runtime.media_file_manager: Disconnecting files for session with ID test session id
+2026-09-14 03:32:57.635 DEBUG   streamlit.runtime.media_file_manager: Sessions still active: dict_keys([])
+2026-09-14 03:32:57.635 DEBUG   streamlit.runtime.media_file_manager: Files: 0; Sessions with files: 0
+[31m──[0m[31m────────────────────[0m[31m [0m[1;31mTraceback [0m[1;2;31m(most recent call last)[0m[31m [0m[31m─────────────────────[0m[31m──[0m
+[31m [0m [2m[LOCAL_HOME]/.codex/automations/research-program/scratch/manager-audit-202[0m [31m [0m
+[31m [0m [2m60914-pins/streamlit/runtime/scriptrunner/[0m[1mexec_code.py[0m:129 in                [31m [0m
+[31m [0m exec_func_with_error_handling                                                [31m [0m
+[31m [0m                                                                              [31m [0m
+[31m [0m [2m[LOCAL_HOME]/.codex/automations/research-program/scratch/manager-audit-202[0m [31m [0m
+[31m [0m [2m60914-pins/streamlit/runtime/scriptrunner/[0m[1mscript_runner.py[0m:807 in            [31m [0m
+[31m [0m code_to_exec                                                                 [31m [0m
+[31m [0m                                                                              [31m [0m
+[31m [0m [2m[LOCAL_HOME]/.codex/automations/research-program/[LOCAL_WORKSPACE]/Manager-Database/u[0m [31m [0m
+[31m [0m [2mi/[0m[1mapp.py[0m:29 in <module>                                                      [31m [0m
+[31m [0m                                                                              [31m [0m
+[31m [0m   [2m26 [0m                                                                        [31m [0m
+[31m [0m   [2m27 [0m                                                                        [31m [0m
+[31m [0m   [2m28 [0m[94mif[0m [91m__name__[0m == [33m"[0m[33m__main__[0m[33m"[0m:                                              [31m [0m
+[31m [0m [31m❱ [0m29 [2m│   [0m[1;4mmain()[0m                                                              [31m [0m
+[31m [0m   [2m30 [0m                                                                        [31m [0m
+[31m [0m                                                                              [31m [0m
+[31m [0m [2m[LOCAL_HOME]/.codex/automations/research-program/[LOCAL_WORKSPACE]/Manager-Database/u[0m [31m [0m
+[31m [0m [2mi/[0m[1mapp.py[0m:25 in main                                                          [31m [0m
+[31m [0m                                                                              [31m [0m
+[31m [0m   [2m22 [0m                                                                        [31m [0m
+[31m [0m   [2m23 [0m[94mdef[0m[90m [0m[92mmain[0m() -> [94mNone[0m:                                                     [31m [0m
+[31m [0m   [2m24 [0m[2m│   [0mnavigation = st.navigation(_build_pages(), position=[33m"[0m[33msidebar[0m[33m"[0m)      [31m [0m
+[31m [0m [31m❱ [0m25 [2m│   [0m[1;4mnavigation.run()[0m                                                    [31m [0m
+[31m [0m   [2m26 [0m                                                                        [31m [0m
+[31m [0m   [2m27 [0m                                                                        [31m [0m
+[31m [0m   [2m28 [0m[94mif[0m [91m__name__[0m == [33m"[0m[33m__main__[0m[33m"[0m:                                              [31m [0m
+[31m [0m                                                                              [31m [0m
+[31m [0m [2m[LOCAL_HOME]/.codex/automations/research-program/scratch/manager-audit-202[0m [31m [0m
+[31m [0m [2m60914-pins/streamlit/navigation/[0m[1mpage.py[0m:494 in run                           [31m [0m
+[31m [0m                                                                              [31m [0m
+[31m [0m [2m[LOCAL_HOME]/.codex/automations/research-program/[LOCAL_WORKSPACE]/Manager-Database/u[0m [31m [0m
+[31m [0m [2mi/[0m[1mdashboard.py[0m:1204 in main                                                  [31m [0m
+[31m [0m                                                                              [31m [0m
+[31m [0m   [2m1201 [0m                                                                      [31m [0m
+[31m [0m   [2m1202 [0m                                                                      [31m [0m
+[31m [0m   [2m1203 [0m[94mdef[0m[90m [0m[92mmain[0m() -> [94mNone[0m:                                                   [31m [0m
+[31m [0m [31m❱ [0m1204 [2m│   [0m[94mif[0m [95mnot[0m [1;4mrequire_login()[0m:                                           [31m [0m
+[31m [0m   [2m1205 [0m[2m│   │   [0mst.stop()                                                     [31m [0m
+[31m [0m   [2m1206 [0m[2m│   [0malert_count = load_unacknowledged_alert_count()                   [31m [0m
+[31m [0m   [2m1207 [0m[2m│   [0mst.sidebar.markdown([33m"[0m[33m### Navigation[0m[33m"[0m)                             [31m [0m
+[31m [0m                                                                              [31m [0m
+[31m [0m [2m[LOCAL_HOME]/.codex/automations/research-program/[LOCAL_WORKSPACE]/Manager-Database/u[0m [31m [0m
+[31m [0m [2mi/[0m[1m__init__.py[0m:40 in require_login                                            [31m [0m
+[31m [0m                                                                              [31m [0m
+[31m [0m   [2m37 [0m[2m│   [0m                                                                    [31m [0m
+[31m [0m   [2m38 [0m[2m│   [0mnames = [username]                                                  [31m [0m
+[31m [0m   [2m39 [0m[2m│   [0musernames = [username]                                              [31m [0m
+[31m [0m [31m❱ [0m40 [2m│   [0mpasswords = [1;4mstauth.Hasher([password])[0m.generate()                    [31m [0m
+[31m [0m   [2m41 [0m[2m│   [0m                                                                    [31m [0m
+[31m [0m   [2m42 [0m[2m│   [0mauthenticator = stauth.Authenticate(                                [31m [0m
+[31m [0m   [2m43 [0m[2m│   │   [0m{                                                               [31m [0m
+[31m────────────────────────────────────────────────────────────────────────────────[0m
+[1;91mTypeError: [0m[1;35mHasher.__init__[0m[1m([0m[1m)[0m takes [1;36m1[0m positional argument but [1;36m2[0m were given
+2026-09-14 03:33:14.360 DEBUG   streamlit.runtime.media_file_manager: Removing orphaned files...
+2026-09-14 03:33:14.360 DEBUG   streamlit.runtime.media_file_manager: Removing orphaned deferred callables...
+{'authenticator': '0.4.2', 'exceptions': ['Hasher.__init__() takes 1 positional argument but 2 were given']}

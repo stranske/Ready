@@ -1,0 +1,39 @@
+- list:
+  - link "Dashboard":
+    - /url: http://127.0.0.1:8538/
+    - generic: 📈
+    - paragraph: Dashboard
+  - link "Daily Report":
+    - /url: http://127.0.0.1:8538/daily-report
+    - generic: 🗞️
+    - paragraph: Daily Report
+  - link "Search":
+    - /url: http://127.0.0.1:8538/search
+    - generic: 🔎
+    - paragraph: Search
+  - link "Upload":
+    - /url: http://127.0.0.1:8538/upload
+    - generic: 📝
+    - paragraph: Upload
+  - link "🔬 Research":
+    - /url: http://127.0.0.1:8538/research
+    - generic: 🔬
+    - paragraph: 🔬 Research
+- banner:
+  - button "Deploy":
+    - generic: Deploy
+  - button "Main menu":
+- alert:
+  - generic: "TypeError: Hasher.__init__() takes 1 positional argument but 2 were given"
+  - generic: "Traceback:"
+  - code:
+    - generic: File "[LOCAL_HOME]/.codex/automations/research-program/[LOCAL_WORKSPACE]/Manager-Database/ui/app.py", line 29, in <module> main()
+    - generic: File "[LOCAL_HOME]/.codex/automations/research-program/[LOCAL_WORKSPACE]/Manager-Database/ui/app.py", line 25, in main navigation.run()
+    - generic: File "[LOCAL_HOME]/.codex/automations/research-program/[LOCAL_WORKSPACE]/Manager-Database/.venv/lib/python3.12/site-packages/streamlit/navigation/page.py", line 498, in run self._page()
+    - generic: "File \"[LOCAL_HOME]/.codex/automations/research-program/[LOCAL_WORKSPACE]/Manager-Database/ui/dashboard.py\", line 1204, in main if not require_login(): ^^^^^^^^^^^^^^^"
+    - generic: File "[LOCAL_HOME]/.codex/automations/research-program/[LOCAL_WORKSPACE]/Manager-Database/ui/__init__.py", line 40, in require_login passwords = stauth.Hasher([password]).generate() ^^^^^^^^^^^^^^^^^^^^^^^^^
+  - button "Copy"
+  - link "Ask Google":
+    - /url: https://www.google.com/search?q=TypeError%3A%20Hasher.__init__()%20takes%201%20positional%20argument%20but%202%20were%20given
+  - link "Ask ChatGPT":
+    - /url: https://chatgpt.com/?q=TypeError%3A%20Hasher.__init__()%20takes%201%20positional%20argument%20but%202%20were%20given%0A%0AFile%20%22%2FUsers%2Fteacher%2F.codex%2Fautomations%2Fresearch-program%2Fclones%2FManager-Database%2Fui%2Fapp.py%22%2C%20line%2029%2C%20in%20%3Cmodule%3E%0A%20%20%20%20main()%0AFile%20%22%2FUsers%2Fteacher%2F.codex%2Fautomations%2Fresearch-program%2Fclones%2FManager-Database%2Fui%2Fapp.py%22%2C%20line%2025%2C%20in%20main%0A%20%20%20%20navigation.run()%0AFile%20%22%2FUsers%2Fteacher%2F.codex%2Fautomations%2Fresearch-program%2Fclones%2FManager-Database%2F.venv%2Flib%2Fpython3.12%2Fsite-packages%2Fstreamlit%2Fnavigation%2Fpage.py%22%2C%20line%20498%2C%20in%20run%0A%20%20%20%20self._page()%0AFile%20%22%2FUsers%2Fteacher%2F.codex%2Fautomations%2Fresearch-program%2Fclones%2FManager-Database%2Fui%2Fdashboard.py%22%2C%20line%201204%2C%20in%20main%0A%20%20%20%20if%20not%20require_login()%3A%0A%20%20%20%20%20%20%20%20%20%20%20%5E%5E%5E%5E%5E%5E%5E%5E%5E%5E%5E%5E%5E%5E%5E%0AFile%20%22%2FUsers%2Fteacher%2F.codex%2Fautomations%2Fresearch-program%2Fclones%2FManager-Database%2Fui%2F__init__.py%22%2C%20line%2040%2C%20in%20require_login%0A%20%20%20%20passwords%20%3D%20stauth.Hasher(%5Bpassword%5D).generate()%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%5E%5E%5E%5E%5E%5E%5E%5E%5E%5E%5E%5E%5E%5E%5E%5E%5E%5E%5E%5E%5E%5E%5E%5E%5E

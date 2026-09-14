@@ -1,0 +1,43 @@
+- list:
+  - link "Dashboard":
+    - /url: http://127.0.0.1:8537/
+    - generic: 📈
+    - paragraph: Dashboard
+  - link "Daily Report":
+    - /url: http://127.0.0.1:8537/daily-report
+    - generic: 🗞️
+    - paragraph: Daily Report
+  - link "Search":
+    - /url: http://127.0.0.1:8537/search
+    - generic: 🔎
+    - paragraph: Search
+  - link "Upload":
+    - /url: http://127.0.0.1:8537/upload
+    - generic: 📝
+    - paragraph: Upload
+  - link "🔬 Research":
+    - /url: http://127.0.0.1:8537/research
+    - generic: 🔬
+    - paragraph: 🔬 Research
+- banner:
+  - button "Deploy":
+    - generic: Deploy
+  - button "Main menu":
+- paragraph: Date
+- group "Date":
+  - spinbutton "year, Date": "2026"
+  - generic: /
+  - spinbutton "month, Date": "03"
+  - generic: /
+  - spinbutton "day, Date": "15"
+- textbox: 2026-03-15
+- tablist:
+  - tab "Filings & Diffs":
+    - paragraph: Filings & Diffs
+  - tab "Crowded Trades" [active] [selected]:
+    - paragraph: Crowded Trades
+  - tab "News Pulse":
+    - paragraph: News Pulse
+- tabpanel "Crowded Trades":
+  - status:
+    - paragraph: No data for this date — nearest report is 2026-03-15.

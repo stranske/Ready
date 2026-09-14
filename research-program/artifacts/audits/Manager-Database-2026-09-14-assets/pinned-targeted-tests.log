@@ -1,0 +1,61 @@
+........................................................................ [ 53%]
+..................................s...........................           [100%]
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/langsmith/evaluation/_key_extraction.py:20
+  [LOCAL_HOME]/.codex/automations/research-program/[LOCAL_WORKSPACE]/Manager-Database/.venv/lib/python3.12/site-packages/langsmith/evaluation/_key_extraction.py:20: DeprecationWarning: ast.Str is deprecated and will be removed in Python 3.14; use ast.Constant instead
+    (ast.Str, ast.Constant) if hasattr(ast, "Str") else (ast.Constant,)
+
+api/chat.py:1501
+  [LOCAL_HOME]/.codex/automations/research-program/[LOCAL_WORKSPACE]/Manager-Database/api/chat.py:1501: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    @app.on_event("startup")
+
+.venv/lib/python3.12/site-packages/fastapi/applications.py:4681
+.venv/lib/python3.12/site-packages/fastapi/applications.py:4681
+.venv/lib/python3.12/site-packages/fastapi/applications.py:4681
+  [LOCAL_HOME]/.codex/automations/research-program/[LOCAL_WORKSPACE]/Manager-Database/.venv/lib/python3.12/site-packages/fastapi/applications.py:4681: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    return self.router.on_event(event_type)  # ty: ignore[deprecated]
+
+api/chat.py:1801
+  [LOCAL_HOME]/.codex/automations/research-program/[LOCAL_WORKSPACE]/Manager-Database/api/chat.py:1801: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    @app.on_event("shutdown")
+
+api/chat.py:1808
+  [LOCAL_HOME]/.codex/automations/research-program/[LOCAL_WORKSPACE]/Manager-Database/api/chat.py:1808: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    @app.on_event("shutdown")
+
+.venv/lib/python3.12/site-packages/pythonjsonlogger/jsonlogger.py:11
+  [LOCAL_HOME]/.codex/automations/research-program/[LOCAL_WORKSPACE]/Manager-Database/.venv/lib/python3.12/site-packages/pythonjsonlogger/jsonlogger.py:11: DeprecationWarning: pythonjsonlogger.jsonlogger has been moved to pythonjsonlogger.json
+    warnings.warn(
+
+tests/test_dashboard.py::test_load_signal_helpers
+tests/test_dashboard.py::test_load_signal_helpers
+tests/test_daily_report.py::test_load_diffs_and_news
+  [LOCAL_HOME]/.codex/automations/research-program/[LOCAL_WORKSPACE]/Manager-Database/api/signals.py:217: DeprecationWarning: The default date adapter is deprecated as of Python 3.12; see the sqlite3 documentation for suggested replacement recipes
+    rows = conn.execute(
+
+tests/test_dashboard.py::test_load_signal_helpers
+tests/test_daily_report.py::test_load_diffs_and_news
+  [LOCAL_HOME]/.codex/automations/research-program/[LOCAL_WORKSPACE]/Manager-Database/api/signals.py:273: DeprecationWarning: The default date adapter is deprecated as of Python 3.12; see the sqlite3 documentation for suggested replacement recipes
+    rows = conn.execute(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
