@@ -487,6 +487,44 @@ def test_research_allowlist_contract_overrides_legacy(tmp_path, reason):
         assert "allowed_hits=1" in result.stdout
 
 
+@pytest.mark.parametrize("suffix", [".json", ".jsonl"])
+@pytest.mark.parametrize("unfinished", ['"', '"Public text', '"trailing' + "\\", r'"escaped\"'])
+def test_unterminated_json_string_fails_closed(tmp_path, suffix, unfinished):
+    path = tmp_path / ("report" + suffix)
+    path.write_text(unfinished)
+
+    result = run_guard(tmp_path)
+
+    assert result.returncode == 1
+    assert f"ERROR: {path.name}:1: invalid structured string" in result.stdout
+    assert "files_scanned=1" in result.stdout
+    assert "errors=1" in result.stdout
+    assert not result.stderr
+
+
+@pytest.mark.parametrize("suffix", [".json", ".jsonl"])
+def test_unterminated_json_preserves_findings_on_other_strings_and_lines(tmp_path, suffix):
+    path = tmp_path / ("report" + suffix)
+    path.write_text(
+        r'{"earlier": "clones\/EXAMPLE", "unfinished": "localhost:8000'
+        + "\n"
+        + r'{"later": "scratchpad\/EXAMPLE"}'
+        + "\n"
+    )
+
+    result = run_guard(tmp_path)
+
+    assert result.returncode == 1
+    assert f"{path.name}:1: scratch-path (1 hit(s))" in result.stdout
+    assert f"{path.name}:1: internal-host (1 hit(s))" in result.stdout
+    assert f"{path.name}:2: scratch-path (1 hit(s))" in result.stdout
+    assert f"ERROR: {path.name}:1: invalid structured string" in result.stdout
+    assert "scratch-path=2 internal-host=1" in result.stdout
+    assert "errors=1" in result.stdout
+    assert "EXAMPLE" not in result.stdout + result.stderr
+    assert not result.stderr
+
+
 def test_explicit_policy_overrides_research_local_policy(tmp_path):
     (tmp_path / "fixture").write_text("ghp_SYNTHETIC\n")
     (tmp_path / ".publication-allow").write_text("fixture:credential # Local fixture.\n")

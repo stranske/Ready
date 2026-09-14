@@ -21,7 +21,8 @@ RULES = {
     "internal-host": re.compile(rb"\.local:|\blocalhost:[0-9]+"),
 }
 # Decode individual JSON strings so diagnostics retain physical source line numbers.
-JSON_STRING = re.compile(rb'"(?:[^"\\]|\\.)*"')
+# Include unfinished strings (and a trailing escape) so malformed input fails closed.
+JSON_STRING = re.compile(rb'"(?:[^"\\]|\\.)*(?:"|\\?$)')
 REPO_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_ROOT = REPO_ROOT / "research-program"
 
@@ -105,8 +106,6 @@ def line_hits(line: bytes, structured: bool) -> tuple[Counter[str], bool]:
     if structured:
         for match in JSON_STRING.finditer(line):
             raw = match.group()
-            if b"\\" not in raw:
-                continue
             # Decode once, including keys; a literal backslash is not a second escape.
             try:
                 value = json.loads(raw).encode("utf-8", errors="surrogatepass")
