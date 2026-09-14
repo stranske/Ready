@@ -32,4 +32,25 @@ Published nine verified, deduplicated, agent-ready implementation issues, replen
 
 The audit does not claim a full local-suite run or any production-provider/Postgres execution. Its focused prior evidence at the unchanged SHA remains the basis for the nine issue-specific reproduction and deliberate-break gates. No repository source, branches, PRs, or labels that dispatch implementation work were changed.
 
-The required external `Code/Audits` index/ledger reconciliation was attempted and rejected by the workspace policy because that Dropbox path is outside the allowed writable roots. The existing canonical research report remains intact; this required OUT report and the unit checkpoint retain the publication record. This is the only incomplete administrative sink.
+The prior attempt could not write the external audit records. Attempt 2 completed that reconciliation at 2026-09-14T19:14:45.381778+00:00; the canonical report, verification log, repository index, root ledger, and body status index now record all nine published issues. Administrative sinks are complete; implementation remains pending.
+
+
+## 2026-09-14T19:14:45.381778+00:00 — Publication reconciliation, attempt 2
+
+Unit `D-audit-Manager-Database--2026-09-14T19-00-22Z` resumed Phase 5 from its completed publication checkpoint. Current clone and remote main remain `4523cf50dac3f3fe2ba338b8243e630940c54fd0`. All nine existing issues are open, their bodies match the staged files, local and remote-body format validation passes without advisories, and all 37 retained citation contexts match the current source. Each issue has exactly one intake row. All nine remote format guards are successful, including the supported manual replacement for #1674. No duplicate issue or intake row was created.
+
+The prior executor's external-write limitation is resolved in this run: canonical report, verification log, repository index, root audit ledger, and body status index now record publication. This completes the administrative sink; the nine implementation defects remain open. The earlier research-only statuses below are historical and are superseded by this publication record. Runtime evidence is retained from the earlier same-SHA audit; this reconciliation did not rerun the suite or claim production readiness.
+
+| Finding | Issue | Status | Format guard |
+| --- | --- | --- | --- |
+| F01 | [#1667](https://github.com/stranske/Manager-Database/issues/1667) — Restore configured login with the pinned authenticator API | Filed; implementation pending | [success](https://github.com/stranske/Manager-Database/actions/runs/34884639893) |
+| F02 | [#1668](https://github.com/stranske/Manager-Database/issues/1668) — Align point-in-time same-day amendment authority with holdings diffs | Filed; implementation pending | [success](https://github.com/stranske/Manager-Database/actions/runs/34884642152) |
+| F03 | [#1669](https://github.com/stranske/Manager-Database/issues/1669) — Preserve manager associations when document content is deduplicated | Filed; implementation pending | [success](https://github.com/stranske/Manager-Database/actions/runs/34884644119) |
+| F04 | [#1670](https://github.com/stranske/Manager-Database/issues/1670) — Make scheduled EDGAR indexing atomic with filing writes | Filed; implementation pending | [success](https://github.com/stranske/Manager-Database/actions/runs/34884646787) |
+| F05 | [#1671](https://github.com/stranske/Manager-Database/issues/1671) — Resolve SQLite manager keys across dashboard and daily report queries | Filed; implementation pending | [success](https://github.com/stranske/Manager-Database/actions/runs/34884648869) |
+| F06 | [#1672](https://github.com/stranske/Manager-Database/issues/1672) — Resolve SQLite manager identity in RAG context extraction | Filed; implementation pending | [success](https://github.com/stranske/Manager-Database/actions/runs/34884651189) |
+| F07 | [#1673](https://github.com/stranske/Manager-Database/issues/1673) — Expose existing Alerts management through the full UI shell | Filed; implementation pending | [success](https://github.com/stranske/Manager-Database/actions/runs/34884653399) |
+| F08 | [#1674](https://github.com/stranske/Manager-Database/issues/1674) — Count only persisted news identities in spike alerts | Filed; implementation pending | [success](https://github.com/stranske/Manager-Database/actions/runs/34884950733) |
+| F09 | [#1675](https://github.com/stranske/Manager-Database/issues/1675) — Repair AWS CLI installation in the scheduled snapshot job | Filed; implementation pending | [success](https://github.com/stranske/Manager-Database/actions/runs/34884656369) |
+
+Evidence: [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Manager-Database-2026-09-14-assets/resume-verification.json, resume-guards.json, resume-issues.json, and resume-format-runs.json. Next ledger action: record implementation PRs, merges, and acceptance-gate verification.

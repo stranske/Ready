@@ -248,3 +248,8 @@ The authorized publication review retained all 9 same-SHA findings after direct 
 Filed and read back #1667–#1675 at unchanged main `4523cf50dac3f3fe2ba338b8243e630940c54fd0`; nine intake rows appended. Issue-format guard passed all: opened-event successes for #1667–#1673/#1675 and supported manual recheck success 34884950733 for #1674 after its event run cancellation. OUT report saved; no source edits.
 
 Required Dropbox `Code/Audits` README/verification/ledger writes were attempted and rejected as outside this workspace's writable roots. The existing research audit is preserved; the unit checkpoint and OUT report retain the exact publication reconciliation.
+
+
+## 2026-09-14T19:14:45.381778+00:00 — Publication reconciliation, attempt 2 — D-audit-Manager-Database--2026-09-14T19-00-22Z
+
+Resumed Phase 5 only. Fresh readback: all 9 issues open, bodies identical, 9/9 validators and remote guards pass, 37 citation contexts unchanged, exactly 9 intake rows. Canonical Code/Audits report/verification/index/ledger/body-index and OUT reconciled successfully; prior external-write gap resolved. No source edits, duplicate filing, or additional intake writes. Ready for program.py done.

@@ -690,3 +690,4 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-14T19:10:08Z — D-audit-Manager-Database--2026-09-14T19-00-22Z — fail — offload to codex exited 1; retained artifact is not proof of success
 ## 2026-09-14T19:11:43Z — D-audit-Manager-Database--2026-09-14T19-00-22Z — route — router picked codex from ['codex']
 ## 2026-09-14T19:11:43Z — D-audit-Manager-Database--2026-09-14T19-00-22Z — claimed by codex (agent codex)
+## 2026-09-14T19:14:51Z — D-audit-Manager-Database--2026-09-14T19-00-22Z — done — Reconciled nine published Manager-Database findings with successful format guards, unique intake rows, and complete canonical audit records at unchanged main.
