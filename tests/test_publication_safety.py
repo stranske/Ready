@@ -444,6 +444,21 @@ def test_policy_only_is_not_publication_content(tmp_path):
     assert "zero files scanned" in result.stdout
 
 
+@pytest.mark.parametrize("has_report", [False, True])
+def test_explicit_policy_parent_components_do_not_count_as_content(tmp_path, has_report):
+    (tmp_path / "nested").mkdir()
+    (tmp_path / ".publication-allow").write_text("# Reviewed policy.\n")
+    if has_report:
+        (tmp_path / "report.md").write_text("Public content\n")
+
+    result = run_guard(tmp_path, tmp_path / "nested" / ".." / ".publication-allow")
+
+    assert result.returncode == (0 if has_report else 1)
+    assert f"files_scanned={int(has_report)}" in result.stdout
+    if not has_report:
+        assert "zero files scanned" in result.stdout
+
+
 def test_dangling_research_policy_does_not_fall_back(tmp_path):
     (tmp_path / "fixture").write_text("ghp_SYNTHETIC\n")
     allowlist_for(tmp_path).write_text("fixture:credential # Legacy fixture.\n")

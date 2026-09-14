@@ -130,8 +130,7 @@ def scan(root: Path, allowlist: Path | None = None) -> int:
             for filename in sorted(filenames):
                 path = directory / filename
                 name = path.relative_to(root).as_posix()
-                # Scan the selected policy separately, exactly once. Policy alone
-                # must not make an otherwise empty publication tree pass.
+                # The selected policy is validated and scanned separately.
                 if path.absolute() == allowlist_path.absolute():
                     continue
                 if path.is_symlink():
@@ -141,6 +140,14 @@ def scan(root: Path, allowlist: Path | None = None) -> int:
                     errors.append(f"{name}: not a regular file")
                     continue
                 try:
+                    # Compare file identity so aliases containing '..' cannot
+                    # count the selected policy as publication content.
+                    if (
+                        not allowlist_path.is_symlink()
+                        and allowlist_path.is_file()
+                        and path.samefile(allowlist_path)
+                    ):
+                        continue
                     content = path.read_bytes()
                 except OSError:
                     errors.append(f"{name}: cannot read file")
