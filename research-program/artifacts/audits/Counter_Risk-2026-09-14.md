@@ -32,3 +32,7 @@ An issue-body normalization command briefly changed PR #1060 due to a zero-based
 ## Durable-record exception
 
 The required Dropbox `Code/Audits/Counter_Risk/` and `Code/Audits/AUDIT_LEDGER.md` updates could not be written from this execution environment: the filesystem policy rejects writes outside the research-program workspace and permits no approval escalation. This OUT report, the unit checkpoint, and the intake rows contain the complete handoff needed to mirror the record; no claim is made that the Dropbox ledger changed.
+
+## Attempt 2 reconciliation
+
+At `2026-09-14T07:51:03Z`, `git pull --ff-only` confirmed that the clone and `origin/main` remain at `7c01963cb4173128c806347e622ed43a08fdcf4a`. Live GitHub reads confirmed #1061–#1068 are open with the intended six issue-format sections and only `bug` plus the applicable repository priority label. The eight corresponding Agents Issue Format Guard runs all have `conclusion=success`. The required eight intake rows remain present. A read-only check of the Dropbox ledger and repo index found no #1061–#1068 or 2026-09-14 Counter_Risk entry, so the durable-record exception remains real rather than resolved.

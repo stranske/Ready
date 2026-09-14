@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-14T07:49:04Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-14T08:06:53Z)
 
 Units: 111 — claimed 1, done 106, failed 3, queued 1
 Paused: False   Phase stops: []
@@ -122,9 +122,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-14T01:05:24Z — D3-unblock-sweep-2026-09-14T01 — done — cursor produced 539 words at artifacts/sweeps/D3-unblock-sweep-2026-09-14T01.md in 288s
-- 2026-09-14T02:07:46Z — verify — enqueued D4-verify-merged-2026-09-14T02
-- 2026-09-14T02:07:47Z — D4-verify-merged-2026-09-14T02 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-14T02:07:47Z — D4-verify-merged-2026-09-14T02 — claimed by driver (agent cursor)
 - 2026-09-14T02:12:18Z — D4-verify-merged-2026-09-14T02 — done — cursor produced 1116 words at artifacts/verification/D4-verify-merged-2026-09-14T02.md in 250s
 - 2026-09-14T06:49:49Z — refill — Counter_Risk: open=1 <= 2 → audit queued
@@ -134,6 +131,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-14T07:03:08Z — D-audit-Counter_Risk--2026-09-14T06-49-49Z — fail — offload to codex exited 1; retained artifact is not proof of success
 - 2026-09-14T07:49:04Z — D-audit-Counter_Risk--2026-09-14T06-49-49Z — route — router picked codex from ['codex']
 - 2026-09-14T07:49:04Z — D-audit-Counter_Risk--2026-09-14T06-49-49Z — claimed by driver (agent codex)
+- 2026-09-14T07:51:51Z — D-audit-Counter_Risk--2026-09-14T06-49-49Z — fail — offload to codex exited 1; retained artifact is not proof of success
+- 2026-09-14T08:06:53Z — D-audit-Counter_Risk--2026-09-14T06-49-49Z — route — router picked codex from ['codex']
+- 2026-09-14T08:06:53Z — D-audit-Counter_Risk--2026-09-14T06-49-49Z — claimed by driver (agent codex)
 
 ## Questions
 

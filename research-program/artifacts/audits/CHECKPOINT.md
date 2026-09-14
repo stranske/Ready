@@ -218,3 +218,6 @@ Re-opened and retained eight prior staged defects because their cited source pat
 
 ## 2026-09-14T07:16:00Z — D-audit-Counter_Risk durable-record exception
 The required Dropbox `Code/Audits` folder/index/ledger writes were rejected by the workspace filesystem policy as outside the project, with no approval path. The OUT report and unit checkpoint hold the exact completion record; the eight GitHub issues, final format guards, and intake rows are complete.
+
+## 2026-09-14T07:51:03Z — D-audit-Counter_Risk attempt 2 reconciliation
+Resumed Phase 5 only. Clone and `origin/main` still agree at `7c01963cb4173128c806347e622ed43a08fdcf4a`; GitHub confirms open, six-section #1061–#1068 and eight successful issue-format guards, and the intake sink has all eight rows. The required Dropbox audit ledger/index has no 2026-09-14 Counter_Risk record; policy still prevents that external write.
