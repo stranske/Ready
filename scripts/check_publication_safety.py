@@ -21,13 +21,24 @@ RULES = {
     "internal-host": re.compile(rb"\.local:|\blocalhost:[0-9]+"),
 }
 # Decode individual JSON strings so diagnostics retain physical source line numbers.
-JSON_STRING = re.compile(rb'"(?:[^"\\]|\\.)*"')
+# Include unfinished strings (and a trailing escape) so malformed input fails closed.
+JSON_STRING = re.compile(rb'"(?:[^"\\]|\\.)*(?:"|\\?$)')
 REPO_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_ROOT = REPO_ROOT / "research-program"
 
 
 def resolve_allowlist(root: Path, allowlist: Path | None) -> Path:
-    return allowlist or root.parent / ".publication-allow"
+    if allowlist is not None:
+        return allowlist
+    local = root / ".publication-allow"
+    # A dangling policy link is still a selected policy and must fail closed.
+    if local.exists() or local.is_symlink():
+        return local
+    # Legacy exceptions are relative to the canonical research tree. Applying
+    # them to another root could suppress findings in unrelated files.
+    if root.absolute() == DEFAULT_ROOT:
+        return REPO_ROOT / ".publication-allow"
+    return local
 
 
 def load_allowlist(root: Path, allowlist: Path) -> tuple[set[tuple[str, str]], list[str]]:
@@ -39,6 +50,9 @@ def load_allowlist(root: Path, allowlist: Path) -> tuple[set[tuple[str, str]], l
         return allowed, errors
     if path.is_symlink():
         return allowed, [".publication-allow: symlinks are not allowed"]
+    # A FIFO can block read_text indefinitely; reject special files before reading.
+    if not path.is_file():
+        return allowed, [".publication-allow: not a regular file"]
     try:
         lines = path.read_text(encoding="utf-8").splitlines()
     except (OSError, UnicodeError):
@@ -74,7 +88,7 @@ def load_allowlist(root: Path, allowlist: Path) -> tuple[set[tuple[str, str]], l
 def scan_allowlist_bytes(
     content: bytes, allowed: set[tuple[str, str]], counts: Counter[str]
 ) -> None:
-    """Scan the repo-root allowlist itself; it is not under the research tree."""
+    """Scan the selected policy without counting it as publication content."""
     for number, line in enumerate(content.splitlines(), 1):
         for rule, pattern in RULES.items():
             hits = len(pattern.findall(line))
@@ -86,25 +100,31 @@ def scan_allowlist_bytes(
             print(f".publication-allow:{number}: {rule} ({hits} hit(s))")
 
 
-def line_hits(line: bytes, structured: bool) -> Counter[str]:
+def line_hits(line: bytes, structured: bool) -> tuple[Counter[str], bool]:
     counts = Counter({rule: len(pattern.findall(line)) for rule, pattern in RULES.items()})
+    invalid_string = False
     if structured:
         for match in JSON_STRING.finditer(line):
             raw = match.group()
-            if b"\\" not in raw:
-                continue
             # Decode once, including keys; a literal backslash is not a second escape.
-            value = json.loads(raw).encode("utf-8", errors="surrogatepass")
+            try:
+                value = json.loads(raw).encode("utf-8", errors="surrogatepass")
+            except (ValueError, UnicodeError):
+                # Retain earlier findings and inspect the remaining strings.
+                invalid_string = True
+                continue
             for rule, pattern in RULES.items():
                 # Raw findings already counted above must not be counted twice.
                 counts[rule] += max(0, len(pattern.findall(value)) - len(pattern.findall(raw)))
-    return counts
+    return counts, invalid_string
 
 
 def scan(root: Path, allowlist: Path | None = None) -> int:
     """Scan bytes in every file; fail closed for missing, unreadable, or linked files."""
     allowlist_path = resolve_allowlist(root, allowlist)
     allowed, errors = load_allowlist(root, allowlist_path)
+    if allowlist is not None and not allowlist_path.exists() and not allowlist_path.is_symlink():
+        errors.append(".publication-allow: explicitly selected allowlist does not exist")
     counts: Counter[str] = Counter()
     files_scanned = 0
     exceptions = 0
@@ -119,6 +139,9 @@ def scan(root: Path, allowlist: Path | None = None) -> int:
             for filename in sorted(filenames):
                 path = directory / filename
                 name = path.relative_to(root).as_posix()
+                # The selected policy is validated and scanned separately.
+                if path.absolute() == allowlist_path.absolute():
+                    continue
                 if path.is_symlink():
                     errors.append(f"{name}: symlinks are not allowed")
                     continue
@@ -126,17 +149,25 @@ def scan(root: Path, allowlist: Path | None = None) -> int:
                     errors.append(f"{name}: not a regular file")
                     continue
                 try:
+                    # Compare file identity so aliases containing '..' cannot
+                    # count the selected policy as publication content.
+                    if (
+                        not allowlist_path.is_symlink()
+                        and allowlist_path.is_file()
+                        and path.samefile(allowlist_path)
+                    ):
+                        continue
                     content = path.read_bytes()
                 except OSError:
                     errors.append(f"{name}: cannot read file")
                     continue
                 files_scanned += 1
                 for number, line in enumerate(content.splitlines(), 1):
-                    try:
-                        hits_by_rule = line_hits(line, path.suffix.lower() in {".json", ".jsonl"})
-                    except (ValueError, UnicodeError):
+                    hits_by_rule, invalid_string = line_hits(
+                        line, path.suffix.lower() in {".json", ".jsonl"}
+                    )
+                    if invalid_string:
                         errors.append(f"{name}:{number}: invalid structured string")
-                        hits_by_rule = line_hits(line, False)
                     for rule, hits in hits_by_rule.items():
                         if not hits:
                             continue
@@ -171,7 +202,7 @@ def main() -> int:
         "--allowlist",
         type=Path,
         default=None,
-        help="repo-root allowlist path (default: <root>/../.publication-allow)",
+        help="policy path (default: <root>/.publication-allow; repo fallback only for default root)",
     )
     args = parser.parse_args()
     return scan(args.root, args.allowlist)

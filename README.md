@@ -28,7 +28,7 @@ Two defect classes have already reached this tree and both are invisible on a ca
 
 Run `python scripts/check_publication_safety.py` with Python 3.12 or later before
 publishing. It scans bytes in every file under `research-program/`, including
-binary files, and separately scans the repo-root allowlist. JSON and JSONL string
+binary files, and separately scans the selected allowlist exactly once. JSON and JSONL string
 values and keys are also scanned after decoding escapes once, with findings
 attributed to their physical source lines. Diagnostics contain
 the relative file, line, and rule, never the matched content. Missing or empty
@@ -37,13 +37,29 @@ files scanned, unallowed hits for every rule (including zeros), allowed hits,
 and errors. This mechanical check does not establish that proprietary content is
 safe to publish.
 
-For an intentional example, add an exact path relative to `research-program/`
-to the repo-root `.publication-allow` (outside the machine-owned tree), in the
+For an intentional example, manage the policy in the upstream engine that
+publishes `research-program/.publication-allow`; do not hand-edit that generated
+mirror, because the next refresh overwrites it. Alternatively, keep reviewed
+policy in the preserved repo-root `.publication-allow` fallback (when no local
+policy is published) or pass an explicit `--allowlist` file. Entries name an exact
+path relative to `research-program/`, in the
 form `example.md:credential # Synthetic example reviewed for publication.` Each
 entry needs a reason and one of `home-path`,
 `credential`, `private-key`, `scratch-path`, or `internal-host`. Wildcards and
 paths outside the research tree are rejected. An exception covers only that
 file and rule; it does not suppress other rules or files. No findings are automatically allowlisted.
+
+An explicit `--allowlist` path takes precedence. Otherwise the scanner uses
+`<root>/.publication-allow` when present, then the repo-root `.publication-allow`
+as a compatibility fallback only for the default `research-program/` root.
+Custom scan roots require a local policy or an explicit `--allowlist`; they do
+not inherit exceptions from their parent directory.
+This repository retains that fallback outside the
+machine-owned tree so publication refreshes preserve its reviewed policy. The
+policies are never combined: an invalid or linked local policy fails rather than
+falling back to a permissive parent policy. The selected policy is scanned for
+findings but does not count as publication content; a policy-only tree fails the
+zero-files check.
 
 Preparation is an explicit operator step; CI runs only the scanner and does not
 redact files. On a separate staging copy, run

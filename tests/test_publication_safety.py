@@ -14,14 +14,14 @@ SCRIPT = REPO / "scripts/check_publication_safety.py"
 
 @pytest.fixture
 def tmp_path(tmp_path):
-    """Give each synthetic research tree its own repo-root allowlist directory."""
+    """Give each synthetic research tree an isolated parent directory."""
     root = tmp_path / "research"
     root.mkdir()
     return root
 
 
 def allowlist_for(root: Path) -> Path:
-    return root.parent / ".publication-allow"
+    return root / ".publication-allow"
 
 
 def run_guard(root, allowlist=None):
@@ -46,7 +46,15 @@ def load_scanner():
         ("/Users/example/file", "home-path"),
         *[
             (prefix + "SENSITIVE_SENTINEL", "credential")
-            for prefix in ("sk-ant-", "sk-proj-", "ghp_", "github_pat_", "lsv2_", "crsr_", "AIza")
+            for prefix in (
+                "sk-ant-",
+                "sk-proj-",
+                "ghp_",
+                "github_pat_",
+                "lsv2_",
+                "crsr_",
+                "AIza",
+            )
         ],
         ("-----BEGIN RSA PRIVATE KEY-----", "private-key"),
         ("-----BEGIN OPENSSH PRIVATE KEY-----", "private-key"),
@@ -84,6 +92,41 @@ def test_all_hits_and_rule_totals_are_reported(tmp_path):
         assert expected in result.stdout
 
 
+def test_all_rules_on_one_line_are_reported_even_with_an_exception(tmp_path):
+    (tmp_path / "report.txt").write_text(
+        "Public introduction\n"
+        "/Users/example clones/example localhost:8000 "
+        "BEGIN RSA PRIVATE KEY ghp_SYNTHETIC\n"
+    )
+    expected_rules = ("home-path", "credential", "private-key", "scratch-path", "internal-host")
+
+    result = run_guard(tmp_path)
+
+    assert result.returncode == 1
+    for rule in expected_rules:
+        assert result.stdout.count(f"report.txt:2: {rule} (1 hit(s))") == 1
+    assert result.stdout.splitlines()[-1] == (
+        "files_scanned=1 home-path=1 credential=1 private-key=1 "
+        "scratch-path=1 internal-host=1 allowed_hits=0 errors=0"
+    )
+
+    allowlist_for(tmp_path).write_text(
+        "report.txt:home-path # Reviewed synthetic documentation example.\n"
+    )
+    result = run_guard(tmp_path)
+
+    assert result.returncode == 1
+    assert "report.txt:2: home-path" not in result.stdout
+    for rule in expected_rules[1:]:
+        assert result.stdout.count(f"report.txt:2: {rule} (1 hit(s))") == 1
+    assert result.stdout.splitlines()[-1] == (
+        "files_scanned=1 home-path=0 credential=1 private-key=1 "
+        "scratch-path=1 internal-host=1 allowed_hits=1 errors=0"
+    )
+    assert "SYNTHETIC" not in result.stdout + result.stderr
+    assert not result.stderr
+
+
 def test_clean_tree_and_zeros(tmp_path):
     (tmp_path / "report.md").write_text("Public research report.\n")
     result = run_guard(tmp_path)
@@ -98,6 +141,31 @@ def test_clean_tree_and_zeros(tmp_path):
         "errors=0",
     ):
         assert expected in result.stdout
+
+
+def test_hidden_nested_files_are_scanned_alongside_root_findings(tmp_path):
+    nested = tmp_path / ".archive" / "exports"
+    nested.mkdir(parents=True)
+    (nested / ".report.bin").write_bytes(
+        b"\xff\x00Public introduction\nclones/example localhost:8000\n"
+    )
+    (tmp_path / "report.md").write_text("Public introduction\n/Users/example/report\n")
+    (nested / "clean.md").write_text("Public content\n")
+
+    result = run_guard(tmp_path)
+
+    assert result.returncode == 1
+    for expected in (
+        ".archive/exports/.report.bin:2: scratch-path (1 hit(s))",
+        ".archive/exports/.report.bin:2: internal-host (1 hit(s))",
+        "report.md:2: home-path (1 hit(s))",
+        "files_scanned=3",
+        "home-path=1 credential=0 private-key=0 scratch-path=1 internal-host=1",
+        "allowed_hits=0 errors=0",
+    ):
+        assert expected in result.stdout
+    assert "example" not in result.stdout + result.stderr
+    assert not result.stderr
 
 
 @pytest.mark.parametrize("missing", [False, True])
@@ -133,7 +201,8 @@ def test_explicit_allowlist_overrides_default_and_requires_reason(tmp_path, reas
 
     result = run_guard(tmp_path, explicit)
 
-    assert "files_scanned=1" in result.stdout
+    # The unselected local policy is still scanned as publication content.
+    assert "files_scanned=2" in result.stdout
     if reason.strip() == "# Synthetic regression fixture.":
         assert result.returncode == 0
         assert "allowed_hits=1" in result.stdout
@@ -171,6 +240,47 @@ def test_allowlist_itself_is_scanned(tmp_path):
     result = run_guard(tmp_path)
     assert result.returncode == 1
     assert ".publication-allow:1: credential" in result.stdout
+
+
+@pytest.mark.parametrize("explicit", [False, True])
+def test_invalid_utf8_policy_fails_and_preserves_all_findings(tmp_path, explicit):
+    (tmp_path / "report.md").write_text("Public introduction\nclones/example\n")
+    policy = tmp_path.parent / "reviewed-policy" if explicit else allowlist_for(tmp_path)
+    policy.write_bytes(
+        b"report.md:scratch-path # Reviewed example.\n"
+        b"# Invalid UTF-8: \xff\n"
+        b"# scratchpad/POLICY_SENTINEL\n"
+    )
+
+    result = run_guard(tmp_path, policy if explicit else None)
+
+    assert result.returncode == 1
+    assert "ERROR: .publication-allow: cannot read UTF-8 allowlist" in result.stdout
+    assert "report.md:2: scratch-path (1 hit(s))" in result.stdout
+    assert ".publication-allow:3: scratch-path (1 hit(s))" in result.stdout
+    assert "files_scanned=1" in result.stdout
+    assert "scratch-path=2" in result.stdout
+    assert "allowed_hits=0" in result.stdout
+    assert "errors=1" in result.stdout
+    assert "POLICY_SENTINEL" not in result.stdout + result.stderr
+    assert not result.stderr
+
+
+@pytest.mark.parametrize("has_hit", [False, True])
+def test_missing_explicit_allowlist_fails_and_continues_scan(tmp_path, has_hit):
+    content = "clones/example\n" if has_hit else "Public content\n"
+    (tmp_path / "report.md").write_text(content)
+    allowlist_for(tmp_path).write_text("report.md:scratch-path # Reviewed fixture.\n")
+
+    result = run_guard(tmp_path, tmp_path.parent / "missing-policy")
+
+    assert result.returncode == 1
+    assert "explicitly selected allowlist does not exist" in result.stdout
+    assert "files_scanned=2" in result.stdout
+    assert "allowed_hits=0" in result.stdout
+    assert "errors=1" in result.stdout
+    if has_hit:
+        assert "report.md:1: scratch-path (1 hit(s))" in result.stdout
 
 
 def test_allowlist_cannot_self_allow(tmp_path):
@@ -215,6 +325,32 @@ def test_named_pipe_fails_without_blocking_other_findings(tmp_path):
     assert "ERROR: a-pipe: not a regular file" in result.stdout
     assert "report.md:2: scratch-path (1 hit(s))" in result.stdout
     assert "files_scanned=1" in result.stdout
+    assert "errors=1" in result.stdout
+
+
+@pytest.mark.parametrize("location", ["local", "explicit"])
+@pytest.mark.parametrize("kind", ["pipe", "directory"])
+def test_nonregular_allowlist_fails_without_blocking_scan(tmp_path, location, kind):
+    (tmp_path / "report.md").write_text("Public introduction\nclones/example\n")
+    policy = {
+        "local": tmp_path / ".publication-allow",
+        "explicit": tmp_path.parent / "reviewed-policy",
+    }[location]
+    if kind == "pipe":
+        os.mkfifo(policy)
+    else:
+        policy.mkdir()
+    cmd = [sys.executable, str(SCRIPT), "--root", str(tmp_path)]
+    if location == "explicit":
+        cmd.extend(["--allowlist", str(policy)])
+
+    result = subprocess.run(cmd, capture_output=True, text=True, check=False, timeout=5)
+
+    assert result.returncode == 1
+    assert "ERROR: .publication-allow: not a regular file" in result.stdout
+    assert "report.md:2: scratch-path (1 hit(s))" in result.stdout
+    assert "files_scanned=1" in result.stdout
+    assert "allowed_hits=0" in result.stdout
     assert "errors=1" in result.stdout
 
 
@@ -265,22 +401,67 @@ def test_unreadable_directory_fails_closed(tmp_path, monkeypatch, capsys):
     assert "ERROR: research tree contains an unreadable directory" in output
 
 
-def test_unreadable_file_fails_closed(tmp_path, monkeypatch, capsys):
+@pytest.mark.parametrize("failed_name", ["a-unreadable.md", "z-unreadable.md"])
+def test_unreadable_file_preserves_other_findings(tmp_path, monkeypatch, capsys, failed_name):
     scanner = load_scanner()
-    (tmp_path / "report.md").write_text("Public content\n")
+    (tmp_path / failed_name).write_text("Public content\n")
+    (tmp_path / "report.md").write_text("Public introduction\nclones/PRIVATE_SENTINEL\n")
+    (tmp_path / "second.md").write_text("localhost:8000 localhost:9000\n")
     real_read_bytes = Path.read_bytes
 
     def read_bytes_with_error(self):
-        if self.name == "report.md":
-            raise OSError(13, "Permission denied")
+        if self.name == failed_name:
+            raise OSError(13, "PRIVATE_ERROR_SENTINEL")
         return real_read_bytes(self)
 
     monkeypatch.setattr(Path, "read_bytes", read_bytes_with_error)
-    allowlist = tmp_path / "allowlist"
-    result = scanner.scan(tmp_path, allowlist)
-    output = capsys.readouterr().out
+    result = scanner.scan(tmp_path)
+    captured = capsys.readouterr()
+    output = captured.out
     assert result == 1
-    assert "ERROR: report.md: cannot read file" in output
+    assert f"ERROR: {failed_name}: cannot read file" in output
+    assert "report.md:2: scratch-path (1 hit(s))" in output
+    assert "second.md:1: internal-host (2 hit(s))" in output
+    assert output.splitlines()[-1] == (
+        "files_scanned=2 home-path=0 credential=0 private-key=0 "
+        "scratch-path=1 internal-host=2 allowed_hits=0 errors=1"
+    )
+    assert "PRIVATE_SENTINEL" not in output + captured.err
+    assert "PRIVATE_ERROR_SENTINEL" not in output + captured.err
+    assert not captured.err
+
+
+@pytest.mark.parametrize("explicit", [False, True])
+@pytest.mark.parametrize("read_method", ["read_text", "read_bytes"])
+def test_policy_read_failure_preserves_findings(
+    tmp_path, monkeypatch, capsys, explicit, read_method
+):
+    scanner = load_scanner()
+    (tmp_path / "report.md").write_text("Public introduction\nclones/example\n")
+    policy = tmp_path.parent / "reviewed-policy" if explicit else allowlist_for(tmp_path)
+    policy.write_text("# No exceptions.\n")
+    original_read = getattr(Path, read_method)
+
+    def fail_policy_read(self, *args, **kwargs):
+        if self == policy:
+            raise PermissionError("PRIVATE_ERROR_SENTINEL")
+        return original_read(self, *args, **kwargs)
+
+    monkeypatch.setattr(Path, read_method, fail_policy_read)
+
+    result = scanner.scan(tmp_path, policy if explicit else None)
+    captured = capsys.readouterr()
+
+    assert result == 1
+    error = "cannot read UTF-8 allowlist" if read_method == "read_text" else "cannot read file"
+    assert f"ERROR: .publication-allow: {error}" in captured.out
+    assert "report.md:2: scratch-path (1 hit(s))" in captured.out
+    assert captured.out.splitlines()[-1] == (
+        "files_scanned=1 home-path=0 credential=0 private-key=0 "
+        "scratch-path=1 internal-host=0 allowed_hits=0 errors=1"
+    )
+    assert "PRIVATE_ERROR_SENTINEL" not in captured.out + captured.err
+    assert not captured.err
 
 
 @pytest.mark.parametrize("suffix", [".json", ".jsonl"])
@@ -321,6 +502,49 @@ def test_json_literal_escape_is_not_decoded_twice(tmp_path):
     assert run_guard(tmp_path).returncode == 0
 
 
+@pytest.mark.parametrize("suffix", [".json", ".jsonl"])
+@pytest.mark.parametrize("malformed", [r'"bad\q"', '"unfinished'])
+def test_allowlisted_findings_do_not_suppress_structured_errors(tmp_path, suffix, malformed):
+    path = tmp_path / ("report" + suffix)
+    path.write_text(r'{"example": "clones\/SYNTHETIC_ONLY", "invalid": ' + malformed + "\n")
+    allowlist_for(tmp_path).write_text(
+        f"{path.name}:scratch-path # Reviewed synthetic path example.\n"
+    )
+
+    result = run_guard(tmp_path)
+
+    assert result.returncode == 1
+    assert f"ERROR: {path.name}:1: invalid structured string" in result.stdout
+    assert result.stdout.splitlines()[-1] == (
+        "files_scanned=1 home-path=0 credential=0 private-key=0 "
+        "scratch-path=0 internal-host=0 allowed_hits=1 errors=1"
+    )
+    assert "SYNTHETIC_ONLY" not in result.stdout + result.stderr
+    assert not result.stderr
+
+
+@pytest.mark.parametrize("suffix", [".json", ".jsonl"])
+def test_invalid_json_string_does_not_hide_other_findings(tmp_path, suffix):
+    path = tmp_path / ("report" + suffix)
+    path.write_text(
+        "\n"
+        r'{"before": "clones\u002fexample", "invalid": "\q", '
+        r'"after": "localhost\u003a8000", "raw": "scratchpad/example"}'
+        "\n"
+    )
+
+    result = run_guard(tmp_path)
+
+    assert result.returncode == 1
+    assert f"ERROR: {path.name}:2: invalid structured string" in result.stdout
+    assert f"{path.name}:2: scratch-path (2 hit(s))" in result.stdout
+    assert f"{path.name}:2: internal-host (1 hit(s))" in result.stdout
+    assert "files_scanned=1" in result.stdout
+    assert "errors=1" in result.stdout
+    assert "example" not in result.stdout + result.stderr
+    assert not result.stderr
+
+
 @pytest.mark.parametrize(
     "label",
     [
@@ -346,3 +570,157 @@ def test_all_private_key_formats_are_rejected(tmp_path, label, suffix):
     assert f"evidence{suffix}:1: private-key (1 hit(s))" in result.stdout
     assert "files_scanned=1" in result.stdout
     assert "SYNTHETIC_MATERIAL" not in result.stdout + result.stderr
+
+
+@pytest.mark.parametrize("reason", [" # Reviewed synthetic fixture.", "", " # "])
+def test_research_allowlist_contract_overrides_legacy(tmp_path, reason):
+    (tmp_path / "fixture").write_text("ghp_SYNTHETIC\n")
+    # The supported research-local policy wins, even when invalid; the legacy
+    # policy must never silently rescue a missing justification.
+    (tmp_path.parent / ".publication-allow").write_text("fixture:credential # Legacy fixture.\n")
+    (tmp_path / ".publication-allow").write_text(f"fixture:credential{reason}\n")
+    result = run_guard(tmp_path)
+    assert "files_scanned=1" in result.stdout
+    assert result.returncode == (0 if reason.strip() == "# Reviewed synthetic fixture." else 1)
+    if result.returncode:
+        assert "expected exact path:rule # reason" in result.stdout
+    else:
+        assert "allowed_hits=1" in result.stdout
+
+
+@pytest.mark.parametrize("suffix", [".json", ".jsonl"])
+@pytest.mark.parametrize("unfinished", ['"', '"Public text', '"trailing' + "\\", r'"escaped\"'])
+def test_unterminated_json_string_fails_closed(tmp_path, suffix, unfinished):
+    path = tmp_path / ("report" + suffix)
+    path.write_text(unfinished)
+
+    result = run_guard(tmp_path)
+
+    assert result.returncode == 1
+    assert f"ERROR: {path.name}:1: invalid structured string" in result.stdout
+    assert "files_scanned=1" in result.stdout
+    assert "errors=1" in result.stdout
+    assert not result.stderr
+
+
+@pytest.mark.parametrize("suffix", [".json", ".jsonl"])
+def test_unterminated_json_preserves_findings_on_other_strings_and_lines(tmp_path, suffix):
+    path = tmp_path / ("report" + suffix)
+    path.write_text(
+        r'{"earlier": "clones\/EXAMPLE", "unfinished": "localhost:8000'
+        + "\n"
+        + r'{"later": "scratchpad\/EXAMPLE"}'
+        + "\n"
+    )
+
+    result = run_guard(tmp_path)
+
+    assert result.returncode == 1
+    assert f"{path.name}:1: scratch-path (1 hit(s))" in result.stdout
+    assert f"{path.name}:1: internal-host (1 hit(s))" in result.stdout
+    assert f"{path.name}:2: scratch-path (1 hit(s))" in result.stdout
+    assert f"ERROR: {path.name}:1: invalid structured string" in result.stdout
+    assert "scratch-path=2 internal-host=1" in result.stdout
+    assert "errors=1" in result.stdout
+    assert "EXAMPLE" not in result.stdout + result.stderr
+    assert not result.stderr
+
+
+def test_explicit_policy_overrides_research_local_policy(tmp_path):
+    (tmp_path / "fixture").write_text("ghp_SYNTHETIC\n")
+    (tmp_path / ".publication-allow").write_text("fixture:credential # Local fixture.\n")
+    explicit = tmp_path.parent / "explicit-policy"
+    explicit.write_text("# No exceptions.\n")
+    result = run_guard(tmp_path, explicit)
+    assert result.returncode == 1
+    assert "fixture:1: credential" in result.stdout
+    assert "allowed_hits=0" in result.stdout
+
+
+def test_research_allowlist_is_scanned_once(tmp_path):
+    (tmp_path / "fixture").write_text("Public content\n")
+    (tmp_path / ".publication-allow").write_text("# ghp_SYNTHETIC\n")
+    result = run_guard(tmp_path)
+    assert result.returncode == 1
+    assert result.stdout.count(".publication-allow:1: credential") == 1
+    assert "credential=1" in result.stdout
+    assert "files_scanned=1" in result.stdout
+
+
+def test_policy_only_is_not_publication_content(tmp_path):
+    (tmp_path / ".publication-allow").write_text("# No exceptions.\n")
+    result = run_guard(tmp_path)
+    assert result.returncode == 1
+    assert "zero files scanned" in result.stdout
+
+
+@pytest.mark.parametrize("has_report", [False, True])
+def test_explicit_policy_parent_components_do_not_count_as_content(tmp_path, has_report):
+    (tmp_path / "nested").mkdir()
+    (tmp_path / ".publication-allow").write_text("# Reviewed policy.\n")
+    if has_report:
+        (tmp_path / "report.md").write_text("Public content\n")
+
+    result = run_guard(tmp_path, tmp_path / "nested" / ".." / ".publication-allow")
+
+    assert result.returncode == (0 if has_report else 1)
+    assert f"files_scanned={int(has_report)}" in result.stdout
+    if not has_report:
+        assert "zero files scanned" in result.stdout
+
+
+def test_dangling_research_policy_does_not_fall_back(tmp_path):
+    (tmp_path / "fixture").write_text("ghp_SYNTHETIC\n")
+    (tmp_path.parent / ".publication-allow").write_text("fixture:credential # Legacy fixture.\n")
+    (tmp_path / ".publication-allow").symlink_to(tmp_path.parent / "missing-policy")
+    result = run_guard(tmp_path)
+    assert result.returncode == 1
+    assert "symlinks are not allowed" in result.stdout
+    assert "allowed_hits=0" in result.stdout
+
+
+@pytest.mark.parametrize("nested", [False, True])
+def test_custom_root_does_not_inherit_parent_exceptions(tmp_path, nested):
+    root = tmp_path / "export" if nested else tmp_path
+    root.mkdir(exist_ok=True)
+    (root / "report.md").write_text("clones/example\n")
+    parent_policy = root.parent / ".publication-allow"
+    parent_policy.write_text("report.md:scratch-path # Reviewed for the parent tree only.\n")
+
+    result = run_guard(root)
+
+    assert result.returncode == 1
+    assert "report.md:1: scratch-path (1 hit(s))" in result.stdout
+    assert "allowed_hits=0" in result.stdout
+    assert "errors=0" in result.stdout
+    # The operator can still deliberately select a policy for an exported tree.
+    assert run_guard(root, parent_policy).returncode == 0
+
+
+@pytest.mark.parametrize("kind", ["valid", "pipe", "directory", "invalid-local", "linked-local"])
+def test_canonical_root_retains_legacy_policy_validation(tmp_path, monkeypatch, capsys, kind):
+    scanner = load_scanner()
+    monkeypatch.setattr(scanner, "DEFAULT_ROOT", tmp_path)
+    monkeypatch.setattr(scanner, "REPO_ROOT", tmp_path.parent)
+    (tmp_path / "report.md").write_text("clones/example\n")
+    legacy = tmp_path.parent / ".publication-allow"
+    if kind == "pipe":
+        os.mkfifo(legacy)
+    elif kind == "directory":
+        legacy.mkdir()
+    else:
+        legacy.write_text("report.md:scratch-path # Reviewed canonical research example.\n")
+    if kind == "invalid-local":
+        (tmp_path / ".publication-allow").write_text("report.md:scratch-path\n")
+    elif kind == "linked-local":
+        (tmp_path / ".publication-allow").symlink_to(tmp_path.parent / "missing-policy")
+
+    result = scanner.scan(tmp_path)
+    output = capsys.readouterr().out
+
+    assert result == (0 if kind == "valid" else 1)
+    assert "files_scanned=1" in output
+    assert f"allowed_hits={int(kind == 'valid')}" in output
+    if kind != "valid":
+        assert "report.md:1: scratch-path (1 hit(s))" in output
+        assert "ERROR: .publication-allow:" in output
