@@ -1,0 +1,343 @@
+[
+  {
+    "body": "When an original filing and its amendment share a filing date, `holdings_as_of` can choose the original solely because its database ID is larger. Rank visible filings by filed date, amendment status, then ID, matching the holdings-diff selector. Knowledge-time and supersession filters stay intact; schemas without a filing type retain the ID tie-break.\n\nCloses #1668\n\n## Tasks\n\n- [x] Apply the filed-date, amendment-status, and ID authority policy in the production point-in-time selector.\n- [x] Add a shared inverted-ID fixture with pre-amendment and exact knowledge-time cutoffs, exercised through tuple and mapping cursors.\n- [x] Verify cross-selector agreement, normalized filing types, legacy schemas, equal-type ties, and filed-date precedence.\n\n## Acceptance Criteria\n\n- [x] `python -m pytest tests/test_bitemporal_holdings.py tests/test_diff_holdings.py`: 29 passed. AMENDED wins once known; ORIGINAL remains visible beforehand.\n- [x] Restoring the ID-only tie comparison makes the named same-day knowledge-cutoff test fail; restoring the fix passes the full selector gate.\n\n## Validation\n\nPython 3.12.2. `python -m pytest tests/test_backtest_flow.py`: 14 passed. Focused Ruff, Black (target py312), mypy for `etl/point_in_time.py`, and `git diff --check` passed. SQLite tuple and mapping cursor paths were exercised; no live PostgreSQL run is claimed.\n\nThe new tests against the original production code failed in six cases, with 23 existing/control cases passing. Exact deliberate-break output is retained in a durable PR comment so automated body updates cannot erase it.\n\n\n<!-- This is an auto-generated comment: release notes by coderabbit.ai -->\n\n## Summary by CodeRabbit\n\n- **Bug Fixes**\n  - Improved point-in-time holdings accuracy when multiple filings are submitted for the same period and day.\n  - Amendments are now prioritized appropriately, while later-filed originals and knowledge-time cutoffs are handled consistently.\n  - Point-in-time and latest/prior holdings views now agree when same-day filing updates are involved.\n\n- **Documentation**\n  - Clarified how filings are selected when determining historical holdings.\n\n<!-- end of auto-generated comment: release notes by coderabbit.ai -->",
+    "labels": [
+      {
+        "id": "LA_kwDOO4LcjM8AAAACTb32Yg",
+        "name": "agent:codex",
+        "description": "Assign to Codex agent",
+        "color": "0e8a16"
+      },
+      {
+        "id": "LA_kwDOO4LcjM8AAAACTb-Fgg",
+        "name": "autofix",
+        "description": "Let bots format/lint automatically",
+        "color": "0366d6"
+      },
+      {
+        "id": "LA_kwDOO4LcjM8AAAACTcLHBw",
+        "name": "agents:keepalive",
+        "description": "Enable keepalive monitoring on PR",
+        "color": "1d76db"
+      },
+      {
+        "id": "LA_kwDOO4LcjM8AAAACUJJHeA",
+        "name": "verify:compare",
+        "description": "Runs verifier comparison mode after merge",
+        "color": "1D76DB"
+      },
+      {
+        "id": "LA_kwDOO4LcjM8AAAAC0hUTIQ",
+        "name": "codex",
+        "description": "Work performed by Codex",
+        "color": "1D76DB"
+      }
+    ],
+    "mergeCommit": {
+      "oid": "f5aa6d84f6471028dac6bd99b9d0993f59a9849c"
+    },
+    "mergedAt": "2026-09-15T00:35:49Z",
+    "number": 1677,
+    "title": "fix(etl): align same-day amendment authority across holdings selectors",
+    "url": "https://github.com/stranske/Manager-Database/pull/1677"
+  },
+  {
+    "body": "## Workflow Source\n\nStarted from:\n- [x] GitHub issue: #1664\n- [x] Automation run\n\nAutomation intent:\n- [x] Verifier should review this\n- [x] Keepalive may manage this PR\n\n## Summary\n\nSQLite databases using `managers.id` silently showed an empty dashboard news feed because the join assumed `managers.manager_id`. Reuse the existing key resolver for that join; retain the PostgreSQL query and existing empty-schema behavior.\n\nCloses #1664.\n\nTarget selection followed escaped-defect priority, then churn, then uncovered mass: recent dashboard/query and manager-key fixes (#1654, #1655, #1656, #1659, #1662) identify this failure family. Among the inspected leading gaps, dashboard had 112 uncovered statements, alerts UI 100, and chat API 91; dashboard and alerts each had two commits in the inspected 30-day history. This chunk targets the reproducible news-query defect and its uncovered PostgreSQL path, without refactoring.\n\n## Testing\n\n- Before edits at `0d219bb`: `python3 -m pytest --cov=. --cov-report=json:... --cov-report=term:skip-covered` measured 86.5138% line coverage; 1,624 passed, 6 failed, 14 skipped.\n- After: the same coverage scope measured 86.5748% (11,556/13,348 statements), with dashboard moving from 81.6694% to 83.0065% (8 fewer uncovered statements). 1,632 passed, 5 failed, 14 skipped. No new failing tests. These are line-coverage figures from the existing `.coveragerc`, not branch coverage.\n- The five remaining failures are existing OpenMP/shared-memory subprocess aborts in `test_app_health` and `test_seed_universe`; the baseline dependency-validator subprocess failure passed on the final run. The full suite is not green in this environment.\n- Focused dashboard suite: 39 passed. Ruff and Black (`--target-version py312`) pass for the changed test; Ruff also passes for the product file.\n- Real mutation/revert runs: restoring the hard-coded join fails both `id` cases (2 failed, 4 passed); changing both news joins to a nonexistent column fails all 6 data cases; changing the empty-result `headline` column fails the remaining error-path test. Each mutation was reverted and followed by all 7 new cases passing. Initial OpenMP-aborted attempts were discarded, not counted as mutation proof.\n- Tests execute SQL over real SQLite fixtures for both manager keys, manager-specific/all-manager feeds, ordering, limit, unlinked rows, payload fields, empty-schema columns, and connection closure. PostgreSQL query-path tests translate `%s` placeholders into SQLite placeholders; they are not live PostgreSQL integration coverage.\n\n\n<!-- This is an auto-generated comment: release notes by coderabbit.ai -->\n\n## Summary by CodeRabbit\n\n- **Bug Fixes**\n  - Improved dashboard news loading for SQLite databases using either supported manager identifier column format.\n  - Dashboard news now remains functional when optional news or manager schema elements are unavailable, returning an empty result instead of failing.\n  - Preserved manager filtering, result ordering, maximum result limits, and displayed news details across supported database configurations.\n\n<!-- end of auto-generated comment: release notes by coderabbit.ai -->",
+    "labels": [
+      {
+        "id": "LA_kwDOO4LcjM8AAAACUJJHeA",
+        "name": "verify:compare",
+        "description": "Runs verifier comparison mode after merge",
+        "color": "1D76DB"
+      }
+    ],
+    "mergeCommit": {
+      "oid": "4523cf50dac3f3fe2ba338b8243e630940c54fd0"
+    },
+    "mergedAt": "2026-09-14T01:27:54Z",
+    "number": 1665,
+    "title": "fix(dashboard): resolve SQLite manager key in news feed",
+    "url": "https://github.com/stranske/Manager-Database/pull/1665"
+  },
+  {
+    "body": "## Dev Tool Version Sync\n\nThis PR updates dev tool versions in `pyproject.toml` and related generated dependency files to match the central version pins from [stranske/Workflows](https://github.com/stranske/Workflows).\n\n### Changes\n```\nFound 3 version updates:\n  - ruff: ==0.16.6 -> ==0.16.7\n  - requirements.lock:ruff: 0.16.6 -> ==0.16.7\n  - .pre-commit-config.yaml:astral-sh/ruff-pre-commit: v0.16.6 -> v0.16.7\n\nRun with --apply to update dependency files\n```\n\n### Why\nConsistent dev tool versions across repos ensures:\n- CI behaviors match between repos\n- No surprises from version drift\n- Easier debugging when tools behave the same everywhere\n\n---\n**Source:** `.github/workflows/autofix-versions.env`\n**Settled source commit:** `569875fea7d2956d35c45ff83766b65e47bfb23a`\n\n<!-- sync-pr-delivery-record:v1 {\"schema\":\"sync-pr-delivery-record/v1\",\"durable_issue_url\":\"https://github.com/stranske/Workflows/issues/1836\",\"plan_id\":\"dev-tool-da45be92183d\",\"generation\":\"da45be92183d\",\"repository\":\"stranske/Manager-Database\",\"desired_tree_hash\":\"06555536ab1f5be4017d559f0315523368131841\",\"source_commit\":\"569875fea7d2956d35c45ff83766b65e47bfb23a\",\"lease_expires_at\":\"2026-09-16T21:04:10Z\",\"predecessor_prs\":[],\"successor_prs\":[]} -->",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "0d219bb4074282399c47153ef23eab1226365a3a"
+    },
+    "mergedAt": "2026-09-13T23:53:44Z",
+    "number": 1663,
+    "title": "deps: sync dev tool versions",
+    "url": "https://github.com/stranske/Manager-Database/pull/1663"
+  },
+  {
+    "body": "Upload history silently appeared empty on SQLite databases whose manager primary key is `id`: `_recent_uploads` hardcoded `m.manager_id`, caught the resulting SQL error, and returned an empty table. Reuse the existing dialect-aware column resolver, as the upload selector already does.\n\nSelected by #1661's escaped-defect-first rule: recent fixes #1655, #1656 and #1659 establish this recurring schema mismatch; this adjacent query retained it. Larger uncovered files (dashboard 112 lines, alerts UI 100, chat API 91) were lower priority than a reproduced defect with a two-line runtime fix. No refactor or infrastructure changes.\n\nValidation:\n- Extended the existing real-SQLite history regression across both `id` and `manager_id`; added the uninitialized-schema fallback/connection-cleanup regression.\n- Before the fix: the `id` history case failed, with 20 passing tests.\n- Deliberately broke the join key: both schema cases failed (19 passed). Restored source: 21 passed.\n- Deliberately removed fallback columns: the new empty-schema test failed (20 passed). Restored source: 21 passed. Each restoration was verified byte-for-byte.\n- Ruff and Black checks pass for both changed files.\n\nCloses #1661 (one bounded coverage round). Coverage remains below 90%; this PR addresses one bounded gap.\n\nFull-suite comparison (same `python3 -m pytest --cov=. --cov-report=json:... --cov-report=term:skip-covered` command):\n- Baseline at e946f52: 86.47129% line coverage, 1616 passed, 14 skipped, 2 failed.\n- After: 86.49479% line coverage, 1619 passed, 14 skipped, 1 failed.\n- `ui/upload.py`: 59.14% → 61.70% (38 → 36 missing lines, one new covered runtime line).\n- Existing failure in both runs: `tests/test_app_health.py::test_health_app_import_with_invalid_circuit_reset` (subprocess abort). Baseline also failed `tests/test_seed_universe.py::test_seed_universe_csv_and_dry_run`; it passed afterward. Full suite is not claimed green.\n- Targeted mypy: no issues in either changed file.\n- PostgreSQL was not integration-tested locally; its existing resolver result (`manager_id`) and placeholder handling are unchanged.\n\n\n<!-- This is an auto-generated comment: release notes by coderabbit.ai -->\n\n## Summary by CodeRabbit\n\n- **Bug Fixes**\n  - Improved upload history compatibility with databases that use either `id` or `manager_id` for manager records.\n  - Recent uploads now load correctly across supported database schemas.\n  - Upload history gracefully returns an empty result when the database schema has not yet been initialized.\n\n<!-- end of auto-generated comment: release notes by coderabbit.ai -->\n\n## Acceptance disposition\n- [x] Selected by escaped-defect priority with measured baseline and candidate coverage.\n- [x] Minimal production fix in the same logical chunk; two supported SQLite schemas and missing-schema connection cleanup covered.\n- [x] Actual deliberate-break and byte-for-byte restoration evidence recorded above.\n- [x] Closer independently reran all 21 upload tests on exact head 21301837804362db8ca77930c1c86377ede67ff5; passed.\n\nThe project-wide 90% objective remains unmet; #1661 is explicitly one low-blast-radius round, not a claim of global completion.\n",
+    "labels": [
+      {
+        "id": "LA_kwDOO4LcjM8AAAACUJJHeA",
+        "name": "verify:compare",
+        "description": "Runs verifier comparison mode after merge",
+        "color": "1D76DB"
+      }
+    ],
+    "mergeCommit": {
+      "oid": "627df17ae1f8914087a4c0a8f79f206a690908bd"
+    },
+    "mergedAt": "2026-09-13T21:34:46Z",
+    "number": 1662,
+    "title": "fix(upload): restore recent history across SQLite manager schemas",
+    "url": "https://github.com/stranske/Manager-Database/pull/1662"
+  },
+  {
+    "body": "Closes #1652\n\nRepeated Saturday, Sunday, and holiday lookups previously refetched the same prior trading-day quote on every call. Track successfully fetched windows by normalized ticker and requested date so subsequent lookups reuse the available cached quote.\n\nThe first lookup still refreshes a partial cache. Different tickers and later dates refresh independently, and disabling the cache continues to fetch on each successful lookup. Failed, empty, or out-of-window provider responses do not mark a cached window checked, preserving retries after an unusable refresh. Checked dates live only for the adapter instance.\n\n## Tasks and acceptance\n- [x] Add checked-date caching to `PriceAdapter.close_on_or_before`.\n- [x] Cover Saturday, Sunday, and holiday dates with initially empty and preloaded SQLite caches; repeated AAPL lookups make exactly one provider request.\n- [x] Cover normalized tickers, different symbols, later trading dates, disabled caching, and retry after failed/empty/out-of-window refreshes.\n- [x] `python -m pytest tests/test_adapter_base.py` passes: 26 passed.\n- [x] Deliberately remove the checked-date guard and rerun the same gate: 9 failed, 17 passed on redundant request assertions. Restore the guard: 26 passed.\n\n## Validation\n- `python -m pytest tests/test_adapter_base.py tests/test_backtest_flow.py tests/test_attribution_flow.py`: 49 passed; seven existing FastAPI deprecation warnings.\n- Expanded tests against the original implementation: 9 failed, 17 passed.\n- `python -m ruff check adapters/prices.py tests/test_adapter_base.py`: passed.\n- `python -m black --check --target-version py312 adapters/prices.py tests/test_adapter_base.py`: passed.\n- `git diff --check`: passed.\n\nProvider behavior is injected at the supported fetcher boundary; these are offline tests using real SQLite storage, with no live market-data calls. Local test transcripts: `[LOCAL_HOME]/.codex/automations/pd-workloop-resume/artifacts/20260913T2001Z/` (`fixed-tests.txt`, `deliberate-break.txt`, `restored-tests.txt`).\n",
+    "labels": [
+      {
+        "id": "LA_kwDOO4LcjM8AAAACTb32Yg",
+        "name": "agent:codex",
+        "description": "Assign to Codex agent",
+        "color": "0e8a16"
+      },
+      {
+        "id": "LA_kwDOO4LcjM8AAAACTb-Fgg",
+        "name": "autofix",
+        "description": "Let bots format/lint automatically",
+        "color": "0366d6"
+      },
+      {
+        "id": "LA_kwDOO4LcjM8AAAACTcLHBw",
+        "name": "agents:keepalive",
+        "description": "Enable keepalive monitoring on PR",
+        "color": "1d76db"
+      },
+      {
+        "id": "LA_kwDOO4LcjM8AAAACUJJHeA",
+        "name": "verify:compare",
+        "description": "Runs verifier comparison mode after merge",
+        "color": "1D76DB"
+      },
+      {
+        "id": "LA_kwDOO4LcjM8AAAAC0hUTIQ",
+        "name": "codex",
+        "description": "Work performed by Codex",
+        "color": "1D76DB"
+      }
+    ],
+    "mergeCommit": {
+      "oid": "33592778c9acff79bf3b6f1f979a2b364383d4cb"
+    },
+    "mergedAt": "2026-09-13T21:33:15Z",
+    "number": 1660,
+    "title": "fix(prices): reuse checked weekend and holiday lookups",
+    "url": "https://github.com/stranske/Manager-Database/pull/1660"
+  },
+  {
+    "body": "Closes #1651\n\nSQLite manager tables commonly use `id`; five activism queries assumed `manager_id` and raised `sqlite3.OperationalError`. Resolve the join column with the shared `resolve_manager_id_column` helper so both SQLite schemas return the same records. PostgreSQL retains the existing `manager_id` identifier, and all filter values remain bound parameters.\n\nThe live functions are filings, events, active campaigns, activism campaigns, and manager activism profile. The issue's timeline function has no manager join; it is covered without changing its SQL.\n\n## Tasks and acceptance\n- [x] Resolve all five manager joins through the shared validated identifier helper.\n- [x] Execute populated SQLite regressions with both `id` and `manager_id`, including unmatched LEFT JOIN rows and bound filter values.\n- [x] Run `pytest tests/test_activism_dialect_portability.py`: 31 passed.\n- [x] Deliberately hardcode all five joins back to `m.manager_id`: 13 failed, 18 passed with missing-column errors; restore the fix: 31 passed.\n\n## Validation\n- `pytest tests/test_activism_dialect_portability.py tests/test_activism_api.py tests/test_activism_campaign_flow.py`: 48 passed. Existing FastAPI/SQLite deprecation warnings remain.\n- Ruff, Black (`--target-version py312`), and `git diff --check` passed.\n- SQLite behavior is exercised directly; this run does not claim a live PostgreSQL check.\n\nRegression evidence: the hardcoded implementation fails every affected query on the `id` schema, including missing-manager LEFT JOIN cases; the restored implementation passes all 31 portability cases.\n\n## Handoff\nImplementation and local acceptance checks are complete. Keepalive owns asynchronous CI and the next review pass; closer owns exact-head merge and post-merge verification.\n\n\n<!-- This is an auto-generated comment: release notes by coderabbit.ai -->\n\n## Summary by CodeRabbit\n\n- **Bug Fixes**\n  - Improved the reliability of activism data queries across supported database configurations.\n  - Manager-related filings, events, campaigns, and profiles now resolve correctly even when database column naming differs.\n  - Preserved filtering behavior and timeline results when manager records are unavailable.\n\n- **Tests**\n  - Added database compatibility coverage for activism queries, manager matching, filtering, and timeline results.\n\n<!-- end of auto-generated comment: release notes by coderabbit.ai -->",
+    "labels": [
+      {
+        "id": "LA_kwDOO4LcjM8AAAACTb32Yg",
+        "name": "agent:codex",
+        "description": "Assign to Codex agent",
+        "color": "0e8a16"
+      },
+      {
+        "id": "LA_kwDOO4LcjM8AAAACTb-Fgg",
+        "name": "autofix",
+        "description": "Let bots format/lint automatically",
+        "color": "0366d6"
+      },
+      {
+        "id": "LA_kwDOO4LcjM8AAAACTcLHBw",
+        "name": "agents:keepalive",
+        "description": "Enable keepalive monitoring on PR",
+        "color": "1d76db"
+      },
+      {
+        "id": "LA_kwDOO4LcjM8AAAACUJJHeA",
+        "name": "verify:compare",
+        "description": "Runs verifier comparison mode after merge",
+        "color": "1D76DB"
+      },
+      {
+        "id": "LA_kwDOO4LcjM8AAAAC0hUTIQ",
+        "name": "codex",
+        "description": "Work performed by Codex",
+        "color": "1D76DB"
+      }
+    ],
+    "mergeCommit": {
+      "oid": "0db5d0956692fc0db435ce8021f43c0e1c8418ed"
+    },
+    "mergedAt": "2026-09-13T19:28:51Z",
+    "number": 1659,
+    "title": "fix(activism): resolve manager joins across SQLite schemas",
+    "url": "https://github.com/stranske/Manager-Database/pull/1659"
+  },
+  {
+    "body": "Fractional similar-manager thresholds were accepted on rule creation and update, and persisted thresholds were evaluated as floats. For example, `2.5` could fire against a count of `3`; large integer thresholds could also lose precision.\n\nThis uses the existing positive-integer count parser for `similar_manager_count_gte` in validation and evaluation. Invalid stored thresholds do not fire or prevent later valid rules from being evaluated. Integral floats and integer strings retain the existing count-condition behavior. Continuous financial thresholds are unchanged.\n\nCloses #1650\n\n- [x] Move the condition into the integer condition keys; the shared parser enforces the existing minimum of 1.\n- [x] Parse stored thresholds as integers during evaluation.\n- [x] Cover create/update validation, stored invalid thresholds, inclusive boundaries, and large integer precision.\n- [x] Demonstrate that allowing floats again breaks the test gate.\n\nValidation: `uv run --extra dev pytest tests/test_alert_engine.py tests/test_alerts_api.py tests/test_alert_integration.py` — 193 passed. New tests on the original implementation: 15 failed, 113 passed. Restoring only the original `alerts/models.py`: 8 failed, 120 passed. Restored fix: `uv run --extra dev pytest tests/test_alert_engine.py` — 128 passed. Ruff, Black (py312), mypy on both source modules, and `git diff --check` pass.\n\nThe current API uses `condition_json`, event `crowded_trade_change`, and `AlertEngine._evaluate_condition`; the regression exercises those real interfaces instead of the outdated names in the issue example. Both create and update reject `2.5` specifically for `similar_manager_count_gte`.\n",
+    "labels": [
+      {
+        "id": "LA_kwDOO4LcjM8AAAACTb32Yg",
+        "name": "agent:codex",
+        "description": "Assign to Codex agent",
+        "color": "0e8a16"
+      },
+      {
+        "id": "LA_kwDOO4LcjM8AAAACTb-Fgg",
+        "name": "autofix",
+        "description": "Let bots format/lint automatically",
+        "color": "0366d6"
+      },
+      {
+        "id": "LA_kwDOO4LcjM8AAAACTcLHBw",
+        "name": "agents:keepalive",
+        "description": "Enable keepalive monitoring on PR",
+        "color": "1d76db"
+      },
+      {
+        "id": "LA_kwDOO4LcjM8AAAACUJJHeA",
+        "name": "verify:compare",
+        "description": "Runs verifier comparison mode after merge",
+        "color": "1D76DB"
+      },
+      {
+        "id": "LA_kwDOO4LcjM8AAAAC0hUTIQ",
+        "name": "codex",
+        "description": "Work performed by Codex",
+        "color": "1D76DB"
+      }
+    ],
+    "mergeCommit": {
+      "oid": "89e83faf33ee00fe4cf5ecdf756ca6a00926213f"
+    },
+    "mergedAt": "2026-09-13T18:31:10Z",
+    "number": 1658,
+    "title": "fix(alerts): require integer similar-manager count thresholds",
+    "url": "https://github.com/stranske/Manager-Database/pull/1658"
+  },
+  {
+    "body": "Closes #1648. Bounded verification follow-up to #1655; also restores the shared smoke environment used after #1656.\n\nThe post-merge Docker smoke failed twice before application startup because Docker Hub denies pulls for the pinned MinIO image (CI run 34768687099, attempts 1 and 2). Pull the same `RELEASE.2025-05-24T17-08-30Z` from `quay.io/minio/minio` in the repo-specific CI workflow and Compose file. MinIO documents this registry in its [official Docker instructions](https://github.com/minio/minio/blob/master/docs/docker/README.md). This changes the registry only; the release, service arguments and configuration stay the same.\n\nValidation:\n- Docker Hub manifest read remains unauthorized after anonymous registry authentication. Quay serves the pinned release with digest `sha256:a616cd8f37758b0296db62cc9e6af05a074e844cc7b5c0a0e62176d73828d440`, including Linux amd64 and arm64 images.\n- Pulled and started that image locally with the CI MinIO server arguments: exit 0, `/minio/health/live` returned HTTP 200, and `minio --version` reported the exact pinned release. The temporary container was removed. Local execution used arm64; GitHub's amd64 smoke remains the remote validation gate.\n- `docker compose config --quiet`, YAML parsing of both files, and `git diff --check` passed.\n- `python -m pytest tests/test_readiness_smoke.py -q`: 16 passed.\n\nThe preceding manager-selector change already has a dual-provider PASS report; its source remains open while this infrastructure caveat is repaired. After this follow-up merges, run `verify:compare` on this PR and disposition the source from the completed smoke and durable verifier report. No auto-merge is enabled; ordinary required checks, review closure and the seven-minute exact-head review window apply.\n\n\n<!-- This is an auto-generated comment: release notes by coderabbit.ai -->\n\n## Summary by CodeRabbit\n\n- **Chores**\n  - Updated the MinIO image source used by container-based environments and automated smoke checks.\n  - Continued using the same pinned MinIO release version for consistent behavior.\n\n<!-- end of auto-generated comment: release notes by coderabbit.ai -->",
+    "labels": [
+      {
+        "id": "LA_kwDOO4LcjM8AAAACTb32Yg",
+        "name": "agent:codex",
+        "description": "Assign to Codex agent",
+        "color": "0e8a16"
+      },
+      {
+        "id": "LA_kwDOO4LcjM8AAAACTb-Fgg",
+        "name": "autofix",
+        "description": "Let bots format/lint automatically",
+        "color": "0366d6"
+      },
+      {
+        "id": "LA_kwDOO4LcjM8AAAACTcLHBw",
+        "name": "agents:keepalive",
+        "description": "Enable keepalive monitoring on PR",
+        "color": "1d76db"
+      },
+      {
+        "id": "LA_kwDOO4LcjM8AAAACUJJHeA",
+        "name": "verify:compare",
+        "description": "Runs verifier comparison mode after merge",
+        "color": "1D76DB"
+      },
+      {
+        "id": "LA_kwDOO4LcjM8AAAAC0hUTIQ",
+        "name": "codex",
+        "description": "Work performed by Codex",
+        "color": "1D76DB"
+      }
+    ],
+    "mergeCommit": {
+      "oid": "e946f52f4b9917016fa8e515d2d8a25011aa1dbd"
+    },
+    "mergedAt": "2026-09-13T19:30:12Z",
+    "number": 1657,
+    "title": "fix(ci): restore MinIO pulls through official Quay registry",
+    "url": "https://github.com/stranske/Manager-Database/pull/1657"
+  },
+  {
+    "body": "Closes #1649.\n\nWhen SQLite defines `managers.id`, the upload manager selector currently returns no choices because its query hardcodes `manager_id`. Resolve the primary key with `adapters.base.resolve_manager_id_column` so both supported column names return managers sorted by name. Preserve the existing empty-schema fallback, exception logging, and connection cleanup.\n\n## Tasks and acceptance\n- [x] Use the shared manager ID column resolver in `_load_managers()`.\n- [x] Verify populated and empty SQLite `id` and `manager_id` schemas with real SQL, sorted results, and closed connections.\n- [x] Verify unexpected schema errors are logged and return an empty list.\n- [x] `pytest tests/test_upload.py`: 19 passed.\n- [x] Deliberate-break gate: overlay the candidate tests onto the original implementation; the populated `id` regression fails and logs `sqlite3.OperationalError: no such column: manager_id`. Fixed implementation passes all 19 tests.\n\nThe live API takes no connection argument, so tests inject a real SQLite connection through `connect_db`. Errors remain caught by design; the deliberate-break assertion fails on the empty result and captures the original OperationalError in the log. No live PostgreSQL validation is claimed.\n\n## Validation evidence\nRuff and Black pass on both changed files; `mypy ui/upload.py` and `git diff --check` pass. The independent verifier grades the command PASS; per-node attribution was unavailable, and no claim is made that every compatibility test must fail on the base.\n\n### Deliberate-break demonstration — PASS\n\n- gate: `pytest tests/test_upload.py`\n- base ref: `origin/main`\n- worktree: `[LOCAL_HOME]/.codex/automations/pd-workloop-resume/worktrees/mdb-1649-upload-managers`\n- candidate tests overlaid onto the base: `tests/test_upload.py`\n\n**RED — the gate against the base implementation** (`origin/main` with only the candidate tests overlaid). Exit code `1`.\n\n```\narametrize(\"populated\", [False, True])\n    def test_load_managers_resolves_schema_and_closes_connection(monkeypatch, id_column, populated):\n        conn = sqlite3.connect(\":memory:\")\n        conn.execute(f\"CREATE TABLE managers ({id_column} INTEGER PRIMARY KEY, name TEXT NOT NULL)\")\n        if populated:\n            conn.executemany(\n                f\"INSERT INTO managers ({id_column}, name) VALUES (?, ?)\",\n                [(1, \"Zulu\"), (2, \"Alpha\")],\n            )\n        monkeypatch.setattr(upload, \"connect_db\", lambda: conn)\n    \n>       assert upload._load_managers() == ([(2, \"Alpha\"), (1, \"Zulu\")] if populated else [])\nE       AssertionError: assert [] == [(2, 'Alpha'), (1, 'Zulu')]\nE         \nE         Right contains 2 more items, first extra item: (2, 'Alpha')\nE         Use -v to get more diff\n\ntests/test_upload.py:207: AssertionError\n------------------------------ Captured log call -------------------------------\nERROR    ui.upload:upload.py:46 Failed to load managers from database\nTraceback (most recent call last):\n  File \"/private/var/folders/qm/w0dtc0j132gd6ymf1hxtd2p00000gp/T/orch-local-verify-in59uz4c/base/ui/upload.py\", line 43, in _load_managers\n    rows = conn.execute(\"SELECT manager_id, name FROM managers ORDER BY name ASC\").fetchall()\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nsqlite3.OperationalError: no such column: manager_id\n=============================== warnings summary ===============================\n../../../../../../../../opt/anaconda3/lib/python3.12/site-packages/langsmith/evaluation/_key_extraction.py:20\n  /opt/anaconda3/lib/python3.12/site-packages/langsmith/evaluation/_key_extraction.py:20: DeprecationWarning: ast.Str is deprecated and will be removed in Python 3.14; use ast.Constant instead\n    (ast.Str, ast.Constant) if hasattr(ast, \"Str\") else (ast.Constant,)\n\napi/chat.py:1501\n  /private/var/folders/qm/w0dtc0j132gd6ymf1hxtd2p00000gp/T/orch-local-verify-in59uz4c/base/api/chat.py:1501: DeprecationWarning: \n          on_event is deprecated, use lifespan event handlers instead.\n  \n          Read more about it in the\n          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).\n          \n    @app.on_event(\"startup\")\n\n../../../../../../../../opt/anaconda3/lib/python3.12/site-packages/fastapi/applications.py:4675\n../../../../../../../../opt/anaconda3/lib/python3.12/site-packages/fastapi/applications.py:4675\n../../../../../../../../opt/anaconda3/lib/python3.12/site-packages/fastapi/applications.py:4675\n  /opt/anaconda3/lib/python3.12/site-packages/fastapi/applications.py:4675: DeprecationWarning: \n          on_event is deprecated, use lifespan event handlers instead.\n  \n          Read more about it in the\n          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).\n          \n    return self.router.on_event(event_type)  # ty: ignore[deprecated]\n\napi/chat.py:1801\n  /private/var/folders/qm/w0dtc0j132gd6ymf1hxtd2p00000gp/T/orch-local-verify-in59uz4c/base/api/chat.py:1801: DeprecationWarning: \n          on_event is deprecated, use lifespan event handlers instead.\n  \n          Read more about it in the\n          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).\n          \n    @app.on_event(\"shutdown\")\n\napi/chat.py:1808\n  /private/var/folders/qm/w0dtc0j132gd6ymf1hxtd2p00000gp/T/orch-local-verify-in59uz4c/base/api/chat.py:1808: DeprecationWarning: \n          on_event is deprecated, use lifespan event handlers instead.\n  \n          Read more about it in the\n          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).\n          \n    @app.on_event(\"shutdown\")\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=========================== short test summary info ============================\nFAILED tests/test_upload.py::test_load_managers_resolves_schema_and_closes_connection[True-id]\n1 failed, 18 passed, 7 warnings in 2.80s\n```\n\n**GREEN — the same gate in the worktree, with the implementation present.** Exit code `0`.\n\n```\n...................                                                      [100%]\n=============================== warnings summary ===============================\n../../../../../../../opt/anaconda3/lib/python3.12/site-packages/langsmith/evaluation/_key_extraction.py:20\n  /opt/anaconda3/lib/python3.12/site-packages/langsmith/evaluation/_key_extraction.py:20: DeprecationWarning: ast.Str is deprecated and will be removed in Python 3.14; use ast.Constant instead\n    (ast.Str, ast.Constant) if hasattr(ast, \"Str\") else (ast.Constant,)\n\napi/chat.py:1501\n  [LOCAL_HOME]/.codex/automations/pd-workloop-resume/worktrees/mdb-1649-upload-managers/api/chat.py:1501: DeprecationWarning: \n          on_event is deprecated, use lifespan event handlers instead.\n  \n          Read more about it in the\n          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).\n          \n    @app.on_event(\"startup\")\n\n../../../../../../../opt/anaconda3/lib/python3.12/site-packages/fastapi/applications.py:4675\n../../../../../../../opt/anaconda3/lib/python3.12/site-packages/fastapi/applications.py:4675\n../../../../../../../opt/anaconda3/lib/python3.12/site-packages/fastapi/applications.py:4675\n  /opt/anaconda3/lib/python3.12/site-packages/fastapi/applications.py:4675: DeprecationWarning: \n          on_event is deprecated, use lifespan event handlers instead.\n  \n          Read more about it in the\n          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).\n          \n    return self.router.on_event(event_type)  # ty: ignore[deprecated]\n\napi/chat.py:1801\n  [LOCAL_HOME]/.codex/automations/pd-workloop-resume/worktrees/mdb-1649-upload-managers/api/chat.py:1801: DeprecationWarning: \n          on_event is deprecated, use lifespan event handlers instead.\n  \n          Read more about it in the\n          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).\n          \n    @app.on_event(\"shutdown\")\n\napi/chat.py:1808\n  [LOCAL_HOME]/.codex/automations/pd-workloop-resume/worktrees/mdb-1649-upload-managers/api/chat.py:1808: DeprecationWarning: \n          on_event is deprecated, use lifespan event handlers instead.\n  \n          Read more about it in the\n          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).\n          \n    @app.on_event(\"shutdown\")\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n19 passed, 7 warnings in 3.11s\n```\n\n**Per-node attribution unavailable**, so the red above is graded per COMMAND and one discriminating test would earn it for every tautology beside it: pytest emitted no parseable per-node outcome lines (returncode=1)\n\n_Produced by `local_verify.py --transcript`; the live worktree was never mutated._\n",
+    "labels": [
+      {
+        "id": "LA_kwDOO4LcjM8AAAACTb32Yg",
+        "name": "agent:codex",
+        "description": "Assign to Codex agent",
+        "color": "0e8a16"
+      },
+      {
+        "id": "LA_kwDOO4LcjM8AAAACTb-Fgg",
+        "name": "autofix",
+        "description": "Let bots format/lint automatically",
+        "color": "0366d6"
+      },
+      {
+        "id": "LA_kwDOO4LcjM8AAAACTcLHBw",
+        "name": "agents:keepalive",
+        "description": "Enable keepalive monitoring on PR",
+        "color": "1d76db"
+      },
+      {
+        "id": "LA_kwDOO4LcjM8AAAACUJJHeA",
+        "name": "verify:compare",
+        "description": "Runs verifier comparison mode after merge",
+        "color": "1D76DB"
+      },
+      {
+        "id": "LA_kwDOO4LcjM8AAAAC0hUTIQ",
+        "name": "codex",
+        "description": "Work performed by Codex",
+        "color": "1D76DB"
+      }
+    ],
+    "mergeCommit": {
+      "oid": "716b4593e1803f3b789260eec8a9ae1a51b883e1"
+    },
+    "mergedAt": "2026-09-13T17:30:07Z",
+    "number": 1656,
+    "title": "fix(upload-ui): resolve manager primary key for SQLite",
+    "url": "https://github.com/stranske/Manager-Database/pull/1656"
+  },
+  {
+    "body": "The alerts manager selector discarded every manager returned by `/managers` because it read `id` while the API serializes `manager_id`. Resolve the canonical identifier first, falling back to legacy `id` when it is absent or null. Keep valid integer/string IDs, pagination, sorting, and deduplication intact.\n\nCloses #1648.\n\n## Validation\n\n- [x] API payload `[{\"manager_id\": 1, \"name\": \"Elliott\"}]` returns `[(1, \"Elliott\")]`.\n- [x] Regression coverage includes list and paginated responses, legacy IDs, canonical precedence, zero IDs, incomplete entries, sorting, and deduplication.\n- [x] `python3 -m pytest tests/test_ui_alerts.py -q`: 52 passed after the fix; the regression suite fails on the original implementation.\n- [x] Deliberately changing canonical lookup back to `id` makes nine cases fail; restoring the implementation returns all 52 to passing.\n- [x] Ruff, Black (Python 3.12 target), mypy for `ui/alerts.py`, and `git diff --check` pass.\n\nReady for keepalive CI/review, then closer verification.\n\n\n<!-- This is an auto-generated comment: release notes by coderabbit.ai -->\n\n## Summary by CodeRabbit\n\n* **Bug Fixes**\n  * Improved manager loading to support both current and legacy identifier formats.\n  * Added support for paginated manager data.\n  * Ensured incomplete entries are excluded and duplicate identifiers are handled consistently.\n\n<!-- end of auto-generated comment: release notes by coderabbit.ai -->",
+    "labels": [
+      {
+        "id": "LA_kwDOO4LcjM8AAAACTb32Yg",
+        "name": "agent:codex",
+        "description": "Assign to Codex agent",
+        "color": "0e8a16"
+      },
+      {
+        "id": "LA_kwDOO4LcjM8AAAACTb-Fgg",
+        "name": "autofix",
+        "description": "Let bots format/lint automatically",
+        "color": "0366d6"
+      },
+      {
+        "id": "LA_kwDOO4LcjM8AAAACTcLHBw",
+        "name": "agents:keepalive",
+        "description": "Enable keepalive monitoring on PR",
+        "color": "1d76db"
+      },
+      {
+        "id": "LA_kwDOO4LcjM8AAAACUJJHeA",
+        "name": "verify:compare",
+        "description": "Runs verifier comparison mode after merge",
+        "color": "1D76DB"
+      },
+      {
+        "id": "LA_kwDOO4LcjM8AAAAC0hUTIQ",
+        "name": "codex",
+        "description": "Work performed by Codex",
+        "color": "1D76DB"
+      }
+    ],
+    "mergeCommit": {
+      "oid": "ccffead13b168f084c4169e64838c43d3e4c36c3"
+    },
+    "mergedAt": "2026-09-13T16:28:33Z",
+    "number": 1655,
+    "title": "fix(alerts-ui): populate manager selector from API identifiers",
+    "url": "https://github.com/stranske/Manager-Database/pull/1655"
+  }
+]

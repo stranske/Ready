@@ -1,8 +1,8 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-15T01:42:27Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-15T02:13:15Z)
 
-Units: 115 — done 111, failed 4
+Units: 116 — claimed 1, done 111, failed 4
 Paused: False   Phase stops: []
-Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=warn vibe=ok aider=ok
+Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 Claude conservation: off (weekly window available)
 Owner inbox: https://github.com/stranske/Ready/issues/553
 
@@ -123,12 +123,10 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D4-verify-merged-2026-09-12T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
 | D4-verify-merged-2026-09-13T01 | D | D | failed | cursor |  | Verify merged PRs against their issues' acceptance criteria |
 | D4-verify-merged-2026-09-14T02 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
+| D4-verify-merged-2026-09-15T02 | D | D | claimed | cursor | codex | Verify merged PRs against their issues' acceptance criteria |
 
 ## Last checkpoints
 
-- 2026-09-14T18:29:28Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
-- 2026-09-14T19:00:22Z — refill — Manager-Database: open=2 <= 2 → audit queued
-- 2026-09-14T19:00:26Z — D-audit-Manager-Database--2026-09-14T19-00-22Z — route — router picked codex from ['codex']
 - 2026-09-14T19:00:26Z — D-audit-Manager-Database--2026-09-14T19-00-22Z — claimed by driver (agent codex)
 - 2026-09-14T19:10:08Z — D-audit-Manager-Database--2026-09-14T19-00-22Z — fail — offload to codex exited 1; retained artifact is not proof of success
 - 2026-09-14T19:11:43Z — D-audit-Manager-Database--2026-09-14T19-00-22Z — route — router picked codex from ['codex']
@@ -138,6 +136,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-15T01:34:46Z — D3-unblock-sweep-2026-09-15T01 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-15T01:34:46Z — D3-unblock-sweep-2026-09-15T01 — claimed by driver (agent cursor)
 - 2026-09-15T01:42:27Z — D3-unblock-sweep-2026-09-15T01 — done — cursor produced 506 words at artifacts/sweeps/D3-unblock-sweep-2026-09-15T01.md in 438s
+- 2026-09-15T02:11:46Z — verify — enqueued D4-verify-merged-2026-09-15T02
+- 2026-09-15T02:11:46Z — D4-verify-merged-2026-09-15T02 — route — router picked cursor from ['codex', 'cursor']
+- 2026-09-15T02:11:46Z — D4-verify-merged-2026-09-15T02 — claimed by codex (agent cursor)
 
 ## Questions
 
