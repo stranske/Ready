@@ -691,3 +691,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-14T19:11:43Z — D-audit-Manager-Database--2026-09-14T19-00-22Z — route — router picked codex from ['codex']
 ## 2026-09-14T19:11:43Z — D-audit-Manager-Database--2026-09-14T19-00-22Z — claimed by codex (agent codex)
 ## 2026-09-14T19:14:51Z — D-audit-Manager-Database--2026-09-14T19-00-22Z — done — Reconciled nine published Manager-Database findings with successful format guards, unique intake rows, and complete canonical audit records at unchanged main.
+## 2026-09-15T01:34:46Z — unblock — enqueued D3-unblock-sweep-2026-09-15T01
+## 2026-09-15T01:34:46Z — D3-unblock-sweep-2026-09-15T01 — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-15T01:34:46Z — D3-unblock-sweep-2026-09-15T01 — claimed by driver (agent cursor)
