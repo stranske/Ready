@@ -1,0 +1,108 @@
+[
+  {
+    "body": "<!-- pr-preamble:start -->\n<!-- meta:issue:559 -->\n> **Source:** Issue #559\n\nCloses #559\n\n<!-- pr-preamble:end -->\n\n<!-- auto-status-summary:start -->\n## Automated Status Summary\n#### Scope\nIn tools/embedding_provider.py lines 155 and 214, both OpenAIEmbeddingProvider.embed and LocalFallbackEmbeddingProvider.embed filter input texts using list comprehensions: items = [text.strip() for text in texts if text and text.strip()]. When a caller provides an iterable containing empty or whitespace-only strings (e.g. [\"text\", \"\", \"more\"]), dropping elements changes the returned vector count (len(response.vectors) != len(texts)), corrupting positional 1-to-1 alignment between input documents and output embedding vectors.\n\n#### Tasks\n- [x] Update OpenAIEmbeddingProvider.embed in tools/embedding_provider.py to preserve input sequence length\n- [x] Update LocalFallbackEmbeddingProvider.embed in tools/embedding_provider.py to return a zero or fallback vector for empty items\n- [x] Add unit tests in tests/test_main.py asserting len(resp.vectors) == len(texts) for inputs containing empty strings\n\n#### Acceptance criteria\n- [x] `pytest tests/test_main.py` passes with all tests green.\n- [x] `python -c \"from tools.embedding_provider import LocalFallbackEmbeddingProvider; p = LocalFallbackEmbeddingProvider(); r = p.embed(['a', '', 'b']); assert len(r.vectors) == 3\"` succeeds.\n- [x] Deliberate-break demonstration: re-introducing the if text.strip() filter causes `pytest tests/test_main.py` to fail on empty-item test cases, and reverting restores pass.\n\n<!-- auto-status-summary:end -->\n\n<!-- This is an auto-generated comment: release notes by coderabbit.ai -->\n\n## Summary by CodeRabbit\n\n- **Bug Fixes**\n  - Embedding results now consistently preserve the original input order.\n  - Blank or whitespace-only inputs receive zero vectors while maintaining the configured dimensions.\n  - Mixed inputs continue to produce one result per input, including entries filtered before processing.\n  - Embedding responses now report detected vector dimensions in their metadata.\n\n<!-- end of auto-generated comment: release notes by coderabbit.ai -->\n\n## Opener recovery validation\n\nRebased onto current main and fixed the optional-dimension type assertions. Mocked OpenAI tests now cover mixed blank inputs, all-blank inputs, empty input, iterator input, exact vector positions, and retained nonblank text stripping. `python3 -m pytest tests/test_main.py -q`: 10 passed. `python3 -m mypy --follow-imports=silent --ignore-missing-imports tests/test_main.py`: passes; the prior tests reproduced three operator errors. Ruff and Black pass. Restoring input filtering causes four alignment tests to fail; byte restoration returns all ten to pass. The issue alignment one-liner passes.\n\nWhitespace review finding: main already calls `text.strip()` before OpenAI embedding. Retaining stripping preserves existing behavior; the new mocked test locks this down. Active review threads require reviewer disposition; no self-resolution or merge is claimed.\n",
+    "labels": [
+      {
+        "id": "LA_kwDORbgIC88AAAACZuxGbA",
+        "name": "agent:retry",
+        "description": "Add to trigger agent retry after rate limit or pause",
+        "color": "0e8a16"
+      },
+      {
+        "id": "LA_kwDORbgIC88AAAACZuxGeQ",
+        "name": "agent:needs-attention",
+        "description": "Agent needs human review or intervention",
+        "color": "fbca04"
+      },
+      {
+        "id": "LA_kwDORbgIC88AAAACZuxG2Q",
+        "name": "agents:keepalive",
+        "description": "Enable keepalive monitoring on PR",
+        "color": "1d76db"
+      },
+      {
+        "id": "LA_kwDORbgIC88AAAACZuxHMQ",
+        "name": "autofix",
+        "description": "Let bots format/lint automatically",
+        "color": "0366d6"
+      },
+      {
+        "id": "LA_kwDORbgIC88AAAACvmrMIQ",
+        "name": "agent:cursor",
+        "description": "Assign to Cursor agent (cursor-agent CLI)",
+        "color": "00b8d9"
+      },
+      {
+        "id": "LA_kwDORbgIC88AAAACxe2qiw",
+        "name": "verify:compare",
+        "description": "Runs verifier comparison mode after merge",
+        "color": "942665"
+      }
+    ],
+    "mergeCommit": {
+      "oid": "4107431ed0b1a503c2e504fa5a25c153e4fb47f6"
+    },
+    "mergedAt": "2026-09-14T07:59:51Z",
+    "number": 571,
+    "title": "fix(embedding): preserve vector alignment for empty inputs (closes #559)",
+    "url": "https://github.com/stranske/Ready/pull/571"
+  },
+  {
+    "body": "<!-- pr-preamble:start -->\n<!-- meta:issue:554 -->\n> **Source:** Issue #554\n\nCloses #554\n\n<!-- pr-preamble:end -->\n\n<!-- auto-status-summary:start -->\n## Automated Status Summary\n#### Scope\n`research-program/artifacts/work-bundle/` is prepared to be handed to colleagues in the owner's work environment, and the rest of `research-program/` is published to a public repository. Two disclosure-class defects have already reached this tree, both invisible on a casual read:\n\n- A credential scan printed token prefixes into a working file before it was caught by hand.\n- A batch of issue bodies carried a drafting agent's private working-directory paths (`[LOCAL_WORKSPACE]/<Repo>/...`), which made twenty-two issues unactionable across the fleet and had to be repaired one by one.\n\nBoth were found by a person looking. Neither would have been caught by any check in this repository, because there is none. The bundle's own redaction pass is a one-time human-reviewed step, not a gate, so nothing prevents the next artifact from reintroducing what the last one removed.\n\nEvidence: `research-program/artifacts/work-bundle/REDACTIONS.md` records the manual redaction pass and its scope reduction; `README.md` states the disclosure standard this issue enforces; `research-program/CHECKPOINT.md` records the repair of the path-citation defect.\n\n#### Tasks\n- [x] Add `scripts/check_publication_safety.py` scanning every file under `research-program/` for: an absolute home path (`[LOCAL_HOME]/`), a credential prefix (`[REDACTED_CREDENTIAL]`, `[REDACTED_CREDENTIAL]`, `[REDACTED_CREDENTIAL]`, `[REDACTED_CREDENTIAL]`, `[REDACTED_CREDENTIAL]`, `[REDACTED_CREDENTIAL]`, `[REDACTED_CREDENTIAL]`), a private-key header (`[PRIVATE_KEY_HEADER]`, `[PRIVATE_KEY_HEADER]`), a scratchpad or drafting-agent path (`[LOCAL_WORKSPACE]/`, `[LOCAL_WORKSPACE]/`, `[LOCAL_WORKSPACE]/`), and an internal hostname pattern (`[LOCAL_HOST]` or a bare `localhost:` port reference).\n- [x] Report every hit in one pass with file, line number and which rule matched; do not stop at the first.\n- [x] Support an explicit allowlist file, `research-program/.publication-allow`, holding one `path:rule` pair per line with a required trailing comment giving the reason, so a deliberate exception is visible and justified rather than a silent skip.\n- [x] Exit non-zero on any unallowed hit; print a summary line naming the counts for every rule including the zeros, so a clean run is distinguishable from a run that scanned nothing.\n- [x] Print the number of files scanned, so a guard that matched nothing because it walked the wrong directory is visible.\n- [x] Add `.github/workflows/publication-guard.yml` running the script on pull requests and on pushes to the default branch.\n- [x] Add `tests/test_publication_safety.py` with fixtures for each rule, an allowlisted exception, and a clean tree.\n\n#### Acceptance criteria\n- [x] `python scripts/check_publication_safety.py` exits non-zero on a fixture containing a token prefix and names the file, the line and the rule.\n- [x] The same fixture allowlisted with a reason exits zero, and an allowlist entry without a reason is itself an error.\n- [x] A clean tree exits zero and prints the per-rule counts including zeros and the number of files scanned.\n- [x] Pointing the scanner at an empty directory fails rather than passing, because zero files scanned is not evidence of safety.\n- [x] The workflow runs on pull requests and blocks merge on failure.\n\n<!-- auto-status-summary:end -->\n\n<!-- This is an auto-generated comment: release notes by coderabbit.ai -->\n## Summary by CodeRabbit\n\n- **New Features**\n  - Added automated publication-safety checks for credentials, private keys, local paths, and internal hosts.\n  - Added preparation tooling to redact sensitive details from publication copies while preserving supported file content.\n  - Publication validation now blocks the Gate when findings, invalid inputs, or incomplete checks are detected.\n  - Added reviewed allowlist support for approved findings.\n\n- **Documentation**\n  - Added guidance covering detected content, allowlist requirements, redaction behavior, and workflow enforcement.\n<!-- end of auto-generated comment: release notes by coderabbit.ai -->\n",
+    "labels": [
+      {
+        "id": "LA_kwDORbgIC88AAAACZuxF1A",
+        "name": "agent:codex",
+        "description": "Assign to Codex agent",
+        "color": "0e8a16"
+      },
+      {
+        "id": "LA_kwDORbgIC88AAAACZuxG2Q",
+        "name": "agents:keepalive",
+        "description": "Enable keepalive monitoring on PR",
+        "color": "1d76db"
+      },
+      {
+        "id": "LA_kwDORbgIC88AAAACZuxHMQ",
+        "name": "autofix",
+        "description": "Let bots format/lint automatically",
+        "color": "0366d6"
+      },
+      {
+        "id": "LA_kwDORbgIC88AAAACxe2qiw",
+        "name": "verify:compare",
+        "description": "Runs verifier comparison mode after merge",
+        "color": "942665"
+      }
+    ],
+    "mergeCommit": {
+      "oid": "2dd52d56932de83b4f0f5c02c4274802ebd7dd31"
+    },
+    "mergedAt": "2026-09-14T15:26:24Z",
+    "number": 569,
+    "title": "feat(publication): enforce research safety scan in required Gate",
+    "url": "https://github.com/stranske/Ready/pull/569"
+  },
+  {
+    "body": "## Dev Tool Version Sync\n\nThis PR updates dev tool versions in `pyproject.toml` and related generated dependency files to match the central version pins from [stranske/Workflows](https://github.com/stranske/Workflows).\n\n### Changes\n```\nFound 3 version updates:\n  - ruff: ==0.16.6 -> ==0.16.7\n  - requirements.lock:ruff: 0.16.6 -> ==0.16.7\n  - requirements-dev.lock:ruff: 0.16.6 -> ==0.16.7\n\nRun with --apply to update dependency files\n```\n\n### Why\nConsistent dev tool versions across repos ensures:\n- CI behaviors match between repos\n- No surprises from version drift\n- Easier debugging when tools behave the same everywhere\n\n---\n**Source:** `.github/workflows/autofix-versions.env`\n**Settled source commit:** `569875fea7d2956d35c45ff83766b65e47bfb23a`\n\n<!-- sync-pr-delivery-record:v1 {\"schema\":\"sync-pr-delivery-record/v1\",\"durable_issue_url\":\"https://github.com/stranske/Workflows/issues/1836\",\"plan_id\":\"dev-tool-da45be92183d\",\"generation\":\"da45be92183d\",\"repository\":\"stranske/Ready\",\"desired_tree_hash\":\"8dcc2b1c2af59590bd72aa7f77a66e866ec426f4\",\"source_commit\":\"569875fea7d2956d35c45ff83766b65e47bfb23a\",\"lease_expires_at\":\"2026-09-16T21:04:47Z\",\"predecessor_prs\":[],\"successor_prs\":[]} -->",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "4d1f7be46c141f5ef5163ce538d9b977456854fd"
+    },
+    "mergedAt": "2026-09-13T23:52:51Z",
+    "number": 568,
+    "title": "deps: sync dev tool versions",
+    "url": "https://github.com/stranske/Ready/pull/568"
+  },
+  {
+    "body": "<!-- workflow-source:local_request -->\nReady's default branch is red: the format check fails with `39 files would be reformatted`, all of them under `research-program/artifacts`.\n\nThat tree is not source. It is a published mirror of a local engine directory, rsynced in with deletion enabled on every worker tick, holding agent-generated scripts and reports. Formatting them would be churn the next sync discards, and the repository README already records the tree as machine-owned.\n\n`ruff` already excludes exactly this path via `extend-exclude`. `black` did not, so the two linters disagreed about what counts as this repository's code. This adds the matching exclusion, using `force-exclude` because CI passes explicit paths and `extend-exclude` does not apply to those.\n\nVerified locally: `black --check .` now reports 74 files unchanged, none reformatted.\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\n<!-- This is an auto-generated comment: release notes by coderabbit.ai -->\n\n## Summary by CodeRabbit\n\n- **Chores**\n  - Updated formatting configuration to exclude research artifacts from automatic formatting.\n\n<!-- end of auto-generated comment: release notes by coderabbit.ai -->",
+    "labels": [],
+    "mergeCommit": {
+      "oid": "94fd565ad1ee2aa6f9d4c39521265fdc5c4abc53"
+    },
+    "mergedAt": "2026-09-13T20:56:59Z",
+    "number": 567,
+    "title": "fix(ci): exclude the machine-owned artifact mirror from black, as ruff already does",
+    "url": "https://github.com/stranske/Ready/pull/567"
+  }
+]
