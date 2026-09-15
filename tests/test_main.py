@@ -1,12 +1,22 @@
-"""Tests for my_project module."""
+"""Tests for my_project module and backplane contract validation."""
 
 import sys
+from pathlib import Path
 from types import ModuleType
 from unittest.mock import Mock
 
 import pytest
+from scripts.validate_run_contract import (
+    INGEST_SCHEMA_FILES,
+    _self_smoke,
+    validate_envelope,
+)
 
 from my_project import __version__, add, greet
+
+REPO_ROOT = Path(__file__).resolve().parent.parent
+SCHEMA_DIR = REPO_ROOT / "docs" / "contracts" / "schemas"
+REGISTRY_PATH = REPO_ROOT / "config" / "backplane_participants.json"
 
 
 def test_version() -> None:
@@ -37,6 +47,94 @@ def test_add_negative() -> None:
     """Add should handle negative numbers."""
     assert add(-5, -3) == -8
     assert add(-10, 5) == -5
+
+
+def test_ingest_schema_files_includes_capability_bundle() -> None:
+    """Consumer ingest map must include capability-bundle/v1."""
+    assert "capability-bundle/v1" in INGEST_SCHEMA_FILES
+    assert INGEST_SCHEMA_FILES["capability-bundle/v1"] == "capability-bundle-v1.schema.json"
+
+
+def _capability_bundle_consumer_registry() -> dict[str, object]:
+    return {
+        "participants": [
+            {
+                "repo": "stranske/Ready",
+                "role": "consumer",
+                "status": "emitting",
+                "ingests": ["capability-bundle/v1"],
+            }
+        ]
+    }
+
+
+def _valid_capability_bundle() -> dict[str, object]:
+    return {
+        "schema_version": "capability-bundle/v1",
+        "capability_id": "test.capability",
+        "version": "1",
+        "content_hash": ("sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"),
+        "selector": {},
+        "owner": "test-owner",
+        "fragments": {"task": "validate capability-bundle consumer path"},
+        "gates": ["gate1"],
+        "rollback": "revert",
+    }
+
+
+def test_validate_envelope_accepts_valid_capability_bundle_consumer() -> None:
+    """Consumer path must accept a schema-valid capability-bundle document."""
+    report = validate_envelope(
+        envelope=_valid_capability_bundle(),
+        schema_dir=SCHEMA_DIR,
+        registry=_capability_bundle_consumer_registry(),
+        repo="stranske/Ready",
+        manifest=None,
+    )
+    assert report.conformant
+    assert not report.skipped
+    assert report.role == "consumer"
+
+
+def test_validate_envelope_rejects_invalid_capability_bundle_consumer() -> None:
+    """Consumer path must reject capability-bundle documents missing required fields."""
+    invalid = _valid_capability_bundle()
+    del invalid["content_hash"]
+    report = validate_envelope(
+        envelope=invalid,
+        schema_dir=SCHEMA_DIR,
+        registry=_capability_bundle_consumer_registry(),
+        repo="stranske/Ready",
+        manifest=None,
+    )
+    assert not report.conformant
+    assert report.violations
+
+
+def test_self_smoke_validates_all_schema_files(capsys: pytest.CaptureFixture[str]) -> None:
+    """Self-smoke must load every bundled Draft 2020-12 schema."""
+    expected = sorted(p.name for p in SCHEMA_DIR.glob("*.schema.json"))
+    assert expected, "expected at least one schema under docs/contracts/schemas"
+    assert _self_smoke(SCHEMA_DIR, REGISTRY_PATH) == 0
+    prefix = "PASS schema loads + valid Draft202012: "
+    validated = [
+        line.removeprefix(prefix)
+        for line in capsys.readouterr().out.splitlines()
+        if line.startswith(prefix)
+    ]
+    assert validated == expected
+
+
+def test_self_smoke_fails_when_schema_dir_empty(tmp_path: Path) -> None:
+    """Self-smoke must fail when no bundled schemas are present."""
+    empty_dir = tmp_path / "schemas"
+    empty_dir.mkdir()
+    assert _self_smoke(empty_dir, REGISTRY_PATH) == 1
+
+
+def test_ingest_schema_files_requires_capability_bundle_mapping() -> None:
+    """Deliberate-break guard: capability-bundle mapping is required."""
+    assert "capability-bundle/v1" in INGEST_SCHEMA_FILES
 
 
 def test_local_fallback_embedding_preserves_empty_string_positions() -> None:
