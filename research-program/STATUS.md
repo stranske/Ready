@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-15T01:34:46Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-15T01:42:27Z)
 
-Units: 115 — claimed 1, done 110, failed 4
+Units: 115 — done 111, failed 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=warn vibe=ok aider=ok
 Claude conservation: off (weekly window available)
@@ -83,7 +83,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D3-unblock-sweep-2026-09-14T01 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D3-unblock-sweep-2026-09-14T09 | D | D | done | cursor | codex | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D3-unblock-sweep-2026-09-14T17 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
-| D3-unblock-sweep-2026-09-15T01 | D | D | claimed | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
+| D3-unblock-sweep-2026-09-15T01 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D3-unblock-sweep-pass2-20260913T2023 | D | D | done | cursor | driver | Unblock sweep pass 2: the seven repos the budgeted first pass deferred |
 | D-audit-Counter_Risk--2026-09-07T04-47-32Z | D | D | done | codex | driver | Audit stranske/Counter_Risk and file issues (supply 2 <= 2) |
 | D-audit-Counter_Risk--2026-09-08T17-11-36Z | D | D | done | codex | codex | Audit stranske/Counter_Risk and file issues (supply 1 <= 2) |
@@ -126,7 +126,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-14T17:28:14Z — mirror — deferred — Ready#573 exact-head sync review; publication resumes by 2026-09-14T17:32:47+00:00; local work continues
 - 2026-09-14T18:29:28Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 - 2026-09-14T19:00:22Z — refill — Manager-Database: open=2 <= 2 → audit queued
 - 2026-09-14T19:00:26Z — D-audit-Manager-Database--2026-09-14T19-00-22Z — route — router picked codex from ['codex']
@@ -138,6 +137,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-15T01:34:46Z — unblock — enqueued D3-unblock-sweep-2026-09-15T01
 - 2026-09-15T01:34:46Z — D3-unblock-sweep-2026-09-15T01 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-15T01:34:46Z — D3-unblock-sweep-2026-09-15T01 — claimed by driver (agent cursor)
+- 2026-09-15T01:42:27Z — D3-unblock-sweep-2026-09-15T01 — done — cursor produced 506 words at artifacts/sweeps/D3-unblock-sweep-2026-09-15T01.md in 438s
 
 ## Questions
 

@@ -1,0 +1,190 @@
+[
+  {
+    "body": "Closes #1670\n\n## Summary\n\nScheduled EDGAR indexing previously committed documents on a separate connection before filing and holdings writes. A later failure left searchable orphan documents. The wrapper now borrows the filing connection, disables PostgreSQL autocommit for the write boundary, commits each successful filing before alert emission, and rolls back pending writes and closes the connection on every exit. Indexing errors propagate instead of falling back to a separate writer. Raw S3 retention remains independent.\n\n## Tasks\n\n- [x] Pass the existing connection through the EDGAR wrapper to real document storage.\n- [x] Share document, filing and holdings rollback and unconditional connection cleanup.\n- [x] Add real-writer fault injection after indexing for parsing, filing-upsert and holdings-write failures.\n\n## Acceptance criteria and validation\n\n- [x] `USE_SIMPLE_EMBED=1 python -m pytest tests/test_edgar_flow.py --run-nightly -o addopts='' -q`: **22 passed, no skips** on Python 3.12.2.\n- [x] Each post-index failure leaves `(documents, filings, holdings) == (0, 0, 0)`, closes the connection, and emits no alert. Successful ingestion persists all three before the event callback observes them from a separate connection.\n- [x] A failed second filing preserves the first committed filing and its event. Setup failure closes the connection and restores original autocommit.\n- [x] Deliberate break: removed `connection=conn` at the scheduled document call, restoring db_path-only storage. All three rollback cases failed with `(1, 0, 0)` orphan rows. Restored exact bytes; full 22-test gate passed again.\n- [x] Ruff, Black target py312, focused mypy, test-dependency verification and `git diff --check` passed.\n\nSQLite failure paths use the real embedding writer and database. The PostgreSQL adapter regression checks connection forwarding and existing transaction behavior; no live PostgreSQL claim is made for this PR. Existing document-association recovery is separate in #1678.\n\nReady for keepalive CI/review. Closer must check the unchanged head, required checks, elapsed review window and active review threads before merge and verify:compare.\n",
+    "closingIssuesReferences": [
+      {
+        "id": "I_kwDOO4LcjM8AAAABRQx37A",
+        "number": 1670,
+        "repository": {
+          "id": "R_kgDOO4LcjA",
+          "name": "Manager-Database",
+          "owner": {
+            "id": "MDQ6VXNlcjIzMDQ2MzIy",
+            "login": "stranske"
+          }
+        },
+        "url": "https://github.com/stranske/Manager-Database/issues/1670"
+      }
+    ],
+    "isDraft": false,
+    "labels": [
+      {
+        "id": "LA_kwDOO4LcjM8AAAACTb32Yg",
+        "name": "agent:codex",
+        "description": "Assign to Codex agent",
+        "color": "0e8a16"
+      },
+      {
+        "id": "LA_kwDOO4LcjM8AAAACTb-Fgg",
+        "name": "autofix",
+        "description": "Let bots format/lint automatically",
+        "color": "0366d6"
+      },
+      {
+        "id": "LA_kwDOO4LcjM8AAAACTcLHBw",
+        "name": "agents:keepalive",
+        "description": "Enable keepalive monitoring on PR",
+        "color": "1d76db"
+      },
+      {
+        "id": "LA_kwDOO4LcjM8AAAAC0hUTIQ",
+        "name": "codex",
+        "description": "Work performed by Codex",
+        "color": "1D76DB"
+      }
+    ],
+    "number": 1679,
+    "title": "fix: make scheduled EDGAR indexing atomic with filing writes",
+    "updatedAt": "2026-09-15T01:19:27Z",
+    "url": "https://github.com/stranske/Manager-Database/pull/1679"
+  },
+  {
+    "body": "Identical text stored for two managers previously kept only the first manager, making the document disappear from the second manager's filtered retrieval. Preserve every explicit association in `document_managers` while retaining one stable document ID and the original scalar owner for compatibility. Unified search lists the associated manager names in a single document result.\n\nCloses #1669\n\n## Tasks\n\n- [x] Add Alembic migration 022 and mirror the table/index/backfill in schema.sql; backfill only known non-null owners.\n- [x] Persist idempotent document-manager links for new and deduplicated content on SQLite and PostgreSQL, including initially unowned content.\n- [x] Use associations for manager-filtered embeddings retrieval and both unified-search database paths without duplicate rows.\n- [x] Cover shared content, unrelated managers, repeated associations, stable IDs, backfill, migration reuse and downgrade.\n\n## Acceptance Criteria\n\n- [x] Python 3.12.2: `python -m pytest tests/test_embeddings.py tests/test_document_managers_migration.py tests/test_search.py tests/test_schema.py -o addopts='' -q`: **76 passed, no skips**. Ran with USE_SIMPLE_EMBED=1 and DOCUMENT_TEST_POSTGRES_URL pointing to a disposable local PostgreSQL 18/pgvector container. Tests exercise SQLite and actual PostgreSQL migration, association storage, filtered vector retrieval, unified search, repeat upgrade and downgrade.\n- [x] Deliberate-break gate: disabled explicit association insertion, including the hash-conflict path, in embeddings.py. `test_shared_document_preserves_each_manager` failed in both parameters; the original-owner case fails because manager 2 has no result. Restored exact source bytes and reran the full gate: **76 passed**. Raw evidence retained in a durable PR comment.\n\n## Validation\n\nRuff, Black (target py312), embeddings.py mypy, and git diff --check pass. Full touched-source mypy reports two existing Pydantic fallback assignment errors at api/search.py:15; reproduced unchanged against origin/main. No new mypy errors were introduced.\n\nThe migration preserves historical scalar owners and never infers associations from text similarity. Deploy migration 022 before PostgreSQL application code. SQLite lightweight stores create/backfill the same association table as needed.\n\n\n<!-- This is an auto-generated comment: release notes by coderabbit.ai -->\n\n## Summary by CodeRabbit\n\n- **New Features**\n  - Documents can now be associated with multiple managers.\n  - Document searches display all associated manager names and support filtering by manager.\n  - Existing document ownership is preserved during the transition to shared manager associations.\n\n- **Bug Fixes**\n  - Prevented duplicate document-manager associations when storing or migrating documents.\n\n- **Tests**\n  - Added coverage for migration, shared documents, manager filtering, and cross-database behavior.\n\n<!-- end of auto-generated comment: release notes by coderabbit.ai -->",
+    "closingIssuesReferences": [
+      {
+        "id": "I_kwDOO4LcjM8AAAABRQx27g",
+        "number": 1669,
+        "repository": {
+          "id": "R_kgDOO4LcjA",
+          "name": "Manager-Database",
+          "owner": {
+            "id": "MDQ6VXNlcjIzMDQ2MzIy",
+            "login": "stranske"
+          }
+        },
+        "url": "https://github.com/stranske/Manager-Database/issues/1669"
+      }
+    ],
+    "isDraft": false,
+    "labels": [
+      {
+        "id": "LA_kwDOO4LcjM8AAAACTb32Yg",
+        "name": "agent:codex",
+        "description": "Assign to Codex agent",
+        "color": "0e8a16"
+      },
+      {
+        "id": "LA_kwDOO4LcjM8AAAACTb-Fgg",
+        "name": "autofix",
+        "description": "Let bots format/lint automatically",
+        "color": "0366d6"
+      },
+      {
+        "id": "LA_kwDOO4LcjM8AAAACTcLHBw",
+        "name": "agents:keepalive",
+        "description": "Enable keepalive monitoring on PR",
+        "color": "1d76db"
+      },
+      {
+        "id": "LA_kwDOO4LcjM8AAAAC0hUTIQ",
+        "name": "codex",
+        "description": "Work performed by Codex",
+        "color": "1D76DB"
+      }
+    ],
+    "number": 1678,
+    "title": "fix(documents): preserve manager links across content deduplication",
+    "updatedAt": "2026-09-15T01:10:07Z",
+    "url": "https://github.com/stranske/Manager-Database/pull/1678"
+  },
+  {
+    "body": "Configured UI credentials currently crash before a login form appears. Use the pinned authenticator API, read its authentication state on each rerun, and retain the logout control so logging out immediately revokes access. Preserve blank-credential development mode and sign reauthentication cookies with an independent UI_COOKIE_KEY and cache bcrypt hashes across reruns; existing cookies require a fresh login.\n\nCloses #1667\n\n## Validation\n\n- Python 3.12.2, Streamlit 1.60.0, streamlit-authenticator 0.4.2.\n- `python -m pytest tests/test_ui_auth.py tests/test_ui_auth_dev_mode.py`: **9 passed**. Real AppTest exercises form rendering, rejected username/password, successful login, authenticated rerun, logout and the next rerun; also checks stale dev flags, missing dependency and blank credentials.\n- Ruff, Black with target py312, focused mypy and `git diff --check` pass.\n\n## Deliberate-break evidence\n\nActual named gate: `python -m pytest tests/test_ui_auth.py::test_configured_login_renders_with_real_authenticator`.\n\nRestored `stauth.Hasher([password]).generate()` immediately before credential construction in `ui/__init__.py`:\n\n```text\nTypeError: Hasher.__init__() takes 1 positional argument but 2 were given\nFAILED tests/test_ui_auth.py::test_configured_login_renders_with_real_authenticator\n1 failed\nexit 1\n```\n\nReverted that mutation and ran the full authentication gate:\n\n```text\n9 passed, 7 warnings in 13.39s\nexit 0\n```\n\nThe original base also fails the new form-render test with the same TypeError. The old mock-based suite passed before this change and could not detect dependency drift. Evidence was collected against the actual installed pinned libraries using synthetic credentials only. AppTest does not exercise browser cookie transport.\n\n\n<!-- This is an auto-generated comment: release notes by coderabbit.ai -->\n## Summary by CodeRabbit\n\n- **Security**\n  - Configured login now requires valid authentication and rejects stale cached login state.\n  - Logging out resets authentication and access.\n  - Authentication fails closed when the required authenticator is unavailable.\n  - A separate cookie-signing key of at least 32 characters is required; changing it invalidates existing reauthentication cookies.\n\n- **Development Experience**\n  - Development-mode access remains available when credentials are unset, blank, or whitespace-only.\n\n- **Tests**\n  - Added integration coverage for login, logout, authentication failures, session handling, and development-mode behavior.\n<!-- end of auto-generated comment: release notes by coderabbit.ai -->\n\n## Review recovery tasks\n\n- [x] Address r4010099707: replace the password-derived UI cookie signing key with an independent high-entropy UI_COOKIE_KEY; fail closed for configured authentication when absent and document rotation. Keep chat signing separate.\n- [x] Address r4010099697: avoid bcrypt hashing on every rerun by caching the hash with password-change invalidation and use auto_hash=False; prove rerun reuse and changed-password invalidation.\n- [x] Reconcile r4010090630 with the security correction: test the cookie_key actually passed to Authenticate and independent-secret rotation rather than asserting the rejected password-derived design. Run real AppTest authentication regressions and retain exact output.\n\nActive review sources: https://github.com/stranske/Manager-Database/pull/1676#discussion_r4010099707, https://github.com/stranske/Manager-Database/pull/1676#discussion_r4010099697, https://github.com/stranske/Manager-Database/pull/1676#discussion_r4010090630. These are automation-owned code/test tasks; do not self-resolve review threads. Historical validation above is for the original head.\n\n## Current recovery validation\n\nRecovery af993275 requires independent UI_COOKIE_KEY, wires Docker configuration, and caches bcrypt with password-change invalidation. Python 3.12.2 real AppTest plus argument capture: 18 passed. Four new regression cases failed on the prior source. Current evidence: https://github.com/stranske/Manager-Database/pull/1676#issuecomment-5672645191. Historical 9-test validation above describes the original implementation. Active review threads remain for independent closer disposition.\n",
+    "closingIssuesReferences": [
+      {
+        "id": "I_kwDOO4LcjM8AAAABRQx1QQ",
+        "number": 1667,
+        "repository": {
+          "id": "R_kgDOO4LcjA",
+          "name": "Manager-Database",
+          "owner": {
+            "id": "MDQ6VXNlcjIzMDQ2MzIy",
+            "login": "stranske"
+          }
+        },
+        "url": "https://github.com/stranske/Manager-Database/issues/1667"
+      }
+    ],
+    "isDraft": false,
+    "labels": [
+      {
+        "id": "LA_kwDOO4LcjM8AAAACTb32Yg",
+        "name": "agent:codex",
+        "description": "Assign to Codex agent",
+        "color": "0e8a16"
+      },
+      {
+        "id": "LA_kwDOO4LcjM8AAAACTb-Fgg",
+        "name": "autofix",
+        "description": "Let bots format/lint automatically",
+        "color": "0366d6"
+      },
+      {
+        "id": "LA_kwDOO4LcjM8AAAACTcLHBw",
+        "name": "agents:keepalive",
+        "description": "Enable keepalive monitoring on PR",
+        "color": "1d76db"
+      },
+      {
+        "id": "LA_kwDOO4LcjM8AAAAC0hUTIQ",
+        "name": "codex",
+        "description": "Work performed by Codex",
+        "color": "1D76DB"
+      }
+    ],
+    "number": 1676,
+    "title": "fix(ui): restore configured login and persistent logout control",
+    "updatedAt": "2026-09-15T01:16:51Z",
+    "url": "https://github.com/stranske/Manager-Database/pull/1676"
+  },
+  {
+    "body": "## Sync Summary\n\n### Files Updated\n- agents-81-gate-followups.yml: Gate followups hub - consolidates keepalive and autofix followups\n- runner_lib/ (2 files): Shared runner prompt assembly, output parsing, and dispatch debounce helpers\n- discover_model_catalog.py: Advisory provider-catalog discovery - proposes new model candidates without changing reviewed selections\n- tracked-variable-v1.md: Tracked-variable/v1 specification and clause-variable alias for backplane consumers\n\n### Files Skipped\n- .github/workflows/pr-00-gate.yml: Maintains a fully custom Gate workflow; never overwrite (replaces the hard-coded custom_gate_repos list in maint-68).\n- ci.yml: File exists and sync_mode is create_only\n- renovate.json: File exists and sync_mode is create_only\n- cross-repo-smoke.yml: File exists and sync_mode is create_only\n- llm_slots.json: None\n\n---\n\n### Review Checklist\n- [ ] CI passes with updated workflows\n- [ ] No repo-specific customizations were overwritten\n\n**Source:** stranske/Workflows\n**Source SHA:** `3706dc2fd51b77e87902ddfe508f06b81b83e8fc`\n**Template hash:** `4ea960ea76ca`\n**Consumer-sync plan ID:** `sha256:4ea960ea76cadd86c5a1b679f34f57a13a99279a02101d901fe123f966214944`\n**Plan scope:** `full`\n**Scope base SHA:** `full`\n**Sync phase:** `promote`\n**Sync branch:** `sync/workflows-delivery`\n**Consumer repo:** `stranske/Manager-Database`\n**Manifest:** `.github/sync-manifest.yml`\n\n<!-- workflow-source:sync_campaign -->\n<!-- workflows-consumer-sync:v1 {\"schema\":\"workflows-consumer-sync-pr/v1\",\"consumer_repo\":\"stranske/Manager-Database\",\"source_repository\":\"stranske/Workflows\",\"source_sha\":\"3706dc2fd51b77e87902ddfe508f06b81b83e8fc\",\"template_hash\":\"4ea960ea76ca\",\"plan_id\":\"sha256:4ea960ea76cadd86c5a1b679f34f57a13a99279a02101d901fe123f966214944\",\"plan_scope\":\"full\",\"scope_base_sha\":\"\",\"source_commit\":\"3706dc2fd51b77e87902ddfe508f06b81b83e8fc\",\"sync_phase\":\"promote\",\"sync_branch\":\"sync/workflows-delivery\",\"manifest\":\".github/sync-manifest.yml\",\"lifecycle_state\":\"staging\",\"run_id\":\"34862724935\",\"run_attempt\":\"1\",\"changes_count\":4} -->\n<!-- sync-pr-delivery-record:v1 {\"schema\":\"sync-pr-delivery-record/v1\",\"durable_issue_url\":\"https://github.com/stranske/Workflows/issues/1836\",\"plan_id\":\"sha256:4ea960ea76cadd86c5a1b679f34f57a13a99279a02101d901fe123f966214944\",\"generation\":\"4ea960ea76ca\",\"repository\":\"stranske/Manager-Database\",\"desired_tree_hash\":\"e06e7444fcb133b8005df13d0c12ee00720c1e51\",\"source_commit\":\"3706dc2fd51b77e87902ddfe508f06b81b83e8fc\",\"head_observed_sha\":\"4e984bc4b99da193fbf08a334132a393a9d906d3\",\"head_observed_at\":\"2026-09-14T15:32:48Z\",\"lease_expires_at\":\"2026-09-17T15:32:50Z\",\"predecessor_prs\":[],\"successor_prs\":[],\"delivery_state\":\"sealed\",\"review_started_at\":\"2026-09-14T15:46:39.093Z\",\"sealed_at\":\"2026-09-14T16:13:28.749Z\",\"sealed_head_sha\":\"4e984bc4b99da193fbf08a334132a393a9d906d3\",\"review_evidence\":{\"policy_schema\":\"workflows.consumer-sync-review-policy/v1\",\"reason\":\"review_timeout_degraded\",\"degraded\":true,\"responded_reviewers\":[],\"unavailable_reviewers\":[]},\"terminal_disposition\":\"\"} -->\n\nautofix: false",
+    "closingIssuesReferences": [],
+    "isDraft": false,
+    "labels": [
+      {
+        "id": "LA_kwDOO4LcjM8AAAACThBM5A",
+        "name": "sync",
+        "description": "Automated sync from Workflows",
+        "color": "0e8a16"
+      },
+      {
+        "id": "LA_kwDOO4LcjM8AAAACThBNIQ",
+        "name": "automated",
+        "description": "Automated sync from Workflows",
+        "color": "0e8a16"
+      },
+      {
+        "id": "LA_kwDOO4LcjM8AAAACvmrUZQ",
+        "name": "workflow:source-sync",
+        "description": "PR source is a sync or maintenance campaign",
+        "color": "1d76db"
+      },
+      {
+        "id": "LA_kwDOO4LcjM8AAAACv7rsMQ",
+        "name": "sync:delivery-staging",
+        "description": "Generated delivery is mutable and must not merge",
+        "color": "d93f0b"
+      },
+      {
+        "id": "LA_kwDOO4LcjM8AAAACv7rsaA",
+        "name": "sync:delivery-ready",
+        "description": "Generated delivery is sealed to its exact reviewed head",
+        "color": "0e8a16"
+      }
+    ],
+    "number": 1666,
+    "title": "chore: sync workflow templates",
+    "updatedAt": "2026-09-15T01:31:09Z",
+    "url": "https://github.com/stranske/Manager-Database/pull/1666"
+  }
+]
