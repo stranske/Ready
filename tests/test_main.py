@@ -253,3 +253,17 @@ def test_verdict_policy_split_pass_concerns_with_inf_confidence_does_not_trigger
     assert result.split_verdict is True
     assert result.concerns_confidence == 0.0
     assert result.needs_human is False
+
+
+def test_ci_failure_triage_playbook_urls_resolve_to_existing_docs() -> None:
+    """All DEFAULT_TRIAGE_PATTERNS playbook_url paths must exist under docs/."""
+    from tools.ci_failure_triage import DEFAULT_TRIAGE_PATTERNS
+
+    repo_root = Path(__file__).resolve().parents[1]
+    for pattern in DEFAULT_TRIAGE_PATTERNS:
+        if not pattern.playbook_url:
+            continue
+        doc_path = pattern.playbook_url.split("#", 1)[0]
+        assert (repo_root / doc_path).is_file(), (
+            f"{pattern.error_type} playbook_url {pattern.playbook_url!r} missing file {doc_path}"
+        )
