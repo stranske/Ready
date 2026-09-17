@@ -607,3 +607,22 @@
 - 2026-09-14T09:15:59.625872+00:00 D3-unblock-sweep-2026-09-14T09: Inv-Man-Intake disposition complete; frozen/repaired 0/0; owner holds 0; residual agent labels [950, 949, 948] with prescribed release labels already absent; reroutes 0; supply 4; priority/open 0/6; evidence D3-unblock-sweep-2026-09-14T09-evidence/Inv-Man-Intake.json.
 
 - 2026-09-14T09:15:59.625872+00:00 D3-unblock-sweep-2026-09-14T09: Pension-Data disposition complete; frozen/repaired 0/0; owner holds 0; residual agent labels [883, 882, 881, 880, 879] with prescribed release labels already absent; reroutes 0; supply 8; priority/open 0/10; evidence D3-unblock-sweep-2026-09-14T09-evidence/Pension-Data.json.
+- 2026-09-14T17:25:30.595204+00:00 D3-unblock-sweep-2026-09-14T17: Workflows complete; frozen 2/0; owner 2; silent 5; reroutes 0; branch skipped; supply 38
+- 2026-09-14T17:25:30.595204+00:00 D3-unblock-sweep-2026-09-14T17: Travel-Plan-Permission complete; frozen 0/0; owner 0; silent 0; reroutes 0; branch success; supply 5
+- 2026-09-14T17:25:30.595204+00:00 D3-unblock-sweep-2026-09-14T17: Trend_Model_Project complete; frozen 0/0; owner 0; silent 0; reroutes 0; branch success; supply 8
+- 2026-09-14T17:25:30.595204+00:00 D3-unblock-sweep-2026-09-14T17: Portable-Alpha-Extension-Model complete; frozen 0/0; owner 0; silent 0; reroutes 0; branch success; supply 5
+- 2026-09-14T17:25:30.595204+00:00 D3-unblock-sweep-2026-09-14T17: Counter_Risk complete; frozen 0/0; owner 0; silent 0; reroutes 0; branch success; supply 8
+- 2026-09-14T17:25:30.595204+00:00 D3-unblock-sweep-2026-09-14T17: Manager-Database complete; frozen 0/0; owner 0; silent 0; reroutes 0; branch success; supply 2
+- 2026-09-14T17:25:30.595204+00:00 D3-unblock-sweep-2026-09-14T17: Inv-Man-Intake complete; frozen 0/0; owner 0; silent 3; reroutes 0; branch success; supply 4
+- 2026-09-14T17:25:30.595204+00:00 D3-unblock-sweep-2026-09-14T17: Pension-Data complete; frozen 0/0; owner 0; silent 5; reroutes 0; branch success; supply 8
+- 2026-09-14T17:30:00+00:00 D3-unblock-sweep-2026-09-14T17: Workflows disposition; repaired frozen #3448/#3449 (format body + removed agents:auto-pilot-pause); owner holds 0; silent claims 5 with prescribed release labels already absent; reroutes 0
+- 2026-09-15T01:36:17.708904+00:00 D3-unblock-sweep-2026-09-15T01: Workflows complete; frozen 0/0; owner 0; silent 5/0; reroutes 0; branch skipped; supply 35; priority 1/44
+- 2026-09-15T01:36:17.708904+00:00 D3-unblock-sweep-2026-09-15T01: Travel-Plan-Permission complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch success; supply 5; priority 0/9
+- 2026-09-15T01:36:17.708904+00:00 D3-unblock-sweep-2026-09-15T01: Trend_Model_Project complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch success; supply 8; priority 0/10
+- 2026-09-15T01:36:17.708904+00:00 D3-unblock-sweep-2026-09-15T01: Portable-Alpha-Extension-Model complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch success; supply 4; priority 4/6
+- 2026-09-15T01:36:17.708904+00:00 D3-unblock-sweep-2026-09-15T01: Counter_Risk complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch failure; supply 7; priority 6/9
+- 2026-09-15T01:36:17.708904+00:00 D3-unblock-sweep-2026-09-15T01: Manager-Database complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch success; supply 10; priority 9/12
+- 2026-09-15T01:36:17.708904+00:00 D3-unblock-sweep-2026-09-15T01: Inv-Man-Intake complete; frozen 0/0; owner 0; silent 3/0; reroutes 0; branch success; supply 4; priority 0/6
+- 2026-09-15T01:36:17.708904+00:00 D3-unblock-sweep-2026-09-15T01: Pension-Data complete; frozen 0/0; owner 0; silent 5/0; reroutes 0; branch success; supply 8; priority 0/10
+- 2026-09-15T01:40:00+00:00 D3-unblock-sweep-2026-09-15T01: Counter_Risk disposition; CI red run 34899128332 black format limits.py; mechanical fix verified locally [LOCAL_WORKSPACE]/Counter_Risk/src/counter_risk/compute/limits.py; PR blocked by offload
+- 2026-09-15T01:40:00+00:00 D3-unblock-sweep-2026-09-15T01: sweep complete; 8 covered 7 deferred; 0 frozen repaired; 13 silent claims release already satisfied; 0 reroutes; 1 red branch

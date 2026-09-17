@@ -1,0 +1,41 @@
+[
+  {
+    "body": "## Sync Summary\n\n### Files Updated\n- agents-81-gate-followups.yml: Gate followups hub - consolidates keepalive and autofix followups\n- runner_lib/ (2 files): Shared runner prompt assembly, output parsing, and dispatch debounce helpers\n- discover_model_catalog.py: Advisory provider-catalog discovery - proposes new model candidates without changing reviewed selections\n- tracked-variable-v1.md: Tracked-variable/v1 specification and clause-variable alias for backplane consumers\n\n### Files Skipped\n- pr-00-gate.yml: File exists and sync_mode is create_only\n- ci.yml: File exists and sync_mode is create_only\n- renovate.json: File exists and sync_mode is create_only\n- cross-repo-smoke.yml: File exists and sync_mode is create_only\n- llm_slots.json: None\n\n---\n\n### Review Checklist\n- [ ] CI passes with updated workflows\n- [ ] No repo-specific customizations were overwritten\n\n**Source:** stranske/Workflows\n**Source SHA:** `3706dc2fd51b77e87902ddfe508f06b81b83e8fc`\n**Template hash:** `4ea960ea76ca`\n**Consumer-sync plan ID:** `sha256:4ea960ea76cadd86c5a1b679f34f57a13a99279a02101d901fe123f966214944`\n**Plan scope:** `full`\n**Scope base SHA:** `full`\n**Sync phase:** `promote`\n**Sync branch:** `sync/workflows-delivery`\n**Consumer repo:** `stranske/Inv-Man-Intake`\n**Manifest:** `.github/sync-manifest.yml`\n\n<!-- workflow-source:sync_campaign -->\n<!-- workflows-consumer-sync:v1 {\"schema\":\"workflows-consumer-sync-pr/v1\",\"consumer_repo\":\"stranske/Inv-Man-Intake\",\"source_repository\":\"stranske/Workflows\",\"source_sha\":\"3706dc2fd51b77e87902ddfe508f06b81b83e8fc\",\"template_hash\":\"4ea960ea76ca\",\"plan_id\":\"sha256:4ea960ea76cadd86c5a1b679f34f57a13a99279a02101d901fe123f966214944\",\"plan_scope\":\"full\",\"scope_base_sha\":\"\",\"source_commit\":\"3706dc2fd51b77e87902ddfe508f06b81b83e8fc\",\"sync_phase\":\"promote\",\"sync_branch\":\"sync/workflows-delivery\",\"manifest\":\".github/sync-manifest.yml\",\"lifecycle_state\":\"staging\",\"run_id\":\"34862724935\",\"run_attempt\":\"1\",\"changes_count\":4} -->\n<!-- sync-pr-delivery-record:v1 {\"schema\":\"sync-pr-delivery-record/v1\",\"durable_issue_url\":\"https://github.com/stranske/Workflows/issues/1836\",\"plan_id\":\"sha256:4ea960ea76cadd86c5a1b679f34f57a13a99279a02101d901fe123f966214944\",\"generation\":\"4ea960ea76ca\",\"repository\":\"stranske/Inv-Man-Intake\",\"desired_tree_hash\":\"c486e2d21dfbd81dc85111c58d7ebe015ae2b9f3\",\"source_commit\":\"3706dc2fd51b77e87902ddfe508f06b81b83e8fc\",\"head_observed_sha\":\"53bdec998961e9b599ee641a8e8606143a8a88a6\",\"head_observed_at\":\"2026-09-14T15:33:00Z\",\"lease_expires_at\":\"2026-09-17T15:33:02Z\",\"predecessor_prs\":[],\"successor_prs\":[],\"delivery_state\":\"sealed\",\"review_started_at\":\"2026-09-14T15:46:16.618Z\",\"sealed_at\":\"2026-09-14T16:13:07.011Z\",\"sealed_head_sha\":\"53bdec998961e9b599ee641a8e8606143a8a88a6\",\"review_evidence\":{\"policy_schema\":\"workflows.consumer-sync-review-policy/v1\",\"reason\":\"review_timeout_degraded\",\"degraded\":true,\"responded_reviewers\":[],\"unavailable_reviewers\":[]},\"terminal_disposition\":\"\"} -->\n\nautofix: false",
+    "isDraft": false,
+    "labels": [
+      {
+        "id": "LA_kwDORbgIAs8AAAACZuwx2g",
+        "name": "sync",
+        "description": "Automated sync from Workflows",
+        "color": "0e8a16"
+      },
+      {
+        "id": "LA_kwDORbgIAs8AAAACZuwx6A",
+        "name": "automated",
+        "description": "Automated sync from Workflows",
+        "color": "0e8a16"
+      },
+      {
+        "id": "LA_kwDORbgIAs8AAAACvmrKdg",
+        "name": "workflow:source-sync",
+        "description": "PR source is a sync or maintenance campaign",
+        "color": "1d76db"
+      },
+      {
+        "id": "LA_kwDORbgIAs8AAAACv73hlA",
+        "name": "sync:delivery-ready",
+        "description": "Generated delivery is sealed to its exact reviewed head",
+        "color": "0e8a16"
+      },
+      {
+        "id": "LA_kwDORbgIAs8AAAACv74Raw",
+        "name": "sync:delivery-staging",
+        "description": "Generated delivery is mutable and must not merge",
+        "color": "d93f0b"
+      }
+    ],
+    "number": 970,
+    "title": "chore: sync workflow templates",
+    "updatedAt": "2026-09-14T16:33:19Z"
+  }
+]

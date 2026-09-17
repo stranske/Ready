@@ -1,51 +1,56 @@
-# Manager-Database audit — 2026-09-14
+# Manager-Database Track D audit publication — 2026-09-14
 
-Unit: D-audit-Manager-Database--2026-09-14T06-49-50Z  
-Completed research: 2026-09-14T08:36:27.770705+00:00  
-Baseline: stranske/Manager-Database main at `4523cf50dac3f3fe2ba338b8243e630940c54fd0`, rechecked against remote main at close.
+Unit: `D-audit-Manager-Database--2026-09-14T19-00-22Z`  
+Repository: `stranske/Manager-Database`  
+Base: `main` / `4523cf50dac3f3fe2ba338b8243e630940c54fd0`
 
-Nine verified findings are staged: four P1 data-integrity or access defects and five P2 correctness, navigation, or operations defects. No issues were filed and no repository source was changed. The Research Program's explicit research-only rule overrides the brief's filing instruction; this run therefore does **not** replenish the live GitHub implementation queue.
+## Result
 
-| Finding | Priority | Staged implementation body |
-|---|---|---|
-| F01 | P1 | [Restore configured login with the pinned authenticator API]([LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Manager-Database-2026-09-14-issue-bodies/01-restore-configured-login-with-the-pinned-authenticator-api.md) |
-| F02 | P1 | [Align point-in-time same-day amendment authority with holdings diffs]([LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Manager-Database-2026-09-14-issue-bodies/02-align-point-in-time-same-day-amendment-authority-with-holdings-diffs.md) |
-| F03 | P1 | [Preserve manager associations when document content is deduplicated]([LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Manager-Database-2026-09-14-issue-bodies/03-preserve-manager-associations-when-document-content-is-deduplicated.md) |
-| F04 | P1 | [Make scheduled EDGAR indexing atomic with filing writes]([LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Manager-Database-2026-09-14-issue-bodies/04-make-scheduled-edgar-indexing-atomic-with-filing-writes.md) |
-| F05 | P2 | [Resolve SQLite manager keys across dashboard and daily report queries]([LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Manager-Database-2026-09-14-issue-bodies/05-resolve-sqlite-manager-keys-across-dashboard-and-daily-report-queries.md) |
-| F06 | P2 | [Resolve SQLite manager identity in RAG context extraction]([LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Manager-Database-2026-09-14-issue-bodies/06-resolve-sqlite-manager-identity-in-rag-context-extraction.md) |
-| F07 | P2 | [Expose existing Alerts management through the full UI shell]([LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Manager-Database-2026-09-14-issue-bodies/07-expose-existing-alerts-management-through-the-full-ui-shell.md) |
-| F08 | P2 | [Count only persisted news identities in spike alerts]([LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Manager-Database-2026-09-14-issue-bodies/08-count-only-persisted-news-identities-in-spike-alerts.md) |
-| F09 | P2 | [Repair AWS CLI installation in the scheduled snapshot job]([LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Manager-Database-2026-09-14-issue-bodies/09-repair-aws-cli-installation-in-the-scheduled-snapshot-job.md) |
+Published nine verified, deduplicated, agent-ready implementation issues, replenishing the supply that had fallen to two. The source clone was refreshed with `git pull --ff-only`; its pre-existing untracked `uv.lock` was not changed. This publication reused the completed same-day research audit because the current remote SHA was unchanged, then independently re-opened every cited target-repository line and refreshed the open/recently-closed issue and open-PR inventory.
 
-## Evidence and priorities
+| Issue | Priority | Verified defect |
+| --- | --- | --- |
+| [#1667](https://github.com/stranske/Manager-Database/issues/1667) | P1 | Configured Streamlit login uses an obsolete pinned authenticator API. |
+| [#1668](https://github.com/stranske/Manager-Database/issues/1668) | P1 | Point-in-time history and holdings diffs select different same-day amendment authorities. |
+| [#1669](https://github.com/stranske/Manager-Database/issues/1669) | P1 | Content deduplication drops an explicitly supplied second manager association. |
+| [#1670](https://github.com/stranske/Manager-Database/issues/1670) | P1 | Scheduled EDGAR indexing can commit a document before a later filing write fails. |
+| [#1671](https://github.com/stranske/Manager-Database/issues/1671) | P2 | Dashboard and daily-report SQLite queries hard-code an unsupported manager key. |
+| [#1672](https://github.com/stranske/Manager-Database/issues/1672) | P2 | RAG catalog/context extraction silently loses data on the supported SQLite key spelling. |
+| [#1673](https://github.com/stranske/Manager-Database/issues/1673) | P2 | The implemented Alerts page is absent from the supported full UI shell. |
+| [#1674](https://github.com/stranske/Manager-Database/issues/1674) | P2 | News-spike alerts count duplicate identities that persistence suppresses. |
+| [#1675](https://github.com/stranske/Manager-Database/issues/1675) | P2 | The scheduled snapshot job cannot install AWS CLI before its dry-run contract. |
 
-Fix configured login and the three integrity boundaries first. With locked Streamlit 1.60.0 and authenticator 0.4.2, actual AppTest execution fails before the login form with Hasher TypeError. Offline fault injections demonstrate: a same-day original wins in point-in-time history while the diff selector chooses its amendment; deduplicated text assigned to two managers retains only the first association; and scheduled EDGAR filing-write failure leaves one indexed document with zero filings.
+## Verification
 
-Matched SQLite fixtures differing only in managers.id versus managers.manager_id show empty dashboard/QC/news results, a daily-report JOIN error, and lost RAG entity context. Two duplicate news candidates yield one stored row but an alert count of two. The full UI renders five navigation entries while its implemented Alerts management page is absent. The [scheduled Database Snapshot run](https://github.com/stranske/Manager-Database/actions/runs/34809590737) fails before dry-run validation because apt cannot install awscli, despite [successful same-head CI](https://github.com/stranske/Manager-Database/actions/runs/34796000355).
+- All nine bodies passed the target repository's `.github/scripts/issue_format.py` locally with no advisories.
+- GitHub readback confirmed each issue is open with only `bug`, `priority:high|normal`, and `testing`; no auto-dispatch label was applied.
+- The format guard explicitly succeeded for #1667–#1673 and #1675. #1674's opened-event check was canceled in its label-event burst, so the supported manual guard check was dispatched and succeeded: [run 34884950733](https://github.com/stranske/Manager-Database/actions/runs/34884950733).
+- The live scheduled snapshot failure remains reproduced at the audited SHA: [run 34809590737](https://github.com/stranske/Manager-Database/actions/runs/34809590737).
+- The required intake log received nine `repo|body-file|url` entries.
 
-## Validation and limits
+## Risks and non-actions
 
-- 1,651 tests collected. Focused existing tests under pinned Streamlit: **133 passed, 1 skipped**, exit 0. This is a targeted suite, not a claim of full local-suite success.
-- Nine issue bodies pass the source-owned AGENT_ISSUE_FORMAT validator without advisories; all 37 cited lines were opened and checked. Deliberate-break gates are implementation requirements, not tests claimed to have been written during this audit.
-- Synthetic browser journeys covered Dashboard, portfolio/history, Daily Report, Search, Upload rendering, Research gating, and configured-login failure. Screenshots used local Streamlit 1.63; the decisive login reproduction and focused tests were independently repeated on the 1.60 pin. The initial 1.63 navigation-test failure was excluded as environment skew.
-- No live production Postgres, authenticated provider, production backup/restore, upload persistence, or Research submission was exercised. Panel suggestions about these unperformed flows were rejected as evidence of defects.
+The audit does not claim a full local-suite run or any production-provider/Postgres execution. Its focused prior evidence at the unchanged SHA remains the basis for the nine issue-specific reproduction and deliberate-break gates. No repository source, branches, PRs, or labels that dispatch implementation work were changed.
 
-## Eight-dimension coverage
+The prior attempt could not write the external audit records. Attempt 2 completed that reconciliation at 2026-09-14T19:14:45.381778+00:00; the canonical report, verification log, repository index, root ledger, and body status index now record all nine published issues. Administrative sinks are complete; implementation remains pending.
 
-| Dimension | Result |
-|---|---|
-| Code quality | F01–F04 and F08: concrete API and data-boundary failures. |
-| Duplication | Shared manager-key helper is bypassed in UI/RAG (F05/F06); scheduled ingestion forks from generic atomic ingestion (F04). |
-| Functionality and wiring | F07 missing navigation; F05/F06 query contracts. |
-| Observed UX | Browser captures plus four-model panel; configured auth and Alerts reachability verified. Product readiness gate remains failed. |
-| Public field | Six primary-source references; existing pgvector/RAG capability is acknowledged rather than proposed again. |
-| Opportunities | Local OCR with page provenance and a linked static manager-review packet; separate roadmap, not claimed completed. |
-| Tooling | Actual-dependency auth gate, paired SQLite fixture matrix, and isolated restore drill proposed. |
-| Automation | Current remote checks and local configurations inventoried; F09 belongs to this repo, shared sync workflows remain Workflows-owned. |
 
-## Reconciliation and next action
+## 2026-09-14T19:14:45.381778+00:00 — Publication reconciliation, attempt 2
 
-Fresh open inventory contains #1653 (Postgres similarity bootstrap), #1664 (dashboard news coverage), and two informational trackers, with no open PRs at capture. F05 excludes #1664's already-covered news-stream branch; fixed upload, alert-selector, and activism-API cases from September 10 were not refiled. Older closed delivery contracts are context for the newly reproduced residual cases, not evidence of unfinished prior work by themselves.
+Unit `D-audit-Manager-Database--2026-09-14T19-00-22Z` resumed Phase 5 from its completed publication checkpoint. Current clone and remote main remain `4523cf50dac3f3fe2ba338b8243e630940c54fd0`. All nine existing issues are open, their bodies match the staged files, local and remote-body format validation passes without advisories, and all 37 retained citation contexts match the current source. Each issue has exactly one intake row. All nine remote format guards are successful, including the supported manual replacement for #1674. No duplicate issue or intake row was created.
 
-An authorized publication lane can review the nine bodies, refresh dedup against current GitHub state, then file them. No intake-log URLs or format-guard run is claimed because publication did not occur. See the canonical [verification log]([LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Manager-Database/2026-09-14-verification-log.md), [UX review]([LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Manager-Database/2026-09-14-UX_REVIEW.md), and [platform/roadmap brief]([LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Manager-Database/2026-09-14-PLATFORM_TEST_BRIEF.md). Evidence and reproducers are in [audit assets]([LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Manager-Database-2026-09-14-assets); durable records are also stored under Code/Audits/Manager-Database.
+The prior executor's external-write limitation is resolved in this run: canonical report, verification log, repository index, root audit ledger, and body status index now record publication. This completes the administrative sink; the nine implementation defects remain open. The earlier research-only statuses below are historical and are superseded by this publication record. Runtime evidence is retained from the earlier same-SHA audit; this reconciliation did not rerun the suite or claim production readiness.
+
+| Finding | Issue | Status | Format guard |
+| --- | --- | --- | --- |
+| F01 | [#1667](https://github.com/stranske/Manager-Database/issues/1667) — Restore configured login with the pinned authenticator API | Filed; implementation pending | [success](https://github.com/stranske/Manager-Database/actions/runs/34884639893) |
+| F02 | [#1668](https://github.com/stranske/Manager-Database/issues/1668) — Align point-in-time same-day amendment authority with holdings diffs | Filed; implementation pending | [success](https://github.com/stranske/Manager-Database/actions/runs/34884642152) |
+| F03 | [#1669](https://github.com/stranske/Manager-Database/issues/1669) — Preserve manager associations when document content is deduplicated | Filed; implementation pending | [success](https://github.com/stranske/Manager-Database/actions/runs/34884644119) |
+| F04 | [#1670](https://github.com/stranske/Manager-Database/issues/1670) — Make scheduled EDGAR indexing atomic with filing writes | Filed; implementation pending | [success](https://github.com/stranske/Manager-Database/actions/runs/34884646787) |
+| F05 | [#1671](https://github.com/stranske/Manager-Database/issues/1671) — Resolve SQLite manager keys across dashboard and daily report queries | Filed; implementation pending | [success](https://github.com/stranske/Manager-Database/actions/runs/34884648869) |
+| F06 | [#1672](https://github.com/stranske/Manager-Database/issues/1672) — Resolve SQLite manager identity in RAG context extraction | Filed; implementation pending | [success](https://github.com/stranske/Manager-Database/actions/runs/34884651189) |
+| F07 | [#1673](https://github.com/stranske/Manager-Database/issues/1673) — Expose existing Alerts management through the full UI shell | Filed; implementation pending | [success](https://github.com/stranske/Manager-Database/actions/runs/34884653399) |
+| F08 | [#1674](https://github.com/stranske/Manager-Database/issues/1674) — Count only persisted news identities in spike alerts | Filed; implementation pending | [success](https://github.com/stranske/Manager-Database/actions/runs/34884950733) |
+| F09 | [#1675](https://github.com/stranske/Manager-Database/issues/1675) — Repair AWS CLI installation in the scheduled snapshot job | Filed; implementation pending | [success](https://github.com/stranske/Manager-Database/actions/runs/34884656369) |
+
+Evidence: [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Manager-Database-2026-09-14-assets/resume-verification.json, resume-guards.json, resume-issues.json, and resume-format-runs.json. Next ledger action: record implementation PRs, merges, and acceptance-gate verification.

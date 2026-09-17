@@ -666,3 +666,35 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-14T09:12:07Z — D3-unblock-sweep-2026-09-14T09 — route — router picked cursor from ['codex', 'cursor']
 ## 2026-09-14T09:12:07Z — D3-unblock-sweep-2026-09-14T09 — claimed by codex (agent cursor)
 ## 2026-09-14T09:16:05Z — D3-unblock-sweep-2026-09-14T09 — done — Swept eight repositories: no frozen issues or stale agent PRs, seven current-main CIs pass, twelve already-released residual agent labels and priority gaps in a
+## 2026-09-14T15:23:25Z — mirror — deferred — stranske/Ready#569 closer review; publication resumes by 2026-09-14T17:11:59.405682+00:00; local work continues
+## 2026-09-14T15:38:27Z — mirror — deferred — Ready#573 exact-head sync review; publication resumes by 2026-09-14T17:32:47+00:00; local work continues
+## 2026-09-14T15:53:30Z — mirror — deferred — Ready#573 exact-head sync review; publication resumes by 2026-09-14T17:32:47+00:00; local work continues
+## 2026-09-14T16:08:34Z — mirror — deferred — Ready#573 exact-head sync review; publication resumes by 2026-09-14T17:32:47+00:00; local work continues
+## 2026-09-14T16:10:42Z — mirror — deferred — Ready#573 exact-head sync review; publication resumes by 2026-09-14T17:32:47+00:00; local work continues
+## 2026-09-14T16:23:37Z — mirror — deferred — Ready#573 exact-head sync review; publication resumes by 2026-09-14T17:32:47+00:00; local work continues
+## 2026-09-14T16:38:41Z — mirror — deferred — Ready#573 exact-head sync review; publication resumes by 2026-09-14T17:32:47+00:00; local work continues
+## 2026-09-14T16:53:56Z — mirror — deferred — Ready#573 exact-head sync review; publication resumes by 2026-09-14T17:32:47+00:00; local work continues
+## 2026-09-14T17:04:56Z — mirror — deferred — Ready#573 exact-head sync review; publication resumes by 2026-09-14T17:32:47+00:00; local work continues
+## 2026-09-14T17:08:59Z — mirror — deferred — Ready#573 exact-head sync review; publication resumes by 2026-09-14T17:32:47+00:00; local work continues
+## 2026-09-14T17:10:43Z — mirror — deferred — Ready#573 exact-head sync review; publication resumes by 2026-09-14T17:32:47+00:00; local work continues
+## 2026-09-14T17:24:01Z — unblock — enqueued D3-unblock-sweep-2026-09-14T17
+## 2026-09-14T17:24:02Z — D3-unblock-sweep-2026-09-14T17 — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-14T17:24:02Z — D3-unblock-sweep-2026-09-14T17 — claimed by driver (agent cursor)
+## 2026-09-14T17:24:02Z — mirror — deferred — Ready#573 exact-head sync review; publication resumes by 2026-09-14T17:32:47+00:00; local work continues
+## 2026-09-14T17:28:14Z — D3-unblock-sweep-2026-09-14T17 — done — cursor produced 477 words at artifacts/sweeps/D3-unblock-sweep-2026-09-14T17.md in 251s
+## 2026-09-14T17:28:14Z — mirror — deferred — Ready#573 exact-head sync review; publication resumes by 2026-09-14T17:32:47+00:00; local work continues
+## 2026-09-14T18:29:28Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+## 2026-09-14T19:00:22Z — refill — Manager-Database: open=2 <= 2 → audit queued
+## 2026-09-14T19:00:26Z — D-audit-Manager-Database--2026-09-14T19-00-22Z — route — router picked codex from ['codex']
+## 2026-09-14T19:00:26Z — D-audit-Manager-Database--2026-09-14T19-00-22Z — claimed by driver (agent codex)
+## 2026-09-14T19:10:08Z — D-audit-Manager-Database--2026-09-14T19-00-22Z — fail — offload to codex exited 1; retained artifact is not proof of success
+## 2026-09-14T19:11:43Z — D-audit-Manager-Database--2026-09-14T19-00-22Z — route — router picked codex from ['codex']
+## 2026-09-14T19:11:43Z — D-audit-Manager-Database--2026-09-14T19-00-22Z — claimed by codex (agent codex)
+## 2026-09-14T19:14:51Z — D-audit-Manager-Database--2026-09-14T19-00-22Z — done — Reconciled nine published Manager-Database findings with successful format guards, unique intake rows, and complete canonical audit records at unchanged main.
+## 2026-09-15T01:34:46Z — unblock — enqueued D3-unblock-sweep-2026-09-15T01
+## 2026-09-15T01:34:46Z — D3-unblock-sweep-2026-09-15T01 — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-15T01:34:46Z — D3-unblock-sweep-2026-09-15T01 — claimed by driver (agent cursor)
+## 2026-09-15T01:42:27Z — D3-unblock-sweep-2026-09-15T01 — done — cursor produced 506 words at artifacts/sweeps/D3-unblock-sweep-2026-09-15T01.md in 438s
+## 2026-09-15T02:11:46Z — verify — enqueued D4-verify-merged-2026-09-15T02
+## 2026-09-15T02:11:46Z — D4-verify-merged-2026-09-15T02 — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-15T02:11:46Z — D4-verify-merged-2026-09-15T02 — claimed by codex (agent cursor)
