@@ -484,14 +484,17 @@ def _self_smoke(schema_dir: Path, registry_path: Path) -> int:
     PASS/FAIL line per case and returns non-zero if any case is unexpected.
     """
     registry = _load_json(registry_path)
-    schema_names = sorted(p.name for p in schema_dir.glob("*.schema.json"))
+    # Load EVERY bundled schema (must be valid Draft 2020-12). Discovering them
+    # rather than naming three means a schema added to the directory is checked
+    # the day it lands; the previous hardcoded triple silently skipped
+    # tracked-variable-v1 and capability-bundle-v1.
+    schema_names = sorted(path.name for path in schema_dir.glob("*.schema.json"))
     if not schema_names:
         print(
             f"FAIL schema dir {schema_dir}: no *.schema.json files found; "
             "self-smoke cannot validate schemas"
         )
         return 1
-    # Load every bundled schema (must be valid Draft 2020-12).
     for name in schema_names:
         schema = _load_schema(schema_dir, name)
         Draft202012Validator.check_schema(schema)
