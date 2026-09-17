@@ -206,3 +206,14 @@ def test_openai_embedding_all_blank_inputs_do_not_call_sdk(
     factory.assert_not_called()
     assert response.vectors == [[] for _ in texts]
     assert response.metadata.dimensions is None
+
+
+@pytest.mark.parametrize(
+    "score",
+    [float("nan"), float("inf"), float("-inf")],
+)
+def test_format_similarity_non_finite_scores_return_safe_fallback(score: float) -> None:
+    """Non-finite similarity scores must not crash duplicate-comment formatting."""
+    from scripts.langchain.issue_dedup import _format_similarity
+
+    assert _format_similarity(score) == "0%"
