@@ -217,3 +217,39 @@ def test_format_similarity_non_finite_scores_return_safe_fallback(score: float) 
     from scripts.langchain.issue_dedup import _format_similarity
 
     assert _format_similarity(score) == "0%"
+
+
+@pytest.mark.parametrize(
+    "raw",
+    ["nan", "inf", "-inf", "NaN", "INF"],
+)
+def test_verdict_policy_coerce_confidence_rejects_non_finite_strings(raw: str) -> None:
+    """Non-finite confidence strings must clamp to 0.0 before policy evaluation."""
+    from scripts.langchain.verdict_policy import _coerce_confidence
+
+    assert _coerce_confidence(raw) == 0.0
+
+
+@pytest.mark.parametrize(
+    "value",
+    [float("nan"), float("inf"), float("-inf")],
+)
+def test_verdict_policy_normalize_confidence_rejects_non_finite_floats(value: float) -> None:
+    """Non-finite confidence floats must clamp to 0.0 before threshold checks."""
+    from scripts.langchain.verdict_policy import _normalize_confidence
+
+    assert _normalize_confidence(value) == 0.0
+
+
+def test_verdict_policy_split_pass_concerns_with_nan_confidence_does_not_trigger_human() -> None:
+    """Split pass/concerns with non-finite confidence must not silently bypass review."""
+    from scripts.langchain.verdict_policy import ProviderVerdict, evaluate_verdict_policy
+
+    verdicts = [
+        ProviderVerdict(provider="a", model="m1", verdict="pass", confidence=0.9),
+        ProviderVerdict(provider="b", model="m2", verdict="concerns", confidence=float("nan")),
+    ]
+    result = evaluate_verdict_policy(verdicts)
+    assert result.split_verdict is True
+    assert result.concerns_confidence == 0.0
+    assert result.needs_human is False
