@@ -241,13 +241,13 @@ def test_verdict_policy_normalize_confidence_rejects_non_finite_floats(value: fl
     assert _normalize_confidence(value) == 0.0
 
 
-def test_verdict_policy_split_pass_concerns_with_nan_confidence_does_not_trigger_human() -> None:
-    """Split pass/concerns with non-finite confidence must not silently bypass review."""
+def test_verdict_policy_split_pass_concerns_with_inf_confidence_does_not_trigger_human() -> None:
+    """Split pass/concerns with infinite concerns confidence must clamp before threshold check."""
     from scripts.langchain.verdict_policy import ProviderVerdict, evaluate_verdict_policy
 
     verdicts = [
         ProviderVerdict(provider="a", model="m1", verdict="pass", confidence=0.9),
-        ProviderVerdict(provider="b", model="m2", verdict="concerns", confidence=float("nan")),
+        ProviderVerdict(provider="b", model="m2", verdict="concerns", confidence=float("inf")),
     ]
     result = evaluate_verdict_policy(verdicts)
     assert result.split_verdict is True

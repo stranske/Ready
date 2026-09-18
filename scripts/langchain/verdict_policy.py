@@ -1,4 +1,8 @@
-"""Utility helpers to extract provider verdicts and apply a policy."""
+"""Utility helpers to extract provider verdicts and apply a policy.
+
+Synced from ``stranske/Workflows`` via ``.github/sync-manifest.yml``; land behavioral
+changes in Workflows first, then refresh consumer copies (see ``AGENTS.md``).
+"""
 
 from __future__ import annotations
 
