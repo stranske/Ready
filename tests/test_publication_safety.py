@@ -56,6 +56,8 @@ def load_scanner():
                 "AIza",
             )
         ],
+        ("-----BEGIN PRIVATE KEY-----", "private-key"),
+        ("-----BEGIN ENCRYPTED PRIVATE KEY-----", "private-key"),
         ("-----BEGIN RSA PRIVATE KEY-----", "private-key"),
         ("-----BEGIN OPENSSH PRIVATE KEY-----", "private-key"),
         ("clones/Repo/file.py", "scratch-path"),
@@ -352,6 +354,15 @@ def test_nonregular_allowlist_fails_without_blocking_scan(tmp_path, location, ki
     assert "files_scanned=1" in result.stdout
     assert "allowed_hits=0" in result.stdout
     assert "errors=1" in result.stdout
+
+
+def test_publication_guard_workflow_runs_prepare_then_scan():
+    workflow = (REPO / ".github/workflows/publication-guard.yml").read_text()
+    assert "prepare_publication.py" in workflow
+    assert "check_publication_safety.py --root" in workflow
+    assert workflow.index("prepare_publication.py") < workflow.index(
+        "check_publication_safety.py --root"
+    )
 
 
 @pytest.mark.parametrize(
