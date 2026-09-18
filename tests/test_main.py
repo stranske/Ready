@@ -264,6 +264,8 @@ def test_ci_failure_triage_playbook_urls_resolve_to_existing_docs() -> None:
         if not pattern.playbook_url:
             continue
         doc_path = pattern.playbook_url.split("#", 1)[0]
-        assert (repo_root / doc_path).is_file(), (
-            f"{pattern.error_type} playbook_url {pattern.playbook_url!r} missing file {doc_path}"
+        docs_root = (repo_root / "docs").resolve()
+        resolved_doc = (repo_root / doc_path).resolve()
+        assert resolved_doc.is_relative_to(docs_root) and resolved_doc.is_file(), (
+            f"{pattern.error_type} playbook_url {pattern.playbook_url!r} must resolve under docs/"
         )
