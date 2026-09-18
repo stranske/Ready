@@ -61,8 +61,8 @@ falling back to a permissive parent policy. The selected policy is scanned for
 findings but does not count as publication content; a policy-only tree fails the
 zero-files check.
 
-Preparation is an explicit operator step; CI runs only the scanner and does not
-redact files. On a separate staging copy, run
+Preparation is an explicit operator step; CI also exercises it on a disposable
+staging copy after the direct scanner pass. On a separate staging copy, run
 `python scripts/prepare_publication.py --staging-root <staging-copy>` followed by
 `python scripts/check_publication_safety.py --root <staging-copy> --allowlist <reviewed-allowlist>`.
 Publish only after both commands succeed. Preparation replaces private path,

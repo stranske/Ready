@@ -18,4 +18,11 @@ jobs:
           python-version: '3.12'
       - name: Check published research
         run: python scripts/check_publication_safety.py
-
+      - name: Prepare publication staging copy
+        run: |
+          set -euo pipefail
+          staging="$(mktemp -d)"
+          trap 'rm -rf "$staging"' EXIT
+          cp -a research-program "$staging/research-program"
+          python scripts/prepare_publication.py --staging-root "$staging/research-program"
+          python scripts/check_publication_safety.py --root "$staging/research-program" --allowlist .publication-allow
