@@ -1,14 +1,9 @@
-"""Utility helpers to extract provider verdicts and apply a policy.
-
-Synced from ``stranske/Workflows`` via ``.github/sync-manifest.yml``; land behavioral
-changes in Workflows first, then refresh consumer copies (see ``AGENTS.md``).
-"""
+"""Utility helpers to extract provider verdicts and apply a policy."""
 
 from __future__ import annotations
 
 import argparse
 import json
-import math
 import sys
 from collections.abc import Iterable
 from dataclasses import dataclass
@@ -80,16 +75,13 @@ def _coerce_confidence(value: str) -> float:
     if not cleaned:
         return 0.0
     try:
-        parsed = float(cleaned)
+        return float(cleaned)
     except ValueError:
         return 0.0
-    if not math.isfinite(parsed):
-        return 0.0
-    return parsed
 
 
 def _normalize_confidence(value: float) -> float:
-    if not math.isfinite(value) or value <= 0:
+    if value <= 0:
         return 0.0
     if value <= 1:
         return value

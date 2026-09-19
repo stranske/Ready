@@ -152,7 +152,7 @@ class OpenAIEmbeddingProvider(EmbeddingProvider):
         return True
 
     def embed(self, texts: Iterable[str], *, model: str | None = None) -> EmbeddingResponse:
-        text_list = list(texts)
+        items = [text.strip() for text in texts if text and text.strip()]
         resolved_model = self.model_name(model)
         metadata = EmbeddingMetadata(
             provider=self.provider_id,
@@ -160,50 +160,28 @@ class OpenAIEmbeddingProvider(EmbeddingProvider):
             dimensions=None,
             is_fallback=self.is_fallback(),
         )
-        if not text_list:
+        if not items:
             return EmbeddingResponse(vectors=[], metadata=metadata)
+        if not self.credentials_configured():
+            raise RuntimeError("OpenAI embeddings requested without OPENAI_API_KEY configured.")
+        try:
+            from langchain_openai import OpenAIEmbeddings
+        except ImportError as exc:
+            raise RuntimeError(
+                "langchain_openai and its dependencies are required for OpenAI embeddings."
+            ) from exc
 
-        embed_indices: list[int] = []
-        embed_items: list[str] = []
-        for index, text in enumerate(text_list):
-            stripped = text.strip()
-            if stripped:
-                embed_indices.append(index)
-                embed_items.append(stripped)
+        try:
+            client = OpenAIEmbeddings(
+                model=resolved_model,
+                # Keep a plain str for runtime compatibility across supported langchain_openai versions.
+                api_key=os.environ["OPENAI_API_KEY"],  # type: ignore[arg-type]
+            )
+            vectors = client.embed_documents(items)
+        except Exception as exc:  # pragma: no cover - depends on external SDK errors
+            raise RuntimeError("OpenAI embeddings request failed.") from exc
 
-        vectors: list[list[float]] = []
-        dimensions: int | None = None
-        if embed_items:
-            if not self.credentials_configured():
-                raise RuntimeError("OpenAI embeddings requested without OPENAI_API_KEY configured.")
-            try:
-                from langchain_openai import OpenAIEmbeddings
-            except ImportError as exc:
-                raise RuntimeError(
-                    "langchain_openai and its dependencies are required for OpenAI embeddings."
-                ) from exc
-
-            try:
-                client = OpenAIEmbeddings(
-                    model=resolved_model,
-                    # Keep a plain str for runtime compatibility across supported langchain_openai versions.
-                    api_key=os.environ["OPENAI_API_KEY"],  # type: ignore[arg-type]
-                )
-                embedded = client.embed_documents(embed_items)
-            except Exception as exc:  # pragma: no cover - depends on external SDK errors
-                raise RuntimeError("OpenAI embeddings request failed.") from exc
-
-            dimensions = len(embedded[0]) if embedded else None
-            vectors = [[] for _ in text_list]
-            for index, vector in zip(embed_indices, embedded, strict=True):
-                vectors[index] = vector
-        else:
-            vectors = [[] for _ in text_list]
-
-        for index, text in enumerate(text_list):
-            if not text.strip():
-                vectors[index] = [0.0] * (dimensions or 0)
-
+        dimensions = len(vectors[0]) if vectors else None
         metadata = EmbeddingMetadata(
             provider=self.provider_id,
             model=resolved_model,
@@ -233,7 +211,7 @@ class LocalFallbackEmbeddingProvider(EmbeddingProvider):
         return True
 
     def embed(self, texts: Iterable[str], *, model: str | None = None) -> EmbeddingResponse:
-        text_list = list(texts)
+        items = [text.strip() for text in texts if text and text.strip()]
         resolved_model = self.model_name(model)
         metadata = EmbeddingMetadata(
             provider=self.provider_id,
@@ -241,17 +219,13 @@ class LocalFallbackEmbeddingProvider(EmbeddingProvider):
             dimensions=FALLBACK_DIMENSIONS,
             is_fallback=self.is_fallback(),
         )
-        if not text_list:
+        if not items:
             return EmbeddingResponse(vectors=[], metadata=metadata)
 
         vectors: list[list[float]] = []
-        for text in text_list:
-            stripped = text.strip()
-            if not stripped:
-                vectors.append([0.0] * FALLBACK_DIMENSIONS)
-                continue
+        for text in items:
             vector = [0.0] * FALLBACK_DIMENSIONS
-            for token in _tokenize(stripped):
+            for token in _tokenize(text):
                 index = _hash_token(token) % FALLBACK_DIMENSIONS
                 vector[index] += 1.0
             _normalize_l2(vector)
