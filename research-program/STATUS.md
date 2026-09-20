@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-20T20:54:50Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-20T21:10:56Z)
 
-Units: 148 — done 143, failed 3, queued 2
+Units: 148 — claimed 1, done 143, failed 3, queued 1
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 Orchestrator evidence (30d): offload runs 186, bound to a research round 2, scored 2 (PASS 2, FAIL 0, infra 0) — codex 0/26 (P0 F0 I0), cursor 2/89 (P2 F0 I0), gemini 0/67 (P0 F0 I0), vibe 0/4 (P0 F0 I0)
@@ -119,7 +119,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Manager-Database--2026-09-10T17-45-13Z | D | D | done | codex | driver | Audit stranske/Manager-Database and file issues (supply 0 <= 2) |
 | D-audit-Manager-Database--2026-09-14T06-49-50Z | D | D | done | codex | codex | Audit stranske/Manager-Database and file issues (supply 2 <= 2) |
 | D-audit-Manager-Database--2026-09-14T19-00-22Z | D | D | done | codex | codex | Audit stranske/Manager-Database and file issues (supply 2 <= 2) |
-| D-audit-Manager-Database--2026-09-20T20-25-22Z | D | D | queued | claude |  | Audit stranske/Manager-Database and file issues (supply 1 <= 2) |
+| D-audit-Manager-Database--2026-09-20T20-25-22Z | D | D | claimed | cursor | driver | Audit stranske/Manager-Database and file issues (supply 1 <= 2) |
 | D-audit-Manager-Mosaic--2026-09-05T04-00-25Z | D | D | done | codex | driver | Audit stranske/Manager-Mosaic and file issues (supply 2 <= 2) |
 | D-audit-Manager-Mosaic--2026-09-19T20-12-04Z | D | D | done | codex | codex | Audit stranske/Manager-Mosaic and file issues (supply 3 <= 3) |
 | D-audit-Portable-Alpha-Extension-Model--2026-09-07T04-47-31Z | D | D | done | codex | codex | Audit stranske/Portable-Alpha-Extension-Model and file issues (supply  |
@@ -160,8 +160,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-20T20:18:56Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
-- 2026-09-20T20:25:16Z — verify — enqueued D4-verify-merged-2026-09-20T20
 - 2026-09-20T20:25:18Z — refill — Deliverable-Render: open=1 <= 2 → audit queued
 - 2026-09-20T20:25:21Z — refill — Counter_Risk: open=2 <= 2 → audit queued
 - 2026-09-20T20:25:22Z — refill — Manager-Database: open=1 <= 2 → audit queued
@@ -172,6 +170,8 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-20T20:49:01Z — D-audit-Deliverable-Render--2026-09-20T20-25-18Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-20T20:49:01Z — D-audit-Deliverable-Render--2026-09-20T20-25-18Z — claimed by driver (agent cursor)
 - 2026-09-20T20:54:49Z — D-audit-Deliverable-Render--2026-09-20T20-25-18Z — done — cursor produced 696 words at artifacts/audits/Deliverable-Render-2026-09-20.md in 318s
+- 2026-09-20T21:10:56Z — D-audit-Manager-Database--2026-09-20T20-25-22Z — route — router picked cursor from ['codex', 'cursor']
+- 2026-09-20T21:10:56Z — D-audit-Manager-Database--2026-09-20T20-25-22Z — claimed by driver (agent cursor)
 
 ## Questions
 
