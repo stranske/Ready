@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-20T21:18:25Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-20T21:18:48Z)
 
-Units: 148 — claimed 1, done 144, failed 3
+Units: 148 — done 145, failed 3
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 Orchestrator evidence (30d): offload runs 188, bound to a research round 4, scored 4 (PASS 4, FAIL 0, infra 0) — codex 0/26 (P0 F0 I0), cursor 4/91 (P4 F0 I0), gemini 0/67 (P0 F0 I0), vibe 0/4 (P0 F0 I0)
@@ -156,11 +156,10 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D4-verify-merged-2026-09-18T02 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
 | D4-verify-merged-2026-09-19T02 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
 | D4-verify-merged-2026-09-20T03 | D | D | done | cursor | codex | Verify merged PRs against their issues' acceptance criteria |
-| D4-verify-merged-2026-09-20T20 | D | D | claimed | cursor | codex | Verify merged PRs against their issues' acceptance criteria |
+| D4-verify-merged-2026-09-20T20 | D | D | done | cursor | codex | Verify merged PRs against their issues' acceptance criteria |
 
 ## Last checkpoints
 
-- 2026-09-20T20:25:26Z — D-audit-Counter_Risk--2026-09-20T20-25-21Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-20T20:25:26Z — D-audit-Counter_Risk--2026-09-20T20-25-21Z — claimed by driver (agent cursor)
 - 2026-09-20T20:25:29Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
 - 2026-09-20T20:42:22Z — D-audit-Counter_Risk--2026-09-20T20-25-21Z — done — cursor produced 588 words at artifacts/audits/Counter_Risk-2026-09-20.md in 999s
@@ -172,6 +171,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-20T21:12:08Z — D4-verify-merged-2026-09-20T20 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-20T21:12:08Z — D4-verify-merged-2026-09-20T20 — claimed by codex (agent cursor)
 - 2026-09-20T21:18:24Z — D-audit-Manager-Database--2026-09-20T20-25-22Z — done — cursor produced 626 words at artifacts/audits/Manager-Database-2026-09-20.md in 404s
+- 2026-09-20T21:18:48Z — D4-verify-merged-2026-09-20T20 — done — Verified 20 recent merged PRs: 17 delivered, two missing deliberate-break evidence with follow-ups filed, and one dependency chore excluded.
 
 ## Questions
 
