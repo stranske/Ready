@@ -1,0 +1,1062 @@
+diff --git a/.github/scripts/__tests__/agents-pr-meta-update-body.test.js b/.github/scripts/__tests__/agents-pr-meta-update-body.test.js
+index f207a073b..4063d524f 100644
+--- a/.github/scripts/__tests__/agents-pr-meta-update-body.test.js
++++ b/.github/scripts/__tests__/agents-pr-meta-update-body.test.js
+@@ -334,7 +334,7 @@ test('extractBlock returns empty string if markers not found', () => {
+ 
+ // ========== stripPrTemplateContent tests ==========
+ 
+-test('stripPrTemplateContent removes content before pr-preamble marker', () => {
++test('stripPrTemplateContent preserves checkbox-bearing content before pr-preamble marker', () => {
+   const body = `# Summary
+ 
+ One sentence.
+@@ -356,9 +356,7 @@ Add labels.
+ 
+   const result = stripPrTemplateContent(body);
+   
+-  assert.ok(result.startsWith('<!-- pr-preamble:start -->'));
+-  assert.ok(!result.includes('# Summary'));
+-  assert.ok(!result.includes('Checklist'));
++  assert.equal(result, body);
+ });
+ 
+ test('stripPrTemplateContent removes content before auto-status-summary if no preamble', () => {
+@@ -1598,3 +1596,41 @@ test('upsertBlock preserves triple newlines in single-pair case (no duplicates)'
+   assert.ok(result.includes('After'));
+   assert.ok(result.includes('\n\n\n'), 'should preserve existing triple newlines when no duplicates removed');
+ });
++
++
++test('metadata regeneration preserves outside task lines before and after the summary', () => {
++  const before = '## Reviewer tasks\n- [ ] Exercise the error path\n  and retain its output.\n\n';
++  const after = '\n\n## More acceptance\n- [ ] Verify the packaged command';
++  const oldSummary = '<!-- auto-status-summary:start -->\n## Tasks\n- [x] Source task\n<!-- auto-status-summary:end -->';
++  const newSummary = '<!-- auto-status-summary:start -->\n## Tasks\n- [x] Refreshed source task\n<!-- auto-status-summary:end -->';
++  const preamble = '<!-- pr-preamble:start -->\nCloses #3441\n<!-- pr-preamble:end -->';
++  const refresh = (body) => upsertBlock(upsertBlock(stripPrTemplateContent(body), 'pr-preamble', preamble), 'auto-status-summary', newSummary);
++  const result = refresh(before + oldSummary + after);
++  assert.ok(result.startsWith(before));
++  assert.ok(result.includes(after));
++  assert.ok(result.includes(newSummary));
++  assert.equal(refresh(result), result);
++});
++
++for (const templatePath of ['../../../.github/PULL_REQUEST_TEMPLATE.md', '../../../templates/consumer-repo/.github/PULL_REQUEST_TEMPLATE.md']) {
++  test(`metadata refresh removes template controls and retains genuine reviewer tasks (${templatePath})`, () => {
++    const template = require('fs').readFileSync(require('path').resolve(__dirname, templatePath), 'utf8');
++    const summary = '<!-- auto-status-summary:start -->\n## Tasks\n- [x] Source task\n<!-- auto-status-summary:end -->';
++    assert.equal(stripPrTemplateContent(template + summary), summary);
++    const reviewer = '## Review tasks\n> - [ ] Check the error path\n>   and its diagnostic.\n';
++    const cleaned = stripPrTemplateContent(template + reviewer + summary);
++    assert.ok(cleaned.includes(reviewer));
++    assert.doesNotMatch(cleaned, /\[[ xX]\] (?:GitHub issue|Direct PR|Verifier should|Keepalive may)/);
++    assert.equal(stripPrTemplateContent(cleaned), cleaned);
++    // A genuine task in Notes within Workflow Source must also survive.
++    const notes = template.replace('Notes:', 'Notes:\n- [ ] Verify the provenance record');
++    assert.match(stripPrTemplateContent(notes + summary), /- \[ \] Verify the provenance record/);
++  });
++}
++
++for (const hidden of ['<!--\n- [ ] Hidden comment\n-->\n', '```markdown\n- [ ] Fenced example\n```\n', '> ```markdown\n> - [ ] Quoted fenced example\n> ```\n']) {
++  test(`metadata refresh ignores hidden checkbox prefix: ${hidden.split('\n')[0]}`, () => {
++    const summary = '<!-- auto-status-summary:start -->\n## Tasks\n- [x] Source task\n<!-- auto-status-summary:end -->';
++    assert.equal(stripPrTemplateContent('## Stale template\n' + hidden + summary), summary);
++  });
++}
+diff --git a/.github/scripts/__tests__/issue_scope_parser.test.js b/.github/scripts/__tests__/issue_scope_parser.test.js
+index ca3e1d292..a03fb7f65 100644
+--- a/.github/scripts/__tests__/issue_scope_parser.test.js
++++ b/.github/scripts/__tests__/issue_scope_parser.test.js
+@@ -8,8 +8,64 @@ const {
+   parseScopeTasksAcceptanceSections,
+   analyzeSectionPresence,
+   hasNonPlaceholderScopeTasksAcceptanceContent,
++  visibleChecklistContent,
+ } = require('../issue_scope_parser');
+ 
++for (const parserPath of ['../issue_scope_parser', '../../../templates/consumer-repo/.github/scripts/issue_scope_parser']) {
++  const parser = require(parserPath);
++  for (const fence of ['```', '~~~']) {
++    for (const quote of ['', '> ', '> > ']) {
++      test(`template controls preserve fenced examples (${parserPath}, ${fence}, ${quote})`, () => {
++        const example = [
++          `${fence}markdown`, '## Workflow Source', 'Started from:',
++          '- [ ] GitHub issue: #123', `    ${fence}`,
++          'Automation intent:', '- [ ] Keepalive may manage this PR',
++          `${fence}not-a-closing-fence`, '- [ ] Direct PR / remote GitHub work', fence,
++        ].map((line) => quote + line).join('\n');
++        const actualControls = [
++          '## Workflow Source', 'Started from:', '- [ ] GitHub issue: #456',
++          'Automation intent:', '- [ ] Keepalive may manage this PR',
++          'Notes:', '- [ ] Retain reviewer work',
++        ].join('\n');
++        assert.equal(parser.stripPrTemplateControls(`${example}\n${actualControls}`),
++          `${example}\n## Workflow Source\nNotes:\n- [ ] Retain reviewer work`);
++        assert.doesNotMatch(parser.visibleChecklistContent(example), /\[ \]/);
++      });
++    }
++  }
++}
++
++test('visible checklist scan handles nested quotes without counting their fenced examples', () => {
++  const body = [
++    '> > - [ ] Visible nested task',
++    '> >   with a continuation.',
++    '> > ```markdown',
++    '> > - [ ] Example only',
++    '> > ```',
++    '>> - [x] Completed nested task',
++  ].join('\n');
++  const visible = visibleChecklistContent(body);
++  assert.match(visible, /^- \[ \] Visible nested task\n  with a continuation\./);
++  assert.match(visible, /- \[x\] Completed nested task/);
++  assert.doesNotMatch(visible, /Example only|>/);
++});
++
++for (const fence of ['```', '~~~']) {
++  test(`visible checklist scan keeps fence and comment state separate (${fence})`, () => {
++    const body = [
++      '<!-- hidden comment', fence, '- [ ] Hidden task', '-->',
++      `${fence}markdown`, '<!-- literal comment opener',
++      `    ${fence}`, '- [ ] Indented fence is still an example',
++      `${fence}not-a-closing-fence`, '- [ ] Still an example', fence,
++      '- [ ] Real task <!-- inline comment --> remains visible',
++      '-->',
++    ].join('\n');
++    const visible = visibleChecklistContent(body);
++    assert.match(visible, /- \[ \] Real task  remains visible/);
++    assert.doesNotMatch(visible, /Hidden task|example|literal comment/);
++  });
++}
++
+ test('extracts sections inside auto-status markers', () => {
+   const issue = [
+     'Intro text',
+diff --git a/.github/scripts/__tests__/keepalive-loop.test.js b/.github/scripts/__tests__/keepalive-loop.test.js
+index 5874a4b12..6b3ba5eb1 100644
+--- a/.github/scripts/__tests__/keepalive-loop.test.js
++++ b/.github/scripts/__tests__/keepalive-loop.test.js
+@@ -20,6 +20,7 @@ const {
+ } = require('../keepalive_loop.js');
+ const { formatStateComment, parseStateComment } = require('../keepalive_state.js');
+ const { signAuthorityChallengeClaim } = require('../keepalive_challenge_due.js');
++const { stripPrTemplateContent, upsertBlock } = require('../agents_pr_meta_update_body.js');
+ 
+ const authorityClaimInputs = (prNumber, boundaryFingerprint, overrides = {}) => {
+   const claim = {
+@@ -410,6 +411,353 @@ test('evaluateKeepaliveLoop stops when tasks are complete and verification is do
+   assert.equal(result.reason, 'tasks-complete');
+ });
+ 
++for (const [placement, marker] of ['before', 'after', 'unmanaged'].flatMap(
++  (placement) => ['-', '*', '+', '1.', '1)'].map((marker) => [placement, marker]),
++)) {
++  test(`evaluateKeepaliveLoop dispatches unchecked work outside summary (${placement}, ${marker})`, async () => {
++    const summary = [
++      '<!-- auto-status-summary:start -->',
++      '## Tasks', '- [x] Implement the source task',
++      '## Acceptance Criteria', '- [x] Verify the source task',
++      '<!-- auto-status-summary:end -->',
++    ].join('\n');
++    const extra = `## Reviewer follow-up\n${marker} [ ] Exercise the retry path\n    with a failed first request.`;
++    const body = placement === 'before' ? `${extra}\n${summary}`
++      : placement === 'after' ? `${summary}\n${extra}`
++        : `${summary.replace(/<!--[^>]*-->/g, '')}\n${extra}`;
++    const pr = { number: 3441, head: { ref: 'codex/issue-3441', sha: 'visible-head' },
++      labels: [{ name: 'agent:codex' }], body };
++    const github = buildGithubStub({ pr,
++      comments: [{ id: 23, body: formatStateComment({ verification: { status: 'done' } }) }],
++      workflowRuns: [{ head_sha: 'visible-head', conclusion: 'success' }],
++    });
++    const result = await evaluateKeepaliveLoop({ github, context: buildContext(pr.number), core: buildCore() });
++    assert.equal(result.action, 'run');
++    assert.equal(result.reason, 'ready');
++    assert.deepEqual(result.checkboxCounts, { total: 3, checked: 2, unchecked: 1 });
++    assert.match(result.taskAppendix, /Exercise the retry path/);
++    assert.match(result.taskAppendix, /with a failed first request/);
++  });
++}
++
++test('evaluateKeepaliveLoop does not complete an outside task matching completed summary text', async () => {
++  const task = 'Exercise the retry path';
++  const summary = [
++    '<!-- auto-status-summary:start -->',
++    '## Tasks', `- [x] ${task}`,
++    '## Acceptance Criteria', '- [x] Verify the source task',
++    '<!-- auto-status-summary:end -->',
++  ].join('\n');
++  const body = upsertBlock(
++    stripPrTemplateContent(`${summary}\n## Reviewer follow-up\n- [ ] ${task}`),
++    'auto-status-summary', summary,
++  );
++  const pr = {
++    number: 3441,
++    head: { ref: 'codex/issue-3441', sha: 'repeated-task-head' },
++    labels: [{ name: 'agent:codex' }],
++    body,
++  };
++  const github = buildGithubStub({
++    pr,
++    comments: [{ id: 23, body: formatStateComment({ verification: { status: 'done' } }) }],
++    workflowRuns: [{ head_sha: pr.head.sha, conclusion: 'success' }],
++  });
++  const result = await evaluateKeepaliveLoop({
++    github, context: buildContext(pr.number), core: buildCore(),
++  });
++  assert.equal(result.action, 'run');
++  assert.equal(result.reason, 'ready');
++  assert.deepEqual(result.checkboxCounts, { total: 3, checked: 2, unchecked: 1 });
++  assert.ok(result.taskAppendix.includes(`- [ ] ${task}`));
++});
++
++for (const placement of ['before', 'after']) {
++  test(`evaluateKeepaliveLoop counts collapsible reviewer work after refresh (${placement})`, async () => {
++    const summary = [
++      '<!-- auto-status-summary:start -->',
++      '## Tasks', '- [x] Source task',
++      '## Acceptance Criteria', '- [x] Source acceptance',
++      '<!-- auto-status-summary:end -->',
++    ].join('\n');
++    const reviewer = [
++      '<details>', '<summary>Reviewer follow-up</summary>', '',
++      '- [ ] Exercise the packaged retry path',
++      '  and inspect the diagnostic.', '', '</details>',
++    ].join('\n');
++    const original = placement === 'before' ? `${reviewer}\n${summary}` : `${summary}\n${reviewer}`;
++    const refresh = (body) => upsertBlock(stripPrTemplateContent(body), 'auto-status-summary', summary);
++    const body = refresh(original.replace(/\n/g, '\r\n'));
++    assert.ok(body.replace(/\r\n/g, '\n').includes(reviewer),
++      'metadata refresh must preserve collapsible reviewer work');
++    assert.equal(refresh(body), body);
++    const pr = {
++      number: 3441, head: { ref: 'codex/issue-3441', sha: 'details-head' },
++      labels: [{ name: 'agent:codex' }], body,
++    };
++    const github = buildGithubStub({
++      pr, workflowRuns: [{ head_sha: pr.head.sha, conclusion: 'success' }],
++      comments: [{ id: 23, body: formatStateComment({ verification: { status: 'done' } }) }],
++    });
++    const result = await evaluateKeepaliveLoop({ github, context: buildContext(pr.number), core: buildCore() });
++    assert.equal(result.action, 'run');
++    assert.equal(result.reason, 'ready');
++    assert.deepEqual(result.checkboxCounts, { total: 3, checked: 2, unchecked: 1 });
++    assert.match(result.taskAppendix, /Exercise the packaged retry path/);
++    assert.match(result.taskAppendix, /and inspect the diagnostic/);
++  });
++}
++
++test('evaluateKeepaliveLoop counts outside work after a fenced HTML comment opener', async () => {
++  const summary = [
++    '<!-- auto-status-summary:start -->',
++    '## Tasks', '- [x] Source task',
++    '## Acceptance Criteria', '- [x] Source acceptance',
++    '<!-- auto-status-summary:end -->',
++  ].join('\n');
++  const reviewer = '\n```markdown\n<!-- example text\n```\n- [ ] Real reviewer task\n-->\n';
++  const body = upsertBlock(stripPrTemplateContent(reviewer + summary), 'auto-status-summary', summary);
++  assert.ok(body.includes(reviewer.trim()), 'metadata refresh must preserve real reviewer work');
++  const pr = {
++    number: 3441, head: { ref: 'codex/issue-3441', sha: 'fenced-comment-head' },
++    labels: [{ name: 'agent:codex' }], body,
++  };
++  const github = buildGithubStub({
++    pr, workflowRuns: [{ head_sha: pr.head.sha, conclusion: 'success' }],
++    comments: [{ id: 23, body: formatStateComment({ verification: { status: 'done' } }) }],
++  });
++  const result = await evaluateKeepaliveLoop({ github, context: buildContext(pr.number), core: buildCore() });
++  assert.equal(result.action, 'run');
++  assert.equal(result.reason, 'ready');
++  assert.deepEqual(result.checkboxCounts, { total: 3, checked: 2, unchecked: 1 });
++  assert.match(result.taskAppendix, /Real reviewer task/);
++});
++
++test('evaluateKeepaliveLoop retains nested blockquoted outside tasks through metadata refresh', async () => {
++  const summary = [
++    '<!-- auto-status-summary:start -->',
++    '## Tasks', '- [x] Implement the source task',
++    '## Acceptance Criteria', '- [x] Verify the source task',
++    '<!-- auto-status-summary:end -->',
++  ].join('\n');
++  const reviewer = 'Review follow-up:\n> > - [ ] Exercise the nested retry path\n> >   and verify its diagnostic.\n\n';
++  const body = upsertBlock(stripPrTemplateContent(reviewer + summary), 'auto-status-summary', summary);
++  assert.ok(body.startsWith(reviewer), 'metadata refresh must preserve the nested task');
++  const pr = {
++    number: 3441,
++    head: { ref: 'codex/issue-3441', sha: 'nested-quote-head' },
++    labels: [{ name: 'agent:codex' }],
++    body,
++  };
++  const github = buildGithubStub({
++    pr,
++    comments: [{ id: 23, body: formatStateComment({ verification: { status: 'done' } }) }],
++    workflowRuns: [{ head_sha: 'nested-quote-head', conclusion: 'success' }],
++  });
++  const result = await evaluateKeepaliveLoop({
++    github, context: buildContext(pr.number), core: buildCore(),
++  });
++  assert.equal(result.action, 'run');
++  assert.equal(result.reason, 'ready');
++  assert.deepEqual(result.checkboxCounts, { total: 3, checked: 2, unchecked: 1 });
++  assert.match(result.taskAppendix, /Exercise the nested retry path/);
++  assert.match(result.taskAppendix, /and verify its diagnostic/);
++});
++
++test('evaluateKeepaliveLoop requires outside work to be checked after metadata refresh', async () => {
++  const summary = (task) => [
++    '<!-- auto-status-summary:start -->',
++    '## Tasks', `- [x] ${task}`,
++    '## Acceptance Criteria', '- [x] Verify the source task',
++    '<!-- auto-status-summary:end -->',
++  ].join('\n');
++  const refresh = (body) => upsertBlock(
++    upsertBlock(stripPrTemplateContent(body), 'pr-preamble',
++      '<!-- pr-preamble:start -->\nCloses #3441\n<!-- pr-preamble:end -->'),
++    'auto-status-summary', summary('Refreshed source task'),
++  );
++  const original = [
++    '## Reviewer tasks', '- [ ] Exercise the error path',
++    '  and retain its diagnostic.',
++    summary('Original source task'),
++    '## Reviewer acceptance', '> - [ ] Verify the packaged command',
++  ].join('\n');
++  let body = refresh(original);
++  assert.equal(refresh(body), body);
++  assert.doesNotMatch(body, /Original source task/);
++  assert.match(body, /Refreshed source task/);
++
++  for (const remaining of [2, 1, 0]) {
++    const pr = {
++      number: 3441,
++      head: { ref: 'codex/issue-3441', sha: 'refreshed-head' },
++      labels: [{ name: 'agent:codex' }],
++      body,
++    };
++    const github = buildGithubStub({
++      pr,
++      comments: [{ id: 23, body: formatStateComment({ verification: { status: 'done' } }) }],
++      workflowRuns: [{ head_sha: 'refreshed-head', conclusion: 'success' }],
++    });
++    const result = await evaluateKeepaliveLoop({
++      github, context: buildContext(pr.number), core: buildCore(),
++    });
++    assert.equal(result.action, remaining ? 'run' : 'stop');
++    assert.equal(result.reason, remaining ? 'ready' : 'tasks-complete');
++    assert.deepEqual(result.checkboxCounts, {
++      total: 4, checked: 4 - remaining, unchecked: remaining,
++    });
++    if (remaining) {
++      assert.match(result.taskAppendix, /Exercise the error path/);
++      assert.match(result.taskAppendix, /and retain its diagnostic/);
++      assert.match(result.taskAppendix, /Verify the packaged command/);
++    }
++    body = refresh(body.replace('- [ ]', '- [x]'));
++  }
++});
++
++test('evaluateKeepaliveLoop resumes a reopened outside task despite saved completion', async () => {
++  const pr = {
++    number: 3441,
++    head: { ref: 'codex/issue-3441', sha: 'reopened-head' },
++    labels: [{ name: 'agent:codex' }],
++    body: [
++      '<!-- auto-status-summary:start -->',
++      '## Tasks', '- [x] Implement the source task',
++      '## Acceptance Criteria', '- [x] Verify the source task',
++      '<!-- auto-status-summary:end -->',
++      '## Reviewer follow-up', '- [x] Exercise the retry path',
++    ].join('\n'),
++  };
++  const github = buildGithubStub({
++    pr,
++    comments: [{ id: 23, body: formatStateComment({
++      tasks: { total: 3, checked: 3, unchecked: 0 },
++      verification: { status: 'done' },
++    }) }],
++    workflowRuns: [{ head_sha: 'reopened-head', conclusion: 'success' }],
++  });
++  const evaluate = () => evaluateKeepaliveLoop({
++    github, context: buildContext(pr.number), core: buildCore(),
++  });
++  const completed = await evaluate();
++  assert.equal(completed.reason, 'tasks-complete');
++  assert.equal(completed.action, 'stop');
++
++  // A body-only edit must invalidate completion without requiring a new head.
++  pr.body = pr.body.replace('- [x] Exercise the retry path', '- [ ] Exercise the retry path');
++  const reopened = await evaluate();
++  assert.equal(reopened.action, 'run');
++  assert.equal(reopened.reason, 'ready');
++  assert.deepEqual(reopened.checkboxCounts, { total: 3, checked: 2, unchecked: 1 });
++  assert.match(reopened.taskAppendix, /2\/3 tasks complete, 1 remaining/);
++  assert.match(reopened.taskAppendix, /- \[ \] Exercise the retry path/);
++});
++
++test('evaluateKeepaliveLoop ignores outside examples and metrics but counts visible duplicate work', async () => {
++  const summary = '<!-- auto-status-summary:start -->\n## Tasks\n- [x] Retry request\n## Acceptance Criteria\n- [x] Verified\n<!-- auto-status-summary:end -->';
++  const examples = '\n```markdown\n- [ ] Example only\n```\n<!--\n- [ ] Hidden example\n-->\n- [ ] Repos checked: 12/12\n';
++  for (const outside of [examples, `${examples}- [ ] Retry request\n`]) {
++    const pr = { number: 3442, head: { ref: 'codex/issue-3441', sha: 'example-head' },
++      labels: [{ name: 'agent:codex' }], body: summary + outside };
++    const github = buildGithubStub({ pr,
++      comments: [{ id: 23, body: formatStateComment({ verification: { status: 'done' } }) }],
++      workflowRuns: [{ head_sha: 'example-head', conclusion: 'success' }],
++    });
++    const result = await evaluateKeepaliveLoop({ github, context: buildContext(pr.number), core: buildCore() });
++    assert.equal(result.reason, outside === examples ? 'tasks-complete' : 'ready');
++    assert.equal(result.checkboxCounts.unchecked, outside === examples ? 0 : 1);
++  }
++});
++
++for (const templatePath of ['../../../.github/PULL_REQUEST_TEMPLATE.md', '../../../templates/consumer-repo/.github/PULL_REQUEST_TEMPLATE.md']) {
++  for (const managed of [false, true]) {
++    test(`evaluateKeepaliveLoop excludes checked-in PR template controls (${templatePath}, managed=${managed})`, async () => {
++      const template = fs.readFileSync(path.resolve(__dirname, templatePath), 'utf8')
++        .replace('- [ ] GitHub issue: #', '- [x] GitHub issue: #3441');
++      const tasks = '## Tasks\n- [x] Source task\n## Acceptance Criteria\n- [x] Source acceptance';
++      for (const followup of ['', '\n## Reviewer notes\n> - [ ] Verify quoted follow-up']) {
++        const summary = managed ? `<!-- auto-status-summary:start -->\n${tasks}\n<!-- auto-status-summary:end -->` : tasks;
++        const pr = { number: 3441, head: { ref: 'codex/issue-3441', sha: 'template-head' },
++          labels: [{ name: 'agent:codex' }], body: `${template}\n${summary}${followup}` };
++        const github = buildGithubStub({ pr,
++          comments: [{ id: 23, body: formatStateComment({ verification: { status: 'done' } }) }],
++          workflowRuns: [{ head_sha: 'template-head', conclusion: 'success' }],
++        });
++        const result = await evaluateKeepaliveLoop({ github, context: buildContext(pr.number), core: buildCore() });
++        assert.equal(result.reason, followup ? 'ready' : 'tasks-complete');
++        assert.deepEqual(result.checkboxCounts, { total: followup ? 3 : 2, checked: 2, unchecked: followup ? 1 : 0 });
++        if (followup) assert.match(result.taskAppendix, /Verify quoted follow-up/);
++      }
++    });
++  }
++}
++
++test('evaluateKeepaliveLoop ignores quoted fenced examples but counts quoted reviewer work', async () => {
++  const pr = { number: 3441, head: { ref: 'codex/issue-3441', sha: 'quoted-head' },
++    labels: [{ name: 'agent:codex' }], body: [
++      '<!-- auto-status-summary:start -->', '## Tasks', '- [x] Source task',
++      '## Acceptance Criteria', '- [x] Source acceptance', '<!-- auto-status-summary:end -->',
++      '> ```markdown', '> - [ ] Example only', '> ```',
++      '> <!--', '> - [ ] Hidden only', '> -->',
++      '> - [ ] Real quoted follow-up',
++    ].join('\n') };
++  const github = buildGithubStub({ pr, workflowRuns: [{ head_sha: 'quoted-head', conclusion: 'success' }] });
++  const result = await evaluateKeepaliveLoop({ github, context: buildContext(pr.number), core: buildCore() });
++  assert.equal(result.checkboxCounts.unchecked, 1);
++  assert.match(result.taskAppendix, /Real quoted follow-up/);
++  assert.doesNotMatch(result.taskAppendix, /Example only|Hidden only/);
++});
++
++test('updateKeepaliveLoopSummary retains outside work in live task counts', async () => {
++  const pr = { number: 3441, labels: [{ name: 'agent:codex' }], body:
++    '<!-- auto-status-summary:start -->\n## Tasks\n- [x] Source task\n## Acceptance Criteria\n- [x] Source acceptance\n<!-- auto-status-summary:end -->\n## Follow-up\n- [ ] Check the retry path' };
++  const github = buildGithubStub({ pr });
++  await updateKeepaliveLoopSummary({ github, context: buildContext(pr.number), core: buildCore(), inputs: {
++    prNumber: pr.number, action: 'run', reason: 'ready', runResult: 'success', gateConclusion: 'success',
++    tasksTotal: 2, tasksUnchecked: 0, keepaliveEnabled: true, iteration: 0, maxIterations: 5,
++    codex_changes_made: 'true', codex_files_changed: 1, codex_commit_sha: 'new-head',
++  } });
++  const comment = github.actions.find((action) => action.body && parseStateComment(action.body));
++  assert.ok(comment);
++  const state = parseStateComment(comment.body).data;
++  assert.deepEqual(state.tasks, { total: 3, unchecked: 1 });
++});
++
++test('updateKeepaliveLoopSummary refuses stale completion when outside work was added', async () => {
++  const pr = { number: 3441, labels: [{ name: 'agent:codex' }], body:
++    '<!-- auto-status-summary:start -->\n## Tasks\n- [x] Source task\n## Acceptance Criteria\n- [x] Source acceptance\n<!-- auto-status-summary:end -->\n## Follow-up\n- [ ] Check the retry path' };
++  const github = buildGithubStub({ pr });
++  await updateKeepaliveLoopSummary({ github, context: buildContext(pr.number), core: buildCore(), inputs: {
++    prNumber: pr.number, action: 'stop', reason: 'tasks-complete', runResult: 'success', gateConclusion: 'success',
++    tasksTotal: 2, tasksUnchecked: 0, keepaliveEnabled: true, iteration: 0, maxIterations: 5,
++    codex_changes_made: 'true', codex_files_changed: 1, codex_commit_sha: 'new-head',
++  } });
++  const comment = github.actions.find((action) => action.body && parseStateComment(action.body));
++  assert.ok(comment);
++  const state = parseStateComment(comment.body).data;
++  assert.deepEqual(state.tasks, { total: 3, unchecked: 1 });
++  assert.match(comment.body, /tasks-changed/);
++  assert.equal(github.actions.some((action) => action.labels?.includes('automerge')), false);
++});
++
++for (const action of ['stop', 'run']) {
++  test(`updateKeepaliveLoopSummary revokes existing automerge on visible outstanding work (${action})`, async () => {
++    const pr = { number: 3441, labels: [{ name: 'agent:codex' }, { name: 'automerge' }], body: '## Tasks\n- [x] Source task\n## Acceptance Criteria\n- [x] Verified\n## Review\n> - [ ] Finish review task' };
++    const github = buildGithubStub({ pr, labels: ['agent:codex', 'automerge'] });
++    await updateKeepaliveLoopSummary({ github, context: buildContext(pr.number), core: buildCore(), inputs: {
++      prNumber: pr.number, action, reason: action === 'stop' ? 'tasks-complete' : 'ready',
++      runResult: 'success', gateConclusion: 'success', tasksTotal: 2, tasksUnchecked: 0,
++      keepaliveEnabled: true, iteration: 0, maxIterations: 5,
++    } });
++    const removalIndex = github.actions.findIndex((entry) => entry.type === 'remove-label' && entry.name === 'automerge');
++    assert.ok(removalIndex >= 0, 'outstanding live work must revoke the previous merge authorization');
++    const summaryIndex = github.actions.findIndex((entry) => entry.body && parseStateComment(entry.body));
++    assert.ok(summaryIndex > removalIndex, 'revoke authorization before publishing state');
++    assert.equal(github.actions.some((entry) => entry.labels?.includes('automerge')), false);
++  });
++}
++
+ test('evaluateKeepaliveLoop stops when round budget is exhausted', async () => {
+   const pr = {
+     number: 404,
+diff --git a/.github/scripts/agents_pr_meta_update_body.js b/.github/scripts/agents_pr_meta_update_body.js
+index d4b6bc4ba..108656775 100644
+--- a/.github/scripts/agents_pr_meta_update_body.js
++++ b/.github/scripts/agents_pr_meta_update_body.js
+@@ -10,6 +10,7 @@
+  * - Building and updating PR body with preamble and status blocks
+  */
+ 
++const { visibleChecklistContent, stripPrTemplateControls } = require('./issue_scope_parser');
+ const path = require('path');
+ const fs = require('fs');
+ const os = require('os');
+@@ -728,8 +729,13 @@ function stripPrTemplateContent(body) {
+     firstMarkerIndex = statusStart;
+   }
+   
+-  // If we found a marker and there's content before it, strip that content
++  // A checkbox-bearing prefix may be reviewer-added work, not a template.
++  // Preserve it with its context and continuation lines across regeneration.
+   if (firstMarkerIndex > 0) {
++    const prefix = stripPrTemplateControls(body.slice(0, firstMarkerIndex));
++    if (/^\s*(?:[-*+]|\d+[.)])\s*\[[ xX]\]/m.test(visibleChecklistContent(prefix))) {
++      return prefix + body.slice(firstMarkerIndex);
++    }
+     return body.slice(firstMarkerIndex);
+   }
+   
+diff --git a/.github/scripts/issue_scope_parser.js b/.github/scripts/issue_scope_parser.js
+index c1ce66fff..2f91fd1c9 100644
+--- a/.github/scripts/issue_scope_parser.js
++++ b/.github/scripts/issue_scope_parser.js
+@@ -2,7 +2,7 @@
+ 
+ const normalizeNewlines = (value) => String(value || '').replace(/\r\n/g, '\n');
+ const stripBlockquotePrefixes = (value) =>
+-  String(value || '').replace(/^[ \t]*>+[ \t]?/gm, '');
++  String(value || '').replace(/^(?:[ \t]*>[ \t]?)+/gm, '');
+ 
+ /**
+  * Check if a line is a code fence delimiter (``` or ~~~).
+@@ -10,6 +10,89 @@ const stripBlockquotePrefixes = (value) =>
+  */
+ const isCodeFenceLine = (line) => /^(`{3,}|~{3,})/.test(line.trim());
+ 
++
++// Shared by PR metadata preservation and keepalive's visible-work scan.
++function visibleChecklistContent(markdown) {
++  let fence = null;
++  let comment = false;
++  return stripBlockquotePrefixes(normalizeNewlines(markdown))
++    .split('\n').map((line) => {
++      // Fenced examples are literal: comment markers inside them must never
++      // consume real checklist lines after the closing fence.
++      const delimiter = !comment && line.match(/^ {0,3}(`{3,}|~{3,})(.*)$/);
++      if (delimiter) {
++        const token = delimiter[1];
++        if (!fence) fence = token;
++        else if (token[0] === fence[0] && token.length >= fence.length && !delimiter[2].trim()) fence = null;
++        return '';
++      }
++      if (fence) return '';
++      let visible = '';
++      let offset = 0;
++      while (offset < line.length) {
++        if (comment) {
++          const end = line.indexOf('-->', offset);
++          if (end < 0) break;
++          comment = false;
++          offset = end + 3;
++        } else {
++          const start = line.indexOf('<!--', offset);
++          if (start < 0) {
++            visible += line.slice(offset);
++            break;
++          }
++          visible += line.slice(offset, start);
++          comment = true;
++          offset = start + 4;
++        }
++      }
++      return visible;
++    }).join('\n');
++}
++
++// Workflow Source contains mutually exclusive metadata controls, not delivery
++// work. Match only the known controls in their named template groups so real
++// reviewer tasks (including tasks in Notes) survive with their surrounding text.
++function stripPrTemplateControls(markdown) {
++  let sourceDepth = 0;
++  let group = '';
++  let fence = null;
++  const sourceChoices = /^(?:GitHub issue:\s*#.*|Direct PR \/ remote GitHub work|Local Codex\/user request|Automation run|Review follow-up from PR #.*|Sync \/ maintenance campaign|Dependabot or dependency update|Do not automate)$/i;
++  const intentChoices = /^(?:Verifier should review this|Keepalive may manage this PR|Human-only unless checks fail)$/i;
++  return normalizeNewlines(markdown).split('\n').filter((line) => {
++    // Fenced examples are literal body content, never template metadata. Keep
++    // indentation after quote markers so an indented fence cannot close one.
++    const unquoted = stripBlockquotePrefixes(line);
++    const delimiter = unquoted.match(/^ {0,3}(`{3,}|~{3,})(.*)$/);
++    if (delimiter) {
++      const token = delimiter[1];
++      if (!fence) fence = token;
++      else if (token[0] === fence[0] && token.length >= fence.length && !delimiter[2].trim()) fence = null;
++      return true;
++    }
++    if (fence) return true;
++    const visible = unquoted.trim();
++    const heading = visible.match(/^(#{1,6})\s+(.+?)\s*#*$/);
++    if (heading) {
++      if (sourceDepth && heading[1].length <= sourceDepth) {
++        sourceDepth = 0;
++        group = '';
++      }
++      if (heading[2].toLowerCase() === 'workflow source') sourceDepth = heading[1].length;
++    }
++    if (!sourceDepth) return true;
++    if (/^Started from:$/i.test(visible)) { group = 'source'; return false; }
++    if (/^Automation intent:$/i.test(visible)) { group = 'intent'; return false; }
++    const checkbox = visible.match(/^(?:[-*+]|\d+[.)])\s*\[[ xX]\]\s*(.*)$/);
++    if (checkbox) {
++      return !(group === 'source' && sourceChoices.test(checkbox[1]))
++        && !(group === 'intent' && intentChoices.test(checkbox[1]));
++    }
++    if (visible && !/^<!--/.test(visible)) group = '';
++    return true;
++  }).join('\n');
++}
++
+ const LIST_ITEM_REGEX = /^(\s*)([-*+]|\d+[.)])\s+(.*)$/;
+ const DETAILS_OPEN_REGEX = /^<details\b[^>]*>\s*$/i;
+ const DETAILS_CLOSE_REGEX = /^<\/details>\s*$/i;
+@@ -737,6 +820,8 @@ const analyzeSectionPresence = (source) => {
+ };
+ 
+ module.exports = {
++  visibleChecklistContent,
++  stripPrTemplateControls,
+   extractScopeTasksAcceptanceSections,
+   parseScopeTasksAcceptanceSections,
+   hasNonPlaceholderScopeTasksAcceptanceContent,
+diff --git a/.github/scripts/keepalive_loop.js b/.github/scripts/keepalive_loop.js
+index a191e388c..311b84176 100644
+--- a/.github/scripts/keepalive_loop.js
++++ b/.github/scripts/keepalive_loop.js
+@@ -4,7 +4,7 @@ const fs = require('fs');
+ const path = require('path');
+ const crypto = require('crypto');
+ 
+-const { parseScopeTasksAcceptanceSections } = require('./issue_scope_parser');
++const { parseScopeTasksAcceptanceSections, visibleChecklistContent, stripPrTemplateControls } = require('./issue_scope_parser');
+ const { getGithubApiCache } = require('./github-api-cache-client');
+ const {
+   loadKeepaliveState,
+@@ -1471,6 +1471,41 @@ function isActionableChecklistItemText(text) {
+   return !isStatusMetricChecklistItem(text) && !isPlaceholderChecklistItem(text);
+ }
+ 
++// The source-derived summary remains the canonical section parser input, but
++// visible checkboxes outside it must also reach both dispatch and live reporting.
++function parseKeepaliveChecklistSections(body) {
++  body = stripPrTemplateControls(body);
++  const sections = normaliseChecklistSections(parseScopeTasksAcceptanceSections(body));
++  for (const key of ['tasks', 'acceptance']) {
++    sections[key] = visibleChecklistContent(sections[key]);
++  }
++  const outside = String(body || '').replace(
++    /<!-- auto-status-summary:start -->[\s\S]*?<!-- auto-status-summary:end -->/g, '',
++  );
++  const itemKey = (item) => `${item.checked}:${normaliseTaskKey(item.text)}`;
++  const represented = outside === String(body || '')
++    ? new Set(extractChecklistItems([sections.tasks, sections.acceptance].join('\n')).map(itemKey))
++    : new Set();
++  const additional = [];
++  let capturing = false;
++  for (const line of visibleChecklistContent(outside).split('\n')) {
++    const item = extractChecklistItems(line)[0];
++    if (item) {
++      capturing = isActionableChecklistItemText(item.text) && !represented.has(itemKey(item));
++      if (capturing) additional.push(line);
++    } else if (capturing && /^\s+\S/.test(line)) {
++      additional.push(line);
++    } else {
++      capturing = false;
++    }
++  }
++  if (additional.length) {
++    sections.tasks = [sections.tasks, '### Additional PR tasks', additional.join('\n')]
++      .filter(Boolean).join('\n\n');
++  }
++  return sections;
++}
++
+ function toActionableChecklistCounts(markdown) {
+   const actionable = extractChecklistItems(markdown).filter((item) => isActionableChecklistItemText(item.text));
+   const checked = actionable.filter((item) => item.checked).length;
+@@ -2625,7 +2660,7 @@ async function evaluateKeepaliveLoop({ github: rawGithub, context, core, payload
+     const runCapZero = labels.includes('agents:max-runs:0');
+ 
+     const sections = parseScopeTasksAcceptanceSections(pr.body || '');
+-    const normalisedSections = normaliseChecklistSections(sections);
++    const normalisedSections = parseKeepaliveChecklistSections(pr.body || '');
+     const combinedChecklist = [normalisedSections?.tasks, normalisedSections?.acceptance]
+       .filter(Boolean)
+       .join('\n');
+@@ -3222,8 +3257,8 @@ async function updateKeepaliveLoopSummary({ github: rawGithub, context, core, in
+     }
+ 
+     const gateConclusion = normalise(inputs.gateConclusion || inputs.gate_conclusion);
+-    const action = normalise(inputs.action);
+-    const reason = normalise(inputs.reason);
++    let action = normalise(inputs.action);
++    let reason = normalise(inputs.reason);
+     const tasksTotalInput = inputs.tasksTotal ?? inputs.tasks_total;
+     const tasksUncheckedInput = inputs.tasksUnchecked ?? inputs.tasks_unchecked;
+     const keepaliveEnabledInput = inputs.keepaliveEnabled ?? inputs.keepalive_enabled;
+@@ -3397,7 +3432,7 @@ async function updateKeepaliveLoopSummary({ github: rawGithub, context, core, in
+ 
+     const previousFailure = previousState?.failure || {};
+     const prBody = await fetchPrBody({ github, context, prNumber, core });
+-    const focusSections = prBody ? normaliseChecklistSections(parseScopeTasksAcceptanceSections(prBody)) : {};
++    const focusSections = prBody ? parseKeepaliveChecklistSections(prBody) : {};
+     const focusItems = extractChecklistItems(focusSections.tasks || focusSections.acceptance || '');
+     const focusUnchecked = focusItems.filter((item) => !item.checked);
+     const currentFocus = normaliseTaskText(previousState?.current_focus || '');
+@@ -3424,6 +3459,30 @@ async function updateKeepaliveLoopSummary({ github: rawGithub, context, core, in
+       }
+     }
+ 
++    // A reviewer can add work after evaluation but before this live re-count.
++    // Do not publish a stale success or add automerge while that work is visible.
++    if (action === 'stop' && reason === 'tasks-complete' && tasksUnchecked > 0) {
++      action = 'wait';
++      reason = 'tasks-changed';
++      core?.info?.('Visible tasks changed after evaluation; keepalive must re-evaluate.');
++    }
++
++    // The root merger selects by this label, so a previous completion must not
++    // authorize a merge after visible work reopens, regardless of current action.
++    if (prBody && tasksUnchecked > 0 && labels.some((label) => label.toLowerCase() === 'automerge')) {
++      try {
++        await github.rest.issues.removeLabel({
++          owner: context.repo.owner,
++          repo: context.repo.repo,
++          issue_number: prNumber,
++          name: 'automerge',
++        });
++        core?.info?.('Removed stale automerge authorization while visible tasks remain.');
++      } catch (error) {
++        if (error?.status !== 404) throw error;
++      }
++    }
++
+     // Recalculate rounds_without_task_completion using live checkbox counts.
+     // The evaluate step calculated this counter before autoReconcile ran, so it
+     // may incorrectly show "no progress" even though autoReconcile just checked
+@@ -4867,7 +4926,7 @@ async function markAgentRunning({ github: rawGithub, context, core, inputs }) {
+     );
+   }
+   const prBody = await fetchPrBody({ github, context, prNumber, core });
+-  const focusSections = prBody ? normaliseChecklistSections(parseScopeTasksAcceptanceSections(prBody)) : {};
++  const focusSections = prBody ? parseKeepaliveChecklistSections(prBody) : {};
+   const focusItems = extractChecklistItems(focusSections.tasks || focusSections.acceptance || '');
+   const focusUnchecked = focusItems.filter((item) => !item.checked);
+   const attemptedTasks = normaliseAttemptedTasks(previousState?.attempted_tasks);
+diff --git a/docs/keepalive/GoalsAndPlumbing.md b/docs/keepalive/GoalsAndPlumbing.md
+index 82b53f38e..17ff6df39 100644
+--- a/docs/keepalive/GoalsAndPlumbing.md
++++ b/docs/keepalive/GoalsAndPlumbing.md
+@@ -48,7 +48,7 @@ Keepalive **must not** dispatch an agent unless *all* conditions hold:
+ 
+ 1. **PR opt-in:** The PR carries both an `agent:*` routing label (for example, `agent:codex` or `agent:claude`) and `agents:keepalive`.
+ 2. **Gate green:** The Gate workflow for the current head SHA completed successfully.
+-3. **Tasks present:** The PR body contains unchecked tasks in the Automated Status Summary.
++3. **Tasks present:** The PR body contains unchecked actionable tasks, including visible checkboxes outside the Automated Status Summary.
+ 
+ > **Note on auto-pilot:** Issue formatting now runs inside the auto-pilot workflow before a PR exists. Gate guardrails apply to **PR keepalive dispatch**, not the issue‑formatting phase of auto-pilot.
+ >
+@@ -218,6 +218,21 @@ Before the next round begins:
+ 
+ ## 12. Issue Context & Status Summary
+ 
++The source issue is the task of record. The `auto-status-summary` block is a
++machine-owned projection refreshed by PR metadata (`pr-meta` in the event hub).
++Source-issue edits reach that block on the next metadata refresh, not immediately;
++manual edits inside the block can be overwritten on regeneration. Keep durable
++source tasks in the source issue. Reviewer-added checkboxes outside the block
++remain in the PR body across regeneration, including before the managed preamble.
++Keepalive includes those visible checkboxes in its dispatch decision, task appendix,
++and live progress counts, so a completed summary cannot hide remaining PR work.
++Blockquoted reviewer tasks count as visible work. Fenced examples, HTML comments,
++placeholder tasks, status metrics, and the standard PR template Workflow Source
++choices do not count as additional work. A live recount with outstanding work
++removes any stale `automerge` label before publishing progress. Adding an outside checkbox does not mark it complete; it must
++be explicitly checked after verification. It is not copied back to the source issue.
++
++
+ The Keepalive workflow depends on the **Automated Status Summary** block in the PR body to extract Scope, Tasks, and Acceptance Criteria.
+ 
+ ### Data Flow
+diff --git a/templates/consumer-repo/.github/scripts/agents_pr_meta_update_body.js b/templates/consumer-repo/.github/scripts/agents_pr_meta_update_body.js
+index d4b6bc4ba..108656775 100644
+--- a/templates/consumer-repo/.github/scripts/agents_pr_meta_update_body.js
++++ b/templates/consumer-repo/.github/scripts/agents_pr_meta_update_body.js
+@@ -10,6 +10,7 @@
+  * - Building and updating PR body with preamble and status blocks
+  */
+ 
++const { visibleChecklistContent, stripPrTemplateControls } = require('./issue_scope_parser');
+ const path = require('path');
+ const fs = require('fs');
+ const os = require('os');
+@@ -728,8 +729,13 @@ function stripPrTemplateContent(body) {
+     firstMarkerIndex = statusStart;
+   }
+   
+-  // If we found a marker and there's content before it, strip that content
++  // A checkbox-bearing prefix may be reviewer-added work, not a template.
++  // Preserve it with its context and continuation lines across regeneration.
+   if (firstMarkerIndex > 0) {
++    const prefix = stripPrTemplateControls(body.slice(0, firstMarkerIndex));
++    if (/^\s*(?:[-*+]|\d+[.)])\s*\[[ xX]\]/m.test(visibleChecklistContent(prefix))) {
++      return prefix + body.slice(firstMarkerIndex);
++    }
+     return body.slice(firstMarkerIndex);
+   }
+   
+diff --git a/templates/consumer-repo/.github/scripts/issue_scope_parser.js b/templates/consumer-repo/.github/scripts/issue_scope_parser.js
+index c1ce66fff..2f91fd1c9 100644
+--- a/templates/consumer-repo/.github/scripts/issue_scope_parser.js
++++ b/templates/consumer-repo/.github/scripts/issue_scope_parser.js
+@@ -2,7 +2,7 @@
+ 
+ const normalizeNewlines = (value) => String(value || '').replace(/\r\n/g, '\n');
+ const stripBlockquotePrefixes = (value) =>
+-  String(value || '').replace(/^[ \t]*>+[ \t]?/gm, '');
++  String(value || '').replace(/^(?:[ \t]*>[ \t]?)+/gm, '');
+ 
+ /**
+  * Check if a line is a code fence delimiter (``` or ~~~).
+@@ -10,6 +10,89 @@ const stripBlockquotePrefixes = (value) =>
+  */
+ const isCodeFenceLine = (line) => /^(`{3,}|~{3,})/.test(line.trim());
+ 
++
++// Shared by PR metadata preservation and keepalive's visible-work scan.
++function visibleChecklistContent(markdown) {
++  let fence = null;
++  let comment = false;
++  return stripBlockquotePrefixes(normalizeNewlines(markdown))
++    .split('\n').map((line) => {
++      // Fenced examples are literal: comment markers inside them must never
++      // consume real checklist lines after the closing fence.
++      const delimiter = !comment && line.match(/^ {0,3}(`{3,}|~{3,})(.*)$/);
++      if (delimiter) {
++        const token = delimiter[1];
++        if (!fence) fence = token;
++        else if (token[0] === fence[0] && token.length >= fence.length && !delimiter[2].trim()) fence = null;
++        return '';
++      }
++      if (fence) return '';
++      let visible = '';
++      let offset = 0;
++      while (offset < line.length) {
++        if (comment) {
++          const end = line.indexOf('-->', offset);
++          if (end < 0) break;
++          comment = false;
++          offset = end + 3;
++        } else {
++          const start = line.indexOf('<!--', offset);
++          if (start < 0) {
++            visible += line.slice(offset);
++            break;
++          }
++          visible += line.slice(offset, start);
++          comment = true;
++          offset = start + 4;
++        }
++      }
++      return visible;
++    }).join('\n');
++}
++
++// Workflow Source contains mutually exclusive metadata controls, not delivery
++// work. Match only the known controls in their named template groups so real
++// reviewer tasks (including tasks in Notes) survive with their surrounding text.
++function stripPrTemplateControls(markdown) {
++  let sourceDepth = 0;
++  let group = '';
++  let fence = null;
++  const sourceChoices = /^(?:GitHub issue:\s*#.*|Direct PR \/ remote GitHub work|Local Codex\/user request|Automation run|Review follow-up from PR #.*|Sync \/ maintenance campaign|Dependabot or dependency update|Do not automate)$/i;
++  const intentChoices = /^(?:Verifier should review this|Keepalive may manage this PR|Human-only unless checks fail)$/i;
++  return normalizeNewlines(markdown).split('\n').filter((line) => {
++    // Fenced examples are literal body content, never template metadata. Keep
++    // indentation after quote markers so an indented fence cannot close one.
++    const unquoted = stripBlockquotePrefixes(line);
++    const delimiter = unquoted.match(/^ {0,3}(`{3,}|~{3,})(.*)$/);
++    if (delimiter) {
++      const token = delimiter[1];
++      if (!fence) fence = token;
++      else if (token[0] === fence[0] && token.length >= fence.length && !delimiter[2].trim()) fence = null;
++      return true;
++    }
++    if (fence) return true;
++    const visible = unquoted.trim();
++    const heading = visible.match(/^(#{1,6})\s+(.+?)\s*#*$/);
++    if (heading) {
++      if (sourceDepth && heading[1].length <= sourceDepth) {
++        sourceDepth = 0;
++        group = '';
++      }
++      if (heading[2].toLowerCase() === 'workflow source') sourceDepth = heading[1].length;
++    }
++    if (!sourceDepth) return true;
++    if (/^Started from:$/i.test(visible)) { group = 'source'; return false; }
++    if (/^Automation intent:$/i.test(visible)) { group = 'intent'; return false; }
++    const checkbox = visible.match(/^(?:[-*+]|\d+[.)])\s*\[[ xX]\]\s*(.*)$/);
++    if (checkbox) {
++      return !(group === 'source' && sourceChoices.test(checkbox[1]))
++        && !(group === 'intent' && intentChoices.test(checkbox[1]));
++    }
++    if (visible && !/^<!--/.test(visible)) group = '';
++    return true;
++  }).join('\n');
++}
++
+ const LIST_ITEM_REGEX = /^(\s*)([-*+]|\d+[.)])\s+(.*)$/;
+ const DETAILS_OPEN_REGEX = /^<details\b[^>]*>\s*$/i;
+ const DETAILS_CLOSE_REGEX = /^<\/details>\s*$/i;
+@@ -737,6 +820,8 @@ const analyzeSectionPresence = (source) => {
+ };
+ 
+ module.exports = {
++  visibleChecklistContent,
++  stripPrTemplateControls,
+   extractScopeTasksAcceptanceSections,
+   parseScopeTasksAcceptanceSections,
+   hasNonPlaceholderScopeTasksAcceptanceContent,
+diff --git a/templates/consumer-repo/.github/scripts/keepalive_loop.js b/templates/consumer-repo/.github/scripts/keepalive_loop.js
+index a191e388c..311b84176 100644
+--- a/templates/consumer-repo/.github/scripts/keepalive_loop.js
++++ b/templates/consumer-repo/.github/scripts/keepalive_loop.js
+@@ -4,7 +4,7 @@ const fs = require('fs');
+ const path = require('path');
+ const crypto = require('crypto');
+ 
+-const { parseScopeTasksAcceptanceSections } = require('./issue_scope_parser');
++const { parseScopeTasksAcceptanceSections, visibleChecklistContent, stripPrTemplateControls } = require('./issue_scope_parser');
+ const { getGithubApiCache } = require('./github-api-cache-client');
+ const {
+   loadKeepaliveState,
+@@ -1471,6 +1471,41 @@ function isActionableChecklistItemText(text) {
+   return !isStatusMetricChecklistItem(text) && !isPlaceholderChecklistItem(text);
+ }
+ 
++// The source-derived summary remains the canonical section parser input, but
++// visible checkboxes outside it must also reach both dispatch and live reporting.
++function parseKeepaliveChecklistSections(body) {
++  body = stripPrTemplateControls(body);
++  const sections = normaliseChecklistSections(parseScopeTasksAcceptanceSections(body));
++  for (const key of ['tasks', 'acceptance']) {
++    sections[key] = visibleChecklistContent(sections[key]);
++  }
++  const outside = String(body || '').replace(
++    /<!-- auto-status-summary:start -->[\s\S]*?<!-- auto-status-summary:end -->/g, '',
++  );
++  const itemKey = (item) => `${item.checked}:${normaliseTaskKey(item.text)}`;
++  const represented = outside === String(body || '')
++    ? new Set(extractChecklistItems([sections.tasks, sections.acceptance].join('\n')).map(itemKey))
++    : new Set();
++  const additional = [];
++  let capturing = false;
++  for (const line of visibleChecklistContent(outside).split('\n')) {
++    const item = extractChecklistItems(line)[0];
++    if (item) {
++      capturing = isActionableChecklistItemText(item.text) && !represented.has(itemKey(item));
++      if (capturing) additional.push(line);
++    } else if (capturing && /^\s+\S/.test(line)) {
++      additional.push(line);
++    } else {
++      capturing = false;
++    }
++  }
++  if (additional.length) {
++    sections.tasks = [sections.tasks, '### Additional PR tasks', additional.join('\n')]
++      .filter(Boolean).join('\n\n');
++  }
++  return sections;
++}
++
+ function toActionableChecklistCounts(markdown) {
+   const actionable = extractChecklistItems(markdown).filter((item) => isActionableChecklistItemText(item.text));
+   const checked = actionable.filter((item) => item.checked).length;
+@@ -2625,7 +2660,7 @@ async function evaluateKeepaliveLoop({ github: rawGithub, context, core, payload
+     const runCapZero = labels.includes('agents:max-runs:0');
+ 
+     const sections = parseScopeTasksAcceptanceSections(pr.body || '');
+-    const normalisedSections = normaliseChecklistSections(sections);
++    const normalisedSections = parseKeepaliveChecklistSections(pr.body || '');
+     const combinedChecklist = [normalisedSections?.tasks, normalisedSections?.acceptance]
+       .filter(Boolean)
+       .join('\n');
+@@ -3222,8 +3257,8 @@ async function updateKeepaliveLoopSummary({ github: rawGithub, context, core, in
+     }
+ 
+     const gateConclusion = normalise(inputs.gateConclusion || inputs.gate_conclusion);
+-    const action = normalise(inputs.action);
+-    const reason = normalise(inputs.reason);
++    let action = normalise(inputs.action);
++    let reason = normalise(inputs.reason);
+     const tasksTotalInput = inputs.tasksTotal ?? inputs.tasks_total;
+     const tasksUncheckedInput = inputs.tasksUnchecked ?? inputs.tasks_unchecked;
+     const keepaliveEnabledInput = inputs.keepaliveEnabled ?? inputs.keepalive_enabled;
+@@ -3397,7 +3432,7 @@ async function updateKeepaliveLoopSummary({ github: rawGithub, context, core, in
+ 
+     const previousFailure = previousState?.failure || {};
+     const prBody = await fetchPrBody({ github, context, prNumber, core });
+-    const focusSections = prBody ? normaliseChecklistSections(parseScopeTasksAcceptanceSections(prBody)) : {};
++    const focusSections = prBody ? parseKeepaliveChecklistSections(prBody) : {};
+     const focusItems = extractChecklistItems(focusSections.tasks || focusSections.acceptance || '');
+     const focusUnchecked = focusItems.filter((item) => !item.checked);
+     const currentFocus = normaliseTaskText(previousState?.current_focus || '');
+@@ -3424,6 +3459,30 @@ async function updateKeepaliveLoopSummary({ github: rawGithub, context, core, in
+       }
+     }
+ 
++    // A reviewer can add work after evaluation but before this live re-count.
++    // Do not publish a stale success or add automerge while that work is visible.
++    if (action === 'stop' && reason === 'tasks-complete' && tasksUnchecked > 0) {
++      action = 'wait';
++      reason = 'tasks-changed';
++      core?.info?.('Visible tasks changed after evaluation; keepalive must re-evaluate.');
++    }
++
++    // The root merger selects by this label, so a previous completion must not
++    // authorize a merge after visible work reopens, regardless of current action.
++    if (prBody && tasksUnchecked > 0 && labels.some((label) => label.toLowerCase() === 'automerge')) {
++      try {
++        await github.rest.issues.removeLabel({
++          owner: context.repo.owner,
++          repo: context.repo.repo,
++          issue_number: prNumber,
++          name: 'automerge',
++        });
++        core?.info?.('Removed stale automerge authorization while visible tasks remain.');
++      } catch (error) {
++        if (error?.status !== 404) throw error;
++      }
++    }
++
+     // Recalculate rounds_without_task_completion using live checkbox counts.
+     // The evaluate step calculated this counter before autoReconcile ran, so it
+     // may incorrectly show "no progress" even though autoReconcile just checked
+@@ -4867,7 +4926,7 @@ async function markAgentRunning({ github: rawGithub, context, core, inputs }) {
+     );
+   }
+   const prBody = await fetchPrBody({ github, context, prNumber, core });
+-  const focusSections = prBody ? normaliseChecklistSections(parseScopeTasksAcceptanceSections(prBody)) : {};
++  const focusSections = prBody ? parseKeepaliveChecklistSections(prBody) : {};
+   const focusItems = extractChecklistItems(focusSections.tasks || focusSections.acceptance || '');
+   const focusUnchecked = focusItems.filter((item) => !item.checked);
+   const attemptedTasks = normaliseAttemptedTasks(previousState?.attempted_tasks);

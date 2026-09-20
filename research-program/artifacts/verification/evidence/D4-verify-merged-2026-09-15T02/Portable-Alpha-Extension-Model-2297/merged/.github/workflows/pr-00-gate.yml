@@ -1,0 +1,315 @@
+# -----------------------------------------------------------------------------
+# Gate Workflow — PAEM Custom Gate
+# -----------------------------------------------------------------------------
+# Orchestrates CI enforcement for pull requests. Includes PAEM-specific jobs:
+# - Codespace validation (PAEM specialty)
+# - Integration tests (golden tutorial tests)
+#
+# IMPORTANT: The `summary` job and `Gate / gate` commit status are REQUIRED
+# for keepalive automation to detect CI results.
+#
+# This is a CUSTOM Gate - not auto-synced from Workflows templates.
+# Based on stranske/Workflows/templates/consumer-repo/.github/workflows/pr-00-gate.yml
+# -----------------------------------------------------------------------------
+
+name: Gate
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review, labeled]
+  workflow_dispatch:
+
+concurrency:
+  group: pr-${{ github.event.pull_request.number || github.ref_name }}-gate
+  cancel-in-progress: true
+
+jobs:
+  detect:
+    name: classify changed paths
+    runs-on: ubuntu-latest
+    outputs:
+      is_docs_only: ${{ steps.classify.outputs.is-docs-only || 'false' }}
+      is_python_code: ${{ steps.classify.outputs.is-python-code || 'true' }}
+      is_workflow_change: ${{ steps.classify.outputs.is-workflow-change || 'false' }}
+      is_security_relevant: ${{ steps.classify.outputs.is-security-relevant || 'true' }}
+      classification_rationale: ${{ steps.classify.outputs.classification-rationale || 'path classifier unavailable' }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Classify changed paths
+        id: classify
+        uses: ./.github/actions/path-classifier
+        with:
+          force-full: ${{ github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'verify:full') || github.event_name == 'schedule' }}
+
+  generated-delivery-seal:
+    name: generated delivery seal
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Require an exact-head delivery seal
+        uses: stranske/Workflows/.github/actions/generated-delivery-seal@632eb20586f8403219d101e8a982b62efeb94104
+
+  # ───────────────────────────────────────────────────────────────────────────
+  # Core Python CI - delegates to Workflows reusable workflow
+  # ───────────────────────────────────────────────────────────────────────────
+  python-ci:
+    name: Python CI
+    needs: detect
+    if: >-
+      ${{
+        needs.detect.outputs.is_docs_only != 'true' &&
+        needs.detect.outputs.is_python_code == 'true'
+      }}
+    uses: stranske/Workflows/.github/workflows/reusable-10-ci-python.yml@main
+    with:
+      python-versions: '["3.12"]' # Single version, no multi-platform
+      typecheck: true
+      # RAISED 60 -> 86 on 2026-08-26, and the stale comment removed with it. That comment
+      # read "Target: 85% - tracking issue to be created" while measured coverage is 86.25%:
+      # the target was already MET, and had been for as long as reporting was off. A number
+      # nobody publishes cannot tell you that you already succeeded.
+      #
+      # 60 against 86.25% is a floor 26 points below reality -- it reports a pass on any
+      # input and could not fail if coverage fell by a quarter. Now matches
+      # config/coverage-baseline.json, set at the same measured current in #2245, so the soft
+      # gate and Maint Coverage Guard agree about this repo. 86 rather than 86.25 leaves the
+      # jitter tolerance where it belongs, in the guard's warn_drop of 1.0.
+      coverage-min: "86"
+      # Only the REPORTING leg was off: `enable-soft-gate` defaults to false upstream, so
+      # the Gate computed a coverage number every run and discarded it -- no trend
+      # artifact, no hotspot table, nothing for Maint Coverage Guard to read. Report-only:
+      # coverage_trend.py runs with --soft and always exits 0, so this cannot fail a PR.
+      # Measured 86.25% on 2026-08-25, which already MEETS the 85% target the line above
+      # calls untracked. The floor of 60 stays for now -- raising it is a gate change and
+      # belongs with the baseline work, not with turning reporting on.
+      enable-soft-gate: true
+      format_check: false # Using ruff for formatting
+      working-directory: "."
+      artifact-prefix: "gate-"
+    secrets: inherit
+
+  # ───────────────────────────────────────────────────────────────────────────
+  # PAEM-specific: Codespace Configuration Validation
+  # Runs in PARALLEL with python-ci (no dependency)
+  # ───────────────────────────────────────────────────────────────────────────
+  codespace-validation:
+    name: Codespace Config
+    needs: detect
+    if: ${{ needs.detect.outputs.is_docs_only != 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Validate devcontainer.json
+        run: |
+          python -m json.tool .devcontainer/devcontainer.json > /dev/null
+          echo "✅ devcontainer.json is valid JSON"
+      - name: Validate setup script syntax
+        run: |
+          chmod +x .devcontainer/setup.sh 2>/dev/null || true
+          bash -n .devcontainer/setup.sh
+          echo "✅ Codespace setup script syntax is valid"
+
+  # ───────────────────────────────────────────────────────────────────────────
+  # PAEM-specific: Dashboard Boot Smoke
+  # Proves the browser demo entry starts without the optional LLM extra.
+  # ───────────────────────────────────────────────────────────────────────────
+  dashboard-smoke:
+    name: Dashboard Smoke
+    needs: detect
+    if: ${{ needs.detect.outputs.is_docs_only != 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
+          cache: pip
+      - name: Install base dependencies only
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+      - name: Start dashboard and check Streamlit health
+        run: |
+          set -euo pipefail
+          smoke_status=1
+          python -m streamlit run dashboard/app.py \
+            --server.headless=true \
+            --server.port=8501 \
+            --server.address=127.0.0.1 \
+            > streamlit.log 2>&1 &
+          dashboard_pid=$!
+          trap 'status=$?; kill "$dashboard_pid" 2>/dev/null || true; if [[ "$status" -ne 0 || "$smoke_status" -ne 0 ]]; then cat streamlit.log; fi' EXIT
+
+          for _ in {1..30}; do
+            if curl --fail --silent --show-error http://127.0.0.1:8501/_stcore/health; then
+              echo "Dashboard health check passed"
+              smoke_status=0
+              exit 0
+            fi
+            sleep 1
+          done
+
+          echo "::error::Dashboard did not become healthy on /_stcore/health"
+          exit 1
+
+  # ───────────────────────────────────────────────────────────────────────────
+  # PAEM-specific: Integration Tests (CLI + Golden Tutorials)
+  # Runs in PARALLEL with python-ci for faster feedback
+  # ───────────────────────────────────────────────────────────────────────────
+  integration-tests:
+    name: Integration Tests
+    needs: detect
+    if: ${{ needs.detect.outputs.is_docs_only != 'true' }}
+    runs-on: ubuntu-latest
+    # OPTIMIZATION: Removed 'needs: [python-ci]' - integration tests don't
+    # depend on Python CI passing and can run in parallel for faster feedback.
+    # If integration tests fail, the summary job will still catch it.
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
+          cache: pip
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-dev.txt
+          pip install -e .
+      - name: Run CLI integration test
+        run: |
+          python -m pa_core.cli --config examples/scenarios/my_first_scenario.yml \
+            --index data/sp500tr_fred_divyield.csv --seed 42
+          # Verify output was created
+          shopt -s nullglob
+          files=(Outputs.xlsx Outputs.parquet Outputs/*.xlsx Outputs/*.parquet)
+          [ ${#files[@]} -gt 0 ] || { echo "::error::No output artifact produced"; exit 1; }
+      - name: Run golden tutorial tests
+        run: |
+          pytest tests/golden/ -v --tb=short
+
+  # ───────────────────────────────────────────────────────────────────────────
+  # Gate Summary - Required for keepalive automation
+  # ───────────────────────────────────────────────────────────────────────────
+  summary:
+    name: gate-summary
+    needs: [detect, generated-delivery-seal, python-ci, codespace-validation, dashboard-smoke, integration-tests]
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      statuses: write
+    outputs:
+      state: ${{ steps.summarize.outputs.state }}
+      description: ${{ steps.summarize.outputs.description }}
+    steps:
+      - name: Summarize results
+        id: summarize
+        env:
+          DETECT_RESULT: ${{ needs.detect.result || 'skipped' }}
+          DELIVERY_SEAL_RESULT: ${{ needs.generated-delivery-seal.result || 'skipped' }}
+          PYTHON_RESULT: ${{ needs.python-ci.result || 'skipped' }}
+          CODESPACE_RESULT: ${{ needs.codespace-validation.result || 'skipped' }}
+          DASHBOARD_RESULT: ${{ needs.dashboard-smoke.result || 'skipped' }}
+          INTEGRATION_RESULT: ${{ needs.integration-tests.result || 'skipped' }}
+        run: |
+          set -euo pipefail
+
+          python_result="${PYTHON_RESULT:-skipped}"
+          delivery_seal_result="${DELIVERY_SEAL_RESULT:-skipped}"
+          codespace_result="${CODESPACE_RESULT:-skipped}"
+          dashboard_result="${DASHBOARD_RESULT:-skipped}"
+          integration_result="${INTEGRATION_RESULT:-skipped}"
+
+          state="success"
+          description="All checks passed"
+
+          if [[ "$delivery_seal_result" == "failure" ]]; then
+            state="failure"
+            description="Generated delivery seal failed"
+          elif [[ "$delivery_seal_result" == "cancelled" ]]; then
+            state="error"
+            description="Generated delivery seal was cancelled"
+          fi
+
+          # Check Python CI
+          if [[ "$state" == "success" && "$python_result" == "failure" ]]; then
+            state="failure"
+            description="Python CI failed"
+          elif [[ "$state" == "success" && "$python_result" == "cancelled" ]]; then
+            state="error"
+            description="Python CI was cancelled"
+          fi
+
+          # Check Codespace validation (only fail if CI passed)
+          if [[ "$state" == "success" && "$codespace_result" == "failure" ]]; then
+            state="failure"
+            description="Codespace validation failed"
+          fi
+
+          # Check dashboard smoke (only fail if earlier checks passed)
+          if [[ "$state" == "success" && "$dashboard_result" == "failure" ]]; then
+            state="failure"
+            description="Dashboard smoke failed"
+          fi
+
+          # Check Integration tests (only fail if CI passed)
+          if [[ "$state" == "success" && "$integration_result" == "failure" ]]; then
+            state="failure"
+            description="Integration tests failed"
+          fi
+
+          detect_result="${DETECT_RESULT:-skipped}"
+          if [[ "${detect_result}" != "success" ]]; then
+            if [[ "${detect_result}" == "failure" ]]; then
+              state="failure"
+              description="Path classification failed"
+            elif [[ "${detect_result}" == "cancelled" ]]; then
+              state="error"
+              description="Path classification was cancelled"
+            else
+              state="pending"
+              description="Path classification status unknown"
+            fi
+          fi
+
+          echo "state=${state}" >> "$GITHUB_OUTPUT"
+          echo "description=${description}" >> "$GITHUB_OUTPUT"
+          echo "[Gate] State: ${state}, Description: ${description}"
+
+      - name: Report Gate commit status
+        if: ${{ always() }}
+        uses: actions/github-script@v9.0.0
+        env:
+          STATE: ${{ steps.summarize.outputs.state || 'pending' }}
+          DESCRIPTION: ${{ steps.summarize.outputs.description || 'Gate status pending' }}
+          TARGET_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        with:
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const sha = context.payload.pull_request?.head?.sha || context.sha;
+            const state = process.env.STATE;
+            const description = process.env.DESCRIPTION;
+            const target_url = process.env.TARGET_URL;
+
+            await github.rest.repos.createCommitStatus({
+              owner,
+              repo,
+              sha,
+              state,
+              context: 'Gate / gate',
+              description,
+              target_url
+            });
+
+            console.log(`Posted commit status: ${state} - ${description}`);
+
+      - name: Fail if Gate failed
+        if: ${{ steps.summarize.outputs.state == 'failure' }}
+        run: |
+          echo "::error::Gate failed: ${{ steps.summarize.outputs.description }}"
+          exit 1

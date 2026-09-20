@@ -1,0 +1,1046 @@
+diff --git a/scripts/build_manifest.py b/scripts/build_manifest.py
+new file mode 100644
+index 0000000..13b4de6
+--- /dev/null
++++ b/scripts/build_manifest.py
+@@ -0,0 +1,37 @@
++#!/usr/bin/env python3
++"""Build a manifest.jsonl for a local document library tree."""
++
++from __future__ import annotations
++
++import argparse
++import sys
++from pathlib import Path
++
++ROOT = Path(__file__).resolve().parents[1]
++SRC = ROOT / "src"
++if str(SRC) not in sys.path:
++    sys.path.insert(0, str(SRC))
++
++from doc_lineage.manifest import write_manifest  # noqa: E402
++
++
++def parse_args() -> argparse.Namespace:
++    parser = argparse.ArgumentParser(description=__doc__)
++    parser.add_argument("root", type=Path, help="Root directory of the document library")
++    parser.add_argument(
++        "--output",
++        type=Path,
++        required=True,
++        help="Path to write manifest.jsonl",
++    )
++    return parser.parse_args()
++
++
++def main() -> int:
++    args = parse_args()
++    write_manifest(args.root.resolve(), args.output.resolve())
++    return 0
++
++
++if __name__ == "__main__":
++    raise SystemExit(main())
+diff --git a/src/doc_lineage/identity.py b/src/doc_lineage/identity.py
+new file mode 100644
+index 0000000..9d3ab2d
+--- /dev/null
++++ b/src/doc_lineage/identity.py
+@@ -0,0 +1,102 @@
++"""Document identity derived from content and library path conventions."""
++
++from __future__ import annotations
++
++import hashlib
++import re
++from dataclasses import dataclass
++from pathlib import Path
++
++NUMERIC_PREFIX_PATTERN = re.compile(r"^(?P<prefix>\d+)[\-_.](?P<rest>.+)$")
++YEAR_PATTERN = re.compile(r"^\d{4}$")
++
++
++@dataclass(frozen=True)
++class DocumentIdentity:
++    """Stable identity for one document file."""
++
++    stable_id: str
++    sha256: str
++    doc_key: str
++    entity_slug: str
++    category: str
++    as_of: str
++    filename: str
++    supersession_evidence: str | None = None
++
++
++def sha256_bytes(data: bytes) -> str:
++    """Return the lowercase hex digest for raw document bytes."""
++    return hashlib.sha256(data).hexdigest()
++
++
++def parse_path_parts(root: Path, file_path: Path) -> tuple[str, str, str]:
++    """Parse entity slug, category, and as-of segment from a library path."""
++    relative = file_path.relative_to(root)
++    parts = relative.parts
++    if len(parts) < 3:
++        msg = f"path must be <entity>/<category>/.../file: {relative}"
++        raise ValueError(msg)
++
++    entity_slug = parts[0]
++    category = parts[1]
++    as_of = _parse_as_of(parts[2:-1], file_path.name)
++    return entity_slug, category, as_of
++
++
++def _parse_as_of(intermediate_parts: tuple[str, ...], filename: str) -> str:
++    # Archive and other organizational folders do not erase the document year.
++    # The nearest year directory retains precedence over filename metadata.
++    for part in reversed(intermediate_parts):
++        if YEAR_PATTERN.fullmatch(part):
++            return part
++
++    stem = Path(filename).stem
++    year_match = re.search(r"(20\d{2})", stem)
++    if year_match:
++        return year_match.group(1)
++    return "unknown"
++
++
++def build_doc_key(entity_slug: str, category: str, as_of: str) -> str:
++    """Return the canonical doc key for one library location."""
++    return f"{entity_slug}/{category}/{as_of}"
++
++
++def compute_identity(
++    root: Path,
++    file_path: Path,
++    *,
++    content: bytes | None = None,
++) -> DocumentIdentity:
++    """Compute content-first identity for one document under ``root``."""
++    raw = content if content is not None else file_path.read_bytes()
++    digest = sha256_bytes(raw)
++    entity_slug, category, as_of = parse_path_parts(root, file_path)
++    doc_key = build_doc_key(entity_slug, category, as_of)
++    return DocumentIdentity(
++        stable_id=digest,
++        sha256=digest,
++        doc_key=doc_key,
++        entity_slug=entity_slug,
++        category=category,
++        as_of=as_of,
++        filename=file_path.name,
++    )
++
++
++def parse_numeric_prefix(filename: str) -> tuple[int | None, str, str | None]:
++    """Return numeric prefix, normalized basename, and convention name if matched."""
++    match = NUMERIC_PREFIX_PATTERN.match(filename)
++    if not match:
++        return None, filename, None
++    prefix = int(match.group("prefix"))
++    rest = match.group("rest")
++    return prefix, rest, "numeric_prefix_separator"
++
++
++def normalized_supersession_group(filename: str) -> str:
++    """Group superseding files that share the same basename after numeric prefix."""
++    basename = Path(filename).name
++    _prefix, rest, _convention = parse_numeric_prefix(basename)
++    return Path(rest).stem.lower()
+diff --git a/src/doc_lineage/manifest.py b/src/doc_lineage/manifest.py
+new file mode 100644
+index 0000000..2cc34ac
+--- /dev/null
++++ b/src/doc_lineage/manifest.py
+@@ -0,0 +1,235 @@
++"""Incremental manifest generation over a document library tree."""
++
++from __future__ import annotations
++
++import json
++import mimetypes
++from collections import defaultdict
++from dataclasses import asdict, dataclass, replace
++from datetime import UTC, datetime
++from pathlib import Path
++from typing import Any
++
++from doc_lineage.identity import (
++    DocumentIdentity,
++    compute_identity,
++    normalized_supersession_group,
++    parse_numeric_prefix,
++)
++
++TEXT_LAYER_VALUES = frozenset({"present", "absent", "unknown"})
++DOCUMENT_SUFFIXES = {
++    ".pdf",
++    ".doc",
++    ".docx",
++    ".xls",
++    ".xlsx",
++    ".csv",
++    ".txt",
++    ".html",
++    ".htm",
++}
++
++
++@dataclass(frozen=True)
++class ManifestRow:
++    stable_id: str
++    sha256: str
++    path: str
++    entity_slug: str
++    category: str
++    as_of: str
++    received_at: str
++    bytes: int
++    mime: str
++    supersedes: str | None
++    text_layer: str
++    supersession_evidence: str | None = None
++
++    def to_json(self) -> str:
++        payload = asdict(self)
++        return json.dumps(payload, sort_keys=True, separators=(",", ":"))
++
++
++def _received_at(path: Path) -> str:
++    timestamp = path.stat().st_mtime
++    return datetime.fromtimestamp(timestamp, tz=UTC).isoformat()
++
++
++def _guess_mime(path: Path) -> str:
++    mime, _encoding = mimetypes.guess_type(path.name)
++    return mime or "application/octet-stream"
++
++
++def _iter_documents(root: Path) -> list[Path]:
++    documents: list[Path] = []
++    for path in sorted(root.rglob("*")):
++        if not path.is_file():
++            continue
++        if path.name.startswith("."):
++            continue
++        if path.suffix.lower() not in DOCUMENT_SUFFIXES:
++            continue
++        documents.append(path)
++    return documents
++
++
++def _assign_supersedes(rows: list[ManifestRow]) -> list[ManifestRow]:
++    """Link increasing numeric prefixes, treating an unnumbered file as the original.
++
++    Equal prefixes do not establish an order. If a rank has conflicting contents,
++    leave links to and from that rank unset rather than choosing by path order.
++    """
++    by_directory: dict[Path, list[tuple[ManifestRow, int | None, str | None]]] = defaultdict(list)
++    for row in rows:
++        path = Path(row.path)
++        prefix, _rest, convention = parse_numeric_prefix(path.name)
++        by_directory[path.parent].append((row, prefix, convention))
++
++    superseded_by: dict[str, str] = {}
++    evidence_by_target: dict[str, str] = {}
++    for directory_rows in by_directory.values():
++        groups: dict[str, list[tuple[ManifestRow, int | None, str | None]]] = defaultdict(list)
++        for row, prefix, convention in directory_rows:
++            groups[normalized_supersession_group(row.path)].append((row, prefix, convention))
++        for group in groups.values():
++            ranks: dict[int, list[tuple[ManifestRow, str | None]]] = defaultdict(list)
++            for row, prefix, convention in group:
++                ranks[prefix if prefix is not None else -1].append((row, convention))
++            ordered_ranks = sorted(ranks)
++            for older_rank, newer_rank in zip(ordered_ranks, ordered_ranks[1:], strict=False):
++                older_ids = {row.stable_id for row, _ in ranks[older_rank]}
++                newer_ids = {row.stable_id for row, _ in ranks[newer_rank]}
++                if len(older_ids) != 1 or len(newer_ids) != 1:
++                    continue
++                older_id = next(iter(older_ids))
++                if older_ids == newer_ids:
++                    # A byte-identical re-supply retains the prior version link;
++                    # it must not supersede its own content identity.
++                    predecessor = superseded_by.get(ranks[older_rank][0][0].path)
++                    if predecessor is None:
++                        continue
++                    older_id = predecessor
++                for newer_row, newer_conv in ranks[newer_rank]:
++                    superseded_by[newer_row.path] = older_id
++                    if newer_conv:
++                        evidence_by_target[newer_row.path] = newer_conv
++
++    updated: list[ManifestRow] = []
++    for row in rows:
++        supersedes = superseded_by.get(row.path)
++        evidence = evidence_by_target.get(row.path)
++        updated.append(
++            ManifestRow(
++                stable_id=row.stable_id,
++                sha256=row.sha256,
++                path=row.path,
++                entity_slug=row.entity_slug,
++                category=row.category,
++                as_of=row.as_of,
++                received_at=row.received_at,
++                bytes=row.bytes,
++                mime=row.mime,
++                supersedes=supersedes,
++                text_layer=row.text_layer,
++                supersession_evidence=evidence,
++            )
++        )
++    return updated
++
++
++def build_manifest_rows(root: Path) -> list[ManifestRow]:
++    """Scan ``root`` and return sorted manifest rows."""
++    root = root.resolve()
++    if not root.is_dir():
++        raise ValueError(f"library root must be an existing directory: {root}")
++    rows: list[ManifestRow] = []
++    for file_path in _iter_documents(root):
++        identity = compute_identity(root, file_path)
++        relative_path = file_path.relative_to(root).as_posix()
++        rows.append(
++            ManifestRow(
++                stable_id=identity.stable_id,
++                sha256=identity.sha256,
++                path=relative_path,
++                entity_slug=identity.entity_slug,
++                category=identity.category,
++                as_of=identity.as_of,
++                received_at=_received_at(file_path),
++                bytes=file_path.stat().st_size,
++                mime=_guess_mime(file_path),
++                supersedes=None,
++                text_layer="unknown",
++            )
++        )
++    rows = _assign_supersedes(rows)
++    return sorted(rows, key=lambda row: row.path)
++
++
++def read_manifest(path: Path) -> dict[str, str]:
++    """Return existing manifest lines keyed by path."""
++    if not path.exists():
++        return {}
++    lines: dict[str, str] = {}
++    for line in path.read_text(encoding="utf-8").splitlines():
++        if not line.strip():
++            continue
++        payload: dict[str, Any] = json.loads(line)
++        lines[str(payload["path"])] = line
++    return lines
++
++
++def write_manifest(root: Path, output_path: Path) -> None:
++    """Write an incremental manifest, preserving unchanged rows byte-for-byte."""
++    root = root.resolve()
++    output_path = output_path.resolve()
++    if output_path.is_relative_to(root) and output_path.suffix.lower() in DOCUMENT_SUFFIXES:
++        raise ValueError("manifest output must not be a document path inside the input root")
++    rows = build_manifest_rows(root)
++    previous_lines = read_manifest(output_path)
++    # Text checks describe bytes, so even a reused path can inherit a result.
++    annotations_by_identity: dict[tuple[str, str], set[str]] = defaultdict(set)
++    for line in previous_lines.values():
++        payload = json.loads(line)
++        stable_id, digest = payload.get("stable_id"), payload.get("sha256")
++        annotation = payload.get("text_layer")
++        if (
++            isinstance(stable_id, str)
++            and isinstance(digest, str)
++            and isinstance(annotation, str)
++            and annotation in {"present", "absent"}
++        ):
++            annotations_by_identity[(stable_id, digest)].add(annotation)
++    output_lines: list[str] = []
++    for row in rows:
++        serialized = row.to_json()
++        previous = previous_lines.get(row.path)
++        annotations = annotations_by_identity.get((row.stable_id, row.sha256), set())
++        if len(annotations) == 1:
++            serialized = replace(row, text_layer=next(iter(annotations))).to_json()
++        if previous is not None:
++            previous_payload = json.loads(previous)
++            if (
++                previous_payload.get("stable_id") == row.stable_id
++                and previous_payload.get("sha256") == row.sha256
++                and isinstance(previous_payload.get("text_layer"), str)
++                and previous_payload.get("text_layer") in TEXT_LAYER_VALUES
++            ):
++                serialized = replace(row, text_layer=previous_payload["text_layer"]).to_json()
++            current_payload = json.loads(serialized)
++            if previous_payload == current_payload:
++                serialized = previous
++        output_lines.append(serialized)
++
++    content = "\n".join(output_lines)
++    if output_lines:
++        content += "\n"
++    if output_path.exists() and output_path.read_bytes() == content.encode("utf-8"):
++        return
++    output_path.parent.mkdir(parents=True, exist_ok=True)
++    output_path.write_text(content, encoding="utf-8")
++
++
++def identity_for_path(root: Path, file_path: Path) -> DocumentIdentity:
++    """Expose identity computation for tests and callers."""
++    return compute_identity(root, file_path)
+diff --git a/tests/fixtures/library/manager_alpha/lpa/2024/001_alpha_terms.pdf b/tests/fixtures/library/manager_alpha/lpa/2024/001_alpha_terms.pdf
+new file mode 100644
+index 0000000..214e00e
+Binary files /dev/null and b/tests/fixtures/library/manager_alpha/lpa/2024/001_alpha_terms.pdf differ
+diff --git a/tests/fixtures/library/manager_alpha/lpa/2024/002_alpha_terms.pdf b/tests/fixtures/library/manager_alpha/lpa/2024/002_alpha_terms.pdf
+new file mode 100644
+index 0000000..ee88db3
+Binary files /dev/null and b/tests/fixtures/library/manager_alpha/lpa/2024/002_alpha_terms.pdf differ
+diff --git a/tests/fixtures/library/manager_alpha/lpa/2024/renamed/001_alpha_terms.pdf b/tests/fixtures/library/manager_alpha/lpa/2024/renamed/001_alpha_terms.pdf
+new file mode 100644
+index 0000000..214e00e
+Binary files /dev/null and b/tests/fixtures/library/manager_alpha/lpa/2024/renamed/001_alpha_terms.pdf differ
+diff --git a/tests/fixtures/library/manager_beta/side_letters/2023/archive/beta_side_copy.pdf b/tests/fixtures/library/manager_beta/side_letters/2023/archive/beta_side_copy.pdf
+new file mode 100644
+index 0000000..d52a9b2
+Binary files /dev/null and b/tests/fixtures/library/manager_beta/side_letters/2023/archive/beta_side_copy.pdf differ
+diff --git a/tests/fixtures/library/manager_beta/side_letters/2023/beta_side.pdf b/tests/fixtures/library/manager_beta/side_letters/2023/beta_side.pdf
+new file mode 100644
+index 0000000..d52a9b2
+Binary files /dev/null and b/tests/fixtures/library/manager_beta/side_letters/2023/beta_side.pdf differ
+diff --git a/tests/fixtures/library/manager_gamma/consultant_reports/2025/gamma_q1.pdf b/tests/fixtures/library/manager_gamma/consultant_reports/2025/gamma_q1.pdf
+new file mode 100644
+index 0000000..dfd9e80
+Binary files /dev/null and b/tests/fixtures/library/manager_gamma/consultant_reports/2025/gamma_q1.pdf differ
+diff --git a/tests/test_identity.py b/tests/test_identity.py
+new file mode 100644
+index 0000000..d056811
+--- /dev/null
++++ b/tests/test_identity.py
+@@ -0,0 +1,82 @@
++"""Content identity and library metadata parsing contracts."""
++
++from pathlib import Path
++
++import pytest
++
++from doc_lineage.identity import _parse_as_of, compute_identity, parse_path_parts, sha256_bytes
++
++
++@pytest.mark.parametrize(
++    ("intermediate_parts", "filename", "as_of"),
++    [
++        (("2024",), "terms.pdf", "2024"),
++        (("archive",), "terms_2025.pdf", "2025"),
++        (("archive",), "terms.pdf", "unknown"),
++        (("2023", "archive"), "beta_side_copy.pdf", "2023"),
++    ],
++)
++def test_parse_as_of_uses_directory_year_before_filename(
++    intermediate_parts: tuple[str, ...], filename: str, as_of: str
++) -> None:
++    assert _parse_as_of(intermediate_parts, filename) == as_of
++
++
++@pytest.mark.parametrize(
++    ("relative", "as_of"),
++    [
++        ("manager_alpha/lpa/2024/terms.pdf", "2024"),
++        ("manager_alpha/lpa/2024/archive/terms.pdf", "2024"),
++        ("manager_alpha/lpa/2024/archive/2025/terms.pdf", "2025"),
++        ("manager_alpha/lpa/2024/archive/terms_2025.pdf", "2024"),
++        ("manager_alpha/lpa/terms_2025.pdf", "2025"),
++        ("manager_alpha/lpa/terms.pdf", "unknown"),
++    ],
++)
++def test_doc_key_uses_nearest_year_directory_then_filename(
++    tmp_path: Path, relative: str, as_of: str
++) -> None:
++    identity = compute_identity(tmp_path, tmp_path / relative, content=b"abc")
++    assert identity.entity_slug == "manager_alpha"
++    assert identity.category == "lpa"
++    assert identity.as_of == as_of
++    assert identity.doc_key == f"manager_alpha/lpa/{as_of}"
++
++
++def test_identity_hashes_raw_bytes_from_disk_or_supplied_content(tmp_path: Path) -> None:
++    path = tmp_path / "manager_alpha" / "lpa" / "terms.pdf"
++    path.parent.mkdir(parents=True)
++    path.write_bytes(b"abc")
++    expected = "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
++    identity = compute_identity(tmp_path, path)
++    assert identity.sha256 == identity.stable_id == expected
++    assert compute_identity(tmp_path, path, content=b"abc") == identity
++    assert compute_identity(tmp_path, path, content=b"").sha256 == (
++        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
++    )
++    path.write_bytes(b"abc\r\n\x00\xff")
++    changed = compute_identity(tmp_path, path)
++    assert changed.sha256 == sha256_bytes(b"abc\r\n\x00\xff")
++    assert changed.stable_id != identity.stable_id
++    assert changed.doc_key == identity.doc_key
++
++
++def test_move_changes_doc_key_but_preserves_content_identity(tmp_path: Path) -> None:
++    original = tmp_path / "manager_alpha/lpa/2024/terms.pdf"
++    original.parent.mkdir(parents=True)
++    original.write_bytes(b"synthetic document")
++    before = compute_identity(tmp_path, original)
++    renamed = tmp_path / "manager_beta/side_letters/2025/renamed.pdf"
++    renamed.parent.mkdir(parents=True)
++    original.rename(renamed)
++    after = compute_identity(tmp_path, renamed)
++    assert after.doc_key == "manager_beta/side_letters/2025"
++    assert after.doc_key != before.doc_key
++    assert after.stable_id == before.stable_id
++    assert after.sha256 == before.sha256
++
++
++@pytest.mark.parametrize("relative", ["terms.pdf", "manager_alpha/terms.pdf"])
++def test_incomplete_library_path_is_rejected(tmp_path: Path, relative: str) -> None:
++    with pytest.raises(ValueError, match="path must be"):
++        parse_path_parts(tmp_path, tmp_path / relative)
+diff --git a/tests/test_identity_manifest.py b/tests/test_identity_manifest.py
+new file mode 100644
+index 0000000..ce28d15
+--- /dev/null
++++ b/tests/test_identity_manifest.py
+@@ -0,0 +1,536 @@
++"""Tests for document identity and manifest generation."""
++
++from __future__ import annotations
++
++import json
++import os
++import shutil
++import sys
++from pathlib import Path
++
++import pytest
++
++from doc_lineage.identity import compute_identity, sha256_bytes
++from doc_lineage.manifest import build_manifest_rows, read_manifest, write_manifest
++
++FIXTURE_ROOT = Path(__file__).parent / "fixtures" / "library"
++
++
++def _rows_by_path(root: Path) -> dict[str, dict[str, object]]:
++    return {row.path: json.loads(row.to_json()) for row in build_manifest_rows(root)}
++
++
++@pytest.mark.parametrize(
++    ("content", "digest"),
++    [
++        (b"", "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"),
++        (b"\x00\xff\r\n", "e9489f37fb3051e9efa1dc916004d7274e7b63975e3209708947267f2393a9be"),
++    ],
++    ids=["empty", "binary"],
++)
++def test_written_manifest_contains_required_document_metadata(
++    tmp_path: Path, content: bytes, digest: str
++) -> None:
++    library = tmp_path / "library"
++    relative = "manager_alpha/lpa/2024/terms.pdf"
++    document = library / relative
++    document.parent.mkdir(parents=True)
++    document.write_bytes(content)
++    os.utime(document, (1_704_067_200, 1_704_067_200))
++    output = tmp_path / "manifest.jsonl"
++
++    write_manifest(library, output)
++
++    lines = output.read_text(encoding="utf-8").splitlines()
++    assert len(lines) == 1
++    assert json.loads(lines[0]) == {
++        "stable_id": digest,
++        "sha256": digest,
++        "path": relative,
++        "entity_slug": "manager_alpha",
++        "category": "lpa",
++        "as_of": "2024",
++        "received_at": "2024-01-01T00:00:00+00:00",
++        "bytes": len(content),
++        "mime": "application/pdf",
++        "supersedes": None,
++        "supersession_evidence": None,
++        "text_layer": "unknown",
++    }
++
++
++def test_rename_preserves_stable_id_and_sha256(tmp_path: Path) -> None:
++    library = tmp_path / "library"
++    doc_dir = library / "manager_alpha" / "lpa" / "2024"
++    doc_dir.mkdir(parents=True)
++    original = doc_dir / "001_terms.pdf"
++    original.write_bytes(b"rename-me")
++    before = compute_identity(library, original)
++
++    renamed = doc_dir / "001_terms_renamed.pdf"
++    original.rename(renamed)
++    after = compute_identity(library, renamed)
++
++    assert after.filename != before.filename
++    assert after.stable_id == before.stable_id
++    assert after.sha256 == before.sha256
++
++
++def test_duplicate_content_paths_share_stable_id() -> None:
++    rows = _rows_by_path(FIXTURE_ROOT)
++    primary = rows["manager_beta/side_letters/2023/beta_side.pdf"]
++    duplicate = rows["manager_beta/side_letters/2023/archive/beta_side_copy.pdf"]
++    assert primary["stable_id"] == duplicate["stable_id"]
++    assert primary["sha256"] == duplicate["sha256"]
++    assert primary["path"] != duplicate["path"]
++
++
++def test_incremental_copy_and_removal_preserve_identity(tmp_path: Path) -> None:
++    library = tmp_path / "library"
++    shutil.copytree(FIXTURE_ROOT, library)
++    output = tmp_path / "manifest.jsonl"
++    write_manifest(library, output)
++    before = read_manifest(output)
++    source = "manager_gamma/consultant_reports/2025/gamma_q1.pdf"
++    duplicate = "manager_gamma/consultant_reports/2025/archive/resupplied.pdf"
++    original = json.loads(before[source])
++    (library / duplicate).parent.mkdir(parents=True)
++    shutil.copyfile(library / source, library / duplicate)
++
++    write_manifest(library, output)
++
++    copied = read_manifest(output)
++    assert set(copied) == set(before) | {duplicate}
++    for path, line in before.items():
++        assert copied[path] == line
++    copy_row = json.loads(copied[duplicate])
++    assert copy_row["path"] == duplicate
++    assert copy_row["sha256"] == original["sha256"]
++    assert copy_row["stable_id"] == original["stable_id"]
++    assert {json.loads(line)["stable_id"] for line in copied.values()} == {
++        json.loads(line)["stable_id"] for line in before.values()
++    }
++
++    (library / source).unlink()
++    write_manifest(library, output)
++
++    remaining = read_manifest(output)
++    assert remaining == {path: line for path, line in copied.items() if path != source}
++    persisted = output.read_bytes()
++    write_manifest(library, output)
++    assert output.read_bytes() == persisted
++
++
++def test_incremental_manifest_tracks_fixture_rename(tmp_path: Path) -> None:
++    library = tmp_path / "library"
++    shutil.copytree(FIXTURE_ROOT, library)
++    output = tmp_path / "manifest.jsonl"
++    write_manifest(library, output)
++    before = read_manifest(output)
++    old_path = "manager_gamma/consultant_reports/2025/gamma_q1.pdf"
++    new_path = "manager_gamma/consultant_reports/2025/gamma_q1_renamed.pdf"
++    original = json.loads(before[old_path])
++
++    (library / old_path).rename(library / new_path)
++    write_manifest(library, output)
++
++    after = read_manifest(output)
++    assert set(after) == (set(before) - {old_path}) | {new_path}
++    renamed = json.loads(after[new_path])
++    assert renamed["path"] == new_path
++    assert renamed["stable_id"] == original["stable_id"]
++    assert renamed["sha256"] == original["sha256"]
++    for path in before.keys() - {old_path}:
++        assert after[path] == before[path]
++
++    persisted = output.read_bytes()
++    write_manifest(library, output)
++    assert output.read_bytes() == persisted
++
++
++def test_numeric_resupply_records_supersedes_and_evidence() -> None:
++    rows = _rows_by_path(FIXTURE_ROOT)
++    older = rows["manager_alpha/lpa/2024/001_alpha_terms.pdf"]
++    newer = rows["manager_alpha/lpa/2024/002_alpha_terms.pdf"]
++    assert newer["supersedes"] == older["stable_id"]
++    assert newer["supersession_evidence"] == "numeric_prefix_separator"
++
++
++@pytest.mark.parametrize("duplicate_original", [False, True])
++def test_identical_resupplies_preserve_prior_distinct_identity(
++    tmp_path: Path, duplicate_original: bool
++) -> None:
++    directory = tmp_path / "alpha/reports"
++    directory.mkdir(parents=True)
++    documents = {
++        "report.pdf": b"original",
++        "1_report.pdf": b"original" if duplicate_original else b"revision",
++        "2_report.pdf": b"original" if duplicate_original else b"revision",
++        "3_report.pdf": b"original" if duplicate_original else b"revision",
++        "4_report.pdf": b"final revision",
++    }
++    for filename, content in documents.items():
++        (directory / filename).write_bytes(content)
++    output = tmp_path / "manifest.jsonl"
++
++    write_manifest(tmp_path, output)
++
++    rows = {Path(path).name: json.loads(line) for path, line in read_manifest(output).items()}
++    for filename in ("1_report.pdf", "2_report.pdf", "3_report.pdf"):
++        row = rows[filename]
++        assert row["supersedes"] == (None if duplicate_original else sha256_bytes(b"original"))
++        assert row["supersession_evidence"] == (
++            None if duplicate_original else "numeric_prefix_separator"
++        )
++    assert rows["4_report.pdf"]["supersedes"] == sha256_bytes(documents["3_report.pdf"])
++    assert all(row["supersedes"] != row["stable_id"] for row in rows.values())
++    persisted = output.read_bytes()
++    write_manifest(tmp_path, output)
++    assert output.read_bytes() == persisted
++
++
++def test_text_layer_defaults_to_unknown() -> None:
++    rows = _rows_by_path(FIXTURE_ROOT)
++    assert all(row["text_layer"] == "unknown" for row in rows.values())
++
++
++def test_second_run_is_byte_identical(tmp_path: Path) -> None:
++    library = tmp_path / "library"
++    shutil.copytree(FIXTURE_ROOT, library)
++    output = tmp_path / "manifest.jsonl"
++    write_manifest(library, output)
++    first = output.read_bytes()
++    write_manifest(library, output)
++    second = output.read_bytes()
++    assert first == second
++
++
++@pytest.mark.parametrize("empty_library", [False, True])
++def test_unchanged_manifest_is_not_rewritten(tmp_path: Path, empty_library: bool) -> None:
++    library = tmp_path / "library"
++    if empty_library:
++        library.mkdir()
++    else:
++        shutil.copytree(FIXTURE_ROOT, library)
++    output = tmp_path / "manifest.jsonl"
++    write_manifest(library, output)
++    original = output.read_bytes()
++    # Use a fixed old timestamp so the check does not depend on clock resolution.
++    os.utime(output, ns=(1_000_000_000, 1_000_000_000))
++    previous_mtime = output.stat().st_mtime_ns
++
++    write_manifest(library, output)
++
++    assert output.read_bytes() == original
++    assert output.stat().st_mtime_ns == previous_mtime
++
++    added = library / "new_manager/reports/new.pdf"
++    added.parent.mkdir(parents=True)
++    added.write_bytes(b"new document")
++    write_manifest(library, output)
++    assert output.read_bytes() != original
++    assert "new_manager/reports/new.pdf" in read_manifest(output)
++
++
++def test_build_manifest_script_entry_point(tmp_path: Path) -> None:
++    library = tmp_path / "library"
++    shutil.copytree(FIXTURE_ROOT, library)
++    output = tmp_path / "manifest.jsonl"
++    import subprocess
++
++    result = subprocess.run(
++        [
++            sys.executable,
++            "scripts/build_manifest.py",
++            str(library),
++            "--output",
++            str(output),
++        ],
++        cwd=Path(__file__).resolve().parents[1],
++        check=True,
++        capture_output=True,
++        text=True,
++    )
++    assert result.returncode == 0
++    lines = output.read_text(encoding="utf-8").strip().splitlines()
++    assert len(lines) >= 5
++    payload = json.loads(lines[0])
++    assert payload["text_layer"] == "unknown"
++
++    before = read_manifest(output)
++    old_path = "manager_gamma/consultant_reports/2025/gamma_q1.pdf"
++    new_path = "manager_gamma/consultant_reports/2025/renamed.pdf"
++    copy_path = "manager_gamma/consultant_reports/2025/copy.pdf"
++    original = json.loads(before[old_path])
++    (library / old_path).rename(library / new_path)
++    shutil.copyfile(library / new_path, library / copy_path)
++
++    subprocess.run(result.args, check=True, capture_output=True, text=True)
++
++    after = read_manifest(output)
++    assert set(after) == (set(before) - {old_path}) | {new_path, copy_path}
++    for path in (new_path, copy_path):
++        row = json.loads(after[path])
++        assert row["path"] == path
++        assert row["stable_id"] == original["stable_id"]
++        assert row["sha256"] == original["sha256"]
++        assert row["text_layer"] == "unknown"
++    for path in before.keys() - {old_path}:
++        assert after[path] == before[path]
++
++    persisted = output.read_bytes()
++    os.utime(output, ns=(1_000_000_000, 1_000_000_000))
++    previous_mtime = output.stat().st_mtime_ns
++    subprocess.run(result.args, check=True, capture_output=True, text=True)
++    assert output.read_bytes() == persisted
++    assert output.stat().st_mtime_ns == previous_mtime
++
++
++def test_content_based_stable_id_passes_rename_test(tmp_path: Path) -> None:
++    library = tmp_path / "library"
++    doc_dir = library / "manager_alpha" / "lpa" / "2024"
++    doc_dir.mkdir(parents=True)
++    original = doc_dir / "001_terms.pdf"
++    original.write_bytes(b"rename-me")
++    before = compute_identity(library, original)
++    renamed = doc_dir / "001_terms_renamed.pdf"
++    original.rename(renamed)
++    after = compute_identity(library, renamed)
++    assert after.stable_id == before.stable_id
++
++
++def test_incremental_manifest_preserves_unchanged_lines(tmp_path: Path) -> None:
++    library = tmp_path / "library"
++    shutil.copytree(FIXTURE_ROOT, library)
++    output = tmp_path / "manifest.jsonl"
++    write_manifest(library, output)
++    preserved = read_manifest(output)
++    write_manifest(library, output)
++    assert read_manifest(output) == preserved
++
++
++@pytest.mark.parametrize("root_is_file", [False, True])
++def test_invalid_library_root_preserves_existing_manifest(
++    tmp_path: Path, root_is_file: bool
++) -> None:
++    library = tmp_path / "library"
++    shutil.copytree(FIXTURE_ROOT, library)
++    output = tmp_path / "manifest.jsonl"
++    write_manifest(library, output)
++    original = output.read_bytes()
++    library.rename(tmp_path / "moved_library")
++    if root_is_file:
++        library.write_bytes(b"not a directory")
++
++    with pytest.raises(ValueError, match="root must be an existing directory"):
++        write_manifest(library, output)
++
++    assert output.read_bytes() == original
++    with pytest.raises(ValueError, match="root must be an existing directory"):
++        build_manifest_rows(library)
++
++
++def test_supersession_is_path_scoped_with_duplicate_content(tmp_path: Path) -> None:
++    library = tmp_path / "library"
++    docs = {
++        "alpha/reports/001_report.pdf": b"old",
++        "alpha/reports/002_report.pdf": b"new",
++        "beta/reports/copy.pdf": b"new",
++        "gamma/reports/001_report.pdf": b"same",
++        "gamma/reports/002_report.pdf": b"same",
++    }
++    for relative, content in docs.items():
++        path = library / relative
++        path.parent.mkdir(parents=True, exist_ok=True)
++        path.write_bytes(content)
++    rows = _rows_by_path(library)
++    assert rows["alpha/reports/002_report.pdf"]["supersedes"] == sha256_bytes(b"old")
++    assert (
++        rows["alpha/reports/002_report.pdf"]["supersession_evidence"] == "numeric_prefix_separator"
++    )
++    for relative in docs.keys() - {"alpha/reports/002_report.pdf"}:
++        assert rows[relative]["supersedes"] is None
++        assert rows[relative]["supersession_evidence"] is None
++
++
++@pytest.mark.parametrize("existing", [False, True])
++def test_document_output_inside_library_is_rejected(tmp_path: Path, existing: bool) -> None:
++    library = tmp_path / "library"
++    library.mkdir()
++    output = library / "manifest.txt"
++    if existing:
++        output.write_bytes(b"original document")
++    with pytest.raises(ValueError, match="output.*document"):
++        write_manifest(library, output)
++    if existing:
++        assert output.read_bytes() == b"original document"
++    else:
++        assert not output.exists()
++
++
++@pytest.mark.parametrize("annotation", ["present", "absent"])
++def test_text_layer_annotation_survives_unchanged_content(tmp_path: Path, annotation: str) -> None:
++    library = tmp_path / "library"
++    doc = library / "alpha/reports/report.pdf"
++    doc.parent.mkdir(parents=True)
++    doc.write_bytes(b"original")
++    output = library / "manifest.jsonl"
++    write_manifest(library, output)
++    payload = json.loads(output.read_text())
++    payload["text_layer"] = annotation
++    annotated = json.dumps(payload) + "\n"
++    output.write_text(annotated)
++    write_manifest(library, output)
++    assert output.read_text() == annotated
++    doc.write_bytes(b"changed")
++    write_manifest(library, output)
++    assert json.loads(output.read_text())["text_layer"] == "unknown"
++
++
++@pytest.mark.parametrize("annotation", ["not-a-state", None, False, 1, [], {}])
++def test_invalid_prior_text_layer_is_reset(tmp_path: Path, annotation: object) -> None:
++    library = tmp_path / "library"
++    doc = library / "alpha/reports/report.pdf"
++    doc.parent.mkdir(parents=True)
++    doc.write_bytes(b"original")
++    output = tmp_path / "manifest.jsonl"
++    write_manifest(library, output)
++    payload = json.loads(output.read_text())
++    payload["text_layer"] = annotation
++    output.write_text(json.dumps(payload) + "\n")
++    write_manifest(library, output)
++    assert json.loads(output.read_text())["text_layer"] == "unknown"
++
++
++@pytest.mark.parametrize("separator", ["_", "-", "."])
++def test_numeric_resupply_links_unnumbered_original_and_orders_numerically(
++    tmp_path: Path, separator: str
++) -> None:
++    directory = tmp_path / "alpha/reports/2024"
++    directory.mkdir(parents=True)
++    versions = ["report.pdf", f"2{separator}report.pdf", f"10{separator}report.pdf"]
++    for filename in reversed(versions):
++        (directory / filename).write_bytes(filename.encode())
++
++    output = tmp_path / "manifest.jsonl"
++    write_manifest(tmp_path, output)
++    rows = {Path(path).name: json.loads(line) for path, line in read_manifest(output).items()}
++    assert rows[versions[0]]["supersedes"] is None
++    assert rows[versions[0]]["supersession_evidence"] is None
++    for older, newer in zip(versions, versions[1:], strict=False):
++        assert rows[newer]["supersedes"] == rows[older]["stable_id"]
++        assert rows[newer]["supersession_evidence"] == "numeric_prefix_separator"
++
++
++@pytest.mark.parametrize("duplicate_content", [False, True])
++def test_equal_numeric_prefixes_do_not_invent_version_order(
++    tmp_path: Path, duplicate_content: bool
++) -> None:
++    directory = tmp_path / "alpha/reports"
++    directory.mkdir(parents=True)
++    documents = {
++        "report.pdf": b"original",
++        "1_report.pdf": b"first",
++        "01-report.pdf": b"first" if duplicate_content else b"conflicting",
++        "2_report.pdf": b"second",
++    }
++    for filename, content in documents.items():
++        (directory / filename).write_bytes(content)
++    rows = {Path(row.path).name: row for row in build_manifest_rows(tmp_path)}
++    assert rows["report.pdf"].supersedes is None
++    for filename in ("1_report.pdf", "01-report.pdf", "2_report.pdf"):
++        row = rows[filename]
++        if duplicate_content:
++            expected = b"first" if filename == "2_report.pdf" else b"original"
++            assert row.supersedes == sha256_bytes(expected)
++            assert row.supersession_evidence == "numeric_prefix_separator"
++        else:
++            assert row.supersedes is None
++            assert row.supersession_evidence is None
++
++
++@pytest.mark.parametrize("annotation", ["present", "absent"])
++@pytest.mark.parametrize("keep_original", [False, True])
++def test_text_layer_follows_content_to_new_path(
++    tmp_path: Path, annotation: str, keep_original: bool
++) -> None:
++    library = tmp_path / "library"
++    original = library / "alpha/reports/report.pdf"
++    original.parent.mkdir(parents=True)
++    original.write_bytes(b"examined document")
++    output = tmp_path / "manifest.jsonl"
++    write_manifest(library, output)
++    payload = json.loads(output.read_text())
++    payload["text_layer"] = annotation
++    output.write_text(json.dumps(payload) + "\n")
++    renamed = original.with_name("resupplied.pdf")
++    if keep_original:
++        shutil.copyfile(original, renamed)
++    else:
++        original.rename(renamed)
++
++    write_manifest(library, output)
++
++    rows = [json.loads(line) for line in read_manifest(output).values()]
++    assert len(rows) == (2 if keep_original else 1)
++    assert all(row["stable_id"] == payload["stable_id"] for row in rows)
++    assert all(row["text_layer"] == annotation for row in rows)
++    persisted = output.read_bytes()
++    write_manifest(library, output)
++    assert output.read_bytes() == persisted
++
++
++def test_conflicting_text_layer_results_are_not_inherited_by_new_path(tmp_path: Path) -> None:
++    library = tmp_path / "library"
++    original = library / "alpha/reports/report.pdf"
++    original.parent.mkdir(parents=True)
++    original.write_bytes(b"examined document")
++    duplicate = original.with_name("copy.pdf")
++    shutil.copyfile(original, duplicate)
++    output = tmp_path / "manifest.jsonl"
++    write_manifest(library, output)
++    rows = [json.loads(line) for line in read_manifest(output).values()]
++    for row, annotation in zip(rows, ["present", "absent"], strict=True):
++        row["text_layer"] = annotation
++    output.write_text("".join(json.dumps(row) + "\n" for row in rows))
++    renamed = original.with_name("renamed.pdf")
++    original.rename(renamed)
++    duplicate.unlink()
++
++    write_manifest(library, output)
++
++    assert json.loads(output.read_text())["text_layer"] == "unknown"
++
++
++@pytest.mark.parametrize("annotation", ["present", "absent"])
++@pytest.mark.parametrize("keep_original", [False, True])
++def test_text_layer_follows_content_to_reused_path(
++    tmp_path: Path, annotation: str, keep_original: bool
++) -> None:
++    library = tmp_path / "library"
++    original = library / "alpha/reports/report.pdf"
++    original.parent.mkdir(parents=True)
++    original.write_bytes(b"examined document")
++    destination = original.with_name("resupplied.pdf")
++    destination.write_bytes(b"different document")
++    output = tmp_path / "manifest.jsonl"
++    write_manifest(library, output)
++    rows = [json.loads(line) for line in read_manifest(output).values()]
++    for row in rows:
++        row["text_layer"] = annotation if row["path"].endswith("/report.pdf") else "unknown"
++    output.write_text("".join(json.dumps(row) + "\n" for row in rows))
++    if keep_original:
++        shutil.copyfile(original, destination)
++    else:
++        original.replace(destination)
++
++    write_manifest(library, output)
++
++    updated = [json.loads(line) for line in read_manifest(output).values()]
++    assert len(updated) == (2 if keep_original else 1)
++    assert all(row["stable_id"] == sha256_bytes(b"examined document") for row in updated)
++    assert all(row["sha256"] == row["stable_id"] for row in updated)
++    assert all(row["text_layer"] == annotation for row in updated)
++    persisted = output.read_bytes()
++    write_manifest(library, output)
++    assert output.read_bytes() == persisted

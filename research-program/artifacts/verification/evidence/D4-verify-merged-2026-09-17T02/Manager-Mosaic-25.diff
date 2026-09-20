@@ -1,0 +1,1434 @@
+diff --git a/pyproject.toml b/pyproject.toml
+index fe5b704..d209da9 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -20,7 +20,9 @@ classifiers = [
+     "Programming Language :: Python :: 3.12",
+     "Programming Language :: Python :: 3.13",
+ ]
+-dependencies = []
++dependencies = [
++    "jsonschema==4.22.0",
++]
+ 
+ [project.optional-dependencies]
+ dev = [
+@@ -29,6 +31,7 @@ dev = [
+     "ruff==0.16.7",
+     "mypy==2.3.1",
+     "black==26.5.1",
++    "types-jsonschema==4.23.0.20241208",
+ ]
+ 
+ [project.urls]
+@@ -38,6 +41,9 @@ Repository = "https://github.com/stranske/Manager-Mosaic"
+ [tool.setuptools.packages.find]
+ where = ["src"]
+ 
++[tool.setuptools.package-data]
++manager_mosaic = ["schemas/*.json"]
++
+ [tool.pytest.ini_options]
+ testpaths = ["tests"]
+ addopts = "-v --cov=src --cov-report=term-missing --cov-report=xml"
+diff --git a/requirements.lock b/requirements.lock
+index 7c08660..15ab152 100644
+--- a/requirements.lock
++++ b/requirements.lock
+@@ -2,8 +2,12 @@
+ #    uv pip compile pyproject.toml --extra=dev --universal --output-file=requirements.lock
+ ast-serialize==0.6.0
+     # via mypy
++attrs==26.1.0
++    # via
++    #   jsonschema
++    #   referencing
+ black==26.5.1
+-    # via my-project (pyproject.toml)
++    # via manager-mosaic (pyproject.toml)
+ click==8.4.2
+     # via black
+ colorama==0.4.6 ; sys_platform == 'win32'
+@@ -14,10 +18,14 @@ coverage==7.16.0
+     # via pytest-cov
+ iniconfig==2.3.0
+     # via pytest
++jsonschema==4.22.0
++    # via manager-mosaic (pyproject.toml)
++jsonschema-specifications==2025.9.1
++    # via jsonschema
+ librt==0.13.0 ; platform_python_implementation != 'PyPy'
+     # via mypy
+ mypy==2.3.1
+-    # via my-project (pyproject.toml)
++    # via manager-mosaic (pyproject.toml)
+ mypy-extensions==1.1.0
+     # via
+     #   black
+@@ -40,13 +48,26 @@ pygments==2.20.0
+     # via pytest
+ pytest==9.1.1
+     # via
+-    #   my-project (pyproject.toml)
++    #   manager-mosaic (pyproject.toml)
+     #   pytest-cov
+ pytest-cov==7.1.0
+-    # via my-project (pyproject.toml)
++    # via manager-mosaic (pyproject.toml)
+ pytokens==0.4.1
+     # via black
++referencing==0.37.0
++    # via
++    #   jsonschema
++    #   jsonschema-specifications
++    #   types-jsonschema
++rpds-py==2026.6.3
++    # via
++    #   jsonschema
++    #   referencing
+ ruff==0.16.7
+-    # via my-project (pyproject.toml)
++    # via manager-mosaic (pyproject.toml)
++types-jsonschema==4.23.0.20241208
++    # via manager-mosaic (pyproject.toml)
+ typing-extensions==4.16.0
+-    # via mypy
++    # via
++    #   mypy
++    #   referencing
+diff --git a/schemas/mosaic-store-v1.schema.json b/schemas/mosaic-store-v1.schema.json
+new file mode 100644
+index 0000000..97a0948
+--- /dev/null
++++ b/schemas/mosaic-store-v1.schema.json
+@@ -0,0 +1,166 @@
++{
++  "$schema": "https://json-schema.org/draft/2020-12/schema",
++  "$id": "https://github.com/stranske/Manager-Mosaic/schemas/mosaic-store-v1.schema.json",
++  "title": "Manager Mosaic Store",
++  "type": "object",
++  "additionalProperties": false,
++  "properties": {
++    "funds": {
++      "type": "array",
++      "items": { "$ref": "#/$defs/fund" }
++    },
++    "periods": {
++      "type": "array",
++      "items": { "$ref": "#/$defs/period" }
++    },
++    "entries": {
++      "type": "array",
++      "items": { "$ref": "#/$defs/entry" }
++    },
++    "themes": {
++      "type": "array",
++      "items": { "$ref": "#/$defs/theme" }
++    },
++    "documents": {
++      "type": "array",
++      "items": { "$ref": "#/$defs/document" }
++    },
++    "gaps": {
++      "type": "array",
++      "items": { "$ref": "#/$defs/gap" }
++    },
++    "status_vocabularies": {
++      "type": "object",
++      "additionalProperties": {
++        "type": "array",
++        "items": { "type": "string" },
++        "minItems": 1
++      }
++    }
++  },
++  "$defs": {
++    "fund": {
++      "type": "object",
++      "additionalProperties": false,
++      "required": ["name", "manager", "strategy", "archetype", "note"],
++      "properties": {
++        "name": { "type": "string" },
++        "manager": { "type": "string" },
++        "strategy": { "type": "string" },
++        "archetype": { "type": "string" },
++        "note": { "type": "string" }
++      }
++    },
++    "period": {
++      "type": "object",
++      "additionalProperties": false,
++      "required": ["id", "sort", "label", "kind", "title", "author", "attendees", "verdict", "note"],
++      "properties": {
++        "id": { "type": "string" },
++        "sort": { "type": "integer" },
++        "label": { "type": "string" },
++        "kind": { "type": "string" },
++        "title": { "type": "string" },
++        "author": { "type": "string" },
++        "attendees": { "type": "string" },
++        "verdict": { "type": "string" },
++        "note": { "type": "string" }
++      }
++    },
++    "pub": {
++      "type": "object",
++      "additionalProperties": false,
++      "required": ["state", "as_of", "detail", "src"],
++      "properties": {
++        "state": { "type": "string", "enum": ["PENDING", "COMPLETED", "TERMINATED"] },
++        "as_of": { "type": "string" },
++        "detail": { "type": "string" },
++        "src": { "type": "string", "minLength": 1 }
++      }
++    },
++    "mention": {
++      "type": "object",
++      "additionalProperties": false,
++      "required": ["period", "text", "size", "src", "inferred"],
++      "properties": {
++        "period": { "type": "string" },
++        "text": { "type": "string" },
++        "bps": { "type": ["number", "null"] },
++        "size": { "type": "string" },
++        "src": { "type": "string", "minLength": 1 },
++        "inferred": { "type": "boolean" }
++      }
++    },
++    "entry": {
++      "type": "object",
++      "additionalProperties": false,
++      "required": [
++        "id",
++        "name",
++        "ticker",
++        "counterparty",
++        "kind",
++        "first",
++        "last",
++        "status",
++        "flag",
++        "thesis",
++        "pub",
++        "mentions"
++      ],
++      "properties": {
++        "id": { "type": "string" },
++        "name": { "type": "string" },
++        "ticker": { "type": "string" },
++        "counterparty": { "type": "string" },
++        "kind": { "type": "string" },
++        "first": { "type": "string" },
++        "last": { "type": "string" },
++        "status": { "type": "string" },
++        "peak": { "type": ["number", "null"] },
++        "flag": { "type": "string" },
++        "thesis": { "type": "string" },
++        "pub": { "$ref": "#/$defs/pub" },
++        "mentions": {
++          "type": "array",
++          "items": { "$ref": "#/$defs/mention" }
++        }
++      }
++    },
++    "theme": {
++      "type": "object",
++      "additionalProperties": false,
++      "required": ["id", "name", "desc", "periods"],
++      "properties": {
++        "id": { "type": "string" },
++        "name": { "type": "string" },
++        "desc": { "type": "string" },
++        "periods": {
++          "type": "array",
++          "items": { "type": "string" }
++        }
++      }
++    },
++    "document": {
++      "type": "object",
++      "additionalProperties": false,
++      "required": ["name", "date", "verdict", "note"],
++      "properties": {
++        "name": { "type": "string" },
++        "date": { "type": "string" },
++        "verdict": { "type": "string" },
++        "note": { "type": "string" }
++      }
++    },
++    "gap": {
++      "type": "object",
++      "additionalProperties": false,
++      "required": ["sev", "title", "desc"],
++      "properties": {
++        "sev": { "type": "string" },
++        "title": { "type": "string" },
++        "desc": { "type": "string" }
++      }
++    }
++  }
++}
+diff --git a/scripts/check_deliberate_break.py b/scripts/check_deliberate_break.py
+index ecfcf28..72e1723 100644
+--- a/scripts/check_deliberate_break.py
++++ b/scripts/check_deliberate_break.py
+@@ -36,7 +36,12 @@
+ # Compatible installed versions may exceed this Workflows-owned bootstrap floor;
+ # automatic repair remains reproducibly pinned by PYTEST_RUNTIME_DEPENDENCIES.
+ PYYAML_VERSION = "6.0.3"
+-PYTEST_RUNTIME_DEPENDENCIES = (f"pyyaml=={PYYAML_VERSION}",)
++JSONSCHEMA_VERSION = "4.22.0"
++PYTEST_RUNTIME_DEPENDENCIES = (
++    f"pyyaml=={PYYAML_VERSION}",
++    f"jsonschema=={JSONSCHEMA_VERSION}",
++)
++PYTEST_RUNTIME_IMPORTS = ("yaml", "jsonschema")
+ PYYAML_PROBE_SENTINEL = "__gate_pyyaml_import_ok__"
+ PYYAML_PROBE_CODE = f"import yaml; print({PYYAML_PROBE_SENTINEL!r})"
+ 
+@@ -234,7 +239,7 @@ def parse_deliberate_break_spec(markdown: str) -> DeliberateBreakSpec | None:
+ 
+ 
+ def _pytest_command(test_id: str) -> tuple[str, ...]:
+-    return (sys.executable, "-m", "pytest", test_id, "-q")
++    return (sys.executable, "-m", "pytest", test_id, "-q", "-o", "addopts=")
+ 
+ 
+ def _supported_pyyaml_version(installed_version: str | None) -> bool:
+@@ -258,59 +263,67 @@ def _supported_pyyaml_version(installed_version: str | None) -> bool:
+     return installed_match.group("pre") is None and installed_match.group("dev") is None
+ 
+ 
++def _missing_pytest_runtime_imports() -> list[str]:
++    missing: list[str] = []
++    try:
++        installed_version = metadata.version("PyYAML")
++    except metadata.PackageNotFoundError:
++        installed_version = None
++    if not _supported_pyyaml_version(installed_version):
++        missing.append("yaml")
++    else:
++        try:
++            import_module("yaml")
++        except Exception:
++            missing.append("yaml")
++    for module_name in PYTEST_RUNTIME_IMPORTS:
++        if module_name == "yaml":
++            continue
++        try:
++            import_module(module_name)
++        except Exception:
++            missing.append(module_name)
++    return missing
++
++
+ def _ensure_pytest_runtime_deps() -> None:
+     """Install lightweight dependencies that Gate test-quality may not preinstall.
+ 
+     Gate's test-quality job installs only ``pytest``. Deliberate-break may still
+-    collect tests that import PyYAML (for example via ``sync_manifest_compiler``).
++    collect tests that import PyYAML (for example via ``sync_manifest_compiler``)
++    or other lightweight runtime deps declared in ``PYTEST_RUNTIME_DEPENDENCIES``.
+     Installing here avoids editing ``pr-00-gate.yml``, which forces an
+     Actions ``action_required`` approval wait on workflow-touching PRs.
+     """
+-    try:
+-        installed_version = metadata.version("PyYAML")
+-    except metadata.PackageNotFoundError:
+-        installed_version = None
+-    import_error: Exception | None = None
+-    if _supported_pyyaml_version(installed_version):
+-        try:
+-            import_module("yaml")
+-        except Exception as exc:
+-            # Any ordinary import-time failure means the installed distribution
+-            # is unusable. Reinstall the locked wheel before collecting tests.
+-            import_error = exc
+-        else:
+-            return
+-    if not _supported_pyyaml_version(installed_version) or import_error is not None:
+-        # Local and custom environments are user-owned; dependency repair may
+-        # mutate the active interpreter only in GitHub Actions.
+-        if os.environ.get("GITHUB_ACTIONS") != "true":
+-            error = ImportError(
+-                f"PyYAML >= {PYYAML_VERSION} is required; install "
+-                f"'PyYAML>={PYYAML_VERSION}' in the active environment"
+-            )
+-            raise error from import_error
+-        command = [
+-            sys.executable,
+-            "-m",
+-            "pip",
+-            "install",
+-            "--upgrade",
+-        ]
+-        if import_error is not None:
+-            command.append("--force-reinstall")
+-        command.extend(PYTEST_RUNTIME_DEPENDENCIES)
+-        subprocess.run(
+-            command,
+-            check=True,
+-            text=True,
+-            capture_output=True,
+-            timeout=DEFAULT_TIMEOUT_SECONDS,
++    missing = _missing_pytest_runtime_imports()
++    if not missing:
++        return
++    if os.environ.get("GITHUB_ACTIONS") != "true":
++        packages = ", ".join(PYTEST_RUNTIME_DEPENDENCIES)
++        raise ImportError(
++            f"Deliberate-break requires {packages}; missing imports: {', '.join(missing)}"
++        )
++    command = [
++        sys.executable,
++        "-m",
++        "pip",
++        "install",
++        "--upgrade",
++        *PYTEST_RUNTIME_DEPENDENCIES,
++    ]
++    subprocess.run(
++        command,
++        check=True,
++        text=True,
++        capture_output=True,
++        timeout=DEFAULT_TIMEOUT_SECONDS,
++    )
++    still_missing = _missing_pytest_runtime_imports()
++    if still_missing:
++        raise ImportError(
++            "Deliberate-break runtime deps remained unavailable after install: "
++            + ", ".join(still_missing)
+         )
+-        try:
+-            import_module("yaml")
+-        except Exception as retry_error:
+-            error = ImportError(f"PyYAML remained unimportable after reinstall: {retry_error}")
+-            raise error from (import_error or retry_error)
+ 
+ 
+ def _pyyaml_runtime_needs_repair() -> bool:
+@@ -697,8 +710,18 @@ def _run_with_runtime_deps(
+     command: tuple[str, ...],
+     cwd: Path,
+ ) -> subprocess.CompletedProcess[str]:
+-    """Run the check, repairing PyYAML only after a YAML-triggered failure."""
++    """Run the check, repairing lightweight pytest imports when needed."""
+     managed_runtime = _uses_pytest_runtime(command)
++    if managed_runtime:
++        try:
++            _ensure_pytest_runtime_deps()
++        except (
++            subprocess.TimeoutExpired,
++            subprocess.CalledProcessError,
++            ImportError,
++            OSError,
++        ) as exc:
++            raise RuntimeDependencyError(exc) from exc
+     try:
+         completed = _run(command, cwd)
+     except OSError as exc:
+diff --git a/src/manager_mosaic/__init__.py b/src/manager_mosaic/__init__.py
+index 4dca5c3..c91d7e7 100644
+--- a/src/manager_mosaic/__init__.py
++++ b/src/manager_mosaic/__init__.py
+@@ -1,33 +1,62 @@
+-"""Manager mosaic: evidence-linked facts, discrepancy detection, and investment-thesis monitoring across manager communication sources
+-
+-The two helpers below are the Template's scaffold and are exercised by tests/test_main.py.
+-They stay until real modules replace them, so the package always has a tested public surface.
+-"""
++"""Manager mosaic: evidence-linked facts, discrepancy detection, and thesis monitoring."""
++
++from manager_mosaic.model import (
++    Document,
++    Entry,
++    Fund,
++    Gap,
++    Mention,
++    Period,
++    Pub,
++    Store,
++    Theme,
++    ValidationViolation,
++    derive_gaps,
++    document,
++    entry,
++    fund,
++    gap,
++    load_schema,
++    mention,
++    period,
++    pub,
++    theme,
++    validate,
++)
+ 
+ __version__ = "0.1.0"
+-__all__ = ["greet", "add"]
++__all__ = [
++    "Document",
++    "Entry",
++    "Fund",
++    "Gap",
++    "Mention",
++    "Period",
++    "Pub",
++    "Store",
++    "Theme",
++    "ValidationViolation",
++    "derive_gaps",
++    "document",
++    "entry",
++    "fund",
++    "gap",
++    "load_schema",
++    "mention",
++    "period",
++    "pub",
++    "theme",
++    "validate",
++    "greet",
++    "add",
++]
+ 
+ 
+ def greet(name: str) -> str:
+-    """Return a greeting message.
+-
+-    Args:
+-        name: The name to greet.
+-
+-    Returns:
+-        A greeting string.
+-    """
++    """Return a greeting message."""
+     return f"Hello, {name}!"
+ 
+ 
+ def add(a: int, b: int) -> int:
+-    """Add two numbers.
+-
+-    Args:
+-        a: First number.
+-        b: Second number.
+-
+-    Returns:
+-        The sum of a and b.
+-    """
++    """Add two numbers."""
+     return a + b
+diff --git a/src/manager_mosaic/model.py b/src/manager_mosaic/model.py
+new file mode 100644
+index 0000000..f39ae9b
+--- /dev/null
++++ b/src/manager_mosaic/model.py
+@@ -0,0 +1,458 @@
++"""Core mosaic store model and semantic validator.
++
++The store is meant to be edited by hand. Editing a rendered output instead of the
++store is a discarded edit — always change the store and re-validate.
++"""
++
++from __future__ import annotations
++
++import json
++import math
++import re
++from collections.abc import Mapping, Sequence
++from dataclasses import dataclass
++from importlib import resources
++from pathlib import Path
++from types import MappingProxyType
++from typing import Any
++
++PUB_STATES = frozenset({"PENDING", "COMPLETED", "TERMINATED"})
++_TRUNCATED_CURRENCY = re.compile(r"^[$€£¥][A-Za-z]+$")
++_NUMERIC_FIELDS = frozenset({"sort", "bps", "peak"})
++
++
++@dataclass(frozen=True, slots=True)
++class Fund:
++    name: str
++    manager: str
++    strategy: str
++    archetype: str
++    note: str
++
++
++@dataclass(frozen=True, slots=True)
++class Period:
++    id: str
++    sort: int
++    label: str
++    kind: str
++    title: str
++    author: str
++    attendees: str
++    verdict: str
++    note: str
++
++
++@dataclass(frozen=True, slots=True)
++class Pub:
++    state: str
++    as_of: str
++    detail: str
++    src: str
++
++
++@dataclass(frozen=True, slots=True)
++class Mention:
++    period: str
++    text: str
++    bps: float | None
++    size: str
++    src: str
++    inferred: bool
++
++
++@dataclass(frozen=True, slots=True)
++class Entry:
++    id: str
++    name: str
++    ticker: str
++    counterparty: str
++    kind: str
++    first: str
++    last: str
++    status: str
++    peak: float | None
++    flag: str
++    thesis: str
++    pub: Pub
++    mentions: tuple[Mention, ...]
++
++
++@dataclass(frozen=True, slots=True)
++class Theme:
++    id: str
++    name: str
++    desc: str
++    periods: tuple[str, ...]
++
++
++@dataclass(frozen=True, slots=True)
++class Document:
++    name: str
++    date: str
++    verdict: str
++    note: str
++
++
++@dataclass(frozen=True, slots=True)
++class Gap:
++    sev: str
++    title: str
++    desc: str
++
++
++@dataclass(frozen=True, slots=True)
++class Store:
++    funds: tuple[Fund, ...]
++    periods: tuple[Period, ...]
++    entries: tuple[Entry, ...]
++    themes: tuple[Theme, ...]
++    documents: tuple[Document, ...]
++    gaps: tuple[Gap, ...]
++    status_vocabularies: Mapping[str, frozenset[str]]
++
++    def __post_init__(self) -> None:
++        immutable_vocabularies = MappingProxyType(
++            {kind: frozenset(values) for kind, values in self.status_vocabularies.items()}
++        )
++        object.__setattr__(self, "status_vocabularies", immutable_vocabularies)
++
++    @classmethod
++    def from_dict(cls, payload: Mapping[str, Any]) -> Store:
++        status_vocabularies = {
++            kind: frozenset(values)
++            for kind, values in payload.get("status_vocabularies", {}).items()
++        }
++        return cls(
++            funds=tuple(fund(**item) for item in payload.get("funds", [])),
++            periods=tuple(period(**item) for item in payload.get("periods", [])),
++            entries=tuple(_entry_from_dict(item) for item in payload.get("entries", [])),
++            themes=tuple(
++                theme(
++                    id=item["id"],
++                    name=item["name"],
++                    desc=item["desc"],
++                    periods=tuple(item.get("periods", [])),
++                )
++                for item in payload.get("themes", [])
++            ),
++            documents=tuple(document(**item) for item in payload.get("documents", [])),
++            gaps=tuple(gap(**item) for item in payload.get("gaps", [])),
++            status_vocabularies=status_vocabularies,
++        )
++
++    @classmethod
++    def from_json(cls, path: Path) -> Store:
++        return cls.from_dict(json.loads(path.read_text(encoding="utf-8")))
++
++
++@dataclass(frozen=True, slots=True)
++class ValidationViolation:
++    record_id: str
++    message: str
++
++
++def fund(
++    name: str,
++    manager: str,
++    strategy: str,
++    archetype: str,
++    note: str,
++) -> Fund:
++    return Fund(name, manager, strategy, archetype, note)
++
++
++def period(
++    id: str,
++    sort: int,
++    label: str,
++    kind: str,
++    title: str,
++    author: str,
++    attendees: str,
++    verdict: str,
++    note: str,
++) -> Period:
++    return Period(id, sort, label, kind, title, author, attendees, verdict, note)
++
++
++def pub(state: str, as_of: str, detail: str, src: str) -> Pub:
++    return Pub(state, as_of, detail, src)
++
++
++def mention(
++    period: str,
++    text: str,
++    bps: float | None,
++    size: str,
++    src: str,
++    inferred: bool,
++) -> Mention:
++    return Mention(period, text, bps, size, src, inferred)
++
++
++def entry(
++    id: str,
++    name: str,
++    ticker: str,
++    counterparty: str,
++    kind: str,
++    first: str,
++    last: str,
++    status: str,
++    peak: float | None,
++    flag: str,
++    thesis: str,
++    pub: Pub,
++    mentions: Sequence[Mention],
++) -> Entry:
++    return Entry(
++        id,
++        name,
++        ticker,
++        counterparty,
++        kind,
++        first,
++        last,
++        status,
++        peak,
++        flag,
++        thesis,
++        pub,
++        tuple(mentions),
++    )
++
++
++def theme(id: str, name: str, desc: str, periods: Sequence[str]) -> Theme:
++    return Theme(id, name, desc, tuple(periods))
++
++
++def document(name: str, date: str, verdict: str, note: str) -> Document:
++    return Document(name, date, verdict, note)
++
++
++def gap(sev: str, title: str, desc: str) -> Gap:
++    return Gap(sev, title, desc)
++
++
++def _entry_from_dict(item: Mapping[str, Any]) -> Entry:
++    pub_data = item["pub"]
++    mentions = tuple(
++        mention(
++            period=m["period"],
++            text=m["text"],
++            bps=m.get("bps"),
++            size=m.get("size", ""),
++            src=m.get("src", ""),
++            inferred=m["inferred"],
++        )
++        for m in item.get("mentions", [])
++    )
++    return entry(
++        id=item["id"],
++        name=item["name"],
++        ticker=item.get("ticker", ""),
++        counterparty=item.get("counterparty", ""),
++        kind=item.get("kind", "position"),
++        first=item["first"],
++        last=item["last"],
++        status=item["status"],
++        peak=item.get("peak"),
++        flag=item.get("flag", ""),
++        thesis=item.get("thesis", ""),
++        pub=pub(
++            state=pub_data["state"],
++            as_of=pub_data.get("as_of", ""),
++            detail=pub_data.get("detail", ""),
++            src=pub_data.get("src", ""),
++        ),
++        mentions=mentions,
++    )
++
++
++def _append_duplicate(
++    violations: list[ValidationViolation],
++    seen: dict[str, str],
++    record_id: str,
++    collection: str,
++) -> None:
++    if record_id in seen:
++        violations.append(
++            ValidationViolation(
++                record_id,
++                f"identifier {record_id!r} defined twice in {collection}",
++            )
++        )
++    seen[record_id] = collection
++
++
++def _check_finite(
++    violations: list[ValidationViolation],
++    record_id: str,
++    field: str,
++    value: Any,
++) -> None:
++    if value is None:
++        return
++    if isinstance(value, float) and not math.isfinite(value):
++        violations.append(ValidationViolation(record_id, f"{field} must be finite, got {value!r}"))
++
++
++def _check_truncated_currency(
++    violations: list[ValidationViolation],
++    record_id: str,
++    field: str,
++    value: str,
++) -> None:
++    if value and _TRUNCATED_CURRENCY.match(value.strip()):
++        violations.append(
++            ValidationViolation(
++                record_id,
++                f"{field} looks like a truncated currency amount: {value!r}",
++            )
++        )
++
++
++def validate(store: Store) -> list[ValidationViolation]:
++    """Return every semantic violation in one pass."""
++    violations: list[ValidationViolation] = []
++    seen_ids: dict[str, str] = {}
++
++    period_ids = {item.id for item in store.periods}
++    document_names = {item.name for item in store.documents}
++
++    for period_item in store.periods:
++        _append_duplicate(violations, seen_ids, period_item.id, "periods")
++        _check_finite(violations, period_item.id, "sort", period_item.sort)
++
++    for theme_item in store.themes:
++        _append_duplicate(violations, seen_ids, theme_item.id, "themes")
++        for period_ref in theme_item.periods:
++            if period_ref not in period_ids:
++                violations.append(
++                    ValidationViolation(
++                        theme_item.id,
++                        f"period {period_ref!r} referenced but not defined",
++                    )
++                )
++
++    for document_item in store.documents:
++        if document_item.name in seen_ids:
++            violations.append(
++                ValidationViolation(
++                    document_item.name,
++                    f"identifier {document_item.name!r} defined twice in documents",
++                )
++            )
++        seen_ids[document_item.name] = "documents"
++
++    for entry_item in store.entries:
++        _append_duplicate(violations, seen_ids, entry_item.id, "entries")
++        if entry_item.first not in period_ids:
++            violations.append(
++                ValidationViolation(
++                    entry_item.id,
++                    f"period {entry_item.first!r} referenced but not defined",
++                )
++            )
++        if entry_item.last not in period_ids:
++            violations.append(
++                ValidationViolation(
++                    entry_item.id,
++                    f"period {entry_item.last!r} referenced but not defined",
++                )
++            )
++        _check_finite(violations, entry_item.id, "peak", entry_item.peak)
++        _check_truncated_currency(violations, entry_item.id, "flag", entry_item.flag)
++
++        vocabulary = store.status_vocabularies.get(entry_item.kind, frozenset())
++        if vocabulary and entry_item.status not in vocabulary:
++            violations.append(
++                ValidationViolation(
++                    entry_item.id,
++                    f"status {entry_item.status!r} is not allowed for "
++                    f"{entry_item.kind!r} entries",
++                )
++            )
++
++        if entry_item.pub.state not in PUB_STATES:
++            violations.append(
++                ValidationViolation(
++                    entry_item.id,
++                    f"pub.state must be one of {sorted(PUB_STATES)}, got {entry_item.pub.state!r}",
++                )
++            )
++        if entry_item.pub.src not in document_names:
++            violations.append(
++                ValidationViolation(
++                    entry_item.id,
++                    f"document {entry_item.pub.src!r} referenced but not defined",
++                )
++            )
++
++        for index, mention_item in enumerate(entry_item.mentions):
++            mention_id = f"{entry_item.id}:mention[{index}]"
++            if not mention_item.src:
++                violations.append(ValidationViolation(mention_id, "mention must carry src"))
++            elif mention_item.src not in document_names:
++                violations.append(
++                    ValidationViolation(
++                        mention_id,
++                        f"document {mention_item.src!r} referenced but not defined",
++                    )
++                )
++            if mention_item.period not in period_ids:
++                violations.append(
++                    ValidationViolation(
++                        mention_id,
++                        f"period {mention_item.period!r} referenced but not defined",
++                    )
++                )
++            _check_finite(violations, mention_id, "bps", mention_item.bps)
++            _check_truncated_currency(violations, mention_id, "size", mention_item.size)
++
++    return violations
++
++
++def derive_gaps(store: Store) -> tuple[Gap, ...]:
++    """Compute coverage gaps without mutating entry status."""
++    period_ids = {item.id: item for item in store.periods}
++    gaps: list[Gap] = []
++    for entry_item in store.entries:
++        mentioned_periods = {mention.period for mention in entry_item.mentions}
++        active_periods = [
++            period_item
++            for period_item in store.periods
++            if _period_in_range(period_item, entry_item, period_ids)
++        ]
++        for period_item in active_periods:
++            if period_item.id not in mentioned_periods:
++                gaps.append(
++                    gap(
++                        sev="info",
++                        title=f"Missing mention for {entry_item.id} in {period_item.id}",
++                        desc=(
++                            f"Entry {entry_item.id!r} is active in period {period_item.id!r} "
++                            "but has no mention; silence is not a status change."
++                        ),
++                    )
++                )
++    return tuple(gaps)
++
++
++def _period_in_range(
++    period_item: Period,
++    entry_item: Entry,
++    period_ids: Mapping[str, Period],
++) -> bool:
++    first = period_ids.get(entry_item.first)
++    last = period_ids.get(entry_item.last)
++    if first is None or last is None:
++        return False
++    return first.sort <= period_item.sort <= last.sort
++
++
++def load_schema(name: str = "mosaic-store-v1") -> dict[str, Any]:
++    schema_file = resources.files("manager_mosaic").joinpath("schemas", f"{name}.schema.json")
++    payload: dict[str, Any] = json.loads(schema_file.read_text(encoding="utf-8"))
++    return payload
+diff --git a/src/manager_mosaic/schemas/mosaic-store-v1.schema.json b/src/manager_mosaic/schemas/mosaic-store-v1.schema.json
+new file mode 100644
+index 0000000..97a0948
+--- /dev/null
++++ b/src/manager_mosaic/schemas/mosaic-store-v1.schema.json
+@@ -0,0 +1,166 @@
++{
++  "$schema": "https://json-schema.org/draft/2020-12/schema",
++  "$id": "https://github.com/stranske/Manager-Mosaic/schemas/mosaic-store-v1.schema.json",
++  "title": "Manager Mosaic Store",
++  "type": "object",
++  "additionalProperties": false,
++  "properties": {
++    "funds": {
++      "type": "array",
++      "items": { "$ref": "#/$defs/fund" }
++    },
++    "periods": {
++      "type": "array",
++      "items": { "$ref": "#/$defs/period" }
++    },
++    "entries": {
++      "type": "array",
++      "items": { "$ref": "#/$defs/entry" }
++    },
++    "themes": {
++      "type": "array",
++      "items": { "$ref": "#/$defs/theme" }
++    },
++    "documents": {
++      "type": "array",
++      "items": { "$ref": "#/$defs/document" }
++    },
++    "gaps": {
++      "type": "array",
++      "items": { "$ref": "#/$defs/gap" }
++    },
++    "status_vocabularies": {
++      "type": "object",
++      "additionalProperties": {
++        "type": "array",
++        "items": { "type": "string" },
++        "minItems": 1
++      }
++    }
++  },
++  "$defs": {
++    "fund": {
++      "type": "object",
++      "additionalProperties": false,
++      "required": ["name", "manager", "strategy", "archetype", "note"],
++      "properties": {
++        "name": { "type": "string" },
++        "manager": { "type": "string" },
++        "strategy": { "type": "string" },
++        "archetype": { "type": "string" },
++        "note": { "type": "string" }
++      }
++    },
++    "period": {
++      "type": "object",
++      "additionalProperties": false,
++      "required": ["id", "sort", "label", "kind", "title", "author", "attendees", "verdict", "note"],
++      "properties": {
++        "id": { "type": "string" },
++        "sort": { "type": "integer" },
++        "label": { "type": "string" },
++        "kind": { "type": "string" },
++        "title": { "type": "string" },
++        "author": { "type": "string" },
++        "attendees": { "type": "string" },
++        "verdict": { "type": "string" },
++        "note": { "type": "string" }
++      }
++    },
++    "pub": {
++      "type": "object",
++      "additionalProperties": false,
++      "required": ["state", "as_of", "detail", "src"],
++      "properties": {
++        "state": { "type": "string", "enum": ["PENDING", "COMPLETED", "TERMINATED"] },
++        "as_of": { "type": "string" },
++        "detail": { "type": "string" },
++        "src": { "type": "string", "minLength": 1 }
++      }
++    },
++    "mention": {
++      "type": "object",
++      "additionalProperties": false,
++      "required": ["period", "text", "size", "src", "inferred"],
++      "properties": {
++        "period": { "type": "string" },
++        "text": { "type": "string" },
++        "bps": { "type": ["number", "null"] },
++        "size": { "type": "string" },
++        "src": { "type": "string", "minLength": 1 },
++        "inferred": { "type": "boolean" }
++      }
++    },
++    "entry": {
++      "type": "object",
++      "additionalProperties": false,
++      "required": [
++        "id",
++        "name",
++        "ticker",
++        "counterparty",
++        "kind",
++        "first",
++        "last",
++        "status",
++        "flag",
++        "thesis",
++        "pub",
++        "mentions"
++      ],
++      "properties": {
++        "id": { "type": "string" },
++        "name": { "type": "string" },
++        "ticker": { "type": "string" },
++        "counterparty": { "type": "string" },
++        "kind": { "type": "string" },
++        "first": { "type": "string" },
++        "last": { "type": "string" },
++        "status": { "type": "string" },
++        "peak": { "type": ["number", "null"] },
++        "flag": { "type": "string" },
++        "thesis": { "type": "string" },
++        "pub": { "$ref": "#/$defs/pub" },
++        "mentions": {
++          "type": "array",
++          "items": { "$ref": "#/$defs/mention" }
++        }
++      }
++    },
++    "theme": {
++      "type": "object",
++      "additionalProperties": false,
++      "required": ["id", "name", "desc", "periods"],
++      "properties": {
++        "id": { "type": "string" },
++        "name": { "type": "string" },
++        "desc": { "type": "string" },
++        "periods": {
++          "type": "array",
++          "items": { "type": "string" }
++        }
++      }
++    },
++    "document": {
++      "type": "object",
++      "additionalProperties": false,
++      "required": ["name", "date", "verdict", "note"],
++      "properties": {
++        "name": { "type": "string" },
++        "date": { "type": "string" },
++        "verdict": { "type": "string" },
++        "note": { "type": "string" }
++      }
++    },
++    "gap": {
++      "type": "object",
++      "additionalProperties": false,
++      "required": ["sev", "title", "desc"],
++      "properties": {
++        "sev": { "type": "string" },
++        "title": { "type": "string" },
++        "desc": { "type": "string" }
++      }
++    }
++  }
++}
+diff --git a/tests/fixtures/model/minimal_store.json b/tests/fixtures/model/minimal_store.json
+new file mode 100644
+index 0000000..75cd420
+--- /dev/null
++++ b/tests/fixtures/model/minimal_store.json
+@@ -0,0 +1,71 @@
++{
++  "status_vocabularies": {
++    "position": ["ACTIVE", "WATCH", "EXITED"]
++  },
++  "documents": [
++    {
++      "name": "Q1-2025-Letter",
++      "date": "2025-03-31",
++      "verdict": "constructive",
++      "note": "Synthetic fixture"
++    }
++  ],
++  "periods": [
++    {
++      "id": "2025Q1",
++      "sort": 1,
++      "label": "Q1 2025",
++      "kind": "quarter",
++      "title": "First quarter review",
++      "author": "Analyst",
++      "attendees": "IC",
++      "verdict": "hold",
++      "note": ""
++    },
++    {
++      "id": "2025Q2",
++      "sort": 2,
++      "label": "Q2 2025",
++      "kind": "quarter",
++      "title": "Second quarter review",
++      "author": "Analyst",
++      "attendees": "IC",
++      "verdict": "hold",
++      "note": ""
++    }
++  ],
++  "entries": [
++    {
++      "id": "alpha-fund",
++      "name": "Alpha Fund",
++      "ticker": "ALF",
++      "counterparty": "Manager A",
++      "kind": "position",
++      "first": "2025Q1",
++      "last": "2025Q2",
++      "status": "ACTIVE",
++      "peak": 1.5,
++      "flag": "",
++      "thesis": "Carry and relative value",
++      "pub": {
++        "state": "PENDING",
++        "as_of": "2025-03-31",
++        "detail": "Under review",
++        "src": "Q1-2025-Letter"
++      },
++      "mentions": [
++        {
++          "period": "2025Q1",
++          "text": "Maintained exposure",
++          "bps": 25.0,
++          "size": "$36B",
++          "src": "Q1-2025-Letter",
++          "inferred": false
++        }
++      ]
++    }
++  ],
++  "funds": [],
++  "themes": [],
++  "gaps": []
++}
+diff --git a/tests/test_check_deliberate_break.py b/tests/test_check_deliberate_break.py
+new file mode 100644
+index 0000000..1c1eb33
+--- /dev/null
++++ b/tests/test_check_deliberate_break.py
+@@ -0,0 +1,15 @@
++"""Tests for deliberate-break gate helpers."""
++
++from __future__ import annotations
++
++import sys
++
++from scripts.check_deliberate_break import _pytest_command
++
++
++def test_pytest_command_clears_addopts() -> None:
++    command = _pytest_command("tests/test_example.py::test_gate")
++    assert "-o" in command
++    assert "addopts=" in command
++    assert command[0] == sys.executable
++    assert command[1:4] == ("-m", "pytest", "tests/test_example.py::test_gate")
+diff --git a/tests/test_main.py b/tests/test_main.py
+index 5f9ec33..adf42d7 100644
+--- a/tests/test_main.py
++++ b/tests/test_main.py
+@@ -31,3 +31,11 @@ def test_add_negative() -> None:
+     """Add should handle negative numbers."""
+     assert add(-5, -3) == -8
+     assert add(-10, 5) == -5
++
++
++def test_wildcard_import_exports_greet_and_add() -> None:
++    """Wildcard imports must preserve legacy greet/add exports."""
++    namespace: dict[str, object] = {}
++    exec("from manager_mosaic import *", namespace)  # noqa: S102
++    assert "greet" in namespace
++    assert "add" in namespace
+diff --git a/tests/test_model_validation.py b/tests/test_model_validation.py
+new file mode 100644
+index 0000000..ebd341a
+--- /dev/null
++++ b/tests/test_model_validation.py
+@@ -0,0 +1,158 @@
++"""Model validation and silence-invariant gates for Manager-Mosaic."""
++
++from __future__ import annotations
++
++import json
++import math
++from pathlib import Path
++
++from jsonschema import Draft202012Validator
++
++from manager_mosaic.model import (
++    Store,
++    derive_gaps,
++    entry,
++    load_schema,
++    mention,
++    pub,
++    validate,
++)
++
++FIXTURES = Path(__file__).parent / "fixtures" / "model"
++
++
++def _load(name: str) -> Store:
++    return Store.from_json(FIXTURES / name)
++
++
++def _validate_schema(name: str) -> None:
++    payload = json.loads((FIXTURES / name).read_text(encoding="utf-8"))
++    Draft202012Validator(load_schema()).validate(payload)
++
++
++def test_fixture_validates_against_json_schema() -> None:
++    _validate_schema("minimal_store.json")
++
++
++def test_mistyped_entry_period_reference_is_reported() -> None:
++    broken = Store.from_dict(
++        {
++            **json.loads((FIXTURES / "minimal_store.json").read_text(encoding="utf-8")),
++            "entries": [
++                {
++                    **json.loads((FIXTURES / "minimal_store.json").read_text(encoding="utf-8"))[
++                        "entries"
++                    ][0],
++                    "first": "2025Q1_typo",
++                }
++            ],
++        }
++    )
++    violations = validate(broken)
++    assert any(v.record_id == "alpha-fund" and "2025Q1_typo" in v.message for v in violations)
++
++
++def test_truncated_currency_suffix_is_reported() -> None:
++    payload = json.loads((FIXTURES / "minimal_store.json").read_text(encoding="utf-8"))
++    payload["entries"][0]["mentions"][0]["size"] = "$B"
++    broken = Store.from_dict(payload)
++    violations = validate(broken)
++    assert any("truncated currency" in v.message for v in violations)
++
++
++def test_mention_without_src_is_reported() -> None:
++    payload = json.loads((FIXTURES / "minimal_store.json").read_text(encoding="utf-8"))
++    payload["entries"][0]["mentions"][0]["src"] = ""
++    broken = Store.from_dict(payload)
++    violations = validate(broken)
++    assert any("mention must carry src" in v.message for v in violations)
++
++
++def test_mention_with_omitted_src_is_reported() -> None:
++    payload = json.loads((FIXTURES / "minimal_store.json").read_text(encoding="utf-8"))
++    del payload["entries"][0]["mentions"][0]["src"]
++    broken = Store.from_dict(payload)
++    violations = validate(broken)
++    assert any(
++        "mention[0]" in v.record_id and "mention must carry src" in v.message for v in violations
++    )
++
++
++def test_derive_gaps_leaves_status_unchanged() -> None:
++    store = _load("minimal_store.json")
++    before_status = store.entries[0].status
++    gaps = derive_gaps(store)
++    assert store.entries[0].status == before_status
++    assert any("2025Q2" in item.title for item in gaps)
++
++
++def test_validator_returns_all_four_defects() -> None:
++    payload = json.loads((FIXTURES / "minimal_store.json").read_text(encoding="utf-8"))
++    payload["entries"][0]["first"] = "missing-period"
++    payload["entries"][0]["mentions"][0]["src"] = ""
++    payload["entries"][0]["mentions"][0]["size"] = "$B"
++    payload["entries"][0]["mentions"][0]["bps"] = math.inf
++    broken = Store.from_dict(payload)
++    violations = validate(broken)
++    messages = {(item.record_id, item.message) for item in violations}
++    assert any(
++        record_id == "alpha-fund" and "missing-period" in message for record_id, message in messages
++    )
++    assert any(
++        "mention[0]" in record_id and "mention must carry src" in message
++        for record_id, message in messages
++    )
++    assert any("truncated currency" in message for _, message in messages)
++    assert any("bps must be finite" in message for _, message in messages)
++
++
++def test_oversized_integer_sort_does_not_abort_validation() -> None:
++    payload = json.loads((FIXTURES / "minimal_store.json").read_text(encoding="utf-8"))
++    payload["periods"][0]["sort"] = 10**400
++    payload["entries"][0]["first"] = "missing-period"
++    broken = Store.from_dict(payload)
++    violations = validate(broken)
++    assert any(
++        record_id == "alpha-fund" and "missing-period" in message
++        for record_id, message in ((v.record_id, v.message) for v in violations)
++    )
++
++
++def _forbidden_infer_exit_on_gap(store: Store) -> str:
++    """Anti-pattern: treating absence as proof of exit (must never ship)."""
++
++    if derive_gaps(store):
++        return "EXITED"
++    return store.entries[0].status
++
++
++def test_silence_invariant_deliberate_break_then_revert() -> None:
++    """Deliberate-break gate documented in the PR body."""
++
++    store = _load("minimal_store.json")
++    assert store.entries[0].status == "ACTIVE"
++    assert _forbidden_infer_exit_on_gap(store) == "EXITED"
++    gaps = derive_gaps(store)
++    assert store.entries[0].status == "ACTIVE"
++    assert gaps
++
++
++def test_builders_create_expected_entry() -> None:
++    item = entry(
++        id="demo",
++        name="Demo",
++        ticker="DMO",
++        counterparty="Manager",
++        kind="position",
++        first="2025Q1",
++        last="2025Q2",
++        status="ACTIVE",
++        peak=None,
++        flag="",
++        thesis="",
++        pub=pub("PENDING", "2025-01-01", "", "Q1-2025-Letter"),
++        mentions=[
++            mention("2025Q1", "note", 10.0, "$1M", "Q1-2025-Letter", False),
++        ],
++    )
++    assert item.mentions[0].inferred is False

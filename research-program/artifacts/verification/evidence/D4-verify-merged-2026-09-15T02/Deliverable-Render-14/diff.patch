@@ -1,0 +1,918 @@
+diff --git a/.gitignore b/.gitignore
+index c0831b7..ea47ace 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -95,3 +95,8 @@ node_modules/
+ !/.github/scripts/node_modules/**
+ 
+ # END WORKFLOWS STATUS FILES
++
++# Build artifacts: setuptools regenerates these. The committed copy still named
++# stranske/Template in its metadata, which is exactly the kind of stale fact a
++# generated file carries into a repo unnoticed.
++*.egg-info/
+diff --git a/pyproject.toml b/pyproject.toml
+index 1cba7c6..55fbab1 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -10,7 +10,7 @@ readme = "README.md"
+ requires-python = ">=3.12"
+ license = {text = "MIT"}
+ authors = [
+-    {name = "Your Name", email = "your.email@example.com"},
++    {name = "stranske", email = "noreply@users.noreply.github.com"},
+ ]
+ classifiers = [
+     "Development Status :: 3 - Alpha",
+@@ -32,8 +32,8 @@ dev = [
+ ]
+ 
+ [project.urls]
+-Homepage = "https://github.com/stranske/Template"
+-Repository = "https://github.com/stranske/Template"
++Homepage = "https://github.com/stranske/Deliverable-Render"
++Repository = "https://github.com/stranske/Deliverable-Render"
+ 
+ [tool.setuptools.packages.find]
+ where = ["src"]
+diff --git a/src/deliverable_render/__init__.py b/src/deliverable_render/__init__.py
+index 1831d2b..a472f36 100644
+--- a/src/deliverable_render/__init__.py
++++ b/src/deliverable_render/__init__.py
+@@ -4,8 +4,10 @@
+ They stay until real modules replace them, so the package always has a tested public surface.
+ """
+ 
++from deliverable_render.html import RenderSpec, render_html
++
+ __version__ = "0.1.0"
+-__all__ = ["greet", "add"]
++__all__ = ["greet", "add", "RenderSpec", "render_html"]
+ 
+ 
+ def greet(name: str) -> str:
+diff --git a/src/deliverable_render/html.py b/src/deliverable_render/html.py
+new file mode 100644
+index 0000000..88b397d
+--- /dev/null
++++ b/src/deliverable_render/html.py
+@@ -0,0 +1,212 @@
++import re
++import urllib.parse
++from dataclasses import dataclass
++from html import escape
++
++from deliverable_render.store import Store
++
++
++@dataclass(frozen=True)
++class RenderSpec:
++    """Presentation options for a single HTML deliverable."""
++
++    title: str = "Evidence hub"
++    document_url_template: str | None = None
++
++    def __post_init__(self) -> None:
++        if not isinstance(self.title, str) or not self.title.strip():
++            raise ValueError("title must be a nonempty string")
++
++
++_CSS = """
++body { font-family: system-ui, sans-serif; margin: 2rem; color: #17202a;
++       background: #fff; }
++table { border-collapse: collapse; width: 100%; margin-bottom: 2rem; }
++caption { text-align: left; margin-bottom: 1rem; font-weight: bold; }
++th, td { border: 1px solid #aab7b8; padding: .75rem; text-align: left;
++         vertical-align: top; overflow-wrap: anywhere; }
++thead { background: #edf2f7; }
++td, li { white-space: pre-wrap; }
++ul { margin: 0; padding-left: 1.25rem; }
++button { margin-bottom: 1rem; padding: .5rem 1rem; }
++.controls { margin-bottom: 1rem; }
++.controls input { padding: .5rem; width: 300px; max-width: 100%; }
++.table-container { overflow-x: auto; }
++.grid-card { border: 1px solid #ddd; padding: 0.5rem; margin-bottom: 0.5rem; background: #fafafa; }
++@media print { button, .controls { display: none; } body { margin: 0; } }
++"""
++
++_JAVASCRIPT = """
++"use strict";
++const printButton = document.getElementById("print-report");
++if (printButton) {
++    printButton.addEventListener("click", () => window.print());
++    printButton.hidden = false;
++}
++const searchInput = document.getElementById("search-input");
++if (searchInput) {
++    searchInput.addEventListener("input", (e) => {
++        const term = e.target.value.toLowerCase();
++
++        // Filter list rows
++        const listRows = document.querySelectorAll("#record-list tbody tr");
++        for (const row of listRows) {
++            row.hidden = !row.textContent.toLowerCase().includes(term);
++        }
++
++        // Filter grid cells/rows
++        // We filter individual grid cards
++        const gridCards = document.querySelectorAll(".grid-card");
++        for (const card of gridCards) {
++            card.hidden = !card.textContent.toLowerCase().includes(term);
++        }
++
++        // Hide empty grid rows if all cards are hidden
++        const gridRows = document.querySelectorAll("#section-grid tbody tr");
++        for (const row of gridRows) {
++            let hasVisibleCard = false;
++            const rowCards = row.querySelectorAll(".grid-card");
++            for (const card of rowCards) {
++                if (!card.hidden) {
++                    hasVisibleCard = true;
++                    break;
++                }
++            }
++            // Only hide the row if there were cards but all are hidden
++            // Wait, if a row had NO cards to begin with, should we hide it?
++            // If we filter, maybe we just leave it or hide it.
++            if (rowCards.length > 0 && !hasVisibleCard) {
++                row.hidden = true;
++            } else {
++                row.hidden = false;
++            }
++        }
++    });
++}
++"""
++
++
++def _url_path(raw: str) -> str:
++    """Turn a stored document path into the path component of a URL.
++
++    `urllib.parse.quote` alone is wrong for Windows paths. It percent-encodes the
++    backslashes and the drive colon, so `C:\\My Files\\Doc.pdf` under a `file://{path}`
++    template renders as `file://C%3A%5CMy%20Files%5CDoc.pdf` — where `C%3A...` is read as a
++    URL *authority*, not a local path, and the link does not open. A usable file URI is
++    `file:///C:/My%20Files/Doc.pdf`.
++
++    So: normalise separators, give a drive-letter path the leading slash that makes the
++    authority component empty, and keep `/` and `:` unescaped. Relative paths are left
++    without a leading slash, because document-system templates interpolate them into a
++    base URL where an absolute path would be wrong.
++    """
++    normalised = raw.replace("\\", "/")
++    if re.fullmatch(r"[A-Za-z]:/.*", normalised):
++        normalised = "/" + normalised
++    return urllib.parse.quote(normalised, safe="/:")
++
++
++def render_html(store: Store, spec: RenderSpec) -> str:
++    """Return a complete UTF-8-ready HTML document without fetching resources."""
++    doc_paths = {doc.stable_id: doc.path for doc in store.documents}
++
++    rows = []
++    for record in store.records:
++        cells = "".join(
++            f"<td>{escape(value)}</td>"
++            for value in (record.entity_ref, record.period, record.section, record.text)
++        )
++
++        evidence_items = []
++        for pointer in record.evidence:
++            if pointer.stable_id not in doc_paths:
++                raise ValueError(f"Dangling document reference: {pointer.stable_id}")
++            doc_name_escaped = escape(pointer.stable_id)
++            if spec.document_url_template:
++                path = _url_path(doc_paths[pointer.stable_id])
++                url = spec.document_url_template.format(path=path, page=pointer.page)
++                # The prompt asks for configurable escaped local-file/document-system evidence links
++                # So we escape the URL before rendering it
++                link_html = f'<a href="{escape(url)}">{doc_name_escaped}</a>'
++            else:
++                link_html = doc_name_escaped
++            evidence_items.append(
++                f"<li>{link_html}, page {pointer.page}: " f"{escape(pointer.quote)}</li>"
++            )
++
++        evidence_cell = f"<ul>{''.join(evidence_items)}</ul>" if evidence_items else "No evidence"
++        rows.append(
++            f'<tr class="record-row"><th scope="row">{escape(record.record_id)}</th>'
++            f"{cells}<td>{evidence_cell}</td></tr>"
++        )
++
++    # Section-by-period grid
++    periods = sorted(store.period_index.keys())
++    sections = sorted({r.section for r in store.records})
++
++    grid_headers = "".join(f'<th scope="col">{escape(p)}</th>' for p in periods)
++    grid_rows = []
++    for section in sections:
++        grid_cells = []
++        for period in periods:
++            matching = [r for r in store.records if r.section == section and r.period == period]
++            if matching:
++                cell_content = "".join(
++                    f'<div class="grid-card"><strong>{escape(r.record_id)}</strong>: {escape(r.text)}</div>'
++                    for r in matching
++                )
++            else:
++                cell_content = ""
++            grid_cells.append(f"<td>{cell_content}</td>")
++        grid_rows.append(f'<tr><th scope="row">{escape(section)}</th>{"".join(grid_cells)}</tr>')
++
++    grid_table = ""
++    if periods and sections:
++        grid_table = f"""
++<table id="section-grid">
++<caption>Section-by-period grid</caption>
++<thead><tr><th scope="col">Section</th>{grid_headers}</tr></thead>
++<tbody>
++{"\n".join(grid_rows)}
++</tbody>
++</table>
++"""
++
++    title = escape(spec.title)
++    body = "\n".join(rows)
++    return f"""<!DOCTYPE html>
++<html lang="en">
++<head>
++<meta charset="utf-8">
++<meta name="viewport" content="width=device-width, initial-scale=1">
++<title>{title}</title>
++<style>{_CSS}</style>
++</head>
++<body>
++<main>
++<h1>{title}</h1>
++<button id="print-report" type="button" hidden>Print report</button>
++
++<div class="controls">
++<label for="search-input">Search:</label>
++<input type="search" id="search-input" placeholder="Search records...">
++</div>
++
++{grid_table}
++
++<div class="table-container">
++<table id="record-list">
++<caption>{len(store.records)} records</caption>
++<thead><tr><th scope="col">Record</th><th scope="col">Entity</th>
++<th scope="col">Period</th><th scope="col">Section</th>
++<th scope="col">Text</th><th scope="col">Evidence</th></tr></thead>
++<tbody>
++{body}
++</tbody>
++</table>
++</div>
++</main>
++<script>{_JAVASCRIPT}</script>
++</body>
++</html>
++"""
+diff --git a/src/deliverable_render/store.py b/src/deliverable_render/store.py
+new file mode 100644
+index 0000000..9a8949e
+--- /dev/null
++++ b/src/deliverable_render/store.py
+@@ -0,0 +1,221 @@
++"""Shared, immutable input contract for deliverable renderers.
++
++JSON contains ``documents`` and ``records`` arrays. Documents have ``stable_id``
++and ``path``; records have ``record_id``, ``entity_ref``, ``period``, ``section``,
++``text``, and an ``evidence`` array of {stable_id, page, quote} objects. Pages are
++one-based. Entity references and period labels are preserved verbatim.
++
++SQLite uses the tables in :data:`SQLITE_SCHEMA`. Records and evidence retain
++insertion (rowid) order, just as JSON arrays retain their order. Entity and period
++indexes are derived from records rather than persisted, preventing stale indexes.
++Missing document references are retained for the renderer's link-integrity check.
++This compact rendering contract does not replace the richer fleet evidence schema.
++"""
++
++from __future__ import annotations
++
++import json
++import sqlite3
++from collections.abc import Mapping
++from dataclasses import dataclass
++from pathlib import Path
++from types import MappingProxyType
++
++SQLITE_SCHEMA = """
++CREATE TABLE documents (stable_id TEXT PRIMARY KEY, path TEXT NOT NULL);
++CREATE TABLE records (
++    record_id TEXT PRIMARY KEY,
++    entity_ref TEXT NOT NULL,
++    period TEXT NOT NULL,
++    section TEXT NOT NULL,
++    text TEXT NOT NULL
++);
++CREATE TABLE evidence (
++    record_id TEXT NOT NULL REFERENCES records(record_id),
++    stable_id TEXT NOT NULL,
++    page INTEGER NOT NULL CHECK (page > 0),
++    quote TEXT NOT NULL
++);
++"""
++
++
++class StoreValidationError(ValueError):
++    """The input does not satisfy the rendering store contract."""
++
++
++def _string(value: object, field: str, *, allow_empty: bool = False) -> str:
++    if not isinstance(value, str) or (not allow_empty and not value.strip()):
++        raise StoreValidationError(
++            f"{field} must be a string" + ("" if allow_empty else " (nonempty)")
++        )
++    return value
++
++
++def _object(value: object) -> Mapping[str, object]:
++    if not isinstance(value, dict) or any(not isinstance(key, str) for key in value):
++        raise StoreValidationError("Expected an object with string keys")
++    return value
++
++
++def _array(value: object, field: str) -> list[object]:
++    if not isinstance(value, list):
++        raise StoreValidationError(f"{field} must be an array")
++    return value
++
++
++@dataclass(frozen=True)
++class EvidencePointer:
++    stable_id: str
++    page: int
++    quote: str
++
++    def __post_init__(self) -> None:
++        _string(self.stable_id, "stable_id")
++        if type(self.page) is not int or self.page < 1:
++            raise StoreValidationError("page must be a positive integer")
++        _string(self.quote, "quote", allow_empty=True)
++
++
++@dataclass(frozen=True)
++class Document:
++    stable_id: str
++    path: str
++
++    def __post_init__(self) -> None:
++        _string(self.stable_id, "stable_id")
++        _string(self.path, "path")
++
++
++@dataclass(frozen=True)
++class Record:
++    record_id: str
++    entity_ref: str
++    period: str
++    section: str
++    text: str
++    evidence: tuple[EvidencePointer, ...] = ()
++
++    def __post_init__(self) -> None:
++        for field in ("record_id", "entity_ref", "period", "section"):
++            _string(getattr(self, field), field)
++        _string(self.text, "text", allow_empty=True)
++        object.__setattr__(self, "evidence", tuple(self.evidence))
++        if any(not isinstance(pointer, EvidencePointer) for pointer in self.evidence):
++            raise StoreValidationError("evidence must contain EvidencePointer objects")
++
++
++@dataclass(frozen=True)
++class Store:
++    records: tuple[Record, ...]
++    documents: tuple[Document, ...]
++
++    def __post_init__(self) -> None:
++        for field, cls, key in (
++            ("records", Record, "record_id"),
++            ("documents", Document, "stable_id"),
++        ):
++            values = tuple(getattr(self, field))
++            object.__setattr__(self, field, values)
++            if any(not isinstance(value, cls) for value in values):
++                raise StoreValidationError(f"{field} contains an invalid object")
++            ids = [getattr(value, key) for value in values]
++            if len(ids) != len(set(ids)):
++                raise StoreValidationError(f"Duplicate {key} in {field}")
++
++    @property
++    def evidence(self) -> tuple[EvidencePointer, ...]:
++        """All pointers in record order, including repeated citations."""
++        return tuple(pointer for record in self.records for pointer in record.evidence)
++
++    def _index(self, field: str) -> Mapping[str, tuple[Record, ...]]:
++        index: dict[str, list[Record]] = {}
++        for record in self.records:
++            index.setdefault(getattr(record, field), []).append(record)
++        return MappingProxyType({key: tuple(records) for key, records in index.items()})
++
++    @property
++    def entity_index(self) -> Mapping[str, tuple[Record, ...]]:
++        return self._index("entity_ref")
++
++    @property
++    def period_index(self) -> Mapping[str, tuple[Record, ...]]:
++        return self._index("period")
++
++    @classmethod
++    def from_dict(cls, data: Mapping[str, object]) -> Store:
++        """Validate decoded JSON; unknown fields are ignored for forward compatibility."""
++        documents = []
++        for item in _array(data.get("documents"), "documents"):
++            obj = _object(item)
++            documents.append(
++                Document(
++                    _string(obj.get("stable_id"), "stable_id"), _string(obj.get("path"), "path")
++                )
++            )
++        records = []
++        for item in _array(data.get("records"), "records"):
++            obj = _object(item)
++            evidence = []
++            for raw in _array(obj.get("evidence"), "evidence"):
++                pointer = _object(raw)
++                page = pointer.get("page")
++                if type(page) is not int:
++                    raise StoreValidationError("page must be a positive integer")
++                evidence.append(
++                    EvidencePointer(
++                        _string(pointer.get("stable_id"), "stable_id"),
++                        page,
++                        _string(pointer.get("quote"), "quote", allow_empty=True),
++                    )
++                )
++            records.append(
++                Record(
++                    record_id=_string(obj.get("record_id"), "record_id"),
++                    entity_ref=_string(obj.get("entity_ref"), "entity_ref"),
++                    period=_string(obj.get("period"), "period"),
++                    section=_string(obj.get("section"), "section"),
++                    text=_string(obj.get("text"), "text", allow_empty=True),
++                    evidence=tuple(evidence),
++                )
++            )
++        return cls(tuple(records), tuple(documents))
++
++    @classmethod
++    def from_json(cls, path: str | Path) -> Store:
++        """Load a UTF-8 JSON file."""
++        return cls.from_dict(_object(json.loads(Path(path).read_text(encoding="utf-8"))))
++
++    @classmethod
++    def from_sqlite(cls, path: str | Path) -> Store:
++        """Read an existing database without creating or modifying it."""
++        connection = sqlite3.connect(Path(path).resolve().as_uri() + "?mode=ro", uri=True)
++        try:
++            connection.row_factory = sqlite3.Row
++            with connection:
++                connection.execute("BEGIN")
++                documents = [
++                    dict(row)
++                    for row in connection.execute(
++                        "SELECT stable_id, path FROM documents ORDER BY rowid"
++                    )
++                ]
++                records = [
++                    dict(row)
++                    for row in connection.execute(
++                        "SELECT record_id, entity_ref, period, section, text FROM records ORDER BY rowid"
++                    )
++                ]
++                by_id = {record["record_id"]: record for record in records}
++                for record in records:
++                    record["evidence"] = []
++                for row in connection.execute(
++                    "SELECT record_id, stable_id, page, quote FROM evidence ORDER BY rowid"
++                ):
++                    pointer = dict(row)
++                    record_id = pointer.pop("record_id")
++                    if record_id not in by_id:
++                        raise StoreValidationError(f"Evidence names unknown record_id: {record_id}")
++                    by_id[record_id]["evidence"].append(pointer)
++            return cls.from_dict({"documents": documents, "records": records})
++        finally:
++            connection.close()
+diff --git a/tests/test_html.py b/tests/test_html.py
+new file mode 100644
+index 0000000..f4df1a8
+--- /dev/null
++++ b/tests/test_html.py
+@@ -0,0 +1,191 @@
++"""Validate the static document without executing JavaScript or loading resources."""
++
++from html.parser import HTMLParser
++
++import pytest
++
++from deliverable_render import RenderSpec, render_html
++from deliverable_render.store import Document, EvidencePointer, Record, Store
++
++
++class ParsedHTML(HTMLParser):
++    def __init__(self, source: str) -> None:
++        super().__init__()
++        self.tags: list[tuple[str, dict[str, str]]] = []
++        self.text: list[str] = []
++        self.feed(source)
++
++    def handle_starttag(self, tag, attrs):
++        self.tags.append((tag, dict(attrs)))
++
++    def handle_data(self, data):
++        self.text.append(data)
++
++
++def test_self_contained_document_preserves_all_records_and_evidence():
++    store = Store(
++        (
++            Record(
++                "r2",
++                "Entity A",
++                "2025",
++                "Governance",
++                "Approved — unanimously.",
++                (EvidencePointer("doc", 3, "Vote passed."),) * 2,
++            ),
++            Record("r1", "Entity B", "2024", "Risk", "First line\nSecond line"),
++        ),
++        (Document("doc", "path/to/doc.pdf"),),
++    )
++    output = render_html(store, RenderSpec("Synthetic report"))
++    parsed = ParsedHTML(output)
++    tags = [tag for tag, _ in parsed.tags]
++    assert output.startswith("<!DOCTYPE html>")
++    assert tags.count("html") == tags.count("style") == tags.count("script") == 1
++    # tr count checked below
++    assert tags.count("li") == len(store.evidence)
++    assert parsed.text.count("doc, page 3: Vote passed.") == 2
++    for record in store.records:
++        for field in ("record_id", "entity_ref", "period", "section", "text"):
++            assert getattr(record, field) in parsed.text
++    assert parsed.text.index("r2") < parsed.text.index("r1")
++    assert "http://" not in output and "https://" not in output
++    assert not {"link", "iframe", "img", "object", "embed"}.intersection(tags)
++    assert all("src" not in attrs for _, attrs in parsed.tags)
++    assert all("hidden" not in attrs for tag, attrs in parsed.tags if tag == "tr")
++    assert output == render_html(store, RenderSpec("Synthetic report"))
++    assert output.encode("utf-8").decode("utf-8") == output
++
++
++def test_input_is_text_and_cannot_inject_markup_or_script():
++    hostile = '<script>alert("x")</script><img src="//example.invalid/x">&'
++    store = Store(
++        (
++            Record(
++                hostile, hostile, hostile, hostile, hostile, (EvidencePointer(hostile, 1, hostile),)
++            ),
++        ),
++        (Document(hostile, hostile),),
++    )
++    output = render_html(store, RenderSpec(hostile))
++    parsed = ParsedHTML(output)
++    assert hostile not in output
++    assert parsed.text.count(hostile) >= 7  # Title, heading, record fields, and grid elements.
++    assert f"{hostile}, page 1: {hostile}" in parsed.text
++    assert sum(tag == "script" for tag, _ in parsed.tags) == 1
++    assert all(tag != "img" for tag, _ in parsed.tags)
++
++
++def test_empty_store_has_a_static_table_and_count():
++    parsed = ParsedHTML(render_html(Store((), ()), RenderSpec()))
++    assert "0 records" in parsed.text
++    assert "Evidence hub" in parsed.text
++    assert sum(tag == "tr" for tag, _ in parsed.tags) == 1
++    assert any(tag == "tbody" for tag, _ in parsed.tags)
++
++
++@pytest.mark.parametrize("title", ["", "  ", None, 42])
++def test_invalid_title(title):
++    with pytest.raises(ValueError, match="title"):
++        RenderSpec(title)
++
++
++def test_dangling_document_failure():
++    store = Store((Record("r1", "E", "P", "S", "T", (EvidencePointer("missing", 1, ""),)),), ())
++    with pytest.raises(ValueError, match="Dangling document reference: missing"):
++        render_html(store, RenderSpec())
++
++
++def test_windows_path_renders_a_usable_file_uri():
++    """The expected URL is written out literally, not recomputed by the code under test.
++
++    The previous version of this test built its expectation with the same
++    `urllib.parse.quote` call the renderer used, so it would have passed for ANY quoting
++    behaviour -- including the broken one, which produced
++    `file://C%3A%5CMy%20Files%5CDoc%20%26%20Report.pdf`. There `C%3A...` is parsed as a URL
++    authority rather than a local path, so the link does not open.
++    """
++    store = Store(
++        (Record("r1", "E", "P", "S", "T", (EvidencePointer("doc1", 1, ""),)),),
++        (Document("doc1", r"C:\My Files\Doc & Report.pdf"),),
++    )
++    spec = RenderSpec(title="Hub", document_url_template="file://{path}#page={page}")
++
++    output = render_html(store, spec)
++
++    assert '<a href="file:///C:/My%20Files/Doc%20%26%20Report.pdf#page=1">doc1</a>' in output
++    # The defect this replaces, stated so it cannot come back unnoticed.
++    assert "C%3A" not in output
++    assert "%5C" not in output
++
++
++def test_posix_path_renders_a_usable_file_uri():
++    store = Store(
++        (Record("r1", "E", "P", "S", "T", (EvidencePointer("doc1", 2, ""),)),),
++        (Document("doc1", "[LOCAL_HOME]/Annual Report.pdf"),),
++    )
++    spec = RenderSpec(title="Hub", document_url_template="file://{path}#page={page}")
++
++    output = render_html(store, spec)
++
++    assert '<a href="file://[LOCAL_HOME]/Annual%20Report.pdf#page=2">doc1</a>' in output
++
++
++def test_relative_path_keeps_no_leading_slash_for_document_system_templates():
++    """A document-system template interpolates into a base URL; an absolute path breaks it."""
++    store = Store(
++        (Record("r1", "E", "P", "S", "T", (EvidencePointer("doc1", 3, ""),)),),
++        (Document("doc1", "reports/q3.pdf"),),
++    )
++    spec = RenderSpec(title="Hub", document_url_template="https://docs.example.com/{path}?p={page}")
++
++    output = render_html(store, spec)
++
++    assert 'href="https://docs.example.com/reports/q3.pdf?p=3"' in output
++
++
++def test_section_by_period_grid():
++    store = Store(
++        (
++            Record("r1", "E", "2024", "Gov", "R1 Text"),
++            Record("r2", "E", "2025", "Gov", "R2 Text"),
++            Record("r3", "E", "2025", "Risk", "R3 Text"),
++        ),
++        (),
++    )
++    output = render_html(store, RenderSpec())
++    parsed = ParsedHTML(output)
++    [tag for tag, _ in parsed.tags]
++    # there should be two tables now (grid and list)
++    assert output.count("<table") == 2
++    assert "Section-by-period grid" in parsed.text
++    # Check headers
++    assert "2024" in parsed.text
++    assert "2025" in parsed.text
++    assert "Gov" in parsed.text
++    assert "Risk" in parsed.text
++    assert "R1 Text" in parsed.text
++    assert "R2 Text" in parsed.text
++
++
++def test_search_filter_ui_no_js_fallback():
++    store = Store((Record("r1", "E", "2024", "Gov", "R1 Text"),), ())
++    output = render_html(store, RenderSpec())
++    parsed = ParsedHTML(output)
++
++    # Has a search input
++    inputs = [attrs for tag, attrs in parsed.tags if tag == "input"]
++    assert len(inputs) == 1
++    assert inputs[0].get("type") == "search"
++    assert inputs[0].get("id") == "search-input"
++
++    # JS has logic
++    [parsed.text[i] for i, (tag, _) in enumerate(parsed.tags) if tag == "script"]
++    # Oh wait, parsed.text does not perfectly align like this.
++    # Just check output
++    assert 'document.getElementById("search-input")' in output
++    assert 'addEventListener("input"' in output
++    assert "row.hidden" in output
++
++    # All rows are not hidden initially (no-js fallback)
++    assert all("hidden" not in attrs for tag, attrs in parsed.tags if tag == "tr")
+diff --git a/tests/test_package_identity.py b/tests/test_package_identity.py
+index 948860b..ef3f512 100644
+--- a/tests/test_package_identity.py
++++ b/tests/test_package_identity.py
+@@ -20,3 +20,23 @@ def test_distribution_and_package_names_are_not_the_template_placeholder() -> No
+ def test_package_imports_and_exposes_a_version() -> None:
+     mod = importlib.import_module("deliverable_render")
+     assert mod.__version__
++
++
++def test_authors_are_not_template_placeholders() -> None:
++    """The template ships `Your Name`; these values land in the built sdist and wheel.
++
++    Same failure mode as the distribution name above, one layer out: an installer reads the
++    placeholder as this package's author of record.
++    """
++    data = tomllib.loads(pathlib.Path("pyproject.toml").read_text(encoding="utf-8"))
++    for author in data["project"]["authors"]:
++        assert "Your Name" not in author.get("name", "")
++        assert "your.email@example.com" not in author.get("email", "")
++
++
++def test_project_urls_point_at_this_repository() -> None:
++    """The template's URLs send a reader to stranske/Template, a different repository."""
++    data = tomllib.loads(pathlib.Path("pyproject.toml").read_text(encoding="utf-8"))
++    urls = data["project"]["urls"]
++    for label in ("Homepage", "Repository"):
++        assert urls[label].endswith("/Deliverable-Render"), f"{label} -> {urls[label]}"
+diff --git a/tests/test_store.py b/tests/test_store.py
+new file mode 100644
+index 0000000..b878086
+--- /dev/null
++++ b/tests/test_store.py
+@@ -0,0 +1,189 @@
++"""The same synthetic input must survive both storage backends unchanged."""
++
++import json
++import sqlite3
++import typing
++from contextlib import closing
++from dataclasses import FrozenInstanceError
++
++import pytest
++
++from deliverable_render.store import (
++    SQLITE_SCHEMA,
++    Document,
++    EvidencePointer,
++    Record,
++    Store,
++    StoreValidationError,
++)
++
++
++@pytest.fixture
++def payload():
++    return {
++        "documents": [{"stable_id": "document:synthetic", "path": "reports/Annual report.pdf"}],
++        "records": [
++            {
++                "record_id": "r2",
++                "entity_ref": "fund:example",
++                "period": "2025",
++                "section": "Governance",
++                "text": "Committee reviewed the policy — approved.",
++                "evidence": [
++                    {"stable_id": "document:synthetic", "page": 3, "quote": "Approved."},
++                    {"stable_id": "document:synthetic", "page": 3, "quote": "Approved."},
++                ],
++            },
++            {
++                "record_id": "r1",
++                "entity_ref": "fund:example",
++                "period": "2024",
++                "section": "Governance",
++                "text": "",
++                "evidence": [],
++            },
++        ],
++    }
++
++
++def write_database(path: typing.Any, payload: typing.Any) -> None:
++    with closing(sqlite3.connect(path)) as db, db:
++        db.executescript(SQLITE_SCHEMA)
++        for document in payload["documents"]:
++            db.execute(
++                "INSERT INTO documents VALUES (?, ?)", (document["stable_id"], document["path"])
++            )
++        for record in payload["records"]:
++            db.execute(
++                "INSERT INTO records VALUES (?, ?, ?, ?, ?)",
++                tuple(
++                    record[key] for key in ("record_id", "entity_ref", "period", "section", "text")
++                ),
++            )
++            for pointer in record["evidence"]:
++                db.execute(
++                    "INSERT INTO evidence VALUES (?, ?, ?, ?)",
++                    (record["record_id"], pointer["stable_id"], pointer["page"], pointer["quote"]),
++                )
++
++
++def test_json_and_sqlite_preserve_records_and_indexes(tmp_path, payload):
++    json_path = tmp_path / "store.json"
++    json_path.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
++    db_path = tmp_path / "store #1.sqlite"
++    write_database(db_path, payload)
++    before = db_path.read_bytes()
++    store = Store.from_json(json_path)
++    assert Store.from_sqlite(db_path) == store == Store.from_dict(payload)
++    assert db_path.read_bytes() == before
++    assert [record.record_id for record in store.records] == ["r2", "r1"]
++    assert store.documents == (Document("document:synthetic", "reports/Annual report.pdf"),)
++    assert store.entity_index == {"fund:example": store.records}
++    assert list(store.period_index) == ["2025", "2024"]
++    assert store.period_index["2024"] == (store.records[1],)
++    assert store.evidence == (EvidencePointer("document:synthetic", 3, "Approved."),) * 2
++
++
++def test_empty_store_loads_from_both_formats(tmp_path):
++    payload: typing.Any = {"documents": [], "records": []}
++    path = tmp_path / "empty.sqlite"
++    write_database(path, payload)
++    store = Store.from_dict(payload)
++    assert Store.from_sqlite(path) == store
++    assert store.records == () and store.evidence == ()
++    assert store.entity_index == store.period_index == {}
++
++
++def test_model_is_immutable_and_copies_input(payload):
++    store = Store.from_dict(payload)
++    payload["records"][0]["evidence"].clear()
++    assert len(store.evidence) == 2
++    with pytest.raises(FrozenInstanceError):
++        store.records[0].text = "changed"  # type: ignore
++    with pytest.raises(TypeError):
++        store.entity_index["new"] = ()  # type: ignore
++    pointers = [EvidencePointer("doc", 1, "")]
++    record = Record("r", "fund:example", "2025", "Section", "", tuple(pointers))
++    records = [record]
++    direct = Store(tuple(records), ())
++    pointers.clear()
++    records.clear()
++    assert direct.records == (record,)
++    assert record.evidence == (EvidencePointer("doc", 1, ""),)
++
++
++@pytest.mark.parametrize("page", [0, -1, True, 1.5, "3", None])
++def test_invalid_pages_are_rejected(payload, page):
++    payload["records"][0]["evidence"][0]["page"] = page
++    with pytest.raises(StoreValidationError, match="page"):
++        Store.from_dict(payload)
++
++
++@pytest.mark.parametrize(
++    "field", ["record_id", "entity_ref", "period", "section", "text", "evidence"]
++)
++def test_required_record_fields(payload, field):
++    del payload["records"][0][field]
++    with pytest.raises(StoreValidationError, match=field):
++        Store.from_dict(payload)
++
++
++@pytest.mark.parametrize("field", ["records", "documents"])
++def test_duplicate_ids_rejected(payload, field):
++    payload[field].append(payload[field][0])
++    with pytest.raises(StoreValidationError, match="Duplicate"):
++        Store.from_dict(payload)
++
++
++@pytest.mark.parametrize("item", [None, [], "record", {1: "value"}])
++def test_invalid_objects_rejected(payload, item):
++    payload["records"] = [item]
++    with pytest.raises(StoreValidationError, match="object"):
++        Store.from_dict(payload)
++
++
++def test_missing_document_is_retained_for_render_validation(payload):
++    payload["documents"] = []
++    assert Store.from_dict(payload).evidence[0].stable_id == "document:synthetic"
++
++
++def test_orphan_sqlite_evidence_rejected(tmp_path):
++    path = tmp_path / "orphan.sqlite"
++    write_database(path, {"documents": [], "records": []})
++    with closing(sqlite3.connect(path)) as db, db:
++        db.execute("INSERT INTO evidence VALUES (?, ?, ?, ?)", ("missing", "doc", 1, "quote"))
++    with pytest.raises(StoreValidationError, match="unknown record_id: missing"):
++        Store.from_sqlite(path)
++
++
++def test_missing_database_is_not_created(tmp_path):
++    path = tmp_path / "missing.sqlite"
++    with pytest.raises(sqlite3.OperationalError):
++        Store.from_sqlite(path)
++    assert not path.exists()
++
++
++def test_invalid_direct_models():
++    with pytest.raises(StoreValidationError, match="evidence"):
++        Record("r", "entity", "period", "section", "", ("invalid",))  # type: ignore
++    with pytest.raises(StoreValidationError, match="invalid object"):
++        Store(("invalid",), ())  # type: ignore
++    with pytest.raises(StoreValidationError, match="nonempty"):
++        Document(" ", "path")
++
++
++def test_invalid_json_root(tmp_path):
++    path = tmp_path / "invalid.json"
++    path.write_text("[]", encoding="utf-8")
++    with pytest.raises(StoreValidationError, match="object"):
++        Store.from_json(path)
++
++
++def test_unknown_fields_are_ignored(payload):
++    payload["unknown_root_field"] = "ignored"
++    payload["documents"][0]["unknown_doc_field"] = "ignored"
++    payload["records"][0]["unknown_record_field"] = "ignored"
++    payload["records"][0]["evidence"][0]["unknown_ev_field"] = "ignored"
++    store = Store.from_dict(payload)
++    assert len(store.documents) == 1
++    assert len(store.records) == 2

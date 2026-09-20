@@ -1,0 +1,62 @@
+diff --git a/config/backplane_participants.json b/config/backplane_participants.json
+new file mode 100644
+index 0000000..4a8c2a3
+--- /dev/null
++++ b/config/backplane_participants.json
+@@ -0,0 +1,20 @@
++{
++  "schema_version": "backplane-participants/v1",
++  "contract": "run-contract/v1",
++  "parent_issue": "stranske/Manager-Mosaic#3",
++  "participants": [
++    {
++      "repo": "stranske/Manager-Mosaic",
++      "parent_issue": "stranske/Manager-Mosaic#3",
++      "contract_version": "run-contract/v1",
++      "role": "consumer",
++      "status": "planned",
++      "ingests": [
++        "evidence-object/v1",
++        "artifact-manifest/v1",
++        "run-contract/v1",
++        "identity-map-conventions"
++      ]
++    }
++  ]
++}
+diff --git a/tests/test_backplane_registry.py b/tests/test_backplane_registry.py
+new file mode 100644
+index 0000000..4be045e
+--- /dev/null
++++ b/tests/test_backplane_registry.py
+@@ -0,0 +1,30 @@
++"""Consumer-local backplane participant registry."""
++
++import json
++from pathlib import Path
++
++EXPECTED_INGESTS = (
++    "evidence-object/v1",
++    "artifact-manifest/v1",
++    "run-contract/v1",
++    "identity-map-conventions",
++)
++
++
++def test_manager_mosaic_consumer_entry_present() -> None:
++    root = Path(__file__).resolve().parents[1]
++    registry = json.loads((root / "config" / "backplane_participants.json").read_text())
++    entry = next(
++        (
++            participant
++            for participant in registry.get("participants", [])
++            if participant.get("repo") == "stranske/Manager-Mosaic"
++        ),
++        None,
++    )
++    assert entry is not None, "Manager-Mosaic participant entry missing"
++    assert entry.get("role") == "consumer"
++    assert entry.get("status") == "planned"
++    assert entry.get("parent_issue") == "stranske/Manager-Mosaic#3"
++    assert entry.get("contract_version") == "run-contract/v1"
++    assert entry.get("ingests") == list(EXPECTED_INGESTS)

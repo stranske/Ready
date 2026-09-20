@@ -1,0 +1,96 @@
+diff --git a/pyproject.toml b/pyproject.toml
+index 616e2c96..2b4644a3 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -106,6 +106,7 @@ target-version = ["py312"]
+ # scripts and reports, rsynced in with deletion enabled on every worker tick. Formatting them here
+ # is churn that the next sync discards, and leaving them unformatted reddens the default branch.
+ # ruff already excludes the same path (see [tool.ruff] extend-exclude); this makes black agree.
+-# force-exclude rather than extend-exclude, because CI passes explicit paths and extend-exclude
+-# does not apply to those.
++# Keep force-exclude as well because CI passes explicit paths and extend-exclude does not
++# apply to those.
++extend-exclude = 'research-program/artifacts'
+ force-exclude = "research-program/artifacts/"
+diff --git a/tests/test_repo_hygiene.py b/tests/test_repo_hygiene.py
+index 32aa8eef..e1cad305 100644
+--- a/tests/test_repo_hygiene.py
++++ b/tests/test_repo_hygiene.py
+@@ -3,6 +3,11 @@
+ from __future__ import annotations
+ 
+ import subprocess
++import sys
++import tomllib
++from pathlib import Path
++
++import pytest
+ 
+ 
+ def _git_ls_files(pattern: str) -> list[str]:
+@@ -86,3 +91,65 @@ def test_generated_dirs_untracked_and_vendored_preserved() -> None:
+         "Vendored .github/scripts/node_modules/ must be unignored; verbose check-ignore "
+         "may report the negation rule that preserves it."
+     )
++
++
++def test_black_config_excludes_published_artifacts() -> None:
++    """Keep the repository's artifact exclusion in Black's configuration."""
++    config = tomllib.loads((Path(__file__).resolve().parents[1] / "pyproject.toml").read_text())
++    assert config["tool"]["black"]["extend-exclude"] == "research-program/artifacts"
++    assert config["tool"]["black"]["force-exclude"] == "research-program/artifacts/"
++
++
++def test_black_extend_exclude_independently_skips_artifacts(tmp_path: Path) -> None:
++    """The recursive exclusion works even without the explicit-path protection."""
++    config_text = (Path(__file__).resolve().parents[1] / "pyproject.toml").read_text()
++    config_path = tmp_path / "pyproject.toml"
++    config_path.write_text(config_text)
++    artifact = tmp_path / "research-program" / "artifacts" / "probe.py"
++    artifact.parent.mkdir(parents=True)
++    unformatted = "values=[1,2,3]\n"
++    artifact.write_text(unformatted)
++    # Isolate extend-exclude: force-exclude would otherwise mask its removal.
++    command = [sys.executable, "-m", "black", "--check", "--force-exclude", "", "."]
++
++    def check_black(expected_code: int) -> subprocess.CompletedProcess[str]:
++        result = subprocess.run(command, cwd=tmp_path, capture_output=True, text=True, timeout=30)
++        assert result.returncode == expected_code, result.stdout + result.stderr
++        assert artifact.read_text() == unformatted
++        return result
++
++    check_black(0)
++    config_path.write_text(config_text.replace("extend-exclude = 'research-program/artifacts'", ""))
++    rejected = check_black(1)
++    assert "probe.py" in rejected.stderr
++    config_path.write_text(config_text)
++    check_black(0)
++
++
++@pytest.mark.parametrize(
++    "targets",
++    [["."], ["research-program/artifacts/nested/probe.py", "source.py"]],
++    ids=["recursive", "explicit-paths"],
++)
++def test_formatters_exclude_published_artifacts(tmp_path: Path, targets: list[str]) -> None:
++    """Real Black invocation skips mirror scripts without hiding normal source files."""
++    config_text = (Path(__file__).resolve().parents[1] / "pyproject.toml").read_text()
++    config = tomllib.loads(config_text)
++    assert "research-program/artifacts" in config["tool"]["ruff"]["extend-exclude"]
++    (tmp_path / "pyproject.toml").write_text(config_text)
++    artifact = tmp_path / "research-program" / "artifacts" / "nested" / "probe.py"
++    artifact.parent.mkdir(parents=True)
++    unformatted = "values=[1,2,3]\n"
++    artifact.write_text(unformatted)
++    source = tmp_path / "source.py"
++    source.write_text("values = [1, 2, 3]\n")
++    command = [sys.executable, "-m", "black", "--check", *targets]
++
++    clean = subprocess.run(command, cwd=tmp_path, capture_output=True, text=True)
++    assert clean.returncode == 0, clean.stdout + clean.stderr
++    assert artifact.read_text() == unformatted
++
++    source.write_text(unformatted)
++    rejected = subprocess.run(command, cwd=tmp_path, capture_output=True, text=True)
++    assert rejected.returncode == 1, rejected.stdout + rejected.stderr
++    assert "source.py" in rejected.stderr

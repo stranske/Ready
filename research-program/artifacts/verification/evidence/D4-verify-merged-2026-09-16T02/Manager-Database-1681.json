@@ -1,0 +1,24 @@
+{
+  "body": "## Summary\n- Route dashboard manager selector and QC stale-manager queries through `resolve_manager_id_column`, aliasing to `manager_id` in result frames.\n- Fix daily-report fallback diff, news, and activism joins to use the resolved managers primary-key column on SQLite while preserving Postgres behavior.\n\nCloses #1671\n\n## Test plan\n- [x] `pytest tests/test_dashboard.py tests/test_daily_report_views.py -q` \u2014 PASS (full suites)\n- [x] Parametrized id/manager_id key-matrix tests for dashboard QC summary and daily-report fallback paths\n- [x] Deliberate-break gate: hardcoded `m.manager_id` join restored briefly \u2192 `test_daily_report_fallback_queries_resolve_manager_primary_key[id]` FAILED \u2192 reverted",
+  "closingIssuesReferences": [
+    {
+      "id": "I_kwDOO4LcjM8AAAABRQx5Cg",
+      "number": 1671,
+      "repository": {
+        "id": "R_kgDOO4LcjA",
+        "name": "Manager-Database",
+        "owner": {
+          "id": "MDQ6VXNlcjIzMDQ2MzIy",
+          "login": "stranske"
+        }
+      },
+      "url": "https://github.com/stranske/Manager-Database/issues/1671"
+    }
+  ],
+  "mergeCommit": {
+    "oid": "85b6b5292ac463f86786e589ff8a15fc9bee0acf"
+  },
+  "mergedAt": "2026-09-15T11:00:48Z",
+  "number": 1681,
+  "title": "fix(ui): resolve SQLite manager keys across dashboard and daily report (#1671)"
+}

@@ -1,0 +1,308 @@
+{
+  "body": "## Why\n\n`research-program/artifacts/work-bundle/` is prepared to be handed to colleagues in the owner's work environment, and the rest of `research-program/` is published to a public repository. Two disclosure-class defects have already reached this tree, both invisible on a casual read:\n\n- A credential scan printed token prefixes into a working file before it was caught by hand.\n- A batch of issue bodies carried a drafting agent's private working-directory paths (`[LOCAL_WORKSPACE]/<Repo>/...`), which made twenty-two issues unactionable across the fleet and had to be repaired one by one.\n\nBoth were found by a person looking. Neither would have been caught by any check in this repository, because there is none. The bundle's own redaction pass is a one-time human-reviewed step, not a gate, so nothing prevents the next artifact from reintroducing what the last one removed.\n\nEvidence: `research-program/artifacts/work-bundle/REDACTIONS.md` records the manual redaction pass and its scope reduction; `README.md` states the disclosure standard this issue enforces; `research-program/CHECKPOINT.md` records the repair of the path-citation defect.\n\n## Scope\n\nA publication guard: one script plus a CI job that fails when a file under `research-program/` contains material that must not be published.\n\n## Non-Goals\n\n- No scanning outside `research-program/`; ordinary repository code is out of scope here.\n- No attempt to detect proprietary manager content by meaning. This guard catches mechanical patterns only, and must not pretend otherwise.\n- No auto-redaction. A hit fails the build and names the file and line; a human or the engine decides what to do.\n\n## Tasks\n\n- [ ] Add `scripts/check_publication_safety.py` scanning every file under `research-program/` for: an absolute home path (`[LOCAL_HOME]/`), a credential prefix (`[REDACTED_CREDENTIAL]`, `[REDACTED_CREDENTIAL]`, `[REDACTED_CREDENTIAL]`, `[REDACTED_CREDENTIAL]`, `[REDACTED_CREDENTIAL]`, `[REDACTED_CREDENTIAL]`, `[REDACTED_CREDENTIAL]`), a private-key header (`[PRIVATE_KEY_HEADER]`, `[PRIVATE_KEY_HEADER]`), a scratchpad or drafting-agent path (`[LOCAL_WORKSPACE]/`, `[LOCAL_WORKSPACE]/`, `[LOCAL_WORKSPACE]/`), and an internal hostname pattern (`[LOCAL_HOST]` or a bare `localhost:` port reference).\n- [ ] Report every hit in one pass with file, line number and which rule matched; do not stop at the first.\n- [ ] Support an explicit allowlist file, `research-program/.publication-allow`, holding one `path:rule` pair per line with a required trailing comment giving the reason, so a deliberate exception is visible and justified rather than a silent skip.\n- [ ] Exit non-zero on any unallowed hit; print a summary line naming the counts for every rule including the zeros, so a clean run is distinguishable from a run that scanned nothing.\n- [ ] Print the number of files scanned, so a guard that matched nothing because it walked the wrong directory is visible.\n- [ ] Add `.github/workflows/publication-guard.yml` running the script on pull requests and on pushes to the default branch.\n- [ ] Add `tests/test_publication_safety.py` with fixtures for each rule, an allowlisted exception, and a clean tree.\n\n## Acceptance Criteria\n\n- [ ] `python scripts/check_publication_safety.py` exits non-zero on a fixture containing a token prefix and names the file, the line and the rule.\n- [ ] The same fixture allowlisted with a reason exits zero, and an allowlist entry without a reason is itself an error.\n- [ ] A clean tree exits zero and prints the per-rule counts including zeros and the number of files scanned.\n- [ ] Pointing the scanner at an empty directory fails rather than passing, because zero files scanned is not evidence of safety.\n- [ ] The workflow runs on pull requests and blocks merge on failure.\n\n## Test Gate\n\n`tests/test_publication_safety.py`, run by this repo's CI gate. Demonstrate the gate by deliberately weakening it: drop the `[REDACTED_CREDENTIAL]` pattern from the rule set, confirm the corresponding fixture test fails, then revert and confirm it passes. Record both outcomes in the pull request.\n\n## Implementation Notes\n\nThis is a gate, so it owes the gate questions. What clears it: removing the offending text, or allowlisting it with a stated reason, both of which are possible while the gate is closed. What it measures and what it drains are the same set of files. What it prints when fully satisfied: every rule with a zero count plus the files-scanned total, so a satisfied gate and a broken gate never look alike. Keep it dependency-free so it can run anywhere, including in the target work environment where installing packages is not assumed.\n\n## Verification follow-up (adversarial review, 2026-09-14)\n\nAn independent review of the implementation PR found the work incomplete while every box was ticked. These are the remaining tasks.\n\n- [ ] Match the full PEM private-key family in BOTH the scanner and the exporter, including `-----BEGIN PRIVATE KEY-----` (PKCS#8) and `-----BEGIN ENCRYPTED PRIVATE KEY-----`. PKCS#8 currently scans clean, and it is the default output of modern tooling.\n- [ ] Define the header set once and have both scripts consume it, so the two copies of a security rule cannot drift.\n- [ ] One test per key format, each asserting the scan FAILS on it.\n- [ ] Wire `prepare_publication.py` into `publication-guard.yml`, or drop the claim that preparation is integrated; the workflow currently runs only the checker.\n- [ ] Make the \"clean preserved\" tests assert that files were actually examined, not merely that nothing was redacted — they pass today against a no-op returning `files_redacted=0`.\n",
+  "comments": [
+    {
+      "id": "IC_kwDORbgIC88AAAABSqFIQA",
+      "author": {
+        "login": "github-actions"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `Report every hit in one pass with file, line number and which rule matched; do not stop at the first.`.\n- `Acceptance Criteria` names no test, runnable command or observable verification gate — Definition of Ready / Quality Bar §2 requires one.\n- `Acceptance Criteria` uses subjective wording (clean); replace with a measurable check.\n\n_Advisory:_\n- 6 cited path(s) do not exist yet: `scripts/check_publication_safety.py`, `[LOCAL_WORKSPACE]/`, `[LOCAL_WORKSPACE]/`, `research-program/.publication-allow`, `.github/workflows/publication-guard.yml`, `tests/test_publication_safety.py` — expected when a task creates them; check for typos otherwise.\n\nDispatched the Agents Issue Optimizer format phase (attempt 1 of 3).\n\n<!-- format-guard:0889e78b850b:attempt:1 -->\n",
+      "createdAt": "2026-09-04T22:14:44Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Ready/issues/554#issuecomment-5547051072",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDORbgIC88AAAABSqFmCA",
+      "author": {
+        "login": "agents-workflows-bot"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "⚠️ **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Ready/actions/runs/33924676410)\n\n**Format validation report:**\n```text\nThis issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `Report every hit in one pass with file, line number and which rule matched; do not stop at the first.`.\n- `Acceptance Criteria` uses subjective wording (clean); replace with a measurable check.\n\n_Advisory:_\n- 6 cited path(s) do not exist yet: `scripts/check_publication_safety.py`, `[LOCAL_WORKSPACE]/`, `[LOCAL_WORKSPACE]/`, `research-program/.publication-allow`, `.github/workflows/publication-guard.yml`, `tests/test_publication_safety.py` — expected when a task creates them; check for typos otherwise.\n```\n",
+      "createdAt": "2026-09-04T22:15:37Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Ready/issues/554#issuecomment-5547058696",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDORbgIC88AAAABSqFvBg",
+      "author": {
+        "login": "github-actions"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `Report every hit in one pass with file, line number and which rule matched; do not stop at the first.`.\n- `Acceptance Criteria` names no test, runnable command or observable verification gate — Definition of Ready / Quality Bar §2 requires one.\n- `Acceptance Criteria` uses subjective wording (clean); replace with a measurable check.\n\n_Advisory:_\n- 6 cited path(s) do not exist yet: `scripts/check_publication_safety.py`, `[LOCAL_WORKSPACE]/`, `[LOCAL_WORKSPACE]/`, `research-program/.publication-allow`, `.github/workflows/publication-guard.yml`, `tests/test_publication_safety.py` — expected when a task creates them; check for typos otherwise.\n\nDispatched the Agents Issue Optimizer format phase (attempt 2 of 3).\n\n<!-- format-guard:0889e78b850b:attempt:2 -->\n",
+      "createdAt": "2026-09-04T22:15:53Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Ready/issues/554#issuecomment-5547060998",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDORbgIC88AAAABSqGPxA",
+      "author": {
+        "login": "agents-workflows-bot"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "⚠️ **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Ready/actions/runs/33924761100)\n\n**Format validation report:**\n```text\nThis issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `Report every hit in one pass with file, line number and which rule matched; do not stop at the first.`.\n- `Acceptance Criteria` uses subjective wording (clean); replace with a measurable check.\n\n_Advisory:_\n- 6 cited path(s) do not exist yet: `scripts/check_publication_safety.py`, `[LOCAL_WORKSPACE]/`, `[LOCAL_WORKSPACE]/`, `research-program/.publication-allow`, `.github/workflows/publication-guard.yml`, `tests/test_publication_safety.py` — expected when a task creates them; check for typos otherwise.\n```\n",
+      "createdAt": "2026-09-04T22:16:52Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Ready/issues/554#issuecomment-5547069380",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDORbgIC88AAAABSqGcwQ",
+      "author": {
+        "login": "github-actions"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `Report every hit in one pass with file, line number and which rule matched; do not stop at the first.`.\n- `Acceptance Criteria` names no test, runnable command or observable verification gate — Definition of Ready / Quality Bar §2 requires one.\n- `Acceptance Criteria` uses subjective wording (clean); replace with a measurable check.\n\n_Advisory:_\n- 6 cited path(s) do not exist yet: `scripts/check_publication_safety.py`, `[LOCAL_WORKSPACE]/`, `[LOCAL_WORKSPACE]/`, `research-program/.publication-allow`, `.github/workflows/publication-guard.yml`, `tests/test_publication_safety.py` — expected when a task creates them; check for typos otherwise.\n\nDispatched the Agents Issue Optimizer format phase (attempt 3 of 3).\n\n<!-- format-guard:0889e78b850b:attempt:3 -->\n",
+      "createdAt": "2026-09-04T22:17:16Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Ready/issues/554#issuecomment-5547072705",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDORbgIC88AAAABSqGnEQ",
+      "author": {
+        "login": "github-actions"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "<!-- format-guard:attempt-cap -->\nAutomated formatting stopped after 3 optimizer attempts. Fix the issue body manually, then remove agents:auto-pilot-pause before retrying.\n",
+      "createdAt": "2026-09-04T22:17:31Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Ready/issues/554#issuecomment-5547075345",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDORbgIC88AAAABSqHDwQ",
+      "author": {
+        "login": "agents-workflows-bot"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "⚠️ **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Ready/actions/runs/33924860948)\n\n**Format validation report:**\n```text\nThis issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `Report every hit in one pass with file, line number and which rule matched; do not stop at the first.`.\n- `Acceptance Criteria` uses subjective wording (clean); replace with a measurable check.\n\n_Advisory:_\n- 6 cited path(s) do not exist yet: `scripts/check_publication_safety.py`, `[LOCAL_WORKSPACE]/`, `[LOCAL_WORKSPACE]/`, `research-program/.publication-allow`, `.github/workflows/publication-guard.yml`, `tests/test_publication_safety.py` — expected when a task creates them; check for typos otherwise.\n```\n",
+      "createdAt": "2026-09-04T22:18:25Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Ready/issues/554#issuecomment-5547082689",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDORbgIC88AAAABSqHLgw",
+      "author": {
+        "login": "github-actions"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "<!-- format-guard:attempt-cap -->\nAutomated formatting stopped after 3 optimizer attempts. Fix the issue body manually, then remove agents:auto-pilot-pause before retrying.\n",
+      "createdAt": "2026-09-04T22:18:39Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Ready/issues/554#issuecomment-5547084675",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDORbgIC88AAAABUVIg1Q",
+      "author": {
+        "login": "github-actions"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `Report every hit in one pass with file, line number and which rule matched; do not stop at the first.`.\n- `Acceptance Criteria` names no test, runnable command or observable verification gate — Definition of Ready / Quality Bar §2 requires one.\n- `Acceptance Criteria` uses subjective wording (clean); replace with a measurable check.\n\n_Advisory:_\n- 8 cited path(s) do not exist yet: `scripts/check_publication_safety.py`, `[LOCAL_WORKSPACE]/`, `[LOCAL_WORKSPACE]/`, `research-program/.publication-allow`, `.github/workflows/publication-guard.yml`, `tests/test_publication_safety.py`, … — expected when a task creates them; check for typos otherwise.\n\nDispatched the Agents Issue Optimizer format phase (attempt 1 of 3).\n\n<!-- format-guard:22cd078a8915:attempt:1 -->\n",
+      "createdAt": "2026-09-14T05:08:50Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Ready/issues/554#issuecomment-5659304149",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDORbgIC88AAAABUVJBVQ",
+      "author": {
+        "login": "agents-workflows-bot"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "⚠️ **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Ready/actions/runs/34808546582)\n\n**Format validation report:**\n```text\nThis issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `Report every hit in one pass with file, line number and which rule matched; do not stop at the first.`.\n- `Acceptance Criteria` uses subjective wording (clean); replace with a measurable check.\n\n_Advisory:_\n- 8 cited path(s) do not exist yet: `scripts/check_publication_safety.py`, `[LOCAL_WORKSPACE]/`, `[LOCAL_WORKSPACE]/`, `research-program/.publication-allow`, `.github/workflows/publication-guard.yml`, `tests/test_publication_safety.py`, … — expected when a task creates them; check for typos otherwise.\n```\n",
+      "createdAt": "2026-09-14T05:10:00Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Ready/issues/554#issuecomment-5659312469",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDORbgIC88AAAABUVJI0w",
+      "author": {
+        "login": "github-actions"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `Report every hit in one pass with file, line number and which rule matched; do not stop at the first.`.\n- `Acceptance Criteria` names no test, runnable command or observable verification gate — Definition of Ready / Quality Bar §2 requires one.\n- `Acceptance Criteria` uses subjective wording (clean); replace with a measurable check.\n\n_Advisory:_\n- 8 cited path(s) do not exist yet: `scripts/check_publication_safety.py`, `[LOCAL_WORKSPACE]/`, `[LOCAL_WORKSPACE]/`, `research-program/.publication-allow`, `.github/workflows/publication-guard.yml`, `tests/test_publication_safety.py`, … — expected when a task creates them; check for typos otherwise.\n\nDispatched the Agents Issue Optimizer format phase (attempt 2 of 3).\n\n<!-- format-guard:22cd078a8915:attempt:2 -->\n",
+      "createdAt": "2026-09-14T05:10:18Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Ready/issues/554#issuecomment-5659314387",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDORbgIC88AAAABUVJlrg",
+      "author": {
+        "login": "agents-workflows-bot"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "⚠️ **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Ready/actions/runs/34808636594)\n\n**Format validation report:**\n```text\nThis issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `Report every hit in one pass with file, line number and which rule matched; do not stop at the first.`.\n- `Acceptance Criteria` uses subjective wording (clean); replace with a measurable check.\n\n_Advisory:_\n- 8 cited path(s) do not exist yet: `scripts/check_publication_safety.py`, `[LOCAL_WORKSPACE]/`, `[LOCAL_WORKSPACE]/`, `research-program/.publication-allow`, `.github/workflows/publication-guard.yml`, `tests/test_publication_safety.py`, … — expected when a task creates them; check for typos otherwise.\n```\n",
+      "createdAt": "2026-09-14T05:11:18Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Ready/issues/554#issuecomment-5659321774",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDORbgIC88AAAABUVJvgg",
+      "author": {
+        "login": "github-actions"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `Report every hit in one pass with file, line number and which rule matched; do not stop at the first.`.\n- `Acceptance Criteria` names no test, runnable command or observable verification gate — Definition of Ready / Quality Bar §2 requires one.\n- `Acceptance Criteria` uses subjective wording (clean); replace with a measurable check.\n\n_Advisory:_\n- 8 cited path(s) do not exist yet: `scripts/check_publication_safety.py`, `[LOCAL_WORKSPACE]/`, `[LOCAL_WORKSPACE]/`, `research-program/.publication-allow`, `.github/workflows/publication-guard.yml`, `tests/test_publication_safety.py`, … — expected when a task creates them; check for typos otherwise.\n\nDispatched the Agents Issue Optimizer format phase (attempt 3 of 3).\n\n<!-- format-guard:22cd078a8915:attempt:3 -->\n",
+      "createdAt": "2026-09-14T05:11:39Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Ready/issues/554#issuecomment-5659324290",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDORbgIC88AAAABUVJ54A",
+      "author": {
+        "login": "github-actions"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "<!-- format-guard:attempt-cap -->\nAutomated formatting stopped after 3 optimizer attempts. Fix the issue body manually, then remove agents:auto-pilot-pause before retrying.\n",
+      "createdAt": "2026-09-14T05:12:00Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Ready/issues/554#issuecomment-5659326944",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDORbgIC88AAAABUVKOOg",
+      "author": {
+        "login": "agents-workflows-bot"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "⚠️ **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Ready/actions/runs/34808719263)\n\n**Format validation report:**\n```text\nThis issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `Report every hit in one pass with file, line number and which rule matched; do not stop at the first.`.\n- `Acceptance Criteria` uses subjective wording (clean); replace with a measurable check.\n\n_Advisory:_\n- 8 cited path(s) do not exist yet: `scripts/check_publication_safety.py`, `[LOCAL_WORKSPACE]/`, `[LOCAL_WORKSPACE]/`, `research-program/.publication-allow`, `.github/workflows/publication-guard.yml`, `tests/test_publication_safety.py`, … — expected when a task creates them; check for typos otherwise.\n```\n",
+      "createdAt": "2026-09-14T05:12:41Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Ready/issues/554#issuecomment-5659332154",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDORbgIC88AAAABUVKYHQ",
+      "author": {
+        "login": "github-actions"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "<!-- format-guard:attempt-cap -->\nAutomated formatting stopped after 3 optimizer attempts. Fix the issue body manually, then remove agents:auto-pilot-pause before retrying.\n",
+      "createdAt": "2026-09-14T05:12:59Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Ready/issues/554#issuecomment-5659334685",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDORbgIC88AAAABUb6WAQ",
+      "author": {
+        "login": "stranske"
+      },
+      "authorAssociation": "OWNER",
+      "body": "PR #569 merged at 2026-09-14T15:26:24Z as 2dd52d56932de83b4f0f5c02c4274802ebd7dd31 after the exact-head review window, complete expected/required checks, and zero active review threads. Reopening the automatic merge closure to preserve the required merge → verify → close sequence. verify:compare is on the merged PR and Agents Verifier run 34862167055 is in progress: https://github.com/stranske/Ready/actions/runs/34862167055 . The closer will inspect its durable provider report and close this issue on PASS with no remaining debt, or own a bounded follow-up. The temporary local publication hold has been cleared.",
+      "createdAt": "2026-09-14T15:27:56Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Ready/issues/554#issuecomment-5666412033",
+      "viewerDidAuthor": true
+    },
+    {
+      "id": "IC_kwDORbgIC88AAAABUb6lug",
+      "author": {
+        "login": "github-actions"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "<!-- format-guard:attempt-cap -->\nAutomated formatting stopped after 3 optimizer attempts. Fix the issue body manually, then remove agents:auto-pilot-pause before retrying.\n",
+      "createdAt": "2026-09-14T15:28:14Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Ready/issues/554#issuecomment-5666416058",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDORbgIC88AAAABUcu_Gg",
+      "author": {
+        "login": "stranske"
+      },
+      "authorAssociation": "OWNER",
+      "body": "Closer audited the durable [provider comparison](https://github.com/stranske/Ready/pull/569#issuecomment-5666450941) against merged commit `2dd52d56932de83b4f0f5c02c4274802ebd7dd31`, the current source #554 requirements, scanner/exporter source, tests, and workflow wiring.\n\nThe allowlist-path concern is actionable: without `--allowlist`, the scanner selected only the parent policy. Follow-up **#574** now honors `research-program/.publication-allow` first, preserves the deliberate parent-policy fallback outside the generated tree, and keeps explicit selection highest priority. A malformed or linked local policy fails closed. Six new contract regressions failed on the merged implementation and pass with this fix. The policy is scanned once and cannot make an empty publication tree pass.\n\nThe exporter concern is dispositioned from the source issue's later verification-follow-up section: it explicitly requires shared PEM patterns, exporter tests and an accurate integration claim. Current README says preparation is an explicit operator step and CI runs only the checker; no CI auto-redaction claim is made. Existing tests cover the full PEM family, read preservation and nonzero examined-file counts. No exporter removal or workflow rewrite is required.\n\nValidation for #574: **193 full-suite tests pass**, **176 focused scanner/exporter tests pass**. Removing `[REDACTED_CREDENTIAL]` produced the source-required named fixture failure (1 failed, 14 passed); restoring it returned the suite to green. Ruff, configured Black, `mypy src` and diff checks pass. The standalone scanner mypy import-resolution failure reproduces unchanged on the original merged source. Publication snapshot: **1,448 files, zero findings, zero allowlisted hits, zero errors**.\n\nThis records a substantive follow-up, not a dual-provider PASS. Keep #554 open. Next closer: after the seven-minute floor on #574's unchanged head, audit all required/expected checks and active review threads, merge only with zero active non-outdated threads, apply `verify:compare` to #574, then disposition its durable report before closing #554.\n",
+      "createdAt": "2026-09-14T16:30:52Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Ready/issues/554#issuecomment-5667274522",
+      "viewerDidAuthor": true
+    }
+  ],
+  "labels": [
+    {
+      "id": "LA_kwDORbgIC88AAAACZuwQvA",
+      "name": "enhancement",
+      "description": "New feature or request",
+      "color": "a2eeef"
+    },
+    {
+      "id": "LA_kwDORbgIC88AAAAC1gTFwQ",
+      "name": "priority:high",
+      "description": "Opener picks these first within priority tier",
+      "color": "d73a4a"
+    }
+  ],
+  "number": 554,
+  "state": "OPEN",
+  "title": "Publication guard: fail the build when published research artifacts carry paths, credentials or scratchpad references",
+  "url": "https://github.com/stranske/Ready/issues/554"
+}

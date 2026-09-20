@@ -1,0 +1,383 @@
+[
+  {
+    "repo": "Workflows",
+    "pr": 3432,
+    "issue": 3431,
+    "merge_sha": "5740e81cabc3fe436cd6da476a567ba0b0e88f71",
+    "verdict": "VERIFIED",
+    "criteria": [
+      "MET: all publishers with IDs and capabilities are returned; malformed entries are excluded and out-of-range timestamps cannot abort the catalog.",
+      "MET: publisher parameterization and the real CLI test assert new candidates, exact output, and unchanged registry; no automatic promotion.",
+      "MET: named test is present in tests/tools and full tests are wired in Selftest CI. PR retains 19-pass and six-failure publisher-filter mutation evidence."
+    ],
+    "evidence": [
+      "[tools/discover_model_catalog.py:64](https://github.com/stranske/Workflows/blob/5740e81cabc3fe436cd6da476a567ba0b0e88f71/tools/discover_model_catalog.py#L64)",
+      "[tests/tools/test_discover_model_catalog.py:47](https://github.com/stranske/Workflows/blob/5740e81cabc3fe436cd6da476a567ba0b0e88f71/tests/tools/test_discover_model_catalog.py#L47)",
+      "[tests/tools/test_discover_model_catalog.py:61](https://github.com/stranske/Workflows/blob/5740e81cabc3fe436cd6da476a567ba0b0e88f71/tests/tools/test_discover_model_catalog.py#L61)"
+    ],
+    "ci": "[Selftest CI success](https://github.com/stranske/Workflows/actions/runs/34799141072)",
+    "gap": "",
+    "followup": "None"
+  },
+  {
+    "repo": "Workflows",
+    "pr": 3436,
+    "issue": 3433,
+    "merge_sha": "f65449d1d1b0074bb169792f30680fd47073762c",
+    "verdict": "PARTIAL",
+    "criteria": [
+      "MET: explicit unproductive completion grants bounded retries on the same head, with non-vacuous should_dispatch assertions.",
+      "NOT MET: workflow productivity measures only whether the head changed; it does not use completed-task delta or report prior commit/task counts on refusal.",
+      "NOT MET at this merge: after the retry limit, refusal requires a new head commit. Merged #3440 later repairs that deadlock with a timed cooldown.",
+      "NOT MET: issue-named tests/workflows/test_keepalive_dispatch_debounce.py and its required break/revert transcript are absent. Equivalent lower-level retry tests exist, but do not establish the workflow/task-delta contract."
+    ],
+    "evidence": [
+      "[.github/workflows/agents-keepalive-loop.yml:1091](https://github.com/stranske/Workflows/blob/f65449d1d1b0074bb169792f30680fd47073762c/.github/workflows/agents-keepalive-loop.yml#L1091)",
+      "[scripts/runner_lib/core.py:1105](https://github.com/stranske/Workflows/blob/f65449d1d1b0074bb169792f30680fd47073762c/scripts/runner_lib/core.py#L1105)",
+      "[tests/scripts/test_runner_lib.py:982](https://github.com/stranske/Workflows/blob/f65449d1d1b0074bb169792f30680fd47073762c/tests/scripts/test_runner_lib.py#L982)"
+    ],
+    "ci": "[Selftest CI success](https://github.com/stranske/Workflows/actions/runs/34799823811)",
+    "gap": "Task-delta measurement, numeric refusal diagnostics, and named workflow gate remain missing; original exhaustion latch repaired by #3440.",
+    "followup": "Draft Workflows-3433-debounce.md; original issue remains open; #3435 is closed unmerged"
+  },
+  {
+    "repo": "Workflows",
+    "pr": 3439,
+    "issue": 3438,
+    "merge_sha": "2b2bfd6754c608ca2d6b23169f77671990e97e5b",
+    "verdict": "VERIFIED",
+    "criteria": [
+      "MET: best-effort AppArmor repair is scoped to workspace-write; a single same-model fallback shares network access while preserving filesystem confinement.",
+      "MET: anchored real bwrap stderr forces exit 1; workflow-derived tests distinguish diagnostic lines from quoted JSON prose.",
+      "MET: consumer runtime requirement has retained Codex work-log entries on Ready #569 and direct commit f96303e98878e291ddeefea0da97689f6dc19715, changing scanner and tests. This run fetched that commit; it did not rerun a consumer agent.",
+      "MET: source owner disposition confirms both AC and no remaining blocker. Advisory PARTIAL was rejected because runtime evidence belongs outside the diff."
+    ],
+    "evidence": [
+      "[.github/workflows/reusable-codex-run.yml:956](https://github.com/stranske/Workflows/blob/2b2bfd6754c608ca2d6b23169f77671990e97e5b/.github/workflows/reusable-codex-run.yml#L956)",
+      "[.github/workflows/reusable-codex-run.yml:1159](https://github.com/stranske/Workflows/blob/2b2bfd6754c608ca2d6b23169f77671990e97e5b/.github/workflows/reusable-codex-run.yml#L1159)",
+      "[tests/workflows/test_codex_sandbox_startup_failure.py:123](https://github.com/stranske/Workflows/blob/2b2bfd6754c608ca2d6b23169f77671990e97e5b/tests/workflows/test_codex_sandbox_startup_failure.py#L123)"
+    ],
+    "ci": "[Selftest CI success](https://github.com/stranske/Workflows/actions/runs/34800484000)",
+    "gap": "",
+    "followup": "None"
+  },
+  {
+    "repo": "Workflows",
+    "pr": 3424,
+    "issue": 3389,
+    "merge_sha": "3ecbe0ef73564827372ae9c44a8b4c163dbc8c08",
+    "verdict": "VERIFIED",
+    "criteria": [
+      "MET: CLI regression exercises explicit argv, input file/stdin, Unicode path, cwd-sensitive addressability, failure output and valid-input controls.",
+      "MET, measured this run: isolated merge snapshot 156 passed; parent snapshot 152 passed, same Python 3.12.2 and coverage configuration.",
+      "MET: issue_format.py statement coverage rises from 272/283 (96.11%) to 280/283 (98.94%); branches 154/162 to 156/162. Source is unchanged. This is a scoped coverage increase, not a claim that the entire repo reached 90%.",
+      "The advisory found absent historical coverage evidence; direct before/after execution supplies it. Fresh snapshots ran cleanly; no new follow-up is needed."
+    ],
+    "evidence": [
+      "[tests/scripts/test_issue_format.py:1000](https://github.com/stranske/Workflows/blob/3ecbe0ef73564827372ae9c44a8b4c163dbc8c08/tests/scripts/test_issue_format.py#L1000)"
+    ],
+    "ci": "[Selftest CI success](https://github.com/stranske/Workflows/actions/runs/34805984472)",
+    "gap": "",
+    "followup": "None"
+  },
+  {
+    "repo": "Workflows",
+    "pr": 3440,
+    "issue": 3433,
+    "merge_sha": "a5908e2624eefd374d7582bbd600186a51ab54fe",
+    "verdict": "PARTIAL",
+    "criteria": [
+      "MET for the narrow repair: exhausted retries enter a 30-minute cooldown that time alone drains; absent/unparseable timestamps permit redispatch and the counter is bounded.",
+      "MET: tests cover expiry, a fresh cooldown after another zero-output run, and no head-commit drain requirement. This run: 60 runner-library tests passed. PR retains deliberate-break expiry failures and restoration.",
+      "NOT MET for the full referenced issue #3433: task-delta productivity, numeric commit/task diagnostics, and the named workflow-level gate were not added. These inherited gaps must not be hidden by marking the cooldown patch sufficient for the whole issue."
+    ],
+    "evidence": [
+      "[scripts/runner_lib/core.py:1020](https://github.com/stranske/Workflows/blob/a5908e2624eefd374d7582bbd600186a51ab54fe/scripts/runner_lib/core.py#L1020)",
+      "[scripts/runner_lib/core.py:1135](https://github.com/stranske/Workflows/blob/a5908e2624eefd374d7582bbd600186a51ab54fe/scripts/runner_lib/core.py#L1135)",
+      "[tests/scripts/test_runner_lib.py:1026](https://github.com/stranske/Workflows/blob/a5908e2624eefd374d7582bbd600186a51ab54fe/tests/scripts/test_runner_lib.py#L1026)",
+      "[docs/keepalive/GoalsAndPlumbing.md:302](https://github.com/stranske/Workflows/blob/a5908e2624eefd374d7582bbd600186a51ab54fe/docs/keepalive/GoalsAndPlumbing.md#L302)"
+    ],
+    "ci": "[Selftest CI success](https://github.com/stranske/Workflows/actions/runs/34807139851)",
+    "gap": "Cooldown fix verified; original #3433 still lacks task-delta and named workflow acceptance.",
+    "followup": "Same draft Workflows-3433-debounce.md; no duplicate issue proposed"
+  },
+  {
+    "repo": "Ready",
+    "pr": 571,
+    "issue": 559,
+    "merge_sha": "4107431ed0b1a503c2e504fa5a25c153e4fb47f6",
+    "verdict": "VERIFIED",
+    "criteria": [
+      "MET: both provider implementations retain one output slot per input; local blanks receive zero vectors and OpenAI nonblank embeddings are reconstructed at original indices.",
+      "MET: tests assert exact positions, vector dimensions, all-blank and empty input, iterator behavior, and SDK call filtering. The local-fallback one-liner follows the same path.",
+      "MET: CI runs tests/test_main.py; PR retains 10 passing tests, four failing alignment mutations, byte restoration and the one-liner success. Blank-only OpenAI responses have unknown dimensions and empty vectors, explicitly tested rather than fabricated dimensions."
+    ],
+    "evidence": [
+      "[tools/embedding_provider.py:166](https://github.com/stranske/Ready/blob/4107431ed0b1a503c2e504fa5a25c153e4fb47f6/tools/embedding_provider.py#L166)",
+      "[tools/embedding_provider.py:251](https://github.com/stranske/Ready/blob/4107431ed0b1a503c2e504fa5a25c153e4fb47f6/tools/embedding_provider.py#L251)",
+      "[tests/test_main.py:70](https://github.com/stranske/Ready/blob/4107431ed0b1a503c2e504fa5a25c153e4fb47f6/tests/test_main.py#L70)"
+    ],
+    "ci": "[CI success](https://github.com/stranske/Ready/actions/runs/34820466890)",
+    "gap": "",
+    "followup": "None"
+  },
+  {
+    "repo": "Counter_Risk",
+    "pr": 1069,
+    "issue": 1061,
+    "merge_sha": "9c6cd8962536c7d1159e5d45c2a0d36b919322c4",
+    "verdict": "PARTIAL",
+    "criteria": [
+      "MET: both check_limits and find_missing_limit_entities resolve registered counterparty aliases through one canonical helper; unknown/non-counterparty behavior is preserved.",
+      "MET: named regression uses the production _build_limit_exposure_rows boundary, asserts exposure 200, breach 100, fail severity, alias/canonical equality, and unknown-name control.",
+      "MET: retained comment 5661630984 reports 44 passes, alias-resolution and production-reshaper mutations each failing, then restored pass.",
+      "NOT MET for overall completion validation: exact merge CI 34827221311 fails Black on the changed src/counter_risk/compute/limits.py. The PR Gate explicitly disables format_check while push CI enables the reusable default. Numerical tests pass; this is a format/gate-parity defect."
+    ],
+    "evidence": [
+      "[src/counter_risk/compute/limits.py:93](https://github.com/stranske/Counter_Risk/blob/9c6cd8962536c7d1159e5d45c2a0d36b919322c4/src/counter_risk/compute/limits.py#L93)",
+      "[tests/compute/test_limits.py:502](https://github.com/stranske/Counter_Risk/blob/9c6cd8962536c7d1159e5d45c2a0d36b919322c4/tests/compute/test_limits.py#L502)",
+      "[.github/workflows/pr-00-gate.yml:73](https://github.com/stranske/Counter_Risk/blob/9c6cd8962536c7d1159e5d45c2a0d36b919322c4/.github/workflows/pr-00-gate.yml#L73)"
+    ],
+    "ci": "[CI failure](https://github.com/stranske/Counter_Risk/actions/runs/34827221311)",
+    "gap": "Exact merged main CI fails formatting in limits.py despite green PR Gate.",
+    "followup": "Consolidated draft Counter_Risk-format-parity.md covering #1069 and #1071"
+  },
+  {
+    "repo": "Doc-Lineage",
+    "pr": 23,
+    "issue": 6,
+    "merge_sha": "8f4b97535571b70a1bdfffaeb18efbcdcdff7317",
+    "verdict": "VERIFIED",
+    "criteria": [
+      "MET: versioned legal-clause vocabulary has 25 keys, canonical metadata, sources, dotted identifiers and a production loader. README points to the vocabulary.",
+      "MET: named test invokes the loader and checks count >=20, uniqueness and key pattern; duplicate-map-key parsing fails explicitly.",
+      "MET: packaged resources take precedence; installed-wheel test deletes its checkout and checks both clean and adjacent-decoy layouts without mocking lookup.",
+      "MET: generated egg-info and old bootstrap marker are removed and ignored. Owner adversarial corrections are addressed by actual source and subsequent acceptance disposition.",
+      "MET: source comment 5663197340 retains 26 suite passes, 17/17 empty-loader mutation failures, duplicate-key and source-first precedence failures, then restored passes; exact merge CI is successful."
+    ],
+    "evidence": [
+      "[src/doc_lineage/vocab.py:19](https://github.com/stranske/Doc-Lineage/blob/8f4b97535571b70a1bdfffaeb18efbcdcdff7317/src/doc_lineage/vocab.py#L19)",
+      "[tests/vocab/test_legal_clauses.py:33](https://github.com/stranske/Doc-Lineage/blob/8f4b97535571b70a1bdfffaeb18efbcdcdff7317/tests/vocab/test_legal_clauses.py#L33)",
+      "[tests/vocab/test_legal_clauses.py:80](https://github.com/stranske/Doc-Lineage/blob/8f4b97535571b70a1bdfffaeb18efbcdcdff7317/tests/vocab/test_legal_clauses.py#L80)",
+      "[vocab/legal-clauses.json:20](https://github.com/stranske/Doc-Lineage/blob/8f4b97535571b70a1bdfffaeb18efbcdcdff7317/vocab/legal-clauses.json#L20)"
+    ],
+    "ci": "[CI success](https://github.com/stranske/Doc-Lineage/actions/runs/34840191817)",
+    "gap": "",
+    "followup": "None"
+  },
+  {
+    "repo": "Workflows",
+    "pr": 3445,
+    "issue": 1836,
+    "merge_sha": "3706dc2fd51b77e87902ddfe508f06b81b83e8fc",
+    "verdict": "VERIFIED",
+    "criteria": [
+      "MET for this supporting source repair: explicit None narrowing replaces bool(prior) so the optional mapping is type-safe without changing behavior.",
+      "MET: parametrized cases cover None, empty mappings, true/false, missing productivity, and false-looking non-booleans.",
+      "#1836 is a durable campaign tracker, not a closable implementation spec. No whole-campaign completion is claimed; the PR is a substantive source typing fix, not a generated dependency delivery."
+    ],
+    "evidence": [
+      "[scripts/runner_lib/core.py:1042](https://github.com/stranske/Workflows/blob/3706dc2fd51b77e87902ddfe508f06b81b83e8fc/scripts/runner_lib/core.py#L1042)",
+      "[tests/scripts/test_runner_lib.py:986](https://github.com/stranske/Workflows/blob/3706dc2fd51b77e87902ddfe508f06b81b83e8fc/tests/scripts/test_runner_lib.py#L986)"
+    ],
+    "ci": "[Selftest CI success](https://github.com/stranske/Workflows/actions/runs/34855835879)",
+    "gap": "",
+    "followup": "None"
+  },
+  {
+    "repo": "Ready",
+    "pr": 569,
+    "issue": 554,
+    "merge_sha": "2dd52d56932de83b4f0f5c02c4274802ebd7dd31",
+    "verdict": "PARTIAL",
+    "criteria": [
+      "MET: byte scanner reports each location/rule without matched contents, all per-rule zero counts, and files scanned; missing/empty trees, invalid policies, links and unreadable inputs fail.",
+      "MET: shared PEM patterns cover the expanded header family; tests cover encoded JSON, source preservation/read counts and binary guard behavior. This run: 169 focused tests passed.",
+      "MET: required Gate unconditionally depends on publication-safety and rejects non-success even when Python skips; push Publication guard and CI both pass.",
+      "MET: later owner requirement allows accurately documenting preparation as an operator staging step. README does so; CI is not claimed to auto-redact.",
+      "NOT MET: resolve_allowlist defaults to root.parent/.publication-allow, so the requested research-program/.publication-allow is not honored. Existing open #574 is the concrete repair. Its current state was fetched; it is not counted as merged or verified."
+    ],
+    "evidence": [
+      "[scripts/check_publication_safety.py:29](https://github.com/stranske/Ready/blob/2dd52d56932de83b4f0f5c02c4274802ebd7dd31/scripts/check_publication_safety.py#L29)",
+      "[scripts/check_publication_safety.py:155](https://github.com/stranske/Ready/blob/2dd52d56932de83b4f0f5c02c4274802ebd7dd31/scripts/check_publication_safety.py#L155)",
+      "[.github/workflows/pr-00-gate.yml:88](https://github.com/stranske/Ready/blob/2dd52d56932de83b4f0f5c02c4274802ebd7dd31/.github/workflows/pr-00-gate.yml#L88)",
+      "[tests/test_publication_safety.py:230](https://github.com/stranske/Ready/blob/2dd52d56932de83b4f0f5c02c4274802ebd7dd31/tests/test_publication_safety.py#L230)",
+      "[tests/test_prepare_publication.py:151](https://github.com/stranske/Ready/blob/2dd52d56932de83b4f0f5c02c4274802ebd7dd31/tests/test_prepare_publication.py#L151)"
+    ],
+    "ci": "[CI success](https://github.com/stranske/Ready/actions/runs/34862160309); [Publication guard success](https://github.com/stranske/Ready/actions/runs/34862159566)",
+    "gap": "Research-local default allowlist location unmet; repair #574 remains OPEN.",
+    "followup": "Existing Ready PR #574; Ready-554-existing-followup.md records the gap, no duplicate issue"
+  },
+  {
+    "repo": "Portable-Alpha-Extension-Model",
+    "pr": 2297,
+    "issue": 2296,
+    "merge_sha": "086de8b946df86f01f3f09ef4f594bce86064d75",
+    "verdict": "VERIFIED",
+    "criteria": [
+      "MET: four cases exercise both public allocation searches with repeated infeasible/duplicate random draws, real allocation enumeration and independent feasible-grid oracle.",
+      "MET: output/evaluation counts, uniqueness, feasibility and capital conservation are asserted for budgets below/above the feasible count; simulation/random draws alone are controlled.",
+      "MET: retained same-environment full-suite statement coverage rises 435/635 to 516/635 in the module; focused test-file scope rises 216/635 to 386/635. These are distinct denominators/scopes.",
+      "MET: disabling fallback or deduplication causes all four cases to fail; restoration gives seven test-file passes. The issue literal filesystem --cov selector yields no data, so the recorded module-selector measurement is the valid evidence. No whole-project 90% claim."
+    ],
+    "evidence": [
+      "[tests/test_sleeve_frontier.py:14](https://github.com/stranske/Portable-Alpha-Extension-Model/blob/086de8b946df86f01f3f09ef4f594bce86064d75/tests/test_sleeve_frontier.py#L14)",
+      "[tests/test_sleeve_frontier.py:75](https://github.com/stranske/Portable-Alpha-Extension-Model/blob/086de8b946df86f01f3f09ef4f594bce86064d75/tests/test_sleeve_frontier.py#L75)"
+    ],
+    "ci": "[CI success](https://github.com/stranske/Portable-Alpha-Extension-Model/actions/runs/34883178073)",
+    "gap": "",
+    "followup": "None"
+  },
+  {
+    "repo": "Workflows",
+    "pr": 3451,
+    "issue": 3450,
+    "merge_sha": "c8561288b546c9ab6beb3d318336b7b30c36d8d0",
+    "verdict": "VERIFIED",
+    "criteria": [
+      "MET: metadata observers cannot churn status URLs; dependency-contract conclusions remain visible without self-observing URLs.",
+      "MET: bounded exact-head Gate recovery survives a flooded recent page; wrong/missing heads cannot report success and non-404 API errors propagate.",
+      "MET: executable idempotence tests assert stable bytes, real Gate transitions, missing evidence, rate-limit propagation and template-related behavior. Source/template helper bytes match.",
+      "MET: retained post-merge comment 5669732801 records unchanged FAA #723 head with stable body from 19:35:55Z to 19:38:02Z, across more than two former churn cycles. This supports the bounded runtime AC, not indefinite stability or FAA issue acceptance."
+    ],
+    "evidence": [
+      "[.github/scripts/agents_pr_meta_update_body.js:967](https://github.com/stranske/Workflows/blob/c8561288b546c9ab6beb3d318336b7b30c36d8d0/.github/scripts/agents_pr_meta_update_body.js#L967)",
+      "[.github/scripts/__tests__/agents-pr-meta-status-idempotence.test.js:74](https://github.com/stranske/Workflows/blob/c8561288b546c9ab6beb3d318336b7b30c36d8d0/.github/scripts/__tests__/agents-pr-meta-status-idempotence.test.js#L74)",
+      "[.github/scripts/__tests__/agents-pr-meta-contract-status.test.js:33](https://github.com/stranske/Workflows/blob/c8561288b546c9ab6beb3d318336b7b30c36d8d0/.github/scripts/__tests__/agents-pr-meta-contract-status.test.js#L33)"
+    ],
+    "ci": "[Selftest CI success](https://github.com/stranske/Workflows/actions/runs/34887778302)",
+    "gap": "",
+    "followup": "None"
+  },
+  {
+    "repo": "Deliverable-Render",
+    "pr": 14,
+    "issue": 2,
+    "merge_sha": "e2ac49f36be9628ada5d9c30081fe11a0f7490ce",
+    "verdict": "PARTIAL",
+    "criteria": [
+      "MET: structured records/evidence/documents, JSON/SQLite loading, entity/period indexes, offline HTML, configurable list-view source links and dangling-reference errors are implemented.",
+      "NOT MET at this merge: grid cards contain text without source anchors; synthetic store/golden HTML files and tests/test_render_html_offline.py are absent.",
+      "Existing merged follow-up #16 supplies these missing artifacts and grid links. The misleading bootstrap title does not make this a ledger-only commit; its eight-file diff is substantive but incomplete."
+    ],
+    "evidence": [
+      "[src/deliverable_render/html.py:35](https://github.com/stranske/Deliverable-Render/blob/e2ac49f36be9628ada5d9c30081fe11a0f7490ce/src/deliverable_render/html.py#L35)",
+      "[src/deliverable_render/store.py:189](https://github.com/stranske/Deliverable-Render/blob/e2ac49f36be9628ada5d9c30081fe11a0f7490ce/src/deliverable_render/store.py#L189)"
+    ],
+    "ci": "[CI success](https://github.com/stranske/Deliverable-Render/actions/runs/34890535922)",
+    "gap": "Grid source links and persisted fixture/golden acceptance were absent at this merge; now repaired by verified #16.",
+    "followup": "Existing merged #16; Deliverable-Render-2-resolved-followup.md; no new issue"
+  },
+  {
+    "repo": "Deliverable-Render",
+    "pr": 16,
+    "issue": 2,
+    "merge_sha": "da795c067565a4a8f6b1cd20da32a4e88d953530",
+    "verdict": "VERIFIED",
+    "criteria": [
+      "MET: explicit list/grid selection produces one source anchor per evidence pointer; grid cards use the same resolved document links and missing documents raise a named error.",
+      "MET: persisted synthetic JSON plus separate list/grid goldens are compared by parsed structure. Static markup contains all rows without executing JavaScript.",
+      "MET: local and document-system modes differ only by link prefix; remote anchors are navigation, not fetched resources. Generated/local golden output has no HTTP resource references.",
+      "MET: this run 79 store/HTML/offline tests pass. In-memory external-stylesheet injection causes the generated list/grid resource tests to fail (2 failed, 2 persisted controls passed); restoration gives 4 passes. No repository source file was modified.",
+      "Owner follow-up confirms #14 deficiencies repaired. Baseline/browser support is documented; no actual work-environment browser session was performed."
+    ],
+    "evidence": [
+      "[src/deliverable_render/html.py:124](https://github.com/stranske/Deliverable-Render/blob/da795c067565a4a8f6b1cd20da32a4e88d953530/src/deliverable_render/html.py#L124)",
+      "[src/deliverable_render/html.py:202](https://github.com/stranske/Deliverable-Render/blob/da795c067565a4a8f6b1cd20da32a4e88d953530/src/deliverable_render/html.py#L202)",
+      "[tests/test_render_html_offline.py:61](https://github.com/stranske/Deliverable-Render/blob/da795c067565a4a8f6b1cd20da32a4e88d953530/tests/test_render_html_offline.py#L61)",
+      "[tests/test_render_html_offline.py:122](https://github.com/stranske/Deliverable-Render/blob/da795c067565a4a8f6b1cd20da32a4e88d953530/tests/test_render_html_offline.py#L122)"
+    ],
+    "ci": "[CI success](https://github.com/stranske/Deliverable-Render/actions/runs/34896196226)",
+    "gap": "",
+    "followup": "None"
+  },
+  {
+    "repo": "Counter_Risk",
+    "pr": 1071,
+    "issue": 1062,
+    "merge_sha": "215978393d213ce5a3bdc0ff48f9647c43b5569e",
+    "verdict": "PARTIAL",
+    "criteria": [
+      "MET: concentration groups sum gross magnitudes by counterparty before Top5/Top10/HHI; anonymous rows remain independent and custom grouping is supported.",
+      "MET: production reshaper regressions compare split/consolidated exposures, mixed signs, zero/near-zero totals and a valid control, with explicit expected metric values.",
+      "MET: comment 5671057375 retains 44 passes, pre-fix source mutation (2 failures/3 controls passing), then all five named cases passing after restoration.",
+      "NOT MET for overall completion validation: exact merge CI 34899128332 fails Black on limits.py inherited from #1069. This is the same existing format-parity defect, not a newly introduced concentration error."
+    ],
+    "evidence": [
+      "[src/counter_risk/compute/rollups.py:596](https://github.com/stranske/Counter_Risk/blob/215978393d213ce5a3bdc0ff48f9647c43b5569e/src/counter_risk/compute/rollups.py#L596)",
+      "[tests/compute/test_concentration_metrics.py:495](https://github.com/stranske/Counter_Risk/blob/215978393d213ce5a3bdc0ff48f9647c43b5569e/tests/compute/test_concentration_metrics.py#L495)",
+      "[.github/workflows/pr-00-gate.yml:73](https://github.com/stranske/Counter_Risk/blob/215978393d213ce5a3bdc0ff48f9647c43b5569e/.github/workflows/pr-00-gate.yml#L73)"
+    ],
+    "ci": "[CI failure](https://github.com/stranske/Counter_Risk/actions/runs/34899128332)",
+    "gap": "Exact merged main CI fails inherited limits.py formatting; numerical acceptance is supported.",
+    "followup": "Same consolidated Counter_Risk-format-parity.md; no per-PR duplicate"
+  },
+  {
+    "repo": "Workflows",
+    "pr": 3443,
+    "issue": 3434,
+    "merge_sha": "3e1d15ca52bf9fde9437a6706f4cf888f52b6341",
+    "verdict": "VERIFIED",
+    "criteria": [
+      "MET: root/consumer evaluators count only failed or timed-out Gate attempts with actual failed jobs; reruns of one run ID are individually inspected.",
+      "MET: jobless current failures return before writing autofix:escalated; genuine failures retain escalation and report examined/failed attempt counts.",
+      "MET: root/consumer basic autofix recognizes timed_out and excludes cancelled/skipped. Intended wrapper differences are explicitly retained in drift fingerprints.",
+      "MET: this run 174 workflow-derived cases pass, including cancelled-only histories, same-run repeated attempts, jobless escalation ordering, timeout eligibility and injected mutation detection. Named gate is wired into Selftest CI.",
+      "Owner review-followup concerns are addressed in actual code and later thread-specific disposition; retained PR evidence includes literal commands and failure/restoration results."
+    ],
+    "evidence": [
+      "[.github/workflows/agents-autofix-loop.yml:560](https://github.com/stranske/Workflows/blob/3e1d15ca52bf9fde9437a6706f4cf888f52b6341/.github/workflows/agents-autofix-loop.yml#L560)",
+      "[.github/workflows/agents-autofix-loop.yml:690](https://github.com/stranske/Workflows/blob/3e1d15ca52bf9fde9437a6706f4cf888f52b6341/.github/workflows/agents-autofix-loop.yml#L690)",
+      "[tests/workflows/test_autofix_cancelled_gate.py:283](https://github.com/stranske/Workflows/blob/3e1d15ca52bf9fde9437a6706f4cf888f52b6341/tests/workflows/test_autofix_cancelled_gate.py#L283)",
+      "[tests/workflows/test_autofix_cancelled_gate.py:538](https://github.com/stranske/Workflows/blob/3e1d15ca52bf9fde9437a6706f4cf888f52b6341/tests/workflows/test_autofix_cancelled_gate.py#L538)"
+    ],
+    "ci": "[Selftest CI success](https://github.com/stranske/Workflows/actions/runs/34901143910)",
+    "gap": "",
+    "followup": "None"
+  },
+  {
+    "repo": "Workflows",
+    "pr": 3444,
+    "issue": 3441,
+    "merge_sha": "4da3c7426ce55a2147eafdee306d3c71e0078de1",
+    "verdict": "VERIFIED",
+    "criteria": [
+      "MET: dispatch, running-state focus and live progress use visible outside-summary tasks; outstanding work prevents a tasks-complete result and removes stale automerge authorization.",
+      "MET: prefix reviewer tasks survive metadata regeneration; known template choices, fenced examples and comments are excluded without eating later visible tasks.",
+      "MET: fence state is recognized before comment/template-control processing, covering the owner counterexample; root and all three consumer helper copies match.",
+      "MET: source issue remains task of record and refresh timing is documented. This run 308 parser/metadata/keepalive tests pass; retained comment 5672188235 identifies original summary-only, fenced-comment and fenced-template mutations with restored passes."
+    ],
+    "evidence": [
+      "[.github/scripts/issue_scope_parser.js:15](https://github.com/stranske/Workflows/blob/4da3c7426ce55a2147eafdee306d3c71e0078de1/.github/scripts/issue_scope_parser.js#L15)",
+      "[.github/scripts/issue_scope_parser.js:56](https://github.com/stranske/Workflows/blob/4da3c7426ce55a2147eafdee306d3c71e0078de1/.github/scripts/issue_scope_parser.js#L56)",
+      "[.github/scripts/keepalive_loop.js:1476](https://github.com/stranske/Workflows/blob/4da3c7426ce55a2147eafdee306d3c71e0078de1/.github/scripts/keepalive_loop.js#L1476)",
+      "[.github/scripts/keepalive_loop.js:3466](https://github.com/stranske/Workflows/blob/4da3c7426ce55a2147eafdee306d3c71e0078de1/.github/scripts/keepalive_loop.js#L3466)",
+      "[docs/keepalive/GoalsAndPlumbing.md:221](https://github.com/stranske/Workflows/blob/4da3c7426ce55a2147eafdee306d3c71e0078de1/docs/keepalive/GoalsAndPlumbing.md#L221)"
+    ],
+    "ci": "[Selftest CI success](https://github.com/stranske/Workflows/actions/runs/34905589741)",
+    "gap": "",
+    "followup": "None"
+  },
+  {
+    "repo": "Manager-Database",
+    "pr": 1677,
+    "issue": 1668,
+    "merge_sha": "f5aa6d84f6471028dac6bd99b9d0993f59a9849c",
+    "verdict": "VERIFIED",
+    "criteria": [
+      "MET: holdings_as_of orders by filed date, normalized amendment flag, then numeric ID, preserving no-type schemas and existing knowledge-time visibility filtering.",
+      "MET: shared inverted-ID fixture asserts ORIGINAL before the amendment becomes known and AMENDED afterward, with tuple/mapping cursors and cross-selector agreement.",
+      "MET: equal-type ID ordering, latest-filed-date precedence, normalized type and no-type legacy controls remain protected.",
+      "MET: retained comment 5672102879 reports 29 selector passes, 14 backtest passes, exact ID-only mutation producing two failures, then restoration; merge CI succeeds including the repository integration topology."
+    ],
+    "evidence": [
+      "[etl/point_in_time.py:103](https://github.com/stranske/Manager-Database/blob/f5aa6d84f6471028dac6bd99b9d0993f59a9849c/etl/point_in_time.py#L103)",
+      "[etl/point_in_time.py:138](https://github.com/stranske/Manager-Database/blob/f5aa6d84f6471028dac6bd99b9d0993f59a9849c/etl/point_in_time.py#L138)",
+      "[tests/test_bitemporal_holdings.py:253](https://github.com/stranske/Manager-Database/blob/f5aa6d84f6471028dac6bd99b9d0993f59a9849c/tests/test_bitemporal_holdings.py#L253)",
+      "[tests/test_diff_holdings.py:523](https://github.com/stranske/Manager-Database/blob/f5aa6d84f6471028dac6bd99b9d0993f59a9849c/tests/test_diff_holdings.py#L523)"
+    ],
+    "ci": "[CI success](https://github.com/stranske/Manager-Database/actions/runs/34913834671)",
+    "gap": "",
+    "followup": "None"
+  }
+]

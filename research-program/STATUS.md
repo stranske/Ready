@@ -1,8 +1,9 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-15T02:13:15Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-20T20:42:22Z)
 
-Units: 116 — claimed 1, done 111, failed 4
+Units: 148 — done 142, failed 3, queued 3
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
+Orchestrator evidence (30d): offload runs 185, bound to a research round 1, scored 1 (PASS 1, FAIL 0, infra 0) — codex 0/26 (P0 F0 I0), cursor 1/88 (P1 F0 I0), gemini 0/67 (P0 F0 I0), vibe 0/4 (P0 F0 I0)
 Claude conservation: off (weekly window available)
 Owner inbox: https://github.com/stranske/Ready/issues/553
 
@@ -77,13 +78,30 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D3-unblock-sweep-2026-09-12T08 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D3-unblock-sweep-2026-09-12T16 | D | D | done | cursor | codex | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D3-unblock-sweep-2026-09-13T00 | D | D | done | cursor | codex | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
-| D3-unblock-sweep-2026-09-13T08 | D | D | failed | cursor |  | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
-| D3-unblock-sweep-2026-09-13T16 | D | D | failed | cursor |  | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
+| D3-unblock-sweep-2026-09-13T08 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
+| D3-unblock-sweep-2026-09-13T16 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D3-unblock-sweep-2026-09-13T20 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D3-unblock-sweep-2026-09-14T01 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D3-unblock-sweep-2026-09-14T09 | D | D | done | cursor | codex | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D3-unblock-sweep-2026-09-14T17 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D3-unblock-sweep-2026-09-15T01 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
+| D3-unblock-sweep-2026-09-15T09 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
+| D3-unblock-sweep-2026-09-15T17 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
+| D3-unblock-sweep-2026-09-16T02 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
+| D3-unblock-sweep-2026-09-16T10 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
+| D3-unblock-sweep-2026-09-16T18 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
+| D3-unblock-sweep-2026-09-17T02 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
+| D3-unblock-sweep-2026-09-17T10 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
+| D3-unblock-sweep-2026-09-17T18 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
+| D3-unblock-sweep-2026-09-18T03 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
+| D3-unblock-sweep-2026-09-18T11 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
+| D3-unblock-sweep-2026-09-18T19 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
+| D3-unblock-sweep-2026-09-19T03 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
+| D3-unblock-sweep-2026-09-19T11 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
+| D3-unblock-sweep-2026-09-19T19 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
+| D3-unblock-sweep-2026-09-20T04 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
+| D3-unblock-sweep-2026-09-20T12 | D | D | done | cursor | codex | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
+| D3-unblock-sweep-2026-09-20T20 | D | D | done | cursor | codex | Unblock sweep: frozen issues, stalled agent PRs, red default branches |
 | D3-unblock-sweep-pass2-20260913T2023 | D | D | done | cursor | driver | Unblock sweep pass 2: the seven repos the budgeted first pass deferred |
 | D-audit-Counter_Risk--2026-09-07T04-47-32Z | D | D | done | codex | driver | Audit stranske/Counter_Risk and file issues (supply 2 <= 2) |
 | D-audit-Counter_Risk--2026-09-08T17-11-36Z | D | D | done | codex | codex | Audit stranske/Counter_Risk and file issues (supply 1 <= 2) |
@@ -92,12 +110,18 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Counter_Risk--2026-09-10T17-45-12Z | D | D | done | codex | driver | Audit stranske/Counter_Risk and file issues (supply 1 <= 2) |
 | D-audit-Counter_Risk--2026-09-13T18-41-41Z | D | D | done | codex | codex | Audit stranske/Counter_Risk and file issues (supply 1 <= 2) |
 | D-audit-Counter_Risk--2026-09-14T06-49-49Z | D | D | failed | codex |  | Audit stranske/Counter_Risk and file issues (supply 1 <= 2) |
+| D-audit-Counter_Risk--2026-09-20T20-25-21Z | D | D | done | cursor | driver | Audit stranske/Counter_Risk and file issues (supply 2 <= 2) |
+| D-audit-Deliverable-Render--2026-09-20T08-24-39Z | D | D | failed | codex |  | Audit stranske/Deliverable-Render and file issues (supply 1 <= 2) |
+| D-audit-Deliverable-Render--2026-09-20T20-25-18Z | D | D | queued | claude |  | Audit stranske/Deliverable-Render and file issues (supply 1 <= 2) |
+| D-audit-Doc-Lineage--2026-09-19T20-12-10Z | D | D | done | codex | codex | Audit stranske/Doc-Lineage and file issues (supply 2 <= 2) |
 | D-audit-Fine-Art-Archive--2026-09-05T04-00-31Z | D | D | done | codex | codex | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 2) |
 | D-audit-Fine-Art-Archive--2026-09-06T04-25-53Z | D | D | done | codex | driver | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 3) |
 | D-audit-Manager-Database--2026-09-10T17-45-13Z | D | D | done | codex | driver | Audit stranske/Manager-Database and file issues (supply 0 <= 2) |
 | D-audit-Manager-Database--2026-09-14T06-49-50Z | D | D | done | codex | codex | Audit stranske/Manager-Database and file issues (supply 2 <= 2) |
 | D-audit-Manager-Database--2026-09-14T19-00-22Z | D | D | done | codex | codex | Audit stranske/Manager-Database and file issues (supply 2 <= 2) |
+| D-audit-Manager-Database--2026-09-20T20-25-22Z | D | D | queued | claude |  | Audit stranske/Manager-Database and file issues (supply 1 <= 2) |
 | D-audit-Manager-Mosaic--2026-09-05T04-00-25Z | D | D | done | codex | driver | Audit stranske/Manager-Mosaic and file issues (supply 2 <= 2) |
+| D-audit-Manager-Mosaic--2026-09-19T20-12-04Z | D | D | done | codex | codex | Audit stranske/Manager-Mosaic and file issues (supply 3 <= 3) |
 | D-audit-Portable-Alpha-Extension-Model--2026-09-07T04-47-31Z | D | D | done | codex | codex | Audit stranske/Portable-Alpha-Extension-Model and file issues (supply  |
 | D-audit-Portable-Alpha-Extension-Model--2026-09-07T17-01-44Z | D | D | done | codex | driver | Audit stranske/Portable-Alpha-Extension-Model and file issues (supply  |
 | D-audit-Ready--2026-09-07T04-47-33Z | D | D | done | codex | driver | Audit stranske/Ready and file issues (supply 1 <= 2) |
@@ -106,12 +130,15 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Travel-Plan-Permission--2026-09-06T16-33-27Z | D | D | done | codex | driver | Audit stranske/Travel-Plan-Permission and file issues (supply 2 <= 2) |
 | D-audit-Travel-Plan-Permission--2026-09-07T04-47-30Z | D | D | done | codex | codex | Audit stranske/Travel-Plan-Permission and file issues (supply 2 <= 3) |
 | D-audit-Travel-Plan-Permission--2026-09-07T17-01-43Z | D | D | done | codex | claude | Audit stranske/Travel-Plan-Permission and file issues (supply 1 <= 2) |
+| D-audit-Trend_Model_Project--2026-09-19T08-08-54Z | D | D | done | codex | codex | Audit stranske/Trend_Model_Project and file issues (supply 2 <= 3) |
+| D-audit-Trend_Model_Project--2026-09-19T20-12-05Z | D | D | failed | codex |  | Audit stranske/Trend_Model_Project and file issues (supply 0 <= 2) |
 | D-audit-learning-management-system--2026-09-05T04-00-30Z | D | D | done | codex | driver | Audit stranske/learning-management-system and file issues (supply 2 <= |
 | D-audit-learning-management-system--2026-09-06T16-33-31Z | D | D | done | codex | driver | Audit stranske/learning-management-system and file issues (supply 1 <= |
 | D-audit-learning-management-system--2026-09-08T05-06-08Z | D | D | done | codex | codex | Audit stranske/learning-management-system and file issues (supply 1 <= |
 | D-audit-learning-management-system--2026-09-09T05-14-48Z | D | D | done | codex | driver | Audit stranske/learning-management-system and file issues (supply 1 <= |
 | D-audit-learning-management-system--2026-09-10T05-35-47Z | D | D | done | codex | driver | Audit stranske/learning-management-system and file issues (supply 1 <= |
 | D-audit-learning-management-system--2026-09-10T17-45-16Z | D | D | done | codex | driver | Audit stranske/learning-management-system and file issues (supply 2 <= |
+| D-audit-learning-management-system--2026-09-20T08-24-44Z | D | D | done | codex | claude | Audit stranske/learning-management-system and file issues (supply 2 <= |
 | D-audit-trip-planner--2026-09-07T04-47-34Z | D | D | done | codex | codex | Audit stranske/trip-planner and file issues (supply 2 <= 2) |
 | D4-verify-merged-2026-09-05T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
 | D4-verify-merged-2026-09-06T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
@@ -121,24 +148,30 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D4-verify-merged-2026-09-10T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
 | D4-verify-merged-2026-09-11T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
 | D4-verify-merged-2026-09-12T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
-| D4-verify-merged-2026-09-13T01 | D | D | failed | cursor |  | Verify merged PRs against their issues' acceptance criteria |
+| D4-verify-merged-2026-09-13T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
 | D4-verify-merged-2026-09-14T02 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
-| D4-verify-merged-2026-09-15T02 | D | D | claimed | cursor | codex | Verify merged PRs against their issues' acceptance criteria |
+| D4-verify-merged-2026-09-15T02 | D | D | done | cursor | codex | Verify merged PRs against their issues' acceptance criteria |
+| D4-verify-merged-2026-09-16T02 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
+| D4-verify-merged-2026-09-17T02 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
+| D4-verify-merged-2026-09-18T02 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
+| D4-verify-merged-2026-09-19T02 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
+| D4-verify-merged-2026-09-20T03 | D | D | done | cursor | codex | Verify merged PRs against their issues' acceptance criteria |
+| D4-verify-merged-2026-09-20T20 | D | D | queued | codex |  | Verify merged PRs against their issues' acceptance criteria |
 
 ## Last checkpoints
 
-- 2026-09-14T19:00:26Z — D-audit-Manager-Database--2026-09-14T19-00-22Z — claimed by driver (agent codex)
-- 2026-09-14T19:10:08Z — D-audit-Manager-Database--2026-09-14T19-00-22Z — fail — offload to codex exited 1; retained artifact is not proof of success
-- 2026-09-14T19:11:43Z — D-audit-Manager-Database--2026-09-14T19-00-22Z — route — router picked codex from ['codex']
-- 2026-09-14T19:11:43Z — D-audit-Manager-Database--2026-09-14T19-00-22Z — claimed by codex (agent codex)
-- 2026-09-14T19:14:51Z — D-audit-Manager-Database--2026-09-14T19-00-22Z — done — Reconciled nine published Manager-Database findings with successful format guards, unique intake rows, and complete canonical audit records at unchanged main.
-- 2026-09-15T01:34:46Z — unblock — enqueued D3-unblock-sweep-2026-09-15T01
-- 2026-09-15T01:34:46Z — D3-unblock-sweep-2026-09-15T01 — route — router picked cursor from ['codex', 'cursor']
-- 2026-09-15T01:34:46Z — D3-unblock-sweep-2026-09-15T01 — claimed by driver (agent cursor)
-- 2026-09-15T01:42:27Z — D3-unblock-sweep-2026-09-15T01 — done — cursor produced 506 words at artifacts/sweeps/D3-unblock-sweep-2026-09-15T01.md in 438s
-- 2026-09-15T02:11:46Z — verify — enqueued D4-verify-merged-2026-09-15T02
-- 2026-09-15T02:11:46Z — D4-verify-merged-2026-09-15T02 — route — router picked cursor from ['codex', 'cursor']
-- 2026-09-15T02:11:46Z — D4-verify-merged-2026-09-15T02 — claimed by codex (agent cursor)
+- 2026-09-20T20:13:00Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+- 2026-09-20T20:16:36Z — D3-unblock-sweep-2026-09-20T20 — done — Covered eight prescribed repositories: no actionable frozen work, stale claims, stalled PRs, or default-branch failures; recorded 59 ready issues and priority-l
+- 2026-09-20T20:16:40Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+- 2026-09-20T20:18:56Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+- 2026-09-20T20:25:16Z — verify — enqueued D4-verify-merged-2026-09-20T20
+- 2026-09-20T20:25:18Z — refill — Deliverable-Render: open=1 <= 2 → audit queued
+- 2026-09-20T20:25:21Z — refill — Counter_Risk: open=2 <= 2 → audit queued
+- 2026-09-20T20:25:22Z — refill — Manager-Database: open=1 <= 2 → audit queued
+- 2026-09-20T20:25:26Z — D-audit-Counter_Risk--2026-09-20T20-25-21Z — route — router picked cursor from ['codex', 'cursor']
+- 2026-09-20T20:25:26Z — D-audit-Counter_Risk--2026-09-20T20-25-21Z — claimed by driver (agent cursor)
+- 2026-09-20T20:25:29Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+- 2026-09-20T20:42:22Z — D-audit-Counter_Risk--2026-09-20T20-25-21Z — done — cursor produced 588 words at artifacts/audits/Counter_Risk-2026-09-20.md in 999s
 
 ## Questions
 

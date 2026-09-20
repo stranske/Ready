@@ -1,0 +1,169 @@
+diff --git a/etl/point_in_time.py b/etl/point_in_time.py
+index f2cd4e62..9f87f414 100644
+--- a/etl/point_in_time.py
++++ b/etl/point_in_time.py
+@@ -75,6 +75,8 @@ def holdings_as_of(
+     (``superseded_at`` is null or ``superseded_at > as_of``). Among filings with
+     ``filed_date <= as_of``, the latest filing per ``period_end`` (else
+     ``filed_date``) is selected, then that filing's visible holdings are returned.
++    Same-day ties prefer amendments, then the largest filing ID, matching the
++    holdings-diff selector. Schemas without a filing type retain the ID tie-break.
+     """
+     holdings_columns = get_table_columns(conn, "holdings")
+     filing_columns = get_table_columns(conn, "filings")
+@@ -98,8 +100,10 @@ def holdings_as_of(
+ 
+     # Load candidate filings for the manager filed by as_of, then pick latest
+     # per period in Python so SQLite/Postgres stay aligned without dialect SQL.
++    type_expr = "f.type" if "type" in filing_columns else "NULL"
+     filing_sql = (
+-        f"SELECT f.filing_id, f.filed_date, {period_expr} AS event_time "
++        f"SELECT f.filing_id, f.filed_date, {period_expr} AS event_time, "
++        f"{type_expr} AS filing_type "
+         f"FROM filings f "
+         f"WHERE f.manager_id = {marker} "
+         f"AND f.filed_date IS NOT NULL "
+@@ -116,24 +120,23 @@ def holdings_as_of(
+     if not filing_rows:
+         return []
+ 
+-    latest_by_period: dict[str, tuple[Any, ...]] = {}
++    latest_by_period: dict[str, tuple[int, str, bool]] = {}
+     for row in filing_rows:
+         if hasattr(row, "keys"):
+             filing_id = row["filing_id"]
+             filed_date = row["filed_date"]
+             event_time = row["event_time"]
++            filing_type = row["filing_type"]
+         else:
+-            filing_id, filed_date, event_time = row[0], row[1], row[2]
++            filing_id, filed_date, event_time, filing_type = row[0], row[1], row[2], row[3]
+         period_key = str(event_time)
+         filed_key = str(filed_date)
++        # Match diff_holdings: filed date, amendment status, then numeric ID.
++        amendment = str(filing_type or "").strip().upper().endswith("/A")
++        candidate = (int(filing_id), filed_key, amendment)
+         prev = latest_by_period.get(period_key)
+-        if prev is None:
+-            latest_by_period[period_key] = (filing_id, filed_key, event_time)
+-            continue
+-        prev_filed = prev[1]
+-        prev_fid = int(prev[0])
+-        if filed_key > prev_filed or (filed_key == prev_filed and int(filing_id) > prev_fid):
+-            latest_by_period[period_key] = (filing_id, filed_key, event_time)
++        if prev is None or (filed_key, amendment, candidate[0]) > (prev[1], prev[2], prev[0]):
++            latest_by_period[period_key] = candidate
+ 
+     selected_ids = [int(item[0]) for item in latest_by_period.values()]
+     if not selected_ids:
+diff --git a/tests/conftest.py b/tests/conftest.py
+index e74ea6fc..833a5e69 100644
+--- a/tests/conftest.py
++++ b/tests/conftest.py
+@@ -75,3 +75,36 @@ def pytest_addoption(parser):
+         default=False,
+         help="Run nightly tests",
+     )
++
++
++@pytest.fixture(params=[False, True], ids=["tuple-rows", "mapping-rows"])
++def same_day_amendment_db(request):
++    """Seed an amendment with a lower ID that becomes known after its original."""
++    import sqlite3
++
++    conn = sqlite3.connect(":memory:")
++    if request.param:
++        conn.row_factory = sqlite3.Row
++    conn.executescript("""
++        CREATE TABLE filings (
++            filing_id INTEGER PRIMARY KEY, manager_id INTEGER, type TEXT,
++            period_end TEXT, filed_date TEXT
++        );
++        CREATE TABLE holdings (
++            holding_id INTEGER PRIMARY KEY, filing_id INTEGER, cusip TEXT,
++            name_of_issuer TEXT, shares INTEGER, value_usd REAL,
++            knowledge_time TEXT, superseded_at TEXT
++        );
++        INSERT INTO filings VALUES
++            (1, 1, '13F-HR/A', '2024-03-31', '2024-05-15'),
++            (2, 1, '13F-HR', '2024-03-31', '2024-05-15'),
++            (3, 1, '13F-HR', '2023-12-31', '2024-02-15');
++        INSERT INTO holdings VALUES
++            (1, 1, 'AMENDED', 'Amended', 20, 200, '2024-06-01T12:00:00Z', NULL),
++            (2, 2, 'ORIGINAL', 'Original', 10, 100, '2024-05-15T12:00:00Z', NULL),
++            (3, 3, 'PRIOR', 'Prior', 5, 50, '2024-02-15T12:00:00Z', NULL);
++    """)
++    try:
++        yield conn
++    finally:
++        conn.close()
+diff --git a/tests/test_bitemporal_holdings.py b/tests/test_bitemporal_holdings.py
+index c250530c..aceb6d02 100644
+--- a/tests/test_bitemporal_holdings.py
++++ b/tests/test_bitemporal_holdings.py
+@@ -248,3 +248,41 @@ def test_deliberate_break_mutate_breaks_as_of(tmp_path):
+     before = point_in_time.holdings_as_of(conn, 1, datetime(2025, 2, 15, tzinfo=UTC))
+     # Under mutate semantics the historical v1 row is gone, so as-of cannot reconstruct it.
+     assert before == [] or all(int(row["shares"]) != 1 for row in before)
++
++
++def test_same_day_amendment_respects_knowledge_cutoff(same_day_amendment_db):
++    """Same-day amendment authority must not depend on insertion order."""
++    conn = same_day_amendment_db
++    before = point_in_time.holdings_as_of(conn, 1, datetime(2024, 6, 1, 11, 59, 59, tzinfo=UTC))
++    assert {row["cusip"] for row in before} == {"PRIOR", "ORIGINAL"}
++    after = point_in_time.holdings_as_of(conn, 1, datetime(2024, 6, 1, 12, tzinfo=UTC))
++    assert {row["cusip"] for row in after} == {"PRIOR", "AMENDED"}
++    assert {row["filing_id"] for row in after} == {1, 3}
++
++
++def test_same_day_amendment_normalizes_filing_type(same_day_amendment_db):
++    conn = same_day_amendment_db
++    conn.execute("UPDATE filings SET type = ' 13f-hr/a ' WHERE filing_id = 1")
++    rows = point_in_time.holdings_as_of(conn, 1, datetime(2024, 6, 2, tzinfo=UTC))
++    assert {row["cusip"] for row in rows} == {"PRIOR", "AMENDED"}
++
++
++def test_same_day_authority_without_type_column_retains_id_tie(same_day_amendment_db):
++    conn = same_day_amendment_db
++    conn.execute("ALTER TABLE filings DROP COLUMN type")
++    rows = point_in_time.holdings_as_of(conn, 1, datetime(2024, 6, 2, tzinfo=UTC))
++    assert {row["cusip"] for row in rows} == {"PRIOR", "ORIGINAL"}
++
++
++def test_same_day_authority_with_equal_type_retains_id_tie(same_day_amendment_db):
++    conn = same_day_amendment_db
++    conn.execute("UPDATE filings SET type = '13F-HR/A' WHERE filing_id = 2")
++    rows = point_in_time.holdings_as_of(conn, 1, datetime(2024, 6, 2, tzinfo=UTC))
++    assert {row["cusip"] for row in rows} == {"PRIOR", "ORIGINAL"}
++
++
++def test_later_filed_original_outranks_earlier_amendment(same_day_amendment_db):
++    conn = same_day_amendment_db
++    conn.execute("UPDATE filings SET filed_date = '2024-05-16' WHERE filing_id = 2")
++    rows = point_in_time.holdings_as_of(conn, 1, datetime(2024, 6, 2, tzinfo=UTC))
++    assert {row["cusip"] for row in rows} == {"PRIOR", "ORIGINAL"}
+diff --git a/tests/test_diff_holdings.py b/tests/test_diff_holdings.py
+index 425bd4c4..48c70136 100644
+--- a/tests/test_diff_holdings.py
++++ b/tests/test_diff_holdings.py
+@@ -518,3 +518,19 @@ def fake_connect_db(db_path=None):
+ 
+     assert rows == []
+     assert calls == [None, "closed"]
++
++
++def test_same_day_amendment_agrees_with_point_in_time(same_day_amendment_db):
++    """Both selectors choose the same restatement once its holdings are known."""
++    from datetime import UTC, datetime
++
++    from etl.point_in_time import holdings_as_of
++
++    conn = same_day_amendment_db
++    current, prior = _fetch_latest_sets(1, conn)
++    assert set(current) == {"AMENDED"}
++    assert set(prior) == {"PRIOR"}
++    as_of = holdings_as_of(conn, 1, datetime(2024, 6, 1, 12, tzinfo=UTC))
++    assert {row["cusip"] for row in as_of if row["filing_id"] != 3} == set(current)
++    before = holdings_as_of(conn, 1, datetime(2024, 6, 1, 11, 59, 59, tzinfo=UTC))
++    assert {row["cusip"] for row in before if row["filing_id"] != 3} == {"ORIGINAL"}

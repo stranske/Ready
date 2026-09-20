@@ -1,0 +1,217 @@
+{
+  "repo": "Counter_Risk",
+  "full": "stranske/Counter_Risk",
+  "issues": [
+    {
+      "labels": [
+        {
+          "id": "LA_kwDORPCqTs8AAAACZaQR7w",
+          "name": "agents:auto-pilot-pause",
+          "description": "",
+          "color": "ededed"
+        }
+      ],
+      "number": 1072,
+      "title": "Raise test coverage toward 90% (autopilot round 5, low blast radius only)",
+      "updatedAt": "2026-09-15T11:35:00Z"
+    },
+    {
+      "labels": [
+        {
+          "id": "LA_kwDORPCqTs8AAAACX8YqvQ",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        },
+        {
+          "id": "LA_kwDORPCqTs8AAAACg4J5qg",
+          "name": "priority:normal",
+          "description": "Normal-priority weekly repo-review work",
+          "color": "fbca04"
+        }
+      ],
+      "number": 1068,
+      "title": "[P2] Finalize the distribution deck before PDF export",
+      "updatedAt": "2026-09-14T06:59:32Z"
+    },
+    {
+      "labels": [
+        {
+          "id": "LA_kwDORPCqTs8AAAACX8YqvQ",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        },
+        {
+          "id": "LA_kwDORPCqTs8AAAACg4J5qg",
+          "name": "priority:normal",
+          "description": "Normal-priority weekly repo-review work",
+          "color": "fbca04"
+        }
+      ],
+      "number": 1067,
+      "title": "[P2] Hash optional inputs that alter report artifacts",
+      "updatedAt": "2026-09-14T06:59:31Z"
+    },
+    {
+      "labels": [
+        {
+          "id": "LA_kwDORPCqTs8AAAACX8YqvQ",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        },
+        {
+          "id": "LA_kwDORPCqTs8AAAACg4J5qg",
+          "name": "priority:normal",
+          "description": "Normal-priority weekly repo-review work",
+          "color": "fbca04"
+        }
+      ],
+      "number": 1066,
+      "title": "[P2] Reject incompatible PDF and distribution settings",
+      "updatedAt": "2026-09-14T06:59:30Z"
+    },
+    {
+      "labels": [
+        {
+          "id": "LA_kwDORPCqTs8AAAACX8YqvQ",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        },
+        {
+          "id": "LA_kwDORPCqTs8AAAACg4J5qg",
+          "name": "priority:normal",
+          "description": "Normal-priority weekly repo-review work",
+          "color": "fbca04"
+        }
+      ],
+      "number": 1065,
+      "title": "[P2] Report skipped link refresh without denying generated slides",
+      "updatedAt": "2026-09-14T06:59:29Z"
+    },
+    {
+      "labels": [
+        {
+          "id": "LA_kwDORPCqTs8AAAACX8YqvQ",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        },
+        {
+          "id": "LA_kwDORPCqTs8AAAACg4J5qg",
+          "name": "priority:normal",
+          "description": "Normal-priority weekly repo-review work",
+          "color": "fbca04"
+        }
+      ],
+      "number": 1064,
+      "title": "[P2] Include change facts in live chat messages",
+      "updatedAt": "2026-09-14T06:59:28Z"
+    },
+    {
+      "labels": [
+        {
+          "id": "LA_kwDORPCqTs8AAAACX8YqvQ",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        },
+        {
+          "id": "LA_kwDORPCqTs8AAAACg4J5qg",
+          "name": "priority:normal",
+          "description": "Normal-priority weekly repo-review work",
+          "color": "fbca04"
+        }
+      ],
+      "number": 1063,
+      "title": "[P2] Reject malformed nonblank maturity amounts",
+      "updatedAt": "2026-09-14T06:59:26Z"
+    },
+    {
+      "labels": [
+        {
+          "id": "LA_kwDORPCqTs8AAAACrdtCOQ",
+          "name": "tracker:durable",
+          "description": "Permanently-open tracker; excluded from open-issue backlog counts",
+          "color": "c5def5"
+        }
+      ],
+      "number": 724,
+      "title": "Dependency Dashboard",
+      "updatedAt": "2026-09-15T16:59:53Z"
+    },
+    {
+      "labels": [
+        {
+          "id": "LA_kwDORPCqTs8AAAACrdtCOQ",
+          "name": "tracker:durable",
+          "description": "Permanently-open tracker; excluded from open-issue backlog counts",
+          "color": "c5def5"
+        }
+      ],
+      "number": 499,
+      "title": "Agent metrics weekly summary",
+      "updatedAt": "2026-09-14T06:19:17Z"
+    }
+  ],
+  "frozen": [
+    {
+      "labels": [
+        {
+          "id": "LA_kwDORPCqTs8AAAACZaQR7w",
+          "name": "agents:auto-pilot-pause",
+          "description": "",
+          "color": "ededed"
+        }
+      ],
+      "number": 1072,
+      "title": "Raise test coverage toward 90% (autopilot round 5, low blast radius only)",
+      "updatedAt": "2026-09-15T11:35:00Z"
+    }
+  ],
+  "silent_candidates": [],
+  "prs": [
+    {
+      "body": "## Sync Summary\n\n### Files Updated\n- autofix.yml: Autofix workflow - repairs failed/timed-out checks; cancellations do not trigger repairs\n- agents-81-gate-followups.yml: Gate followups hub - keepalive and autofix; budgets count Gate failures with failed jobs\n- runner_lib/ (2 files): Shared runner prompt assembly, output parsing, and dispatch debounce helpers\n- issue_scope_parser.js: Parses issue scope and requirements\n- keepalive_loop.js: Core keepalive loop logic\n- agents_pr_meta_update_body.js: Updates PR body with stable completed dependency-provenance results, observer exclusion, and exact-head Gate visibility\n- agents_verifier_context.js: Verifier context with exact PR-head identity for replayable corpus evidence\n- discover_model_catalog.py: Advisory provider-catalog discovery - proposes new model candidates without changing reviewed selections\n- MODEL_SELECTION_POLICY.md: Auditable auxiliary-model evaluation, selection, and refresh policy\n- tracked-variable-v1.md: Tracked-variable/v1 specification and clause-variable alias for backplane consumers\n\n### Files Skipped\n- pr-00-gate.yml: File exists and sync_mode is create_only\n- ci.yml: File exists and sync_mode is create_only\n- renovate.json: File exists and sync_mode is create_only\n- cross-repo-smoke.yml: File exists and sync_mode is create_only\n- llm_slots.json: None\n\n---\n\n### Review Checklist\n- [ ] CI passes with updated workflows\n- [ ] No repo-specific customizations were overwritten\n\n**Source:** stranske/Workflows\n**Source SHA:** `9a16cbf4f93a9366cdc2a0ab30fa2d01c977abbc`\n**Template hash:** `e44d4dc4e791`\n**Consumer-sync plan ID:** `sha256:e44d4dc4e7914e69fa48886f82cdceeca613fd57e039e1ae2f393b867b9fef16`\n**Plan scope:** `full`\n**Scope base SHA:** `full`\n**Sync phase:** `promote`\n**Sync branch:** `sync/workflows-delivery`\n**Consumer repo:** `stranske/Counter_Risk`\n**Manifest:** `.github/sync-manifest.yml`\n\n<!-- workflow-source:sync_campaign -->\n<!-- workflows-consumer-sync:v1 {\"schema\":\"workflows-consumer-sync-pr/v1\",\"consumer_repo\":\"stranske/Counter_Risk\",\"source_repository\":\"stranske/Workflows\",\"source_sha\":\"9a16cbf4f93a9366cdc2a0ab30fa2d01c977abbc\",\"template_hash\":\"e44d4dc4e791\",\"plan_id\":\"sha256:e44d4dc4e7914e69fa48886f82cdceeca613fd57e039e1ae2f393b867b9fef16\",\"plan_scope\":\"full\",\"scope_base_sha\":\"\",\"source_commit\":\"9a16cbf4f93a9366cdc2a0ab30fa2d01c977abbc\",\"sync_phase\":\"promote\",\"sync_branch\":\"sync/workflows-delivery\",\"manifest\":\".github/sync-manifest.yml\",\"lifecycle_state\":\"staging\",\"run_id\":\"34934210514\",\"run_attempt\":\"1\",\"changes_count\":10} -->\n<!-- sync-pr-delivery-record:v1 {\"schema\":\"sync-pr-delivery-record/v1\",\"durable_issue_url\":\"https://github.com/stranske/Workflows/issues/1836\",\"plan_id\":\"sha256:e44d4dc4e7914e69fa48886f82cdceeca613fd57e039e1ae2f393b867b9fef16\",\"generation\":\"e44d4dc4e791\",\"repository\":\"stranske/Counter_Risk\",\"desired_tree_hash\":\"be38bcc06c5edf29a47bc8698a1a77082de38fac\",\"source_commit\":\"9a16cbf4f93a9366cdc2a0ab30fa2d01c977abbc\",\"head_observed_sha\":\"37c541cec708b1c901cdc43da2b88c7cdd435da6\",\"head_observed_at\":\"2026-09-15T05:48:59Z\",\"lease_expires_at\":\"2026-09-18T05:49:00Z\",\"predecessor_prs\":[],\"successor_prs\":[],\"delivery_state\":\"staging\",\"review_started_at\":\"\",\"sealed_at\":\"\",\"sealed_head_sha\":\"\",\"review_evidence\":{}} -->\n\nautofix: false",
+      "isDraft": false,
+      "labels": [
+        {
+          "id": "LA_kwDORPCqTs8AAAACX8bBXw",
+          "name": "sync",
+          "description": "Automated sync from Workflows",
+          "color": "0e8a16"
+        },
+        {
+          "id": "LA_kwDORPCqTs8AAAACX8bB4Q",
+          "name": "automated",
+          "description": "Automated sync from Workflows",
+          "color": "0e8a16"
+        },
+        {
+          "id": "LA_kwDORPCqTs8AAAACvmrFUw",
+          "name": "workflow:source-sync",
+          "description": "PR source is a sync or maintenance campaign",
+          "color": "1d76db"
+        },
+        {
+          "id": "LA_kwDORPCqTs8AAAACv73grw",
+          "name": "sync:delivery-staging",
+          "description": "Generated delivery is mutable and must not merge",
+          "color": "d93f0b"
+        }
+      ],
+      "number": 1070,
+      "title": "chore: sync workflow templates",
+      "updatedAt": "2026-09-15T16:02:08Z"
+    }
+  ],
+  "silent_stuck": [],
+  "stalled_prs": [],
+  "supply_count": 7,
+  "open_count": 7,
+  "priority_count": 6,
+  "ci_runs": [],
+  "latest_ci": null
+}

@@ -1,0 +1,607 @@
+diff --git a/.gitignore b/.gitignore
+index c0831b7..b8c74ef 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -95,3 +95,11 @@ node_modules/
+ !/.github/scripts/node_modules/**
+ 
+ # END WORKFLOWS STATUS FILES
++
++# Build artifacts: setuptools regenerates these; committing them let a build
++# artifact silently change a dependency pin (ruff 0.16.5 -> 0.16.6) with no
++# matching pyproject.toml change.
++*.egg-info/
++
++# Agent execution bootstrap scratch files, not project content.
++agents/codex-*.md
+diff --git a/README.md b/README.md
+index 305c167..e07c9a1 100644
+--- a/README.md
++++ b/README.md
+@@ -2,7 +2,7 @@
+ 
+ Document lineage and blackline engine for recurring investment documents.
+ 
+-**Status:** created 2026-09-04 as part of the Research Program 2026-09 (see `stranske/Ready` → `research-program/`). Scope, architecture and first issues arrive from research briefs R1 (legal-document decomposition) and R2 (consultant-report diffing). Until then this repo carries only the Workflows consumer scaffold.
++**Status:** created 2026-09-04 as part of the Research Program 2026-09 (see `stranske/Ready` → `research-program/`). Scope, architecture and first issues arrive from research briefs R1 (legal-document decomposition) and R2 (consultant-report diffing). The initial legal clause vocabulary and Python loader are available; the document processing engine remains to be implemented.
+ 
+ ## Intent
+ 
+@@ -15,7 +15,9 @@ Document lineage and blackline engine for recurring investment documents.
+ 
+ ## Interoperability
+ 
+-Identifiers and evidence objects follow the fleet conventions in `docs/contracts/` (`run-contract/v1`, `evidence-object/v1`, identity-map conventions). Document-type and clause vocabularies will be published as data files so sibling repos (`Inv-Man-Intake`, `Manager-Database`, `Pension-Data`) can adopt the same names.
++Identifiers and evidence objects follow the fleet conventions in `docs/contracts/` (`run-contract/v1`, `evidence-object/v1`, identity-map conventions). The versioned [legal clause vocabulary](vocab/legal-clauses.json) publishes 25 stable `ontology_key` values so sibling repos (`Inv-Man-Intake`, `Manager-Database`, `Pension-Data`) can adopt the same names. Load the full document with `from doc_lineage.vocab import load_legal_clauses` and `load_legal_clauses()`.
++
++The keys adapt topics from [ILPA Principles 3.0](https://ilpa.org/wp-content/uploads/2019/06/ILPA-Principles-3.0_2019.pdf) and [CUAD v1](https://www.atticusprojectai.org/cuad/) (CC BY 4.0), with withdrawal fields supplied by the B2 owner default. Each entry records its source. `non_authoritative: false` identifies the canonical project vocabulary; these are project-defined identifiers, not identifiers issued by ILPA or CUAD or recommended contract terms.
+ 
+ ## Scope, fixed 2026-09-04 by the work-environment inventory
+ 
+diff --git a/pyproject.toml b/pyproject.toml
+index 36f7345..cc26c0f 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -24,6 +24,7 @@ dependencies = []
+ 
+ [project.optional-dependencies]
+ dev = [
++    "setuptools==82.0.1",
+     "pytest==9.1.1",
+     "pytest-cov==7.1.0",
+     "ruff==0.16.7",
+@@ -35,8 +36,12 @@ dev = [
+ Homepage = "https://github.com/stranske/Template"
+ Repository = "https://github.com/stranske/Template"
+ 
+-[tool.setuptools.packages.find]
+-where = ["src"]
++[tool.setuptools]
++packages = ["doc_lineage", "doc_lineage._vocab"]
++package-dir = {"" = "src", "doc_lineage._vocab" = "vocab"}
++
++[tool.setuptools.package-data]
++"doc_lineage._vocab" = ["legal-clauses.json"]
+ 
+ [tool.pytest.ini_options]
+ testpaths = ["tests"]
+diff --git a/requirements-dev.lock b/requirements-dev.lock
+index c2a39b1..d2e7970 100644
+--- a/requirements-dev.lock
++++ b/requirements-dev.lock
+@@ -44,5 +44,6 @@ pytokens==0.4.1
+     # via black
+ ruff==0.16.7
+     # via my-project (pyproject.toml)
++setuptools==82.0.1
+ typing-extensions==4.15.0
+     # via mypy
+diff --git a/requirements.lock b/requirements.lock
+index 7c08660..f8aaf59 100644
+--- a/requirements.lock
++++ b/requirements.lock
+@@ -48,5 +48,6 @@ pytokens==0.4.1
+     # via black
+ ruff==0.16.7
+     # via my-project (pyproject.toml)
++setuptools==82.0.1
+ typing-extensions==4.16.0
+     # via mypy
+diff --git a/src/doc_lineage.egg-info/PKG-INFO b/src/doc_lineage.egg-info/PKG-INFO
+deleted file mode 100644
+index bcc196e..0000000
+--- a/src/doc_lineage.egg-info/PKG-INFO
++++ /dev/null
+@@ -1,55 +0,0 @@
+-Metadata-Version: 2.4
+-Name: doc-lineage
+-Version: 0.1.0
+-Summary: Document lineage: identity, extraction with page pointers, and version and family comparison for recurring investment documents
+-Author-email: Your Name <your.email@example.com>
+-License: MIT
+-Project-URL: Homepage, https://github.com/stranske/Template
+-Project-URL: Repository, https://github.com/stranske/Template
+-Classifier: Development Status :: 3 - Alpha
+-Classifier: Intended Audience :: Developers
+-Classifier: License :: OSI Approved :: MIT License
+-Classifier: Programming Language :: Python :: 3
+-Classifier: Programming Language :: Python :: 3.12
+-Classifier: Programming Language :: Python :: 3.13
+-Requires-Python: >=3.12
+-Description-Content-Type: text/markdown
+-License-File: LICENSE
+-Provides-Extra: dev
+-Requires-Dist: pytest==9.1.1; extra == "dev"
+-Requires-Dist: pytest-cov==7.1.0; extra == "dev"
+-Requires-Dist: ruff==0.16.5; extra == "dev"
+-Requires-Dist: mypy==2.3.1; extra == "dev"
+-Requires-Dist: black==26.5.1; extra == "dev"
+-Dynamic: license-file
+-
+-# Doc-Lineage
+-
+-Document lineage and blackline engine for recurring investment documents.
+-
+-**Status:** created 2026-09-04 as part of the Research Program 2026-09 (see `stranske/Ready` → `research-program/`). Scope, architecture and first issues arrive from research briefs R1 (legal-document decomposition) and R2 (consultant-report diffing). Until then this repo carries only the Workflows consumer scaffold.
+-
+-## Intent
+-
+-- Take two or more versions of a recurring document (PPM, LPA, side letter, consultant report, manager letter, DDQ) and produce:
+-  - a **blackline** (what changed, where, classified by kind of change),
+-  - a **lineage** (which document supersedes which; families of documents descending from a common template),
+-  - a set of **tracked variables** — clauses, defined terms, and recurring work units — extracted into a stable schema so documents and counterparties can be compared.
+-- Run without servers: a Python library plus a static/offline review surface, producing HTML and CSV artifacts with one-click links back to the source document and page.
+-- **Synthetic and public data only** in this repository. No proprietary manager material is ever committed or used in tests.
+-
+-## Interoperability
+-
+-Identifiers and evidence objects follow the fleet conventions in `docs/contracts/` (`run-contract/v1`, `evidence-object/v1`, identity-map conventions). Document-type and clause vocabularies will be published as data files so sibling repos (`Inv-Man-Intake`, `Manager-Database`, `Pension-Data`) can adopt the same names.
+-
+-## Scope, fixed 2026-09-04 by the work-environment inventory
+-
+-The owner's work environment answered a structured information request, and its answers pin this repo's scope. The relevant facts:
+-
+-- The document library is already a synced folder tree, one folder per manager then one per document category, holding roughly 3,800 PDFs, 480 spreadsheets and 170 Word documents in the manager portion alone. There is no document-management system to integrate with.
+-- **There are no stable document identifiers.** The filename is the de facto identifier and supersession is an ad hoc numeric-prefix convention. One existing tool already derives a content-hash identifier because path-based keys silently orphaned data whenever a document was renamed. Identity therefore has to be computed, and it has to survive renames.
+-- **A real minority of legal documents are scanned images with no text layer.** One recognition pass recovered more than twenty documents and five hundred pages that every prior text-based analysis had silently skipped. Optical character recognition is a required stage, not an enhancement, and any coverage figure computed without it is wrong.
+-- Three separate extraction implementations exist there today, each solving page pointers, content hashing and recognition fallback slightly differently. This repo replaces all three with one library.
+-- Two comparison tools already run there with real, named schemas: a consultant-report tracker with change, continuity, persistence and stale-flag ledgers, a section crosswalk, a five-value segment vocabulary and three materiality tiers; and a legal-document lineage tool with a seven-column material-change ledger and a three-tier materiality taxonomy mapped to named source fields. **This repo adopts those field names rather than inventing new ones.**
+-
+-So the build order is: document identity and manifest, extraction with page pointers and a recognition fallback, the tracked-variable schema taken from the two existing tools, then the lineage and comparison engine. Rendering belongs to `stranske/Deliverable-Render`, not here.
+diff --git a/src/doc_lineage.egg-info/SOURCES.txt b/src/doc_lineage.egg-info/SOURCES.txt
+deleted file mode 100644
+index 5786a73..0000000
+--- a/src/doc_lineage.egg-info/SOURCES.txt
++++ /dev/null
+@@ -1,13 +0,0 @@
+-LICENSE
+-README.md
+-pyproject.toml
+-src/doc_lineage/__init__.py
+-src/doc_lineage.egg-info/PKG-INFO
+-src/doc_lineage.egg-info/SOURCES.txt
+-src/doc_lineage.egg-info/dependency_links.txt
+-src/doc_lineage.egg-info/requires.txt
+-src/doc_lineage.egg-info/top_level.txt
+-tests/test_dependency_version_alignment.py
+-tests/test_main.py
+-tests/test_package_identity.py
+-tests/test_repo_hygiene.py
+\ No newline at end of file
+diff --git a/src/doc_lineage.egg-info/dependency_links.txt b/src/doc_lineage.egg-info/dependency_links.txt
+deleted file mode 100644
+index 8b13789..0000000
+--- a/src/doc_lineage.egg-info/dependency_links.txt
++++ /dev/null
+@@ -1 +0,0 @@
+-
+diff --git a/src/doc_lineage.egg-info/requires.txt b/src/doc_lineage.egg-info/requires.txt
+deleted file mode 100644
+index 78f9441..0000000
+--- a/src/doc_lineage.egg-info/requires.txt
++++ /dev/null
+@@ -1,7 +0,0 @@
+-
+-[dev]
+-pytest==9.1.1
+-pytest-cov==7.1.0
+-ruff==0.16.5
+-mypy==2.3.1
+-black==26.5.1
+diff --git a/src/doc_lineage.egg-info/top_level.txt b/src/doc_lineage.egg-info/top_level.txt
+deleted file mode 100644
+index 618fa2f..0000000
+--- a/src/doc_lineage.egg-info/top_level.txt
++++ /dev/null
+@@ -1 +0,0 @@
+-doc_lineage
+diff --git a/src/doc_lineage/vocab.py b/src/doc_lineage/vocab.py
+new file mode 100644
+index 0000000..3ec7664
+--- /dev/null
++++ b/src/doc_lineage/vocab.py
+@@ -0,0 +1,38 @@
++"""Load the versioned vocabulary used for cross-manager clause joins."""
++
++import json
++from importlib.resources import files
++from pathlib import Path
++from typing import Any, cast
++
++
++def _unique_object(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
++    """Reject duplicate map keys instead of silently discarding vocabulary entries."""
++    result: dict[str, Any] = {}
++    for key, value in pairs:
++        if key in result:
++            raise ValueError(f"Duplicate JSON map key: {key}")
++        result[key] = value
++    return result
++
++
++def load_legal_clauses() -> dict[str, Any]:
++    """Return a fresh vocabulary document, including metadata and the clauses map.
++
++    The source checkout owns the JSON in ``vocab/``; wheels bundle that same
++    directory as ``doc_lineage._vocab``. No working-directory dependency exists.
++    """
++    try:
++        resource = files("doc_lineage._vocab").joinpath("legal-clauses.json")
++    except ModuleNotFoundError as exc:
++        module = Path(__file__).resolve()
++        root = module.parents[2]
++        if (
++            exc.name != "doc_lineage._vocab"
++            or module.parent != root / "src" / "doc_lineage"
++            or not (root / "pyproject.toml").is_file()
++        ):
++            raise
++        resource = root / "vocab" / "legal-clauses.json"
++    text = resource.read_text(encoding="utf-8")
++    return cast(dict[str, Any], json.loads(text, object_pairs_hook=_unique_object))
+diff --git a/tests/vocab/test_legal_clauses.py b/tests/vocab/test_legal_clauses.py
+new file mode 100644
+index 0000000..914d575
+--- /dev/null
++++ b/tests/vocab/test_legal_clauses.py
+@@ -0,0 +1,207 @@
++"""Contract checks for the shared legal clause vocabulary."""
++
++import json
++import re
++import shutil
++import subprocess
++import sys
++from pathlib import Path
++
++import pytest
++
++from doc_lineage.vocab import load_legal_clauses
++
++VOCAB_PATH = Path(__file__).resolve().parents[2] / "vocab" / "legal-clauses.json"
++
++
++def _assert_vocabulary(data):
++    assert data["schema_version"] == "1.0.0"
++    assert data["version"] == "1.0.0"
++    assert data["non_authoritative"] is False
++    clauses = data["clauses"]
++    assert isinstance(clauses, dict)
++    assert len(clauses) >= 20
++    keys = [clause["ontology_key"] for clause in clauses.values()]
++    assert len(keys) == len(set(keys)), "Duplicate ontology_key values"
++    for map_key, clause in clauses.items():
++        assert re.fullmatch(r"legal(?:\.[a-z][a-z0-9_]*){2,}", clause["ontology_key"])
++        assert map_key == clause["ontology_key"]
++        assert clause["source"] in data["sources"]
++    assert "legal.withdrawal.notice_days" in clauses
++
++
++def test_legal_clauses_minimum_keys_and_unique():
++    _assert_vocabulary(load_legal_clauses())
++
++
++def test_loader_is_independent_of_working_directory_and_returns_fresh_data(tmp_path, monkeypatch):
++    monkeypatch.chdir(tmp_path)
++    expected = load_legal_clauses()
++    _assert_vocabulary(expected)
++    loaded = load_legal_clauses()
++    assert loaded == expected
++    loaded["clauses"].clear()
++    assert load_legal_clauses() == expected
++
++
++def test_loader_uses_bundled_resource(monkeypatch):
++    _assert_vocabulary(load_legal_clauses())
++    monkeypatch.setattr("doc_lineage.vocab.files", lambda package: VOCAB_PATH.parent)
++    assert load_legal_clauses() == json.loads(VOCAB_PATH.read_text(encoding="utf-8"))
++
++
++@pytest.mark.parametrize("failure", ["dependency", "installed_layout", "missing_project"])
++def test_loader_does_not_hide_resource_import_failures(tmp_path, monkeypatch, failure):
++    """Only a source checkout with an absent resource package may use the fallback."""
++    _assert_vocabulary(load_legal_clauses())
++    root = tmp_path / "project"
++    package_dir = root / ("site-packages" if failure == "installed_layout" else "src")
++    module = package_dir / "doc_lineage" / "vocab.py"
++    module.parent.mkdir(parents=True)
++    module.touch()
++    if failure != "missing_project":
++        (root / "pyproject.toml").touch()
++    decoy = root / "vocab" / "legal-clauses.json"
++    decoy.parent.mkdir()
++    decoy.write_text('{"wrong": true}', encoding="utf-8")
++    missing = "resource_dependency" if failure == "dependency" else "doc_lineage._vocab"
++    error = ModuleNotFoundError(f"No module named {missing!r}", name=missing)
++
++    def unavailable_resource(package):
++        raise error
++
++    monkeypatch.setattr("doc_lineage.vocab.__file__", str(module))
++    monkeypatch.setattr("doc_lineage.vocab.files", unavailable_resource)
++    with pytest.raises(ModuleNotFoundError) as caught:
++        load_legal_clauses()
++    assert caught.value is error
++
++
++def test_installed_wheel_loads_bundled_vocabulary_despite_adjacent_decoy(tmp_path):
++    """Exercise the actual build configuration and resource lookup outside the checkout."""
++    root = VOCAB_PATH.parent.parent
++    checkout = tmp_path / "checkout"
++    checkout.mkdir()
++    for name in ("pyproject.toml", "README.md", "LICENSE"):
++        shutil.copy2(root / name, checkout / name)
++    shutil.copytree(root / "src" / "doc_lineage", checkout / "src" / "doc_lineage")
++    shutil.copytree(root / "vocab", checkout / "vocab")
++    wheels = tmp_path / "wheels"
++    wheels.mkdir()
++    subprocess.run(
++        [
++            sys.executable,
++            "-c",
++            "import sys; from setuptools.build_meta import build_wheel; build_wheel(sys.argv[1])",
++            str(wheels),
++        ],
++        cwd=checkout,
++        check=True,
++        capture_output=True,
++        text=True,
++    )
++    installed = tmp_path / "installed"
++    subprocess.run(
++        [
++            sys.executable,
++            "-m",
++            "pip",
++            "install",
++            "--no-index",
++            "--no-deps",
++            "--target",
++            str(installed),
++            str(next(wheels.glob("*.whl"))),
++        ],
++        check=True,
++        capture_output=True,
++        text=True,
++    )
++    shutil.rmtree(checkout)
++    expected = load_legal_clauses()
++    _assert_vocabulary(expected)
++    for with_decoy in (False, True):
++        if with_decoy:
++            decoy = tmp_path / "vocab" / "legal-clauses.json"
++            decoy.parent.mkdir()
++            decoy.write_text('{"wrong": true}', encoding="utf-8")
++        result = subprocess.run(
++            [
++                sys.executable,
++                "-I",
++                "-c",
++                "import sys, json; sys.path.insert(0, sys.argv[1]); "
++                "from doc_lineage.vocab import load_legal_clauses; "
++                "print(json.dumps(load_legal_clauses()))",
++                str(installed),
++            ],
++            cwd=tmp_path,
++            check=True,
++            capture_output=True,
++            text=True,
++        )
++        assert json.loads(result.stdout) == expected
++
++
++@pytest.mark.parametrize("duplicate_map_key", [False, True], ids=["ontology_value", "map_key"])
++def test_uniqueness_gate_rejects_duplicates(tmp_path, monkeypatch, duplicate_map_key):
++    """Keep the deliberate-break acceptance gate reproducible without editing source data."""
++    data = load_legal_clauses()
++    _assert_vocabulary(data)
++    clauses = list(data["clauses"].values())
++    first_key = clauses[0]["ontology_key"]
++    second_key = clauses[1]["ontology_key"]
++    clauses[1]["ontology_key"] = first_key
++    text = json.dumps(data)
++    if duplicate_map_key:
++        text = text.replace(json.dumps(second_key), json.dumps(first_key), 1)
++    broken_vocab = tmp_path / "legal-clauses.json"
++    broken_vocab.write_text(text, encoding="utf-8")
++    monkeypatch.setattr("doc_lineage.vocab.files", lambda package: broken_vocab.parent)
++    message = "Duplicate JSON map key" if duplicate_map_key else "Duplicate ontology_key values"
++    error = ValueError if duplicate_map_key else AssertionError
++    with pytest.raises(error, match=message):
++        test_legal_clauses_minimum_keys_and_unique()
++
++
++@pytest.mark.parametrize("count", [19, 20], ids=["below_minimum", "at_minimum"])
++def test_minimum_count_gate_boundary(tmp_path, monkeypatch, count):
++    data = load_legal_clauses()
++    _assert_vocabulary(data)
++    required_key = "legal.withdrawal.notice_days"
++    other_keys = [key for key in data["clauses"] if key != required_key]
++    keys = [required_key, *other_keys[: count - 1]]
++    data["clauses"] = {key: data["clauses"][key] for key in keys}
++    candidate = tmp_path / "legal-clauses.json"
++    candidate.write_text(json.dumps(data), encoding="utf-8")
++    monkeypatch.setattr("doc_lineage.vocab.files", lambda package: candidate.parent)
++    if count < 20:
++        with pytest.raises(AssertionError):
++            test_legal_clauses_minimum_keys_and_unique()
++    else:
++        test_legal_clauses_minimum_keys_and_unique()
++
++
++@pytest.mark.parametrize(
++    "invalid_key",
++    [
++        "legal.notice_days",
++        "other.withdrawal.notice_days",
++        "legal.Withdrawal.notice_days",
++        "legal.withdrawal.notice-days",
++        "legal.withdrawal.1notice",
++        "legal.withdrawal.notice_days\n",
++    ],
++)
++def test_ontology_key_pattern_gate_rejects_invalid_keys(tmp_path, monkeypatch, invalid_key):
++    data = load_legal_clauses()
++    _assert_vocabulary(data)
++    original_key = next(key for key in data["clauses"] if key != "legal.withdrawal.notice_days")
++    clause = data["clauses"].pop(original_key)
++    clause["ontology_key"] = invalid_key
++    data["clauses"][invalid_key] = clause
++    candidate = tmp_path / "legal-clauses.json"
++    candidate.write_text(json.dumps(data), encoding="utf-8")
++    monkeypatch.setattr("doc_lineage.vocab.files", lambda package: candidate.parent)
++    with pytest.raises(AssertionError):
++        test_legal_clauses_minimum_keys_and_unique()
+diff --git a/vocab/legal-clauses.json b/vocab/legal-clauses.json
+new file mode 100644
+index 0000000..31511c9
+--- /dev/null
++++ b/vocab/legal-clauses.json
+@@ -0,0 +1,147 @@
++{
++  "schema_version": "1.0.0",
++  "version": "1.0.0",
++  "non_authoritative": false,
++  "description": "Canonical Doc-Lineage identifiers; project-defined adaptations of public clause topics, not source-issued identifiers or recommended contract terms.",
++  "sources": {
++    "ILPA": {
++      "title": "ILPA Principles 3.0",
++      "url": "https://ilpa.org/wp-content/uploads/2019/06/ILPA-Principles-3.0_2019.pdf"
++    },
++    "CUAD": {
++      "title": "Contract Understanding Atticus Dataset v1",
++      "url": "https://www.atticusprojectai.org/cuad/",
++      "license": "CC BY 4.0"
++    },
++    "owner_default": {
++      "title": "B2 owner default: withdrawal tracking for R1"
++    }
++  },
++  "clauses": {
++    "legal.fees.management_rate": {
++      "ontology_key": "legal.fees.management_rate",
++      "label": "Management fee rate",
++      "source": "ILPA"
++    },
++    "legal.fees.management_basis": {
++      "ontology_key": "legal.fees.management_basis",
++      "label": "Management fee calculation basis",
++      "source": "ILPA"
++    },
++    "legal.fees.offsets": {
++      "ontology_key": "legal.fees.offsets",
++      "label": "Management fee offsets",
++      "source": "ILPA"
++    },
++    "legal.expenses.fund_allocation": {
++      "ontology_key": "legal.expenses.fund_allocation",
++      "label": "Allocation of fund expenses",
++      "source": "ILPA"
++    },
++    "legal.economics.carried_interest": {
++      "ontology_key": "legal.economics.carried_interest",
++      "label": "Carried interest",
++      "source": "ILPA"
++    },
++    "legal.economics.preferred_return": {
++      "ontology_key": "legal.economics.preferred_return",
++      "label": "Preferred return",
++      "source": "ILPA"
++    },
++    "legal.economics.clawback": {
++      "ontology_key": "legal.economics.clawback",
++      "label": "Return of excess carried interest",
++      "source": "ILPA"
++    },
++    "legal.economics.gp_commitment": {
++      "ontology_key": "legal.economics.gp_commitment",
++      "label": "General partner capital commitment",
++      "source": "ILPA"
++    },
++    "legal.fund.term": {
++      "ontology_key": "legal.fund.term",
++      "label": "Fund duration and extensions",
++      "source": "ILPA"
++    },
++    "legal.fund.investment_period": {
++      "ontology_key": "legal.fund.investment_period",
++      "label": "Investment period",
++      "source": "ILPA"
++    },
++    "legal.governance.key_person": {
++      "ontology_key": "legal.governance.key_person",
++      "label": "Key person provisions",
++      "source": "ILPA"
++    },
++    "legal.governance.gp_removal": {
++      "ontology_key": "legal.governance.gp_removal",
++      "label": "General partner removal",
++      "source": "ILPA"
++    },
++    "legal.governance.lpac": {
++      "ontology_key": "legal.governance.lpac",
++      "label": "Limited partner advisory committee",
++      "source": "ILPA"
++    },
++    "legal.governance.conflicts": {
++      "ontology_key": "legal.governance.conflicts",
++      "label": "Conflict approval provisions",
++      "source": "ILPA"
++    },
++    "legal.reporting.financial_statements": {
++      "ontology_key": "legal.reporting.financial_statements",
++      "label": "Financial reporting obligations",
++      "source": "ILPA"
++    },
++    "legal.withdrawal.notice_days": {
++      "ontology_key": "legal.withdrawal.notice_days",
++      "label": "Withdrawal notice period in days",
++      "source": "owner_default"
++    },
++    "legal.withdrawal.gates": {
++      "ontology_key": "legal.withdrawal.gates",
++      "label": "Limits on withdrawals",
++      "source": "owner_default"
++    },
++    "legal.withdrawal.suspension": {
++      "ontology_key": "legal.withdrawal.suspension",
++      "label": "Suspension of withdrawals",
++      "source": "owner_default"
++    },
++    "legal.governing_law.jurisdiction": {
++      "ontology_key": "legal.governing_law.jurisdiction",
++      "label": "Governing law",
++      "source": "CUAD"
++    },
++    "legal.transfer.assignment": {
++      "ontology_key": "legal.transfer.assignment",
++      "label": "Restrictions on assignment",
++      "source": "CUAD"
++    },
++    "legal.termination.notice_period": {
++      "ontology_key": "legal.termination.notice_period",
++      "label": "Notice period for termination",
++      "source": "CUAD"
++    },
++    "legal.termination.convenience": {
++      "ontology_key": "legal.termination.convenience",
++      "label": "Termination without cause",
++      "source": "CUAD"
++    },
++    "legal.renewal.term": {
++      "ontology_key": "legal.renewal.term",
++      "label": "Renewal term",
++      "source": "CUAD"
++    },
++    "legal.liability.cap": {
++      "ontology_key": "legal.liability.cap",
++      "label": "Limitation of liability",
++      "source": "CUAD"
++    },
++    "legal.rights.most_favored_nation": {
++      "ontology_key": "legal.rights.most_favored_nation",
++      "label": "Most favored nation rights",
++      "source": "CUAD"
++    }
++  }
++}

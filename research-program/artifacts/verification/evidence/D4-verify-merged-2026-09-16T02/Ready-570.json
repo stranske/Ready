@@ -1,0 +1,24 @@
+{
+  "body": "<!-- pr-preamble:start -->\n<!-- meta:issue:557 -->\n> **Source:** Issue #557\n\nCloses #557\n\n<!-- pr-preamble:end -->\n\n<!-- auto-status-summary:start -->\n## Automated Status Summary\n#### Scope\nThe repository configuration in pyproject.toml defines ruff exclusion rules via extend-exclude = [\"research-program/artifacts\"] at line 64, but tool.black at lines 102-105 lacks an equivalent exclusion rule. Consequently, running black --check . evaluates machine-generated, unformatted Python scripts published under research-program/artifacts (such as research-program/artifacts/audits/Fine-Art-Archive-2026-09-05-resume/finalize.py). This causes CI formatting checks in Python CI / lint-format to fail on main with exit code 1. Adding extend-exclude = 'research-program/artifacts' under tool.black ensures that published research artifacts do not trigger false-positive CI format gate failures.\n\n<!-- Updated WORKFLOW_OUTPUTS.md context:start -->\n## Context for Agent\n\n### Related Issues/PRs\n- [#567](https://github.com/stranske/Ready/issues/567)\n<!-- Updated WORKFLOW_OUTPUTS.md context:end -->\n\n#### Tasks\n- [x] Add extend-exclude = 'research-program/artifacts' to tool.black in pyproject.toml\n- [x] Add a regression test in tests/test_repo_hygiene.py asserting pyproject.toml tool.black contains the extend-exclude setting\n\n#### Acceptance criteria\n- [x] `black --check .` executes and passes with exit code 0 on the repository root.\n- [x] `pytest tests/test_repo_hygiene.py` passes all assertions.\n- [x] Deliberate-break demonstration: removing extend-exclude from tool.black in pyproject.toml causes `black --check .` to fail with exit code 1 when unformatted artifact files exist, and reverting restores pass.\n\n<!-- auto-status-summary:end -->\n\n<!-- This is an auto-generated comment: release notes by coderabbit.ai -->\n## Summary by CodeRabbit\n\n* **Tests**\n  * Added coverage to verify formatting tools exclude published research artifacts as configured.\n  * Added integration checks confirming excluded artifacts are skipped while improperly formatted regular source files remain flagged.\n<!-- end of auto-generated comment: release notes by coderabbit.ai -->\n\n\n## Opener review recovery \u2014 2026-09-14T05:00Z\n\nRequired checks are green, but reviewer findings still need implementation or evidence-based disposition. Completion checkboxes do not clear these findings.\n\n- [x] Preserve Black force-exclude behavior for explicit artifact paths; verify recursive and explicit-path regression tests, and demonstrate that replacing force-exclude with extend-exclude fails the explicit-path test. Address active thread https://github.com/stranske/Ready/pull/570#discussion_r4002180790.\n",
+  "closingIssuesReferences": [
+    {
+      "id": "I_kwDORbgIC88AAAABQBlHZw",
+      "number": 557,
+      "repository": {
+        "id": "R_kgDORbgICw",
+        "name": "Ready",
+        "owner": {
+          "id": "MDQ6VXNlcjIzMDQ2MzIy",
+          "login": "stranske"
+        }
+      },
+      "url": "https://github.com/stranske/Ready/issues/557"
+    }
+  ],
+  "mergeCommit": {
+    "oid": "4d90bfb83c077dd8dbbdab80202b57f47c5391ca"
+  },
+  "mergedAt": "2026-09-15T02:51:19Z",
+  "number": 570,
+  "title": "test(hygiene): protect generated artifact formatter exclusion"
+}

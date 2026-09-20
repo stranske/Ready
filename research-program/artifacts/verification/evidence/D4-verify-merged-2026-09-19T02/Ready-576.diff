@@ -1,0 +1,61 @@
+diff --git a/.github/workflows/publication-guard.yml b/.github/workflows/publication-guard.yml
+index 9136f71..8a8c6cb 100644
+--- a/.github/workflows/publication-guard.yml
++++ b/.github/workflows/publication-guard.yml
+@@ -18,4 +18,11 @@ jobs:
+           python-version: '3.12'
+       - name: Check published research
+         run: python scripts/check_publication_safety.py
+-
++      - name: Prepare publication staging copy
++        run: |
++          set -euo pipefail
++          staging="$(mktemp -d)"
++          trap 'rm -rf "$staging"' EXIT
++          cp -a research-program "$staging/research-program"
++          python scripts/prepare_publication.py --staging-root "$staging/research-program"
++          python scripts/check_publication_safety.py --root "$staging/research-program" --allowlist .publication-allow
+diff --git a/README.md b/README.md
+index a90a4f1..655813f 100644
+--- a/README.md
++++ b/README.md
+@@ -61,8 +61,8 @@ falling back to a permissive parent policy. The selected policy is scanned for
+ findings but does not count as publication content; a policy-only tree fails the
+ zero-files check.
+ 
+-Preparation is an explicit operator step; CI runs only the scanner and does not
+-redact files. On a separate staging copy, run
++Preparation is an explicit operator step; CI also exercises it on a disposable
++staging copy after the direct scanner pass. On a separate staging copy, run
+ `python scripts/prepare_publication.py --staging-root <staging-copy>` followed by
+ `python scripts/check_publication_safety.py --root <staging-copy> --allowlist <reviewed-allowlist>`.
+ Publish only after both commands succeed. Preparation replaces private path,
+diff --git a/tests/test_publication_safety.py b/tests/test_publication_safety.py
+index a5e22bc..0f9ea6b 100644
+--- a/tests/test_publication_safety.py
++++ b/tests/test_publication_safety.py
+@@ -56,6 +56,8 @@ def load_scanner():
+                 "[REDACTED_CREDENTIAL]",
+             )
+         ],
++        ("-----BEGIN PRIVATE KEY-----", "private-key"),
++        ("-----BEGIN ENCRYPTED PRIVATE KEY-----", "private-key"),
+         ("-----[PRIVATE_KEY_HEADER]-----", "private-key"),
+         ("-----[PRIVATE_KEY_HEADER]-----", "private-key"),
+         ("[LOCAL_WORKSPACE]/Repo/file.py", "scratch-path"),
+@@ -354,6 +356,15 @@ def test_nonregular_allowlist_fails_without_blocking_scan(tmp_path, location, ki
+     assert "errors=1" in result.stdout
+ 
+ 
++def test_publication_guard_workflow_runs_prepare_then_scan():
++    workflow = (REPO / ".github/workflows/publication-guard.yml").read_text()
++    assert "prepare_publication.py" in workflow
++    assert "check_publication_safety.py --root" in workflow
++    assert workflow.index("prepare_publication.py") < workflow.index(
++        "check_publication_safety.py --root"
++    )
++
++
+ @pytest.mark.parametrize(
+     "result,expected",
+     [

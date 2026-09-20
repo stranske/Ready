@@ -1,0 +1,231 @@
+diff --git a/.github/workflows/reusable-codex-run.yml b/.github/workflows/reusable-codex-run.yml
+index bac49fc9b..b5a3f579d 100644
+--- a/.github/workflows/reusable-codex-run.yml
++++ b/.github/workflows/reusable-codex-run.yml
+@@ -931,6 +931,41 @@ jobs:
+             SANDBOX="workspace-write"
+           fi
+ 
++          # --- Codex Linux sandbox repair (openai/codex#15982, #17337, #19235) ---
++          # codex's workspace-write sandbox shells out to bubblewrap, which unshares the
++          # network namespace and then brings up loopback. Bringing up `lo` needs CAP_NET_ADMIN
++          # inside that namespace, and Ubuntu 24.04+ images ship
++          # kernel.apparmor_restrict_unprivileged_userns=1, which withholds it. Every shell
++          # command then dies before it runs with:
++          #     bwrap: loopback: Failed RTM_NEWADDR: Operation not permitted
++          # codex reports that as a SUCCESSFUL turn with no files changed, so from the outside
++          # a totally blocked agent is indistinguishable from one that had nothing to do.
++          # Measured 2026-09-13: every codex keepalive run across the fleet was inert this way.
++          #
++          # First try to restore the capability, which keeps the sandbox exactly as designed.
++          # Runners grant passwordless sudo; if that ever stops being true, this is a no-op and
++          # the network-access fallback below still rescues the run.
++          # Scoped to workspace-write: a read-only run never needs the capability, and the
++          # sysctl is a host-wide mitigation that would then stay off for the rest of the
++          # runner's life for no benefit. The keepalive E2E caller runs read-only.
++          # Matches the bubblewrap startup diagnostic on its own stderr line. Anchoring to the
++          # start of a line is what keeps it from firing on the agent's own prose: codex writes
++          # its --json event stream into the same capture file, one JSON object per line, so
++          # every agent_message line begins with '{'. An unanchored "bwrap:" would let a run
++          # that merely DISCUSSES this incident trigger the retry and then be forced to exit 1.
++          SANDBOX_STARTUP_FAILURE_RE='^bwrap: '
++          SANDBOX_USERNS_RELAXED="no"
++          if [ "$SANDBOX" = "workspace-write" ] &&
++            [ "$(cat /proc/sys/kernel/apparmor_restrict_unprivileged_userns 2>/dev/null || echo 0)" = "1" ]; then
++            if sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0 >/dev/null 2>&1; then
++              SANDBOX_USERNS_RELAXED="yes"
++              echo "Relaxed kernel.apparmor_restrict_unprivileged_userns for the codex sandbox."
++            else
++              echo "::warning::Could not relax apparmor_restrict_unprivileged_userns; " \
++                "relying on the sandbox network-access fallback if bwrap fails."
++            fi
++          fi
++
+           # Parse EXTRA_ARGS_RAW safely (no eval). Supports:
+           #  - JSON array: ["--flag", "value"]
+           #  - string: "--flag value --other=123" (shell-like splitting)
+@@ -984,7 +1019,7 @@ jobs:
+           echo "Prompt file: $PROMPT_FILE"
+           echo "Model candidates: ${CODEX_MODEL_CANDIDATES:-}"
+           echo "Model selection reason: ${CODEX_MODEL_SELECTION_REASON:-input}"
+-          echo "Sandbox: $SANDBOX"
++          echo "Sandbox: $SANDBOX (userns restriction relaxed: ${SANDBOX_USERNS_RELAXED:-n/a})"
+           if [ "${#EXTRA_ARGS[@]}" -gt 0 ]; then
+             echo "Extra args: provided (${#EXTRA_ARGS[@]} arg(s))"
+           fi
+@@ -1110,6 +1145,38 @@ jobs:
+             cat "$attempt_session" >> "$SESSION_JSONL"
+             selected_model="$codex_model"
+ 
++            # A bwrap startup failure is NOT a model problem and does NOT set a non-zero
++            # exit code — codex exits 0 having run nothing. Detect it explicitly and retry the
++            # same model once with network access enabled in the workspace-write sandbox, which
++            # makes bwrap share the host network namespace instead of unsharing it, so the
++            # loopback setup that fails is never attempted. Filesystem confinement — the part
++            # that actually matters on an ephemeral runner — is unchanged.
++            if grep -Eq "$SANDBOX_STARTUP_FAILURE_RE" "$attempt_session" 2>/dev/null &&
++              [ "${SANDBOX_NETWORK_FALLBACK_USED:-no}" = "no" ] &&
++              [ "$SANDBOX" = "workspace-write" ]; then
++              echo "::warning::codex sandbox failed to start (bwrap); retrying with " \
++                "sandbox network access enabled."
++              SANDBOX_NETWORK_FALLBACK_USED="yes"
++              rm -f "$OUTPUT_FILE"
++              cmd+=(--config "sandbox_workspace_write.network_access=true")
++              CODEX_EXIT=0
++              "${cmd[@]}" "$prompt_content" > "$attempt_session" 2>&1 || CODEX_EXIT=$?
++              cat "$attempt_session" >> "$SESSION_JSONL"
++            fi
++
++            # Never report a sandbox that never started as a successful run. Reporting success
++            # here is what let the dispatch debounce record a terminal completion for a run
++            # that produced nothing, latching the keepalive loop shut (#3433).
++            if grep -Eq "$SANDBOX_STARTUP_FAILURE_RE" "$attempt_session" 2>/dev/null; then
++              echo "::error::codex sandbox failed to start; the agent executed no commands. " \
++                "See openai/codex#15982."
++              if [ "$CODEX_EXIT" -eq 0 ]; then
++                CODEX_EXIT=1
++              fi
++              selected_model="$codex_model"
++              break
++            fi
++
+             if [ "$CODEX_EXIT" -eq 0 ]; then
+               if [ "$attempt" -gt 1 ]; then
+                 selected_reason="runtime-fallback-model-unavailable"
+diff --git a/tests/workflows/test_codex_sandbox_startup_failure.py b/tests/workflows/test_codex_sandbox_startup_failure.py
+new file mode 100644
+index 000000000..0720a618f
+--- /dev/null
++++ b/tests/workflows/test_codex_sandbox_startup_failure.py
+@@ -0,0 +1,131 @@
++"""The codex sandbox-startup detection must fire on stderr and never on the agent's prose.
++
++Background (#3438): codex's workspace-write sandbox shells out to bubblewrap, which cannot
++bring up loopback on Ubuntu 24.04+ runners. Every shell command dies before it runs and codex
++reports the turn as a SUCCESS, so the workflow has to detect the failure itself.
++
++The detection reads the capture file that holds BOTH codex's ``--json`` event stream and its
++stderr. That is the trap: an unanchored ``bwrap:`` match would also fire on an ``agent_message``
++that merely quotes the error — including an agent working on this very incident — which would
++retry a healthy run with a weakened sandbox and then force it to exit 1. These tests run the
++workflow's own pattern against both shapes.
++"""
++
++from __future__ import annotations
++
++import re
++import subprocess
++from pathlib import Path
++
++import pytest
++import yaml
++
++ROOT = Path(__file__).resolve().parents[2]
++WORKFLOW = ROOT / ".github" / "workflows" / "reusable-codex-run.yml"
++
++REAL_STDERR_LINE = "bwrap: loopback: Failed RTM_NEWADDR: Operation not permitted"
++AGENT_MESSAGE_QUOTING_THE_ERROR = (
++    '{"type":"item.completed","item":{"id":"item_1","type":"agent_message","text":'
++    '"I fixed the sandbox repair: bwrap: loopback: Failed RTM_NEWADDR no longer blocks us."}}'
++)
++
++
++def _codex_run_step_body() -> str:
++    document = yaml.safe_load(WORKFLOW.read_text(encoding="utf-8"))
++    bodies = [
++        step["run"]
++        for job in document["jobs"].values()
++        for step in job.get("steps", [])
++        if isinstance(step.get("run"), str) and "codex exec" in step["run"]
++    ]
++    assert len(bodies) == 1, f"expected exactly one codex exec step, found {len(bodies)}"
++    return bodies[0]
++
++
++@pytest.fixture(scope="module")
++def sandbox_failure_pattern() -> str:
++    """The regex the workflow actually uses, read out of the workflow itself."""
++    match = re.search(
++        r"^\s*SANDBOX_STARTUP_FAILURE_RE='([^']+)'", _codex_run_step_body(), re.MULTILINE
++    )
++    assert match, "SANDBOX_STARTUP_FAILURE_RE is not defined in the codex exec step"
++    return match.group(1)
++
++
++def _matches(pattern: str, text: str) -> bool:
++    """Run the pattern exactly as the workflow does: grep -Eq over the capture file."""
++    result = subprocess.run(
++        ["grep", "-Eq", pattern],
++        input=text,
++        text=True,
++        capture_output=True,
++        check=False,
++    )
++    return result.returncode == 0
++
++
++def test_detects_a_real_sandbox_startup_failure(sandbox_failure_pattern: str) -> None:
++    capture = "Reading additional input from stdin...\n" + REAL_STDERR_LINE + "\n"
++
++    assert _matches(sandbox_failure_pattern, capture)
++
++
++def test_does_not_fire_on_an_agent_message_that_quotes_the_error(
++    sandbox_failure_pattern: str,
++) -> None:
++    """A successful run that merely discusses bubblewrap must not be treated as blocked."""
++    capture = (
++        '{"type":"thread.started","thread_id":"abc"}\n'
++        + AGENT_MESSAGE_QUOTING_THE_ERROR
++        + "\n"
++        + '{"type":"turn.completed","usage":{"output_tokens":42}}\n'
++    )
++
++    assert not _matches(sandbox_failure_pattern, capture)
++
++
++def test_does_not_fire_on_a_clean_session(sandbox_failure_pattern: str) -> None:
++    capture = (
++        '{"type":"thread.started","thread_id":"abc"}\n'
++        '{"type":"item.completed","item":{"type":"agent_message","text":"Added the loader."}}\n'
++    )
++
++    assert not _matches(sandbox_failure_pattern, capture)
++
++
++def test_the_pattern_is_anchored(sandbox_failure_pattern: str) -> None:
++    """Pin the property, not just the behaviour.
++
++    Dropping the anchor is the single edit that reintroduces the false positive, and it would
++    still pass a test that only checked the real stderr line.
++    """
++    assert sandbox_failure_pattern.startswith("^"), sandbox_failure_pattern
++
++
++def test_sandbox_repair_is_scoped_to_workspace_write() -> None:
++    """A read-only run must not disable a host-wide kernel mitigation it cannot benefit from."""
++    body = _codex_run_step_body()
++    guard = re.search(
++        r'if \[ "\$SANDBOX" = "workspace-write" \] &&\s*\n'
++        r'\s*\[ "\$\(cat /proc/sys/kernel/apparmor_restrict_unprivileged_userns',
++        body,
++    )
++    assert guard, "the apparmor relaxation is not gated on SANDBOX = workspace-write"
++
++
++def test_network_fallback_is_bounded_and_scoped() -> None:
++    body = _codex_run_step_body()
++    assert "SANDBOX_NETWORK_FALLBACK_USED:-no" in body, "the retry is not guarded by a flag"
++    assert body.count('SANDBOX_NETWORK_FALLBACK_USED="yes"') == 1, "the guard is never set"
++    assert "sandbox_workspace_write.network_access=true" in body
++
++
++def test_a_failed_sandbox_cannot_report_success() -> None:
++    """codex exits 0 when its sandbox dies; that is what let a dead run look healthy."""
++    body = _codex_run_step_body()
++    forced = re.search(
++        r'if grep -Eq "\$SANDBOX_STARTUP_FAILURE_RE" "\$attempt_session" 2>/dev/null; then'
++        r"(?:.|\n)*?CODEX_EXIT=1",
++        body,
++    )
++    assert forced, "a detected sandbox startup failure does not force a non-zero exit"

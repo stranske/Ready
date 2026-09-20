@@ -1,0 +1,151 @@
+diff --git a/scripts/check_deliberate_break.py b/scripts/check_deliberate_break.py
+index ff750e46..19eba93f 100644
+--- a/scripts/check_deliberate_break.py
++++ b/scripts/check_deliberate_break.py
+@@ -157,7 +157,7 @@ def _extract_fallback_test_name(named_line: str) -> str | None:
+     if unquoted:
+         name = unquoted.group(1)
+         tail = named_line[unquoted.end() :]
+-        if not tail or tail[0] not in "_A-Za-z0-9":
++        if not tail or not (tail[0].isalnum() or tail[0] == "_"):
+             return name
+     return None
+ 
+@@ -226,13 +226,13 @@ def _infer_break_file(break_line: str, named_line: str, markdown: str) -> str |
+     for text in (named_line, markdown):
+         ordered_paths.extend(_candidate_paths(text))
+ 
+-    workflow_paths = [
+-        path
+-        for path in ordered_paths
+-        if ".github/workflows/" in path or path.endswith((".yml", ".yaml"))
+-    ]
+-    if workflow_paths:
+-        return workflow_paths[0]
++    github_workflow_paths = [path for path in ordered_paths if ".github/workflows/" in path]
++    if github_workflow_paths:
++        return github_workflow_paths[0]
++
++    yaml_paths = [path for path in ordered_paths if path.endswith((".yml", ".yaml"))]
++    if yaml_paths:
++        return yaml_paths[0]
+ 
+     return ordered_paths[0] if ordered_paths else None
+ 
+diff --git a/templates/consumer-repo/scripts/check_deliberate_break.py b/templates/consumer-repo/scripts/check_deliberate_break.py
+index c7edd46c..19eba93f 100644
+--- a/templates/consumer-repo/scripts/check_deliberate_break.py
++++ b/templates/consumer-repo/scripts/check_deliberate_break.py
+@@ -157,7 +157,7 @@ def _extract_fallback_test_name(named_line: str) -> str | None:
+     if unquoted:
+         name = unquoted.group(1)
+         tail = named_line[unquoted.end() :]
+-        if not tail or tail[0] not in "_A-Za-z0-9":
++        if not tail or not (tail[0].isalnum() or tail[0] == "_"):
+             return name
+     return None
+ 
+@@ -226,10 +226,15 @@ def _infer_break_file(break_line: str, named_line: str, markdown: str) -> str |
+     for text in (named_line, markdown):
+         ordered_paths.extend(_candidate_paths(text))
+ 
+-    workflow_paths = [
+-        path for path in ordered_paths if path.endswith((".yml", ".yaml")) and "/workflows/" in path
+-    ]
+-    return (workflow_paths or ordered_paths or [None])[0]
++    github_workflow_paths = [path for path in ordered_paths if ".github/workflows/" in path]
++    if github_workflow_paths:
++        return github_workflow_paths[0]
++
++    yaml_paths = [path for path in ordered_paths if path.endswith((".yml", ".yaml"))]
++    if yaml_paths:
++        return yaml_paths[0]
++
++    return ordered_paths[0] if ordered_paths else None
+ 
+ 
+ def parse_deliberate_break_spec(markdown: str) -> DeliberateBreakSpec | None:
+diff --git a/tests/scripts/test_check_deliberate_break.py b/tests/scripts/test_check_deliberate_break.py
+index 6110fea6..a2a90c47 100644
+--- a/tests/scripts/test_check_deliberate_break.py
++++ b/tests/scripts/test_check_deliberate_break.py
+@@ -187,20 +187,70 @@ def test_fallback_test_name_parser_rejects_near_misses_and_accepts_valid_tokens(
+     )
+ 
+ 
+-def test_consumer_template_fallback_test_name_matches_main_parser() -> None:
++def test_unquoted_fallback_test_name_treats_hyphen_as_boundary() -> None:
++    """A literal '_A-Za-z0-9' membership check misread '-' as identifier continuation."""
++    assert (
++        _extract_fallback_test_name("Named test: run `tests/test_app.py` with test_widget-extra.")
++        == "test_widget"
++    )
++    assert (
++        _extract_fallback_test_name("Named test: run `tests/test_app.py` with test_widget7.")
++        == "test_widget7"
++    )
++
++
++def _load_consumer_deliberate_break_helpers() -> dict[str, object]:
+     consumer_path = (
+         Path(__file__).resolve().parents[2]
+         / "templates/consumer-repo/scripts/check_deliberate_break.py"
+     )
+     consumer_source = consumer_path.read_text(encoding="utf-8")
+-    start = consumer_source.index("def _extract_fallback_test_name")
+-    end = consumer_source.index("\ndef _fallback_marker", start)
+-    namespace: dict[str, object] = {}
+-    exec(consumer_source[start:end], {"re": __import__("re")}, namespace)
+-    consumer_extract = namespace["_extract_fallback_test_name"]
+-
+-    sample = "Named test: `tests/test_app.py` with test_widget."
+-    assert consumer_extract(sample) == _extract_fallback_test_name(sample)
++    namespace: dict[str, object] = {"re": __import__("re")}
++    extract_start = consumer_source.index("def _extract_fallback_test_name")
++    extract_end = consumer_source.index("\ndef _fallback_marker", extract_start)
++    exec(consumer_source[extract_start:extract_end], namespace, namespace)
++    infer_start = consumer_source.index("def _infer_break_file")
++    infer_end = consumer_source.index("\ndef parse_deliberate_break_spec", infer_start)
++    exec(consumer_source[infer_start:infer_end], namespace, namespace)
++    return namespace
++
++
++def test_consumer_template_fallback_test_name_matches_main_parser() -> None:
++    consumer_extract = _load_consumer_deliberate_break_helpers()["_extract_fallback_test_name"]
++
++    for sample in (
++        "Named test: `tests/test_app.py` with test_widget.",
++        "Named test: run `tests/test_app.py` with test_widget-extra.",
++        "Named test: run `tests/test_app.py` with test_widget7.",
++        "Named test: `tests/test_app.py` with `test_widget`.",
++    ):
++        assert consumer_extract(sample) == _extract_fallback_test_name(sample)
++
++
++def test_consumer_template_infer_break_file_prefers_workflow_path() -> None:
++    consumer_infer = _load_consumer_deliberate_break_helpers()["_infer_break_file"]
++
++    assert (
++        consumer_infer(
++            break_line="- [ ] Deliberate break: temporarily break the named test.",
++            named_line="- [ ] Named test: add `tests/test_widget.py` with `test_widget`.",
++            markdown="## Scope\n- [ ] Update `.github/workflows/ci.yml`.\n",
++        )
++        == ".github/workflows/ci.yml"
++    )
++
++    assert (
++        consumer_infer(
++            break_line="- [ ] Deliberate break: prove the named test fails.",
++            named_line="- [ ] Named test: add `tests/test_widget.py` with `test_widget`.",
++            markdown=(
++                "## Scope\n"
++                "- [ ] Touch `config/app.yaml`.\n"
++                "- [ ] Update `.github/workflows/reusable-ci.yml`.\n"
++            ),
++        )
++        == ".github/workflows/reusable-ci.yml"
++    )
+ 
+ 
+ def test_explicit_marker_outside_acceptance_section_is_honored() -> None:

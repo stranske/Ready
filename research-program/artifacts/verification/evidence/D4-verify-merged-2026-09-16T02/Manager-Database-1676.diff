@@ -1,0 +1,589 @@
+diff --git a/.env.example b/.env.example
+index bd4540e0..85c024f6 100644
+--- a/.env.example
++++ b/.env.example
+@@ -20,6 +20,9 @@ DB_SNAPSHOT_KMS_KEY_ID=
+ # UI and API endpoints
+ UI_USERNAME=
+ UI_PASSWORD=
++# Independent random UI JWT signing secret (at least 32 characters).
++# Rotate with UI_PASSWORD to invalidate existing UI cookies; do not reuse chat secrets.
++UI_COOKIE_KEY=
+ UI_OFFLINE=0
+ API_BASE_URL=http://[LOCAL_HOST]
+ DATA_API_URL=
+diff --git a/docker-compose.yml b/docker-compose.yml
+index ab807f6a..b9d820b8 100644
+--- a/docker-compose.yml
++++ b/docker-compose.yml
+@@ -84,6 +84,7 @@ services:
+       <<: [*shared-db-env, *shared-minio-env]
+       UI_USERNAME: ${UI_USERNAME:-}
+       UI_PASSWORD: ${UI_PASSWORD:-}
++      UI_COOKIE_KEY: ${UI_COOKIE_KEY:-}
+     ports:
+       - "8501:8501"
+     depends_on:
+diff --git a/docs/deploy/INTERNAL_HOSTING.md b/docs/deploy/INTERNAL_HOSTING.md
+index f33bc4ee..13b42931 100644
+--- a/docs/deploy/INTERNAL_HOSTING.md
++++ b/docs/deploy/INTERNAL_HOSTING.md
+@@ -60,8 +60,16 @@ host environment variables into the `ui` container:
+ ```bash
+ export UI_USERNAME="<analyst-username>"
+ export UI_PASSWORD="<strong-password>"
++export UI_COOKIE_KEY="<independent-random-secret-at-least-32-characters>"
+ ```
+ 
++Generate `UI_COOKIE_KEY` from cryptographically secure random bytes and keep it
++independent of the login password and `CHAT_SESSION_COOKIE_SECRET`. Configured
++login fails closed if it is missing or shorter than 32 characters. Rotate it
++alongside `UI_PASSWORD` when existing UI reauthentication cookies must be
++invalidated. The password hash is cached across reruns and replaced when the
++configured password changes.
++
+ ## LLM boundary: the `LLM_ZONE` switch
+ 
+ The chat (Research) page is the **only** external-LLM boundary. The provider
+diff --git a/pyproject.toml b/pyproject.toml
+index e6537f9d..b06427bd 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -18,9 +18,9 @@ dependencies = [
+     "boto3",
+     "python-json-logger",
+     "psycopg[binary]",
+-    "streamlit",
++    "streamlit==1.60.0",
+     "pandas",
+-    "streamlit-authenticator",
++    "streamlit-authenticator==0.4.2",
+     "altair",
+     # Prefect requires newer FastAPI; avoid conflicting pin.
+     "fastapi",
+@@ -40,6 +40,7 @@ mgrdb-app = "ui.launch:main"
+ [project.optional-dependencies]
+ app = []
+ dev = [
++    "extra-streamlit-components==0.1.81",
+     "pytest==9.1.1",
+     "pytest-asyncio",
+     "pytest-cov==7.1.0",
+@@ -92,6 +93,7 @@ markers = [
+ 
+ [tool.black]
+ line-length = 100
++target-version = ["py312"]
+ workers = 1
+ force-exclude = "(^|.*/)(\\.git|\\.hg|\\.mypy_cache|\\.nox|\\.tox|\\.venv|_build|buck-out|build|dist|node_modules|\\.workflows-lib)(/|$)"
+ 
+@@ -143,4 +145,4 @@ module = [
+     "task_validator",
+     "injection_guard",
+ ]
+-ignore_errors = true
+\ No newline at end of file
++ignore_errors = true
+diff --git a/requirements.lock b/requirements.lock
+index 73113ef8..52ab5f3b 100644
+--- a/requirements.lock
++++ b/requirements.lock
+@@ -137,7 +137,9 @@ edgartools==5.44.0
+ exceptiongroup==1.3.1
+     # via prefect
+ extra-streamlit-components==0.1.81
+-    # via streamlit-authenticator
++    # via
++    #   manager-database (pyproject.toml)
++    #   streamlit-authenticator
+ fakeredis==2.37.0
+     # via manager-database (pyproject.toml)
+ fastapi==0.140.0
+diff --git a/requirements.txt b/requirements.txt
+index 49a25582..bce62d32 100644
+--- a/requirements.txt
++++ b/requirements.txt
+@@ -14,9 +14,9 @@ black
+ ruff
+ pre-commit
+ psycopg[binary]
+-streamlit
++streamlit==1.60.0
+ pandas
+-streamlit-authenticator
++streamlit-authenticator==0.4.2
+ altair
+ mypy
+ coverage
+diff --git a/tests/test_ui_auth.py b/tests/test_ui_auth.py
+index 62d6bc4e..c2ecc06b 100644
+--- a/tests/test_ui_auth.py
++++ b/tests/test_ui_auth.py
+@@ -1,135 +1,252 @@
+ import importlib
+-import sys
+-from pathlib import Path
+-from types import SimpleNamespace
++import os
++from unittest.mock import PropertyMock, patch
+ 
+-sys.path.append(str(Path(__file__).resolve().parents[1]))
++import pytest
++from streamlit.testing.v1 import AppTest
+ 
++APP_SOURCE = (
++    "import streamlit as st\n"
++    "from ui import require_login\n"
++    "if require_login():\n"
++    "    st.write('Protected content')\n"
++    "else:\n"
++    "    st.write('Access denied')\n"
++)
+ 
+-class FakeStreamlit:
+-    def __init__(self, session_state=None):
+-        self.session_state = session_state or {}
+-        self.success_messages = []
+-        self.error_messages = []
+-        self.warning_messages = []
+ 
+-    def success(self, message: str) -> None:
+-        self.success_messages.append(message)
+-
+-    def error(self, message: str) -> None:
+-        self.error_messages.append(message)
+-
+-    def warning(self, message: str) -> None:
+-        self.warning_messages.append(message)
+-
+-
+-class FakeHasher:
+-    def __init__(self, _passwords):
+-        pass
+-
+-    def generate(self):
+-        return ["hashed-pass"]
+-
+-
+-class FakeAuthenticator:
+-    def __init__(self, auth_status: bool | None, name: str = "Analyst"):
+-        self.auth_status = auth_status
+-        self.name = name
+-        self.logout_called = False
+-
+-    def login(self, _label: str, _location: str):
+-        return self.name, self.auth_status, None
+-
+-    def logout(self, _label: str, _location: str) -> None:
+-        self.logout_called = True
+-
+-
+-def _load_ui_module():
+-    # Reload to ensure each test starts with a clean module state.
+-    return importlib.reload(importlib.import_module("ui"))
+-
+-
+-def test_require_login_short_circuits_when_authenticated(monkeypatch):
+-    ui = _load_ui_module()
+-    fake_st = FakeStreamlit(session_state={"auth": True})
+-
+-    # Ensure no auth UI is invoked when already authenticated.
+-    def exploding_auth(*_args, **_kwargs):
+-        raise AssertionError("Authenticate should not be called")
+-
+-    monkeypatch.setattr(ui, "st", fake_st)
+-    monkeypatch.setattr(
+-        ui,
+-        "stauth",
+-        SimpleNamespace(Authenticate=exploding_auth, Hasher=FakeHasher),
+-    )
+-
+-    assert ui.require_login() is True
+-    assert fake_st.success_messages == []
+-    assert fake_st.error_messages == []
+-
+-
+-def test_require_login_sets_session_on_success(monkeypatch):
+-    ui = _load_ui_module()
+-    fake_st = FakeStreamlit()
+-    authenticator = FakeAuthenticator(auth_status=True, name="Avery")
+-    monkeypatch.setenv("UI_USERNAME", "analyst")
+-    monkeypatch.setenv("UI_PASSWORD", "pass")
+-    monkeypatch.setattr(ui, "st", fake_st)
+-    monkeypatch.setattr(
+-        ui,
+-        "stauth",
+-        SimpleNamespace(
+-            Authenticate=lambda *args, **kwargs: authenticator,
+-            Hasher=FakeHasher,
+-        ),
+-    )
+-
+-    assert ui.require_login() is True
+-    assert fake_st.session_state["auth"] is True
+-    assert authenticator.logout_called is True
+-    assert fake_st.success_messages == ["Welcome Avery!"]
+-
+-
+-def test_require_login_handles_invalid_credentials(monkeypatch):
+-    ui = _load_ui_module()
+-    fake_st = FakeStreamlit()
+-    authenticator = FakeAuthenticator(auth_status=False)
++@pytest.fixture
++def configured_app(monkeypatch):
+     monkeypatch.setenv("UI_USERNAME", "analyst")
+-    monkeypatch.setenv("UI_PASSWORD", "pass")
+-    monkeypatch.setattr(ui, "st", fake_st)
+-    monkeypatch.setattr(
+-        ui,
+-        "stauth",
+-        SimpleNamespace(
+-            Authenticate=lambda *args, **kwargs: authenticator,
+-            Hasher=FakeHasher,
+-        ),
+-    )
+-
+-    assert ui.require_login() is False
+-    assert fake_st.error_messages == ["Invalid credentials"]
+-
+-
+-def test_require_login_skips_auth_when_credentials_missing(monkeypatch):
+-    ui = _load_ui_module()
+-    fake_st = FakeStreamlit()
+-    monkeypatch.delenv("UI_USERNAME", raising=False)
+-    monkeypatch.delenv("UI_PASSWORD", raising=False)
+-    monkeypatch.setattr(ui, "st", fake_st)
+-
+-    assert ui.require_login() is True
+-    assert fake_st.session_state["auth"] is True
+-    assert fake_st.warning_messages == []
+-
+-
+-def test_require_login_skips_auth_when_password_blank(monkeypatch):
+-    ui = _load_ui_module()
+-    fake_st = FakeStreamlit()
+-    monkeypatch.setenv("UI_USERNAME", "analyst")
+-    monkeypatch.setenv("UI_PASSWORD", "   ")
+-    monkeypatch.setattr(ui, "st", fake_st)
+-
+-    assert ui.require_login() is True
+-    assert fake_st.session_state["auth"] is True
+-    assert fake_st.warning_messages == []
++    monkeypatch.setenv("UI_PASSWORD", "synthetic-test-password")
++    monkeypatch.setenv("UI_COOKIE_KEY", "synthetic-independent-cookie-key-for-tests")
++    # Other UI tests replace module globals; restore the real dependency boundary.
++    importlib.reload(importlib.import_module("ui"))
++    return AppTest.from_string(APP_SOURCE, default_timeout=15)
++
++
++def _button(app, label):
++    return next(button for button in app.button if button.label == label)
++
++
++def _submit(app, username="analyst", password="synthetic-test-password"):
++    app.text_input[0].set_value(username)
++    app.text_input[1].set_value(password)
++    _button(app, "Login").click().run()
++    assert not app.exception
++
++
++def test_configured_login_renders_with_real_authenticator(configured_app):
++    app = configured_app.run()
++
++    assert not app.exception
++    assert [field.label for field in app.text_input] == ["Username", "Password"]
++    assert _button(app, "Login")
++    assert app.session_state["auth"] is False
++    assert app.markdown[-1].value == "Access denied"
++
++
++@pytest.mark.parametrize(
++    ("username", "password"),
++    [("analyst", "wrong-password"), ("unknown", "synthetic-test-password")],
++)
++def test_configured_login_rejects_invalid_credentials(configured_app, username, password):
++    app = configured_app.run()
++    _submit(app, username, password)
++
++    assert app.session_state["auth"] is False
++    assert app.session_state["authentication_status"] is False
++    assert app.error[0].value == "Invalid credentials"
++    assert app.markdown[-1].value == "Access denied"
++    assert all(button.label != "Logout" for button in app.button)
++
++
++def test_valid_login_rerun_and_logout(configured_app):
++    app = configured_app.run()
++    _submit(app)
++
++    assert app.session_state["auth"] is True
++    assert app.session_state["authentication_status"] is True
++    assert app.markdown[-1].value == "Protected content"
++    assert _button(app, "Logout")
++
++    app.run()
++    assert not app.exception
++    assert app.markdown[-1].value == "Protected content"
++    assert len(app.text_input) == 0
++    _button(app, "Logout").click().run()
++
++    assert not app.exception
++    assert app.session_state["auth"] is False
++    assert app.session_state["authentication_status"] is None
++    assert app.markdown[-1].value == "Access denied"
++    app.run()
++    assert not app.exception
++    assert app.markdown[-1].value == "Access denied"
++    assert _button(app, "Login")
++
++
++@pytest.mark.parametrize("authentication_status", [None, False])
++def test_configured_login_does_not_trust_cached_dev_auth(configured_app, authentication_status):
++    configured_app.session_state["auth"] = True
++    configured_app.session_state["authentication_status"] = authentication_status
++    app = configured_app.run()
++
++    assert not app.exception
++    assert app.session_state["auth"] is False
++    assert app.markdown[-1].value == "Access denied"
++    assert _button(app, "Login")
++
++
++def test_require_login_fails_closed_without_dependency(configured_app, monkeypatch):
++    app = configured_app.run()
++    _submit(app)
++    assert app.session_state["auth"] is True
++    assert app.markdown[-1].value == "Protected content"
++
++    ui = importlib.import_module("ui")
++    monkeypatch.setattr(ui, "stauth", None)
++
++    for _ in range(2):
++        app.run()
++        assert not app.exception
++        assert app.session_state["auth"] is False
++        assert app.markdown[-1].value == "Access denied"
++        assert app.error[0].value == (
++            "streamlit_authenticator is required when UI auth credentials are configured."
++        )
++        assert all(button.label != "Logout" for button in app.button)
++
++
++def test_dev_mode_discards_previous_authenticated_session(configured_app, monkeypatch):
++    app = configured_app.run()
++    _submit(app)
++    assert app.session_state["authentication_status"] is True
++
++    username = os.environ["UI_USERNAME"]
++    monkeypatch.delenv("UI_USERNAME")
++    app.run()
++    assert not app.exception
++    assert app.markdown[-1].value == "Protected content"
++    assert app.session_state["authentication_status"] is None
++    assert app.session_state["username"] is None
++    assert app.session_state["name"] is None
++
++    monkeypatch.setenv("UI_USERNAME", username)
++    app.run()
++    assert not app.exception
++    assert app.session_state["auth"] is False
++    assert app.markdown[-1].value == "Access denied"
++    assert _button(app, "Login")
++
++
++@pytest.mark.parametrize("authenticated", [False, True])
++@pytest.mark.parametrize("key", [None, "", " " * 32, "short-key"])
++def test_configured_login_requires_cookie_secret(configured_app, monkeypatch, key, authenticated):
++    app = configured_app.run()
++    if authenticated:
++        _submit(app)
++        assert app.session_state["auth"] is True
++        assert app.markdown[-1].value == "Protected content"
++
++    if key is None:
++        monkeypatch.delenv("UI_COOKIE_KEY", raising=False)
++    else:
++        monkeypatch.setenv("UI_COOKIE_KEY", key)
++    # Invalid signing configuration must also revoke an already logged-in session.
++    for _ in range(2):
++        app.run()
++        assert not app.exception
++        assert app.session_state["auth"] is False
++        assert app.markdown[-1].value == "Access denied"
++        assert not app.text_input
++        assert all(button.label != "Logout" for button in app.button)
++        assert "UI_COOKIE_KEY" in app.error[0].value
++
++
++def test_authenticator_receives_independent_secret_and_cached_hash(configured_app, monkeypatch):
++    ui = importlib.import_module("ui")
++    ui._password_hash.cache_clear()
++    with (
++        patch.object(ui.stauth.Hasher, "hash", wraps=ui.stauth.Hasher.hash) as hasher,
++        patch.object(ui.stauth, "Authenticate", wraps=ui.stauth.Authenticate) as authenticate,
++    ):
++        app = configured_app.run()
++        app.run()
++        assert not app.exception
++        assert hasher.call_count == 1
++        first_hash = authenticate.call_args.args[0]["usernames"]["analyst"]["password"]
++        assert first_hash.startswith("$2")
++        assert authenticate.call_args.args[2] == "synthetic-independent-cookie-key-for-tests"
++        assert authenticate.call_args.kwargs["auto_hash"] is False
++
++        monkeypatch.setenv("UI_PASSWORD", "changed-synthetic-password")
++        monkeypatch.setenv("UI_COOKIE_KEY", "rotated-independent-cookie-secret-for-tests")
++        app.run()
++        assert not app.exception
++        assert hasher.call_count == 2
++        assert authenticate.call_args.args[0]["usernames"]["analyst"]["password"] != first_hash
++        assert authenticate.call_args.args[2] == "rotated-independent-cookie-secret-for-tests"
++        assert authenticate.call_args.kwargs["auto_hash"] is False
++
++
++def test_cookie_reauthentication_rejects_rotated_key(configured_app, monkeypatch):
++    from extra_streamlit_components import CookieManager
++
++    ui = importlib.import_module("ui")
++    # Simulate browser transport only; signing and verification use the real library.
++    with patch.object(CookieManager, "set") as set_cookie:
++        app = configured_app.run()
++        _submit(app)
++        assert app.session_state["auth"] is True
++        cookie_name, signed_cookie = set_cookie.call_args.args
++        assert cookie_name == "mi_cookie"
++
++    with patch.object(
++        type(ui.st.context),
++        "cookies",
++        new_callable=PropertyMock,
++        return_value={cookie_name: signed_cookie},
++    ):
++        returning_app = AppTest.from_string(APP_SOURCE, default_timeout=15).run()
++        assert not returning_app.exception
++        assert returning_app.session_state["auth"] is True
++        assert returning_app.markdown[-1].value == "Protected content"
++        assert not returning_app.text_input
++
++        monkeypatch.setenv("UI_COOKIE_KEY", "rotated-independent-cookie-key-for-tests")
++        fresh_app = AppTest.from_string(APP_SOURCE, default_timeout=15).run()
++        assert not fresh_app.exception
++        assert fresh_app.session_state["auth"] is False
++        assert fresh_app.markdown[-1].value == "Access denied"
++        assert _button(fresh_app, "Login")
++        _submit(fresh_app)
++        assert fresh_app.session_state["auth"] is True
++        assert fresh_app.markdown[-1].value == "Protected content"
++
++
++@pytest.mark.parametrize("field", ["UI_USERNAME", "UI_PASSWORD"])
++@pytest.mark.parametrize("value", [None, "", "   "])
++def test_require_login_preserves_blank_credential_dev_mode(
++    configured_app, monkeypatch, field, value
++):
++    configured_value = os.environ[field]
++    if value is None:
++        monkeypatch.delenv(field, raising=False)
++    else:
++        monkeypatch.setenv(field, value)
++
++    app = configured_app.run()
++    assert not app.exception
++    assert app.session_state["auth"] is True
++    assert app.markdown[-1].value == "Protected content"
++    assert len(app.text_input) == 0
++
++    # Reconfiguring credentials must revoke the dev-mode flag on the next run.
++    monkeypatch.setenv(field, configured_value)
++    app.run()
++    assert not app.exception
++    assert app.session_state["auth"] is False
++    assert app.markdown[-1].value == "Access denied"
++    assert [widget.label for widget in app.text_input] == ["Username", "Password"]
++    assert _button(app, "Login")
+diff --git a/ui/__init__.py b/ui/__init__.py
+index 1484a45f..ae410f36 100644
+--- a/ui/__init__.py
++++ b/ui/__init__.py
+@@ -4,6 +4,7 @@
+ 
+ import logging
+ import os
++from functools import lru_cache
+ 
+ import streamlit as st
+ 
+@@ -20,41 +21,55 @@ def _get_env_credential(key: str) -> str | None:
+     return value or None
+ 
+ 
++@lru_cache(maxsize=1)
++def _password_hash(password: str) -> str:
++    """Reuse bcrypt work across reruns, replacing it when the password changes."""
++    return str(stauth.Hasher.hash(password))
++
++
+ def require_login() -> bool:
+     """Render a simple login form and return authentication status."""
+-    if st.session_state.get("auth"):
+-        return True
+-
+     username = _get_env_credential("UI_USERNAME")
+     password = _get_env_credential("UI_PASSWORD")
+     if not username or not password:
+         logger.info("UI_USERNAME/UI_PASSWORD not set; skipping authentication in dev mode.")
++        # Development access must not preserve a previous configured identity.
++        # Restoring credentials requires authentication again on the next rerun.
++        for field in ("authentication_status", "username", "name"):
++            st.session_state[field] = None
+         st.session_state["auth"] = True
+         return True
++    # The library owns configured authentication; a previous dev-mode flag is
++    # not evidence of login. Clear it before rendering, including failure paths.
++    st.session_state["auth"] = False
+     if stauth is None:
+         st.error("streamlit_authenticator is required when UI auth credentials are configured.")
+         return False
+ 
+-    names = [username]
+-    usernames = [username]
+-    passwords = stauth.Hasher([password]).generate()
++    cookie_key = _get_env_credential("UI_COOKIE_KEY")
++    if not cookie_key or len(cookie_key) < 32:
++        st.error("UI_COOKIE_KEY must be an independent random secret of at least 32 characters.")
++        return False
+ 
++    credentials = {
++        "usernames": {username: {"name": username, "password": _password_hash(password)}}
++    }
+     authenticator = stauth.Authenticate(
+-        {
+-            "usernames": usernames,
+-            "names": names,
+-            "passwords": passwords,
+-        },
++        credentials,
+         "mi_cookie",
+-        "auth",
++        cookie_key,
+         cookie_expiry_days=1,
++        auto_hash=False,
+     )
+-    name, auth_status, _ = authenticator.login("Login", "main")
+-    if auth_status:
++    # Rendered login returns None in 0.4.x; status lives in session_state.
++    authenticator.login(location="main")
++    if st.session_state.get("authentication_status") is True:
+         authenticator.logout("Logout", "sidebar")
+-        st.session_state["auth"] = True
+-        st.success(f"Welcome {name}!")
+-        return True
+-    elif auth_status is False:
++        # Clicking logout changes library state during this very render.
++        if st.session_state.get("authentication_status") is True:
++            st.session_state["auth"] = True
++            st.success(f"Welcome {st.session_state.get('name') or username}!")
++            return True
++    elif st.session_state.get("authentication_status") is False:
+         st.error("Invalid credentials")
+     return False

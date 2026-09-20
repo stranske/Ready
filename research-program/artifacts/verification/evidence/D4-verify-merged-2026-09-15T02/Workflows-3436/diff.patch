@@ -1,0 +1,616 @@
+diff --git a/.github/workflows/agents-keepalive-loop.yml b/.github/workflows/agents-keepalive-loop.yml
+index c99e96bdf..e54caf3f6 100644
+--- a/.github/workflows/agents-keepalive-loop.yml
++++ b/.github/workflows/agents-keepalive-loop.yml
+@@ -1042,8 +1042,59 @@ jobs:
+             scripts/state_fingerprint.py
+             scripts/reference_packs.py
+             scripts/orchestrator_skill.py
++            .github/scripts/github-api-with-retry.js
++            .github/scripts/token_load_balancer.js
++            .github/scripts/error_classifier.js
+           sparse-checkout-cone-mode: false
+ 
++      - name: Measure runner productivity
++        id: productivity
++        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
++        env:
++          PR_NUMBER: ${{ needs.evaluate.outputs.pr_number }}
++          HEAD_SHA: ${{ needs.evaluate.outputs.head_sha }}
++        with:
++          github-token: ${{ secrets.GITHUB_TOKEN }}
++          script: |
++            // Did this run actually move the branch? A runner can exit 0 having produced
++            // nothing — the codex sandbox failing to initialize reports itself as a
++            // SUCCESSFUL run with no commit. Recording that as a terminal completion burned
++            // the (head_sha, provider) debounce key, and only a new head commit clears the
++            // key, so the refusal could only be lifted by the agent it was refusing (#3433).
++            // Comparing the PR head now against the SHA this dispatch was reserved for is the
++            // cheapest ground truth available here. A failed lookup stays UNMEASURED, which
++            // keeps the pre-#3433 behavior rather than loosening the debounce on an API hiccup.
++            const { createTokenAwareRetry } = require('./.github/scripts/github-api-with-retry.js');
++            const { withRetry } = await createTokenAwareRetry({
++              github,
++              core,
++              env: process.env,
++              task: 'keepalive-productivity',
++            });
++            const prNumber = Number(process.env.PR_NUMBER || '');
++            const dispatchedHead = String(process.env.HEAD_SHA || '');
++            if (!prNumber || !dispatchedHead) {
++              core.info('No PR or head SHA; productivity unmeasured.');
++              core.setOutput('produced_work', '');
++              return;
++            }
++            let currentHead = '';
++            try {
++              const { data: pr } = await withRetry((client) => client.rest.pulls.get({
++                ...context.repo,
++                pull_number: prNumber,
++              }));
++              currentHead = String((pr.head && pr.head.sha) || '');
++            } catch (error) {
++              core.warning(`Could not read PR head: ${error && error.message ? error.message : error}`);
++            }
++            const producedWork = currentHead ? String(currentHead !== dispatchedHead) : '';
++            core.info(
++              `head_at_dispatch=${dispatchedHead} head_now=${currentHead || 'unreadable'} ` +
++              `produced_work=${producedWork || 'unmeasured'}`,
++            );
++            core.setOutput('produced_work', producedWork);
++
+       - name: Record completion
+         env:
+           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+@@ -1051,6 +1102,7 @@ jobs:
+           PROVIDER: ${{ needs.evaluate.outputs.agent_type || 'codex' }}
+           PR_NUMBER: ${{ needs.evaluate.outputs.pr_number }}
+           HEAD_SHA: ${{ needs.evaluate.outputs.head_sha }}
++          PRODUCED_WORK: ${{ steps.productivity.outputs.produced_work }}
+           SUMMARY: >-
+             ${{ needs.run-codex.outputs.final-message-summary ||
+                 needs.run-claude.outputs.final-message-summary ||
+@@ -1087,6 +1139,7 @@ jobs:
+             --head-sha "$HEAD_SHA" \
+             --summary "$SUMMARY" \
+             --exit-code "$EXIT_CODE" \
++            --produced-work "$PRODUCED_WORK" \
+             --storage auto
+ 
+   progress-review:
+diff --git a/scripts/runner_lib/__init__.py b/scripts/runner_lib/__init__.py
+index 587f3f1ff..db3d2b587 100644
+--- a/scripts/runner_lib/__init__.py
++++ b/scripts/runner_lib/__init__.py
+@@ -1,6 +1,7 @@
+ """Shared helpers for dual-provider agent runner workflows."""
+ 
+ from .core import (
++    UNPRODUCTIVE_COMPLETION_RETRY_LIMIT,
+     CapabilityEffectEvidence,
+     DebounceDecision,
+     RunnerPrompt,
+@@ -13,6 +14,7 @@
+ )
+ 
+ __all__ = [
++    "UNPRODUCTIVE_COMPLETION_RETRY_LIMIT",
+     "CapabilityEffectEvidence",
+     "DebounceDecision",
+     "RunnerPrompt",
+diff --git a/scripts/runner_lib/core.py b/scripts/runner_lib/core.py
+index 7c862efbc..27f9e633d 100644
+--- a/scripts/runner_lib/core.py
++++ b/scripts/runner_lib/core.py
+@@ -30,6 +30,14 @@
+ PROMPT_PROVIDERS = {"claude", "codex", "cursor", "gemini"}
+ TERMINAL_STATUSES = {"completed", "error"}
+ PENDING_STALE_AFTER_SECONDS = 30 * 60
++# A runner can exit 0 having produced nothing — the codex sandbox failing to initialize
++# (`bwrap: loopback: Failed RTM_NEWADDR`) reports itself as a SUCCESSFUL run with no commit.
++# Recording that as a terminal `completed` burned the (head_sha, provider) key, and the only
++# thing that clears the key is a new head commit, which only the agent being refused could
++# produce: clearing the gate required the action the gate forbade. This many re-dispatches are
++# granted on the same head after an unproductive completion (#3433). ONE constant, consumed by
++# both the refusal branch and the message it prints, so the two cannot drift apart.
++UNPRODUCTIVE_COMPLETION_RETRY_LIMIT = 2
+ TRUSTED_MARKER_AUTHORS = {
+     "chatgpt-codex-connector",
+     "chatgpt-codex-connector[bot]",
+@@ -87,6 +95,10 @@ class DebounceDecision:
+     key: str
+     prior_status: str | None = None
+     prior_head_sha: str | None = None
++    # What would clear this refusal. Runtime rule: a gate reports its blocking quantity AND its
++    # drainable quantity in the same place, so a refusal can never go silent about what would
++    # release it. Empty when nothing is being blocked.
++    drainable: str = ""
+ 
+ 
+ def _validate_capability_effect_evidence_values(values: dict[str, str]) -> None:
+@@ -995,6 +1007,59 @@ def _pending_record_is_stale(prior: dict[str, Any], *, now: dt.datetime | None =
+     return (current - started_at).total_seconds() > PENDING_STALE_AFTER_SECONDS
+ 
+ 
++def _completion_was_unproductive(prior: dict[str, Any] | None) -> bool:
++    """True only when a completion explicitly reported that it produced no work.
++
++    Absence of the field means the caller did not measure productivity, which must keep the
++    pre-#3433 behavior (treat the completion as terminal) rather than silently loosening the
++    debounce for every caller that has not been taught to report it.
++    """
++    return bool(prior) and prior.get("productive") is False
++
++
++def _unproductive_completion_count(prior: dict[str, Any] | None) -> int:
++    if not prior:
++        return 0
++    try:
++        return int(prior.get("unproductive_completions") or 0)
++    except (TypeError, ValueError):
++        return 0
++
++
++def _reserve_dispatch(
++    storage: RunnerDispatchStorage,
++    pr_number: int,
++    head_sha: str,
++    provider: str,
++    key: str,
++    prior: dict[str, Any] | None,
++    *,
++    reason: str,
++) -> DebounceDecision:
++    """Write the pending reservation for a granted dispatch and describe the decision."""
++    record = {
++        "provider": provider,
++        "pr_number": pr_number,
++        "head_sha": head_sha,
++        "key": key,
++        "status": "pending",
++        "started_at": _utc_now(),
++    }
++    # Carry the unproductive tally across the retry so the allowance is bounded: it is the only
++    # thing that makes "retry an unproductive completion" terminate instead of cycling forever.
++    unproductive = _unproductive_completion_count(prior)
++    if unproductive and prior and prior.get("head_sha") == head_sha:
++        record["unproductive_completions"] = unproductive
++    storage.write_record(pr_number, provider, record)
++    return DebounceDecision(
++        True,
++        reason,
++        key,
++        prior_status=str(prior.get("status")) if prior else None,
++        prior_head_sha=str(prior.get("head_sha")) if prior else None,
++    )
++
++
+ def should_dispatch(
+     pr_number: int,
+     head_sha: str,
+@@ -1005,14 +1070,42 @@ def should_dispatch(
+ 
+     Error records are retried deliberately: they mean the prior runner attempt did not
+     leave a successful completion marker, so a later Gate pass may try again.
++
++    A completion that produced no work is retried too, up to
++    ``UNPRODUCTIVE_COMPLETION_RETRY_LIMIT`` times on the same head. Without that, a runner
++    that exits 0 having done nothing latches the loop shut: the refusal can only be cleared
++    by a new head commit, and only the refused agent could push one (#3433).
+     """
+     provider = _validate_provider(provider)
+     storage = storage or _storage_from_name("auto")
+     key = _runner_key(pr_number, head_sha, provider)
+     prior = storage.read_record(pr_number, provider)
++    unproductive_completions = _unproductive_completion_count(prior)
+ 
+     if prior and prior.get("head_sha") == head_sha:
+         status = str(prior.get("status") or "")
++        if status == "completed" and _completion_was_unproductive(prior):
++            if unproductive_completions <= UNPRODUCTIVE_COMPLETION_RETRY_LIMIT:
++                return _reserve_dispatch(
++                    storage,
++                    pr_number,
++                    head_sha,
++                    provider,
++                    key,
++                    prior,
++                    reason="retry-unproductive-completion",
++                )
++            return DebounceDecision(
++                False,
++                f"duplicate-{status}",
++                key,
++                prior_status=status,
++                prior_head_sha=head_sha,
++                drainable=(
++                    "a new head commit; unproductive retries exhausted "
++                    f"({unproductive_completions}/{UNPRODUCTIVE_COMPLETION_RETRY_LIMIT})"
++                ),
++            )
+         if status == "completed" or (status == "pending" and not _pending_record_is_stale(prior)):
+             return DebounceDecision(
+                 False,
+@@ -1020,6 +1113,14 @@ def should_dispatch(
+                 key,
+                 prior_status=status,
+                 prior_head_sha=head_sha,
++                drainable=(
++                    "a new head commit"
++                    if status == "completed"
++                    else (
++                        "the in-flight run finishing, or this pending record ageing past "
++                        f"{PENDING_STALE_AFTER_SECONDS}s"
++                    )
++                ),
+             )
+ 
+     if prior is None:
+@@ -1030,22 +1131,7 @@ def should_dispatch(
+         reason = "stale-pending"
+     else:
+         reason = f"retry-{str(prior.get('status') or 'unknown')}"
+-    record = {
+-        "provider": provider,
+-        "pr_number": pr_number,
+-        "head_sha": head_sha,
+-        "key": key,
+-        "status": "pending",
+-        "started_at": _utc_now(),
+-    }
+-    storage.write_record(pr_number, provider, record)
+-    return DebounceDecision(
+-        True,
+-        reason,
+-        key,
+-        prior_status=str(prior.get("status")) if prior else None,
+-        prior_head_sha=str(prior.get("head_sha")) if prior else None,
+-    )
++    return _reserve_dispatch(storage, pr_number, head_sha, provider, key, prior, reason=reason)
+ 
+ 
+ def record_completion(
+@@ -1054,8 +1140,15 @@ def record_completion(
+     provider: str,
+     result: RunnerResult | dict[str, Any],
+     storage: RunnerDispatchStorage | None = None,
++    produced_work: bool | None = None,
+ ) -> dict[str, Any]:
+-    """Persist terminal runner state after a dispatch finishes."""
++    """Persist terminal runner state after a dispatch finishes.
++
++    ``produced_work`` is the caller's verdict on whether the run actually moved the branch.
++    ``None`` means unmeasured and preserves the pre-#3433 behavior. ``False`` marks the
++    completion unproductive so ``should_dispatch`` will grant a bounded retry on the same head
++    instead of refusing forever (#3433).
++    """
+     provider = _validate_provider(provider)
+     storage = storage or _storage_from_name("auto")
+     key = _runner_key(pr_number, head_sha, provider)
+@@ -1080,6 +1173,19 @@ def record_completion(
+         "completed_at": completed_at,
+         "result": compact_result,
+     }
++    if status == "completed" and produced_work is not None:
++        record["productive"] = bool(produced_work)
++        if produced_work:
++            record["unproductive_completions"] = 0
++        elif prior.get("key") == key and prior.get("status") in TERMINAL_STATUSES:
++            # This completion is already recorded; re-running the completion job for the same
++            # dispatch key must not spend another retry. record_completion is idempotent for a
++            # key by contract (see completed_at above, which is preserved the same way), and a
++            # counter that advanced on a rerun would quietly exhaust the allowance without any
++            # additional agent run having happened.
++            record["unproductive_completions"] = _unproductive_completion_count(prior) or 1
++        else:
++            record["unproductive_completions"] = _unproductive_completion_count(prior) + 1
+     storage.write_record(pr_number, provider, record)
+     return record
+ 
+@@ -1165,12 +1271,31 @@ def _cmd_should_dispatch(args: argparse.Namespace) -> int:
+         "key": decision.key,
+         "prior_status": decision.prior_status or "",
+         "prior_head_sha": decision.prior_head_sha or "",
++        # Always emitted, including as "" for a granted dispatch, so "no drainable path stated"
++        # can never be confused with "nothing is blocking" — one sentinel, one meaning.
++        "drainable": decision.drainable,
+     }
+     _write_github_output(outputs)
+     print(json.dumps(outputs, sort_keys=True))
+     return 0
+ 
+ 
++def _parse_produced_work(raw: str) -> bool | None:
++    """Parse the caller's productivity verdict, treating anything unrecognized as unmeasured.
++
++    Deliberately does NOT reuse ``_parse_optional_bool``: that helper raises on an unknown
++    value, and a workflow that could not read the branch head (API hiccup, token scope) would
++    then fail to record the completion at all — a worse outcome than the debounce defect this
++    field exists to fix. Unmeasured must degrade to the pre-#3433 behavior, not to an error.
++    """
++    normalized = (raw or "").strip().lower()
++    if normalized in {"1", "true", "yes", "on"}:
++        return True
++    if normalized in {"0", "false", "no", "off"}:
++        return False
++    return None
++
++
+ def _cmd_record_completion(args: argparse.Namespace) -> int:
+     raw = ""
+     if args.raw_output_file:
+@@ -1196,8 +1321,14 @@ def _cmd_record_completion(args: argparse.Namespace) -> int:
+         args.provider,
+         result,
+         storage=_storage_from_name(args.storage),
++        produced_work=_parse_produced_work(args.produced_work),
+     )
+-    outputs = {"recorded": "true", "status": str(record["status"]), "key": str(record["key"])}
++    outputs = {
++        "recorded": "true",
++        "status": str(record["status"]),
++        "key": str(record["key"]),
++        "productive": "" if "productive" not in record else str(record["productive"]).lower(),
++    }
+     _write_github_output(outputs)
+     print(json.dumps(outputs, sort_keys=True))
+     return 0
+@@ -1262,6 +1393,14 @@ def build_parser() -> argparse.ArgumentParser:
+     complete.add_argument("--raw-output-file", default="")
+     complete.add_argument("--summary", default="")
+     complete.add_argument("--exit-code", default=None)
++    complete.add_argument(
++        "--produced-work",
++        default="",
++        help=(
++            "whether the run actually moved the branch (true/false). Anything else, including "
++            "the default, means unmeasured and keeps the completion terminal."
++        ),
++    )
+     complete.set_defaults(func=_cmd_record_completion)
+ 
+     evidence = subparsers.add_parser(
+diff --git a/templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml b/templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml
+index 53e8006ab..c9f65dbc7 100644
+--- a/templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml
++++ b/templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml
+@@ -824,8 +824,59 @@ jobs:
+             scripts/runner_lib
+             scripts/state_fingerprint.py
+             scripts/reference_packs.py
++            .github/scripts/github-api-with-retry.js
++            .github/scripts/token_load_balancer.js
++            .github/scripts/error_classifier.js
+           sparse-checkout-cone-mode: false
+ 
++      - name: Measure runner productivity
++        id: productivity
++        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
++        env:
++          PR_NUMBER: ${{ needs.evaluate.outputs.pr_number }}
++          HEAD_SHA: ${{ needs.evaluate.outputs.head_sha }}
++        with:
++          github-token: ${{ secrets.GITHUB_TOKEN }}
++          script: |
++            // Did this run actually move the branch? A runner can exit 0 having produced
++            // nothing — the codex sandbox failing to initialize reports itself as a
++            // SUCCESSFUL run with no commit. Recording that as a terminal completion burned
++            // the (head_sha, provider) debounce key, and only a new head commit clears the
++            // key, so the refusal could only be lifted by the agent it was refusing (#3433).
++            // Comparing the PR head now against the SHA this dispatch was reserved for is the
++            // cheapest ground truth available here. A failed lookup stays UNMEASURED, which
++            // keeps the pre-#3433 behavior rather than loosening the debounce on an API hiccup.
++            const { createTokenAwareRetry } = require('./.github/scripts/github-api-with-retry.js');
++            const { withRetry } = await createTokenAwareRetry({
++              github,
++              core,
++              env: process.env,
++              task: 'keepalive-productivity',
++            });
++            const prNumber = Number(process.env.PR_NUMBER || '');
++            const dispatchedHead = String(process.env.HEAD_SHA || '');
++            if (!prNumber || !dispatchedHead) {
++              core.info('No PR or head SHA; productivity unmeasured.');
++              core.setOutput('produced_work', '');
++              return;
++            }
++            let currentHead = '';
++            try {
++              const { data: pr } = await withRetry((client) => client.rest.pulls.get({
++                ...context.repo,
++                pull_number: prNumber,
++              }));
++              currentHead = String((pr.head && pr.head.sha) || '');
++            } catch (error) {
++              core.warning(`Could not read PR head: ${error && error.message ? error.message : error}`);
++            }
++            const producedWork = currentHead ? String(currentHead !== dispatchedHead) : '';
++            core.info(
++              `head_at_dispatch=${dispatchedHead} head_now=${currentHead || 'unreadable'} ` +
++              `produced_work=${producedWork || 'unmeasured'}`,
++            );
++            core.setOutput('produced_work', producedWork);
++
+       - name: Record completion
+         env:
+           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+@@ -833,6 +884,7 @@ jobs:
+           PROVIDER: ${{ needs.evaluate.outputs.agent_type || 'codex' }}
+           PR_NUMBER: ${{ needs.evaluate.outputs.pr_number }}
+           HEAD_SHA: ${{ needs.evaluate.outputs.head_sha }}
++          PRODUCED_WORK: ${{ steps.productivity.outputs.produced_work }}
+           SUMMARY: >-
+             ${{ needs.run-codex.outputs.final-message-summary ||
+                 needs.run-claude.outputs.final-message-summary ||
+@@ -867,6 +919,7 @@ jobs:
+             --head-sha "$HEAD_SHA" \
+             --summary "$SUMMARY" \
+             --exit-code "$EXIT_CODE" \
++            --produced-work "$PRODUCED_WORK" \
+             --storage auto
+ 
+   summary:
+diff --git a/tests/scripts/test_runner_lib.py b/tests/scripts/test_runner_lib.py
+index 8aa7c0b2c..b9f93bd3d 100644
+--- a/tests/scripts/test_runner_lib.py
++++ b/tests/scripts/test_runner_lib.py
+@@ -10,7 +10,9 @@
+ import pytest
+ import scripts.runner_lib.core as runner_core
+ from scripts.runner_lib import (
++    UNPRODUCTIVE_COMPLETION_RETRY_LIMIT,
+     CapabilityEffectEvidence,
++    RunnerResult,
+     assemble_prompt,
+     normalize_capability_effect_evidence,
+     parse_runner_output,
+@@ -965,3 +967,149 @@ def fail_check_call(
+     assert clone_env is not None
+     assert clone_env["GIT_ASKPASS_PASSWORD"] == token
+     assert Path(clone_env["GIT_ASKPASS"]).exists() is False
++
++
++def _unproductive_result() -> RunnerResult:
++    """A run that exits 0 having done nothing — the shape the codex sandbox failure takes."""
++    return RunnerResult(
++        provider="codex",
++        success=True,
++        final_message="bwrap: loopback: Failed RTM_NEWADDR: Operation not permitted",
++        summary="Blocked by the execution environment. No files changed, no commits created.",
++    )
++
++
++def test_unproductive_completion_is_retried_on_the_same_head() -> None:
++    """The #3433 deadlock: a zero-output run must not burn the head's dispatch key.
++
++    Clearing a `duplicate-completed` refusal requires a new head commit, and only the agent
++    being refused could push one — so refusing forever on an unproductive completion means the
++    gate can only be opened by the action it forbids.
++    """
++    storage = MemoryRunnerStorage()
++    should_dispatch(42, "aaa", "codex", storage=storage)
++    record_completion(
++        42, "aaa", "codex", _unproductive_result(), storage=storage, produced_work=False
++    )
++
++    decision = should_dispatch(42, "aaa", "codex", storage=storage)
++
++    assert decision.should_dispatch is True
++    assert decision.reason == "retry-unproductive-completion"
++
++
++def test_unproductive_retries_are_bounded_and_name_what_would_drain_them() -> None:
++    storage = MemoryRunnerStorage()
++    reasons = []
++    for _ in range(UNPRODUCTIVE_COMPLETION_RETRY_LIMIT + 1):
++        decision = should_dispatch(42, "aaa", "codex", storage=storage)
++        reasons.append(decision.reason)
++        record_completion(
++            42, "aaa", "codex", _unproductive_result(), storage=storage, produced_work=False
++        )
++
++    exhausted = should_dispatch(42, "aaa", "codex", storage=storage)
++
++    assert reasons[0] == "first-dispatch"
++    assert reasons[1:] == ["retry-unproductive-completion"] * UNPRODUCTIVE_COMPLETION_RETRY_LIMIT
++    assert exhausted.should_dispatch is False
++    assert exhausted.reason == "duplicate-completed"
++    # The refusal must state its drainable quantity, not just that it is closed.
++    assert "a new head commit" in exhausted.drainable
++    assert f"{UNPRODUCTIVE_COMPLETION_RETRY_LIMIT + 1}/{UNPRODUCTIVE_COMPLETION_RETRY_LIMIT}" in (
++        exhausted.drainable
++    )
++
++
++def test_productive_completion_still_burns_the_head_key() -> None:
++    storage = MemoryRunnerStorage()
++    should_dispatch(42, "aaa", "codex", storage=storage)
++    record_completion(
++        42,
++        "aaa",
++        "codex",
++        parse_runner_output("codex", "Done"),
++        storage=storage,
++        produced_work=True,
++    )
++
++    decision = should_dispatch(42, "aaa", "codex", storage=storage)
++
++    assert decision.should_dispatch is False
++    assert decision.reason == "duplicate-completed"
++    assert decision.drainable == "a new head commit"
++
++
++def test_unmeasured_completion_keeps_pre_3433_behavior() -> None:
++    """No productivity verdict means unmeasured, which must stay terminal.
++
++    Callers that have not been taught to measure (autofix) must not silently get a looser
++    debounce as a side effect of this fix.
++    """
++    storage = MemoryRunnerStorage()
++    should_dispatch(42, "aaa", "codex", storage=storage)
++    record_completion(42, "aaa", "codex", _unproductive_result(), storage=storage)
++
++    decision = should_dispatch(42, "aaa", "codex", storage=storage)
++
++    assert decision.should_dispatch is False
++    assert decision.reason == "duplicate-completed"
++
++
++def test_productive_run_resets_the_unproductive_tally() -> None:
++    storage = MemoryRunnerStorage()
++    should_dispatch(42, "aaa", "codex", storage=storage)
++    record_completion(
++        42, "aaa", "codex", _unproductive_result(), storage=storage, produced_work=False
++    )
++    should_dispatch(42, "aaa", "codex", storage=storage)
++    record_completion(
++        42,
++        "bbb",
++        "codex",
++        parse_runner_output("codex", "Done"),
++        storage=storage,
++        produced_work=True,
++    )
++
++    assert storage.records[(42, "codex")]["unproductive_completions"] == 0
++
++
++def test_pending_refusal_names_its_drainable_quantity() -> None:
++    storage = MemoryRunnerStorage()
++    should_dispatch(42, "aaa", "codex", storage=storage)
++
++    decision = should_dispatch(42, "aaa", "codex", storage=storage)
++
++    assert decision.should_dispatch is False
++    assert decision.reason == "duplicate-pending"
++    assert "ageing past" in decision.drainable
++
++
++def test_granted_dispatch_reports_no_drainable_quantity() -> None:
++    """The drained rendering must be reachable: an unblocked decision prints an empty string.
++
++    A field that only ever renders a blocked state is the reporting half of a latched gate.
++    """
++    storage = MemoryRunnerStorage()
++
++    assert should_dispatch(42, "aaa", "codex", storage=storage).drainable == ""
++
++
++def test_rerunning_the_completion_job_does_not_spend_another_retry() -> None:
++    """record_completion is idempotent for a dispatch key, tally included.
++
++    The completion job can re-run for the same key without any additional agent run having
++    happened; a counter that advanced on a rerun would quietly exhaust the retry allowance.
++    """
++    storage = MemoryRunnerStorage()
++    should_dispatch(42, "aaa", "codex", storage=storage)
++    record_completion(
++        42, "aaa", "codex", _unproductive_result(), storage=storage, produced_work=False
++    )
++    record_completion(
++        42, "aaa", "codex", _unproductive_result(), storage=storage, produced_work=False
++    )
++
++    assert storage.records[(42, "codex")]["unproductive_completions"] == 1
++    assert should_dispatch(42, "aaa", "codex", storage=storage).should_dispatch is True

@@ -1,0 +1,24 @@
+{
+  "body": "## Summary\nComplete these in order. Mark checkbox done ONLY after implementation is verified:\n\n- [x] Add `delegationSource: 'static'` to every `decideNextAgent` return path that previously omitted it (explicit-label, no-agents-available, initial-selection, unavailable-agent swap, effective, cooldown).\n- [x] Preserve the computed `delegationSource` on stalled-no-alternatives instead of hardcoding static.\n- [x] Add regression tests in `agent_delegation_policy.test.js` and a keepalive-loop integration test proving `agent:auto` resolves with `delegationSource`.\n\nFixes upstream manifest-synced paths blocking consumer review on `agent_delegation_policy.js` / `keepalive_loop.js` (Counter_Risk#989 sync debt).\n\nCloses #3346\n\n## Test plan\n- [x] `node --test .github/scripts/__tests__/agent_delegation_policy.test.js -t delegationSource`\n- [x] `node --test .github/scripts/__tests__/keepalive-loop.test.js -t 'evaluateKeepaliveLoop resolves agent:auto'`\n\n<!-- pr-preamble:start -->\n<!-- meta:issue:3346 -->\n> **Source:** Issue #3346\n\nCloses #3346\n\n<!-- pr-preamble:end -->\n\n<!-- auto-status-summary:start -->\n## Automated Status Summary\n#### Scope\n## Upstream sync review debt\n\nConsumer delivery PR: stranske/Counter_Risk#989\n\nManifest-synced paths with unresolved bot review threads:\n\n<!-- Updated WORKFLOW_OUTPUTS.md context:start -->\n## Context for Agent\n\n### Related Issues/PRs\n- [stranske/Counter_Risk#989](https://github.com/stranske/Counter_Risk/issues/989)\n<!-- Updated WORKFLOW_OUTPUTS.md context:end -->\n\n#### Tasks\n- [x] consumer `.github/scripts/agent_delegation_policy.js` \u2192 source `stranske/Workflows/.github/scripts/agent_delegation_policy.js`\n- [x] consumer `.github/scripts/keepalive_loop.js` \u2192 source `stranske/Workflows/.github/scripts/keepalive_loop.js`\n\n#### Acceptance criteria\n- [ ] Acceptance criteria section missing from source issue.\n\n<!-- auto-status-summary:end -->\n\n<!-- This is an auto-generated comment: release notes by coderabbit.ai -->\n## Summary by CodeRabbit\n\n- **Bug Fixes**\n  - Improved agent-routing status reporting by accurately identifying whether delegation came from static selection or route-weight logic.\n  - Preserved the correct delegation source, reason, selected agent, and no-switch decision when no eligible alternatives are available.\n  - Improved reporting for stalled-agent decisions, including cases where route-weight selection cannot identify an eligible alternative.\n\n- **Tests**\n  - Added regression coverage for automatic agent selection, delegation status reporting, and stalled-routing scenarios.\n<!-- end of auto-generated comment: release notes by coderabbit.ai -->\n\n",
+  "closingIssuesReferences": [
+    {
+      "id": "I_kwDOQprj9M8AAAABPoJ1AQ",
+      "number": 3346,
+      "repository": {
+        "id": "R_kgDOQprj9A",
+        "name": "Workflows",
+        "owner": {
+          "id": "MDQ6VXNlcjIzMDQ2MzIy",
+          "login": "stranske"
+        }
+      },
+      "url": "https://github.com/stranske/Workflows/issues/3346"
+    }
+  ],
+  "mergeCommit": {
+    "oid": "a0e4a8a03d0794a2fcbb480ab4f38fbb3d0df697"
+  },
+  "mergedAt": "2026-09-15T14:06:09Z",
+  "number": 3456,
+  "title": "fix(delegation): return delegationSource on every decideNextAgent path (#3346)"
+}

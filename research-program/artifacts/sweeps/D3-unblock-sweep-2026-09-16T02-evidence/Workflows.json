@@ -1,0 +1,179 @@
+{
+  "repo": "Workflows",
+  "full": "stranske/Workflows",
+  "open_count": 44,
+  "frozen": [],
+  "supply": 35,
+  "priority_count": 1,
+  "open_prs": 3,
+  "silent_claims": [
+    {
+      "number": 3392,
+      "title": "fix: expose provider availability to consumer keepalive auto-routing",
+      "labels": [
+        "agent:codex",
+        "agents:formatted",
+        "verify:evaluate"
+      ],
+      "hours_stale": 53.9,
+      "release_labels_present": []
+    },
+    {
+      "number": 3389,
+      "title": "Raise test coverage toward 90% (autopilot round 8, low blast radius only)",
+      "labels": [
+        "agent:codex",
+        "agents:formatted",
+        "verify:evaluate"
+      ],
+      "hours_stale": 45.7,
+      "release_labels_present": []
+    },
+    {
+      "number": 3375,
+      "title": "[P1] Extend output-substrate/v1 with manifest CSV export slice (B2-032)",
+      "labels": [
+        "agent:codex",
+        "agents:apply-suggestions",
+        "agents:formatted"
+      ],
+      "hours_stale": 53.9,
+      "release_labels_present": []
+    },
+    {
+      "number": 3374,
+      "title": "[P0] Add output-substrate/v1 contract schema (B2-028)",
+      "labels": [
+        "agent:codex",
+        "agents:apply-suggestions",
+        "agents:formatted"
+      ],
+      "hours_stale": 53.8,
+      "release_labels_present": []
+    },
+    {
+      "number": 3373,
+      "title": "[P0] Add document-mirror/v1 schema and validator hook (B2-023)",
+      "labels": [
+        "agent:codex",
+        "agents:apply-suggestions",
+        "agents:formatted"
+      ],
+      "hours_stale": 53.9,
+      "release_labels_present": []
+    }
+  ],
+  "stalled_prs": [],
+  "runs": [
+    {
+      "conclusion": "skipped",
+      "createdAt": "2026-09-16T01:56:04Z",
+      "databaseId": 35046012850,
+      "event": "issues",
+      "name": "Auto-Label Issues",
+      "status": "completed",
+      "url": "https://github.com/stranske/Workflows/actions/runs/35046012850",
+      "workflowName": "Auto-Label Issues"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-16T01:56:04Z",
+      "databaseId": 35046012914,
+      "event": "issues",
+      "name": "Agents Issue Format Guard",
+      "status": "completed",
+      "url": "https://github.com/stranske/Workflows/actions/runs/35046012914",
+      "workflowName": "Agents Issue Format Guard"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-16T01:54:56Z",
+      "databaseId": 35045937857,
+      "event": "schedule",
+      "name": "Sync/Dependency Campaign",
+      "status": "completed",
+      "url": "https://github.com/stranske/Workflows/actions/runs/35045937857",
+      "workflowName": "Sync/Dependency Campaign"
+    },
+    {
+      "conclusion": "failure",
+      "createdAt": "2026-09-16T01:49:18Z",
+      "databaseId": 35045572293,
+      "event": "schedule",
+      "name": "Agents 70 Orchestrator",
+      "status": "completed",
+      "url": "https://github.com/stranske/Workflows/actions/runs/35045572293",
+      "workflowName": "Agents 70 Orchestrator"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-16T01:38:44Z",
+      "databaseId": 35044897031,
+      "event": "schedule",
+      "name": "Agents Keepalive Sweep",
+      "status": "completed",
+      "url": "https://github.com/stranske/Workflows/actions/runs/35044897031",
+      "workflowName": "Agents Keepalive Sweep"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-16T01:38:27Z",
+      "databaseId": 35044878478,
+      "event": "issues",
+      "name": "Agents Issue Format Guard",
+      "status": "completed",
+      "url": "https://github.com/stranske/Workflows/actions/runs/35044878478",
+      "workflowName": "Agents Issue Format Guard"
+    },
+    {
+      "conclusion": "skipped",
+      "createdAt": "2026-09-16T01:38:26Z",
+      "databaseId": 35044878371,
+      "event": "issues",
+      "name": "Auto-Label Issues",
+      "status": "completed",
+      "url": "https://github.com/stranske/Workflows/actions/runs/35044878371",
+      "workflowName": "Auto-Label Issues"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-16T01:37:54Z",
+      "databaseId": 35044843314,
+      "event": "schedule",
+      "name": "Sync/Dependency Campaign",
+      "status": "completed",
+      "url": "https://github.com/stranske/Workflows/actions/runs/35044843314",
+      "workflowName": "Sync/Dependency Campaign"
+    },
+    {
+      "conclusion": "failure",
+      "createdAt": "2026-09-16T01:26:06Z",
+      "databaseId": 35044068705,
+      "event": "schedule",
+      "name": "Agents 70 Orchestrator",
+      "status": "completed",
+      "url": "https://github.com/stranske/Workflows/actions/runs/35044068705",
+      "workflowName": "Agents 70 Orchestrator"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-16T01:23:55Z",
+      "databaseId": 35043922174,
+      "event": "schedule",
+      "name": "Health 75 API Rate Diagnostic",
+      "status": "completed",
+      "url": "https://github.com/stranske/Workflows/actions/runs/35043922174",
+      "workflowName": "Health 75 API Rate Diagnostic"
+    }
+  ],
+  "branch_state": {
+    "workflowName": "Health 75 API Rate Diagnostic",
+    "conclusion": "success",
+    "status": "completed",
+    "url": "https://github.com/stranske/Workflows/actions/runs/35043922174",
+    "databaseId": 35043922174
+  },
+  "head_sha": "a0e4a8a03d0794a2fcbb480ab4f38fbb3d0df697",
+  "head_check_runs": [],
+  "head_red_checks": []
+}

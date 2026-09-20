@@ -1,0 +1,271 @@
+{
+  "repo": "Workflows",
+  "full": "stranske/Workflows",
+  "frozen": [
+    {
+      "body": "## Upstream sync review debt\n\nConsumer delivery PR: stranske/Trend_Model_Project#6035\n\nManifest-synced paths with unresolved bot review threads:\n- consumer `.github/scripts/agents_pr_meta_update_body.js` \u2192 source `stranske/Workflows/.github/scripts/agents_pr_meta_update_body.js`\n- consumer `.github/scripts/issue_scope_parser.js` \u2192 source `stranske/Workflows/.github/scripts/issue_scope_parser.js`\n\nFix these paths in Workflows main so the next sync regeneration outdates the consumer threads.",
+      "labels": [
+        {
+          "id": "LA_kwDOQprj9M8AAAACSq7nhQ",
+          "name": "automation",
+          "description": "Automation and workflow automation",
+          "color": "205d64"
+        },
+        {
+          "id": "LA_kwDOQprj9M8AAAACUhUbLw",
+          "name": "agents:auto-pilot-pause",
+          "description": "Pause auto-pilot at current step",
+          "color": "FEF2C0"
+        },
+        {
+          "id": "LA_kwDOQprj9M8AAAACVO1uJQ",
+          "name": "consumer-sync",
+          "description": "",
+          "color": "ededed"
+        }
+      ],
+      "number": 3455,
+      "title": "[sync-review] Fix upstream manifest-synced paths blocking stranske/Trend_Model_Project#6035",
+      "updatedAt": "2026-09-15T06:26:26Z"
+    }
+  ],
+  "silent": [
+    {
+      "number": 3392,
+      "title": "fix: expose provider availability to consumer keepalive auto-routing",
+      "labels": [
+        "agent:codex",
+        "agents:formatted",
+        "verify:evaluate"
+      ],
+      "age_h": 37.5
+    },
+    {
+      "number": 3389,
+      "title": "Raise test coverage toward 90% (autopilot round 8, low blast radius only)",
+      "labels": [
+        "agent:codex",
+        "agents:formatted",
+        "verify:evaluate"
+      ],
+      "age_h": 29.4
+    },
+    {
+      "number": 3375,
+      "title": "[P1] Extend output-substrate/v1 with manifest CSV export slice (B2-032)",
+      "labels": [
+        "agent:codex",
+        "agents:apply-suggestions",
+        "agents:formatted"
+      ],
+      "age_h": 37.5
+    },
+    {
+      "number": 3374,
+      "title": "[P0] Add output-substrate/v1 contract schema (B2-028)",
+      "labels": [
+        "agent:codex",
+        "agents:apply-suggestions",
+        "agents:formatted"
+      ],
+      "age_h": 37.5
+    },
+    {
+      "number": 3373,
+      "title": "[P0] Add document-mirror/v1 schema and validator hook (B2-023)",
+      "labels": [
+        "agent:codex",
+        "agents:apply-suggestions",
+        "agents:formatted"
+      ],
+      "age_h": 37.5
+    }
+  ],
+  "stalled": [],
+  "supply": 36,
+  "priority_count": 1,
+  "open_count": 45,
+  "ci_status": "hub-only",
+  "ci_url": null,
+  "ci_run_id": null,
+  "head_sha": "7b9d5e54414babbbee1991906fd8c43fa4281367",
+  "runs": [
+    {
+      "conclusion": "",
+      "createdAt": "2026-09-15T09:47:35Z",
+      "databaseId": 34954466301,
+      "headSha": "7b9d5e54414babbbee1991906fd8c43fa4281367",
+      "name": "Agents Issue Format Guard",
+      "status": "queued",
+      "updatedAt": "2026-09-15T09:47:35Z",
+      "url": "https://github.com/stranske/Workflows/actions/runs/34954466301",
+      "workflowName": "Agents Issue Format Guard"
+    },
+    {
+      "conclusion": "skipped",
+      "createdAt": "2026-09-15T09:47:35Z",
+      "databaseId": 34954466158,
+      "headSha": "7b9d5e54414babbbee1991906fd8c43fa4281367",
+      "name": "Auto-Label Issues",
+      "status": "completed",
+      "updatedAt": "2026-09-15T09:47:36Z",
+      "url": "https://github.com/stranske/Workflows/actions/runs/34954466158",
+      "workflowName": "Auto-Label Issues"
+    },
+    {
+      "conclusion": "",
+      "createdAt": "2026-09-15T09:47:31Z",
+      "databaseId": 34954460653,
+      "headSha": "7b9d5e54414babbbee1991906fd8c43fa4281367",
+      "name": "Sync/Dependency Campaign",
+      "status": "in_progress",
+      "updatedAt": "2026-09-15T09:47:35Z",
+      "url": "https://github.com/stranske/Workflows/actions/runs/34954460653",
+      "workflowName": "Sync/Dependency Campaign"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-15T09:46:01Z",
+      "databaseId": 34954320568,
+      "headSha": "7b9d5e54414babbbee1991906fd8c43fa4281367",
+      "name": "Agents Auto-Pilot",
+      "status": "completed",
+      "updatedAt": "2026-09-15T09:46:12Z",
+      "url": "https://github.com/stranske/Workflows/actions/runs/34954320568",
+      "workflowName": "Agents Auto-Pilot"
+    },
+    {
+      "conclusion": "",
+      "createdAt": "2026-09-15T09:46:01Z",
+      "databaseId": 34954320320,
+      "headSha": "7b9d5e54414babbbee1991906fd8c43fa4281367",
+      "name": "Health 52 Semgrep Scan",
+      "status": "in_progress",
+      "updatedAt": "2026-09-15T09:46:13Z",
+      "url": "https://github.com/stranske/Workflows/actions/runs/34954320320",
+      "workflowName": "Health 52 Semgrep Scan"
+    }
+  ],
+  "check_runs": [
+    {
+      "name": "auto-label",
+      "status": "completed",
+      "conclusion": "skipped",
+      "html_url": "https://github.com/stranske/Workflows/actions/runs/34954466158/job/104333039009"
+    },
+    {
+      "name": "check",
+      "status": "in_progress",
+      "conclusion": null,
+      "html_url": "https://github.com/stranske/Workflows/actions/runs/34954466301/job/104333038801"
+    },
+    {
+      "name": "Refresh campaign queue",
+      "status": "in_progress",
+      "conclusion": null,
+      "html_url": "https://github.com/stranske/Workflows/actions/runs/34954460653/job/104333020372"
+    },
+    {
+      "name": "Publish actionable drift alert",
+      "status": "completed",
+      "conclusion": "skipped",
+      "html_url": "https://github.com/stranske/Workflows/actions/runs/34954320401/job/104332983557"
+    },
+    {
+      "name": "Resolve recovered drift alert",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/stranske/Workflows/actions/runs/34954320401/job/104332982156"
+    },
+    {
+      "name": "CodeQL",
+      "status": "in_progress",
+      "conclusion": null,
+      "html_url": "https://github.com/stranske/Workflows/actions/runs/34954320340/job/104332640544"
+    },
+    {
+      "name": "auto-pilot",
+      "status": "completed",
+      "conclusion": "skipped",
+      "html_url": "https://github.com/stranske/Workflows/actions/runs/34954320568/job/104332614565"
+    },
+    {
+      "name": "stranske-pdf-extract package tests",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/stranske/Workflows/actions/runs/34954320334/job/104332606422"
+    },
+    {
+      "name": "JavaScript Tests",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/stranske/Workflows/actions/runs/34954320334/job/104332606289"
+    },
+    {
+      "name": "Python Tests",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/stranske/Workflows/actions/runs/34954320334/job/104332606269"
+    },
+    {
+      "name": "Lint, Format & YAML Validation",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/stranske/Workflows/actions/runs/34954320334/job/104332606154"
+    },
+    {
+      "name": "Semgrep",
+      "status": "in_progress",
+      "conclusion": null,
+      "html_url": "https://github.com/stranske/Workflows/actions/runs/34954320320/job/104332605326"
+    },
+    {
+      "name": "classify changed paths",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/stranske/Workflows/actions/runs/34954320340/job/104332567306"
+    },
+    {
+      "name": "gate",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/stranske/Workflows/actions/runs/34954320568/job/104332565942"
+    },
+    {
+      "name": "check",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/stranske/Workflows/actions/runs/34954320500/job/104332564608"
+    },
+    {
+      "name": "YAML syntax + script imports",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/stranske/Workflows/actions/runs/34954320344/job/104332564168"
+    },
+    {
+      "name": "scorecard",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/stranske/Workflows/actions/runs/34954320466/job/104332563982"
+    },
+    {
+      "name": "Open or update Release PR",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/stranske/Workflows/actions/runs/34954320384/job/104332563935"
+    },
+    {
+      "name": "Parse and lint workflows",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/stranske/Workflows/actions/runs/34954320327/job/104332563805"
+    },
+    {
+      "name": "classify changed paths",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/stranske/Workflows/actions/runs/34954320334/job/104332563728"
+    }
+  ]
+}

@@ -1,0 +1,215 @@
+{
+  "body": "## Why\n\nDoc-Lineage README (`README.md:5-6`) states the repo is scaffold-only; no vocabulary data exists. R1 requires ~25 stable `ontology_key` values for cross-manager clause joins. Verified: `tests/test_main.py:1-33` only tests template `doc_lineage` scaffold stubs — no `vocab/` directory. **Missing behavior:** no `legal.withdrawal.notice_days`-class keys for extraction or diff.\n\n## Scope\n\nAdd `vocab/legal-clauses.json` with ~25 keys, conformance test, and README wire-up.\n\n## Non-Goals\n\n- Do NOT implement full M1 pipeline (B2-002).\n- Do NOT commit proprietary LPAs — public/synthetic only per README:14.\n- Scaffold-only completion does NOT count.\n\n## Tasks\n\n- [x] Create `vocab/legal-clauses.json` with `schema_version`, `version`, `non_authoritative: false`, and `clauses` map (~25 keys seeded from ILPA/CUAD per B2 owner default).\n- [x] Create `tests/vocab/test_legal_clauses.py` asserting unique keys, dotted `ontology_key` pattern, and minimum count ≥ 20.\n- [x] Update `README.md:18` interoperability bullet to point at `vocab/legal-clauses.json`.\n- [x] Add loader `src/doc_lineage/vocab.py` with `load_legal_clauses() -> dict` (replace `my_project` package name in `pyproject.toml` if still template).\n\n## Acceptance Criteria\n\n- [x] Named test: `tests/vocab/test_legal_clauses.py::test_legal_clauses_minimum_keys_and_unique` passes.\n- [x] **Deliberate-break gate:** duplicate two `ontology_key` values in JSON → named test **must FAIL** → revert.\n\n## Implementation Notes\n\nMirror Inv-Man-Intake stub pattern at `stranske/Inv-Man-Intake` at `docs/contracts/standard_element_library.md:9-13` for data-file vocabulary shape.\n\n_Surfaced by B2-001; verified scaffold-only Doc-Lineage checkout._\n\n## Verification follow-up (adversarial review, 2026-09-14)\n\nAn independent review of the implementation PR found the work incomplete while every box was ticked. These are the remaining tasks.\n\n- [x] Fix `src/doc_lineage/vocab.py` path resolution: the packaged resource must take precedence over an adjacent `vocab/legal-clauses.json`. Today a decoy file beside the installed package is returned instead.\n- [x] Route the vocabulary assertions through `load_legal_clauses()` so they fail when the loader is stubbed to return `{}`. Two of the four current tests pass against an empty loader.\n- [x] Add a decoy-file test that fails on the path-resolution bug rather than suppressing it with a `Path.is_file` patch.\n- [x] Remove `agents/codex-6.md` and `src/doc_lineage.egg-info/` from the tree and gitignore the egg-info.\n",
+  "comments": [
+    {
+      "id": "IC_kwDOUOakrc8AAAABSo5Nwg",
+      "author": {
+        "login": "stranske-keepalive"
+      },
+      "authorAssociation": "NONE",
+      "body": "🤖 **Auto-pilot step $((STEP_COUNT + 1))**: Starting issue formatting...\n\nRunning formatter inline (not via label trigger).\n",
+      "createdAt": "2026-09-04T20:00:25Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Doc-Lineage/issues/6#issuecomment-5545807298",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDOUOakrc8AAAABSo6QGg",
+      "author": {
+        "login": "agents-workflows-bot"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "🤖 **Auto-pilot step $((STEP_COUNT + 1))**: Analyzing issue for improvements...\n\nRunning optimizer inline (not via label trigger).\n",
+      "createdAt": "2026-09-04T20:02:08Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Doc-Lineage/issues/6#issuecomment-5545824282",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDOUOakrc8AAAABSo6qOA",
+      "author": {
+        "login": "agents-workflows-bot"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "## Issue Optimization Suggestions\n\nReview the suggestions below. If you want the agent to apply them, add the\n`agents:apply-suggestions` label to this issue.\n\n### Task splitting\n- Create `vocab/legal-clauses.json` with `schema_version`, `version`, `non_authoritative: false`, and `clauses` map (~25 keys seeded from ILPA/CUAD per B2 owner default). (This task combines file creation, schema definition, and content population. The agent cannot make subjective decisions about which specific ILPA/CUAD clauses to include without explicit guidance.). Suggested split: Create the vocab directory and legal-clauses.json file with the required schema fields (schema_version, version, non_authoritative), Define the JSON structure for the clauses map with ontology_key, display_name, and description fields, Populate the clauses map with 25 common contract clause types using dotted notation (e.g., legal.withdrawal.notice_days, legal.termination.cause, legal.indemnification.scope).\n- Update `pyproject.toml` to replace `my_project` package name if still template. (This is conditional and bundled with another task. The condition needs verification first, and the replacement name is not specified.). Suggested split: Verify whether pyproject.toml still contains the template package name my_project, Replace my_project with doc_lineage in pyproject.toml if the template name is still present.\n\n### Blocked tasks\n- Create `vocab/legal-clauses.json` with ~25 keys seeded from ILPA/CUAD per B2 owner default (The agent cannot make subjective design decisions about which specific ILPA/CUAD clauses to include. The phrase 'B2 owner default' references external context not provided in the issue. | Provide an explicit list of the 25 ontology_key values to include, or reference a specific public ILPA/CUAD document section with line numbers. Example: 'Use clauses from CUAD v1 sections 3.1-3.25' or provide a bulleted list of required keys.)\n\n### Objective acceptance criteria\n- If two `ontology_key` values are duplicated in `vocab/legal-clauses.json`, `tests/vocab/test_legal_clauses.py::test_legal_clauses_minimum_keys_and_unique` fails, and passes again after reverting. (This is a manual verification step, not an automated acceptance criterion. It requires the agent to deliberately break the code, observe failure, then revert. | Replace with: 'The test test_legal_clauses_minimum_keys_and_unique includes an assertion that fails when duplicate ontology_key values are present in the clauses map.' This makes it a code requirement rather than a manual testing procedure.)\n\n### Missing sections\n- None\n\n### Formatting issues\n- The Non-Goals section uses a mix of bullet points and plain text. The original uses bullets, but the formatted version converts them to plain text with 'Do NOT' prefixes. Standardize to either all bullets or all paragraphs.\n- The Tasks section splits the loader task across two items: one for creating vocab.py and another for updating pyproject.toml. The parenthetical about pyproject.toml in the original should be a separate task (which it is in the formatted version, so this is actually correct).\n- The Implementation Notes section references '[LOCAL_WORKSPACE]/Inv-Man-Intake/docs/contracts/standard_element_library.md:9-13' but doesn't specify what pattern to mirror. Consider adding a brief description of the expected shape (e.g., 'Use a JSON object with top-level metadata fields and a clauses array/map').\n\n### Notes\n- The issue is well-structured with all required sections present (Why, Scope, Non-Goals, Tasks, Acceptance Criteria, Implementation Notes). The main compatibility issues are: (1) subjective decision-making required for clause selection without explicit guidance, (2) a manual verification acceptance criterion that should be converted to a code requirement, and (3) one complex task that bundles schema design with content population. The file path references are specific and actionable. The issue would benefit from either an explicit list of the 25 ontology_key values or a reference to a specific public document section to eliminate subjective decision-making.\n\n<!-- suggestions-json: {\"task_splitting\": [{\"task\": \"Create `vocab/legal-clauses.json` with `schema_version`, `version`, `non_authoritative: false`, and `clauses` map (~25 keys seeded from ILPA/CUAD per B2 owner default).\", \"reason\": \"This task combines file creation, schema definition, and content population. The agent cannot make subjective decisions about which specific ILPA/CUAD clauses to include without explicit guidance.\", \"split_suggestions\": [\"Create the vocab directory and legal-clauses.json file with the required schema fields (schema_version, version, non_authoritative)\", \"Define the JSON structure for the clauses map with ontology_key, display_name, and description fields\", \"Populate the clauses map with 25 common contract clause types using dotted notation (e.g., legal.withdrawal.notice_days, legal.termination.cause, legal.indemnification.scope)\"]}, {\"task\": \"Update `pyproject.toml` to replace `my_project` package name if still template.\", \"reason\": \"This is conditional and bundled with another task. The condition needs verification first, and the replacement name is not specified.\", \"split_suggestions\": [\"Verify whether pyproject.toml still contains the template package name my_project\", \"Replace my_project with doc_lineage in pyproject.toml if the template name is still present\"]}], \"blocked_tasks\": [{\"task\": \"Create `vocab/legal-clauses.json` with ~25 keys seeded from ILPA/CUAD per B2 owner default\", \"reason\": \"The agent cannot make subjective design decisions about which specific ILPA/CUAD clauses to include. The phrase 'B2 owner default' references external context not provided in the issue.\", \"suggested_action\": \"Provide an explicit list of the 25 ontology_key values to include, or reference a specific public ILPA/CUAD document section with line numbers. Example: 'Use clauses from CUAD v1 sections 3.1-3.25' or provide a bulleted list of required keys.\"}], \"objective_criteria\": [{\"criterion\": \"If two `ontology_key` values are duplicated in `vocab/legal-clauses.json`, `tests/vocab/test_legal_clauses.py::test_legal_clauses_minimum_keys_and_unique` fails, and passes again after reverting.\", \"issue\": \"This is a manual verification step, not an automated acceptance criterion. It requires the agent to deliberately break the code, observe failure, then revert.\", \"suggestion\": \"Replace with: 'The test test_legal_clauses_minimum_keys_and_unique includes an assertion that fails when duplicate ontology_key values are present in the clauses map.' This makes it a code requirement rather than a manual testing procedure.\"}], \"missing_sections\": [], \"formatting_issues\": [\"The Non-Goals section uses a mix of bullet points and plain text. The original uses bullets, but the formatted version converts them to plain text with 'Do NOT' prefixes. Standardize to either all bullets or all paragraphs.\", \"The Tasks section splits the loader task across two items: one for creating vocab.py and another for updating pyproject.toml. The parenthetical about pyproject.toml in the original should be a separate task (which it is in the formatted version, so this is actually correct).\", \"The Implementation Notes section references '[LOCAL_WORKSPACE]/Inv-Man-Intake/docs/contracts/standard_element_library.md:9-13' but doesn't specify what pattern to mirror. Consider adding a brief description of the expected shape (e.g., 'Use a JSON object with top-level metadata fields and a clauses array/map').\"], \"overall_notes\": \"The issue is well-structured with all required sections present (Why, Scope, Non-Goals, Tasks, Acceptance Criteria, Implementation Notes). The main compatibility issues are: (1) subjective decision-making required for clause selection without explicit guidance, (2) a manual verification acceptance criterion that should be converted to a code requirement, and (3) one complex task that bundles schema design with content population. The file path references are specific and actionable. The issue would benefit from either an explicit list of the 25 ontology_key values or a reference to a specific public document section to eliminate subjective decision-making.\"} -->",
+      "createdAt": "2026-09-04T20:02:49Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Doc-Lineage/issues/6#issuecomment-5545830968",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDOUOakrc8AAAABSo7k1Q",
+      "author": {
+        "login": "agents-workflows-bot"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "⚠️ **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Doc-Lineage/actions/runs/33914254046)\n",
+      "createdAt": "2026-09-04T20:04:21Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Doc-Lineage/issues/6#issuecomment-5545845973",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDOUOakrc8AAAABSo7lAw",
+      "author": {
+        "login": "stranske-keepalive"
+      },
+      "authorAssociation": "NONE",
+      "body": "🤖 **Auto-pilot step $((STEP_COUNT + 1))**: Applying optimization suggestions...\n\nRunning apply inline (not via label trigger).\n",
+      "createdAt": "2026-09-04T20:04:21Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Doc-Lineage/issues/6#issuecomment-5545846019",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDOUOakrc8AAAABSo8J7A",
+      "author": {
+        "login": "github-actions"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `Define the JSON structure for the clauses map with ontology_key (verify: confirm completion in repo)`.\n\n_Advisory:_\n- 9 cited path(s) do not exist yet: `[LOCAL_WORKSPACE]/Doc-Lineage/README.md`, `[LOCAL_WORKSPACE]/Doc-Lineage/tests/test_main.py`, `vocab/`, `vocab/legal-clauses.json`, `tests/vocab/test_legal_clauses.py`, `src/doc_lineage/vocab.py`, … — expected when a task creates them; check for typos otherwise.\n\nDispatched the Agents Issue Optimizer format phase (attempt 1 of 3).\n\n<!-- format-guard:e17b9e057415:attempt:1 -->\n",
+      "createdAt": "2026-09-04T20:05:18Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Doc-Lineage/issues/6#issuecomment-5545855468",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDOUOakrc8AAAABSo8rsQ",
+      "author": {
+        "login": "stranske-keepalive"
+      },
+      "authorAssociation": "NONE",
+      "body": "🤖 **Auto-pilot step 1**: Issue prepared! Assigning to agent...\n\nAdding `agent:codex` label. The capability check will run automatically.\n\n⏳ Agent will create a PR shortly.",
+      "createdAt": "2026-09-04T20:06:09Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Doc-Lineage/issues/6#issuecomment-5545864113",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDOUOakrc8AAAABSo9UQQ",
+      "author": {
+        "login": "agents-workflows-bot"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "### ⚠️ Capability Check: Some tasks may need human assistance\n\n**Recommendation:** REVIEW_NEEDED\n\n**✅ Actionable Tasks (4):**\n- Update `README.md:18` interoperability bullet to point at `vocab/legal-clauses.json`.\n- Add `src/doc_lineage/vocab.py` with `load_legal_clauses() -> dict`.\n- Update `pyproject.toml` to replace `my_project` package name if still template.\n- Verify whether pyproject.toml still contains the template package name my_project\n\n**⚠️ Partial Tasks (8):**\n- Create `vocab/legal-clauses.json` with `schema_version`, `version`, `non_authoritative: false`, and `clauses` map (~25 keys seeded from ILPA/CUAD per B2 owner default).\n  - *Limitation:* Task bundles multiple actions; split into smaller tasks.\n- Create the vocab directory and legal-clauses.json file with the required schema fields for schema_version (verify: confirm completion in repo)\n  - *Limitation:* Task bundles multiple actions; split into smaller tasks.\n- Create the vocab directory and legal-clauses.json file with the required schema fields for non_authoritative (verify: confirm completion in repo)\n  - *Limitation:* Task bundles multiple actions; split into smaller tasks.\n- Define the JSON structure for the clauses map with ontology_key (verify: confirm completion in repo)\n  - *Limitation:* Task bundles multiple actions; split into smaller tasks.\n- Define the JSON structure for the clauses map with display_name (verify: confirm completion in repo)\n  - *Limitation:* Task bundles multiple actions; split into smaller tasks.\n- _(5 further sub-tasks elided; split this issue)_\n  - *Limitation:* Task bundles multiple actions; split into smaller tasks.\n- Create `tests/vocab/test_legal_clauses.py` asserting unique keys, dotted `ontology_key` pattern, and minimum count ≥ 20.\n  - *Limitation:* Task bundles multiple actions; split into smaller tasks.\n- Replace my_project with doc_lineage in pyproject.toml if the template name is still present (verify: confirm completion in repo)\n  - *Limitation:* Task bundles multiple actions; split into smaller tasks.\n\n**👤 Human Actions Needed:**\n- Split task into smaller steps: Create `vocab/legal-clauses.json` with `schema_version`, `version`, `non_authoritative: false`, and `clauses` map (~25 keys seeded from ILPA/CUAD per B2 owner default).\n- Split task into smaller steps: Create the vocab directory and legal-clauses.json file with the required schema fields for schema_version (verify: confirm completion in repo)\n- Split task into smaller steps: Create the vocab directory and legal-clauses.json file with the required schema fields for non_authoritative (verify: confirm completion in repo)\n- Split task into smaller steps: Define the JSON structure for the clauses map with ontology_key (verify: confirm completion in repo)\n- Split task into smaller steps: Define the JSON structure for the clauses map with display_name (verify: confirm completion in repo)\n- Split task into smaller steps: _(5 further sub-tasks elided; split this issue)_\n- Split task into smaller steps: Create `tests/vocab/test_legal_clauses.py` asserting unique keys, dotted `ontology_key` pattern, and minimum count ≥ 20.\n- Split task into smaller steps: Replace my_project with doc_lineage in pyproject.toml if the template name is still present (verify: confirm completion in repo)\n- LLM provider unavailable\n\n---\n*Auto-generated by capability check*",
+      "createdAt": "2026-09-04T20:07:12Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Doc-Lineage/issues/6#issuecomment-5545874497",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDOUOakrc8AAAABSo-0tw",
+      "author": {
+        "login": "stranske-keepalive"
+      },
+      "authorAssociation": "NONE",
+      "body": "🤖 **Auto-pilot step $((STEP_COUNT + 1))**: Starting issue formatting...\n\nRunning formatter inline (not via label trigger).\n",
+      "createdAt": "2026-09-04T20:09:45Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Doc-Lineage/issues/6#issuecomment-5545899191",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDOUOakrc8AAAABSo-4uw",
+      "author": {
+        "login": "stranske-keepalive"
+      },
+      "authorAssociation": "NONE",
+      "body": "⚠️ **Auto-pilot paused during formatting.**\n\nFormatter output does not satisfy the canonical issue-format contract.",
+      "createdAt": "2026-09-04T20:09:51Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Doc-Lineage/issues/6#issuecomment-5545900219",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDOUOakrc8AAAABUR0hSQ",
+      "author": {
+        "login": "agents-workflows-bot"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "Opened PR #23 to engage Codex.\n\nKeepalive mode: **OFF**\n\nNext steps for the PR author:\n- Comment `@codex start` (auto-posted when possible).\n  Ask Codex to draft the plan.\n- After Codex replies with the checklist, post the execution command below.\n  This begins delivery and enables keepalive.\n\nExecution command (copy into a standalone PR comment):\n```markdown\n@codex ## Keepalive Next Task\n\nYour objective is to satisfy the **Acceptance Criteria** by completing each **Task** within the defined **Scope**.\n\n**This round you MUST:**\n1. Implement actual code or test changes that advance at least one incomplete task toward acceptance.\n2. Commit meaningful source code (.py, .yml, .js, etc.)—not just status/docs updates.\n3. Mark a task checkbox complete ONLY after verifying the implementation works.\n4. Focus on the FIRST unchecked task unless blocked, then move to the next.\n\n**Guidelines:**\n- Keep edits scoped to the current task rather than reshaping the entire PR.\n- Use repository instructions, conventions, and tests to validate work.\n- Prefer small, reviewable commits; leave clear notes when follow-up is required.\n- Do NOT work on unrelated improvements until all PR tasks are complete.\n\n## Pre-Commit Formatting Gate (Black)\n\nBefore you commit or push any Python (`.py`) changes, you MUST:\n1. Run Black to format the relevant files (line length 100).\n2. Verify formatting passes CI by running:\n   `black --check --line-length 100 --exclude '(\\.workflows-lib|node_modules)' .`\n3. If the check fails, do NOT commit/push; format again until it passes.\n\n**COVERAGE TASKS - SPECIAL RULES:**\nIf a task mentions \"coverage\" or a percentage target (e.g., \"≥95%\", \"to 95%\"), you MUST:\n1. After adding tests, run TARGETED coverage verification to avoid timeouts:\n   - For a specific script like `scripts/foo.py`, run:\n     `pytest tests/scripts/test_foo.py --cov=scripts/foo --cov-report=term-missing -m \"not slow\"`\n   - If no matching test file exists, run:\n     `pytest tests/ --cov=scripts/foo --cov-report=term-missing -m \"not slow\" -x`\n2. Find the specific script in the coverage output table\n3. Verify the `Cover` column shows the target percentage or higher\n4. Only mark the task complete if the actual coverage meets the target\n5. If coverage is below target, add more tests until it meets the target\n\nIMPORTANT: Always use `-m \"not slow\"` to skip slow integration tests that may timeout.\nIMPORTANT: Use targeted `--cov=scripts/specific_module` instead of `--cov=scripts` for faster feedback.\n\nA coverage task is NOT complete just because you added tests. It is complete ONLY when the coverage command output confirms the target is met.\n\n**The Tasks and Acceptance Criteria are provided in the appendix below.** Work through them in order.\n```\n\nIssue context (optional: copy into the PR description):\n\n```markdown\n### Source Issue #6: [P0] Add fund-clause vocabulary v1 data file (B2-001)\nKeepalive: OFF\nBase: main\nHead: codex/issue-6\n\nSource: https://github.com/stranske/Doc-Lineage/issues/6\n\n> ## Why\n> \n> Doc-Lineage README (`README.md:5-6`) states the repo is scaffold-only; no vocabulary data exists. R1 requires ~25 stable `ontology_key` values for cross-manager clause joins. Verified: `tests/test_main.py:1-33` only tests template `doc_lineage` scaffold stubs — no `vocab/` directory. **Missing behavior:** no `legal.withdrawal.notice_days`-class keys for extraction or diff.\n> \n> ## Scope\n> \n> Add `vocab/legal-clauses.json` with ~25 keys, conformance test, and README wire-up.\n> \n> ## Non-Goals\n> \n> - Do NOT implement full M1 pipeline (B2-002).\n> - Do NOT commit proprietary LPAs — public/synthetic only per README:14.\n> - Scaffold-only completion does NOT count.\n> \n> ## Tasks\n> \n> - [ ] Create `vocab/legal-clauses.json` with `schema_version`, `version`, `non_authoritative: false`, and `clauses` map (~25 keys seeded from ILPA/CUAD per B2 owner default).\n> - [ ] Create `tests/vocab/test_legal_clauses.py` asserting unique keys, dotted `ontology_key` pattern, and minimum count ≥ 20.\n> - [ ] Update `README.md:18` interoperability bullet to point at `vocab/legal-clauses.json`.\n> - [ ] Add loader `src/doc_lineage/vocab.py` with `load_legal_clauses() -> dict` (replace `my_project` package name in `pyproject.toml` if still template).\n> \n> ## Acceptance Criteria\n> \n> - [ ] Named test: `tests/vocab/test_legal_clauses.py::test_legal_clauses_minimum_keys_and_unique` passes.\n> - [ ] **Deliberate-break gate:** duplicate two `ontology_key` values in JSON → named test **must FAIL** → revert.\n> \n> ## Implementation Notes\n> \n> Mirror Inv-Man-Intake stub pattern at `stranske/Inv-Man-Intake` at `docs/contracts/standard_element_library.md:9-13` for data-file vocabulary shape.\n> \n> _Surfaced by B2-001; verified scaffold-only Doc-Lineage checkout._\n> \n```",
+      "createdAt": "2026-09-13T20:14:32Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Doc-Lineage/issues/6#issuecomment-5655830857",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDOUOakrc8AAAABUZgl4Q",
+      "author": {
+        "login": "stranske"
+      },
+      "authorAssociation": "OWNER",
+      "body": "## Closer terminal acceptance disposition — source #6\n\nPR #23 is merged at `8f4b97535571b70a1bdfffaeb18efbcdcdff7317`, which is also current main. [Verifier run 34840244292](https://github.com/stranske/Doc-Lineage/actions/runs/34840244292) completed successfully. The durable [provider comparison](https://github.com/stranske/Doc-Lineage/pull/23#issuecomment-5663490232) reports PASS from both providers. Source #6 was already closed when this round inspected it; this records acceptance, not a new merge or closure.\n\nReconciled the report's limited-visibility concerns against the full merged files and retained acceptance evidence:\n\n- `pyproject.toml` explicitly includes `legal-clauses.json` under `doc_lineage._vocab` package data. The real installed-wheel test removes its build checkout, runs isolated Python, and checks loading with and without an adjacent decoy without mocking resource lookup.\n- `src/doc_lineage/vocab.py` loads the packaged resource first, restricts fallback to a source checkout, and rejects duplicate JSON map keys.\n- The actual vocabulary has exactly 25 entries. The named acceptance test calls the production loader. Prior exact-head recovery logs show 26 passing tests and 100% coverage; all 17 vocabulary nodes fail with the actual loader replaced by `{}`; duplicating ontology values fails the named test; reintroducing source-first precedence fails the installed-wheel test; restored vocabulary tests pass 17/17. These are retained observed runs, not newly rerun tests.\n- The complete merged tree contains neither `agents/codex-6.md` nor egg-info; both ignore rules are present. README links the vocabulary and documents the loader.\n\nResolved the two historical outdated threads: the bootstrap-only marker concern is superseded by removal of the bootstrap artifact and delivery of the full implementation; the missing-vocabulary finding is satisfied by the merged loader, data, tests, and README. The installed-resource review thread was already resolved. No active review or acceptance debt remains.\n\nSource #6's original and adversarial follow-up checklists are now reconciled with this evidence. No follow-up PR or human action is required. Exact-target closer ownership for #23/#6 is terminal; this does not disposition PR #22 or any unrelated Doc-Lineage work.\n",
+      "createdAt": "2026-09-14T12:26:55Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Doc-Lineage/issues/6#issuecomment-5663892961",
+      "viewerDidAuthor": true
+    }
+  ],
+  "labels": [
+    {
+      "id": "LA_kwDOUOakrc8AAAACzyADfw",
+      "name": "agents:apply-suggestions",
+      "description": "Applies optimization suggestions from agents:optimize",
+      "color": "0E8A16"
+    },
+    {
+      "id": "LA_kwDOUOakrc8AAAACzyADgg",
+      "name": "agents:formatted",
+      "description": "Issue has been formatted to AGENT_ISSUE_TEMPLATE",
+      "color": "1D76DB"
+    },
+    {
+      "id": "LA_kwDOUOakrc8AAAACzyADhA",
+      "name": "agent:codex",
+      "description": "Assign to Codex agent",
+      "color": "0e8a16"
+    },
+    {
+      "id": "LA_kwDOUOakrc8AAAAC1gTHhA",
+      "name": "priority:normal",
+      "description": "Standard priority within opener-cap discipline",
+      "color": "fbca04"
+    }
+  ],
+  "number": 6,
+  "state": "CLOSED",
+  "title": "[P0] Add fund-clause vocabulary v1 data file (B2-001)",
+  "url": "https://github.com/stranske/Doc-Lineage/issues/6"
+}

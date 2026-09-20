@@ -1,0 +1,223 @@
+# Baseline allowlist for Health 74 Template Drift.
+#
+# Each entry permits exactly one current normalized main/template content pair.
+# If either file changes, the fingerprint no longer matches and Health 74 fails
+# until the template is aligned or this baseline is deliberately re-reviewed.
+#
+# 2026-07-24b re-baseline: fingerprints regenerated after check_template_drift.py
+# gained action-pin canonicalization (uses:<action>@<ref> collapses to @<pinned>).
+# From here, Renovate action-pin bumps and the intentional pinned-vs-floating
+# divergence no longer change these fingerprints, so this allowlist stops going
+# stale on dependency bumps; only a genuine logic change to a root workflow will.
+#
+# 2026-08-05 re-baseline: auto-label now isolates the preliminary eligibility
+# sparse checkout under eligibility-source/ in both root and consumer workflows.
+# The remaining root/template differences are the already-reviewed consumer
+# action-pin and auth-plumbing contract.
+#
+# 2026-07-24 re-baseline: refreshed fingerprints for 13 entries (belt 71/72/73,
+# auto-label, autofix-dispatcher, capability-check, decompose, dedup, guard,
+# issue-optimizer, keepalive-loop-reporter, verifier, weekly-metrics) that went
+# stale after Renovate action-pin/dep bumps (#2799 actions/checkout v7.0.1;
+# #2776 coverage pins) moved the consumer templates' pinned SHAs. Verified via
+# git log that the ONLY commits touching these since the last baseline were those
+# dep bumps (root workflows keep floating major tags), so the divergence remains
+# the intentional action-pin-contract drift, not a missing consumer improvement.
+#
+# 2026-06-24 re-baseline: refreshed the consumer template fingerprints for
+# auto-label, capability-check, decompose, dedup, issue-optimizer, and
+# weekly-metrics after the setup-python v6 digest moved to ece7cb0. The root
+# workflows intentionally continue using floating major tags.
+#
+# 2026-06-14 re-baseline: refreshed the fingerprints of 7 entries (issue-intake,
+# auto-label, capability-check, decompose, dedup, issue-optimizer, weekly-metrics)
+# that went stale after action-version bumps (#2391/#2394) and root feature work.
+# The divergence is intentional, not a missing consumer improvement: consumer
+# template workflows SHA-pin third-party actions per the fleet action-pin contract
+# (docs/HISTORY.md, PR #1925) and carry LangSmith tracing env, while the root
+# Workflows-repo copies use floating major tags plus repo-internal concurrency +
+# sparse-checkout (docs/fixes/sparse-checkout-audit-2026-02-03.csv). Aligning the
+# template to root would strip the contractually-required consumer action pins, so
+# these are re-baselined rather than aligned.
+
+[pair.1]
+main = .github/workflows/agents-63-issue-intake.yml
+template = templates/consumer-repo/.github/workflows/agents-issue-intake.yml
+main_sha256 = 756b0e4deaf5efd4138f785b857d57ed271bd30f9facc3daa4a6125db14edbb2
+template_sha256 = 9176b7cffc68dba50fa7ff9c6a2386383c237433ac5a656053eccdd202628c6d
+divergence = Named-secrets rollout 2026-08-23: both surfaces now pass named setup-api-client secret inputs instead of the whole-secrets-context blob, applied identically to root and consumer, and scoped to each workflow's DECLARED workflow_call secrets where that context is a closed set. Removing that handoff is the demonstrated remedy for GitHub's suspicious-workflow hold (agents-dedup then ran at run_attempt 1 with nothing approved after 22 days held). Prior divergence unchanged: Intentional divergence re-reviewed 2026-08-16: root and consumer intake surfaces both remove the operator draft toggle and always hand off ready-for-review automation PRs; root retains its richer failure summary while the consumer remains a pinned, minimal bridge contract.
+divergence_reviewed = 2026-08-16
+fingerprint_refreshed = 2026-08-23
+
+[pair.2]
+main = .github/workflows/agents-71-codex-belt-dispatcher.yml
+template = templates/consumer-repo/.github/workflows/agents-71-codex-belt-dispatcher.yml
+main_sha256 = f86d032758e170beb186b9bea6e56e02c8acd73b4363e6147754f43eb1451dac
+template_sha256 = 9b24abb5fb42613375c3fc1a0a4a4c0b726f98294a9916cf3cd42790b3a26dbc
+divergence = Credential-pool guard 2026-08-29: both surfaces now install retry dependencies outside later checkout cleanup and probe the exact wrapped client before candidate selection or issue transition, applied identically while preserving consumer action pins and Codex-specific wording. The divergence itself is unchanged and was NOT re-reviewed, so divergence_reviewed keeps its prior date. Prior divergence unchanged: client-id rename 2026-08-24: every create-github-app-token step moved from the deprecated `app-id` input to `client-id`, applied identically to root and consumer, with the secret VALUE unchanged (the action forwards either input to the same appId slot -- main.js:21, lib/main.js:37). Prior divergence unchanged: Named-secrets rollout 2026-08-23 removed the whole-secrets-context handoff from both surfaces. Prior divergence unchanged: Intentional divergence re-baselined 2026-08-16: workflow_dispatch inputs are passed through step-level env and read through process.env, while consumer action pinning and Codex-specific wording remain preserved.
+divergence_reviewed = 2026-08-16
+fingerprint_refreshed = 2026-08-29
+
+[pair.3]
+main = .github/workflows/agents-72-codex-belt-worker.yml
+template = templates/consumer-repo/.github/workflows/agents-72-codex-belt-worker.yml
+main_sha256 = d38c8fa8c9a0b8d22cc2618073f3df7e66e5933cedbda9adfe696ebe26bfc56a
+template_sha256 = abea1d00c85b0d2207746e916a3d1e581fc30f21274ea0c5b45479a604e558cb
+divergence = client-id rename 2026-08-24: every create-github-app-token step moved from the deprecated `app-id` input to `client-id`, applied identically to root and consumer, with the secret VALUE unchanged (the action forwards either input to the same appId slot -- main.js:21, lib/main.js:37). Fingerprints refreshed for that change; the divergence itself is unchanged and was NOT re-reviewed, which is why divergence_reviewed keeps its old date. Prior divergence unchanged: Named-secrets rollout 2026-08-23: both surfaces now pass named setup-api-client secret inputs instead of the whole-secrets-context blob, applied identically to root and consumer, and scoped to each workflow's DECLARED workflow_call secrets where that context is a closed set. Removing that handoff is the demonstrated remedy for GitHub's suspicious-workflow hold (agents-dedup then ran at run_attempt 1 with nothing approved after 22 days held). Prior divergence unchanged: Intentional divergence re-reviewed 2026-06-20: exported Orchestrator skill inputs were added to both root and consumer worker workflow_call surfaces while preserving consumer action pinning and guarded merge wording.
+divergence_reviewed = 2026-06-20
+fingerprint_refreshed = 2026-08-24
+
+[pair.4]
+main = .github/workflows/agents-73-codex-belt-conveyor.yml
+template = templates/consumer-repo/.github/workflows/agents-73-codex-belt-conveyor.yml
+main_sha256 = 0e1002a98faad1c4444923a7924dc2fd2a1e4f0115d074cd130e8f35e3209033
+template_sha256 = 07d5ef489140f7d55a6733d4e1c73d5d3bc17bad33ce9df216767ecb1395be79
+divergence = client-id rename 2026-08-24: every create-github-app-token step moved from the deprecated `app-id` input to `client-id`, applied identically to root and consumer, with the secret VALUE unchanged (the action forwards either input to the same appId slot -- main.js:21, lib/main.js:37). Fingerprints refreshed for that change; the divergence itself is unchanged and was NOT re-reviewed, which is why divergence_reviewed keeps its old date. Prior divergence unchanged: Named-secrets rollout 2026-08-23: both surfaces now pass named setup-api-client secret inputs instead of the whole-secrets-context blob, applied identically to root and consumer, and scoped to each workflow's DECLARED workflow_call secrets where that context is a closed set. Removing that handoff is the demonstrated remedy for GitHub's suspicious-workflow hold (agents-dedup then ran at run_attempt 1 with nothing approved after 22 days held). Prior divergence unchanged: Intentional divergence re-reviewed 2026-08-10: root conveyor labels Gate and changed-file checks as authoritative; the consumer adds explicit best-effort rationale for only post-merge cleanup calls while preserving its action pins and Codex-specific behavior.
+divergence_reviewed = 2026-08-10
+fingerprint_refreshed = 2026-08-24
+
+[pair.5]
+main = .github/workflows/agents-auto-label.yml
+template = templates/consumer-repo/.github/workflows/agents-auto-label.yml
+main_sha256 = fe2a6db1b56246337df20c9415e5d247475e8e442115f058d63209f397026511
+template_sha256 = 5fce65bfde5481b32cdadfa51c4ac596e4c213515704c84f35a0bb22a955f3b7
+divergence = Bounded suggestions display 2026-08-31: both surfaces now derive suggestions from bounded_diverse_matches excluding auto-apply winners instead of re-scanning the full match list, applied identically to root and consumer. Fingerprints refreshed for that change; the divergence itself is unchanged and was NOT re-reviewed, which is why divergence_reviewed keeps its prior date. Prior divergence unchanged: Label-matcher margin-check fix 2026-08-31: both surfaces now pass diverse=False into find_similar_labels for the auto-apply margin gate and apply bounded_diverse_matches only to the suggestions display, applied identically to root and consumer. Prior divergence unchanged: Intentional divergence re-reviewed 2026-08-31: root and consumer workflows both use the bounded shared matcher and issue-safe auto-apply gate while retaining root sparse-checkout plus App-token setup and consumer SHA-pinned actions plus token-aware retry plumbing. Do not align wholesale: that would strip the consumer security contract.
+divergence_reviewed = 2026-08-31
+fingerprint_refreshed = 2026-08-31
+
+[pair.6]
+main = .github/workflows/agents-autofix-dispatcher.yml
+template = templates/consumer-repo/.github/workflows/agents-autofix-dispatcher.yml
+main_sha256 = c7e2b1e144b7d16c030569bcddc35590bece7d87e74d65cf6a2be1682290485d
+template_sha256 = 05531a5b52a65d97b35964d6faac5624de8605bc9f639b97c6ee6fe61d325705
+divergence = client-id rename 2026-08-24: every create-github-app-token step moved from the deprecated `app-id` input to `client-id`, applied identically to root and consumer, with the secret VALUE unchanged (the action forwards either input to the same appId slot -- main.js:21, lib/main.js:37). Fingerprints refreshed for that change; the divergence itself is unchanged and was NOT re-reviewed, which is why divergence_reviewed keeps its old date. Prior divergence unchanged: Named-secrets rollout 2026-08-23: both surfaces now pass named setup-api-client secret inputs instead of the whole-secrets-context blob, applied identically to root and consumer, and scoped to each workflow's DECLARED workflow_call secrets where that context is a closed set. Removing that handoff is the demonstrated remedy for GitHub's suspicious-workflow hold (agents-dedup then ran at run_attempt 1 with nothing approved after 22 days held). Prior divergence unchanged: Intentional divergence re-reviewed 2026-08-23: the Workflows-local dispatcher resolves and invokes the in-repository reusable autofix surface, while the consumer wrapper uses the published Workflows workflow with pinned actions and consumer secret wiring. Do not align wholesale because that would remove the consumer deployment contract.
+divergence_reviewed = 2026-08-23
+fingerprint_refreshed = 2026-08-24
+
+[pair.7]
+main = .github/workflows/agents-capability-check.yml
+template = templates/consumer-repo/.github/workflows/agents-capability-check.yml
+main_sha256 = fd15a87ee9e5dfa7f93c48aa372d87b4c7172a2148f90aba6f25a1f6c9b5ccbe
+template_sha256 = d64c56f967166f803f054b9d81e2390dadd8dc5984bb280271f09bf4fffd9702
+divergence = Named-secrets rollout 2026-08-23: both surfaces now pass named setup-api-client secret inputs instead of the whole-secrets-context blob, applied identically to root and consumer, and scoped to each workflow's DECLARED workflow_call secrets where that context is a closed set. Removing that handoff is the demonstrated remedy for GitHub's suspicious-workflow hold (agents-dedup then ran at run_attempt 1 with nothing approved after 22 days held). Prior divergence unchanged: Intentional divergence re-baselined 2026-08-22 after both surfaces migrated from the retired check_capability alias to classify_capabilities. The consumer template retains SHA-pinned actions and LangSmith tracing while the root workflow retains in-repo concurrency and sparse-checkout plumbing; do not align wholesale because that would strip the consumer security contract.
+divergence_reviewed = 2026-08-22
+fingerprint_refreshed = 2026-08-23
+
+[pair.8]
+main = .github/workflows/agents-decompose.yml
+template = templates/consumer-repo/.github/workflows/agents-decompose.yml
+main_sha256 = 66b4596b399d478f5070cedd81cd92b8952f2f82dc17bdf129c200614e09da13
+template_sha256 = 48cb4ecee47f756d64c3c76a8f47cac01468c9df5ceae50a86508eadb7d8b589
+divergence = Named-secrets rollout 2026-08-23: both surfaces now pass named setup-api-client secret inputs instead of the whole-secrets-context blob, applied identically to root and consumer, and scoped to each workflow's DECLARED workflow_call secrets where that context is a closed set. Removing that handoff is the demonstrated remedy for GitHub's suspicious-workflow hold (agents-dedup then ran at run_attempt 1 with nothing approved after 22 days held). Prior divergence unchanged: Intentional divergence re-baselined 2026-08-09: root-only warning-only REST triage marker added; do not align wholesale because consumer pins and retry plumbing are contractually distinct.
+divergence_reviewed = 2026-08-09
+fingerprint_refreshed = 2026-08-23
+
+[pair.9]
+main = .github/workflows/agents-dedup.yml
+template = templates/consumer-repo/.github/workflows/agents-dedup.yml
+main_sha256 = ed04c329fe0d0bed4136a11c23e11cee740af22e7ec46bdaad831d9ef4df1f99
+template_sha256 = aa6c161b640eb303df8d47bc4d85535210f9cc7a49e4f165059432d6f0106bd2
+divergence = Root sparse-checkout now also fetches pyproject.toml, README.md, scripts/__init__.py and scripts/langchain; without them `pip install -e ".[langchain]"` failed and `from scripts.langchain.issue_dedup import ...` could not resolve, so the job could never complete - hidden for 22 days by GitHub's suspicious-workflow hold. Root only: the consumer template does a full checkout and already guards the install for consumers that are not installable packages. Prior divergence unchanged: Intentional divergence (re-baselined 2026-08-23): both surfaces now pass the eight named setup-api-client secret inputs instead of `secrets: ${{ toJSON(secrets) }}`, applied identically to root and consumer so the whole-secrets-context handoff is gone from both. Fingerprints refreshed for that change. The remaining divergence is unchanged and still intentional: consumer template SHA-pins third-party actions per the fleet action-pin contract (docs/HISTORY.md, PR #1925) and sets LangSmith tracing env; root uses floating major tags with repo-internal concurrency + sparse-checkout (docs/fixes/sparse-checkout-audit-2026-02-03.csv). Do not align: would strip consumer action pins.
+divergence_reviewed = 2026-08-23
+fingerprint_refreshed = 2026-08-23
+
+[pair.10]
+main = .github/workflows/agents-guard.yml
+template = templates/consumer-repo/.github/workflows/agents-guard.yml
+main_sha256 = db19a7be90004acf658ace7ba2e635dc26f918ed8a52934f5c09d8923a0962e8
+template_sha256 = b62efff58577347cf8e868a4915dba9ba2553e281b06f205e9a667a3e6dc1237
+divergence = client-id rename 2026-08-24: every create-github-app-token step moved from the deprecated `app-id` input to `client-id`, applied identically to root and consumer, with the secret VALUE unchanged (the action forwards either input to the same appId slot -- main.js:21, lib/main.js:37). Fingerprints refreshed for that change; the divergence itself is unchanged and was NOT re-reviewed, which is why divergence_reviewed keeps its old date. Prior divergence unchanged: Named-secrets rollout 2026-08-23: both surfaces now pass named setup-api-client secret inputs instead of the whole-secrets-context blob, applied identically to root and consumer, and scoped to each workflow's DECLARED workflow_call secrets where that context is a closed set. Removing that handoff is the demonstrated remedy for GitHub's suspicious-workflow hold (agents-dedup then ran at run_attempt 1 with nothing approved after 22 days held). Prior divergence unchanged: Intentional divergence re-baselined 2026-06-30: root and consumer guard workflows differ for pinned consumer actions/App-token setup; stranske/Workflows digest pins were refreshed together in root and consumer guard surfaces after Renovate moved the Workflows digest to ebef44a.
+divergence_reviewed = 2026-06-30
+fingerprint_refreshed = 2026-08-24
+
+[pair.11]
+# 2026-09-02: refreshed after recursion-guard comment accuracy fix; root and consumer
+# retain their established in-tree versus sparse-checkout issue-update implementations.
+main = .github/workflows/agents-issue-optimizer.yml
+template = templates/consumer-repo/.github/workflows/agents-issue-optimizer.yml
+main_sha256 = e391cef557443c8cc059391d8ddaa3c084a5f8f5d2297d905501b0c0bc378d1b
+template_sha256 = 3e405ac97a1c52751662127f442606cd19a5ff24cb666fd037b3f4b762ab1d82
+divergence = client-id rename 2026-08-24: every create-github-app-token step moved from the deprecated `app-id` input to `client-id`, applied identically to root and consumer, with the secret VALUE unchanged (the action forwards either input to the same appId slot -- main.js:21, lib/main.js:37). Fingerprints refreshed for that change; the divergence itself is unchanged and was NOT re-reviewed, which is why divergence_reviewed keeps its old date. Prior divergence unchanged: Fingerprints refreshed 2026-08-24: both surfaces now link recursion-pause comments to the managed WORKFLOW_USER_GUIDE recovery section instead of a nonexistent Agents.md anchor. The Workflows-local surface links to templates/consumer-repo/WORKFLOW_USER_GUIDE.md because there is no root guide, while the distributed consumer links to its root WORKFLOW_USER_GUIDE.md. Prior fingerprint refresh 2026-08-24: both surfaces treat automated issues as format-ineligible, complementing the shared guard cleanup that removes stale agents:format leases from exempt issues. Underlying divergence re-reviewed 2026-08-23: root remains in-tree (scripts/langchain + .github/scripts/issue_format.py); consumer vendors those via Workflows sparse-checkout under workflows-scripts/. Do not align wholesale — that would strip consumer action pins/token setup.
+divergence_reviewed = 2026-08-23
+fingerprint_refreshed = 2026-09-02
+
+[pair.12]
+main = .github/workflows/agents-keepalive-loop-reporter.yml
+template = templates/consumer-repo/.github/workflows/agents-keepalive-loop-reporter.yml
+main_sha256 = b57ab568475f34cab079bdbb3b55229b393c2bd482dd91951b331b78a039c097
+template_sha256 = fc2e824dc22b1f7677ca92f9877d0a27898975adb56e26b2933190f87787a2ea
+divergence = client-id rename 2026-08-24: every create-github-app-token step moved from the deprecated `app-id` input to `client-id`, applied identically to root and consumer, with the secret VALUE unchanged (the action forwards either input to the same appId slot -- main.js:21, lib/main.js:37). Fingerprints refreshed for that change; the divergence itself is unchanged and was NOT re-reviewed, which is why divergence_reviewed keeps its old date. Prior divergence unchanged: Named-secrets rollout 2026-08-23: both surfaces now pass named setup-api-client secret inputs instead of the whole-secrets-context blob, applied identically to root and consumer, and scoped to each workflow's DECLARED workflow_call secrets where that context is a closed set. Removing that handoff is the demonstrated remedy for GitHub's suspicious-workflow hold (agents-dedup then ran at run_attempt 1 with nothing approved after 22 days held). Prior divergence unchanged: Intentional divergence re-reviewed 2026-08-15: both reporters mint the dedicated KEEPALIVE_APP token with WORKFLOWS_APP fallback, fail closed before trusted summary writes, and record the selected App writer. The root keeps its in-repo setup helpers while the consumer retains state fingerprinting and SHA-pinned actions; do not align wholesale.
+divergence_reviewed = 2026-08-15
+fingerprint_refreshed = 2026-08-24
+
+[pair.13]
+main = .github/workflows/agents-keepalive-sweep.yml
+template = templates/consumer-repo/.github/workflows/agents-keepalive-sweep.yml
+main_sha256 = a163e6a9ff5c55758bc9030e1ec5a1578eb4074876788a43195fe164cdf5cc04
+template_sha256 = 526cd23f10c3de5d7b7cd33ef22da4f85d480459e5feecc327f7371473ba787b
+divergence = Keepalive routing-label hardening re-reviewed 2026-09-03: root and both consumer mode sweeps normalize labels before eligibility, require a real executable routing label rather than disabled Aider or recovery-only labels, and use the normalized needs-attention signal for authority challenges. This preserves recovery dispatch for PRs that also carry a concrete route without changing the root/consumer dispatch topology. Prior divergence unchanged: Non-consolidated fallback re-reviewed 2026-09-01: consumer sweep now runs mutually exclusive sweep_consolidated / sweep_nonconsolidated jobs plus an ungated name_mode job that records the named skip reason when the consolidated path is inactive, so unset USE_CONSOLIDATED_WORKFLOWS still gets hourly re-evaluation via agents-81. Root retains its single inverted-mode sweep that targets agents-keepalive-loop.yml. Prior divergence unchanged: Intentional divergence re-reviewed 2026-08-13: root and consumer sweeps share HMAC-signed due-authority claims bound to repository, PR, fingerprint, nonce, and exact sweep run; missing signing material fails closed to ordinary non-forced rechecks. Both bypass state debounce for ordinary sweep recovery, retain completed-runner debounce for ordinary wakeups, and bypass runner debounce only for a verified signed due claim, while the consumer retains its consolidated gate-followup dispatch path and pinned action contract.
+divergence_reviewed = 2026-09-03
+fingerprint_refreshed = 2026-09-03
+
+[pair.14]
+main = .github/workflows/agents-verifier.yml
+template = templates/consumer-repo/.github/workflows/agents-verifier.yml
+main_sha256 = 9eac4dcf473c8be04bdd6cf168dda13da2d1a2c3b19a69c091b67fe3ad47eabe
+template_sha256 = a7692b7c3a3cf030e18c7f97ad2fc62bb8def38a3f52546bea5dc3276faf3b23
+divergence = Named-secrets rollout 2026-08-23: both surfaces now pass named setup-api-client secret inputs instead of the whole-secrets-context blob, applied identically to root and consumer, and scoped to each workflow's DECLARED workflow_call secrets where that context is a closed set. Removing that handoff is the demonstrated remedy for GitHub's suspicious-workflow hold (agents-dedup then ran at run_attempt 1 with nothing approved after 22 days held). Prior divergence unchanged: Intentional divergence re-reviewed 2026-08-23: the Workflows verifier retains its local corpus and provider plumbing, while the consumer verifier calls the distributed surface with consumer-specific action pins and token setup. Do not align wholesale because those execution environments are intentionally different.
+divergence_reviewed = 2026-08-23
+fingerprint_refreshed = 2026-08-23
+
+[pair.15]
+main = .github/workflows/agents-weekly-metrics.yml
+template = templates/consumer-repo/.github/workflows/agents-weekly-metrics.yml
+main_sha256 = f73c20f665876d28b0c23ffe8e12603f843fd360a4871a7c10fce0e7bed37d0c
+template_sha256 = b2f5e897e4a4f2ba6297ed3e75eaeb8652ec33326bc6830be0151baca90e4759
+divergence = Timestamp-output repair 2026-08-30: root and consumer workflows now both prefix their weekly tracker write with Last successful write, applied while preserving the existing root/consumer execution differences. The divergence itself is unchanged and was NOT re-reviewed. Prior divergence unchanged: client-id rename 2026-08-24: every create-github-app-token step moved from the deprecated `app-id` input to `client-id`, applied identically to root and consumer, with the secret VALUE unchanged (the action forwards either input to the same appId slot -- main.js:21, lib/main.js:37). Prior divergence unchanged: Named-secrets rollout 2026-08-23: both surfaces now pass named setup-api-client secret inputs instead of the whole-secrets-context blob, applied identically to root and consumer, and scoped to each workflow's DECLARED workflow_call secrets where that context is a closed set. Removing that handoff is the demonstrated remedy for GitHub's suspicious-workflow hold (agents-dedup then ran at run_attempt 1 with nothing approved after 22 days held). Prior divergence unchanged: Intentional divergence (re-baselined 2026-07-14): consumer template SHA-pins third-party actions per the fleet action-pin contract (docs/HISTORY.md, PR #1925) and sets LangSmith tracing env; root uses floating major tags with repo-internal concurrency + sparse-checkout (docs/fixes/sparse-checkout-audit-2026-02-03.csv). Do not align: would strip consumer action pins.
+divergence_reviewed = 2026-07-14
+fingerprint_refreshed = 2026-08-30
+
+[pair.16]
+main = .github/workflows/agents-auto-pilot.yml
+template = templates/consumer-repo/.github/workflows/agents-auto-pilot.yml
+main_sha256 = 1af7c27fc8f3751e708d3bdd6af6eb5f33faec31a896ec307f852cfe9498a095
+template_sha256 = 3bf6229c41eae2862f79b6977274f91a0b7cf0ec842ac20e5d6e45f8d310ee4e
+divergence = client-id rename 2026-08-24: every create-github-app-token step moved from the deprecated `app-id` input to `client-id`, applied identically to root and consumer, with the secret VALUE unchanged (the action forwards either input to the same appId slot -- main.js:21, lib/main.js:37). Fingerprints refreshed for that change; the divergence itself is unchanged and was NOT re-reviewed, which is why divergence_reviewed keeps its old date. Prior divergence unchanged: Fingerprints refreshed 2026-08-23: both surfaces now pass the named setup-api-client secret inputs instead of the whole-secrets-context blob, applied identically to root and consumer so it introduces no new divergence. That removal is what cleared GitHub's suspicious-workflow hold on agents-dedup (#3185), which then ran at run_attempt 1 with nothing approved after 22 days held. Underlying divergence unchanged: Intentional divergence reviewed 2026-08-21: the Workflows-local auto-pilot retains Workflows-only PR-meta and keepalive fallbacks, while the consumer template dispatches only the consolidated Agents 80 and Agents 81 entry points. The sync manifest delivers the consumer-specific template so retired Workflows-local targets cannot be restored in consumer repositories.
+divergence_reviewed = 2026-08-21
+fingerprint_refreshed = 2026-08-24
+
+[pair.17]
+main = .github/workflows/autofix.yml
+template = templates/consumer-repo/.github/workflows/autofix.yml
+main_sha256 = 96c8131203431b7da850474e06fa169a2580fa5fa4759674be712ea408f17d16
+template_sha256 = 73536de641ae21b89b5de24848a850e2753f5bc4d608f90498b44007fc2b8cfe
+divergence = Timeout handling 2026-09-14: four identical conclusion-filter edits applied to source and consumer autofix; both still exclude cancellations. Verified the exact same transformation against origin/main on both sides. Fingerprints refreshed; existing divergence and its review date are unchanged. Prior divergence: Intentional divergence reviewed 2026-08-23: the Workflows source runs its local reusable autofix workflow and uses the repository's CI concurrency/context contract; the consumer template calls the published reusable workflow with SHA-pinned actions, SERVICE_BOT_PAT, and workflow-run PR context recovery. Do not align wholesale because the consumer is a deployable wrapper rather than the source implementation.
+divergence_reviewed = 2026-08-23
+fingerprint_refreshed = 2026-09-14
+
+[pair.18]
+main = .github/workflows/maint-coverage-guard.yml
+template = templates/consumer-repo/.github/workflows/maint-coverage-guard.yml
+main_sha256 = 72bf27126d9da22fa27a3c040edef487ae9e41fee087f541111072f1af2b8845
+template_sha256 = bc22e4a1a12383e607b6406baf6bb920fbd840d9627fe001b847e0a03637ed9f
+divergence = Guard FINDS the report inside the artifact 2026-08-30, AND CORRECTS THE CLAIM BELOW. The note that follows says matrix artifacts extract to `payload/coverage/runtimes/...`. They do not, and that is why the seven hardcoded candidate paths still matched nothing after the artifact NAME was fixed the same day. MEASURED by downloading three repos' real gate-coverage-3.12-1 artifacts (stranske/Counter_Risk, stranske/Pension-Data, stranske/trip-planner): every one contains `index.ndjson` and `runtimes/<ver>/coverage.json` with NO top-level `coverage/` directory, so the extracted path is `coverage_artifacts/payload/runtimes/3.12/coverage.json` -- one level from the first candidate and matched by none. The list also hardcoded Python 3.12/3.13, so a matrix bump would break it silently and later. Literals are still tried FIRST, so a repo where resolution already worked cannot be re-resolved by this change; failing that the payload is FOUND by the property the guard actually reads -- a JSON carrying totals.percent_covered -- which cannot drift from a directory layout it never mentions, and which correctly rejects the `summary.json` sibling that carries a `coverage` key but no totals. Results are sorted, so an artifact holding two runtimes resolves identically every run. The missing-artifact message now lists what was downloaded, because it could not distinguish an empty artifact from a full one whose contents it did not recognise -- and the second is what really happened, in every repo. Applied IDENTICALLY to root and consumer; fingerprints refreshed, divergence_reviewed keeps its date. Prior divergence unchanged: Review findings fixed 2026-08-30: matrix artifacts downloaded under payload extract to `payload/coverage/runtimes/...`, so both guards probe that actual layout before legacy layouts; the three failure states now separately report no coverage artifacts, unusable payload names, and a usable payload missing its same-run trend. Applied IDENTICALLY to root and consumer, so it introduces NO NEW divergence; fingerprints refreshed and divergence_reviewed deliberately keeps its old date. Prior divergence unchanged: Guard matches the payload artifact by PREFIX 2026-08-30: the producer runs under a version matrix, so what it publishes is gate-coverage-3.12-1 and gate-coverage-3.13-1, while this job matched the exact names gate-coverage / gate-coverage.json. MEASURED 2026-08-30 across the lane fleet: EIGHT repos published a trend, a summary and both suffixed payloads -- everything the job needs -- and every one was skipped, which is why the guard had a failing run in all 13 repos. Two more literals would not have fixed it, so the match is by prefix with -trend/-summary/-delta excluded by name (a bare prefix would have selected the TREND as the payload and compared coverage against itself); exact names are still preferred first so a repo where this already worked is untouched, and multiple suffixed matches are SORTED because the API's listing order is not stable. The failure message was split into three findings, because "coverage is not measured here", "it is measured under a name I cannot use" and "a payload but no trend" have different fixes and the single message asserted the first in all three cases -- it told eight measuring repos to go and switch coverage on. Applied IDENTICALLY to root and consumer, so it introduces NO NEW divergence; fingerprints refreshed and divergence_reviewed deliberately keeps its old date. Prior divergence unchanged: Guard reads a per-repo workflow list 2026-08-30: which workflow carries a repo's coverage is a PER-REPO fact and was hardcoded to pr-00-gate.yml, so two repos were invisible to the guard for the same reason and neither is misconfigured -- stranske/Counter_Risk measures coverage on ci.yml by documented judgement, and stranske/Orchestrator publishes its only honest figure (80.3% combined, against the 34.11% its Gate reports for pytest alone) from a ci.yml job, because 79 of its 102 modules run under --selftest subprocesses pytest-cov cannot see. Reading source_workflows from config/coverage-baseline.json puts the answer in the file that is already the per-repo coverage config and already excluded from sync. The default is exactly the previous behaviour and an unreadable config falls back to it, so no repo changes unless it opts in. Applied IDENTICALLY to root and consumer, so it introduces NO NEW divergence; fingerprints refreshed for it and divergence_reviewed deliberately keeps its old date. Prior divergence unchanged: Coverage guard fingerprint refreshed 2026-08-26: both root and consumer selectors now recognize the downloaded `coverage_artifacts/payload/gate-coverage.json` filename, preventing the source/template artifact-name mismatch from hiding usable Gate coverage. The remaining root/template differences are still intentional: consumers use pinned public actions and an App token while Workflows uses local artifact-cache helpers and sparse checkout. Prior divergence unchanged: Coverage guard re-reviewed 2026-08-25: both selectors require the trend artifact alongside the coverage payload, because coverage_guard.py makes a missing trend a successful no-op.
+divergence_reviewed = 2026-08-25
+fingerprint_refreshed = 2026-09-03
+
+[pair.19]
+main = .github/workflows/pr-00-gate.yml
+template = templates/consumer-repo/.github/workflows/pr-00-gate.yml
+main_sha256 = 7939eacba3b56af55e9a32ec4496a83dbcd7dc9795efc7a8aee443d56611b48f
+template_sha256 = fd301850e4faeaa28e4cf7594a0fb6ec5387894b2518bb5c2a876d8a6f246735
+divergence = Fork read-only token tolerated 2026-09-06: both surfaces now let the summary job survive a read-only fork token on the two writes it makes -- the consolidated summary comment and the `Gate / gate` commit status -- warning and falling back to the job summary instead of rethrowing, so a fork PR with green CI reports the verdict it computed rather than a red Gate (observed in stranske/Fine-Art-Archive#716, run 34017696018). Keyed on the head repo differing from the base repo, so a same-repo 403 still fails loudly; #2278 recorded the opposite defect. Applied IDENTICALLY to root and consumer, so it introduces NO NEW divergence; fingerprints refreshed and divergence_reviewed deliberately keeps its old date. Prior divergence unchanged: Gate label catch annotated 2026-08-31: both surfaces note the acceptance-criteria label apply is best-effort, applied identically; fingerprints refreshed. Prior: Acceptance-criteria label step hardened 2026-08-31: both surfaces now catch API failures and use continue-on-error so installation rate limits cannot fail Gate after deliberate-break already passed, applied identically to root and consumer. Fingerprints refreshed for that change; the divergence itself is unchanged and was NOT re-reviewed, which is why divergence_reviewed keeps its prior date. Prior divergence unchanged: client-id rename 2026-08-24: every create-github-app-token step moved from the deprecated `app-id` input to `client-id`, applied identically to root and consumer, with the secret VALUE unchanged (the action forwards either input to the same appId slot -- main.js:21, lib/main.js:37). Fingerprints refreshed for that change; the divergence itself is unchanged and was NOT re-reviewed, which is why divergence_reviewed keeps its old date. Prior divergence unchanged: Gate commit-status token pinned 2026-08-23: both surfaces now pass `env: {}` to createTokenAwareRetry for the `gate-commit-status` call, applied IDENTICALLY to root and consumer, so the divergence between them is unchanged by it. Without the pin the balancer could select a token lacking the `statuses` scope; the post then 403s and the swallow leaves the PREVIOUS status in place, so a fully green Gate keeps a red `Gate / gate` that nothing clears and a sealed sync PR cannot merge (observed in stranske/Orchestrator, PR #54). Prior divergence unchanged: Named-secrets rollout 2026-08-23: both surfaces now pass named setup-api-client secret inputs instead of the whole-secrets-context blob, applied identically to root and consumer, and scoped to each workflow's DECLARED workflow_call secrets where that context is a closed set. Removing that handoff is the demonstrated remedy for GitHub's suspicious-workflow hold (agents-dedup then ran at run_attempt 1 with nothing approved after 22 days held). Prior divergence unchanged: Intentional divergence reviewed 2026-08-23: the source Gate runs Workflows-only package, ledger, diff-quality, and live sync-manifest issue-state checks with GH_TOKEN and GITHUB_TOKEN exported for the pytest guard; the consumer Gate uses published reusable workflows, pinned actions, and skips unavailable Workflows-local deliberate-break helpers. The consumer template must remain a bootstrap-safe deployment surface.
+divergence_reviewed = 2026-08-23
+fingerprint_refreshed = 2026-09-06
+
+[pair.20]
+main = .github/workflows/reusable-pr-context.yml
+template = templates/consumer-repo/.github/workflows/reusable-pr-context.yml
+main_sha256 = 5737cde9fcd21c31c244eef632a5db469052d6e92dcc3a56f5bafebde83a12ab
+template_sha256 = 4c9b90b908eaa50d982ce711f709c21725743559c76f303dd6240b6edcd1fb11
+divergence = client-id rename 2026-08-24: every create-github-app-token step moved from the deprecated `app-id` input to `client-id`, applied identically to root and consumer, with the secret VALUE unchanged (the action forwards either input to the same appId slot -- main.js:21, lib/main.js:37). Fingerprints refreshed for that change; the divergence itself is unchanged and was NOT re-reviewed, which is why divergence_reviewed keeps its old date. Prior divergence unchanged: Named-secrets rollout 2026-08-23: both surfaces now pass named setup-api-client secret inputs instead of the whole-secrets-context blob, applied identically to root and consumer, and scoped to each workflow's DECLARED workflow_call secrets where that context is a closed set. Removing that handoff is the demonstrated remedy for GitHub's suspicious-workflow hold (agents-dedup then ran at run_attempt 1 with nothing approved after 22 days held). Prior divergence unchanged: Intentional divergence reviewed 2026-08-23: Workflows keeps local setup-api-client, cancellation, and full multi-agent label detection; the consumer uses pinned actions, App-token setup, and only the consumer-supported routing labels. These execution contexts are intentionally not byte-identical.
+divergence_reviewed = 2026-08-23
+fingerprint_refreshed = 2026-08-24

@@ -1,0 +1,5 @@
+{
+  "body": "## Upstream sync review debt\n\nConsumer delivery PR: stranske/Counter_Risk#989\n\nManifest-synced paths with unresolved bot review threads:\n- consumer `.github/scripts/agent_delegation_policy.js` \u2192 source `stranske/Workflows/.github/scripts/agent_delegation_policy.js`\n- consumer `.github/scripts/keepalive_loop.js` \u2192 source `stranske/Workflows/.github/scripts/keepalive_loop.js`\n\nFix these paths in Workflows main so the next sync regeneration outdates the consumer threads.",
+  "state": "CLOSED",
+  "title": "[sync-review] Fix upstream manifest-synced paths blocking stranske/Counter_Risk#989"
+}

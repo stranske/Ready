@@ -1,0 +1,655 @@
+diff --git a/src/doc_lineage/blackline.py b/src/doc_lineage/blackline.py
+new file mode 100644
+index 0000000..dc677c2
+--- /dev/null
++++ b/src/doc_lineage/blackline.py
+@@ -0,0 +1,190 @@
++"""Section-ID blackline pairing over flat ingest segments (B2-005)."""
++
++from __future__ import annotations
++
++import json
++import math
++import re
++from collections.abc import Iterable, Sequence
++from dataclasses import dataclass
++from typing import Any, Literal
++
++from doc_lineage.ingest import Segment
++
++LINEAGE_EDGES_SCHEMA_VERSION = "lineage-edges/v1"
++DEFAULT_HEADER_CONFIDENCE_THRESHOLD = 0.8
++SECTION_HEADER_RE = re.compile(r"^(\d+)\.\s+((?:[A-Z]{2,}(?:\s+[A-Z]{2,})*))(?:\s+(.*))?$")
++PairingMethod = Literal["section_id", "manual_review"]
++MANUAL_REVIEW_CONFIDENCE = 0.0
++
++
++@dataclass(frozen=True)
++class Section:
++    section_id: str
++    title: str
++    header_confidence: float
++    segment_ids: tuple[str, ...]
++    text: str
++
++
++@dataclass(frozen=True)
++class DocumentSections:
++    source_sha256: str
++    sections: tuple[Section, ...]
++
++
++@dataclass(frozen=True)
++class SectionPair:
++    section_id: str
++    left: Section | None
++    right: Section | None
++    pairing_method: PairingMethod
++    confidence: float
++
++
++def _finite_confidence(value: float) -> float:
++    """Map non-finite header confidence to a safe manual-review floor."""
++    if not math.isfinite(value):
++        return MANUAL_REVIEW_CONFIDENCE
++    return value
++
++
++def _parse_section_header(text: str) -> tuple[str, str, float] | None:
++    match = SECTION_HEADER_RE.match(text.strip())
++    if not match:
++        return None
++    section_id, title = match.group(1), match.group(2).strip()
++    if not title:
++        return None
++    return section_id, title, 1.0
++
++
++def build_section_tree(
++    segments: Sequence[Segment],
++    *,
++    source_sha256: str,
++) -> DocumentSections:
++    """Group flat ingest segments into numbered sections by header IDs."""
++    sections: list[Section] = []
++    current_id: str | None = None
++    current_title = ""
++    current_confidence = 0.0
++    current_segment_ids: list[str] = []
++    current_text_parts: list[str] = []
++
++    def flush() -> None:
++        nonlocal current_id, current_title, current_confidence
++        nonlocal current_segment_ids, current_text_parts
++        if current_id is None or not current_segment_ids:
++            current_id = None
++            current_title = ""
++            current_confidence = 0.0
++            current_segment_ids = []
++            current_text_parts = []
++            return
++        sections.append(
++            Section(
++                section_id=current_id,
++                title=current_title,
++                header_confidence=current_confidence,
++                segment_ids=tuple(current_segment_ids),
++                text="\n".join(current_text_parts),
++            )
++        )
++        current_id = None
++        current_title = ""
++        current_confidence = 0.0
++        current_segment_ids = []
++        current_text_parts = []
++
++    for segment in segments:
++        parsed = _parse_section_header(segment.text)
++        if parsed is not None:
++            flush()
++            current_id, current_title, current_confidence = parsed
++            current_segment_ids = [segment.segment_id]
++            current_text_parts = [segment.text]
++            continue
++        if current_id is None:
++            continue
++        current_segment_ids.append(segment.segment_id)
++        current_text_parts.append(segment.text)
++
++    flush()
++    return DocumentSections(source_sha256=source_sha256, sections=tuple(sections))
++
++
++def _sections_by_id(sections: Sequence[Section]) -> dict[str, list[Section]]:
++    grouped: dict[str, list[Section]] = {}
++    for section in sections:
++        grouped.setdefault(section.section_id, []).append(section)
++    return grouped
++
++
++def align_sections(
++    doc_a: DocumentSections,
++    doc_b: DocumentSections,
++    *,
++    threshold: float = DEFAULT_HEADER_CONFIDENCE_THRESHOLD,
++) -> list[SectionPair]:
++    """Pair sections by stable section IDs before any semantic fallback."""
++    effective_threshold = threshold if math.isfinite(threshold) else float("inf")
++    left_groups = _sections_by_id(doc_a.sections)
++    right_groups = _sections_by_id(doc_b.sections)
++    ordered_ids = sorted(
++        set(left_groups) | set(right_groups),
++        key=lambda value: int(value),
++    )
++    pairs: list[SectionPair] = []
++
++    for section_id in ordered_ids:
++        left_list = left_groups.get(section_id, [])
++        right_list = right_groups.get(section_id, [])
++        duplicate_ambiguity = len(left_list) > 1 or len(right_list) > 1
++        pair_count = max(len(left_list), len(right_list), 1)
++
++        for index in range(pair_count):
++            left = left_list[index] if index < len(left_list) else None
++            right = right_list[index] if index < len(right_list) else None
++            left_conf = _finite_confidence(left.header_confidence if left is not None else 1.0)
++            right_conf = _finite_confidence(right.header_confidence if right is not None else 1.0)
++            confidence = min(left_conf, right_conf)
++            if (
++                left is None
++                or right is None
++                or duplicate_ambiguity
++                or confidence < effective_threshold
++            ):
++                pairing_method: PairingMethod = "manual_review"
++            else:
++                pairing_method = "section_id"
++            pairs.append(
++                SectionPair(
++                    section_id=section_id,
++                    left=left,
++                    right=right,
++                    pairing_method=pairing_method,
++                    confidence=confidence,
++                )
++            )
++    return pairs
++
++
++def lineage_edge_for(pair: SectionPair) -> dict[str, Any]:
++    """Serialize one pairing decision as a lineage-edges/v1 record."""
++    confidence = _finite_confidence(pair.confidence)
++    return {
++        "schema_version": LINEAGE_EDGES_SCHEMA_VERSION,
++        "section_id": pair.section_id,
++        "left_section_id": pair.left.section_id if pair.left is not None else None,
++        "right_section_id": pair.right.section_id if pair.right is not None else None,
++        "pairing_method": pair.pairing_method,
++        "confidence": confidence,
++        "left_title": pair.left.title if pair.left is not None else None,
++        "right_title": pair.right.title if pair.right is not None else None,
++    }
++
++
++def emit_lineage_edges_ndjson(pairs: Iterable[SectionPair]) -> str:
++    """Render aligned pairs as newline-delimited lineage edge records."""
++    return "\n".join(json.dumps(lineage_edge_for(pair), sort_keys=True) for pair in pairs)
+diff --git a/src/doc_lineage/ingest.py b/src/doc_lineage/ingest.py
+index 466fa2d..2d68bdb 100644
+--- a/src/doc_lineage/ingest.py
++++ b/src/doc_lineage/ingest.py
+@@ -19,7 +19,6 @@ from typing import Any
+ from doc_lineage.adapters import SegmenterResult, segment_document
+ from doc_lineage.adapters.docling_segmenter import MAX_INGEST_BYTES, read_bounded_bytes
+ from doc_lineage.identity import sha256_bytes
+-from doc_lineage.schema.validation import validate_contract_record
+ 
+ MANIFEST_SCHEMA_VERSION = "artifact-manifest/v1"
+ MANIFEST_SCHEMA_NAME = "artifact-manifest-v1"
+@@ -119,6 +118,8 @@ def build_manifest(
+         },
+         "artifacts": artifacts,
+     }
++    from doc_lineage.schema.validation import validate_contract_record
++
+     validate_contract_record(MANIFEST_SCHEMA_NAME, manifest)
+     return manifest
+ 
+diff --git a/tests/blackline/test_section_id_pairing.py b/tests/blackline/test_section_id_pairing.py
+new file mode 100644
+index 0000000..dd85dd9
+--- /dev/null
++++ b/tests/blackline/test_section_id_pairing.py
+@@ -0,0 +1,253 @@
++"""Section-ID pairing for the clause blackline engine (B2-005)."""
++
++from __future__ import annotations
++
++import json
++import math
++from dataclasses import dataclass
++from pathlib import Path
++
++import pytest
++
++from doc_lineage.blackline import (
++    DEFAULT_HEADER_CONFIDENCE_THRESHOLD,
++    DocumentSections,
++    Section,
++    SectionPair,
++    align_sections,
++    build_section_tree,
++    emit_lineage_edges_ndjson,
++)
++from doc_lineage.ingest import Segment
++
++FIXTURES = Path(__file__).resolve().parents[1] / "fixtures" / "blackline"
++
++
++@dataclass(frozen=True)
++class _FixtureDoc:
++    source_sha256: str
++    segments: tuple[Segment, ...]
++
++
++def _load_fixture(name: str) -> _FixtureDoc:
++    payload = json.loads((FIXTURES / name).read_text(encoding="utf-8"))
++    segments = tuple(Segment(**entry) for entry in payload["segments"])
++    return _FixtureDoc(source_sha256=payload["source_sha256"], segments=segments)
++
++
++def _misaligned_pairs_for_test(
++    doc_a: DocumentSections,
++    doc_b: DocumentSections,
++) -> list[SectionPair]:
++    """Test-only fault injection: pair by position with reversed right order."""
++    left_sections = list(doc_a.sections)
++    right_sections = list(doc_b.sections)
++    ordered_ids = sorted(
++        {section.section_id for section in left_sections}
++        | {section.section_id for section in right_sections},
++        key=lambda value: int(value),
++    )
++    pairs: list[SectionPair] = []
++    for index, section_id in enumerate(ordered_ids):
++        left = left_sections[index] if index < len(left_sections) else None
++        right = right_sections[-(index + 1)] if index < len(right_sections) else None
++        pairs.append(
++            SectionPair(
++                section_id=section_id,
++                left=left,
++                right=right,
++                pairing_method="manual_review",
++                confidence=0.0,
++            )
++        )
++    return pairs
++
++
++def test_pairs_by_section_id() -> None:
++    """Named gate: numbered sections pair by stable section IDs on a golden pair."""
++    before = _load_fixture("lpa_before_segments.json")
++    after = _load_fixture("lpa_after_segments.json")
++    doc_a = build_section_tree(before.segments, source_sha256=before.source_sha256)
++    doc_b = build_section_tree(after.segments, source_sha256=after.source_sha256)
++
++    pairs = align_sections(doc_a, doc_b)
++    assert [pair.section_id for pair in pairs] == ["1", "2", "3", "4"]
++    assert all(pair.pairing_method == "section_id" for pair in pairs)
++    assert all(pair.left is not None and pair.right is not None for pair in pairs)
++    assert pairs[0].left is not None and pairs[0].right is not None
++    assert pairs[0].left.text != pairs[0].right.text
++    assert pairs[1].left is not None and pairs[1].right is not None
++    assert pairs[1].left.text == pairs[1].right.text
++
++    ndjson = emit_lineage_edges_ndjson(pairs)
++    assert ndjson.count('"schema_version": "lineage-edges/v1"') == 4
++
++
++def test_header_only_segment_starts_section() -> None:
++    """A header-only segment such as '1. MANAGEMENT FEE' still opens a section."""
++    segments = (
++        Segment(
++            segment_id="sha-p0001-s0001",
++            page=1,
++            order=1,
++            text="1. MANAGEMENT FEE",
++            char_count=17,
++            word_count=3,
++        ),
++        Segment(
++            segment_id="sha-p0001-s0002",
++            page=1,
++            order=2,
++            text="The Partnership shall pay the General Partner.",
++            char_count=46,
++            word_count=8,
++        ),
++    )
++    doc = build_section_tree(segments, source_sha256="sha")
++    assert len(doc.sections) == 1
++    assert doc.sections[0].section_id == "1"
++    assert doc.sections[0].title == "MANAGEMENT FEE"
++    assert "General Partner" in doc.sections[0].text
++
++
++def test_low_header_confidence_fails_closed_to_manual_review() -> None:
++    low_confidence = Section(
++        section_id="1",
++        title="MANAGEMENT FEE",
++        header_confidence=0.2,
++        segment_ids=("seg-1",),
++        text="1. MANAGEMENT FEE body",
++    )
++    doc_a = DocumentSections(source_sha256="left", sections=(low_confidence,))
++    doc_b = DocumentSections(
++        source_sha256="right",
++        sections=(
++            Section(
++                section_id="1",
++                title="MANAGEMENT FEE",
++                header_confidence=1.0,
++                segment_ids=("seg-2",),
++                text="1. MANAGEMENT FEE body",
++            ),
++        ),
++    )
++    (pair,) = align_sections(doc_a, doc_b, threshold=DEFAULT_HEADER_CONFIDENCE_THRESHOLD)
++    assert pair.pairing_method == "manual_review"
++
++
++def test_non_finite_confidence_fails_closed_to_manual_review() -> None:
++    nan_confidence = Section(
++        section_id="1",
++        title="MANAGEMENT FEE",
++        header_confidence=math.nan,
++        segment_ids=("seg-1",),
++        text="1. MANAGEMENT FEE body",
++    )
++    doc_a = DocumentSections(source_sha256="left", sections=(nan_confidence,))
++    doc_b = DocumentSections(
++        source_sha256="right",
++        sections=(
++            Section(
++                section_id="1",
++                title="MANAGEMENT FEE",
++                header_confidence=1.0,
++                segment_ids=("seg-2",),
++                text="1. MANAGEMENT FEE body",
++            ),
++        ),
++    )
++    (pair,) = align_sections(doc_a, doc_b)
++    assert pair.pairing_method == "manual_review"
++    assert math.isfinite(pair.confidence)
++
++
++def test_one_sided_section_id_emits_manual_review() -> None:
++    """Added or deleted sections must not pair as high-confidence section_id."""
++    section = Section(
++        section_id="1",
++        title="MANAGEMENT FEE",
++        header_confidence=1.0,
++        segment_ids=("seg-1",),
++        text="1. MANAGEMENT FEE body",
++    )
++    doc_with_section = DocumentSections(source_sha256="left", sections=(section,))
++    doc_empty = DocumentSections(source_sha256="right", sections=())
++
++    (deleted_pair,) = align_sections(doc_with_section, doc_empty)
++    assert deleted_pair.pairing_method == "manual_review"
++    assert deleted_pair.left is not None
++    assert deleted_pair.right is None
++
++    (added_pair,) = align_sections(doc_empty, doc_with_section)
++    assert added_pair.pairing_method == "manual_review"
++    assert added_pair.left is None
++    assert added_pair.right is not None
++
++
++def test_non_finite_threshold_fails_closed_to_manual_review() -> None:
++    section = Section(
++        section_id="1",
++        title="MANAGEMENT FEE",
++        header_confidence=1.0,
++        segment_ids=("seg-1",),
++        text="1. MANAGEMENT FEE body",
++    )
++    doc_a = DocumentSections(source_sha256="left", sections=(section,))
++    doc_b = DocumentSections(source_sha256="right", sections=(section,))
++
++    (pair,) = align_sections(doc_a, doc_b, threshold=math.nan)
++    assert pair.pairing_method == "manual_review"
++
++
++def test_duplicate_section_ids_emit_manual_review_pairs() -> None:
++    duplicate_left = (
++        Section(
++            section_id="1",
++            title="MANAGEMENT FEE",
++            header_confidence=1.0,
++            segment_ids=("seg-1",),
++            text="1. MANAGEMENT FEE first",
++        ),
++        Section(
++            section_id="1",
++            title="MANAGEMENT FEE",
++            header_confidence=1.0,
++            segment_ids=("seg-2",),
++            text="1. MANAGEMENT FEE duplicate",
++        ),
++    )
++    doc_a = DocumentSections(source_sha256="left", sections=duplicate_left)
++    doc_b = DocumentSections(
++        source_sha256="right",
++        sections=(
++            Section(
++                section_id="1",
++                title="MANAGEMENT FEE",
++                header_confidence=1.0,
++                segment_ids=("seg-3",),
++                text="1. MANAGEMENT FEE right",
++            ),
++        ),
++    )
++    pairs = align_sections(doc_a, doc_b)
++    assert len(pairs) == 2
++    assert all(pair.section_id == "1" for pair in pairs)
++    assert all(pair.pairing_method == "manual_review" for pair in pairs)
++
++
++def test_deliberate_break_semantic_only_pairs_wrong_sections() -> None:
++    """Semantic-only pairing must misalign IDs; section-ID pairing rejects that path."""
++    before = _load_fixture("lpa_before_segments.json")
++    after = _load_fixture("lpa_after_segments.json")
++    doc_a = build_section_tree(before.segments, source_sha256=before.source_sha256)
++    doc_b = build_section_tree(after.segments, source_sha256=after.source_sha256)
++
++    id_pairs = align_sections(doc_a, doc_b)
++    semantic_pairs = _misaligned_pairs_for_test(doc_a, doc_b)
++    with pytest.raises(AssertionError):
++        assert all(
++            id_pair.right is not None
++            and semantic_pair.right is not None
++            and id_pair.right.section_id == semantic_pair.right.section_id
++            for id_pair, semantic_pair in zip(id_pairs, semantic_pairs, strict=True)
++        )
+diff --git a/tests/fixtures/blackline/lpa_after_segments.json b/tests/fixtures/blackline/lpa_after_segments.json
+new file mode 100644
+index 0000000..164e1f9
+--- /dev/null
++++ b/tests/fixtures/blackline/lpa_after_segments.json
+@@ -0,0 +1,45 @@
++{
++  "source_sha256": "c709931830bf21859bb1819e9b0b8b13428a0971699e33ad73bc401e422bf18f",
++  "segments": [
++    {
++      "segment_id": "c709931830bf2185-p0001-s0001",
++      "page": 1,
++      "order": 1,
++      "text": "SYNTHETIC LIMITED PARTNERSHIP AGREEMENT Alpha Opportunities Fund IV, L.P.",
++      "char_count": 73,
++      "word_count": 9
++    },
++    {
++      "segment_id": "c709931830bf2185-p0001-s0002",
++      "page": 1,
++      "order": 2,
++      "text": "1. MANAGEMENT FEE The Partnership shall pay the General Partner an annual management fee equal to 2.0% of aggregate Capital Commitments during the Commitment Period, and 1.25% of invested capital thereafter.",
++      "char_count": 207,
++      "word_count": 31
++    },
++    {
++      "segment_id": "c709931830bf2185-p0001-s0003",
++      "page": 1,
++      "order": 3,
++      "text": "2. CARRIED INTEREST Carried interest is 20% of Distributable Proceeds, subject to a preferred return of 8% compounded annually.",
++      "char_count": 127,
++      "word_count": 19
++    },
++    {
++      "segment_id": "c709931830bf2185-p0002-s0004",
++      "page": 2,
++      "order": 4,
++      "text": "3. KEY PERSON EVENT A Key Person Event occurs if fewer than two Key Persons devote substantially all business time to the Partnership.",
++      "char_count": 134,
++      "word_count": 23
++    },
++    {
++      "segment_id": "c709931830bf2185-p0002-s0005",
++      "page": 2,
++      "order": 5,
++      "text": "4. TRANSFER RESTRICTIONS No Limited Partner may transfer its Interest without the prior written consent of the General Partner, which may be withheld in its sole discretion.",
++      "char_count": 173,
++      "word_count": 27
++    }
++  ]
++}
+diff --git a/tests/fixtures/blackline/lpa_before_segments.json b/tests/fixtures/blackline/lpa_before_segments.json
+new file mode 100644
+index 0000000..c25995f
+--- /dev/null
++++ b/tests/fixtures/blackline/lpa_before_segments.json
+@@ -0,0 +1,45 @@
++{
++  "source_sha256": "b709931830bf21859bb1819e9b0b8b13428a0971699e33ad73bc401e422bf18f",
++  "segments": [
++    {
++      "segment_id": "b709931830bf2185-p0001-s0001",
++      "page": 1,
++      "order": 1,
++      "text": "SYNTHETIC LIMITED PARTNERSHIP AGREEMENT Alpha Opportunities Fund IV, L.P.",
++      "char_count": 73,
++      "word_count": 9
++    },
++    {
++      "segment_id": "b709931830bf2185-p0001-s0002",
++      "page": 1,
++      "order": 2,
++      "text": "1. MANAGEMENT FEE The Partnership shall pay the General Partner an annual management fee equal to 1.75% of aggregate Capital Commitments during the Commitment Period, and 1.25% of invested capital thereafter.",
++      "char_count": 208,
++      "word_count": 31
++    },
++    {
++      "segment_id": "b709931830bf2185-p0001-s0003",
++      "page": 1,
++      "order": 3,
++      "text": "2. CARRIED INTEREST Carried interest is 20% of Distributable Proceeds, subject to a preferred return of 8% compounded annually.",
++      "char_count": 127,
++      "word_count": 19
++    },
++    {
++      "segment_id": "b709931830bf2185-p0002-s0004",
++      "page": 2,
++      "order": 4,
++      "text": "3. KEY PERSON EVENT A Key Person Event occurs if fewer than two Key Persons devote substantially all business time to the Partnership.",
++      "char_count": 134,
++      "word_count": 23
++    },
++    {
++      "segment_id": "b709931830bf2185-p0002-s0005",
++      "page": 2,
++      "order": 5,
++      "text": "4. TRANSFER RESTRICTIONS No Limited Partner may transfer its Interest without the prior written consent of the General Partner, which may be withheld in its sole discretion.",
++      "char_count": 173,
++      "word_count": 27
++    }
++  ]
++}
+diff --git a/tests/ingest/test_lazy_validation_import.py b/tests/ingest/test_lazy_validation_import.py
+new file mode 100644
+index 0000000..fbea880
+--- /dev/null
++++ b/tests/ingest/test_lazy_validation_import.py
+@@ -0,0 +1,71 @@
++"""Regression: ingest module import must not load schema validation eagerly."""
++
++from __future__ import annotations
++
++import sys
++from pathlib import Path
++from unittest.mock import patch
++
++from doc_lineage.ingest import MANIFEST_SCHEMA_NAME, build_manifest
++
++
++def test_ingest_import_does_not_load_validator_module() -> None:
++    """Importing doc_lineage.ingest must not pull in schema.validation."""
++    import doc_lineage as doc_lineage_pkg
++
++    saved_modules: dict[str, object] = {}
++    saved_ingest_attr = getattr(doc_lineage_pkg, "ingest", None)
++    for name in list(sys.modules):
++        if (
++            name == "doc_lineage.ingest"
++            or name.startswith("doc_lineage.ingest.")
++            or name == "doc_lineage.schema.validation"
++            or name.startswith("doc_lineage.schema.")
++        ):
++            saved_modules[name] = sys.modules.pop(name)
++
++    try:
++        import doc_lineage.ingest  # noqa: F401
++
++        assert "doc_lineage.schema.validation" not in sys.modules
++    finally:
++        for name in list(sys.modules):
++            if (
++                name == "doc_lineage.ingest"
++                or name.startswith("doc_lineage.ingest.")
++                or name == "doc_lineage.schema.validation"
++                or name.startswith("doc_lineage.schema.")
++            ) and name not in saved_modules:
++                del sys.modules[name]
++        sys.modules.update(saved_modules)
++        if saved_ingest_attr is not None:
++            doc_lineage_pkg.ingest = saved_ingest_attr
++        elif hasattr(doc_lineage_pkg, "ingest"):
++            delattr(doc_lineage_pkg, "ingest")
++
++
++def test_build_manifest_invokes_validator_before_return(tmp_path: Path) -> None:
++    """build_manifest must validate via lazy import before returning."""
++    source = tmp_path / "sample.pdf"
++    source.write_bytes(b"%PDF-1.4 minimal")
++
++    with patch("doc_lineage.schema.validation.validate_contract_record") as validate_mock:
++        manifest = build_manifest(
++            run_id="test-run",
++            source_path=source,
++            source_sha256="abc123",
++            artifacts=[
++                {
++                    "artifact_id": "abc123-segments",
++                    "name": "segments.json",
++                    "kind": "data",
++                    "path": "segments.json",
++                    "sha256": "def456",
++                    "bytes": 10,
++                    "media_type": "application/json",
++                }
++            ],
++        )
++
++    validate_mock.assert_called_once_with(MANIFEST_SCHEMA_NAME, manifest)
++    assert manifest["schema_version"] == "artifact-manifest/v1"

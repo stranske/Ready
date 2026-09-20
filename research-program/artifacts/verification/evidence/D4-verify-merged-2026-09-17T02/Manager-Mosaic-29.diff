@@ -1,0 +1,204 @@
+diff --git a/src/manager_mosaic/discrepancy.py b/src/manager_mosaic/discrepancy.py
+new file mode 100644
+index 0000000..f00d071
+--- /dev/null
++++ b/src/manager_mosaic/discrepancy.py
+@@ -0,0 +1,94 @@
++"""Deterministic numeric discrepancy detection for normalized facts."""
++
++from __future__ import annotations
++
++import json
++import math
++from collections import defaultdict
++from collections.abc import Sequence
++from dataclasses import dataclass
++from typing import Literal
++
++
++@dataclass(frozen=True)
++class FactRecord:
++    fact_key: str
++    entity_ref: str
++    period: str
++    value: float
++    evidence_id: str
++
++    def __post_init__(self) -> None:
++        if not math.isfinite(self.value):
++            raise ValueError(f"fact value must be finite, got {self.value!r}")
++
++
++@dataclass(frozen=True)
++class DiscrepancyRecord:
++    discrepancy_id: str
++    fact_key: str
++    entity_ref: str
++    period: str
++    values: tuple[float, ...]
++    evidence_ids: tuple[str, ...]
++    kind: Literal["numeric_delta"]
++
++
++def _discrepancy_id(fact_key: str, entity_ref: str, period: str) -> str:
++    """Return an injective ID for the canonical (fact_key, entity_ref, period) tuple."""
++    return json.dumps([fact_key, entity_ref, period], separators=(",", ":"))
++
++
++def _relative_spread_percent(values: Sequence[float]) -> float:
++    """Return the maximum pairwise relative spread across ``values`` in percent."""
++    if len(values) < 2:
++        return 0.0
++    spread = 0.0
++    for left in values:
++        for right in values:
++            if left == right:
++                continue
++            baseline = min(abs(left), abs(right))
++            if baseline == 0.0:
++                return math.inf
++            normalized_difference = abs(left / baseline - right / baseline)
++            spread = max(spread, normalized_difference * 100.0)
++    return spread
++
++
++def detect_numeric_discrepancies(
++    facts: Sequence[FactRecord],
++    *,
++    threshold_percent: float = 5.0,
++) -> list[DiscrepancyRecord]:
++    """Flag fact groups that disagree beyond ``threshold_percent`` relative spread."""
++    if not math.isfinite(threshold_percent) or threshold_percent < 0:
++        raise ValueError(
++            "threshold_percent must be a non-negative finite number, " f"got {threshold_percent!r}"
++        )
++
++    grouped: dict[tuple[str, str, str], list[FactRecord]] = defaultdict(list)
++    for fact in facts:
++        grouped[(fact.fact_key, fact.entity_ref, fact.period)].append(fact)
++
++    discrepancies: list[DiscrepancyRecord] = []
++    for (fact_key, entity_ref, period), group in sorted(grouped.items()):
++        if len(group) < 2:
++            continue
++        values = tuple(fact.value for fact in group)
++        spread = _relative_spread_percent(values)
++        if not math.isinf(spread) and spread <= threshold_percent:
++            continue
++        evidence_ids = tuple(fact.evidence_id for fact in group)
++        discrepancies.append(
++            DiscrepancyRecord(
++                discrepancy_id=_discrepancy_id(fact_key, entity_ref, period),
++                fact_key=fact_key,
++                entity_ref=entity_ref,
++                period=period,
++                values=values,
++                evidence_ids=evidence_ids,
++                kind="numeric_delta",
++            )
++        )
++    return discrepancies
+diff --git a/tests/test_discrepancy_detection.py b/tests/test_discrepancy_detection.py
+new file mode 100644
+index 0000000..50f5a84
+--- /dev/null
++++ b/tests/test_discrepancy_detection.py
+@@ -0,0 +1,98 @@
++"""Numeric discrepancy detection tests."""
++
++from __future__ import annotations
++
++import math
++import sys
++
++import pytest
++
++from manager_mosaic.discrepancy import FactRecord, detect_numeric_discrepancies
++
++
++def _irr_pair() -> list[FactRecord]:
++    return [
++        FactRecord(
++            fact_key="performance.irr",
++            entity_ref="fund-alpha",
++            period="2024Q4",
++            value=12.0,
++            evidence_id="ev-irr-a",
++        ),
++        FactRecord(
++            fact_key="performance.irr",
++            entity_ref="fund-alpha",
++            period="2024Q4",
++            value=18.0,
++            evidence_id="ev-irr-b",
++        ),
++    ]
++
++
++def test_detect_numeric_discrepancies_flags_conflicting_irr_values() -> None:
++    discrepancies = detect_numeric_discrepancies(_irr_pair(), threshold_percent=5.0)
++
++    assert len(discrepancies) == 1
++    record = discrepancies[0]
++    assert record.fact_key == "performance.irr"
++    assert record.entity_ref == "fund-alpha"
++    assert record.period == "2024Q4"
++    assert record.kind == "numeric_delta"
++    assert set(record.values) == {12.0, 18.0}
++    assert set(record.evidence_ids) == {"ev-irr-a", "ev-irr-b"}
++
++
++def test_threshold_boundary_equality_and_just_over() -> None:
++    facts = _irr_pair()
++
++    assert detect_numeric_discrepancies(facts, threshold_percent=50.0) == []
++    assert len(detect_numeric_discrepancies(facts, threshold_percent=49.0)) == 1
++
++
++def test_zero_baseline_flags_unbounded_spread() -> None:
++    facts = [
++        FactRecord("metric", "entity", "2024", 0.0, "ev-a"),
++        FactRecord("metric", "entity", "2024", 1.0, "ev-b"),
++    ]
++
++    assert len(detect_numeric_discrepancies(facts, threshold_percent=150.0)) == 1
++
++
++def test_negative_threshold_rejected() -> None:
++    with pytest.raises(ValueError, match="threshold_percent"):
++        detect_numeric_discrepancies(_irr_pair(), threshold_percent=-1.0)
++
++
++def test_non_finite_threshold_rejected() -> None:
++    with pytest.raises(ValueError, match="threshold_percent"):
++        detect_numeric_discrepancies(_irr_pair(), threshold_percent=math.nan)
++
++
++def test_opposite_max_finite_values_produce_documented_spread() -> None:
++    max_value = sys.float_info.max
++    facts = [
++        FactRecord("metric", "entity", "2024", max_value, "ev-a"),
++        FactRecord("metric", "entity", "2024", -max_value, "ev-b"),
++    ]
++
++    assert detect_numeric_discrepancies(facts, threshold_percent=200.0) == []
++
++
++def test_non_finite_fact_value_rejected() -> None:
++    with pytest.raises(ValueError, match="finite"):
++        FactRecord("metric", "entity", "2024", math.nan, "ev-a")
++
++
++def test_discrepancy_id_injective_for_colon_entity_refs() -> None:
++    left = [
++        FactRecord("a", "b:c", "d", 1.0, "ev-1"),
++        FactRecord("a", "b:c", "d", 2.0, "ev-2"),
++    ]
++    right = [
++        FactRecord("a:b", "c", "d", 1.0, "ev-3"),
++        FactRecord("a:b", "c", "d", 2.0, "ev-4"),
++    ]
++
++    left_id = detect_numeric_discrepancies(left)[0].discrepancy_id
++    right_id = detect_numeric_discrepancies(right)[0].discrepancy_id
++    assert left_id != right_id

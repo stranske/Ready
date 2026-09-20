@@ -1,0 +1,131 @@
+{
+  "repo": "Workflows",
+  "full": "stranske/Workflows",
+  "open_count": 46,
+  "frozen": [
+    {
+      "number": 3459,
+      "title": "[sync-review] Fix upstream manifest-synced paths blocking stranske/Manager-Database#1683",
+      "labels": [
+        "automation",
+        "agents:auto-pilot-pause",
+        "consumer-sync"
+      ]
+    }
+  ],
+  "supply": 37,
+  "priority_count": 1,
+  "open_prs": 4,
+  "silent_claims": [
+    {
+      "number": 3392,
+      "title": "fix: expose provider availability to consumer keepalive auto-routing",
+      "labels": [
+        "agent:codex",
+        "agents:formatted",
+        "verify:evaluate"
+      ],
+      "hours_stale": 62.1,
+      "release_labels_present": []
+    },
+    {
+      "number": 3389,
+      "title": "Raise test coverage toward 90% (autopilot round 8, low blast radius only)",
+      "labels": [
+        "agent:codex",
+        "agents:formatted",
+        "verify:evaluate"
+      ],
+      "hours_stale": 53.9,
+      "release_labels_present": []
+    },
+    {
+      "number": 3375,
+      "title": "[P1] Extend output-substrate/v1 with manifest CSV export slice (B2-032)",
+      "labels": [
+        "agent:codex",
+        "agents:apply-suggestions",
+        "agents:formatted"
+      ],
+      "hours_stale": 62.1,
+      "release_labels_present": []
+    },
+    {
+      "number": 3374,
+      "title": "[P0] Add output-substrate/v1 contract schema (B2-028)",
+      "labels": [
+        "agent:codex",
+        "agents:apply-suggestions",
+        "agents:formatted"
+      ],
+      "hours_stale": 62.1,
+      "release_labels_present": []
+    },
+    {
+      "number": 3373,
+      "title": "[P0] Add document-mirror/v1 schema and validator hook (B2-023)",
+      "labels": [
+        "agent:codex",
+        "agents:apply-suggestions",
+        "agents:formatted"
+      ],
+      "hours_stale": 62.1,
+      "release_labels_present": []
+    }
+  ],
+  "stalled_prs": [],
+  "runs": [
+    {
+      "conclusion": "failure",
+      "createdAt": "2026-09-16T10:16:32Z",
+      "databaseId": 35084088151,
+      "event": "schedule",
+      "name": "Agents 70 Orchestrator",
+      "status": "completed",
+      "url": "https://github.com/stranske/Workflows/actions/runs/35084088151",
+      "workflowName": "Agents 70 Orchestrator"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-16T10:13:48Z",
+      "databaseId": 35083836097,
+      "event": "schedule",
+      "name": "Health 75 API Rate Diagnostic",
+      "status": "completed",
+      "url": "https://github.com/stranske/Workflows/actions/runs/35083836097",
+      "workflowName": "Health 75 API Rate Diagnostic"
+    },
+    {
+      "conclusion": "skipped",
+      "createdAt": "2026-09-16T10:12:09Z",
+      "databaseId": 35083688289,
+      "event": "issues",
+      "name": "Auto-Label Issues",
+      "status": "completed",
+      "url": "https://github.com/stranske/Workflows/actions/runs/35083688289",
+      "workflowName": "Auto-Label Issues"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-16T10:12:09Z",
+      "databaseId": 35083688271,
+      "event": "issues",
+      "name": "Agents Issue Format Guard",
+      "status": "completed",
+      "url": "https://github.com/stranske/Workflows/actions/runs/35083688271",
+      "workflowName": "Agents Issue Format Guard"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-16T10:11:31Z",
+      "databaseId": 35083634721,
+      "event": "schedule",
+      "name": "Sync/Dependency Campaign",
+      "status": "completed",
+      "url": "https://github.com/stranske/Workflows/actions/runs/35083634721",
+      "workflowName": "Sync/Dependency Campaign"
+    }
+  ],
+  "branch_state": "hub-only",
+  "branch_url": null
+}

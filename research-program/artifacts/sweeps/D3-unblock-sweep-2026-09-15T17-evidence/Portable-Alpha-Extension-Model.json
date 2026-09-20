@@ -1,0 +1,209 @@
+{
+  "repo": "Portable-Alpha-Extension-Model",
+  "full": "stranske/Portable-Alpha-Extension-Model",
+  "issues": [
+    {
+      "labels": [
+        {
+          "id": "LA_kwDOO15QxM8AAAACUl0YTQ",
+          "name": "agents:auto-pilot-pause",
+          "description": "Pause auto-pilot at current step",
+          "color": "fbca04"
+        }
+      ],
+      "number": 2300,
+      "title": "Raise test coverage toward 90% (autopilot round 8, low blast radius only)",
+      "updatedAt": "2026-09-15T11:35:06Z"
+    },
+    {
+      "labels": [
+        {
+          "id": "LA_kwDOO15QxM8AAAACCCn9ag",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        },
+        {
+          "id": "LA_kwDOO15QxM8AAAACHPI7Xg",
+          "name": "infra",
+          "description": "",
+          "color": "F9D0C4"
+        },
+        {
+          "id": "LA_kwDOO15QxM8AAAACHPJCEQ",
+          "name": "priority: high",
+          "description": "",
+          "color": "B60205"
+        }
+      ],
+      "number": 2287,
+      "title": "Support Plotly 7 image export or constrain installation",
+      "updatedAt": "2026-09-07T17:04:46Z"
+    },
+    {
+      "labels": [
+        {
+          "id": "LA_kwDOO15QxM8AAAACCCn9ag",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        },
+        {
+          "id": "LA_kwDOO15QxM8AAAACHPIkSw",
+          "name": "ui",
+          "description": "",
+          "color": "BFD4F2"
+        },
+        {
+          "id": "LA_kwDOO15QxM8AAAACHPJGvA",
+          "name": "priority: medium",
+          "description": "",
+          "color": "D93F0B"
+        }
+      ],
+      "number": 2285,
+      "title": "Ship asset and portfolio samples in installed packages",
+      "updatedAt": "2026-09-07T17:04:44Z"
+    },
+    {
+      "labels": [
+        {
+          "id": "LA_kwDOO15QxM8AAAACCCn9ag",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        },
+        {
+          "id": "LA_kwDOO15QxM8AAAACHPIkSw",
+          "name": "ui",
+          "description": "",
+          "color": "BFD4F2"
+        },
+        {
+          "id": "LA_kwDOO15QxM8AAAACHPJGvA",
+          "name": "priority: medium",
+          "description": "",
+          "color": "D93F0B"
+        }
+      ],
+      "number": 2284,
+      "title": "Keep Run Logs provenance bound to the selected run",
+      "updatedAt": "2026-09-07T17:04:43Z"
+    },
+    {
+      "labels": [
+        {
+          "id": "LA_kwDOO15QxM8AAAACCCn9ag",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        },
+        {
+          "id": "LA_kwDOO15QxM8AAAACHPIshw",
+          "name": "engine",
+          "description": "",
+          "color": "FAE3A8"
+        },
+        {
+          "id": "LA_kwDOO15QxM8AAAACHPJGvA",
+          "name": "priority: medium",
+          "description": "",
+          "color": "D93F0B"
+        }
+      ],
+      "number": 2281,
+      "title": "Preserve common random draws for InternalPA sweep financing",
+      "updatedAt": "2026-09-07T17:04:40Z"
+    },
+    {
+      "labels": [
+        {
+          "id": "LA_kwDOO15QxM8AAAACrdsv3g",
+          "name": "tracker:durable",
+          "description": "Permanently-open tracker; excluded from open-issue backlog counts",
+          "color": "c5def5"
+        }
+      ],
+      "number": 1958,
+      "title": "Dependency Dashboard",
+      "updatedAt": "2026-09-15T17:44:32Z"
+    },
+    {
+      "labels": [
+        {
+          "id": "LA_kwDOO15QxM8AAAACrdsv3g",
+          "name": "tracker:durable",
+          "description": "Permanently-open tracker; excluded from open-issue backlog counts",
+          "color": "c5def5"
+        }
+      ],
+      "number": 1707,
+      "title": "Agent metrics weekly summary",
+      "updatedAt": "2026-09-14T06:16:35Z"
+    }
+  ],
+  "frozen": [
+    {
+      "labels": [
+        {
+          "id": "LA_kwDOO15QxM8AAAACUl0YTQ",
+          "name": "agents:auto-pilot-pause",
+          "description": "Pause auto-pilot at current step",
+          "color": "fbca04"
+        }
+      ],
+      "number": 2300,
+      "title": "Raise test coverage toward 90% (autopilot round 8, low blast radius only)",
+      "updatedAt": "2026-09-15T11:35:06Z"
+    }
+  ],
+  "silent_candidates": [],
+  "prs": [
+    {
+      "body": "## Sync Summary\n\n### Files Updated\n- autofix.yml: Autofix workflow - repairs failed/timed-out checks; cancellations do not trigger repairs\n- agents-81-gate-followups.yml: Gate followups hub - keepalive and autofix; budgets count Gate failures with failed jobs\n- runner_lib/ (2 files): Shared runner prompt assembly, output parsing, and dispatch debounce helpers\n- issue_scope_parser.js: Parses issue scope and requirements\n- keepalive_loop.js: Core keepalive loop logic\n- agents_pr_meta_update_body.js: Updates PR body with stable completed dependency-provenance results, observer exclusion, and exact-head Gate visibility\n- agents_verifier_context.js: Verifier context with exact PR-head identity for replayable corpus evidence\n- discover_model_catalog.py: Advisory provider-catalog discovery - proposes new model candidates without changing reviewed selections\n- MODEL_SELECTION_POLICY.md: Auditable auxiliary-model evaluation, selection, and refresh policy\n- tracked-variable-v1.md: Tracked-variable/v1 specification and clause-variable alias for backplane consumers\n\n### Files Skipped\n- pr-00-gate.yml: File exists and sync_mode is create_only\n- ci.yml: File exists and sync_mode is create_only\n- renovate.json: File exists and sync_mode is create_only\n- cross-repo-smoke.yml: File exists and sync_mode is create_only\n- llm_slots.json: None\n\n---\n\n### Review Checklist\n- [ ] CI passes with updated workflows\n- [ ] No repo-specific customizations were overwritten\n\n**Source:** stranske/Workflows\n**Source SHA:** `9a16cbf4f93a9366cdc2a0ab30fa2d01c977abbc`\n**Template hash:** `e44d4dc4e791`\n**Consumer-sync plan ID:** `sha256:e44d4dc4e7914e69fa48886f82cdceeca613fd57e039e1ae2f393b867b9fef16`\n**Plan scope:** `full`\n**Scope base SHA:** `full`\n**Sync phase:** `canary`\n**Sync branch:** `sync/workflows-candidate`\n**Consumer repo:** `stranske/Portable-Alpha-Extension-Model`\n**Manifest:** `.github/sync-manifest.yml`\n\n<!-- workflow-source:sync_campaign -->\n<!-- workflows-consumer-sync:v1 {\"schema\":\"workflows-consumer-sync-pr/v1\",\"consumer_repo\":\"stranske/Portable-Alpha-Extension-Model\",\"source_repository\":\"stranske/Workflows\",\"source_sha\":\"9a16cbf4f93a9366cdc2a0ab30fa2d01c977abbc\",\"template_hash\":\"e44d4dc4e791\",\"plan_id\":\"sha256:e44d4dc4e7914e69fa48886f82cdceeca613fd57e039e1ae2f393b867b9fef16\",\"plan_scope\":\"full\",\"scope_base_sha\":\"\",\"source_commit\":\"9a16cbf4f93a9366cdc2a0ab30fa2d01c977abbc\",\"sync_phase\":\"canary\",\"sync_branch\":\"sync/workflows-candidate\",\"manifest\":\".github/sync-manifest.yml\",\"lifecycle_state\":\"staging\",\"run_id\":\"34931054295\",\"run_attempt\":\"1\",\"changes_count\":10} -->\n<!-- sync-pr-delivery-record:v1 {\"schema\":\"sync-pr-delivery-record/v1\",\"durable_issue_url\":\"https://github.com/stranske/Workflows/issues/1836\",\"plan_id\":\"sha256:e44d4dc4e7914e69fa48886f82cdceeca613fd57e039e1ae2f393b867b9fef16\",\"generation\":\"e44d4dc4e791\",\"repository\":\"stranske/Portable-Alpha-Extension-Model\",\"desired_tree_hash\":\"dd496abf22fc67959ebf943be2381b1e2c64e531\",\"source_commit\":\"9a16cbf4f93a9366cdc2a0ab30fa2d01c977abbc\",\"head_observed_sha\":\"e375b405890d4e614d795409e4eff0388154bf34\",\"head_observed_at\":\"2026-09-15T05:02:07Z\",\"lease_expires_at\":\"2026-09-18T05:02:08Z\",\"predecessor_prs\":[],\"successor_prs\":[],\"delivery_state\":\"sealed\",\"review_started_at\":\"2026-09-15T05:21:09.477Z\",\"sealed_at\":\"2026-09-15T05:39:05.266Z\",\"sealed_head_sha\":\"e375b405890d4e614d795409e4eff0388154bf34\",\"review_evidence\":{\"policy_schema\":\"workflows.consumer-sync-review-policy/v1\",\"reason\":\"review_timeout_degraded\",\"degraded\":true,\"responded_reviewers\":[],\"unavailable_reviewers\":[]},\"terminal_disposition\":\"\"} -->\n\nautofix: false",
+      "isDraft": false,
+      "labels": [
+        {
+          "id": "LA_kwDOO15QxM8AAAACTsjiqA",
+          "name": "sync",
+          "description": "Automated sync from Workflows",
+          "color": "0e8a16"
+        },
+        {
+          "id": "LA_kwDOO15QxM8AAAACTsji5A",
+          "name": "automated",
+          "description": "Automated sync from Workflows",
+          "color": "0e8a16"
+        },
+        {
+          "id": "LA_kwDOO15QxM8AAAACvmrXUg",
+          "name": "workflow:source-sync",
+          "description": "PR source is a sync or maintenance campaign",
+          "color": "1d76db"
+        },
+        {
+          "id": "LA_kwDOO15QxM8AAAACv73hhg",
+          "name": "sync:delivery-staging",
+          "description": "Generated delivery is mutable and must not merge",
+          "color": "d93f0b"
+        },
+        {
+          "id": "LA_kwDOO15QxM8AAAACv73hnw",
+          "name": "sync:delivery-ready",
+          "description": "Generated delivery is sealed to its exact reviewed head",
+          "color": "0e8a16"
+        }
+      ],
+      "number": 2299,
+      "title": "chore: sync workflow templates",
+      "updatedAt": "2026-09-15T05:39:10Z"
+    }
+  ],
+  "silent_stuck": [],
+  "stalled_prs": [],
+  "supply_count": 5,
+  "open_count": 5,
+  "priority_count": 4,
+  "ci_runs": [],
+  "latest_ci": null
+}

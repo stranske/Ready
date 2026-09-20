@@ -1,0 +1,24 @@
+{
+  "body": "Closes #1670\n\n## Summary\n\nScheduled EDGAR indexing previously committed documents on a separate connection before filing and holdings writes. A later failure left searchable orphan documents. The wrapper now borrows the filing connection, disables PostgreSQL autocommit for the write boundary, commits each successful filing before alert emission, and rolls back pending writes and closes the connection on every exit. Indexing errors propagate instead of falling back to a separate writer. Raw S3 retention remains independent.\n\n## Tasks\n\n- [x] Pass the existing connection through the EDGAR wrapper to real document storage.\n- [x] Share document, filing and holdings rollback and unconditional connection cleanup.\n- [x] Add real-writer fault injection after indexing for parsing, filing-upsert and holdings-write failures.\n\n\n- [x] In `alerts/dispatch.py`, `alerts/db.py` and `etl/edgar_flow.py`, verify and address https://github.com/stranske/Manager-Database/pull/1679#discussion_r4011309150: persist an outbox/idempotency record before external email/Slack delivery, and prevent duplicate event/channel sends on retry after post-delivery database commit failure. Preserve filing-before-alert durability. Use a mock external channel and real PostgreSQL regression with an injected failing commit; record concrete delivery semantics and evidence. Leave independent review-thread disposition to closer.\n\n## Acceptance criteria and validation\n\n- [x] `USE_SIMPLE_EMBED=1 python -m pytest tests/test_edgar_flow.py --run-nightly -o addopts='' -q`: **22 passed, no skips** on Python 3.12.2.\n- [x] Each post-index failure leaves `(documents, filings, holdings) == (0, 0, 0)`, closes the connection, and emits no alert. Successful ingestion persists all three before the event callback observes them from a separate connection.\n- [x] A failed second filing preserves the first committed filing and its event. Setup failure closes the connection and restores original autocommit.\n- [x] Deliberate break: removed `connection=conn` at the scheduled document call, restoring db_path-only storage. All three rollback cases failed with `(1, 0, 0)` orphan rows. Restored exact bytes; full 22-test gate passed again.\n- [x] Ruff, Black target py312, focused mypy, test-dependency verification and `git diff --check` passed.\n\nSQLite failure paths use the real embedding writer and database. The PostgreSQL adapter regression checks connection forwarding and existing transaction behavior; no live PostgreSQL claim is made for this PR. Existing document-association recovery is separate in #1678.\n\nReady for keepalive CI/review. Closer must check the unchanged head, required checks, elapsed review window and active review threads before merge and verify:compare.\n\n\n<!-- This is an auto-generated comment: release notes by coderabbit.ai -->\n## Summary by CodeRabbit\n\n- **Bug Fixes**\n  - Improved filing imports to keep related database updates consistent when an error occurs.\n  - Earlier successful filings remain saved if a later filing fails.\n  - Alerts are now sent only after the corresponding filing is successfully saved.\n  - Improved cleanup after import failures to prevent incomplete or lingering database sessions.\n  - Improved reliability across supported database configurations, including SQLite and PostgreSQL.\n  - Prevented duplicate alert deliveries during retries by tracking completed channel attempts.\n  - Prevented duplicate alerts when the same filing event is processed again.\n<!-- end of auto-generated comment: release notes by coderabbit.ai -->",
+  "closingIssuesReferences": [
+    {
+      "id": "I_kwDOO4LcjM8AAAABRQx37A",
+      "number": 1670,
+      "repository": {
+        "id": "R_kgDOO4LcjA",
+        "name": "Manager-Database",
+        "owner": {
+          "id": "MDQ6VXNlcjIzMDQ2MzIy",
+          "login": "stranske"
+        }
+      },
+      "url": "https://github.com/stranske/Manager-Database/issues/1670"
+    }
+  ],
+  "mergeCommit": {
+    "oid": "6d82618cd462d82b5707b7a801c2958016ec3adc"
+  },
+  "mergedAt": "2026-09-15T06:45:32Z",
+  "number": 1679,
+  "title": "fix: make scheduled EDGAR indexing atomic with filing writes"
+}

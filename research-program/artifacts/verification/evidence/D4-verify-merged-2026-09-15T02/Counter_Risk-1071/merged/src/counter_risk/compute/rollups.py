@@ -1,0 +1,647 @@
+"""Rollup computations for historical class sheets and run summaries."""
+
+from __future__ import annotations
+
+import csv
+import math
+from collections import defaultdict
+from collections.abc import Iterable, Mapping
+from pathlib import Path
+from typing import Any, cast
+
+from counter_risk.compute.limits import _exposure_magnitude
+from counter_risk.normalize import normalize_counterparty
+
+_COUNTERPARTY_KEYS = ("counterparty", "counterparty_name", "name")
+_ASSET_CLASS_KEYS = ("asset_class", "class", "segment")
+_NOTIONAL_KEYS = ("notional", "exposure", "total", "amount")
+_PRIOR_NOTIONAL_KEYS = (
+    "prior_notional",
+    "prior_month_notional",
+    "notional_prior_month",
+    "notional_prior",
+    "prior",
+)
+
+_TOTAL_COLUMNS = (
+    "group_type",
+    "group_name",
+    "notional",
+    "prior_notional",
+    "notional_change",
+)
+
+_TOP_EXPOSURE_COLUMNS = ("counterparty", "asset_class", "notional")
+_TOP_CHANGE_COLUMNS = (
+    "group_type",
+    "group_name",
+    "notional",
+    "prior_notional",
+    "notional_change",
+    "absolute_change",
+)
+_NOTIONAL_PROXY_COLUMNS = ("Notional", "AnnualizedVolatility")
+_POSITION_PROXY_COLUMNS = ("PositionUSD", "Vol")
+_NOTIONAL_PROXY_NOTIONAL_KEYS = ("Notional", "notional")
+_NOTIONAL_PROXY_VOLATILITY_KEYS = ("AnnualizedVolatility", "annualized_volatility")
+_POSITION_PROXY_USD_KEYS = ("PositionUSD", "position_usd")
+_POSITION_PROXY_VOL_KEYS = ("Vol", "vol")
+_RISK_PROXY_NOTIONAL_VOLATILITY_COLUMN = "risk_proxy_notional_annualized_volatility"
+_RISK_PROXY_POSITION_VOL_COLUMN = "risk_proxy_position_usd_vol"
+
+_CONCENTRATION_GROUP_COLUMNS = ("variant", "segment")
+_CONCENTRATION_METRIC_COLUMNS = ("top5_share", "top10_share", "hhi")
+_NEAR_ZERO_EXPOSURE_TOTAL = 1e-12
+
+_REPO_CASH_OUTPUT_COLUMNS = (
+    "counterparty",
+    "group_type",
+    "group_name",
+    "TIPS",
+    "Treasury",
+    "Equity",
+    "Commodity",
+    "Currency",
+    "notional",
+    "prior_notional",
+    "notional_change",
+    "Cash",
+    "Notional",
+    "NotionalChange",
+)
+
+
+def _is_dataframe_like(value: Any) -> bool:
+    return hasattr(value, "to_dict") and hasattr(value, "columns")
+
+
+def _iter_rows(table: Any, *, arg_name: str) -> list[Mapping[str, Any]]:
+    rows: list[Any]
+    if _is_dataframe_like(table):
+        rows = list(table.to_dict(orient="records"))
+    elif isinstance(table, Iterable) and not isinstance(table, (str, bytes)):
+        rows = list(table)
+    else:
+        raise TypeError(
+            f"{arg_name} must be a pandas-like DataFrame or an iterable of row mappings"
+        )
+
+    validated: list[Mapping[str, Any]] = []
+    for index, row in enumerate(rows):
+        if not isinstance(row, Mapping):
+            raise TypeError(f"{arg_name} row at index {index} must be a mapping")
+        validated.append(cast(Mapping[str, Any], row))
+
+    return validated
+
+
+def _find_string(row: Mapping[str, Any], keys: tuple[str, ...], *, field: str) -> str:
+    for key in keys:
+        value = row.get(key)
+        if isinstance(value, str) and value.strip():
+            return value.strip()
+    raise ValueError(f"Row missing required {field} column value from aliases {keys}")
+
+
+def _find_numeric(
+    row: Mapping[str, Any],
+    keys: tuple[str, ...],
+    *,
+    field: str,
+    default: float | None = None,
+) -> float:
+    for key in keys:
+        if key not in row:
+            continue
+
+        raw_value = row.get(key)
+        if raw_value is None or (isinstance(raw_value, str) and not raw_value.strip()):
+            continue
+        if isinstance(raw_value, bool):
+            raise ValueError(f"Row value for {field!r} must be numeric")
+
+        try:
+            value = float(raw_value)
+        except (TypeError, ValueError) as exc:
+            raise ValueError(f"Row value for {field!r} must be numeric") from exc
+        if not math.isfinite(value):
+            raise ValueError(f"Row value for {field!r} must be finite, got {raw_value!r}")
+        return value
+
+    if default is not None:
+        if not math.isfinite(default):
+            raise ValueError(f"Default value for {field!r} must be finite, got {default!r}")
+        return default
+
+    raise ValueError(f"Row missing required numeric {field} column from aliases {keys}")
+
+
+def _to_dataframe_or_records(*, records: list[dict[str, Any]], columns: tuple[str, ...]) -> Any:
+    try:
+        import pandas as pd
+    except ModuleNotFoundError:
+        return [{column: row.get(column) for column in columns} for row in records]
+
+    frame = pd.DataFrame(records) if records else pd.DataFrame(columns=columns)
+
+    for column in columns:
+        if column not in frame.columns:
+            frame[column] = 0.0
+
+    return frame.loc[:, list(columns)]
+
+
+def _records_from_table(table: Any, *, arg_name: str) -> list[dict[str, Any]]:
+    rows = _iter_rows(table, arg_name=arg_name)
+    return [dict(row) for row in rows]
+
+
+def _column_names_from_rows(table: Any, rows: list[Mapping[str, Any]]) -> tuple[str, ...]:
+    if _is_dataframe_like(table):
+        columns = getattr(table, "columns", ())
+        normalized = [str(column) for column in columns]
+        return tuple(normalized)
+
+    ordered_columns: list[str] = []
+    seen: set[str] = set()
+    for row in rows:
+        for key in row:
+            normalized_key = str(key)
+            if normalized_key in seen:
+                continue
+            seen.add(normalized_key)
+            ordered_columns.append(normalized_key)
+    return tuple(ordered_columns)
+
+
+def _has_any_column(columns: tuple[str, ...], candidates: tuple[str, ...]) -> bool:
+    return any(candidate in columns for candidate in candidates)
+
+
+def compute_totals(exposures_df: Any) -> Any:
+    """Aggregate exposures by counterparty and asset class.
+
+    Output schema columns:
+    - group_type: one of "counterparty" or "asset_class"
+    - group_name: counterparty or asset class label
+    - notional: current notional total
+    - prior_notional: prior notional total if available (0.0 otherwise)
+    - notional_change: `notional - prior_notional`
+    """
+
+    rows = _iter_rows(exposures_df, arg_name="exposures_df")
+    if not rows:
+        return _to_dataframe_or_records(records=[], columns=_TOTAL_COLUMNS)
+
+    by_counterparty: dict[str, list[float]] = defaultdict(lambda: [0.0, 0.0])
+    by_asset_class: dict[str, list[float]] = defaultdict(lambda: [0.0, 0.0])
+
+    for row in rows:
+        counterparty = _find_string(row, _COUNTERPARTY_KEYS, field="counterparty")
+        asset_class = _find_string(row, _ASSET_CLASS_KEYS, field="asset_class")
+        notional = _find_numeric(row, _NOTIONAL_KEYS, field="notional")
+        prior_notional = _find_numeric(
+            row,
+            _PRIOR_NOTIONAL_KEYS,
+            field="prior_notional",
+            default=0.0,
+        )
+
+        by_counterparty[counterparty][0] += notional
+        by_counterparty[counterparty][1] += prior_notional
+        by_asset_class[asset_class][0] += notional
+        by_asset_class[asset_class][1] += prior_notional
+
+    records: list[dict[str, Any]] = []
+
+    for name in sorted(by_counterparty, key=str.casefold):
+        notional, prior_notional = by_counterparty[name]
+        records.append(
+            {
+                "group_type": "counterparty",
+                "group_name": name,
+                "notional": notional,
+                "prior_notional": prior_notional,
+                "notional_change": notional - prior_notional,
+            }
+        )
+
+    for name in sorted(by_asset_class, key=str.casefold):
+        notional, prior_notional = by_asset_class[name]
+        records.append(
+            {
+                "group_type": "asset_class",
+                "group_name": name,
+                "notional": notional,
+                "prior_notional": prior_notional,
+                "notional_change": notional - prior_notional,
+            }
+        )
+
+    return _to_dataframe_or_records(records=records, columns=_TOTAL_COLUMNS)
+
+
+def apply_repo_cash_to_totals(
+    totals_df: Any,
+    repo_cash_by_counterparty: Mapping[str, float],
+) -> Any:
+    """Overlay parsed daily-holdings Repo Cash onto All Programs totals rows.
+
+    For matched counterparties, this increments both ``Cash`` and ``Notional``.
+    For unmatched counterparties, a new totals row is appended with zeroes for
+    non-cash asset classes and ``NotionalChange`` defaulted to ``0.0``.
+    """
+
+    rows = _iter_rows(totals_df, arg_name="totals_df")
+    records = [dict(row) for row in rows]
+    output_columns = list(_column_names_from_rows(totals_df, rows))
+    for column in _REPO_CASH_OUTPUT_COLUMNS:
+        if column not in output_columns:
+            output_columns.append(column)
+
+    if not repo_cash_by_counterparty:
+        return _to_dataframe_or_records(records=records, columns=tuple(output_columns))
+
+    normalized_index: dict[str, int] = {}
+    for index, row in enumerate(records):
+        counterparty_raw = _counterparty_label_from_totals_row(row)
+        if counterparty_raw is None:
+            continue
+        normalized_index[normalize_counterparty(counterparty_raw)] = index
+
+    for raw_counterparty, raw_amount in repo_cash_by_counterparty.items():
+        counterparty = str(raw_counterparty).strip()
+        if not counterparty:
+            raise ValueError("repo_cash_by_counterparty contains an empty counterparty key")
+
+        try:
+            amount = float(raw_amount)
+        except (TypeError, ValueError) as exc:
+            raise ValueError(
+                f"repo_cash_by_counterparty value for {counterparty!r} must be numeric"
+            ) from exc
+        if not math.isfinite(amount):
+            raise ValueError(f"repo_cash_by_counterparty value for {counterparty!r} must be finite")
+
+        normalized = normalize_counterparty(counterparty)
+        matched_index = normalized_index.get(normalized)
+        if matched_index is None:
+            records.append(
+                {
+                    "counterparty": counterparty,
+                    "group_type": "counterparty",
+                    "group_name": counterparty,
+                    "TIPS": 0.0,
+                    "Treasury": 0.0,
+                    "Equity": 0.0,
+                    "Commodity": 0.0,
+                    "Currency": 0.0,
+                    "Cash": amount,
+                    "notional": amount,
+                    "prior_notional": 0.0,
+                    "notional_change": amount,
+                    "Notional": amount,
+                    "NotionalChange": 0.0,
+                }
+            )
+            normalized_index[normalized] = len(records) - 1
+            continue
+
+        row = records[matched_index]
+        _add_amount_to_aliases(row=row, aliases=("cash", "Cash"), amount=amount)
+        _add_amount_to_aliases(row=row, aliases=("notional", "Notional"), amount=amount)
+        if row.get("group_type") == "counterparty":
+            row["group_name"] = _counterparty_label_from_totals_row(row) or counterparty
+            row["notional_change"] = float(row.get("notional_change", 0.0) or 0.0) + amount
+
+    return _to_dataframe_or_records(records=records, columns=tuple(output_columns))
+
+
+def _counterparty_label_from_totals_row(row: Mapping[str, Any]) -> str | None:
+    counterparty_raw = row.get("counterparty")
+    if isinstance(counterparty_raw, str) and counterparty_raw.strip():
+        return counterparty_raw.strip()
+
+    group_type = str(row.get("group_type", "")).strip().casefold()
+    if group_type != "counterparty":
+        return None
+
+    group_name = row.get("group_name")
+    if isinstance(group_name, str) and group_name.strip():
+        return group_name.strip()
+
+    return None
+
+
+def _add_amount_to_aliases(*, row: dict[str, Any], aliases: tuple[str, ...], amount: float) -> None:
+    current = 0.0
+    for alias in aliases:
+        raw = row.get(alias)
+        if raw is None or (isinstance(raw, str) and not raw.strip()):
+            continue
+        current = float(raw)
+        break
+
+    updated = current + amount
+    for alias in aliases:
+        row[alias] = updated
+
+
+def compute_notional_breakdown(exposures_df: Any) -> dict[str, float]:
+    """Return asset-class notional fractions for the supplied exposure rows."""
+
+    rows = _iter_rows(exposures_df, arg_name="exposures_df")
+    if not rows:
+        return {}
+
+    by_asset_class: dict[str, float] = defaultdict(float)
+    for row in rows:
+        asset_class = _find_string(row, _ASSET_CLASS_KEYS, field="asset_class")
+        notional = _find_numeric(row, _NOTIONAL_KEYS, field="notional")
+        by_asset_class[asset_class] += notional
+
+    total_notional = sum(by_asset_class.values())
+    if total_notional == 0.0:
+        return dict.fromkeys(sorted(by_asset_class, key=str.casefold), 0.0)
+
+    return {
+        name: by_asset_class[name] / total_notional
+        for name in sorted(by_asset_class, key=str.casefold)
+    }
+
+
+def top_exposures(exposures_df: Any, n: int = 10) -> Any:
+    """Return top-N exposures sorted by descending notional with deterministic ties."""
+
+    if n <= 0:
+        raise ValueError("n must be positive")
+
+    rows = _iter_rows(exposures_df, arg_name="exposures_df")
+    normalized_rows: list[dict[str, Any]] = []
+
+    for row in rows:
+        normalized_rows.append(
+            {
+                "counterparty": _find_string(row, _COUNTERPARTY_KEYS, field="counterparty"),
+                "asset_class": _find_string(row, _ASSET_CLASS_KEYS, field="asset_class"),
+                "notional": _find_numeric(row, _NOTIONAL_KEYS, field="notional"),
+            }
+        )
+
+    normalized_rows.sort(
+        key=lambda item: (
+            -_exposure_magnitude(float(item["notional"])),
+            str(item["counterparty"]).casefold(),
+            str(item["asset_class"]).casefold(),
+        )
+    )
+
+    return _to_dataframe_or_records(records=normalized_rows[:n], columns=_TOP_EXPOSURE_COLUMNS)
+
+
+def top_changes(totals_df: Any, n: int = 10) -> Any:
+    """Return top-N absolute notional movers from totals output."""
+
+    if n <= 0:
+        raise ValueError("n must be positive")
+
+    rows = _records_from_table(totals_df, arg_name="totals_df")
+    change_rows: list[dict[str, Any]] = []
+
+    for row in rows:
+        if "notional_change" in row:
+            try:
+                change_value = float(row["notional_change"])
+            except (TypeError, ValueError) as exc:
+                raise ValueError("totals_df notional_change values must be numeric") from exc
+        else:
+            notional = _find_numeric(row, ("notional",), field="notional", default=0.0)
+            prior_notional = _find_numeric(
+                row,
+                ("prior_notional",),
+                field="prior_notional",
+                default=0.0,
+            )
+            change_value = notional - prior_notional
+
+        group_type = str(row.get("group_type", "")).strip() or "unknown"
+        group_name = str(row.get("group_name", "")).strip() or "unknown"
+
+        change_rows.append(
+            {
+                "group_type": group_type,
+                "group_name": group_name,
+                "notional": float(row.get("notional", 0.0) or 0.0),
+                "prior_notional": float(row.get("prior_notional", 0.0) or 0.0),
+                "notional_change": change_value,
+                "absolute_change": abs(change_value),
+            }
+        )
+
+    change_rows.sort(
+        key=lambda item: (
+            -float(item["absolute_change"]),
+            str(item["group_type"]).casefold(),
+            str(item["group_name"]).casefold(),
+        )
+    )
+
+    return _to_dataframe_or_records(records=change_rows[:n], columns=_TOP_CHANGE_COLUMNS)
+
+
+def compute_risk_proxies(exposures_df: Any) -> Any:
+    """Return exposure rows annotated with available risk proxy calculations."""
+
+    rows = _iter_rows(exposures_df, arg_name="exposures_df")
+    columns = _column_names_from_rows(exposures_df, rows)
+    has_notional_proxy_inputs = _has_any_column(
+        columns, _NOTIONAL_PROXY_NOTIONAL_KEYS
+    ) and _has_any_column(columns, _NOTIONAL_PROXY_VOLATILITY_KEYS)
+    has_position_proxy_inputs = _has_any_column(
+        columns, _POSITION_PROXY_USD_KEYS
+    ) and _has_any_column(columns, _POSITION_PROXY_VOL_KEYS)
+
+    proxy_records: list[dict[str, Any]] = []
+    for row in rows:
+        normalized_row = dict(row)
+        if has_notional_proxy_inputs:
+            notional = _find_numeric(
+                row,
+                _NOTIONAL_PROXY_NOTIONAL_KEYS,
+                field="Notional",
+                default=0.0,
+            )
+            annualized_volatility = _find_numeric(
+                row,
+                _NOTIONAL_PROXY_VOLATILITY_KEYS,
+                field="AnnualizedVolatility",
+                default=0.0,
+            )
+            normalized_row[_RISK_PROXY_NOTIONAL_VOLATILITY_COLUMN] = (
+                notional * annualized_volatility
+            )
+
+        if has_position_proxy_inputs:
+            position_usd = _find_numeric(
+                row,
+                _POSITION_PROXY_USD_KEYS,
+                field="PositionUSD",
+                default=0.0,
+            )
+            volatility = _find_numeric(
+                row,
+                _POSITION_PROXY_VOL_KEYS,
+                field="Vol",
+                default=0.0,
+            )
+            normalized_row[_RISK_PROXY_POSITION_VOL_COLUMN] = position_usd * volatility
+
+        proxy_records.append(normalized_row)
+
+    output_columns = list(columns)
+    if has_notional_proxy_inputs and _RISK_PROXY_NOTIONAL_VOLATILITY_COLUMN not in output_columns:
+        output_columns.append(_RISK_PROXY_NOTIONAL_VOLATILITY_COLUMN)
+    if has_position_proxy_inputs and _RISK_PROXY_POSITION_VOL_COLUMN not in output_columns:
+        output_columns.append(_RISK_PROXY_POSITION_VOL_COLUMN)
+
+    return _to_dataframe_or_records(records=proxy_records, columns=tuple(output_columns))
+
+
+def compute_concentration_metrics(
+    exposures_df: Any,
+    group_by: list[str] | None = None,
+) -> Any:
+    """Compute Top 5 share, Top 10 share, and HHI per group.
+
+    For each combination of *group_by* values the function computes:
+
+    * **top5_share** – sum of the five largest entity notional magnitudes
+      divided by the total group notional magnitude.  When the group has fewer than five entities, all
+      entities are summed (i.e. top5_share == 1.0).
+    * **top10_share** – same as above using ten entities.
+    * **hhi** – Herfindahl-Hirschman Index: sum of squared market-share
+      fractions for every entity in the group.  Ranges from 1/N (perfectly
+      dispersed) to 1.0 (fully concentrated in one entity).
+
+    Repeated counterparties are consolidated within each group by summing
+    row magnitudes (gross exposure, without netting opposite signs). Identity
+    uses the standard counterparty aliases; rows without an identity remain
+    independent entities for compatibility with identity-free inputs.
+
+    When the total notional magnitude for a group is near zero all three
+    metrics are returned as ``0.0``.
+
+    See ``docs/concentration_metrics.md`` for output-field definitions, the HHI
+    scaling reference, and operator interpretation guidance.
+
+    Parameters
+    ----------
+    exposures_df:
+        Table of exposures.  Each row must include every column named in
+        *group_by* and a notional column (resolved via the standard notional
+        aliases: ``notional``, ``exposure``, ``total``, ``amount``).
+    group_by:
+        Column names to group on.  Defaults to ``["variant", "segment"]``.
+
+    Returns
+    -------
+    Table with columns: *group_by columns* then ``top5_share``,
+    ``top10_share``, ``hhi``.  The return type is a
+    :class:`pandas.DataFrame` when pandas is available, otherwise a list of
+    dicts.
+
+    Raises
+    ------
+    ValueError
+        If a required group_by column is absent from any row, or if a
+        notional value cannot be converted to float.
+    TypeError
+        If *exposures_df* is not a DataFrame-like object or an iterable of
+        row mappings.
+    """
+    if group_by is None:
+        group_by = list(_CONCENTRATION_GROUP_COLUMNS)
+
+    rows = _iter_rows(exposures_df, arg_name="exposures_df")
+
+    if rows:
+        sample = rows[0]
+        missing = [col for col in group_by if col not in sample]
+        if missing:
+            raise ValueError(
+                f"exposures_df is missing required group_by column(s): "
+                f"{', '.join(repr(c) for c in missing)}"
+            )
+
+    groups: dict[tuple[str, ...], dict[str | int, float]] = defaultdict(lambda: defaultdict(float))
+    group_key_order: list[tuple[str, ...]] = []
+    seen_keys: set[tuple[str, ...]] = set()
+
+    for row_index, row in enumerate(rows):
+        key = tuple(str(row.get(col, "")).strip() for col in group_by)
+        notional = _find_numeric(row, _NOTIONAL_KEYS, field="notional")
+        if key not in seen_keys:
+            group_key_order.append(key)
+            seen_keys.add(key)
+        counterparty = next(
+            (
+                value.strip()
+                for alias in _COUNTERPARTY_KEYS
+                if isinstance(value := row.get(alias), str) and value.strip()
+            ),
+            None,
+        )
+        # Keep anonymous rows independent for callers without identity columns.
+        entity = counterparty if counterparty is not None else row_index
+        groups[key][entity] += _exposure_magnitude(notional)
+
+    records: list[dict[str, Any]] = []
+    for key in group_key_order:
+        notionals = sorted(groups[key].values(), reverse=True)
+        total = sum(notionals)
+
+        if total <= _NEAR_ZERO_EXPOSURE_TOTAL:
+            top5_share = 0.0
+            top10_share = 0.0
+            hhi = 0.0
+        else:
+            top5_share = sum(notionals[:5]) / total
+            top10_share = sum(notionals[:10]) / total
+            hhi = sum((n / total) ** 2 for n in notionals)
+
+        record: dict[str, Any] = {}
+        for col, val in zip(group_by, key, strict=False):
+            record[col] = val
+        record["top5_share"] = top5_share
+        record["top10_share"] = top10_share
+        record["hhi"] = hhi
+        records.append(record)
+
+    output_columns = tuple(group_by) + _CONCENTRATION_METRIC_COLUMNS
+    return _to_dataframe_or_records(records=records, columns=output_columns)
+
+
+def write_concentration_metrics_csv(metrics: Any, path: Path | str) -> None:
+    """Write concentration metrics to a CSV file.
+
+    Parameters
+    ----------
+    metrics:
+        Return value of :func:`compute_concentration_metrics` (DataFrame or
+        list of dicts).
+    path:
+        Destination file path.  Parent directories are created if absent.
+    """
+    rows = _iter_rows(metrics, arg_name="metrics")
+    out_path = Path(path)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+
+    if not rows:
+        out_path.write_text("", encoding="utf-8")
+        return
+
+    fieldnames = list(rows[0].keys())
+    with out_path.open("w", newline="", encoding="utf-8") as fh:
+        writer = csv.DictWriter(fh, fieldnames=fieldnames, extrasaction="ignore")
+        writer.writeheader()
+        writer.writerows(rows)

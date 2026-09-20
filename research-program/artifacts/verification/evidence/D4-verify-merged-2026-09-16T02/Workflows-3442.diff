@@ -1,0 +1,1533 @@
+diff --git a/.github/scripts/__tests__/agents-verifier-context.test.js b/.github/scripts/__tests__/agents-verifier-context.test.js
+index d65843c9b..b75d104b9 100644
+--- a/.github/scripts/__tests__/agents-verifier-context.test.js
++++ b/.github/scripts/__tests__/agents-verifier-context.test.js
+@@ -283,6 +283,8 @@ test('buildVerifierContext allows non-default base branches when acceptance crit
+   assert.equal(result.shouldRun, true);
+   assert.equal(core.outputs.should_run, 'true');
+   assert.equal(core.outputs.pr_number, '99');
++  assert.equal(core.outputs.pr_head_sha, 'head-sha-99');
++  assert.equal(core.outputs.target_sha, 'merge-sha-99');
+   assert.equal(core.outputs.skip_reason, '');
+ });
+ 
+diff --git a/.github/scripts/agents_verifier_context.js b/.github/scripts/agents_verifier_context.js
+index 8748fa313..392132a72 100644
+--- a/.github/scripts/agents_verifier_context.js
++++ b/.github/scripts/agents_verifier_context.js
+@@ -650,6 +650,7 @@ async function buildVerifierContext({ github, context, core, ciWorkflows }) {
+     fs.writeFileSync(diffPath, diffText + '\n', 'utf8');
+   }
+ 
++  core?.setOutput?.('pr_head_sha', pull.head?.sha || '');
+   core?.setOutput?.('should_run', 'true');
+   core?.setOutput?.('skip_reason', '');
+   core?.setOutput?.('pr_number', String(pull.number || ''));
+diff --git a/.github/sync-manifest.yml b/.github/sync-manifest.yml
+index 19e43a7ce..5a0e8902a 100644
+--- a/.github/sync-manifest.yml
++++ b/.github/sync-manifest.yml
+@@ -548,7 +548,7 @@ scripts:
+     description: "Updates PR body with stable completed dependency-provenance results, observer exclusion, and exact-head Gate visibility"
+ 
+   - source: .github/scripts/agents_verifier_context.js
+-    description: "Context gathering for agent verifier"
++    description: "Verifier context with exact PR-head identity for replayable corpus evidence"
+ 
+   - source: .github/scripts/agents_dispatch_summary.js
+     description: "Summarizes agent dispatch operations"
+diff --git a/.github/workflows/maint-79-verifier-corpus-harvest.yml b/.github/workflows/maint-79-verifier-corpus-harvest.yml
+index 180b3d568..c66347045 100644
+--- a/.github/workflows/maint-79-verifier-corpus-harvest.yml
++++ b/.github/workflows/maint-79-verifier-corpus-harvest.yml
+@@ -72,12 +72,13 @@ jobs:
+           body: |
+             Automated corpus growth (stranske/Workflows#2819 move 2).
+ 
+-            High-confidence cases derived from realized PR outcomes — see the run
+-            summary for the promoted case list. Ambiguous cases were routed to the
+-            auto-expiring staging file, not here.
++            This PR may contain staging-only changes; staging is FYI-only and does
++            not affect approval metrics. Only changes to config/model_eval_pilot.json
++            represent promotions. The run summary lists promoted and staged counts.
+ 
+-            Expected verdicts here come from what the world already adjudicated by
+-            merging or reverting each PR. The semantic NON_PASS categories
++            Expected verdicts require an exact-head verifier decision and realized
++            outcome, with the verifier run and durable source URL retained. The semantic
++            NON_PASS categories
+             (stale-verifier-claim, review-thread-debt, missing-acceptance-criterion)
+             remain owner-sourced and are never machine-added.
+       - name: Enforce review window before auto-merge
+diff --git a/.github/workflows/reusable-agents-verifier.yml b/.github/workflows/reusable-agents-verifier.yml
+index 9b548398a..99f2b9c24 100644
+--- a/.github/workflows/reusable-agents-verifier.yml
++++ b/.github/workflows/reusable-agents-verifier.yml
+@@ -1257,11 +1257,17 @@ jobs:
+           }}
+         env:
+           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
++          PR_NUMBER: ${{ steps.context.outputs.pr_number }}
++          PR_HEAD_SHA: ${{ steps.context.outputs.pr_head_sha }}
++          EVALUATED_SHA: ${{ steps.context.outputs.target_sha }}
++          CI_FAILED: ${{ steps.context.outputs.ci_failed }}
+         run: |
+           set -euo pipefail
+-          pr_number="${{ steps.context.outputs.pr_number }}"
+-          if [ -n "$pr_number" ] && [ -f "comparison-comment.md" ]; then
+-            gh pr comment "$pr_number" --body-file comparison-comment.md || \
++          verifier_pr="$PR_NUMBER"
++          if [ -n "$verifier_pr" ] && [ -f "comparison-comment.md" ]; then
++            python .workflows-lib/tools/verifier_corpus_evidence.py \
++              --comparison comparison.json --comment comparison-comment.md
++            gh pr comment "$verifier_pr" --body-file comparison-comment.md || \
+               echo "Warning: Could not post comment"
+           fi
+ 
+diff --git a/config/backplane_participants.json b/config/backplane_participants.json
+index 2ffa73f93..9a5e6bdd9 100644
+--- a/config/backplane_participants.json
++++ b/config/backplane_participants.json
+@@ -90,7 +90,7 @@
+       "status": "planned",
+       "rationale": "Near-verbatim blueprint signature run_simulation(config, returns) -> RunResult (api.py:400); content-addressed run_id (bundle.py:75-81); 3/3 artifact_discipline + ci_reference_runs. evidence is out of role (0/3 N/A for a computational engine), so 'evidence_refs' is intentionally NOT required. Needs the single replayable envelope + cost/latency + structured warnings + a funds/managers identity map.",
+       "issue_deferred": {
+-        "expires_at": "2026-09-15T00:00:00Z",
++        "expires_at": "2026-10-15T00:00:00Z",
+         "reason": "Deferred until its producer issue is selected; keep planned and do not fabricate implementation status."
+       },
+       "reference_state": "missing"
+@@ -121,7 +121,7 @@
+       "status": "planned",
+       "rationale": "Among the readiest (sum 14/18); schema'd manifest, first-class data_quality (3/3), validated name registry (3/3 identity). Candidate THIRD prototype tool. Must first register the console script + add pandas, then enforce manifest_schema end-to-end and add tool/git/python provenance + top-level schema_version. evidence is 1/3 and partly out of role; not required.",
+       "issue_deferred": {
+-        "expires_at": "2026-09-15T00:00:00Z",
++        "expires_at": "2026-10-15T00:00:00Z",
+         "reason": "Deferred until console-script/runtime dependency blockers are resolved in a repo-local issue."
+       },
+       "reference_state": "missing"
+@@ -149,7 +149,7 @@
+       "status": "planned",
+       "rationale": "Near-ready computational tool (5 of 6 standards strong once ev/id discounted as out-of-role for a Monte Carlo engine). Hashed manifest + verifiable bundle + content-addressed idempotency + CI golden runs. Alternate THIRD tool. Needs the unified run.json that finally captures warnings (currently stderr-only) + a cost stub, and the golden gate flipped from ::warning:: to hard-fail. evidence_objects (0/3 N/A) and identity_map (1/3 N/A) are out of role -> NOT required.",
+       "issue_deferred": {
+-        "expires_at": "2026-09-15T00:00:00Z",
++        "expires_at": "2026-10-15T00:00:00Z",
+         "reason": "Deferred until unified run envelope and warning/cost capture are selected as repo-local work."
+       },
+       "reference_state": "missing"
+@@ -175,7 +175,7 @@
+       "status": "planned",
+       "rationale": "Tier-2: included as the IDENTITY SOURCE (best-in-fleet identity_map 3/3: canonical manager_id + aliases + cik + lei + registry_ids, live EDGAR resolution). NOT a first-class orchestrated tool in the prototype. Its highest-leverage contribution is surfacing canonical manager/provider IDs the other repos join on. Full RunResult envelope + CI-gating its existing eval thresholds are P3+. Therefore only 'identity_refs' is required at first.",
+       "issue_deferred": {
+-        "expires_at": "2026-09-15T00:00:00Z",
++        "expires_at": "2026-10-15T00:00:00Z",
+         "reason": "Deferred until identity-source surfacing is selected as repo-local work."
+       },
+       "reference_state": "missing"
+@@ -202,7 +202,7 @@
+       "status": "planned",
+       "rationale": "Tier-2: included as the EVIDENCE SOURCE (evidence_objects 2/3, enforced source-doc+page provenance). NOT a first-class orchestrated tool yet: needs a real ingest(package) entry point + manifest + durable storage and real firm/fund alias resolution (aliases_json hard-coded None) before it can be CALLED. Tool-ification deferred to P3+.",
+       "issue_deferred": {
+-        "expires_at": "2026-09-15T00:00:00Z",
++        "expires_at": "2026-10-15T00:00:00Z",
+         "reason": "Deferred until a headless ingest/package entry point and durable manifest work are selected."
+       },
+       "reference_state": "missing"
+@@ -225,7 +225,7 @@
+       "status": "candidate",
+       "rationale": "CANDIDATE consumer, NOT ACTIVE (status: candidate -> the conformance gate is a no-op for it). Captured architecturally so the cross-over use case is supported: investment-tool evidence objects + canonical identity refs flowing INTO the learning system (e.g. attributing a learning artifact to a source document or a canonical entity). As a CONSUMER it ingests the satellite schemas listed in 'ingests' and is NEVER required to emit a run-contract/v1 run.json. This does NOT make LMS a backplane PRODUCER: LMS remains in the 'excluded' block as a producer (its own EvidenceRecord/MasteryEstimate domain contracts must NOT be conflated with backplane evidence objects). Activating LMS (candidate -> consumer) is a deliberate, reviewable charter decision; P0 only records the architecture.",
+       "issue_deferred": {
+-        "expires_at": "2026-09-15T00:00:00Z",
++        "expires_at": "2026-10-15T00:00:00Z",
+         "reason": "Candidate consumer only; activation needs a separate charter decision before any active issue."
+       },
+       "reference_state": "not-applicable"
+@@ -250,5 +250,5 @@
+       "reason": "Workflows is the CONTRACT OWNER / harness, not a research tool that emits run envelopes. It hosts the contract, schemas, registry, validator, and conformance workflow; it does not conform to the contract as a participant. Mirrors langsmith-fleet rollout_status 'contract-owner'. (Workflows-as-app is explicitly excluded.)"
+     }
+   ],
+-  "updated_at": "2026-08-15T07:30:00Z"
++  "updated_at": "2026-09-15T00:52:00Z"
+ }
+diff --git a/docs/MODEL_SELECTION_POLICY.md b/docs/MODEL_SELECTION_POLICY.md
+index 208bf9cc6..3c9c45b31 100644
+--- a/docs/MODEL_SELECTION_POLICY.md
++++ b/docs/MODEL_SELECTION_POLICY.md
+@@ -102,13 +102,17 @@ quality gate and an explicit approval update.
+ ### Prepared promotions and rollbacks
+ 
+ `tools/prepare_model_promotion.py` (run by `maint-86`) can *prepare* a selection
+-change from a passing benchmark, but never applies one on its own. It only
+-prepares a candidate that is the **same family** as the incumbent (e.g. openai
+-`gpt-5.x`, anthropic `claude-<line>`), **passed every quality gate** (including
+-paired non-inferiority), and costs **≤** the incumbent per accepted review.
+-Cross-family swaps are never auto-prepared. It writes the registry mutation
+-(recording the prior selection in `selection_history`) and opens a PR; merging
+-that PR is the human approval this policy requires — `human_approval_required`
++change from a passing benchmark, but never applies one on its own. Candidates
++must pass every benchmark quality gate and have known, finite, nonnegative costs.
++Same-family candidates (e.g. openai `gpt-5.x`, anthropic `claude-<line>`) costing
++**≤** the incumbent receive `preparation_mode=bounded`. Cross-family or pricier
++candidates receive `preparation_mode=approval-required` and explicit
++`approval_reasons`. The tool selects at most one candidate per provider, preferring
++bounded changes, then lower cost and latency. Both modes retain
++`human_approval_required=true`; preparation metadata does not authorize auto-merge.
++The tool writes the registry mutation (recording the prior selection in
++`selection_history`) for the workflow to open as a PR; merging that PR is the
++human approval this policy requires — `human_approval_required`
+ stays true. The inverse path prepares a rollback to the prior selection when the
+ active model shows a failed workload-benchmark (a quality-gate breach).
+ 
+@@ -141,3 +145,23 @@ Review at least every 30 days and immediately after any of:
+ Update the facts and catalog baseline first, run the paired benchmark, attach
+ evidence, then update the explicit selection. Maint-68 propagates the registry;
+ consumer slot provider preferences remain intact.
++
++### Replayable corpus evidence
++
++`maint-79` harvests only PR outcomes joined to a bot-published
++`verifier-corpus-decision/v1` record. The comparison verifier records the PR head,
++evaluated merge SHA, repository/PR, run ID and attempt beside the durable report.
++A candidate retains that decision and its comment URL. A stable merge without a
++matching decision is excluded; a NON_PASS decision cannot become a clean PASS
++just because the PR merged. Provider errors and unavailable reviews are not
++benchmark verdicts. A failed merge CI check floors the structured verdict to
++NON_PASS even when every provider says PASS. Missing or invalid CI-gate context
++suppresses publication rather than creating unverifiable benchmark evidence.
++Historical reports without these fields are not backfilled
++from merge metadata. They can enter future harvests after fresh verification.
++
++Case identity includes repository, PR, head and verifier run/attempt. Replaying
++the same evidence does not duplicate a case. Existing adjudicated corpus entries
++keep their historical identifiers. The staging file is FYI-only; a staging-only
++PR does not grow approval metrics. Only additions to `model_eval_pilot.json` count
++as promotions, and existing category/size caps and model approval policy remain.
+diff --git a/docs/ci/WORKFLOWS.md b/docs/ci/WORKFLOWS.md
+index 0b799d768..c0324bd45 100644
+--- a/docs/ci/WORKFLOWS.md
++++ b/docs/ci/WORKFLOWS.md
+@@ -233,7 +233,7 @@ Scheduled health jobs keep the automation ecosystem aligned:
+ * [`maint-77-model-registry-freshness.yml`](../../.github/workflows/maint-77-model-registry-freshness.yml) checks the canonical LLM registry for overdue or unproved decisions, invalid lifecycle/evidence references, and profile/slot drift. Scheduled and manual runs also perform credential-gated provider catalog discovery; catalog additions become review candidates and never auto-promote (scheduled weekly, manual dispatch, PR gate for registry/slot/policy/checker changes).
+ * [`maint-78-model-evaluation-pilot.yml`](../../.github/workflows/maint-78-model-evaluation-pilot.yml) runs the frozen 30-case verifier corpus against explicit incumbent and candidate models using repository credentials, then uploads artifact-only paired results. The pilot narrows candidates; it cannot approve or migrate a model.
+ * [`maint-79-verifier-corpus-harvest.yml`](../../.github/workflows/maint-79-verifier-corpus-harvest.yml) grows the frozen verifier evaluation corpus from realized PR outcomes (stable merge, revert, resolved follow-up). High-confidence cases auto-promote only after the PR head is unchanged for seven minutes, required checks report and pass, and no active review threads remain; ambiguous cases land in an auto-expiring staging file. It only narrows/expands the corpus; it cannot approve or migrate a model.
+-* [`maint-86-model-promotion-prepare.yml`](../../.github/workflows/maint-86-model-promotion-prepare.yml) turns a passing benchmark into a *prepared* verifier-model selection change: a same-family, non-inferior, cost≤ promotion (or a gate-breach rollback) is written to the registry and opened as a PR. The PR is **not** auto-merged — a human merges it to approve, so `human_approval_required` stays true. Dispatch-only until a trustworthy approval benchmark exists.
++* [`maint-86-model-promotion-prepare.yml`](../../.github/workflows/maint-86-model-promotion-prepare.yml) turns a passing benchmark into a *prepared* verifier-model selection change: a passing promotion (preferring same-family, cost≤ candidates; riskier swaps require explicit approval) (or a gate-breach rollback) is written to the registry and opened as a PR. The PR is **not** auto-merged — a human merges it to approve, so `human_approval_required` stays true. Dispatch-only until a trustworthy approval benchmark exists.
+ * [`maint-80-langsmith-metrics-dashboard.yml`](../../.github/workflows/maint-80-langsmith-metrics-dashboard.yml) generates weekly LangSmith trace coverage dashboard - downloads metrics from autopilot artifacts, computes coverage, creates issue report (scheduled Monday 9AM UTC, manual dispatch).
+ * [`maint-81-langsmith-fleet-conformance.yml`](../../.github/workflows/maint-81-langsmith-fleet-conformance.yml) validates fleet artifact coverage against `config/langsmith_fleet_registry.json` and reports missing/stale/invalid records (scheduled Monday 9:30AM UTC, manual dispatch with optional enforcement).
+ * [`maint-82-sync-dependency-campaign.yml`](../../.github/workflows/maint-82-sync-dependency-campaign.yml) refreshes a GitHub-visible sync/dependency campaign issue, persists plan-bound Maint 71 continuation handoffs, and wakes due generated-delivery lanes with idempotency keys. A transient delivery continuation is serialized ahead of candidate work, but an actionable delivery blocker does not suppress a corrective candidate wave.
+@@ -249,3 +249,12 @@ Together these workflows define the CI surface area referenced by Gate and the G
+ 
+ * [`selftest-ci.yml`](../../.github/workflows/selftest-ci.yml) runs the repository's own test suite (JS + Python tests, linting, YAML validation) on push and PR, including the langchain verdict, verifier, and structured-output contract tests.
+ * [`health-keepalive-e2e.yml`](../../.github/workflows/health-keepalive-e2e.yml) path-filtered E2E test for the keepalive system. Runs only when keepalive-related files change. Supports two modes: orchestration-only (default) and real Codex ping (via `e2e:codex-ping` label).
++
++### Verifier corpus provenance
++
++The reusable verifier publishes `verifier-corpus-decision/v1` beside comparison
++reports using the exact PR head and evaluated target captured in its context.
++Maint 79 joins this bot-published evidence (run/attempt and report URL included)
++to current merged-PR outcomes; missing identities and clean merges with NON_PASS
++decisions cannot create PASS benchmark cases. Staging-only PRs do not change
++approval metrics. See `docs/MODEL_SELECTION_POLICY.md` for the evidence contract.
+diff --git a/docs/ci/WORKFLOW_SYSTEM.md b/docs/ci/WORKFLOW_SYSTEM.md
+index 433d3ac3f..e544de53c 100644
+--- a/docs/ci/WORKFLOW_SYSTEM.md
++++ b/docs/ci/WORKFLOW_SYSTEM.md
+@@ -757,7 +757,7 @@ Keep this table handy when you are triaging automation: it confirms which workfl
+ | **Maint 77 Model Registry Freshness** (`maint-77-model-registry-freshness.yml`, maintenance bucket) | `schedule` (Mondays 05:20 UTC), `workflow_dispatch`, `pull_request` (registry/slot/policy/checker paths) | Validates explicit model decisions, evidence, lifecycle, and profile slots offline. Scheduled/manual runs add credential-gated provider-catalog drift and refresh one review issue; catalog changes never auto-select a model. | ⚪ Scheduled/manual + PR gate | [Model registry freshness runs](https://github.com/stranske/Workflows/actions/workflows/maint-77-model-registry-freshness.yml) |
+ | **Maint 78 Model Evaluation Pilot** (`maint-78-model-evaluation-pilot.yml`, maintenance bucket) | `workflow_dispatch` | Runs the frozen 30-case verifier corpus against explicit incumbent and candidate models with repository credentials. Uploads artifact-only paired verdict, schema, and latency evidence; never changes a selection. | ⚪ Manual evaluation | [Model evaluation pilot runs](https://github.com/stranske/Workflows/actions/workflows/maint-78-model-evaluation-pilot.yml) |
+ | **Maint 79 Verifier Corpus Harvest** (`maint-79-verifier-corpus-harvest.yml`, maintenance bucket) | `schedule` (weekly), `workflow_dispatch` | Grows the frozen verifier evaluation corpus from realized PR outcomes. High-confidence cases auto-promote only after an unchanged-head seven-minute review window, passing required checks, and zero active review threads; ambiguous cases stage FYI-only and auto-expire. Never changes a selection. | 🟢 Scheduled | [Verifier corpus harvest runs](https://github.com/stranske/Workflows/actions/workflows/maint-79-verifier-corpus-harvest.yml) |
+-| **Maint 86 Model Promotion Prepare** (`maint-86-model-promotion-prepare.yml`, maintenance bucket) | `workflow_dispatch` | Evaluates a benchmark and, for a same-family non-inferior cost≤ candidate (or a gate-breach rollback), opens a registry-change PR. Not auto-merged — a human merges to approve. Dispatch-only until a trustworthy approval benchmark exists. | ⚪ Manual/prepared | [Model promotion prepare runs](https://github.com/stranske/Workflows/actions/workflows/maint-86-model-promotion-prepare.yml) |
++| **Maint 86 Model Promotion Prepare** (`maint-86-model-promotion-prepare.yml`, maintenance bucket) | `workflow_dispatch` | Evaluates a benchmark and, for a passing candidate (preferring same-family cost≤ changes; riskier swaps require explicit approval) (or a gate-breach rollback), opens a registry-change PR. Not auto-merged — a human merges to approve. Dispatch-only until a trustworthy approval benchmark exists. | ⚪ Manual/prepared | [Model promotion prepare runs](https://github.com/stranske/Workflows/actions/workflows/maint-86-model-promotion-prepare.yml) |
+ | **LangSmith Metrics Dashboard** (`maint-80-langsmith-metrics-dashboard.yml`, maintenance bucket) | `workflow_dispatch`, `schedule` (Mondays 09:00 UTC) | Generates weekly LangSmith trace coverage dashboard by downloading metrics from autopilot artifacts, computing coverage, and creating issue reports. | ⚪ Manual/scheduled | [LangSmith metrics runs](https://github.com/stranske/Workflows/actions/workflows/maint-80-langsmith-metrics-dashboard.yml) |
+ | **LangSmith Fleet Conformance** (`maint-81-langsmith-fleet-conformance.yml`, maintenance bucket) | `workflow_dispatch`, `schedule` (Mondays 09:30 UTC) | Validates LangSmith fleet artifact coverage against `config/langsmith_fleet_registry.json`, emits markdown/JSON reports, and can optionally enforce non-valid rows. | ⚪ Manual/scheduled | [LangSmith fleet conformance runs](https://github.com/stranske/Workflows/actions/workflows/maint-81-langsmith-fleet-conformance.yml) |
+ | **Sync/Dependency Campaign** (`maint-82-sync-dependency-campaign.yml`, maintenance bucket) | `schedule` (10-minute continuation sweep), `workflow_dispatch`, `repository_dispatch` | Refreshes the GitHub-visible campaign issue and persists Maint 71 handoffs as a durable queue. Due transient review/check holds dispatch at most one candidate, delivery, and dev-tool lane; actionable review or source failures remain assigned rather than retried as timers. | ⚪ Scheduled/manual | [Sync/Dependency campaign runs](https://github.com/stranske/Workflows/actions/workflows/maint-82-sync-dependency-campaign.yml) |
+@@ -1127,3 +1127,12 @@ branch-protection rulebook without re-learning the terminology.
+      Gate summary job summary comment (with links back to the Gate run and reusable
+      matrix). If the comment is still absent, note the remediation in the
+      incident issue and ping `#trend-ci` for follow-up.
++
++### Verifier corpus provenance
++
++The reusable verifier publishes `verifier-corpus-decision/v1` beside comparison
++reports using the exact PR head and evaluated target captured in its context.
++Maint 79 joins this bot-published evidence (run/attempt and report URL included)
++to current merged-PR outcomes; missing identities and clean merges with NON_PASS
++decisions cannot create PASS benchmark cases. Staging-only PRs do not change
++approval metrics. See `docs/MODEL_SELECTION_POLICY.md` for the evidence contract.
+diff --git a/templates/consumer-repo/.github/scripts/agents_verifier_context.js b/templates/consumer-repo/.github/scripts/agents_verifier_context.js
+index 8748fa313..392132a72 100644
+--- a/templates/consumer-repo/.github/scripts/agents_verifier_context.js
++++ b/templates/consumer-repo/.github/scripts/agents_verifier_context.js
+@@ -650,6 +650,7 @@ async function buildVerifierContext({ github, context, core, ciWorkflows }) {
+     fs.writeFileSync(diffPath, diffText + '\n', 'utf8');
+   }
+ 
++  core?.setOutput?.('pr_head_sha', pull.head?.sha || '');
+   core?.setOutput?.('should_run', 'true');
+   core?.setOutput?.('skip_reason', '');
+   core?.setOutput?.('pr_number', String(pull.number || ''));
+diff --git a/tests/test_backplane_registry.py b/tests/test_backplane_registry.py
+index accad445a..14866804f 100644
+--- a/tests/test_backplane_registry.py
++++ b/tests/test_backplane_registry.py
+@@ -4,11 +4,22 @@
+ import json
+ from datetime import UTC, datetime
+ from pathlib import Path
++from unittest.mock import Mock
+ 
+ import pytest
+ from scripts import validate_backplane_registry as vbr
+ 
+ ROOT = Path(__file__).resolve().parents[1]
++VALIDATION_TIME = datetime(2026, 9, 14, tzinfo=UTC)
++
++
++@pytest.fixture(autouse=True)
++def fixed_validation_clock(monkeypatch: pytest.MonkeyPatch) -> None:
++    # Gate run 34913714874 failed when the live deferrals expired on September 15.
++    # Unit tests use a known time; the operational CLI still checks the real clock.
++    clock = Mock(wraps=datetime)
++    clock.now.return_value = VALIDATION_TIME
++    monkeypatch.setattr(vbr, "datetime", clock)
+ 
+ 
+ def _registry() -> dict:
+@@ -26,8 +37,8 @@ def test_registry_has_no_tbd_placeholders_and_validates() -> None:
+     registry = _registry()
+     findings = vbr.validate_registry(registry)
+ 
+-    # The live registry must be STRUCTURALLY valid. Operational freshness (a
+-    # reference run aging past the 7-day window) is a non-blocking "stale" finding:
++    # The registry must be structurally valid at the fixed validation time. A
++    # reference run aging past the 7-day window is a non-blocking "stale" finding:
+     # it is surfaced by the dedicated backplane lane (health-78) but must not fail
+     # this structural check, which runs in the required suite for every unrelated PR.
+     assert vbr.blocking_findings(findings) == []
+@@ -166,7 +177,7 @@ def test_reference_run_id_must_be_non_empty_string(bad_run_id: object) -> None:
+ def test_strict_cli_flag_matches_documented_invocation(tmp_path: Path) -> None:
+     registry = copy.deepcopy(_registry())
+     entry = _pension_conformant_entry(registry)
+-    entry["reference_run_evidence"]["generated_at"] = datetime.now(UTC).isoformat()
++    entry["reference_run_evidence"]["generated_at"] = VALIDATION_TIME.isoformat()
+     registry_path = tmp_path / "registry.json"
+     registry_path.write_text(json.dumps(registry), encoding="utf-8")
+ 
+@@ -201,6 +212,27 @@ def test_expired_deferred_issue_is_rejected() -> None:
+     )
+ 
+ 
++@pytest.mark.parametrize("expires_at", ["2026-09-13T00:00:00Z", "2026-09-14T00:00:00Z"])
++def test_cli_expired_deferral_remains_blocking(
++    tmp_path: Path, capsys: pytest.CaptureFixture[str], expires_at: str
++) -> None:
++    registry = _registry()
++    registry["participants"][1]["issue_deferred"]["expires_at"] = expires_at
++    registry_path = tmp_path / "registry.json"
++    registry_path.write_text(json.dumps(registry), encoding="utf-8")
++
++    assert vbr.main(["--json", str(registry_path)]) == 1
++
++    report = json.loads(capsys.readouterr().out)
++    assert report["blocking_count"] == 1
++    assert report["blocking_ok"] is False
++    assert {
++        "path": "participants[1].issue_deferred.expires_at",
++        "message": "deferred issue expired",
++        "severity": vbr.ERROR_SEVERITY,
++    } in report["findings"]
++
++
+ def test_stale_reference_run_is_rejected() -> None:
+     registry = copy.deepcopy(_registry())
+     entry = _pension_conformant_entry(registry)
+diff --git a/tests/tools/test_harvest_verifier_corpus.py b/tests/tools/test_harvest_verifier_corpus.py
+index f7632736e..118ca39fa 100644
+--- a/tests/tools/test_harvest_verifier_corpus.py
++++ b/tests/tools/test_harvest_verifier_corpus.py
+@@ -3,9 +3,13 @@
+ from __future__ import annotations
+ 
+ import json
++import subprocess
++import sys
+ from datetime import UTC, datetime
+ 
++import pytest
+ from tools import harvest_verifier_corpus as hv
++from tools import verifier_corpus_evidence as evidence
+ 
+ NOW = datetime(2026, 7, 25, tzinfo=UTC)
+ 
+@@ -27,6 +31,19 @@ def _rec(
+     return {
+         "repo": "stranske/Demo",
+         "pr": pr,
++        "head_sha": "a" * 40,
++        "merge_sha": "b" * 40,
++        "verifier_decision": {
++            "schema": evidence.MARKER,
++            "repo": "stranske/Demo",
++            "pr": pr,
++            "head_sha": "a" * 40,
++            "evaluated_sha": "b" * 40,
++            "run_id": "123",
++            "run_attempt": "1",
++            "verdict": "PASS",
++            "source_url": f"https://github.com/stranske/Demo/pull/{pr}#issuecomment-456",
++        },
+         "merged": merged,
+         "merged_at": merged_at,
+         "reverted": reverted,
+@@ -115,6 +132,48 @@ def test_grow_corpus_noop_returns_original():
+     assert added == [] and grown is corpus
+ 
+ 
++def test_harvest_case_identity_includes_owner_and_is_stable_across_runs():
++    records = [_rec(1), _rec(1)]
++    for record, owner in zip(records, ("alice", "bob"), strict=True):
++        record["repo"] = f"{owner}/Demo"
++        record["verifier_decision"]["repo"] = record["repo"]
++        record["verifier_decision"][
++            "source_url"
++        ] = f"https://github.com/{owner}/Demo/pull/1#issuecomment-456"
++    promote, stage = hv.partition(records, now=NOW, stability_days=30)
++    assert stage == []
++    assert {case["case_id"] for case in promote} == {
++        f"{owner}/demo#1@{'a' * 40}:123:1" for owner in ("alice", "bob")
++    }
++    grown, added = hv.grow_corpus({"cases": []}, promote, max_size=150)
++    assert len(added) == 2
++
++    replay = [dict(record, repo=record["repo"].upper(), pr="1") for record in records]
++    replay_cases, _ = hv.partition(replay, now=NOW.replace(day=26), stability_days=30)
++    assert [case["case_id"] for case in replay_cases] == [case["case_id"] for case in promote]
++    unchanged, added = hv.grow_corpus(grown, replay_cases, max_size=150)
++    assert unchanged is grown
++    assert added == []
++
++
++def test_existing_corpus_identity_is_preserved_when_normalizing_deduplication():
++    legacy = {"case_id": "demo-1", "repo": "stranske/Demo", "pr": 1}
++    corpus = {"corpus_version": "v1", "cases": [legacy]}
++    promote, _ = hv.partition([dict(_rec("1"), repo="STRANSKE/DEMO")], now=NOW, stability_days=30)
++    grown, added = hv.grow_corpus(corpus, promote, max_size=150)
++    assert grown is corpus
++    assert grown["cases"] == [legacy]
++    assert added == []
++
++
++def test_staging_uses_the_same_repository_identity_as_the_corpus():
++    existing = {"repo": "Alice/Demo", "pr": 1, "harvested_at": "2026-07-20"}
++    replay = dict(existing, repo="alice/demo", pr="1", harvested_at="2026-07-25")
++    other_owner = dict(existing, repo="bob/Demo")
++    staged = hv.prune_staging({"cases": [existing]}, [replay, other_owner], now=NOW, expiry_days=60)
++    assert staged["cases"] == [existing, other_owner]
++
++
+ def test_staging_auto_expires_old_cases():
+     old = {"repo": "stranske/Demo", "pr": 100, "harvested_at": "2026-01-01"}  # >60d ago
+     fresh = {"repo": "stranske/Demo", "pr": 101, "harvested_at": NOW.date().isoformat()}
+@@ -175,3 +234,168 @@ def test_main_respects_disabled_flag(tmp_path):
+         json.dumps({"profiles": {"verifier-balanced": {"corpus_growth": {"enabled": False}}}})
+     )
+     assert hv.main(["--policy", str(pol_p), "--from-json", str(tmp_path / "none.json")]) == 0
++
++
++@pytest.mark.parametrize(
++    "field,value",
++    [
++        ("verifier_decision", None),
++        ("head_sha", "c" * 40),
++        ("merge_sha", "c" * 40),
++    ],
++)
++def test_unjoined_merge_cannot_become_benchmark_ground_truth(field, value):
++    record = _rec(1)
++    record[field] = value
++    assert hv.partition([record], now=NOW, stability_days=30) == ([], [])
++
++
++@pytest.mark.parametrize(
++    "field,value",
++    [
++        ("repo", "other/repo"),
++        ("pr", 2),
++        ("run_id", ""),
++        ("run_attempt", "0"),
++        ("head_sha", "c" * 40),
++        ("evaluated_sha", "c" * 40),
++        ("source_url", "https://github.com/other/repo/pull/1#issuecomment-456"),
++        ("verdict", "ERROR"),
++    ],
++)
++def test_wrong_verifier_identity_cannot_promote(field, value):
++    record = _rec(1)
++    record["verifier_decision"][field] = value
++    assert hv.partition([record], now=NOW, stability_days=30) == ([], [])
++
++
++def test_nonpass_decision_is_never_relabelled_pass_by_clean_merge():
++    record = _rec(1)
++    record["verifier_decision"]["verdict"] = "NON_PASS"
++    assert hv.partition([record], now=NOW, stability_days=30) == ([], [])
++    record["reverted"] = True
++    promoted, _ = hv.partition([record], now=NOW, stability_days=30)
++    assert promoted[0]["expected_verdict"] == "NON_PASS"
++
++
++def test_contradictory_ci_failure_pass_decision_is_not_harvestable():
++    record = _rec(1)
++    record["verifier_decision"]["ci_failed"] = True
++    assert hv.partition([record], now=NOW, stability_days=30) == ([], [])
++
++
++def test_case_identity_and_provenance_distinguish_verifier_runs_and_heads():
++    first, second, third = _rec(1), _rec(1), _rec(1)
++    second["verifier_decision"]["run_id"] = "124"
++    third["head_sha"] = third["verifier_decision"]["head_sha"] = "c" * 40
++    promoted, _ = hv.partition([first, second, third, first], now=NOW, stability_days=30)
++    grown, added = hv.grow_corpus({"cases": []}, promoted, max_size=150)
++    assert len(added) == 3
++    assert grown["cases"][0]["verifier_decision"] == first["verifier_decision"]
++    staged = hv.prune_staging({"cases": []}, promoted, now=NOW, expiry_days=60)
++    assert len(staged["cases"]) == 3
++
++
++@pytest.mark.parametrize(
++    ("ci_failed", "expected_verdict"),
++    [("false", "PASS"), ("true", "NON_PASS"), (None, None), ("unknown", None)],
++)
++def test_actual_report_publisher_roundtrips_through_live_fetch_and_partition(
++    tmp_path, monkeypatch, ci_failed, expected_verdict
++):
++    record = _rec(1)
++    comparison, comment = tmp_path / "comparison.json", tmp_path / "comment.md"
++    comparison.write_text(
++        json.dumps(
++            {
++                "results": [
++                    {"used_llm": True, "verdict": "PASS"},
++                    {"used_llm": True, "verdict": "PASS"},
++                ]
++            }
++        )
++    )
++    comment.write_text("## Provider Comparison Report\n")
++    env = {
++        "GITHUB_REPOSITORY": record["repo"],
++        "PR_NUMBER": "1",
++        "PR_HEAD_SHA": record["head_sha"],
++        "EVALUATED_SHA": record["merge_sha"],
++        "GITHUB_RUN_ID": "123",
++        "GITHUB_RUN_ATTEMPT": "1",
++    }
++    for key, value in env.items():
++        monkeypatch.setenv(key, value)
++    if ci_failed is None:
++        monkeypatch.delenv("CI_FAILED", raising=False)
++    else:
++        monkeypatch.setenv("CI_FAILED", ci_failed)
++    subprocess.run(
++        [
++            sys.executable,
++            evidence.__file__,
++            "--comparison",
++            str(comparison),
++            "--comment",
++            str(comment),
++        ],
++        check=True,
++    )
++    github_pr = {
++        "number": 1,
++        "mergedAt": record["merged_at"],
++        "labels": [],
++        "headRefOid": record["head_sha"],
++        "mergeCommit": {"oid": record["merge_sha"]},
++        "comments": [
++            {
++                "body": comment.read_text(),
++                "author": {"login": "github-actions"},
++                "url": record["verifier_decision"]["source_url"],
++            }
++        ],
++    }
++    calls = []
++
++    def gh(args):
++        calls.append(args)
++        return [] if "revert in:title" in args else [github_pr]
++
++    monkeypatch.setattr(hv, "_gh_json", gh)
++    fetched = hv.fetch_records(
++        [record["repo"]], per_repo=10, stability_days=30, harvest_window_days=60
++    )
++    promoted, staged = hv.partition(fetched, now=NOW, stability_days=30)
++    if expected_verdict is None:
++        assert evidence.MARKER not in comment.read_text()
++        assert (promoted, staged) == ([], [])
++        return
++    assert staged == []
++    assert fetched[0]["verifier_decision"]["verdict"] == expected_verdict
++    assert fetched[0]["verifier_decision"]["ci_failed"] is (ci_failed == "true")
++    assert fetched[0]["verifier_decision"]["run_id"] == "123"
++    if expected_verdict == "NON_PASS":
++        # A merged PR alone cannot establish a realized NON_PASS category,
++        # and must never promote a CI-failed decision into a clean PASS.
++        assert promoted == []
++    else:
++        assert len(promoted) == 1
++        assert promoted[0]["expected_verdict"] == expected_verdict
++    assert "comments" in calls[0][-1]
++    github_pr["comments"][0]["author"]["login"] = "untrusted-reviewer"
++    assert evidence.decision_from_comments(record, github_pr["comments"]) is None
++    github_pr["comments"][0]["author"]["login"] = "github-actions"
++    github_pr["headRefOid"] = "c" * 40
++    fetched = hv.fetch_records(
++        [record["repo"]], per_repo=10, stability_days=30, harvest_window_days=60
++    )
++    assert hv.partition(fetched, now=NOW, stability_days=30) == ([], [])
++
++
++@pytest.mark.parametrize(
++    "results",
++    [[], [{"used_llm": False, "verdict": "PASS"}], [{"used_llm": True, "verdict": "ERROR"}]],
++)
++@pytest.mark.parametrize("ci_failed", ["true", "false", None])
++def test_provider_failure_cannot_publish_a_decision(results, ci_failed):
++    assert evidence.decision_from_results(results, {}, ci_failed=ci_failed) is None
+diff --git a/tests/tools/test_prepare_model_promotion.py b/tests/tools/test_prepare_model_promotion.py
+index 80e50d632..f14b205bc 100644
+--- a/tests/tools/test_prepare_model_promotion.py
++++ b/tests/tools/test_prepare_model_promotion.py
+@@ -4,12 +4,202 @@
+ 
+ import datetime as dt
+ import json
++import subprocess
++import sys
++from pathlib import Path
+ 
++import pytest
++from tools import evaluate_model_benchmark as benchmark
++from tools import harvest_verifier_corpus as harvest
+ from tools import prepare_model_promotion as pmp
++from tools import verifier_corpus_evidence as evidence
+ 
+ TODAY = dt.date(2026, 8, 1)
+ 
+ 
++def _run_preparation_cli(benchmark_path, registry_path, output_path):
++    """Exercise the module entry point and exit signal consumed by Maint 86."""
++    return subprocess.run(
++        [
++            sys.executable,
++            "-m",
++            "tools.prepare_model_promotion",
++            "--benchmark",
++            str(benchmark_path),
++            "--registry",
++            str(registry_path),
++            "--write",
++            str(output_path),
++            "--today",
++            TODAY.isoformat(),
++        ],
++        cwd=Path(__file__).resolve().parents[2],
++        capture_output=True,
++        text=True,
++        check=False,
++        timeout=30,
++    )
++
++
++def _harvested_benchmark(candidate, cost):
++    """Join 75 simulated outcomes and retain owner-adjudicated failure categories."""
++    policy = json.loads(benchmark.DEFAULT_POLICY_PATH.read_text())
++    growth = policy["profiles"]["verifier-balanced"]["corpus_growth"]
++    records = []
++    for pr in range(1, 76):
++        records.append(
++            {
++                "repo": "example/reviews",
++                "pr": pr,
++                "head_sha": "a" * 40,
++                "merge_sha": "b" * 40,
++                "merged": True,
++                "merged_at": "2026-06-01T00:00:00Z",
++                "reverted": 35 < pr <= 55,
++                "verifier_followup": pr > 55,
++                "followup_resolved": pr > 55,
++                "verifier_decision": {
++                    "schema": evidence.MARKER,
++                    "repo": "example/reviews",
++                    "pr": pr,
++                    "head_sha": "a" * 40,
++                    "evaluated_sha": "b" * 40,
++                    "run_id": str(pr),
++                    "run_attempt": "1",
++                    "verdict": "PASS",
++                    "source_url": f"https://github.com/example/reviews/pull/{pr}#issuecomment-1",
++                },
++            }
++        )
++    promoted, staged = harvest.partition(
++        records,
++        now=dt.datetime(2026, 8, 1, tzinfo=dt.UTC),
++        stability_days=growth["stability_days"],
++    )
++    assert staged == []
++    # These categories cannot be inferred by the harvester. Supply explicitly
++    # simulated owner labels, including enough NON_PASS cases for the Wilson gate.
++    owner_categories = [
++        "missing-acceptance-criterion",
++        "stale-verifier-claim",
++        "review-thread-debt",
++    ]
++    corpus = {
++        "corpus_version": "test-owner-v1",
++        "cases": [
++            {
++                "case_id": f"owner-{index}",
++                "repo": "example/owner-reviews",
++                "pr": index + 1,
++                "category": owner_categories[index % len(owner_categories)],
++                "expected_verdict": "NON_PASS",
++                "provenance": "owner-adjudicated",
++            }
++            for index in range(40)
++        ],
++    }
++    grown, added = harvest.grow_corpus(
++        corpus,
++        promoted,
++        max_size=growth["max_corpus_size"],
++        category_caps=growth["category_caps"],
++    )
++    assert len(added) == 75
++    assert len({case["case_id"] for case in added}) == 75
++    assert all(
++        case["expected_verdict"] == ("PASS" if case["pr"] <= 35 else "NON_PASS") for case in added
++    )
++    payload = {
++        "profile": "verifier-balanced",
++        "benchmark_id": "harvested-approval-test",
++        "baseline_model_id": "claude-opus-4-6",
++        "corpus_version": grown["corpus_version"],
++        "prompt_version": "test-v1",
++        "measured_at": TODAY.isoformat(),
++        "candidates": [
++            {
++                "provider": "anthropic",
++                "model_id": model_id,
++                "cases": [
++                    {
++                        **case,
++                        "actual_verdict": case["expected_verdict"],
++                        "schema_valid": True,
++                        "total_cost_usd": review_cost,
++                        "latency_ms": 100,
++                    }
++                    for case in grown["cases"]
++                ],
++            }
++            for model_id, review_cost in [("claude-opus-4-6", 0.10), (candidate, cost)]
++        ],
++    }
++    return payload, policy
++
++
++@pytest.mark.parametrize(
++    "candidate,cost,reasons",
++    [
++        ("claude-opus-4-8", 0.08, []),
++        ("claude-opus-4-8", 0.10, []),
++        ("claude-sonnet-5", 0.08, ["cross-family"]),
++        ("claude-opus-4-8", 0.20, ["cost-increase"]),
++        ("claude-sonnet-5", 0.20, ["cross-family", "cost-increase"]),
++    ],
++)
++def test_harvested_cases_pass_real_gates_and_prepare_registry(tmp_path, candidate, cost, reasons):
++    payload, policy = _harvested_benchmark(candidate, cost)
++    report = benchmark.evaluate_benchmark(payload, policy)
++    assert all(all(result["gate_results"].values()) for result in report["results"])
++    (proposal,) = pmp.find_promotions(report, _registry())
++    assert proposal["preparation_mode"] == ("approval-required" if reasons else "bounded")
++    assert proposal["approval_reasons"] == reasons
++    assert proposal["human_approval_required"] is True
++    bench, reg, out = (tmp_path / name for name in ("bench.json", "registry.json", "out.json"))
++    bench.write_text(json.dumps(report))
++    reg.write_text(json.dumps(_registry()))
++    completed = _run_preparation_cli(bench, reg, out)
++    assert completed.returncode == 10, completed.stdout + completed.stderr
++    assert completed.stderr == ""
++    assert f"PROMOTE anthropic: claude-opus-4-6 -> {candidate}" in completed.stdout
++    if reasons:
++        assert f"approval-required ({', '.join(reasons)})" in completed.stdout
++    else:
++        assert "same-family (claude-opus)" in completed.stdout
++        assert "approval-required" not in completed.stdout
++    prepared = json.loads(out.read_text())
++    assert prepared["selections"][0]["model_id"] == candidate
++    assert prepared["selections"][0]["decided_at"] == TODAY.isoformat()
++    assert proposal["evidence_id"] in prepared["selections"][0]["evidence_ids"]
++    assert prepared["selection_history"][0]["model_id"] == "claude-opus-4-6"
++    assert json.loads(reg.read_text()) == _registry()
++
++
++@pytest.mark.parametrize("failed_gate", ["minimum_adjudicated_cases", "minimum_cases_per_category"])
++def test_harvested_cases_cannot_bypass_approval_gates(tmp_path, failed_gate):
++    payload, policy = _harvested_benchmark("claude-opus-4-8", 0.08)
++    for candidate in payload["candidates"]:
++        if failed_gate == "minimum_adjudicated_cases":
++            candidate["cases"] = candidate["cases"][:74]
++        else:
++            candidate["cases"] = [
++                case for case in candidate["cases"] if case["provenance"] == "harvested"
++            ]
++    report = benchmark.evaluate_benchmark(payload, policy)
++    assert all(result["gate_results"][failed_gate] is False for result in report["results"])
++    assert pmp.find_promotions(report, _registry()) == []
++    bench, reg, out = (tmp_path / name for name in ("bench.json", "registry.json", "out.json"))
++    bench.write_text(json.dumps(report))
++    reg.write_text(json.dumps(_registry()))
++    completed = _run_preparation_cli(bench, reg, out)
++    assert completed.returncode == 0, completed.stdout + completed.stderr
++    assert completed.stderr == ""
++    assert "no passing promotion or gate-breach rollback to prepare" in completed.stdout
++    assert "PROMOTE" not in completed.stdout
++    assert not out.exists()
++    assert json.loads(reg.read_text()) == _registry()
++
++
+ def _registry(model_id="claude-opus-4-6"):
+     return {
+         "selections": [
+@@ -89,26 +279,35 @@ def test_same_family_cheaper_pass_is_prepared():
+     assert len(props) == 1
+     assert props[0]["to_model_id"] == "claude-opus-4-8"
+     assert props[0]["from_model_id"] == "claude-opus-4-6"
++    assert props[0]["preparation_mode"] == "bounded"
++    assert props[0]["human_approval_required"] is True
++    assert props[0]["approval_reasons"] == []
+ 
+ 
+-def test_cross_family_is_not_prepared():
++def test_cross_family_requires_approval():
+     report = _report(
+         [
+             _result("claude-opus-4-6", "anthropic", status="passed", cost=0.10),
+             _result("claude-sonnet-5", "anthropic", status="passed", cost=0.02),
+         ]
+     )
+-    assert pmp.find_promotions(report, _registry()) == []  # different family -> human only
++    proposal = pmp.find_promotions(report, _registry())[0]
++    assert proposal["preparation_mode"] == "approval-required"
++    assert proposal["human_approval_required"] is True
++    assert proposal["approval_reasons"] == ["cross-family"]
+ 
+ 
+-def test_more_expensive_same_family_is_not_prepared():
++def test_more_expensive_same_family_requires_approval():
+     report = _report(
+         [
+             _result("claude-opus-4-6", "anthropic", status="passed", cost=0.10),
+             _result("claude-opus-4-8", "anthropic", status="passed", cost=0.20),
+         ]
+     )
+-    assert pmp.find_promotions(report, _registry()) == []
++    proposal = pmp.find_promotions(report, _registry())[0]
++    assert proposal["preparation_mode"] == "approval-required"
++    assert proposal["human_approval_required"] is True
++    assert proposal["approval_reasons"] == ["cost-increase"]
+ 
+ 
+ def test_failed_candidate_is_not_prepared():
+@@ -225,7 +424,7 @@ def test_main_noop_when_nothing_qualifies(tmp_path):
+     report = _report(
+         [
+             _result("claude-opus-4-6", "anthropic", status="passed", cost=0.10),
+-            _result("claude-sonnet-5", "anthropic", status="passed", cost=0.01),
++            _result("claude-sonnet-5", "anthropic", status="failed", cost=0.01),
+         ]
+     )
+     bench = tmp_path / "bench.json"
+@@ -235,3 +434,163 @@ def test_main_noop_when_nothing_qualifies(tmp_path):
+     assert (
+         pmp.main(["--benchmark", str(bench), "--registry", str(reg), "--today", "2026-08-01"]) == 0
+     )
++
++
++def _promoted_registry():
++    report = _report(
++        [
++            _result("claude-opus-4-6", "anthropic", status="passed", cost=0.10),
++            _result("claude-opus-4-8", "anthropic", status="passed", cost=0.08),
++        ]
++    )
++    return pmp.apply_promotion(
++        _registry(), pmp.find_promotions(report, _registry())[0], today=TODAY
++    )
++
++
++def test_rollback_requires_matching_provider_and_failed_gate():
++    registry = _promoted_registry()
++    result = _result("claude-opus-4-8", "openai", status="failed", cost=0.08)
++    assert pmp.find_rollbacks(_report([result]), registry) == []
++    result["provider"] = "claude"  # Provider aliases still match.
++    rollback = pmp.find_rollbacks(_report([result]), registry)[0]
++    assert rollback["trigger"] == "quality_gate_breach"
++    assert rollback["breached_gates"] == ["paired_success_noninferiority"]
++    result["gate_results"] = {}
++    assert pmp.find_rollbacks(_report([result]), registry) == []
++
++
++def test_rollback_rejects_unrelated_history():
++    registry = _promoted_registry()
++    registry["selection_history"][0]["superseded_by"] = "claude-opus-4-7"
++    breach = _report([_result("claude-opus-4-8", "anthropic", status="failed", cost=0.08)])
++    assert pmp.find_rollbacks(breach, registry) == []
++
++
++@pytest.mark.parametrize(
++    "section,key",
++    [
++        ("selections", "model_id"),
++        ("selection_history", "superseded_by"),
++        ("selection_history", "model_id"),
++    ],
++)
++def test_apply_rollback_rejects_stale_proposal(section, key):
++
++    registry = _promoted_registry()
++    breach = _report([_result("claude-opus-4-8", "anthropic", status="failed", cost=0.08)])
++    rollback = pmp.find_rollbacks(breach, registry)[0]
++    registry[section][0][key] = "claude-opus-4-9"
++    before = json.dumps(registry, sort_keys=True)
++    with pytest.raises(ValueError, match="no longer matches"):
++        pmp.apply_rollback(registry, rollback, today=TODAY)
++    assert json.dumps(registry, sort_keys=True) == before
++
++
++def test_main_breach_takes_precedence_over_promotion(tmp_path):
++    registry = _promoted_registry()
++    report = _report(
++        [
++            _result("claude-opus-4-8", "anthropic", status="failed", cost=0.08),
++            _result("claude-opus-4-9", "anthropic", status="passed", cost=0.06),
++        ],
++        baseline="claude-opus-4-8",
++    )
++    bench = tmp_path / "bench.json"
++    reg = tmp_path / "registry.json"
++    out = tmp_path / "out.json"
++    bench.write_text(json.dumps(report))
++    reg.write_text(json.dumps(registry))
++    assert (
++        pmp.main(
++            [
++                "--benchmark",
++                str(bench),
++                "--registry",
++                str(reg),
++                "--write",
++                str(out),
++                "--today",
++                TODAY.isoformat(),
++            ]
++        )
++        == 10
++    )
++    reverted = json.loads(out.read_text())
++    assert reverted["selections"][0]["model_id"] == "claude-opus-4-6"
++    assert reverted["selections"][0]["evidence_ids"] == ["catalog-1"]
++    assert reverted["selection_history"] == []
++
++
++@pytest.mark.parametrize(
++    "candidate,cost,reasons",
++    [
++        ("claude-opus-4-8", 0.10, []),
++        ("claude-sonnet-5", 0.20, ["cross-family", "cost-increase"]),
++    ],
++)
++def test_cli_prepares_candidate_with_approval_context(tmp_path, candidate, cost, reasons):
++    report = _report(
++        [
++            _result("claude-opus-4-6", "anthropic", status="passed", cost=0.10),
++            _result(candidate, "anthropic", status="passed", cost=cost),
++        ]
++    )
++    proposal = pmp.find_promotions(report, _registry())[0]
++    assert proposal["approval_reasons"] == reasons
++    bench, reg, out = (tmp_path / name for name in ("bench.json", "registry.json", "out.json"))
++    bench.write_text(json.dumps(report))
++    reg.write_text(json.dumps(_registry()))
++    assert pmp.main(["--benchmark", str(bench), "--registry", str(reg), "--write", str(out)]) == 10
++    selection = json.loads(out.read_text())["selections"][0]
++    assert selection["model_id"] == candidate
++    assert "requires human approval" in selection["rationale"]
++    for reason in reasons:
++        assert reason in selection["rationale"]
++
++
++def test_bounded_candidate_wins_over_cheaper_cross_family_candidate():
++    report = _report(
++        [
++            _result("claude-opus-4-6", "anthropic", status="passed", cost=0.10),
++            _result("claude-sonnet-5", "anthropic", status="passed", cost=0.02),
++            _result("claude-opus-4-8", "anthropic", status="passed", cost=0.08),
++        ]
++    )
++    proposals = pmp.find_promotions(report, _registry())
++    assert len(proposals) == 1
++    assert proposals[0]["to_model_id"] == "claude-opus-4-8"
++
++
++@pytest.mark.parametrize("cost", [None, "invalid", float("nan"), float("inf"), -0.01, 10**400])
++@pytest.mark.parametrize("invalid_baseline", [False, True])
++def test_unusable_cost_cannot_prepare_promotion(cost, invalid_baseline):
++    report = _report(
++        [
++            _result(
++                "claude-opus-4-6",
++                "anthropic",
++                status="passed",
++                cost=cost if invalid_baseline else 0.10,
++            ),
++            _result(
++                "claude-opus-4-8",
++                "anthropic",
++                status="passed",
++                cost=0.08 if invalid_baseline else cost,
++            ),
++        ]
++    )
++    assert pmp.find_promotions(report, _registry()) == []
++
++
++@pytest.mark.parametrize("latency,expected", [(0, "claude-opus-4-9"), (None, "claude-opus-4-8")])
++def test_equal_cost_candidates_rank_zero_latency_before_positive(latency, expected):
++    report = _report(
++        [
++            _result("claude-opus-4-6", "anthropic", status="passed", cost=0.10),
++            _result("claude-opus-4-8", "anthropic", status="passed", cost=0.08, latency=100),
++            _result("claude-opus-4-9", "anthropic", status="passed", cost=0.08, latency=latency),
++        ]
++    )
++    assert pmp.find_promotions(report, _registry())[0]["to_model_id"] == expected
+diff --git a/tests/workflows/test_model_eval_pilot_workflow.py b/tests/workflows/test_model_eval_pilot_workflow.py
+index 064566f5c..93f45e938 100644
+--- a/tests/workflows/test_model_eval_pilot_workflow.py
++++ b/tests/workflows/test_model_eval_pilot_workflow.py
+@@ -22,3 +22,17 @@ def test_model_eval_pilot_runs_as_importable_module() -> None:
+     assert "if [ ! -f pilot-results.json ]" in summary["run"]
+     assert upload["if"] == "always()"
+     assert upload["with"]["if-no-files-found"] == "warn"
++
++
++def test_corpus_decision_publisher_uses_evaluated_context_identity():
++    root = Path(__file__).resolve().parents[2]
++    workflow = yaml.safe_load((root / ".github/workflows/reusable-agents-verifier.yml").read_text())
++    steps = next(job["steps"] for job in workflow["jobs"].values() if "steps" in job)
++    publish = next(step for step in steps if step.get("name") == "Post comparison report comment")
++    assert publish["env"]["PR_HEAD_SHA"] == "${{ steps.context.outputs.pr_head_sha }}"
++    assert publish["env"]["EVALUATED_SHA"] == "${{ steps.context.outputs.target_sha }}"
++    assert publish["env"]["CI_FAILED"] == "${{ steps.context.outputs.ci_failed }}"
++    assert "python .workflows-lib/tools/verifier_corpus_evidence.py" in publish["run"]
++    assert publish["run"].index("tools/verifier_corpus_evidence.py") < publish["run"].index(
++        "gh pr comment"
++    )
+diff --git a/tools/harvest_verifier_corpus.py b/tools/harvest_verifier_corpus.py
+index b03af407b..7762bf29f 100644
+--- a/tools/harvest_verifier_corpus.py
++++ b/tools/harvest_verifier_corpus.py
+@@ -7,7 +7,9 @@
+ its expected verdicts must be trustworthy. It was hand-built and never grows, so
+ the approval benchmark stays perpetually under its 75-case minimum and no model is
+ ever promoted. This harvester grows it from outcomes the world has *already*
+-adjudicated by merging or reverting a PR:
++adjudicated by merging or reverting a PR. Every candidate must first join an
++actual verifier decision to the exact PR head and evaluated merge, with its run
++and durable report URL. Missing or mismatched decisions are excluded:
+ 
+   - A PR that merged cleanly and stayed stable for ``stability_days`` with no
+     revert and no verifier follow-up → the verifier's PASS was borne out →
+@@ -42,6 +44,8 @@
+ from pathlib import Path
+ from typing import Any
+ 
++from tools.verifier_corpus_evidence import decision_from_comments, joined_decision
++
+ _REPO_ROOT = Path(__file__).resolve().parent.parent
+ DEFAULT_CORPUS_PATH = _REPO_ROOT / "config" / "model_eval_pilot.json"
+ DEFAULT_STAGING_PATH = _REPO_ROOT / "config" / "model_eval_corpus_staging.json"
+@@ -76,7 +80,8 @@ def classify(
+     Returns ``{expected_verdict, category, confidence}`` or ``None`` when the PR
+     carries no usable verifier signal (e.g. never merged).
+     """
+-    if not record.get("merged"):
++    decision = joined_decision(record)
++    if decision is None or not record.get("merged"):
+         return None
+     merged_at = _parse_ts(record.get("merged_at"))
+     if merged_at is None:
+@@ -97,6 +102,9 @@ def classify(
+             "confidence": confidence,
+         }
+ 
++    if decision["verdict"] != "PASS":
++        return None  # A clean merge cannot turn an observed NON_PASS into PASS.
++
+     age_days = (now - merged_at).total_seconds() / 86400.0
+     confidence = "high" if age_days >= stability_days else "low"
+     return {
+@@ -106,9 +114,17 @@ def classify(
+     }
+ 
+ 
++def _pr_key(record: dict[str, Any]) -> tuple[str, str]:
++    """Use GitHub's case-insensitive full repository name and PR number."""
++    return str(record.get("repo", "")).strip().lower(), str(record.get("pr", ""))
++
++
+ def _case_id(record: dict[str, Any]) -> str:
+-    repo = str(record.get("repo", "")).split("/")[-1].lower()
+-    return f"{repo}-{record.get('pr')}"
++    repo, pr = _pr_key(record)
++    decision = joined_decision(record)
++    if decision is None:
++        raise ValueError("corpus case requires an exact verifier decision")
++    return f"{repo}#{pr}@{record['head_sha']}:{decision['run_id']}:{decision['run_attempt']}"
+ 
+ 
+ def to_case(record: dict[str, Any], label: dict[str, Any], *, now: datetime) -> dict[str, Any]:
+@@ -116,6 +132,9 @@ def to_case(record: dict[str, Any], label: dict[str, Any], *, now: datetime) ->
+         "case_id": _case_id(record),
+         "repo": record.get("repo"),
+         "pr": record.get("pr"),
++        "head_sha": record["head_sha"],
++        "merge_sha": record.get("merge_sha"),
++        "verifier_decision": dict(record["verifier_decision"]),
+         "expected_verdict": label["expected_verdict"],
+         "category": label["category"],
+         "provenance": "harvested",
+@@ -141,8 +160,8 @@ def partition(
+     return promote, stage
+ 
+ 
+-def _corpus_keys(cases: Iterable[dict[str, Any]]) -> set[tuple[Any, Any]]:
+-    return {(c.get("repo"), c.get("pr")) for c in cases}
++def _corpus_keys(cases: Iterable[dict[str, Any]]) -> set[tuple[str, str]]:
++    return {_pr_key(c) for c in cases}
+ 
+ 
+ def _bump_version(version: str | None, added: int) -> str:
+@@ -167,21 +186,23 @@ def grow_corpus(
+ ) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+     """Append new high-confidence cases to the corpus.
+ 
+-    Dedups by repo+pr, respects ``max_size``, and honours per-category caps so an
++    Dedups by repository, PR, head and verifier run/attempt; legacy cases retain
++    their keys. Respects ``max_size`` and per-category caps so an
+     easy-to-source category (``clean-pass``) cannot flood the corpus and starve
+     the balance the approval stage needs (10 per required category).
+     """
+     caps = category_caps or {}
+     cases = list(corpus.get("cases", []))
+-    existing = _corpus_keys(cases)
++    existing = {case.get("case_id") for case in cases}
++    legacy = _corpus_keys(case for case in cases if not case.get("verifier_decision"))
+     counts: dict[str, int] = {}
+     for case in cases:
+         counts[case.get("category", "")] = counts.get(case.get("category", ""), 0) + 1
+     added: list[dict[str, Any]] = []
+     for case in promote:
+-        key = (case.get("repo"), case.get("pr"))
++        key = case["case_id"]
+         category = case.get("category", "")
+-        if key in existing or len(cases) >= max_size:
++        if key in existing or _pr_key(case) in legacy or len(cases) >= max_size:
+             continue
+         if category in caps and counts.get(category, 0) >= caps[category]:
+             continue
+@@ -202,9 +223,9 @@ def prune_staging(
+ ) -> dict[str, Any]:
+     """Merge new staging cases and drop any older than ``expiry_days`` (auto-expiry)."""
+     kept: list[dict[str, Any]] = []
+-    seen: set[tuple[Any, Any]] = set()
++    seen: set[Any] = set()
+     for case in list(staging.get("cases", [])) + stage_new:
+-        key = (case.get("repo"), case.get("pr"))
++        key = case["case_id"] if case.get("verifier_decision") else _pr_key(case)
+         if key in seen:
+             continue
+         first_seen = _parse_ts(case.get("harvested_at")) or now
+@@ -288,7 +309,7 @@ def fetch_records(
+                     "--limit",
+                     str(per_repo),
+                     "--json",
+-                    "number,title,mergedAt,body,labels",
++                    "number,title,mergedAt,body,labels,headRefOid,mergeCommit,comments",
+                 ]
+             )
+             or []
+@@ -297,21 +318,21 @@ def fetch_records(
+         for pr in merged:
+             number = pr.get("number")
+             labels = {lb.get("name") for lb in pr.get("labels", []) if isinstance(lb, dict)}
+-            records.append(
+-                {
+-                    "repo": repo,
+-                    "pr": number,
+-                    "merged": True,
+-                    "merged_at": pr.get("mergedAt"),
+-                    "reverted": number in reverted,
+-                    "verifier_followup": bool(
+-                        labels & {"verify:create-issue", "verifier-followup"}
+-                    ),
+-                    # Resolution of a follow-up needs semantic judgment; stay conservative
+-                    # (unresolved -> staged, never auto-labeled NON_PASS).
+-                    "followup_resolved": False,
+-                }
+-            )
++            record = {
++                "repo": repo,
++                "head_sha": pr.get("headRefOid"),
++                "merge_sha": (pr.get("mergeCommit") or {}).get("oid"),
++                "pr": number,
++                "merged": True,
++                "merged_at": pr.get("mergedAt"),
++                "reverted": number in reverted,
++                "verifier_followup": bool(labels & {"verify:create-issue", "verifier-followup"}),
++                # Resolution of a follow-up needs semantic judgment; stay conservative
++                # (unresolved -> staged, never auto-labeled NON_PASS).
++                "followup_resolved": False,
++            }
++            record["verifier_decision"] = decision_from_comments(record, pr.get("comments", []))
++            records.append(record)
+     return records
+ 
+ 
+diff --git a/tools/prepare_model_promotion.py b/tools/prepare_model_promotion.py
+index 245864407..0a77455ab 100644
+--- a/tools/prepare_model_promotion.py
++++ b/tools/prepare_model_promotion.py
+@@ -10,10 +10,12 @@
+ itself — `human_approval_required` stays true; merging the PR IS the approval.
+ 
+ Guardrails (a candidate is only prepared when ALL hold):
+-  - it is the SAME FAMILY as the incumbent (openai gpt-5.x, anthropic claude-<line>);
+-    cross-family swaps always need a human to initiate, never auto-preparation;
+   - it PASSED every quality gate on the benchmark (including paired non-inferiority);
+-  - its cost per accepted review is <= the incumbent's.
++  - both candidate and incumbent have finite, nonnegative review costs.
++
++Same-family candidates with non-increasing cost receive bounded preparation
++metadata. Cross-family or pricier candidates are prepared for explicit approval.
++Neither route bypasses the policy's human approval requirement.
+ 
+ Rollback is the inverse: if the *active* selection has a failed workload-benchmark
+ result (a quality-gate breach), propose reverting to the prior selection recorded in
+@@ -30,6 +32,7 @@
+ import copy
+ import datetime as _dt
+ import json
++import math
+ import sys
+ from pathlib import Path
+ from typing import Any
+@@ -103,7 +106,11 @@ def _selection_for(registry: dict[str, Any], profile: str, provider: str) -> dic
+ 
+ def _cost(result: dict[str, Any]) -> float | None:
+     value = (result.get("metrics") or {}).get("cost_per_accepted_review_usd")
+-    return None if value is None else float(value)
++    try:
++        cost = float(value)
++    except (TypeError, ValueError, OverflowError):
++        return None
++    return cost if math.isfinite(cost) and cost >= 0 else None
+ 
+ 
+ def _result_for(report: dict[str, Any], model_id: str) -> dict[str, Any] | None:
+@@ -125,10 +132,10 @@ def _evidence_id(report: dict[str, Any], provider: str, model_id: str) -> str |
+ def find_promotions(
+     report: dict[str, Any], registry: dict[str, Any], *, profile: str = DEFAULT_PROFILE
+ ) -> list[dict[str, Any]]:
+-    """Return prepared same-family, passing, cost<= promotions for the profile.
++    """Return passing promotions with explicit preparation and approval metadata.
+ 
+-    At most one promotion per provider (the cheapest, then lowest-latency, of the
+-    qualifying same-family candidates).
++    At most one promotion per provider: prefer bounded same-family, cost<=
++    candidates, then rank by cost and latency. Riskier swaps require approval.
+     """
+     incumbent_id = str(report.get("baseline_model_id", "")).strip()
+     if not incumbent_id:
+@@ -150,11 +157,14 @@ def find_promotions(
+             continue
+         if result.get("status") != "passed":
+             continue
+-        if model_family(provider, model_id) != model_family(provider, incumbent_id):
+-            continue
+         cand_cost = _cost(result)
+-        if cand_cost is None or incumbent_cost is None or cand_cost > incumbent_cost:
++        if cand_cost is None or incumbent_cost is None:
+             continue
++        approval_reasons = []
++        if model_family(provider, model_id) != model_family(provider, incumbent_id):
++            approval_reasons.append("cross-family")
++        if cand_cost > incumbent_cost:
++            approval_reasons.append("cost-increase")
+         evidence_id = _evidence_id(report, provider, model_id)
+         if not evidence_id:
+             continue
+@@ -168,18 +178,29 @@ def find_promotions(
+                 "incumbent_cost": incumbent_cost,
+                 "candidate_cost": cand_cost,
+                 "p95_latency_ms": (result.get("metrics") or {}).get("p95_latency_ms"),
++                "preparation_mode": "approval-required" if approval_reasons else "bounded",
++                "human_approval_required": True,
++                "approval_reasons": approval_reasons,
+                 "reason": (
+-                    f"same-family ({model_family(provider, model_id)}) non-inferior pass at "
++                    f"approval-required ({', '.join(approval_reasons)}): non-inferior pass at "
++                    f"cost/accepted {cand_cost} versus incumbent {incumbent_cost}"
++                    if approval_reasons
++                    else f"same-family ({model_family(provider, model_id)}) non-inferior pass at "
+                     f"cost/accepted {cand_cost} <= incumbent {incumbent_cost}"
+                 ),
+             }
+         )
+ 
+-    # One winner per provider: cheapest, then lowest latency.
++    # Prefer bounded changes over riskier swaps, then cost and latency.
+     best_by_provider: dict[str, dict[str, Any]] = {}
+     for proposal in sorted(
+         proposals,
+-        key=lambda p: (p["candidate_cost"], p["p95_latency_ms"] or float("inf"), p["to_model_id"]),
++        key=lambda p: (
++            bool(p["approval_reasons"]),
++            p["candidate_cost"],
++            float("inf") if p["p95_latency_ms"] is None else p["p95_latency_ms"],
++            p["to_model_id"],
++        ),
+     ):
+         best_by_provider.setdefault(proposal["provider"], proposal)
+     return list(best_by_provider.values())
+@@ -213,8 +234,8 @@ def apply_promotion(
+     selection["decided_at"] = today.isoformat()
+     selection["review_by"] = (today + _dt.timedelta(days=REVIEW_INTERVAL_DAYS)).isoformat()
+     selection["rationale"] = (
+-        "Auto-prepared same-family non-inferior + cost<= promotion (#2819 move 3); "
+-        "human-approved by merging the promotion PR."
++        f"Prepared promotion (#2819 move 3): {promotion['reason']}; "
++        "requires human approval by merging the promotion PR."
+     )
+     return new_registry
+ 
+@@ -228,13 +249,29 @@ def find_rollbacks(
+         if str(sel.get("profile", "")).strip() != profile:
+             continue
+         active_id = str(sel.get("model_id", "")).strip()
+-        result = _result_for(report, active_id)
++        result = next(
++            (
++                result
++                for result in report.get("results", [])
++                if str(result.get("model_id", "")).strip() == active_id
++                and _normalize_provider(str(result.get("provider", "")))
++                == _normalize_provider(str(sel.get("provider", "")))
++            ),
++            None,
++        )
+         if not result or result.get("status") != "failed":
+             continue
+         prior = _latest_history(registry, profile, str(sel.get("provider", "")))
+-        if prior is None:
++        if (
++            prior is None
++            or prior.get("superseded_by") != active_id
++            or not str(prior.get("model_id", "")).strip()
++            or prior.get("model_id") == active_id
++        ):
+             continue
+         breached = [k for k, ok in (result.get("gate_results") or {}).items() if ok is False]
++        if not breached:
++            continue
+         rollbacks.append(
+             {
+                 "profile": profile,
+@@ -242,6 +279,7 @@ def find_rollbacks(
+                 "from_model_id": active_id,
+                 "to_model_id": str(prior.get("model_id", "")).strip(),
+                 "breached_gates": breached,
++                "trigger": "quality_gate_breach",
+                 "reason": f"active model {active_id} failed gates {breached}; reverting to prior selection",
+             }
+         )
+@@ -278,6 +316,13 @@ def apply_rollback(
+     )
+     if selection is None or prior_index is None:  # pragma: no cover - guarded by find_rollbacks
+         raise ValueError("no prior selection to roll back to")
++    prior = history[prior_index]
++    if (
++        selection.get("model_id") != rollback["from_model_id"]
++        or prior.get("superseded_by") != rollback["from_model_id"]
++        or prior.get("model_id") != rollback["to_model_id"]
++    ):
++        raise ValueError("rollback no longer matches the active selection and promotion history")
+     prior = history.pop(prior_index)
+     selection["model_id"] = str(prior.get("model_id", "")).strip()
+     selection["evidence_ids"] = list(prior.get("evidence_ids", []))
+@@ -325,6 +370,10 @@ def main(argv: list[str] | None = None) -> int:
+         if args.mode in {"rollback", "auto"}
+         else []
+     )
++    # A breach takes precedence over a new promotion for the same selection.
++    # Otherwise the promotion inserts history before the rollback consumes it.
++    reverting = {(r["profile"], r["provider"]) for r in rollbacks}
++    promotions = [p for p in promotions if (p["profile"], p["provider"]) not in reverting]
+ 
+     mutated = registry
+     for promotion in promotions:
+@@ -341,7 +390,7 @@ def main(argv: list[str] | None = None) -> int:
+         mutated = apply_rollback(mutated, rollback, today=today)
+ 
+     if not promotions and not rollbacks:
+-        print("no same-family non-inferior promotion or gate-breach rollback to prepare.")
++        print("no passing promotion or gate-breach rollback to prepare.")
+     elif args.write:
+         args.write.write_text(json.dumps(mutated, indent=2) + "\n", encoding="utf-8")
+         print(f"wrote proposed registry to {args.write}")
+diff --git a/tools/verifier_corpus_evidence.py b/tools/verifier_corpus_evidence.py
+new file mode 100644
+index 000000000..d763f0917
+--- /dev/null
++++ b/tools/verifier_corpus_evidence.py
+@@ -0,0 +1,124 @@
++"""Publish and validate the exact verifier decision used by corpus harvesting."""
++
++from __future__ import annotations
++
++import argparse
++import json
++import os
++import re
++from pathlib import Path
++from typing import Any
++
++MARKER = "verifier-corpus-decision/v1"
++
++
++def decision_from_results(
++    results: list[dict[str, Any]], identity: dict[str, str], *, ci_failed: str | None = None
++) -> dict[str, Any] | None:
++    """Retain usable decisions with the workflow's trusted merge-CI hard gate."""
++    verdicts = [str(result.get("verdict", "")).upper() for result in results]
++    if not results or not all(result.get("used_llm") for result in results):
++        return None
++    if any(verdict not in {"PASS", "CONCERNS", "FAIL", "NON_PASS"} for verdict in verdicts):
++        return None
++    # The context step emits exactly true/false. Missing or malformed context
++    # cannot establish an authoritative disposition for corpus harvesting.
++    if ci_failed not in {"true", "false"}:
++        return None
++    return {
++        "schema": MARKER,
++        **identity,
++        "verdict": (
++            "PASS" if ci_failed == "false" and all(v == "PASS" for v in verdicts) else "NON_PASS"
++        ),
++        "ci_failed": ci_failed == "true",
++        "provider_verdicts": verdicts,
++    }
++
++
++def joined_decision(record: dict[str, Any]) -> dict[str, Any] | None:
++    """Require a decision tied to this repository, PR, head and evaluated merge."""
++    decision = record.get("verifier_decision")
++    if not isinstance(decision, dict) or decision.get("schema") != MARKER:
++        return None
++    repo = str(record.get("repo", "")).strip().lower()
++    pr = str(record.get("pr", ""))
++    head = str(record.get("head_sha", ""))
++    evaluated = str(record.get("merge_sha") or head)
++    run = str(decision.get("run_id", ""))
++    attempt = str(decision.get("run_attempt", ""))
++    if (
++        not re.fullmatch(r"[^/\s]+/[^/\s]+", repo)
++        or not pr.isdigit()
++        or not re.fullmatch(r"[0-9a-f]{40}", head)
++        or not re.fullmatch(r"[0-9a-f]{40}", evaluated)
++        or not run.isdigit()
++        or not attempt.isdigit()
++        or int(run) < 1
++        or int(attempt) < 1
++        or str(decision.get("repo", "")).lower() != repo
++        or str(decision.get("pr", "")) != pr
++        or decision.get("head_sha") != head
++        or decision.get("evaluated_sha") != evaluated
++        or decision.get("verdict") not in {"PASS", "NON_PASS"}
++        or (decision.get("ci_failed") is True and decision.get("verdict") == "PASS")
++        or not str(decision.get("source_url", ""))
++        .lower()
++        .startswith(f"https://github.com/{repo}/pull/{pr}#issuecomment-")
++    ):
++        return None
++    return decision
++
++
++def decision_from_comments(
++    record: dict[str, Any], comments: list[dict[str, Any]]
++) -> dict[str, Any] | None:
++    """Read only the verifier bot's structured evidence, newest usable record first."""
++    for comment in reversed(comments):
++        if (comment.get("author") or {}).get("login") not in {
++            "github-actions",
++            "github-actions[bot]",
++        }:
++            continue
++        matches = re.findall(
++            r"<!-- verifier-corpus-decision/v1 (\{[^\n]+\}) -->", comment.get("body", "")
++        )
++        for match in reversed(matches):
++            try:
++                decision = json.loads(match)
++            except json.JSONDecodeError:
++                continue
++            if not isinstance(decision, dict):
++                continue
++            decision["source_url"] = comment.get("url", "")
++            if joined_decision({**record, "verifier_decision": decision}):
++                return decision
++    return None
++
++
++def main(argv: list[str] | None = None) -> int:
++    parser = argparse.ArgumentParser(description=__doc__)
++    parser.add_argument("--comparison", type=Path, required=True)
++    parser.add_argument("--comment", type=Path, required=True)
++    args = parser.parse_args(argv)
++    identity = {
++        key: os.environ.get(env, "")
++        for key, env in {
++            "repo": "GITHUB_REPOSITORY",
++            "pr": "PR_NUMBER",
++            "head_sha": "PR_HEAD_SHA",
++            "evaluated_sha": "EVALUATED_SHA",
++            "run_id": "GITHUB_RUN_ID",
++            "run_attempt": "GITHUB_RUN_ATTEMPT",
++        }.items()
++    }
++    results = json.loads(args.comparison.read_text(encoding="utf-8")).get("results", [])
++    decision = decision_from_results(results, identity, ci_failed=os.environ.get("CI_FAILED"))
++    if decision:
++        with args.comment.open("a", encoding="utf-8") as handle:
++            handle.write(f"\n<!-- {MARKER} {json.dumps(decision, sort_keys=True)} -->\n")
++    return 0
++
++
++if __name__ == "__main__":
++    raise SystemExit(main())

@@ -1,0 +1,2373 @@
+{
+  "body": "<!-- pr-preamble:start -->\n<!-- meta:issue:3450 -->\n> **Source:** Issue #3450\n\nCloses #3450\n\n<!-- pr-preamble:end -->\n\n<!-- auto-status-summary:start -->\n## Automated Status Summary\n#### Scope\nBounded closer recovery for existing stranske/Fine-Art-Archive#723 (source stranske/Fine-Art-Archive#722). On unchanged head `7ae7c51831df2e710c45bf1d05ab674a1e8e400f`, the PR body changes every 45–55 seconds solely because its generated table contains new Agents PR Event Hub and PR 46 Dependency Repair Contract run URLs. WORKFLOWS_APP writes each body and the consumer edited event triggers another round. Job 104068146532 proves the executing canonical source was Workflows `3706dc2fd51b77e87902ddfe508f06b81b83e8fc`.\n\n<!-- Updated WORKFLOW_OUTPUTS.md context:start -->\n## Context for Agent\n\n### Related Issues/PRs\n- [stranske/Workflows#3444](https://github.com/stranske/Workflows/issues/3444)\n- [stranske/Fine-Art-Archive#723](https://github.com/stranske/Fine-Art-Archive/issues/723)\n- [stranske/Fine-Art-Archive#722](https://github.com/stranske/Fine-Art-Archive/issues/722)\n- [#723](https://github.com/stranske/Workflows/issues/723)\n- [#722](https://github.com/stranske/Workflows/issues/722)\n- [#3444](https://github.com/stranske/Workflows/issues/3444)\n<!-- Updated WORKFLOW_OUTPUTS.md context:end -->\n\n#### Tasks\n- [x] Exclude current metadata observers in `.github/scripts/agents_pr_meta_update_body.js` from derived status tables.\n- [x] Recover a missing recent-page Gate with one `pr-00-gate.yml` lookup constrained to the exact implementation head; retain unknown/error states when unavailable.\n- [x] Add `.github/scripts/__tests__/agents-pr-meta-status-idempotence.test.js` covering repeated metadata-only generations, genuine Gate transitions, latest-page flooding and exact-head/error handling.\n- [x] Synchronize the helper to `templates/consumer-repo/.github/scripts/agents_pr_meta_update_body.js`; update `.github/sync-manifest.yml` and `docs/ci/WORKFLOWS.md`.\n\n#### Acceptance criteria\n- [x] `node --test .github/scripts/__tests__/agents-pr-meta-status-idempotence.test.js .github/scripts/__tests__/agents-pr-meta-update-body.test.js .github/scripts/__tests__/issue_scope_parser.test.js` passes after the fix; metadata-only generations produce byte-identical summaries while genuine Gate changes remain visible.\n- [x] Removing Gate recovery makes the older-exact-head-Gate regression fail; restoring it passes.\n- [x] Template completeness and relevant sync-manifest tests pass; root/template helper bytes match.\n- [x] After gated merge and canonical-source promotion, reobserve FAA #723 with its unchanged implementation head and establish metadata stability before resuming source #722 acceptance reconciliation.\n\n<!-- auto-status-summary:end -->\n\n<!-- This is an auto-generated comment: release notes by coderabbit.ai -->\n## Summary by CodeRabbit\n\n- **Bug Fixes**\n  - Improved pull request status reporting by excluding internal workflow runs by name and path.\n  - Limited displayed results to runs matching the exact pull request commit.\n  - Preserved accurate Gate and task-check statuses across metadata-only updates.\n  - Added recovery for missing Gate results when an exact matching run is available.\n  - Improved handling of missing workflows and unavailable results without incorrectly changing status information.\n\n- **Documentation**\n  - Updated workflow documentation to describe status filtering, Gate lookup behavior, and unavailable-result handling.\n\n- **Tests**\n  - Added coverage for status preservation, filtering, recovery, error handling, and CI visibility.\n<!-- end of auto-generated comment: release notes by coderabbit.ai -->",
+  "closingIssuesReferences": [
+    {
+      "id": "I_kwDOQprj9M8AAAABRPuaZg",
+      "number": 3450,
+      "repository": {
+        "id": "R_kgDOQprj9A",
+        "name": "Workflows",
+        "owner": {
+          "id": "MDQ6VXNlcjIzMDQ2MzIy",
+          "login": "stranske"
+        }
+      },
+      "url": "https://github.com/stranske/Workflows/issues/3450"
+    }
+  ],
+  "comments": [
+    {
+      "id": "IC_kwDOQprj9M8AAAABUdMVRw",
+      "author": {
+        "login": "chatgpt-codex-connector"
+      },
+      "authorAssociation": "NONE",
+      "body": "<!-- codex-pull-request-review-summary -->\n\n## Codex Review Summary\n\nThis comment shows the latest Codex review activity on this pull request.\n\n| Review | Status | Commit | Review trigger |\n| --- | --- | --- | --- |\n| 📝 **Code Review** | ✅ **Completed** <relative-time datetime=\"2026-09-14T17:11:54.545835Z\">2026-09-14T17:11:54.545835Z</relative-time> | `04b9494` | PR opened |\n\n\n\n<details> <summary>ℹ️ About Codex in GitHub</summary>\n<br/>\n\n[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you\n- Open a pull request for review\n- Mark a draft as ready\n- Comment \"@codex review\" or \"@codex security review\".\n\nCodex reacts with 👀 while any review is running, comments if it has suggestions, and reacts with 👍 once all reviews finish with no findings.\n\n</details>",
+      "createdAt": "2026-09-14T17:09:02Z",
+      "includesCreatedEdit": true,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Workflows/pull/3451#issuecomment-5667755335",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDOQprj9M8AAAABUdMgFA",
+      "author": {
+        "login": "coderabbitai"
+      },
+      "authorAssociation": "NONE",
+      "body": "<!-- This is an auto-generated comment: summarize by coderabbit.ai -->\n<!-- review_stack_entry_start -->\n\n<a href=\"https://app.coderabbit.ai/change-stack/stranske/Workflows/pull/3451#gh-light-mode-only\"><img src=\"https://storage.googleapis.com/coderabbit_public_assets/review-stack-in-coderabbit-ui.svg\" alt=\"Review Change Stack\" width=\"202\" height=\"32\"></a><a href=\"https://app.coderabbit.ai/change-stack/stranske/Workflows/pull/3451#gh-dark-mode-only\"><img src=\"https://storage.googleapis.com/coderabbit_public_assets/review-stack-in-coderabbit-ui-dark.svg\" alt=\"Review Change Stack\" width=\"202\" height=\"32\"></a>\n\n<!-- review_stack_entry_end -->\n<!-- This is an auto-generated comment: rate limited by coderabbit.ai -->\n\n> [!WARNING]\n> ## Review limit reached\n> \n> **Next included review available in 38 minutes.**\n> \n> [Check out review usage here](https://app.coderabbit.ai/dashboard/review-capacity?orgId=5ba6f601-25e3-4d4a-8ab2-e138d054c185).\n> \n> <details>\n> <summary>View limit details</summary>\n> \n> **Limit details:** You’ve used the included review currently available. Your 63 included PR review attempts over the past 7 days set your current allowance at 1 review per hour.\n> \n> Your organization has reached its usage spending cap. Adjust your spending cap in the [billing tab](https://app.coderabbit.ai/settings/billing?tab=usage&orgId=5ba6f601-25e3-4d4a-8ab2-e138d054c185).\n> \n> [Learn how review limits work](https://docs.coderabbit.ai/management/plans#rate-limits).\n> \n> **Review configuration:**\n> \n> <details>\n> <summary>⚙️ Run configuration</summary>\n> \n> **Configuration used**: Path: .coderabbit.yaml\n> \n> **Review profile**: ASSERTIVE\n> \n> **Plan**: Essentials\n> \n> **Run ID**: `33944649-163f-46c6-87d7-ce8ac6d47b94`\n> \n> </details>\n> \n> <details>\n> <summary>📥 Commits</summary>\n> \n> Reviewing files that changed from the base of the PR and between 799153b8f8e123d141bdfd7a7e5ebcb6f8cdbea7 and 7ee517b7206b2b048faa3e11c9d34e2af7ab4a8e.\n> \n> </details>\n> \n> <details>\n> <summary>📒 Files selected for processing (6)</summary>\n> \n> * `.github/scripts/__tests__/agents-pr-meta-contract-status.test.js`\n> * `.github/scripts/__tests__/agents-pr-meta-status-idempotence.test.js`\n> * `.github/scripts/agents_pr_meta_update_body.js`\n> * `.github/sync-manifest.yml`\n> * `docs/ci/WORKFLOWS.md`\n> * `templates/consumer-repo/.github/scripts/agents_pr_meta_update_body.js`\n> \n> </details>\n> \n> </details>\n\n<!-- end of auto-generated comment: rate limited by coderabbit.ai -->\n\n<!-- recent_review_start -->\n\nNo actionable comments were generated in the recent review. 🎉\n\n<details>\n<summary>ℹ️ Recent review info</summary>\n\n<details>\n<summary>⚙️ Run configuration</summary>\n\n**Configuration used**: Path: .coderabbit.yaml\n\n**Review profile**: ASSERTIVE\n\n**Plan**: Essentials\n\n**Run ID**: `e2fdc8dc-2dcd-46ec-a41d-367033913f4a`\n\n</details>\n\n<details>\n<summary>📥 Commits</summary>\n\nReviewing files that changed from the base of the PR and between 63f12e784aa54e914f43908c67f40ba1b7763657 and 799153b8f8e123d141bdfd7a7e5ebcb6f8cdbea7.\n\n</details>\n\n<details>\n<summary>📒 Files selected for processing (1)</summary>\n\n* `.github/scripts/__tests__/agents-pr-meta-status-idempotence.test.js`\n\n</details>\n\n**Included review availability:** 3 reviews are currently available. Your included PR review attempts over the past 7 days set your current allowance at 5 reviews per hour.\n\n</details>\n\n---\n\n\n\n<!-- recent_review_end -->\n<!-- walkthrough_start -->\n\n<details>\n<summary>📝 Walkthrough</summary>\n\n## Walkthrough\n\nThe PR metadata updater excludes self-observing workflows and collects status runs for the exact implementation head. It recovers a missing Gate result through a constrained lookup. Tests and documentation cover idempotence, filtering, missing workflows, and API errors.\n\n### Changes\n\n**PR metadata status collection**\n\n|Layer / File(s)|Summary|\n|---|---|\n|**Status collection and Gate recovery** <br> `.github/scripts/agents_pr_meta_update_body.js`, `templates/consumer-repo/.github/scripts/agents_pr_meta_update_body.js`|The scripts exclude observer workflows by name and normalized path. They select latest runs for the exact head and query `pr-00-gate.yml` when Gate is missing. A 404 leaves Gate unknown; other errors propagate.|\n|**Status update integration and documentation** <br> `.github/scripts/agents_pr_meta_update_body.js`, `templates/consumer-repo/.github/scripts/agents_pr_meta_update_body.js`, `.github/sync-manifest.yml`, `docs/ci/WORKFLOWS.md`|The update flow uses and exports `collectStatusWorkflowRuns`. The manifest and workflow catalog describe observer exclusion, exact-head recovery, and preserved status visibility.|\n|**Idempotence and recovery validation** <br> `.github/scripts/__tests__/agents-pr-meta-status-idempotence.test.js`|Tests cover metadata-only stability, Gate transitions, exact-head recovery, head safeguards, observer filtering, missing workflows, and propagated API errors.|\n\n<!-- change_assessment_start -->\n**Priority:** ➖ Normal\n\n\n\n**Estimated code review effort:** 3 (Moderate) | ~25 minutes\n\n<!-- change_assessment_commit:\"799153b8f8e123d141bdfd7a7e5ebcb6f8cdbea7\" -->\n**Change:** Bug fix · **Severity of issue fixed:** Medium\n<!-- change_assessment_end -->\n\n### Sequence Diagram(s)\n\n```mermaid\nsequenceDiagram\n  participant PRMetadataUpdater\n  participant WorkflowRunsAPI\n  participant GateWorkflow\n  PRMetadataUpdater->>WorkflowRunsAPI: List runs for the exact head\n  WorkflowRunsAPI-->>PRMetadataUpdater: Return filtered latest workflow runs\n  PRMetadataUpdater->>GateWorkflow: Query pr-00-gate.yml when Gate is absent\n  GateWorkflow-->>PRMetadataUpdater: Return Gate result or 404\n  PRMetadataUpdater-->>PRMetadataUpdater: Render PR status metadata\n```\n\n</details>\n\n<!-- walkthrough_end -->\n<!-- final_review_risk_start -->\n**Merge Risk:** _⚪ Minimal_ · up to `79915`\n<!-- final_review_risk_coverage:{\"sourceCommitId\":\"799153b8f8e123d141bdfd7a7e5ebcb6f8cdbea7\",\"coveredCommitId\":\"799153b8f8e123d141bdfd7a7e5ebcb6f8cdbea7\",\"kind\":\"reviewed\"} -->\n\nThis change stops PR metadata generation from treating its own status-update workflow as a status signal, while still recovering a genuine Gate result for the exact commit under review. The added tests exercise the real filtering, recovery, and rendering logic with realistic mocked inputs, and the helper stays in sync between the canonical script and the consumer template, so no merge-blocking risk was found.\n<!-- final_review_risk_end -->\n<!-- pre_merge_checks_walkthrough_start -->\n\n<details>\n<summary>🚥 Pre-merge checks | ✅ 4 | ❌ 1</summary>\n\n### ❌ Failed checks (1 warning)\n\n|     Check name     | Status     | Explanation                                                                                                                                                                                 | Resolution                                                                         |\n| :----------------: | :--------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :--------------------------------------------------------------------------------- |\n| Docstring Coverage | ⚠️ Warning | Docstring coverage is 14.29% which is insufficient. The required threshold is 80.00%. Docstring coverage is scoped to functions touched by this diff. Analyzed 14 functions across 3 files. | Write docstrings for the functions missing them to satisfy the coverage threshold. |\n\n<details>\n<summary>✅ Passed checks (4 passed)</summary>\n\n|         Check name         | Status   | Explanation                                                                                                                                                                                               |\n| :------------------------: | :------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |\n|      Description Check     | ✅ Passed | Check skipped - CodeRabbit’s high-level summary is enabled.                                                                                                                                               |\n|         Title check        | ✅ Passed | The title clearly identifies the main change: it prevents metadata status self-observation in the PR metadata workflow.                                                                                   |\n|     Linked Issues check    | ✅ Passed | The changes satisfy the coding objectives in `#3450`. Both helper copies exclude metadata observer workflows by name and normalized path. `collectStatusWorkflowRuns` performs exact-head status collectio… |\n| Out of Scope Changes check | ✅ Passed | The changed files support `#3450`: the canonical helper, synchronized consumer-template helper, focused regression tests, sync manifest, and CI documentation. The reviewed changes do not alter FAA `#723`,… |\n\n</details>\n\n</details>\n\n<!-- pre_merge_checks_walkthrough_end -->\n<!-- finishing_touch_checkbox_start -->\n\n<details>\n<summary>✨ Finishing Touches 💡 1</summary>\n\n<!-- finishing_touch_suggestion:docstrings -->\n<details>\n<summary>📝 Generate docstrings 💡</summary>\n\n- [ ] <!-- {\"checkboxId\":\"7962f53c-55bc-4827-bfbf-6a18da830691\"} --> Create stacked PR\n- [ ] <!-- {\"checkboxId\":\"3e1879ae-f29b-4d0d-8e06-d12b7ba33d98\"} --> Commit on current branch\n\n</details>\n<details>\n<summary>🧪 Generate unit tests (beta)</summary>\n\n- [ ] <!-- {\"checkboxId\": \"f47ac10b-58cc-4372-a567-0e02b2c3d479\", \"radioGroupId\": \"utg-output-choice-group-unknown_comment_id\"} -->   Create PR with unit tests\n- [ ] <!-- {\"checkboxId\": \"6ba7b810-9dad-11d1-80b4-00c04fd430c8\", \"radioGroupId\": \"utg-output-choice-group-unknown_comment_id\"} -->   Commit unit tests in branch `codex/issue-3450-metadata-loop`\n\n</details>\n\n</details>\n\n<!-- finishing_touch_checkbox_end -->\n<!-- tips_start -->\n\n---\n\n\n\n\n<sub>Comment `@coderabbitai help` to get the list of available commands.</sub>\n\n<!-- tips_end -->",
+      "createdAt": "2026-09-14T17:09:14Z",
+      "includesCreatedEdit": true,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Workflows/pull/3451#issuecomment-5667758100",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDOQprj9M8AAAABUdM0Ag",
+      "author": {
+        "login": "agents-workflows-bot"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "<!-- keepalive-loop-summary -->\n## 🤖 Keepalive Loop Status\n\n**PR #3451** | Agent: **Codex** | Iteration 0/12\n\n### Current State\n| Metric | Value |\n|--------|-------|\n| Iteration progress | [----------] 0/12 |\n| Action | wait (gate-cancelled-transient) |\n| Disposition | skipped (transient) |\n| Gate | cancelled |\n| Tasks | 0/8 complete |\n| Timeout | 45 min (default) |\n| Timeout usage | 0m elapsed (2%, 45m remaining) |\n| Keepalive | ✅ enabled |\n| Autofix | ❌ disabled |\n\n### 🔍 Failure Classification\n| Error type | infrastructure |\n| Error category | transient |\n| Suggested recovery | Capture logs and context; retry once and escalate if the issue persists. |\n\n<!-- keepalive-state:v1 {\"trace\":\"\",\"pr_number\":3451,\"iteration\":0,\"max_iterations\":12,\"last_action\":\"wait\",\"last_reason\":\"gate-cancelled-transient-transient\",\"failure\":{},\"error_type\":\"infrastructure\",\"error_category\":\"transient\",\"tasks\":{\"total\":8,\"unchecked\":8},\"gate_conclusion\":\"cancelled\",\"failure_threshold\":3,\"running\":false,\"needs_task_reconciliation\":false,\"last_files_changed\":0,\"prev_files_changed\":0,\"rounds_without_task_completion\":0,\"consecutive_zero_activity_rounds\":0,\"complete_gate_failure_rounds\":0,\"complete_gate_failure_rounds_max\":3,\"consecutive_fix_rounds\":0,\"total_tasks_completed\":0,\"last_effort_score\":0,\"last_data_quality\":\"\",\"attempted_tasks\":[],\"last_focus\":\"Exclude current metadata observers in `.github/scripts/agents_pr_meta_update_body.js` from derived status tables.\",\"verification\":{},\"keepalive_enabled\":true,\"autofix_enabled\":false,\"timeout\":{\"resolved_minutes\":45,\"default_minutes\":45,\"extended_minutes\":90,\"override_minutes\":null,\"source\":\"default\",\"label\":null,\"elapsed_minutes\":0,\"remaining_minutes\":45,\"usage_ratio\":0.015552962962962963,\"warning\":null},\"attempts\":[{\"iteration\":0,\"action\":\"wait\",\"reason\":\"gate-cancelled-transient-transient\",\"run_result\":\"skipped\",\"prompt_mode\":\"normal\",\"prompt_file\":\".github/codex/prompts/keepalive_next_task.md\",\"gate\":\"cancelled\",\"error_category\":\"transient\",\"error_type\":\"infrastructure\",\"tasks_total\":8,\"tasks_unchecked\":8,\"tasks_completed_delta\":0,\"all_complete\":false}],\"version\":\"v1\"} -->",
+      "createdAt": "2026-09-14T17:09:39Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Workflows/pull/3451#issuecomment-5667763202",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDOQprj9M8AAAABUdM00g",
+      "author": {
+        "login": "agents-workflows-bot"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "<!-- keepalive-work-log -->\n<details><summary><strong>Keepalive Work Log</strong> (click to expand)</summary>\n\n| # | Time (UTC) | Agent | Action | Result | Files | Tasks | Progress | Commit | Gate |\n|---|------------|-------|--------|--------|-------|-------|----------|--------|------|\n| 0 | 2026-09-14 17:09:39 | Codex | wait (gate-cancelled-transient-transient) | skipped | — | 0 | 0/8 | — | cancelled |\n| 1 | 2026-09-14 17:14:24 | Codex | run (bypass-rate-limit-gate) | success | 37 file(s) | +3 | 3/8 | [`63f12e7`](../commit/63f12e784aa54e914f43908c67f40ba1b7763657) | cancelled |\n| 2 | 2026-09-14 17:18:38 | Codex | run (ready) | success | 33 file(s) | 0 | 3/8 | [`799153b`](../commit/799153b8f8e123d141bdfd7a7e5ebcb6f8cdbea7) | success |\n| 3 | 2026-09-14 17:23:19 | Codex | run (ready) | success | 33 file(s) | +5 | 8/8 | [`4f0e946`](../commit/4f0e94671c852bbe5d4e64d834b39940b63afcb4) | success |\n| 4 | 2026-09-14 17:27:38 | Claude | run (verify-acceptance) | success | — | 0 | 8/8 | — | success |\n| 4 | 2026-09-14 17:28:26 | Codex | stop (tasks-complete) | skipped | — | 0 | 8/8 | — | success |\n| 4 | 2026-09-14 17:31:40 | Codex | wait (gate-cancelled-transient) | skipped | — | 0 | 8/8 | — | cancelled |\n| 4 | 2026-09-14 17:32:36 | Codex | wait (gate-not-success) | skipped | — | 0 | 8/8 | — | — |\n| 4 | 2026-09-14 17:33:33 | Codex | wait (gate-cancelled-transient) | skipped | — | 0 | 8/8 | — | cancelled |\n| 4 | 2026-09-14 17:35:01 | Codex | stop (tasks-complete) | skipped | — | 0 | 8/8 | — | success |\n| 4 | 2026-09-14 17:35:48 | Codex | wait (gate-not-success) | skipped | — | 0 | 8/8 | — | — |\n| 4 | 2026-09-14 17:37:36 | Codex | stop (tasks-complete) | skipped | — | 0 | 8/8 | — | success |\n| 4 | 2026-09-14 18:34:57 | Codex | stop (tasks-complete) | skipped | — | 0 | 8/8 | — | success |\n| 4 | 2026-09-14 19:29:12 | Codex | stop (tasks-complete) | skipped | — | 0 | 8/8 | — | success |\n| 4 | 2026-09-14 19:29:59 | Codex | wait (gate-not-success) | skipped | — | 0 | 8/8 | — | — |\n| 4 | 2026-09-14 19:32:18 | Codex | stop (tasks-complete) | skipped | — | 0 | 8/8 | — | success |\n| 4 | 2026-09-14 19:36:12 | Codex | wait (gate-not-success) | skipped | — | 0 | 8/8 | — | — |\n| 4 | 2026-09-14 19:38:30 | Codex | stop (tasks-complete) | skipped | — | 0 | 8/8 | — | success |\n</details>",
+      "createdAt": "2026-09-14T17:09:40Z",
+      "includesCreatedEdit": true,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Workflows/pull/3451#issuecomment-5667763410",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDOQprj9M8AAAABUdNJfw",
+      "author": {
+        "login": "github-actions"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "Runner dispatch state for codex on PR #3451. Do not edit.\n\n<!-- runner-dispatch:codex:3451:v1 base64:eyJjb21wbGV0ZWRfYXQiOiIyMDI2LTA5LTE0VDE3OjIzOjAzWiIsImhlYWRfc2hhIjoiNzk5MTUzYjhmOGUxMjNkMTQxYmRmZDdhN2U1ZWJjYjZmOGNkYmVhNyIsImtleSI6ImIwM2Q5NmQ2MTA2NzA1NzQ1MmRjYjFkYjQ3MjY3ZjdkYTdkYWJjMGY0MTFiOTg2OWFlMmM2MDBjOWQ2YjNhYjgiLCJwcl9udW1iZXIiOjM0NTEsInByb2R1Y3RpdmUiOnRydWUsInByb3ZpZGVyIjoiY29kZXgiLCJyZXN1bHQiOnsiZXJyb3IiOiIiLCJmaW5hbF9tZXNzYWdlX2NoYXJzIjo1MDAsImZpbmFsX21lc3NhZ2Vfc2hhMjU2IjoiNWFjMTBmOTUwYzliMmU0OTI5OTc1ZGI2YzVjNmE0N2U3MTM5OGQxMGQyZmI1NzNjZTRlN2M2YjEwNjdhY2Y3NSIsInByb3ZpZGVyIjoiY29kZXgiLCJzY2hlbWEiOiJydW5uZXItcmVzdWx0LXN1bW1hcnkvdjEiLCJzdWNjZXNzIjp0cnVlLCJzdW1tYXJ5IjoiQWRkZWQgYSByZWdyZXNzaW9uIHByZXNlcnZpbmcgQ0kgZmFpbHVyZSBldmlkZW5jZSB3aGVuIEdhdGUgcmVjb3ZlcnkgcmV0dXJucyA0MDQuIFZlcmlmaWVkOiAtIFJlcXVlc3RlZCBOb2RlIHRlc3RzIHBhc3MuIC0gUmVtb3ZpbmcgcmVjb3ZlcnkgZmFpbHMgdGhlIG9sZGVyLUdhdGUgcmVncmVzc2lvbjsgcmVzdG9yaW5nIGl0IHBhc3Nlcy4gLSA1NSB0ZW1wbGF0ZS9zeW5jIHRlc3RzIHBhc3M7IGhlbHBlciBjb3BpZXMgbWF0Y2guIEJsb2NrZWQ6IGAuZ2l0YCBpcyByZWFkLW9ubHksIHNvIGNvbW1pdHRpbmcgZmFpbGVkLiBQUi1ib2R5IHVwZGF0ZXMgcmVxdWlyZSBhcHByb3ZhbCB1bmF2YWlsYWJsZSBpbiB0aGlzIHJ1bi4gUFIgIzM0NTEgcmVtYWlucyBvcGVuIGFuZCByZWFkeS4gR2F0ZSByZWNvdmVyeSBhbmQgdGhyZWUgbG9jYWwgYWNjZXB0YW5jZSBjaGVja2JveGVzIGFyZSB2ZXJpZmllZCBidXQgdW5yZWNvbmNpbGVkLiBQb3N0LXByb21vdGlvbiBGQUEgc3RhYmlsaXQiLCJ0cnVuY2F0ZWQiOmZhbHNlfSwic3RhcnRlZF9hdCI6IjIwMjYtMDktMTRUMTc6MTk6MDJaIiwic3RhdHVzIjoiY29tcGxldGVkIiwidW5wcm9kdWN0aXZlX2NvbXBsZXRpb25zIjowfQ== -->",
+      "createdAt": "2026-09-14T17:10:05Z",
+      "includesCreatedEdit": true,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Workflows/pull/3451#issuecomment-5667768703",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDOQprj9M8AAAABUdNcvA",
+      "author": {
+        "login": "stranske-keepalive"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "<!-- keepalive-loop-summary -->\n## 🤖 Keepalive Loop Status\n\n**PR #3451** | Agent: **Codex** | Iteration 4/12\n\n### Current State\n| Metric | Value |\n|--------|-------|\n| Iteration progress | [###-------] 4/12 |\n| Action | stop (tasks-complete) |\n| Agent status | ✅ ALL TASKS COMPLETE |\n| Gate | success |\n| Tasks | 8/8 complete |\n| Timeout | 45 min (default) |\n| Timeout usage | 3m elapsed (7%, 42m remaining) |\n| Keepalive | ✅ enabled |\n| Autofix | ❌ disabled |\n\n### 🔍 Failure Classification\n| Error type | infrastructure |\n| Error category | unknown |\n| Suggested recovery | Capture logs and context; retry once and escalate if the issue persists. |\n\n<!-- keepalive-state:v1 {\"trace\":\"\",\"pr_number\":3451,\"iteration\":4,\"max_iterations\":12,\"last_action\":\"stop\",\"last_reason\":\"tasks-complete\",\"failure\":{},\"error_type\":\"infrastructure\",\"error_category\":\"unknown\",\"tasks\":{\"total\":8,\"unchecked\":0},\"gate_conclusion\":\"success\",\"failure_threshold\":3,\"running\":false,\"needs_task_reconciliation\":false,\"last_files_changed\":0,\"prev_files_changed\":33,\"rounds_without_task_completion\":14,\"consecutive_zero_activity_rounds\":1,\"complete_gate_failure_rounds\":0,\"complete_gate_failure_rounds_max\":3,\"consecutive_fix_rounds\":0,\"total_tasks_completed\":8,\"last_effort_score\":0,\"last_data_quality\":\"\",\"attempted_tasks\":[{\"task\":\"Exclude current metadata observers in `.github/scripts/agents_pr_meta_update_body.js` from derived status tables.\",\"key\":\"exclude current metadata observers in `.github/scripts/agents_pr_meta_update_body.js` from derived status tables.\",\"iteration\":1,\"timestamp\":\"2026-09-14T17:14:23.742Z\"},{\"task\":\"Recover a missing recent-page Gate with one `pr-00-gate.yml` lookup constrained to the exact implementation head; retain unknown/error states when unavailable.\",\"key\":\"recover a missing recent-page gate with one `pr-00-gate.yml` lookup constrained to the exact implementation head; retain unknown/error states when unavailable.\",\"iteration\":3,\"timestamp\":\"2026-09-14T17:23:19.295Z\"}],\"last_focus\":\"\",\"verification\":{\"status\":\"done\",\"iteration\":4,\"attempt_count\":1,\"last_result\":\"success\",\"updated_at\":\"2026-09-14T17:27:37.570Z\"},\"keepalive_enabled\":true,\"autofix_enabled\":false,\"timeout\":{\"resolved_minutes\":45,\"default_minutes\":45,\"extended_minutes\":90,\"override_minutes\":null,\"source\":\"default\",\"label\":null,\"elapsed_minutes\":3,\"remaining_minutes\":42,\"usage_ratio\":0.06691481481481482,\"warning\":null},\"attempts\":[{\"iteration\":0,\"action\":\"wait\",\"reason\":\"gate-cancelled-transient-transient\",\"run_result\":\"skipped\",\"prompt_mode\":\"normal\",\"prompt_file\":\".github/codex/prompts/keepalive_next_task.md\",\"gate\":\"cancelled\",\"error_category\":\"transient\",\"error_type\":\"infrastructure\",\"tasks_total\":8,\"tasks_unchecked\":8,\"tasks_completed_delta\":0,\"all_complete\":false},{\"iteration\":1,\"action\":\"run\",\"reason\":\"bypass-rate-limit-gate\",\"run_result\":\"success\",\"prompt_mode\":\"normal\",\"prompt_file\":\".github/codex/prompts/keepalive_next_task.md\",\"gate\":\"cancelled\",\"tasks_total\":8,\"tasks_unchecked\":5,\"tasks_completed_delta\":3,\"all_complete\":false},{\"iteration\":2,\"action\":\"run\",\"reason\":\"ready\",\"run_result\":\"success\",\"prompt_mode\":\"normal\",\"prompt_file\":\".github/codex/prompts/keepalive_next_task.md\",\"gate\":\"success\",\"tasks_total\":8,\"tasks_unchecked\":5,\"tasks_completed_delta\":0,\"all_complete\":false},{\"iteration\":3,\"action\":\"run\",\"reason\":\"ready\",\"run_result\":\"success\",\"prompt_mode\":\"normal\",\"prompt_file\":\".github/codex/prompts/keepalive_next_task.md\",\"gate\":\"success\",\"tasks_total\":8,\"tasks_unchecked\":0,\"tasks_completed_delta\":5,\"all_complete\":true},{\"iteration\":4,\"action\":\"run\",\"reason\":\"verify-acceptance\",\"run_result\":\"success\",\"prompt_mode\":\"verify\",\"prompt_file\":\".github/codex/prompts/verifier_acceptance_check.md\",\"gate\":\"success\",\"tasks_total\":8,\"tasks_unchecked\":0,\"tasks_completed_delta\":0,\"all_complete\":true},{\"iteration\":4,\"action\":\"stop\",\"reason\":\"tasks-complete\",\"run_result\":\"skipped\",\"prompt_mode\":\"normal\",\"prompt_file\":\".github/codex/prompts/keepalive_next_task.md\",\"gate\":\"success\",\"error_category\":\"unknown\",\"error_type\":\"infrastructure\",\"tasks_total\":8,\"tasks_unchecked\":0,\"tasks_completed_delta\":0,\"all_complete\":true},{\"iteration\":4,\"action\":\"wait\",\"reason\":\"gate-cancelled-transient\",\"run_result\":\"skipped\",\"prompt_mode\":\"normal\",\"prompt_file\":\".github/codex/prompts/keepalive_next_task.md\",\"gate\":\"cancelled\",\"error_category\":\"transient\",\"error_type\":\"infrastructure\",\"tasks_total\":8,\"tasks_unchecked\":0,\"tasks_completed_delta\":0,\"all_complete\":true},{\"iteration\":4,\"action\":\"wait\",\"reason\":\"gate-not-success\",\"run_result\":\"skipped\",\"prompt_mode\":\"normal\",\"prompt_file\":\".github/codex/prompts/keepalive_next_task.md\",\"error_category\":\"unknown\",\"error_type\":\"infrastructure\",\"tasks_total\":8,\"tasks_unchecked\":0,\"tasks_completed_delta\":0,\"all_complete\":true},{\"iteration\":4,\"action\":\"wait\",\"reason\":\"gate-cancelled-transient\",\"run_result\":\"skipped\",\"prompt_mode\":\"normal\",\"prompt_file\":\".github/codex/prompts/keepalive_next_task.md\",\"gate\":\"cancelled\",\"error_category\":\"transient\",\"error_type\":\"infrastructure\",\"tasks_total\":8,\"tasks_unchecked\":0,\"tasks_completed_delta\":0,\"all_complete\":true},{\"iteration\":4,\"action\":\"stop\",\"reason\":\"tasks-complete\",\"run_result\":\"skipped\",\"prompt_mode\":\"normal\",\"prompt_file\":\".github/codex/prompts/keepalive_next_task.md\",\"gate\":\"success\",\"error_category\":\"unknown\",\"error_type\":\"infrastructure\",\"tasks_total\":8,\"tasks_unchecked\":0,\"tasks_completed_delta\":0,\"all_complete\":true},{\"iteration\":4,\"action\":\"wait\",\"reason\":\"gate-not-success\",\"run_result\":\"skipped\",\"prompt_mode\":\"normal\",\"prompt_file\":\".github/codex/prompts/keepalive_next_task.md\",\"error_category\":\"unknown\",\"error_type\":\"infrastructure\",\"tasks_total\":8,\"tasks_unchecked\":0,\"tasks_completed_delta\":0,\"all_complete\":true},{\"iteration\":4,\"action\":\"stop\",\"reason\":\"tasks-complete\",\"run_result\":\"skipped\",\"prompt_mode\":\"normal\",\"prompt_file\":\".github/codex/prompts/keepalive_next_task.md\",\"gate\":\"success\",\"error_category\":\"unknown\",\"error_type\":\"infrastructure\",\"tasks_total\":8,\"tasks_unchecked\":0,\"tasks_completed_delta\":0,\"all_complete\":true},{\"iteration\":4,\"action\":\"wait\",\"reason\":\"gate-not-success\",\"run_result\":\"skipped\",\"prompt_mode\":\"normal\",\"prompt_file\":\".github/codex/prompts/keepalive_next_task.md\",\"error_category\":\"unknown\",\"error_type\":\"infrastructure\",\"tasks_total\":8,\"tasks_unchecked\":0,\"tasks_completed_delta\":0,\"all_complete\":true},{\"iteration\":4,\"action\":\"stop\",\"reason\":\"tasks-complete\",\"run_result\":\"skipped\",\"prompt_mode\":\"normal\",\"prompt_file\":\".github/codex/prompts/keepalive_next_task.md\",\"gate\":\"success\",\"error_category\":\"unknown\",\"error_type\":\"infrastructure\",\"tasks_total\":8,\"tasks_unchecked\":0,\"tasks_completed_delta\":0,\"all_complete\":true},{\"iteration\":4,\"action\":\"wait\",\"reason\":\"gate-not-success\",\"run_result\":\"skipped\",\"prompt_mode\":\"normal\",\"prompt_file\":\".github/codex/prompts/keepalive_next_task.md\",\"error_category\":\"unknown\",\"error_type\":\"infrastructure\",\"tasks_total\":8,\"tasks_unchecked\":0,\"tasks_completed_delta\":0,\"all_complete\":true},{\"iteration\":4,\"action\":\"stop\",\"reason\":\"tasks-complete\",\"run_result\":\"skipped\",\"prompt_mode\":\"normal\",\"prompt_file\":\".github/codex/prompts/keepalive_next_task.md\",\"gate\":\"success\",\"error_category\":\"unknown\",\"error_type\":\"infrastructure\",\"tasks_total\":8,\"tasks_unchecked\":0,\"tasks_completed_delta\":0,\"all_complete\":true}],\"version\":\"v1\"} -->",
+      "createdAt": "2026-09-14T17:10:28Z",
+      "includesCreatedEdit": true,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Workflows/pull/3451#issuecomment-5667773628",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDOQprj9M8AAAABUdPMQQ",
+      "author": {
+        "login": "agents-workflows-bot"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "<!-- bot-comment-handler -->\n<!-- bot-comment-handler-part:1/1 -->\n## 🤖 Bot Comment Handler\n\n- Agent: codex\n- Bot comments to address: 3\n- Exact PR head: 7ee517b7206b2b048faa3e11c9d34e2af7ab4a8e\n- Controller part: 1 of 1\n\nThe agent is reassigned only after every controller part is durable on the PR.\nEach entry links to the authoritative review thread containing its full context.\n\n### Active thread controller\n\n- PRRT_kwDOQprj9M6iNLix — .github/scripts/agents_pr_meta_update_body.js:925\n  - https://github.com/stranske/Workflows/pull/3451#discussion_r4007656281\n  - Acceptance criterion: **<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub> Avoid reporting the filtered PR 46 check as not started** On dependency-bot and repair-promotion PRs where `PR 46 Dependency Repair Contract` is required, this filter removes the exact-head run before `buildStatusBlock` matches `requiredChecks`, so a completed...\n\n- PRRT_kwDOQprj9M6iNNRe — .github/scripts/agents_pr_meta_update_body.js:925\n  - https://github.com/stranske/Workflows/pull/3451#discussion_r4007666959\n  - Acceptance criterion: `PR 46 Dependency Repair Contract` is a real dependency-provenance check, not just a metadata writer (it is documented as required for dependency-repair lanes). Adding it to this blanket filter removes both successful and failed contract runs from the table, so a dependency PR can no longer expose that check's result; if it is a required context...\n\n- PRRT_kwDOQprj9M6iNNR_ — templates/consumer-repo/.github/scripts/agents_pr_meta_update_body.js:925\n  - https://github.com/stranske/Workflows/pull/3451#discussion_r4007667009\n  - Acceptance criterion: `PR 46 Dependency Repair Contract` is a real dependency-provenance check, not just a metadata writer (it is documented as required for dependency-repair lanes). Adding it to this blanket filter removes both successful and failed contract runs from the table, so a dependency PR can no longer expose that check's result; if it is a required context...\n\n### Required outcome\n1. Inspect every listed active thread on the exact head.\n2. Implement and validate any still-valid criterion; do not make no-op edits.\n3. Reply with exact-head evidence and request a thread-specific reviewer disposition.\n4. Never self-resolve reviewer threads.\n5. Do not report completion while any listed thread remains active; a generic top-level review is insufficient.",
+      "createdAt": "2026-09-14T17:12:44Z",
+      "includesCreatedEdit": true,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Workflows/pull/3451#issuecomment-5667802177",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDOQprj9M8AAAABUdTTAQ",
+      "author": {
+        "login": "agents-workflows-bot"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "<!-- agent-completion-checkpoint -->\n## ✅ Codex Completion Checkpoint\n\n**Iteration:** 2\n**Commit:** `4f0e946`\n**Recorded:** 2026-09-14T17:22:52.167Z\n\n### Tasks Completed\n- [x] Exclude current metadata observers in `.github/scripts/agents_pr_meta_update_body.js` from derived status tables.\n- [x] Add `.github/scripts/__tests__/agents-pr-meta-status-idempotence.test.js` covering repeated metadata-only generations, genuine Gate transitions, latest-page flooding and exact-head/error handling.\n- [x] Synchronize the helper to `templates/consumer-repo/.github/scripts/agents_pr_meta_update_body.js`; update `.github/sync-manifest.yml` and `docs/ci/WORKFLOWS.md`.\n\n<details>\n<summary>About this comment</summary>\n\nThis comment is automatically generated to track task completions.\nThe Automated Status Summary reads these checkboxes to update PR progress.\nDo not edit this comment manually.\n</details>",
+      "createdAt": "2026-09-14T17:18:12Z",
+      "includesCreatedEdit": true,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Workflows/pull/3451#issuecomment-5667869441",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDOQprj9M8AAAABUdXYnw",
+      "author": {
+        "login": "github-actions"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "Runner dispatch state for claude on PR #3451. Do not edit.\n\n<!-- runner-dispatch:claude:3451:v1 base64:eyJjb21wbGV0ZWRfYXQiOiIyMDI2LTA5LTE0VDE3OjI3OjMwWiIsImhlYWRfc2hhIjoiNGYwZTk0NjcxYzg1MmJiZTVkNGU2NGQ4MzRiMzk5NDBiNjNhZmNiNCIsImtleSI6IjAwN2E4MjdmNzIzODRjYzJiNmZmYTYwNWM3MjYwYmY2YTdkNmRiNWY3NmYxYzVkNWIzNzBkZGNmYTgzODI2NmMiLCJwcl9udW1iZXIiOjM0NTEsInByb2R1Y3RpdmUiOmZhbHNlLCJwcm92aWRlciI6ImNsYXVkZSIsInJlc3VsdCI6eyJlcnJvciI6IiIsImZpbmFsX21lc3NhZ2VfY2hhcnMiOjQ5OSwiZmluYWxfbWVzc2FnZV9zaGEyNTYiOiJhMGY1YzE4MWQ1MmFkZmRjNGFkZmM1MjExZjlmMTg2OTI0OTBiZDMwZWVkNTFlNmNhZGY4ZWE2NDYxMDc3ZTA1IiwicHJvdmlkZXIiOiJjbGF1ZGUiLCJzY2hlbWEiOiJydW5uZXItcmVzdWx0LXN1bW1hcnkvdjEiLCJzdWNjZXNzIjp0cnVlLCJzdW1tYXJ5IjoiYGBganNvbiB7XCJ2ZXJkaWN0XCI6XCJGQUlMXCIsXCJyZWFzb25cIjpcImNvZGUsIHRlc3RzLCB0ZW1wbGF0ZSBzeW5jLCBhbmQgZG9jcyBhcmUgYWxsIHZlcmlmaWVkIGNvcnJlY3QsIGJ1dCBhY2NlcHRhbmNlIGNyaXRlcmlvbiA0IChwb3N0LW1lcmdlIEZBQSAjNzIzIHJlb2JzZXJ2YXRpb24gYW5kIG1ldGFkYXRhIHN0YWJpbGl0eSkgY2Fubm90IGhhdmUgb2NjdXJyZWQ6IFBSICMzNDUxIGlzIHN0aWxsIE9QRU4vdW5tZXJnZWQgYW5kIEZBQSAjNzIzIHN0aWxsIHNob3dzIGxpdmUgQWdlbnRzIFBSIEV2ZW50IEh1YiAvIFBSIDQ2IERlcGVuZGVuY3kgUmVwYWlyIENvbnRyYWN0IHJ1bi1VUkwgY2h1cm4gaW4gaXRzIGJvZHlcIn0gYGBgICMjIFNjb3BlIENoZWNrIC0gRmlsZXMgaW4gZGlmZjogNSAtIEZpbGVzIG1hdGNoaW5nIHNjb3BlOiA1IC0gT3V0LW9mLXNjb3BlIGZpbGVzOiBub25lIChEaWZmIGNvbXB1dGVkIGFzIGBnaXQgZGlmZiAtLW5hbWUtb25seSAkKGdpdCBtZXJnZS1iYXNlIiwidHJ1bmNhdGVkIjpmYWxzZX0sInN0YXJ0ZWRfYXQiOiIyMDI2LTA5LTE0VDE3OjIzOjQ4WiIsInN0YXR1cyI6ImNvbXBsZXRlZCIsInVucHJvZHVjdGl2ZV9jb21wbGV0aW9ucyI6MX0= -->",
+      "createdAt": "2026-09-14T17:23:49Z",
+      "includesCreatedEdit": true,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Workflows/pull/3451#issuecomment-5667936415",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "IC_kwDOQprj9M8AAAABUddHwA",
+      "author": {
+        "login": "stranske"
+      },
+      "authorAssociation": "OWNER",
+      "body": "Closer recovery for the three active provenance findings is pushed in `7ee517b72` on the existing PR.\n\nPR 46 remains a real provenance check. Its last completed exact-head result now appears in the table and required-check summary without a changing run URL. A later pending body-triggered run does not displace that result; a bounded completed-run lookup recovers it if only pending runs remain on the recent page. The display explicitly identifies last-completed evidence and sends readers to PR checks for the current run. Missing observer evidence is described as reported separately, never as not started. Success-to-failure changes remain visible, including when the workflow display name changes. Root and consumer-template helpers match. Required checks, workflow permissions, and merge/review gates are unchanged.\n\nValidation on this head:\n- Focused production-helper, contract/idempotence, metadata, and scope-parser tests: 157 passed, 0 failed.\n- Full JavaScript tests: 1,568 passed, 1 skipped, 0 failed.\n- Sync compiler, drift allowlist, and delivery tests: 63 passed.\n- Template completeness, Node syntax, byte equality, and git diff checks passed.\n- New contract regressions failed on the preceding production implementation. Deliberately disabling the contract filter or Gate recovery caused the named test suites to fail; restored production passed.\n\nAll three review threads remain open for independent disposition. The conservative review floor is **2026-09-14T17:37:34Z** for this exact head and resets after any push. No merge or auto-merge is armed. Closer will re-read full required/expected checks and suites plus active non-outdated threads after the floor; it will merge only if all gates are satisfied, then trigger verification. Source #3450 remains open pending post-merge verification and the required Fine-Art-Archive #723 stability observation; source #722 implementation acceptance is still outstanding. Keepalive was temporarily removed during this bounded local repair to prevent competing writes and has been restored.\n",
+      "createdAt": "2026-09-14T17:31:22Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Workflows/pull/3451#issuecomment-5668030400",
+      "viewerDidAuthor": true
+    },
+    {
+      "id": "IC_kwDOQprj9M8AAAABUepeTA",
+      "author": {
+        "login": "stranske"
+      },
+      "authorAssociation": "OWNER",
+      "body": "CodeRabbit fallback advisory completed through Orchestrator/Cursor at exact head `7ee517b7206b2b048faa3e11c9d34e2af7ab4a8e`: **approve**, no P0/P1 blockers. Reviewer ran 40 metadata contract/idempotence tests and 82 merge-contract tests, all passed; verified source/template equality.\n\nIndependent thread-specific assessment: r4007656281 and r4007666959 are addressed by preserving completed exact-head PR46 results without changing run URLs, bounded completed-run lookup, and explicit missing-observer wording. r4007667009 is addressed identically in the template. These are advisory findings, not CodeRabbit approval or GitHub thread resolution. All three threads remain active and must receive authoritative disposition before merge.\n\nFull 122-context audit also verifies each of the five historical cancellations has two later same-head successful replacements. The green rollup alone was not used to dismiss them. Remaining pre-merge owner: closer, for independent disposition of the three threads and exact-head/current-base/required-and-expected-check gates. Post-merge source #3450 still needs Fine-Art-Archive #723 metadata stability evidence and verify:compare. No merge or bypass attempted across unresolved threads.\n\nDurable advisory: `[LOCAL_HOME]/.codex/automations/pd-workloop-resume/artifacts/20260914T1901Z/advisory-3451.json`.",
+      "createdAt": "2026-09-14T19:10:26Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Workflows/pull/3451#issuecomment-5669281356",
+      "viewerDidAuthor": true
+    },
+    {
+      "id": "IC_kwDOQprj9M8AAAABUe7i0g",
+      "author": {
+        "login": "stranske"
+      },
+      "authorAssociation": "OWNER",
+      "body": "Closer independent disposition on unchanged head `7ee517b7206b2b048faa3e11c9d34e2af7ab4a8e`:\n\nThe three active findings r4007656281, r4007666959, and r4007667009 are addressed. I read each original claim, current production collection/rendering paths, the matching template, and the independent Orchestrator/Cursor advisory linked in the preceding comment. PR 46 remains a provenance check: completed exact-head success and failure are retained, pending reruns do not displace them, a bounded completed-run lookup recovers flooded-page evidence, and missing observer evidence is explicitly reported separately rather than as not started. Its changing URL is excluded; current status remains available in PR checks. Root/template bytes match.\n\nFresh validation: `node --test .github/scripts/__tests__/agents-pr-meta-contract-status.test.js .github/scripts/__tests__/agents-pr-meta-status-idempotence.test.js .github/scripts/__tests__/agents-pr-meta-update-body.test.js .github/scripts/__tests__/issue_scope_parser.test.js` — 157 passed, 0 failed. The independent advisory separately ran 40 contract/idempotence and 82 merge-contract tests. No code changes or new push were needed. These repaired claims now receive closer-owned thread resolution; this does not represent a new CodeRabbit review.\n\nThe post-merge FAA stability checkbox in the generated summary is premature. Source #3450 is not complete: after gated merge, verify:compare and live unchanged-head FAA #723 metadata stability evidence are required. FAA source #722 acceptance remains separate and unresolved. A successful pre-merge keepalive job does not satisfy this post-merge criterion.\n",
+      "createdAt": "2026-09-14T19:27:42Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Workflows/pull/3451#issuecomment-5669577426",
+      "viewerDidAuthor": true
+    },
+    {
+      "id": "IC_kwDOQprj9M8AAAABUfBtrA",
+      "author": {
+        "login": "stranske"
+      },
+      "authorAssociation": "OWNER",
+      "body": "Exact-head check-presence audit for `7ee517b7206b2b048faa3e11c9d34e2af7ab4a8e`:\n\nThe configured required context is `summary` (ruleset 11191936); it succeeds, as do Gate, JavaScript Tests, Python Tests, workflow validation, template completeness, manifest validation, and sync shadow evidence. All 68 latest reported contexts are SUCCESS or intentionally SKIPPED. The full check history contains 120 runs: five cancelled jobs in Gate34875169820 each have two later exact-head successful replacements in Gate34875256403 and Gate34875636581. These are explicit replacements, not an assumption based on the rollup. All GitHub Actions suites are completed; no action-required/startup failure was found.\n\nThe prescribed root absent-check script is missing; the available scripts/ reporter is hard-coded to Orchestrator. Neither was counted as passing evidence. Direct comparison finds zero absent names versus the preceding PR head4f0e94671 (61 distinct check names). Comparison with merged Workflows3440/3436/3427 additionally identifies conditional reusable Python jobs, nested workflow lint, E2E/template-drift jobs, post-merge verifier, and zizmor. Their absence is explained by the actual unchanged workflow topology: no Python source or workflow YAML changes in this six-file JS/helper/test/manifest/docs diff; `python ci` and `workflow lint (maint-36)` wrappers explicitly reported SKIPPED, so their reusable children were not instantiated. Zizmor and E2E are workflow/path-filtered; the post-merge verifier is not a pre-merge job. Current full JS and Python selftests both ran successfully. No product check was waived, fabricated, or bypassed.\n\nThe head is unchanged since the recorded push17:30:34Z and its17:37:34Z minimum review floor has elapsed. All three reviewed findings were independently dispositioned against current code and fresh157-test results. Closer will perform an immediate final head/review/check/mergeability query and an expected-head guarded merge, without administrative bypass or branch deletion. Source3450 must remain open for verify:compare and post-merge FAA723 stability evidence.\n",
+      "createdAt": "2026-09-14T19:34:22Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Workflows/pull/3451#issuecomment-5669678508",
+      "viewerDidAuthor": true
+    },
+    {
+      "id": "IC_kwDOQprj9M8AAAABUfFBwQ",
+      "author": {
+        "login": "stranske"
+      },
+      "authorAssociation": "OWNER",
+      "body": "Post-merge checkpoint for repair #3451 / source #3450:\n\nMerged at2026-09-14T19:35:00Z as `c8561288b546c9ab6beb3d318336b7b30c36d8d0`, from reviewed head `7ee517b7206b2b048faa3e11c9d34e2af7ab4a8e`. Immediate gate evidence captured at19:34:58Z: all68 latest contexts SUCCESS/SKIPPED,49 completed GitHub Actions suites, zero active non-outdated review threads, CLEAN/MERGEABLE, elapsed review floor; expected-head squash merge, no bypass or branch deletion.\n\n`verify:compare` is on the merged PR. Actual post-merge verifier run34887826465 is in progress, with `check` successful and `verifier / Run post-merge verifier` running: https://github.com/stranske/Workflows/actions/runs/34887826465 . Earlier pre-merge verifier workflow exits are not durable provider reports. Source3450 was reopened after GitHub's automatic close and remains pending report disposition.\n\nLive Fine-Art-Archive723 observation at unchanged implementation head `7ae7c51831df2e710c45bf1d05ab674a1e8e400f`: the body at19:34:59Z showed changing observer URLs and false `gate: not started`. At19:35:55Z, after the source merge, it changed to `Gate: success` linked to actual Gate34781672266, removed the Event Hub row, and retained PR46 skipped as `Last completed result; current run in PR checks`. A fresh read at19:38:02Z was byte-identical and still updatedAt19:35:55Z; PR merge state CLEAN. This is a bounded live stability observation across more than two of the prior45–55second churn cycles, not a claim of indefinite future stability.\n\nNext owner remains Reviewed Repo Merge Verify Closer, checkpoint20:20Z: read the durable provider comparison for3451 and disposition source3450. FAA source722's coverage metric/stop-clause acceptance remains separate; this repair does not accept or merge FAA723. Generated consumer-template promotion remains the sync campaign's responsibility. No human action is needed.\n",
+      "createdAt": "2026-09-14T19:38:51Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Workflows/pull/3451#issuecomment-5669732801",
+      "viewerDidAuthor": true
+    },
+    {
+      "id": "IC_kwDOQprj9M8AAAABUfGT_g",
+      "author": {
+        "login": "github-actions"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "## Provider Comparison Report\n\n### Provider Summary\n| Provider | Model | Verdict | Confidence | Summary |\n| --- | --- | --- | --- | --- |\n| openai | gpt-5.6-terra | PASS | 90% | The change directly addresses the self-observation loop by excluding the metadata-producing observer workflows from derived status rendering, preventing newly created observer run URLs from changin... |\n| anthropic | claude-sonnet-5 | PASS | 68% | The PR implements the required fix to stop metadata self-observation by excluding current status-observer runs (Gate, PR 46 Dependency Repair Contract) from derived status tables, adds a scoped rec... |\n\n<details>\n<summary>📋 Full Provider Details (click to expand)</summary>\n\n#### openai\n- **Model:** gpt-5.6-terra\n- **Verdict:** PASS\n- **Confidence:** 90%\n- **Scores:**\n  - Correctness: 9.0/10\n  - Completeness: 9.0/10\n  - Quality: 9.0/10\n  - Testing: 9.0/10\n  - Risks: 8.0/10\n- **Summary:** The change directly addresses the self-observation loop by excluding the metadata-producing observer workflows from derived status rendering, preventing newly created observer run URLs from changing an otherwise unchanged PR summary. It adds bounded Gate recovery using a single Gate workflow lookup constrained to the implementation head, while preserving unknown/error behavior when a matching run cannot be retrieved. The implementation is synchronized byte-for-byte to the consumer template and the sync-manifest and workflow documentation references are updated. Added tests cover repeated metadata-only rendering idempotence, real Gate state changes, recent-page flooding, exact-head recovery, and recovery error handling; the additional contract-status test strengthens coverage of required-check rendering. The code changes are focused, maintainable, and do not introduce material security or compatibility risk.\n\n#### anthropic\n- **Model:** claude-sonnet-5\n- **Verdict:** PASS\n- **Confidence:** 68%\n- **Scores:**\n  - Correctness: 8.0/10\n  - Completeness: 8.0/10\n  - Quality: 7.0/10\n  - Testing: 8.0/10\n  - Risks: 7.0/10\n- **Summary:** The PR implements the required fix to stop metadata self-observation by excluding current status-observer runs (Gate, PR 46 Dependency Repair Contract) from derived status tables, adds a scoped recovery lookup for missing Gate results constrained to the exact head, and introduces two new test suites (contract-status and idempotence) that appear to directly target the acceptance criteria (idempotent metadata-only updates, genuine Gate transitions, exact-head recovery). The core script change (+99/-18) is mirrored into the consumer template, and sync-manifest/docs were updated accordingly, satisfying the 'synchronize helper' task. CI results confirm all Python/JS/lint/gate workflows passed on the merge commit, including the test files referenced in the acceptance criteria. Given the truncated diff, full line-level verification of the self-observation exclusion logic wasn't possible, but the structural evidence (test files, script size increase, synced template, updated manifest/docs, and green CI) strongly indicates the acceptance criteria are met. Confidence is moderate due to incomplete visibility into implementation internals, but no clear correctness or completeness gaps are evident from the available information.\n- **Concerns:**\n  - Full diff of agents_pr_meta_update_body.js was truncated in the review context, so the exact self-observer exclusion logic and Gate-recovery lookup could not be fully traced line-by-line; assessment relies on the visible test file (agents-pr-meta-contract-status.test.js) and summary of changes.\n  - Two new test files were added, but it's not explicitly confirmed in the visible diff that they cover every acceptance-criteria scenario (e.g., 'latest-page flooding' and 'older-exact-head-Gate regression' failing when recovery is removed) beyond what the truncated test content shows.\n  - Template/root byte-parity and sync-manifest changes are minimal (+1/-1 each) which is consistent with a simple version bump, but exact synchronization correctness for the full 99-line script change couldn't be independently verified from the truncated diff.\n\n</details>\n\n### Agreement\n- Verdict: PASS (all providers)\n- Correctness: scores within 1 point (avg 8.5/10, range 8.0-9.0)\n- Completeness: scores within 1 point (avg 8.5/10, range 8.0-9.0)\n- Testing: scores within 1 point (avg 8.5/10, range 8.0-9.0)\n- Risks: scores within 1 point (avg 7.5/10, range 7.0-8.0)\n\n### Disagreement\n| Dimension | openai | anthropic |\n| --- | --- | --- |\n| Quality | 9.0/10 | 7.0/10 |\n\n### Unique Insights\n- openai: The change directly addresses the self-observation loop by excluding the metadata-producing observer workflows from derived status rendering, preventing newly created observer run URLs from changing an otherwise unchanged PR summary. It adds bounded Gate recovery using a single Gate workflow look...\n- anthropic: Full diff of agents_pr_meta_update_body.js was truncated in the review context, so the exact self-observer exclusion logic and Gate-recovery lookup could not be fully traced line-by-line; assessment relies on the visible test file (agents-pr-meta-contract-status.test.js) and summary of changes.; Two new test files were added, but it's not explicitly confirmed in the visible diff that they cover every acceptance-criteria scenario (e.g., 'latest-page flooding' and 'older-exact-head-Gate regression' failing when recovery is removed) beyond what the truncated test content shows.; Template/root byte-parity and sync-manifest changes are minimal (+1/-1 each) which is consistent with a simple version bump, but exact synchronization correctness for the full 99-line script change couldn't be independently verified from the truncated diff.\n\n### 🔍 LangSmith Traces\n- [openai](https://smith.langchain.com/r/lc_run--01a0a16f-0935-7ff0-810a-e4fa57241f42-0)\n- [anthropic](https://smith.langchain.com/r/lc_run--01a0a16f-3824-7621-afad-c270241b2296-0)\n\n",
+      "createdAt": "2026-09-14T19:40:31Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/stranske/Workflows/pull/3451#issuecomment-5669753854",
+      "viewerDidAuthor": false
+    }
+  ],
+  "files": [
+    {
+      "path": ".github/scripts/__tests__/agents-pr-meta-contract-status.test.js",
+      "additions": 87,
+      "deletions": 0,
+      "changeType": "ADDED"
+    },
+    {
+      "path": ".github/scripts/__tests__/agents-pr-meta-status-idempotence.test.js",
+      "additions": 233,
+      "deletions": 0,
+      "changeType": "ADDED"
+    },
+    {
+      "path": ".github/scripts/agents_pr_meta_update_body.js",
+      "additions": 99,
+      "deletions": 18,
+      "changeType": "MODIFIED"
+    },
+    {
+      "path": ".github/sync-manifest.yml",
+      "additions": 1,
+      "deletions": 1,
+      "changeType": "MODIFIED"
+    },
+    {
+      "path": "docs/ci/WORKFLOWS.md",
+      "additions": 1,
+      "deletions": 1,
+      "changeType": "MODIFIED"
+    },
+    {
+      "path": "templates/consumer-repo/.github/scripts/agents_pr_meta_update_body.js",
+      "additions": 99,
+      "deletions": 18,
+      "changeType": "MODIFIED"
+    }
+  ],
+  "headRefOid": "7ee517b7206b2b048faa3e11c9d34e2af7ab4a8e",
+  "mergeCommit": {
+    "oid": "c8561288b546c9ab6beb3d318336b7b30c36d8d0"
+  },
+  "mergedAt": "2026-09-14T19:35:00Z",
+  "number": 3451,
+  "reviews": [
+    {
+      "id": "PRR_kwDOQprj9M8AAAABNfvMLA",
+      "author": {
+        "login": "chatgpt-codex-connector"
+      },
+      "authorAssociation": "NONE",
+      "body": "\n### 💡 Codex Review\n\nHere are some automated review suggestions for this pull request.\n\n**Reviewed commit:** `04b94943d7`\n    \n\n<details> <summary>ℹ️ About Codex in GitHub</summary>\n<br/>\n\n[Your team has set up Codex to review pull requests in this repo](https://chatgpt.com/codex/cloud/settings/general). Reviews are triggered when you\n- Open a pull request for review\n- Mark a draft as ready\n- Comment \"@codex review\".\n\nIf Codex has suggestions, it will comment; otherwise it will react with 👍.\n\n\n\n\nCodex can also answer questions or update the PR. Try commenting \"@codex address that feedback\".\n            \n</details>",
+      "submittedAt": "2026-09-14T17:11:52Z",
+      "includesCreatedEdit": false,
+      "reactionGroups": [],
+      "state": "COMMENTED",
+      "commit": {
+        "oid": "04b94943d751b9e6ff03032393860aac639bbb63"
+      }
+    },
+    {
+      "id": "PRR_kwDOQprj9M8AAAABNfwIbg",
+      "author": {
+        "login": "copilot-pull-request-reviewer"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "### 🟡 Changes recommended\n\nPreserve the Dependency Repair Contract result while excluding only its body-edit-triggering metadata URL.\n\n*Get a fresh assessment by requesting another Copilot review.*\n\n<details>\n<summary>Pull request overview</summary>\n\nUpdates PR metadata rendering to prevent self-observation loops while preserving exact-head Gate recovery.\n\n**Changes:**\n- Filters metadata observer runs and adds targeted Gate recovery.\n- Adds idempotence and regression tests.\n- Synchronizes the consumer template, manifest, and documentation.\n</details>\n\n<details>\n<summary>File summaries</summary>\n\n| File | Description |\r\n|---|---|\r\n| `templates/consumer-repo/.github/scripts/agents_pr_meta_update_body.js` | Mirrors observer filtering and Gate recovery changes. |\r\n| `docs/ci/WORKFLOWS.md` | Documents status-loop prevention behavior. |\r\n| `.github/sync-manifest.yml` | Updates synchronization metadata. |\r\n| `.github/scripts/agents_pr_meta_update_body.js` | Implements status filtering and Gate recovery. |\r\n| `.github/scripts/__tests__/agents-pr-meta-status-idempotence.test.js` | Covers idempotence, Gate transitions, flooding, and errors. |\n</details>\n\n<details>\n<summary>Review details</summary>\n\n- **Files reviewed:** 5/5 changed files\n- **Comments generated:** 2\n- **Review effort level:** Lite\n</details>\n\n---\n\n💡 <a href=\"/stranske/Workflows/new/main?filename=.github/skills/code-review/SKILL.md\" class=\"Link--inTextBlock\" target=\"_blank\" rel=\"noopener noreferrer\">Add a `code-review` agent skill</a> or configure MCP servers for context-aware, tailored reviews. <a href=\"https://docs.github.com/copilot/how-tos/use-copilot-agents/request-a-code-review/use-code-review?tool=webui#mcp-servers-and-agent-skills\" class=\"Link--inTextBlock\" target=\"_blank\" rel=\"noopener noreferrer\">Learn more in the docs.</a>",
+      "submittedAt": "2026-09-14T17:13:11Z",
+      "includesCreatedEdit": false,
+      "reactionGroups": [],
+      "state": "COMMENTED",
+      "commit": {
+        "oid": "04b94943d751b9e6ff03032393860aac639bbb63"
+      }
+    },
+    {
+      "id": "PRR_kwDOQprj9M8AAAABNf6n7g",
+      "author": {
+        "login": "stranske"
+      },
+      "authorAssociation": "OWNER",
+      "body": "",
+      "submittedAt": "2026-09-14T17:31:19Z",
+      "includesCreatedEdit": false,
+      "reactionGroups": [],
+      "state": "COMMENTED",
+      "commit": {
+        "oid": "7ee517b7206b2b048faa3e11c9d34e2af7ab4a8e"
+      }
+    },
+    {
+      "id": "PRR_kwDOQprj9M8AAAABNf6oig",
+      "author": {
+        "login": "stranske"
+      },
+      "authorAssociation": "OWNER",
+      "body": "",
+      "submittedAt": "2026-09-14T17:31:20Z",
+      "includesCreatedEdit": false,
+      "reactionGroups": [],
+      "state": "COMMENTED",
+      "commit": {
+        "oid": "7ee517b7206b2b048faa3e11c9d34e2af7ab4a8e"
+      }
+    },
+    {
+      "id": "PRR_kwDOQprj9M8AAAABNf6pMA",
+      "author": {
+        "login": "stranske"
+      },
+      "authorAssociation": "OWNER",
+      "body": "",
+      "submittedAt": "2026-09-14T17:31:21Z",
+      "includesCreatedEdit": false,
+      "reactionGroups": [],
+      "state": "COMMENTED",
+      "commit": {
+        "oid": "7ee517b7206b2b048faa3e11c9d34e2af7ab4a8e"
+      }
+    }
+  ],
+  "statusCheckRollup": [
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:30:30Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875169527/job/104080450011",
+      "name": "comment_event_context",
+      "startedAt": "2026-09-14T17:30:31Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents PR meta manager"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:31:21Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875256410/job/104080743670",
+      "name": "create-issue",
+      "startedAt": "2026-09-14T17:31:22Z",
+      "status": "COMPLETED",
+      "workflowName": "Create Issue from Verification (Enhanced)"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:35:06Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875636634/job/104082007862",
+      "name": "create-issue",
+      "startedAt": "2026-09-14T17:35:06Z",
+      "status": "COMPLETED",
+      "workflowName": "Create Issue from Verification (Enhanced)"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:29:17Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887183357/job/104120617668",
+      "name": "create-issue",
+      "startedAt": "2026-09-14T19:29:17Z",
+      "status": "COMPLETED",
+      "workflowName": "Create Issue from Verification (Enhanced)"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:35:29Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887824987/job/104122724864",
+      "name": "create-issue",
+      "startedAt": "2026-09-14T19:35:29Z",
+      "status": "COMPLETED",
+      "workflowName": "Create Issue from Verification (Enhanced)"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:31:21Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875256301/job/104080743482",
+      "name": "create-new-pr",
+      "startedAt": "2026-09-14T17:31:21Z",
+      "status": "COMPLETED",
+      "workflowName": "Create New PR from Verification"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:35:06Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875636510/job/104082006361",
+      "name": "create-new-pr",
+      "startedAt": "2026-09-14T17:35:06Z",
+      "status": "COMPLETED",
+      "workflowName": "Create New PR from Verification"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:29:17Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887183305/job/104120618243",
+      "name": "create-new-pr",
+      "startedAt": "2026-09-14T19:29:17Z",
+      "status": "COMPLETED",
+      "workflowName": "Create New PR from Verification"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:35:29Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887825020/job/104122724977",
+      "name": "create-new-pr",
+      "startedAt": "2026-09-14T19:35:29Z",
+      "status": "COMPLETED",
+      "workflowName": "Create New PR from Verification"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:30:29Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875166815/job/104080442329",
+      "name": "contract",
+      "startedAt": "2026-09-14T17:30:30Z",
+      "status": "COMPLETED",
+      "workflowName": "PR 46 Dependency Repair Contract"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:31:21Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875256780/job/104080746063",
+      "name": "contract",
+      "startedAt": "2026-09-14T17:31:22Z",
+      "status": "COMPLETED",
+      "workflowName": "PR 46 Dependency Repair Contract"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:32:33Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875374461/job/104081184375",
+      "name": "contract",
+      "startedAt": "2026-09-14T17:32:41Z",
+      "status": "COMPLETED",
+      "workflowName": "PR 46 Dependency Repair Contract"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:35:06Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875636755/job/104082042921",
+      "name": "contract",
+      "startedAt": "2026-09-14T17:35:12Z",
+      "status": "COMPLETED",
+      "workflowName": "PR 46 Dependency Repair Contract"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:26:33Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34886905129/job/104119687530",
+      "name": "contract",
+      "startedAt": "2026-09-14T19:26:33Z",
+      "status": "COMPLETED",
+      "workflowName": "PR 46 Dependency Repair Contract"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:29:17Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887183670/job/104120619446",
+      "name": "contract",
+      "startedAt": "2026-09-14T19:29:17Z",
+      "status": "COMPLETED",
+      "workflowName": "PR 46 Dependency Repair Contract"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:35:29Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887826171/job/104122729094",
+      "name": "contract",
+      "startedAt": "2026-09-14T19:35:30Z",
+      "status": "COMPLETED",
+      "workflowName": "PR 46 Dependency Repair Contract"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:31:27Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875255947/job/104080740625",
+      "name": "gate",
+      "startedAt": "2026-09-14T17:31:23Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Auto-Pilot"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:35:14Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875635783/job/104082002671",
+      "name": "gate",
+      "startedAt": "2026-09-14T17:35:08Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Auto-Pilot"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:29:22Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887183074/job/104120615565",
+      "name": "gate",
+      "startedAt": "2026-09-14T19:29:18Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Auto-Pilot"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:35:14Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887778720/job/104122579250",
+      "name": "gate",
+      "startedAt": "2026-09-14T19:35:07Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Auto-Pilot"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:35:37Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887825928/job/104122726434",
+      "name": "gate",
+      "startedAt": "2026-09-14T19:35:32Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Auto-Pilot"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:31:30Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875256607/job/104080743084",
+      "name": "Resolve PR",
+      "startedAt": "2026-09-14T17:31:23Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Bot Comment Handler"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:35:18Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875636254/job/104082004362",
+      "name": "Resolve PR",
+      "startedAt": "2026-09-14T17:35:08Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Bot Comment Handler"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:29:31Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887183666/job/104120617723",
+      "name": "Resolve PR",
+      "startedAt": "2026-09-14T19:29:19Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Bot Comment Handler"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:35:40Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887826894/job/104122728445",
+      "name": "Resolve PR",
+      "startedAt": "2026-09-14T19:35:32Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Bot Comment Handler"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:32:12Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875256564/job/104080873049",
+      "name": "Evaluate keepalive loop",
+      "startedAt": "2026-09-14T17:31:48Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Keepalive Loop"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:35:30Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875636478/job/104082006722",
+      "name": "Evaluate keepalive loop",
+      "startedAt": "2026-09-14T17:35:09Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Keepalive Loop"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:29:39Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887183650/job/104120626922",
+      "name": "Evaluate keepalive loop",
+      "startedAt": "2026-09-14T19:29:21Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Keepalive Loop"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:35:50Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887826937/job/104122732235",
+      "name": "Evaluate keepalive loop",
+      "startedAt": "2026-09-14T19:35:33Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Keepalive Loop"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:31:32Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875256720/job/104080743556",
+      "name": "check",
+      "startedAt": "2026-09-14T17:31:23Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Verifier"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:35:23Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875636764/job/104082006712",
+      "name": "check",
+      "startedAt": "2026-09-14T17:35:08Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Verifier"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:29:32Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887183635/job/104120617370",
+      "name": "check",
+      "startedAt": "2026-09-14T19:29:20Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Verifier"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:35:45Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887826465/job/104122727613",
+      "name": "check",
+      "startedAt": "2026-09-14T19:35:33Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Verifier"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:31:32Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875256785/job/104080744055",
+      "name": "Resolve Context",
+      "startedAt": "2026-09-14T17:31:25Z",
+      "status": "COMPLETED",
+      "workflowName": "CI Autofix Loop"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:35:52Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875636916/job/104082007504",
+      "name": "Resolve Context",
+      "startedAt": "2026-09-14T17:35:44Z",
+      "status": "COMPLETED",
+      "workflowName": "CI Autofix Loop"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:29:23Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887183718/job/104120618079",
+      "name": "Resolve Context",
+      "startedAt": "2026-09-14T19:29:19Z",
+      "status": "COMPLETED",
+      "workflowName": "CI Autofix Loop"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:35:36Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887826068/job/104122727713",
+      "name": "Resolve Context",
+      "startedAt": "2026-09-14T19:35:31Z",
+      "status": "COMPLETED",
+      "workflowName": "CI Autofix Loop"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:31:04Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875169820/job/104080580349",
+      "name": "detect changed files",
+      "startedAt": "2026-09-14T17:30:55Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:32:19Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875256403/job/104080997287",
+      "name": "detect changed files",
+      "startedAt": "2026-09-14T17:32:09Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:35:14Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875636581/job/104082006806",
+      "name": "detect changed files",
+      "startedAt": "2026-09-14T17:35:08Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:29:30Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887183448/job/104120617632",
+      "name": "detect changed files",
+      "startedAt": "2026-09-14T19:29:19Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:35:39Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887826671/job/104122729863",
+      "name": "detect changed files",
+      "startedAt": "2026-09-14T19:35:32Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:30:37Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875169906/job/104080450480",
+      "name": "detect workflow edits",
+      "startedAt": "2026-09-14T17:30:33Z",
+      "status": "COMPLETED",
+      "workflowName": "Health 40 Sweep"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:31:42Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875169535/job/104080808725",
+      "name": "classify changed paths",
+      "startedAt": "2026-09-14T17:31:35Z",
+      "status": "COMPLETED",
+      "workflowName": "Health 44 Gate Branch Protection"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:31:03Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875169663/job/104080448889",
+      "name": "guard",
+      "startedAt": "2026-09-14T17:30:33Z",
+      "status": "COMPLETED",
+      "workflowName": "Health 45 Agents Guard"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:31:50Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875256317/job/104080741875",
+      "name": "guard",
+      "startedAt": "2026-09-14T17:31:23Z",
+      "status": "COMPLETED",
+      "workflowName": "Health 45 Agents Guard"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:32:59Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875374322/job/104081136319",
+      "name": "guard",
+      "startedAt": "2026-09-14T17:32:35Z",
+      "status": "COMPLETED",
+      "workflowName": "Health 45 Agents Guard"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:35:45Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875636471/job/104082005137",
+      "name": "guard",
+      "startedAt": "2026-09-14T17:35:08Z",
+      "status": "COMPLETED",
+      "workflowName": "Health 45 Agents Guard"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:27:03Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34886902454/job/104119678181",
+      "name": "guard",
+      "startedAt": "2026-09-14T19:26:33Z",
+      "status": "COMPLETED",
+      "workflowName": "Health 45 Agents Guard"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:29:44Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887183406/job/104120616810",
+      "name": "guard",
+      "startedAt": "2026-09-14T19:29:18Z",
+      "status": "COMPLETED",
+      "workflowName": "Health 45 Agents Guard"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:35:57Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887824905/job/104122722534",
+      "name": "guard",
+      "startedAt": "2026-09-14T19:35:31Z",
+      "status": "COMPLETED",
+      "workflowName": "Health 45 Agents Guard"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:30:44Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875169478/job/104080464111",
+      "name": "classify changed paths",
+      "startedAt": "2026-09-14T17:30:36Z",
+      "status": "COMPLETED",
+      "workflowName": "Health 50 Security Scan"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:30:38Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875169541/job/104080448137",
+      "name": "classify changed paths",
+      "startedAt": "2026-09-14T17:30:32Z",
+      "status": "COMPLETED",
+      "workflowName": "Health 52 Semgrep Scan"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:31:01Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875169547/job/104080448537",
+      "name": "Produce read-only shadow evidence",
+      "startedAt": "2026-09-14T17:30:33Z",
+      "status": "COMPLETED",
+      "workflowName": "Health 69 Consumer Sync Shadow Evidence"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:30:49Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875169465/job/104080447629",
+      "name": "validate",
+      "startedAt": "2026-09-14T17:30:34Z",
+      "status": "COMPLETED",
+      "workflowName": "Health 72 Template Sync"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:30:39Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875169493/job/104080448447",
+      "name": "Check template completeness",
+      "startedAt": "2026-09-14T17:30:32Z",
+      "status": "COMPLETED",
+      "workflowName": "Health 73 Template Completeness"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:30:44Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875169548/job/104080448330",
+      "name": "Parse and lint workflows",
+      "startedAt": "2026-09-14T17:30:32Z",
+      "status": "COMPLETED",
+      "workflowName": "Maint 52 Validate Workflows"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:30:48Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875169558/job/104080448346",
+      "name": "YAML syntax + script imports",
+      "startedAt": "2026-09-14T17:30:32Z",
+      "status": "COMPLETED",
+      "workflowName": "PR 11 - Minimal invariant CI"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:30:44Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875169670/job/104080449540",
+      "name": "classify changed paths",
+      "startedAt": "2026-09-14T17:30:33Z",
+      "status": "COMPLETED",
+      "workflowName": "Selftest CI"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:30:48Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875169513/job/104080447944",
+      "name": "Validate sync manifest completeness",
+      "startedAt": "2026-09-14T17:30:33Z",
+      "status": "COMPLETED",
+      "workflowName": "Validate Sync Manifest"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:31:28Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875255947/job/104080778868",
+      "name": "auto-pilot",
+      "startedAt": "2026-09-14T17:31:28Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Auto-Pilot"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:35:15Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875635783/job/104082058149",
+      "name": "auto-pilot",
+      "startedAt": "2026-09-14T17:35:15Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Auto-Pilot"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:29:23Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887183074/job/104120654304",
+      "name": "auto-pilot",
+      "startedAt": "2026-09-14T19:29:23Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Auto-Pilot"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:35:14Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887778720/job/104122638426",
+      "name": "auto-pilot",
+      "startedAt": "2026-09-14T19:35:15Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Auto-Pilot"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:35:38Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887825928/job/104122775655",
+      "name": "auto-pilot",
+      "startedAt": "2026-09-14T19:35:38Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Auto-Pilot"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:31:32Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875256607/job/104080800977",
+      "name": "Handle bot comments",
+      "startedAt": "2026-09-14T17:31:32Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Bot Comment Handler"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:35:18Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875636254/job/104082075370",
+      "name": "Handle bot comments",
+      "startedAt": "2026-09-14T17:35:18Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Bot Comment Handler"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:29:32Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887183666/job/104120703460",
+      "name": "Handle bot comments",
+      "startedAt": "2026-09-14T19:29:32Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Bot Comment Handler"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:35:41Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887826894/job/104122794111",
+      "name": "Handle bot comments",
+      "startedAt": "2026-09-14T19:35:41Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Bot Comment Handler"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:32:12Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875256564/job/104081022296",
+      "name": "Verify secrets available",
+      "startedAt": "2026-09-14T17:32:12Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Keepalive Loop"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:35:31Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875636478/job/104082149980",
+      "name": "Verify secrets available",
+      "startedAt": "2026-09-14T17:35:31Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Keepalive Loop"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:29:40Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887183650/job/104120746861",
+      "name": "Verify secrets available",
+      "startedAt": "2026-09-14T19:29:40Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Keepalive Loop"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:35:51Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887826937/job/104122850417",
+      "name": "Verify secrets available",
+      "startedAt": "2026-09-14T19:35:51Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Keepalive Loop"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:30:30Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875169527/job/104080449774",
+      "name": "gate_event_context",
+      "startedAt": "2026-09-14T17:30:31Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents PR meta manager"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:31:32Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875256720/job/104080803871",
+      "name": "verifier",
+      "startedAt": "2026-09-14T17:31:32Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Verifier"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:35:23Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875636764/job/104082106399",
+      "name": "verifier",
+      "startedAt": "2026-09-14T17:35:24Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Verifier"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:29:32Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887183635/job/104120707024",
+      "name": "verifier",
+      "startedAt": "2026-09-14T19:29:33Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Verifier"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:31:32Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875256785/job/104080803363",
+      "name": "autofix",
+      "startedAt": "2026-09-14T17:31:32Z",
+      "status": "COMPLETED",
+      "workflowName": "CI Autofix Loop"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:35:52Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875636916/job/104082269587",
+      "name": "autofix",
+      "startedAt": "2026-09-14T17:35:52Z",
+      "status": "COMPLETED",
+      "workflowName": "CI Autofix Loop"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:29:23Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887183718/job/104120658175",
+      "name": "autofix",
+      "startedAt": "2026-09-14T19:29:24Z",
+      "status": "COMPLETED",
+      "workflowName": "CI Autofix Loop"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:35:37Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887826068/job/104122770791",
+      "name": "autofix",
+      "startedAt": "2026-09-14T19:35:37Z",
+      "status": "COMPLETED",
+      "workflowName": "CI Autofix Loop"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:30:38Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875169906/job/104080492065",
+      "name": "workflow lint (maint-36)",
+      "startedAt": "2026-09-14T17:30:38Z",
+      "status": "COMPLETED",
+      "workflowName": "Health 40 Sweep"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:30:45Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875169478/job/104080531906",
+      "name": "CodeQL",
+      "startedAt": "2026-09-14T17:30:45Z",
+      "status": "COMPLETED",
+      "workflowName": "Health 50 Security Scan"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:30:39Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875169541/job/104080497851",
+      "name": "Semgrep",
+      "startedAt": "2026-09-14T17:30:39Z",
+      "status": "COMPLETED",
+      "workflowName": "Health 52 Semgrep Scan"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:30:29Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875166815/job/104080441836",
+      "name": "unauthorized-promotion-marker",
+      "startedAt": "2026-09-14T17:30:29Z",
+      "status": "COMPLETED",
+      "workflowName": "PR 46 Dependency Repair Contract"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:31:21Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875256780/job/104080745369",
+      "name": "unauthorized-promotion-marker",
+      "startedAt": "2026-09-14T17:31:22Z",
+      "status": "COMPLETED",
+      "workflowName": "PR 46 Dependency Repair Contract"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:32:33Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875374461/job/104081138981",
+      "name": "unauthorized-promotion-marker",
+      "startedAt": "2026-09-14T17:32:33Z",
+      "status": "COMPLETED",
+      "workflowName": "PR 46 Dependency Repair Contract"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:35:06Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875636755/job/104082052360",
+      "name": "unauthorized-promotion-marker",
+      "startedAt": "2026-09-14T17:35:14Z",
+      "status": "COMPLETED",
+      "workflowName": "PR 46 Dependency Repair Contract"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:26:33Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34886905129/job/104119686505",
+      "name": "unauthorized-promotion-marker",
+      "startedAt": "2026-09-14T19:26:33Z",
+      "status": "COMPLETED",
+      "workflowName": "PR 46 Dependency Repair Contract"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:29:17Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887183670/job/104120619769",
+      "name": "unauthorized-promotion-marker",
+      "startedAt": "2026-09-14T19:29:17Z",
+      "status": "COMPLETED",
+      "workflowName": "PR 46 Dependency Repair Contract"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:35:29Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887826171/job/104122728613",
+      "name": "unauthorized-promotion-marker",
+      "startedAt": "2026-09-14T19:35:30Z",
+      "status": "COMPLETED",
+      "workflowName": "PR 46 Dependency Repair Contract"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:40:36Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887826465/job/104122818286",
+      "name": "verifier / Run post-merge verifier",
+      "startedAt": "2026-09-14T19:36:07Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Verifier"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:31:01Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875169820/job/104080579962",
+      "name": "generated delivery seal",
+      "startedAt": "2026-09-14T17:30:56Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:32:16Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875256403/job/104080997035",
+      "name": "generated delivery seal",
+      "startedAt": "2026-09-14T17:32:10Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:35:13Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875636581/job/104082006535",
+      "name": "generated delivery seal",
+      "startedAt": "2026-09-14T17:35:08Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:29:24Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887183448/job/104120617485",
+      "name": "generated delivery seal",
+      "startedAt": "2026-09-14T19:29:19Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:35:36Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887826671/job/104122729482",
+      "name": "generated delivery seal",
+      "startedAt": "2026-09-14T19:35:32Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:37:06Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875169535/job/104080858308",
+      "name": "enforce",
+      "startedAt": "2026-09-14T17:31:45Z",
+      "status": "COMPLETED",
+      "workflowName": "Health 44 Gate Branch Protection"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:31:03Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875169670/job/104080529917",
+      "name": "JavaScript Tests",
+      "startedAt": "2026-09-14T17:30:46Z",
+      "status": "COMPLETED",
+      "workflowName": "Selftest CI"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:32:12Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875256564/job/104081022998",
+      "name": "Review agent progress alignment",
+      "startedAt": "2026-09-14T17:32:12Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Keepalive Loop"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:35:31Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875636478/job/104082148974",
+      "name": "Review agent progress alignment",
+      "startedAt": "2026-09-14T17:35:31Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Keepalive Loop"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:29:40Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887183650/job/104120746975",
+      "name": "Review agent progress alignment",
+      "startedAt": "2026-09-14T19:29:40Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Keepalive Loop"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:35:51Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887826937/job/104122850587",
+      "name": "Review agent progress alignment",
+      "startedAt": "2026-09-14T19:35:51Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Keepalive Loop"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:31:32Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875256785/job/104080804527",
+      "name": "Record autofix dispatch completion",
+      "startedAt": "2026-09-14T17:31:33Z",
+      "status": "COMPLETED",
+      "workflowName": "CI Autofix Loop"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:35:52Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875636916/job/104082270253",
+      "name": "Record autofix dispatch completion",
+      "startedAt": "2026-09-14T17:35:52Z",
+      "status": "COMPLETED",
+      "workflowName": "CI Autofix Loop"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:29:24Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887183718/job/104120657573",
+      "name": "Record autofix dispatch completion",
+      "startedAt": "2026-09-14T19:29:24Z",
+      "status": "COMPLETED",
+      "workflowName": "CI Autofix Loop"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:35:37Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887826068/job/104122772112",
+      "name": "Record autofix dispatch completion",
+      "startedAt": "2026-09-14T19:35:37Z",
+      "status": "COMPLETED",
+      "workflowName": "CI Autofix Loop"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:30:38Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875169906/job/104080491851",
+      "name": "workflow liveness (zero-job approval holds)",
+      "startedAt": "2026-09-14T17:30:38Z",
+      "status": "COMPLETED",
+      "workflowName": "Health 40 Sweep"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:30:54Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875169527/job/104080448676",
+      "name": "Upsert PR body sections",
+      "startedAt": "2026-09-14T17:30:33Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents PR meta manager"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:31:11Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875169820/job/104080645837",
+      "name": "privilege environment gate",
+      "startedAt": "2026-09-14T17:31:07Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:32:26Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875256403/job/104081063058",
+      "name": "privilege environment gate",
+      "startedAt": "2026-09-14T17:32:22Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:35:19Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875636581/job/104082055098",
+      "name": "privilege environment gate",
+      "startedAt": "2026-09-14T17:35:17Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:29:37Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887183448/job/104120691874",
+      "name": "privilege environment gate",
+      "startedAt": "2026-09-14T19:29:33Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:35:44Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887826671/job/104122783214",
+      "name": "privilege environment gate",
+      "startedAt": "2026-09-14T19:35:41Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:31:50Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875169670/job/104080527851",
+      "name": "Python Tests",
+      "startedAt": "2026-09-14T17:30:46Z",
+      "status": "COMPLETED",
+      "workflowName": "Selftest CI"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:32:12Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875256564/job/104081023565",
+      "name": "Mark agent running",
+      "startedAt": "2026-09-14T17:32:13Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Keepalive Loop"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:35:31Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875636478/job/104082151112",
+      "name": "Mark agent running",
+      "startedAt": "2026-09-14T17:35:31Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Keepalive Loop"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:29:40Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887183650/job/104120748437",
+      "name": "Mark agent running",
+      "startedAt": "2026-09-14T19:29:40Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Keepalive Loop"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:35:51Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887826937/job/104122850732",
+      "name": "Mark agent running",
+      "startedAt": "2026-09-14T19:35:51Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Keepalive Loop"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:30:31Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875169527/job/104080450276",
+      "name": "Detect keepalive round comments",
+      "startedAt": "2026-09-14T17:30:31Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents PR meta manager"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:30:38Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875169906/job/104080492114",
+      "name": "branch protection sweep",
+      "startedAt": "2026-09-14T17:30:38Z",
+      "status": "COMPLETED",
+      "workflowName": "Health 40 Sweep"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:31:16Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875169820/job/104080645616",
+      "name": "issue consistency",
+      "startedAt": "2026-09-14T17:31:07Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:32:34Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875256403/job/104081063188",
+      "name": "issue consistency",
+      "startedAt": "2026-09-14T17:32:22Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:35:27Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875636581/job/104082054845",
+      "name": "issue consistency",
+      "startedAt": "2026-09-14T17:35:17Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:29:43Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887183448/job/104120691878",
+      "name": "issue consistency",
+      "startedAt": "2026-09-14T19:29:32Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:35:53Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887826671/job/104122783124",
+      "name": "issue consistency",
+      "startedAt": "2026-09-14T19:35:42Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:31:07Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875169670/job/104080527910",
+      "name": "stranske-pdf-extract package tests",
+      "startedAt": "2026-09-14T17:30:47Z",
+      "status": "COMPLETED",
+      "workflowName": "Selftest CI"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:32:12Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875256564/job/104081024543",
+      "name": "Keepalive next task (Codex)",
+      "startedAt": "2026-09-14T17:32:13Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Keepalive Loop"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:35:31Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875636478/job/104082151378",
+      "name": "Keepalive next task (Codex)",
+      "startedAt": "2026-09-14T17:35:31Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Keepalive Loop"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:29:40Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887183650/job/104120749026",
+      "name": "Keepalive next task (Codex)",
+      "startedAt": "2026-09-14T19:29:40Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Keepalive Loop"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:35:51Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887826937/job/104122851429",
+      "name": "Keepalive next task (Codex)",
+      "startedAt": "2026-09-14T19:35:51Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Keepalive Loop"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:30:31Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875169527/job/104080450630",
+      "name": "Resume keepalive after Gate",
+      "startedAt": "2026-09-14T17:30:31Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents PR meta manager"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:31:11Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875169820/job/104080688740",
+      "name": "python ci",
+      "startedAt": "2026-09-14T17:31:12Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:32:26Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875256403/job/104081104364",
+      "name": "python ci",
+      "startedAt": "2026-09-14T17:32:27Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:35:20Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875636581/job/104082087004",
+      "name": "python ci",
+      "startedAt": "2026-09-14T17:35:20Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:29:37Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887183448/job/104120732594",
+      "name": "python ci",
+      "startedAt": "2026-09-14T19:29:37Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:35:44Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887826671/job/104122814072",
+      "name": "python ci",
+      "startedAt": "2026-09-14T19:35:45Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:31:10Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875169670/job/104080528007",
+      "name": "Lint, Format & YAML Validation",
+      "startedAt": "2026-09-14T17:30:46Z",
+      "status": "COMPLETED",
+      "workflowName": "Selftest CI"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:31:32Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875256607/job/104080803697",
+      "name": "Cleanup",
+      "startedAt": "2026-09-14T17:31:32Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Bot Comment Handler"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:35:18Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875636254/job/104082076545",
+      "name": "Cleanup",
+      "startedAt": "2026-09-14T17:35:18Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Bot Comment Handler"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:29:32Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887183666/job/104120703896",
+      "name": "Cleanup",
+      "startedAt": "2026-09-14T19:29:32Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Bot Comment Handler"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:35:41Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887826894/job/104122795115",
+      "name": "Cleanup",
+      "startedAt": "2026-09-14T19:35:41Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Bot Comment Handler"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:32:12Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875256564/job/104081023977",
+      "name": "Keepalive next task (Claude)",
+      "startedAt": "2026-09-14T17:32:13Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Keepalive Loop"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:35:31Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875636478/job/104082151153",
+      "name": "Keepalive next task (Claude)",
+      "startedAt": "2026-09-14T17:35:31Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Keepalive Loop"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:29:40Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887183650/job/104120748983",
+      "name": "Keepalive next task (Claude)",
+      "startedAt": "2026-09-14T19:29:40Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Keepalive Loop"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:35:51Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887826937/job/104122852044",
+      "name": "Keepalive next task (Claude)",
+      "startedAt": "2026-09-14T19:35:51Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Keepalive Loop"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:30:31Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875169527/job/104080450277",
+      "name": "gate_no_pr_summary",
+      "startedAt": "2026-09-14T17:30:31Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents PR meta manager"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:32:12Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875256564/job/104081023717",
+      "name": "Keepalive next task (Cursor)",
+      "startedAt": "2026-09-14T17:32:13Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Keepalive Loop"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:35:31Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875636478/job/104082151420",
+      "name": "Keepalive next task (Cursor)",
+      "startedAt": "2026-09-14T17:35:31Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Keepalive Loop"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:29:40Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887183650/job/104120749270",
+      "name": "Keepalive next task (Cursor)",
+      "startedAt": "2026-09-14T19:29:41Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Keepalive Loop"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:35:51Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887826937/job/104122852227",
+      "name": "Keepalive next task (Cursor)",
+      "startedAt": "2026-09-14T19:35:51Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Keepalive Loop"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:30:31Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875169527/job/104080451146",
+      "name": "Dispatch keepalive orchestrator",
+      "startedAt": "2026-09-14T17:30:31Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents PR meta manager"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:32:12Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875256564/job/104081024680",
+      "name": "Keepalive next task (Gemini)",
+      "startedAt": "2026-09-14T17:32:13Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Keepalive Loop"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:35:31Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875636478/job/104082151518",
+      "name": "Keepalive next task (Gemini)",
+      "startedAt": "2026-09-14T17:35:31Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Keepalive Loop"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:29:40Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887183650/job/104120749511",
+      "name": "Keepalive next task (Gemini)",
+      "startedAt": "2026-09-14T19:29:41Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Keepalive Loop"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:35:51Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887826937/job/104122851944",
+      "name": "Keepalive next task (Gemini)",
+      "startedAt": "2026-09-14T19:35:51Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Keepalive Loop"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:32:12Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875256564/job/104081025327",
+      "name": "Record keepalive dispatch completion",
+      "startedAt": "2026-09-14T17:32:13Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Keepalive Loop"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:35:31Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875636478/job/104082151914",
+      "name": "Record keepalive dispatch completion",
+      "startedAt": "2026-09-14T17:35:32Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Keepalive Loop"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:29:40Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887183650/job/104120749935",
+      "name": "Record keepalive dispatch completion",
+      "startedAt": "2026-09-14T19:29:41Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Keepalive Loop"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:35:51Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887826937/job/104122852918",
+      "name": "Record keepalive dispatch completion",
+      "startedAt": "2026-09-14T19:35:52Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Keepalive Loop"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:32:41Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875256564/job/104081023355",
+      "name": "Update keepalive summary",
+      "startedAt": "2026-09-14T17:32:15Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Keepalive Loop"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:35:51Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875636478/job/104082150197",
+      "name": "Update keepalive summary",
+      "startedAt": "2026-09-14T17:35:34Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Keepalive Loop"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:30:01Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887183650/job/104120748364",
+      "name": "Update keepalive summary",
+      "startedAt": "2026-09-14T19:29:48Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Keepalive Loop"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:36:15Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887826937/job/104122851013",
+      "name": "Update keepalive summary",
+      "startedAt": "2026-09-14T19:35:54Z",
+      "status": "COMPLETED",
+      "workflowName": "Agents Keepalive Loop"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:31:25Z",
+      "conclusion": "CANCELLED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875169820/job/104080687683",
+      "name": "docs guard",
+      "startedAt": "2026-09-14T17:31:13Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:32:46Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875256403/job/104081102599",
+      "name": "docs guard",
+      "startedAt": "2026-09-14T17:32:28Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:35:37Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875636581/job/104082086040",
+      "name": "docs guard",
+      "startedAt": "2026-09-14T17:35:22Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:29:48Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887183448/job/104120730206",
+      "name": "docs guard",
+      "startedAt": "2026-09-14T19:29:39Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:35:58Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887826671/job/104122812463",
+      "name": "docs guard",
+      "startedAt": "2026-09-14T19:35:46Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:31:31Z",
+      "conclusion": "CANCELLED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875169820/job/104080687497",
+      "name": "github scripts tests",
+      "startedAt": "2026-09-14T17:31:14Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:32:45Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875256403/job/104081102583",
+      "name": "github scripts tests",
+      "startedAt": "2026-09-14T17:32:29Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:35:43Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875636581/job/104082085827",
+      "name": "github scripts tests",
+      "startedAt": "2026-09-14T17:35:22Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:29:54Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887183448/job/104120730242",
+      "name": "github scripts tests",
+      "startedAt": "2026-09-14T19:29:39Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:36:06Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887826671/job/104122812510",
+      "name": "github scripts tests",
+      "startedAt": "2026-09-14T19:35:46Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:31:27Z",
+      "conclusion": "CANCELLED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875169820/job/104080687545",
+      "name": "stranske-pdf-extract package tests",
+      "startedAt": "2026-09-14T17:31:13Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:32:44Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875256403/job/104081102576",
+      "name": "stranske-pdf-extract package tests",
+      "startedAt": "2026-09-14T17:32:29Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:35:43Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875636581/job/104082085830",
+      "name": "stranske-pdf-extract package tests",
+      "startedAt": "2026-09-14T17:35:23Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:30:02Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887183448/job/104120730122",
+      "name": "stranske-pdf-extract package tests",
+      "startedAt": "2026-09-14T19:29:39Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:36:05Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887826671/job/104122812558",
+      "name": "stranske-pdf-extract package tests",
+      "startedAt": "2026-09-14T19:35:47Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:31:25Z",
+      "conclusion": "CANCELLED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875169820/job/104080687574",
+      "name": "test-quality",
+      "startedAt": "2026-09-14T17:31:14Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:32:43Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875256403/job/104081102537",
+      "name": "test-quality",
+      "startedAt": "2026-09-14T17:32:30Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:35:37Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875636581/job/104082085901",
+      "name": "test-quality",
+      "startedAt": "2026-09-14T17:35:22Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:30:01Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887183448/job/104120730155",
+      "name": "test-quality",
+      "startedAt": "2026-09-14T19:29:41Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:35:57Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887826671/job/104122812502",
+      "name": "test-quality",
+      "startedAt": "2026-09-14T19:35:46Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:31:11Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875169820/job/104080689605",
+      "name": "docker smoke",
+      "startedAt": "2026-09-14T17:31:12Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:32:26Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875256403/job/104081104391",
+      "name": "docker smoke",
+      "startedAt": "2026-09-14T17:32:27Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:35:20Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875636581/job/104082087769",
+      "name": "docker smoke",
+      "startedAt": "2026-09-14T17:35:20Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:29:37Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887183448/job/104120731495",
+      "name": "docker smoke",
+      "startedAt": "2026-09-14T19:29:37Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:35:44Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887826671/job/104122813792",
+      "name": "docker smoke",
+      "startedAt": "2026-09-14T19:35:45Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:31:38Z",
+      "conclusion": "CANCELLED",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875169820/job/104080687590",
+      "name": "ledger validation",
+      "startedAt": "2026-09-14T17:31:13Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:33:56Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875256403/job/104081102571",
+      "name": "ledger validation",
+      "startedAt": "2026-09-14T17:32:30Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:36:14Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875636581/job/104082086062",
+      "name": "ledger validation",
+      "startedAt": "2026-09-14T17:35:22Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:30:57Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887183448/job/104120730224",
+      "name": "ledger validation",
+      "startedAt": "2026-09-14T19:29:41Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:37:13Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887826671/job/104122812408",
+      "name": "ledger validation",
+      "startedAt": "2026-09-14T19:35:47Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:32:07Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875169820/job/104080836960",
+      "name": "summary",
+      "startedAt": "2026-09-14T17:31:41Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:34:21Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875256403/job/104081615185",
+      "name": "summary",
+      "startedAt": "2026-09-14T17:33:59Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T17:36:47Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34875636581/job/104082392712",
+      "name": "summary",
+      "startedAt": "2026-09-14T17:36:17Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:31:33Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887183448/job/104121190117",
+      "name": "summary",
+      "startedAt": "2026-09-14T19:31:01Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-14T19:37:47Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/stranske/Workflows/actions/runs/34887826671/job/104123320946",
+      "name": "summary",
+      "startedAt": "2026-09-14T19:37:16Z",
+      "status": "COMPLETED",
+      "workflowName": "Gate"
+    },
+    {
+      "__typename": "StatusContext",
+      "context": "CodeRabbit",
+      "startedAt": "2026-09-14T17:30:40Z",
+      "state": "SUCCESS",
+      "targetUrl": ""
+    },
+    {
+      "__typename": "StatusContext",
+      "context": "Gate / gate",
+      "startedAt": "2026-09-14T19:37:43Z",
+      "state": "SUCCESS",
+      "targetUrl": "https://github.com/stranske/Workflows/actions/runs/34887826671"
+    }
+  ],
+  "title": "fix(pr-meta): stop metadata status self-observation"
+}

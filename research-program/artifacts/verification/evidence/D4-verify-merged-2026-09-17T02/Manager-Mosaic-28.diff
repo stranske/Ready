@@ -1,0 +1,283 @@
+diff --git a/src/manager_mosaic/__init__.py b/src/manager_mosaic/__init__.py
+index c91d7e7..a7b0277 100644
+--- a/src/manager_mosaic/__init__.py
++++ b/src/manager_mosaic/__init__.py
+@@ -1,5 +1,6 @@
+ """Manager mosaic: evidence-linked facts, discrepancy detection, and thesis monitoring."""
+ 
++from manager_mosaic.evidence import validate_evidence_object
+ from manager_mosaic.model import (
+     Document,
+     Entry,
+@@ -47,6 +48,7 @@
+     "pub",
+     "theme",
+     "validate",
++    "validate_evidence_object",
+     "greet",
+     "add",
+ ]
+diff --git a/src/manager_mosaic/evidence.py b/src/manager_mosaic/evidence.py
+new file mode 100644
+index 0000000..49ed78a
+--- /dev/null
++++ b/src/manager_mosaic/evidence.py
+@@ -0,0 +1,37 @@
++"""Evidence-object/v1 validation for the manager mosaic package."""
++
++from __future__ import annotations
++
++from typing import Any
++
++from jsonschema import Draft202012Validator
++
++from manager_mosaic.model import load_schema
++
++
++def load_evidence_schema() -> dict[str, Any]:
++    """Load the packaged evidence-object/v1 JSON Schema.
++
++    The schema ships inside the package (``manager_mosaic/schemas``) and is read
++    through package resources, so validation works from an installed wheel and
++    not only from a source checkout.
++    """
++    return load_schema("evidence-object-v1")
++
++
++def validate_evidence_object(payload: dict[str, Any]) -> list[str]:
++    """Return all schema violations for an evidence-object/v1 payload.
++
++    An empty list means the payload is valid. The ``excerpt`` key must be
++    present even when its value is ``null``; a wholly absent key is rejected.
++    """
++    violations: list[str] = []
++    if "excerpt" not in payload:
++        violations.append(
++            "excerpt key must be present (string or explicit null); positional anchors alone are insufficient"
++        )
++
++    validator = Draft202012Validator(load_evidence_schema())
++    for error in sorted(validator.iter_errors(payload), key=lambda item: list(item.path)):
++        violations.append(error.message)
++    return violations
+diff --git a/src/manager_mosaic/schemas/evidence-object-v1.schema.json b/src/manager_mosaic/schemas/evidence-object-v1.schema.json
+new file mode 100644
+index 0000000..5bd44de
+--- /dev/null
++++ b/src/manager_mosaic/schemas/evidence-object-v1.schema.json
+@@ -0,0 +1,101 @@
++{
++  "$schema": "https://json-schema.org/draft/2020-12/schema",
++  "$id": "https://github.com/stranske/Workflows/docs/contracts/schemas/evidence-object-v1.schema.json",
++  "title": "Research Backplane Evidence Object v1",
++  "description": "An attributable evidence object linking an extracted/asserted fact back to its source. Closes the fleet's most common evidence gap: even the best repos (Pension-Data 2/3, Inv-Man-Intake 2/3) omit EXCERPT text and extraction METHOD from their evidence object. Both are required here. Out of role for pure computational engines (PAEM/Trend_Model emit no facts) -- such tools list 'evidence' outside their registry required_sections and emit no evidence objects.",
++  "type": "object",
++  "additionalProperties": true,
++  "required": [
++    "schema_version",
++    "evidence_id",
++    "fact_ref",
++    "source_id",
++    "method",
++    "excerpt"
++  ],
++  "properties": {
++    "schema_version": {
++      "const": "evidence-object/v1"
++    },
++    "evidence_id": {
++      "type": "string",
++      "minLength": 1,
++      "description": "Stable, deterministic id for this evidence object (e.g. a content hash), referenced from run-contract/v1 evidence_refs."
++    },
++    "fact_ref": {
++      "type": "string",
++      "minLength": 1,
++      "description": "Identifier of the fact/metric/field this evidence supports (e.g. 'strategy.asset_class', a metric key, a holdings delta id)."
++    },
++    "source_id": {
++      "type": "string",
++      "minLength": 1,
++      "description": "Stable source document / dataset id the fact was drawn from."
++    },
++    "method": {
++      "type": "string",
++      "enum": [
++        "rule",
++        "parser",
++        "table",
++        "text",
++        "ocr",
++        "llm",
++        "computed",
++        "fallback",
++        "manual"
++      ],
++      "description": "How the fact was extracted/produced. This is the field the fleet's best repos are missing (Pension-Data: no method on the evidence link; Inv-Man-Intake: provider_name lives on the document result, not the field)."
++    },
++    "excerpt": {
++      "type": ["string", "null"],
++      "maxLength": 2000,
++      "description": "The quoted source text supporting the fact (bounded). Required to be PRESENT (string or explicit null) so consumers can see WHAT text supports a fact. The fleet stores positional anchors like 'text:3' instead of quoted excerpts; this field carries the quote. Bounded length keeps it artifact-safe; long source bodies stay in named artifacts."
++    },
++    "locator": {
++      "type": "object",
++      "additionalProperties": true,
++      "description": "Structured location within the source. The richer locators (bbox/table/row) already exist on types like Inv-Man-Intake SourceLocation but are not propagated to the evidence object today.",
++      "properties": {
++        "page": {
++          "type": "integer",
++          "minimum": 0
++        },
++        "section": {
++          "type": "string",
++          "minLength": 1
++        },
++        "table_index": {
++          "type": "integer",
++          "minimum": 0
++        },
++        "row": {
++          "type": "integer",
++          "minimum": 0
++        },
++        "column": {
++          "type": ["string", "integer"]
++        },
++        "bbox": {
++          "type": "array",
++          "items": {
++            "type": "number"
++          },
++          "minItems": 4,
++          "maxItems": 4
++        }
++      }
++    },
++    "confidence": {
++      "type": ["number", "null"],
++      "minimum": 0,
++      "maximum": 1,
++      "description": "Per-evidence-link confidence (so two evidence sources for one fact can carry differing confidences -- a gap noted for Pension-Data, where confidence sits on the fact not the link)."
++    },
++    "entity_ref": {
++      "type": "string",
++      "pattern": "^[a-z0-9_]+:[a-z0-9][a-z0-9_.:-]*$",
++      "description": "Optional canonical entity id (per identity-map-conventions.md) the fact is about."
++    }
++  }
++}
+diff --git a/tests/test_evidence_validation.py b/tests/test_evidence_validation.py
+new file mode 100644
+index 0000000..d2f57f2
+--- /dev/null
++++ b/tests/test_evidence_validation.py
+@@ -0,0 +1,108 @@
++"""Evidence-object/v1 validator tests."""
++
++from __future__ import annotations
++
++import json
++from importlib import resources
++from pathlib import Path
++
++from manager_mosaic import validate_evidence_object
++from manager_mosaic.evidence import load_evidence_schema
++
++
++def test_validate_evidence_object_reports_missing_excerpt_key() -> None:
++    payload = {
++        "schema_version": "evidence-object/v1",
++        "evidence_id": "ev-1",
++        "fact_ref": "strategy.asset_class",
++        "source_id": "doc-1",
++        "method": "parser",
++    }
++    violations = validate_evidence_object(payload)
++    assert violations
++    assert any("excerpt" in message for message in violations)
++
++
++def test_validate_evidence_object_accepts_explicit_null_excerpt() -> None:
++    payload = {
++        "schema_version": "evidence-object/v1",
++        "evidence_id": "ev-1",
++        "fact_ref": "strategy.asset_class",
++        "source_id": "doc-1",
++        "method": "parser",
++        "excerpt": None,
++    }
++    assert validate_evidence_object(payload) == []
++
++
++def test_validate_evidence_object_accepts_valid_payload() -> None:
++    payload = {
++        "schema_version": "evidence-object/v1",
++        "evidence_id": "ev-1",
++        "fact_ref": "strategy.asset_class",
++        "source_id": "doc-1",
++        "method": "parser",
++        "excerpt": "Quoted source text supporting the fact.",
++    }
++    assert validate_evidence_object(payload) == []
++
++
++def test_validate_evidence_object_reports_every_violation() -> None:
++    """A validator that returns only the first error must fail this test."""
++    violations = validate_evidence_object({})
++
++    # The missing-excerpt pre-check plus one `required` error per schema key.
++    assert len(violations) == 7
++    for key in (
++        "schema_version",
++        "evidence_id",
++        "fact_ref",
++        "source_id",
++        "method",
++        "excerpt",
++    ):
++        assert any(key in message for message in violations), key
++
++
++def test_validate_evidence_object_reports_violations_at_mixed_depths() -> None:
++    """Violations nested at different paths are all returned, in path order."""
++    payload = {
++        "schema_version": "evidence-object/v1",
++        "evidence_id": "",
++        "fact_ref": "strategy.asset_class",
++        "source_id": "doc-1",
++        "method": "telepathy",
++        "excerpt": "Quoted source text supporting the fact.",
++        "locator": {"page": -1, "bbox": [1.0, 2.0]},
++        "confidence": 5,
++    }
++    violations = validate_evidence_object(payload)
++
++    assert len(violations) == 5
++    assert any("non-empty" in message for message in violations)
++    assert any("telepathy" in message for message in violations)
++    assert any("too short" in message for message in violations)
++    assert any("minimum of 0" in message for message in violations)
++    assert any("maximum of 1" in message for message in violations)
++
++
++def test_evidence_schema_is_readable_through_package_resources() -> None:
++    """The schema must resolve from the installed package, not a source path."""
++    schema_file = resources.files("manager_mosaic").joinpath(
++        "schemas", "evidence-object-v1.schema.json"
++    )
++    assert schema_file.is_file()
++    assert load_evidence_schema() == json.loads(schema_file.read_text(encoding="utf-8"))
++
++
++def test_packaged_evidence_schema_matches_published_contract() -> None:
++    """The packaged copy must not drift from the published contract."""
++    published = Path("docs/contracts/schemas/evidence-object-v1.schema.json")
++    if not published.is_file():  # pragma: no cover - installed-package runs
++        return
++    packaged = resources.files("manager_mosaic").joinpath(
++        "schemas", "evidence-object-v1.schema.json"
++    )
++    assert json.loads(packaged.read_text(encoding="utf-8")) == json.loads(
++        published.read_text(encoding="utf-8")
++    )

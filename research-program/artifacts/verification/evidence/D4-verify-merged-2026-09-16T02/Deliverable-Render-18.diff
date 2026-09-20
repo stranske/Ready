@@ -1,0 +1,689 @@
+diff --git a/pyproject.toml b/pyproject.toml
+index 55fbab1..921dc51 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -20,7 +20,9 @@ classifiers = [
+     "Programming Language :: Python :: 3.12",
+     "Programming Language :: Python :: 3.13",
+ ]
+-dependencies = []
++dependencies = [
++    "python-pptx==1.0.2",
++]
+ 
+ [project.optional-dependencies]
+ dev = [
+diff --git a/requirements.lock b/requirements.lock
+index 7c08660..4880521 100644
+--- a/requirements.lock
++++ b/requirements.lock
+@@ -3,7 +3,7 @@
+ ast-serialize==0.6.0
+     # via mypy
+ black==26.5.1
+-    # via my-project (pyproject.toml)
++    # via deliverable-render (pyproject.toml)
+ click==8.4.2
+     # via black
+ colorama==0.4.6 ; sys_platform == 'win32'
+@@ -16,8 +16,10 @@ iniconfig==2.3.0
+     # via pytest
+ librt==0.13.0 ; platform_python_implementation != 'PyPy'
+     # via mypy
++lxml==6.1.3
++    # via python-pptx
+ mypy==2.3.1
+-    # via my-project (pyproject.toml)
++    # via deliverable-render (pyproject.toml)
+ mypy-extensions==1.1.0
+     # via
+     #   black
+@@ -30,6 +32,8 @@ pathspec==1.1.1
+     # via
+     #   black
+     #   mypy
++pillow==12.3.0
++    # via python-pptx
+ platformdirs==4.11.0
+     # via black
+ pluggy==1.6.0
+@@ -40,13 +44,19 @@ pygments==2.20.0
+     # via pytest
+ pytest==9.1.1
+     # via
+-    #   my-project (pyproject.toml)
++    #   deliverable-render (pyproject.toml)
+     #   pytest-cov
+ pytest-cov==7.1.0
+-    # via my-project (pyproject.toml)
++    # via deliverable-render (pyproject.toml)
++python-pptx==1.0.2
++    # via deliverable-render (pyproject.toml)
+ pytokens==0.4.1
+     # via black
+ ruff==0.16.7
+-    # via my-project (pyproject.toml)
++    # via deliverable-render (pyproject.toml)
+ typing-extensions==4.16.0
+-    # via mypy
++    # via
++    #   mypy
++    #   python-pptx
++xlsxwriter==3.2.9
++    # via python-pptx
+diff --git a/src/deliverable_render/pptx/__init__.py b/src/deliverable_render/pptx/__init__.py
+new file mode 100644
+index 0000000..162d843
+--- /dev/null
++++ b/src/deliverable_render/pptx/__init__.py
+@@ -0,0 +1,19 @@
++"""PowerPoint deck rendering with manifest-driven completeness gates."""
++
++from deliverable_render.pptx.manifest import (
++    BuildSummary,
++    DeckBuildError,
++    DeckManifest,
++    SlideSpec,
++    build_deck,
++    enforce_completeness,
++)
++
++__all__ = [
++    "BuildSummary",
++    "DeckBuildError",
++    "DeckManifest",
++    "SlideSpec",
++    "build_deck",
++    "enforce_completeness",
++]
+diff --git a/src/deliverable_render/pptx/manifest.py b/src/deliverable_render/pptx/manifest.py
+new file mode 100644
+index 0000000..895b4b9
+--- /dev/null
++++ b/src/deliverable_render/pptx/manifest.py
+@@ -0,0 +1,278 @@
++"""Manifest schema and deck builder for completeness-gated presentations."""
++
++from __future__ import annotations
++
++import io
++from collections.abc import Mapping
++from dataclasses import dataclass
++from pathlib import Path
++from typing import TYPE_CHECKING, Any
++
++from pptx import Presentation as PresentationFactory
++from pptx.enum.shapes import PP_PLACEHOLDER
++from pptx.util import Inches
++
++from deliverable_render.store import Store
++
++if TYPE_CHECKING:
++    from pptx.presentation import Presentation
++    from pptx.slide import SlideLayout
++
++
++class DeckBuildError(ValueError):
++    """The deck manifest or store cannot satisfy the build contract."""
++
++
++@dataclass(frozen=True)
++class SlideSpec:
++    """One slide entry in a deck manifest edition."""
++
++    slide_id: str
++    title: str
++    layout: str
++    source: str
++    dropped_reason: str | None = None
++    allow_empty: bool = False
++
++    def __post_init__(self) -> None:
++        if not self.slide_id.strip():
++            raise DeckBuildError("slide_id must be a non-empty string")
++        if self.dropped_reason is not None:
++            if not self.dropped_reason.strip():
++                raise DeckBuildError("dropped_reason must be non-empty when provided")
++            return
++        if not self.title.strip():
++            raise DeckBuildError(f"slide {self.slide_id}: title must be a non-empty string")
++        if not self.layout.strip():
++            raise DeckBuildError(f"slide {self.slide_id}: layout must be a non-empty string")
++        if not self.source.strip():
++            raise DeckBuildError(f"slide {self.slide_id}: source must be a non-empty string")
++
++
++def _require_string(value: object, field_name: str, slide_id: str) -> str:
++    if not isinstance(value, str):
++        raise DeckBuildError(f"slide {slide_id}: {field_name} must be a string")
++    return value
++
++
++def _require_bool(value: object, field_name: str, slide_id: str) -> bool:
++    if not isinstance(value, bool):
++        raise DeckBuildError(f"slide {slide_id}: {field_name} must be a boolean")
++    return value
++
++
++@dataclass(frozen=True)
++class DeckManifest:
++    """Ordered deck edition: slide identifiers, layouts, and store queries."""
++
++    slides: tuple[SlideSpec, ...]
++
++    def __post_init__(self) -> None:
++        ids = [slide.slide_id for slide in self.slides]
++        if len(ids) != len(set(ids)):
++            raise DeckBuildError("Duplicate slide_id in manifest")
++
++    @classmethod
++    def from_mapping(cls, data: Mapping[str, object]) -> DeckManifest:
++        raw_slides = data.get("slides")
++        if not isinstance(raw_slides, list):
++            raise DeckBuildError("manifest slides must be an array")
++        slides: list[SlideSpec] = []
++        for item in raw_slides:
++            if not isinstance(item, Mapping):
++                raise DeckBuildError("each slide entry must be an object")
++            slide_id = _require_string(item.get("slide_id", ""), "slide_id", "<unknown>")
++            dropped = item.get("dropped_reason")
++            if dropped is not None and not isinstance(dropped, str):
++                raise DeckBuildError(f"slide {slide_id}: dropped_reason must be a string")
++            allow_empty = item.get("allow_empty", False)
++            slides.append(
++                SlideSpec(
++                    slide_id=slide_id,
++                    title=_require_string(item.get("title", ""), "title", slide_id),
++                    layout=_require_string(item.get("layout", ""), "layout", slide_id),
++                    source=_require_string(item.get("source", ""), "source", slide_id),
++                    dropped_reason=dropped,
++                    allow_empty=_require_bool(allow_empty, "allow_empty", slide_id),
++                )
++            )
++        return cls(tuple(slides))
++
++    def slide_ids(self) -> frozenset[str]:
++        return frozenset(slide.slide_id for slide in self.slides)
++
++    def by_id(self) -> Mapping[str, SlideSpec]:
++        return {slide.slide_id: slide for slide in self.slides}
++
++
++@dataclass(frozen=True)
++class BuildSummary:
++    """Four-count build report; zeros are explicit so a clean build is distinguishable."""
++
++    slides_built: int
++    slides_carried: int
++    slides_dropped_with_reason: int
++    slides_missing_source: int
++
++    def as_dict(self) -> dict[str, int]:
++        return {
++            "slides_built": self.slides_built,
++            "slides_carried": self.slides_carried,
++            "slides_dropped_with_reason": self.slides_dropped_with_reason,
++            "slides_missing_source": self.slides_missing_source,
++        }
++
++
++def enforce_completeness(prior: DeckManifest, current: DeckManifest) -> None:
++    """Require every prior slide_id to have a successor or an explicit dropped_reason."""
++    current_by_id = current.by_id()
++    for prior_slide in prior.slides:
++        current_slide = current_by_id.get(prior_slide.slide_id)
++        if current_slide is None:
++            raise DeckBuildError(
++                f"slide_id {prior_slide.slide_id!r} from the prior edition has no successor "
++                "and no dropped_reason"
++            )
++
++
++def _resolve_layout(presentation: Presentation, layout_name: str) -> SlideLayout:
++    for layout in presentation.slide_layouts:
++        if layout.name == layout_name:
++            return layout
++    available = ", ".join(sorted(layout.name for layout in presentation.slide_layouts))
++    raise DeckBuildError(f"Unknown layout {layout_name!r}; available: {available}")
++
++
++def _resolve_static_asset(template_dir: Path, asset_name: str) -> Path:
++    if Path(asset_name).is_absolute() or ".." in Path(asset_name).parts:
++        raise DeckBuildError(
++            f"static asset {asset_name!r} must be a relative path within the template directory"
++        )
++    template_root = template_dir.resolve()
++    asset_path = (template_root / asset_name).resolve()
++    try:
++        asset_path.relative_to(template_root)
++    except ValueError:
++        raise DeckBuildError(
++            f"static asset {asset_name!r} resolves outside the template directory"
++        ) from None
++    return asset_path
++
++
++def _query_store(store: Store, source: str, template_dir: Path) -> str | None:
++    if source.startswith("record:"):
++        record_id = source.removeprefix("record:")
++        for record in store.records:
++            if record.record_id == record_id:
++                return record.text
++        return None
++    if source.startswith("static:"):
++        asset_name = source.removeprefix("static:")
++        asset_path = _resolve_static_asset(template_dir, asset_name)
++        if asset_path.is_file():
++            return asset_path.read_text(encoding="utf-8").strip()
++        return None
++    raise DeckBuildError(f"Unsupported source query {source!r}; use record:<id> or static:<file>")
++
++
++def _load_template(template: Path | bytes) -> Presentation:
++    if isinstance(template, bytes):
++        return PresentationFactory(io.BytesIO(template))
++    return PresentationFactory(str(template))
++
++
++def _content_placeholder(slide: object) -> Any:
++    placeholders = getattr(slide, "placeholders", None)
++    if placeholders is None:
++        return None
++    for placeholder in placeholders:
++        if not getattr(placeholder, "is_placeholder", False):
++            continue
++        if not hasattr(placeholder, "text"):
++            continue
++        placeholder_format = placeholder.placeholder_format
++        if placeholder_format.type in (PP_PLACEHOLDER.BODY, PP_PLACEHOLDER.OBJECT):
++            return placeholder
++        if placeholder_format.idx != 0:
++            return placeholder
++    return None
++
++
++def _set_slide_title(slide: object, title: str) -> None:
++    shapes = getattr(slide, "shapes", None)
++    if shapes is None:
++        return
++    title_shape = shapes.title
++    if title_shape is not None:
++        title_shape.text = title
++        return
++    if not title:
++        return
++    textbox = shapes.add_textbox(Inches(0.5), Inches(0.3), Inches(9), Inches(1))
++    textbox.text = title
++
++
++def build_deck(
++    template: Path | bytes,
++    manifest: DeckManifest,
++    store: Store,
++    *,
++    prior: DeckManifest | None = None,
++    template_dir: Path | None = None,
++) -> tuple[bytes, BuildSummary]:
++    """Assemble a presentation from template layouts and store-backed slide content."""
++    if prior is not None:
++        enforce_completeness(prior, manifest)
++
++    presentation = _load_template(template)
++    if template_dir is not None:
++        resolved_template_dir = template_dir
++    elif isinstance(template, Path):
++        resolved_template_dir = template.parent
++    else:
++        resolved_template_dir = Path(".")
++
++    prior_ids = prior.slide_ids() if prior is not None else frozenset()
++    slides_built = 0
++    slides_carried = 0
++    slides_dropped_with_reason = 0
++    slides_missing_source = 0
++
++    for slide in manifest.slides:
++        if slide.dropped_reason is not None:
++            slides_dropped_with_reason += 1
++            continue
++
++        content = _query_store(store, slide.source, resolved_template_dir)
++        if content is None or not content.strip():
++            if slide.allow_empty:
++                slides_missing_source += 1
++                content = ""
++            else:
++                raise DeckBuildError(
++                    f"slide_id {slide.slide_id!r}: store query {slide.source!r} returned nothing"
++                )
++
++        layout = _resolve_layout(presentation, slide.layout)
++        new_slide = presentation.slides.add_slide(layout)
++        _set_slide_title(new_slide, slide.title)
++        body_shape = _content_placeholder(new_slide)
++        if body_shape is not None and hasattr(body_shape, "text"):
++            body_shape.text = content
++        elif content:
++            textbox = new_slide.shapes.add_textbox(Inches(1), Inches(2), Inches(8), Inches(4))
++            textbox.text = content
++
++        slides_built += 1
++        if slide.slide_id in prior_ids:
++            slides_carried += 1
++
++    buffer = io.BytesIO()
++    presentation.save(buffer)
++    summary = BuildSummary(
++        slides_built=slides_built,
++        slides_carried=slides_carried,
++        slides_dropped_with_reason=slides_dropped_with_reason,
++        slides_missing_source=slides_missing_source,
++    )
++    return buffer.getvalue(), summary
+diff --git a/tests/fixtures/deck/cover_blurb.txt b/tests/fixtures/deck/cover_blurb.txt
+new file mode 100644
+index 0000000..7109259
+--- /dev/null
++++ b/tests/fixtures/deck/cover_blurb.txt
+@@ -0,0 +1 @@
++Synthetic due diligence deck fixture.
+diff --git a/tests/fixtures/deck/manifest_allow_empty.json b/tests/fixtures/deck/manifest_allow_empty.json
+new file mode 100644
+index 0000000..b7c5ad8
+--- /dev/null
++++ b/tests/fixtures/deck/manifest_allow_empty.json
+@@ -0,0 +1,11 @@
++{
++  "slides": [
++    {
++      "slide_id": "optional-appendix",
++      "title": "Appendix",
++      "layout": "Title and Content",
++      "source": "record:missing-record",
++      "allow_empty": true
++    }
++  ]
++}
+diff --git a/tests/fixtures/deck/manifest_v1.json b/tests/fixtures/deck/manifest_v1.json
+new file mode 100644
+index 0000000..6d5bcf1
+--- /dev/null
++++ b/tests/fixtures/deck/manifest_v1.json
+@@ -0,0 +1,22 @@
++{
++  "slides": [
++    {
++      "slide_id": "cover",
++      "title": "Due Diligence Deck",
++      "layout": "Title Slide",
++      "source": "static:cover_blurb.txt"
++    },
++    {
++      "slide_id": "governance",
++      "title": "Governance",
++      "layout": "Title and Content",
++      "source": "record:gov-24"
++    },
++    {
++      "slide_id": "risk",
++      "title": "Risk Overview",
++      "layout": "Title and Content",
++      "source": "record:risk-25"
++    }
++  ]
++}
+diff --git a/tests/fixtures/deck/manifest_v2_complete.json b/tests/fixtures/deck/manifest_v2_complete.json
+new file mode 100644
+index 0000000..9300414
+--- /dev/null
++++ b/tests/fixtures/deck/manifest_v2_complete.json
+@@ -0,0 +1,21 @@
++{
++  "slides": [
++    {
++      "slide_id": "cover",
++      "title": "Due Diligence Deck 2025",
++      "layout": "Title Slide",
++      "source": "static:cover_blurb.txt"
++    },
++    {
++      "slide_id": "governance",
++      "title": "Governance",
++      "layout": "Title and Content",
++      "source": "record:gov-25"
++    },
++    {
++      "slide_id": "risk",
++      "title": "Risk Overview",
++      "dropped_reason": "Merged into governance narrative for 2025"
++    }
++  ]
++}
+diff --git a/tests/fixtures/deck/manifest_v2_incomplete.json b/tests/fixtures/deck/manifest_v2_incomplete.json
+new file mode 100644
+index 0000000..2d86fa3
+--- /dev/null
++++ b/tests/fixtures/deck/manifest_v2_incomplete.json
+@@ -0,0 +1,16 @@
++{
++  "slides": [
++    {
++      "slide_id": "cover",
++      "title": "Due Diligence Deck 2025",
++      "layout": "Title Slide",
++      "source": "static:cover_blurb.txt"
++    },
++    {
++      "slide_id": "governance",
++      "title": "Governance",
++      "layout": "Title and Content",
++      "source": "record:gov-25"
++    }
++  ]
++}
+diff --git a/tests/fixtures/deck/synthetic_template.pptx b/tests/fixtures/deck/synthetic_template.pptx
+new file mode 100644
+index 0000000..a0e773f
+Binary files /dev/null and b/tests/fixtures/deck/synthetic_template.pptx differ
+diff --git a/tests/test_deck_completeness_gate.py b/tests/test_deck_completeness_gate.py
+new file mode 100644
+index 0000000..e2c08e6
+--- /dev/null
++++ b/tests/test_deck_completeness_gate.py
+@@ -0,0 +1,196 @@
++"""Manifest-gated deck builder completeness and store contract tests."""
++
++from __future__ import annotations
++
++import json
++from io import BytesIO
++from pathlib import Path
++
++import pytest
++from pptx import Presentation
++
++from deliverable_render.pptx.manifest import (
++    DeckBuildError,
++    DeckManifest,
++    build_deck,
++    enforce_completeness,
++)
++from deliverable_render.store import Store
++
++FIXTURES = Path(__file__).parent / "fixtures" / "deck"
++TEMPLATE = FIXTURES / "synthetic_template.pptx"
++STORE = Store.from_json(Path(__file__).parent / "fixtures" / "synthetic_store.json")
++
++
++def _load_manifest(name: str) -> DeckManifest:
++    return DeckManifest.from_mapping(json.loads((FIXTURES / name).read_text(encoding="utf-8")))
++
++
++def _slide_titles(pptx_bytes: bytes) -> list[str]:
++    presentation = Presentation(BytesIO(pptx_bytes))
++    titles: list[str] = []
++    for slide in presentation.slides:
++        if slide.shapes.title is not None and slide.shapes.title.text:
++            titles.append(slide.shapes.title.text)
++    return titles
++
++
++def _slide_body_text(slide: object) -> str:
++    shapes = getattr(slide, "shapes", None)
++    if shapes is None:
++        return ""
++    title_shape = shapes.title
++    for shape in shapes:
++        if shape == title_shape:
++            continue
++        if hasattr(shape, "text") and shape.text:
++            return shape.text
++    return ""
++
++
++def _slide_bodies(pptx_bytes: bytes) -> list[str]:
++    presentation = Presentation(BytesIO(pptx_bytes))
++    return [_slide_body_text(slide) for slide in presentation.slides]
++
++
++def test_missing_successor_without_dropped_reason_fails_and_names_slide_id() -> None:
++    prior = _load_manifest("manifest_v1.json")
++    current = _load_manifest("manifest_v2_incomplete.json")
++
++    with pytest.raises(DeckBuildError, match="slide_id 'risk'"):
++        build_deck(TEMPLATE, current, STORE, prior=prior)
++
++
++def test_dropped_reason_allows_build_and_counts_summary() -> None:
++    prior = _load_manifest("manifest_v1.json")
++    current = _load_manifest("manifest_v2_complete.json")
++
++    pptx_bytes, summary = build_deck(TEMPLATE, current, STORE, prior=prior, template_dir=FIXTURES)
++
++    assert summary.slides_built == 2
++    assert summary.slides_carried == 2
++    assert summary.slides_dropped_with_reason == 1
++    assert summary.slides_missing_source == 0
++    assert summary.as_dict() == {
++        "slides_built": 2,
++        "slides_carried": 2,
++        "slides_dropped_with_reason": 1,
++        "slides_missing_source": 0,
++    }
++    titles = _slide_titles(pptx_bytes)
++    assert titles == ["Due Diligence Deck 2025", "Governance"]
++    assert len(Presentation(BytesIO(pptx_bytes)).slides) == 2
++
++
++def test_empty_store_query_fails_unless_allow_empty() -> None:
++    manifest = DeckManifest.from_mapping(
++        {
++            "slides": [
++                {
++                    "slide_id": "appendix",
++                    "title": "Appendix",
++                    "layout": "Title and Content",
++                    "source": "record:does-not-exist",
++                }
++            ]
++        }
++    )
++
++    with pytest.raises(DeckBuildError, match="slide_id 'appendix'"):
++        build_deck(TEMPLATE, manifest, STORE, template_dir=FIXTURES)
++
++    allowed = _load_manifest("manifest_allow_empty.json")
++    _, summary = build_deck(TEMPLATE, allowed, STORE, template_dir=FIXTURES)
++    assert summary.slides_missing_source == 1
++    assert summary.slides_built == 1
++
++
++def test_produced_file_is_valid_presentation_without_office() -> None:
++    manifest = _load_manifest("manifest_v1.json")
++    pptx_bytes, summary = build_deck(TEMPLATE, manifest, STORE, template_dir=FIXTURES)
++
++    presentation = Presentation(BytesIO(pptx_bytes))
++    assert len(presentation.slides) == summary.slides_built == 3
++    assert _slide_titles(pptx_bytes) == [
++        "Due Diligence Deck",
++        "Governance",
++        "Risk Overview",
++    ]
++    assert _slide_bodies(pptx_bytes) == [
++        "Synthetic due diligence deck fixture.",
++        "Policy approved.",
++        "No exceptions & no missing rows.",
++    ]
++
++
++def test_malformed_manifest_rejects_non_boolean_allow_empty() -> None:
++    with pytest.raises(DeckBuildError, match="allow_empty must be a boolean"):
++        DeckManifest.from_mapping(
++            {
++                "slides": [
++                    {
++                        "slide_id": "appendix",
++                        "title": "Appendix",
++                        "layout": "Title and Content",
++                        "source": "record:gov-24",
++                        "allow_empty": "false",
++                    }
++                ]
++            }
++        )
++
++
++def test_malformed_manifest_rejects_non_string_source() -> None:
++    with pytest.raises(DeckBuildError, match="source must be a string"):
++        DeckManifest.from_mapping(
++            {
++                "slides": [
++                    {
++                        "slide_id": "appendix",
++                        "title": "Appendix",
++                        "layout": "Title and Content",
++                        "source": None,
++                    }
++                ]
++            }
++        )
++
++
++def test_static_asset_path_traversal_rejected() -> None:
++    manifest = DeckManifest.from_mapping(
++        {
++            "slides": [
++                {
++                    "slide_id": "leak",
++                    "title": "Leak",
++                    "layout": "Title and Content",
++                    "source": "static:../cover_blurb.txt",
++                }
++            ]
++        }
++    )
++    with pytest.raises(DeckBuildError, match="relative path"):
++        build_deck(TEMPLATE, manifest, STORE, template_dir=FIXTURES)
++
++
++def test_deliberate_break_gate_must_fail_then_restore() -> None:
++    """Deliberate-break gate: disabling the completeness check must let a bad build through."""
++    prior = _load_manifest("manifest_v1.json")
++    current = _load_manifest("manifest_v2_incomplete.json")
++
++    original = enforce_completeness
++
++    def noop(_prior: DeckManifest, _current: DeckManifest) -> None:
++        return None
++
++    import deliverable_render.pptx.manifest as manifest_module
++
++    manifest_module.enforce_completeness = noop  # type: ignore[assignment]
++    try:
++        _, summary = build_deck(TEMPLATE, current, STORE, prior=prior, template_dir=FIXTURES)
++        assert summary.slides_dropped_with_reason == 0
++    finally:
++        manifest_module.enforce_completeness = original  # type: ignore[assignment]
++
++    with pytest.raises(DeckBuildError, match="slide_id 'risk'"):
++        build_deck(TEMPLATE, current, STORE, prior=prior, template_dir=FIXTURES)

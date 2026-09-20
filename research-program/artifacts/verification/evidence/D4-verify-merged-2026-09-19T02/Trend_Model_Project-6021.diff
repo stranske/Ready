@@ -1,0 +1,214 @@
+diff --git a/scripts/langchain/verifier_config.py b/scripts/langchain/verifier_config.py
+index 1dfec26..1c5f1d8 100644
+--- a/scripts/langchain/verifier_config.py
++++ b/scripts/langchain/verifier_config.py
+@@ -8,7 +8,10 @@ from dataclasses import dataclass
+ from typing import Any, Literal
+ 
+ from scripts.langchain.issue_pr_context import DEFAULT_TOKEN_BUDGET
+-from scripts.langchain.structured_output import MAX_REPAIR_ATTEMPTS, clamp_repair_attempts
++from scripts.langchain.structured_output import (
++    MAX_REPAIR_ATTEMPTS,
++    clamp_repair_attempts,
++)
+ 
+ EVAL_PAIR_BUDGET_TOKENS = DEFAULT_TOKEN_BUDGET
+ EVAL_SCHEMA_REPAIR_BUDGET_TOKENS = DEFAULT_TOKEN_BUDGET
+diff --git a/src/trend_analysis/pipeline_helpers.py b/src/trend_analysis/pipeline_helpers.py
+index 8b67dfd..6b8d5b8 100644
+--- a/src/trend_analysis/pipeline_helpers.py
++++ b/src/trend_analysis/pipeline_helpers.py
+@@ -594,6 +594,8 @@ def compute_signal(
+     effective_min_periods = window if min_periods is None else int(min_periods)
+     if effective_min_periods <= 0:
+         raise ValueError("min_periods must be positive")
++    if effective_min_periods > window:
++        raise ValueError("signals.min_periods cannot exceed signals.window.")
+ 
+     spec = TrendSpec(window=window, min_periods=effective_min_periods)
+ 
+diff --git a/src/trend_analysis/presets.py b/src/trend_analysis/presets.py
+index ab8475a..4fd65da 100644
+--- a/src/trend_analysis/presets.py
++++ b/src/trend_analysis/presets.py
+@@ -83,7 +83,7 @@ def _normalise_metric_weights(raw: Mapping[str, Any]) -> dict[str, float]:
+ def _coerce_int(value: Any, default: int, minimum: int = 1) -> int:
+     try:
+         coerced = int(value)
+-    except (TypeError, ValueError):
++    except (TypeError, ValueError, OverflowError):
+         return default
+     return max(coerced, minimum)
+ 
+@@ -93,7 +93,7 @@ def _coerce_optional_int(value: Any | None, minimum: int = 1) -> int | None:
+         return None
+     try:
+         coerced = int(value)
+-    except (TypeError, ValueError):
++    except (TypeError, ValueError, OverflowError):
+         return None
+     if coerced < minimum:
+         return None
+@@ -117,9 +117,16 @@ def _build_trend_spec(config: Mapping[str, Any]) -> TrendSpec:
+     if not isinstance(signals, Mapping):
+         signals = {}
+ 
+-    spec = trend_spec_from_mapping(signals, retain_disabled_vol_target=True)
+-    # Presets historically clamp an overlong warm-up to their own window. This
+-    # is preset default policy, not a second signal parser.
++    # Presets historically clamp an overlong warm-up to their own window. Clamp
++    # before TrendSpec construction so __post_init__ validation can still reject
++    # direct TrendSpec(min_periods>window) callers without breaking preset policy.
++    signals_for_spec: dict[str, Any] = dict(signals)
++    window = _coerce_int(signals_for_spec.get("window"), _DEFAULT_SPEC_WINDOW)
++    min_periods = _coerce_optional_int(signals_for_spec.get("min_periods"))
++    if min_periods is not None and min_periods > window:
++        signals_for_spec["min_periods"] = window
++
++    spec = trend_spec_from_mapping(signals_for_spec, retain_disabled_vol_target=True)
+     if spec.min_periods is not None and spec.min_periods > spec.window:
+         return replace(spec, min_periods=spec.window)
+     return spec
+diff --git a/src/trend_analysis/signals.py b/src/trend_analysis/signals.py
+index 2c6c938..ab617fb 100644
+--- a/src/trend_analysis/signals.py
++++ b/src/trend_analysis/signals.py
+@@ -140,6 +140,8 @@ class TrendSpec:
+             raise ValueError("window must be a positive integer")
+         if self.min_periods is not None and self.min_periods <= 0:
+             raise ValueError("min_periods must be positive when provided")
++        if self.min_periods is not None and self.min_periods > self.window:
++            raise ValueError("signals.min_periods cannot exceed signals.window.")
+         if self.lag < 1:
+             raise ValueError("lag must be at least 1")
+         if self.vol_target is not None and self.vol_target < 0:
+diff --git a/tests/app/test_data_page.py b/tests/app/test_data_page.py
+index fc56d42..be6d386 100644
+--- a/tests/app/test_data_page.py
++++ b/tests/app/test_data_page.py
+@@ -10,9 +10,8 @@ import pandas as pd
+ import pytest
+ 
+ from streamlit_app.components.upload_guard import GuardedUpload, hash_bytes
+-from trend_analysis.io.market_data import MarketDataValidationError
+-
+ from tests.support.dummy_streamlit import DummyStreamlit
++from trend_analysis.io.market_data import MarketDataValidationError
+ 
+ 
+ class DummyUpload:
+diff --git a/tests/app/test_results_page.py b/tests/app/test_results_page.py
+index 41ce16f..7416e9f 100644
+--- a/tests/app/test_results_page.py
++++ b/tests/app/test_results_page.py
+@@ -6,9 +6,8 @@ from types import ModuleType, SimpleNamespace
+ import pandas as pd
+ import pytest
+ 
+-from trend_analysis.diagnostics import PipelineReasonCode, pipeline_failure
+-
+ from tests.support.dummy_streamlit import DummyStreamlit
++from trend_analysis.diagnostics import PipelineReasonCode, pipeline_failure
+ 
+ 
+ @pytest.fixture()
+diff --git a/tests/streamlit/test_mc_page.py b/tests/streamlit/test_mc_page.py
+index 3e395df..71d1f4e 100644
+--- a/tests/streamlit/test_mc_page.py
++++ b/tests/streamlit/test_mc_page.py
+@@ -12,14 +12,17 @@ from typing import Any, Callable
+ import pandas as pd
+ import pytest
+ 
+-from trend_analysis.monte_carlo.registry import ScenarioRegistryEntry
+-from trend_analysis.monte_carlo.scenario import MonteCarloScenario, MonteCarloSettings
+-
+ from tests.support.dummy_streamlit import (
+     DummyStreamlit,
++)
++from tests.support.dummy_streamlit import (
+     Placeholder as _Placeholder,
++)
++from tests.support.dummy_streamlit import (
+     ProgressBar as _ProgressBar,
+ )
++from trend_analysis.monte_carlo.registry import ScenarioRegistryEntry
++from trend_analysis.monte_carlo.scenario import MonteCarloScenario, MonteCarloSettings
+ 
+ 
+ @dataclass
+diff --git a/tests/test_pipeline_helpers_additional.py b/tests/test_pipeline_helpers_additional.py
+index 2dfb5de..b471eac 100644
+--- a/tests/test_pipeline_helpers_additional.py
++++ b/tests/test_pipeline_helpers_additional.py
+@@ -915,6 +915,8 @@ def test_compute_signal_error_paths(monthly_frame: pd.DataFrame) -> None:
+         compute_signal(monthly_frame, column="A", window=0)
+     with pytest.raises(ValueError):
+         compute_signal(monthly_frame, column="A", window=2, min_periods=0)
++    with pytest.raises(ValueError, match=r"^signals\.min_periods cannot exceed signals\.window\.$"):
++        compute_signal(monthly_frame, column="A", window=5, min_periods=6)
+ 
+ 
+ def test_run_uses_canonical_missing_policy(monkeypatch: pytest.MonkeyPatch) -> None:
+diff --git a/tests/test_presets_extended.py b/tests/test_presets_extended.py
+index 88306ef..b0c0161 100644
+--- a/tests/test_presets_extended.py
++++ b/tests/test_presets_extended.py
+@@ -1,4 +1,5 @@
+ import logging
++import math
+ from pathlib import Path
+ from types import SimpleNamespace
+ 
+@@ -55,6 +56,33 @@ def test_normalise_helpers_and_build_trend_spec() -> None:
+     assert spec.zscore == pytest.approx(1.0)
+ 
+ 
++def test_coerce_int_infinity_fallbacks() -> None:
++    """Regression: non-finite inputs must not abort preset integer coercion."""
++    assert presets._coerce_int(float("inf"), default=9, minimum=1) == 9
++    assert presets._coerce_int(float("-inf"), default=9, minimum=1) == 9
++    assert presets._coerce_int(math.inf, default=11, minimum=1) == 11
++    assert presets._coerce_int(-math.inf, default=11, minimum=1) == 11
++    assert presets._coerce_optional_int(float("inf"), minimum=1) is None
++    assert presets._coerce_optional_int(float("-inf"), minimum=1) is None
++    assert presets._coerce_optional_int(math.inf, minimum=1) is None
++    assert presets._coerce_optional_int(-math.inf, minimum=1) is None
++
++
++def test_build_trend_spec_infinity_signals_do_not_abort() -> None:
++    spec = presets._build_trend_spec(
++        {
++            "signals": {
++                "window": float("inf"),
++                "min_periods": float("-inf"),
++                "lag": 1,
++            }
++        }
++    )
++    assert isinstance(spec, TrendSpec)
++    assert spec.window >= 1
++    assert spec.min_periods is None or spec.min_periods <= spec.window
++
++
+ def test_trend_preset_helpers_cover_defaults() -> None:
+     spec = TrendSpec(window=20, min_periods=10, vol_adjust=True, vol_target=0.2, zscore=True)
+     preset_cfg = {
+diff --git a/tests/test_trend_signals_validation.py b/tests/test_trend_signals_validation.py
+index 8c17362..e547022 100644
+--- a/tests/test_trend_signals_validation.py
++++ b/tests/test_trend_signals_validation.py
+@@ -22,6 +22,13 @@ def test_trend_spec_validates_parameters() -> None:
+         TrendSpec(vol_target=-0.5)
+ 
+ 
++def test_trend_spec_rejects_min_periods_above_window() -> None:
++    """``TrendSpec`` should mirror ``SignalSettings`` min_periods/window bounds."""
++
++    with pytest.raises(ValueError, match=r"^signals\.min_periods cannot exceed signals\.window\.$"):
++        TrendSpec(window=5, min_periods=6)
++
++
+ def test_compute_trend_signals_rejects_empty_returns() -> None:
+     """An empty input frame should fail fast with a clear error."""
+ 

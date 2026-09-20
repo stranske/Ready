@@ -1,0 +1,202 @@
+# Thin caller for Python CI - delegates to Workflows repo reusable workflow
+# No local scripts required - all logic is centralized in stranske/Workflows
+#
+# This workflow runs:
+# - Lint (Ruff)
+# - Format check (Black)
+# - Type checking (mypy)
+# - Tests (pytest) on Python 3.12 and 3.13
+#
+# NOTE: Do NOT add a top-level 'permissions:' block here. It causes
+# startup_failure when calling reusable workflows. The reusable workflow
+# defines its own permissions.
+#
+# Copy this file to: .github/workflows/ci.yml
+# Also copy: autofix-versions.env to .github/workflows/autofix-versions.env
+name: CI
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  python:
+    name: Python CI
+    uses: stranske/Workflows/.github/workflows/reusable-10-ci-python.yml@main
+    with:
+      python-versions: '["3.12", "3.13"]'
+      typecheck: true
+      coverage: true
+      coverage-min: '75'
+    secrets: inherit
+
+  postgres-integration:
+    name: Postgres chain integration
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      MGRDB_PG_TEST_URL: postgresql://postgres:postgres@[LOCAL_HOST]/postgres
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
+          cache: pip
+      - name: Install test dependencies
+        run: python -m pip install -e ".[dev]"
+      - name: Run Postgres chain and alert integration tests
+        run: pytest tests/test_chain_postgres_integration.py tests/test_alert_postgres_integration.py -v
+
+  golden:
+    name: Golden offline gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
+          cache: pip
+      - name: Install test dependencies
+        run: python -m pip install -e ".[dev]"
+      - name: Run offline golden/threshold gate
+        # No service container and no provider secrets: the golden tests run the
+        # deterministic eval suite and diff_holdings goldens over in-memory
+        # SQLite fixtures, so zero external dependency must be required here.
+        run: pytest -m golden -v
+
+  docker-smoke:
+    name: Docker stack smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      # The FastAPI app reads MINIO_ENDPOINT as a boto3 endpoint_url (scheme
+      # required) and authenticates with MINIO_ROOT_USER/MINIO_ROOT_PASSWORD,
+      # matching docker-compose.yml's MinIO service.
+      DB_URL: postgresql://postgres:postgres@[LOCAL_HOST]/postgres
+      MINIO_ENDPOINT: http://[LOCAL_HOST]
+      MINIO_ROOT_USER: minio
+      MINIO_ROOT_PASSWORD: minio123
+      MINIO_REGION: us-east-1
+      MINIO_BUCKET: filings
+      USE_SIMPLE_EMBED: "1"
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
+          cache: pip
+      - name: Install dependencies
+        run: python -m pip install -e ".[dev]"
+      - name: Install Postgres client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+      - name: Apply database schema
+        # docker-compose applies schema.sql via the initdb mount; replicate that
+        # against the Actions Postgres service so /managers and seeding have tables.
+        run: psql "$DB_URL" -v ON_ERROR_STOP=1 -f schema.sql
+      - name: Start MinIO
+        # The minio/minio entrypoint needs the `server` command, which Actions
+        # service containers cannot supply, so start it via docker run instead.
+        run: |
+          docker run -d --name minio \
+            -p 9000:9000 -p 9001:9001 \
+            -e MINIO_ROOT_USER="$MINIO_ROOT_USER" \
+            -e MINIO_ROOT_PASSWORD="$MINIO_ROOT_PASSWORD" \
+            quay.io/minio/minio:RELEASE.2025-05-24T17-08-30Z server /data --console-address ":9001"
+          minio_ready=0
+          for _ in $(seq 1 30); do
+            if curl -sf http://[LOCAL_HOST]/minio/health/live >/dev/null; then
+              echo "MinIO ready"; minio_ready=1; break
+            fi
+            sleep 2
+          done
+          if [ "$minio_ready" -ne 1 ]; then
+            echo "MinIO did not become healthy within 60s" >&2
+            docker logs minio >&2 || true
+            exit 1
+          fi
+      - name: Start API and run readiness smoke
+        run: |
+          uvicorn api.chat:app --host 0.0.0.0 --port 8000 &
+          api_pid=$!
+          trap 'kill "$api_pid" 2>/dev/null || true' EXIT
+          ready=0
+          for _ in $(seq 1 30); do
+            if curl -sf http://[LOCAL_HOST]/health/detailed >/dev/null; then
+              echo "API ready"; ready=1; break
+            fi
+            sleep 2
+          done
+          if [ "$ready" -ne 1 ]; then
+            echo "API did not become healthy within 60s" >&2
+            exit 1
+          fi
+          python scripts/seed_readiness_data.py
+          python scripts/readiness_smoke.py --skip-stack-start --skip-ui --base-url http://[LOCAL_HOST]
+
+  ui-screenshots:
+    name: UI screenshot artifact
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      DB_PATH: artifacts/ui-data/manager_demo.sqlite
+      UI_OFFLINE: "1"
+      USE_SIMPLE_EMBED: "1"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: "3.14"
+          cache: pip
+      - name: Install UI screenshot dependencies
+        run: |
+          python -m pip install -e ".[dev]"
+          python -m pip install playwright
+          playwright install --with-deps chromium
+      - name: Build synthetic fixture database
+        run: python scripts/build_wasm_demo.py artifacts/ui-data
+      - name: Launch offline deterministic UI
+        run: |
+          streamlit run web/wasm_app.py --server.port=8501 --server.headless=true &
+          echo $! > streamlit.pid
+      - name: Capture deterministic UI screenshots
+        run: python scripts/capture_ui_screenshots.py --base-url http://127.0.0.1:8501 --output-dir artifacts/ui
+      - name: Upload UI screenshots
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: ui-screenshots
+          path: artifacts/ui/
+          if-no-files-found: error
+      - name: Stop offline UI
+        if: always()
+        run: |
+          if [ -f streamlit.pid ]; then
+            kill "$(cat streamlit.pid)" 2>/dev/null || true
+          fi

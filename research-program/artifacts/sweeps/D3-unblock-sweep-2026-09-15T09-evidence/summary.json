@@ -1,0 +1,1706 @@
+[
+  {
+    "repo": "Workflows",
+    "full": "stranske/Workflows",
+    "frozen": [
+      {
+        "body": "## Upstream sync review debt\n\nConsumer delivery PR: stranske/Trend_Model_Project#6035\n\nManifest-synced paths with unresolved bot review threads:\n- consumer `.github/scripts/agents_pr_meta_update_body.js` \u2192 source `stranske/Workflows/.github/scripts/agents_pr_meta_update_body.js`\n- consumer `.github/scripts/issue_scope_parser.js` \u2192 source `stranske/Workflows/.github/scripts/issue_scope_parser.js`\n\nFix these paths in Workflows main so the next sync regeneration outdates the consumer threads.",
+        "labels": [
+          {
+            "id": "LA_kwDOQprj9M8AAAACSq7nhQ",
+            "name": "automation",
+            "description": "Automation and workflow automation",
+            "color": "205d64"
+          },
+          {
+            "id": "LA_kwDOQprj9M8AAAACUhUbLw",
+            "name": "agents:auto-pilot-pause",
+            "description": "Pause auto-pilot at current step",
+            "color": "FEF2C0"
+          },
+          {
+            "id": "LA_kwDOQprj9M8AAAACVO1uJQ",
+            "name": "consumer-sync",
+            "description": "",
+            "color": "ededed"
+          }
+        ],
+        "number": 3455,
+        "title": "[sync-review] Fix upstream manifest-synced paths blocking stranske/Trend_Model_Project#6035",
+        "updatedAt": "2026-09-15T06:26:26Z"
+      }
+    ],
+    "silent": [
+      {
+        "number": 3392,
+        "title": "fix: expose provider availability to consumer keepalive auto-routing",
+        "labels": [
+          "agent:codex",
+          "agents:formatted",
+          "verify:evaluate"
+        ],
+        "age_h": 37.5
+      },
+      {
+        "number": 3389,
+        "title": "Raise test coverage toward 90% (autopilot round 8, low blast radius only)",
+        "labels": [
+          "agent:codex",
+          "agents:formatted",
+          "verify:evaluate"
+        ],
+        "age_h": 29.4
+      },
+      {
+        "number": 3375,
+        "title": "[P1] Extend output-substrate/v1 with manifest CSV export slice (B2-032)",
+        "labels": [
+          "agent:codex",
+          "agents:apply-suggestions",
+          "agents:formatted"
+        ],
+        "age_h": 37.5
+      },
+      {
+        "number": 3374,
+        "title": "[P0] Add output-substrate/v1 contract schema (B2-028)",
+        "labels": [
+          "agent:codex",
+          "agents:apply-suggestions",
+          "agents:formatted"
+        ],
+        "age_h": 37.5
+      },
+      {
+        "number": 3373,
+        "title": "[P0] Add document-mirror/v1 schema and validator hook (B2-023)",
+        "labels": [
+          "agent:codex",
+          "agents:apply-suggestions",
+          "agents:formatted"
+        ],
+        "age_h": 37.5
+      }
+    ],
+    "stalled": [],
+    "supply": 36,
+    "priority_count": 1,
+    "open_count": 45,
+    "ci_status": "hub-only",
+    "ci_url": null,
+    "ci_run_id": null,
+    "head_sha": "7b9d5e54414babbbee1991906fd8c43fa4281367",
+    "runs": [
+      {
+        "conclusion": "",
+        "createdAt": "2026-09-15T09:47:35Z",
+        "databaseId": 34954466301,
+        "headSha": "7b9d5e54414babbbee1991906fd8c43fa4281367",
+        "name": "Agents Issue Format Guard",
+        "status": "queued",
+        "updatedAt": "2026-09-15T09:47:35Z",
+        "url": "https://github.com/stranske/Workflows/actions/runs/34954466301",
+        "workflowName": "Agents Issue Format Guard"
+      },
+      {
+        "conclusion": "skipped",
+        "createdAt": "2026-09-15T09:47:35Z",
+        "databaseId": 34954466158,
+        "headSha": "7b9d5e54414babbbee1991906fd8c43fa4281367",
+        "name": "Auto-Label Issues",
+        "status": "completed",
+        "updatedAt": "2026-09-15T09:47:36Z",
+        "url": "https://github.com/stranske/Workflows/actions/runs/34954466158",
+        "workflowName": "Auto-Label Issues"
+      },
+      {
+        "conclusion": "",
+        "createdAt": "2026-09-15T09:47:31Z",
+        "databaseId": 34954460653,
+        "headSha": "7b9d5e54414babbbee1991906fd8c43fa4281367",
+        "name": "Sync/Dependency Campaign",
+        "status": "in_progress",
+        "updatedAt": "2026-09-15T09:47:35Z",
+        "url": "https://github.com/stranske/Workflows/actions/runs/34954460653",
+        "workflowName": "Sync/Dependency Campaign"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-15T09:46:01Z",
+        "databaseId": 34954320568,
+        "headSha": "7b9d5e54414babbbee1991906fd8c43fa4281367",
+        "name": "Agents Auto-Pilot",
+        "status": "completed",
+        "updatedAt": "2026-09-15T09:46:12Z",
+        "url": "https://github.com/stranske/Workflows/actions/runs/34954320568",
+        "workflowName": "Agents Auto-Pilot"
+      },
+      {
+        "conclusion": "",
+        "createdAt": "2026-09-15T09:46:01Z",
+        "databaseId": 34954320320,
+        "headSha": "7b9d5e54414babbbee1991906fd8c43fa4281367",
+        "name": "Health 52 Semgrep Scan",
+        "status": "in_progress",
+        "updatedAt": "2026-09-15T09:46:13Z",
+        "url": "https://github.com/stranske/Workflows/actions/runs/34954320320",
+        "workflowName": "Health 52 Semgrep Scan"
+      }
+    ],
+    "check_runs": [
+      {
+        "name": "auto-label",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Workflows/actions/runs/34954466158/job/104333039009"
+      },
+      {
+        "name": "check",
+        "status": "in_progress",
+        "conclusion": null,
+        "html_url": "https://github.com/stranske/Workflows/actions/runs/34954466301/job/104333038801"
+      },
+      {
+        "name": "Refresh campaign queue",
+        "status": "in_progress",
+        "conclusion": null,
+        "html_url": "https://github.com/stranske/Workflows/actions/runs/34954460653/job/104333020372"
+      },
+      {
+        "name": "Publish actionable drift alert",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Workflows/actions/runs/34954320401/job/104332983557"
+      },
+      {
+        "name": "Resolve recovered drift alert",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Workflows/actions/runs/34954320401/job/104332982156"
+      },
+      {
+        "name": "CodeQL",
+        "status": "in_progress",
+        "conclusion": null,
+        "html_url": "https://github.com/stranske/Workflows/actions/runs/34954320340/job/104332640544"
+      },
+      {
+        "name": "auto-pilot",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Workflows/actions/runs/34954320568/job/104332614565"
+      },
+      {
+        "name": "stranske-pdf-extract package tests",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Workflows/actions/runs/34954320334/job/104332606422"
+      },
+      {
+        "name": "JavaScript Tests",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Workflows/actions/runs/34954320334/job/104332606289"
+      },
+      {
+        "name": "Python Tests",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Workflows/actions/runs/34954320334/job/104332606269"
+      },
+      {
+        "name": "Lint, Format & YAML Validation",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Workflows/actions/runs/34954320334/job/104332606154"
+      },
+      {
+        "name": "Semgrep",
+        "status": "in_progress",
+        "conclusion": null,
+        "html_url": "https://github.com/stranske/Workflows/actions/runs/34954320320/job/104332605326"
+      },
+      {
+        "name": "classify changed paths",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Workflows/actions/runs/34954320340/job/104332567306"
+      },
+      {
+        "name": "gate",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Workflows/actions/runs/34954320568/job/104332565942"
+      },
+      {
+        "name": "check",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Workflows/actions/runs/34954320500/job/104332564608"
+      },
+      {
+        "name": "YAML syntax + script imports",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Workflows/actions/runs/34954320344/job/104332564168"
+      },
+      {
+        "name": "scorecard",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Workflows/actions/runs/34954320466/job/104332563982"
+      },
+      {
+        "name": "Open or update Release PR",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Workflows/actions/runs/34954320384/job/104332563935"
+      },
+      {
+        "name": "Parse and lint workflows",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Workflows/actions/runs/34954320327/job/104332563805"
+      },
+      {
+        "name": "classify changed paths",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Workflows/actions/runs/34954320334/job/104332563728"
+      }
+    ]
+  },
+  {
+    "repo": "Travel-Plan-Permission",
+    "full": "stranske/Travel-Plan-Permission",
+    "frozen": [],
+    "silent": [],
+    "stalled": [],
+    "supply": 5,
+    "priority_count": 0,
+    "open_count": 9,
+    "ci_status": "success",
+    "ci_url": "https://github.com/stranske/Travel-Plan-Permission/actions/runs/34950710271/job/104320739911",
+    "ci_run_id": null,
+    "head_sha": "c59866cb7b65747028e1c7bf30a6ee27c8e6023f",
+    "runs": [
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-15T09:42:03Z",
+        "databaseId": 34953945130,
+        "headSha": "c59866cb7b65747028e1c7bf30a6ee27c8e6023f",
+        "name": "Auto-merge documentation PRs",
+        "status": "completed",
+        "updatedAt": "2026-09-15T09:42:11Z",
+        "url": "https://github.com/stranske/Travel-Plan-Permission/actions/runs/34953945130",
+        "workflowName": "Auto-merge documentation PRs"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-15T09:36:04Z",
+        "databaseId": 34953394129,
+        "headSha": "c59866cb7b65747028e1c7bf30a6ee27c8e6023f",
+        "name": "Agents Keepalive Sweep",
+        "status": "completed",
+        "updatedAt": "2026-09-15T09:36:16Z",
+        "url": "https://github.com/stranske/Travel-Plan-Permission/actions/runs/34953394129",
+        "workflowName": "Agents Keepalive Sweep"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-15T09:15:11Z",
+        "databaseId": 34951515213,
+        "headSha": "c59866cb7b65747028e1c7bf30a6ee27c8e6023f",
+        "name": "Auto-merge documentation PRs",
+        "status": "completed",
+        "updatedAt": "2026-09-15T09:15:18Z",
+        "url": "https://github.com/stranske/Travel-Plan-Permission/actions/runs/34951515213",
+        "workflowName": "Auto-merge documentation PRs"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-15T09:06:54Z",
+        "databaseId": 34950710271,
+        "headSha": "c59866cb7b65747028e1c7bf30a6ee27c8e6023f",
+        "name": "Agents PR Health",
+        "status": "completed",
+        "updatedAt": "2026-09-15T09:07:25Z",
+        "url": "https://github.com/stranske/Travel-Plan-Permission/actions/runs/34950710271",
+        "workflowName": "Agents PR Health"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-15T08:42:48Z",
+        "databaseId": 34948469045,
+        "headSha": "c59866cb7b65747028e1c7bf30a6ee27c8e6023f",
+        "name": "Auto-merge documentation PRs",
+        "status": "completed",
+        "updatedAt": "2026-09-15T08:42:57Z",
+        "url": "https://github.com/stranske/Travel-Plan-Permission/actions/runs/34948469045",
+        "workflowName": "Auto-merge documentation PRs"
+      }
+    ],
+    "check_runs": [
+      {
+        "name": "auto-merge-docs",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Travel-Plan-Permission/actions/runs/34953945130/job/104331345538"
+      },
+      {
+        "name": "Re-evaluate stalled agent PRs (consolidated)",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Travel-Plan-Permission/actions/runs/34953394129/job/104329520570"
+      },
+      {
+        "name": "Name keepalive sweep mode",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Travel-Plan-Permission/actions/runs/34953394129/job/104329519053"
+      },
+      {
+        "name": "Re-evaluate stalled agent PRs (non-consolidated)",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Travel-Plan-Permission/actions/runs/34953394129/job/104329518798"
+      },
+      {
+        "name": "auto-merge-docs",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Travel-Plan-Permission/actions/runs/34951515213/job/104323329197"
+      },
+      {
+        "name": "health / Health summary",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Travel-Plan-Permission/actions/runs/34950710271/job/104320863261"
+      },
+      {
+        "name": "health / Fix failing checks",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Travel-Plan-Permission/actions/runs/34950710271/job/104320862225"
+      },
+      {
+        "name": "health / Nudge stalled PRs",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Travel-Plan-Permission/actions/runs/34950710271/job/104320862064"
+      },
+      {
+        "name": "health / Resolve conflicts",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Travel-Plan-Permission/actions/runs/34950710271/job/104320861004"
+      },
+      {
+        "name": "health / Scan open PRs",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Travel-Plan-Permission/actions/runs/34950710271/job/104320763752"
+      },
+      {
+        "name": "health / Schedule gate",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Travel-Plan-Permission/actions/runs/34950710271/job/104320739911"
+      },
+      {
+        "name": "auto-merge-docs",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Travel-Plan-Permission/actions/runs/34948469045/job/104313441186"
+      },
+      {
+        "name": "Re-evaluate stalled agent PRs (consolidated)",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Travel-Plan-Permission/actions/runs/34948037226/job/104312025399"
+      },
+      {
+        "name": "Re-evaluate stalled agent PRs (non-consolidated)",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Travel-Plan-Permission/actions/runs/34948037226/job/104312024204"
+      },
+      {
+        "name": "Name keepalive sweep mode",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Travel-Plan-Permission/actions/runs/34948037226/job/104312024050"
+      },
+      {
+        "name": "auto-merge-docs",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Travel-Plan-Permission/actions/runs/34946264939/job/104306278283"
+      },
+      {
+        "name": "health / Resolve conflicts",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Travel-Plan-Permission/actions/runs/34945369054/job/104303486542"
+      },
+      {
+        "name": "health / Fix failing checks",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Travel-Plan-Permission/actions/runs/34945369054/job/104303486441"
+      },
+      {
+        "name": "health / Nudge stalled PRs",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Travel-Plan-Permission/actions/runs/34945369054/job/104303485691"
+      },
+      {
+        "name": "health / Health summary",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Travel-Plan-Permission/actions/runs/34945369054/job/104303485323"
+      }
+    ]
+  },
+  {
+    "repo": "Trend_Model_Project",
+    "full": "stranske/Trend_Model_Project",
+    "frozen": [],
+    "silent": [],
+    "stalled": [],
+    "supply": 8,
+    "priority_count": 0,
+    "open_count": 10,
+    "ci_status": "success",
+    "ci_url": "https://github.com/stranske/Trend_Model_Project/actions/runs/34951465671/job/104323174811",
+    "ci_run_id": null,
+    "head_sha": "90c36199505fd757e371b5fc12c151b503174e4d",
+    "runs": [
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-15T09:35:38Z",
+        "databaseId": 34953355482,
+        "headSha": "90c36199505fd757e371b5fc12c151b503174e4d",
+        "name": "Agents Keepalive Sweep",
+        "status": "completed",
+        "updatedAt": "2026-09-15T09:36:22Z",
+        "url": "https://github.com/stranske/Trend_Model_Project/actions/runs/34953355482",
+        "workflowName": "Agents Keepalive Sweep"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-15T09:14:41Z",
+        "databaseId": 34951465671,
+        "headSha": "90c36199505fd757e371b5fc12c151b503174e4d",
+        "name": "Agents PR Health",
+        "status": "completed",
+        "updatedAt": "2026-09-15T09:15:29Z",
+        "url": "https://github.com/stranske/Trend_Model_Project/actions/runs/34951465671",
+        "workflowName": "Agents PR Health"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-15T08:37:53Z",
+        "databaseId": 34948018817,
+        "headSha": "90c36199505fd757e371b5fc12c151b503174e4d",
+        "name": "Agents Keepalive Sweep",
+        "status": "completed",
+        "updatedAt": "2026-09-15T08:38:07Z",
+        "url": "https://github.com/stranske/Trend_Model_Project/actions/runs/34948018817",
+        "workflowName": "Agents Keepalive Sweep"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-15T08:18:36Z",
+        "databaseId": 34946245275,
+        "headSha": "90c36199505fd757e371b5fc12c151b503174e4d",
+        "name": "Agents PR Health",
+        "status": "completed",
+        "updatedAt": "2026-09-15T08:19:16Z",
+        "url": "https://github.com/stranske/Trend_Model_Project/actions/runs/34946245275",
+        "workflowName": "Agents PR Health"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-15T07:33:38Z",
+        "databaseId": 34942320874,
+        "headSha": "90c36199505fd757e371b5fc12c151b503174e4d",
+        "name": "Agents Keepalive Sweep",
+        "status": "completed",
+        "updatedAt": "2026-09-15T07:33:49Z",
+        "url": "https://github.com/stranske/Trend_Model_Project/actions/runs/34942320874",
+        "workflowName": "Agents Keepalive Sweep"
+      }
+    ],
+    "check_runs": [
+      {
+        "name": "Re-evaluate stalled agent PRs (consolidated)",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Trend_Model_Project/actions/runs/34953355482/job/104329385940"
+      },
+      {
+        "name": "Name keepalive sweep mode",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Trend_Model_Project/actions/runs/34953355482/job/104329384237"
+      },
+      {
+        "name": "Re-evaluate stalled agent PRs (non-consolidated)",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Trend_Model_Project/actions/runs/34953355482/job/104329383901"
+      },
+      {
+        "name": "health / Health summary",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Trend_Model_Project/actions/runs/34951465671/job/104323389311"
+      },
+      {
+        "name": "health / Resolve conflicts",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Trend_Model_Project/actions/runs/34951465671/job/104323331646"
+      },
+      {
+        "name": "health / Nudge stalled PRs",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Trend_Model_Project/actions/runs/34951465671/job/104323331387"
+      },
+      {
+        "name": "health / Fix failing checks",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Trend_Model_Project/actions/runs/34951465671/job/104323329855"
+      },
+      {
+        "name": "health / Scan open PRs",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Trend_Model_Project/actions/runs/34951465671/job/104323196914"
+      },
+      {
+        "name": "health / Schedule gate",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Trend_Model_Project/actions/runs/34951465671/job/104323174811"
+      },
+      {
+        "name": "Re-evaluate stalled agent PRs (consolidated)",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Trend_Model_Project/actions/runs/34948018817/job/104311965969"
+      },
+      {
+        "name": "Re-evaluate stalled agent PRs (non-consolidated)",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Trend_Model_Project/actions/runs/34948018817/job/104311964228"
+      },
+      {
+        "name": "Name keepalive sweep mode",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Trend_Model_Project/actions/runs/34948018817/job/104311963989"
+      },
+      {
+        "name": "health / Health summary",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Trend_Model_Project/actions/runs/34946245275/job/104306386304"
+      },
+      {
+        "name": "health / Nudge stalled PRs",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Trend_Model_Project/actions/runs/34946245275/job/104306341065"
+      },
+      {
+        "name": "health / Resolve conflicts",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Trend_Model_Project/actions/runs/34946245275/job/104306340724"
+      },
+      {
+        "name": "health / Fix failing checks",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Trend_Model_Project/actions/runs/34946245275/job/104306338365"
+      },
+      {
+        "name": "health / Scan open PRs",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Trend_Model_Project/actions/runs/34946245275/job/104306244703"
+      },
+      {
+        "name": "health / Schedule gate",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Trend_Model_Project/actions/runs/34946245275/job/104306215388"
+      },
+      {
+        "name": "Re-evaluate stalled agent PRs (consolidated)",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Trend_Model_Project/actions/runs/34942320874/job/104293611712"
+      },
+      {
+        "name": "Re-evaluate stalled agent PRs (non-consolidated)",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Trend_Model_Project/actions/runs/34942320874/job/104293610825"
+      }
+    ]
+  },
+  {
+    "repo": "Portable-Alpha-Extension-Model",
+    "full": "stranske/Portable-Alpha-Extension-Model",
+    "frozen": [],
+    "silent": [],
+    "stalled": [],
+    "supply": 4,
+    "priority_count": 4,
+    "open_count": 6,
+    "ci_status": "success",
+    "ci_url": "https://github.com/stranske/Portable-Alpha-Extension-Model/actions/runs/34950776851/job/104320957638",
+    "ci_run_id": null,
+    "head_sha": "086de8b946df86f01f3f09ef4f594bce86064d75",
+    "runs": [
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-15T09:07:36Z",
+        "databaseId": 34950776851,
+        "headSha": "086de8b946df86f01f3f09ef4f594bce86064d75",
+        "name": "Agents PR Health",
+        "status": "completed",
+        "updatedAt": "2026-09-15T09:08:40Z",
+        "url": "https://github.com/stranske/Portable-Alpha-Extension-Model/actions/runs/34950776851",
+        "workflowName": "Agents PR Health"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-15T08:38:06Z",
+        "databaseId": 34948038970,
+        "headSha": "086de8b946df86f01f3f09ef4f594bce86064d75",
+        "name": "Agents Keepalive Sweep",
+        "status": "completed",
+        "updatedAt": "2026-09-15T08:38:21Z",
+        "url": "https://github.com/stranske/Portable-Alpha-Extension-Model/actions/runs/34948038970",
+        "workflowName": "Agents Keepalive Sweep"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-15T08:09:34Z",
+        "databaseId": 34945437045,
+        "headSha": "086de8b946df86f01f3f09ef4f594bce86064d75",
+        "name": "Agents PR Health",
+        "status": "completed",
+        "updatedAt": "2026-09-15T08:10:08Z",
+        "url": "https://github.com/stranske/Portable-Alpha-Extension-Model/actions/runs/34945437045",
+        "workflowName": "Agents PR Health"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-15T07:34:00Z",
+        "databaseId": 34942352792,
+        "headSha": "086de8b946df86f01f3f09ef4f594bce86064d75",
+        "name": "Agents Keepalive Sweep",
+        "status": "completed",
+        "updatedAt": "2026-09-15T07:34:13Z",
+        "url": "https://github.com/stranske/Portable-Alpha-Extension-Model/actions/runs/34942352792",
+        "workflowName": "Agents Keepalive Sweep"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-15T07:08:41Z",
+        "databaseId": 34940222528,
+        "headSha": "086de8b946df86f01f3f09ef4f594bce86064d75",
+        "name": "Agents PR Health",
+        "status": "completed",
+        "updatedAt": "2026-09-15T07:09:06Z",
+        "url": "https://github.com/stranske/Portable-Alpha-Extension-Model/actions/runs/34940222528",
+        "workflowName": "Agents PR Health"
+      }
+    ],
+    "check_runs": [
+      {
+        "name": "Re-evaluate stalled agent PRs (consolidated)",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Portable-Alpha-Extension-Model/actions/runs/34953400815/job/104329542629"
+      },
+      {
+        "name": "Re-evaluate stalled agent PRs (non-consolidated)",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Portable-Alpha-Extension-Model/actions/runs/34953400815/job/104329541195"
+      },
+      {
+        "name": "Name keepalive sweep mode",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Portable-Alpha-Extension-Model/actions/runs/34953400815/job/104329540872"
+      },
+      {
+        "name": "health / Resolve conflicts",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Portable-Alpha-Extension-Model/actions/runs/34950776851/job/104321243299"
+      },
+      {
+        "name": "health / Nudge stalled PRs",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Portable-Alpha-Extension-Model/actions/runs/34950776851/job/104321243163"
+      },
+      {
+        "name": "health / Fix failing checks",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Portable-Alpha-Extension-Model/actions/runs/34950776851/job/104321242725"
+      },
+      {
+        "name": "health / Health summary",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Portable-Alpha-Extension-Model/actions/runs/34950776851/job/104321241995"
+      },
+      {
+        "name": "health / Scan open PRs",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Portable-Alpha-Extension-Model/actions/runs/34950776851/job/104320983489"
+      },
+      {
+        "name": "health / Schedule gate",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Portable-Alpha-Extension-Model/actions/runs/34950776851/job/104320957638"
+      },
+      {
+        "name": "Re-evaluate stalled agent PRs (consolidated)",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Portable-Alpha-Extension-Model/actions/runs/34948038970/job/104312031224"
+      },
+      {
+        "name": "Re-evaluate stalled agent PRs (non-consolidated)",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Portable-Alpha-Extension-Model/actions/runs/34948038970/job/104312030457"
+      },
+      {
+        "name": "Name keepalive sweep mode",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Portable-Alpha-Extension-Model/actions/runs/34948038970/job/104312030110"
+      },
+      {
+        "name": "health / Fix failing checks",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Portable-Alpha-Extension-Model/actions/runs/34945437045/job/104303717021"
+      },
+      {
+        "name": "health / Nudge stalled PRs",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Portable-Alpha-Extension-Model/actions/runs/34945437045/job/104303716185"
+      },
+      {
+        "name": "health / Resolve conflicts",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Portable-Alpha-Extension-Model/actions/runs/34945437045/job/104303715312"
+      },
+      {
+        "name": "health / Health summary",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Portable-Alpha-Extension-Model/actions/runs/34945437045/job/104303714898"
+      },
+      {
+        "name": "health / Scan open PRs",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Portable-Alpha-Extension-Model/actions/runs/34945437045/job/104303629050"
+      },
+      {
+        "name": "health / Schedule gate",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Portable-Alpha-Extension-Model/actions/runs/34945437045/job/104303596588"
+      },
+      {
+        "name": "Re-evaluate stalled agent PRs (consolidated)",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Portable-Alpha-Extension-Model/actions/runs/34942352792/job/104293716281"
+      },
+      {
+        "name": "Name keepalive sweep mode",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Portable-Alpha-Extension-Model/actions/runs/34942352792/job/104293715105"
+      }
+    ]
+  },
+  {
+    "repo": "Counter_Risk",
+    "full": "stranske/Counter_Risk",
+    "frozen": [],
+    "silent": [],
+    "stalled": [],
+    "supply": 6,
+    "priority_count": 6,
+    "open_count": 8,
+    "ci_status": "success",
+    "ci_url": "https://github.com/stranske/Counter_Risk/actions/runs/34951682050/job/104323871171",
+    "ci_run_id": null,
+    "head_sha": "537c913cf54bab0f8bfe59a72edea4bfc575d862",
+    "runs": [
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-15T09:35:49Z",
+        "databaseId": 34953371900,
+        "headSha": "537c913cf54bab0f8bfe59a72edea4bfc575d862",
+        "name": "Agents Keepalive Sweep",
+        "status": "completed",
+        "updatedAt": "2026-09-15T09:36:00Z",
+        "url": "https://github.com/stranske/Counter_Risk/actions/runs/34953371900",
+        "workflowName": "Agents Keepalive Sweep"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-15T09:16:55Z",
+        "databaseId": 34951682050,
+        "headSha": "537c913cf54bab0f8bfe59a72edea4bfc575d862",
+        "name": "Agents PR Health",
+        "status": "completed",
+        "updatedAt": "2026-09-15T09:17:33Z",
+        "url": "https://github.com/stranske/Counter_Risk/actions/runs/34951682050",
+        "workflowName": "Agents PR Health"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-15T08:37:58Z",
+        "databaseId": 34948025537,
+        "headSha": "537c913cf54bab0f8bfe59a72edea4bfc575d862",
+        "name": "Agents Keepalive Sweep",
+        "status": "completed",
+        "updatedAt": "2026-09-15T08:38:09Z",
+        "url": "https://github.com/stranske/Counter_Risk/actions/runs/34948025537",
+        "workflowName": "Agents Keepalive Sweep"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-15T08:21:01Z",
+        "databaseId": 34946466193,
+        "headSha": "537c913cf54bab0f8bfe59a72edea4bfc575d862",
+        "name": "Agents PR Health",
+        "status": "completed",
+        "updatedAt": "2026-09-15T08:21:44Z",
+        "url": "https://github.com/stranske/Counter_Risk/actions/runs/34946466193",
+        "workflowName": "Agents PR Health"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-15T07:33:47Z",
+        "databaseId": 34942333917,
+        "headSha": "537c913cf54bab0f8bfe59a72edea4bfc575d862",
+        "name": "Agents Keepalive Sweep",
+        "status": "completed",
+        "updatedAt": "2026-09-15T07:34:02Z",
+        "url": "https://github.com/stranske/Counter_Risk/actions/runs/34942333917",
+        "workflowName": "Agents Keepalive Sweep"
+      }
+    ],
+    "check_runs": [
+      {
+        "name": "Re-evaluate stalled agent PRs (non-consolidated)",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Counter_Risk/actions/runs/34953371900/job/104329444161"
+      },
+      {
+        "name": "Name keepalive sweep mode",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Counter_Risk/actions/runs/34953371900/job/104329442863"
+      },
+      {
+        "name": "Re-evaluate stalled agent PRs (consolidated)",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Counter_Risk/actions/runs/34953371900/job/104329442622"
+      },
+      {
+        "name": "health / Health summary",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Counter_Risk/actions/runs/34951682050/job/104324033168"
+      },
+      {
+        "name": "health / Nudge stalled PRs",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Counter_Risk/actions/runs/34951682050/job/104323978967"
+      },
+      {
+        "name": "health / Resolve conflicts",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Counter_Risk/actions/runs/34951682050/job/104323978836"
+      },
+      {
+        "name": "health / Fix failing checks",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Counter_Risk/actions/runs/34951682050/job/104323976939"
+      },
+      {
+        "name": "health / Scan open PRs",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Counter_Risk/actions/runs/34951682050/job/104323897366"
+      },
+      {
+        "name": "health / Schedule gate",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Counter_Risk/actions/runs/34951682050/job/104323871171"
+      },
+      {
+        "name": "Re-evaluate stalled agent PRs (non-consolidated)",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Counter_Risk/actions/runs/34948025537/job/104311987444"
+      },
+      {
+        "name": "Name keepalive sweep mode",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Counter_Risk/actions/runs/34948025537/job/104311986020"
+      },
+      {
+        "name": "Re-evaluate stalled agent PRs (consolidated)",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Counter_Risk/actions/runs/34948025537/job/104311985658"
+      },
+      {
+        "name": "health / Health summary",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Counter_Risk/actions/runs/34946466193/job/104307124340"
+      },
+      {
+        "name": "health / Nudge stalled PRs",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Counter_Risk/actions/runs/34946466193/job/104307081660"
+      },
+      {
+        "name": "health / Resolve conflicts",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Counter_Risk/actions/runs/34946466193/job/104307081191"
+      },
+      {
+        "name": "health / Fix failing checks",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Counter_Risk/actions/runs/34946466193/job/104307079823"
+      },
+      {
+        "name": "health / Scan open PRs",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Counter_Risk/actions/runs/34946466193/job/104306968442"
+      },
+      {
+        "name": "health / Schedule gate",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Counter_Risk/actions/runs/34946466193/job/104306940422"
+      },
+      {
+        "name": "Re-evaluate stalled agent PRs (non-consolidated)",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Counter_Risk/actions/runs/34942333917/job/104293655721"
+      },
+      {
+        "name": "Name keepalive sweep mode",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Counter_Risk/actions/runs/34942333917/job/104293654941"
+      }
+    ]
+  },
+  {
+    "repo": "Manager-Database",
+    "full": "stranske/Manager-Database",
+    "frozen": [],
+    "silent": [],
+    "stalled": [],
+    "supply": 7,
+    "priority_count": 6,
+    "open_count": 9,
+    "ci_status": "success",
+    "ci_url": "https://github.com/stranske/Manager-Database/actions/runs/32449581317/job/96675371707",
+    "ci_run_id": null,
+    "head_sha": "7e1d59fb12d90c5b2b4ddc343621ff51aba57f4f",
+    "runs": [
+      {
+        "conclusion": "skipped",
+        "createdAt": "2026-08-18T10:36:29Z",
+        "databaseId": 32127590212,
+        "headSha": "7e1d59fb12d90c5b2b4ddc343621ff51aba57f4f",
+        "name": "Agents Keepalive Sweep",
+        "status": "completed",
+        "updatedAt": "2026-08-18T10:36:30Z",
+        "url": "https://github.com/stranske/Manager-Database/actions/runs/32127590212",
+        "workflowName": "Agents Keepalive Sweep"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-08-18T10:06:49Z",
+        "databaseId": 32125117554,
+        "headSha": "7e1d59fb12d90c5b2b4ddc343621ff51aba57f4f",
+        "name": "Agents PR Health",
+        "status": "completed",
+        "updatedAt": "2026-08-18T10:07:15Z",
+        "url": "https://github.com/stranske/Manager-Database/actions/runs/32125117554",
+        "workflowName": "Agents PR Health"
+      },
+      {
+        "conclusion": "skipped",
+        "createdAt": "2026-08-18T09:37:15Z",
+        "databaseId": 32122553057,
+        "headSha": "7e1d59fb12d90c5b2b4ddc343621ff51aba57f4f",
+        "name": "Agents Keepalive Sweep",
+        "status": "completed",
+        "updatedAt": "2026-08-18T09:37:16Z",
+        "url": "https://github.com/stranske/Manager-Database/actions/runs/32122553057",
+        "workflowName": "Agents Keepalive Sweep"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-08-18T09:09:30Z",
+        "databaseId": 32120098061,
+        "headSha": "7e1d59fb12d90c5b2b4ddc343621ff51aba57f4f",
+        "name": "Agents PR Health",
+        "status": "completed",
+        "updatedAt": "2026-08-18T09:10:00Z",
+        "url": "https://github.com/stranske/Manager-Database/actions/runs/32120098061",
+        "workflowName": "Agents PR Health"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-08-18T08:09:30Z",
+        "databaseId": 32114939782,
+        "headSha": "7e1d59fb12d90c5b2b4ddc343621ff51aba57f4f",
+        "name": "Agents PR Health",
+        "status": "completed",
+        "updatedAt": "2026-08-18T08:09:56Z",
+        "url": "https://github.com/stranske/Manager-Database/actions/runs/32114939782",
+        "workflowName": "Agents PR Health"
+      }
+    ],
+    "check_runs": [
+      {
+        "name": "Re-evaluate stalled agent PRs",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Manager-Database/actions/runs/32451204534/job/96679937194"
+      },
+      {
+        "name": "postgres-snapshot",
+        "status": "completed",
+        "conclusion": "failure",
+        "html_url": "https://github.com/stranske/Manager-Database/actions/runs/32450374571/job/96677640317"
+      },
+      {
+        "name": "health / Fix failing checks",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Manager-Database/actions/runs/32449581317/job/96675433718"
+      },
+      {
+        "name": "health / Resolve conflicts",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Manager-Database/actions/runs/32449581317/job/96675433235"
+      },
+      {
+        "name": "health / Nudge stalled PRs",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Manager-Database/actions/runs/32449581317/job/96675433195"
+      },
+      {
+        "name": "health / Health summary",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Manager-Database/actions/runs/32449581317/job/96675432996"
+      },
+      {
+        "name": "health / Scan open PRs",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Manager-Database/actions/runs/32449581317/job/96675390556"
+      },
+      {
+        "name": "health / Schedule gate",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Manager-Database/actions/runs/32449581317/job/96675371707"
+      },
+      {
+        "name": "Report keepalive completion",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Manager-Database/actions/runs/32448277009/job/96671811736"
+      },
+      {
+        "name": "Record autofix dispatch completion",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Manager-Database/actions/runs/32448264266/job/96671802530"
+      },
+      {
+        "name": "autofix",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Manager-Database/actions/runs/32448264266/job/96671802349"
+      },
+      {
+        "name": "Fetch PR context",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Manager-Database/actions/runs/32448264517/job/96671796526"
+      },
+      {
+        "name": "Record keepalive dispatch completion",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Manager-Database/actions/runs/32448264572/job/96671782987"
+      },
+      {
+        "name": "Update keepalive summary",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Manager-Database/actions/runs/32448264572/job/96671782323"
+      },
+      {
+        "name": "Keepalive next task (Claude)",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Manager-Database/actions/runs/32448264572/job/96671782051"
+      },
+      {
+        "name": "Keepalive next task (Codex)",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Manager-Database/actions/runs/32448264572/job/96671781917"
+      },
+      {
+        "name": "Mark agent running",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Manager-Database/actions/runs/32448264572/job/96671781860"
+      },
+      {
+        "name": "Cleanup bot comment label",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Manager-Database/actions/runs/32448264517/job/96671781760"
+      },
+      {
+        "name": "Flag for human follow-up",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Manager-Database/actions/runs/32448264572/job/96671781588"
+      },
+      {
+        "name": "Run Codex autofix",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Manager-Database/actions/runs/32448264572/job/96671781487"
+      }
+    ]
+  },
+  {
+    "repo": "Inv-Man-Intake",
+    "full": "stranske/Inv-Man-Intake",
+    "frozen": [],
+    "silent": [
+      {
+        "number": 950,
+        "title": "[P1] report-spec.json renderer contract (B2-031)",
+        "labels": [
+          "agents:formatted",
+          "agents:apply-suggestions",
+          "agent:codex"
+        ],
+        "age_h": 37.5
+      },
+      {
+        "number": 949,
+        "title": "[P1] Evidence-object/v1 emitter replacing page-pointer refs (B2-017)",
+        "labels": [
+          "agents:formatted",
+          "agents:apply-suggestions",
+          "agent:codex"
+        ],
+        "age_h": 37.5
+      },
+      {
+        "number": 948,
+        "title": "[P1] Consultant section ontology aligned to tracked-variable/v1 (B2-010)",
+        "labels": [
+          "agents:formatted",
+          "agents:apply-suggestions",
+          "agent:codex"
+        ],
+        "age_h": 37.5
+      }
+    ],
+    "stalled": [],
+    "supply": 4,
+    "priority_count": 0,
+    "open_count": 6,
+    "ci_status": "success",
+    "ci_url": "https://github.com/stranske/Inv-Man-Intake/actions/runs/34951475184/job/104323205859",
+    "ci_run_id": null,
+    "head_sha": "be28f2dcfce9da2810f168caec9fa4fe5fb7b4b0",
+    "runs": [
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-15T09:36:08Z",
+        "databaseId": 34953401956,
+        "headSha": "be28f2dcfce9da2810f168caec9fa4fe5fb7b4b0",
+        "name": "Agents Keepalive Sweep",
+        "status": "completed",
+        "updatedAt": "2026-09-15T09:36:23Z",
+        "url": "https://github.com/stranske/Inv-Man-Intake/actions/runs/34953401956",
+        "workflowName": "Agents Keepalive Sweep"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-15T09:14:47Z",
+        "databaseId": 34951475184,
+        "headSha": "be28f2dcfce9da2810f168caec9fa4fe5fb7b4b0",
+        "name": "Agents PR Health",
+        "status": "completed",
+        "updatedAt": "2026-09-15T09:15:17Z",
+        "url": "https://github.com/stranske/Inv-Man-Intake/actions/runs/34951475184",
+        "workflowName": "Agents PR Health"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-15T08:38:14Z",
+        "databaseId": 34948051465,
+        "headSha": "be28f2dcfce9da2810f168caec9fa4fe5fb7b4b0",
+        "name": "Agents Keepalive Sweep",
+        "status": "completed",
+        "updatedAt": "2026-09-15T08:38:30Z",
+        "url": "https://github.com/stranske/Inv-Man-Intake/actions/runs/34948051465",
+        "workflowName": "Agents Keepalive Sweep"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-15T08:18:41Z",
+        "databaseId": 34946252225,
+        "headSha": "be28f2dcfce9da2810f168caec9fa4fe5fb7b4b0",
+        "name": "Agents PR Health",
+        "status": "completed",
+        "updatedAt": "2026-09-15T08:19:13Z",
+        "url": "https://github.com/stranske/Inv-Man-Intake/actions/runs/34946252225",
+        "workflowName": "Agents PR Health"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-15T07:34:01Z",
+        "databaseId": 34942353381,
+        "headSha": "be28f2dcfce9da2810f168caec9fa4fe5fb7b4b0",
+        "name": "Agents Keepalive Sweep",
+        "status": "completed",
+        "updatedAt": "2026-09-15T07:34:16Z",
+        "url": "https://github.com/stranske/Inv-Man-Intake/actions/runs/34942353381",
+        "workflowName": "Agents Keepalive Sweep"
+      }
+    ],
+    "check_runs": [
+      {
+        "name": "Re-evaluate stalled agent PRs (non-consolidated)",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Inv-Man-Intake/actions/runs/34953401956/job/104329547740"
+      },
+      {
+        "name": "Re-evaluate stalled agent PRs (consolidated)",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Inv-Man-Intake/actions/runs/34953401956/job/104329546061"
+      },
+      {
+        "name": "Name keepalive sweep mode",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Inv-Man-Intake/actions/runs/34953401956/job/104329545931"
+      },
+      {
+        "name": "health / Resolve conflicts",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Inv-Man-Intake/actions/runs/34951475184/job/104323338043"
+      },
+      {
+        "name": "health / Fix failing checks",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Inv-Man-Intake/actions/runs/34951475184/job/104323337423"
+      },
+      {
+        "name": "health / Nudge stalled PRs",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Inv-Man-Intake/actions/runs/34951475184/job/104323337260"
+      },
+      {
+        "name": "health / Health summary",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Inv-Man-Intake/actions/runs/34951475184/job/104323336245"
+      },
+      {
+        "name": "health / Scan open PRs",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Inv-Man-Intake/actions/runs/34951475184/job/104323236221"
+      },
+      {
+        "name": "health / Schedule gate",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Inv-Man-Intake/actions/runs/34951475184/job/104323205859"
+      },
+      {
+        "name": "Re-evaluate stalled agent PRs (non-consolidated)",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Inv-Man-Intake/actions/runs/34948051465/job/104312070751"
+      },
+      {
+        "name": "Name keepalive sweep mode",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Inv-Man-Intake/actions/runs/34948051465/job/104312070257"
+      },
+      {
+        "name": "Re-evaluate stalled agent PRs (consolidated)",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Inv-Man-Intake/actions/runs/34948051465/job/104312069724"
+      },
+      {
+        "name": "health / Resolve conflicts",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Inv-Man-Intake/actions/runs/34946252225/job/104306361416"
+      },
+      {
+        "name": "health / Nudge stalled PRs",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Inv-Man-Intake/actions/runs/34946252225/job/104306361324"
+      },
+      {
+        "name": "health / Fix failing checks",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Inv-Man-Intake/actions/runs/34946252225/job/104306361144"
+      },
+      {
+        "name": "health / Health summary",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Inv-Man-Intake/actions/runs/34946252225/job/104306360041"
+      },
+      {
+        "name": "health / Scan open PRs",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Inv-Man-Intake/actions/runs/34946252225/job/104306265249"
+      },
+      {
+        "name": "health / Schedule gate",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Inv-Man-Intake/actions/runs/34946252225/job/104306236360"
+      },
+      {
+        "name": "Re-evaluate stalled agent PRs (non-consolidated)",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Inv-Man-Intake/actions/runs/34942353381/job/104293722940"
+      },
+      {
+        "name": "Re-evaluate stalled agent PRs (consolidated)",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Inv-Man-Intake/actions/runs/34942353381/job/104293721564"
+      }
+    ]
+  },
+  {
+    "repo": "Pension-Data",
+    "full": "stranske/Pension-Data",
+    "frozen": [],
+    "silent": [
+      {
+        "number": 883,
+        "title": "[P1] workspace-bundle.json contract wiring (B2-030)",
+        "labels": [
+          "agents:formatted",
+          "agents:apply-suggestions",
+          "agent:codex"
+        ],
+        "age_h": 37.5
+      },
+      {
+        "number": 882,
+        "title": "[P1] Factor renderer-shell from apps/web (B2-029)",
+        "labels": [
+          "agents:formatted",
+          "agents:apply-suggestions",
+          "agent:codex"
+        ],
+        "age_h": 37.5
+      },
+      {
+        "number": 881,
+        "title": "[P1] Evidence + identity-map projection emitter (B2-018)",
+        "labels": [
+          "agents:formatted",
+          "agents:apply-suggestions",
+          "agent:codex"
+        ],
+        "age_h": 37.5
+      },
+      {
+        "number": 880,
+        "title": "[P2] N-CSR sample ingest lane (B2-042)",
+        "labels": [
+          "agents:formatted",
+          "agents:apply-suggestions",
+          "agent:codex"
+        ],
+        "age_h": 37.5
+      },
+      {
+        "number": 879,
+        "title": "[P2] CalPERS IC document harvester (B2-038)",
+        "labels": [
+          "agents:formatted",
+          "agents:apply-suggestions",
+          "agent:codex"
+        ],
+        "age_h": 37.5
+      }
+    ],
+    "stalled": [],
+    "supply": 8,
+    "priority_count": 0,
+    "open_count": 10,
+    "ci_status": "success",
+    "ci_url": "https://github.com/stranske/Pension-Data/actions/runs/34951367159/job/104322856346",
+    "ci_run_id": null,
+    "head_sha": "1224f0308b1a9be8cf8bc5079b4b0570e6071d5e",
+    "runs": [
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-15T09:35:18Z",
+        "databaseId": 34953323969,
+        "headSha": "1224f0308b1a9be8cf8bc5079b4b0570e6071d5e",
+        "name": "Agents Keepalive Sweep",
+        "status": "completed",
+        "updatedAt": "2026-09-15T09:35:31Z",
+        "url": "https://github.com/stranske/Pension-Data/actions/runs/34953323969",
+        "workflowName": "Agents Keepalive Sweep"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-15T09:13:39Z",
+        "databaseId": 34951367159,
+        "headSha": "1224f0308b1a9be8cf8bc5079b4b0570e6071d5e",
+        "name": "Agents PR Health",
+        "status": "completed",
+        "updatedAt": "2026-09-15T09:14:12Z",
+        "url": "https://github.com/stranske/Pension-Data/actions/runs/34951367159",
+        "workflowName": "Agents PR Health"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-15T08:37:16Z",
+        "databaseId": 34947963338,
+        "headSha": "1224f0308b1a9be8cf8bc5079b4b0570e6071d5e",
+        "name": "Agents Keepalive Sweep",
+        "status": "completed",
+        "updatedAt": "2026-09-15T08:37:28Z",
+        "url": "https://github.com/stranske/Pension-Data/actions/runs/34947963338",
+        "workflowName": "Agents Keepalive Sweep"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-15T08:17:26Z",
+        "databaseId": 34946141020,
+        "headSha": "1224f0308b1a9be8cf8bc5079b4b0570e6071d5e",
+        "name": "Agents PR Health",
+        "status": "completed",
+        "updatedAt": "2026-09-15T08:17:51Z",
+        "url": "https://github.com/stranske/Pension-Data/actions/runs/34946141020",
+        "workflowName": "Agents PR Health"
+      },
+      {
+        "conclusion": "success",
+        "createdAt": "2026-09-15T07:33:07Z",
+        "databaseId": 34942277427,
+        "headSha": "1224f0308b1a9be8cf8bc5079b4b0570e6071d5e",
+        "name": "Agents Keepalive Sweep",
+        "status": "completed",
+        "updatedAt": "2026-09-15T07:33:20Z",
+        "url": "https://github.com/stranske/Pension-Data/actions/runs/34942277427",
+        "workflowName": "Agents Keepalive Sweep"
+      }
+    ],
+    "check_runs": [
+      {
+        "name": "Re-evaluate stalled agent PRs (non-consolidated)",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Pension-Data/actions/runs/34953323969/job/104329279768"
+      },
+      {
+        "name": "Name keepalive sweep mode",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Pension-Data/actions/runs/34953323969/job/104329278554"
+      },
+      {
+        "name": "Re-evaluate stalled agent PRs (consolidated)",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Pension-Data/actions/runs/34953323969/job/104329278368"
+      },
+      {
+        "name": "health / Nudge stalled PRs",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Pension-Data/actions/runs/34951367159/job/104322988454"
+      },
+      {
+        "name": "health / Fix failing checks",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Pension-Data/actions/runs/34951367159/job/104322988310"
+      },
+      {
+        "name": "health / Resolve conflicts",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Pension-Data/actions/runs/34951367159/job/104322988186"
+      },
+      {
+        "name": "health / Health summary",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Pension-Data/actions/runs/34951367159/job/104322987364"
+      },
+      {
+        "name": "health / Scan open PRs",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Pension-Data/actions/runs/34951367159/job/104322889289"
+      },
+      {
+        "name": "health / Schedule gate",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Pension-Data/actions/runs/34951367159/job/104322856346"
+      },
+      {
+        "name": "Re-evaluate stalled agent PRs (non-consolidated)",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Pension-Data/actions/runs/34947963338/job/104311780311"
+      },
+      {
+        "name": "Name keepalive sweep mode",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Pension-Data/actions/runs/34947963338/job/104311779214"
+      },
+      {
+        "name": "Re-evaluate stalled agent PRs (consolidated)",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Pension-Data/actions/runs/34947963338/job/104311778964"
+      },
+      {
+        "name": "health / Resolve conflicts",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Pension-Data/actions/runs/34946141020/job/104305965711"
+      },
+      {
+        "name": "health / Nudge stalled PRs",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Pension-Data/actions/runs/34946141020/job/104305965619"
+      },
+      {
+        "name": "health / Fix failing checks",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Pension-Data/actions/runs/34946141020/job/104305965390"
+      },
+      {
+        "name": "health / Health summary",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Pension-Data/actions/runs/34946141020/job/104305964117"
+      },
+      {
+        "name": "health / Scan open PRs",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Pension-Data/actions/runs/34946141020/job/104305897622"
+      },
+      {
+        "name": "health / Schedule gate",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Pension-Data/actions/runs/34946141020/job/104305872786"
+      },
+      {
+        "name": "Re-evaluate stalled agent PRs (non-consolidated)",
+        "status": "completed",
+        "conclusion": "skipped",
+        "html_url": "https://github.com/stranske/Pension-Data/actions/runs/34942277427/job/104293472887"
+      },
+      {
+        "name": "Name keepalive sweep mode",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/stranske/Pension-Data/actions/runs/34942277427/job/104293471721"
+      }
+    ]
+  }
+]

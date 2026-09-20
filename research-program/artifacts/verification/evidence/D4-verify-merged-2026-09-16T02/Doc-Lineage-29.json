@@ -1,0 +1,24 @@
+{
+  "body": "<!-- pr-preamble:start -->\n<!-- meta:issue:4 -->\n> **Source:** Issue #4\n\nCloses #4\n\n<!-- pr-preamble:end -->\n\n## Summary\n- Add `doc_lineage.schema` ledger row models adopted verbatim from the work-environment comparison tools (change, continuity, persistence, stale-flag, section crosswalk, material ledgers).\n- Publish JSON Schema under `schemas/` with exact wire field names including legal-tool `From`/`To`.\n- Add consultant-report and legal-filing fixtures plus `tests/test_schema_wire_names.py` (wire-name gate, enum rejection, non-finite percentage rejection, deliberate-break assertion for `carry_forward_pct`).\n\n## Test plan\n- [x] `pytest tests/test_schema_wire_names.py -q`\n- [x] Full suite 93% cov (80% gate)\n- [x] `tests/test_dependency_version_alignment.py` after lock regen for jsonschema\n\n<!-- This is an auto-generated comment: release notes by coderabbit.ai -->\n## Summary by CodeRabbit\n\n* **New Features**\n  * Added structured models, serialization, and validation for change, continuity, persistence, material, stale-flag, and section-crosswalk records.\n  * Added standardized segment classifications, materiality tiers, and text-source values.\n  * Added strict validation for required fields, data types, allowed values, and finite numeric values.\n\n* **Tests**\n  * Added transition fixtures and validation coverage for supported record formats.\n\n* **Chores**\n  * Added coverage data to ignore rules.\n<!-- end of auto-generated comment: release notes by coderabbit.ai -->\n\n<!-- auto-status-summary:start -->\n## Automated Status Summary\n#### Scope\nThe tracked-variable schema for this repo does not need to be invented. Two comparison tools already run in the work environment with real, named field sets, and the response gives them verbatim (section D). Adopting those names is what makes a tool built here interoperable with the tools already in use there; inventing parallel names is the single change most likely to make this repo useless.\n\nEvidence: response section D, the consultant-report comparison tool and the legal-document lineage tool (https://github.com/stranske/Ready/blob/main/research-program/artifacts/work-bundle/INFORMATION-REQUEST-RESPONSE.md).\n\n#### Tasks\n- [ ] Add `src/doc_lineage/schema/change_ledger.py` with fields `doc_type, transition, canonical_section, subsection, item, page_new, change_type, tier, topic, prior_text, current_text`.\n- [ ] Add `continuity_ledger` with `doc_type, transition, canonical_section, status, words_current, carry_forward_pct, refresh_pct, verbatim_words, near_verbatim_words, revised_words, new_words, dropped_words, segments_verbatim, segments_near, segments_revised, segments_new, segments_dropped, segments_cosmetic, new_items, dropped_items`.\n- [ ] Add `persistence_ledger` with `doc_type, canonical_section, item, consecutive_years_unchanged, first_seen, last_seen, words, text`, and `stale_flag_ledger` as that shape plus `report_year, flag`.\n- [ ] Add `section_crosswalk` with `doc_type, year, raw_section, canonical_section, words`.\n- [ ] Add `material_ledger` with the legal tool's seven columns `date, tier, theme, category, change, from_value, to_value`, documenting that `from` and `to` are reserved words in Python and that the wire names stay `From` and `To`.\n- [ ] Define the segment classification vocabulary as a closed enumeration `VERBATIM, NEAR_VERBATIM, REVISED, NEW, DROPPED`, and the materiality tiers as `T1` decision-relevant, `T2` factual refresh, `T3` cosmetic.\n- [ ] Publish JSON Schema for each record type under `schemas/` and validate every fixture against it in tests.\n- [ ] Add a round-trip test that a ledger row serializes to the wire names the existing tools use and parses back unchanged.\n\n#### Acceptance criteria\n- [ ] Every field name listed above exists with that exact wire spelling, asserted by a test that reads the names from the JSON Schema rather than from Python identifiers.\n- [ ] The segment vocabulary and tier set reject an unknown value rather than passing it through.\n- [ ] A row with a non-finite number in any percentage or word-count field is rejected at validation, not stored.\n- [ ] Fixtures exist for both a consultant-report transition and a legal-filing transition, and both validate.\n\n<!-- auto-status-summary:end -->",
+  "closingIssuesReferences": [
+    {
+      "id": "I_kwDOUOakrc8AAAABPwX8Zg",
+      "number": 4,
+      "repository": {
+        "id": "R_kgDOUOakrQ",
+        "name": "Doc-Lineage",
+        "owner": {
+          "id": "MDQ6VXNlcjIzMDQ2MzIy",
+          "login": "stranske"
+        }
+      },
+      "url": "https://github.com/stranske/Doc-Lineage/issues/4"
+    }
+  ],
+  "mergeCommit": {
+    "oid": "6bbc90a82497ddca98e349ba53e9ad15caef0020"
+  },
+  "mergedAt": "2026-09-15T17:58:37Z",
+  "number": 29,
+  "title": "Adopt work-environment ledger schemas with JSON Schema wire names (#4)"
+}

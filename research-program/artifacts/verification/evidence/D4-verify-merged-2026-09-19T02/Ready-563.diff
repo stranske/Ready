@@ -1,0 +1,73 @@
+diff --git a/tests/test_main.py b/tests/test_main.py
+index d73b7ad..55e31b3 100644
+--- a/tests/test_main.py
++++ b/tests/test_main.py
+@@ -253,3 +253,19 @@ def test_verdict_policy_split_pass_concerns_with_inf_confidence_does_not_trigger
+     assert result.split_verdict is True
+     assert result.concerns_confidence == 0.0
+     assert result.needs_human is False
++
++
++def test_ci_failure_triage_playbook_urls_resolve_to_existing_docs() -> None:
++    """All DEFAULT_TRIAGE_PATTERNS playbook_url paths must exist under docs/."""
++    from tools.ci_failure_triage import DEFAULT_TRIAGE_PATTERNS
++
++    repo_root = Path(__file__).resolve().parents[1]
++    for pattern in DEFAULT_TRIAGE_PATTERNS:
++        if not pattern.playbook_url:
++            continue
++        doc_path = pattern.playbook_url.split("#", 1)[0]
++        docs_root = (repo_root / "docs").resolve()
++        resolved_doc = (repo_root / doc_path).resolve()
++        assert resolved_doc.is_relative_to(docs_root) and resolved_doc.is_file(), (
++            f"{pattern.error_type} playbook_url {pattern.playbook_url!r} must resolve under docs/"
++        )
+diff --git a/tools/ci_failure_triage.py b/tools/ci_failure_triage.py
+index ad85170..5514a0a 100644
+--- a/tools/ci_failure_triage.py
++++ b/tools/ci_failure_triage.py
+@@ -76,7 +76,7 @@ DEFAULT_TRIAGE_PATTERNS: tuple[TriagePattern, ...] = (
+         root_cause="Type checking failed during mypy.",
+         suggested_fix=SUGGESTED_FIX_TEMPLATES["mypy"],
+         file_regexes=_compile([r"(?P<path>[A-Za-z0-9_./-]+\.py):\d+:"]),
+-        playbook_url="docs/INTEGRATION_GUIDE.md#scenario-2-mypy-errors",
++        playbook_url="docs/CI_SYSTEM_GUIDE.md#ci-is-failing",
+     ),
+     TriagePattern(
+         error_type="pytest",
+@@ -90,7 +90,7 @@ DEFAULT_TRIAGE_PATTERNS: tuple[TriagePattern, ...] = (
+         root_cause="Pytest reported failing tests.",
+         suggested_fix=SUGGESTED_FIX_TEMPLATES["pytest"],
+         file_regexes=_compile([r"(?P<path>[A-Za-z0-9_./-]+\.py):\d+:"]),
+-        playbook_url="docs/INTEGRATION_GUIDE.md#scenario-1-tests-failing",
++        playbook_url="docs/CI_SYSTEM_GUIDE.md#ci-is-failing",
+     ),
+     TriagePattern(
+         error_type="coverage",
+@@ -103,7 +103,7 @@ DEFAULT_TRIAGE_PATTERNS: tuple[TriagePattern, ...] = (
+         ),
+         root_cause="Coverage enforcement failed.",
+         suggested_fix=SUGGESTED_FIX_TEMPLATES["coverage"],
+-        playbook_url="docs/INTEGRATION_GUIDE.md#consumer-repo-setup-coverage-soft-gate",
++        playbook_url="docs/CI_SYSTEM_GUIDE.md#ci-is-failing",
+     ),
+     TriagePattern(
+         error_type="import_error",
+@@ -117,7 +117,7 @@ DEFAULT_TRIAGE_PATTERNS: tuple[TriagePattern, ...] = (
+         root_cause="Python import failed during test or runtime.",
+         suggested_fix=SUGGESTED_FIX_TEMPLATES["import_error"],
+         file_regexes=_compile([r"File \"(?P<path>[A-Za-z0-9_./-]+\.py)\""]),
+-        playbook_url="docs/llm-task-analysis.md#import-errors",
++        playbook_url="docs/CI_SYSTEM_GUIDE.md#ci-is-failing",
+     ),
+     TriagePattern(
+         error_type="syntax_error",
+@@ -131,7 +131,7 @@ DEFAULT_TRIAGE_PATTERNS: tuple[TriagePattern, ...] = (
+         root_cause="Python parser raised a syntax error.",
+         suggested_fix=SUGGESTED_FIX_TEMPLATES["syntax_error"],
+         file_regexes=_compile([r"File \"(?P<path>[A-Za-z0-9_./-]+\.py)\""]),
+-        playbook_url="docs/fast-validation-ecosystem.md#error-handling",
++        playbook_url="docs/CI_SYSTEM_GUIDE.md#ci-is-failing",
+     ),
+ )
+ 

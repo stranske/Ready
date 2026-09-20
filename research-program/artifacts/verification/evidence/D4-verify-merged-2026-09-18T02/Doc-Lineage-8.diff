@@ -1,0 +1,1759 @@
+diff --git a/README.md b/README.md
+index e07c9a1..f686b3d 100644
+--- a/README.md
++++ b/README.md
+@@ -13,6 +13,23 @@ Document lineage and blackline engine for recurring investment documents.
+ - Run without servers: a Python library plus a static/offline review surface, producing HTML and CSV artifacts with one-click links back to the source document and page.
+ - **Synthetic and public data only** in this repository. No proprietary manager material is ever committed or used in tests.
+ 
++## Ingest (M1)
++
++`doc-lineage ingest` parses one document, splits it into page-anchored segments, and
++writes a run directory containing `segments.json` and an `artifact-manifest.json`
++conforming to `artifact-manifest/v1` (`docs/contracts/schemas/`):
++
++```bash
++doc-lineage ingest tests/fixtures/synthetic_lpa.pdf --output /tmp/out
++```
++
++Docling is the intended segmenter. It is an optional dependency, so the adapter falls
++back to reading the PDF's own content streams when Docling is not importable, and every
++run records which backend produced the text (`backend` in `segments.json`) so fallback
++output is never mistaken for a Docling parse. Pages with no readable text layer are
++reported in `pages_without_text_layer` rather than dropped — recognition (issue #3) is a
++required stage here, so a page that yields nothing is a finding, not a silence.
++
+ ## Interoperability
+ 
+ Identifiers and evidence objects follow the fleet conventions in `docs/contracts/` (`run-contract/v1`, `evidence-object/v1`, identity-map conventions). The versioned [legal clause vocabulary](vocab/legal-clauses.json) publishes 25 stable `ontology_key` values so sibling repos (`Inv-Man-Intake`, `Manager-Database`, `Pension-Data`) can adopt the same names. Load the full document with `from doc_lineage.vocab import load_legal_clauses` and `load_legal_clauses()`.
+diff --git a/pyproject.toml b/pyproject.toml
+index ca47f39..a3a7b15 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -35,15 +35,25 @@ dev = [
+     "black==26.5.1",
+ ]
+ 
++[project.scripts]
++doc-lineage = "doc_lineage.cli:main"
++
+ [project.urls]
+ Homepage = "https://github.com/stranske/Template"
+ Repository = "https://github.com/stranske/Template"
+ 
+ [tool.setuptools]
+-packages = ["doc_lineage", "doc_lineage._vocab", "doc_lineage.schema"]
+-package-dir = {"" = "src", "doc_lineage._vocab" = "vocab"}
++packages = [
++    "doc_lineage",
++    "doc_lineage._contracts",
++    "doc_lineage._vocab",
++    "doc_lineage.adapters",
++    "doc_lineage.schema",
++]
++package-dir = {"" = "src", "doc_lineage._vocab" = "vocab", "doc_lineage._contracts" = "docs/contracts/schemas"}
+ 
+ [tool.setuptools.package-data]
++"doc_lineage._contracts" = ["*.schema.json"]
+ "doc_lineage._vocab" = ["legal-clauses.json"]
+ "doc_lineage.schema" = ["schemas/*.schema.json"]
+ 
+diff --git a/src/doc_lineage/__init__.py b/src/doc_lineage/__init__.py
+index b278c46..300494a 100644
+--- a/src/doc_lineage/__init__.py
++++ b/src/doc_lineage/__init__.py
+@@ -1,33 +1,13 @@
+-"""Document lineage: identity, extraction with page pointers, and version and family comparison for recurring investment documents
++"""Document lineage: identity, extraction with page pointers, and version and family comparison for recurring investment documents"""
+ 
+-The two helpers below are the Template's scaffold and are exercised by tests/test_main.py.
+-They stay until real modules replace them, so the package always has a tested public surface.
+-"""
++from doc_lineage.identity import DocumentIdentity, compute_identity
++from doc_lineage.ingest import IngestResult, Segment, ingest_document
+ 
+ __version__ = "0.1.0"
+-__all__ = ["greet", "add"]
+-
+-
+-def greet(name: str) -> str:
+-    """Return a greeting message.
+-
+-    Args:
+-        name: The name to greet.
+-
+-    Returns:
+-        A greeting string.
+-    """
+-    return f"Hello, {name}!"
+-
+-
+-def add(a: int, b: int) -> int:
+-    """Add two numbers.
+-
+-    Args:
+-        a: First number.
+-        b: Second number.
+-
+-    Returns:
+-        The sum of a and b.
+-    """
+-    return a + b
++__all__ = [
++    "DocumentIdentity",
++    "IngestResult",
++    "Segment",
++    "compute_identity",
++    "ingest_document",
++]
+diff --git a/src/doc_lineage/adapters/__init__.py b/src/doc_lineage/adapters/__init__.py
+new file mode 100644
+index 0000000..c4640fd
+--- /dev/null
++++ b/src/doc_lineage/adapters/__init__.py
+@@ -0,0 +1,17 @@
++"""Adapters that wrap third-party document tooling behind a stable interface."""
++
++from doc_lineage.adapters.docling_segmenter import (
++    DOCLING_BACKEND,
++    OFFLINE_BACKEND,
++    PageText,
++    SegmenterResult,
++    segment_document,
++)
++
++__all__ = [
++    "DOCLING_BACKEND",
++    "OFFLINE_BACKEND",
++    "PageText",
++    "SegmenterResult",
++    "segment_document",
++]
+diff --git a/src/doc_lineage/adapters/docling_segmenter.py b/src/doc_lineage/adapters/docling_segmenter.py
+new file mode 100644
+index 0000000..03c578e
+--- /dev/null
++++ b/src/doc_lineage/adapters/docling_segmenter.py
+@@ -0,0 +1,406 @@
++"""Docling segmenter wrapper with an offline fallback for CI.
++
++Docling is the intended production segmenter, but it is a heavy optional
++dependency that cannot be installed in every CI leg. This adapter therefore
++resolves a backend at call time and always reports which one produced the text,
++so a caller can never mistake fallback output for a Docling parse. The fallback
++reads the PDF's own content streams; it does not fabricate text and it does not
++perform recognition. Whether a page carried a text layer at all is reported
++separately, because "no extractable text" is a real finding that a recognition
++fallback (issue #3) has to act on, not a silence to paper over.
++"""
++
++from __future__ import annotations
++
++import re
++import tempfile
++import zlib
++from dataclasses import dataclass
++from pathlib import Path
++
++MAX_INGEST_BYTES = 100 * 1024 * 1024
++
++DOCLING_BACKEND = "docling"
++OFFLINE_BACKEND = "offline-pdf-text"
++
++PDF_MAGIC = b"%PDF"
++
++_OBJECT_PATTERN = re.compile(rb"(?<![0-9])(\d+)\s+\d+\s+obj\b(.*?)\bendobj", re.DOTALL)
++_STREAM_PATTERN = re.compile(rb"stream\r?\n(.*?)\r?\nendstream", re.DOTALL)
++_PAGE_TYPE_PATTERN = re.compile(rb"/Type\s*/Page(?![a-zA-Z])")
++_CONTENTS_PATTERN = re.compile(rb"/Contents\s*(\[[^\]]*\]|\d+\s+\d+\s+R)")
++_REFERENCE_PATTERN = re.compile(rb"(\d+)\s+\d+\s+R")
++_PAGES_REF_PATTERN = re.compile(rb"/Pages\s+(\d+)\s+\d+\s+R")
++_SHOW_TEXT_PATTERN = re.compile(
++    rb"\((?:\\.|[^()\\])*\)\s*(?:Tj|TJ|'|\")" rb"|(?:\[(?:[^\]]|\\.)*\]\s*TJ)" rb"|T\*",
++    re.DOTALL,
++)
++_KIDS_PATTERN = re.compile(rb"/Kids\s*\[([^\]]*)\]")
++_ROOT_PATTERN = re.compile(rb"/Root\s+(\d+)\s+\d+\s+R")
++_PAGES_TYPE_PATTERN = re.compile(rb"/Type\s*/Pages\b")
++_PDF_ESCAPES = {
++    b"n": b"\n",
++    b"r": b"\r",
++    b"t": b"\t",
++    b"b": b"\b",
++    b"f": b"\f",
++    b"(": b"(",
++    b")": b")",
++    b"\\": b"\\",
++}
++
++
++@dataclass(frozen=True)
++class PageText:
++    """Text recovered for one page, with an explicit text-layer verdict."""
++
++    page: int
++    text: str
++    has_text_layer: bool
++
++
++@dataclass(frozen=True)
++class SegmenterResult:
++    """Pages plus the provenance of the backend that produced them."""
++
++    backend: str
++    pages: tuple[PageText, ...]
++
++    @property
++    def pages_without_text_layer(self) -> tuple[int, ...]:
++        return tuple(page.page for page in self.pages if not page.has_text_layer)
++
++
++def segment_document(
++    path: Path,
++    *,
++    allow_docling: bool = True,
++    data: bytes | None = None,
++) -> SegmenterResult:
++    """Return per-page text for ``path`` using Docling when it is importable.
++
++    ``allow_docling=False`` forces the offline backend. Tests use it to exercise
++    the fallback deterministically on machines where Docling happens to exist.
++
++    When ``data`` is supplied, segmentation uses that immutable snapshot instead
++    of re-reading ``path``, so callers can hash and segment the same bytes.
++    """
++    payload = data if data is not None else read_bounded_bytes(path, MAX_INGEST_BYTES)
++    if allow_docling:
++        docling_pages = _try_docling(path, payload)
++        if docling_pages is not None:
++            return SegmenterResult(backend=DOCLING_BACKEND, pages=docling_pages)
++    return SegmenterResult(backend=OFFLINE_BACKEND, pages=_offline_pages(payload))
++
++
++def read_bounded_bytes(path: Path, max_bytes: int) -> bytes:
++    """Read at most ``max_bytes`` from ``path``, rejecting larger inputs."""
++    with path.open("rb") as handle:
++        payload = handle.read(max_bytes + 1)
++    if len(payload) > max_bytes:
++        raise ValueError(
++            f"document exceeds ingest size limit ({len(payload)} > {max_bytes} bytes): {path}"
++        )
++    return payload
++
++
++def _try_docling(path: Path, data: bytes) -> tuple[PageText, ...] | None:
++    """Convert with Docling, or return ``None`` when it is unavailable."""
++    try:
++        from docling.document_converter import DocumentConverter  # type: ignore[import-not-found]
++        from docling.exceptions import ConversionError  # type: ignore[import-not-found]
++    except ImportError:
++        return None
++
++    convert_path = path
++    temp_path: Path | None = None
++    suffix = path.suffix or ".bin"
++    with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as handle:
++        handle.write(data)
++        temp_path = Path(handle.name)
++        convert_path = temp_path
++
++    try:
++        document = DocumentConverter().convert(str(convert_path)).document
++    except ConversionError:
++        return None
++    finally:
++        if temp_path is not None:
++            temp_path.unlink(missing_ok=True)
++
++    pages_dict = getattr(document, "pages", None) or {}
++    by_page: dict[int, list[str]] = {int(page_no): [] for page_no in pages_dict}
++    for item, _level in document.iterate_items():
++        text = str(getattr(item, "text", "") or "").strip()
++        if not text:
++            continue
++        for provenance in getattr(item, "prov", ()) or ():
++            page_no = int(getattr(provenance, "page_no", 1) or 1)
++            by_page.setdefault(page_no, []).append(text)
++    if not by_page and not pages_dict:
++        return None
++    page_inventory = {int(page_no) for page_no in pages_dict} | set(by_page)
++    num_pages_attr = getattr(document, "num_pages", 0)
++    total_pages = int(num_pages_attr() if callable(num_pages_attr) else num_pages_attr or 0)
++    if total_pages <= 0:
++        total_pages = max(page_inventory) if page_inventory else 0
++    elif page_inventory:
++        total_pages = max(total_pages, max(page_inventory))
++    return tuple(
++        PageText(
++            page=page,
++            text="\n".join(by_page.get(page, [])),
++            has_text_layer=bool(by_page.get(page)),
++        )
++        for page in range(1, total_pages + 1)
++    )
++
++
++def _offline_pages(data: bytes) -> tuple[PageText, ...]:
++    """Recover page text without third-party tooling."""
++    if not data.startswith(PDF_MAGIC):
++        raise ValueError(
++            "non-PDF input requires Docling; the offline backend only reads PDF content streams"
++        )
++
++    objects = _objects(data)
++    page_bodies = _ordered_page_bodies(data, objects)
++    if not page_bodies:
++        # A PDF with no page object is empty as far as this backend can tell.
++        # Report one page with no text layer rather than returning nothing, so a
++        # caller still sees a page and can route recognition. Returning no pages
++        # would make "unreadable" indistinguishable from "read, found nothing".
++        return (PageText(page=1, text="", has_text_layer=False),)
++
++    pages: list[PageText] = []
++    for index, body in enumerate(page_bodies, start=1):
++        text = "\n".join(
++            extracted
++            for extracted in (
++                _extract_stream_text(stream) for stream in _page_streams(body, objects)
++            )
++            if extracted
++        ).strip()
++        # A page whose content this backend cannot read stays a page. Dropping it
++        # would hide the one signal a recognition fallback needs.
++        pages.append(PageText(page=index, text=text, has_text_layer=bool(text)))
++    return tuple(pages)
++
++
++def _objects(data: bytes) -> dict[int, bytes]:
++    """Return indirect object bodies keyed by object number, in file order."""
++    return {int(match.group(1)): match.group(2) for match in _OBJECT_PATTERN.finditer(data)}
++
++
++def _ordered_page_bodies(data: bytes, objects: dict[int, bytes]) -> list[bytes]:
++    """Return page object bodies in logical reading order via the page tree."""
++    root_match = _ROOT_PATTERN.search(data)
++    if root_match is None:
++        return [body for body in objects.values() if _is_page_object(body)]
++    catalog = objects.get(int(root_match.group(1)))
++    if catalog is None:
++        return [body for body in objects.values() if _is_page_object(body)]
++    pages_ref = _PAGES_REF_PATTERN.search(catalog)
++    if pages_ref is None:
++        return [body for body in objects.values() if _is_page_object(body)]
++    pages_body = objects.get(int(pages_ref.group(1)))
++    if pages_body is None:
++        return [body for body in objects.values() if _is_page_object(body)]
++    ordered: list[bytes] = []
++    _collect_pages(pages_body, objects, ordered)
++    return ordered or [body for body in objects.values() if _is_page_object(body)]
++
++
++def _collect_pages(node_body: bytes, objects: dict[int, bytes], out: list[bytes]) -> None:
++    """Walk a /Pages node depth-first, appending /Page bodies in Kids order."""
++    if _is_page_object(node_body):
++        out.append(node_body)
++        return
++    if not _PAGES_TYPE_PATTERN.search(node_body):
++        return
++    kids_match = _KIDS_PATTERN.search(node_body)
++    if kids_match is None:
++        return
++    for reference in _REFERENCE_PATTERN.finditer(kids_match.group(1)):
++        child = objects.get(int(reference.group(1)))
++        if child is not None:
++            _collect_pages(child, objects, out)
++
++
++def _is_page_object(body: bytes) -> bool:
++    """True for ``/Type /Page``; ``/Type /Pages`` is the tree node, not a page."""
++    return bool(_PAGE_TYPE_PATTERN.search(body))
++
++
++def _page_streams(page_body: bytes, objects: dict[int, bytes]) -> list[bytes]:
++    """Return the decoded content streams a page references, in order."""
++    contents = _CONTENTS_PATTERN.search(page_body)
++    if not contents:
++        return []
++    streams: list[bytes] = []
++    for reference in _REFERENCE_PATTERN.finditer(contents.group(1)):
++        body = objects.get(int(reference.group(1)))
++        if body is None:
++            continue
++        decoded = _decode_stream(body)
++        if decoded is not None:
++            streams.append(decoded)
++    return streams
++
++
++def _decode_stream(object_body: bytes) -> bytes | None:
++    """Return one object's stream payload, or ``None`` when it cannot be read."""
++    match = _STREAM_PATTERN.search(object_body)
++    if not match:
++        return None
++    header = object_body[: match.start()]
++    payload = match.group(1)
++    if b"/FlateDecode" in header:
++        try:
++            return zlib.decompress(payload)
++        except zlib.error:
++            return None
++    if b"/Filter" in header:
++        # An encoding this backend cannot read is not text it may guess at.
++        return None
++    return payload
++
++
++def _extract_stream_text(stream: bytes) -> str:
++    """Join the text-showing operators of one content stream into page text."""
++    lines: list[str] = []
++    current: list[str] = []
++    index = 0
++    while index < len(stream):
++        if stream[index : index + 1] == b"(":
++            raw, end_index = _read_balanced_pdf_string(stream, index)
++            if raw is None:
++                index += 1
++                continue
++            operator, operator_len = _peek_text_showing_operator(stream, end_index)
++            if operator in (b"Tj", b"'", b'"'):
++                decoded = _decode_pdf_string(raw)
++                if operator in (b"'", b'"'):
++                    if current:
++                        lines.append("".join(current))
++                    current = [decoded]
++                else:
++                    current.append(decoded)
++            index = end_index + operator_len
++            continue
++        if stream[index : index + 1] == b"[":
++            array_end = _find_balanced_array_end(stream, index)
++            if array_end == -1:
++                index += 1
++                continue
++            operator, operator_len = _peek_text_showing_operator(stream, array_end + 1)
++            if operator == b"TJ":
++                current.extend(_strings_from_tj_array(stream[index + 1 : array_end]))
++            index = array_end + 1 + operator_len
++            continue
++        if stream[index : index + 2] == b"T*":
++            lines.append("".join(current))
++            current = []
++            index += 2
++            continue
++        index += 1
++    if current:
++        lines.append("".join(current))
++    return "\n".join(lines).strip()
++
++
++def _peek_text_showing_operator(stream: bytes, start: int) -> tuple[bytes, int]:
++    """Return ``(operator, consumed_length)`` when a text operator follows."""
++    index = start
++    while index < len(stream) and stream[index : index + 1] in b" \t\r\n\f":
++        index += 1
++    for operator in (b"TJ", b"Tj", b"T*", b"'", b'"'):
++        if stream[index : index + len(operator)] == operator:
++            return operator, index - start + len(operator)
++    return b"", index - start
++
++
++def _find_balanced_array_end(stream: bytes, start: int) -> int:
++    """Return the index of the closing ``]`` for an array starting at ``start``."""
++    if start >= len(stream) or stream[start : start + 1] != b"[":
++        return -1
++    depth = 0
++    index = start
++    while index < len(stream):
++        byte = stream[index : index + 1]
++        if byte == b"(":
++            _, index = _read_balanced_pdf_string(stream, index)
++            continue
++        if byte == b"[":
++            depth += 1
++        elif byte == b"]":
++            depth -= 1
++            if depth == 0:
++                return index
++        index += 1
++    return -1
++
++
++def _strings_from_tj_array(array_body: bytes) -> list[str]:
++    strings: list[str] = []
++    index = 0
++    while index < len(array_body):
++        if array_body[index : index + 1] == b"(":
++            raw, index = _read_balanced_pdf_string(array_body, index)
++            if raw is not None:
++                strings.append(_decode_pdf_string(raw))
++            continue
++        index += 1
++    return strings
++
++
++def _read_balanced_pdf_string(data: bytes, start: int) -> tuple[bytes | None, int]:
++    """Return the raw bytes inside a PDF literal string starting at ``(``."""
++    if start >= len(data) or data[start : start + 1] != b"(":
++        return None, start + 1
++    depth = 0
++    index = start
++    while index < len(data):
++        byte = data[index : index + 1]
++        if byte == b"\\":
++            index += 2 if index + 1 < len(data) else 1
++            continue
++        if byte == b"(":
++            depth += 1
++        elif byte == b")":
++            depth -= 1
++            if depth == 0:
++                return data[start + 1 : index], index + 1
++        index += 1
++    return None, len(data)
++
++
++def _decode_pdf_string(raw: bytes) -> str:
++    """Resolve PDF literal-string escapes into text."""
++    out = bytearray()
++    index = 0
++    while index < len(raw):
++        byte = raw[index : index + 1]
++        if byte != b"\\":
++            out += byte
++            index += 1
++            continue
++        index += 1
++        if index >= len(raw):
++            break
++        escape = raw[index : index + 1]
++        if escape in _PDF_ESCAPES:
++            out += _PDF_ESCAPES[escape]
++            index += 1
++            continue
++        if escape.isdigit():
++            octal = bytearray()
++            while index < len(raw) and raw[index] in b"01234567" and len(octal) < 3:
++                octal.append(raw[index])
++                index += 1
++            if octal:
++                out.append(int(octal, 8) & 0xFF)
++                continue
++        out += escape
++        index += 1
++    return out.decode("latin-1")
+diff --git a/src/doc_lineage/cli.py b/src/doc_lineage/cli.py
+new file mode 100644
+index 0000000..178a184
+--- /dev/null
++++ b/src/doc_lineage/cli.py
+@@ -0,0 +1,69 @@
++"""Command line entry point for Doc-Lineage."""
++
++from __future__ import annotations
++
++import argparse
++import sys
++from collections.abc import Sequence
++from pathlib import Path
++
++from doc_lineage.ingest import ingest_document
++
++
++def build_parser() -> argparse.ArgumentParser:
++    parser = argparse.ArgumentParser(prog="doc-lineage", description="Document lineage tooling.")
++    subparsers = parser.add_subparsers(dest="command", required=True)
++
++    ingest = subparsers.add_parser(
++        "ingest",
++        help="Parse and segment one document, writing an artifact-manifest/v1 run directory.",
++    )
++    ingest.add_argument("path", type=Path, help="Document to ingest.")
++    ingest.add_argument(
++        "--output",
++        type=Path,
++        required=True,
++        help="Directory to write segments.json and artifact-manifest.json into.",
++    )
++    ingest.add_argument("--run-id", default=None, help="Override the generated run id.")
++    ingest.add_argument("--git-sha", default=None, help="Record the git sha for this run.")
++    ingest.add_argument(
++        "--no-docling",
++        action="store_true",
++        help="Force the offline text backend even when Docling is importable.",
++    )
++    return parser
++
++
++def main(argv: Sequence[str] | None = None) -> int:
++    args = build_parser().parse_args(argv)
++    if args.command != "ingest":  # pragma: no cover - argparse rejects anything else
++        raise AssertionError(f"unhandled command: {args.command}")
++
++    try:
++        result = ingest_document(
++            args.path,
++            output_dir=args.output,
++            run_id=args.run_id,
++            git_sha=args.git_sha,
++            allow_docling=not args.no_docling,
++        )
++    except (FileNotFoundError, ValueError) as exc:
++        print(f"doc-lineage ingest: {exc}", file=sys.stderr)
++        return 1
++
++    print(
++        f"ingested {result.source_path.name} "
++        f"[backend={result.backend} run_id={result.run_id}] -> "
++        f"{len(result.segments)} segment(s) across {result.page_count} page(s)"
++    )
++    print(f"manifest: {result.manifest_path}")
++    print(f"segments: {result.segments_path}")
++    if result.pages_without_text_layer:
++        pages = ", ".join(str(page) for page in result.pages_without_text_layer)
++        print(f"warning: no text layer on page(s) {pages}; recognition fallback required")
++    return 0
++
++
++if __name__ == "__main__":  # pragma: no cover - exercised via the console script
++    raise SystemExit(main())
+diff --git a/src/doc_lineage/ingest.py b/src/doc_lineage/ingest.py
+new file mode 100644
+index 0000000..466fa2d
+--- /dev/null
++++ b/src/doc_lineage/ingest.py
+@@ -0,0 +1,211 @@
++"""M1 ingest pipeline: parse one document, segment it, emit an artifact manifest.
++
++The output contract is ``artifact-manifest/v1`` from
++``docs/contracts/schemas/artifact-manifest-v1.schema.json``. The manifest is
++validated against that schema before anything is written, so a run either
++produces a conforming manifest or fails loudly; it never leaves a half-valid
++manifest on disk for a downstream consumer to trip over.
++"""
++
++from __future__ import annotations
++
++import json
++import re
++from dataclasses import asdict, dataclass
++from datetime import UTC, datetime
++from pathlib import Path
++from typing import Any
++
++from doc_lineage.adapters import SegmenterResult, segment_document
++from doc_lineage.adapters.docling_segmenter import MAX_INGEST_BYTES, read_bounded_bytes
++from doc_lineage.identity import sha256_bytes
++from doc_lineage.schema.validation import validate_contract_record
++
++MANIFEST_SCHEMA_VERSION = "artifact-manifest/v1"
++MANIFEST_SCHEMA_NAME = "artifact-manifest-v1"
++SEGMENTS_SCHEMA_VERSION = "doc-lineage-segments/v1"
++TOOL_NAME = "doc-lineage-ingest"
++MANIFEST_FILENAME = "artifact-manifest.json"
++SEGMENTS_FILENAME = "segments.json"
++_PARAGRAPH_SPLIT = re.compile(r"\n\s*\n")
++_WHITESPACE = re.compile(r"\s+")
++
++
++@dataclass(frozen=True)
++class Segment:
++    """One contiguous block of document text with a page pointer."""
++
++    segment_id: str
++    page: int
++    order: int
++    text: str
++    char_count: int
++    word_count: int
++
++    def to_dict(self) -> dict[str, Any]:
++        return asdict(self)
++
++
++@dataclass(frozen=True)
++class IngestResult:
++    """Everything one ingest run produced, in memory and on disk."""
++
++    source_path: Path
++    source_sha256: str
++    run_id: str
++    backend: str
++    segments: tuple[Segment, ...]
++    manifest: dict[str, Any]
++    output_dir: Path
++    manifest_path: Path
++    segments_path: Path
++    pages_without_text_layer: tuple[int, ...]
++
++    @property
++    def page_count(self) -> int:
++        pages = {segment.page for segment in self.segments}
++        pages.update(self.pages_without_text_layer)
++        return len(pages)
++
++
++def segment_pages(result: SegmenterResult, *, source_sha256: str) -> tuple[Segment, ...]:
++    """Split per-page text into paragraph segments with stable ids.
++
++    The id is derived from the source digest plus the page and ordinal, so the
++    same bytes always yield the same segment ids across machines and runs.
++    """
++    segments: list[Segment] = []
++    order = 0
++    for page in result.pages:
++        for block in _PARAGRAPH_SPLIT.split(page.text):
++            text = _WHITESPACE.sub(" ", block).strip()
++            if not text:
++                continue
++            order += 1
++            segments.append(
++                Segment(
++                    segment_id=f"{source_sha256[:16]}-p{page.page:04d}-s{order:04d}",
++                    page=page.page,
++                    order=order,
++                    text=text,
++                    char_count=len(text),
++                    word_count=len(text.split()),
++                )
++            )
++    return tuple(segments)
++
++
++def build_manifest(
++    *,
++    run_id: str,
++    source_path: Path,
++    source_sha256: str,
++    artifacts: list[dict[str, Any]],
++    git_sha: str | None = None,
++    created_at: str | None = None,
++    source_bytes: int | None = None,
++) -> dict[str, Any]:
++    """Assemble an ``artifact-manifest/v1`` payload for one ingest run."""
++    manifest: dict[str, Any] = {
++        "schema_version": MANIFEST_SCHEMA_VERSION,
++        "run_id": run_id,
++        "tool": TOOL_NAME,
++        "git_sha": git_sha,
++        "created_at": created_at or datetime.now(tz=UTC).isoformat(),
++        "source": {
++            "filename": source_path.name,
++            "sha256": source_sha256,
++            "bytes": source_bytes if source_bytes is not None else source_path.stat().st_size,
++        },
++        "artifacts": artifacts,
++    }
++    validate_contract_record(MANIFEST_SCHEMA_NAME, manifest)
++    return manifest
++
++
++def ingest_document(
++    path: Path,
++    *,
++    output_dir: Path,
++    run_id: str | None = None,
++    git_sha: str | None = None,
++    created_at: str | None = None,
++    allow_docling: bool = True,
++) -> IngestResult:
++    """Parse, segment, and manifest one document into ``output_dir``.
++
++    Raises ``FileNotFoundError`` when ``path`` is missing and ``ValueError``
++    when the document yields no segments, because an empty manifest cannot
++    satisfy the contract's ``minItems: 1`` and an empty result is a finding,
++    not a success.
++    """
++    source = path.expanduser().resolve()
++    if not source.is_file():
++        raise FileNotFoundError(f"document to ingest does not exist: {source}")
++
++    raw = read_bounded_bytes(source, MAX_INGEST_BYTES)
++    source_sha256 = sha256_bytes(raw)
++    effective_run_id = (run_id or f"ingest-{source_sha256[:12]}").strip()
++    if not effective_run_id:
++        raise ValueError("run_id must be a non-empty string")
++    segmented = segment_document(source, allow_docling=allow_docling, data=raw)
++    segments = segment_pages(segmented, source_sha256=source_sha256)
++    if not segments:
++        raise ValueError(
++            f"no text segments recovered from {source} via backend {segmented.backend}; "
++            "a recognition fallback is required before this document can be ingested"
++        )
++
++    destination = output_dir.expanduser().resolve()
++    destination.mkdir(parents=True, exist_ok=True)
++
++    segments_payload = {
++        "schema_version": SEGMENTS_SCHEMA_VERSION,
++        "source_sha256": source_sha256,
++        "backend": segmented.backend,
++        "pages_without_text_layer": list(segmented.pages_without_text_layer),
++        "segments": [segment.to_dict() for segment in segments],
++    }
++    segments_bytes = _dump(segments_payload)
++    segments_path = destination / SEGMENTS_FILENAME
++
++    artifacts = [
++        {
++            "artifact_id": f"{source_sha256[:16]}-segments",
++            "name": SEGMENTS_FILENAME,
++            "kind": "data",
++            "path": SEGMENTS_FILENAME,
++            "sha256": sha256_bytes(segments_bytes),
++            "bytes": len(segments_bytes),
++            "media_type": "application/json",
++        }
++    ]
++    manifest = build_manifest(
++        run_id=effective_run_id,
++        source_path=source,
++        source_sha256=source_sha256,
++        artifacts=artifacts,
++        git_sha=git_sha,
++        created_at=created_at,
++        source_bytes=len(raw),
++    )
++    segments_path.write_bytes(segments_bytes)
++    manifest_path = destination / MANIFEST_FILENAME
++    manifest_path.write_bytes(_dump(manifest))
++
++    return IngestResult(
++        source_path=source,
++        source_sha256=source_sha256,
++        run_id=str(manifest["run_id"]),
++        backend=segmented.backend,
++        segments=segments,
++        manifest=manifest,
++        output_dir=destination,
++        manifest_path=manifest_path,
++        segments_path=segments_path,
++        pages_without_text_layer=segmented.pages_without_text_layer,
++    )
++
++
++def _dump(payload: dict[str, Any]) -> bytes:
++    return (json.dumps(payload, indent=2, sort_keys=True) + "\n").encode("utf-8")
+diff --git a/src/doc_lineage/schema/__init__.py b/src/doc_lineage/schema/__init__.py
+index 5aa8b66..2a6b61c 100644
+--- a/src/doc_lineage/schema/__init__.py
++++ b/src/doc_lineage/schema/__init__.py
+@@ -9,7 +9,12 @@ from doc_lineage.schema.change_ledger import (
+     StaleFlagLedgerRow,
+ )
+ from doc_lineage.schema.enums import MaterialityTier, SegmentClassification, TextBasis
+-from doc_lineage.schema.validation import load_schema, validate_record
++from doc_lineage.schema.validation import (
++    load_contract_schema,
++    load_schema,
++    validate_contract_record,
++    validate_record,
++)
+ 
+ __all__ = [
+     "ChangeLedgerRow",
+@@ -21,6 +26,8 @@ __all__ = [
+     "SegmentClassification",
+     "StaleFlagLedgerRow",
+     "TextBasis",
++    "load_contract_schema",
+     "load_schema",
++    "validate_contract_record",
+     "validate_record",
+ ]
+diff --git a/src/doc_lineage/schema/validation.py b/src/doc_lineage/schema/validation.py
+index 9908e0c..5a14d42 100644
+--- a/src/doc_lineage/schema/validation.py
++++ b/src/doc_lineage/schema/validation.py
+@@ -34,13 +34,43 @@ def _schema_resource(name: str) -> Path:
+         return checkout_root / "schemas" / filename
+ 
+ 
++def _contract_schema_resource(name: str) -> Path:
++    """Locate a synced backplane contract schema.
++
++    Wheels bundle ``docs/contracts/schemas`` as ``doc_lineage._contracts`` so the
++    contract has exactly one source file; the checkout fallback mirrors the
++    pattern already used for the vocabulary in ``doc_lineage.vocab``.
++    """
++    filename = f"{name}.schema.json"
++    try:
++        resource = files("doc_lineage._contracts").joinpath(filename)
++        return Path(str(resource))
++    except ModuleNotFoundError:
++        checkout_root = Path(__file__).resolve().parents[3]
++        return checkout_root / "docs" / "contracts" / "schemas" / filename
++
++
+ @lru_cache(maxsize=32)
+ def load_schema(name: str) -> dict[str, Any]:
+     path = _schema_resource(name)
+     return cast(dict[str, Any], json.loads(path.read_text(encoding="utf-8")))
+ 
+ 
++@lru_cache(maxsize=32)
++def load_contract_schema(name: str) -> dict[str, Any]:
++    """Return a synced contract schema (e.g. ``artifact-manifest-v1``)."""
++    path = _contract_schema_resource(name)
++    return cast(dict[str, Any], json.loads(path.read_text(encoding="utf-8")))
++
++
+ def validate_record(schema_name: str, payload: dict[str, Any]) -> None:
+     _reject_non_finite_numbers(payload)
+     schema = load_schema(schema_name)
+     Draft202012Validator(schema).validate(payload)
++
++
++def validate_contract_record(schema_name: str, payload: dict[str, Any]) -> None:
++    """Validate a payload against a synced backplane contract schema."""
++    _reject_non_finite_numbers(payload)
++    schema = load_contract_schema(schema_name)
++    Draft202012Validator(schema).validate(payload)
+diff --git a/tests/fixtures/synthetic_lpa.pdf b/tests/fixtures/synthetic_lpa.pdf
+new file mode 100644
+index 0000000..4ba7079
+--- /dev/null
++++ b/tests/fixtures/synthetic_lpa.pdf
+@@ -0,0 +1,89 @@
++%PDF-1.4
++1 0 obj
++<< /Type /Catalog /Pages 2 0 R >>
++endobj
++2 0 obj
++<< /Type /Pages /Kids [5 0 R 7 0 R] /Count 2 >>
++endobj
++3 0 obj
++<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
++endobj
++4 0 obj
++<< /Length 533 >>
++stream
++BT
++/F1 11 Tf
++14 TL
++72 720 Td
++(SYNTHETIC LIMITED PARTNERSHIP AGREEMENT) Tj
++T*
++(Alpha Opportunities Fund IV, L.P.) Tj
++T*
++() Tj
++T*
++(1. MANAGEMENT FEE) Tj
++T*
++(The Partnership shall pay the General Partner an annual management fee) Tj
++T*
++(equal to 1.75% of aggregate Capital Commitments during the Commitment) Tj
++T*
++(Period, and 1.25% of invested capital thereafter.) Tj
++T*
++() Tj
++T*
++(2. CARRIED INTEREST) Tj
++T*
++(Carried interest is 20% of Distributable Proceeds, subject to a) Tj
++T*
++(preferred return of 8% compounded annually.) Tj
++T*
++ET
++endstream
++endobj
++5 0 obj
++<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 4 0 R >>
++endobj
++6 0 obj
++<< /Length 406 >>
++stream
++BT
++/F1 11 Tf
++14 TL
++72 720 Td
++(3. KEY PERSON EVENT) Tj
++T*
++(A Key Person Event occurs if fewer than two Key Persons devote) Tj
++T*
++(substantially all business time to the Partnership.) Tj
++T*
++() Tj
++T*
++(4. TRANSFER RESTRICTIONS) Tj
++T*
++(No Limited Partner may transfer its Interest without the prior written) Tj
++T*
++(consent of the General Partner, which may be withheld in its sole) Tj
++T*
++(discretion.) Tj
++T*
++ET
++endstream
++endobj
++7 0 obj
++<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents 6 0 R >>
++endobj
++xref
++0 8
++0000000000 65535 f 
++0000000009 00000 n 
++0000000058 00000 n 
++0000000121 00000 n 
++0000000191 00000 n 
++0000000774 00000 n 
++0000000900 00000 n 
++0000001356 00000 n 
++trailer
++<< /Size 8 /Root 1 0 R >>
++startxref
++1482
++%%EOF
+diff --git a/tests/ingest/__init__.py b/tests/ingest/__init__.py
+new file mode 100644
+index 0000000..a19f9d5
+--- /dev/null
++++ b/tests/ingest/__init__.py
+@@ -0,0 +1 @@
++"""Tests for the M1 ingest pipeline."""
+diff --git a/tests/ingest/test_docling_segmenter.py b/tests/ingest/test_docling_segmenter.py
+new file mode 100644
+index 0000000..fb8354e
+--- /dev/null
++++ b/tests/ingest/test_docling_segmenter.py
+@@ -0,0 +1,432 @@
++"""Backend selection and offline text recovery in the Docling adapter."""
++
++from __future__ import annotations
++
++import sys
++import types
++import zlib
++from dataclasses import dataclass
++from pathlib import Path
++from typing import Any
++
++import pytest
++
++from doc_lineage.adapters import DOCLING_BACKEND, OFFLINE_BACKEND, segment_document
++from doc_lineage.adapters.docling_segmenter import (
++    _decode_pdf_string,
++    read_bounded_bytes,
++)
++
++FIXTURE = Path(__file__).resolve().parents[1] / "fixtures" / "synthetic_lpa.pdf"
++
++
++def _pdf_with_pages(*streams: tuple[bytes, bytes]) -> bytes:
++    """Build a minimal PDF whose pages reference the given (header_extra, body) streams."""
++    out = bytearray(b"%PDF-1.4\n")
++    number = 1
++    for header_extra, body in streams:
++        contents_num, page_num = number, number + 1
++        number += 2
++        out += (
++            f"{contents_num} 0 obj\n<< /Length {len(body)} ".encode("ascii")
++            + header_extra
++            + b">>\nstream\n"
++            + body
++            + b"\nendstream\nendobj\n"
++        )
++        out += (
++            f"{page_num} 0 obj\n<< /Type /Page /Parent 99 0 R "
++            f"/Contents {contents_num} 0 R >>\nendobj\n".encode("ascii")
++        )
++    out += b"%%EOF\n"
++    return bytes(out)
++
++
++def _pdf_with_stream(body: bytes, *, header_extra: bytes = b"") -> bytes:
++    return _pdf_with_pages((header_extra, body))
++
++
++def test_plain_text_input_requires_docling(tmp_path: Path) -> None:
++    source = tmp_path / "notes.txt"
++    source.write_text("alpha lpa v1\n", encoding="utf-8")
++
++    with pytest.raises(ValueError, match="non-PDF input requires Docling"):
++        segment_document(source, allow_docling=False)
++
++
++def test_empty_non_pdf_input_requires_docling(tmp_path: Path) -> None:
++    source = tmp_path / "empty.txt"
++    source.write_bytes(b"")
++
++    with pytest.raises(ValueError, match="non-PDF input requires Docling"):
++        segment_document(source, allow_docling=False)
++
++
++def test_flate_encoded_stream_is_inflated(tmp_path: Path) -> None:
++    body = zlib.compress(b"BT (Compressed clause) Tj ET\n")
++    source = tmp_path / "flate.pdf"
++    source.write_bytes(_pdf_with_stream(body, header_extra=b"/Filter /FlateDecode "))
++
++    result = segment_document(source, allow_docling=False)
++
++    assert [page.text for page in result.pages] == ["Compressed clause"]
++
++
++def test_corrupt_flate_stream_is_skipped_not_guessed(tmp_path: Path) -> None:
++    source = tmp_path / "broken.pdf"
++    source.write_bytes(_pdf_with_stream(b"(Not Tj deflate)", header_extra=b"/Filter /FlateDecode "))
++
++    result = segment_document(source, allow_docling=False)
++
++    assert result.pages_without_text_layer == (1,)
++
++
++def test_unknown_filter_is_skipped_not_guessed(tmp_path: Path) -> None:
++    source = tmp_path / "dct.pdf"
++    source.write_bytes(_pdf_with_stream(b"(Scanned) Tj", header_extra=b"/Filter /DCTDecode "))
++
++    result = segment_document(source, allow_docling=False)
++
++    assert result.pages_without_text_layer == (1,)
++
++
++def test_stream_without_show_operators_is_ignored(tmp_path: Path) -> None:
++    source = tmp_path / "graphics.pdf"
++    source.write_bytes(_pdf_with_stream(b"0 0 612 792 re f\n"))
++
++    result = segment_document(source, allow_docling=False)
++
++    assert result.pages_without_text_layer == (1,)
++
++
++def test_trailing_text_without_a_line_break_is_kept(tmp_path: Path) -> None:
++    source = tmp_path / "tail.pdf"
++    source.write_bytes(_pdf_with_stream(b"BT (First) Tj T* (Second) Tj ET"))
++
++    result = segment_document(source, allow_docling=False)
++
++    assert result.pages[0].text == "First\nSecond"
++
++
++def test_quote_operators_flush_the_previous_line(tmp_path: Path) -> None:
++    source = tmp_path / "quotes.pdf"
++    source.write_bytes(_pdf_with_stream(b"BT (Line 1) Tj (Line 2) ' (Line 3) \" ET"))
++
++    result = segment_document(source, allow_docling=False)
++
++    assert result.pages[0].text == "Line 1\nLine 2\nLine 3"
++
++
++def test_tj_array_with_kerning_adjustments(tmp_path: Path) -> None:
++    source = tmp_path / "tj.pdf"
++    source.write_bytes(_pdf_with_stream(b"BT [(First) 20 (Second)] TJ ET"))
++
++    result = segment_document(source, allow_docling=False)
++
++    assert result.pages[0].text == "FirstSecond"
++
++
++def test_tj_array_with_bracket_inside_literal_string(tmp_path: Path) -> None:
++    source = tmp_path / "tj-bracket.pdf"
++    source.write_bytes(_pdf_with_stream(b"BT [(Clause ] text)] TJ ET"))
++
++    result = segment_document(source, allow_docling=False)
++
++    assert result.pages[0].text == "Clause ] text"
++
++
++def test_bdc_metadata_strings_are_not_extracted_as_page_text(tmp_path: Path) -> None:
++    source = tmp_path / "bdc.pdf"
++    source.write_bytes(
++        _pdf_with_stream(b"BT /Span << /Lang (en-US) >> BDC (Actual clause) Tj EMC ET")
++    )
++
++    result = segment_document(source, allow_docling=False)
++
++    assert result.pages[0].text == "Actual clause"
++
++
++def test_balanced_parentheses_inside_literal_strings(tmp_path: Path) -> None:
++    source = tmp_path / "nested.pdf"
++    source.write_bytes(_pdf_with_stream(b"BT (Section (A)) Tj ET"))
++
++    result = segment_document(source, allow_docling=False)
++
++    assert result.pages[0].text == "Section (A)"
++
++
++def test_catalog_pages_reference_is_resolved_when_metadata_precedes_it(tmp_path: Path) -> None:
++    source = tmp_path / "catalog.pdf"
++    source.write_bytes(
++        b"%PDF-1.4\n"
++        b"1 0 obj\n<< /Type /Catalog /Metadata 9 0 R /Pages 2 0 R >>\nendobj\n"
++        b"2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n"
++        b"3 0 obj\n<< /Type /Page /Parent 2 0 R /Contents 4 0 R >>\nendobj\n"
++        b"4 0 obj\n<< /Length 24 >>\nstream\nBT (Catalog page) Tj ET\nendstream\nendobj\n"
++        b"9 0 obj\n<< /Subtype /XML >>\nendobj\n"
++        b"xref\n0 10\n0000000000 65535 f \n"
++        b"trailer\n<< /Root 1 0 R >>\nstartxref\n0\n%%EOF\n"
++    )
++
++    result = segment_document(source, allow_docling=False)
++
++    assert result.pages[0].text == "Catalog page"
++
++
++def test_pdf_string_escapes_are_resolved() -> None:
++    assert _decode_pdf_string(rb"Fee \(1.75\%\)") == "Fee (1.75%)"
++    assert _decode_pdf_string(rb"line\nbreak") == "line\nbreak"
++    assert _decode_pdf_string(rb"back\\slash") == "back\\slash"
++    assert _decode_pdf_string(rb"\101\102") == "AB"
++    assert _decode_pdf_string(rb"\q") == "q"
++    assert _decode_pdf_string(rb"\8") == "8"
++    assert _decode_pdf_string(rb"trailing\\") == "trailing\\"
++
++
++def test_docling_is_used_when_importable(monkeypatch: pytest.MonkeyPatch) -> None:
++    """A stub Docling proves the adapter prefers it and labels the backend honestly."""
++
++    @dataclass
++    class _Prov:
++        page_no: int
++
++    @dataclass
++    class _Item:
++        text: str
++        prov: tuple[_Prov, ...]
++
++    class _PageItem:
++        pass
++
++    class _Document:
++        num_pages = 3
++        pages = {1: _PageItem(), 2: _PageItem(), 3: _PageItem()}
++
++        def iterate_items(self) -> list[tuple[_Item, int]]:
++            return [
++                (_Item("Docling clause one", (_Prov(1),)), 0),
++                (_Item("   ", (_Prov(1),)), 0),
++            ]
++
++    class _Converter:
++        def convert(self, _source: str) -> Any:
++            return types.SimpleNamespace(document=_Document())
++
++    module = types.ModuleType("docling")
++    converter_module = types.ModuleType("docling.document_converter")
++    converter_module.DocumentConverter = _Converter  # type: ignore[attr-defined]
++    exceptions_module = types.ModuleType("docling.exceptions")
++    exceptions_module.ConversionError = Exception  # type: ignore[attr-defined]
++    monkeypatch.setitem(sys.modules, "docling", module)
++    monkeypatch.setitem(sys.modules, "docling.document_converter", converter_module)
++    monkeypatch.setitem(sys.modules, "docling.exceptions", exceptions_module)
++
++    result = segment_document(FIXTURE)
++
++    assert result.backend == DOCLING_BACKEND
++    assert [page.page for page in result.pages] == [1, 2, 3]
++    assert result.pages[0].text == "Docling clause one"
++    assert result.pages[1].text == ""
++    assert result.pages[2].text == ""
++    assert result.pages_without_text_layer == (2, 3)
++
++
++def test_docling_returning_nothing_falls_back_to_offline(monkeypatch: pytest.MonkeyPatch) -> None:
++    class _Document:
++        def iterate_items(self) -> list[tuple[object, int]]:
++            return []
++
++    class _Converter:
++        def convert(self, _source: str) -> Any:
++            return types.SimpleNamespace(document=_Document())
++
++    converter_module = types.ModuleType("docling.document_converter")
++    converter_module.DocumentConverter = _Converter  # type: ignore[attr-defined]
++    exceptions_module = types.ModuleType("docling.exceptions")
++    exceptions_module.ConversionError = Exception  # type: ignore[attr-defined]
++    monkeypatch.setitem(sys.modules, "docling", types.ModuleType("docling"))
++    monkeypatch.setitem(sys.modules, "docling.document_converter", converter_module)
++    monkeypatch.setitem(sys.modules, "docling.exceptions", exceptions_module)
++
++    result = segment_document(FIXTURE)
++
++    assert result.backend == OFFLINE_BACKEND
++    assert len(result.pages) == 2
++
++
++def test_missing_docling_falls_back_without_raising(monkeypatch: pytest.MonkeyPatch) -> None:
++    monkeypatch.setitem(sys.modules, "docling.document_converter", None)
++
++    result = segment_document(FIXTURE)
++
++    assert result.backend == OFFLINE_BACKEND
++
++
++def test_docling_convert_failure_falls_back_to_offline(monkeypatch: pytest.MonkeyPatch) -> None:
++    class _ConversionError(Exception):
++        pass
++
++    class _Converter:
++        def convert(self, _source: str) -> Any:
++            raise _ConversionError("docling conversion failed")
++
++    converter_module = types.ModuleType("docling.document_converter")
++    converter_module.DocumentConverter = _Converter  # type: ignore[attr-defined]
++    exceptions_module = types.ModuleType("docling.exceptions")
++    exceptions_module.ConversionError = _ConversionError  # type: ignore[attr-defined]
++    monkeypatch.setitem(sys.modules, "docling", types.ModuleType("docling"))
++    monkeypatch.setitem(sys.modules, "docling.document_converter", converter_module)
++    monkeypatch.setitem(sys.modules, "docling.exceptions", exceptions_module)
++
++    result = segment_document(FIXTURE)
++
++    assert result.backend == OFFLINE_BACKEND
++    assert len(result.pages) == 2
++
++
++def test_docling_pages_inventory_includes_image_only_pages(monkeypatch: pytest.MonkeyPatch) -> None:
++    @dataclass
++    class _Prov:
++        page_no: int
++
++    @dataclass
++    class _Item:
++        text: str
++        prov: tuple[_Prov, ...]
++
++    class _PageItem:
++        pass
++
++    class _Document:
++        pages = {1: _PageItem(), 2: _PageItem()}
++
++        def iterate_items(self) -> list[tuple[_Item, int]]:
++            return [(_Item("Only page one", (_Prov(1),)), 0)]
++
++    class _Converter:
++        def convert(self, _source: str) -> Any:
++            return types.SimpleNamespace(document=_Document())
++
++    converter_module = types.ModuleType("docling.document_converter")
++    converter_module.DocumentConverter = _Converter  # type: ignore[attr-defined]
++    exceptions_module = types.ModuleType("docling.exceptions")
++    exceptions_module.ConversionError = Exception  # type: ignore[attr-defined]
++    monkeypatch.setitem(sys.modules, "docling", types.ModuleType("docling"))
++    monkeypatch.setitem(sys.modules, "docling.document_converter", converter_module)
++    monkeypatch.setitem(sys.modules, "docling.exceptions", exceptions_module)
++
++    result = segment_document(FIXTURE)
++
++    assert result.backend == DOCLING_BACKEND
++    assert [page.page for page in result.pages] == [1, 2]
++    assert result.pages_without_text_layer == (2,)
++
++
++def test_docling_uses_supplied_snapshot_not_live_path(
++    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
++) -> None:
++    seen: list[bytes] = []
++
++    class _Document:
++        pages = {1: object()}
++
++        def iterate_items(self) -> list[tuple[object, int]]:
++            return []
++
++    class _Converter:
++        def convert(self, source: str) -> Any:
++            seen.append(Path(source).read_bytes())
++            return types.SimpleNamespace(document=_Document())
++
++    converter_module = types.ModuleType("docling.document_converter")
++    converter_module.DocumentConverter = _Converter  # type: ignore[attr-defined]
++    exceptions_module = types.ModuleType("docling.exceptions")
++    exceptions_module.ConversionError = Exception  # type: ignore[attr-defined]
++    monkeypatch.setitem(sys.modules, "docling", types.ModuleType("docling"))
++    monkeypatch.setitem(sys.modules, "docling.document_converter", converter_module)
++    monkeypatch.setitem(sys.modules, "docling.exceptions", exceptions_module)
++
++    source = tmp_path / "snapshot-live.pdf"
++    snapshot = _pdf_with_stream(b"BT (Snapshot clause) Tj ET")
++    source.write_bytes(b"%PDF-1.4\n%%EOF\n")
++
++    result = segment_document(source, data=snapshot)
++
++    assert result.backend == DOCLING_BACKEND
++    assert seen == [snapshot]
++    assert result.pages_without_text_layer == (1,)
++
++
++def test_read_bounded_bytes_rejects_inputs_above_limit(tmp_path: Path) -> None:
++    limit = 4096
++    source = tmp_path / "large.pdf"
++    source.write_bytes(b"x" * (limit + 1))
++
++    with pytest.raises(ValueError, match="exceeds ingest size limit"):
++        read_bounded_bytes(source, limit)
++
++
++def test_read_bounded_bytes_accepts_inputs_at_limit(tmp_path: Path) -> None:
++    limit = 4096
++    source = tmp_path / "max.pdf"
++    payload = b"x" * limit
++    source.write_bytes(payload)
++
++    assert read_bounded_bytes(source, limit) == payload
++
++
++def test_segment_document_uses_supplied_snapshot(tmp_path: Path) -> None:
++    source = tmp_path / "snapshot.pdf"
++    payload = _pdf_with_stream(b"BT (Snapshot clause) Tj ET")
++    source.write_bytes(payload)
++
++    result = segment_document(source, allow_docling=False, data=payload)
++
++    assert result.pages[0].text == "Snapshot clause"
++
++
++def test_a_page_with_no_readable_text_is_still_reported_as_a_page(tmp_path: Path) -> None:
++    """The mixed case: a text-less page must not vanish from the page list."""
++    source = tmp_path / "mixed.pdf"
++    source.write_bytes(
++        _pdf_with_pages(
++            (b"", b"BT (Readable clause) Tj ET"),
++            (b"/Filter /DCTDecode ", b"scanned-image-bytes"),
++        )
++    )
++
++    result = segment_document(source, allow_docling=False)
++
++    assert [page.page for page in result.pages] == [1, 2]
++    assert result.pages[0].text == "Readable clause"
++    assert result.pages_without_text_layer == (2,)
++
++
++def test_page_without_contents_has_no_text_layer(tmp_path: Path) -> None:
++    source = tmp_path / "bare.pdf"
++    source.write_bytes(b"%PDF-1.4\n1 0 obj\n<< /Type /Page /Parent 99 0 R >>\nendobj\n%%EOF\n")
++
++    result = segment_document(source, allow_docling=False)
++
++    assert result.pages_without_text_layer == (1,)
++
++
++def test_dangling_contents_reference_is_skipped(tmp_path: Path) -> None:
++    source = tmp_path / "dangling.pdf"
++    source.write_bytes(b"%PDF-1.4\n1 0 obj\n<< /Type /Page /Contents [7 0 R] >>\nendobj\n%%EOF\n")
++
++    result = segment_document(source, allow_docling=False)
++
++    assert result.pages_without_text_layer == (1,)
++
++
++def test_contents_object_without_a_stream_is_skipped(tmp_path: Path) -> None:
++    source = tmp_path / "nostream.pdf"
++    source.write_bytes(
++        b"%PDF-1.4\n1 0 obj\n<< /Nothing true >>\nendobj\n"
++        b"2 0 obj\n<< /Type /Page /Contents 1 0 R >>\nendobj\n%%EOF\n"
++    )
++
++    result = segment_document(source, allow_docling=False)
++
++    assert result.pages_without_text_layer == (1,)
+diff --git a/tests/ingest/test_ingest_synthetic_pdf.py b/tests/ingest/test_ingest_synthetic_pdf.py
+new file mode 100644
+index 0000000..e09d4bd
+--- /dev/null
++++ b/tests/ingest/test_ingest_synthetic_pdf.py
+@@ -0,0 +1,230 @@
++"""M1 ingest pipeline over a committed synthetic PDF.
++
++The fixture ``tests/fixtures/synthetic_lpa.pdf`` is a hand-built, uncompressed,
++two-page PDF containing synthetic LPA clause text. Nothing proprietary is
++committed and no network or optional dependency is required, so these tests run
++identically in every CI leg.
++"""
++
++from __future__ import annotations
++
++import json
++import shutil
++import subprocess
++import sys
++from pathlib import Path
++
++import pytest
++from jsonschema import Draft202012Validator
++
++from doc_lineage.adapters import OFFLINE_BACKEND, segment_document
++from doc_lineage.adapters.docling_segmenter import MAX_INGEST_BYTES
++from doc_lineage.cli import main as cli_main
++from doc_lineage.ingest import (
++    MANIFEST_FILENAME,
++    MANIFEST_SCHEMA_NAME,
++    MANIFEST_SCHEMA_VERSION,
++    SEGMENTS_FILENAME,
++    ingest_document,
++)
++from doc_lineage.schema.validation import load_contract_schema
++
++FIXTURE = Path(__file__).resolve().parents[1] / "fixtures" / "synthetic_lpa.pdf"
++
++
++def test_ingest_writes_valid_manifest(tmp_path: Path) -> None:
++    """The named gate: ingest emits an artifact-manifest/v1 that validates."""
++    result = ingest_document(FIXTURE, output_dir=tmp_path, allow_docling=False)
++
++    manifest_path = tmp_path / MANIFEST_FILENAME
++    segments_path = tmp_path / SEGMENTS_FILENAME
++    assert manifest_path.is_file()
++    assert segments_path.is_file()
++
++    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
++    Draft202012Validator(load_contract_schema(MANIFEST_SCHEMA_NAME)).validate(manifest)
++
++    assert manifest["schema_version"] == MANIFEST_SCHEMA_VERSION
++    assert manifest["tool"] == "doc-lineage-ingest"
++    assert manifest["run_id"]
++
++    # The manifest must describe the bytes actually written, not the bytes the
++    # pipeline intended to write. This is what the deliberate-break gate removes.
++    (artifact,) = manifest["artifacts"]
++    assert artifact["path"] == SEGMENTS_FILENAME
++    assert artifact["sha256"] == _sha256(segments_path)
++    assert artifact["bytes"] == segments_path.stat().st_size
++
++    assert manifest["source"]["sha256"] == result.source_sha256
++    assert manifest["source"]["filename"] == FIXTURE.name
++
++
++def test_segments_carry_page_pointers_and_stable_ids(tmp_path: Path) -> None:
++    first = ingest_document(FIXTURE, output_dir=tmp_path / "a", allow_docling=False)
++    second = ingest_document(FIXTURE, output_dir=tmp_path / "b", allow_docling=False)
++
++    assert first.page_count == 2
++    assert {segment.page for segment in first.segments} == {1, 2}
++    assert [segment.segment_id for segment in first.segments] == [
++        segment.segment_id for segment in second.segments
++    ]
++
++    text = " ".join(segment.text for segment in first.segments)
++    assert "MANAGEMENT FEE" in text
++    assert "Key Person Event" in text
++    assert all(segment.char_count == len(segment.text) for segment in first.segments)
++    assert all(segment.word_count > 0 for segment in first.segments)
++
++
++def test_segments_payload_records_backend_and_text_layer(tmp_path: Path) -> None:
++    result = ingest_document(FIXTURE, output_dir=tmp_path, allow_docling=False)
++    payload = json.loads(result.segments_path.read_text(encoding="utf-8"))
++
++    assert payload["backend"] == OFFLINE_BACKEND
++    assert payload["source_sha256"] == result.source_sha256
++    assert payload["pages_without_text_layer"] == []
++    assert len(payload["segments"]) == len(result.segments)
++
++
++def test_offline_backend_reports_missing_text_layer(tmp_path: Path) -> None:
++    """A PDF with no readable content stream is a finding, not silence."""
++    blank = tmp_path / "scanned.pdf"
++    blank.write_bytes(b"%PDF-1.4\n%%EOF\n")
++
++    segmented = segment_document(blank, allow_docling=False)
++
++    assert segmented.pages_without_text_layer == (1,)
++    with pytest.raises(ValueError, match="recognition fallback"):
++        ingest_document(blank, output_dir=tmp_path / "out", allow_docling=False)
++
++
++def test_ingest_rejects_a_missing_document(tmp_path: Path) -> None:
++    with pytest.raises(FileNotFoundError):
++        ingest_document(tmp_path / "absent.pdf", output_dir=tmp_path / "out")
++
++
++def test_ingest_rejects_documents_above_size_limit(tmp_path: Path) -> None:
++    oversized = tmp_path / "oversized.pdf"
++    oversized.write_bytes(b"x" * (MAX_INGEST_BYTES + 1))
++
++    with pytest.raises(ValueError, match="exceeds ingest size limit"):
++        ingest_document(oversized, output_dir=tmp_path / "out", allow_docling=False)
++
++
++def test_ingest_manifest_bytes_match_snapshot_length(
++    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
++) -> None:
++    from doc_lineage import ingest as ingest_module
++
++    source = tmp_path / "snapshot.pdf"
++    shutil.copy(FIXTURE, source)
++    original = ingest_module.read_bounded_bytes
++    snapshot_len = source.stat().st_size
++
++    def _snapshot_then_mutate(path: Path, max_bytes: int) -> bytes:
++        payload = original(path, max_bytes)
++        path.write_bytes(b"mutated-after-snapshot")
++        return payload
++
++    monkeypatch.setattr(ingest_module, "read_bounded_bytes", _snapshot_then_mutate)
++
++    result = ingest_document(source, output_dir=tmp_path / "out", allow_docling=False)
++
++    assert result.manifest["source"]["bytes"] == snapshot_len
++    assert source.stat().st_size != snapshot_len
++
++
++def test_ingest_rejects_empty_run_id(tmp_path: Path) -> None:
++    with pytest.raises(ValueError, match="run_id must be a non-empty string"):
++        ingest_document(FIXTURE, output_dir=tmp_path, run_id="   ", allow_docling=False)
++
++
++def test_offline_backend_rejects_binary_non_pdf(tmp_path: Path) -> None:
++    binary = tmp_path / "deck.pptx"
++    binary.write_bytes(b"PK\x03\x04fake-pptx-bytes")
++
++    with pytest.raises(ValueError, match="non-PDF input requires Docling"):
++        segment_document(binary, allow_docling=False)
++
++
++def test_cli_ingest_exits_zero(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
++    exit_code = cli_main(
++        [
++            "ingest",
++            str(FIXTURE),
++            "--output",
++            str(tmp_path / "run"),
++            "--run-id",
++            "fixed-run",
++            "--no-docling",
++        ]
++    )
++
++    assert exit_code == 0
++    captured = capsys.readouterr()
++    assert "run_id=fixed-run" in captured.out
++    assert (tmp_path / "run" / MANIFEST_FILENAME).is_file()
++
++
++def test_cli_ingest_reports_a_missing_document(
++    tmp_path: Path, capsys: pytest.CaptureFixture[str]
++) -> None:
++    exit_code = cli_main(["ingest", str(tmp_path / "absent.pdf"), "--output", str(tmp_path)])
++
++    assert exit_code == 1
++    assert "does not exist" in capsys.readouterr().err
++
++
++def test_console_script_runs_the_documented_command(tmp_path: Path) -> None:
++    """`doc-lineage ingest <fixture> --output <dir>` exits 0, as the issue requires."""
++    project_root = Path(__file__).resolve().parents[2]
++    subprocess.run(
++        [sys.executable, "-m", "pip", "install", "-e", str(project_root), "-q"],
++        check=True,
++        capture_output=True,
++        text=True,
++    )
++    script = shutil.which("doc-lineage")
++    assert script is not None, "doc-lineage console script must be installed"
++    command = [
++        script,
++        "ingest",
++        str(FIXTURE),
++        "--output",
++        str(tmp_path / "run"),
++        "--no-docling",
++    ]
++    completed = subprocess.run(
++        command,
++        check=False,
++        capture_output=True,
++        text=True,
++    )
++
++    assert completed.returncode == 0, completed.stderr
++    assert (tmp_path / "run" / MANIFEST_FILENAME).is_file()
++
++
++def _sha256(path: Path) -> str:
++    import hashlib
++
++    return hashlib.sha256(path.read_bytes()).hexdigest()
++
++
++def test_cli_warns_about_pages_without_a_text_layer(
++    tmp_path: Path, capsys: pytest.CaptureFixture[str]
++) -> None:
++    """A mixed document ingests and still surfaces the pages needing recognition."""
++    mixed = tmp_path / "mixed.pdf"
++    mixed.write_bytes(
++        b"%PDF-1.4\n"
++        b"1 0 obj\n<< /Length 26 >>\nstream\nBT (Readable clause) Tj ET\nendstream\nendobj\n"
++        b"2 0 obj\n<< /Type /Page /Contents 1 0 R >>\nendobj\n"
++        b"3 0 obj\n<< /Length 5 /Filter /DCTDecode >>\nstream\nimage\nendstream\nendobj\n"
++        b"4 0 obj\n<< /Type /Page /Contents 3 0 R >>\nendobj\n%%EOF\n"
++    )
++
++    exit_code = cli_main(["ingest", str(mixed), "--output", str(tmp_path / "run"), "--no-docling"])
++
++    assert exit_code == 0
++    assert "no text layer on page(s) 2" in capsys.readouterr().out
+diff --git a/tests/test_main.py b/tests/test_main.py
+index 1b1092c..840a3d5 100644
+--- a/tests/test_main.py
++++ b/tests/test_main.py
+@@ -1,33 +1,28 @@
+-"""Tests for doc_lineage module."""
++"""Package import smoke: the public surface must import and expose the M1 API.
+ 
+-from doc_lineage import __version__, add, greet
++This replaces the Template's ``greet``/``add`` scaffold tests. The scaffold
++helpers are gone, so a test that still asserted on them would be asserting the
++package had not been built yet.
++"""
+ 
++from __future__ import annotations
+ 
+-def test_version() -> None:
+-    """Version should be a string."""
+-    assert isinstance(__version__, str)
+-    assert __version__ == "0.1.0"
++import doc_lineage
+ 
+ 
+-def test_greet() -> None:
+-    """Greet should return proper greeting."""
+-    assert greet("World") == "Hello, World!"
+-    assert greet("Alice") == "Hello, Alice!"
++def test_version_is_a_string() -> None:
++    assert isinstance(doc_lineage.__version__, str)
++    assert doc_lineage.__version__ == "0.1.0"
+ 
+ 
+-def test_greet_empty() -> None:
+-    """Greet should handle empty string."""
+-    assert greet("") == "Hello, !"
++def test_public_surface_exposes_the_ingest_api() -> None:
++    assert "ingest_document" in doc_lineage.__all__
++    assert callable(doc_lineage.ingest_document)
++    assert not hasattr(doc_lineage, "greet")
++    assert not hasattr(doc_lineage, "add")
+ 
+ 
+-def test_add() -> None:
+-    """Add should return sum of two numbers."""
+-    assert add(1, 2) == 3
+-    assert add(0, 0) == 0
+-    assert add(-1, 1) == 0
++def test_console_entry_point_is_importable() -> None:
++    from doc_lineage.cli import main
+ 
+-
+-def test_add_negative() -> None:
+-    """Add should handle negative numbers."""
+-    assert add(-5, -3) == -8
+-    assert add(-10, 5) == -5
++    assert callable(main)
+diff --git a/tests/vocab/test_legal_clauses.py b/tests/vocab/test_legal_clauses.py
+index 914d575..36fb879 100644
+--- a/tests/vocab/test_legal_clauses.py
++++ b/tests/vocab/test_legal_clauses.py
+@@ -86,6 +86,12 @@ def test_installed_wheel_loads_bundled_vocabulary_despite_adjacent_decoy(tmp_pat
+         shutil.copy2(root / name, checkout / name)
+     shutil.copytree(root / "src" / "doc_lineage", checkout / "src" / "doc_lineage")
+     shutil.copytree(root / "vocab", checkout / "vocab")
++    # pyproject packages the synced contract schemas as doc_lineage._contracts,
++    # so the wheel build needs them here too. The subject of this test is still
++    # the vocabulary resource; this only keeps the temp checkout buildable.
++    shutil.copytree(
++        root / "docs" / "contracts" / "schemas", checkout / "docs" / "contracts" / "schemas"
++    )
+     wheels = tmp_path / "wheels"
+     wheels.mkdir()
+     subprocess.run(

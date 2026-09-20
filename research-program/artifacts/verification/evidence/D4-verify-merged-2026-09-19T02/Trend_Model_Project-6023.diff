@@ -1,0 +1,86 @@
+diff --git a/src/trend_analysis/config/model.py b/src/trend_analysis/config/model.py
+index 1ccc572..f918c80 100644
+--- a/src/trend_analysis/config/model.py
++++ b/src/trend_analysis/config/model.py
+@@ -523,6 +523,8 @@ class PortfolioSettings(BaseModel):
+             lam = float(value)
+         except (TypeError, ValueError) as exc:  # pragma: no cover - defensive
+             raise ValueError("portfolio.lambda_tc must be numeric.") from exc
++        if not math.isfinite(lam):
++            raise ValueError("portfolio.lambda_tc must be finite.")
+         if lam < 0 or lam > 1:
+             raise ValueError("portfolio.lambda_tc must be between 0 and 1 inclusive.")
+         return lam
+diff --git a/src/trend_analysis/config/models.py b/src/trend_analysis/config/models.py
+index e567c82..ba3b230 100644
+--- a/src/trend_analysis/config/models.py
++++ b/src/trend_analysis/config/models.py
+@@ -485,6 +485,8 @@ if _HAS_PYDANTIC:
+                     lam = float(raw)
+                 except Exception as exc:  # pragma: no cover - defensive
+                     raise ValueError("lambda_tc must be numeric") from exc
++                if not math.isfinite(lam):
++                    raise ValueError("lambda_tc must be finite")
+                 if lam < 0:
+                     raise ValueError("lambda_tc must be >= 0")
+                 if lam > 1:
+@@ -748,6 +750,8 @@ else:  # Fallback mode for tests without pydantic
+                         lam = float(port["lambda_tc"])
+                     except Exception as exc:  # pragma: no cover - defensive
+                         raise ValueError("lambda_tc must be numeric") from exc
++                    if not math.isfinite(lam):
++                        raise ValueError("lambda_tc must be finite")
+                     if lam < 0:
+                         raise ValueError("lambda_tc must be >= 0")
+                     if lam > 1:
+diff --git a/tests/test_config_models_fallback_unit.py b/tests/test_config_models_fallback_unit.py
+index ce9813b..b0f0d1c 100644
+--- a/tests/test_config_models_fallback_unit.py
++++ b/tests/test_config_models_fallback_unit.py
+@@ -153,6 +153,24 @@ def test_fallback_config_rejects_invalid_portfolio_values(
+         )
+ 
+ 
++@pytest.mark.parametrize("lam", [float("nan"), float("inf"), float("-inf")])
++def test_fallback_config_rejects_non_finite_lambda_tc(
++    fallback_models: ModuleType,
++    lam: float,
++) -> None:
++    Config = fallback_models.Config  # type: ignore[attr-defined]
++
++    with pytest.raises(ValueError, match="lambda_tc must be finite"):
++        Config(
++            **_base_config_payload(
++                portfolio={
++                    "cost_model": {"per_trade_bps": 0, "half_spread_bps": 0},
++                    "lambda_tc": lam,
++                }
++            )
++        )
++
++
+ def test_fallback_config_requires_dict_sections(fallback_models: ModuleType) -> None:
+     Config = fallback_models.Config  # type: ignore[attr-defined]
+     with pytest.raises(ValueError, match="data section is required"):
+diff --git a/tests/test_config_turnover_validation.py b/tests/test_config_turnover_validation.py
+index 5fc2df7..3baf80a 100644
+--- a/tests/test_config_turnover_validation.py
++++ b/tests/test_config_turnover_validation.py
+@@ -83,3 +83,17 @@ def test_string_coercion():
+     cfg = Config(**cfg_dict)
+     assert cfg.portfolio["cost_model"]["per_trade_bps"] == 15.0
+     assert cfg.portfolio["max_turnover"] == 0.75
++
++
++@pytest.mark.parametrize("lam", [float("nan"), float("inf"), float("-inf")])
++def test_lambda_tc_rejects_non_finite(lam):
++    cfg_dict = make_cfg({"portfolio": {"lambda_tc": lam}})
++    with pytest.raises(Exception):
++        Config(**cfg_dict)
++
++
++@pytest.mark.parametrize("lam", [0, 0.5, 1.0])
++def test_lambda_tc_accepts_finite_values(lam):
++    cfg_dict = make_cfg({"portfolio": {"lambda_tc": lam}})
++    cfg = Config(**cfg_dict)
++    assert float(cfg.portfolio["lambda_tc"]) == float(lam)

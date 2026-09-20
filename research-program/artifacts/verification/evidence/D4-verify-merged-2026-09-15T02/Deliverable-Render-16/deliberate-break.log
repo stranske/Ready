@@ -1,0 +1,69 @@
+FF..                                                                     [100%]
+=================================== FAILURES ===================================
+_______________ test_no_external_resource_references[False-list] _______________
+
+store = Store(records=(Record(record_id='gov-24', entity_ref='Example Fund', period='2024', section='Governance', text='Policy...'annual', path='C:/Synthetic/Annual Report.pdf'), Document(stable_id='risk', path='C:/Synthetic/Risk & Controls.pdf')))
+view = 'list', persisted = False
+
+    @pytest.mark.parametrize("view", ["list", "grid"])
+    @pytest.mark.parametrize("persisted", [False, True])
+    def test_no_external_resource_references(store, view, persisted):
+        output = (
+            (FIXTURES / f"expected_{view}.html").read_text(encoding="utf-8")
+            if persisted
+            else render_html(store, spec(view))
+        )
+>       assert "http://" not in output and "https://" not in output
+E       assert ('http://' not in '<!DOCTYPE h...>\n</html>\n'
+E         
+E         'http://' is contained here:
+E           y>
+E           </html> and 'https://' not in '<!DOCTYPE h...>\n</html>\n'
+E         
+E         'https://' is contained here:
+E           et" href="https://example.invalid/break.css"><style></style>
+E         ?           ++++++++
+E           </head>
+E           <body>
+E           <main>...
+E         
+E         ...Full output truncated (74 lines hidden), use '-vv' to show)
+
+tests/test_render_html_offline.py:81: AssertionError
+_______________ test_no_external_resource_references[False-grid] _______________
+
+store = Store(records=(Record(record_id='gov-24', entity_ref='Example Fund', period='2024', section='Governance', text='Policy...'annual', path='C:/Synthetic/Annual Report.pdf'), Document(stable_id='risk', path='C:/Synthetic/Risk & Controls.pdf')))
+view = 'grid', persisted = False
+
+    @pytest.mark.parametrize("view", ["list", "grid"])
+    @pytest.mark.parametrize("persisted", [False, True])
+    def test_no_external_resource_references(store, view, persisted):
+        output = (
+            (FIXTURES / f"expected_{view}.html").read_text(encoding="utf-8")
+            if persisted
+            else render_html(store, spec(view))
+        )
+>       assert "http://" not in output and "https://" not in output
+E       assert ('http://' not in '<!DOCTYPE h...>\n</html>\n'
+E         
+E         'http://' is contained here:
+E           y>
+E           </html> and 'https://' not in '<!DOCTYPE h...>\n</html>\n'
+E         
+E         'https://' is contained here:
+E           et" href="https://example.invalid/break.css"><style></style>
+E         ?           ++++++++
+E           </head>
+E           <body>
+E           <main>...
+E         
+E         ...Full output truncated (71 lines hidden), use '-vv' to show)
+
+tests/test_render_html_offline.py:81: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_render_html_offline.py::test_no_external_resource_references[False-list]
+FAILED tests/test_render_html_offline.py::test_no_external_resource_references[False-grid]
+2 failed, 2 passed, 12 deselected in 0.14s
+....                                                                     [100%]
+4 passed, 12 deselected in 0.01s
+DELIBERATE_BREAK_EXIT 1 RESTORED_EXIT 0

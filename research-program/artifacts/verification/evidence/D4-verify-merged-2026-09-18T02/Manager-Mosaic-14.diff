@@ -1,0 +1,174 @@
+diff --git a/config/fact_key_registry.json b/config/fact_key_registry.json
+new file mode 100644
+index 0000000..b39e099
+--- /dev/null
++++ b/config/fact_key_registry.json
+@@ -0,0 +1,25 @@
++{
++  "schema_version": "fact-key-registry/v1",
++  "keys": [
++    "capacity.hard_cap_usd",
++    "capacity.remaining_capacity_pct",
++    "fees.hurdle_rate",
++    "fees.management_fee_rate",
++    "fees.performance_fee_rate",
++    "fund.gross_irr",
++    "fund.net_irr",
++    "legal.redemption_notice_days",
++    "legal.side_letter_terms",
++    "legal.withdrawal_notice_days",
++    "liquidity.gate_provisions",
++    "liquidity.lockup_period_months",
++    "liquidity.redemption_frequency",
++    "liquidity.side_pocket_pct",
++    "performance.dpi",
++    "performance.irr",
++    "performance.moic",
++    "performance.tvpi",
++    "team.key_person_turnover",
++    "team.portfolio_manager_tenure_years"
++  ]
++}
+diff --git a/pyproject.toml b/pyproject.toml
+index d209da9..237bbb9 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -42,7 +42,7 @@ Repository = "https://github.com/stranske/Manager-Mosaic"
+ where = ["src"]
+ 
+ [tool.setuptools.package-data]
+-manager_mosaic = ["schemas/*.json"]
++manager_mosaic = ["schemas/*.json", "fact_key_registry.json"]
+ 
+ [tool.pytest.ini_options]
+ testpaths = ["tests"]
+diff --git a/src/manager_mosaic/fact_key_registry.json b/src/manager_mosaic/fact_key_registry.json
+new file mode 100644
+index 0000000..b39e099
+--- /dev/null
++++ b/src/manager_mosaic/fact_key_registry.json
+@@ -0,0 +1,25 @@
++{
++  "schema_version": "fact-key-registry/v1",
++  "keys": [
++    "capacity.hard_cap_usd",
++    "capacity.remaining_capacity_pct",
++    "fees.hurdle_rate",
++    "fees.management_fee_rate",
++    "fees.performance_fee_rate",
++    "fund.gross_irr",
++    "fund.net_irr",
++    "legal.redemption_notice_days",
++    "legal.side_letter_terms",
++    "legal.withdrawal_notice_days",
++    "liquidity.gate_provisions",
++    "liquidity.lockup_period_months",
++    "liquidity.redemption_frequency",
++    "liquidity.side_pocket_pct",
++    "performance.dpi",
++    "performance.irr",
++    "performance.moic",
++    "performance.tvpi",
++    "team.key_person_turnover",
++    "team.portfolio_manager_tenure_years"
++  ]
++}
+diff --git a/src/manager_mosaic/fact_keys.py b/src/manager_mosaic/fact_keys.py
+new file mode 100644
+index 0000000..5a3c04a
+--- /dev/null
++++ b/src/manager_mosaic/fact_keys.py
+@@ -0,0 +1,32 @@
++"""Load the shared fact_key vocabulary registry."""
++
++from __future__ import annotations
++
++import json
++from importlib import resources
++from pathlib import Path
++from typing import cast
++
++_REPO_REGISTRY_PATH = Path(__file__).resolve().parents[2] / "config" / "fact_key_registry.json"
++_PACKAGED_REGISTRY_NAME = "fact_key_registry.json"
++
++
++def _load_registry_payload(registry_path: Path) -> dict[str, object]:
++    return cast(dict[str, object], json.loads(registry_path.read_text(encoding="utf-8")))
++
++
++def _default_registry_payload() -> dict[str, object]:
++    if _REPO_REGISTRY_PATH.is_file():
++        return _load_registry_payload(_REPO_REGISTRY_PATH)
++    packaged = resources.files("manager_mosaic").joinpath(_PACKAGED_REGISTRY_NAME)
++    return cast(dict[str, object], json.loads(packaged.read_text(encoding="utf-8")))
++
++
++def load_fact_key_registry(path: Path | None = None) -> frozenset[str]:
++    """Return the registered fact_key strings from the JSON registry."""
++    registry_path = path or _REPO_REGISTRY_PATH
++    payload = _load_registry_payload(path) if path is not None else _default_registry_payload()
++    keys = payload.get("keys")
++    if not isinstance(keys, list) or not keys:
++        raise ValueError(f"{registry_path} must contain a non-empty 'keys' list")
++    return frozenset(str(key) for key in keys)
+diff --git a/tests/test_fact_key_registry.py b/tests/test_fact_key_registry.py
+new file mode 100644
+index 0000000..f7a8f82
+--- /dev/null
++++ b/tests/test_fact_key_registry.py
+@@ -0,0 +1,55 @@
++"""Tests for the shared fact_key registry and loader."""
++
++import json
++import re
++from importlib import resources
++from pathlib import Path
++
++import pytest
++
++from manager_mosaic import fact_keys
++from manager_mosaic.fact_keys import load_fact_key_registry
++
++_FIXTURE_FACT_KEY_PATTERN = re.compile(r'fact_key\s*=\s*"([^"]+)"')
++
++
++def _fixture_fact_keys_from_tests() -> frozenset[str]:
++    tests_dir = Path(__file__).resolve().parent
++    keys: set[str] = set()
++    for path in tests_dir.glob("test_*.py"):
++        if path.name == "test_fact_key_registry.py":
++            continue
++        text = path.read_text(encoding="utf-8")
++        keys.update(_FIXTURE_FACT_KEY_PATTERN.findall(text))
++    return frozenset(keys)
++
++
++def test_fact_key_registry_contains_core_performance_and_liquidity_keys() -> None:
++    registry = load_fact_key_registry()
++    assert "fund.net_irr" in registry
++    assert "legal.withdrawal_notice_days" in registry
++    assert "performance.irr" in registry
++    assert "liquidity.redemption_frequency" in registry
++
++
++def test_fact_key_registry_covers_synthetic_fixture_keys() -> None:
++    registry = load_fact_key_registry()
++    fixture_keys = _fixture_fact_keys_from_tests()
++    assert fixture_keys, "expected synthetic test fixtures to reference fact_key strings"
++    missing = sorted(fixture_keys - registry)
++    assert not missing, f"fixture fact_keys missing from registry: {missing}"
++
++
++def test_fact_key_registry_is_readable_through_package_resources(
++    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
++) -> None:
++    """The registry must resolve from the installed package, not only a source path."""
++    registry_file = resources.files("manager_mosaic").joinpath("fact_key_registry.json")
++    assert registry_file.is_file()
++    packaged_keys = frozenset(
++        str(key) for key in json.loads(registry_file.read_text(encoding="utf-8"))["keys"]
++    )
++    # Hide the source-checkout copy so the packaged-resource branch is the one taken.
++    monkeypatch.setattr(fact_keys, "_REPO_REGISTRY_PATH", tmp_path / "absent" / "registry.json")
++    assert not fact_keys._REPO_REGISTRY_PATH.is_file()
++    assert load_fact_key_registry() == packaged_keys

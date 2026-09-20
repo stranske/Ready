@@ -1,0 +1,745 @@
+diff --git a/README.md b/README.md
+index 8808a70..01143c8 100644
+--- a/README.md
++++ b/README.md
+@@ -25,3 +25,40 @@ render/probe        capability probes an operator can run in a locked-down envir
+ ## Interoperability
+ 
+ The structured-store contract is aligned with the fleet's shared formats in `docs/contracts/` (run records, artifact manifests, evidence objects, identity conventions) and with the field names already in use in the owner's work tools, so a store produced there renders here without a translation step.
++
++## Offline HTML hub
++
++```python
++from pathlib import Path
++from deliverable_render import RenderSpec, render_html
++from deliverable_render.store import Store
++
++store = Store.from_json("tests/fixtures/synthetic_store.json")
++spec = RenderSpec(
++    title="Synthetic evidence hub",
++    document_url_template="file://{path}#page={page}",
++    view="grid",
++)
++Path("hub.html").write_text(render_html(store, spec), encoding="utf-8")
++```
++
++`view="list"` is the default; `view="grid"` groups records by section and period.
++Each page renders one view. When `document_url_template` is set, it renders one
++source link per evidence pointer, including multiple pointers on a record. Unlike
++the initial renderer, it does not append a
++second view automatically. Records without evidence remain visible. An empty grid
++falls back to the empty records table.
++
++Set `document_url_template` to a local-file template as above, or to a document
++system template such as `https://documents.example.invalid{path}#page={page}`.
++The template changes only navigational links, never page resource loading. Leaving
++it unset retains plain-text evidence. All referenced document IDs are validated in
++either mode. The synthetic paths are illustrative and do not identify real files.
++
++The saved `tests/fixtures/expected_list.html` and `expected_grid.html` are golden
++reference artifacts for the synthetic JSON store. `tests/test_render_html_offline.py`
++compares parsed structure and content, validates the saved pages without executing
++JavaScript, and checks both link modes. These goldens are committed references;
++tests never regenerate them. Review intentional renderer changes before updating
++both files. Current Edge, Chrome, Firefox and Safari support the HTML5/ES2015
++baseline; the tables and links remain available with JavaScript disabled.
+diff --git a/agents/codex-2.md b/agents/codex-2.md
+new file mode 100644
+index 0000000..8164394
+--- /dev/null
++++ b/agents/codex-2.md
+@@ -0,0 +1 @@
++<!-- bootstrap for codex on issue #2 run:34892746532-1 -->
+diff --git a/src/deliverable_render/html.py b/src/deliverable_render/html.py
+index 88b397d..3c2c919 100644
+--- a/src/deliverable_render/html.py
++++ b/src/deliverable_render/html.py
+@@ -1,7 +1,14 @@
++"""Self-contained HTML5 for current Edge, Chrome, Firefox and Safari.
++
++Static tables and source links remain usable with JavaScript disabled. Search
++and printing are progressive enhancements using ES2015 browser APIs.
++"""
++
+ import re
+ import urllib.parse
+ from dataclasses import dataclass
+ from html import escape
++from typing import Literal
+ 
+ from deliverable_render.store import Store
+ 
+@@ -12,10 +19,13 @@ class RenderSpec:
+ 
+     title: str = "Evidence hub"
+     document_url_template: str | None = None
++    view: Literal["list", "grid"] = "list"
+ 
+     def __post_init__(self) -> None:
+         if not isinstance(self.title, str) or not self.title.strip():
+             raise ValueError("title must be a nonempty string")
++        if self.view not in ("list", "grid"):
++            raise ValueError("view must be list or grid")
+ 
+ 
+ _CSS = """
+@@ -111,6 +121,7 @@ def render_html(store: Store, spec: RenderSpec) -> str:
+     doc_paths = {doc.stable_id: doc.path for doc in store.documents}
+ 
+     rows = []
++    evidence_by_record = {}
+     for record in store.records:
+         cells = "".join(
+             f"<td>{escape(value)}</td>"
+@@ -135,6 +146,7 @@ def render_html(store: Store, spec: RenderSpec) -> str:
+             )
+ 
+         evidence_cell = f"<ul>{''.join(evidence_items)}</ul>" if evidence_items else "No evidence"
++        evidence_by_record[record.record_id] = evidence_cell
+         rows.append(
+             f'<tr class="record-row"><th scope="row">{escape(record.record_id)}</th>'
+             f"{cells}<td>{evidence_cell}</td></tr>"
+@@ -152,7 +164,9 @@ def render_html(store: Store, spec: RenderSpec) -> str:
+             matching = [r for r in store.records if r.section == section and r.period == period]
+             if matching:
+                 cell_content = "".join(
+-                    f'<div class="grid-card"><strong>{escape(r.record_id)}</strong>: {escape(r.text)}</div>'
++                    f'<div class="grid-card" data-record-id="{escape(r.record_id)}">'
++                    f"<strong>{escape(r.record_id)}</strong>: {escape(r.text)} "
++                    f"{evidence_by_record[r.record_id]}</div>"
+                     for r in matching
+                 )
+             else:
+@@ -174,6 +188,18 @@ def render_html(store: Store, spec: RenderSpec) -> str:
+ 
+     title = escape(spec.title)
+     body = "\n".join(rows)
++    record_table = f"""
++<table id="record-list">
++<caption>{len(store.records)} records</caption>
++<thead><tr><th scope="col">Record</th><th scope="col">Entity</th>
++<th scope="col">Period</th><th scope="col">Section</th>
++<th scope="col">Text</th><th scope="col">Evidence</th></tr></thead>
++<tbody>
++{body}
++</tbody>
++</table>
++"""
++    table = grid_table if spec.view == "grid" and grid_table else record_table
+     return f"""<!DOCTYPE html>
+ <html lang="en">
+ <head>
+@@ -192,18 +218,8 @@ def render_html(store: Store, spec: RenderSpec) -> str:
+ <input type="search" id="search-input" placeholder="Search records...">
+ </div>
+ 
+-{grid_table}
+-
+ <div class="table-container">
+-<table id="record-list">
+-<caption>{len(store.records)} records</caption>
+-<thead><tr><th scope="col">Record</th><th scope="col">Entity</th>
+-<th scope="col">Period</th><th scope="col">Section</th>
+-<th scope="col">Text</th><th scope="col">Evidence</th></tr></thead>
+-<tbody>
+-{body}
+-</tbody>
+-</table>
++{table}
+ </div>
+ </main>
+ <script>{_JAVASCRIPT}</script>
+diff --git a/src/deliverable_render/store.py b/src/deliverable_render/store.py
+index 9a8949e..b53ecd5 100644
+--- a/src/deliverable_render/store.py
++++ b/src/deliverable_render/store.py
+@@ -16,7 +16,7 @@
+ 
+ import json
+ import sqlite3
+-from collections.abc import Mapping
++from collections.abc import Iterable, Mapping
+ from dataclasses import dataclass
+ from pathlib import Path
+ from types import MappingProxyType
+@@ -52,7 +52,7 @@ def _string(value: object, field: str, *, allow_empty: bool = False) -> str:
+ 
+ 
+ def _object(value: object) -> Mapping[str, object]:
+-    if not isinstance(value, dict) or any(not isinstance(key, str) for key in value):
++    if not isinstance(value, Mapping) or any(not isinstance(key, str) for key in value):
+         raise StoreValidationError("Expected an object with string keys")
+     return value
+ 
+@@ -63,6 +63,20 @@ def _array(value: object, field: str) -> list[object]:
+     return value
+ 
+ 
++def _items[T](value: object, field: str, cls: type[T]) -> tuple[T, ...]:
++    """Copy model collections, rejecting scalars and mappings even when empty."""
++    if not isinstance(value, Iterable) or isinstance(value, (str, bytes, Mapping)):
++        raise StoreValidationError(f"{field} must be an iterable of {cls.__name__} objects")
++    items = []
++    for item in value:
++        if not isinstance(item, cls):
++            raise StoreValidationError(
++                f"{field} contains an invalid object; expected {cls.__name__}"
++            )
++        items.append(item)
++    return tuple(items)
++
++
+ @dataclass(frozen=True)
+ class EvidencePointer:
+     stable_id: str
+@@ -99,9 +113,7 @@ def __post_init__(self) -> None:
+         for field in ("record_id", "entity_ref", "period", "section"):
+             _string(getattr(self, field), field)
+         _string(self.text, "text", allow_empty=True)
+-        object.__setattr__(self, "evidence", tuple(self.evidence))
+-        if any(not isinstance(pointer, EvidencePointer) for pointer in self.evidence):
+-            raise StoreValidationError("evidence must contain EvidencePointer objects")
++        object.__setattr__(self, "evidence", _items(self.evidence, "evidence", EvidencePointer))
+ 
+ 
+ @dataclass(frozen=True)
+@@ -114,10 +126,8 @@ def __post_init__(self) -> None:
+             ("records", Record, "record_id"),
+             ("documents", Document, "stable_id"),
+         ):
+-            values = tuple(getattr(self, field))
++            values = _items(getattr(self, field), field, cls)
+             object.__setattr__(self, field, values)
+-            if any(not isinstance(value, cls) for value in values):
+-                raise StoreValidationError(f"{field} contains an invalid object")
+             ids = [getattr(value, key) for value in values]
+             if len(ids) != len(set(ids)):
+                 raise StoreValidationError(f"Duplicate {key} in {field}")
+@@ -144,6 +154,7 @@ def period_index(self) -> Mapping[str, tuple[Record, ...]]:
+     @classmethod
+     def from_dict(cls, data: Mapping[str, object]) -> Store:
+         """Validate decoded JSON; unknown fields are ignored for forward compatibility."""
++        data = _object(data)
+         documents = []
+         for item in _array(data.get("documents"), "documents"):
+             obj = _object(item)
+diff --git a/tests/fixtures/expected_grid.html b/tests/fixtures/expected_grid.html
+new file mode 100644
+index 0000000..06c6bf6
+--- /dev/null
++++ b/tests/fixtures/expected_grid.html
+@@ -0,0 +1,97 @@
++<!DOCTYPE html>
++<html lang="en">
++<head>
++<meta charset="utf-8">
++<meta name="viewport" content="width=device-width, initial-scale=1">
++<title>Synthetic evidence hub</title>
++<style>
++body { font-family: system-ui, sans-serif; margin: 2rem; color: #17202a;
++       background: #fff; }
++table { border-collapse: collapse; width: 100%; margin-bottom: 2rem; }
++caption { text-align: left; margin-bottom: 1rem; font-weight: bold; }
++th, td { border: 1px solid #aab7b8; padding: .75rem; text-align: left;
++         vertical-align: top; overflow-wrap: anywhere; }
++thead { background: #edf2f7; }
++td, li { white-space: pre-wrap; }
++ul { margin: 0; padding-left: 1.25rem; }
++button { margin-bottom: 1rem; padding: .5rem 1rem; }
++.controls { margin-bottom: 1rem; }
++.controls input { padding: .5rem; width: 300px; max-width: 100%; }
++.table-container { overflow-x: auto; }
++.grid-card { border: 1px solid #ddd; padding: 0.5rem; margin-bottom: 0.5rem; background: #fafafa; }
++@media print { button, .controls { display: none; } body { margin: 0; } }
++</style>
++</head>
++<body>
++<main>
++<h1>Synthetic evidence hub</h1>
++<button id="print-report" type="button" hidden>Print report</button>
++
++<div class="controls">
++<label for="search-input">Search:</label>
++<input type="search" id="search-input" placeholder="Search records...">
++</div>
++
++<div class="table-container">
++
++<table id="section-grid">
++<caption>Section-by-period grid</caption>
++<thead><tr><th scope="col">Section</th><th scope="col">2024</th><th scope="col">2025</th></tr></thead>
++<tbody>
++<tr><th scope="row">Governance</th><td><div class="grid-card" data-record-id="gov-24"><strong>gov-24</strong>: Policy approved.<ul><li><a href="file:///C:/Synthetic/Annual%20Report.pdf#page=3">annual</a>, page 3: Approved unanimously.</li></ul></div></td><td><div class="grid-card" data-record-id="gov-25"><strong>gov-25</strong>: Policy renewed.<ul><li><a href="file:///C:/Synthetic/Annual%20Report.pdf#page=8">annual</a>, page 8: Renewed for one year.</li><li><a href="file:///C:/Synthetic/Risk%20%26%20Controls.pdf#page=2">risk</a>, page 2: Controls tested.</li></ul></div></td></tr>
++<tr><th scope="row">Risk</th><td></td><td><div class="grid-card" data-record-id="risk-25"><strong>risk-25</strong>: No exceptions &amp; no missing rows. No evidence</div></td></tr>
++</tbody>
++</table>
++
++</div>
++</main>
++<script>
++"use strict";
++const printButton = document.getElementById("print-report");
++if (printButton) {
++    printButton.addEventListener("click", () => window.print());
++    printButton.hidden = false;
++}
++const searchInput = document.getElementById("search-input");
++if (searchInput) {
++    searchInput.addEventListener("input", (e) => {
++        const term = e.target.value.toLowerCase();
++
++        // Filter list rows
++        const listRows = document.querySelectorAll("#record-list tbody tr");
++        for (const row of listRows) {
++            row.hidden = !row.textContent.toLowerCase().includes(term);
++        }
++
++        // Filter grid cells/rows
++        // We filter individual grid cards
++        const gridCards = document.querySelectorAll(".grid-card");
++        for (const card of gridCards) {
++            card.hidden = !card.textContent.toLowerCase().includes(term);
++        }
++
++        // Hide empty grid rows if all cards are hidden
++        const gridRows = document.querySelectorAll("#section-grid tbody tr");
++        for (const row of gridRows) {
++            let hasVisibleCard = false;
++            const rowCards = row.querySelectorAll(".grid-card");
++            for (const card of rowCards) {
++                if (!card.hidden) {
++                    hasVisibleCard = true;
++                    break;
++                }
++            }
++            // Only hide the row if there were cards but all are hidden
++            // Wait, if a row had NO cards to begin with, should we hide it?
++            // If we filter, maybe we just leave it or hide it.
++            if (rowCards.length > 0 && !hasVisibleCard) {
++                row.hidden = true;
++            } else {
++                row.hidden = false;
++            }
++        }
++    });
++}
++</script>
++</body>
++</html>
+diff --git a/tests/fixtures/expected_list.html b/tests/fixtures/expected_list.html
+new file mode 100644
+index 0000000..6181b86
+--- /dev/null
++++ b/tests/fixtures/expected_list.html
+@@ -0,0 +1,100 @@
++<!DOCTYPE html>
++<html lang="en">
++<head>
++<meta charset="utf-8">
++<meta name="viewport" content="width=device-width, initial-scale=1">
++<title>Synthetic evidence hub</title>
++<style>
++body { font-family: system-ui, sans-serif; margin: 2rem; color: #17202a;
++       background: #fff; }
++table { border-collapse: collapse; width: 100%; margin-bottom: 2rem; }
++caption { text-align: left; margin-bottom: 1rem; font-weight: bold; }
++th, td { border: 1px solid #aab7b8; padding: .75rem; text-align: left;
++         vertical-align: top; overflow-wrap: anywhere; }
++thead { background: #edf2f7; }
++td, li { white-space: pre-wrap; }
++ul { margin: 0; padding-left: 1.25rem; }
++button { margin-bottom: 1rem; padding: .5rem 1rem; }
++.controls { margin-bottom: 1rem; }
++.controls input { padding: .5rem; width: 300px; max-width: 100%; }
++.table-container { overflow-x: auto; }
++.grid-card { border: 1px solid #ddd; padding: 0.5rem; margin-bottom: 0.5rem; background: #fafafa; }
++@media print { button, .controls { display: none; } body { margin: 0; } }
++</style>
++</head>
++<body>
++<main>
++<h1>Synthetic evidence hub</h1>
++<button id="print-report" type="button" hidden>Print report</button>
++
++<div class="controls">
++<label for="search-input">Search:</label>
++<input type="search" id="search-input" placeholder="Search records...">
++</div>
++
++<div class="table-container">
++
++<table id="record-list">
++<caption>3 records</caption>
++<thead><tr><th scope="col">Record</th><th scope="col">Entity</th>
++<th scope="col">Period</th><th scope="col">Section</th>
++<th scope="col">Text</th><th scope="col">Evidence</th></tr></thead>
++<tbody>
++<tr class="record-row"><th scope="row">gov-24</th><td>Example Fund</td><td>2024</td><td>Governance</td><td>Policy approved.</td><td><ul><li><a href="file:///C:/Synthetic/Annual%20Report.pdf#page=3">annual</a>, page 3: Approved unanimously.</li></ul></td></tr>
++<tr class="record-row"><th scope="row">gov-25</th><td>Example Fund</td><td>2025</td><td>Governance</td><td>Policy renewed.</td><td><ul><li><a href="file:///C:/Synthetic/Annual%20Report.pdf#page=8">annual</a>, page 8: Renewed for one year.</li><li><a href="file:///C:/Synthetic/Risk%20%26%20Controls.pdf#page=2">risk</a>, page 2: Controls tested.</li></ul></td></tr>
++<tr class="record-row"><th scope="row">risk-25</th><td>Example Fund</td><td>2025</td><td>Risk</td><td>No exceptions &amp; no missing rows.</td><td>No evidence</td></tr>
++</tbody>
++</table>
++
++</div>
++</main>
++<script>
++"use strict";
++const printButton = document.getElementById("print-report");
++if (printButton) {
++    printButton.addEventListener("click", () => window.print());
++    printButton.hidden = false;
++}
++const searchInput = document.getElementById("search-input");
++if (searchInput) {
++    searchInput.addEventListener("input", (e) => {
++        const term = e.target.value.toLowerCase();
++
++        // Filter list rows
++        const listRows = document.querySelectorAll("#record-list tbody tr");
++        for (const row of listRows) {
++            row.hidden = !row.textContent.toLowerCase().includes(term);
++        }
++
++        // Filter grid cells/rows
++        // We filter individual grid cards
++        const gridCards = document.querySelectorAll(".grid-card");
++        for (const card of gridCards) {
++            card.hidden = !card.textContent.toLowerCase().includes(term);
++        }
++
++        // Hide empty grid rows if all cards are hidden
++        const gridRows = document.querySelectorAll("#section-grid tbody tr");
++        for (const row of gridRows) {
++            let hasVisibleCard = false;
++            const rowCards = row.querySelectorAll(".grid-card");
++            for (const card of rowCards) {
++                if (!card.hidden) {
++                    hasVisibleCard = true;
++                    break;
++                }
++            }
++            // Only hide the row if there were cards but all are hidden
++            // Wait, if a row had NO cards to begin with, should we hide it?
++            // If we filter, maybe we just leave it or hide it.
++            if (rowCards.length > 0 && !hasVisibleCard) {
++                row.hidden = true;
++            } else {
++                row.hidden = false;
++            }
++        }
++    });
++}
++</script>
++</body>
++</html>
+diff --git a/tests/fixtures/synthetic_store.json b/tests/fixtures/synthetic_store.json
+new file mode 100644
+index 0000000..3541621
+--- /dev/null
++++ b/tests/fixtures/synthetic_store.json
+@@ -0,0 +1,55 @@
++{
++  "documents": [
++    {
++      "stable_id": "annual",
++      "path": "C:/Synthetic/Annual Report.pdf"
++    },
++    {
++      "stable_id": "risk",
++      "path": "C:/Synthetic/Risk & Controls.pdf"
++    }
++  ],
++  "records": [
++    {
++      "record_id": "gov-24",
++      "entity_ref": "Example Fund",
++      "period": "2024",
++      "section": "Governance",
++      "text": "Policy approved.",
++      "evidence": [
++        {
++          "stable_id": "annual",
++          "page": 3,
++          "quote": "Approved unanimously."
++        }
++      ]
++    },
++    {
++      "record_id": "gov-25",
++      "entity_ref": "Example Fund",
++      "period": "2025",
++      "section": "Governance",
++      "text": "Policy renewed.",
++      "evidence": [
++        {
++          "stable_id": "annual",
++          "page": 8,
++          "quote": "Renewed for one year."
++        },
++        {
++          "stable_id": "risk",
++          "page": 2,
++          "quote": "Controls tested."
++        }
++      ]
++    },
++    {
++      "record_id": "risk-25",
++      "entity_ref": "Example Fund",
++      "period": "2025",
++      "section": "Risk",
++      "text": "No exceptions & no missing rows.",
++      "evidence": []
++    }
++  ]
++}
+diff --git a/tests/test_html.py b/tests/test_html.py
+index f4df1a8..2f7d93d 100644
+--- a/tests/test_html.py
++++ b/tests/test_html.py
+@@ -153,19 +153,19 @@ def test_section_by_period_grid():
+         ),
+         (),
+     )
+-    output = render_html(store, RenderSpec())
++    output = render_html(store, RenderSpec(view="grid"))
+     parsed = ParsedHTML(output)
+     [tag for tag, _ in parsed.tags]
+-    # there should be two tables now (grid and list)
+-    assert output.count("<table") == 2
++    # The selected grid has a single copy of each record.
++    assert output.count("<table") == 1
+     assert "Section-by-period grid" in parsed.text
+     # Check headers
+     assert "2024" in parsed.text
+     assert "2025" in parsed.text
+     assert "Gov" in parsed.text
+     assert "Risk" in parsed.text
+-    assert "R1 Text" in parsed.text
+-    assert "R2 Text" in parsed.text
++    assert any("R1 Text" in text for text in parsed.text)
++    assert any("R2 Text" in text for text in parsed.text)
+ 
+ 
+ def test_search_filter_ui_no_js_fallback():
+diff --git a/tests/test_render_html_offline.py b/tests/test_render_html_offline.py
+new file mode 100644
+index 0000000..d2f2649
+--- /dev/null
++++ b/tests/test_render_html_offline.py
+@@ -0,0 +1,143 @@
++"""Source #2 acceptance through persisted inputs and the production renderer."""
++
++from collections import Counter
++from dataclasses import replace
++from html.parser import HTMLParser
++from pathlib import Path
++from urllib.parse import urlsplit
++
++import pytest
++
++from deliverable_render import RenderSpec, render_html
++from deliverable_render.store import Store
++
++FIXTURES = Path(__file__).parent / "fixtures"
++LOCAL = "file://{path}#page={page}"
++REMOTE = "https://documents.example.invalid{path}#page={page}"
++EXPECTED_LINKS = [
++    "file:///C:/Synthetic/Annual%20Report.pdf#page=3",
++    "file:///C:/Synthetic/Annual%20Report.pdf#page=8",
++    "file:///C:/Synthetic/Risk%20%26%20Controls.pdf#page=2",
++]
++
++
++class Markup(HTMLParser):
++    """Compare parsed structure, attribute sets and meaningful text, not bytes."""
++
++    def __init__(self, source):
++        super().__init__(convert_charrefs=True)
++        self.events = []
++        self.tags = []
++        self.text = []
++        self.feed(source)
++
++    def handle_starttag(self, tag, attrs):
++        self.tags.append((tag, dict(attrs)))
++        self.events.append(("start", tag, tuple(sorted(attrs))))
++
++    def handle_endtag(self, tag):
++        self.events.append(("end", tag))
++
++    def handle_data(self, data):
++        if data.strip():
++            self.events.append(("text", data.strip()))
++            self.text.append(data.strip())
++
++    @property
++    def links(self):
++        return [attrs["href"] for tag, attrs in self.tags if tag == "a"]
++
++
++@pytest.fixture
++def store():
++    return Store.from_json(FIXTURES / "synthetic_store.json")
++
++
++def spec(view, template=LOCAL):
++    return RenderSpec("Synthetic evidence hub", template, view=view)
++
++
++@pytest.mark.parametrize("view", ["list", "grid"])
++def test_persisted_golden_matches_renderer_structure(store, view):
++    golden = (FIXTURES / f"expected_{view}.html").read_text(encoding="utf-8")
++    rendered = render_html(store, spec(view))
++    assert Markup(rendered).events == Markup(golden).events
++    # Whitespace between elements and attribute ordering are not byte contracts.
++    reformatted = golden.replace(
++        '<input type="search" id="search-input"', '<input id="search-input" type="search"'
++    ).replace("</head>", "</head>\n\n")
++    assert golden != reformatted
++    assert Markup(golden).events == Markup(reformatted).events
++
++
++@pytest.mark.parametrize("view", ["list", "grid"])
++@pytest.mark.parametrize("persisted", [False, True])
++def test_no_external_resource_references(store, view, persisted):
++    output = (
++        (FIXTURES / f"expected_{view}.html").read_text(encoding="utf-8")
++        if persisted
++        else render_html(store, spec(view))
++    )
++    assert "http://" not in output and "https://" not in output
++    parsed = Markup(output)
++    assert not {"link", "iframe", "img", "object", "embed"}.intersection(
++        tag for tag, _ in parsed.tags
++    )
++    assert all("src" not in attrs and "srcset" not in attrs for _, attrs in parsed.tags)
++
++
++@pytest.mark.parametrize("view", ["list", "grid"])
++def test_each_pointer_has_exactly_one_source_link(store, view):
++    parsed = Markup(render_html(store, spec(view)))
++    assert Counter(parsed.links) == Counter(EXPECTED_LINKS)
++    assert len(parsed.links) == len(store.evidence)
++    assert len([tag for tag, _ in parsed.tags if tag == "table"]) == 1
++    if view == "grid":
++        cards = [a["data-record-id"] for t, a in parsed.tags if a.get("class") == "grid-card"]
++        assert Counter(cards) == Counter(r.record_id for r in store.records)
++        assert "section-grid" in [a.get("id") for t, a in parsed.tags if t == "table"]
++
++
++@pytest.mark.parametrize("view", ["list", "grid"])
++def test_missing_document_fails_before_rendering(store, view):
++    missing = replace(store, documents=store.documents[:1])
++    with pytest.raises(ValueError, match="Dangling document reference: risk"):
++        render_html(missing, spec(view))
++
++
++@pytest.mark.parametrize("view", ["list", "grid"])
++def test_persisted_golden_preserves_rows_without_javascript(store, view):
++    parsed = Markup((FIXTURES / f"expected_{view}.html").read_text(encoding="utf-8"))
++    # HTMLParser never executes the inline script. These records exist in static markup.
++    for record in store.records:
++        assert record.record_id in parsed.text
++        assert any(record.text in text for text in parsed.text)
++    for tag, attrs in parsed.tags:
++        if tag == "tr" or attrs.get("class") == "grid-card":
++            assert "hidden" not in attrs
++            assert "display:none" not in attrs.get("style", "").replace(" ", "")
++
++
++@pytest.mark.parametrize("view", ["list", "grid"])
++def test_link_modes_change_only_source_prefix(store, view):
++    local = render_html(store, spec(view))
++    remote = render_html(store, spec(view, REMOTE))
++    parsed = Markup(remote)
++    assert len(parsed.links) == len(EXPECTED_LINKS)
++    assert all(urlsplit(link).hostname == "documents.example.invalid" for link in parsed.links)
++    assert Markup(remote.replace("https://documents.example.invalid", "file://")).events == (
++        Markup(local).events
++    )
++    # Document-system URLs are navigational anchors, never fetched page resources.
++    assert all("src" not in attrs for _, attrs in parsed.tags)
++
++
++def test_unknown_view_is_rejected():
++    with pytest.raises(ValueError, match="view must be list or grid"):
++        spec("unknown")
++
++
++def test_empty_grid_keeps_visible_empty_table():
++    parsed = Markup(render_html(Store((), ()), spec("grid")))
++    assert "0 records" in parsed.text
++    assert sum(tag == "table" for tag, _ in parsed.tags) == 1
+diff --git a/tests/test_store.py b/tests/test_store.py
+index b878086..67d8c3b 100644
+--- a/tests/test_store.py
++++ b/tests/test_store.py
+@@ -5,6 +5,7 @@
+ import typing
+ from contextlib import closing
+ from dataclasses import FrozenInstanceError
++from types import MappingProxyType
+ 
+ import pytest
+ 
+@@ -15,6 +16,7 @@
+     Record,
+     Store,
+     StoreValidationError,
++    _items,
+ )
+ 
+ 
+@@ -187,3 +189,51 @@ def test_unknown_fields_are_ignored(payload):
+     store = Store.from_dict(payload)
+     assert len(store.documents) == 1
+     assert len(store.records) == 2
++
++
++@pytest.mark.parametrize("root", [None, [], "", 42, {1: "value"}])
++def test_from_dict_rejects_invalid_root_with_named_error(root):
++    with pytest.raises(StoreValidationError, match="object with string keys"):
++        Store.from_dict(root)
++
++
++def test_from_dict_accepts_read_only_mapping(payload):
++    assert Store.from_dict(MappingProxyType(payload)) == Store.from_dict(payload)
++
++
++@pytest.mark.parametrize("value", [None, 42, "", b"", {}])
++@pytest.mark.parametrize("field", ["records", "documents", "evidence"])
++def test_model_collections_reject_scalars_and_mappings(field, value):
++    with pytest.raises(StoreValidationError, match=field):
++        if field == "evidence":
++            Record("r", "E", "P", "S", "", value)
++        else:
++            Store(**{"records": (), "documents": (), field: value})
++
++
++def test_items_accepts_one_shot_generator_and_returns_validated_tuple():
++    def pointers():
++        yield EvidencePointer("doc-a", 1, "first")
++        yield EvidencePointer("doc-b", 2, "second")
++
++    result = _items(pointers(), "evidence", EvidencePointer)
++    assert result == (
++        EvidencePointer("doc-a", 1, "first"),
++        EvidencePointer("doc-b", 2, "second"),
++    )
++    assert isinstance(result, tuple)
++
++
++def test_direct_lists_are_copied_before_indexing():
++    pointers = [EvidencePointer("doc", 1, "Quote")]
++    record = Record("r", "E", "P", "S", "Text", pointers)  # type: ignore[arg-type]
++    records = [record]
++    documents = [Document("doc", "report.pdf")]
++    store = Store(records, documents)  # type: ignore[arg-type]
++    pointers.clear()
++    records.clear()
++    documents.clear()
++    assert store.evidence == (EvidencePointer("doc", 1, "Quote"),)
++    assert store.documents == (Document("doc", "report.pdf"),)
++    assert store.entity_index == {"E": (record,)}
++    assert store.period_index == {"P": (record,)}

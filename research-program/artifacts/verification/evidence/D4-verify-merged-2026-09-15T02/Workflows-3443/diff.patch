@@ -1,0 +1,1297 @@
+diff --git a/.github/sync-manifest.yml b/.github/sync-manifest.yml
+index 3fcf2c494..799e902cf 100644
+--- a/.github/sync-manifest.yml
++++ b/.github/sync-manifest.yml
+@@ -48,7 +48,7 @@ workflows:
+       - stranske/Template
+ 
+   - source: .github/workflows/autofix.yml
+-    description: "Autofix workflow - automatically fixes lint/format issues"
++    description: "Autofix workflow - repairs failed/timed-out checks; cancellations do not trigger repairs"
+ 
+   - source: .github/workflows/pr-46-dependency-repair-contract.yml
+     description: "Dependency repair contract - keeps bot PRs bot-owned and validates agent repair promotion provenance"
+@@ -60,7 +60,7 @@ workflows:
+     description: "PR event hub - consolidates PR meta, bot comments, and verify-to-issue handlers"
+ 
+   - source: .github/workflows/agents-81-gate-followups.yml
+-    description: "Gate followups hub - consolidates keepalive and autofix followups"
++    description: "Gate followups hub - keepalive and autofix; budgets count Gate failures with failed jobs"
+ 
+   - source: .github/workflows/agents-keepalive-sweep.yml
+     description: "Keepalive sweep - periodic level-based resync; dispatches the loop for open agent PRs so silent zero-commit stalls resurface"
+diff --git a/.github/workflows/agents-autofix-loop.yml b/.github/workflows/agents-autofix-loop.yml
+index d6c0bb29d..8b783ed03 100644
+--- a/.github/workflows/agents-autofix-loop.yml
++++ b/.github/workflows/agents-autofix-loop.yml
+@@ -354,8 +354,10 @@ jobs:
+             outputs.gate_conclusion = String(run?.conclusion || run?.status || '');
+             outputs.gate_run_id = String(run?.id || manualInputs.runId || '');
+ 
+-            if ((run.conclusion || '').toLowerCase() === 'success') {
+-              return stop('upstream Gate succeeded');
++            const isFailure = (value) =>
++              ['failure', 'timed_out'].includes(String(value || '').toLowerCase());
++            if (!isFailure(run.conclusion)) {
++              return stop('upstream Gate has no counted failure', 'gate_not_failed');
+             }
+ 
+             if ((run.event || '').toLowerCase() !== 'pull_request') {
+@@ -494,54 +496,6 @@ jobs:
+               ? configMatch[1].toLowerCase() === 'true'
+               : hasExplicitAgentLabel;
+ 
+-            // Auto-escalation: Escalate to Codex CLI when Gate fails
+-            // Triggers if: (1) basic autofix ran but insufficient, OR (2) no basic autofix applied
+-            // Note: We do NOT add agent:codex label here because that triggers external Codex UI
+-            // which would conflict with our internal Codex CLI run. Only add autofix:escalated.
+-            if (!autofixEnabled && !configMatch) {
+-              const hasAutofixLabel =
+-                labels.includes('autofix:applied') || labels.includes('autofix');
+-              const hasEscalatedLabel = labels.includes('autofix:escalated');
+-              const gateConclusion = (run.conclusion || '').toLowerCase();
+-              const gateFailed = gateConclusion === 'failure';
+-
+-              // Escalate if Gate failed and we haven't already escalated
+-              if (gateFailed && !hasEscalatedLabel) {
+-                const reason = hasAutofixLabel
+-                  ? 'Basic autofix ran but Gate still failing'
+-                  : 'No basic autofix (non-Python PR?) and Gate failing';
+-                core.info(`🔄 Auto-escalation: ${reason}. Escalating to Codex CLI...`);
+-                try {
+-                  await withRetry(() =>
+-                    github.rest.issues.addLabels({
+-                      owner,
+-                      repo,
+-                      issue_number: prNumber,
+-                      labels: ['autofix:escalated'],
+-                    })
+-                  );
+-                  core.info(
+-                    '✅ Added autofix:escalated label - Codex CLI will run in this workflow'
+-                  );
+-                  autofixEnabled = true;
+-                } catch (error) {
+-                  core.warning(`Failed to add escalation labels: ${error.message}`);
+-                }
+-              }
+-            }
+-            if (!autofixEnabled) {
+-              return stop('autofix disabled for this pull request');
+-            }
+-
+-            // Phase 2: Support both Codex and Claude autofix
+-            const supportedAgents = ['codex', 'claude'];
+-            if ((outputs.agent_type || '') && !supportedAgents.includes(outputs.agent_type)) {
+-              return stop(
+-                `unsupported agent type for autofix loop: ${outputs.agent_type}`,
+-                'unsupported_agent'
+-              );
+-            }
+-
+             const jobs = await paginateWithRetry(
+               github,
+               github.rest.actions.listJobsForWorkflowRun,
+@@ -553,7 +507,8 @@ jobs:
+               }
+             );
+ 
+-            const workflowFile = 'agents-autofix-loop.yml';
++            // Count failed Gate executions, not unrelated follow-up workflow runs.
++            const workflowFile = run.workflow_id;
+             // Reduce attempts for auto-escalated PRs (they weren't agent-initiated)
+             const isEscalated = labels.includes('autofix:escalated');
+             const maxAttempts = isEscalated
+@@ -572,7 +527,82 @@ jobs:
+               }
+             );
+ 
+-            const attemptCount = previousRuns.length + 1;
++            const listJobsForGateAttempt = async (runId, attemptNumber, latestJobs = null) => {
++              const currentAttempt = Math.max(1, Number(run.run_attempt) || 1);
++              if (runId === run.id && attemptNumber === currentAttempt && latestJobs) {
++                return latestJobs;
++              }
++              const listAttemptJobs = github.rest.actions.listJobsForWorkflowRunAttempt;
++              if (typeof listAttemptJobs === 'function') {
++                return await paginateWithRetry(github, listAttemptJobs, {
++                  owner,
++                  repo,
++                  run_id: runId,
++                  attempt_number: attemptNumber,
++                  per_page: 100,
++                });
++              }
++              if (attemptNumber === 1) {
++                return await paginateWithRetry(
++                  github,
++                  github.rest.actions.listJobsForWorkflowRun,
++                  {
++                    owner,
++                    repo,
++                    run_id: runId,
++                    per_page: 100,
++                  }
++                );
++              }
++              return [];
++            };
++
++            const countFailingAttemptsForRun = async (gateRun, latestJobs = null) => {
++              const maxAttempt = Math.max(1, Number(gateRun.run_attempt) || 1);
++              let count = 0;
++              for (let attempt = 1; attempt <= maxAttempt; attempt += 1) {
++                const attemptJobs = await listJobsForGateAttempt(
++                  gateRun.id,
++                  attempt,
++                  gateRun.id === run.id ? latestJobs : null
++                );
++                if (attemptJobs.some((job) => isFailure(job.conclusion))) {
++                  count += 1;
++                }
++              }
++              return count;
++            };
++
++            const gateRunsById = new Map();
++            for (const candidate of previousRuns) {
++              if (candidate.head_sha !== run.head_sha || !isFailure(candidate.conclusion)) {
++                continue;
++              }
++              const existing = gateRunsById.get(candidate.id);
++              const candidateAttempt = Number(candidate.run_attempt) || 1;
++              const existingAttempt = existing ? Number(existing.run_attempt) || 1 : 0;
++              if (!existing || candidateAttempt >= existingAttempt) {
++                gateRunsById.set(candidate.id, candidate);
++              }
++            }
++            gateRunsById.set(run.id, {
++              ...run,
++              run_attempt: Math.max(
++                Number(run.run_attempt) || 1,
++                Number(gateRunsById.get(run.id)?.run_attempt) || 0
++              ),
++            });
++
++            let attemptsWithFailingJobs = 0;
++            let gateAttemptsExamined = 0;
++            for (const gateRun of gateRunsById.values()) {
++              gateAttemptsExamined += Math.max(1, Number(gateRun.run_attempt) || 1);
++              attemptsWithFailingJobs += await countFailingAttemptsForRun(
++                gateRun,
++                gateRun.id === run.id ? jobs : null
++              );
++            }
++            const attemptCount = attemptsWithFailingJobs;
+             outputs.attempts = String(attemptCount);
+             outputs.max_attempts = String(maxAttempts);
+ 
+@@ -581,7 +611,7 @@ jobs:
+             let triggerStep = null;
+             for (const job of jobs) {
+               const conclusion = (job.conclusion || job.status || '').toLowerCase();
+-              if (!conclusion || ['success', 'skipped'].includes(conclusion)) {
++              if (!isFailure(conclusion)) {
+                 continue;
+               }
+ 
+@@ -590,7 +620,7 @@ jobs:
+                   ? job.steps
+                       .filter((step) => {
+                         const stepConclusion = (step.conclusion || step.status || '').toLowerCase();
+-                        return stepConclusion && !['success', 'skipped'].includes(stepConclusion);
++                        return isFailure(stepConclusion);
+                       })
+                       .map(
+                         (step) =>
+@@ -609,7 +639,7 @@ jobs:
+                 const failingStep = Array.isArray(job.steps)
+                   ? job.steps.find((step) => {
+                       const stepConclusion = (step.conclusion || step.status || '').toLowerCase();
+-                      return stepConclusion && !['success', 'skipped'].includes(stepConclusion);
++                      return isFailure(stepConclusion);
+                     })
+                   : null;
+                 triggerStep = failingStep || null;
+@@ -645,6 +675,7 @@ jobs:
+               `PR: #${prNumber}`,
+               `Head SHA: ${headSha}`,
+               `Autofix attempts for this head: ${attemptCount} / ${maxAttempts}`,
++              `Gate runs examined: ${gateRunsById.size}; gate attempts examined: ${gateAttemptsExamined}; attempts with failing jobs: ${attemptsWithFailingJobs}`,
+               'Fix scope: src/, tests/, tools/, scripts/, agents/, templates/, .github/',
+             ];
+ 
+@@ -656,6 +687,55 @@ jobs:
+ 
+             outputs.appendix = appendixLines.join('\n');
+ 
++            if (failingJobs.length === 0) {
++              return stop('Gate has no failing jobs', 'no_failing_jobs');
++            }
++
++            // Auto-escalation: only after confirming real failed/timed-out Gate jobs.
++            // Note: We do NOT add agent:codex label here because that triggers external Codex UI
++            // which would conflict with our internal Codex CLI run. Only add autofix:escalated.
++            if (!autofixEnabled && !configMatch) {
++              const hasAutofixLabel =
++                labels.includes('autofix:applied') || labels.includes('autofix');
++              const hasEscalatedLabel = labels.includes('autofix:escalated');
++              const gateFailed = isFailure((run.conclusion || '').toLowerCase());
++
++              if (gateFailed && !hasEscalatedLabel) {
++                const reason = hasAutofixLabel
++                  ? 'Basic autofix ran but Gate still failing'
++                  : 'No basic autofix (non-Python PR?) and Gate failing';
++                core.info(`🔄 Auto-escalation: ${reason}. Escalating to Codex CLI...`);
++                try {
++                  await withRetry(() =>
++                    github.rest.issues.addLabels({
++                      owner,
++                      repo,
++                      issue_number: prNumber,
++                      labels: ['autofix:escalated'],
++                    })
++                  );
++                  core.info(
++                    '✅ Added autofix:escalated label - Codex CLI will run in this workflow'
++                  );
++                  autofixEnabled = true;
++                } catch (error) {
++                  core.warning(`Failed to add escalation labels: ${error.message}`);
++                }
++              }
++            }
++            if (!autofixEnabled) {
++              return stop('autofix disabled for this pull request');
++            }
++
++            // Phase 2: Support both Codex and Claude autofix
++            const supportedAgents = ['codex', 'claude'];
++            if ((outputs.agent_type || '') && !supportedAgents.includes(outputs.agent_type)) {
++              return stop(
++                `unsupported agent type for autofix loop: ${outputs.agent_type}`,
++                'unsupported_agent'
++              );
++            }
++
+             if (attemptCount > maxAttempts) {
+               return stop(
+                 `autofix attempt limit reached (${attemptCount} > ${maxAttempts})`,
+diff --git a/.github/workflows/autofix.yml b/.github/workflows/autofix.yml
+index 499769e19..bbfc23e7f 100644
+--- a/.github/workflows/autofix.yml
++++ b/.github/workflows/autofix.yml
+@@ -56,7 +56,7 @@ jobs:
+           custom-predicate: >-
+             (event_name == 'pull_request_target' && action == 'labeled' &&
+              (label.name == 'autofix' || label.name == 'autofix:clean')) ||
+-            (event_name == 'workflow_run' && workflow_run.conclusion == 'failure' &&
++            (event_name == 'workflow_run' && (workflow_run.conclusion == 'failure' || workflow_run.conclusion == 'timed_out') &&
+              length(workflow_run.pull_requests) > 0)
+ 
+       - name: Checkout for API helpers
+@@ -124,7 +124,7 @@ jobs:
+               );
+ 
+               const failedChecks = (data.check_runs || []).filter(
+-                (cr) => (cr.conclusion || '').toLowerCase() === 'failure'
++                (cr) => ['failure', 'timed_out'].includes((cr.conclusion || '').toLowerCase())
+               );
+ 
+               const relevantFailures = failedChecks.filter((cr) => {
+@@ -157,7 +157,7 @@ jobs:
+                 { maxRetries: 3 }
+               );
+               const failedJobs = jobs.filter(
+-                (job) => (job.conclusion || '').toLowerCase() === 'failure'
++                (job) => ['failure', 'timed_out'].includes((job.conclusion || '').toLowerCase())
+               );
+               const relevantFailures = failedJobs.filter((job) => {
+                 const name = String(job.name || '').toLowerCase();
+@@ -222,7 +222,7 @@ jobs:
+               const triggerHeadSha = String(run?.head_sha || run?.head_commit?.id || '');
+               const runId = Number(run?.id || 0);
+ 
+-              if (run.conclusion !== 'failure') {
++              if (!['failure', 'timed_out'].includes(run.conclusion)) {
+                 core.info(
+                   `${workflowName} concluded '${run.conclusion}' — no autofix needed`
+                 );
+diff --git a/config/template-drift-allowlist.txt b/config/template-drift-allowlist.txt
+index 9c5eb1d85..37539a1e6 100644
+--- a/config/template-drift-allowlist.txt
++++ b/config/template-drift-allowlist.txt
+@@ -189,11 +189,11 @@ fingerprint_refreshed = 2026-08-24
+ [pair.17]
+ main = .github/workflows/autofix.yml
+ template = templates/consumer-repo/.github/workflows/autofix.yml
+-main_sha256 = 81f2268c29cc8b5da388a44eab46a8613df153d9e4e83449ab3a5070c03558a7
+-template_sha256 = 88cf48708d972137ef8e9fb3efc2323ee93c8cab16eaba0fc22c8c11ea6695c4
+-divergence = Intentional divergence reviewed 2026-08-23: the Workflows source runs its local reusable autofix workflow and uses the repository's CI concurrency/context contract; the consumer template calls the published reusable workflow with SHA-pinned actions, SERVICE_BOT_PAT, and workflow-run PR context recovery. Do not align wholesale because the consumer is a deployable wrapper rather than the source implementation.
++main_sha256 = 96c8131203431b7da850474e06fa169a2580fa5fa4759674be712ea408f17d16
++template_sha256 = 73536de641ae21b89b5de24848a850e2753f5bc4d608f90498b44007fc2b8cfe
++divergence = Timeout handling 2026-09-14: four identical conclusion-filter edits applied to source and consumer autofix; both still exclude cancellations. Verified the exact same transformation against origin/main on both sides. Fingerprints refreshed; existing divergence and its review date are unchanged. Prior divergence: Intentional divergence reviewed 2026-08-23: the Workflows source runs its local reusable autofix workflow and uses the repository's CI concurrency/context contract; the consumer template calls the published reusable workflow with SHA-pinned actions, SERVICE_BOT_PAT, and workflow-run PR context recovery. Do not align wholesale because the consumer is a deployable wrapper rather than the source implementation.
+ divergence_reviewed = 2026-08-23
+-fingerprint_refreshed = 2026-08-23
++fingerprint_refreshed = 2026-09-14
+ 
+ [pair.18]
+ main = .github/workflows/maint-coverage-guard.yml
+diff --git a/docs/WORKFLOW_GUIDE.md b/docs/WORKFLOW_GUIDE.md
+index eb09b7125..dc73c60a3 100644
+--- a/docs/WORKFLOW_GUIDE.md
++++ b/docs/WORKFLOW_GUIDE.md
+@@ -142,6 +142,13 @@ _Inline Gate helper_
+ - **`agents-autofix-rebase.yml`** — See Agents section; merges the base branch when Gate flags stale branches, preventing common “needs rebase” failures from blocking progress.
+ - **`agents-bot-comment-autolabel.yml`** / **`agents-bot-comment-handler.yml`** — Automatically harvest trusted bot review comments and apply them via the autofix pathways without manual labelling.
+ 
++Autofix budgets count only same-head Gate runs concluded `failure` or `timed_out`
++with at least one job carrying either conclusion. Cancelled, skipped, successful,
++and jobless runs do not consume the budget or trigger `needs-human`. The heavy
++loop reports the number of Gate failures examined and the attempts with failing
++jobs; a current Gate without a failed job cannot escalate even after earlier
++failures. Consumer Gate Followups uses the same rule.
++
+ #### Autofix & Lint Coordination
+ 1. **Gate emits signals** — `pr-00-gate.yml` attaches artifacts describing the failing job plus `mergeable_state`. When lint/format/typecheck/test jobs fail it dispatches `autofix_gate_failure`; when the PR is dirty/behind it dispatches `autofix_rebase_needed`.
+ 2. **CI autofix first pass (`autofix.yml`)** — Runs Ruff/formatters/tests where possible and pushes fixes directly to the branch so same-run Gate retries can pass without escalation.
+diff --git a/templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml b/templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml
+index c9f65dbc7..de4ede9e2 100644
+--- a/templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml
++++ b/templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml
+@@ -1532,8 +1532,10 @@ jobs:
+               return stop('missing workflow_run payload');
+             }
+ 
+-            if ((run.conclusion || '').toLowerCase() === 'success') {
+-              return stop('upstream Gate succeeded');
++            const isFailure = (value) =>
++              ['failure', 'timed_out'].includes(String(value || '').toLowerCase());
++            if (!isFailure(run.conclusion)) {
++              return stop('upstream Gate has no counted failure', 'gate_not_failed');
+             }
+ 
+             if ((run.event || '').toLowerCase() !== 'pull_request') {
+@@ -1623,43 +1625,6 @@ jobs:
+               ? configMatch[1].toLowerCase() === 'true'
+               : hasAgentLabel;
+ 
+-            // Auto-escalation: Escalate to agent CLI when Gate fails
+-            // Triggers if: (1) basic autofix ran but insufficient, OR (2) no basic autofix applied
+-            // Note: We do NOT add agent:* label here because that triggers external agent UI
+-            // which would conflict with our internal agent CLI run. Only add autofix:escalated.
+-            if (!autofixEnabled && !configMatch) {
+-                const hasAutofixLabel =
+-                  labels.includes('autofix:applied') || labels.includes('autofix');
+-              const hasEscalatedLabel = labels.includes('autofix:escalated');
+-              const gateConclusion = (run.conclusion || '').toLowerCase();
+-              const gateFailed = gateConclusion === 'failure';
+-
+-              // Escalate if Gate failed and we haven't already escalated
+-              if (gateFailed && !hasEscalatedLabel) {
+-                const reason = hasAutofixLabel
+-                  ? 'Basic autofix ran but Gate still failing'
+-                  : 'No basic autofix (non-Python PR?) and Gate failing';
+-                core.info(`🔄 Auto-escalation: ${reason}. Escalating to agent CLI...`);
+-                try {
+-                  await withRetry((client) => client.rest.issues.addLabels({
+-                    owner,
+-                    repo,
+-                    issue_number: prNumber,
+-                    labels: ['autofix:escalated'],
+-                  }));
+-                    core.info(
+-                      '✅ Added autofix:escalated label - agent CLI will run in this workflow'
+-                    );
+-                  autofixEnabled = true;
+-                } catch (error) {
+-                  core.warning(`Failed to add escalation labels: ${error.message}`);
+-                }
+-              }
+-            }
+-            if (!autofixEnabled) {
+-              return stop('autofix disabled for this pull request');
+-            }
+-
+             const jobs = await paginateWithRetry(github.rest.actions.listJobsForWorkflowRun, {
+               owner,
+               repo,
+@@ -1667,7 +1632,8 @@ jobs:
+               per_page: 100,
+             });
+ 
+-            const workflowFile = 'agents-81-gate-followups.yml';
++            // Count failed Gate executions, not unrelated follow-up workflow runs.
++            const workflowFile = run.workflow_id;
+             // Reduce attempts for auto-escalated PRs (they weren't agent-initiated)
+             const isEscalated = labels.includes('autofix:escalated');
+               const maxAttempts = isEscalated
+@@ -1682,7 +1648,77 @@ jobs:
+               status: 'completed',
+             });
+ 
+-            const attemptCount = previousRuns.length + 1;
++            const listJobsForGateAttempt = async (runId, attemptNumber, latestJobs = null) => {
++              const currentAttempt = Math.max(1, Number(run.run_attempt) || 1);
++              if (runId === run.id && attemptNumber === currentAttempt && latestJobs) {
++                return latestJobs;
++              }
++              if (typeof github['rest']['actions']['listJobsForWorkflowRunAttempt'] === 'function') {
++                return await paginateWithRetry(github.rest.actions.listJobsForWorkflowRunAttempt, {
++                  owner,
++                  repo,
++                  run_id: runId,
++                  attempt_number: attemptNumber,
++                  per_page: 100,
++                });
++              }
++              if (attemptNumber === 1) {
++                return await paginateWithRetry(github.rest.actions.listJobsForWorkflowRun, {
++                  owner,
++                  repo,
++                  run_id: runId,
++                  per_page: 100,
++                });
++              }
++              return [];
++            };
++
++            const countFailingAttemptsForRun = async (gateRun, latestJobs = null) => {
++              const maxAttempt = Math.max(1, Number(gateRun.run_attempt) || 1);
++              let count = 0;
++              for (let attempt = 1; attempt <= maxAttempt; attempt += 1) {
++                const attemptJobs = await listJobsForGateAttempt(
++                  gateRun.id,
++                  attempt,
++                  gateRun.id === run.id ? latestJobs : null
++                );
++                if (attemptJobs.some((job) => isFailure(job.conclusion))) {
++                  count += 1;
++                }
++              }
++              return count;
++            };
++
++            const gateRunsById = new Map();
++            for (const candidate of previousRuns) {
++              if (candidate.head_sha !== run.head_sha || !isFailure(candidate.conclusion)) {
++                continue;
++              }
++              const existing = gateRunsById.get(candidate.id);
++              const candidateAttempt = Number(candidate.run_attempt) || 1;
++              const existingAttempt = existing ? Number(existing.run_attempt) || 1 : 0;
++              if (!existing || candidateAttempt >= existingAttempt) {
++                gateRunsById.set(candidate.id, candidate);
++              }
++            }
++            gateRunsById.set(run.id, {
++              ...run,
++              run_attempt: Math.max(
++                Number(run.run_attempt) || 1,
++                Number(gateRunsById.get(run.id)?.run_attempt) || 0
++              ),
++            });
++
++            let attemptsWithFailingJobs = 0;
++            let gateAttemptsExamined = 0;
++            for (const gateRun of gateRunsById.values()) {
++              gateAttemptsExamined += Math.max(1, Number(gateRun.run_attempt) || 1);
++              attemptsWithFailingJobs += await countFailingAttemptsForRun(
++                gateRun,
++                gateRun.id === run.id ? jobs : null
++              );
++            }
++            const attemptCount = attemptsWithFailingJobs;
+             outputs.attempts = String(attemptCount);
+             outputs.max_attempts = String(maxAttempts);
+ 
+@@ -1691,7 +1727,7 @@ jobs:
+             let triggerStep = null;
+             for (const job of jobs) {
+               const conclusion = (job.conclusion || job.status || '').toLowerCase();
+-              if (!conclusion || ['success', 'skipped'].includes(conclusion)) {
++              if (!isFailure(conclusion)) {
+                 continue;
+               }
+ 
+@@ -1700,7 +1736,7 @@ jobs:
+                   ? job.steps
+                       .filter((step) => {
+                         const stepConclusion = (step.conclusion || step.status || '').toLowerCase();
+-                        return stepConclusion && !['success', 'skipped'].includes(stepConclusion);
++                        return isFailure(stepConclusion);
+                       })
+                         .map((step) =>
+                           `${step.name} (${step.conclusion || step.status || 'unknown'})`
+@@ -1718,7 +1754,7 @@ jobs:
+                 const failingStep = Array.isArray(job.steps)
+                   ? job.steps.find((step) => {
+                       const stepConclusion = (step.conclusion || step.status || '').toLowerCase();
+-                      return stepConclusion && !['success', 'skipped'].includes(stepConclusion);
++                      return isFailure(stepConclusion);
+                     })
+                   : null;
+                 triggerStep = failingStep || null;
+@@ -1754,6 +1790,7 @@ jobs:
+               `PR: #${prNumber}`,
+               `Head SHA: ${headSha}`,
+               `Autofix attempts for this head: ${attemptCount} / ${maxAttempts}`,
++              `Gate runs examined: ${gateRunsById.size}; gate attempts examined: ${gateAttemptsExamined}; attempts with failing jobs: ${attemptsWithFailingJobs}`,
+               'Fix scope: src/, tests/, tools/, scripts/, agents/, templates/, .github/',
+             ];
+ 
+@@ -1765,6 +1802,44 @@ jobs:
+ 
+             outputs.appendix = appendixLines.join('\n');
+ 
++            if (failingJobs.length === 0) {
++              return stop('Gate has no failing jobs', 'no_failing_jobs');
++            }
++
++            // Auto-escalation: only after confirming real failed/timed-out Gate jobs.
++            // Note: We do NOT add agent:* label here because that triggers external agent UI
++            // which would conflict with our internal agent CLI run. Only add autofix:escalated.
++            if (!autofixEnabled && !configMatch) {
++                const hasAutofixLabel =
++                  labels.includes('autofix:applied') || labels.includes('autofix');
++              const hasEscalatedLabel = labels.includes('autofix:escalated');
++              const gateFailed = isFailure((run.conclusion || '').toLowerCase());
++
++              if (gateFailed && !hasEscalatedLabel) {
++                const reason = hasAutofixLabel
++                  ? 'Basic autofix ran but Gate still failing'
++                  : 'No basic autofix (non-Python PR?) and Gate failing';
++                core.info(`🔄 Auto-escalation: ${reason}. Escalating to agent CLI...`);
++                try {
++                  await withRetry((client) => client.rest.issues.addLabels({
++                    owner,
++                    repo,
++                    issue_number: prNumber,
++                    labels: ['autofix:escalated'],
++                  }));
++                    core.info(
++                      '✅ Added autofix:escalated label - agent CLI will run in this workflow'
++                    );
++                  autofixEnabled = true;
++                } catch (error) {
++                  core.warning(`Failed to add escalation labels: ${error.message}`);
++                }
++              }
++            }
++            if (!autofixEnabled) {
++              return stop('autofix disabled for this pull request');
++            }
++
+             if (attemptCount > maxAttempts) {
+                 return stop(
+                   `autofix attempt limit reached (${attemptCount} > ${maxAttempts})`,
+diff --git a/templates/consumer-repo/.github/workflows/autofix.yml b/templates/consumer-repo/.github/workflows/autofix.yml
+index 47c2d3bf9..e4598229b 100644
+--- a/templates/consumer-repo/.github/workflows/autofix.yml
++++ b/templates/consumer-repo/.github/workflows/autofix.yml
+@@ -86,7 +86,7 @@ jobs:
+           custom-predicate: >-
+             (event_name == 'pull_request_target' && action == 'labeled' &&
+              (label.name == 'autofix' || label.name == 'autofix:clean')) ||
+-            (event_name == 'workflow_run' && workflow_run.conclusion == 'failure' &&
++            (event_name == 'workflow_run' && (workflow_run.conclusion == 'failure' || workflow_run.conclusion == 'timed_out') &&
+              length(workflow_run.pull_requests) > 0)
+ 
+       - name: Checkout for API helpers
+@@ -154,7 +154,7 @@ jobs:
+               );
+ 
+               const failedChecks = (data.check_runs || []).filter(
+-                (cr) => (cr.conclusion || '').toLowerCase() === 'failure'
++                (cr) => ['failure', 'timed_out'].includes((cr.conclusion || '').toLowerCase())
+               );
+ 
+               const relevantFailures = failedChecks.filter((cr) => {
+@@ -189,7 +189,7 @@ jobs:
+                 { maxRetries: 3 }
+               );
+               const failedJobs = jobs.filter(
+-                (job) => (job.conclusion || '').toLowerCase() === 'failure'
++                (job) => ['failure', 'timed_out'].includes((job.conclusion || '').toLowerCase())
+               );
+               const relevantFailures = failedJobs.filter((job) => {
+                 const name = String(job.name || '').toLowerCase();
+@@ -255,7 +255,7 @@ jobs:
+               const runId = Number(run?.id || 0);
+ 
+               // Only proceed when the upstream workflow failed
+-              if (run.conclusion !== 'failure') {
++              if (!['failure', 'timed_out'].includes(run.conclusion)) {
+                 core.info(
+                   `${workflowName} concluded '${run.conclusion}' — ` +
+                   'no autofix needed'
+diff --git a/tests/workflows/test_autofix_cancelled_gate.py b/tests/workflows/test_autofix_cancelled_gate.py
+new file mode 100644
+index 000000000..0264ff310
+--- /dev/null
++++ b/tests/workflows/test_autofix_cancelled_gate.py
+@@ -0,0 +1,573 @@
++"""Execute the actual workflow evaluators against recorded-style GitHub responses."""
++
++import json
++import os
++import shutil
++import subprocess
++from pathlib import Path
++
++import pytest
++import yaml
++
++ROOT = Path(__file__).resolve().parents[2]
++WORKFLOWS = [
++    ".github/workflows/agents-autofix-loop.yml",
++    "templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml",
++]
++NODE = shutil.which("node")
++pytestmark = pytest.mark.skipif(NODE is None, reason="Node is required for workflow scripts")
++
++
++@pytest.mark.parametrize(
++    "workflow",
++    [
++        ".github/workflows/autofix.yml",
++        "templates/consumer-repo/.github/workflows/autofix.yml",
++    ],
++)
++@pytest.mark.parametrize("evidence", ["check", "job"])
++@pytest.mark.parametrize("name", ["lint-format", "lint-ruff", "pytest"])
++@pytest.mark.parametrize(
++    "conclusion", ["timed_out", "failure", "cancelled", "skipped", "success", "neutral"]
++)
++def test_autofix_lint_failure_eligibility(workflow, tmp_path, evidence, name, conclusion):
++    """Run each shipped context evaluator with isolated check or job evidence."""
++    document = yaml.safe_load((ROOT / workflow).read_text())
++    script = next(
++        step["with"]["script"]
++        for job in document["jobs"].values()
++        for step in job.get("steps", [])
++        if step.get("id") == "context"
++    )
++    fixture = {"evidence": evidence, "name": name, "conclusion": conclusion}
++    # Load the production step as ordinary JavaScript, mocking only API boundaries.
++    harness = r"""
++import assert from 'node:assert/strict';
++const fixture = JSON.parse(process.env.FIXTURE);
++const output = {};
++const calls = [];
++const core = {setOutput: (key, value) => output[key] = value,
++  info: () => {}, warning: () => {}, setFailed: (message) => {throw Error(message);}};
++const context = {eventName: 'workflow_run', actor: 'fixture',
++  repo: {owner: 'stranske', repo: 'fixture'}, payload: {workflow_run: {
++    id: 100, name: 'Gate', conclusion: 'timed_out', head_sha: 'current-head',
++    pull_requests: [{number: 7}]
++  }}};
++const result = {name: fixture.name, conclusion: fixture.conclusion};
++const github = {rest: {
++  actions: {listJobsForWorkflowRun: async (params) => {
++    assert.equal(params.run_id, 100);
++    calls.push('jobs');
++    return fixture.evidence === 'job' ? [result] : [];
++  }},
++  checks: {listForRef: async (params) => {
++    assert.equal(params.ref, 'current-head');
++    calls.push('checks');
++    return {data: {check_runs: fixture.evidence === 'check' ? [result] : []}};
++  }},
++  pulls: {
++    get: async (params) => {
++      assert.equal(params.pull_number, 7);
++      return {data: {number: 7, state: 'open', draft: false, labels: [],
++        head: {sha: 'current-head', ref: 'fix-lint', repo: {full_name: 'stranske/fixture'}},
++        base: {repo: {full_name: 'stranske/fixture'}}}};
++    },
++    listFiles: async () => [{filename: 'src/example.py'}]
++  }
++}};
++const require = (name) => {
++  assert.equal(name, './.github/scripts/github-api-with-retry.js');
++  return {createTokenAwareRetry: async () => ({
++    withRetry: (fn) => fn(github),
++    paginateWithRetry: (method, params) => method(params)
++  })};
++};
++async function evaluate() {
++"""
++    runner = tmp_path / "autofix-context.mjs"
++    runner.write_text(
++        harness + script + "\n}\nawait evaluate();\nconsole.log(JSON.stringify({output, calls}));\n"
++    )
++    completed = subprocess.run(
++        [NODE, str(runner)],
++        cwd=tmp_path,
++        env={**os.environ, "FIXTURE": json.dumps(fixture)},
++        text=True,
++        capture_output=True,
++        check=True,
++    )
++    result = json.loads(completed.stdout)
++    eligible = name in {"lint-format", "lint-ruff"} and conclusion in {"failure", "timed_out"}
++    assert result["output"]["should_run"] == str(eligible).lower()
++    assert result["calls"] == (["jobs"] if evidence == "job" and eligible else ["jobs", "checks"])
++    if eligible:
++        assert result["output"]["pr_number"] == 7
++        assert result["output"]["head_sha"] == "current-head"
++
++
++def execute(
++    workflow,
++    tmp_path,
++    conclusion="failure",
++    history=(),
++    jobs=None,
++    historical_jobs=None,
++    *,
++    run_attempt=1,
++    attempt_jobs=None,
++    pr_labels=None,
++    pr_body="",
++):
++    document = yaml.safe_load((ROOT / workflow).read_text())
++    steps = document["jobs"]["prepare"]["steps"]
++    script = next(s["with"]["script"] for s in steps if s.get("id") == "evaluate")
++    escalation = next(
++        s["with"]["script"]
++        for job in document["jobs"].values()
++        for s in job.get("steps", [])
++        if "Autofix attempts exhausted" in s.get("with", {}).get("script", "")
++    )
++    run = {
++        "id": 100,
++        "workflow_id": 42,
++        "head_sha": "current-head",
++        "conclusion": conclusion,
++        "event": "pull_request",
++        "pull_requests": [{"number": 7}],
++        "run_attempt": run_attempt,
++    }
++    failed_job = {"name": "pytest", "conclusion": "failure", "steps": []}
++    jobs = [failed_job] if jobs is None else jobs
++    previous = [
++        dict(run, id=i + 1, conclusion=value, run_attempt=1) for i, value in enumerate(history)
++    ]
++    if pr_labels is None:
++        pr_labels = [{"name": "agent:codex"}, {"name": "autofix"}]
++    fixture = {
++        "run": run,
++        "history": previous + [run],
++        "jobs": jobs,
++        "historical_jobs": historical_jobs,
++        "attempt_jobs": attempt_jobs or {},
++        "pr_labels": pr_labels,
++        "pr_body": pr_body,
++    }
++    # Only the GitHub/retry/registry boundary is replaced. All counting, filtering,
++    # output wiring and escalation code comes from the shipped workflow YAML.
++    harness = r"""
++const fixture = JSON.parse(process.env.FIXTURE);
++const output = {};
++const labels = [];
++const comments = [];
++const attemptCalls = [];
++const core = {
++  setOutput: (key, value) => output[key] = value,
++  info: () => {}, warning: () => {}, setFailed: (message) => {throw Error(message);}
++};
++const context = {repo: {owner: 'stranske', repo: 'fixture'},
++  payload: {workflow_run: fixture.run}};
++const github = {rest: {actions: {
++  getWorkflowRun: async () => ({data: fixture.run}),
++  listWorkflowRuns: async (params) => {
++    if (params.workflow_id !== 42 || params.head_sha !== 'current-head') {
++      throw Error('Attempt history must query the triggering Gate and exact head');
++    }
++    return fixture.history;
++  },
++  listJobsForWorkflowRun: async (params) => params.run_id === 100 ? fixture.jobs :
++    (fixture.historical_jobs ?? [{name: 'pytest', conclusion: 'failure'}]),
++  listJobsForWorkflowRunAttempt: async (params) => {
++    attemptCalls.push({run_id: params.run_id, attempt_number: params.attempt_number});
++    const attemptJobs = fixture.attempt_jobs[String(params.attempt_number)];
++    if (attemptJobs) return attemptJobs;
++    if (params.run_id === 100 && params.attempt_number === fixture.run.run_attempt) {
++      return fixture.jobs;
++    }
++    return fixture.historical_jobs ?? [{name: 'pytest', conclusion: 'failure'}];
++  }
++}, pulls: {get: async () => ({data: {state: 'open', draft: false,
++  head: {sha: 'current-head', ref: 'codex/issue-7', repo: {full_name: 'stranske/fixture'}},
++  labels: fixture.pr_labels, body: fixture.pr_body}})},
++issues: {addLabels: async (params) => labels.push(...params.labels),
++  createComment: async (params) => comments.push(params.body)}}};
++const withRetry = (fn) => fn(github);
++const paginateWithRetry = (...args) => {
++  const params = args.pop(); const method = args.pop(); return method(params);
++};
++const requireStub = (name) => {
++  if (name === 'fs') return {existsSync: () => true};
++  if (name.endsWith('github-api-with-retry.js')) return {
++    withRetry, paginateWithRetry,
++    createTokenAwareRetry: async () => ({withRetry, paginateWithRetry})};
++  if (name.endsWith('agent_registry.js')) return {
++    loadAgentRegistry: () => ({agents: {codex: {}}}), resolveAgentFromLabels: () => 'codex'};
++  throw Error('Unexpected dependency: ' + name);
++};
++const AsyncFunction = Object.getPrototypeOf(async function(){}).constructor;
++await new AsyncFunction('require', 'github', 'context', 'core', process.env.SCRIPT)(
++  requireStub, github, context, core);
++if (output.stop_reason === 'max_attempts') {
++  const escalation = process.env.ESCALATION.replace(/\$\{\{([^}]+)\}\}/g, (_, expression) => {
++    const key = expression.match(/needs\.prepare\.outputs\.(\w+)/)?.[1];
++    if (!key) throw Error('Unexpected expression: ' + expression);
++    return expression.includes('toJSON') ? JSON.stringify(output[key]) : output[key];
++  });
++  await new AsyncFunction('require', 'github', 'context', 'core', escalation)(
++    requireStub, github, context, core);
++}
++console.log(JSON.stringify({output, labels, comments, attemptCalls}));
++"""
++    result = subprocess.run(
++        [NODE, "--input-type=module", "-e", harness],
++        cwd=tmp_path,
++        env={
++            **os.environ,
++            "FIXTURE": json.dumps(fixture),
++            "SCRIPT": script,
++            "ESCALATION": escalation,
++            "MANUAL_GATE_RUN_ID": "100",
++            "MANUAL_PR_NUMBER": "7",
++            "MANUAL_HEAD_SHA": "current-head",
++        },
++        text=True,
++        capture_output=True,
++        check=True,
++    )
++    return json.loads(result.stdout)
++
++
++@pytest.mark.parametrize("workflow", WORKFLOWS)
++@pytest.mark.parametrize("conclusion", ["cancelled", "skipped", "success", "neutral", ""])
++def test_cancelled_gate_never_escalates(workflow, tmp_path, conclusion):
++    result = execute(workflow, tmp_path, conclusion, history=["cancelled"] * 8)
++    assert result["output"]["should_run"] == "false"
++    assert result["output"]["attempts"] == "0"
++    assert "needs-human" not in result["labels"]
++    assert not result["comments"]
++
++
++@pytest.mark.parametrize("workflow", WORKFLOWS)
++@pytest.mark.parametrize("previous_runs", [0, 3, 8])
++def test_cancelled_only_head_never_exhausts_budget(workflow, tmp_path, previous_runs):
++    """Concurrency cancellations cannot spend the budget or latch keepalive shut."""
++    cancelled_jobs = [{"name": "pytest", "conclusion": "cancelled", "steps": []}]
++    result = execute(
++        workflow,
++        tmp_path,
++        "cancelled",
++        history=["cancelled"] * previous_runs,
++        jobs=cancelled_jobs,
++        historical_jobs=cancelled_jobs,
++    )
++    output = result["output"]
++    assert output["attempts"] == "0"
++    assert int(output["attempts"]) < int(output["max_attempts"])
++    assert output["stop_reason"] == "gate_not_failed"
++    assert output["should_run"] == "false"
++    assert "needs-human" not in result["labels"]
++    assert not result["comments"]
++
++
++@pytest.mark.parametrize("workflow", WORKFLOWS)
++@pytest.mark.parametrize("conclusion", ["failure", "timed_out"])
++def test_cancelled_history_does_not_spend_failure_budget(workflow, tmp_path, conclusion):
++    result = execute(
++        workflow, tmp_path, conclusion, history=["cancelled", "skipped", "success", "neutral"] * 4
++    )
++    assert result["output"]["should_run"] == "true"
++    assert result["output"]["attempts"] == "1"
++    assert "needs-human" not in result["labels"]
++
++
++@pytest.mark.parametrize("workflow", WORKFLOWS)
++def test_same_run_reruns_count_each_attempt(workflow, tmp_path):
++    """Re-run jobs increments run_attempt on the same workflow run id."""
++    failed_jobs = [{"name": "pytest", "conclusion": "failure", "steps": []}]
++    attempt_jobs = {str(i): failed_jobs for i in range(1, 5)}
++    result = execute(
++        workflow,
++        tmp_path,
++        history=[],
++        run_attempt=4,
++        attempt_jobs=attempt_jobs,
++    )
++    assert result["output"]["should_run"] == "false"
++    assert result["output"]["stop_reason"] == "max_attempts"
++    assert result["output"]["attempts"] == "4"
++    assert "gate attempts examined: 4" in result["comments"][0]
++
++
++@pytest.mark.parametrize("workflow", WORKFLOWS)
++@pytest.mark.parametrize("historical_failures", [0, 1, 3])
++@pytest.mark.parametrize("failure_conclusion", ["failure", "timed_out"])
++def test_same_run_mixed_attempts_spend_only_real_failure_budget(
++    workflow, tmp_path, historical_failures, failure_conclusion
++):
++    """Inspect each rerun, even when several attempts of that run spend no budget."""
++    failed_jobs = [{"name": "pytest", "conclusion": failure_conclusion, "steps": []}]
++    prior_jobs = [
++        [],
++        [{"name": "pytest", "conclusion": "cancelled"}],
++        [{"name": "pytest", "conclusion": "skipped"}],
++    ] + [failed_jobs] * historical_failures
++    result = execute(
++        workflow,
++        tmp_path,
++        failure_conclusion,
++        jobs=failed_jobs,
++        run_attempt=len(prior_jobs) + 1,
++        attempt_jobs={str(i): jobs for i, jobs in enumerate(prior_jobs, start=1)},
++    )
++    output = result["output"]
++    assert result["attemptCalls"] == [
++        {"run_id": 100, "attempt_number": i} for i in range(1, len(prior_jobs) + 1)
++    ]
++    assert output["attempts"] == str(historical_failures + 1)
++    exhausted = historical_failures + 1 > int(output["max_attempts"])
++    assert output["should_run"] == str(not exhausted).lower()
++    if exhausted:
++        assert output["stop_reason"] == "max_attempts"
++        assert result["labels"] == ["needs-human"]
++        assert "attempts with failing jobs: 4" in result["comments"][0]
++    else:
++        assert result["labels"] == []
++        assert result["comments"] == []
++
++
++@pytest.mark.parametrize("workflow", WORKFLOWS)
++@pytest.mark.parametrize("conclusion", ["failure", "timed_out"])
++def test_jobless_failure_does_not_latch_subsequent_rerun(workflow, tmp_path, conclusion):
++    """Carry label writes into the next evaluation to detect a persistent hold."""
++    first = execute(workflow, tmp_path, conclusion, jobs=[], pr_labels=[])
++    assert first["output"]["stop_reason"] == "no_failing_jobs"
++    assert first["output"]["should_run"] == "false"
++    assert first["labels"] == []
++    assert first["comments"] == []
++
++    second = execute(
++        workflow,
++        tmp_path,
++        conclusion,
++        jobs=[{"name": "pytest", "conclusion": conclusion, "steps": []}],
++        run_attempt=2,
++        attempt_jobs={"1": []},
++        pr_labels=[{"name": label} for label in first["labels"]],
++    )
++    assert second["output"]["should_run"] == "true"
++    assert second["output"]["attempts"] == "1"
++    assert second["labels"] == ["autofix:escalated"]
++    assert second["comments"] == []
++
++
++@pytest.mark.parametrize("workflow", WORKFLOWS)
++@pytest.mark.parametrize("conclusion", ["failure", "timed_out"])
++def test_jobless_gate_without_agent_label_does_not_add_escalated(workflow, tmp_path, conclusion):
++    result = execute(
++        workflow,
++        tmp_path,
++        conclusion,
++        jobs=[],
++        pr_labels=[],
++        pr_body="",
++    )
++    assert result["output"]["stop_reason"] == "no_failing_jobs"
++    assert result["output"]["should_run"] == "false"
++    assert "autofix:escalated" not in result["labels"]
++    assert not result["comments"]
++
++
++@pytest.mark.parametrize("workflow", WORKFLOWS)
++def test_real_failures_still_escalate(workflow, tmp_path):
++    result = execute(workflow, tmp_path, history=["failure", "timed_out", "failure"])
++    assert result["output"]["stop_reason"] == "max_attempts"
++    assert result["output"]["attempts"] == "4"
++    assert result["labels"] == ["needs-human"]
++    assert "attempts with failing jobs: 4" in result["comments"][0]
++
++
++@pytest.mark.parametrize("workflow", WORKFLOWS)
++def test_same_run_attempt_counting_mutation_is_detected(workflow, tmp_path, monkeypatch):
++    """Counting only unique run ids must break same-run rerun budgeting."""
++
++    def regression():
++        test_same_run_reruns_count_each_attempt(workflow, tmp_path)
++        test_same_run_mixed_attempts_spend_only_real_failure_budget(
++            workflow, tmp_path, 3, "failure"
++        )
++
++    regression()
++    original_read_text = Path.read_text
++    source = original_read_text(ROOT / workflow)
++    needle = "Number(gateRun.run_attempt) || 1"
++    assert source.count(needle) >= 1, "Update the mutation for run_attempt counting"
++    mutated = source.replace(needle, "1")
++
++    def read_mutated(path, *args, **kwargs):
++        if path == ROOT / workflow:
++            return mutated
++        return original_read_text(path, *args, **kwargs)
++
++    with monkeypatch.context() as mutation:
++        mutation.setattr(Path, "read_text", read_mutated)
++        with pytest.raises(AssertionError):
++            regression()
++
++    regression()
++
++
++@pytest.mark.parametrize("workflow", WORKFLOWS)
++@pytest.mark.parametrize("conclusion", ["failure", "timed_out"])
++@pytest.mark.parametrize(
++    "jobs",
++    [[]]
++    + [
++        [{"name": "pytest", "conclusion": value}]
++        for value in ("cancelled", "skipped", "success", "neutral")
++    ],
++)
++def test_jobless_gate_cannot_escalate_after_real_failures(workflow, tmp_path, conclusion, jobs):
++    result = execute(workflow, tmp_path, conclusion, history=["failure"] * 8, jobs=jobs)
++    assert result["output"]["stop_reason"] == "no_failing_jobs"
++    assert "needs-human" not in result["labels"]
++    assert not result["comments"]
++
++
++@pytest.mark.parametrize("workflow", WORKFLOWS)
++@pytest.mark.parametrize("conclusion", ["failure", "timed_out"])
++@pytest.mark.parametrize(
++    "historical_jobs",
++    [[]]
++    + [
++        [{"name": "pytest", "conclusion": value}]
++        for value in ("cancelled", "skipped", "success", "neutral")
++    ],
++)
++def test_jobless_historical_failures_do_not_consume_budget(
++    workflow, tmp_path, conclusion, historical_jobs
++):
++    """A failed run conclusion alone is insufficient evidence to spend the budget."""
++    result = execute(workflow, tmp_path, history=[conclusion] * 8, historical_jobs=historical_jobs)
++    assert result["output"]["should_run"] == "true"
++    assert result["output"]["attempts"] == "1"
++    assert "needs-human" not in result["labels"]
++    assert not result["comments"]
++
++
++@pytest.mark.parametrize("workflow", WORKFLOWS)
++@pytest.mark.parametrize(
++    "regression, argument, excluded_conclusion",
++    [
++        (test_cancelled_only_head_never_exhausts_budget, 8, "cancelled"),
++        (test_cancelled_history_does_not_spend_failure_budget, "failure", "cancelled"),
++        (test_cancelled_history_does_not_spend_failure_budget, "failure", "skipped"),
++    ],
++)
++def test_nonfailure_counting_mutation_is_detected(
++    workflow, tmp_path, monkeypatch, regression, argument, excluded_conclusion
++):
++    """Counting cancelled or skipped must break the regression, without editing YAML."""
++    regression(workflow, tmp_path, argument)
++
++    original_read_text = Path.read_text
++    counted = "['failure', 'timed_out'].includes(String(value || '').toLowerCase())"
++
++    source = original_read_text(ROOT / workflow)
++    assert source.count(counted) == 1, "Update the mutation for the workflow predicate"
++    mutated = source.replace(
++        counted, counted.replace("'failure'", f"'failure', '{excluded_conclusion}'")
++    )
++
++    def read_mutated(path, *args, **kwargs):
++        if path == ROOT / workflow:
++            return mutated
++        return original_read_text(path, *args, **kwargs)
++
++    with monkeypatch.context() as mutation:
++        mutation.setattr(Path, "read_text", read_mutated)
++        with pytest.raises(AssertionError):
++            regression(workflow, tmp_path, argument)
++
++    regression(workflow, tmp_path, argument)
++
++
++@pytest.mark.parametrize("workflow", WORKFLOWS)
++@pytest.mark.parametrize("historical_failures", [0, 3])
++def test_timed_out_jobs_enable_autofix_and_exhaust_budget(workflow, tmp_path, historical_failures):
++    timed_out_jobs = [
++        {
++            "name": "pytest",
++            "conclusion": "timed_out",
++            "steps": [{"name": "Run tests", "conclusion": "timed_out"}],
++        }
++    ]
++    result = execute(
++        workflow,
++        tmp_path,
++        "failure",
++        history=["failure"] * historical_failures,
++        jobs=timed_out_jobs,
++        historical_jobs=timed_out_jobs,
++    )
++    output = result["output"]
++    assert output["attempts"] == str(historical_failures + 1)
++    assert output["trigger_job"] == "pytest"
++    assert output["trigger_step"] == "Run tests"
++    if historical_failures:
++        assert output["stop_reason"] == "max_attempts"
++        assert output["should_run"] == "false"
++        assert result["labels"] == ["needs-human"]
++        assert "attempts with failing jobs: 4" in result["comments"][0]
++    else:
++        assert output["should_run"] == "true"
++        assert not result["labels"]
++        assert not result["comments"]
++
++
++@pytest.mark.parametrize(
++    "workflow, evidence",
++    [(workflow, "evaluator") for workflow in WORKFLOWS]
++    + [
++        (workflow, evidence)
++        for workflow in (
++            ".github/workflows/autofix.yml",
++            "templates/consumer-repo/.github/workflows/autofix.yml",
++        )
++        for evidence in ("check", "job")
++    ],
++)
++def test_timed_out_eligibility_mutation_is_detected(workflow, evidence, tmp_path, monkeypatch):
++    """Remove timeout eligibility in memory, require failure, then verify restoration."""
++
++    def regression():
++        if evidence == "evaluator":
++            test_timed_out_jobs_enable_autofix_and_exhaust_budget(workflow, tmp_path, 0)
++            test_timed_out_jobs_enable_autofix_and_exhaust_budget(workflow, tmp_path, 3)
++        else:
++            test_autofix_lint_failure_eligibility(
++                workflow, tmp_path, evidence, "lint-ruff", "timed_out"
++            )
++
++    regression()
++    original_read_text = Path.read_text
++    source = original_read_text(ROOT / workflow)
++    predicate = (
++        "['failure', 'timed_out'].includes(String(value || '').toLowerCase())"
++        if evidence == "evaluator"
++        else "['failure', 'timed_out'].includes(("
++        + ("cr" if evidence == "check" else "job")
++        + ".conclusion || '').toLowerCase())"
++    )
++    assert source.count(predicate) == 1, "Update the mutation for the workflow predicate"
++    mutated = source.replace(predicate, predicate.replace("'failure', 'timed_out'", "'failure'"))
++
++    def read_mutated(path, *args, **kwargs):
++        if path == ROOT / workflow:
++            return mutated
++        return original_read_text(path, *args, **kwargs)
++
++    with monkeypatch.context() as mutation:
++        mutation.setattr(Path, "read_text", read_mutated)
++        with pytest.raises(AssertionError):
++            regression()
++
++    regression()
+diff --git a/tests/workflows/test_github_api_retry_standard.py b/tests/workflows/test_github_api_retry_standard.py
+index 1ef5a3f3a..970e7751f 100644
+--- a/tests/workflows/test_github_api_retry_standard.py
++++ b/tests/workflows/test_github_api_retry_standard.py
+@@ -5,6 +5,7 @@
+ from pathlib import Path
+ from typing import Any
+ 
++import pytest
+ import yaml
+ 
+ REPO_ROOT = Path(__file__).resolve().parents[2]
+@@ -83,9 +84,31 @@ def _iter_checkout_sparse_paths(workflow: dict[str, Any]) -> Iterable[tuple[str,
+             yield step.get("name", "<unnamed>"), paths
+ 
+ 
++def _is_retry_wrapped_alias(script: str, reference_start: int) -> bool:
++    """Recognize a const method alias used only for probing and retry pagination."""
++    declaration = re.search(r"\bconst\s+(\w+)\s*=\s*$", script[:reference_start])
++    method = re.match(r"github\.rest\.\w+\.\w+\s*;", script[reference_start:])
++    if not declaration or not method:
++        return False
++    alias = re.escape(declaration[1])
++    remainder = script[reference_start + method.end() :]
++    wrapped = False
++    for usage in re.finditer(rf"\b{alias}\b", remainder):
++        prefix = remainder[: usage.start()]
++        if re.search(
++            r"\bpaginateWith(?:Retry|Backoff)\s*\(\s*(?:github\s*,\s*)?$", prefix
++        ) and re.match(r"\s*,", remainder[usage.end() :]):
++            wrapped = True
++        elif not re.search(r"\btypeof\s+$", prefix):
++            return False
++    return wrapped
++
++
+ def _rest_calls_missing_retry(script: str, step_name: str, workflow_path: Path) -> list[str]:
+     failures: list[str] = []
+     for match in re.finditer(r"github\.rest\.", script):
++        if _is_retry_wrapped_alias(script, match.start()):
++            continue
+         window_start = max(0, match.start() - 250)
+         window = script[window_start : match.start()]
+         if not any(helper in window for helper in RETRY_HELPERS):
+@@ -94,6 +117,46 @@ def _rest_calls_missing_retry(script: str, step_name: str, workflow_path: Path)
+     return failures
+ 
+ 
++@pytest.mark.parametrize(
++    "call",
++    [
++        "paginateWithRetry(listAttemptJobs, {})",
++        "paginateWithRetry(github, listAttemptJobs, {})",
++        "paginateWithBackoff(listAttemptJobs, {})",
++        "paginateWithBackoff(github, listAttemptJobs, {})",
++    ],
++)
++def test_rest_method_alias_passed_to_retry_pagination(call: str) -> None:
++    script = (
++        "const listAttemptJobs = github.rest.actions.listJobsForWorkflowRunAttempt;\n"
++        "if (typeof listAttemptJobs === 'function') {\n"
++        f"  await {call};\n"
++        "}"
++    )
++    assert _rest_calls_missing_retry(script, "evaluate", Path("fixture.yml")) == []
++
++
++@pytest.mark.parametrize(
++    "script",
++    [
++        "await github.rest.actions.listJobsForWorkflowRunAttempt({});",
++        "const listAttemptJobs = github.rest.actions.listJobsForWorkflowRunAttempt;",
++        "const listAttemptJobs = github.rest.actions.listJobsForWorkflowRunAttempt;\n"
++        "await listAttemptJobs({});",
++        "const listAttemptJobs = github.rest.actions.listJobsForWorkflowRunAttempt;\n"
++        "await paginateWithRetry(listAttemptJobs, {});\nawait listAttemptJobs({});",
++        "const listAttemptJobs = github.rest.actions.listJobsForWorkflowRunAttempt;\n"
++        "await paginateWithRetry(otherMethod, {});",
++        "const listAttemptJobs = github.rest.actions.listJobsForWorkflowRunAttempt;\n"
++        "await paginateWithRetry(listAttemptJobs({}), {});",
++    ],
++)
++def test_rest_calls_and_aliases_without_retry_are_reported(script: str) -> None:
++    assert _rest_calls_missing_retry(script, "evaluate", Path("fixture.yml")) == [
++        "fixture.yml::evaluate line 1"
++    ]
++
++
+ def _paginate_calls(script: str, step_name: str, workflow_path: Path) -> list[str]:
+     failures: list[str] = []
+     for match in re.finditer(r"github\.paginate\b", script):

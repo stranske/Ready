@@ -1,0 +1,24 @@
+{
+  "body": "Identical text stored for two managers previously kept only the first manager, making the document disappear from the second manager's filtered retrieval. Preserve every explicit association in `document_managers` while retaining one stable document ID and the original scalar owner for compatibility. Unified search lists the associated manager names in a single document result.\n\nCloses #1669\n\n## Tasks\n\n- [x] Add Alembic migration 022 and mirror the table/index/backfill in schema.sql; backfill only known non-null owners.\n- [x] Persist idempotent document-manager links for new and deduplicated content on SQLite and PostgreSQL, including initially unowned content.\n- [x] Use associations for manager-filtered embeddings retrieval and both unified-search database paths without duplicate rows.\n- [x] Cover shared content, unrelated managers, repeated associations, stable IDs, backfill, migration reuse and downgrade.\n\n## Acceptance Criteria\n\n- [x] Python 3.12.2: `python -m pytest tests/test_embeddings.py tests/test_document_managers_migration.py tests/test_search.py tests/test_schema.py -o addopts='' -q`: **76 passed, no skips**. Ran with USE_SIMPLE_EMBED=1 and DOCUMENT_TEST_POSTGRES_URL pointing to a disposable local PostgreSQL 18/pgvector container. Tests exercise SQLite and actual PostgreSQL migration, association storage, filtered vector retrieval, unified search, repeat upgrade and downgrade.\n- [x] Deliberate-break gate: disabled explicit association insertion, including the hash-conflict path, in embeddings.py. `test_shared_document_preserves_each_manager` failed in both parameters; the original-owner case fails because manager 2 has no result. Restored exact source bytes and reran the full gate: **76 passed**. Raw evidence retained in a durable PR comment.\n\n## Validation\n\nRuff, Black (target py312), embeddings.py mypy, and git diff --check pass. Full touched-source mypy reports two existing Pydantic fallback assignment errors at api/search.py:15; reproduced unchanged against origin/main. No new mypy errors were introduced.\n\nThe migration preserves historical scalar owners and never infers associations from text similarity. Deploy migration 022 before PostgreSQL application code. SQLite lightweight stores create/backfill the same association table as needed.\n\n\n<!-- This is an auto-generated comment: release notes by coderabbit.ai -->\n\n## Summary by CodeRabbit\n\n- **New Features**\n  - Documents can now be associated with multiple managers.\n  - Document searches display all associated manager names and support filtering by manager.\n  - Existing document ownership is preserved during the transition to shared manager associations.\n\n- **Bug Fixes**\n  - Prevented duplicate document-manager associations when storing or migrating documents.\n\n- **Tests**\n  - Added coverage for migration, shared documents, manager filtering, and cross-database behavior.\n\n<!-- end of auto-generated comment: release notes by coderabbit.ai -->",
+  "closingIssuesReferences": [
+    {
+      "id": "I_kwDOO4LcjM8AAAABRQx27g",
+      "number": 1669,
+      "repository": {
+        "id": "R_kgDOO4LcjA",
+        "name": "Manager-Database",
+        "owner": {
+          "id": "MDQ6VXNlcjIzMDQ2MzIy",
+          "login": "stranske"
+        }
+      },
+      "url": "https://github.com/stranske/Manager-Database/issues/1669"
+    }
+  ],
+  "mergeCommit": {
+    "oid": "25e497f834e10333b7f7f830bbe8c57c3ea7b974"
+  },
+  "mergedAt": "2026-09-15T06:50:47Z",
+  "number": 1678,
+  "title": "fix(documents): preserve manager links across content deduplication"
+}

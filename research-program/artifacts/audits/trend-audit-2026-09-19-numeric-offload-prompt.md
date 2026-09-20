@@ -1,0 +1,5 @@
+Read-only audit of `stranske/Trend_Model_Project` at `[LOCAL_HOME]/.codex/automations/research-program/[LOCAL_WORKSPACE]/Trend_Model_Project`, current commit `a349d2a3d3ef845509376570fb7db37381f518e3`.
+
+Scope ONLY these paths: `src/trend_analysis/risk.py`, `src/trend_analysis/metrics/`, `src/trend_analysis/weights/`, `src/trend_analysis/reporting/`, and their directly corresponding tests. Do not read other paths. Do not edit, commit, push, or create a PR.
+
+Inspect actual code for distinct correctness defects, especially non-finite numeric inputs, invalid bounds, or reporting values that can affect a user. Treat `stranske/Trend_Model_Project` issues #6024 and #6025 as open duplicate exclusions; do not restate them. Cite every candidate using paths relative to the target repo and exact line numbers. For each candidate give a concrete minimal reproduction, current test coverage gap, severity, and a proposed named test gate. Explicitly refute weak candidates. Return concise Markdown only; no progress updates.

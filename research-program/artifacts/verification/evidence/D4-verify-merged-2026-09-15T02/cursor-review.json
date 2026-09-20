@@ -1,0 +1,413 @@
+[
+  {
+    "repo": "Workflows",
+    "pr": 3425,
+    "issue": null,
+    "merge_sha": "f4d3dea0022d976121c1317bebb398fa3936c06c",
+    "verdict": "VERIFIED",
+    "criteria": [
+      {
+        "id": "revert-omitted-repo-decision",
+        "text": "Revert travel-window override: defaults.omitted_repo_decision returns to defer after 2026-09-04..09-14 window (per #3351 window_note)",
+        "status": "MET",
+        "evidence": [
+          "config/repo_review_feedback.json:9-13 (diff.patch) — omitted_repo_decision set to defer; window_note replaced by history_note documenting revert"
+        ]
+      },
+      {
+        "id": "record-window-history",
+        "text": "Record the temporary approve window in config for auditability",
+        "status": "MET",
+        "evidence": [
+          "config/repo_review_feedback.json:13 (diff.patch) — history_note cites Workflows #3351 and revert date"
+        ]
+      }
+    ],
+    "gate": {
+      "named": "Gate / summary (config-only; no issue-named test gate)",
+      "merge_commit": "SUCCESS",
+      "evidence": [
+        "https://github.com/stranske/Workflows/actions/runs/34781762966 — summary SUCCESS",
+        "pr.json statusCheckRollup — gate SUCCESS, Gate / gate SUCCESS"
+      ],
+      "would_fail_without_change": "n/a — JSON config edit only"
+    },
+    "owner_blockers": [],
+    "followup_needed": false,
+    "notes": "No linked issue (closingIssuesReferences empty). Verification is against the implied post-window revert described in #3351 and PR body. Copilot review (https://github.com/stranske/Workflows/pull/3425) flagged a minor history_note boundary wording concern; not an acceptance failure for the config revert itself. Confidence: high."
+  },
+  {
+    "repo": "Workflows",
+    "pr": 3437,
+    "issue": null,
+    "merge_sha": "35bdde2939126d1a2ccceafa54117b087cad8cf9",
+    "verdict": "VERIFIED",
+    "criteria": [
+      {
+        "id": "absolute-program-doc-link",
+        "text": "Replace broken relative research-backplane-contract.md link with absolute GitHub URL and Workflows-only note (same pattern as #3354 siblings)",
+        "status": "MET",
+        "evidence": [
+          "docs/contracts/tracked-variable-v1.md:10 (diff.patch) — relative ./research-backplane-contract.md replaced with https://github.com/stranske/Workflows/blob/main/docs/contracts/research-backplane-contract.md plus parenthetical"
+        ]
+      }
+    ],
+    "gate": {
+      "named": "Gate docs guard / summary (docs-only fast-pass)",
+      "merge_commit": "SUCCESS",
+      "evidence": [
+        "https://github.com/stranske/Workflows/pull/3437#issuecomment-5658110646 — gate-docs-only fast-pass",
+        "pr.json statusCheckRollup — docs guard SUCCESS, summary SUCCESS"
+      ],
+      "would_fail_without_change": "Collab-Admin docs-link test would remain red on synced copy until delivery; no Workflows unit test named in PR"
+    },
+    "owner_blockers": [],
+    "followup_needed": false,
+    "notes": "No linked issue; references #3354 precedent only. Narrow docs/supporting PR, not a tracked issue closure. Confidence: high."
+  },
+  {
+    "repo": "Workflows",
+    "pr": 3432,
+    "issue": 3431,
+    "merge_sha": "5740e81cabc3fe436cd6da476a567ba0b0e88f71",
+    "verdict": "VERIFIED",
+    "criteria": [
+      {
+        "id": "task-parse-catalog",
+        "text": "Update parse_catalog to accept models from all publishers on GitHub Models",
+        "status": "MET",
+        "evidence": [
+          "tools/discover_model_catalog.py:136-140 (diff.patch) — publisher == OpenAI filter removed; retains id and capabilities guards"
+        ]
+      },
+      {
+        "id": "task-tests",
+        "text": "Add unit tests covering multi-publisher GitHub Models catalog payloads",
+        "status": "MET",
+        "evidence": [
+          "tests/tools/test_discover_model_catalog.py:40-52 — parametrized publishers OpenAI/Meta/Mistral AI/Microsoft/Cohere",
+          "tests/tools/test_discover_model_catalog.py:55-78 — CLI fixture reports meta/new and cohere/new without mutating registry"
+        ]
+      },
+      {
+        "id": "ac-cli-parse",
+        "text": "python tools/discover_model_catalog.py parses multi-publisher catalog entries without error",
+        "status": "MET",
+        "evidence": [
+          "tests/tools/test_discover_model_catalog.py:55-78 — discovery.main on fixture payload exits 1 for drift (documented) not parse error"
+        ]
+      },
+      {
+        "id": "ac-pytest",
+        "text": "pytest tests/tools/test_discover_model_catalog.py passes all test cases",
+        "status": "MET",
+        "evidence": [
+          "PR body — python3 -m pytest tests/tools/test_discover_model_catalog.py -q: 19 passed",
+          "pr.json statusCheckRollup — python ci / summary SUCCESS on merge commit"
+        ]
+      },
+      {
+        "id": "ac-deliberate-break",
+        "text": "Deliberate-break: restoring OpenAI-only publisher filter fails multi-publisher fixtures; revert restores pass",
+        "status": "MET",
+        "evidence": [
+          "PR body — publisher-predicate mutation yields 6 failures; restoration passes",
+          "tests/tools/test_discover_model_catalog.py:40-52 — multi-publisher assertions would fail if publisher filter restored"
+        ]
+      }
+    ],
+    "gate": {
+      "named": "pytest tests/tools/test_discover_model_catalog.py",
+      "merge_commit": "SUCCESS",
+      "evidence": [
+        "https://github.com/stranske/Workflows/actions/runs/34799735012 — Gate summary SUCCESS",
+        "https://github.com/stranske/Workflows/issues/3431#issuecomment-5658989561 — owner closer audit cites 19-test pass and deliberate-break"
+      ],
+      "would_fail_without_change": true
+    },
+    "owner_blockers": [],
+    "followup_needed": false,
+    "notes": "Extra timestamp-hardening (tools/discover_model_catalog.py:123-128) is in scope and non-vacuous. Live GitHub Models HTTP 410 noted in PR body — fixture CLI path satisfies issue AC. Issue #3431 closed by owner after provider PASS. Confidence: high."
+  },
+  {
+    "repo": "Workflows",
+    "pr": 3436,
+    "issue": 3433,
+    "merge_sha": "f65449d1d1b0074bb169792f30680fd47073762c",
+    "verdict": "PARTIAL",
+    "criteria": [
+      {
+        "id": "task-productivity-distinction",
+        "text": "Distinguish productive completion from unproductive; only productive completion burns (head_sha, provider) key",
+        "status": "MET",
+        "evidence": [
+          "scripts/runner_lib/core.py:1173-1206 — productive flag and unproductive_completions tally on record_completion",
+          "scripts/runner_lib/core.py:1209-1230 — should_dispatch retries when productive is False",
+          ".github/workflows/agents-keepalive-loop.yml:14-60 — Measure runner productivity compares PR head to dispatched SHA",
+          "templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml:386-432 — consumer copy wired"
+        ]
+      },
+      {
+        "id": "task-surface-numbers",
+        "text": "Surface prior commits, prior task deltas, and drain path when refusing duplicate-completed",
+        "status": "NOT_MET",
+        "evidence": [
+          "scripts/runner_lib/core.py:1226-1229 — drainable mentions only 'a new head commit; unproductive retries exhausted (N/2)'",
+          "No diff lines emit prior commit count or tasks_completed_delta in refusal output"
+        ]
+      },
+      {
+        "id": "task-bounded-escape",
+        "text": "Bounded escape hatch: after N consecutive unproductive completions on same head, allow re-dispatch",
+        "status": "MET",
+        "evidence": [
+          "scripts/runner_lib/core.py:116 — UNPRODUCTIVE_COMPLETION_RETRY_LIMIT = 2",
+          "scripts/runner_lib/core.py:1209-1219 — retry-unproductive-completion while within limit"
+        ]
+      },
+      {
+        "id": "task-regression-file",
+        "text": "Regression in tests/workflows/test_keepalive_dispatch_debounce.py",
+        "status": "NOT_MET",
+        "evidence": [
+          "diff.patch — file tests/workflows/test_keepalive_dispatch_debounce.py absent",
+          "tests/scripts/test_runner_lib.py:483-500 — equivalent logic tested under different path"
+        ]
+      },
+      {
+        "id": "ac-named-pytest",
+        "text": "Run pytest tests/workflows/test_keepalive_dispatch_debounce.py -q; retain output in PR body",
+        "status": "NOT_MET",
+        "evidence": [
+          "PR body auto-status-summary still unchecked for named gate",
+          "No PR-body pytest output for tests/workflows/test_keepalive_dispatch_debounce.py"
+        ]
+      },
+      {
+        "id": "ac-zero-output-redispatch",
+        "text": "completed dispatch with zero commits and zero task deltas yields should_dispatch: true on next evaluation",
+        "status": "MET",
+        "evidence": [
+          "tests/scripts/test_runner_lib.py:483-500 — test_unproductive_completion_is_retried_on_the_same_head asserts should_dispatch True with produced_work=False"
+        ]
+      },
+      {
+        "id": "ac-deliberate-break",
+        "text": "Deliberate-break: revert productivity check so any completed record burns key → test must FAIL → restore",
+        "status": "NOT_MET",
+        "evidence": [
+          "PR body — deliberate-break checkbox unchecked; no fail/pass transcript in PR body or comments"
+        ]
+      },
+      {
+        "id": "latched-gate-after-exhaustion",
+        "text": "After retries exhausted, refusal drainable still requires new head commit (reinstates #3433 latch two runs later)",
+        "status": "NOT_MET",
+        "evidence": [
+          "scripts/runner_lib/core.py:1220-1229 — duplicate-completed drainable is 'a new head commit; unproductive retries exhausted'",
+          "https://github.com/stranske/Workflows/issues/3433#issuecomment-5659019906 — owner reopened #3433 after merge citing incomplete disposition"
+        ]
+      }
+    ],
+    "gate": {
+      "named": "pytest tests/workflows/test_keepalive_dispatch_debounce.py (issue-specified; not present)",
+      "merge_commit": "SUCCESS",
+      "evidence": [
+        "pr.json statusCheckRollup — Gate / gate SUCCESS on merge commit f65449d1",
+        "tests/scripts/test_runner_lib.py exercises core debounce logic but is not the named gate file"
+      ],
+      "would_fail_without_change": "partial — runner_lib tests would fail if productivity retry removed; named gate file missing"
+    },
+    "owner_blockers": [
+      "https://github.com/stranske/Workflows/issues/3433#issuecomment-5659019906 — owner reopened #3433 after #3436 merge; verify:compare and review disposition pending at time of collection",
+      "Owner identified #3436 exhausted-retry path as latched-gate defect; correction landed separately in #3440"
+    ],
+    "followup_needed": true,
+    "notes": "Core zero-output retry works and is non-vacuously tested, but issue-named gate file absent, task-2 reporting incomplete, deliberate-break undocumented, and post-exhaustion refusal still latched on head commit. #3433 remains OPEN. Do not treat PR gate SUCCESS as full issue delivery. Confidence: high on gaps; medium on whether #3440 fully remedies #3433 when taken together (parent should adjudicate)."
+  },
+  {
+    "repo": "Workflows",
+    "pr": 3439,
+    "issue": 3438,
+    "merge_sha": "2b2bfd6754c608ca2d6b23169f77671990e97e5b",
+    "verdict": "PARTIAL",
+    "criteria": [
+      {
+        "id": "task-sysctl-repair",
+        "text": "Best-effort sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0 before codex (workspace-write scoped)",
+        "status": "MET",
+        "evidence": [
+          ".github/workflows/reusable-codex-run.yml:33-42 (diff.patch) — sysctl guarded on SANDBOX=workspace-write and userns restriction == 1"
+        ]
+      },
+      {
+        "id": "task-network-fallback",
+        "text": "Fallback retry once with sandbox_workspace_write.network_access=true when bwrap fails",
+        "status": "MET",
+        "evidence": [
+          ".github/workflows/reusable-codex-run.yml:66-77 — bounded SANDBOX_NETWORK_FALLBACK_USED guard and --config sandbox_workspace_write.network_access=true"
+        ]
+      },
+      {
+        "id": "task-nonzero-on-bwrap",
+        "text": "bwrap: line in session output forces non-zero exit so loop error handling engages",
+        "status": "MET",
+        "evidence": [
+          ".github/workflows/reusable-codex-run.yml:79-90 — forces CODEX_EXIT=1 when pattern matches",
+          "tests/workflows/test_codex_sandbox_startup_failure.py:223-231 — test_a_failed_sandbox_cannot_report_success reads workflow body"
+        ]
+      },
+      {
+        "id": "ac-consumer-commit",
+        "text": "A codex keepalive run in a consumer repo executes shell commands and produces a commit",
+        "status": "NOT_MET",
+        "evidence": [
+          "Squash diff contains workflow + unit tests only; no consumer-repo commit in merge diff",
+          "https://github.com/stranske/Workflows/issues/3438#issuecomment-5659457903 — owner cites Ready #569 commits baf08877 and f96303e9 as runtime evidence (not reproduced in this pass)"
+        ]
+      },
+      {
+        "id": "ac-failure-reporting",
+        "text": "A run whose sandbox fails to start reports failure, not success",
+        "status": "MET",
+        "evidence": [
+          ".github/workflows/reusable-codex-run.yml:82-88",
+          "tests/workflows/test_codex_sandbox_startup_failure.py:167-170 — detects real stderr line",
+          "tests/workflows/test_codex_sandbox_startup_failure.py:173-184 — does not fire on agent prose quoting error"
+        ]
+      }
+    ],
+    "gate": {
+      "named": "tests/workflows/test_codex_sandbox_startup_failure.py (workflow-derived; issue had no explicit pytest gate)",
+      "merge_commit": "SUCCESS",
+      "evidence": [
+        "pr.json statusCheckRollup — Gate / gate SUCCESS, Keepalive E2E SUCCESS on merge commit",
+        "PR CI includes Selftest: Reusables per selection.json body"
+      ],
+      "would_fail_without_change": true
+    },
+    "owner_blockers": [],
+    "followup_needed": true,
+    "notes": "Workflow mechanism and failure-reporting tests are solid and non-vacuous. Runtime AC requiring a consumer commit is not provable from squash diff alone; owner-supplied Ready #569 evidence is plausible but outside this verifier's independent reproduction. Issue #3438 closed by owner accepting that evidence. Confidence: high on code tasks; medium on consumer-runtime AC."
+  },
+  {
+    "repo": "Workflows",
+    "pr": 3424,
+    "issue": 3389,
+    "merge_sha": "3ecbe0ef73564827372ae9c44a8b4c163dbc8c08",
+    "verdict": "PARTIAL",
+    "criteria": [
+      {
+        "id": "task-add-test",
+        "text": "Add unit test in tests/scripts/test_issue_format.py covering untracked branch conditions in issue_format.py",
+        "status": "MET",
+        "evidence": [
+          "tests/scripts/test_issue_format.py:19-64 (diff.patch) — test_cli_checks_addressability_in_working_directory parametrizes file vs stdin and local evidence true/false",
+          ".github/scripts/issue_format.py:617-627 — main() argv-vs-stdin branch and cwd-based addressability exercised"
+        ]
+      },
+      {
+        "id": "task-coverage-increase",
+        "text": "Run pytest tests/scripts/test_issue_format.py and verify coverage increase",
+        "status": "NOT_MET",
+        "evidence": [
+          "PR body — no --cov output or before/after line coverage figures",
+          "diff.patch — test additions only; no coverage artifact"
+        ]
+      },
+      {
+        "id": "ac-pytest-exit-0",
+        "text": "pytest tests/scripts/test_issue_format.py exits 0 on Workflows main",
+        "status": "MET",
+        "evidence": [
+          "pr.json statusCheckRollup — github scripts tests SUCCESS, summary SUCCESS on merge commit"
+        ]
+      },
+      {
+        "id": "ac-line-coverage",
+        "text": "Line coverage of .github/scripts/issue_format.py maintained or improved",
+        "status": "NOT_MET",
+        "evidence": [
+          "No coverage report in PR body, issue comments, or diff"
+        ]
+      },
+      {
+        "id": "ac-fresh-clone",
+        "text": "python -m pytest tests/scripts/test_issue_format.py -q runs cleanly in fresh clone",
+        "status": "MET",
+        "evidence": [
+          "Gate github scripts tests SUCCESS on merge commit (CI fresh checkout)"
+        ]
+      }
+    ],
+    "gate": {
+      "named": "pytest tests/scripts/test_issue_format.py",
+      "merge_commit": "SUCCESS",
+      "evidence": [
+        "https://github.com/stranske/Workflows/actions/runs/34781397909 — Gate SUCCESS per PR body",
+        "pr.json statusCheckRollup — summary SUCCESS"
+      ],
+      "would_fail_without_change": true
+    },
+    "owner_blockers": [],
+    "followup_needed": true,
+    "notes": "PR body claims Closes #3389 but issue #3389 remains OPEN in cached issue JSON. Tests are substantive (assert exit codes and stderr/stdout contracts), not vacuous. Coverage AC and task-2 lack audit proof. Confidence: high on test substance; high on missing coverage evidence."
+  },
+  {
+    "repo": "Workflows",
+    "pr": 3440,
+    "issue": null,
+    "merge_sha": "a5908e2624eefd374d7582bbd600186a51ab54fe",
+    "verdict": "VERIFIED",
+    "criteria": [
+      {
+        "id": "cooldown-not-latch",
+        "text": "Expire unproductive retry allowance into 30-minute cooldown cleared by time alone, not head-commit-only refusal",
+        "status": "MET",
+        "evidence": [
+          "scripts/runner_lib/core.py:84 — UNPRODUCTIVE_COMPLETION_COOLDOWN_SECONDS = 30 * 60",
+          "scripts/runner_lib/core.py:1126-1164 — unproductive-cooldown vs retry-after-unproductive-cooldown paths",
+          "tests/scripts/test_runner_lib.py:206-230 — drainable uses 'time: retry at' and asserts 'head commit' not in drainable"
+        ]
+      },
+      {
+        "id": "unmeasurable-fails-open",
+        "text": "Unparseable/missing completed_at lets dispatch through (fail toward motion)",
+        "status": "MET",
+        "evidence": [
+          "scripts/runner_lib/core.py:1096-1111 — _unproductive_retry_available_at returns None on bad timestamp",
+          "tests/scripts/test_runner_lib.py:263-277 — test_unmeasurable_cooldown_fails_toward_motion"
+        ]
+      },
+      {
+        "id": "docs-gap",
+        "text": "Document debounce productivity/cooldown behavior (#3436 shipped without docs)",
+        "status": "MET",
+        "evidence": [
+          "docs/keepalive/GoalsAndPlumbing.md:10-50 (diff.patch) — decision table and cooldown rationale"
+        ]
+      },
+      {
+        "id": "deliberate-break",
+        "text": "Deliberate-break: cooldown never expire fails named tests; restore passes",
+        "status": "MET",
+        "evidence": [
+          "PR body Verification section — cites test_dispatch_resumes_once_the_cooldown_has_elapsed and test_unmeasurable_cooldown_fails_toward_motion",
+          "tests/scripts/test_runner_lib.py:241-277 — tests present in diff"
+        ]
+      }
+    ],
+    "gate": {
+      "named": "tests/scripts/test_runner_lib.py (PR-stated: 1122 passed with tests/workflows)",
+      "merge_commit": "SUCCESS",
+      "evidence": [
+        "PR body — tests/scripts/test_runner_lib.py + tests/workflows: 1122 passed, 10 skipped",
+        "pr.json statusCheckRollup — summary SUCCESS on merge commit a5908e2"
+      ],
+      "would_fail_without_change": true
+    },
+    "owner_blockers": [],
+    "followup_needed": false,
+    "notes": "Follow-up/correction PR (workflow-source:local_request); does not close an issue. Corrects #3436 latched-gate defect identified by owner. #3433 still OPEN in cache — parent should judge whether #3436+#3440 jointly satisfy #3433. This PR's stated correction scope is delivered. Confidence: high."
+  }
+]

@@ -1,0 +1,141 @@
+src/trend_analysis/config/model.py:614-623
+614:     @field_validator("floor_vol", mode="before")
+615:     @classmethod
+616:     def _validate_floor(cls, value: Any) -> float:
+617:         try:
+618:             floor = float(value)
+619:         except (TypeError, ValueError) as exc:  # pragma: no cover - defensive
+620:             raise ValueError("vol_adjust.floor_vol must be numeric.") from exc
+621:         if floor < 0:
+622:             raise ValueError("vol_adjust.floor_vol cannot be negative.")
+623:         return floor
+
+src/trend_analysis/risk.py:130-135
+130:     vol = latest_vol.astype(float).replace(0.0, np.nan)
+131:     if floor_vol is not None and floor_vol > 0:
+132:         vol = vol.clip(lower=float(floor_vol))
+133:     factors = pd.Series(target, index=vol.index, dtype=float).div(vol)
+134:     factors = factors.replace([np.inf, -np.inf], 0.0).fillna(0.0)
+135:     return factors
+
+tests/test_trend_analysis_config_model.py:419-445
+419: def test_risk_settings_validation() -> None:
+420:     result = config_model.RiskSettings.model_validate(
+421:         {
+422:             "target_vol": "0.2",
+423:             "floor_vol": "0.01",
+424:             "warmup_periods": "3",
+425:         }
+426:     )
+427: 
+428:     assert result.target_vol == pytest.approx(0.2)
+429:     assert result.floor_vol == pytest.approx(0.01)
+430:     assert result.warmup_periods == 3
+431: 
+432: 
+433: def test_risk_settings_rejects_invalid_values() -> None:
+434:     with pytest.raises(ValueError, match="must be greater than zero"):
+435:         config_model.RiskSettings.model_validate(
+436:             {"target_vol": 0, "floor_vol": 0.02, "warmup_periods": 1}
+437:         )
+438:     with pytest.raises(ValueError, match="cannot be negative"):
+439:         config_model.RiskSettings.model_validate(
+440:             {"target_vol": 0.1, "floor_vol": -0.1, "warmup_periods": 1}
+441:         )
+442:     with pytest.raises(ValueError, match="cannot be negative"):
+443:         config_model.RiskSettings.model_validate(
+444:             {"target_vol": 0.1, "floor_vol": 0.02, "warmup_periods": -1}
+445:         )
+
+tests/test_vol_floor_and_warmup.py:32-45
+32: def test_floor_vol_limits_scaling() -> None:
+33:     dates = pd.date_range("2020-01-31", periods=12, freq="ME")
+34:     returns = pd.DataFrame(
+35:         {
+36:             "A": 0.001 + 0.0005 * np.sin(np.arange(12)),
+37:             "B": 0.002 + 0.0010 * np.sin(np.arange(12) / 2.0),
+38:         },
+39:         index=dates,
+40:     )
+41:     latest_vol = realised_volatility(returns, RiskWindow(length=6), periods_per_year=12).iloc[-1]
+42:     without_floor = _scale_factors(latest_vol, 0.10, floor_vol=None)
+43:     with_floor = _scale_factors(latest_vol, 0.10, floor_vol=0.05)
+44:     assert (with_floor <= without_floor + 1e-12).all()
+45:     assert (with_floor[latest_vol < 0.05] <= without_floor[latest_vol < 0.05] + 1e-12).any()
+
+src/trend_analysis/config/model.py:601-612
+601:     @field_validator("target_vol", mode="before")
+602:     @classmethod
+603:     def _validate_target(cls, value: Any) -> float:
+604:         try:
+605:             target = float(value)
+606:         except (TypeError, ValueError) as exc:  # pragma: no cover - defensive
+607:             raise ValueError("vol_adjust.target_vol must be numeric.") from exc
+608:         if not math.isfinite(target):
+609:             raise ValueError("vol_adjust.target_vol must be finite.")
+610:         if target <= 0:
+611:             raise ValueError("vol_adjust.target_vol must be greater than zero.")
+612:         return target
+
+src/trend_analysis/config/model.py:344-353
+344:     @field_validator("per_trade_bps", "half_spread_bps", mode="before")
+345:     @classmethod
+346:     def _validate_cost(cls, value: Any, info: ValidationInfo[Any]) -> float:
+347:         try:
+348:             parsed = float(value)
+349:         except (TypeError, ValueError) as exc:  # pragma: no cover - defensive
+350:             raise ValueError(f"portfolio.cost_model.{info.field_name} must be numeric.") from exc
+351:         if parsed < 0:
+352:             raise ValueError(f"portfolio.cost_model.{info.field_name} cannot be negative.")
+353:         return parsed
+
+src/trend_analysis/config/models.py:510-517
+510:             for key in ("per_trade_bps", "half_spread_bps"):
+511:                 try:
+512:                     parsed = float(cost_cfg[key])
+513:                 except Exception as exc:  # pragma: no cover - defensive
+514:                     raise ValueError(f"cost_model.{key} must be numeric") from exc
+515:                 if parsed < 0:
+516:                     raise ValueError(f"cost_model.{key} must be >= 0")
+517:                 cost_cfg[key] = parsed
+
+src/trend_analysis/metrics/turnover.py:39-50
+39: def linear_turnover_cost(
+40:     turnover: float | pd.Series,
+41:     cost_bps: float,
+42: ) -> float | pd.Series:
+43:     """Return linear transaction cost for turnover and basis points."""
+44:     multiplier = float(cost_bps) / 10000.0
+45:     if isinstance(turnover, pd.Series):
+46:         return turnover.clip(lower=0.0) * multiplier
+47:     turnover_value = float(turnover)
+48:     if turnover_value <= 0.0:
+49:         return 0.0
+50:     return turnover_value * multiplier
+
+tests/test_trend_analysis_config_model.py:381-405
+381: def test_portfolio_settings_rejects_out_of_range_values() -> None:
+382:     with pytest.raises(ValueError, match="turnover cannot be negative"):
+383:         config_model.PortfolioSettings.model_validate(
+384:             {
+385:                 "rebalance_calendar": "NYSE",
+386:                 "max_turnover": -0.1,
+387:                 "cost_model": {"per_trade_bps": 5, "half_spread_bps": 0},
+388:             }
+389:         )
+390:     with pytest.raises(ValueError, match="must be between 0 and 2.0"):
+391:         config_model.PortfolioSettings.model_validate(
+392:             {
+393:                 "rebalance_calendar": "NYSE",
+394:                 "max_turnover": 2.5,
+395:                 "cost_model": {"per_trade_bps": 5, "half_spread_bps": 0},
+396:             }
+397:         )
+398:     with pytest.raises(ValueError, match="cannot be negative"):
+399:         config_model.PortfolioSettings.model_validate(
+400:             {
+401:                 "rebalance_calendar": "NYSE",
+402:                 "max_turnover": 0.4,
+403:                 "cost_model": {"per_trade_bps": -1, "half_spread_bps": 0},
+404:             }
+405:         )

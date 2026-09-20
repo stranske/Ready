@@ -1,0 +1,24 @@
+{
+  "body": "<!-- pr-preamble:start -->\n<!-- meta:issue:1058 -->\n> **Source:** Issue #1058\n\nCloses #1058\n\n<!-- pr-preamble:end -->\n\n<!-- auto-status-summary:start -->\n## Automated Status Summary\n#### Scope\nFleet coverage initiative round 4 remains below the 90% objective. The next slice must prove a real behavioral branch in workbook reconciliation validation, not pad the metric.\n\n#### Tasks\n- [ ] Run `pytest tests/pipeline/test_reconciliation.py --cov=src/counter_risk/pipeline/run.py --cov-report=term-missing` and record baseline in the PR body.\n- [ ] In `tests/pipeline/test_reconciliation.py`, add a regression rejecting invalid workbook reconciliation totals in `src/counter_risk/pipeline/run.py`, and record deliberate-break plus measured coverage delta in the PR body.\n\n#### Acceptance criteria\n- [ ] `pytest tests/pipeline/test_reconciliation.py --cov=src/counter_risk/pipeline/run.py --cov-report=term-missing` exits 0 with measured coverage delta recorded in the PR body.\n- [ ] The new regression fails when its selected branch is deliberately broken, then passes after revert; both recorded in the PR body.\n\n**Head SHA:** 9bf54d96cea062ea620fb6f1ecb21d3f1392b35d\n**Latest Runs:** \u2705 success \u2014 Gate\n**Required:** gate: \u2705 success\n\n| Workflow / Job | Result | Logs |\n|----------------|--------|------|\n| Gate | \u2705 success | [View run](https://github.com/stranske/Counter_Risk/actions/runs/34782868441) |\n| PR 46 Dependency Repair Contract | \u23ed\ufe0f skipped | Last completed result; current run in PR checks |\n<!-- auto-status-summary:end -->",
+  "closingIssuesReferences": [
+    {
+      "id": "I_kwDORPCqTs8AAAABRGfC4g",
+      "number": 1058,
+      "repository": {
+        "id": "R_kgDORPCqTg",
+        "name": "Counter_Risk",
+        "owner": {
+          "id": "MDQ6VXNlcjIzMDQ2MzIy",
+          "login": "stranske"
+        }
+      },
+      "url": "https://github.com/stranske/Counter_Risk/issues/1058"
+    }
+  ],
+  "mergeCommit": {
+    "oid": "537c913cf54bab0f8bfe59a72edea4bfc575d862"
+  },
+  "mergedAt": "2026-09-15T05:22:02Z",
+  "number": 1060,
+  "title": "fix(pipeline): reject invalid workbook reconciliation totals"
+}

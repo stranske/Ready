@@ -1,0 +1,323 @@
+diff --git a/docs/keepalive/GoalsAndPlumbing.md b/docs/keepalive/GoalsAndPlumbing.md
+index ab56aa546..82b53f38e 100644
+--- a/docs/keepalive/GoalsAndPlumbing.md
++++ b/docs/keepalive/GoalsAndPlumbing.md
+@@ -275,3 +275,45 @@ The same Gate step applies the `acceptance-criteria` label when a marker is pres
+ | Exit | All acceptance criteria satisfied or max iterations reached |
+ 
+ Keep this document in sync with [`MULTI_AGENT_ROUTING.md`](MULTI_AGENT_ROUTING.md) and [`Observability_Contract.md`](Observability_Contract.md) whenever the workflow evolves.
++
++### Runner-dispatch debounce: productive vs. zero-output completions
++
++The debounce that stops a runner being dispatched twice for the same work is keyed on
++`(head_sha, provider)`. It used to record **any** finished dispatch as terminal `completed`,
++including a run that produced nothing — and the only thing that clears that key is a new head
++commit, which only the agent being refused could push. Clearing the gate required the action
++the gate forbade (#3433).
++
++That is not hypothetical. codex exits 0 when its Linux sandbox fails to start
++(`bwrap: loopback: Failed RTM_NEWADDR`, #3438), reporting a successful turn with no commit and
++no tasks done. Two consumer PRs sat frozen at iteration 1/12 for four hours while the hourly
++sweep ran past them, because a debounced PR is indistinguishable from a healthy one.
++
++**What the debounce does now:**
++
++| Prior record for this head | Decision |
++|---|---|
++| `pending`, not yet stale | refuse — wait for the in-flight run |
++| `completed`, productive | refuse — a new head commit is the next step |
++| `completed`, zero-output, within the retry allowance | dispatch (`retry-unproductive-completion`) |
++| `completed`, zero-output, allowance spent, cooldown running | refuse (`unproductive-cooldown`) |
++| `completed`, zero-output, cooldown elapsed | dispatch (`retry-after-unproductive-cooldown`) |
++
++Productivity is the caller's verdict, passed as `--produced-work`. The keepalive workflows
++compute it by comparing the PR head after the run against the SHA the dispatch was reserved
++for. **Unmeasured is not the same as unproductive**: a caller that does not pass the flag (and
++a lookup that fails) keeps the original terminal-completion behaviour, so autofix's use of the
++same library is unaffected.
++
++**Why the allowance expires into a cooldown rather than a refusal.** Refusing until the head
++changes would put the original latch back one step further out. A cooldown is cleared by time
++alone — nothing the gate forbids is needed to open it — and the hourly keepalive sweep wakes it.
++For the same reason, a `completed_at` that cannot be parsed lets the dispatch through: a gate
++that cannot measure itself must fail toward motion, not silence.
++
++Every refusal states its drainable quantity next to its blocking state, so a run log never says
++only that dispatch is closed without saying what would open it. A granted dispatch renders that
++field empty, which keeps "no drainable path stated" from ever reading as "nothing is blocking".
++
++Constants live in `scripts/runner_lib/core.py`:
++`UNPRODUCTIVE_COMPLETION_RETRY_LIMIT` and `UNPRODUCTIVE_COMPLETION_COOLDOWN_SECONDS`.
+diff --git a/scripts/runner_lib/__init__.py b/scripts/runner_lib/__init__.py
+index db3d2b587..92ed67109 100644
+--- a/scripts/runner_lib/__init__.py
++++ b/scripts/runner_lib/__init__.py
+@@ -1,6 +1,7 @@
+ """Shared helpers for dual-provider agent runner workflows."""
+ 
+ from .core import (
++    UNPRODUCTIVE_COMPLETION_COOLDOWN_SECONDS,
+     UNPRODUCTIVE_COMPLETION_RETRY_LIMIT,
+     CapabilityEffectEvidence,
+     DebounceDecision,
+@@ -14,6 +15,7 @@
+ )
+ 
+ __all__ = [
++    "UNPRODUCTIVE_COMPLETION_COOLDOWN_SECONDS",
+     "UNPRODUCTIVE_COMPLETION_RETRY_LIMIT",
+     "CapabilityEffectEvidence",
+     "DebounceDecision",
+diff --git a/scripts/runner_lib/core.py b/scripts/runner_lib/core.py
+index 27f9e633d..f18ebe308 100644
+--- a/scripts/runner_lib/core.py
++++ b/scripts/runner_lib/core.py
+@@ -38,6 +38,12 @@
+ # granted on the same head after an unproductive completion (#3433). ONE constant, consumed by
+ # both the refusal branch and the message it prints, so the two cannot drift apart.
+ UNPRODUCTIVE_COMPLETION_RETRY_LIMIT = 2
++# What happens once those retries are spent. Refusing until the head changes would put the
++# ORIGINAL latch back one step further out: a new head commit can only come from the agent
++# being refused. So the allowance expires into a cooldown instead — a wait that time alone
++# clears, which the hourly keepalive sweep then wakes. Nothing the gate forbids is required
++# to open it.
++UNPRODUCTIVE_COMPLETION_COOLDOWN_SECONDS = 30 * 60
+ TRUSTED_MARKER_AUTHORS = {
+     "chatgpt-codex-connector",
+     "chatgpt-codex-connector[bot]",
+@@ -1007,6 +1013,25 @@ def _pending_record_is_stale(prior: dict[str, Any], *, now: dt.datetime | None =
+     return (current - started_at).total_seconds() > PENDING_STALE_AFTER_SECONDS
+ 
+ 
++def _utc_now_dt() -> dt.datetime:
++    return dt.datetime.now(dt.UTC)
++
++
++def _unproductive_retry_available_at(prior: dict[str, Any] | None) -> dt.datetime | None:
++    """When the cooldown after spent retries expires, or None if it cannot be determined.
++
++    An unreadable or absent ``completed_at`` returns None, which the caller treats as "cooldown
++    cannot be measured, so let the dispatch through". Failing toward motion is the whole point:
++    a gate that cannot measure itself must not hold the loop shut on that basis.
++    """
++    if not prior:
++        return None
++    completed_at = _parse_timestamp(prior.get("completed_at"))
++    if completed_at is None:
++        return None
++    return completed_at + dt.timedelta(seconds=UNPRODUCTIVE_COMPLETION_COOLDOWN_SECONDS)
++
++
+ def _completion_was_unproductive(prior: dict[str, Any] | None) -> bool:
+     """True only when a completion explicitly reported that it produced no work.
+ 
+@@ -1072,9 +1097,12 @@ def should_dispatch(
+     leave a successful completion marker, so a later Gate pass may try again.
+ 
+     A completion that produced no work is retried too, up to
+-    ``UNPRODUCTIVE_COMPLETION_RETRY_LIMIT`` times on the same head. Without that, a runner
+-    that exits 0 having done nothing latches the loop shut: the refusal can only be cleared
+-    by a new head commit, and only the refused agent could push one (#3433).
++    ``UNPRODUCTIVE_COMPLETION_RETRY_LIMIT`` times on the same head, and after that on a
++    ``UNPRODUCTIVE_COMPLETION_COOLDOWN_SECONDS`` timer. Without that, a runner that exits 0
++    having done nothing latches the loop shut: the refusal could only be cleared by a new head
++    commit, and only the refused agent could push one (#3433). The cooldown matters for the
++    same reason — an allowance that expired into a permanent refusal would just move that latch
++    two runs later.
+     """
+     provider = _validate_provider(provider)
+     storage = storage or _storage_from_name("auto")
+@@ -1095,16 +1123,27 @@ def should_dispatch(
+                     prior,
+                     reason="retry-unproductive-completion",
+                 )
+-            return DebounceDecision(
+-                False,
+-                f"duplicate-{status}",
++            retry_at = _unproductive_retry_available_at(prior)
++            if retry_at is not None and _utc_now_dt() < retry_at:
++                return DebounceDecision(
++                    False,
++                    "unproductive-cooldown",
++                    key,
++                    prior_status=status,
++                    prior_head_sha=head_sha,
++                    drainable=(
++                        f"time: retry at {retry_at.isoformat()} "
++                        f"(after {unproductive_completions} zero-output runs)"
++                    ),
++                )
++            return _reserve_dispatch(
++                storage,
++                pr_number,
++                head_sha,
++                provider,
+                 key,
+-                prior_status=status,
+-                prior_head_sha=head_sha,
+-                drainable=(
+-                    "a new head commit; unproductive retries exhausted "
+-                    f"({unproductive_completions}/{UNPRODUCTIVE_COMPLETION_RETRY_LIMIT})"
+-                ),
++                prior,
++                reason="retry-after-unproductive-cooldown",
+             )
+         if status == "completed" or (status == "pending" and not _pending_record_is_stale(prior)):
+             return DebounceDecision(
+@@ -1185,7 +1224,13 @@ def record_completion(
+             # additional agent run having happened.
+             record["unproductive_completions"] = _unproductive_completion_count(prior) or 1
+         else:
+-            record["unproductive_completions"] = _unproductive_completion_count(prior) + 1
++            previous = _unproductive_completion_count(prior)
++            # Past the allowance the streak stops climbing: the cooldown is re-armed from this
++            # completion's timestamp instead, so each new zero-output run buys one fresh window
++            # rather than an ever-growing count that means nothing.
++            record["unproductive_completions"] = min(
++                previous + 1, UNPRODUCTIVE_COMPLETION_RETRY_LIMIT + 1
++            )
+     storage.write_record(pr_number, provider, record)
+     return record
+ 
+diff --git a/tests/scripts/test_runner_lib.py b/tests/scripts/test_runner_lib.py
+index b9f93bd3d..fe4adce78 100644
+--- a/tests/scripts/test_runner_lib.py
++++ b/tests/scripts/test_runner_lib.py
+@@ -1,5 +1,6 @@
+ from __future__ import annotations
+ 
++import datetime
+ import json
+ import os
+ import subprocess
+@@ -10,6 +11,7 @@
+ import pytest
+ import scripts.runner_lib.core as runner_core
+ from scripts.runner_lib import (
++    UNPRODUCTIVE_COMPLETION_COOLDOWN_SECONDS,
+     UNPRODUCTIVE_COMPLETION_RETRY_LIMIT,
+     CapabilityEffectEvidence,
+     RunnerResult,
+@@ -998,27 +1000,66 @@ def test_unproductive_completion_is_retried_on_the_same_head() -> None:
+     assert decision.reason == "retry-unproductive-completion"
+ 
+ 
+-def test_unproductive_retries_are_bounded_and_name_what_would_drain_them() -> None:
++def test_unproductive_retries_expire_into_a_cooldown_not_a_latch() -> None:
++    """Spent retries must expire into a WAIT, never into "only a new head commit will do".
++
++    Refusing until the head changes would reinstate the original #3433 deadlock one step
++    further out, because only the agent being refused could push that commit. A cooldown is
++    cleared by time alone, which the hourly keepalive sweep then wakes.
++    """
+     storage = MemoryRunnerStorage()
+-    reasons = []
+     for _ in range(UNPRODUCTIVE_COMPLETION_RETRY_LIMIT + 1):
+-        decision = should_dispatch(42, "aaa", "codex", storage=storage)
+-        reasons.append(decision.reason)
++        should_dispatch(42, "aaa", "codex", storage=storage)
+         record_completion(
+             42, "aaa", "codex", _unproductive_result(), storage=storage, produced_work=False
+         )
+ 
+-    exhausted = should_dispatch(42, "aaa", "codex", storage=storage)
++    cooling = should_dispatch(42, "aaa", "codex", storage=storage)
++
++    assert cooling.should_dispatch is False
++    assert cooling.reason == "unproductive-cooldown"
++    assert "time: retry at" in cooling.drainable
++    # The drainable path must be time, not an action the refused agent alone could take.
++    assert "head commit" not in cooling.drainable
+ 
+-    assert reasons[0] == "first-dispatch"
+-    assert reasons[1:] == ["retry-unproductive-completion"] * UNPRODUCTIVE_COMPLETION_RETRY_LIMIT
+-    assert exhausted.should_dispatch is False
+-    assert exhausted.reason == "duplicate-completed"
+-    # The refusal must state its drainable quantity, not just that it is closed.
+-    assert "a new head commit" in exhausted.drainable
+-    assert f"{UNPRODUCTIVE_COMPLETION_RETRY_LIMIT + 1}/{UNPRODUCTIVE_COMPLETION_RETRY_LIMIT}" in (
+-        exhausted.drainable
++
++def test_dispatch_resumes_once_the_cooldown_has_elapsed() -> None:
++    storage = MemoryRunnerStorage()
++    for _ in range(UNPRODUCTIVE_COMPLETION_RETRY_LIMIT + 1):
++        should_dispatch(42, "aaa", "codex", storage=storage)
++        record_completion(
++            42, "aaa", "codex", _unproductive_result(), storage=storage, produced_work=False
++        )
++    assert should_dispatch(42, "aaa", "codex", storage=storage).should_dispatch is False
++
++    stale = datetime.datetime.now(datetime.UTC) - datetime.timedelta(
++        seconds=UNPRODUCTIVE_COMPLETION_COOLDOWN_SECONDS + 60
+     )
++    record = storage.records[(42, "codex")]
++    record["status"] = "completed"
++    record["completed_at"] = stale.isoformat().replace("+00:00", "Z")
++
++    resumed = should_dispatch(42, "aaa", "codex", storage=storage)
++
++    assert resumed.should_dispatch is True
++    assert resumed.reason == "retry-after-unproductive-cooldown"
++
++
++def test_unmeasurable_cooldown_fails_toward_motion() -> None:
++    """A gate that cannot measure itself must not stay shut on that basis."""
++    storage = MemoryRunnerStorage()
++    for _ in range(UNPRODUCTIVE_COMPLETION_RETRY_LIMIT + 1):
++        should_dispatch(42, "aaa", "codex", storage=storage)
++        record_completion(
++            42, "aaa", "codex", _unproductive_result(), storage=storage, produced_work=False
++        )
++    record = storage.records[(42, "codex")]
++    record["status"] = "completed"
++    record["completed_at"] = "not-a-timestamp"
++
++    decision = should_dispatch(42, "aaa", "codex", storage=storage)
++
++    assert decision.should_dispatch is True
+ 
+ 
+ def test_productive_completion_still_burns_the_head_key() -> None:
+@@ -1113,3 +1154,42 @@ def test_rerunning_the_completion_job_does_not_spend_another_retry() -> None:
+ 
+     assert storage.records[(42, "codex")]["unproductive_completions"] == 1
+     assert should_dispatch(42, "aaa", "codex", storage=storage).should_dispatch is True
++
++
++def test_each_zero_output_run_after_the_cooldown_arms_a_fresh_one() -> None:
++    """Expiry must re-arm, not latch open — and the tally must stay capped while it does.
++
++    Without this, two regressions look identical to the expiry test: a tally that keeps
++    climbing (so the cooldown is measured from an ever-staler completion), and an expired
++    window that never closes again (so a permanently broken runner is re-dispatched forever).
++    """
++    storage = MemoryRunnerStorage()
++    for _ in range(UNPRODUCTIVE_COMPLETION_RETRY_LIMIT + 1):
++        should_dispatch(42, "aaa", "codex", storage=storage)
++        record_completion(
++            42, "aaa", "codex", _unproductive_result(), storage=storage, produced_work=False
++        )
++
++    stale = datetime.datetime.now(datetime.UTC) - datetime.timedelta(
++        seconds=UNPRODUCTIVE_COMPLETION_COOLDOWN_SECONDS + 60
++    )
++    record = storage.records[(42, "codex")]
++    record["status"] = "completed"
++    record["completed_at"] = stale.isoformat().replace("+00:00", "Z")
++
++    assert should_dispatch(42, "aaa", "codex", storage=storage).should_dispatch is True
++
++    # The retry produces nothing either. That must start a NEW cooldown from now.
++    record_completion(
++        42, "aaa", "codex", _unproductive_result(), storage=storage, produced_work=False
++    )
++    rearmed = should_dispatch(42, "aaa", "codex", storage=storage)
++
++    assert rearmed.should_dispatch is False
++    assert rearmed.reason == "unproductive-cooldown"
++    # The tally is capped, so the window is measured from the newest completion rather than
++    # from a completion that keeps receding into the past.
++    assert (
++        storage.records[(42, "codex")]["unproductive_completions"]
++        == UNPRODUCTIVE_COMPLETION_RETRY_LIMIT + 1
++    )

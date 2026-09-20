@@ -1,0 +1,244 @@
+{
+  "repo": "Pension-Data",
+  "full": "stranske/Pension-Data",
+  "frozen": [],
+  "silent": [
+    {
+      "number": 883,
+      "title": "[P1] workspace-bundle.json contract wiring (B2-030)",
+      "labels": [
+        "agents:formatted",
+        "agents:apply-suggestions",
+        "agent:codex"
+      ],
+      "age_h": 37.5
+    },
+    {
+      "number": 882,
+      "title": "[P1] Factor renderer-shell from apps/web (B2-029)",
+      "labels": [
+        "agents:formatted",
+        "agents:apply-suggestions",
+        "agent:codex"
+      ],
+      "age_h": 37.5
+    },
+    {
+      "number": 881,
+      "title": "[P1] Evidence + identity-map projection emitter (B2-018)",
+      "labels": [
+        "agents:formatted",
+        "agents:apply-suggestions",
+        "agent:codex"
+      ],
+      "age_h": 37.5
+    },
+    {
+      "number": 880,
+      "title": "[P2] N-CSR sample ingest lane (B2-042)",
+      "labels": [
+        "agents:formatted",
+        "agents:apply-suggestions",
+        "agent:codex"
+      ],
+      "age_h": 37.5
+    },
+    {
+      "number": 879,
+      "title": "[P2] CalPERS IC document harvester (B2-038)",
+      "labels": [
+        "agents:formatted",
+        "agents:apply-suggestions",
+        "agent:codex"
+      ],
+      "age_h": 37.5
+    }
+  ],
+  "stalled": [],
+  "supply": 8,
+  "priority_count": 0,
+  "open_count": 10,
+  "ci_status": "success",
+  "ci_url": "https://github.com/stranske/Pension-Data/actions/runs/34951367159/job/104322856346",
+  "ci_run_id": null,
+  "head_sha": "1224f0308b1a9be8cf8bc5079b4b0570e6071d5e",
+  "runs": [
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-15T09:35:18Z",
+      "databaseId": 34953323969,
+      "headSha": "1224f0308b1a9be8cf8bc5079b4b0570e6071d5e",
+      "name": "Agents Keepalive Sweep",
+      "status": "completed",
+      "updatedAt": "2026-09-15T09:35:31Z",
+      "url": "https://github.com/stranske/Pension-Data/actions/runs/34953323969",
+      "workflowName": "Agents Keepalive Sweep"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-15T09:13:39Z",
+      "databaseId": 34951367159,
+      "headSha": "1224f0308b1a9be8cf8bc5079b4b0570e6071d5e",
+      "name": "Agents PR Health",
+      "status": "completed",
+      "updatedAt": "2026-09-15T09:14:12Z",
+      "url": "https://github.com/stranske/Pension-Data/actions/runs/34951367159",
+      "workflowName": "Agents PR Health"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-15T08:37:16Z",
+      "databaseId": 34947963338,
+      "headSha": "1224f0308b1a9be8cf8bc5079b4b0570e6071d5e",
+      "name": "Agents Keepalive Sweep",
+      "status": "completed",
+      "updatedAt": "2026-09-15T08:37:28Z",
+      "url": "https://github.com/stranske/Pension-Data/actions/runs/34947963338",
+      "workflowName": "Agents Keepalive Sweep"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-15T08:17:26Z",
+      "databaseId": 34946141020,
+      "headSha": "1224f0308b1a9be8cf8bc5079b4b0570e6071d5e",
+      "name": "Agents PR Health",
+      "status": "completed",
+      "updatedAt": "2026-09-15T08:17:51Z",
+      "url": "https://github.com/stranske/Pension-Data/actions/runs/34946141020",
+      "workflowName": "Agents PR Health"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-15T07:33:07Z",
+      "databaseId": 34942277427,
+      "headSha": "1224f0308b1a9be8cf8bc5079b4b0570e6071d5e",
+      "name": "Agents Keepalive Sweep",
+      "status": "completed",
+      "updatedAt": "2026-09-15T07:33:20Z",
+      "url": "https://github.com/stranske/Pension-Data/actions/runs/34942277427",
+      "workflowName": "Agents Keepalive Sweep"
+    }
+  ],
+  "check_runs": [
+    {
+      "name": "Re-evaluate stalled agent PRs (non-consolidated)",
+      "status": "completed",
+      "conclusion": "skipped",
+      "html_url": "https://github.com/stranske/Pension-Data/actions/runs/34953323969/job/104329279768"
+    },
+    {
+      "name": "Name keepalive sweep mode",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/stranske/Pension-Data/actions/runs/34953323969/job/104329278554"
+    },
+    {
+      "name": "Re-evaluate stalled agent PRs (consolidated)",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/stranske/Pension-Data/actions/runs/34953323969/job/104329278368"
+    },
+    {
+      "name": "health / Nudge stalled PRs",
+      "status": "completed",
+      "conclusion": "skipped",
+      "html_url": "https://github.com/stranske/Pension-Data/actions/runs/34951367159/job/104322988454"
+    },
+    {
+      "name": "health / Fix failing checks",
+      "status": "completed",
+      "conclusion": "skipped",
+      "html_url": "https://github.com/stranske/Pension-Data/actions/runs/34951367159/job/104322988310"
+    },
+    {
+      "name": "health / Resolve conflicts",
+      "status": "completed",
+      "conclusion": "skipped",
+      "html_url": "https://github.com/stranske/Pension-Data/actions/runs/34951367159/job/104322988186"
+    },
+    {
+      "name": "health / Health summary",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/stranske/Pension-Data/actions/runs/34951367159/job/104322987364"
+    },
+    {
+      "name": "health / Scan open PRs",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/stranske/Pension-Data/actions/runs/34951367159/job/104322889289"
+    },
+    {
+      "name": "health / Schedule gate",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/stranske/Pension-Data/actions/runs/34951367159/job/104322856346"
+    },
+    {
+      "name": "Re-evaluate stalled agent PRs (non-consolidated)",
+      "status": "completed",
+      "conclusion": "skipped",
+      "html_url": "https://github.com/stranske/Pension-Data/actions/runs/34947963338/job/104311780311"
+    },
+    {
+      "name": "Name keepalive sweep mode",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/stranske/Pension-Data/actions/runs/34947963338/job/104311779214"
+    },
+    {
+      "name": "Re-evaluate stalled agent PRs (consolidated)",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/stranske/Pension-Data/actions/runs/34947963338/job/104311778964"
+    },
+    {
+      "name": "health / Resolve conflicts",
+      "status": "completed",
+      "conclusion": "skipped",
+      "html_url": "https://github.com/stranske/Pension-Data/actions/runs/34946141020/job/104305965711"
+    },
+    {
+      "name": "health / Nudge stalled PRs",
+      "status": "completed",
+      "conclusion": "skipped",
+      "html_url": "https://github.com/stranske/Pension-Data/actions/runs/34946141020/job/104305965619"
+    },
+    {
+      "name": "health / Fix failing checks",
+      "status": "completed",
+      "conclusion": "skipped",
+      "html_url": "https://github.com/stranske/Pension-Data/actions/runs/34946141020/job/104305965390"
+    },
+    {
+      "name": "health / Health summary",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/stranske/Pension-Data/actions/runs/34946141020/job/104305964117"
+    },
+    {
+      "name": "health / Scan open PRs",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/stranske/Pension-Data/actions/runs/34946141020/job/104305897622"
+    },
+    {
+      "name": "health / Schedule gate",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/stranske/Pension-Data/actions/runs/34946141020/job/104305872786"
+    },
+    {
+      "name": "Re-evaluate stalled agent PRs (non-consolidated)",
+      "status": "completed",
+      "conclusion": "skipped",
+      "html_url": "https://github.com/stranske/Pension-Data/actions/runs/34942277427/job/104293472887"
+    },
+    {
+      "name": "Name keepalive sweep mode",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/stranske/Pension-Data/actions/runs/34942277427/job/104293471721"
+    }
+  ]
+}

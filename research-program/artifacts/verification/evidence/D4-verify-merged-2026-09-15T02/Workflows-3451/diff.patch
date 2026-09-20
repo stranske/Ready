@@ -1,0 +1,716 @@
+diff --git a/.github/scripts/__tests__/agents-pr-meta-contract-status.test.js b/.github/scripts/__tests__/agents-pr-meta-contract-status.test.js
+new file mode 100644
+index 000000000..1eff88c23
+--- /dev/null
++++ b/.github/scripts/__tests__/agents-pr-meta-contract-status.test.js
+@@ -0,0 +1,87 @@
++"use strict";
++const test = require('node:test');
++const assert = require('node:assert/strict');
++const { buildStatusBlock, collectStatusWorkflowRuns } = require('../agents_pr_meta_update_body.js');
++const headSha = 'implementation-head';
++const contractName = 'PR 46 Dependency Repair Contract';
++const contract = { name: contractName, head_sha: headSha, status: 'completed', conclusion: 'success', created_at: '2026-09-14T10:00:00Z', html_url: 'https://example.com/runs/1' };
++const gate = { ...contract, name: 'Gate', html_url: 'https://example.com/gate' };
++function render(runs) {
++  return buildStatusBlock({ scope: 'scope', tasks: '- [x] task', acceptance: '- [ ] verify', headSha,
++    workflowRuns: runs instanceof Map ? runs : new Map(runs.map(r => [r.name.toLowerCase(), r])),
++    requiredChecks: ['gate', contractName], existingBody: '', connectorStates: new Map(),
++    agentType: '', owner: 'stranske', repo: 'Workflows' });
++}
++function client(recent, completed = []) {
++  const calls = [];
++  return { calls, rest: { actions: {
++    listWorkflowRunsForRepo: async args => { calls.push(args); return {data:{workflow_runs:recent}}; },
++    listWorkflowRuns: async args => { calls.push(args); return {data:{workflow_runs:completed}}; },
++  }}};
++}
++for (const conclusion of ['success', 'failure', 'skipped', 'cancelled']) {
++  test(`dependency contract ${conclusion} is visible without the changing run URL`, () => {
++    const summary = render([gate, {...contract, conclusion}]);
++    assert.ok(summary.includes(`${contractName}:`));
++    assert.ok(!summary.includes(`${contractName}: ⏸️ not started`));
++    assert.ok(summary.includes(`| ${contractName} |`));
++    assert.ok(summary.includes(conclusion));
++    assert.ok(!summary.includes(contract.html_url));
++    assert.equal(summary, render([gate, {...contract, conclusion, created_at:'2026-09-14T11:00:00Z', html_url:'https://example.com/runs/2'}]));
++  });
++}
++test('real dependency contract failure changes the summary', () => {
++  assert.notEqual(render([gate, contract]), render([gate, {...contract, conclusion:'failure'}]));
++});
++test('new pending metadata run retains latest completed contract evidence on the same head', async () => {
++  const github = client([gate, contract, {...contract, status:'in_progress', conclusion:null, created_at:'2026-09-14T11:00:00Z'}]);
++  const runs = await collectStatusWorkflowRuns({github, owner:'stranske', repo:'Workflows', headSha});
++  assert.equal(render(runs), render([gate, contract]));
++  assert.equal(github.calls.length, 1);
++});
++test('flooded completed contract lookup is bounded and exact-head', async () => {
++  const github = client([gate, {...contract, status:'in_progress', conclusion:null}], [contract]);
++  const runs = await collectStatusWorkflowRuns({github, owner:'stranske', repo:'Workflows', headSha});
++  assert.equal(render(runs), render([gate, contract]));
++  assert.equal(github.calls.length, 2);
++  assert.deepEqual(github.calls[1], { owner:'stranske', repo:'Workflows', workflow_id:'pr-46-dependency-repair-contract.yml', head_sha:headSha, status:'completed', per_page:1 });
++});
++test('wrong-head or absent contract evidence cannot claim success or not-started', async () => {
++  for (const evidence of [[], [{...contract, head_sha:'other-head'}]]) {
++    const github = client([gate, {...contract, status:'in_progress', conclusion:null}], evidence);
++    const runs = await collectStatusWorkflowRuns({github, owner:'stranske', repo:'Workflows', headSha});
++    const summary = render(runs);
++    assert.ok(!summary.includes(`${contractName}: ✅ success`));
++    assert.ok(!summary.includes(`${contractName}: ⏸️ not started`));
++    assert.ok(summary.includes('reported separately in PR checks'));
++  }
++});
++test('renamed dependency contract is still represented through its workflow path', () => {
++  const summary = render([gate, {...contract, name:'Renamed provenance', path:'.github/workflows/pr-46-dependency-repair-contract.yml@refs/heads/main', conclusion:'failure'}]);
++  assert.ok(summary.includes(`${contractName}: ❌ failure`));
++  assert.ok(!summary.includes(contract.html_url));
++});
++
++for (const status of [401, 403, 429, 500]) {
++  test(`contract lookup ${status} propagates after one attempt`, async () => {
++    const github = client([gate, {...contract, status:'queued', conclusion:null}]);
++    github.rest.actions.listWorkflowRuns = async args => {
++      github.calls.push(args);
++      throw Object.assign(new Error('contract lookup failed'), {status});
++    };
++    await assert.rejects(collectStatusWorkflowRuns({github, owner:'stranske', repo:'Workflows', headSha}), /contract lookup failed/);
++    assert.equal(github.calls.length, 2);
++  });
++}
++test('missing contract workflow remains explicit unknown rather than preserving stale success', async () => {
++  const github = client([gate, {...contract, status:'queued', conclusion:null}]);
++  github.rest.actions.listWorkflowRuns = async () => { throw Object.assign(new Error('missing'), {status:404}); };
++  const runs = await collectStatusWorkflowRuns({github, owner:'stranske', repo:'Workflows', headSha});
++  assert.ok(render(runs).includes(`${contractName}: reported separately in PR checks`));
++});
++test('failure stays visible while a later metadata rerun is pending', async () => {
++  const failed = {...contract, conclusion:'failure'};
++  const github = client([gate, failed, {...contract, status:'in_progress', conclusion:null, created_at:'2026-09-14T11:00:00Z'}]);
++  const runs = await collectStatusWorkflowRuns({github, owner:'stranske', repo:'Workflows', headSha});
++  assert.equal(render(runs), render([gate, failed]));
++});
+diff --git a/.github/scripts/__tests__/agents-pr-meta-status-idempotence.test.js b/.github/scripts/__tests__/agents-pr-meta-status-idempotence.test.js
+new file mode 100644
+index 000000000..b13534ec5
+--- /dev/null
++++ b/.github/scripts/__tests__/agents-pr-meta-status-idempotence.test.js
+@@ -0,0 +1,233 @@
++'use strict';
++
++const test = require('node:test');
++const assert = require('node:assert/strict');
++const { buildStatusBlock, collectStatusWorkflowRuns } = require('../agents_pr_meta_update_body.js');
++
++const headSha = 'unchanged-implementation-head';
++const gate = {
++  name: 'Gate', head_sha: headSha, created_at: '2026-09-13T00:00:00Z',
++  status: 'completed', conclusion: 'success', html_url: 'https://example.com/gate/42',
++};
++const observers = ['Agents PR meta manager', 'Agents PR Event Hub', 'PR 46 Dependency Repair Contract'];
++function generation(id) {
++  return observers.map((name, index) => ({
++    name, head_sha: headSha, created_at: `2026-09-14T${id}:00:00Z`,
++    status: index === 1 ? 'in_progress' : 'completed',
++    conclusion: index === 1 ? null : 'skipped',
++    html_url: `https://example.com/metadata/${id}/${index}`,
++  }));
++}
++function render(runs, existingBody = '') {
++  return buildStatusBlock({
++    scope: 'Keep implementation scope.', tasks: '- [x] Preserve implemented task.',
++    acceptance: '- [ ] Verify before merging.', headSha,
++    workflowRuns: runs instanceof Map ? runs : new Map(runs.map(run => [run.name.toLowerCase(), run])),
++    requiredChecks: ['gate'], existingBody, connectorStates: new Map(),
++    agentType: '', owner: 'stranske', repo: 'Fine-Art-Archive', core: null,
++  });
++}
++
++for (const conclusion of ['success', 'failure', null]) {
++  test(`metadata-only generations are idempotent with a real Gate ${conclusion}`, () => {
++    const realGate = { ...gate, conclusion, status: conclusion ? 'completed' : 'in_progress' };
++    const first = render([...generation('10'), realGate]);
++    const second = render([...generation('11'), realGate], first);
++    assert.equal(second, first);
++    assert.ok(first.includes(gate.html_url));
++    assert.ok(!first.includes('/metadata/'));
++    assert.ok(first.includes('- [x] Preserve implemented task.'));
++    assert.ok(first.includes('- [ ] Verify before merging.'));
++  });
++}
++
++test('metadata-only generations remain stable without inventing a Gate result', () => {
++  const first = render(generation('10'));
++  assert.equal(render(generation('11'), first), first);
++  assert.ok(first.includes('gate: ⏸️ not started'));
++  assert.ok(!first.includes('/metadata/'));
++});
++
++test('real Gate transitions still change the visible result', () => {
++  const first = render([gate]);
++  const second = render([{ ...gate, conclusion: 'failure', html_url: 'https://example.com/gate/43' }], first);
++  assert.notEqual(second, first);
++  assert.ok(second.includes('gate: ❌ failure'));
++  assert.ok(second.includes('/gate/43'));
++});
++
++function client(recent, historical, calls = []) {
++  return { rest: { actions: {
++    listWorkflowRunsForRepo: async args => {
++      calls.push(['recent', args]);
++      return { data: { workflow_runs: recent } };
++    },
++    listWorkflowRuns: async args => {
++      calls.push(['gate', args]);
++      if (historical instanceof Error) throw historical;
++      return { data: { workflow_runs: historical } };
++    },
++  } } };
++}
++const opts = { owner: 'stranske', repo: 'Fine-Art-Archive', headSha, core: { warning() {}, error() {} } };
++
++test('an older exact-head Gate survives a full page of metadata churn', async () => {
++  const calls = [];
++  const recent = Array.from({ length: 100 }, (_, i) => generation('11')[i % 3]);
++  const runs = await collectStatusWorkflowRuns({ ...opts, github: client(recent, [gate], calls) });
++  assert.deepEqual([...runs.keys()], ['pr 46 dependency repair contract', 'gate']);
++  assert.ok(render(runs).includes('gate: ✅ success'));
++  assert.equal(calls.length, 2);
++  assert.deepEqual(calls[1][1], {
++    owner: opts.owner, repo: opts.repo, workflow_id: 'pr-00-gate.yml', head_sha: headSha, per_page: 1,
++  });
++});
++
++test('a Gate in the recent page avoids the recovery request', async () => {
++  const calls = [];
++  await collectStatusWorkflowRuns({ ...opts, github: client([...generation('11'), gate], [], calls) });
++  assert.equal(calls.length, 1);
++});
++
++test('recovered Gate summaries stay stable across flooded pages and expose real transitions', async () => {
++  async function recoverSummary(id, recoveredGate, existingBody = '') {
++    const calls = [];
++    const recent = Array.from({ length: 100 }, (_, i) => generation(id)[i % 3]);
++    const runs = await collectStatusWorkflowRuns({
++      ...opts, github: client(recent, [recoveredGate], calls),
++    });
++    assert.equal(calls.filter(([kind]) => kind === 'gate').length, 1);
++    return render(runs, existingBody);
++  }
++
++  const first = await recoverSummary('10', gate);
++  const second = await recoverSummary('11', gate, first);
++  assert.equal(second, first);
++  assert.ok(second.includes('gate: ✅ success'));
++  assert.ok(!second.includes('/metadata/'));
++
++  const failedGate = { ...gate, conclusion: 'failure', html_url: 'https://example.com/gate/43' };
++  const third = await recoverSummary('12', failedGate, second);
++  assert.notEqual(third, second);
++  assert.ok(third.includes('gate: ❌ failure'));
++  assert.ok(third.includes(failedGate.html_url));
++  assert.ok(!third.includes(gate.html_url));
++  assert.equal(await recoverSummary('13', failedGate, third), third);
++});
++
++test('an empty Gate recovery cannot preserve an earlier successful result', async () => {
++  const calls = [];
++  const runs = await collectStatusWorkflowRuns({
++    ...opts, github: client(generation('11'), [], calls),
++  });
++  const summary = render(runs, render([gate]));
++  assert.equal(runs.has('gate'), false);
++  assert.equal(calls.filter(([kind]) => kind === 'gate').length, 1);
++  assert.ok(summary.includes('gate: ⏸️ not started'));
++  assert.ok(!summary.includes('gate: ✅ success'));
++  assert.ok(!summary.includes(gate.html_url));
++});
++
++test('Gate recovery never uses another implementation head', async () => {
++  const runs = await collectStatusWorkflowRuns({ ...opts,
++    github: client(generation('11'), [{ ...gate, head_sha: 'other-head' }]),
++  });
++  assert.ok(render(runs).includes('gate: ⏸️ not started'));
++});
++
++test('a missing Gate workflow remains unknown', async () => {
++  const error = Object.assign(new Error('Not Found'), { status: 404 });
++  const runs = await collectStatusWorkflowRuns({ ...opts, github: client(generation('11'), error) });
++  assert.ok(render(runs).includes('gate: ⏸️ not started'));
++});
++
++test('a missing Gate preserves current CI evidence without retaining stale Gate success', async () => {
++  const calls = [];
++  const warnings = [];
++  const ci = { ...gate, name: 'CI', conclusion: 'failure', html_url: 'https://example.com/ci/43' };
++  const error = Object.assign(new Error('Not Found'), { status: 404 });
++  const runs = await collectStatusWorkflowRuns({
++    ...opts,
++    core: { warning(message) { warnings.push(message); }, error() {} },
++    github: client([...generation('11'), ci], error, calls),
++  });
++  const summary = render(runs, render([gate]));
++  assert.deepEqual([...runs.keys()], ['pr 46 dependency repair contract', 'ci']);
++  assert.ok(summary.includes('| CI | ❌ failure |'));
++  assert.ok(summary.includes(ci.html_url));
++  assert.ok(summary.includes('gate: ⏸️ not started'));
++  assert.ok(!summary.includes(gate.html_url));
++  assert.ok(!summary.includes('gate: ✅ success'));
++  assert.equal(calls.filter(([kind]) => kind === 'gate').length, 1);
++  assert.ok(warnings.some(message => message.includes('leaving its status unknown')));
++});
++
++test('Gate API rate limits propagate instead of becoming a not-started result', async () => {
++  const error = Object.assign(new Error('API rate limit exceeded'), { status: 403 });
++  await assert.rejects(collectStatusWorkflowRuns({ ...opts,
++    github: client(generation('11'), error),
++  }), /rate limit/);
++});
++
++for (const workflowPath of [
++  '.github/workflows/agents-pr-meta-v4.yml',
++  '.github/workflows/agents-80-pr-event-hub.yml',
++]) {
++  test(`renamed observer ${workflowPath} cannot change derived status`, () => {
++    const observer = { ...generation('10')[0], name: 'Renamed metadata observer', path: workflowPath };
++    const first = render([gate, observer]);
++    const second = render([gate, {
++      ...observer, path: `${workflowPath}@refs/heads/main`,
++      conclusion: 'failure', html_url: 'https://example.com/metadata/new-run',
++    }], first);
++    assert.equal(first, render([gate]));
++    assert.equal(second, first);
++  });
++}
++
++test('ordinary CI transitions remain visible alongside excluded observers', () => {
++  const ci = { ...gate, name: 'CI', path: '.github/workflows/ci.yml' };
++  const first = render([gate, ci, ...generation('10')]);
++  const second = render([gate, { ...ci, conclusion: 'failure' }, ...generation('11')], first);
++  assert.notEqual(first, second);
++  assert.ok(second.includes('| CI | ❌ failure |'));
++});
++
++test('a wrong-head Gate on the recent page cannot suppress exact-head recovery', async () => {
++  const calls = [];
++  const runs = await collectStatusWorkflowRuns({ ...opts,
++    github: client([{ ...gate, head_sha: 'other-head', conclusion: 'failure' }], [gate], calls),
++  });
++  assert.equal(calls.length, 2);
++  assert.equal(runs.get('gate'), gate);
++  assert.ok(render(runs).includes('gate: ✅ success'));
++});
++
++test('runs without head evidence are rejected on both pages', async () => {
++  const runs = await collectStatusWorkflowRuns({ ...opts,
++    github: client([{ ...gate, head_sha: undefined }], [{ ...gate, head_sha: undefined }]),
++  });
++  assert.equal(runs.size, 0);
++});
++
++for (const missingHead of ['', undefined, '  ']) {
++  test(`missing head ${JSON.stringify(missingHead)} never performs an unconstrained lookup`, async () => {
++    const calls = [];
++    const runs = await collectStatusWorkflowRuns({ ...opts, headSha: missingHead,
++      github: client([gate], [gate], calls),
++    });
++    assert.equal(runs.size, 0);
++    assert.deepEqual(calls, []);
++  });
++}
++
++for (const status of [401, 403, 429, 500]) {
++  test(`Gate recovery error ${status} propagates after one lookup`, async () => {
++    const calls = [];
++    const error = Object.assign(new Error('Gate lookup failed'), { status });
++    await assert.rejects(collectStatusWorkflowRuns({ ...opts,
++      github: client(generation('11'), error, calls),
++    }), /Gate lookup failed/);
++    assert.equal(calls.filter(([kind]) => kind === 'gate').length, 1);
++  });
++}
+diff --git a/.github/scripts/agents_pr_meta_update_body.js b/.github/scripts/agents_pr_meta_update_body.js
+index d4b6bc4ba..ea8ea7558 100644
+--- a/.github/scripts/agents_pr_meta_update_body.js
++++ b/.github/scripts/agents_pr_meta_update_body.js
+@@ -921,24 +921,107 @@ function selectLatestWorkflows(runs) {
+ 
+ const SELF_OBSERVING_WORKFLOW_NAMES = new Set([
+   'agents pr meta manager',
++  'agents pr event hub',
++  'pr 46 dependency repair contract',
+ ]);
+ 
++const SELF_OBSERVING_WORKFLOW_PATHS = new Set([
++  '.github/workflows/agents-pr-meta-v4.yml',
++  '.github/workflows/agents-80-pr-event-hub.yml',
++  '.github/workflows/pr-46-dependency-repair-contract.yml',
++]);
++
++const DEPENDENCY_CONTRACT_NAME = 'PR 46 Dependency Repair Contract';
++
++function isDependencyContractRun(run) {
++  return String(run?.name || '').trim().toLowerCase() === DEPENDENCY_CONTRACT_NAME.toLowerCase()
++    || String(run?.path || '').trim().split('@')[0].toLowerCase()
++      === '.github/workflows/pr-46-dependency-repair-contract.yml';
++}
++
+ function isSelfObservingWorkflowRun(run) {
+   const name = String(run?.name || '').trim().toLowerCase();
+-  return Boolean(name && SELF_OBSERVING_WORKFLOW_NAMES.has(name));
++  const workflowPath = String(run?.path || '').trim().split('@')[0].toLowerCase();
++  return SELF_OBSERVING_WORKFLOW_NAMES.has(name)
++    || SELF_OBSERVING_WORKFLOW_PATHS.has(workflowPath);
+ }
+ 
+ function filterWorkflowRunsForStatus(workflowRuns) {
+   const filtered = new Map();
+   for (const [key, run] of workflowRuns || new Map()) {
+-    if (isSelfObservingWorkflowRun(run)) {
+-      continue;
++    if (isDependencyContractRun(run)) {
++      // PR 46 validates provenance as well as observing body edits. Keep its
++      // last completed result, but never echo the run URL that caused an edit.
++      if (run.status === 'completed' && run.conclusion) {
++        filtered.set(DEPENDENCY_CONTRACT_NAME.toLowerCase(), {
++          ...run, name: DEPENDENCY_CONTRACT_NAME, html_url: '',
++        });
++      }
++    } else if (!isSelfObservingWorkflowRun(run)) {
++      filtered.set(key, run);
+     }
+-    filtered.set(key, run);
+   }
+   return filtered;
+ }
+ 
++async function collectStatusWorkflowRuns({github, owner, repo, headSha, core}) {
++  // Without an implementation head, neither endpoint can provide exact-head evidence.
++  if (!normalise(headSha)) return new Map();
++  const response = await withRetries(
++    () => github.rest.actions.listWorkflowRunsForRepo({
++      owner, repo, head_sha: headSha, per_page: 100,
++    }),
++    {description: 'list workflow runs', core},
++  );
++  const exactRuns = (response.data.workflow_runs || []).filter(run => run.head_sha === headSha);
++  const runs = filterWorkflowRunsForStatus(selectLatestWorkflows(exactRuns.filter(run =>
++    !isDependencyContractRun(run) || (run.status === 'completed' && run.conclusion),
++  ).map(run => isDependencyContractRun(run) ? {...run, name: DEPENDENCY_CONTRACT_NAME} : run)));
++  if (exactRuns.some(isDependencyContractRun) && !runs.has(DEPENDENCY_CONTRACT_NAME.toLowerCase())) {
++    // A new body edit starts PR 46 again. Resolve only the last completed
++    // exact-head result so its pending/completed cycle cannot retrigger itself.
++    try {
++      const contractResponse = await withRetries(
++        () => github.rest.actions.listWorkflowRuns({
++          owner, repo, workflow_id: 'pr-46-dependency-repair-contract.yml',
++          head_sha: headSha, status: 'completed', per_page: 1,
++        }),
++        {description: 'recover completed dependency contract', core, attempts: 1},
++      );
++      const completed = filterWorkflowRunsForStatus(selectLatestWorkflows(
++        (contractResponse.data.workflow_runs || []).filter(run =>
++          run.head_sha === headSha && isDependencyContractRun(run),
++        ),
++      ));
++      for (const [key, run] of completed) runs.set(key, run);
++    } catch (error) {
++      if (error?.status !== 404) throw error;
++      core?.warning('Dependency contract workflow unavailable; consult PR checks.');
++    }
++  }
++  if (!runs.has('gate')) {
++    // Metadata-only edited events can fill the latest page. Recover the real
++    // exact-head Gate directly rather than paging through thousands of observers.
++    try {
++      const gateResponse = await withRetries(
++        () => github.rest.actions.listWorkflowRuns({
++          owner, repo, workflow_id: 'pr-00-gate.yml', head_sha: headSha, per_page: 1,
++        }),
++        {description: 'recover exact-head Gate', core, attempts: 1},
++      );
++      for (const run of gateResponse.data.workflow_runs || []) {
++        if (run.head_sha === headSha && String(run.name || '').toLowerCase() === 'gate') {
++          runs.set('gate', run);
++        }
++      }
++    } catch (error) {
++      if (error?.status !== 404) throw error;
++      core?.warning('Gate workflow unavailable; leaving its status unknown.');
++    }
++  }
++  return runs;
++}
++
+ function fallbackChecklist(message) {
+   return `- [ ] ${message}`;
+ }
+@@ -1199,7 +1282,7 @@ function buildStatusBlock({scope, contextSection, tasks, acceptance, headSha, wo
+   if (!isCliAgent) {
+     statusLines.push(`**Head SHA:** ${headSha}`);
+ 
+-    const latestRuns = Array.from(statusWorkflowRuns.values()).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
++    const latestRuns = Array.from(statusWorkflowRuns.values()).filter(run => !isDependencyContractRun(run)).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+     let latestLine = '—';
+     if (latestRuns.length > 0) {
+       const gate = latestRuns.find((run) => (run.name || '').toLowerCase() === 'gate');
+@@ -1213,10 +1296,12 @@ function buildStatusBlock({scope, contextSection, tasks, acceptance, headSha, wo
+     for (const name of requiredChecks) {
+       const run = Array.from(statusWorkflowRuns.values()).find((item) => (item.name || '').toLowerCase() === name.toLowerCase());
+       if (!run) {
+-        requiredParts.push(`${name}: ⏸️ not started`);
++        requiredParts.push(SELF_OBSERVING_WORKFLOW_NAMES.has(name.toLowerCase())
++          ? `${name}: reported separately in PR checks`
++          : `${name}: ⏸️ not started`);
+       } else {
+         const status = combineStatus(run);
+-        requiredParts.push(`${name}: ${status.icon} ${status.label}`);
++        requiredParts.push(`${name}: ${status.icon} ${status.label}${isDependencyContractRun(run) ? ' (last completed; current run in PR checks)' : ''}`);
+       }
+     }
+     statusLines.push(`**Required:** ${requiredParts.length > 0 ? requiredParts.join(', ') : '—'}`);
+@@ -1230,7 +1315,9 @@ function buildStatusBlock({scope, contextSection, tasks, acceptance, headSha, wo
+     } else {
+       for (const run of runs) {
+         const status = combineStatus(run);
+-        const link = run.html_url ? `[View run](${run.html_url})` : '—';
++        const link = isDependencyContractRun(run)
++          ? 'Last completed result; current run in PR checks'
++          : run.html_url ? `[View run](${run.html_url})` : '—';
+         table.push(`| ${run.name || 'Unnamed workflow'} | ${status.icon} ${status.label} | ${link} |`);
+       }
+     }
+@@ -1617,16 +1704,9 @@ async function run({github: rawGithub, context, core, inputs}) {
+     sourceIssue: issueResponse.data,
+   });
+ 
+-  const workflowRunResponse = await withRetries(
+-    () => github.rest.actions.listWorkflowRunsForRepo({
+-      owner,
+-      repo,
+-      head_sha: pr.head.sha,
+-      per_page: 100,
+-    }),
+-    {description: 'list workflow runs', core},
+-  );
+-  const workflowRuns = selectLatestWorkflows(workflowRunResponse.data.workflow_runs || []);
++  const workflowRuns = await collectStatusWorkflowRuns({
++    github, owner, repo, headSha: pr.head.sha, core,
++  });
+ 
+   const requiredChecksRaw = await fetchRequiredChecks(github, owner, repo, pr.base.ref, core);
+   // Avoid mutating the returned array - create a new one with 'gate' appended if needed
+@@ -1725,6 +1805,7 @@ module.exports = {
+   stripPrTemplateContent,
+   upsertBlock,
+   filterWorkflowRunsForStatus,
++  collectStatusWorkflowRuns,
+   buildContextBlock,
+   buildPreamble,
+   buildSourceContextRepairCommentBody,
+diff --git a/.github/sync-manifest.yml b/.github/sync-manifest.yml
+index 3fcf2c494..705ea596a 100644
+--- a/.github/sync-manifest.yml
++++ b/.github/sync-manifest.yml
+@@ -545,7 +545,7 @@ scripts:
+     description: "PR metadata orchestrator logic"
+ 
+   - source: .github/scripts/agents_pr_meta_update_body.js
+-    description: "Updates PR body with agent metadata"
++    description: "Updates PR body with stable completed dependency-provenance results, observer exclusion, and exact-head Gate visibility"
+ 
+   - source: .github/scripts/agents_verifier_context.js
+     description: "Context gathering for agent verifier"
+diff --git a/docs/ci/WORKFLOWS.md b/docs/ci/WORKFLOWS.md
+index 64f45f8c7..0b799d768 100644
+--- a/docs/ci/WORKFLOWS.md
++++ b/docs/ci/WORKFLOWS.md
+@@ -167,7 +167,7 @@ Consumer default note: `agents-pr-meta-v4.yml` is a Workflows-repo service workf
+ * [`agents-keepalive-branch-sync.yml`](../../.github/workflows/agents-keepalive-branch-sync.yml) issues short-lived sync branches, merges the reconciliation PR automatically, and tears down the branch once the update lands so keepalive can clear branch drift without human intervention.
+ * [`agents-keepalive-dispatch-handler.yml`](../../.github/workflows/agents-keepalive-dispatch-handler.yml) listens for orchestrator `repository_dispatch` payloads and replays them through the reusable agents topology so keepalive actions stay aligned with branch-sync repairs.
+ * [`agents-71-codex-belt-dispatcher.yml`](../../.github/workflows/agents-71-codex-belt-dispatcher.yml), [`agents-72-codex-belt-worker-dispatch.yml`](../../.github/workflows/agents-72-codex-belt-worker-dispatch.yml), and [`agents-72-codex-belt-worker.yml`](../../.github/workflows/agents-72-codex-belt-worker.yml) handle dispatching and execution.
+-* [`agents-pr-meta-v4.yml`](../../.github/workflows/agents-pr-meta-v4.yml) is the Workflows-repo PR meta manager, using external scripts to stay under GitHub workflow parser limits. It responds to open, synchronize, reopen, comment, and Gate-completion events, but not PR-body edits: because this workflow writes the body, observing those edits can turn metadata-only check URLs into a self-trigger loop. It skips release-please release PRs because release-please owns those PR bodies and must parse them after merge. Consumer repos should use the current consumer-template PR event hub and Gate followups workflow pair unless they are intentionally maintaining a legacy compatibility file.
++* [`agents-pr-meta-v4.yml`](../../.github/workflows/agents-pr-meta-v4.yml) is the Workflows-repo PR meta manager, using external scripts to stay under GitHub workflow parser limits. It responds to open, synchronize, reopen, comment, and Gate-completion events, but not PR-body edits: because this workflow writes the body, observing those edits can turn metadata-only check URLs into a self-trigger loop. It skips release-please release PRs because release-please owns those PR bodies and must parse them after merge. Consumer repos should use the current consumer-template PR event hub and Gate followups workflow pair unless they are intentionally maintaining a legacy compatibility file. The shared status renderer excludes the legacy metadata manager and current Agents PR Event Hub from derived run tables. PR 46 Dependency Repair Contract retains its last completed exact-head provenance result without its changing run URL; a newer pending run does not replace that result. If only pending contract runs remain on the latest page, one completed-run lookup constrained to the same head recovers the result. Missing evidence points to PR checks instead of claiming that an intentionally filtered observer never started. Current in-flight results and merge authority remain in PR checks. Both observer exclusion and contract recognition match display names and workflow paths so renaming cannot restore the URL feedback loop. Both recent-page and recovered runs must carry the requested implementation head; an absent head causes no lookup. If those runs crowd Gate out of the latest 100 exact-head runs, the renderer makes one targeted `pr-00-gate.yml` lookup for the same head; a missing workflow remains unknown and API failures do not become success. Real Gate state changes and task checkboxes remain visible. This is display-loop prevention, not permission to skip required checks or merge reviews.
+ * [`agents-bot-comment-handler.yml`](../../.github/workflows/agents-bot-comment-handler.yml) dispatches the reusable bot comment handler after Gate success, manual dispatch, or the `autofix:bot-comments` label to address bot review comments.
+ * [`reusable-16-agents.yml`](../../.github/workflows/reusable-16-agents.yml) includes the keepalive sweep, which the orchestrator toggles via the `keepalive_enabled` flag and repository-level `keepalive:paused` label.
+ * [`agents-63-issue-intake.yml`](../../.github/workflows/agents-63-issue-intake.yml) is the canonical front door. It now listens for `agent:codex` labels directly and routes both label triggers and ChatGPT sync requests through the shared normalization pipeline.
+diff --git a/templates/consumer-repo/.github/scripts/agents_pr_meta_update_body.js b/templates/consumer-repo/.github/scripts/agents_pr_meta_update_body.js
+index d4b6bc4ba..ea8ea7558 100644
+--- a/templates/consumer-repo/.github/scripts/agents_pr_meta_update_body.js
++++ b/templates/consumer-repo/.github/scripts/agents_pr_meta_update_body.js
+@@ -921,24 +921,107 @@ function selectLatestWorkflows(runs) {
+ 
+ const SELF_OBSERVING_WORKFLOW_NAMES = new Set([
+   'agents pr meta manager',
++  'agents pr event hub',
++  'pr 46 dependency repair contract',
+ ]);
+ 
++const SELF_OBSERVING_WORKFLOW_PATHS = new Set([
++  '.github/workflows/agents-pr-meta-v4.yml',
++  '.github/workflows/agents-80-pr-event-hub.yml',
++  '.github/workflows/pr-46-dependency-repair-contract.yml',
++]);
++
++const DEPENDENCY_CONTRACT_NAME = 'PR 46 Dependency Repair Contract';
++
++function isDependencyContractRun(run) {
++  return String(run?.name || '').trim().toLowerCase() === DEPENDENCY_CONTRACT_NAME.toLowerCase()
++    || String(run?.path || '').trim().split('@')[0].toLowerCase()
++      === '.github/workflows/pr-46-dependency-repair-contract.yml';
++}
++
+ function isSelfObservingWorkflowRun(run) {
+   const name = String(run?.name || '').trim().toLowerCase();
+-  return Boolean(name && SELF_OBSERVING_WORKFLOW_NAMES.has(name));
++  const workflowPath = String(run?.path || '').trim().split('@')[0].toLowerCase();
++  return SELF_OBSERVING_WORKFLOW_NAMES.has(name)
++    || SELF_OBSERVING_WORKFLOW_PATHS.has(workflowPath);
+ }
+ 
+ function filterWorkflowRunsForStatus(workflowRuns) {
+   const filtered = new Map();
+   for (const [key, run] of workflowRuns || new Map()) {
+-    if (isSelfObservingWorkflowRun(run)) {
+-      continue;
++    if (isDependencyContractRun(run)) {
++      // PR 46 validates provenance as well as observing body edits. Keep its
++      // last completed result, but never echo the run URL that caused an edit.
++      if (run.status === 'completed' && run.conclusion) {
++        filtered.set(DEPENDENCY_CONTRACT_NAME.toLowerCase(), {
++          ...run, name: DEPENDENCY_CONTRACT_NAME, html_url: '',
++        });
++      }
++    } else if (!isSelfObservingWorkflowRun(run)) {
++      filtered.set(key, run);
+     }
+-    filtered.set(key, run);
+   }
+   return filtered;
+ }
+ 
++async function collectStatusWorkflowRuns({github, owner, repo, headSha, core}) {
++  // Without an implementation head, neither endpoint can provide exact-head evidence.
++  if (!normalise(headSha)) return new Map();
++  const response = await withRetries(
++    () => github.rest.actions.listWorkflowRunsForRepo({
++      owner, repo, head_sha: headSha, per_page: 100,
++    }),
++    {description: 'list workflow runs', core},
++  );
++  const exactRuns = (response.data.workflow_runs || []).filter(run => run.head_sha === headSha);
++  const runs = filterWorkflowRunsForStatus(selectLatestWorkflows(exactRuns.filter(run =>
++    !isDependencyContractRun(run) || (run.status === 'completed' && run.conclusion),
++  ).map(run => isDependencyContractRun(run) ? {...run, name: DEPENDENCY_CONTRACT_NAME} : run)));
++  if (exactRuns.some(isDependencyContractRun) && !runs.has(DEPENDENCY_CONTRACT_NAME.toLowerCase())) {
++    // A new body edit starts PR 46 again. Resolve only the last completed
++    // exact-head result so its pending/completed cycle cannot retrigger itself.
++    try {
++      const contractResponse = await withRetries(
++        () => github.rest.actions.listWorkflowRuns({
++          owner, repo, workflow_id: 'pr-46-dependency-repair-contract.yml',
++          head_sha: headSha, status: 'completed', per_page: 1,
++        }),
++        {description: 'recover completed dependency contract', core, attempts: 1},
++      );
++      const completed = filterWorkflowRunsForStatus(selectLatestWorkflows(
++        (contractResponse.data.workflow_runs || []).filter(run =>
++          run.head_sha === headSha && isDependencyContractRun(run),
++        ),
++      ));
++      for (const [key, run] of completed) runs.set(key, run);
++    } catch (error) {
++      if (error?.status !== 404) throw error;
++      core?.warning('Dependency contract workflow unavailable; consult PR checks.');
++    }
++  }
++  if (!runs.has('gate')) {
++    // Metadata-only edited events can fill the latest page. Recover the real
++    // exact-head Gate directly rather than paging through thousands of observers.
++    try {
++      const gateResponse = await withRetries(
++        () => github.rest.actions.listWorkflowRuns({
++          owner, repo, workflow_id: 'pr-00-gate.yml', head_sha: headSha, per_page: 1,
++        }),
++        {description: 'recover exact-head Gate', core, attempts: 1},
++      );
++      for (const run of gateResponse.data.workflow_runs || []) {
++        if (run.head_sha === headSha && String(run.name || '').toLowerCase() === 'gate') {
++          runs.set('gate', run);
++        }
++      }
++    } catch (error) {
++      if (error?.status !== 404) throw error;
++      core?.warning('Gate workflow unavailable; leaving its status unknown.');
++    }
++  }
++  return runs;
++}
++
+ function fallbackChecklist(message) {
+   return `- [ ] ${message}`;
+ }
+@@ -1199,7 +1282,7 @@ function buildStatusBlock({scope, contextSection, tasks, acceptance, headSha, wo
+   if (!isCliAgent) {
+     statusLines.push(`**Head SHA:** ${headSha}`);
+ 
+-    const latestRuns = Array.from(statusWorkflowRuns.values()).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
++    const latestRuns = Array.from(statusWorkflowRuns.values()).filter(run => !isDependencyContractRun(run)).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+     let latestLine = '—';
+     if (latestRuns.length > 0) {
+       const gate = latestRuns.find((run) => (run.name || '').toLowerCase() === 'gate');
+@@ -1213,10 +1296,12 @@ function buildStatusBlock({scope, contextSection, tasks, acceptance, headSha, wo
+     for (const name of requiredChecks) {
+       const run = Array.from(statusWorkflowRuns.values()).find((item) => (item.name || '').toLowerCase() === name.toLowerCase());
+       if (!run) {
+-        requiredParts.push(`${name}: ⏸️ not started`);
++        requiredParts.push(SELF_OBSERVING_WORKFLOW_NAMES.has(name.toLowerCase())
++          ? `${name}: reported separately in PR checks`
++          : `${name}: ⏸️ not started`);
+       } else {
+         const status = combineStatus(run);
+-        requiredParts.push(`${name}: ${status.icon} ${status.label}`);
++        requiredParts.push(`${name}: ${status.icon} ${status.label}${isDependencyContractRun(run) ? ' (last completed; current run in PR checks)' : ''}`);
+       }
+     }
+     statusLines.push(`**Required:** ${requiredParts.length > 0 ? requiredParts.join(', ') : '—'}`);
+@@ -1230,7 +1315,9 @@ function buildStatusBlock({scope, contextSection, tasks, acceptance, headSha, wo
+     } else {
+       for (const run of runs) {
+         const status = combineStatus(run);
+-        const link = run.html_url ? `[View run](${run.html_url})` : '—';
++        const link = isDependencyContractRun(run)
++          ? 'Last completed result; current run in PR checks'
++          : run.html_url ? `[View run](${run.html_url})` : '—';
+         table.push(`| ${run.name || 'Unnamed workflow'} | ${status.icon} ${status.label} | ${link} |`);
+       }
+     }
+@@ -1617,16 +1704,9 @@ async function run({github: rawGithub, context, core, inputs}) {
+     sourceIssue: issueResponse.data,
+   });
+ 
+-  const workflowRunResponse = await withRetries(
+-    () => github.rest.actions.listWorkflowRunsForRepo({
+-      owner,
+-      repo,
+-      head_sha: pr.head.sha,
+-      per_page: 100,
+-    }),
+-    {description: 'list workflow runs', core},
+-  );
+-  const workflowRuns = selectLatestWorkflows(workflowRunResponse.data.workflow_runs || []);
++  const workflowRuns = await collectStatusWorkflowRuns({
++    github, owner, repo, headSha: pr.head.sha, core,
++  });
+ 
+   const requiredChecksRaw = await fetchRequiredChecks(github, owner, repo, pr.base.ref, core);
+   // Avoid mutating the returned array - create a new one with 'gate' appended if needed
+@@ -1725,6 +1805,7 @@ module.exports = {
+   stripPrTemplateContent,
+   upsertBlock,
+   filterWorkflowRunsForStatus,
++  collectStatusWorkflowRuns,
+   buildContextBlock,
+   buildPreamble,
+   buildSourceContextRepairCommentBody,

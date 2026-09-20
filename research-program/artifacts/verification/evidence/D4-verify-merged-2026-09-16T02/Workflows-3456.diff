@@ -1,0 +1,342 @@
+diff --git a/.github/scripts/__tests__/agent_delegation_policy.test.js b/.github/scripts/__tests__/agent_delegation_policy.test.js
+index daa766545..a014ce55e 100644
+--- a/.github/scripts/__tests__/agent_delegation_policy.test.js
++++ b/.github/scripts/__tests__/agent_delegation_policy.test.js
+@@ -379,3 +379,157 @@ test('stalled agent never re-chosen', () => {
+   assert.equal(result.delegationSource, 'route_weights');
+   assert.ok(result.reason.includes('delegation_source: route_weights'));
+ });
++
++test('decideNextAgent always returns delegationSource on static return paths', () => {
++  const explicit = decideNextAgent({
++    state: {},
++    labels: ['agent:claude'],
++    secrets: mockSecrets,
++    registry: mockRegistry,
++  });
++  assert.equal(explicit.reason, 'explicit-label');
++  assert.equal(explicit.delegationSource, 'static');
++
++  // No agent:auto and no explicit agent label → default branch.
++  const defaultPath = decideNextAgent({
++    state: {},
++    labels: [],
++    secrets: mockSecrets,
++    registry: mockRegistry,
++  });
++  assert.equal(defaultPath.reason, 'default');
++  assert.equal(defaultPath.agent, 'codex');
++  assert.equal(defaultPath.delegationSource, 'static');
++
++  const noAgents = decideNextAgent({
++    state: {},
++    labels: ['agent:auto'],
++    secrets: {},
++    registry: mockRegistry,
++  });
++  assert.equal(noAgents.reason, 'no-agents-available');
++  assert.equal(noAgents.delegationSource, 'static');
++
++  const initial = decideNextAgent({
++    state: { iteration: 1 },
++    labels: ['agent:auto'],
++    secrets: mockSecrets,
++    registry: mockRegistry,
++  });
++  assert.equal(initial.reason, 'initial-selection');
++  assert.equal(initial.delegationSource, 'static');
++
++  const unavailable = decideNextAgent({
++    state: {
++      current_agent: 'claude',
++      iteration: 18,
++      last_switch_iteration: 17,
++      effectiveness_history: [{ iteration: 18, commits: 1, tasks: 1, gate: 'pass' }],
++    },
++    labels: ['agent:auto'],
++    secrets: mockSecrets,
++    registry: mockRegistry,
++    runnableAgents: ['codex'],
++  });
++  assert.equal(unavailable.reason, 'claude-unavailable');
++  assert.equal(unavailable.delegationSource, 'static');
++
++  const effective = decideNextAgent({
++    state: {
++      current_agent: 'codex',
++      iteration: 18,
++      last_switch_iteration: 10,
++      effectiveness_history: [
++        { iteration: 16, commits: 1, tasks: 0, gate: 'fail' },
++        { iteration: 17, commits: 0, tasks: 1, gate: 'pending' },
++        { iteration: 18, commits: 1, tasks: 0, gate: 'pending' },
++      ],
++    },
++    labels: ['agent:auto'],
++    secrets: mockSecrets,
++    registry: mockRegistry,
++  });
++  assert.ok(effective.reason.includes('effective'));
++  assert.equal(effective.delegationSource, 'static');
++
++  const cooldown = decideNextAgent({
++    state: {
++      current_agent: 'codex',
++      iteration: 13,
++      last_switch_iteration: 10,
++      effectiveness_history: [
++        { iteration: 11, commits: 0, tasks: 0, gate: 'fail' },
++        { iteration: 12, commits: 0, tasks: 0, gate: 'fail' },
++        { iteration: 13, commits: 0, tasks: 0, gate: 'fail' },
++      ],
++    },
++    labels: ['agent:auto'],
++    secrets: mockSecrets,
++    registry: mockRegistry,
++  });
++  assert.ok(cooldown.reason.includes('cooldown'));
++  assert.equal(cooldown.delegationSource, 'static');
++
++  // Ineffective but not stalled (single failing round) → continue-current.
++  const continueCurrent = decideNextAgent({
++    state: {
++      current_agent: 'codex',
++      iteration: 20,
++      last_switch_iteration: 10,
++      effectiveness_history: [{ iteration: 20, commits: 0, tasks: 0, gate: 'fail' }],
++    },
++    labels: ['agent:auto'],
++    secrets: mockSecrets,
++    registry: mockRegistry,
++  });
++  assert.equal(continueCurrent.reason, 'continue-current');
++  assert.equal(continueCurrent.delegationSource, 'static');
++});
++
++test('stalled-no-alternatives preserves computed delegationSource', () => {
++  const soloRegistry = {
++    default_agent: 'codex',
++    agents: {
++      codex: mockRegistry.agents.codex,
++    },
++  };
++  const soloSecrets = { CODEX_AUTH_JSON: true };
++
++  const staticFallback = decideNextAgent({
++    state: stalledStateCodex,
++    labels: ['agent:auto'],
++    secrets: soloSecrets,
++    registry: soloRegistry,
++    routeWeights: null,
++  });
++  assert.equal(staticFallback.reason, 'stalled-no-alternatives (delegation_source: static (route-weights-unavailable))');
++  assert.equal(staticFallback.delegationSource, 'static');
++  assert.equal(staticFallback.shouldSwitch, false);
++  assert.equal(staticFallback.agent, 'codex');
++
++  // Evidence-bearing export with no eligible alternate still preserves the
++  // computed static source (not a hardcoded literal bypass of the weighted result).
++  const evidenceNoAlternate = decideNextAgent({
++    state: stalledStateCodex,
++    labels: ['agent:auto'],
++    secrets: soloSecrets,
++    registry: soloRegistry,
++    routeWeights: {
++      schema: 'orchestrator.route-weights/v1',
++      generated_at: now,
++      task_types: {
++        implement: {
++          evidence_ok: true,
++          ranking: [{ agent: 'codex', posterior: 0.9, n_obs: 100 }],
++        },
++      },
++    },
++  });
++  assert.equal(
++    evidenceNoAlternate.reason,
++    'stalled-no-alternatives (delegation_source: static (route-weights-no-eligible-agent))'
++  );
++  assert.equal(evidenceNoAlternate.delegationSource, 'static');
++  assert.equal(evidenceNoAlternate.shouldSwitch, false);
++  assert.equal(evidenceNoAlternate.agent, 'codex');
++});
+diff --git a/.github/scripts/__tests__/keepalive-loop.test.js b/.github/scripts/__tests__/keepalive-loop.test.js
+index 6b3ba5eb1..48ba51ae9 100644
+--- a/.github/scripts/__tests__/keepalive-loop.test.js
++++ b/.github/scripts/__tests__/keepalive-loop.test.js
+@@ -6331,3 +6331,53 @@ test('updateKeepaliveLoopSummary shows regex fallback warning', async () => {
+   assert.match(github.actions[0].body, /Regex \(fallback\)/);
+   assert.match(github.actions[0].body, /Primary provider.*was unavailable/);
+ });
++
++test('evaluateKeepaliveLoop resolves agent:auto via delegation policy with delegationSource', async () => {
++  const previousEnv = {
++    HAS_CODEX_AUTH: process.env.HAS_CODEX_AUTH,
++    HAS_CLAUDE_OAUTH: process.env.HAS_CLAUDE_OAUTH,
++    HAS_CURSOR_AUTH: process.env.HAS_CURSOR_AUTH,
++    ROUTE_WEIGHTS_URL: process.env.ROUTE_WEIGHTS_URL,
++  };
++  const previousFetch = global.fetch;
++  global.fetch = async () => {
++    throw new Error('route weights fetch must not run in this regression');
++  };
++  process.env.HAS_CODEX_AUTH = 'true';
++  process.env.HAS_CLAUDE_OAUTH = 'true';
++  process.env.HAS_CURSOR_AUTH = 'true';
++  process.env.ROUTE_WEIGHTS_URL = 'http://127.0.0.1:9/route-weights-unreachable.json';
++
++  try {
++    const pr = {
++      number: 3346,
++      head: { ref: 'codex/issue-3346-sync-review', sha: 'sha-3346' },
++      labels: [{ name: 'agent:auto' }, { name: 'agents:keepalive' }],
++      body: prBodyFixture,
++    };
++    const github = buildGithubStub({
++      pr,
++      workflowRuns: [{ head_sha: 'sha-3346', conclusion: 'success' }],
++    });
++
++    const result = await evaluateKeepaliveLoop({
++      github,
++      context: buildContext(pr.number),
++      core: buildCore(),
++    });
++
++    assert.equal(result.agentRoutingMode, 'auto');
++    assert.equal(result.agentType, 'codex');
++    assert.equal(result.delegationSource, 'static');
++    assert.equal(result.delegationReason, 'initial-selection');
++  } finally {
++    global.fetch = previousFetch;
++    for (const [key, value] of Object.entries(previousEnv)) {
++      if (value === undefined) {
++        delete process.env[key];
++      } else {
++        process.env[key] = value;
++      }
++    }
++  }
++});
+diff --git a/.github/scripts/agent_delegation_policy.js b/.github/scripts/agent_delegation_policy.js
+index 9252427f8..4396ad98f 100644
+--- a/.github/scripts/agent_delegation_policy.js
++++ b/.github/scripts/agent_delegation_policy.js
+@@ -246,6 +246,7 @@ function decideNextAgent({
+       reason: explicitAgent ? 'explicit-label' : 'default',
+       shouldSwitch: false,
+       alternatives: [],
++      delegationSource: 'static',
+     };
+   }
+ 
+@@ -282,6 +283,7 @@ function decideNextAgent({
+       reason: 'no-agents-available',
+       shouldSwitch: false,
+       alternatives: [],
++      delegationSource: 'static',
+     };
+   }
+ 
+@@ -294,6 +296,7 @@ function decideNextAgent({
+       reason: 'initial-selection',
+       shouldSwitch: false,
+       alternatives: availableAgents.filter((a) => a !== initialAgent),
++      delegationSource: 'static',
+     };
+   }
+ 
+@@ -306,6 +309,7 @@ function decideNextAgent({
+       shouldSwitch: true,
+       previousAgent: currentAgent,
+       alternatives: availableAgents.filter((agent) => agent !== nextAgent),
++      delegationSource: 'static',
+     };
+   }
+ 
+@@ -325,6 +329,7 @@ function decideNextAgent({
+       reason: `effective (${effectiveness.summary})`,
+       shouldSwitch: false,
+       alternatives: availableAgents.filter((a) => a !== currentAgent),
++      delegationSource: 'static',
+     };
+   }
+ 
+@@ -335,6 +340,7 @@ function decideNextAgent({
+       reason: `cooldown (${5 - roundsSinceSwitch} rounds remaining)`,
+       shouldSwitch: false,
+       alternatives: availableAgents.filter((a) => a !== currentAgent),
++      delegationSource: 'static',
+     };
+   }
+ 
+@@ -373,7 +379,7 @@ function decideNextAgent({
+         reason: `stalled-no-alternatives (${sourceSuffix})`,
+         shouldSwitch: false,
+         alternatives: [],
+-        delegationSource: 'static',
++        delegationSource,
+       };
+     }
+     core?.info?.(`Switching from ${currentAgent} to ${nextAgent} due to stall (${sourceSuffix})`);
+diff --git a/templates/consumer-repo/.github/scripts/agent_delegation_policy.js b/templates/consumer-repo/.github/scripts/agent_delegation_policy.js
+index 9252427f8..4396ad98f 100644
+--- a/templates/consumer-repo/.github/scripts/agent_delegation_policy.js
++++ b/templates/consumer-repo/.github/scripts/agent_delegation_policy.js
+@@ -246,6 +246,7 @@ function decideNextAgent({
+       reason: explicitAgent ? 'explicit-label' : 'default',
+       shouldSwitch: false,
+       alternatives: [],
++      delegationSource: 'static',
+     };
+   }
+ 
+@@ -282,6 +283,7 @@ function decideNextAgent({
+       reason: 'no-agents-available',
+       shouldSwitch: false,
+       alternatives: [],
++      delegationSource: 'static',
+     };
+   }
+ 
+@@ -294,6 +296,7 @@ function decideNextAgent({
+       reason: 'initial-selection',
+       shouldSwitch: false,
+       alternatives: availableAgents.filter((a) => a !== initialAgent),
++      delegationSource: 'static',
+     };
+   }
+ 
+@@ -306,6 +309,7 @@ function decideNextAgent({
+       shouldSwitch: true,
+       previousAgent: currentAgent,
+       alternatives: availableAgents.filter((agent) => agent !== nextAgent),
++      delegationSource: 'static',
+     };
+   }
+ 
+@@ -325,6 +329,7 @@ function decideNextAgent({
+       reason: `effective (${effectiveness.summary})`,
+       shouldSwitch: false,
+       alternatives: availableAgents.filter((a) => a !== currentAgent),
++      delegationSource: 'static',
+     };
+   }
+ 
+@@ -335,6 +340,7 @@ function decideNextAgent({
+       reason: `cooldown (${5 - roundsSinceSwitch} rounds remaining)`,
+       shouldSwitch: false,
+       alternatives: availableAgents.filter((a) => a !== currentAgent),
++      delegationSource: 'static',
+     };
+   }
+ 
+@@ -373,7 +379,7 @@ function decideNextAgent({
+         reason: `stalled-no-alternatives (${sourceSuffix})`,
+         shouldSwitch: false,
+         alternatives: [],
+-        delegationSource: 'static',
++        delegationSource,
+       };
+     }
+     core?.info?.(`Switching from ${currentAgent} to ${nextAgent} due to stall (${sourceSuffix})`);

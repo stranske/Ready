@@ -1,0 +1,22 @@
+I'll verify the first seven selected PRs against their issue acceptance criteria — starting with the brief, skill, selection data, and cached evidence.
+Writing review artifacts and checkpoint entries.
+Completed read-only verification of all seven scoped Workflows PRs.
+
+**Outputs**
+- [`artifacts/verification/evidence/D4-verify-merged-2026-09-15T02/cursor-review.md`](file://[LOCAL_HOME]/.codex/automations/research-program/artifacts/verification/evidence/D4-verify-merged-2026-09-15T02/cursor-review.md)
+- [`artifacts/verification/evidence/D4-verify-merged-2026-09-15T02/cursor-review.json`](file://[LOCAL_HOME]/.codex/automations/research-program/artifacts/verification/evidence/D4-verify-merged-2026-09-15T02/cursor-review.json)
+- Advisory checkpoints appended to [`artifacts/verification/D4-verify-merged-2026-09-15T02.CHECKPOINT.md`](file://[LOCAL_HOME]/.codex/automations/research-program/artifacts/verification/D4-verify-merged-2026-09-15T02.CHECKPOINT.md)
+
+| PR | Issue | Verdict | Headline |
+|----|-------|---------|----------|
+| #3425 | — | **VERIFIED** | Travel-window config revert to `defer` |
+| #3437 | — | **VERIFIED** | Absolute URL fix in `tracked-variable-v1.md` |
+| #3432 | #3431 | **VERIFIED** | Multi-publisher catalog parsing + named tests |
+| #3436 | #3433 | **PARTIAL** | Retry logic works; missing named gate file, incomplete refusal reporting, post-exhaustion latch; owner reopened #3433 |
+| #3439 | #3438 | **PARTIAL** | Sandbox repair + failure tests solid; consumer-commit AC only owner-cited |
+| #3424 | #3389 | **PARTIAL** | Real CLI/addressability tests; no coverage proof; #3389 still open |
+| #3440 | — | **VERIFIED** | Cooldown correction to #3436 latch defect |
+
+**Strongest objection:** #3436’s merge gate is green but does not satisfy #3433’s named gate (`tests/workflows/test_keepalive_dispatch_debounce.py` absent) and reintroduces a head-commit latch after retry exhaustion. #3440 fixes that latch; parent should judge #3436+#3440 together against still-open #3433.
+
+No GitHub API calls were needed beyond cached artifacts. No issues filed (read-only offload).

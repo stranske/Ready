@@ -1,0 +1,142 @@
+{
+  "repo": "Workflows",
+  "full": "stranske/Workflows",
+  "open_issues": 45,
+  "priority_count": 1,
+  "supply": 36,
+  "frozen": [
+    {
+      "number": 3466,
+      "title": "[sync-review] Fix upstream manifest-synced paths blocking stranske/Inv-Man-Intake#975",
+      "labels": [
+        "agents:auto-pilot-pause"
+      ]
+    },
+    {
+      "number": 3123,
+      "title": "\ud83d\udd2d LangSmith Observability Health",
+      "labels": [
+        "needs-human"
+      ]
+    }
+  ],
+  "silent": [
+    {
+      "number": 3392,
+      "title": "fix: expose provider availability to consumer keepalive auto-routing",
+      "labels": [
+        "agent:codex",
+        "agents:formatted",
+        "verify:evaluate"
+      ],
+      "updatedAt": "2026-09-13T20:16:59Z",
+      "age_hours": 135.6,
+      "open_prs": [],
+      "release_targets": []
+    },
+    {
+      "number": 3375,
+      "title": "[P1] Extend output-substrate/v1 with manifest CSV export slice (B2-032)",
+      "labels": [
+        "agent:codex",
+        "agents:apply-suggestions",
+        "agents:formatted"
+      ],
+      "updatedAt": "2026-09-13T20:17:01Z",
+      "age_hours": 135.6,
+      "open_prs": [],
+      "release_targets": []
+    },
+    {
+      "number": 3373,
+      "title": "[P0] Add document-mirror/v1 schema and validator hook (B2-023)",
+      "labels": [
+        "agent:codex",
+        "agents:apply-suggestions",
+        "agents:formatted"
+      ],
+      "updatedAt": "2026-09-13T20:17:04Z",
+      "age_hours": 135.6,
+      "open_prs": [],
+      "release_targets": []
+    }
+  ],
+  "stalled_prs": [],
+  "open_prs_count": 6,
+  "runs": [
+    {
+      "conclusion": "failure",
+      "createdAt": "2026-09-19T11:35:57Z",
+      "databaseId": 35440548630,
+      "displayTitle": "Agents 70 Orchestrator",
+      "event": "schedule",
+      "headSha": "1699ca1b427d2bea401c4b9fa7344be5975c95a8",
+      "status": "completed",
+      "updatedAt": "2026-09-19T11:37:34Z",
+      "url": "https://github.com/stranske/Workflows/actions/runs/35440548630",
+      "workflowName": "Agents 70 Orchestrator"
+    }
+  ],
+  "all_runs": [
+    {
+      "conclusion": "",
+      "createdAt": "2026-09-19T11:54:09Z",
+      "databaseId": 35441366930,
+      "displayTitle": "Sync/Dependency Campaign",
+      "event": "schedule",
+      "headSha": "1699ca1b427d2bea401c4b9fa7344be5975c95a8",
+      "status": "queued",
+      "updatedAt": "2026-09-19T11:54:09Z",
+      "url": "https://github.com/stranske/Workflows/actions/runs/35441366930",
+      "workflowName": "Sync/Dependency Campaign"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-19T11:47:09Z",
+      "databaseId": 35441056786,
+      "displayTitle": "Sync/Dependency campaign queue",
+      "event": "issues",
+      "headSha": "1699ca1b427d2bea401c4b9fa7344be5975c95a8",
+      "status": "completed",
+      "updatedAt": "2026-09-19T11:47:21Z",
+      "url": "https://github.com/stranske/Workflows/actions/runs/35441056786",
+      "workflowName": "Agents Issue Format Guard"
+    },
+    {
+      "conclusion": "skipped",
+      "createdAt": "2026-09-19T11:47:09Z",
+      "databaseId": 35441056839,
+      "displayTitle": "Sync/Dependency campaign queue",
+      "event": "issues",
+      "headSha": "1699ca1b427d2bea401c4b9fa7344be5975c95a8",
+      "status": "completed",
+      "updatedAt": "2026-09-19T11:47:17Z",
+      "url": "https://github.com/stranske/Workflows/actions/runs/35441056839",
+      "workflowName": "Auto-Label Issues"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-19T11:46:23Z",
+      "databaseId": 35441021967,
+      "displayTitle": "Sync/Dependency Campaign",
+      "event": "schedule",
+      "headSha": "1699ca1b427d2bea401c4b9fa7344be5975c95a8",
+      "status": "completed",
+      "updatedAt": "2026-09-19T11:47:12Z",
+      "url": "https://github.com/stranske/Workflows/actions/runs/35441021967",
+      "workflowName": "Sync/Dependency Campaign"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-19T11:39:04Z",
+      "databaseId": 35440690211,
+      "displayTitle": "Sync/Dependency campaign queue",
+      "event": "issues",
+      "headSha": "1699ca1b427d2bea401c4b9fa7344be5975c95a8",
+      "status": "completed",
+      "updatedAt": "2026-09-19T11:39:13Z",
+      "url": "https://github.com/stranske/Workflows/actions/runs/35440690211",
+      "workflowName": "Agents Issue Format Guard"
+    }
+  ]
+}

@@ -1,0 +1,164 @@
+name: Selftest CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: selftest-ci-${{ github.repository }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  classify:
+    name: classify changed paths
+    runs-on: ubuntu-latest
+    outputs:
+      is_docs_only: ${{ steps.classify.outputs.is-docs-only || 'false' }}
+      classification_rationale: >-
+        ${{ steps.classify.outputs.classification-rationale || 'path classifier unavailable' }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Classify changed paths
+        id: classify
+        uses: ./.github/actions/path-classifier
+        with:
+          force-full: ${{ github.event_name == 'workflow_dispatch' }}
+
+  test-javascript:
+    name: JavaScript Tests
+    needs: classify
+    if: ${{ github.event_name == 'workflow_dispatch' || needs.classify.outputs.is_docs_only != 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: '24'
+
+      - name: Run JavaScript tests
+        run: node --test .github/scripts/__tests__/*.test.js
+
+      - name: Replay path classifier against recent merged PRs
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PATH_CLASSIFIER_REPLAY: '1'
+        run: node --test .github/scripts/__tests__/path-classifier-replay.test.js
+
+  test-python:
+    name: Python Tests
+    needs: classify
+    if: ${{ github.event_name == 'workflow_dispatch' || needs.classify.outputs.is_docs_only != 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Setup Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.14'
+          cache: pip
+          cache-dependency-path: pyproject.toml
+
+      - name: Install dependencies
+        run: |
+          pip install pytest pytest-cov pyyaml requests numpy pandas pydantic
+
+      - name: Run Python tests
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: |
+          python -m pytest \
+            tests/workflows/ \
+            tests/test_verdict_policy.py \
+            tests/test_verdict_extract.py \
+            tests/test_verdict_policy_integration.py \
+            tests/test_structured_output.py \
+            tests/scripts/test_pr_verifier_compare.py \
+            tests/scripts/test_pr_verifier_fallback.py \
+            tests/scripts/test_pr_verifier_chain_depth.py \
+            tests/scripts/test_pr_verifier_comparison_report.py \
+            tests/scripts/test_pr_verifier_structured_output.py \
+            tests/scripts/test_pr_verifier_infra_detection.py \
+            tests/scripts/test_pr_verifier_issue_creation.py \
+            -v
+
+  packages-pdf-extract:
+    name: stranske-pdf-extract package tests
+    needs: classify
+    if: ${{ github.event_name == 'workflow_dispatch' || needs.classify.outputs.is_docs_only != 'true' }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/stranske_pdf_extract
+    steps:
+      - uses: actions/checkout@v7
+      - name: Setup Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.14'
+          cache: pip
+          cache-dependency-path: packages/stranske_pdf_extract/pyproject.toml
+
+      - name: Install package test dependencies
+        run: python -m pip install -e ".[dev]"
+
+      - name: Run package test suite
+        env:
+          PYTHONPATH: src
+        run: python -m pytest tests
+
+  lint-and-validate:
+    name: Lint, Format & YAML Validation
+    needs: classify
+    if: ${{ github.event_name == 'workflow_dispatch' || needs.classify.outputs.is_docs_only != 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Setup Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.14'
+          cache: pip
+          cache-dependency-path: pyproject.toml
+
+      - name: Install tools
+        run: pip install black ruff pyyaml
+
+      - name: Check Black formatting
+        run: black --check --line-length 100 .
+
+      - name: Run Ruff linting
+        run: ruff check .
+
+      - name: Validate workflow YAML files
+        run: |
+          python -c "
+          import yaml
+          import sys
+          from pathlib import Path
+
+          errors = []
+          for f in Path('.github/workflows').glob('*.yml'):
+              try:
+                  yaml.safe_load(f.read_text())
+              except yaml.YAMLError as e:
+                  errors.append(f'{f}: {e}')
+
+          if errors:
+              for e in errors:
+                  print(e, file=sys.stderr)
+              sys.exit(1)
+          workflow_count = len(list(Path('.github/workflows').glob('*.yml')))
+          print(f'Validated {workflow_count} workflow files')
+          "

@@ -1,0 +1,968 @@
+diff --git a/.gitignore b/.gitignore
+index 4197d8b6..93bde946 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -1,5 +1,6 @@
+ .env
+ __pycache__/
++.mypy_cache/
+ *.pyc
+ *.egg-info/
+ pgdata/
+diff --git a/alerts/db.py b/alerts/db.py
+index 2bfd8ce9..fcaa1fec 100644
+--- a/alerts/db.py
++++ b/alerts/db.py
+@@ -2,6 +2,7 @@
+ 
+ from __future__ import annotations
+ 
++import hashlib
+ import json
+ import sqlite3
+ from datetime import UTC, datetime
+@@ -259,35 +260,78 @@ def insert_alert_history(conn: Any, fired_alerts: list[FiredAlert]) -> list[int]
+     return alert_ids
+ 
+ 
++def _delivery_event_key(fired: FiredAlert) -> str:
++    """Identify filing replays independently of their newly generated timestamp.
++
++    Other event producers must preserve occurred_at and payload on retry.
++    """
++    event = fired.event
++    identity: dict[str, Any] = {
++        "rule_id": fired.rule.rule_id,
++        "type": event.event_type,
++        "manager_id": event.manager_id,
++    }
++    if event.event_type == "new_filing":
++        if event.payload.get("filing_id") is not None:
++            identity["filing_id"] = event.payload["filing_id"]
++        else:
++            identity["payload"] = event.payload
++    else:
++        identity["payload"] = event.payload
++        identity["occurred_at"] = event.occurred_at.isoformat()
++    return hashlib.sha256(serialize_json(identity).encode()).hexdigest()
++
++
+ def insert_pending_alert(conn: Any, fired_alert: FiredAlert) -> int:
+-    """Insert one alert_history row with no delivered channels recorded yet."""
++    """Get or create the durable history/outbox record for a rule/event pair."""
+     ensure_alert_tables(conn)
+-    ph = get_placeholder(conn)
+-    params = (
+-        fired_alert.rule.rule_id,
+-        fired_alert.event.event_type,
+-        serialize_json(fired_alert.event.payload),
+-        serialize_channels(conn, []),
+-    )
+     if is_sqlite(conn):
+-        cursor = conn.execute(
+-            """INSERT INTO alert_history(
+-                rule_id, event_type, payload_json, delivered_channels
+-            ) VALUES (?, ?, ?, ?)""",
+-            params,
+-        )
+-        conn.commit()
+-        return int(cursor.lastrowid or 0)
+-
+-    cursor = conn.execute(
++        _sqlite_add_column_if_missing(conn, "alert_history", "event_key", "TEXT")
++    else:
++        conn.execute("ALTER TABLE alert_history ADD COLUMN IF NOT EXISTS event_key text")
++    conn.execute(
++        "CREATE UNIQUE INDEX IF NOT EXISTS idx_alert_history_event_key ON alert_history(event_key)"
++    )
++    conn.execute("""CREATE TABLE IF NOT EXISTS alert_delivery_attempts (
++        alert_id bigint NOT NULL REFERENCES alert_history(alert_id) ON DELETE CASCADE,
++        channel text NOT NULL,
++        claimed_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
++        PRIMARY KEY (alert_id, channel)
++    )""")
++    ph = get_placeholder(conn)
++    payload_placeholder = ph if is_sqlite(conn) else f"{ph}::jsonb"
++    row = conn.execute(
+         f"""INSERT INTO alert_history(
+-            rule_id, event_type, payload_json, delivered_channels
+-        ) VALUES ({ph}, {ph}, {ph}::jsonb, {ph})
++            rule_id, event_type, payload_json, delivered_channels, event_key
++        ) VALUES ({ph}, {ph}, {payload_placeholder}, {ph}, {ph})
++        ON CONFLICT(event_key) DO UPDATE SET event_key = excluded.event_key
+         RETURNING alert_id""",
+-        params,
+-    )
+-    row = cursor.fetchone()
+-    return int(row[0]) if row and row[0] is not None else 0
++        (
++            fired_alert.rule.rule_id,
++            fired_alert.event.event_type,
++            serialize_json(fired_alert.event.payload),
++            serialize_channels(conn, []),
++            _delivery_event_key(fired_alert),
++        ),
++    ).fetchone()
++    conn.commit()
++    return int(row[0])
++
++
++def claim_delivery(conn: Any, alert_id: int, channel: str) -> bool:
++    """Commit an at-most-once attempt before calling an external service.
++
++    Claims are never automatically released: a failed request or process can
++    have delivered externally even when its local outcome is unknown.
++    """
++    ph = get_placeholder(conn)
++    row = conn.execute(
++        f"""INSERT INTO alert_delivery_attempts(alert_id, channel)
++        VALUES ({ph}, {ph}) ON CONFLICT DO NOTHING RETURNING alert_id""",
++        (alert_id, channel),
++    ).fetchone()
++    conn.commit()
++    return row is not None
+ 
+ 
+ def _fetch_delivery_state(conn: Any, alert_id: int) -> tuple[list[str], dict[str, str]]:
+diff --git a/alerts/dispatch.py b/alerts/dispatch.py
+index ebebbfe2..f4862ca6 100644
+--- a/alerts/dispatch.py
++++ b/alerts/dispatch.py
+@@ -6,7 +6,12 @@
+ from typing import Any
+ 
+ from alerts.channels import DeliveryResult, NotificationChannel
+-from alerts.db import insert_pending_alert, record_delivery_error, record_delivery_success
++from alerts.db import (
++    claim_delivery,
++    insert_pending_alert,
++    record_delivery_error,
++    record_delivery_success,
++)
+ from alerts.models import FiredAlert
+ 
+ logger = logging.getLogger(__name__)
+@@ -25,7 +30,12 @@ async def dispatch(self, fired_alerts: list[FiredAlert]) -> list[int]:
+         return alert_ids
+ 
+     async def dispatch_single(self, alert: FiredAlert) -> int:
+-        """Insert one alert_history row, deliver channels, and persist outcomes."""
++        """Persist an outbox record and attempt each channel at most once.
++
++        This method commits the supplied connection. Callers must commit domain
++        writes first. A claim without a recorded outcome means delivery is
++        unknown and requires reconciliation, never an automatic resend.
++        """
+         alert_id = insert_pending_alert(self.db, alert)
+ 
+         # The streamlit channel uses the persisted alert row as the in-app inbox record.
+@@ -38,8 +48,11 @@ async def dispatch_single(self, alert: FiredAlert) -> int:
+                 )
+                 continue
+ 
++            if not claim_delivery(self.db, alert_id, channel_name):
++                continue
+             result = await channel.deliver(alert)
+             self._record_result(alert_id, result)
++            self.db.commit()
+         return alert_id
+ 
+     def _record_result(self, alert_id: int, result: DeliveryResult) -> None:
+diff --git a/docs/alert-delivery-semantics.md b/docs/alert-delivery-semantics.md
+new file mode 100644
+index 00000000..2a7020bc
+--- /dev/null
++++ b/docs/alert-delivery-semantics.md
+@@ -0,0 +1,52 @@
++# Alert delivery retry semantics
++
++The dispatcher commits a history record before delivery, then commits a unique
++`alert_delivery_attempts` claim for each history ID/channel before calling the
++channel. Replayed filing events reuse the history record using rule ID, event
++type, manager ID and filing ID; a newly generated event timestamp does not cause
++a resend. Other event producers must preserve the event timestamp and payload
++when retrying. Distinct rules and distinct filings remain independent.
++
++Delivery uses **at-most-once attempts**, not exactly-once delivery. An existing
++claim suppresses automatic resends even if the channel raised, timed out, was
++unconfigured, or the delivery-result commit failed. A crash between claiming and
++sending can lose a notification. A claim with neither a delivered channel nor a
++recorded error means the outcome is unknown; reconcile with the provider before
++any manual action. Claims and history must be retained for deduplication to hold.
++Previously stored history without an event key is not retroactively deduplicated.
++
++A retry can attempt channels that have no claim. Database uniqueness also
++prevents two dispatchers from claiming the same rule/event/channel. Delivery
++outcomes are committed after each attempt. If the outcome commit is rolled back,
++the earlier claim survives; if the database committed but its response was lost,
++the same claim still suppresses replay.
++
++The dispatcher owns commits on its supplied connection. EDGAR commits documents,
++filings and holdings before invoking alerts. Callback failure or cleanup cannot
++erase those filings or previously committed claims. This does not add a worker
++that recovers a crash between the filing commit and alert creation; replaying the
++filing is still required to recover that gap.
++
++## Verification in this run
++
++- SQLite regression: four cases passed, covering a failed claim commit (no send),
++  failed outcome commit, accepted outcome commit with a lost response, and a
++  channel exception. Each case rebuilds the filing event and retries on a new
++  connection; total external calls remain one.
++- Alert engine and focused dispatcher tests: 133 passed.
++- Alert integration and EDGAR tests: 27 passed, including all 22 EDGAR tests
++  with `--run-nightly`, on Python 3.14.7.
++- PostgreSQL suite: eight skipped. The added real-database regression injects
++  both outcome-commit failure modes through scheduled EDGAR ingestion, observes
++  durable filings and claims from a separate connection before mock email/Slack
++  delivery, and retries ingestion to assert one send per channel.
++- Live PostgreSQL execution remains required. PostgreSQL 16 startup was attempted
++  with TCP and Unix sockets; both were denied by the sandbox (`Operation not
++  permitted`). Run the PostgreSQL suite against a disposable database using
++  `MGRDB_PG_TEST_URL` (the existing fixture resets its public schema).
++- The full channel suite stalled during asyncio teardown after its existing SMTP
++  test; the new retry cases and existing dispatcher test passed independently.
++- Test-dependency verification reports missing `hypothesis` and optional `uv`.
++
++The task remains unchecked pending successful live PostgreSQL verification.
++Independent review-thread disposition remains with the closer.
+diff --git a/etl/edgar_flow.py b/etl/edgar_flow.py
+index d74aafb7..8a9b2025 100644
+--- a/etl/edgar_flow.py
++++ b/etl/edgar_flow.py
+@@ -31,18 +31,17 @@ def store_document(
+     manager_id: int | None = None,
+     kind: str = "note",
+     filename: str | None = None,
++    *,
++    connection: Any | None = None,
+ ) -> int:
+-    try:
+-        _store_document = importlib.import_module("embeddings").store_document
+-    except (ImportError, AttributeError):
+-        _ = (text, db_path, manager_id, kind, filename)
+-        return 0
++    _store_document = importlib.import_module("embeddings").store_document
+     return _store_document(
+         text,
+         db_path=db_path,
+         manager_id=manager_id,
+         kind=kind,
+         filename=filename,
++        connection=connection,
+     )
+ 
+ 
+@@ -372,67 +371,77 @@ def _latest_filed_date_for_cik(cik: str) -> str | None:
+ async def fetch_and_store(cik: str, since: str):
+     filings = await ADAPTER.list_new_filings(cik, since)
+     conn = connect_db(DB_PATH)
+-    _ensure_legacy_tables(conn)
++    original_autocommit: bool | None = None
++    try:
++        original_autocommit = ingest_module._enable_transactional_writes(conn)
++        _ensure_legacy_tables(conn)
+ 
+-    manager_cols = get_table_columns(conn, "managers")
+-    manager_id = _manager_id_for_cik(conn, cik)
+-    if manager_cols and manager_id is None:
+-        logger.warning("Manager not found; skipping filings", extra={"cik": cik})
+-        conn.close()
+-        return []
+-
+-    all_rows: list[dict[str, Any]] = []
+-    for filing in filings:
+-        raw = await ADAPTER.download(filing)
+-        raw_bytes = raw.encode("utf-8") if isinstance(raw, str) else raw
+-        raw_hash = hashlib.sha256(raw_bytes).hexdigest()[:16]
+-        accession = str(filing.get("accession") or "unknown")
+-        raw_key = f"raw/edgar/{raw_hash}_{accession}.xml"
+-
+-        S3.put_object(Bucket=BUCKET, Key=raw_key, Body=raw, ServerSideEncryption="AES256")
+-        if isinstance(raw, str):
+-            try:
++        manager_cols = get_table_columns(conn, "managers")
++        manager_id = _manager_id_for_cik(conn, cik)
++        if manager_cols and manager_id is None:
++            logger.warning("Manager not found; skipping filings", extra={"cik": cik})
++            return []
++
++        all_rows: list[dict[str, Any]] = []
++        for filing in filings:
++            raw = await ADAPTER.download(filing)
++            raw_bytes = raw.encode("utf-8") if isinstance(raw, str) else raw
++            raw_hash = hashlib.sha256(raw_bytes).hexdigest()[:16]
++            accession = str(filing.get("accession") or "unknown")
++            raw_key = f"raw/edgar/{raw_hash}_{accession}.xml"
++
++            S3.put_object(Bucket=BUCKET, Key=raw_key, Body=raw, ServerSideEncryption="AES256")
++            if isinstance(raw, str):
+                 store_document(
+                     raw,
+                     db_path=DB_PATH,
+                     manager_id=manager_id,
+                     kind="filing_text",
+                     filename=f"{accession}.xml",
++                    connection=conn,
+                 )
+-            except TypeError:
+-                store_document(raw)
+-
+-        parsed_rows = await ADAPTER.parse(raw)
+-        filing_id = _upsert_filing_legacy(
+-            conn,
+-            manager_id=manager_id,
+-            filing_type=str(filing.get("form") or "13F-HR"),
+-            filed_date=filing.get("filed"),
+-            raw_key=raw_key,
+-        )
+-        _replace_holdings_for_filing(
+-            conn,
+-            filing_id=filing_id,
+-            rows=parsed_rows,
+-            manager_id=manager_id,
+-            cik=cik,
+-            accession=accession,
+-            filed_date=filing.get("filed"),
+-        )
+-        conn.commit()
+-        await fire_alerts_for_event(
+-            conn,
+-            build_new_filing_event(
+-                filing_id=filing_id if filing_id > 0 else None,
++
++            parsed_rows = await ADAPTER.parse(raw)
++            filing_id = _upsert_filing_legacy(
++                conn,
+                 manager_id=manager_id,
+                 filing_type=str(filing.get("form") or "13F-HR"),
+                 filed_date=filing.get("filed"),
+-                payload={"accession": accession, "source": "edgar"},
+-            ),
+-        )
+-        all_rows.extend(parsed_rows)
+-    conn.close()
+-    return all_rows
++                raw_key=raw_key,
++            )
++            _replace_holdings_for_filing(
++                conn,
++                filing_id=filing_id,
++                rows=parsed_rows,
++                manager_id=manager_id,
++                cik=cik,
++                accession=accession,
++                filed_date=filing.get("filed"),
++            )
++            # Filing, holdings and document durability precedes all external
++            # delivery. The dispatcher commits its outbox and channel claims
++            # before sending; a later failure must not erase those claims.
++            conn.commit()
++            await fire_alerts_for_event(
++                conn,
++                build_new_filing_event(
++                    filing_id=filing_id if filing_id > 0 else None,
++                    manager_id=manager_id,
++                    filing_type=str(filing.get("form") or "13F-HR"),
++                    filed_date=filing.get("filed"),
++                    payload={"accession": accession, "source": "edgar"},
++                ),
++            )
++            # Persist any remaining callback writes before final cleanup.
++            conn.commit()
++            all_rows.extend(parsed_rows)
++        return all_rows
++    finally:
++        # Each successful filing was committed above; only pending writes are
++        # rolled back, including on cancellation. Raw S3 objects are retained.
++        ingest_module._rollback_quietly(conn)
++        ingest_module._restore_autocommit_quietly(conn, original_autocommit)
++        conn.close()
+ 
+ 
+ @flow
+diff --git a/tests/test_alert_channels.py b/tests/test_alert_channels.py
+index c970c219..6c2dde19 100644
+--- a/tests/test_alert_channels.py
++++ b/tests/test_alert_channels.py
+@@ -213,3 +213,83 @@ def test_build_configured_channels_reads_env(monkeypatch):
+     assert isinstance(channels["email"], EmailChannel)
+     assert isinstance(channels["slack"], SlackChannel)
+     assert isinstance(channels["streamlit"], StreamlitChannel)
++
++
++@pytest.mark.asyncio
++@pytest.mark.parametrize("failure", ["claim", "outcome", "accepted-outcome", "channel"])
++async def test_dispatch_retry_preserves_durable_claim(tmp_path, failure):
++    path = tmp_path / "outbox.db"
++    setup = _setup_db(path)
++    setup.close()
++    sends = []
++
++    class FailingConnection(sqlite3.Connection):
++        armed = False
++
++        def commit(self):
++            if self.armed:
++                self.armed = False
++                if failure == "accepted-outcome":
++                    super().commit()
++                raise RuntimeError("injected commit failure")
++            super().commit()
++
++    conn = sqlite3.connect(path, factory=FailingConnection)
++
++    class ExternalChannel(NotificationChannel):
++        channel_name = "email"
++
++        async def deliver(self, alert):
++            with sqlite3.connect(path) as reader:
++                assert reader.execute("SELECT COUNT(*) FROM alert_history").fetchone() == (1,)
++                assert reader.execute(
++                    "SELECT COUNT(*) FROM alert_delivery_attempts"
++                ).fetchone() == (1,)
++            sends.append(alert.event.payload["filing_id"])
++            if failure == "channel":
++                raise RuntimeError("injected channel failure")
++            conn.armed = True
++            return DeliveryResult("email", success=True)
++
++    def fired():
++        # Rebuilding the event changes occurred_at but preserves filing identity.
++        return FiredAlert(
++            rule=_build_rule(channels=["email"]),
++            event=AlertEvent(event_type="new_filing", manager_id=1, payload={"filing_id": 42}),
++            channels=["email"],
++        )
++
++    dispatcher = AlertDispatcher(conn, {"email": ExternalChannel()})
++    if failure == "claim":
++        from alerts.db import insert_pending_alert
++
++        insert_pending_alert(conn, fired())
++        # Arm specifically at the attempt insert, before any external call.
++        conn.set_trace_callback(
++            lambda sql: (
++                setattr(conn, "armed", True)
++                if sql.startswith("INSERT INTO alert_delivery_attempts")
++                else None
++            )
++        )
++    try:
++        with pytest.raises(RuntimeError, match="injected"):
++            await dispatcher.dispatch_single(fired())
++        conn.rollback()
++    finally:
++        conn.close()
++    assert sends == ([] if failure == "claim" else [42])
++
++    class RetryChannel(NotificationChannel):
++        channel_name = "email"
++
++        async def deliver(self, alert):
++            sends.append(alert.event.payload["filing_id"])
++            return DeliveryResult("email", success=True)
++
++    with sqlite3.connect(path) as retry:
++        dispatcher = AlertDispatcher(retry, {"email": RetryChannel()})
++        first_id = await dispatcher.dispatch_single(fired())
++        assert await dispatcher.dispatch_single(fired()) == first_id
++        assert retry.execute("SELECT COUNT(*) FROM alert_history").fetchone() == (1,)
++    assert sends == [42]
+diff --git a/tests/test_alert_integration.py b/tests/test_alert_integration.py
+index d2f0ec97..ff437c2a 100644
+--- a/tests/test_alert_integration.py
++++ b/tests/test_alert_integration.py
+@@ -1,17 +1,19 @@
+ from __future__ import annotations
+ 
+ import sqlite3
++from datetime import UTC, datetime, timedelta
+ from pathlib import Path
+ 
+ import pytest
+ 
+-from alerts.db import ensure_alert_tables
++from alerts.db import ensure_alert_tables, fetch_rule_by_id, insert_pending_alert, rule_from_row
+ from alerts.integration import (
+     build_new_filing_event,
+     evaluate_and_record_alerts,
+     evaluate_and_record_new_filing_alerts,
+     fire_alerts_for_event,
+ )
++from alerts.models import AlertEvent, FiredAlert
+ 
+ 
+ def _setup_db(db_path: Path) -> sqlite3.Connection:
+@@ -141,3 +143,41 @@ async def test_fire_alerts_for_event_dispatches_matching_channels(tmp_path):
+ 
+     assert len(alert_ids) == 1
+     assert row == ('["streamlit"]',)
++
++
++def test_insert_pending_alert_dedupes_edgar_accession_without_filing_id(tmp_path):
++    """Legacy no-filing_id EDGAR replays must not duplicate on a fresh occurred_at."""
++    conn = _setup_db(tmp_path / "dedupe.db")
++    try:
++        rule_id = _insert_rule(conn)
++        row = fetch_rule_by_id(conn, rule_id)
++        assert row is not None
++        rule = rule_from_row(row)
++        payload = {"accession": "0000000000-24-000001", "source": "edgar"}
++        first = FiredAlert(
++            rule=rule,
++            event=AlertEvent(
++                event_type="new_filing",
++                manager_id=1,
++                payload=payload,
++                occurred_at=datetime(2026, 4, 15, 12, 0, tzinfo=UTC),
++            ),
++            channels=["streamlit"],
++        )
++        second = FiredAlert(
++            rule=rule,
++            event=AlertEvent(
++                event_type="new_filing",
++                manager_id=1,
++                payload=payload,
++                occurred_at=datetime(2026, 4, 15, 12, 0, tzinfo=UTC) + timedelta(hours=1),
++            ),
++            channels=["streamlit"],
++        )
++        first_id = insert_pending_alert(conn, first)
++        second_id = insert_pending_alert(conn, second)
++        assert first_id == second_id
++        count = conn.execute("SELECT COUNT(*) FROM alert_history").fetchone()
++        assert count == (1,)
++    finally:
++        conn.close()
+diff --git a/tests/test_alert_postgres_integration.py b/tests/test_alert_postgres_integration.py
+index 80078bc9..3d8f54a3 100644
+--- a/tests/test_alert_postgres_integration.py
++++ b/tests/test_alert_postgres_integration.py
+@@ -15,6 +15,7 @@
+ 
+ import pytest
+ 
++import etl.edgar_flow as flow
+ from alerts.channels import DeliveryResult, NotificationChannel
+ from alerts.db import (
+     ensure_alert_tables,
+@@ -194,6 +195,7 @@ def _fired_alert(pg_conn: PgAlertFixture) -> FiredAlert:
+ def test_ensure_alert_tables_creates_postgres_tables(pg_conn: PgAlertFixture):
+     with pg_conn.conn.cursor() as cur:
+         cur.execute("SAVEPOINT alert_table_contract")
++        cur.execute("DROP TABLE IF EXISTS alert_delivery_attempts")
+         cur.execute("DROP TABLE IF EXISTS alert_history")
+         cur.execute("DROP TABLE IF EXISTS alert_rules")
+ 
+@@ -284,3 +286,187 @@ async def test_fire_alerts_for_event_records_streamlit_channel(pg_conn: PgAlertF
+ 
+     assert row is not None
+     assert "streamlit" in row[0]
++
++
++@pytest.mark.asyncio
++@pytest.mark.parametrize("callback_fails", [False, True], ids=["success", "callback-failure"])
++async def test_scheduled_edgar_alert_transaction(
++    pg_conn: PgAlertFixture, pg_url, psycopg_module, monkeypatch, callback_fails
++):
++    """Callback failure cannot erase already committed delivery records."""
++    pg_conn.conn.commit()
++    accession = f"scheduled-alert-{callback_fails}"
++
++    class Adapter:
++        async def list_new_filings(self, cik, since):
++            return [{"accession": accession, "filed": "2026-04-15", "form": "13F-HR"}]
++
++        async def download(self, filing):
++            # Binary input bypasses unrelated document embedding in this alert test.
++            return accession.encode()
++
++        async def parse(self, raw):
++            return []
++
++    conn = psycopg_module.connect(pg_url, autocommit=True)
++    monkeypatch.setattr(flow, "connect_db", lambda _: conn)
++    monkeypatch.setattr(flow, "ADAPTER", Adapter())
++    monkeypatch.setattr(flow.S3, "put_object", lambda **kwargs: None)
++    observed_filings = []
++
++    async def dispatch(db_conn, event):
++        assert db_conn is conn
++        assert not conn.autocommit
++        with psycopg_module.connect(pg_url, autocommit=True) as reader:
++            assert (
++                reader.execute(
++                    "SELECT COUNT(*) FROM filings WHERE filing_id = %s",
++                    (event.payload["filing_id"],),
++                ).fetchone()[0]
++                == 1
++            )
++        observed_filings.append(event.payload["filing_id"])
++        ids = await fire_alerts_for_event(
++            db_conn, event, channels={"streamlit": MockStreamlitChannel()}
++        )
++        assert ids
++        assert db_conn.execute(
++            "SELECT delivered_channels FROM alert_history WHERE alert_id = %s", (ids[0],)
++        ).fetchone()[0] == ["streamlit"]
++        if callback_fails:
++            raise RuntimeError("injected callback failure after alert write")
++        return ids
++
++    monkeypatch.setattr(flow, "fire_alerts_for_event", dispatch)
++    if callback_fails:
++        with pytest.raises(RuntimeError, match="injected callback failure"):
++            await flow.fetch_and_store.fn("0001791786", "2026-01-01")
++    else:
++        assert await flow.fetch_and_store.fn("0001791786", "2026-01-01") == []
++    assert conn.closed
++    assert len(observed_filings) == 1
++    with psycopg_module.connect(pg_url, autocommit=True) as reader:
++        assert (
++            reader.execute(
++                "SELECT COUNT(*) FROM filings WHERE filing_id = %s", (observed_filings[0],)
++            ).fetchone()[0]
++            == 1
++        )
++        alerts = reader.execute(
++            "SELECT delivered_channels FROM alert_history WHERE payload_json->>'accession' = %s",
++            (accession,),
++        ).fetchall()
++        assert alerts == [(["streamlit"],)]
++
++
++@pytest.mark.asyncio
++@pytest.mark.parametrize("commit_reached_server", [False, True])
++async def test_external_delivery_commit_failure_retry(
++    pg_conn, pg_url, psycopg_module, monkeypatch, commit_reached_server
++):
++    """A real PostgreSQL claim survives an ambiguous post-send commit and ETL retry."""
++    pg_conn.conn.execute(
++        "UPDATE alert_rules SET channels = %s WHERE rule_id = %s",
++        (["email", "slack"], pg_conn.rule_id),
++    )
++    pg_conn.conn.commit()
++    accession = f"outbox-commit-failure-{commit_reached_server}"
++    deliveries = []
++    connections = []
++    fail_next_commit = False
++    injected = False
++
++    class FailingConnection:
++        def __init__(self):
++            self.connection = psycopg_module.connect(pg_url, autocommit=True)
++
++        def __getattr__(self, name):
++            return getattr(self.connection, name)
++
++        @property
++        def autocommit(self):
++            return self.connection.autocommit
++
++        @autocommit.setter
++        def autocommit(self, value):
++            self.connection.autocommit = value
++
++        def commit(self):
++            nonlocal fail_next_commit
++            if fail_next_commit:
++                fail_next_commit = False
++                if commit_reached_server:
++                    self.connection.commit()
++                raise RuntimeError("injected post-delivery commit failure")
++            self.connection.commit()
++
++    def connect(_):
++        conn = FailingConnection()
++        connections.append(conn)
++        return conn
++
++    class Adapter:
++        async def list_new_filings(self, cik, since):
++            return [{"accession": accession, "filed": "2026-04-15", "form": "13F-HR"}]
++
++        async def download(self, filing):
++            return accession.encode()
++
++        async def parse(self, raw):
++            return []
++
++    class ExternalChannel(NotificationChannel):
++        def __init__(self, name):
++            self.channel_name = name
++
++        async def deliver(self, alert):
++            nonlocal fail_next_commit, injected
++            with psycopg_module.connect(pg_url, autocommit=True) as reader:
++                assert reader.execute(
++                    "SELECT COUNT(*) FROM filings WHERE filing_id = %s",
++                    (alert.event.payload["filing_id"],),
++                ).fetchone() == (1,)
++                assert (
++                    reader.execute(
++                        """SELECT COUNT(*) FROM alert_delivery_attempts a
++                    JOIN alert_history h USING (alert_id)
++                    WHERE h.payload_json->>'accession' = %s AND a.channel = %s""",
++                        (accession, self.channel_name),
++                    ).fetchone()
++                    == (1,)
++                )
++            deliveries.append(self.channel_name)
++            if not injected:
++                injected = True
++                fail_next_commit = True
++            return DeliveryResult(success=True, channel=self.channel_name)
++
++    async def dispatch(conn, event):
++        return await fire_alerts_for_event(
++            conn, event, channels={name: ExternalChannel(name) for name in ["email", "slack"]}
++        )
++
++    monkeypatch.setattr(flow, "connect_db", connect)
++    monkeypatch.setattr(flow, "ADAPTER", Adapter())
++    monkeypatch.setattr(flow.S3, "put_object", lambda **kwargs: None)
++    monkeypatch.setattr(flow, "fire_alerts_for_event", dispatch)
++    try:
++        with pytest.raises(RuntimeError, match="injected post-delivery commit failure"):
++            await flow.fetch_and_store.fn("0001791786", "2026-01-01")
++        assert connections[0].closed
++        assert deliveries == ["email"]
++        await flow.fetch_and_store.fn("0001791786", "2026-01-01")
++        assert connections[1].closed
++        assert deliveries == ["email", "slack"]
++        with psycopg_module.connect(pg_url, autocommit=True) as reader:
++            rows = reader.execute(
++                "SELECT delivered_channels FROM alert_history WHERE payload_json->>'accession' = %s",
++                (accession,),
++            ).fetchall()
++            assert rows == [(["email", "slack"] if commit_reached_server else ["slack"],)]
++    finally:
++        pg_conn.conn.execute(
++            "UPDATE alert_rules SET channels = %s WHERE rule_id = %s",
++            (["streamlit"], pg_conn.rule_id),
++        )
++        pg_conn.conn.commit()
+diff --git a/tests/test_edgar_flow.py b/tests/test_edgar_flow.py
+index b32274e9..b30e8b0b 100644
+--- a/tests/test_edgar_flow.py
++++ b/tests/test_edgar_flow.py
+@@ -333,6 +333,10 @@ def put_object(**kwargs):
+     results = await flow.fetch_and_store.fn("0", "2024-01-01")
+ 
+     assert len(results) == 2
++    borrowed = stored[0][1].pop("connection")
++    assert isinstance(borrowed, sqlite3.Connection)
++    with pytest.raises(sqlite3.ProgrammingError, match="closed"):
++        borrowed.execute("SELECT 1")
+     assert stored == [
+         (
+             "<xml></xml>",
+@@ -369,6 +373,7 @@ async def test_fetch_and_store_uses_postgres_safe_persistence(monkeypatch):
+ 
+     async def fake_fire_alerts_for_event(db_conn, event):
+         assert db_conn is conn
++        assert conn.commits == 1  # Filing is durable before alert dispatch.
+         events.append(event)
+         return [1]
+ 
+@@ -384,6 +389,7 @@ async def fake_fire_alerts_for_event(db_conn, event):
+             "<xml></xml>",
+             {
+                 "db_path": "postgres://manager-db",
++                "connection": conn,
+                 "manager_id": 321,
+                 "kind": "filing_text",
+                 "filename": "1.xml",
+@@ -404,7 +410,7 @@ async def fake_fire_alerts_for_event(db_conn, event):
+         (9001, "AAA", "CorpA", 1, 1),
+         (9001, "BBB", "CorpB", 2, 2),
+     ]
+-    assert conn.commits == 1
++    assert conn.commits == 2  # Alert writes are committed separately.
+     assert conn.transactions == 1
+     assert conn.closed is True
+     assert len(events) == 1
+@@ -498,7 +504,7 @@ async def test_fetch_and_store_idempotent_rerun(monkeypatch, tmp_path):
+ 
+     stored = []
+ 
+-    def record_document(raw):
++    def record_document(raw, **kwargs):
+         stored.append(raw)
+ 
+     monkeypatch.setattr(flow.S3, "put_object", lambda **kwargs: None)
+@@ -607,3 +613,136 @@ async def fake_fetch_and_store(cik, since):
+     monkeypatch.setattr(flow, "RAW_DIR", tmp_path)
+ 
+     await flow.edgar_flow.fn(cik_list=["bad"])
++
++
++@pytest.mark.asyncio
++@pytest.mark.parametrize("failure", [None, "parse", "filing", "holdings"])
++async def test_scheduled_index_and_filing_share_transaction(tmp_path, monkeypatch, failure):
++    import embeddings
++
++    db_path = tmp_path / "atomic.db"
++    _setup_relational_schema(db_path)
++    monkeypatch.setenv("USE_SIMPLE_EMBED", "1")
++    monkeypatch.delenv("DB_URL", raising=False)
++    # Establish the real document schema independently of the tested filing.
++    embeddings.store_document("existing", str(db_path), manager_id=100)
++    with sqlite3.connect(db_path) as setup:
++        setup.execute("DELETE FROM documents")
++
++    class ObservedConnection(sqlite3.Connection):
++        closed = False
++
++        def close(self):
++            self.closed = True
++            super().close()
++
++    conn = sqlite3.connect(db_path, factory=ObservedConnection)
++    monkeypatch.setattr(flow, "connect_db", lambda _: conn)
++    monkeypatch.setattr(flow, "DB_PATH", str(db_path))
++    adapter = DummyAdapter()
++    monkeypatch.setattr(flow, "ADAPTER", adapter)
++    objects, events = [], []
++    monkeypatch.setattr(flow.S3, "put_object", lambda **kwargs: objects.append(kwargs))
++    monkeypatch.setattr(flow, "resolve_holding_identifiers", lambda *args, **kwargs: None)
++
++    def counts():
++        with sqlite3.connect(db_path) as read:
++            return tuple(
++                read.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0]
++                for table in ("documents", "filings", "holdings")
++            )
++
++    async def event_after_commit(db_conn, event):
++        assert db_conn is conn
++        assert counts() == (1, 1, 1)
++        events.append(event)
++
++    monkeypatch.setattr(flow, "fire_alerts_for_event", event_after_commit)
++
++    def assert_index_then_fail():
++        assert conn.execute("SELECT COUNT(*) FROM documents").fetchone()[0] == 1
++        raise RuntimeError("injected post-index failure")
++
++    if failure == "parse":
++
++        async def fail_parse(raw):
++            assert_index_then_fail()
++
++        monkeypatch.setattr(adapter, "parse", fail_parse)
++    elif failure in ("filing", "holdings"):
++        name = "_upsert_filing_legacy" if failure == "filing" else "_insert_holding_legacy"
++        real_write = getattr(flow, name)
++
++        def fail_after_write(*args, **kwargs):
++            real_write(*args, **kwargs)
++            assert_index_then_fail()
++
++        monkeypatch.setattr(flow, name, fail_after_write)
++
++    if failure:
++        with pytest.raises(RuntimeError, match="injected post-index failure"):
++            await flow.fetch_and_store.fn("0", "2024-01-01")
++        assert counts() == (0, 0, 0)
++        assert not events
++    else:
++        assert len(await flow.fetch_and_store.fn("0", "2024-01-01")) == 1
++        assert counts() == (1, 1, 1)
++        assert len(events) == 1
++    assert conn.closed
++    assert len(objects) == 1
++
++
++@pytest.mark.asyncio
++async def test_scheduled_second_filing_failure_preserves_committed_first(tmp_path, monkeypatch):
++    import embeddings
++
++    db_path = tmp_path / "batch.db"
++    _setup_relational_schema(db_path)
++    monkeypatch.setenv("USE_SIMPLE_EMBED", "1")
++    monkeypatch.delenv("DB_URL", raising=False)
++    monkeypatch.setattr(flow, "DB_PATH", str(db_path))
++    monkeypatch.setattr(flow.S3, "put_object", lambda **kwargs: None)
++    monkeypatch.setattr(flow, "resolve_holding_identifiers", lambda *args, **kwargs: None)
++    adapter = MultiFilingAdapter()
++    real_parse = adapter.parse
++
++    async def parse(raw):
++        if "'2'" in raw:
++            raise RuntimeError("second filing failed")
++        return await real_parse(raw)
++
++    monkeypatch.setattr(adapter, "parse", parse)
++    monkeypatch.setattr(flow, "ADAPTER", adapter)
++    events = []
++
++    async def event(db_conn, event):
++        events.append(event)
++
++    monkeypatch.setattr(flow, "fire_alerts_for_event", event)
++    with pytest.raises(RuntimeError, match="second filing failed"):
++        await flow.fetch_and_store.fn("0", "2024-01-01")
++    with sqlite3.connect(db_path) as conn:
++        assert conn.execute("SELECT filename FROM documents").fetchall() == [("1.xml",)]
++        assert conn.execute("SELECT COUNT(*) FROM filings").fetchone()[0] == 1
++        assert conn.execute("SELECT COUNT(*) FROM holdings").fetchone()[0] == 1
++    assert len(events) == 1
++    assert len(embeddings.search_documents("xml", str(db_path))) == 1
++
++
++@pytest.mark.asyncio
++async def test_scheduled_setup_failure_closes_connection(monkeypatch):
++    conn = StrictPostgresConnection()
++    conn.autocommit = True
++    conn.rollback = lambda: None
++    monkeypatch.setattr(flow, "connect_db", lambda _: conn)
++    monkeypatch.setattr(flow, "ADAPTER", EmptyFilingAdapter())
++
++    def fail_setup(db_conn):
++        assert not db_conn.autocommit
++        raise RuntimeError("setup failed")
++
++    monkeypatch.setattr(flow, "_ensure_legacy_tables", fail_setup)
++    with pytest.raises(RuntimeError, match="setup failed"):
++        await flow.fetch_and_store.fn("0", "2024-01-01")
++    assert conn.closed
++    assert conn.autocommit
+diff --git a/tests/test_edgar_integration.py b/tests/test_edgar_integration.py
+index a2612b79..9477cf71 100644
+--- a/tests/test_edgar_integration.py
++++ b/tests/test_edgar_integration.py
+@@ -165,6 +165,15 @@ async def test_store_step_with_mocked_storage(monkeypatch, tmp_path):
+     monkeypatch.setattr(flow, "ADAPTER", edgar)
+ 
+     stored = []
++    connections = []
++    real_connect = flow.connect_db
++
++    def connect(db_path):
++        conn = real_connect(db_path)
++        connections.append(conn)
++        return conn
++
++    monkeypatch.setattr(flow, "connect_db", connect)
+ 
+     def record_document(raw, **kwargs):
+         stored.append((raw, kwargs))
+@@ -192,6 +201,7 @@ def responder(url):
+     rows = await flow.fetch_and_store.fn("0000000000", "2024-01-01")
+ 
+     assert rows
++    assert len(connections) == 1
+     assert stored == [
+         (
+             sample_xml(),
+@@ -200,6 +210,7 @@ def responder(url):
+                 "manager_id": 1,
+                 "kind": "filing_text",
+                 "filename": "0000000000-24-000001.xml",
++                "connection": connections[0],
+             },
+         )
+     ]

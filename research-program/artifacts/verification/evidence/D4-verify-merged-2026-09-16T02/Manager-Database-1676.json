@@ -1,0 +1,24 @@
+{
+  "body": "Configured UI credentials currently crash before a login form appears. Use the pinned authenticator API, read its authentication state on each rerun, and retain the logout control so logging out immediately revokes access. Preserve blank-credential development mode and sign reauthentication cookies with an independent UI_COOKIE_KEY and cache bcrypt hashes across reruns; existing cookies require a fresh login.\n\nCloses #1667\n\n## Validation\n\n- Python 3.12.2, Streamlit 1.60.0, streamlit-authenticator 0.4.2.\n- `python -m pytest tests/test_ui_auth.py tests/test_ui_auth_dev_mode.py`: **9 passed**. Real AppTest exercises form rendering, rejected username/password, successful login, authenticated rerun, logout and the next rerun; also checks stale dev flags, missing dependency and blank credentials.\n- Ruff, Black with target py312, focused mypy and `git diff --check` pass.\n\n## Deliberate-break evidence\n\nActual named gate: `python -m pytest tests/test_ui_auth.py::test_configured_login_renders_with_real_authenticator`.\n\nRestored `stauth.Hasher([password]).generate()` immediately before credential construction in `ui/__init__.py`:\n\n```text\nTypeError: Hasher.__init__() takes 1 positional argument but 2 were given\nFAILED tests/test_ui_auth.py::test_configured_login_renders_with_real_authenticator\n1 failed\nexit 1\n```\n\nReverted that mutation and ran the full authentication gate:\n\n```text\n9 passed, 7 warnings in 13.39s\nexit 0\n```\n\nThe original base also fails the new form-render test with the same TypeError. The old mock-based suite passed before this change and could not detect dependency drift. Evidence was collected against the actual installed pinned libraries using synthetic credentials only. AppTest does not exercise browser cookie transport.\n\n\n<!-- This is an auto-generated comment: release notes by coderabbit.ai -->\n## Summary by CodeRabbit\n\n- **Security**\n  - Configured login now requires valid authentication and rejects stale cached login state.\n  - Logging out resets authentication and access.\n  - Authentication fails closed when the required authenticator is unavailable.\n  - A separate cookie-signing key of at least 32 characters is required; changing it invalidates existing reauthentication cookies.\n\n- **Development Experience**\n  - Development-mode access remains available when credentials are unset, blank, or whitespace-only.\n\n- **Tests**\n  - Added integration coverage for login, logout, authentication failures, session handling, and development-mode behavior.\n<!-- end of auto-generated comment: release notes by coderabbit.ai -->\n\n## Review recovery tasks\n\n- [x] Address r4010099707: replace the password-derived UI cookie signing key with an independent high-entropy UI_COOKIE_KEY; fail closed for configured authentication when absent and document rotation. Keep chat signing separate.\n- [x] Address r4010099697: avoid bcrypt hashing on every rerun by caching the hash with password-change invalidation and use auto_hash=False; prove rerun reuse and changed-password invalidation.\n- [x] Reconcile r4010090630 with the security correction: test the cookie_key actually passed to Authenticate and independent-secret rotation rather than asserting the rejected password-derived design. Run real AppTest authentication regressions and retain exact output.\n\nActive review sources: https://github.com/stranske/Manager-Database/pull/1676#discussion_r4010099707, https://github.com/stranske/Manager-Database/pull/1676#discussion_r4010099697, https://github.com/stranske/Manager-Database/pull/1676#discussion_r4010090630. These are automation-owned code/test tasks; do not self-resolve review threads. Historical validation above is for the original head.\n\n## Current recovery validation\n\nRecovery af993275 requires independent UI_COOKIE_KEY, wires Docker configuration, and caches bcrypt with password-change invalidation. Python 3.12.2 real AppTest plus argument capture: 18 passed. Four new regression cases failed on the prior source. Current evidence: https://github.com/stranske/Manager-Database/pull/1676#issuecomment-5672645191. Historical 9-test validation above describes the original implementation. Active review threads remain for independent closer disposition.\n",
+  "closingIssuesReferences": [
+    {
+      "id": "I_kwDOO4LcjM8AAAABRQx1QQ",
+      "number": 1667,
+      "repository": {
+        "id": "R_kgDOO4LcjA",
+        "name": "Manager-Database",
+        "owner": {
+          "id": "MDQ6VXNlcjIzMDQ2MzIy",
+          "login": "stranske"
+        }
+      },
+      "url": "https://github.com/stranske/Manager-Database/issues/1667"
+    }
+  ],
+  "mergeCommit": {
+    "oid": "486fba16212bf45676800fb082db5c25730a62c0"
+  },
+  "mergedAt": "2026-09-15T06:46:40Z",
+  "number": 1676,
+  "title": "fix(ui): restore configured login and persistent logout control"
+}

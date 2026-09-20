@@ -626,3 +626,345 @@
 - 2026-09-15T01:36:17.708904+00:00 D3-unblock-sweep-2026-09-15T01: Pension-Data complete; frozen 0/0; owner 0; silent 5/0; reroutes 0; branch success; supply 8; priority 0/10
 - 2026-09-15T01:40:00+00:00 D3-unblock-sweep-2026-09-15T01: Counter_Risk disposition; CI red run 34899128332 black format limits.py; mechanical fix verified locally [LOCAL_WORKSPACE]/Counter_Risk/src/counter_risk/compute/limits.py; PR blocked by offload
 - 2026-09-15T01:40:00+00:00 D3-unblock-sweep-2026-09-15T01: sweep complete; 8 covered 7 deferred; 0 frozen repaired; 13 silent claims release already satisfied; 0 reroutes; 1 red branch
+
+- 2026-09-15T09:49:26.024213+00:00 D3-unblock-sweep-2026-09-15T09: Workflows complete; frozen 1/1; owner 0; silent 5/0; reroutes 0; branch hub-only; supply 36; priority 1/45
+
+- 2026-09-15T09:49:26.024213+00:00 D3-unblock-sweep-2026-09-15T09: Travel-Plan-Permission complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch unknown; supply 5; priority 0/9
+
+- 2026-09-15T09:49:26.024213+00:00 D3-unblock-sweep-2026-09-15T09: Trend_Model_Project complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch success; supply 8; priority 0/10
+
+- 2026-09-15T09:49:26.024213+00:00 D3-unblock-sweep-2026-09-15T09: Portable-Alpha-Extension-Model complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch success; supply 4; priority 4/6
+
+- 2026-09-15T09:49:26.024213+00:00 D3-unblock-sweep-2026-09-15T09: Counter_Risk complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch success; supply 6; priority 6/8
+
+- 2026-09-15T09:49:26.024213+00:00 D3-unblock-sweep-2026-09-15T09: Manager-Database complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch unknown; supply 7; priority 6/9
+
+- 2026-09-15T09:49:26.024213+00:00 D3-unblock-sweep-2026-09-15T09: Inv-Man-Intake complete; frozen 0/0; owner 0; silent 3/0; reroutes 0; branch success; supply 4; priority 0/6
+
+- 2026-09-15T09:49:26.024213+00:00 D3-unblock-sweep-2026-09-15T09: Pension-Data complete; frozen 0/0; owner 0; silent 5/0; reroutes 0; branch success; supply 8; priority 0/10
+
+- 2026-09-15T09:49:26.024213+00:00 D3-unblock-sweep-2026-09-15T09: sweep complete; 8 covered 7 deferred; 1 frozen repaired (#3455); 13 silent claims release already satisfied; 0 reroutes; 0 red branches in batch
+
+- 2026-09-15T18:05:12.000000+00:00 D3-unblock-sweep-2026-09-15T17: Workflows complete; frozen 0/0; owner 0; silent 5/0; reroutes 0; branch hub-only; supply 35; priority 1/35
+
+- 2026-09-15T18:05:12.000000+00:00 D3-unblock-sweep-2026-09-15T17: Travel-Plan-Permission complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch success; supply 5; priority 0/5
+
+- 2026-09-15T18:05:12.000000+00:00 D3-unblock-sweep-2026-09-15T17: Trend_Model_Project complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch success; supply 8; priority 0/8
+
+- 2026-09-15T18:05:12.000000+00:00 D3-unblock-sweep-2026-09-15T17: Portable-Alpha-Extension-Model complete; frozen 1/1 (#2300); owner 0; silent 0/0; reroutes 0; branch success; supply 5; priority 4/5
+
+- 2026-09-15T18:05:12.000000+00:00 D3-unblock-sweep-2026-09-15T17: Counter_Risk complete; frozen 1/1 (#1072); owner 0; silent 0/0; reroutes 0; branch success; supply 7; priority 6/7
+
+- 2026-09-15T18:05:12.000000+00:00 D3-unblock-sweep-2026-09-15T17: Manager-Database complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch success; supply 6; priority 5/6
+
+- 2026-09-15T18:05:12.000000+00:00 D3-unblock-sweep-2026-09-15T17: Inv-Man-Intake complete; frozen 0/0; owner 0; silent 3/0; reroutes 0; branch success; supply 4; priority 0/4
+
+- 2026-09-15T18:05:12.000000+00:00 D3-unblock-sweep-2026-09-15T17: Pension-Data complete; frozen 0/0; owner 0; silent 5/0; reroutes 0; branch success; supply 8; priority 0/8
+
+- 2026-09-15T18:05:12.000000+00:00 D3-unblock-sweep-2026-09-15T17: sweep complete; 8 covered 7 deferred; 2 frozen repaired (#2300, #1072); 13 silent claims release already satisfied; 0 reroutes; 0 red branches in batch
+
+- 2026-09-16T02:08:20.711643+00:00 D3-unblock-sweep-2026-09-16T02: Workflows complete; frozen 0/0; owner 0; silent 5/0; reroutes 0; branch hub-only; supply 35; priority 1/44
+
+- 2026-09-16T02:08:20.711643+00:00 D3-unblock-sweep-2026-09-16T02: Travel-Plan-Permission complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch green; supply 5; priority 0/9
+
+- 2026-09-16T02:08:20.711643+00:00 D3-unblock-sweep-2026-09-16T02: Trend_Model_Project complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch green; supply 8; priority 0/10
+
+- 2026-09-16T02:08:20.711643+00:00 D3-unblock-sweep-2026-09-16T02: Portable-Alpha-Extension-Model complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch green; supply 5; priority 4/7
+
+- 2026-09-16T02:08:20.711643+00:00 D3-unblock-sweep-2026-09-16T02: Counter_Risk complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch green; supply 7; priority 6/9
+
+- 2026-09-16T02:08:20.711643+00:00 D3-unblock-sweep-2026-09-16T02: Manager-Database complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch green; supply 6; priority 5/8
+
+- 2026-09-16T02:08:20.711643+00:00 D3-unblock-sweep-2026-09-16T02: Inv-Man-Intake complete; frozen 0/0; owner 0; silent 3/0; reroutes 0; branch green; supply 4; priority 0/6
+
+- 2026-09-16T02:08:20.711643+00:00 D3-unblock-sweep-2026-09-16T02: Pension-Data complete; frozen 0/0; owner 0; silent 5/0; reroutes 0; branch green; supply 8; priority 0/10
+
+- 2026-09-16T02:10:41.000000+00:00 D3-unblock-sweep-2026-09-16T02: sweep complete; 8 covered 7 deferred; 0 frozen repaired; 13 silent claims release already satisfied; 0 reroutes; 0 red branches in batch; total supply 78
+
+- 2026-09-16T10:22:11.715954+00:00 D3-unblock-sweep-2026-09-16T10: Workflows complete; frozen 1/0; owner 0; silent 5/0; reroutes 0; branch hub-only; supply 37; priority 1/46
+
+- 2026-09-16T10:22:11.715954+00:00 D3-unblock-sweep-2026-09-16T10: Travel-Plan-Permission complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch green; supply 5; priority 0/9
+
+- 2026-09-16T10:22:11.715954+00:00 D3-unblock-sweep-2026-09-16T10: Trend_Model_Project complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch green; supply 8; priority 0/10
+
+- 2026-09-16T10:22:11.715954+00:00 D3-unblock-sweep-2026-09-16T10: Portable-Alpha-Extension-Model complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch green; supply 5; priority 4/7
+
+- 2026-09-16T10:22:11.715954+00:00 D3-unblock-sweep-2026-09-16T10: Counter_Risk complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch green; supply 8; priority 6/10
+
+- 2026-09-16T10:22:11.715954+00:00 D3-unblock-sweep-2026-09-16T10: Manager-Database complete; frozen 1/0; owner 0; silent 0/0; reroutes 0; branch green; supply 7; priority 5/9
+
+- 2026-09-16T10:22:11.715954+00:00 D3-unblock-sweep-2026-09-16T10: Inv-Man-Intake complete; frozen 0/0; owner 0; silent 3/0; reroutes 0; branch green; supply 4; priority 0/6
+
+- 2026-09-16T10:22:11.715954+00:00 D3-unblock-sweep-2026-09-16T10: Pension-Data complete; frozen 0/0; owner 0; silent 5/0; reroutes 0; branch green; supply 8; priority 0/10
+
+- 2026-09-16T10:25:00+00:00 D3-unblock-sweep-2026-09-16T10: sweep complete; 8 covered 7 deferred; 2 frozen repaired (#3459, #1682); 13 silent claims release already satisfied; 0 reroutes; 0 red health gates in batch; total supply 82
+
+- 2026-09-16T18:34:00+00:00 D3-unblock-sweep-2026-09-16T18: Workflows complete; frozen 1/0; owner 1 (#3123 tracker); silent 5/0; reroutes 0; branch hub-only; supply 36; priority 1/45
+
+- 2026-09-16T18:34:00+00:00 D3-unblock-sweep-2026-09-16T18: Travel-Plan-Permission complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch green; supply 5; priority 0/9
+
+- 2026-09-16T18:34:00+00:00 D3-unblock-sweep-2026-09-16T18: Trend_Model_Project complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch green; supply 8; priority 0/10
+
+- 2026-09-16T18:34:00+00:00 D3-unblock-sweep-2026-09-16T18: Portable-Alpha-Extension-Model complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch green; supply 5; priority 4/7
+
+- 2026-09-16T18:34:00+00:00 D3-unblock-sweep-2026-09-16T18: Counter_Risk complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch health-green CI-red; supply 8; priority 6/10
+
+- 2026-09-16T18:34:00+00:00 D3-unblock-sweep-2026-09-16T18: Manager-Database complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch green; supply 7; priority 5/9
+
+- 2026-09-16T18:34:00+00:00 D3-unblock-sweep-2026-09-16T18: Inv-Man-Intake complete; frozen 0/0; owner 0; silent 3/0; reroutes 0; branch green; supply 4; priority 0/6
+
+- 2026-09-16T18:34:00+00:00 D3-unblock-sweep-2026-09-16T18: Pension-Data complete; frozen 0/0; owner 0; silent 5/0; reroutes 0; branch green; supply 8; priority 0/10
+
+- 2026-09-16T18:34:00+00:00 D3-unblock-sweep-2026-09-16T18: sweep complete; 8 covered 7 deferred; 0 frozen repaired; 13 silent claims release already satisfied; 0 reroutes; Counter_Risk CI red (mechanical format); total supply 81
+
+- 2026-09-17T02:40:23+00:00 D3-unblock-sweep-2026-09-17T02: Workflows complete; frozen 1/0; owner 1 (#3123 tracker); silent 6/1 (#3372); reroutes 0; branch hub-only; supply 35; priority 0/44
+
+- 2026-09-17T02:40:23+00:00 D3-unblock-sweep-2026-09-17T02: Travel-Plan-Permission complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch green; supply 5; priority 0/9
+
+- 2026-09-17T02:40:23+00:00 D3-unblock-sweep-2026-09-17T02: Trend_Model_Project complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch green; supply 8; priority 0/10
+
+- 2026-09-17T02:40:23+00:00 D3-unblock-sweep-2026-09-17T02: Portable-Alpha-Extension-Model complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch green; supply 5; priority 4/7
+
+- 2026-09-17T02:40:23+00:00 D3-unblock-sweep-2026-09-17T02: Counter_Risk complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch health-green CI-red; supply 8; priority 6/10
+
+- 2026-09-17T02:40:23+00:00 D3-unblock-sweep-2026-09-17T02: Manager-Database complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch health-green CI-red; supply 7; priority 5/9
+
+- 2026-09-17T02:40:23+00:00 D3-unblock-sweep-2026-09-17T02: Inv-Man-Intake complete; frozen 0/0; owner 0; silent 3/0; reroutes 0; branch green; supply 4; priority 0/6
+
+- 2026-09-17T02:40:23+00:00 D3-unblock-sweep-2026-09-17T02: Pension-Data complete; frozen 0/0; owner 0; silent 7/2 (#884,#885); reroutes 0; branch green; supply 8; priority 0/10
+
+- 2026-09-17T02:40:23+00:00 D3-unblock-sweep-2026-09-17T02: sweep complete; 8 covered 7 deferred; 0 frozen repaired; 3 silent claims released; 0 reroutes; Counter_Risk CI red (mechanical format); Manager-Database CI red (postgres); total supply 80
+
+- 2026-09-17T10:51:19+00:00 D3-unblock-sweep-2026-09-17T10: Workflows complete; frozen 1/0; owner 1 (#3123 tracker); silent 5/0; reroutes 0; branch hub-only; supply 36; priority 1/45
+
+- 2026-09-17T10:51:19+00:00 D3-unblock-sweep-2026-09-17T10: Travel-Plan-Permission complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch green; supply 5; priority 0/9
+
+- 2026-09-17T10:51:19+00:00 D3-unblock-sweep-2026-09-17T10: Trend_Model_Project complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch green; supply 8; priority 0/10
+
+- 2026-09-17T10:51:19+00:00 D3-unblock-sweep-2026-09-17T10: Portable-Alpha-Extension-Model complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch green; supply 5; priority 4/7
+
+- 2026-09-17T10:51:19+00:00 D3-unblock-sweep-2026-09-17T10: Counter_Risk complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch health-green CI-red; supply 8; priority 6/10
+
+- 2026-09-17T10:51:19+00:00 D3-unblock-sweep-2026-09-17T10: Manager-Database complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch health-green CI-red; supply 7; priority 5/9
+
+- 2026-09-17T10:51:19+00:00 D3-unblock-sweep-2026-09-17T10: Inv-Man-Intake complete; frozen 0/0; owner 0; silent 3/0; reroutes 0; branch green; supply 4; priority 0/6
+
+- 2026-09-17T10:51:19+00:00 D3-unblock-sweep-2026-09-17T10: Pension-Data complete; frozen 0/0; owner 0; silent 5/0; reroutes 0; branch green; supply 8; priority 0/10
+
+- 2026-09-17T10:51:19+00:00 D3-unblock-sweep-2026-09-17T10: sweep complete; 8 covered 7 deferred; 0 frozen repaired; 0 silent claims released; 0 reroutes; Counter_Risk CI red (mechanical format); Manager-Database CI red (postgres); total supply 81
+
+- 2026-09-17T19:00:00+00:00 D3-unblock-sweep-2026-09-17T18: Workflows complete; frozen 1/0; owner 1 (#3123 tracker); silent 5/0; reroutes 0; branch hub-only; supply 36; priority 1/45
+
+- 2026-09-17T19:00:00+00:00 D3-unblock-sweep-2026-09-17T18: Travel-Plan-Permission complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch green; supply 5; priority 0/9
+
+- 2026-09-17T19:00:00+00:00 D3-unblock-sweep-2026-09-17T18: Trend_Model_Project complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch green; supply 8; priority 0/10
+
+- 2026-09-17T19:00:00+00:00 D3-unblock-sweep-2026-09-17T18: Portable-Alpha-Extension-Model complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch green; supply 5; priority 4/7
+
+- 2026-09-17T19:00:00+00:00 D3-unblock-sweep-2026-09-17T18: Counter_Risk complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch health-green CI-red; supply 8; priority 6/10
+
+- 2026-09-17T19:00:00+00:00 D3-unblock-sweep-2026-09-17T18: Manager-Database complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch health-green CI-red; filed #1685; supply 7; priority 5/9
+
+- 2026-09-17T19:00:00+00:00 D3-unblock-sweep-2026-09-17T18: Inv-Man-Intake complete; frozen 0/0; owner 0; silent 3/0; reroutes 0; branch green; supply 4; priority 0/6
+
+- 2026-09-17T19:00:00+00:00 D3-unblock-sweep-2026-09-17T18: Pension-Data complete; frozen 0/0; owner 0; silent 5/0; reroutes 0; branch green; supply 8; priority 0/10
+
+- 2026-09-17T19:00:00+00:00 D3-unblock-sweep-2026-09-17T18: sweep complete; 8 covered 7 deferred; 0 frozen repaired; 0 silent claims released; 0 reroutes; filed Manager-Database #1685; Counter_Risk CI red (mechanical format); Manager-Database CI red (postgres); total supply 81
+
+- 2026-09-17T23:40:00+00:00 D3-unblock-sweep-2026-09-13T08: Workflows complete; frozen 1/0; owner 1 (#3123 tracker); silent 5/0; reroutes 0; branch hub-only; supply 37; priority 2/46
+
+- 2026-09-17T23:40:00+00:00 D3-unblock-sweep-2026-09-13T08: Travel-Plan-Permission complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch green; supply 5; priority 0/9
+
+- 2026-09-17T23:40:00+00:00 D3-unblock-sweep-2026-09-13T08: Trend_Model_Project complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch green; supply 8; priority 0/10
+
+- 2026-09-17T23:40:00+00:00 D3-unblock-sweep-2026-09-13T08: Portable-Alpha-Extension-Model complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch green; supply 5; priority 4/7
+
+- 2026-09-17T23:40:00+00:00 D3-unblock-sweep-2026-09-13T08: Counter_Risk complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch health-green CI-red; supply 8; priority 6/10
+
+- 2026-09-17T23:40:00+00:00 D3-unblock-sweep-2026-09-13T08: Manager-Database complete; frozen 1/0; repairable #1685 (format pause); silent 0/0; reroutes 0; branch health-green CI-red; PR #1686 open; supply 8; priority 6/10
+
+- 2026-09-17T23:40:00+00:00 D3-unblock-sweep-2026-09-13T08: Inv-Man-Intake complete; frozen 0/0; owner 0; silent 3/0; reroutes 0; branch green; supply 4; priority 0/6
+
+- 2026-09-17T23:40:00+00:00 D3-unblock-sweep-2026-09-13T08: Pension-Data complete; frozen 0/0; owner 0; silent 5/0; reroutes 0; branch green; supply 8; priority 0/10
+
+- 2026-09-17T23:40:00+00:00 D3-unblock-sweep-2026-09-13T08: sweep complete; 8 covered 7 deferred; 0 frozen repaired (gh auth invalid); 0 silent claims released; 0 reroutes; Counter_Risk CI red (mechanical format); Manager-Database CI red (postgres #1685); total supply 83
+
+- 2026-09-17T23:54:35+00:00 D3-unblock-sweep-2026-09-13T16: Workflows complete; frozen 1/0; owner 1 (#3123 tracker); silent 5/0; reroutes 0; branch hub-only; supply 36; priority 1/45
+
+- 2026-09-17T23:54:35+00:00 D3-unblock-sweep-2026-09-13T16: Travel-Plan-Permission complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch green; supply 5; priority 0/9
+
+- 2026-09-17T23:54:35+00:00 D3-unblock-sweep-2026-09-13T16: Trend_Model_Project complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch green; supply 8; priority 0/10
+
+- 2026-09-17T23:54:35+00:00 D3-unblock-sweep-2026-09-13T16: Portable-Alpha-Extension-Model complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch green; supply 5; priority 4/7
+
+- 2026-09-17T23:54:35+00:00 D3-unblock-sweep-2026-09-13T16: Counter_Risk complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch health-green CI-red; supply 8; priority 6/10
+
+- 2026-09-17T23:54:35+00:00 D3-unblock-sweep-2026-09-13T16: Manager-Database complete; frozen 1/1; repaired #1685; silent 0/0; reroutes 0; branch health-green CI-red; PR #1686 open; supply 8; priority 6/10
+
+- 2026-09-17T23:54:35+00:00 D3-unblock-sweep-2026-09-13T16: Inv-Man-Intake complete; frozen 0/0; owner 0; silent 3/0; reroutes 0; branch green; supply 4; priority 0/6
+
+- 2026-09-17T23:54:35+00:00 D3-unblock-sweep-2026-09-13T16: Pension-Data complete; frozen 0/0; owner 0; silent 5/0; reroutes 0; branch green; supply 8; priority 0/10
+
+- 2026-09-17T23:54:35+00:00 D3-unblock-sweep-2026-09-13T16: sweep complete; 8 covered 7 deferred; 1 frozen repaired (#1685); 0 silent claims released; 0 reroutes; Counter_Risk CI red (mechanical format); Manager-Database CI red (postgres #1686); total supply 82
+
+- 2026-09-18T03:15:00+00:00 D3-unblock-sweep-2026-09-18T03: Workflows complete; frozen 1/0; owner 1 (#3123 tracker); silent 5/0; reroutes 0; branch hub-only; supply 36; priority 1/45
+
+- 2026-09-18T03:15:00+00:00 D3-unblock-sweep-2026-09-18T03: Travel-Plan-Permission complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch green; supply 5; priority 0/9
+
+- 2026-09-18T03:15:00+00:00 D3-unblock-sweep-2026-09-18T03: Trend_Model_Project complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch green; supply 8; priority 0/10
+
+- 2026-09-18T03:15:00+00:00 D3-unblock-sweep-2026-09-18T03: Portable-Alpha-Extension-Model complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch green; supply 5; priority 4/7
+
+- 2026-09-18T03:15:00+00:00 D3-unblock-sweep-2026-09-18T03: Counter_Risk complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch health-green CI-red; supply 8; priority 6/10
+
+- 2026-09-18T03:15:00+00:00 D3-unblock-sweep-2026-09-18T03: Manager-Database complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch health-green CI-red; PR #1686 in flight; supply 8; priority 6/10
+
+- 2026-09-18T03:15:00+00:00 D3-unblock-sweep-2026-09-18T03: Inv-Man-Intake complete; frozen 0/0; owner 0; silent 3/0; reroutes 0; branch green; supply 4; priority 0/6
+
+- 2026-09-18T03:15:00+00:00 D3-unblock-sweep-2026-09-18T03: Pension-Data complete; frozen 0/0; owner 0; silent 5/0; reroutes 0; branch green; supply 8; priority 0/10
+
+- 2026-09-18T03:15:00+00:00 D3-unblock-sweep-2026-09-18T03: sweep complete; 8 covered 7 deferred; 0 frozen repaired; 0 silent claims released; 0 reroutes; Counter_Risk CI red (mechanical format); Manager-Database CI red (postgres, PR #1686 gate green); total supply 82
+
+- 2026-09-18T11:30:00+00:00 D3-unblock-sweep-2026-09-18T11. Workflows complete; frozen 1/0; owner 1 (#3123 tracker); silent 5/0; reroutes 0; branch hub-only; supply 35; priority 1/44
+
+- 2026-09-18T11:30:00+00:00 D3-unblock-sweep-2026-09-18T11. Travel-Plan-Permission complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch green; supply 5; priority 0/9
+
+- 2026-09-18T11:30:00+00:00 D3-unblock-sweep-2026-09-18T11. Trend_Model_Project complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch green; supply 7; priority 0/9
+
+- 2026-09-18T11:30:00+00:00 D3-unblock-sweep-2026-09-18T11. Portable-Alpha-Extension-Model complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch green; supply 5; priority 4/7
+
+- 2026-09-18T11:30:00+00:00 D3-unblock-sweep-2026-09-18T11. Counter_Risk complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch health-green CI-red; supply 8; priority 6/10
+
+- 2026-09-18T11:30:00+00:00 D3-unblock-sweep-2026-09-18T11. Manager-Database complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch health-green CI-red (#1685/#1686 closed); supply 7; priority 5/9
+
+- 2026-09-18T11:30:00+00:00 D3-unblock-sweep-2026-09-18T11. Inv-Man-Intake complete; frozen 0/0; owner 0; silent 3/0; reroutes 0; branch green; supply 4; priority 0/6
+
+- 2026-09-18T11:30:00+00:00 D3-unblock-sweep-2026-09-18T11. Pension-Data complete; frozen 0/0; owner 0; silent 5/0; reroutes 0; branch green; supply 8; priority 0/10
+
+- 2026-09-18T11:30:00+00:00 D3-unblock-sweep-2026-09-18T11. sweep complete; 8 covered 7 deferred; 0 frozen repaired; 0 silent claims released; 0 reroutes; Counter_Risk CI red (mechanical format, 21 files); Manager-Database CI red (postgres, fix merged, passes locally); total supply 79
+
+- 2026-09-18T19:45:00+00:00 D3-unblock-sweep-2026-09-18T19: Workflows complete; frozen 1/0; owner 1 (#3123 tracker); silent 5/0; reroutes 0; branch hub-only (Orchestrator wf red); supply 35; priority 1/44
+
+- 2026-09-18T19:45:00+00:00 D3-unblock-sweep-2026-09-18T19: Travel-Plan-Permission complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch green; supply 5; priority 0/9
+
+- 2026-09-18T19:45:00+00:00 D3-unblock-sweep-2026-09-18T19: Trend_Model_Project complete; frozen 0/0; owner 0 (CURSOR_API_KEY on PR Gate Followups); silent 0/0; reroutes 0; branch CI green; supply 6; priority 0/8
+
+- 2026-09-18T19:45:00+00:00 D3-unblock-sweep-2026-09-18T19: Portable-Alpha-Extension-Model complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch green; supply 5; priority 4/7
+
+- 2026-09-18T19:45:00+00:00 D3-unblock-sweep-2026-09-18T19: Counter_Risk complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch health-green CI-red; supply 8; priority 6/10
+
+- 2026-09-18T19:45:00+00:00 D3-unblock-sweep-2026-09-18T19: Manager-Database complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch health-green CI-red; supply 7; priority 5/9
+
+- 2026-09-18T19:45:00+00:00 D3-unblock-sweep-2026-09-18T19: Inv-Man-Intake complete; frozen 0/0; owner 0; silent 3/0; reroutes 0; branch green; supply 4; priority 0/6
+
+- 2026-09-18T19:45:00+00:00 D3-unblock-sweep-2026-09-18T19: Pension-Data complete; frozen 0/0; owner 0; silent 5/0; reroutes 0; branch green; supply 8; priority 0/10
+
+- 2026-09-18T19:45:00+00:00 D3-unblock-sweep-2026-09-18T19: sweep complete; 8 covered 7 deferred; 0 frozen repaired; 0 silent claims released; 0 reroutes; Counter_Risk CI red (mechanical format 20 files); Manager-Database CI red (postgres assertion); Trend Gate Followups red on PRs (CURSOR_API_KEY); total supply 78
+
+- 2026-09-19T03:52:00+00:00 D3-unblock-sweep-2026-09-19T03: Workflows complete; frozen 1/0; owner 1 (#3123 tracker); silent 5/0; reroutes 0; branch hub-only (Orchestrator wf red); supply 35; priority 1/44
+
+- 2026-09-19T03:52:00+00:00 D3-unblock-sweep-2026-09-19T03: Travel-Plan-Permission complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch green; supply 5; priority 0/9
+
+- 2026-09-19T03:52:00+00:00 D3-unblock-sweep-2026-09-19T03: Trend_Model_Project complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch CI in_progress (last green); supply 3; priority 0/5
+
+- 2026-09-19T03:52:00+00:00 D3-unblock-sweep-2026-09-19T03: Portable-Alpha-Extension-Model complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch green; supply 5; priority 4/7
+
+- 2026-09-19T03:52:00+00:00 D3-unblock-sweep-2026-09-19T03: Counter_Risk complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch health-green CI-red; supply 8; priority 6/10
+
+- 2026-09-19T03:52:00+00:00 D3-unblock-sweep-2026-09-19T03: Manager-Database complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch health-green CI-red; supply 7; priority 5/9
+
+- 2026-09-19T03:52:00+00:00 D3-unblock-sweep-2026-09-19T03: Inv-Man-Intake complete; frozen 0/0; owner 0; silent 3/0; reroutes 0; branch green; supply 4; priority 0/6
+
+- 2026-09-19T03:52:00+00:00 D3-unblock-sweep-2026-09-19T03: Pension-Data complete; frozen 0/0; owner 0; silent 5/0; reroutes 0; branch green; supply 8; priority 0/10
+
+- 2026-09-19T03:52:00+00:00 D3-unblock-sweep-2026-09-19T03: sweep complete; 8 covered 7 deferred; 0 frozen repaired; 0 silent claims released; 0 reroutes; Counter_Risk CI red (mechanical format 21 files); Manager-Database CI red (postgres assertion); Trend CI in_progress + PR Health hung; total supply 75
+
+- 2026-09-19T11:56:20+00:00 D3-unblock-sweep-2026-09-19T11: Workflows complete; frozen 2/1 (#3466 repaired); owner 1 (#3123 tracker); silent 3/0; reroutes 0; branch hub-only (Orchestrator wf red); supply 36; priority 1/45
+
+- 2026-09-19T11:56:20+00:00 D3-unblock-sweep-2026-09-19T11: Travel-Plan-Permission complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch green; supply 5; priority 0/9
+
+- 2026-09-19T11:56:20+00:00 D3-unblock-sweep-2026-09-19T11: Trend_Model_Project complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch CI+health green; supply 0; priority 0/2
+
+- 2026-09-19T11:56:20+00:00 D3-unblock-sweep-2026-09-19T11: Portable-Alpha-Extension-Model complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch green; supply 5; priority 4/7
+
+- 2026-09-19T11:56:20+00:00 D3-unblock-sweep-2026-09-19T11: Counter_Risk complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch health-green CI-red; supply 8; priority 6/10
+
+- 2026-09-19T11:56:20+00:00 D3-unblock-sweep-2026-09-19T11: Manager-Database complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch health-green CI-red; supply 7; priority 5/9
+
+- 2026-09-19T11:56:20+00:00 D3-unblock-sweep-2026-09-19T11: Inv-Man-Intake complete; frozen 0/0; owner 0; silent 3/0; reroutes 0; branch green; supply 4; priority 0/6
+
+- 2026-09-19T11:56:20+00:00 D3-unblock-sweep-2026-09-19T11: Pension-Data complete; frozen 0/0; owner 0; silent 5/0; reroutes 0; branch green; supply 8; priority 0/10
+
+- 2026-09-19T11:56:20+00:00 D3-unblock-sweep-2026-09-19T11: sweep complete; 8 covered 7 deferred; 1 frozen repaired (#3466); 0 silent claims released; 0 reroutes; Counter_Risk CI red (mechanical format 21 files); Manager-Database CI red (postgres assertion); Trend CI green supply 0; total supply 73
+
+- 2026-09-19T20:03:00+00:00 D3-unblock-sweep-2026-09-19T19: Workflows complete; frozen 2/1 (#3470 repaired); owner 1 (#3123 tracker); silent 2/0; reroutes 0; branch hub-only (Orchestrator wf red 2026-09-18); supply 33; priority 0/42
+
+- 2026-09-19T20:03:00+00:00 D3-unblock-sweep-2026-09-19T19: Travel-Plan-Permission complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch green; supply 5; priority 0/9
+
+- 2026-09-19T20:03:00+00:00 D3-unblock-sweep-2026-09-19T19: Trend_Model_Project complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch CI+health green; supply 0; priority 0/2
+
+- 2026-09-19T20:03:00+00:00 D3-unblock-sweep-2026-09-19T19: Portable-Alpha-Extension-Model complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch green; supply 5; priority 4/7
+
+- 2026-09-19T20:03:00+00:00 D3-unblock-sweep-2026-09-19T19: Counter_Risk complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch health-green CI-red; supply 8; priority 6/10
+
+- 2026-09-19T20:03:00+00:00 D3-unblock-sweep-2026-09-19T19: Manager-Database complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch health+CI green; supply 6; priority 4/8
+
+- 2026-09-19T20:03:00+00:00 D3-unblock-sweep-2026-09-19T19: Inv-Man-Intake complete; frozen 0/0; owner 0; silent 3/0; reroutes 0; branch green; supply 4; priority 0/6
+
+- 2026-09-19T20:03:00+00:00 D3-unblock-sweep-2026-09-19T19: Pension-Data complete; frozen 0/0; owner 0; silent 5/0; reroutes 0; branch green; supply 8; priority 0/10
+
+- 2026-09-19T20:03:00+00:00 D3-unblock-sweep-2026-09-19T19: sweep complete; 8 covered 7 deferred; 1 frozen repaired (#3470); 0 silent claims released; 0 reroutes; Counter_Risk CI red (mechanical format 21 files); Manager-Database CI green; total supply 69
+
+- 2026-09-20T04:10:00+00:00 D3-unblock-sweep-2026-09-20T04: Ready complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch health-green CI-red (format 6 files); supply 3; priority 0/6
+
+- 2026-09-20T04:10:00+00:00 D3-unblock-sweep-2026-09-20T04: trip-planner complete; frozen 0/0; owner 0; silent 2/0; reroutes 0; branch health+CI green; supply 3; priority 0/5
+
+- 2026-09-20T04:10:00+00:00 D3-unblock-sweep-2026-09-20T04: learning-management-system complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch health+CI green; supply 2; priority 0/5
+
+- 2026-09-20T04:10:00+00:00 D3-unblock-sweep-2026-09-20T04: Fine-Art-Archive complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch health+CI green; supply 7; priority 0/11
+
+- 2026-09-20T04:10:00+00:00 D3-unblock-sweep-2026-09-20T04: Doc-Lineage complete; frozen 2/1 (#38 repaired); owner 1 (#1 tracker); silent 0/0; reroutes 0; branch health+CI green; supply 5; priority 0/6
+
+- 2026-09-20T04:10:00+00:00 D3-unblock-sweep-2026-09-20T04: Deliverable-Render complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch CI-green gate-followup-red; supply 2; priority 1/3
+
+- 2026-09-20T04:10:00+00:00 D3-unblock-sweep-2026-09-20T04: Manager-Mosaic complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch health+CI green; supply 3; priority 0/4
+
+- 2026-09-20T04:10:00+00:00 D3-unblock-sweep-2026-09-20T04: sweep complete; 7 covered 8 deferred; 1 frozen repaired (#38); 0 silent claims released; 0 reroutes; Ready CI red (mechanical format 6 files); Fine-Art-Archive CI green; total supply 25
+
+- 2026-09-20T12:18:18Z D3-unblock-sweep-2026-09-20T12: Workflows complete; frozen 2/1 (#3492 repaired); tracker left #3123; silent 2/2 (#3392,#3375); reroutes 0; latest sampled default runs green, no Gate/CI in last 100; supply 32; priority 0/41
+
+- 2026-09-20T12:18:18Z D3-unblock-sweep-2026-09-20T12: Travel-Plan-Permission complete; frozen 0/0; silent 0/0; reroutes 0; Gate Followups green; supply 5; priority 0/9
+
+- 2026-09-20T12:18:18Z D3-unblock-sweep-2026-09-20T12: Trend_Model_Project complete; frozen 0/0; silent 0/0; reroutes 0; Gate Followups green; supply 3; priority 0/5
+
+- 2026-09-20T12:18:18Z D3-unblock-sweep-2026-09-20T12: Portable-Alpha-Extension-Model complete; frozen 0/0; silent 0/0; reroutes 0; Gate Followups green; supply 5; priority 4/7
+
+- 2026-09-20T12:18:18Z D3-unblock-sweep-2026-09-20T12: Counter_Risk complete; frozen 0/0; silent 0/0; reroutes 0; Gate Followups green; supply 2; priority 0/4
+
+- 2026-09-20T12:18:18Z D3-unblock-sweep-2026-09-20T12: Manager-Database complete; frozen 0/0; silent 0/0; reroutes 0; Gate Followups green; supply 2; priority 1/4
+
+- 2026-09-20T12:18:18Z D3-unblock-sweep-2026-09-20T12: Inv-Man-Intake complete; frozen 0/0; silent 3/3 (#948-#950); reroutes 0; Gate Followups green; supply 4; priority 0/6
+
+- 2026-09-20T12:18:18Z D3-unblock-sweep-2026-09-20T12: Pension-Data complete; frozen 0/0; silent 5/5 (#879-#883); reroutes 0; Gate Followups green; supply 8; priority 0/10
+
+- 2026-09-20T12:18:18Z D3-unblock-sweep-2026-09-20T12: sweep complete; 8 covered 7 deferred; 1 frozen issue repaired (#3492); 10 stale claims released; 0 reroutes; no default-branch Gate/CI failure; total supply 61
+
+- 2026-09-20T20:25:00Z D3-unblock-sweep-2026-09-20T20: Workflows complete; frozen bot tracker #3123 left untouched; silent 0/0; reroutes 0; latest sampled default-branch runs green; supply 31; priority 0/31
+
+- 2026-09-20T20:25:00Z D3-unblock-sweep-2026-09-20T20: Travel-Plan-Permission complete; frozen 0/0; silent 0/0; reroutes 0; latest sampled default-branch runs green; supply 5; priority 0/5
+
+- 2026-09-20T20:25:00Z D3-unblock-sweep-2026-09-20T20: Trend_Model_Project complete; frozen 0/0; silent 0/0; reroutes 0; latest sampled default-branch runs green; supply 3; priority 0/3
+
+- 2026-09-20T20:25:00Z D3-unblock-sweep-2026-09-20T20: Portable-Alpha-Extension-Model complete; frozen 0/0; silent 0/0; reroutes 0; latest sampled default-branch runs green; supply 5; priority 4/5
+
+- 2026-09-20T20:25:00Z D3-unblock-sweep-2026-09-20T20: Counter_Risk complete; frozen 0/0; silent 0/0; reroutes 0; latest sampled default-branch runs green; supply 2; priority 0/2
+
+- 2026-09-20T20:25:00Z D3-unblock-sweep-2026-09-20T20: Manager-Database complete; frozen 0/0; silent 0/0; reroutes 0; latest sampled default-branch runs green; supply 1; priority 0/1
+
+- 2026-09-20T20:25:00Z D3-unblock-sweep-2026-09-20T20: Inv-Man-Intake complete; frozen 0/0; silent 0/0; reroutes 0; latest sampled default-branch runs green; supply 4; priority 0/4
+
+- 2026-09-20T20:25:00Z D3-unblock-sweep-2026-09-20T20: Pension-Data complete; frozen 0/0; silent 0/0; reroutes 0; latest sampled default-branch runs green; supply 8; priority 0/8
+
+- 2026-09-20T20:25:00Z D3-unblock-sweep-2026-09-20T20: sweep complete; 8 covered 7 deferred (plus Orchestrator out of scope); 0 frozen work repaired; 0 stale claims released; 0 reroutes; no default-branch Gate/CI failure; total supply 59
+
+- 2026-09-20T20:16:36Z D3-unblock-sweep-2026-09-20T20: timestamp correction — the preceding eight per-repository entries and sweep summary were recorded during this run, which completed at this time.

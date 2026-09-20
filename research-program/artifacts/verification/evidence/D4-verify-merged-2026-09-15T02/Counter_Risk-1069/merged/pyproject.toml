@@ -1,0 +1,222 @@
+[build-system]
+requires = ["setuptools>=75.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+# Do not emit app-baseline-kit into requirements.lock. It is consumed from the
+# Workflows monorepo via an unpinned `@main` git URL (see the project
+# dependencies), so freezing a commit SHA in the lock conflicts with that URL
+# the moment Workflows main advances ("conflicting URLs for package
+# app-baseline-kit" -> uv install aborts). Leaving it unpinned lets the editable
+# project install resolve it from main, with no lock to keep refreshed.
+[tool.uv.pip]
+no-emit-package = ["app-baseline-kit"]
+
+[project]
+name = "counter-risk"
+version = "0.1.0"
+description = "Counterparty exposure, margin, and risk reporting toolkit"
+readme = "README.md"
+requires-python = ">=3.12"
+license = {text = "MIT"}
+authors = [
+    {name = "stranske", email = "maintainers@users.noreply.github.com"},
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+dependencies = [
+    "pydantic>=2.13.3,<3",
+    "Pillow>=12.2.0,<14",
+    "PyYAML>=6.0.3,<7",
+    "python-pptx==1.0.2",
+    "openpyxl>=3.1.5,<4",
+    "pandas>=2.3,<4",
+    "langchain-openai>=1.1.14,<2",
+    "langchain-anthropic>=1.4.2,<2",
+    "stranske-pdf-extract[baseline,ocr] @ git+https://github.com/stranske/Workflows.git@pdf-extract-v0.1.0#subdirectory=packages/stranske_pdf_extract",
+    "pywin32>=306; sys_platform == 'win32'",
+]
+
+[project.optional-dependencies]
+app = []
+dev = [
+    "pytest==9.1.1",
+    "pytest-cov==7.1.0",
+    "pytest-xdist==3.8.0",
+    "pandas>=2.3,<4",
+    # Shared app behavior baseline harness (tests/baseline). Pulls
+    # pytest-regressions, which needs numpy + pandas for the num_regression
+    # fixture. Tracked as a git direct reference (latest on Workflows main).
+    "app-baseline-kit @ git+https://github.com/stranske/Workflows.git#subdirectory=packages/app-baseline-kit",
+    "pytest-regressions==2.11.0",
+    "numpy>=2.0,<3",
+    "black==26.5.1",
+    "ruff==0.16.7",
+    "mypy==2.3.1",
+    "types-PyYAML==6.0.12.20260724",
+    # Required by scripts/sync_test_dependencies.py when --fix is needed in CI
+    "tomlkit>=0.14.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/stranske/Counter_Risk"
+Repository = "https://github.com/stranske/Counter_Risk"
+
+[project.scripts]
+mapping_diff_report = "counter_risk.cli.mapping_diff_report:main"
+# `counter-risk` is the documented operator/maintainer entry point (README "run"/"gui").
+# The GUI is exposed via the existing `counter-risk gui` subcommand, so no separate
+# `counter-risk-gui` script is declared (single CLI, single console script).
+counter-risk = "counter_risk.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v"
+pythonpath = ["src"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+markers = [
+    "release: slow release/packaging tests (PyInstaller build + packaged executable)",
+    "slow: heavyweight tests that parse real Excel fixtures or run full pipeline (skip in PR gate)",
+]
+
+[tool.coverage.run]
+source = ["src"]
+# Line coverage only (branch coverage dropped) so coverage can use CPython
+# 3.12+'s sys.monitoring backend below. The default C-trace (sys.settrace)
+# backend roughly doubled the coverage-enabled main-push CI run over the
+# numeric/pandas-heavy + full-pipeline tests; sysmon cuts that overhead, but
+# in coverage 7.14 sysmon cannot measure branches (it silently falls back to
+# C-trace when branch=true). Trade-off accepted: faster CI, line-only metric.
+branch = false
+core = "sysmon"
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise NotImplementedError",
+    "if TYPE_CHECKING:",
+    "if __name__ == .__main__.:",
+]
+fail_under = "${COVERAGE_FAIL_UNDER-0}"
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "F",    # pyflakes
+    "I",    # isort
+    "N",    # pep8-naming
+    "W",    # pycodestyle warnings
+    "UP",   # pyupgrade
+    "B",    # flake8-bugbear
+    "C4",   # flake8-comprehensions
+    "SIM",  # flake8-simplify
+]
+ignore = [
+    "E501",  # line too long (handled by formatter)
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["counter_risk", "tools"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+show_error_codes = true
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+disallow_untyped_defs = false
+
+[[tool.mypy.overrides]]
+module = "counter_risk.config"
+disable_error_code = ["import-untyped"]
+
+[[tool.mypy.overrides]]
+module = "counter_risk.parsers.cprs_ch"
+disable_error_code = ["import-untyped"]
+
+[[tool.mypy.overrides]]
+module = "counter_risk.integrations.powerpoint_com"
+disable_error_code = ["import-untyped"]
+
+[[tool.mypy.overrides]]
+module = "counter_risk.pipeline.run"
+disable_error_code = ["import-untyped"]
+
+[[tool.mypy.overrides]]
+module = "counter_risk.chat.context"
+disable_error_code = ["import-untyped", "import-not-found"]
+
+[[tool.mypy.overrides]]
+module = "counter_risk.mosers.workbook_generation"
+disable_error_code = ["import-untyped"]
+
+[[tool.mypy.overrides]]
+module = "counter_risk.name_registry"
+disable_error_code = ["import-untyped"]
+
+[[tool.mypy.overrides]]
+module = "counter_risk.limits_config"
+disable_error_code = ["import-untyped"]
+
+[[tool.mypy.overrides]]
+module = "pypdf"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = [
+    "openpyxl",
+    "openpyxl.*",
+    "pandas",
+    "pandas.*",
+    "pdf2image",
+    "pdfplumber",
+    "pytesseract",
+]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = [
+    "stranske_pdf_extract",
+    "stranske_pdf_extract.*",
+]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "scripts.*"
+ignore_errors = true
+
+[tool.black]
+line-length = 100
+target-version = ["py312"]
+extend-exclude = '''
+/(
+  \.venv
+  | node_modules
+  | \.workflows-lib
+)/
+'''

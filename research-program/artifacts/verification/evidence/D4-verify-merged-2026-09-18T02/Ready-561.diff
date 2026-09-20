@@ -1,0 +1,40 @@
+diff --git a/scripts/langchain/issue_dedup.py b/scripts/langchain/issue_dedup.py
+index 44bf863..7cd89bd 100755
+--- a/scripts/langchain/issue_dedup.py
++++ b/scripts/langchain/issue_dedup.py
+@@ -6,6 +6,7 @@ Build FAISS vector stores for issue deduplication.
+ from __future__ import annotations
+ 
+ import logging
++import math
+ import os
+ from collections.abc import Iterable, Mapping
+ from dataclasses import dataclass
+@@ -217,6 +218,8 @@ def find_similar_issues(
+ 
+ 
+ def _format_similarity(score: float) -> str:
++    if not math.isfinite(score):
++        return "0%"
+     clamped = min(max(score, 0.0), 1.0)
+     return f"{round(clamped * 100):d}%"
+ 
+diff --git a/tests/test_main.py b/tests/test_main.py
+index 25acc60..3d82377 100644
+--- a/tests/test_main.py
++++ b/tests/test_main.py
+@@ -206,3 +206,14 @@ def test_openai_embedding_all_blank_inputs_do_not_call_sdk(
+     factory.assert_not_called()
+     assert response.vectors == [[] for _ in texts]
+     assert response.metadata.dimensions is None
++
++
++@pytest.mark.parametrize(
++    "score",
++    [float("nan"), float("inf"), float("-inf")],
++)
++def test_format_similarity_non_finite_scores_return_safe_fallback(score: float) -> None:
++    """Non-finite similarity scores must not crash duplicate-comment formatting."""
++    from scripts.langchain.issue_dedup import _format_similarity
++
++    assert _format_similarity(score) == "0%"

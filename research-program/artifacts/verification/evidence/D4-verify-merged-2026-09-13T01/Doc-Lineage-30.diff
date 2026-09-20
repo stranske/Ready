@@ -1,0 +1,308 @@
+diff --git a/scripts/validate_fixture_manifest.py b/scripts/validate_fixture_manifest.py
+new file mode 100644
+index 0000000..95ee68c
+--- /dev/null
++++ b/scripts/validate_fixture_manifest.py
+@@ -0,0 +1,108 @@
++#!/usr/bin/env python3
++"""Validate the public fixture corpus manifest against artifact-manifest/v1."""
++
++from __future__ import annotations
++
++import argparse
++import json
++import re
++import sys
++from pathlib import Path
++
++REPO_ROOT = Path(__file__).resolve().parents[1]
++DEFAULT_MANIFEST = REPO_ROOT / "tests" / "fixtures" / "public_corpus" / "manifest.json"
++SCHEMA_PATH = REPO_ROOT / "docs" / "contracts" / "schemas" / "artifact-manifest-v1.schema.json"
++SHA256_RE = re.compile(r"^[a-f0-9]{64}$")
++
++
++def load_manifest(path: Path) -> dict:
++    payload = json.loads(path.read_text(encoding="utf-8"))
++    if not isinstance(payload, dict):
++        raise ValueError(f"{path} must contain a JSON object")
++    return payload
++
++
++def validate_manifest(manifest: dict, *, repo_root: Path = REPO_ROOT) -> list[str]:
++    errors: list[str] = []
++    artifacts = manifest.get("artifacts")
++    if not isinstance(artifacts, list):
++        try:
++            from jsonschema import Draft202012Validator
++
++            schema = json.loads(SCHEMA_PATH.read_text(encoding="utf-8"))
++            errors.extend(
++                f"{error.json_path}: {error.message}"
++                for error in Draft202012Validator(schema).iter_errors(manifest)
++            )
++        except ImportError:
++            errors.append("/artifacts: artifacts must be a list")
++        return errors
++
++    for index, artifact in enumerate(artifacts):
++        if not isinstance(artifact, dict):
++            errors.append(f"/artifacts/{index}: artifact must be an object")
++            continue
++        content_sha256 = artifact.get("content_sha256")
++        sha256 = artifact.get("sha256")
++        if isinstance(content_sha256, str) and content_sha256 != sha256:
++            errors.append(
++                f"/artifacts/{index}: content_sha256 must match sha256 when both are present"
++            )
++        for field in ("sha256", "content_sha256"):
++            value = artifact.get(field)
++            if isinstance(value, str) and not SHA256_RE.fullmatch(value):
++                errors.append(f"/artifacts/{index}/{field}: invalid sha256 length or charset")
++        rel_path = artifact.get("path")
++        if isinstance(rel_path, str):
++            local_path = repo_root / rel_path
++            if local_path.is_file():
++                import hashlib
++
++                digest = hashlib.sha256(local_path.read_bytes()).hexdigest()
++                if isinstance(sha256, str) and digest != sha256:
++                    errors.append(
++                        f"/artifacts/{index}/sha256: does not match checked-in file {rel_path}"
++                    )
++
++    try:
++        from jsonschema import Draft202012Validator
++
++        schema = json.loads(SCHEMA_PATH.read_text(encoding="utf-8"))
++        errors.extend(
++            f"{error.json_path}: {error.message}"
++            for error in Draft202012Validator(schema).iter_errors(manifest)
++        )
++    except ImportError:
++        pass
++    return errors
++
++
++def main(argv: list[str] | None = None) -> int:
++    parser = argparse.ArgumentParser(description=__doc__)
++    parser.add_argument(
++        "--manifest",
++        type=Path,
++        default=DEFAULT_MANIFEST,
++        help="Path to public_corpus/manifest.json",
++    )
++    args = parser.parse_args(argv)
++    manifest_path = args.manifest.resolve()
++    if not manifest_path.is_file():
++        print(f"manifest not found: {manifest_path}", file=sys.stderr)
++        return 2
++    try:
++        manifest = load_manifest(manifest_path)
++    except (OSError, json.JSONDecodeError, ValueError) as exc:
++        print(str(exc), file=sys.stderr)
++        return 2
++    errors = validate_manifest(manifest)
++    if errors:
++        for message in errors:
++            print(message, file=sys.stderr)
++        return 1
++    print(f"OK: {manifest_path}")
++    return 0
++
++
++if __name__ == "__main__":
++    raise SystemExit(main())
+diff --git a/tests/fixtures/public_corpus/README.md b/tests/fixtures/public_corpus/README.md
+new file mode 100644
+index 0000000..8a9f868
+--- /dev/null
++++ b/tests/fixtures/public_corpus/README.md
+@@ -0,0 +1,37 @@
++# Public fixture corpus
++
++Fleet-wide fixture manifest for Doc-Lineage extraction and lineage tests (B2-037).
++
++## Layout
++
++- `manifest.json` — `artifact-manifest/v1` catalog of synthetic library PDFs plus one
++  CalPERS Investment Committee public entry with provenance fields (`source_url`,
++  `content_sha256`, `doc_type_id`).
++- `calpers/ic/default.pdf` — committed synthetic stand-in PDF whose digest matches the
++  manifest. The `source_url` records the canonical CalPERS IC meeting page for provenance;
++  replace this file with a downloaded IC attachment when exercising live public-PDF
++  extraction, then update `sha256` / `content_sha256` / `bytes` together.
++
++## Git LFS
++
++If the CalPERS fixture is replaced with a large public PDF, track it with Git LFS:
++
++```bash
++git lfs install
++git lfs track "tests/fixtures/public_corpus/calpers/**/*.pdf"
++```
++
++Verify the on-disk digest matches the manifest after any replacement:
++
++```bash
++mkdir -p tests/fixtures/public_corpus/calpers/ic
++shasum -a 256 tests/fixtures/public_corpus/calpers/ic/default.pdf
++python3 scripts/validate_fixture_manifest.py
++```
++
++## Validation
++
++```bash
++python3 scripts/validate_fixture_manifest.py
++pytest tests/fixtures/test_public_corpus_manifest.py -q
++```
+diff --git a/tests/fixtures/public_corpus/calpers/ic/default.pdf b/tests/fixtures/public_corpus/calpers/ic/default.pdf
+new file mode 100644
+index 0000000..717dcd0
+Binary files /dev/null and b/tests/fixtures/public_corpus/calpers/ic/default.pdf differ
+diff --git a/tests/fixtures/public_corpus/manifest.json b/tests/fixtures/public_corpus/manifest.json
+new file mode 100644
+index 0000000..b9cbe6e
+--- /dev/null
++++ b/tests/fixtures/public_corpus/manifest.json
+@@ -0,0 +1,43 @@
++{
++  "schema_version": "artifact-manifest/v1",
++  "run_id": "doc-lineage-public-corpus/v1",
++  "tool": "doc-lineage-fixture-corpus",
++  "git_sha": null,
++  "created_at": "2026-09-15T17:35:00Z",
++  "artifacts": [
++    {
++      "artifact_id": "synthetic-alpha-lpa-001",
++      "name": "Synthetic manager_alpha LPA terms (001)",
++      "kind": "data",
++      "path": "tests/fixtures/library/manager_alpha/lpa/2024/001_alpha_terms.pdf",
++      "sha256": "30625187a0eba0130168c6f9b02038f04d3d154b6da5ee5cb3157eed9ec17548",
++      "bytes": 13,
++      "media_type": "application/pdf",
++      "doc_type_id": "synthetic_lpa",
++      "content_sha256": "30625187a0eba0130168c6f9b02038f04d3d154b6da5ee5cb3157eed9ec17548"
++    },
++    {
++      "artifact_id": "synthetic-beta-side-letter",
++      "name": "Synthetic manager_beta side letter",
++      "kind": "data",
++      "path": "tests/fixtures/library/manager_beta/side_letters/2023/beta_side.pdf",
++      "sha256": "fc01c37e41cd931731ce94af4d7b11a43ff7b8618299602f76de5b8a5baaa8a2",
++      "bytes": 17,
++      "media_type": "application/pdf",
++      "doc_type_id": "synthetic_side_letter",
++      "content_sha256": "fc01c37e41cd931731ce94af4d7b11a43ff7b8618299602f76de5b8a5baaa8a2"
++    },
++    {
++      "artifact_id": "calpers-ic-default",
++      "name": "CalPERS Investment Committee default public PDF",
++      "kind": "data",
++      "path": "tests/fixtures/public_corpus/calpers/ic/default.pdf",
++      "sha256": "4c3b40a2609796c87b7796ac6b19d08aa1091cc1bc406222c254adb53b4953e4",
++      "bytes": 441,
++      "media_type": "application/pdf",
++      "doc_type_id": "calpers_investment_committee",
++      "source_url": "https://www.calpers.ca.gov/about/board/board-meetings/invest-202603-0",
++      "content_sha256": "4c3b40a2609796c87b7796ac6b19d08aa1091cc1bc406222c254adb53b4953e4"
++    }
++  ]
++}
+diff --git a/tests/fixtures/test_public_corpus_manifest.py b/tests/fixtures/test_public_corpus_manifest.py
+new file mode 100644
+index 0000000..807597b
+--- /dev/null
++++ b/tests/fixtures/test_public_corpus_manifest.py
+@@ -0,0 +1,92 @@
++"""Tests for the fleet-wide public fixture corpus manifest."""
++
++from __future__ import annotations
++
++import json
++import re
++import subprocess
++import sys
++from pathlib import Path
++
++REPO_ROOT = Path(__file__).resolve().parents[2]
++MANIFEST_PATH = REPO_ROOT / "tests" / "fixtures" / "public_corpus" / "manifest.json"
++SHA256_RE = re.compile(r"^[a-f0-9]{64}$")
++
++
++def _load_manifest() -> dict:
++    return json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
++
++
++def test_manifest_has_at_least_one_entry() -> None:
++    manifest = _load_manifest()
++    assert manifest["schema_version"] == "artifact-manifest/v1"
++    assert len(manifest["artifacts"]) >= 1
++
++
++def test_manifest_sha256_fields_are_valid() -> None:
++    manifest = _load_manifest()
++    for artifact in manifest["artifacts"]:
++        assert SHA256_RE.fullmatch(artifact["sha256"])
++        content_sha256 = artifact.get("content_sha256")
++        if content_sha256 is not None:
++            assert SHA256_RE.fullmatch(content_sha256)
++            assert content_sha256 == artifact["sha256"]
++
++
++def test_manifest_has_calpers_entry() -> None:
++    manifest = _load_manifest()
++    calpers_entries = [
++        artifact
++        for artifact in manifest["artifacts"]
++        if artifact.get("artifact_id") == "calpers-ic-default"
++    ]
++    assert calpers_entries, "expected calpers-ic-default corpus entry"
++    entry = calpers_entries[0]
++    assert entry["doc_type_id"] == "calpers_investment_committee"
++    assert (
++        entry["source_url"]
++        == "https://www.calpers.ca.gov/about/board/board-meetings/invest-202603-0"
++    )
++    assert SHA256_RE.fullmatch(entry["content_sha256"])
++    assert entry["content_sha256"] == entry["sha256"]
++
++
++def test_present_public_file_wrong_digest_fails_validation(tmp_path: Path) -> None:
++    from scripts.validate_fixture_manifest import validate_manifest
++
++    manifest = _load_manifest()
++    calpers_path = REPO_ROOT / "tests/fixtures/public_corpus/calpers/ic/default.pdf"
++    assert calpers_path.is_file(), "CalPERS fixture PDF must be present for digest checks"
++    corrupted = json.loads(json.dumps(manifest))
++    for artifact in corrupted["artifacts"]:
++        if artifact.get("artifact_id") == "calpers-ic-default":
++            artifact["sha256"] = "0" * 64
++            artifact["content_sha256"] = "0" * 64
++    errors = validate_manifest(corrupted)
++    assert any("calpers/ic/default.pdf" in message for message in errors)
++
++
++def test_validate_fixture_manifest_script_passes() -> None:
++    completed = subprocess.run(
++        [
++            sys.executable,
++            str(REPO_ROOT / "scripts" / "validate_fixture_manifest.py"),
++            "--manifest",
++            str(MANIFEST_PATH),
++        ],
++        cwd=REPO_ROOT,
++        check=False,
++        capture_output=True,
++        text=True,
++    )
++    assert completed.returncode == 0, completed.stderr or completed.stdout
++
++
++def test_corrupt_sha256_fails_validation() -> None:
++    from scripts.validate_fixture_manifest import validate_manifest
++
++    manifest = _load_manifest()
++    corrupted = json.loads(json.dumps(manifest))
++    corrupted["artifacts"][0]["sha256"] = "0" * 63 + "x"
++    errors = validate_manifest(corrupted)
++    assert errors, "corrupt sha256 must fail validation (deliberate-break gate)"

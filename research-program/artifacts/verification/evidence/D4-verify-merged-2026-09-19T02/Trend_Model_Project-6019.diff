@@ -1,0 +1,214 @@
+diff --git a/tests/test_pipeline_helpers_additional.py b/tests/test_pipeline_helpers_additional.py
+index 115541c..2dfb5de 100644
+--- a/tests/test_pipeline_helpers_additional.py
++++ b/tests/test_pipeline_helpers_additional.py
+@@ -1110,52 +1110,119 @@ def test_single_period_run_rejects_all_nan_window() -> None:
+         single_period_run(df, "2020-01", "2020-03")
+ 
+ 
+-def test_compute_signal_uses_cache(monkeypatch: pytest.MonkeyPatch) -> None:
+-    class RaisingIndex(pd.DatetimeIndex):
+-        @property
+-        def freq(self):  # type: ignore[override]
+-            raise RuntimeError("freq unavailable")
++class _RecordingCache:
++    def __init__(self) -> None:
++        self.calls: list[tuple[object, ...]] = []
+ 
+-    data = pd.DataFrame(
+-        {"returns": [0.1, -0.2, 0.05, 0.03]},
+-        index=RaisingIndex(pd.date_range("2020-01-31", periods=4, freq="ME")),
+-    )
++    def is_enabled(self) -> bool:
++        return True
+ 
+-    class DummyCache:
+-        def __init__(self) -> None:
+-            self.called = False
++    def get_or_compute(self, *args):
++        self.calls.append(args)
++        compute_fn = args[-1]
++        return compute_fn()
+ 
+-        def is_enabled(self) -> bool:
+-            return True
+ 
+-        def get_or_compute(self, *args):
+-            self.called = True
+-            compute_fn = args[-1]
+-            return compute_fn()
+-
+-    cache = DummyCache()
+-    monkeypatch.setattr(pipeline, "get_cache", lambda: cache)
++class _RaisingFreqIndex(pd.DatetimeIndex):
++    @property
++    def freqstr(self):  # type: ignore[override]
++        raise RuntimeError("freq unavailable")
+ 
+-    series = compute_signal(data, column="returns", window=2, min_periods=1)
+-    assert cache.called is True
+-    assert series.name == "returns_signal"
+ 
++@pytest.mark.parametrize(
++    "frame,window,min_periods,column,expected_freq_tag",
++    [
++        (
++            pd.DataFrame(
++                {"value": np.arange(6)},
++                index=pd.date_range("2020-01-01", periods=6, freq="D"),
++            ),
++            3,
++            2,
++            "value",
++            "D",
++        ),
++        (
++            pd.DataFrame(
++                {"returns": [0.1, -0.2, 0.05, 0.03]},
++                index=_RaisingFreqIndex(pd.date_range("2020-01-31", periods=4, freq="ME")),
++            ),
++            2,
++            1,
++            "returns",
++            "unknown",
++        ),
++    ],
++    ids=["daily-cache-tags", "monthly-freq-unavailable"],
++)
++def test_compute_signal_uses_cache(
++    monkeypatch: pytest.MonkeyPatch,
++    frame: pd.DataFrame,
++    window: int,
++    min_periods: int,
++    column: str,
++    expected_freq_tag: str,
++) -> None:
++    cache = _RecordingCache()
++    monkeypatch.setattr(pipeline, "get_cache", lambda: cache)
+ 
+-def test_compute_signal_without_cache(monkeypatch: pytest.MonkeyPatch) -> None:
+-    frame = pd.DataFrame(
+-        {"returns": [0.1, -0.2, 0.05]},
+-        index=pd.date_range("2020-01-31", periods=3, freq="ME"),
+-    )
++    series = compute_signal(frame, column=column, window=window, min_periods=min_periods)
+ 
+-    class DummyCache:
++    assert cache.calls, "Expected cache to be used when enabled"
++    assert series.name == f"{column}_signal"
++    assert series.index.equals(frame.index)
++    _, window_arg, freq_tag, method_tag, _ = cache.calls[-1]
++    assert window_arg == window
++    assert freq_tag == expected_freq_tag
++    assert method_tag.endswith(f"min{min_periods}")
++
++
++@pytest.mark.parametrize(
++    "frame,window,min_periods,column,expected_tail_value",
++    [
++        (
++            pd.DataFrame(
++                {
++                    "Date": pd.date_range("2020-01-01", periods=4, freq="D"),
++                    "value": [1.0, 2.0, 3.0, 4.0],
++                }
++            ).set_index("Date"),
++            2,
++            1,
++            "value",
++            2.5,
++        ),
++        (
++            pd.DataFrame(
++                {"returns": [0.1, -0.2, 0.05]},
++                index=pd.date_range("2020-01-31", periods=3, freq="ME"),
++            ),
++            2,
++            1,
++            "returns",
++            -0.05,
++        ),
++    ],
++    ids=["daily-nonzero-tail", "monthly-index-preservation"],
++)
++def test_compute_signal_without_cache(
++    monkeypatch: pytest.MonkeyPatch,
++    frame: pd.DataFrame,
++    window: int,
++    min_periods: int,
++    column: str,
++    expected_tail_value: float,
++) -> None:
++    class DisabledCache:
+         def is_enabled(self) -> bool:
+             return False
+ 
+-    monkeypatch.setattr(pipeline, "get_cache", lambda: DummyCache())
+-    series = compute_signal(frame, column="returns", window=2, min_periods=1)
++    monkeypatch.setattr(pipeline, "get_cache", lambda: DisabledCache())
++    series = compute_signal(frame, column=column, window=window, min_periods=min_periods)
+     assert isinstance(series, pd.Series)
+-    assert series.name == "returns_signal"
++    assert series.name == f"{column}_signal"
+     assert series.index.equals(frame.index)
++    assert series.iloc[-1] == pytest.approx(expected_tail_value)
+ 
+ 
+ def test_position_from_signal_behaviour() -> None:
+diff --git a/tests/test_pipeline_run_cache_fallbacks.py b/tests/test_pipeline_run_cache_fallbacks.py
+index 2ed7d64..fe4a22f 100644
+--- a/tests/test_pipeline_run_cache_fallbacks.py
++++ b/tests/test_pipeline_run_cache_fallbacks.py
+@@ -235,27 +235,6 @@ def test_run_full_handles_missing_data_section(monkeypatch: pytest.MonkeyPatch)
+     assert payload["benchmark_ir"] == {}
+ 
+ 
+-def test_compute_signal_uses_cache(monkeypatch: pytest.MonkeyPatch) -> None:
+-    df = pd.DataFrame(
+-        {
+-            "Date": pd.date_range("2020-01-01", periods=6, freq="D"),
+-            "value": np.arange(6),
+-        }
+-    ).set_index("Date")
+-
+-    cache = DummyCache()
+-    monkeypatch.setattr(pipeline, "get_cache", lambda: cache)
+-
+-    series = pipeline.compute_signal(df, column="value", window=3, min_periods=2)
+-
+-    assert cache.calls, "Expected cache to be used when enabled"
+-    dataset_hash, window_arg, freq_tag, method_tag, _ = cache.calls[-1]
+-    assert window_arg == 3
+-    assert method_tag.endswith("min2")
+-    assert series.name == "value_signal"
+-    assert series.index.equals(df.index)
+-
+-
+ def test_preprocessing_summary_monthly_branch() -> None:
+     summary = preprocessing_stage._preprocessing_summary(
+         "M", normalised=False, missing_summary="ok"
+@@ -397,24 +376,6 @@ def test_compute_signal_handles_freq_attribute_errors(
+     assert cache.calls, "Expected caching path despite freq attribute failure"
+ 
+ 
+-def test_compute_signal_without_cache(monkeypatch: pytest.MonkeyPatch) -> None:
+-    df = pd.DataFrame(
+-        {
+-            "Date": pd.date_range("2020-01-01", periods=4, freq="D"),
+-            "value": [1.0, 2.0, 3.0, 4.0],
+-        }
+-    ).set_index("Date")
+-
+-    class DisabledCache(DummyCache):
+-        def is_enabled(self) -> bool:
+-            return False
+-
+-    monkeypatch.setattr(pipeline, "get_cache", lambda: DisabledCache())
+-
+-    series = pipeline.compute_signal(df, column="value", window=2, min_periods=1)
+-    assert series.iloc[-1] != 0.0
+-
+-
+ def test_run_analysis_rank_branch_with_fallbacks(
+     monkeypatch: pytest.MonkeyPatch,
+ ) -> None:
