@@ -1,0 +1,245 @@
+diff --git a/src/counter_risk/pipeline/data_quality.py b/src/counter_risk/pipeline/data_quality.py
+index b2e88491c..72f8a3322 100644
+--- a/src/counter_risk/pipeline/data_quality.py
++++ b/src/counter_risk/pipeline/data_quality.py
+@@ -18,6 +18,7 @@
+     "RECONCILIATION_DORMANT_SERIES": "info",
+     "PPT_GENERATION_FAILED": "fail",
+     "PPT_GENERATION_SKIPPED": "warn",
++    "PPT_LINK_REFRESH_SKIPPED": "warn",
+     "LIMIT_BREACHES": "warn",
+     "MISSING_NOTIONAL": "warn",
+     "INVALID_NOTIONAL": "warn",
+@@ -48,6 +49,7 @@
+     "RECONCILIATION_DORMANT_SERIES": "reconciliation",
+     "PPT_GENERATION_FAILED": "ppt",
+     "PPT_GENERATION_SKIPPED": "ppt",
++    "PPT_LINK_REFRESH_SKIPPED": "ppt",
+     "LIMIT_BREACHES": "limits",
+     "MISSING_NOTIONAL": "data_validation",
+     "INVALID_NOTIONAL": "data_validation",
+@@ -77,6 +79,7 @@ def build_data_quality(
+     missing_inputs: Mapping[str, Any] | None = None,
+     reconciliation_results: Mapping[str, Any] | None = None,
+     ppt_status: str = "success",
++    ppt_outputs: Mapping[str, Mapping[str, str]] | None = None,
+     limit_breach_summary: Mapping[str, Any] | None = None,
+ ) -> dict[str, Any]:
+     """Build the manifest data_quality object from warning entries."""
+@@ -87,6 +90,7 @@ def build_data_quality(
+         missing_inputs=missing_inputs,
+         reconciliation_results=reconciliation_results,
+         ppt_status=ppt_status,
++        ppt_outputs=ppt_outputs,
+         limit_breach_summary=limit_breach_summary,
+     )
+     counts = _build_counts(findings)
+@@ -109,6 +113,7 @@ def _build_findings(
+     missing_inputs: Mapping[str, Any] | None,
+     reconciliation_results: Mapping[str, Any] | None,
+     ppt_status: str,
++    ppt_outputs: Mapping[str, Mapping[str, str]] | None,
+     limit_breach_summary: Mapping[str, Any] | None,
+ ) -> list[dict[str, Any]]:
+     findings: list[dict[str, Any]] = _build_warning_findings(warnings)
+@@ -118,6 +123,7 @@ def _build_findings(
+             missing_inputs=missing_inputs,
+             reconciliation_results=reconciliation_results,
+             ppt_status=ppt_status,
++            ppt_outputs=ppt_outputs,
+             limit_breach_summary=limit_breach_summary,
+         )
+     )
+@@ -164,6 +170,7 @@ def _collect_validation_findings(
+     missing_inputs: Mapping[str, Any] | None,
+     reconciliation_results: Mapping[str, Any] | None,
+     ppt_status: str,
++    ppt_outputs: Mapping[str, Mapping[str, str]] | None,
+     limit_breach_summary: Mapping[str, Any] | None,
+ ) -> list[dict[str, str]]:
+     findings: list[dict[str, str]] = []
+@@ -224,13 +231,31 @@ def _collect_validation_findings(
+             )
+         )
+     elif normalized_ppt_status == "skipped":
+-        findings.append(
+-            _make_finding(
+-                category="ppt",
+-                code="PPT_GENERATION_SKIPPED",
+-                message="PowerPoint generation was skipped.",
++        outputs = ppt_outputs or {}
++        distribution_generated = outputs.get("distribution", {}).get("status") == "success"
++        if outputs.get("master"):
++            message = "Master PowerPoint link refresh was skipped."
++            if distribution_generated:
++                message += " Distribution PowerPoint was generated; verify links/slides manually."
++            findings.append(
++                _make_finding(
++                    category="ppt",
++                    code="PPT_LINK_REFRESH_SKIPPED",
++                    message=message,
++                )
++            )
++        if not distribution_generated:
++            findings.append(
++                _make_finding(
++                    category="ppt",
++                    code="PPT_GENERATION_SKIPPED",
++                    message=(
++                        "Distribution PowerPoint generation was skipped."
++                        if outputs.get("master")
++                        else "PowerPoint generation was skipped."
++                    ),
++                )
+             )
+-        )
+ 
+     has_breaches = bool(limit_breach_summary.get("has_breaches"))
+     breach_count = _safe_int(limit_breach_summary.get("breach_count", 0))
+diff --git a/src/counter_risk/pipeline/manifest.py b/src/counter_risk/pipeline/manifest.py
+index 650685743..b28a4bcd8 100644
+--- a/src/counter_risk/pipeline/manifest.py
++++ b/src/counter_risk/pipeline/manifest.py
+@@ -99,6 +99,11 @@ def build(
+                 "by_variant": {},
+             }
+         )
++        ppt_outputs = self._build_ppt_outputs(
++            output_paths=normalized_output_paths,
++            ppt_status=ppt_status,
++            explicit_outputs=ppt_outputs,
++        )
+         manifest: dict[str, Any] = {
+             "manifest_schema_version": MANIFEST_SCHEMA_VERSION,
+             "provenance": self._build_provenance(),
+@@ -120,17 +125,13 @@ def build(
+                 missing_inputs=resolved_missing_inputs,
+                 reconciliation_results=resolved_reconciliation_results,
+                 ppt_status=ppt_status,
++                ppt_outputs=ppt_outputs,
+                 limit_breach_summary=limit_breach_summary,
+             ),
+             "unmatched_mappings": resolved_unmatched_mappings,
+             "missing_inputs": resolved_missing_inputs,
+             "reconciliation_results": resolved_reconciliation_results,
+         }
+-        ppt_outputs = self._build_ppt_outputs(
+-            output_paths=normalized_output_paths,
+-            ppt_status=ppt_status,
+-            explicit_outputs=ppt_outputs,
+-        )
+         if ppt_outputs:
+             manifest["ppt_outputs"] = ppt_outputs
+         if concentration_metrics is not None:
+diff --git a/tests/pipeline/test_monthly_pipeline_ppt_outputs.py b/tests/pipeline/test_monthly_pipeline_ppt_outputs.py
+index cd6535a68..325a55926 100644
+--- a/tests/pipeline/test_monthly_pipeline_ppt_outputs.py
++++ b/tests/pipeline/test_monthly_pipeline_ppt_outputs.py
+@@ -7,6 +7,7 @@
+ from pathlib import Path
+ 
+ import pytest
++from pptx import Presentation
+ 
+ import counter_risk.pipeline.run as run_module
+ from counter_risk.config import WorkflowConfig
+@@ -50,6 +51,99 @@ def _build_config(
+     )
+ 
+ 
++@pytest.mark.parametrize("explicit_outputs", [True, False])
++@pytest.mark.parametrize("refresh_status", ["skipped", "success"])
++def test_skipped_refresh_reports_existing_distribution(
++    tmp_path: Path,
++    monkeypatch: pytest.MonkeyPatch,
++    explicit_outputs: bool,
++    refresh_status: str,
++) -> None:
++    run_dir = tmp_path / "run"
++    run_dir.mkdir()
++    config = _build_config(tmp_path, enable_ppt_output=True)
++    monkeypatch.setattr(
++        run_module,
++        "_refresh_ppt_links",
++        lambda _path: run_module.PptProcessingResult(
++            status=run_module.PptProcessingStatus(refresh_status),
++        ),
++    )
++    warnings: list[str] = []
++    output_paths, ppt_result = run_module._write_outputs(
++        run_dir=run_dir, config=config, as_of_date=date(2025, 12, 31), warnings=warnings
++    )
++    distribution = run_dir / resolve_ppt_output_names(date(2025, 12, 31)).distribution_filename
++    assert distribution in output_paths
++    assert len(Presentation(str(distribution)).slides) > 0
++    builder = ManifestBuilder(
++        config=config, as_of_date=date(2025, 12, 31), run_date=date(2026, 1, 2)
++    )
++    manifest = builder.build(
++        run_dir=run_dir,
++        input_hashes={},
++        output_paths=output_paths,
++        top_exposures={},
++        top_changes_per_variant={},
++        warnings=warnings,
++        ppt_status=ppt_result.status.value,
++        ppt_outputs=ppt_result.ppt_outputs if explicit_outputs else None,
++    )
++    builder.write(run_dir=run_dir, manifest=manifest)
++    summary = (run_dir / "DATA_QUALITY_SUMMARY.txt").read_text()
++    codes = {finding["code"] for finding in manifest["data_quality"]["findings"]}
++    assert manifest["ppt_outputs"]["distribution"]["status"] == "success"
++    assert "PPT_GENERATION_SKIPPED" not in codes
++    assert "PowerPoint generation was skipped" not in summary
++    if refresh_status == "skipped":
++        assert "PPT_LINK_REFRESH_SKIPPED" in codes
++        assert "link refresh was skipped" in summary
++        assert "Distribution PowerPoint was generated" in summary
++        assert "WARN (YELLOW)" in summary
++    else:
++        assert "PPT_LINK_REFRESH_SKIPPED" not in codes
++
++
++@pytest.mark.parametrize("enable_ppt_output", [True, False])
++def test_skipped_refresh_reports_absent_distribution(
++    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, enable_ppt_output: bool
++) -> None:
++    run_dir = tmp_path / "run"
++    run_dir.mkdir()
++    config = _build_config(
++        tmp_path, enable_ppt_output=enable_ppt_output, enable_distribution_output=False
++    )
++    monkeypatch.setattr(
++        run_module,
++        "_refresh_ppt_links",
++        lambda _path: run_module.PptProcessingResult(status=run_module.PptProcessingStatus.SKIPPED),
++    )
++    output_paths, ppt_result = run_module._write_outputs(
++        run_dir=run_dir, config=config, as_of_date=date(2025, 12, 31), warnings=[]
++    )
++    distribution = run_dir / resolve_ppt_output_names(date(2025, 12, 31)).distribution_filename
++    assert not distribution.exists()
++    builder = ManifestBuilder(
++        config=config, as_of_date=date(2025, 12, 31), run_date=date(2026, 1, 2)
++    )
++    manifest = builder.build(
++        run_dir=run_dir,
++        input_hashes={},
++        output_paths=output_paths,
++        top_exposures={},
++        top_changes_per_variant={},
++        warnings=[],
++        ppt_status=ppt_result.status.value,
++        ppt_outputs=ppt_result.ppt_outputs,
++    )
++    builder.write(run_dir=run_dir, manifest=manifest)
++    summary = (run_dir / "DATA_QUALITY_SUMMARY.txt").read_text()
++    assert "PPT_GENERATION_SKIPPED" in summary
++    assert "PowerPoint generation was skipped" in summary
++    assert "Distribution PowerPoint was generated" not in summary
++    assert ("PPT_LINK_REFRESH_SKIPPED" in summary) is enable_ppt_output
++
++
+ def test_ppt_disabled_skips_ppt_entrypoint_and_produces_no_pptx(
+     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+ ) -> None:

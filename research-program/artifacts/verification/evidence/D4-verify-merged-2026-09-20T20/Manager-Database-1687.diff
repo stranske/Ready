@@ -1,0 +1,203 @@
+diff --git a/etl/manager_similarity_flow.py b/etl/manager_similarity_flow.py
+index 684e4ce6..4efa51ca 100644
+--- a/etl/manager_similarity_flow.py
++++ b/etl/manager_similarity_flow.py
+@@ -25,6 +25,7 @@ def cosine_similarity(left: list[float], right: list[float]) -> float | None:
+ 
+ 
+ def ensure_manager_similarity_table(conn: Any) -> None:
++    """Ensure dialect-specific similarity storage without committing caller work."""
+     if isinstance(conn, sqlite3.Connection):
+         conn.execute("PRAGMA foreign_keys = ON")
+         conn.execute("""CREATE TABLE IF NOT EXISTS manager_similarity (
+@@ -44,6 +45,52 @@ def ensure_manager_similarity_table(conn: Any) -> None:
+         columns = {row[1] for row in conn.execute("PRAGMA table_info(manager_similarity)")}
+         if "cosine" not in columns:
+             conn.execute("ALTER TABLE manager_similarity ADD COLUMN cosine REAL")
++        return
++
++    # This helper also runs on API reads. Even guarded ALTER TABLE takes a
++    # schema lock, so inspect the resolved relation before issuing any DDL.
++    table_exists, has_cosine, has_index_a, has_index_b = conn.execute("""
++        SELECT pg_catalog.to_regclass('manager_similarity') IS NOT NULL,
++            EXISTS (
++                SELECT 1 FROM pg_catalog.pg_attribute
++                WHERE attrelid = pg_catalog.to_regclass('manager_similarity')
++                  AND attname = 'cosine' AND attnum > 0 AND NOT attisdropped
++            ),
++            EXISTS (
++                SELECT 1 FROM pg_catalog.pg_index i
++                JOIN pg_catalog.pg_class c ON c.oid = i.indexrelid
++                WHERE i.indrelid = pg_catalog.to_regclass('manager_similarity')
++                  AND c.relname = 'idx_manager_similarity_a'
++            ),
++            EXISTS (
++                SELECT 1 FROM pg_catalog.pg_index i
++                JOIN pg_catalog.pg_class c ON c.oid = i.indexrelid
++                WHERE i.indrelid = pg_catalog.to_regclass('manager_similarity')
++                  AND c.relname = 'idx_manager_similarity_b'
++            )
++    """).fetchone()
++    # PostgreSQL's canonical manager key differs from SQLite's local schema.
++    # FLOAT(24) is equivalent to the REAL columns in schema.sql and migrations.
++    if not table_exists:
++        conn.execute("""CREATE TABLE IF NOT EXISTS manager_similarity (
++            manager_id_a BIGINT NOT NULL REFERENCES managers(manager_id),
++            manager_id_b BIGINT NOT NULL REFERENCES managers(manager_id),
++            jaccard FLOAT(24) NOT NULL, cosine FLOAT(24),
++            overlap_count INTEGER NOT NULL, union_count INTEGER NOT NULL,
++            computed_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
++            PRIMARY KEY (manager_id_a, manager_id_b),
++            CHECK (manager_id_a < manager_id_b)
++        )""")
++    if not has_index_a:
++        conn.execute(
++            "CREATE INDEX IF NOT EXISTS idx_manager_similarity_a ON manager_similarity(manager_id_a)"
++        )
++    if not has_index_b:
++        conn.execute(
++            "CREATE INDEX IF NOT EXISTS idx_manager_similarity_b ON manager_similarity(manager_id_b)"
++        )
++    if not has_cosine:
++        conn.execute("ALTER TABLE manager_similarity ADD COLUMN IF NOT EXISTS cosine FLOAT(24)")
+ 
+ 
+ def compute_manager_similarity(conn: Any) -> int:
+diff --git a/tests/test_manager_similarity_flow.py b/tests/test_manager_similarity_flow.py
+index b0e8f2c3..f53e695b 100644
+--- a/tests/test_manager_similarity_flow.py
++++ b/tests/test_manager_similarity_flow.py
+@@ -2,13 +2,132 @@
+ import sqlite3
+ from pathlib import Path
+ from typing import Any, cast
++from unittest.mock import Mock
+ 
+ import httpx
+ import pytest
+ 
+ from api import managers as managers_module
+ from api.chat import app
+-from etl.manager_similarity_flow import compute_manager_similarity, cosine_similarity
++from etl.manager_similarity_flow import (
++    compute_manager_similarity,
++    cosine_similarity,
++    ensure_manager_similarity_table,
++)
++
++
++def test_ensure_manager_similarity_table_creates_postgres_schema():
++    conn = Mock()
++    conn.execute.return_value.fetchone.return_value = (False, False, False, False)
++
++    ensure_manager_similarity_table(conn)
++
++    statements = [" ".join(call.args[0].split()) for call in conn.execute.call_args_list]
++    create = next(sql for sql in statements if sql.startswith("CREATE TABLE IF NOT EXISTS"))
++    assert "manager_similarity (" in create
++    assert "manager_id_a BIGINT NOT NULL REFERENCES managers(manager_id)" in create
++    assert "manager_id_b BIGINT NOT NULL REFERENCES managers(manager_id)" in create
++    assert "jaccard FLOAT(24) NOT NULL" in create
++    assert "cosine FLOAT(24)" in create
++    assert "overlap_count INTEGER NOT NULL" in create
++    assert "union_count INTEGER NOT NULL" in create
++    assert "computed_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP" in create
++    assert "PRIMARY KEY (manager_id_a, manager_id_b)" in create
++    assert "CHECK (manager_id_a < manager_id_b)" in create
++    for side in ("a", "b"):
++        assert (
++            f"CREATE INDEX IF NOT EXISTS idx_manager_similarity_{side} "
++            f"ON manager_similarity(manager_id_{side})"
++        ) in statements
++    assert (
++        "ALTER TABLE manager_similarity ADD COLUMN IF NOT EXISTS cosine FLOAT(24)"
++    ) in statements
++    assert not any("PRAGMA" in sql for sql in statements)
++
++    # Once initialized, subsequent requests must not acquire DDL locks.
++    conn.execute.reset_mock()
++    conn.execute.return_value.fetchone.return_value = (True, True, True, True)
++    ensure_manager_similarity_table(conn)
++    conn.execute.assert_called_once()
++    assert conn.execute.call_args.args[0].lstrip().startswith("SELECT")
++    conn.commit.assert_not_called()
++
++
++@pytest.mark.parametrize(
++    ("schema_state", "expected_ddl"),
++    [
++        (
++            (True, False, True, True),
++            "ALTER TABLE manager_similarity ADD COLUMN IF NOT EXISTS cosine FLOAT(24)",
++        ),
++        (
++            (True, True, False, True),
++            "CREATE INDEX IF NOT EXISTS idx_manager_similarity_a ON manager_similarity(manager_id_a)",
++        ),
++        (
++            (True, True, True, False),
++            "CREATE INDEX IF NOT EXISTS idx_manager_similarity_b ON manager_similarity(manager_id_b)",
++        ),
++    ],
++)
++def test_ensure_manager_similarity_table_repairs_only_missing_postgres_storage(
++    schema_state, expected_ddl
++):
++    conn = Mock()
++    conn.execute.return_value.fetchone.return_value = schema_state
++
++    ensure_manager_similarity_table(conn)
++
++    statements = [" ".join(call.args[0].split()) for call in conn.execute.call_args_list]
++    assert statements[0].startswith("SELECT")
++    assert statements[1:] == [expected_ddl]
++    conn.commit.assert_not_called()
++
++
++def test_ensure_manager_similarity_table_propagates_postgres_ddl_errors():
++    conn = Mock()
++    probe = Mock()
++    probe.fetchone.return_value = (True, False, True, True)
++    conn.execute.side_effect = [probe, RuntimeError("permission denied for table")]
++
++    with pytest.raises(RuntimeError, match="permission denied"):
++        ensure_manager_similarity_table(conn)
++    conn.commit.assert_not_called()
++
++
++def test_ensure_manager_similarity_table_propagates_postgres_errors():
++    conn = Mock()
++    conn.execute.side_effect = RuntimeError("permission denied for schema public")
++
++    with pytest.raises(RuntimeError, match="permission denied"):
++        ensure_manager_similarity_table(conn)
++
++
++def test_ensure_manager_similarity_table_upgrades_legacy_sqlite_table():
++    conn = sqlite3.connect(":memory:")
++    try:
++        conn.executescript("""
++            CREATE TABLE managers (id INTEGER PRIMARY KEY);
++            INSERT INTO managers VALUES (1), (2);
++            CREATE TABLE manager_similarity (
++                manager_id_a INTEGER, manager_id_b INTEGER, jaccard REAL,
++                overlap_count INTEGER, union_count INTEGER, computed_at TEXT
++            );
++            INSERT INTO manager_similarity VALUES (1, 2, 0.5, 1, 2, '2026-09-01');
++        """)
++
++        ensure_manager_similarity_table(conn)
++        ensure_manager_similarity_table(conn)
++
++        assert conn.execute(
++            "SELECT manager_id_a, manager_id_b, jaccard, cosine FROM manager_similarity"
++        ).fetchall() == [(1, 2, 0.5, None)]
++        assert {row[1] for row in conn.execute("PRAGMA index_list(manager_similarity)")} == {
++            "idx_manager_similarity_a",
++            "idx_manager_similarity_b",
++        }
++    finally:
++        conn.close()
+ 
+ 
+ def test_similarity_uses_union_denominator_and_latest_filings():

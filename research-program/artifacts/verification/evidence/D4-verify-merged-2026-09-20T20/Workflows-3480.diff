@@ -1,0 +1,229 @@
+diff --git a/.github/workflows/pr-00-gate.yml b/.github/workflows/pr-00-gate.yml
+index 5ea17c503..ace969955 100644
+--- a/.github/workflows/pr-00-gate.yml
++++ b/.github/workflows/pr-00-gate.yml
+@@ -382,6 +382,7 @@ jobs:
+         # Best-effort by design: a repo that is not pip-installable still gets the old behaviour
+         # rather than a hard failure here.
+         run: |
++          set -euo pipefail
+           python -m pip install --upgrade pip pytest
+           # Install the project's DEPENDENCIES but not the project. The check reruns the named
+           # test against an archived BASE revision on PYTHONPATH; a head distribution left in
+@@ -397,23 +398,23 @@ jobs:
+             fi
+           done
+           if [ -f pyproject.toml ] || [ -f setup.py ]; then
+-            if python -m pip install . ; then
+-              dist_name="$(python - <<'PYEOF'
+-          import pathlib, sys
+-          try:
+-              import tomllib
+-              data = tomllib.loads(pathlib.Path("pyproject.toml").read_text(encoding="utf-8"))
+-              print(data["project"]["name"])
+-          except Exception:
+-              sys.exit(0)
++            install_report="$(mktemp)"
++            trap 'rm -f "$install_report"' EXIT
++            if python -m pip install --report "$install_report" . ; then
++              dist_name="$(python - "$install_report" <<'PYEOF'
++          import json, pathlib, re, sys
++          report = json.loads(pathlib.Path(sys.argv[1]).read_text(encoding="utf-8"))
++          names = [entry.get("metadata", {}).get("name") for entry in report.get("install", [])
++                   if entry.get("requested") is True]
++          if len(names) != 1 or not isinstance(names[0], str) or not re.fullmatch(
++              r"[A-Za-z0-9][A-Za-z0-9._-]*", names[0]
++          ):
++              raise SystemExit("Cannot identify installed head distribution; refusing base test.")
++          print(names[0])
+           PYEOF
+           )"
+-              if [ -n "$dist_name" ]; then
+-                python -m pip uninstall -y "$dist_name" >/dev/null 2>&1 \
+-                  || echo "::warning::Could not uninstall $dist_name; base run may see head code."
+-              else
+-                echo "::warning::Could not read project name; leaving the install in place."
+-              fi
++              # Cleanup must succeed before any archived-base proof can run.
++              python -m pip uninstall -y "$dist_name"
+             else
+               echo "::warning::Project install failed; the named test may not be importable."
+             fi
+diff --git a/config/template-drift-allowlist.txt b/config/template-drift-allowlist.txt
+index b4e010add..72232288c 100644
+--- a/config/template-drift-allowlist.txt
++++ b/config/template-drift-allowlist.txt
+@@ -207,11 +207,11 @@ fingerprint_refreshed = 2026-09-03
+ [pair.19]
+ main = .github/workflows/pr-00-gate.yml
+ template = templates/consumer-repo/.github/workflows/pr-00-gate.yml
+-main_sha256 = 5665f8e20c1c168ce0c59aa4b6705f306fd3e34e18e9ae169bfe205f1bc9083a
+-template_sha256 = b2fabb059778981d48462a8ca58b790f5cdf0089112ca2ef7f449263cef83916
+-divergence = Deliberate-break gate installs the project 2026-09-17: the test-quality job ran `pip install --upgrade pip pytest` and nothing else, so any PR whose named acceptance test imported a runtime dependency failed at pytest collection no matter how correctly the PR declared it -- a gate demanding a passing named test while refusing to create an environment that could run one. MEASURED on stranske/Deliverable-Render#20: `ModuleNotFoundError: No module named 'docx'` while pyproject.toml:24 declared python-docx==1.1.2, which then absorbed five autofix attempts against a threshold of three and sat on needs-human for two days. Both surfaces now install the project (editable, non-editable fallback, then the first requirements file present) and warn rather than fail when a repo is not pip-installable. Applied IDENTICALLY to root and consumer, so it introduces NO NEW divergence; fingerprints refreshed and divergence_reviewed deliberately keeps its old date. Prior divergence unchanged: Fork read-only token tolerated 2026-09-06: both surfaces now let the summary job survive a read-only fork token on the two writes it makes -- the consolidated summary comment and the `Gate / gate` commit status -- warning and falling back to the job summary instead of rethrowing, so a fork PR with green CI reports the verdict it computed rather than a red Gate (observed in stranske/Fine-Art-Archive#716, run 34017696018). Keyed on the head repo differing from the base repo, so a same-repo 403 still fails loudly; #2278 recorded the opposite defect. Applied IDENTICALLY to root and consumer, so it introduces NO NEW divergence; fingerprints refreshed and divergence_reviewed deliberately keeps its old date. Prior divergence unchanged: Gate label catch annotated 2026-08-31: both surfaces note the acceptance-criteria label apply is best-effort, applied identically; fingerprints refreshed. Prior: Acceptance-criteria label step hardened 2026-08-31: both surfaces now catch API failures and use continue-on-error so installation rate limits cannot fail Gate after deliberate-break already passed, applied identically to root and consumer. Fingerprints refreshed for that change; the divergence itself is unchanged and was NOT re-reviewed, which is why divergence_reviewed keeps its prior date. Prior divergence unchanged: client-id rename 2026-08-24: every create-github-app-token step moved from the deprecated `app-id` input to `client-id`, applied identically to root and consumer, with the secret VALUE unchanged (the action forwards either input to the same appId slot -- main.js:21, lib/main.js:37). Fingerprints refreshed for that change; the divergence itself is unchanged and was NOT re-reviewed, which is why divergence_reviewed keeps its old date. Prior divergence unchanged: Gate commit-status token pinned 2026-08-23: both surfaces now pass `env: {}` to createTokenAwareRetry for the `gate-commit-status` call, applied IDENTICALLY to root and consumer, so the divergence between them is unchanged by it. Without the pin the balancer could select a token lacking the `statuses` scope; the post then 403s and the swallow leaves the PREVIOUS status in place, so a fully green Gate keeps a red `Gate / gate` that nothing clears and a sealed sync PR cannot merge (observed in stranske/Orchestrator, PR #54). Prior divergence unchanged: Named-secrets rollout 2026-08-23: both surfaces now pass named setup-api-client secret inputs instead of the whole-secrets-context blob, applied identically to root and consumer, and scoped to each workflow's DECLARED workflow_call secrets where that context is a closed set. Removing that handoff is the demonstrated remedy for GitHub's suspicious-workflow hold (agents-dedup then ran at run_attempt 1 with nothing approved after 22 days held). Prior divergence unchanged: Intentional divergence reviewed 2026-08-23: the source Gate runs Workflows-only package, ledger, diff-quality, and live sync-manifest issue-state checks with GH_TOKEN and GITHUB_TOKEN exported for the pytest guard; the consumer Gate uses published reusable workflows, pinned actions, and skips unavailable Workflows-local deliberate-break helpers. The consumer template must remain a bootstrap-safe deployment surface.
++main_sha256 = 3c1abad9c4542fac647cc7b0329c6767a28f2328e8fbc9a0009b69c59da3984c
++template_sha256 = 076440ec55ae2c28964c612684f372f79b0fed0fd674723f49eff8d31f476b75
++divergence = Install-report isolation hardening 2026-09-20: both Gates identify the requested head distribution from the pip install report, supporting setup.py-only metadata, and fail closed on missing identity or uninstall failure before running archived-base tests. Applied identically; no new divergence, original divergence_reviewed retained. Prior history: Deliberate-break gate installs the project 2026-09-17: the test-quality job ran `pip install --upgrade pip pytest` and nothing else, so any PR whose named acceptance test imported a runtime dependency failed at pytest collection no matter how correctly the PR declared it -- a gate demanding a passing named test while refusing to create an environment that could run one. MEASURED on stranske/Deliverable-Render#20: `ModuleNotFoundError: No module named 'docx'` while pyproject.toml:24 declared python-docx==1.1.2, which then absorbed five autofix attempts against a threshold of three and sat on needs-human for two days. Both surfaces now install the project (editable, non-editable fallback, then the first requirements file present) and warn rather than fail when a repo is not pip-installable. Applied IDENTICALLY to root and consumer, so it introduces NO NEW divergence; fingerprints refreshed and divergence_reviewed deliberately keeps its old date. Prior divergence unchanged: Fork read-only token tolerated 2026-09-06: both surfaces now let the summary job survive a read-only fork token on the two writes it makes -- the consolidated summary comment and the `Gate / gate` commit status -- warning and falling back to the job summary instead of rethrowing, so a fork PR with green CI reports the verdict it computed rather than a red Gate (observed in stranske/Fine-Art-Archive#716, run 34017696018). Keyed on the head repo differing from the base repo, so a same-repo 403 still fails loudly; #2278 recorded the opposite defect. Applied IDENTICALLY to root and consumer, so it introduces NO NEW divergence; fingerprints refreshed and divergence_reviewed deliberately keeps its old date. Prior divergence unchanged: Gate label catch annotated 2026-08-31: both surfaces note the acceptance-criteria label apply is best-effort, applied identically; fingerprints refreshed. Prior: Acceptance-criteria label step hardened 2026-08-31: both surfaces now catch API failures and use continue-on-error so installation rate limits cannot fail Gate after deliberate-break already passed, applied identically to root and consumer. Fingerprints refreshed for that change; the divergence itself is unchanged and was NOT re-reviewed, which is why divergence_reviewed keeps its prior date. Prior divergence unchanged: client-id rename 2026-08-24: every create-github-app-token step moved from the deprecated `app-id` input to `client-id`, applied identically to root and consumer, with the secret VALUE unchanged (the action forwards either input to the same appId slot -- main.js:21, lib/main.js:37). Fingerprints refreshed for that change; the divergence itself is unchanged and was NOT re-reviewed, which is why divergence_reviewed keeps its old date. Prior divergence unchanged: Gate commit-status token pinned 2026-08-23: both surfaces now pass `env: {}` to createTokenAwareRetry for the `gate-commit-status` call, applied IDENTICALLY to root and consumer, so the divergence between them is unchanged by it. Without the pin the balancer could select a token lacking the `statuses` scope; the post then 403s and the swallow leaves the PREVIOUS status in place, so a fully green Gate keeps a red `Gate / gate` that nothing clears and a sealed sync PR cannot merge (observed in stranske/Orchestrator, PR #54). Prior divergence unchanged: Named-secrets rollout 2026-08-23: both surfaces now pass named setup-api-client secret inputs instead of the whole-secrets-context blob, applied identically to root and consumer, and scoped to each workflow's DECLARED workflow_call secrets where that context is a closed set. Removing that handoff is the demonstrated remedy for GitHub's suspicious-workflow hold (agents-dedup then ran at run_attempt 1 with nothing approved after 22 days held). Prior divergence unchanged: Intentional divergence reviewed 2026-08-23: the source Gate runs Workflows-only package, ledger, diff-quality, and live sync-manifest issue-state checks with GH_TOKEN and GITHUB_TOKEN exported for the pytest guard; the consumer Gate uses published reusable workflows, pinned actions, and skips unavailable Workflows-local deliberate-break helpers. The consumer template must remain a bootstrap-safe deployment surface.
+ divergence_reviewed = 2026-08-23
+-fingerprint_refreshed = 2026-09-17
++fingerprint_refreshed = 2026-09-20
+ 
+ [pair.20]
+ main = .github/workflows/reusable-pr-context.yml
+diff --git a/docs/keepalive/GoalsAndPlumbing.md b/docs/keepalive/GoalsAndPlumbing.md
+index 3885f8e7d..5dbb81feb 100644
+--- a/docs/keepalive/GoalsAndPlumbing.md
++++ b/docs/keepalive/GoalsAndPlumbing.md
+@@ -266,6 +266,14 @@ Keepalive now has two ways to detect task completion and keep PR checkboxes in s
+ 
+ ### Deliberate-Break Gate
+ 
++The Gate installs declared project dependencies before the proof, then removes
++the installed head distribution so archived-base tests cannot import head code
++from site-packages. Its successful pip install report identifies the requested
++distribution for both `pyproject.toml` and `setup.py` projects. Missing/ambiguous
++report metadata or a failed uninstall stops the job; a warning alone cannot
++authorize a potentially contaminated base test. This isolation rule is identical
++in the source Gate and the create-only consumer Gate template.
++
+ Gate runs an opt-in execution check when the PR body's Acceptance Criteria declares a deliberate-break marker:
+ 
+ ```markdown
+diff --git a/templates/consumer-repo/.github/workflows/pr-00-gate.yml b/templates/consumer-repo/.github/workflows/pr-00-gate.yml
+index 205db004f..b5bc61a33 100644
+--- a/templates/consumer-repo/.github/workflows/pr-00-gate.yml
++++ b/templates/consumer-repo/.github/workflows/pr-00-gate.yml
+@@ -363,6 +363,7 @@ jobs:
+         # Best-effort by design: a repo that is not pip-installable still gets the old behaviour
+         # rather than a hard failure here.
+         run: |
++          set -euo pipefail
+           python -m pip install --upgrade pip pytest
+           # Install the project's DEPENDENCIES but not the project. The check reruns the named
+           # test against an archived BASE revision on PYTHONPATH; a head distribution left in
+@@ -378,23 +379,23 @@ jobs:
+             fi
+           done
+           if [ -f pyproject.toml ] || [ -f setup.py ]; then
+-            if python -m pip install . ; then
+-              dist_name="$(python - <<'PYEOF'
+-          import pathlib, sys
+-          try:
+-              import tomllib
+-              data = tomllib.loads(pathlib.Path("pyproject.toml").read_text(encoding="utf-8"))
+-              print(data["project"]["name"])
+-          except Exception:
+-              sys.exit(0)
++            install_report="$(mktemp)"
++            trap 'rm -f "$install_report"' EXIT
++            if python -m pip install --report "$install_report" . ; then
++              dist_name="$(python - "$install_report" <<'PYEOF'
++          import json, pathlib, re, sys
++          report = json.loads(pathlib.Path(sys.argv[1]).read_text(encoding="utf-8"))
++          names = [entry.get("metadata", {}).get("name") for entry in report.get("install", [])
++                   if entry.get("requested") is True]
++          if len(names) != 1 or not isinstance(names[0], str) or not re.fullmatch(
++              r"[A-Za-z0-9][A-Za-z0-9._-]*", names[0]
++          ):
++              raise SystemExit("Cannot identify installed head distribution; refusing base test.")
++          print(names[0])
+           PYEOF
+           )"
+-              if [ -n "$dist_name" ]; then
+-                python -m pip uninstall -y "$dist_name" >/dev/null 2>&1 \
+-                  || echo "::warning::Could not uninstall $dist_name; base run may see head code."
+-              else
+-                echo "::warning::Could not read project name; leaving the install in place."
+-              fi
++              # Cleanup must succeed before any archived-base proof can run.
++              python -m pip uninstall -y "$dist_name"
+             else
+               echo "::warning::Project install failed; the named test may not be importable."
+             fi
+diff --git a/tests/workflows/test_gate_dependency_isolation.py b/tests/workflows/test_gate_dependency_isolation.py
+new file mode 100644
+index 000000000..5c9a3df5c
+--- /dev/null
++++ b/tests/workflows/test_gate_dependency_isolation.py
+@@ -0,0 +1,82 @@
++"""Exercise the actual Gate dependency bootstrap without installing packages."""
++
++import json
++import os
++import subprocess
++from pathlib import Path
++
++import pytest
++import yaml
++
++
++@pytest.mark.parametrize("prefix", ["", "templates/consumer-repo/"])
++@pytest.mark.parametrize("project_file", ["pyproject.toml", "setup.py"])
++@pytest.mark.parametrize("failure", ["", "missing-name", "ambiguous-name", "uninstall"])
++def test_gate_removes_reported_project_or_fails_closed(tmp_path, prefix, project_file, failure):
++    root = Path(__file__).resolve().parents[2]
++    workflow = yaml.safe_load((root / prefix / ".github/workflows/pr-00-gate.yml").read_text())
++    step = next(
++        step
++        for step in workflow["jobs"]["test-quality"]["steps"]
++        if step.get("name") == "Install test-quality dependencies"
++    )
++    (tmp_path / project_file).write_text(
++        '[project]\nname = "example-project"\n' if project_file.endswith("toml") else "# fixture\n"
++    )
++    report = tmp_path / "fixture-report.json"
++    report.write_text(
++        json.dumps(
++            {
++                "install": [
++                    {"requested": False, "metadata": {"name": "runtime-dependency"}},
++                    {
++                        "requested": True,
++                        "metadata": (
++                            {} if failure == "missing-name" else {"name": "example-project"}
++                        ),
++                    },
++                ]
++                + (
++                    [{"requested": True, "metadata": {"name": "second-project"}}]
++                    if failure == "ambiguous-name"
++                    else []
++                )
++            }
++        )
++    )
++    log = tmp_path / "pip-calls.log"
++    shim = """
++python() {
++  if [ "$1" = "-m" ]; then
++    printf '%s\\n' "$*" >> "$PIP_TEST_LOG"
++    if [ "$3" = "install" ] && [ "$4" = "--report" ]; then
++      cp "$PIP_TEST_REPORT" "$5"
++    fi
++    if [ "$3" = "uninstall" ] && [ "$PIP_TEST_FAILURE" = "uninstall" ]; then
++      return 1
++    fi
++    return 0
++  fi
++  command python3 "$@"
++}
++"""
++    result = subprocess.run(
++        ["bash", "-c", shim + step["run"]],
++        cwd=tmp_path,
++        capture_output=True,
++        text=True,
++        env={
++            **os.environ,
++            "PIP_TEST_LOG": str(log),
++            "PIP_TEST_REPORT": str(report),
++            "PIP_TEST_FAILURE": failure,
++        },
++    )
++    if failure:
++        assert result.returncode != 0, "Unsafe base execution must not continue"
++    else:
++        assert result.returncode == 0, result.stdout + result.stderr
++        calls = log.read_text().splitlines()
++        assert any(call.startswith("-m pip install --report ") for call in calls)
++        assert "-m pip uninstall -y example-project" in calls
++        assert "-m pip uninstall -y runtime-dependency" not in calls

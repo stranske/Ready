@@ -1,0 +1,404 @@
+diff --git a/docs/keepalive/GoalsAndPlumbing.md b/docs/keepalive/GoalsAndPlumbing.md
+index f61d8d704..82e397d16 100644
+--- a/docs/keepalive/GoalsAndPlumbing.md
++++ b/docs/keepalive/GoalsAndPlumbing.md
+@@ -334,16 +334,27 @@ With `--storage auto`, completion reads and writes only the primary PR-comment
+ reservation, never an empty or stale repository-variable fallback. A missing primary
+ reservation returns `recorded=false`, `reason=authoritative-reservation-missing`;
+ a primary read/write failure returns `reason=authoritative-storage-unavailable`.
+-These checks apply even when the completing job has no workflow identity. Dispatch
+-may still use fallback storage during an outage, but its completion cannot be committed
+-until a primary reservation is established. Recover by rerunning from the reservation
+-step after primary storage is healthy; a pending primary reservation retains its
++These checks apply even when the completing job has no workflow identity. Automatic
++dispatch also requires a successful primary read and reservation write. A storage
++failure returns `should_dispatch=false`, `reason=authoritative-storage-unavailable`,
++with a recovery instruction; it never creates a fallback-only reservation whose
++completion could not be committed. If the primary has no record, existing fallback
++records are still read for debounce: an older pending run must finish or age out
++before the same head can be reserved in the primary. A failed legacy-state read
++also refuses dispatch, rather than assuming no earlier run exists. In this migration
++lookup, repository-variable HTTP 401/403 errors propagate as unavailable; only a
++404 means the variable is absent. Explicit single-store reads retain their historical
++best-effort authorization handling. Once the primary contains a record, the fallback
++is not consulted or written. Recover by retrying
++the reservation step after storage is healthy; no head change or manual state
++cleanup is needed. A pending primary reservation retains its
+ stale-pending timeout. A failed write response can be ambiguous, so retries re-read
+ primary state and preserve same-attempt idempotency. Explicit single-store callers
+ retain their existing behavior.
+ 
+-Authoritative storage failures also emit a warning on stderr identifying the read/write
+-operation, exception and cause types, and HTTP status when available. Raw exception text,
++Authoritative storage failures also emit a warning on stderr identifying reservation
++or completion, the read/write operation, exception and cause types, and HTTP status
++when available. Raw exception text,
+ URLs and response bodies are omitted so diagnostic logging does not expose credentials.
+ 
+ **Why the allowance expires into a cooldown rather than a refusal.** Refusing until the head
+diff --git a/scripts/runner_lib/core.py b/scripts/runner_lib/core.py
+index 899ffd581..5f74599d3 100644
+--- a/scripts/runner_lib/core.py
++++ b/scripts/runner_lib/core.py
+@@ -906,16 +906,18 @@ def from_environment(cls) -> RepoVariableRunnerStorage:
+         repo, token = _github_context()
+         return cls(GitHubApi(repo, token))
+ 
+-    def read_record(self, pr_number: int, provider: str) -> dict[str, Any] | None:
++    def read_record(
++        self, pr_number: int, provider: str, *, require_access: bool = False
++    ) -> dict[str, Any] | None:
+         name = _variable_name(pr_number, provider)
+         try:
+             payload = self.api.request("GET", f"/repos/{self.api.repo}/actions/variables/{name}")
+         except RuntimeError as exc:
+             message = str(exc)
+-            if (
+-                " failed: 404 " in message
+-                or " failed: 401 " in message
+-                or " failed: 403 " in message
++            # Explicit single-store callers retain their historical best-effort
++            # read. Migration checks must distinguish denied access from absence.
++            if " failed: 404 " in message or (
++                not require_access and (" failed: 401 " in message or " failed: 403 " in message)
+             ):
+                 return None
+             raise
+@@ -1061,6 +1063,17 @@ def _workflow_attempt_id() -> str:
+     return ""
+ 
+ 
++def _unavailable_dispatch(key: str, prior: dict[str, Any] | None = None) -> DebounceDecision:
++    return DebounceDecision(
++        False,
++        "authoritative-storage-unavailable",
++        key,
++        prior_status=str(prior.get("status")) if prior else None,
++        prior_head_sha=str(prior.get("head_sha")) if prior else None,
++        drainable="retry reservation after primary storage and legacy-state reads recover",
++    )
++
++
+ def _reserve_dispatch(
+     storage: RunnerDispatchStorage,
+     pr_number: int,
+@@ -1090,7 +1103,16 @@ def _reserve_dispatch(
+         record["unproductive_completions"] = unproductive
+         if _completion_was_unproductive(prior):
+             record["productive"] = False
+-    storage.write_record(pr_number, provider, record)
++    # Auto completions only accept the primary reservation. Never start work
++    # whose ownership would exist only in the fallback and could not complete.
++    reservation_storage = storage.primary if isinstance(storage, FallbackRunnerStorage) else storage
++    try:
++        reservation_storage.write_record(pr_number, provider, record)
++    except Exception as exc:
++        if not isinstance(storage, FallbackRunnerStorage):
++            raise
++        _log_storage_failure("write", exc, phase="reservation")
++        return _unavailable_dispatch(key, prior)
+     return DebounceDecision(
+         True,
+         reason,
+@@ -1122,7 +1144,23 @@ def should_dispatch(
+     provider = _validate_provider(provider)
+     storage = storage or _storage_from_name("auto")
+     key = _runner_key(pr_number, head_sha, provider)
+-    prior = storage.read_record(pr_number, provider)
++    try:
++        if isinstance(storage, FallbackRunnerStorage):
++            prior = storage.primary.read_record(pr_number, provider)
++            if prior is None:
++                # Respect legacy fallback reservations until they finish/age out,
++                # but any newly granted reservation must be written to primary.
++                if isinstance(storage.fallback, RepoVariableRunnerStorage):
++                    prior = storage.fallback.read_record(pr_number, provider, require_access=True)
++                else:
++                    prior = storage.fallback.read_record(pr_number, provider)
++        else:
++            prior = storage.read_record(pr_number, provider)
++    except Exception as exc:
++        if not isinstance(storage, FallbackRunnerStorage):
++            raise
++        _log_storage_failure("read", exc, phase="reservation")
++        return _unavailable_dispatch(key)
+     unproductive_completions = _unproductive_completion_count(prior)
+ 
+     if prior and prior.get("head_sha") == head_sha:
+@@ -1188,14 +1226,14 @@ def should_dispatch(
+     return _reserve_dispatch(storage, pr_number, head_sha, provider, key, prior, reason=reason)
+ 
+ 
+-def _log_completion_storage_failure(operation: str, exc: Exception) -> None:
++def _log_storage_failure(operation: str, exc: Exception, *, phase: str = "completion") -> None:
+     # GitHubApi preserves the HTTP/network exception as its cause. Log diagnostic
+     # metadata, not raw exception text, which can contain URLs or response bodies.
+     cause = exc.__cause__ or exc
+     code = getattr(cause, "code", None)
+     status = str(code) if isinstance(code, int) and 100 <= code <= 599 else "unknown"
+     print(
+-        f"warning: authoritative completion {operation} failed: "
++        f"warning: authoritative {phase} {operation} failed: "
+         f"error_type={type(exc).__name__} cause_type={type(cause).__name__} "
+         f"http_status={status}",
+         file=sys.stderr,
+@@ -1236,9 +1274,9 @@ def record_completion(
+     )
+     status = "completed" if result_payload.get("success") else "error"
+     compact_result = _compact_runner_result_payload(result_payload)
+-    # Dispatch may use a fallback for availability, but completion must validate and
+-    # update the authoritative reservation. An empty/stale fallback cannot prove
+-    # that a newer attempt does not own the primary, even if caller identity is absent.
++    # Dispatch and completion both require the authoritative reservation.
++    # An empty/stale fallback cannot prove that a newer attempt does not own the
++    # primary, even if caller identity is absent.
+     uses_fallback = isinstance(storage, FallbackRunnerStorage)
+     completion_storage = storage.primary if isinstance(storage, FallbackRunnerStorage) else storage
+     try:
+@@ -1246,7 +1284,7 @@ def record_completion(
+     except Exception as exc:
+         if not uses_fallback:
+             raise
+-        _log_completion_storage_failure("read", exc)
++        _log_storage_failure("read", exc)
+         return _unrecorded_completion({}, key, "authoritative-storage-unavailable")
+     if uses_fallback and prior_record is None:
+         return _unrecorded_completion({}, key, "authoritative-reservation-missing")
+@@ -1300,7 +1338,7 @@ def record_completion(
+     except Exception as exc:
+         if not uses_fallback:
+             raise
+-        _log_completion_storage_failure("write", exc)
++        _log_storage_failure("write", exc)
+         # Never redirect a checked primary reservation into an unchecked fallback.
+         # A failed response may be ambiguous; a retry re-reads primary state first.
+         return _unrecorded_completion(prior, key, "authoritative-storage-unavailable")
+diff --git a/tests/scripts/test_runner_lib.py b/tests/scripts/test_runner_lib.py
+index c2ee99bed..ab9876d1d 100644
+--- a/tests/scripts/test_runner_lib.py
++++ b/tests/scripts/test_runner_lib.py
+@@ -1051,6 +1051,224 @@ def test_productive_head_change_requires_owning_attempt(
+         assert len(storage.writes) == 1
+ 
+ 
++@pytest.mark.parametrize("operation", ["read", "write"])
++@pytest.mark.parametrize("has_identity", [True, False])
++@pytest.mark.parametrize("previous_fallback", [True, False])
++def test_auto_dispatch_requires_primary_storage(
++    monkeypatch: pytest.MonkeyPatch,
++    capsys: pytest.CaptureFixture[str],
++    operation: str,
++    has_identity: bool,
++    previous_fallback: bool,
++) -> None:
++    primary = MemoryRunnerStorage()
++    fallback = MemoryRunnerStorage()
++    storage = runner_core.FallbackRunnerStorage(primary, fallback)
++    # A reused adapter must not retain an earlier fallback-write selection.
++    storage._use_fallback = previous_fallback
++    monkeypatch.setenv("GITHUB_REPOSITORY", "owner/repo")
++    monkeypatch.setenv("GITHUB_RUN_ID", "100")
++    monkeypatch.setenv("GITHUB_RUN_ATTEMPT", "1")
++    if not has_identity:
++        monkeypatch.delenv("GITHUB_RUN_ID")
++    original = getattr(primary, f"{operation}_record")
++    secret = "private-response-and-token"
++
++    def fail(*_: Any) -> Any:
++        raise RuntimeError(secret) from HTTPError(
++            "https://example.invalid/" + secret, 403, secret, {}, None
++        )
++
++    monkeypatch.setattr(primary, f"{operation}_record", fail)
++    decision = should_dispatch(42, "aaa", "codex", storage=storage)
++
++    assert decision.should_dispatch is False
++    assert decision.reason == "authoritative-storage-unavailable"
++    assert "primary" in decision.drainable
++    assert not primary.writes
++    assert not fallback.writes
++    error = capsys.readouterr().err
++    assert f"authoritative reservation {operation} failed" in error
++    assert "http_status=403" in error
++    assert secret not in error
++
++    # Recovery requires only healthy storage, not a new head or manual state cleanup.
++    monkeypatch.setattr(primary, f"{operation}_record", original)
++    assert should_dispatch(42, "aaa", "codex", storage=storage).should_dispatch
++    assert primary.records[(42, "codex")]["status"] == "pending"
++    completed = record_completion(42, "aaa", "codex", _unproductive_result(), storage=storage)
++    assert completed["status"] == "completed"
++    assert primary.records[(42, "codex")] == completed
++    assert not fallback.writes
++
++
++@pytest.mark.parametrize("status", [401, 403, 404, 500])
++def test_auto_dispatch_checks_real_legacy_backend_access(
++    status: int, capsys: pytest.CaptureFixture[str]
++) -> None:
++    class DeniedApi:
++        repo = "owner/repo"
++
++        def request(self, method: str, path: str) -> Any:
++            assert method == "GET"
++            assert "/actions/variables/" in path
++            raise RuntimeError(f"GitHub API GET failed: {status} private-response") from HTTPError(
++                "https://example.invalid/private-response", status, "private-response", {}, None
++            )
++
++    primary = MemoryRunnerStorage()
++    fallback = runner_core.RepoVariableRunnerStorage(DeniedApi())  # type: ignore[arg-type]
++    decision = should_dispatch(
++        42, "aaa", "codex", storage=runner_core.FallbackRunnerStorage(primary, fallback)
++    )
++
++    if status == 404:
++        assert decision.should_dispatch is True
++        assert primary.records[(42, "codex")]["status"] == "pending"
++        assert capsys.readouterr().err == ""
++    else:
++        assert decision.should_dispatch is False
++        assert decision.reason == "authoritative-storage-unavailable"
++        assert not primary.writes
++        error = capsys.readouterr().err
++        assert f"http_status={status}" in error
++        assert "private-response" not in error
++
++
++@pytest.mark.parametrize("status", [401, 403, 404, 500])
++def test_explicit_repo_variable_read_retains_compatibility(status: int) -> None:
++    class DeniedApi:
++        repo = "owner/repo"
++
++        def request(self, method: str, path: str) -> Any:
++            raise RuntimeError(f"GitHub API GET failed: {status} denied")
++
++    storage = runner_core.RepoVariableRunnerStorage(DeniedApi())  # type: ignore[arg-type]
++    if status in (401, 403, 404):
++        assert storage.read_record(42, "codex") is None
++    else:
++        with pytest.raises(RuntimeError, match="500"):
++            storage.read_record(42, "codex")
++
++
++def test_auto_dispatch_cli_refuses_unreadable_legacy_state(
++    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str], tmp_path: Path
++) -> None:
++    primary = MemoryRunnerStorage()
++    fallback = MemoryRunnerStorage()
++
++    def fail(*_: Any) -> Any:
++        raise RuntimeError("private legacy state")
++
++    monkeypatch.setattr(fallback, "read_record", fail)
++    monkeypatch.setattr(
++        runner_core,
++        "_storage_from_name",
++        lambda _: runner_core.FallbackRunnerStorage(primary, fallback),
++    )
++    outputs = tmp_path / "outputs"
++    monkeypatch.setenv("GITHUB_OUTPUT", str(outputs))
++    assert (
++        runner_core.main(
++            ["should-dispatch", "--provider", "codex", "--pr-number", "42", "--head-sha", "aaa"]
++        )
++        == 0
++    )
++    captured = capsys.readouterr()
++    decision = json.loads(captured.out)
++    assert decision["should_dispatch"] == "false"
++    assert decision["reason"] == "authoritative-storage-unavailable"
++    assert "legacy-state" in decision["drainable"]
++    assert "should_dispatch=false" in outputs.read_text()
++    assert "private legacy state" not in captured.err
++    assert not primary.writes
++    assert not fallback.writes
++
++
++def test_auto_dispatch_ambiguous_primary_write_never_starts_or_writes_fallback(
++    monkeypatch: pytest.MonkeyPatch,
++) -> None:
++    primary = MemoryRunnerStorage()
++    fallback = MemoryRunnerStorage()
++    storage = runner_core.FallbackRunnerStorage(primary, fallback)
++    original = primary.write_record
++
++    def ambiguous_write(pr_number: int, provider: str, record: dict[str, Any]) -> None:
++        original(pr_number, provider, record)
++        raise RuntimeError("response lost after server persisted reservation")
++
++    monkeypatch.setattr(primary, "write_record", ambiguous_write)
++    assert should_dispatch(42, "aaa", "codex", storage=storage).should_dispatch is False
++    assert primary.records[(42, "codex")]["status"] == "pending"
++    assert not fallback.writes
++    monkeypatch.setattr(primary, "write_record", original)
++    assert should_dispatch(42, "aaa", "codex", storage=storage).reason == "duplicate-pending"
++    primary.records[(42, "codex")]["started_at"] = "2000-01-01T00:00:00Z"
++    assert should_dispatch(42, "aaa", "codex", storage=storage).should_dispatch is True
++    assert not fallback.writes
++
++
++def test_auto_dispatch_preserves_live_legacy_fallback_then_migrates_stale_reservation() -> None:
++    primary = MemoryRunnerStorage()
++    fallback = MemoryRunnerStorage()
++    should_dispatch(42, "aaa", "codex", storage=fallback)
++    storage = runner_core.FallbackRunnerStorage(primary, fallback)
++
++    decision = should_dispatch(42, "aaa", "codex", storage=storage)
++    assert decision.should_dispatch is False
++    assert decision.reason == "duplicate-pending"
++    assert not primary.writes
++    fallback.records[(42, "codex")]["started_at"] = "2000-01-01T00:00:00Z"
++    prior = dict(fallback.records[(42, "codex")])
++
++    assert should_dispatch(42, "aaa", "codex", storage=storage).reason == "stale-pending"
++    assert primary.records[(42, "codex")]["status"] == "pending"
++    completed = record_completion(42, "aaa", "codex", _unproductive_result(), storage=storage)
++    assert completed["status"] == "completed"
++    assert primary.records[(42, "codex")] == completed
++    assert fallback.records[(42, "codex")] == prior
++    assert len(fallback.writes) == 1
++
++
++def test_auto_dispatch_uses_primary_when_fallback_is_unavailable(
++    monkeypatch: pytest.MonkeyPatch,
++) -> None:
++    primary = MemoryRunnerStorage()
++    fallback = MemoryRunnerStorage()
++    should_dispatch(42, "aaa", "codex", storage=primary)
++    record_completion(
++        42, "aaa", "codex", _unproductive_result(), storage=primary, produced_work=False
++    )
++
++    def fail(*_: Any) -> Any:
++        raise AssertionError("fallback must not be read or written")
++
++    monkeypatch.setattr(fallback, "read_record", fail)
++    monkeypatch.setattr(fallback, "write_record", fail)
++    storage = runner_core.FallbackRunnerStorage(primary, fallback)
++    storage._use_fallback = True
++    decision = should_dispatch(42, "aaa", "codex", storage=storage)
++    assert decision.should_dispatch is True
++    assert decision.reason == "retry-unproductive-completion"
++    assert primary.records[(42, "codex")]["status"] == "pending"
++
++
++@pytest.mark.parametrize("operation", ["read", "write"])
++def test_single_store_dispatch_errors_still_propagate(
++    monkeypatch: pytest.MonkeyPatch, operation: str
++) -> None:
++    storage = MemoryRunnerStorage()
++    error = RuntimeError("single-store failure")
++
++    def fail(*_: Any) -> Any:
++        raise error
++
++    monkeypatch.setattr(storage, f"{operation}_record", fail)
++    with pytest.raises(RuntimeError) as caught:
++        should_dispatch(42, "aaa", "codex", storage=storage)
++    assert caught.value is error
++
++
+ @pytest.mark.parametrize("primary_state", ["unavailable", "missing"])
+ @pytest.mark.parametrize("fallback_state", ["empty", "stale"])
+ @pytest.mark.parametrize("has_identity", [True, False])

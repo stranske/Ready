@@ -1,0 +1,87 @@
+diff --git a/src/lms/maintenance/budget.py b/src/lms/maintenance/budget.py
+index 51b2f8da..478b5dec 100644
+--- a/src/lms/maintenance/budget.py
++++ b/src/lms/maintenance/budget.py
+@@ -115,9 +115,16 @@ def items_affordable_per_day(
+     return settings.daily_item_cap, "item cap"
+ 
+ 
++def _validate_count(count: int, message: str) -> None:
++    if isinstance(count, bool) or not isinstance(count, int) or count < 0:
++        raise ValueError(message)
++
++
+ def _weighted(values: dict[str, float], tier_counts: dict[str, int] | None) -> float:
+     """Weight per-tier constants by how many items actually use each tier."""
+     counts = {tier: (tier_counts or {}).get(tier, 0) for tier in RETENTION_TIERS}
++    for count in counts.values():
++        _validate_count(count, "tier counts must be non-negative integers")
+     total = sum(counts.values())
+     if total == 0:
+         return values[WARM]
+@@ -142,6 +149,7 @@ def estimate_capacity(
+     anchor_share: float = 0.5,
+ ) -> CapacityEstimate:
+     """Estimate capacity, validating anchor_share via items_affordable_per_day."""
++    _validate_count(active_items, "active_items must be a non-negative integer")
+     per_day, limited_by = items_affordable_per_day(settings, anchor_share=anchor_share)
+     interval = mean_interval_days(tier_counts)
+     capacity = max(1, int(per_day * interval))
+diff --git a/tests/maintenance/test_tiers_horizon_budget.py b/tests/maintenance/test_tiers_horizon_budget.py
+index f9f3007c..5849ca11 100644
+--- a/tests/maintenance/test_tiers_horizon_budget.py
++++ b/tests/maintenance/test_tiers_horizon_budget.py
+@@ -5,6 +5,7 @@
+ import math
+ from collections.abc import Generator
+ from datetime import UTC, datetime, timedelta
++from typing import cast
+ from unittest.mock import patch
+ 
+ import pytest
+@@ -37,6 +38,7 @@
+     describe,
+     estimate_capacity,
+     items_affordable_per_day,
++    mean_first_month_reviews,
+     mean_interval_days,
+ )
+ from lms.maintenance.models import MaintenanceItem
+@@ -448,6 +450,37 @@ def test_capacity_estimate_rejects_non_finite_anchor_share(anchor_share: float)
+         estimate_capacity(BudgetSettings(), active_items=0, anchor_share=anchor_share)
+ 
+ 
++def test_capacity_estimate_rejects_negative_active_items() -> None:
++    """Negative collection sizes must not corrupt utilisation or headroom."""
++    with pytest.raises(ValueError, match="^active_items must be a non-negative integer$"):
++        estimate_capacity(BudgetSettings(), active_items=-10)
++
++
++def test_capacity_estimate_rejects_negative_tier_counts() -> None:
++    """Negative tier distributions must not corrupt weighted interval math."""
++    with pytest.raises(ValueError, match="^tier counts must be non-negative integers$"):
++        estimate_capacity(BudgetSettings(), active_items=10, tier_counts={"hot": -2})
++
++
++@pytest.mark.parametrize("count", [1.5, math.nan, math.inf, -math.inf, "2", None, True])
++def test_capacity_estimate_rejects_non_integer_active_items(count: object) -> None:
++    """Runtime callers must not receive fractional or non-finite collection estimates."""
++    with pytest.raises(ValueError, match="^active_items must be a non-negative integer$"):
++        estimate_capacity(BudgetSettings(), active_items=cast(int, count))
++
++
++@pytest.mark.parametrize("count", [1.5, math.nan, math.inf, -math.inf, "2", None, True])
++@pytest.mark.parametrize("tier", ["hot", "warm", "cold"])
++def test_capacity_estimate_rejects_non_integer_tier_counts(count: object, tier: str) -> None:
++    """Every public weighted calculation rejects malformed counts in every known tier."""
++    counts = {tier: cast(int, count)}
++    for calculation in (mean_interval_days, mean_first_month_reviews):
++        with pytest.raises(ValueError, match="^tier counts must be non-negative integers$"):
++            calculation(counts)
++    with pytest.raises(ValueError, match="^tier counts must be non-negative integers$"):
++        estimate_capacity(BudgetSettings(), active_items=10, tier_counts=counts)
++
++
+ @pytest.mark.parametrize(
+     ("anchor_share", "expected_items"),
+     [(-1.0, 13), (0.0, 13), (0.5, 18), (1.0, 30), (2.0, 30)],

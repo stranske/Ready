@@ -112,3 +112,10 @@
 - Follow-ups filed: 4 (Trend_Model_Project#6046, #6047, #6048; Doc-Lineage#45)
 - OUT: [LOCAL_HOME]/.codex/automations/research-program/artifacts/verification/D4-verify-merged-2026-09-20T03.md
 - Checkpoint: [LOCAL_HOME]/.codex/automations/research-program/artifacts/verification/D4-verify-merged-2026-09-20T03.CHECKPOINT.md
+
+## Unit D4-verify-merged-2026-09-20T20 Completed
+- Total PRs verified: 20 (19 scored + 1 EXCLUDED dependency chore)
+- Verdicts: 17 VERIFIED, 2 PARTIAL, 0 NOT IMPLEMENTED
+- Follow-ups filed: 2 (Workflows#3494, learning-management-system#700)
+- OUT: [LOCAL_HOME]/.codex/automations/research-program/artifacts/verification/D4-verify-merged-2026-09-20T20.md
+- Checkpoint: [LOCAL_HOME]/.codex/automations/research-program/artifacts/verification/D4-verify-merged-2026-09-20T20.CHECKPOINT.md

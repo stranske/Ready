@@ -1,0 +1,165 @@
+diff --git a/docs/keepalive/GoalsAndPlumbing.md b/docs/keepalive/GoalsAndPlumbing.md
+index 82e397d16..c0cdd3381 100644
+--- a/docs/keepalive/GoalsAndPlumbing.md
++++ b/docs/keepalive/GoalsAndPlumbing.md
+@@ -350,7 +350,10 @@ the reservation step after storage is healthy; no head change or manual state
+ cleanup is needed. A pending primary reservation retains its
+ stale-pending timeout. A failed write response can be ambiguous, so retries re-read
+ primary state and preserve same-attempt idempotency. Explicit single-store callers
+-retain their existing behavior.
++retain their existing read behavior. Repository-variable writes propagate
++HTTP 401/403 failures instead of treating them as successful no-ops; callers
++must not report a reservation or completion as persisted after a denied write.
++The PATCH-404 to POST creation path remains supported.
+ 
+ Authoritative storage failures also emit a warning on stderr identifying reservation
+ or completion, the read/write operation, exception and cause types, and HTTP status
+diff --git a/docs/ops/CONSUMER_REPO_MAINTENANCE.md b/docs/ops/CONSUMER_REPO_MAINTENANCE.md
+index 9dad121e0..9da65027f 100644
+--- a/docs/ops/CONSUMER_REPO_MAINTENANCE.md
++++ b/docs/ops/CONSUMER_REPO_MAINTENANCE.md
+@@ -89,6 +89,11 @@ maintenance is grouped into the same weekly maintenance window.
+ 
+ ## Bug Triage Process
+ 
++Repository-variable runner storage must surface denied writes: HTTP 401/403
++cannot count as a successful reservation or recorded completion. The shared
++runner source propagates these errors to its caller, while a missing variable
++(PATCH 404) still uses POST creation. Explicit best-effort reads are unchanged.
++
+ When a bug is identified in workflow templates:
+ 
+ ### Step 1: Classify the Bug
+diff --git a/scripts/runner_lib/core.py b/scripts/runner_lib/core.py
+index 5f74599d3..0216313a4 100644
+--- a/scripts/runner_lib/core.py
++++ b/scripts/runner_lib/core.py
+@@ -936,19 +936,18 @@ def write_record(self, pr_number: int, provider: str, record: dict[str, Any]) ->
+         except RuntimeError as exc:
+             message = str(exc)
+             if " failed: 404 " in message:
+-                self.api.request(
+-                    "POST",
+-                    f"/repos/{self.api.repo}/actions/variables",
+-                    {"name": name, "value": value},
+-                )
+-                return
+-            if " failed: 401 " in message or " failed: 403 " in message:
+-                print(
+-                    f"warning: runner dispatch write skipped for {name}: {message}",
+-                    file=sys.stderr,
+-                )
++                try:
++                    self.api.request(
++                        "POST",
++                        f"/repos/{self.api.repo}/actions/variables",
++                        {"name": name, "value": value},
++                    )
++                except RuntimeError as create_exc:
++                    raise RuntimeError("Repository-variable creation failed.") from create_exc
+                 return
+-            raise
++            # A denied write is not a persisted reservation or completion.
++            # Propagate failure rather than reporting successful progress.
++            raise RuntimeError("Repository-variable write failed.") from exc
+ 
+ 
+ class FallbackRunnerStorage:
+diff --git a/tests/scripts/test_runner_lib.py b/tests/scripts/test_runner_lib.py
+index ab9876d1d..6695b453e 100644
+--- a/tests/scripts/test_runner_lib.py
++++ b/tests/scripts/test_runner_lib.py
+@@ -1151,6 +1151,93 @@ def request(self, method: str, path: str) -> Any:
+             storage.read_record(42, "codex")
+ 
+ 
++@pytest.mark.parametrize("status", [401, 403])
++@pytest.mark.parametrize("operation", ["reserve", "complete"])
++def test_repo_variable_denied_write_cannot_report_success(status, operation, capsys):
++    class DeniedWriteApi:
++        repo = "owner/repo"
++
++        def request(self, method, path, payload=None):
++            if method == "GET":
++                return {}
++            assert method == "PATCH"
++            raise RuntimeError(f"GitHub API PATCH failed: {status} private-response")
++
++    storage = runner_core.RepoVariableRunnerStorage(DeniedWriteApi())
++    with pytest.raises(RuntimeError, match="Repository-variable write failed") as raised:
++        if operation == "reserve":
++            should_dispatch(42, "aaa", "codex", storage=storage)
++        else:
++            record_completion(42, "aaa", "codex", {"success": True}, storage=storage)
++    assert "private-response" not in capsys.readouterr().err
++    assert str(status) in str(raised.value.__cause__)
++
++
++@pytest.mark.parametrize("status", [401, 403])
++@pytest.mark.parametrize("command", ["should-dispatch", "record-completion"])
++@pytest.mark.parametrize("create", [False, True])
++def test_repo_variable_cli_does_not_log_write_response(
++    status, command, create, monkeypatch, capsys, tmp_path
++):
++    class DeniedApi:
++        repo = "owner/repo"
++
++        def request(self, method, path, payload=None):
++            if method == "GET":
++                return {}
++            if create and method == "PATCH":
++                raise RuntimeError("GitHub API PATCH failed: 404 absent")
++            raise RuntimeError(f"GitHub API write failed: {status} private-response")
++
++    monkeypatch.setattr(
++        runner_core,
++        "_storage_from_name",
++        lambda _: runner_core.RepoVariableRunnerStorage(DeniedApi()),
++    )
++    output = tmp_path / "outputs"
++    monkeypatch.setenv("GITHUB_OUTPUT", str(output))
++    assert (
++        runner_core.main(
++            [
++                command,
++                "--provider",
++                "codex",
++                "--pr-number",
++                "42",
++                "--head-sha",
++                "aaa",
++                "--storage",
++                "repo-variable",
++            ]
++        )
++        == 1
++    )
++    captured = capsys.readouterr()
++    assert "Repository-variable" in captured.err
++    assert "private-response" not in captured.err
++    assert not captured.out
++    assert not output.exists()
++
++
++def test_repo_variable_missing_write_creates_variable():
++    calls = []
++
++    class CreateApi:
++        repo = "owner/repo"
++
++        def request(self, method, path, payload=None):
++            calls.append((method, path, payload))
++            if method == "PATCH":
++                raise RuntimeError("GitHub API PATCH failed: 404 missing")
++            return {}
++
++    storage = runner_core.RepoVariableRunnerStorage(CreateApi())
++    record = {"status": "pending"}
++    storage.write_record(42, "codex", record)
++    assert [call[0] for call in calls] == ["PATCH", "POST"]
++    assert json.loads(calls[1][2]["value"]) == record
++
++
+ def test_auto_dispatch_cli_refuses_unreadable_legacy_state(
+     monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str], tmp_path: Path
+ ) -> None:
