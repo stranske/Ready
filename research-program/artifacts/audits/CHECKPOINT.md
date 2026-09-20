@@ -1,4 +1,12 @@
-# CHECKPOINT — Counter_Risk audits (append-only)
+# CHECKPOINT — Track D audits (append-only)
+
+## 2026-09-20 — D-audit-Deliverable-Render--2026-09-20T20-25-18Z
+- Phase 0 scoping complete (ledger + README; no dossier file present).
+- Phase 1 orient: tip 3adc29f, 133 tests collected, ruff clean.
+- Phase 1.5 scorecard: 4 work / 1 partial / 1 broken / 0 fabricated / 0 not exercised of 6.
+- Phase 2-3: 2 verified findings; closed #2-#6 re-checked, not still-broken.
+- Phase 4: filed #27-#28; format guard success.
+- Phase 5: OUT + ledger + intake log complete.
 
 ## 2026-09-20 — D-audit-Counter_Risk--2026-09-20T20-25-21Z
 - Phase 0 scoping complete (dossier + ledger read).
