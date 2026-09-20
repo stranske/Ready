@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-20T20:42:22Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-20T20:49:01Z)
 
-Units: 148 — done 142, failed 3, queued 3
+Units: 148 — claimed 1, done 142, failed 3, queued 2
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 Orchestrator evidence (30d): offload runs 185, bound to a research round 1, scored 1 (PASS 1, FAIL 0, infra 0) — codex 0/26 (P0 F0 I0), cursor 1/88 (P1 F0 I0), gemini 0/67 (P0 F0 I0), vibe 0/4 (P0 F0 I0)
@@ -112,7 +112,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Counter_Risk--2026-09-14T06-49-49Z | D | D | failed | codex |  | Audit stranske/Counter_Risk and file issues (supply 1 <= 2) |
 | D-audit-Counter_Risk--2026-09-20T20-25-21Z | D | D | done | cursor | driver | Audit stranske/Counter_Risk and file issues (supply 2 <= 2) |
 | D-audit-Deliverable-Render--2026-09-20T08-24-39Z | D | D | failed | codex |  | Audit stranske/Deliverable-Render and file issues (supply 1 <= 2) |
-| D-audit-Deliverable-Render--2026-09-20T20-25-18Z | D | D | queued | claude |  | Audit stranske/Deliverable-Render and file issues (supply 1 <= 2) |
+| D-audit-Deliverable-Render--2026-09-20T20-25-18Z | D | D | claimed | cursor | driver | Audit stranske/Deliverable-Render and file issues (supply 1 <= 2) |
 | D-audit-Doc-Lineage--2026-09-19T20-12-10Z | D | D | done | codex | codex | Audit stranske/Doc-Lineage and file issues (supply 2 <= 2) |
 | D-audit-Fine-Art-Archive--2026-09-05T04-00-31Z | D | D | done | codex | codex | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 2) |
 | D-audit-Fine-Art-Archive--2026-09-06T04-25-53Z | D | D | done | codex | driver | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 3) |
@@ -160,8 +160,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-20T20:13:00Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
-- 2026-09-20T20:16:36Z — D3-unblock-sweep-2026-09-20T20 — done — Covered eight prescribed repositories: no actionable frozen work, stale claims, stalled PRs, or default-branch failures; recorded 59 ready issues and priority-l
 - 2026-09-20T20:16:40Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
 - 2026-09-20T20:18:56Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
 - 2026-09-20T20:25:16Z — verify — enqueued D4-verify-merged-2026-09-20T20
@@ -172,6 +170,8 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-20T20:25:26Z — D-audit-Counter_Risk--2026-09-20T20-25-21Z — claimed by driver (agent cursor)
 - 2026-09-20T20:25:29Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
 - 2026-09-20T20:42:22Z — D-audit-Counter_Risk--2026-09-20T20-25-21Z — done — cursor produced 588 words at artifacts/audits/Counter_Risk-2026-09-20.md in 999s
+- 2026-09-20T20:49:01Z — D-audit-Deliverable-Render--2026-09-20T20-25-18Z — route — router picked cursor from ['codex', 'cursor']
+- 2026-09-20T20:49:01Z — D-audit-Deliverable-Render--2026-09-20T20-25-18Z — claimed by driver (agent cursor)
 
 ## Questions
 
