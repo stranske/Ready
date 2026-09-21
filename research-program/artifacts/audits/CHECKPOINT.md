@@ -13,3 +13,5 @@
 ## 2026-09-21T20:43Z — Counter_Risk Phase 1.5 scorecard complete
 
 ## 2026-09-21T20:50Z — Counter_Risk Phase 4-5 complete; issues #1104 #1105 #1106 filed; report at Counter_Risk-2026-09-21.md
+
+## 2026-09-21T20:41Z — Manager-Database audit Phase 0 started (D-audit-Manager-Database--2026-09-21T20-41-04Z); prior 2026-09-20 scorecard and issue ledger read; tip 21ea3aa.
