@@ -977,3 +977,12 @@
 - 2026-09-21T04:16:35.519990+00:00 D3-unblock-sweep-2026-09-21T04: Inv-Man-Intake complete; frozen 0/0 repaired; silent 0/0 released/stale; reroutes 0; CI success; supply 4; priority 0/4
 - 2026-09-21T04:16:35.519990+00:00 D3-unblock-sweep-2026-09-21T04: Pension-Data complete; frozen 0/0 repaired; silent 0/0 released/stale; reroutes 0; Agents Gate Followups failure (https://github.com/stranske/Pension-Data/actions/runs/34867655474); supply 8; priority 0/8
 - 2026-09-21T04:20:00Z D3-unblock-sweep-2026-09-21T04: sweep complete; 8 covered 7 deferred (Orchestrator out of scope); 0 frozen repaired; 0 silent claims released; 0 PR reroutes; product CI green on all consumer repos; total supply 69
+
+- 2026-09-21T12:22:00Z D3-unblock-sweep-2026-09-21T12: Ready complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; CI red (Black tests/test_main.py); supply 3; priority 0/3
+- 2026-09-21T12:22:00Z D3-unblock-sweep-2026-09-21T12. trip-planner complete; frozen 0/0; owner 0; silent 3/3 (#1783,#1785,#1786 released); reroutes 0; branch green; supply 4; priority 0/4
+- 2026-09-21T12:22:00Z D3-unblock-sweep-2026-09-21T12. learning-management-system complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch green; supply 4; priority 1/4
+- 2026-09-21T12:22:00Z D3-unblock-sweep-2026-09-21T12. Fine-Art-Archive complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch green; supply 7; priority 0/7
+- 2026-09-21T12:22:00Z D3-unblock-sweep-2026-09-21T12. Doc-Lineage complete; frozen 1/0 (#1 tracker left); owner 0; silent 0/0; reroutes 0; branch green; supply 4; priority 0/4
+- 2026-09-21T12:22:00Z D3-unblock-sweep-2026-09-21T12. Deliverable-Render complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch green; supply 3; priority 2/3
+- 2026-09-21T12:22:00Z D3-unblock-sweep-2026-09-21T12. Manager-Mosaic complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch green; supply 3; priority 0/3
+- 2026-09-21T12:22:00Z D3-unblock-sweep-2026-09-21T12. sweep complete; 7 covered 8 deferred; 0 frozen repaired; 3 silent claims released; 0 reroutes; Ready CI red (mechanical format); total supply 28
