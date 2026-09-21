@@ -1,3 +1,8 @@
 # Exact paths relative to research-program, followed by a rule and a reason:
 # example.md:credential # Synthetic example, reviewed for publication.
-# No existing findings have been automatically allowlisted.
+artifacts/verification/evidence/D4-verify-merged-2026-09-19T02/Ready-576.diff:private-key # Historical verifier diff records synthetic private-key markers from publication-safety regression coverage.
+artifacts/verification/evidence/D4-verify-merged-2026-09-16T02/Ready-574-issue-554.json:private-key # Historical issue evidence quotes synthetic private-key markers used by publication-safety tests.
+artifacts/verification/evidence/D4-verify-merged-2026-09-15T02/Ready-569/diff.patch:private-key # Historical verifier patch records synthetic private-key markers from publication-safety regression coverage.
+artifacts/verification/evidence/D4-verify-merged-2026-09-15T02/Ready-569/issue-554.json:private-key # Historical issue evidence quotes synthetic private-key markers used by publication-safety tests.
+artifacts/verification/evidence/D4-verify-merged-2026-09-15T02/Ready-569/pr.json:private-key # Historical PR evidence quotes synthetic private-key markers used by publication-safety tests.
+artifacts/verification/evidence/D4-verify-merged-2026-09-15T02/Ready-569/merged/tests/test_prepare_publication.py:private-key # Merged verifier snapshot contains only deliberate synthetic private-key test fixtures.
