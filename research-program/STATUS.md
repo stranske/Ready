@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-21T23:11:20Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-21T23:16:49Z)
 
 Units: 157 — claimed 1, done 153, failed 3
 Paused: False   Phase stops: []
@@ -119,7 +119,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Deliverable-Render--2026-09-20T08-24-39Z | D | D | failed | codex |  | Audit stranske/Deliverable-Render and file issues (supply 1 <= 2) |
 | D-audit-Deliverable-Render--2026-09-20T20-25-18Z | D | D | done | cursor | driver | Audit stranske/Deliverable-Render and file issues (supply 1 <= 2) |
 | D-audit-Deliverable-Render--2026-09-21T08-38-08Z | D | D | done | cursor | driver | Audit stranske/Deliverable-Render and file issues (supply 2 <= 2) |
-| D-audit-Deliverable-Render--2026-09-21T20-41-01Z | D | D | claimed | cursor | codex | Audit stranske/Deliverable-Render and file issues (supply 1 <= 2) |
+| D-audit-Deliverable-Render--2026-09-21T20-41-01Z | D | D | claimed | cursor | driver | Audit stranske/Deliverable-Render and file issues (supply 1 <= 2) |
 | D-audit-Doc-Lineage--2026-09-19T20-12-10Z | D | D | done | codex | codex | Audit stranske/Doc-Lineage and file issues (supply 2 <= 2) |
 | D-audit-Fine-Art-Archive--2026-09-05T04-00-31Z | D | D | done | codex | codex | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 2) |
 | D-audit-Fine-Art-Archive--2026-09-06T04-25-53Z | D | D | done | codex | driver | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 3) |
@@ -169,9 +169,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-21T20:25:34Z — D3-unblock-sweep-2026-09-21T20 — done — cursor produced 624 words at artifacts/sweeps/D3-unblock-sweep-2026-09-21T20.md in 182s
-- 2026-09-21T20:41:01Z — refill — Deliverable-Render: open=1 <= 2 → audit queued
-- 2026-09-21T20:41:04Z — refill — Counter_Risk: open=2 <= 3 → audit queued
 - 2026-09-21T20:41:04Z — refill — Manager-Database: open=1 <= 2 → audit queued
 - 2026-09-21T20:41:07Z — D-audit-Counter_Risk--2026-09-21T20-41-04Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-21T20:41:07Z — D-audit-Counter_Risk--2026-09-21T20-41-04Z — claimed by driver (agent cursor)
@@ -181,6 +178,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-21T21:12:27Z — D-audit-Manager-Database--2026-09-21T20-41-04Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-21T21:12:27Z — D-audit-Manager-Database--2026-09-21T20-41-04Z — claimed by codex (agent cursor)
 - 2026-09-21T21:22:12Z — D-audit-Manager-Database--2026-09-21T20-41-04Z — done — Scorecard: 6 work / 0 partial / 1 broken / 0 fabricated / 0 not exercised of 8; journey: passes (register manager → search → chat → dashboard empty-state); surf
+- 2026-09-21T23:16:48Z — D-audit-Deliverable-Render--2026-09-21T20-41-01Z — claim released (stale)
+- 2026-09-21T23:16:49Z — D-audit-Deliverable-Render--2026-09-21T20-41-01Z — route — router picked cursor from ['codex', 'cursor']
+- 2026-09-21T23:16:49Z — D-audit-Deliverable-Render--2026-09-21T20-41-01Z — claimed by driver (agent cursor)
 
 ## Questions
 
