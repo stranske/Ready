@@ -1,0 +1,1062 @@
+commit 3adc29fdd019b08a96cdbc4694c06a043b00fcd9
+Author: stranske <stranske@gmail.com>
+Date:   Sat Sep 19 23:23:49 2026 -0500
+
+    feat(store): validate structured-store references and evidence (#25)
+    
+    * feat(store): validate semantic references and evidence projection for issue 6
+    
+    * chore(codex-keepalive): apply updates (PR #25)
+    
+    * chore(codex-autofix): apply updates (PR #25)
+    
+    * fix(store): address CodeRabbit review threads on evidence projection
+    
+    Pin jsonschema below 4.23, enforce enclosing fact_ref on native and legacy
+    pointers, reject non-finite JSON constants, preserve optional evidence fields,
+    and add pub.src plus packaged console-entry regression coverage.
+    
+    Co-authored-by: Cursor <cursoragent@cursor.com>
+    
+    * chore(codex-keepalive): apply updates (PR #25)
+    
+    * chore(autofix): formatting/lint
+    
+    * chore(codex-autofix): apply updates (PR #25)
+    
+    * chore(autofix): formatting/lint
+    
+    ---------
+    
+    Co-authored-by: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+    Co-authored-by: Cursor <cursoragent@cursor.com>
+    Co-authored-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
+
+diff --git a/docs/STRUCTURED_STORE_VALIDATION.md b/docs/STRUCTURED_STORE_VALIDATION.md
+new file mode 100644
+index 0000000..d95e68a
+--- /dev/null
++++ b/docs/STRUCTURED_STORE_VALIDATION.md
+@@ -0,0 +1,39 @@
++# Structured-store validation
++
++Run `validate-structured-store path/to/store.json` (or
++`python scripts/validate_structured_store.py path/to/store.json` in a checkout).
++It reads the file without changing it and exits nonzero for malformed input,
++unresolved references, suspected currency-substitution remnants, or evidence
++that cannot satisfy the fleet's `evidence-object/v1` contract. It does not
++render output or upload data.
++
++This is the communication-synthesis format: `fund` is an object and
++`periods`, `entries`, `themes`, `documents`, and `gaps` are arrays.
++Periods and entries need unique nonempty `id` fields. Each entry's nested
++`mentions[].q` refers to a period ID; optional `mentions[].entry_id` refers
++to an entry ID. `entries[].first/last` and `themes[].periods` also refer to
++period IDs when supplied. This follows the source's nested shape: the source
++does **not** describe a `mentions` field on the top-level entries list
++referencing entry IDs. An explicit entry reference is supported where producers
++provide one, while the documented `q` join is always checked.
++
++An evidence pointer in `mentions[].src` or `entries[].pub.src` must contain
++`stable_id` (or `source_id`), `method`, and `quote` (or `excerpt`, which
++may explicitly be null). The validator deterministically derives an
++`evidence_id` and enclosing `fact_ref`, retains one-based page numbers in
++`locator.page`, and validates the result against a packaged copy of the shared
++schema. A native `evidence-object/v1` can be supplied directly. A bare source
++name cannot provide extraction method or excerpt, so it fails with an explicit
++projection diagnostic; no provenance is invented.
++
++The dollar heuristic flags `B` or `$B` in monetary fields such as `size`,
++`peak`, or `amount`, and in monetary phrases such as “capital of B”.
++It is a suspicion, not an attempt to reconstruct the missing number. A ticker
++`B`, a class B rating, and a valid `$36B` are accepted. Unknown monetary
++contexts cannot be conclusively inferred from a single damaged file; review
++such data against its source before relying on it.
++
++Existing `Store` and `StructuredStore` loaders for renderer input remain
++unchanged. This semantic validator is an explicit gate for the separate
++communication-synthesis format, not a new implicit validation step on every
++legacy renderer load.
+diff --git a/pyproject.toml b/pyproject.toml
+index 875f789..7de0c49 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -21,6 +21,7 @@ classifiers = [
+     "Programming Language :: Python :: 3.13",
+ ]
+ dependencies = [
++    "jsonschema>=4.17.3,<4.23.0",
+     "python-docx==1.1.2",
+     "python-pptx==1.0.2",
+     "PyYAML==6.0.3",
+@@ -28,6 +29,10 @@ dependencies = [
+ 
+ [project.scripts]
+ render-docx-memo = "deliverable_render.cli.render_docx:main"
++validate-structured-store = "deliverable_render.store.validate:main"
++
++[tool.setuptools.package-data]
++"deliverable_render.store" = ["evidence-object-v1.schema.json"]
+ 
+ [project.optional-dependencies]
+ dev = [
+diff --git a/requirements-dev.lock b/requirements-dev.lock
+index c2a39b1..136ef21 100644
+--- a/requirements-dev.lock
++++ b/requirements-dev.lock
+@@ -2,18 +2,30 @@
+ #    uv pip compile pyproject.toml --extra dev --output-file requirements-dev.lock
+ ast-serialize==0.6.0
+     # via mypy
++attrs==26.1.0
++    # via
++    #   jsonschema
++    #   referencing
+ black==26.5.1
+-    # via my-project (pyproject.toml)
++    # via deliverable-render (pyproject.toml)
+ click==8.3.1
+     # via black
+ coverage==7.16.0
+     # via pytest-cov
+ iniconfig==2.3.0
+     # via pytest
++jsonschema==4.22.0
++    # via deliverable-render (pyproject.toml)
++jsonschema-specifications==2025.9.1
++    # via jsonschema
+ librt==0.13.0
+     # via mypy
++lxml==6.1.3
++    # via
++    #   python-docx
++    #   python-pptx
+ mypy==2.3.1
+-    # via my-project (pyproject.toml)
++    # via deliverable-render (pyproject.toml)
+ mypy-extensions==1.1.0
+     # via
+     #   black
+@@ -26,6 +38,8 @@ pathspec==1.0.4
+     # via
+     #   black
+     #   mypy
++pillow==12.3.0
++    # via python-pptx
+ platformdirs==4.9.2
+     # via black
+ pluggy==1.6.0
+@@ -36,13 +50,33 @@ pygments==2.19.2
+     # via pytest
+ pytest==9.1.1
+     # via
+-    #   my-project (pyproject.toml)
++    #   deliverable-render (pyproject.toml)
+     #   pytest-cov
+ pytest-cov==7.1.0
+-    # via my-project (pyproject.toml)
++    # via deliverable-render (pyproject.toml)
++python-docx==1.1.2
++    # via deliverable-render (pyproject.toml)
++python-pptx==1.0.2
++    # via deliverable-render (pyproject.toml)
+ pytokens==0.4.1
+     # via black
++pyyaml==6.0.3
++    # via deliverable-render (pyproject.toml)
++referencing==0.37.0
++    # via
++    #   jsonschema
++    #   jsonschema-specifications
++rpds-py==2026.6.3
++    # via
++    #   jsonschema
++    #   referencing
+ ruff==0.16.7
+-    # via my-project (pyproject.toml)
++    # via deliverable-render (pyproject.toml)
+ typing-extensions==4.15.0
+-    # via mypy
++    # via
++    #   mypy
++    #   python-docx
++    #   python-pptx
++    #   referencing
++xlsxwriter==3.2.9
++    # via python-pptx
+diff --git a/requirements.lock b/requirements.lock
+index ae9b9a6..274fa07 100644
+--- a/requirements.lock
++++ b/requirements.lock
+@@ -2,6 +2,10 @@
+ #    uv pip compile pyproject.toml --extra=dev --universal --output-file=requirements.lock
+ ast-serialize==0.6.0
+     # via mypy
++attrs==26.1.0
++    # via
++    #   jsonschema
++    #   referencing
+ black==26.5.1
+     # via deliverable-render (pyproject.toml)
+ click==8.4.2
+@@ -14,6 +18,10 @@ coverage==7.16.0
+     # via pytest-cov
+ iniconfig==2.3.0
+     # via pytest
++jsonschema==4.22.0
++    # via deliverable-render (pyproject.toml)
++jsonschema-specifications==2025.9.1
++    # via jsonschema
+ librt==0.13.0 ; platform_python_implementation != 'PyPy'
+     # via mypy
+ lxml==6.1.3
+@@ -58,6 +66,14 @@ pytokens==0.4.1
+     # via black
+ pyyaml==6.0.3
+     # via deliverable-render (pyproject.toml)
++referencing==0.37.0
++    # via
++    #   jsonschema
++    #   jsonschema-specifications
++rpds-py==2026.6.3
++    # via
++    #   jsonschema
++    #   referencing
+ ruff==0.16.7
+     # via deliverable-render (pyproject.toml)
+ typing-extensions==4.16.0
+@@ -65,5 +81,6 @@ typing-extensions==4.16.0
+     #   mypy
+     #   python-docx
+     #   python-pptx
++    #   referencing
+ xlsxwriter==3.2.9
+     # via python-pptx
+diff --git a/scripts/aggregate_agent_metrics.py b/scripts/aggregate_agent_metrics.py
+index ff86930..d79462e 100755
+--- a/scripts/aggregate_agent_metrics.py
++++ b/scripts/aggregate_agent_metrics.py
+@@ -1522,10 +1522,7 @@ def build_summary(
+             f"- Pinned versions: {_format_counter(codex_cli_freshness['pinned_versions'])}",
+             f"- Latest versions: {_format_counter(codex_cli_freshness['latest_versions'])}",
+             f"- Outdated records: {codex_cli_freshness['outdated_records']}",
+-            (
+-                "- Latest unavailable records: "
+-                f"{codex_cli_freshness['latest_unavailable_records']}"
+-            ),
++            (f"- Latest unavailable records: {codex_cli_freshness['latest_unavailable_records']}"),
+             (
+                 "- Max version delta: "
+                 f"major {codex_cli_freshness['max_version_delta']['major']}, "
+diff --git a/scripts/langchain/issue_optimizer.py b/scripts/langchain/issue_optimizer.py
+index a23ce84..daab9aa 100755
+--- a/scripts/langchain/issue_optimizer.py
++++ b/scripts/langchain/issue_optimizer.py
+@@ -547,7 +547,7 @@ def _detect_objective_criteria(criteria: list[str]) -> list[dict[str, str]]:
+             {
+                 "criterion": "Acceptance Criteria (overall)",
+                 "issue": (
+-                    "No acceptance criterion references a test, smoke test, " "or verification gate"
++                    "No acceptance criterion references a test, smoke test, or verification gate"
+                 ),
+                 "suggestion": (
+                     "Add at least one criterion naming a concrete test/command "
+diff --git a/scripts/langchain/structured_output.py b/scripts/langchain/structured_output.py
+index 1f4fab8..22c812a 100644
+--- a/scripts/langchain/structured_output.py
++++ b/scripts/langchain/structured_output.py
+@@ -103,7 +103,7 @@ def build_repair_callback(
+ def clamp_repair_attempts(max_repair_attempts: int) -> int:
+     if isinstance(max_repair_attempts, bool) or not isinstance(max_repair_attempts, int):
+         raise TypeError(
+-            "max_repair_attempts must be an integer, got " f"{type(max_repair_attempts).__name__}"
++            f"max_repair_attempts must be an integer, got {type(max_repair_attempts).__name__}"
+         )
+     if not MIN_REPAIR_ATTEMPTS <= max_repair_attempts <= MAX_REPAIR_ATTEMPTS:
+         raise ValueError(
+diff --git a/scripts/orchestrator_skill.py b/scripts/orchestrator_skill.py
+index f2fc2e6..ee01a50 100644
+--- a/scripts/orchestrator_skill.py
++++ b/scripts/orchestrator_skill.py
+@@ -370,18 +370,18 @@ def main(argv: list[str] | None = None) -> int:
+     if args.format == "self-check":
+         if not snapshot.exists:
+             print(
+-                "Orchestrator skill self-check: skipped " f"({snapshot.config_path} not found).",
++                f"Orchestrator skill self-check: skipped ({snapshot.config_path} not found).",
+                 file=sys.stderr,
+             )
+             return 0
+         if not snapshot.enabled:
+             print(
+-                "Orchestrator skill self-check: disabled " f"({snapshot.config_path}).",
++                f"Orchestrator skill self-check: disabled ({snapshot.config_path}).",
+                 file=sys.stderr,
+             )
+             return 0
+         print(
+-            "Orchestrator skill self-check: OK " f"(enabled from {snapshot.config_path}).",
++            f"Orchestrator skill self-check: OK (enabled from {snapshot.config_path}).",
+             file=sys.stderr,
+         )
+         return 0
+diff --git a/scripts/validate_structured_store.py b/scripts/validate_structured_store.py
+new file mode 100644
+index 0000000..d6f2de5
+--- /dev/null
++++ b/scripts/validate_structured_store.py
+@@ -0,0 +1,12 @@
++#!/usr/bin/env python3
++"""Checkout-friendly wrapper for the installed validator CLI."""
++
++import sys
++from pathlib import Path
++
++sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
++
++from deliverable_render.store.validate import main
++
++if __name__ == "__main__":
++    raise SystemExit(main())
+diff --git a/src/deliverable_render/html.py b/src/deliverable_render/html.py
+index 3c2c919..2813900 100644
+--- a/src/deliverable_render/html.py
++++ b/src/deliverable_render/html.py
+@@ -142,7 +142,7 @@ def render_html(store: Store, spec: RenderSpec) -> str:
+             else:
+                 link_html = doc_name_escaped
+             evidence_items.append(
+-                f"<li>{link_html}, page {pointer.page}: " f"{escape(pointer.quote)}</li>"
++                f"<li>{link_html}, page {pointer.page}: {escape(pointer.quote)}</li>"
+             )
+ 
+         evidence_cell = f"<ul>{''.join(evidence_items)}</ul>" if evidence_items else "No evidence"
+diff --git a/src/deliverable_render/store.py b/src/deliverable_render/store/__init__.py
+similarity index 100%
+rename from src/deliverable_render/store.py
+rename to src/deliverable_render/store/__init__.py
+diff --git a/src/deliverable_render/store/evidence-object-v1.schema.json b/src/deliverable_render/store/evidence-object-v1.schema.json
+new file mode 100644
+index 0000000..882d8f2
+--- /dev/null
++++ b/src/deliverable_render/store/evidence-object-v1.schema.json
+@@ -0,0 +1,61 @@
++{
++  "$schema": "https://json-schema.org/draft/2020-12/schema",
++  "$id": "https://github.com/stranske/Workflows/docs/contracts/schemas/evidence-object-v1.schema.json",
++  "title": "Research Backplane Evidence Object v1",
++  "description": "An attributable evidence object linking an extracted/asserted fact back to its source. Closes the fleet's most common evidence gap: even the best repos (Pension-Data 2/3, Inv-Man-Intake 2/3) omit EXCERPT text and extraction METHOD from their evidence object. Both are required here. Out of role for pure computational engines (PAEM/Trend_Model emit no facts) -- such tools list 'evidence' outside their registry required_sections and emit no evidence objects.",
++  "type": "object",
++  "additionalProperties": true,
++  "required": ["schema_version", "evidence_id", "fact_ref", "source_id", "method", "excerpt"],
++  "properties": {
++    "schema_version": {"const": "evidence-object/v1"},
++    "evidence_id": {
++      "type": "string",
++      "minLength": 1,
++      "description": "Stable, deterministic id for this evidence object (e.g. a content hash), referenced from run-contract/v1 evidence_refs."
++    },
++    "fact_ref": {
++      "type": "string",
++      "minLength": 1,
++      "description": "Identifier of the fact/metric/field this evidence supports (e.g. 'strategy.asset_class', a metric key, a holdings delta id)."
++    },
++    "source_id": {
++      "type": "string",
++      "minLength": 1,
++      "description": "Stable source document / dataset id the fact was drawn from."
++    },
++    "method": {
++      "type": "string",
++      "enum": ["rule", "parser", "table", "text", "ocr", "llm", "computed", "fallback", "manual"],
++      "description": "How the fact was extracted/produced. This is the field the fleet's best repos are missing (Pension-Data: no method on the evidence link; Inv-Man-Intake: provider_name lives on the document result, not the field)."
++    },
++    "excerpt": {
++      "type": ["string", "null"],
++      "maxLength": 2000,
++      "description": "The quoted source text supporting the fact (bounded). Required to be PRESENT (string or explicit null) so consumers can see WHAT text supports a fact. The fleet stores positional anchors like 'text:3' instead of quoted excerpts; this field carries the quote. Bounded length keeps it artifact-safe; long source bodies stay in named artifacts."
++    },
++    "locator": {
++      "type": "object",
++      "additionalProperties": true,
++      "description": "Structured location within the source. The richer locators (bbox/table/row) already exist on types like Inv-Man-Intake SourceLocation but are not propagated to the evidence object today.",
++      "properties": {
++        "page": {"type": "integer", "minimum": 0},
++        "section": {"type": "string", "minLength": 1},
++        "table_index": {"type": "integer", "minimum": 0},
++        "row": {"type": "integer", "minimum": 0},
++        "column": {"type": ["string", "integer"]},
++        "bbox": {"type": "array", "items": {"type": "number"}, "minItems": 4, "maxItems": 4}
++      }
++    },
++    "confidence": {
++      "type": ["number", "null"],
++      "minimum": 0,
++      "maximum": 1,
++      "description": "Per-evidence-link confidence (so two evidence sources for one fact can carry differing confidences -- a gap noted for Pension-Data, where confidence sits on the fact not the link)."
++    },
++    "entity_ref": {
++      "type": "string",
++      "pattern": "^[a-z0-9_]+:[a-z0-9][a-z0-9_.:-]*$",
++      "description": "Optional canonical entity id (per identity-map-conventions.md) the fact is about."
++    }
++  }
++}
+diff --git a/src/deliverable_render/store/schema.py b/src/deliverable_render/store/schema.py
+new file mode 100644
+index 0000000..8bde72f
+--- /dev/null
++++ b/src/deliverable_render/store/schema.py
+@@ -0,0 +1,42 @@
++"""Communication-synthesis store shape and shared evidence contract.
++
++This is separate from the renderer's existing Store/StructuredStore models.
++The source format nests mentions inside entries and uses mentions[].q to
++identify a period, not an entry. Optional explicit entry_id references are
++checked when present; neither field is silently discarded.
++"""
++
++from __future__ import annotations
++
++import json
++from importlib.resources import files
++from typing import Any, TypedDict, cast
++
++
++class CommunicationSynthesisStore(TypedDict):
++    """Required top-level fields emitted by the communication-synthesis tool.
++
++    Item-level shapes remain producer-owned and forward-compatible. This type
++    records the stable envelope that consumers may rely on: fund metadata plus
++    the period, entry, theme, document, and gap collections.
++    """
++
++    fund: dict[str, Any]
++    periods: list[dict[str, Any]]
++    entries: list[dict[str, Any]]
++    themes: list[dict[str, Any]]
++    documents: list[dict[str, Any]]
++    gaps: list[dict[str, Any]]
++
++
++REQUIRED_TOP_LEVEL = ("fund", "periods", "entries", "themes", "documents", "gaps")
++ARRAY_FIELDS = REQUIRED_TOP_LEVEL[1:]
++MONETARY_FIELDS = frozenset(
++    {"amount", "aum", "balance", "capital", "market_value", "peak", "price", "size", "value"}
++)
++
++
++def evidence_schema() -> dict[str, Any]:
++    """Read the offline-packaged copy of the Workflows evidence-object/v1 schema."""
++    resource = files(__package__).joinpath("evidence-object-v1.schema.json")
++    return cast(dict[str, Any], json.loads(resource.read_text(encoding="utf-8")))
+diff --git a/src/deliverable_render/store/validate.py b/src/deliverable_render/store/validate.py
+new file mode 100644
+index 0000000..e343d3a
+--- /dev/null
++++ b/src/deliverable_render/store/validate.py
+@@ -0,0 +1,279 @@
++"""Read-only semantic validation of the communication-synthesis store."""
++
++from __future__ import annotations
++
++import argparse
++import hashlib
++import json
++import re
++from dataclasses import dataclass, field
++from pathlib import Path
++from typing import Any
++
++from jsonschema import Draft202012Validator  # type: ignore[import-untyped]
++
++from .schema import ARRAY_FIELDS, MONETARY_FIELDS, REQUIRED_TOP_LEVEL, evidence_schema
++
++_MONEY_REMNANT = re.compile(r"^\$?B$", re.IGNORECASE)
++_EXPLICIT_MONEY_REMNANT = re.compile(r"\$B\b", re.IGNORECASE)
++_MONEY_CONTEXT = re.compile(
++    r"\b(?:assets?|aum|valuation|capital|size|amount|market value|worth)"
++    r"\s*(?:of|at|:|=)?\s*\$?B\b",
++    re.IGNORECASE,
++)
++
++
++@dataclass(frozen=True)
++class ValidationIssue:
++    code: str
++    path: str
++    message: str
++
++
++@dataclass
++class ValidationReport:
++    issues: list[ValidationIssue] = field(default_factory=list)
++
++    @property
++    def valid(self) -> bool:
++        return not self.issues
++
++    def fail(self, code: str, path: str, message: str) -> None:
++        self.issues.append(ValidationIssue(code, path, message))
++
++
++def _path(base: str, part: str | int) -> str:
++    return base + "/" + str(part).replace("~", "~0").replace("/", "~1")
++
++
++def _objects(value: Any, path: str, report: ValidationReport) -> list[dict[str, Any]]:
++    if not isinstance(value, list):
++        report.fail("type", path, "expected an array")
++        return []
++    objects = []
++    for index, item in enumerate(value):
++        if isinstance(item, dict):
++            objects.append(item)
++        else:
++            report.fail("type", _path(path, index), "expected an object")
++            objects.append({})  # retain the original index for subsequent diagnostics
++    return objects
++
++
++def _ids(items: list[dict[str, Any]], path: str, report: ValidationReport) -> set[str]:
++    found: set[str] = set()
++    for index, item in enumerate(items):
++        ident = item.get("id")
++        item_path = _path(_path(path, index), "id")
++        if not isinstance(ident, str) or not ident.strip():
++            report.fail("id", item_path, "expected a nonempty string ID")
++        elif ident in found:
++            report.fail("duplicate-id", item_path, f"duplicate ID {ident!r}")
++        else:
++            found.add(ident)
++    return found
++
++
++def _reference(
++    value: Any, targets: set[str], path: str, collection: str, report: ValidationReport
++) -> None:
++    if not isinstance(value, str) or value not in targets:
++        report.fail("orphan-reference", path, f"{value!r} does not resolve in {collection}")
++
++
++def _reject_nonfinite(value: str) -> None:
++    raise ValueError(f"invalid JSON numeric constant: {value}")
++
++
++def project_evidence(pointer: dict[str, Any], *, fact_ref: str) -> dict[str, Any]:
++    """Project an explicit pointer without inventing extraction method or excerpt."""
++    if pointer.get("schema_version") == "evidence-object/v1":
++        native = dict(pointer)
++        if native.get("fact_ref") != fact_ref:
++            raise ValueError("fact_ref does not match the enclosing store location")
++        return native
++    source_id = pointer.get("source_id", pointer.get("stable_id"))
++    if not isinstance(source_id, str) or not source_id.strip():
++        raise ValueError("source_id/stable_id is required")
++    if "method" not in pointer:
++        raise ValueError("method is required; extraction provenance cannot be inferred")
++    if "excerpt" not in pointer and "quote" not in pointer:
++        raise ValueError("excerpt/quote is required (explicit null is allowed)")
++    excerpt = pointer.get("excerpt", pointer.get("quote"))
++    identity = json.dumps([source_id, fact_ref, excerpt], ensure_ascii=False, sort_keys=True)
++    projected: dict[str, Any] = {
++        "schema_version": "evidence-object/v1",
++        "evidence_id": pointer.get(
++            "evidence_id", "sha256:" + hashlib.sha256(identity.encode("utf-8")).hexdigest()
++        ),
++        "fact_ref": fact_ref,
++        "source_id": source_id,
++        "method": pointer["method"],
++        "excerpt": excerpt,
++    }
++    if "confidence" in pointer:
++        projected["confidence"] = pointer["confidence"]
++    if "entity_ref" in pointer:
++        projected["entity_ref"] = pointer["entity_ref"]
++    if "locator" in pointer:
++        locator = dict(pointer["locator"])
++        if "page" in pointer:
++            locator.setdefault("page", pointer["page"])
++        projected["locator"] = locator
++    elif "page" in pointer:
++        projected["locator"] = {"page": pointer["page"]}
++    return projected
++
++
++def _validate_pointer(
++    pointer: Any,
++    path: str,
++    fact_ref: str,
++    validator: Draft202012Validator,
++    report: ValidationReport,
++) -> None:
++    if not isinstance(pointer, dict):
++        report.fail(
++            "evidence-projection",
++            path,
++            "source pointer must include method and excerpt; a bare document ID cannot project",
++        )
++        return
++    try:
++        projected = project_evidence(pointer, fact_ref=fact_ref)
++    except (TypeError, ValueError) as exc:
++        report.fail("evidence-projection", path, str(exc))
++        return
++    for error in sorted(validator.iter_errors(projected), key=lambda e: str(e.absolute_path)):
++        location = path
++        for part in error.absolute_path:
++            location = _path(location, part)
++        report.fail("evidence-schema", location, error.message)
++
++
++def _check_money(value: Any, path: str, report: ValidationReport, key: str = "") -> None:
++    if isinstance(value, dict):
++        for name, child in value.items():
++            _check_money(child, _path(path, name), report, name)
++    elif isinstance(value, list):
++        for index, child in enumerate(value):
++            _check_money(child, _path(path, index), report, key)
++    elif isinstance(value, str) and (
++        _EXPLICIT_MONEY_REMNANT.search(value)
++        or (key.lower() in MONETARY_FIELDS and _MONEY_REMNANT.fullmatch(value.strip()))
++        or (
++            key.lower() in {"text", "note", "thesis", "desc", "detail"}
++            and _MONEY_CONTEXT.search(value)
++        )
++    ):
++        report.fail(
++            "currency-remnant",
++            path,
++            "suspected dollar-substitution corruption: bare magnitude without a number",
++        )
++
++
++def validate_store(path: Path) -> ValidationReport:
++    """Validate without mutating the store or accepting syntax-only success."""
++    report = ValidationReport()
++    try:
++        data = json.loads(
++            path.read_text(encoding="utf-8"),
++            parse_constant=_reject_nonfinite,
++        )
++    except (OSError, UnicodeError, ValueError) as exc:
++        report.fail("input", "", f"cannot read JSON store: {exc}")
++        return report
++    if not isinstance(data, dict):
++        report.fail("type", "", "expected a top-level object")
++        return report
++    for name in REQUIRED_TOP_LEVEL:
++        if name not in data:
++            report.fail("missing", _path("", name), "required store field is absent")
++    if not isinstance(data.get("fund"), dict):
++        report.fail("type", "/fund", "expected an object")
++    sections = {
++        name: _objects(data[name], _path("", name), report) for name in ARRAY_FIELDS if name in data
++    }
++    entry_ids = _ids(sections.get("entries", []), "/entries", report)
++    period_ids = _ids(sections.get("periods", []), "/periods", report)
++    validator = Draft202012Validator(evidence_schema())
++
++    for entry_index, entry in enumerate(sections.get("entries", [])):
++        entry_path = _path("/entries", entry_index)
++        entry_id = entry.get("id")
++        mentions = entry.get("mentions", [])
++        for mention_index, mention in enumerate(
++            _objects(mentions, _path(entry_path, "mentions"), report)
++        ):
++            mention_path = _path(_path(entry_path, "mentions"), mention_index)
++            # The documented producer nests mentions in entries. Its q names a period;
++            # explicit entry_id, if supplied, names an entry.
++            _reference(mention.get("q"), period_ids, _path(mention_path, "q"), "periods", report)
++            if "entry_id" in mention:
++                _reference(
++                    mention["entry_id"],
++                    entry_ids,
++                    _path(mention_path, "entry_id"),
++                    "entries",
++                    report,
++                )
++            if "src" in mention:
++                _validate_pointer(
++                    mention["src"],
++                    _path(mention_path, "src"),
++                    f"entries/{entry_id}/mentions/{mention_index}",
++                    validator,
++                    report,
++                )
++        publication = entry.get("pub")
++        if isinstance(publication, dict) and "src" in publication:
++            _validate_pointer(
++                publication["src"],
++                _path(_path(entry_path, "pub"), "src"),
++                f"entries/{entry_id}/pub",
++                validator,
++                report,
++            )
++        for field_name in ("first", "last"):
++            if entry.get(field_name) not in (None, ""):
++                _reference(
++                    entry[field_name],
++                    period_ids,
++                    _path(entry_path, field_name),
++                    "periods",
++                    report,
++                )
++
++    for index, theme in enumerate(sections.get("themes", [])):
++        theme_path = _path("/themes", index)
++        periods = theme.get("periods", [])
++        if not isinstance(periods, list):
++            report.fail("type", _path(theme_path, "periods"), "expected an array")
++            continue
++        for period_index, period in enumerate(periods):
++            _reference(
++                period,
++                period_ids,
++                _path(_path(theme_path, "periods"), period_index),
++                "periods",
++                report,
++            )
++    _check_money(data, "", report)
++    return report
++
++
++def main(argv: list[str] | None = None) -> int:
++    parser = argparse.ArgumentParser(description="Validate a structured store without modifying it")
++    parser.add_argument("path", type=Path)
++    args = parser.parse_args(argv)
++    report = validate_store(args.path)
++    for issue in report.issues:
++        print(f"{issue.code} {issue.path or '/'}: {issue.message}")
++    if report.valid:
++        print("structured store valid")
++    return 0 if report.valid else 1
++
++
++if __name__ == "__main__":
++    raise SystemExit(main())
+diff --git a/tests/fixtures/stores/corrupted_dollar_amount.json b/tests/fixtures/stores/corrupted_dollar_amount.json
+new file mode 100644
+index 0000000..5822dad
+--- /dev/null
++++ b/tests/fixtures/stores/corrupted_dollar_amount.json
+@@ -0,0 +1,10 @@
++{
++  "fund": {"name": "Synthetic Fund"},
++  "periods": [{"id": "2025Q1"}],
++  "entries": [{"id": "entry-1", "ticker": "B", "mentions": [
++    {"q": "2025Q1", "text": "Capital of B", "size": "B"}
++  ]}],
++  "themes": [],
++  "documents": [],
++  "gaps": []
++}
+diff --git a/tests/fixtures/stores/orphan_entry_id.json b/tests/fixtures/stores/orphan_entry_id.json
+new file mode 100644
+index 0000000..d6b99a2
+--- /dev/null
++++ b/tests/fixtures/stores/orphan_entry_id.json
+@@ -0,0 +1,10 @@
++{
++  "fund": {"name": "Synthetic Fund"},
++  "periods": [{"id": "2025Q1"}],
++  "entries": [{"id": "entry-1", "mentions": [
++    {"q": "2025Q1", "entry_id": "entry-typo", "text": "No matching entry"}
++  ]}],
++  "themes": [],
++  "documents": [],
++  "gaps": []
++}
+diff --git a/tests/fixtures/stores/valid_evidence_store.json b/tests/fixtures/stores/valid_evidence_store.json
+new file mode 100644
+index 0000000..f278e95
+--- /dev/null
++++ b/tests/fixtures/stores/valid_evidence_store.json
+@@ -0,0 +1,18 @@
++{
++  "fund": {"name": "Synthetic Fund", "manager": "Example Manager", "strategy": "Public", "archetype": "Example", "note": ""},
++  "periods": [{"id": "2025Q1", "sort": 1, "label": "Q1", "kind": "quarter", "title": "Synthetic update", "author": "Example", "attendees": [], "verdict": "", "note": ""}],
++  "entries": [{
++    "id": "entry-1", "name": "Example", "ticker": "B", "counterparty": "",
++    "first": "2025Q1", "last": "2025Q1", "status": "ACTIVE",
++    "peak": "$36B", "flag": "", "thesis": "Assets of $36B",
++    "pub": {"state": "COMPLETED", "asOf": "2025-01-01", "detail": ""},
++    "mentions": [{
++      "q": "2025Q1", "entry_id": "entry-1", "text": "Capital of $36B",
++      "bps": 5, "size": "$36B", "inferred": false,
++      "src": {"stable_id": "doc-1", "page": 3, "quote": "Assets of $36B", "method": "parser"}
++    }]
++  }],
++  "themes": [{"id": "theme-1", "name": "Capital", "desc": "", "periods": ["2025Q1"]}],
++  "documents": [{"name": "doc-1", "date": "2025-01-01", "verdict": "", "note": ""}],
++  "gaps": []
++}
+diff --git a/tests/store/test_dollar_substitution_corruption.py b/tests/store/test_dollar_substitution_corruption.py
+new file mode 100644
+index 0000000..71eb868
+--- /dev/null
++++ b/tests/store/test_dollar_substitution_corruption.py
+@@ -0,0 +1,43 @@
++"""A syntactically valid shell-substitution remnant must not be accepted."""
++
++import json
++from pathlib import Path
++
++from deliverable_render.store.validate import validate_store
++
++FIXTURES = Path(__file__).resolve().parents[1] / "fixtures/stores"
++
++
++def test_shell_substitution_corruption_fails_validation():
++    report = validate_store(FIXTURES / "corrupted_dollar_amount.json")
++    assert not report.valid
++    assert {issue.path for issue in report.issues if issue.code == "currency-remnant"} == {
++        "/entries/0/mentions/0/size",
++        "/entries/0/mentions/0/text",
++    }
++
++
++def test_valid_amount_and_legitimate_ticker_b_are_not_rejected():
++    report = validate_store(FIXTURES / "valid_evidence_store.json")
++    assert report.valid, report.issues
++
++
++def test_bare_b_in_nonmonetary_prose_is_not_a_false_positive(tmp_path):
++    data = json.loads((FIXTURES / "valid_evidence_store.json").read_text())
++    data["entries"][0]["thesis"] = "Class B rating"
++    path = tmp_path / "legitimate.json"
++    path.write_text(json.dumps(data))
++    assert validate_store(path).valid
++
++
++def test_explicit_dollar_remnant_is_monetary_context_without_keyword(tmp_path):
++    data = json.loads((FIXTURES / "valid_evidence_store.json").read_text())
++    data["entries"][0]["mentions"][0]["text"] = "The investment was valued at $B."
++    path = tmp_path / "explicit-dollar-remnant.json"
++    path.write_text(json.dumps(data))
++
++    report = validate_store(path)
++
++    assert {issue.path for issue in report.issues if issue.code == "currency-remnant"} == {
++        "/entries/0/mentions/0/text"
++    }
+diff --git a/tests/store/test_evidence_object_projection.py b/tests/store/test_evidence_object_projection.py
+new file mode 100644
+index 0000000..efa449c
+--- /dev/null
++++ b/tests/store/test_evidence_object_projection.py
+@@ -0,0 +1,148 @@
++"""The packaged contract and projected pointers agree with the fleet schema."""
++
++import json
++import os
++import subprocess
++import sys
++from pathlib import Path
++
++from jsonschema import Draft202012Validator
++
++from deliverable_render.store.schema import evidence_schema
++from deliverable_render.store.validate import project_evidence, validate_store
++
++ROOT = Path(__file__).resolve().parents[2]
++FIXTURES = ROOT / "tests/fixtures/stores"
++
++
++def test_store_evidence_projects_to_schema():
++    shared = json.loads(
++        (ROOT / "docs/contracts/schemas/evidence-object-v1.schema.json").read_text()
++    )
++    assert evidence_schema() == shared
++    pointer = json.loads((FIXTURES / "valid_evidence_store.json").read_text())["entries"][0][
++        "mentions"
++    ][0]["src"]
++    first = project_evidence(pointer, fact_ref="entries/entry-1/mentions/0")
++    assert first == project_evidence(pointer, fact_ref="entries/entry-1/mentions/0")
++    assert first["source_id"] == "doc-1"
++    assert first["excerpt"] == "Assets of $36B"
++    assert first["fact_ref"] == "entries/entry-1/mentions/0"
++    assert first["locator"]["page"] == 3
++    assert list(Draft202012Validator(shared).iter_errors(first)) == []
++    assert validate_store(FIXTURES / "valid_evidence_store.json").valid
++
++
++def test_publication_src_projects_with_pub_fact_ref():
++    pointer = {
++        "stable_id": "doc-1",
++        "method": "parser",
++        "quote": "Published excerpt",
++        "page": 2,
++        "confidence": 0.9,
++    }
++    projected = project_evidence(pointer, fact_ref="entries/entry-1/pub")
++    assert projected["fact_ref"] == "entries/entry-1/pub"
++    assert projected["confidence"] == 0.9
++    assert projected["locator"]["page"] == 2
++    assert list(Draft202012Validator(evidence_schema()).iter_errors(projected)) == []
++
++
++def test_publication_src_rejects_conflicting_native_fact_ref(tmp_path):
++    data = json.loads((FIXTURES / "valid_evidence_store.json").read_text())
++    data["entries"][0]["pub"]["src"] = {
++        "schema_version": "evidence-object/v1",
++        "evidence_id": "sha256:deadbeef",
++        "fact_ref": "entries/wrong/pub",
++        "source_id": "doc-1",
++        "method": "parser",
++        "excerpt": "Published excerpt",
++    }
++    path = tmp_path / "bad-pub.json"
++    path.write_text(json.dumps(data))
++    issues = validate_store(path).issues
++    assert any(issue.code == "evidence-projection" and "/pub/src" in issue.path for issue in issues)
++
++
++def test_nonfinite_json_constant_rejected(tmp_path):
++    path = tmp_path / "nan.json"
++    path.write_text(
++        '{"fund": {}, "periods": [], "entries": [], "themes": [], "documents": [], "gaps": [], "bps": NaN}'
++    )
++    report = validate_store(path)
++    assert any(issue.code == "input" for issue in report.issues)
++
++
++def test_missing_method_cannot_be_fabricated(tmp_path):
++    data = json.loads((FIXTURES / "valid_evidence_store.json").read_text())
++    del data["entries"][0]["mentions"][0]["src"]["method"]
++    path = tmp_path / "missing-method.json"
++    path.write_text(json.dumps(data))
++    assert any(issue.code == "evidence-projection" for issue in validate_store(path).issues)
++
++
++def test_both_cli_entry_paths_return_failure_for_orphan():
++    bad = FIXTURES / "orphan_entry_id.json"
++    env = {**os.environ, "PYTHONPATH": str(ROOT / "src")}
++    commands = [
++        [sys.executable, str(ROOT / "scripts/validate_structured_store.py"), str(bad)],
++        [sys.executable, "-m", "deliverable_render.store.validate", str(bad)],
++    ]
++    for command in commands:
++        result = subprocess.run(command, capture_output=True, text=True, env=env, check=False)
++        assert result.returncode == 1
++        assert "entry-typo" in result.stdout
++
++
++def test_cli_success_for_valid_store():
++    env = {**os.environ, "PYTHONPATH": str(ROOT / "src")}
++    result = subprocess.run(
++        [
++            sys.executable,
++            str(ROOT / "scripts/validate_structured_store.py"),
++            str(FIXTURES / "valid_evidence_store.json"),
++        ],
++        capture_output=True,
++        text=True,
++        env=env,
++        check=False,
++    )
++    assert result.returncode == 0, result.stdout + result.stderr
++
++
++def test_packaged_console_entry_rejects_orphan(tmp_path):
++    wheel_dir = tmp_path / "wheels"
++    install_dir = tmp_path / "site"
++    wheel_dir.mkdir()
++    install_dir.mkdir()
++    build = subprocess.run(
++        [sys.executable, "-m", "pip", "wheel", ".", "-w", str(wheel_dir)],
++        cwd=ROOT,
++        capture_output=True,
++        text=True,
++        check=False,
++    )
++    assert build.returncode == 0, build.stdout + build.stderr
++    wheel = next(wheel_dir.glob("deliverable_render-*.whl"))
++    install = subprocess.run(
++        [sys.executable, "-m", "pip", "install", "--target", str(install_dir), str(wheel)],
++        capture_output=True,
++        text=True,
++        check=False,
++    )
++    assert install.returncode == 0, install.stdout + install.stderr
++    env = {**os.environ, "PYTHONPATH": str(install_dir)}
++    result = subprocess.run(
++        [
++            sys.executable,
++            "-m",
++            "deliverable_render.store.validate",
++            str(FIXTURES / "orphan_entry_id.json"),
++        ],
++        capture_output=True,
++        text=True,
++        env=env,
++        check=False,
++    )
++    assert result.returncode == 1
++    assert "entry-typo" in result.stdout
+diff --git a/tests/store/test_orphan_id_detection.py b/tests/store/test_orphan_id_detection.py
+new file mode 100644
+index 0000000..a59dabc
+--- /dev/null
++++ b/tests/store/test_orphan_id_detection.py
+@@ -0,0 +1,41 @@
++"""The documented mention q and explicit entry references must resolve."""
++
++from pathlib import Path
++
++from deliverable_render.store.validate import validate_store
++
++FIXTURE = Path(__file__).resolve().parents[1] / "fixtures/stores/orphan_entry_id.json"
++
++
++def test_mistyped_entry_id_fails_validation():
++    original_bytes = FIXTURE.read_bytes()
++    original_stat = FIXTURE.stat()
++
++    report = validate_store(FIXTURE)
++
++    assert not report.valid
++    assert any(
++        issue.code == "orphan-reference"
++        and issue.path == "/entries/0/mentions/0/entry_id"
++        and "entry-typo" in issue.message
++        for issue in report.issues
++    )
++    assert FIXTURE.read_bytes() == original_bytes
++    current_stat = FIXTURE.stat()
++    assert current_stat.st_mtime_ns == original_stat.st_mtime_ns
++    assert current_stat.st_mode == original_stat.st_mode
++
++
++def test_mistyped_period_id_fails_validation(tmp_path):
++    import json
++
++    data = json.loads(FIXTURE.read_text())
++    data["entries"][0]["mentions"][0]["entry_id"] = "entry-1"
++    data["entries"][0]["mentions"][0]["q"] = "2025QX"
++    path = tmp_path / "bad-period.json"
++    path.write_text(json.dumps(data))
++    report = validate_store(path)
++    assert any(
++        issue.path == "/entries/0/mentions/0/q" and issue.code == "orphan-reference"
++        for issue in report.issues
++    )
+diff --git a/tests/store/test_schema.py b/tests/store/test_schema.py
+new file mode 100644
+index 0000000..89dfb87
+--- /dev/null
++++ b/tests/store/test_schema.py
+@@ -0,0 +1,13 @@
++"""Contract tests for the communication-synthesis store envelope."""
++
++from deliverable_render.store.schema import (
++    ARRAY_FIELDS,
++    REQUIRED_TOP_LEVEL,
++    CommunicationSynthesisStore,
++)
++
++
++def test_communication_synthesis_store_documents_required_top_level_fields():
++    assert CommunicationSynthesisStore.__required_keys__ == frozenset(REQUIRED_TOP_LEVEL)
++    assert CommunicationSynthesisStore.__optional_keys__ == frozenset()
++    assert ARRAY_FIELDS == ("periods", "entries", "themes", "documents", "gaps")

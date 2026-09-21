@@ -1,0 +1,14 @@
+commit 994af8435a22fabd7cbf0f41ee4bed9c61ea289c
+Author: stranske <stranske@gmail.com>
+Date:   Sat Sep 19 22:48:37 2026 -0500
+
+    Scope due Maint 71 delivery dispatches to owned repositories (#3484)
+    
+    Co-authored-by: closer-lane <automation@stranske.dev>
+
+ .../__tests__/sync_dependency_campaign.test.js     | 45 ++++++++++++++++++++++
+ .github/scripts/sync_dependency_campaign.js        | 31 +++++++++++++++
+ .../maint-82-sync-dependency-campaign.yml          | 33 ++++++++++++++--
+ docs/ops/CONSUMER_REPO_MAINTENANCE.md              |  6 +++
+ .../test_maint82_sync_campaign_contract.py         | 10 +++++
+ 5 files changed, 121 insertions(+), 4 deletions(-)

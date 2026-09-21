@@ -1,0 +1,1253 @@
+commit 25de5c34ea2d0f65670c4c2113c7e94bd904c537
+Author: stranske <stranske@gmail.com>
+Date:   Sun Sep 20 00:40:12 2026 -0500
+
+    Guided trip setup, and stop claiming a bare trip is ready to review (#1822)
+    
+    * fix(trip-setup): guided inputs with inline help, and honest readiness
+    
+    A trip created with nothing but a title reported "Your trip plan is ready to
+    review." and claimed "2 saved scenario draft(s)". Both were false: placeholder
+    inventory and scenario drafts are generated for every trip the moment it is
+    created, and readiness was derived from those generated artefacts rather than
+    from anything the traveller supplied.
+    
+    Readiness is now derived from traveller-supplied context. Until the trip has a
+    destination, travel dates, and (for business trips) a purpose for the approver,
+    the workspace names exactly what is missing instead of claiming a reviewable
+    plan, and generated drafts are not reported as decisions.
+    
+    The creation form was a bare list of unexplained inputs. It now:
+    - makes trip type an explicit choice with consequences spelled out, rather than
+      silently defaulting to Leisure in a product whose purpose is approval
+    - explains every field inline: why it is needed and how it is used
+    - derives trip length from the travel dates, and says so
+    - rejects an end date before the start date instead of posting it
+    - adapts the purpose field for business trips ("Approvers read this first")
+    - tells the traveller what is still missing, and what happens after submission
+    
+    Test gates:
+    - tests/app/test_workspace_readiness.py — a bare trip is not reported ready,
+      generated artefacts are not claimed as decisions, business trips require a
+      purpose, and a complete trip is still ready. Verified by deliberately removing
+      the gate: 3 of 5 fail, then pass again once restored.
+    - frontend/src/routes/NewTripPage.test.tsx — trip type cannot default silently,
+      duration derives from dates, an inverted range blocks submission, and every
+      field carries inline help.
+    
+    372 backend and 159 frontend tests pass.
+    
+    Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
+    
+    * fix(workspace): stop presenting generated placeholders as a finished plan
+    
+    The first screen after setup told the traveller their plan was "ready to review",
+    listed "2 saved scenario draft(s)" and "1 inventory bundle(s) assembled" under
+    DECIDED, and pointed them at a scenario comparison — when they had done nothing
+    but type setup details.
+    
+    None of that was real work:
+    
+    - Route options 2 and 3 are the base option plus fixed arithmetic
+      (_ensure_route_option_search_depth: +120.00/+240.00 cost, +45/+90 minutes,
+      +1/+2 transfers).
+    - The base cost is flat constants that ignore the destination entirely
+      (inventory.py: lodging = days x $230 business, transport = $165, activities
+      = $75, transport duration hard-coded to 45 minutes).
+    
+    Verified: trips to Reykjavik and Nairobi both return $1,160 / $1,280 / $1,400
+    with identical travel minutes and transfers. A flight to Nairobi is priced the
+    same as a cab across Chicago, and it was labelled "Estimated total" on a screen
+    whose purpose is to produce an employer approval request.
+    
+    Changes:
+    - Auto-generated drafts and bundles are never reported as traveller decisions.
+    - The post-setup headline says what is true: "Trip setup is saved. Nothing has
+      been planned yet.", and the next action describes the options as indicative
+      route shapes rather than a plan to review.
+    - The route tradeoffs panel carries an explicit notice that the figures are flat
+      per-day rates that do not vary by destination and must not be used for a budget
+      or an approval request.
+    - "Estimated total" is relabelled "Indicative cost".
+    
+    This does not make the numbers real. It stops the product asserting they are.
+    
+    373 backend and 159 frontend tests pass.
+    
+    Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
+    
+    * chore(autofix): formatting/lint
+    
+    * Revert "chore(autofix): formatting/lint"
+    
+    This reverts commit 8398023e94af903b714e338ffb58a99681d50212.
+    
+    * fix(trip setup): align readiness and review feedback
+    
+    * fix(workspace): reject unusable travel dates in readiness
+    
+    * fix(setup): preserve city-state destinations and validate trip context
+    
+    ---------
+    
+    Co-authored-by: Claude Opus 5 <noreply@anthropic.com>
+    Co-authored-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
+
+diff --git a/frontend/src/components/workspace/ScenarioComparison.test.tsx b/frontend/src/components/workspace/ScenarioComparison.test.tsx
+index 86c14ca3..e4286ed4 100644
+--- a/frontend/src/components/workspace/ScenarioComparison.test.tsx
++++ b/frontend/src/components/workspace/ScenarioComparison.test.tsx
+@@ -85,6 +85,7 @@ describe("ScenarioComparison", () => {
+       "Rail vs flight comparison"
+     );
+     expect(screen.getByText("Time").closest("div")).toHaveTextContent("420 min");
++    expect(screen.getByText("Indicative cost").closest("div")).toHaveTextContent("3,600");
+   });
+ 
+   it("invokes onSelectScenario when a scenario chip is clicked", () => {
+diff --git a/frontend/src/components/workspace/ScenarioComparison.tsx b/frontend/src/components/workspace/ScenarioComparison.tsx
+index 52cbcb6e..1b881e3a 100644
+--- a/frontend/src/components/workspace/ScenarioComparison.tsx
++++ b/frontend/src/components/workspace/ScenarioComparison.tsx
+@@ -171,7 +171,7 @@ export function ScenarioComparison({
+                   <dd>{formatMetricValue("transfers", scenario)}</dd>
+                 </div>
+                 <div>
+-                  <dt>Cost</dt>
++                  <dt>Indicative cost</dt>
+                   <dd>{formatMetricValue("estimated_total", scenario)}</dd>
+                 </div>
+               </dl>
+diff --git a/frontend/src/components/workspace/panels/RouteTradeoffsPanel.tsx b/frontend/src/components/workspace/panels/RouteTradeoffsPanel.tsx
+index d8cefa4f..7a78dfba 100644
+--- a/frontend/src/components/workspace/panels/RouteTradeoffsPanel.tsx
++++ b/frontend/src/components/workspace/panels/RouteTradeoffsPanel.tsx
+@@ -39,6 +39,11 @@ export function RouteTradeoffsPanel({
+           ? "Cost, route burden, feasibility, and per-scenario policy preview stay scannable here. Previews are advisory only — final TPP evaluation is authoritative."
+           : "Cost, route burden, and feasibility stay scannable here without forcing you into raw planning notes."}
+       </p>
++      <p className="placeholder-costs-notice" role="note">
++        These are rough starting shapes, not researched options. The figures come from flat
++        per-day rates that do not vary by destination, so do not use them for a budget or an
++        approval request.
++      </p>
+       {scenarios.length > 0 ? (
+         <div className="scenario-review-grid" aria-label="Scenario review board">
+           {scenarios.map((scenario) => (
+diff --git a/frontend/src/routes/NewTripPage.test.tsx b/frontend/src/routes/NewTripPage.test.tsx
+index 20e704aa..d69a4ee9 100644
+--- a/frontend/src/routes/NewTripPage.test.tsx
++++ b/frontend/src/routes/NewTripPage.test.tsx
+@@ -2,7 +2,7 @@ import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/re
+ import { afterEach, describe, expect, it, vi } from "vitest";
+ 
+ import { createTrip } from "../api/trips";
+-import { NewTripPage } from "./NewTripPage";
++import { NewTripPage, missingTripContext, travelDaysInclusive } from "./NewTripPage";
+ import { TestMemoryRouter } from "../test/router";
+ 
+ vi.mock("../api/trips", () => ({
+@@ -20,6 +20,89 @@ vi.mock("react-router-dom", async () => {
+   };
+ });
+ 
++function tripResponse() {
++  return {
++    trip_id: "trip-kyoto-123abc",
++    user_id: "user:test",
++    title: "Kyoto Spring",
++    summary: "Food and gardens",
++    mode: "leisure",
++    status: "draft",
++    trip_frame: {
++      start_date: "2026-04-20",
++      end_date: "2026-04-26",
++      duration_days: 7,
++      primary_regions: ["Kyoto"],
++      traveler_party: { kind: "solo", traveler_count: 1, notes: "" },
++    },
++    profile_refs: {
++      leisure_profile_id: "profile:trip-kyoto-123abc:leisure",
++      business_profile_id: null,
++    },
++    artifacts: {
++      objective_id: null,
++      option_set_ids: [],
++      itinerary_state_id: null,
++      budget_state_id: null,
++      policy_state_id: null,
++    },
++  };
++}
++
++function renderPage() {
++  return render(
++    <TestMemoryRouter>
++      <NewTripPage />
++    </TestMemoryRouter>
++  );
++}
++
++describe("travelDaysInclusive", () => {
++  it("counts travel days inclusively", () => {
++    expect(travelDaysInclusive("2026-10-12", "2026-10-15")).toBe(4);
++    expect(travelDaysInclusive("2026-10-12", "2026-10-12")).toBe(1);
++  });
++
++  it("returns null when the range is unusable", () => {
++    expect(travelDaysInclusive("2026-10-15", "2026-10-12")).toBeNull();
++    expect(travelDaysInclusive("", "2026-10-12")).toBeNull();
++  });
++});
++
++describe("missingTripContext", () => {
++  it("names every input the planner still needs", () => {
++    expect(missingTripContext({ mode: "", purpose: "", destinations: "", startDate: "", endDate: "" })).toEqual([
++      "trip type",
++      "at least one destination",
++      "travel dates",
++    ]);
++  });
++
++  it("is satisfied once type, destination and dates are supplied", () => {
++    expect(
++      missingTripContext({
++        mode: "business",
++        purpose: "Client review",
++        destinations: "Chicago, IL",
++        startDate: "2026-10-12",
++        endDate: "2026-10-15",
++      })
++    ).toEqual([]);
++  });
++
++  it("requires business purpose and a parsed destination", () => {
++    expect(missingTripContext({
++      mode: "business", purpose: " ", destinations: "; ;", startDate: "2026-10-12", endDate: "2026-10-15",
++    })).toEqual(["at least one destination", "a business purpose"]);
++  });
++
++  it("treats a reversed date range as missing travel dates", () => {
++    expect(missingTripContext({
++      mode: "leisure", purpose: "", destinations: "Chicago, IL", startDate: "2026-10-15", endDate: "2026-10-12",
++    })).toEqual(["travel dates"]);
++  });
++});
++
+ describe("NewTripPage", () => {
+   afterEach(() => {
+     cleanup();
+@@ -28,41 +111,15 @@ describe("NewTripPage", () => {
+   });
+ 
+   it("creates a trip and navigates to the workspace route", async () => {
+-    mockedCreateTrip.mockResolvedValue({
+-      trip_id: "trip-kyoto-123abc",
+-      user_id: "user:test",
+-      title: "Kyoto Spring",
+-      summary: "Food and gardens",
+-      mode: "leisure",
+-      status: "draft",
+-      trip_frame: {
+-        start_date: "2026-04-20",
+-        end_date: "2026-04-26",
+-        duration_days: 7,
+-        primary_regions: ["Kyoto"],
+-        traveler_party: { kind: "solo", traveler_count: 1, notes: "" },
+-      },
+-      profile_refs: {
+-        leisure_profile_id: "profile:trip-kyoto-123abc:leisure",
+-        business_profile_id: null,
+-      },
+-      artifacts: {
+-        objective_id: null,
+-        option_set_ids: [],
+-        itinerary_state_id: null,
+-        budget_state_id: null,
+-        policy_state_id: null,
+-      },
+-    });
+-
+-    render(
+-      <TestMemoryRouter>
+-        <NewTripPage />
+-      </TestMemoryRouter>
+-    );
++    mockedCreateTrip.mockResolvedValue(tripResponse());
++    renderPage();
+ 
+-    fireEvent.change(screen.getByLabelText("Title"), { target: { value: "Kyoto Spring" } });
+-    fireEvent.change(screen.getByLabelText("Summary"), { target: { value: "Food and gardens" } });
++    fireEvent.click(screen.getByRole("radio", { name: /Personal trip/ }));
++    fireEvent.change(screen.getByLabelText(/Trip name/), { target: { value: "Kyoto Spring" } });
++    fireEvent.change(screen.getByLabelText(/What is this trip for\?/), {
++      target: { value: "Food and gardens" },
++    });
++    fireEvent.change(screen.getByLabelText(/Destinations/), { target: { value: "Kyoto; Osaka" } });
+     fireEvent.click(screen.getByRole("button", { name: "Create trip" }));
+ 
+     await waitFor(() => {
+@@ -71,23 +128,49 @@ describe("NewTripPage", () => {
+           title: "Kyoto Spring",
+           summary: "Food and gardens",
+           mode: "leisure",
++          trip_frame: expect.objectContaining({ primary_regions: ["Kyoto", "Osaka"] }),
+         })
+       );
+     });
+     expect(mockedNavigate).toHaveBeenCalledWith("/workspace/trip-kyoto-123abc");
+   });
+ 
+-  it("groups inputs into labelled fieldsets", () => {
+-    const { container } = render(
+-      <TestMemoryRouter>
+-        <NewTripPage />
+-      </TestMemoryRouter>
+-    );
++  it("preserves a city-state destination as one primary region", async () => {
++    mockedCreateTrip.mockResolvedValue(tripResponse());
++    renderPage();
++    fireEvent.click(screen.getByRole("radio", { name: /Personal trip/ }));
++    fireEvent.change(screen.getByLabelText(/Trip name/), { target: { value: "Chicago visit" } });
++    fireEvent.change(screen.getByLabelText(/Destinations/), { target: { value: "Chicago, IL" } });
++    fireEvent.click(screen.getByRole("button", { name: "Create trip" }));
++    await waitFor(() => {
++      expect(mockedCreateTrip).toHaveBeenCalledWith(
++        expect.objectContaining({ trip_frame: expect.objectContaining({ primary_regions: ["Chicago, IL"] }) })
++      );
++    });
++  });
++
++  it("rejects a whitespace-only trip name before the API call", () => {
++    renderPage();
++    fireEvent.click(screen.getByRole("radio", { name: /Personal trip/ }));
++    fireEvent.change(screen.getByLabelText(/Trip name/), { target: { value: "   " } });
++    fireEvent.click(screen.getByRole("button", { name: "Create trip" }));
++    expect(screen.getByRole("alert")).toHaveTextContent(/enter a trip name/i);
++    expect(mockedCreateTrip).not.toHaveBeenCalled();
++  });
++
++  it("requires the traveller to choose a trip type rather than defaulting silently", () => {
++    const { container } = renderPage();
++
++    const radios = container.querySelectorAll<HTMLInputElement>('input[name="mode"]');
++    expect(radios.length).toBe(2);
++    for (const radio of radios) {
++      expect(radio.checked).toBe(false);
++      expect(radio.required).toBe(true);
++    }
++  });
+ 
+-    expect(container.querySelectorAll("fieldset").length).toBeGreaterThanOrEqual(3);
+-    expect(screen.getByRole("group", { name: "Trip basics" })).toBeInTheDocument();
+-    expect(screen.getByRole("group", { name: "When" })).toBeInTheDocument();
+-    expect(screen.getByRole("group", { name: "Travelers" })).toBeInTheDocument();
++  it("keeps every field the create-trip contract sends", () => {
++    const { container } = renderPage();
+ 
+     for (const fieldName of [
+       "title",
+@@ -104,4 +187,101 @@ describe("NewTripPage", () => {
+       expect(container.querySelector(`[name="${fieldName}"]`)).toBeInTheDocument();
+     }
+   });
++
++  it("groups inputs into labelled sections", () => {
++    const { container } = renderPage();
++
++    expect(container.querySelectorAll("fieldset").length).toBeGreaterThanOrEqual(4);
++    expect(screen.getByRole("group", { name: "What kind of trip is this?" })).toBeInTheDocument();
++    expect(screen.getByRole("group", { name: "The basics" })).toBeInTheDocument();
++    expect(screen.getByRole("group", { name: "When are you travelling?" })).toBeInTheDocument();
++    expect(screen.getByRole("group", { name: "Who is travelling?" })).toBeInTheDocument();
++  });
++
++  it("explains each input with inline help", () => {
++    const { container } = renderPage();
++
++    // Every section carries guidance rather than a bare label.
++    expect(container.querySelectorAll(".field-hint").length).toBeGreaterThanOrEqual(6);
++    expect(screen.getByText(/Separate multiple stops with semicolons/)).toBeInTheDocument();
++    expect(
++      screen.getByText(/decides whether the trip goes through travel policy and approval/)
++    ).toBeInTheDocument();
++  });
++
++  it("works out trip length from the travel dates", () => {
++    const { container } = renderPage();
++
++    fireEvent.change(screen.getByLabelText(/First day of travel/), {
++      target: { value: "2026-10-12" },
++    });
++    fireEvent.change(screen.getByLabelText(/Last day of travel/), {
++      target: { value: "2026-10-15" },
++    });
++
++    const duration = container.querySelector<HTMLInputElement>('[name="durationDays"]');
++    expect(duration?.value).toBe("4");
++    expect(screen.getByText(/Worked out from your dates \(4 days\)/)).toBeInTheDocument();
++  });
++
++  it("blocks submission when the last day is before the first day", () => {
++    renderPage();
++
++    fireEvent.change(screen.getByLabelText(/First day of travel/), {
++      target: { value: "2026-10-15" },
++    });
++    fireEvent.change(screen.getByLabelText(/Last day of travel/), {
++      target: { value: "2026-10-12" },
++    });
++
++    expect(screen.getByRole("alert")).toHaveTextContent(/last day is before the first day/i);
++    expect(screen.getByLabelText(/First day of travel/)).toHaveAttribute("aria-invalid", "true");
++    expect(screen.getByLabelText(/Last day of travel/)).toHaveAttribute("aria-describedby", "dates-error");
++    expect(screen.getByRole("button", { name: "Create trip" })).toBeDisabled();
++    fireEvent.click(screen.getByRole("button", { name: "Create trip" }));
++    expect(mockedCreateTrip).not.toHaveBeenCalled();
++  });
++
++  it("tells the traveller what is still missing before options can be assembled", () => {
++    renderPage();
++
++    expect(screen.getByText(/Still needed before the planner can assemble options/)).toHaveTextContent(
++      /trip type/
++    );
++
++    fireEvent.click(screen.getByRole("radio", { name: /Business trip/ }));
++    fireEvent.change(screen.getByLabelText(/Destinations/), { target: { value: "Chicago, IL" } });
++    fireEvent.change(screen.getByLabelText(/First day of travel/), {
++      target: { value: "2026-10-12" },
++    });
++    fireEvent.change(screen.getByLabelText(/Last day of travel/), {
++      target: { value: "2026-10-15" },
++    });
++
++    expect(screen.getByText(/Still needed before the planner/)).toHaveTextContent(/business purpose/);
++    fireEvent.change(screen.getByLabelText(/Business purpose/), { target: { value: "Client review" } });
++    expect(screen.queryByText(/Still needed before the planner/)).not.toBeInTheDocument();
++    expect(screen.getByText(/print an approval packet/)).toBeInTheDocument();
++  });
++
++  it("asks a business traveller for the purpose an approver will read", () => {
++    renderPage();
++
++    fireEvent.click(screen.getByRole("radio", { name: /Business trip/ }));
++
++    expect(screen.getByLabelText(/Business purpose/)).toBeInTheDocument();
++    expect(screen.getByText(/Approvers read this first/)).toBeInTheDocument();
++  });
++
++  it("blocks submission above eight destinations and identifies the invalid control", () => {
++    renderPage();
++    const input = screen.getByLabelText(/Destinations/);
++    fireEvent.change(input, { target: { value: "A; B; C; D; E; F; G; H; I" } });
++    expect(screen.getByRole("alert")).toHaveTextContent(/more than 8 destinations/);
++    expect(input).toHaveAttribute("aria-invalid", "true");
++    expect(input).toHaveAttribute("aria-describedby", "destinations-hint destinations-error");
++    expect(screen.getByRole("button", { name: "Create trip" })).toBeDisabled();
++    fireEvent.click(screen.getByRole("button", { name: "Create trip" }));
++    expect(mockedCreateTrip).not.toHaveBeenCalled();
++  });
+ });
+diff --git a/frontend/src/routes/NewTripPage.tsx b/frontend/src/routes/NewTripPage.tsx
+index 38f9c157..ada04b3e 100644
+--- a/frontend/src/routes/NewTripPage.tsx
++++ b/frontend/src/routes/NewTripPage.tsx
+@@ -1,38 +1,124 @@
+-import { FormEvent, startTransition, useState } from "react";
++import { FormEvent, startTransition, useMemo, useState } from "react";
+ import { useNavigate } from "react-router-dom";
+ 
+ import { createTrip } from "../api/trips";
+ import { getErrorMessage } from "../lib/api/errors";
+ 
++type TripMode = "business" | "leisure";
++
++const MODE_CHOICES: Array<{ value: TripMode; label: string; description: string }> = [
++  {
++    value: "business",
++    label: "Business trip",
++    description:
++      "Needs employer approval. The planner checks your plan against travel policy and builds an approval packet you can print.",
++  },
++  {
++    value: "leisure",
++    label: "Personal trip",
++    description: "No approval step. The planner focuses on routes, pacing, and budget for your own use.",
++  },
++];
++
++const PARTY_CHOICES: Array<{ value: string; label: string }> = [
++  { value: "solo", label: "Just me" },
++  { value: "pair", label: "Two of us" },
++  { value: "family", label: "Family" },
++  { value: "friends", label: "Friends" },
++  { value: "team", label: "Work team" },
++];
++
++/** Whole days between two ISO dates, inclusive of the start day. */
++export function travelDaysInclusive(startDate: string, endDate: string): number | null {
++  if (!startDate || !endDate) {
++    return null;
++  }
++  const start = Date.parse(`${startDate}T00:00:00Z`);
++  const end = Date.parse(`${endDate}T00:00:00Z`);
++  if (Number.isNaN(start) || Number.isNaN(end) || end < start) {
++    return null;
++  }
++  return Math.round((end - start) / 86_400_000) + 1;
++}
++
++/** Fields the planner needs before it can assemble anything worth reviewing. */
++export function missingTripContext(values: {
++  mode: TripMode | "";
++  purpose: string;
++  destinations: string;
++  startDate: string;
++  endDate: string;
++}): string[] {
++  const missing: string[] = [];
++  if (!values.mode) {
++    missing.push("trip type");
++  }
++  if (!values.destinations.split(";").some((destination) => destination.trim())) {
++    missing.push("at least one destination");
++  }
++  if (travelDaysInclusive(values.startDate, values.endDate) == null) {
++    missing.push("travel dates");
++  }
++  if (values.mode === "business" && !values.purpose.trim()) {
++    missing.push("a business purpose");
++  }
++  return missing;
++}
++
+ export function NewTripPage() {
+   const navigate = useNavigate();
+   const [isSubmitting, setIsSubmitting] = useState(false);
+   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+ 
++  const [mode, setMode] = useState<TripMode | "">("");
++  const [title, setTitle] = useState("");
++  const [purpose, setPurpose] = useState("");
++  const [destinations, setDestinations] = useState("");
++  const [startDate, setStartDate] = useState("");
++  const [endDate, setEndDate] = useState("");
++  const [durationOverride, setDurationOverride] = useState<string>("");
++  const [travelerKind, setTravelerKind] = useState("solo");
++  const [travelerCount, setTravelerCount] = useState("1");
++  const [travelerNotes, setTravelerNotes] = useState("");
++
++  const derivedDuration = useMemo(() => travelDaysInclusive(startDate, endDate), [startDate, endDate]);
++  const durationValue = durationOverride !== "" ? durationOverride : derivedDuration != null ? String(derivedDuration) : "";
++  const datesInvalid = Boolean(startDate && endDate && derivedDuration == null);
++  const destinationList = destinations
++    .split(";")
++    .map((value) => value.trim())
++    .filter(Boolean);
++  const tooManyDestinations = destinationList.length > 8;
++
++  const missing = missingTripContext({ mode, purpose, destinations, startDate, endDate });
++  const isBusiness = mode === "business";
++
+   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+     event.preventDefault();
++    if (!title.trim()) {
++      setErrorMessage("Enter a trip name before creating the trip.");
++      return;
++    }
++    if (datesInvalid || tooManyDestinations) {
++      return;
++    }
+     setIsSubmitting(true);
+     setErrorMessage(null);
+ 
+-    const formData = new FormData(event.currentTarget);
+-
+     try {
+       const trip = await createTrip({
+-        title: String(formData.get("title") ?? ""),
+-        summary: String(formData.get("summary") ?? ""),
+-        mode: String(formData.get("mode") ?? "leisure"),
++        title: title.trim(),
++        summary: purpose.trim(),
++        mode: mode || "leisure",
+         trip_frame: {
+-          start_date: String(formData.get("startDate") ?? "") || null,
+-          end_date: String(formData.get("endDate") ?? "") || null,
+-          duration_days: Number(formData.get("durationDays") ?? 0) || null,
+-          primary_regions: String(formData.get("primaryRegions") ?? "")
+-            .split(",")
+-            .map((value) => value.trim())
+-            .filter(Boolean),
++          start_date: startDate || null,
++          end_date: endDate || null,
++          duration_days: durationValue ? Number(durationValue) : null,
++          primary_regions: destinationList,
+           traveler_party: {
+-            kind: String(formData.get("travelerKind") ?? "solo"),
+-            traveler_count: Number(formData.get("travelerCount") ?? 1) || 1,
+-            notes: String(formData.get("travelerNotes") ?? ""),
++            kind: travelerKind,
++            traveler_count: Number(travelerCount) || 1,
++            notes: travelerNotes.trim(),
+           },
+         },
+       });
+@@ -48,77 +134,223 @@ export function NewTripPage() {
+ 
+   return (
+     <section className="auth-layout">
+-      <article className="status-card auth-card">
++      <article className="status-card auth-card setup-card">
+         <p className="status-label">New trip</p>
+-        <h2>Create a trip</h2>
++        <h2>Set up your trip</h2>
+         <p className="lede">
+-          Add the basics now. You can refine routes, notes, budget, and decisions in the planner.
++          Tell the planner the essentials and it will assemble route and cost options you can compare.
++          You can change any of this later.
+         </p>
+-        <form className="auth-form" onSubmit={handleSubmit}>
+-          <fieldset>
+-            <legend>Trip basics</legend>
+-            <label>
+-              Title
+-              <input name="title" type="text" required />
+-            </label>
++
++        <form className="auth-form setup-form" onSubmit={handleSubmit}>
++          <fieldset className="setup-group">
++            <legend>What kind of trip is this?</legend>
++            <p className="field-hint">
++              This decides whether the trip goes through travel policy and approval.
++            </p>
++            <div className="choice-grid" role="radiogroup" aria-label="Trip type">
++              {MODE_CHOICES.map((choice) => (
++                <label
++                  key={choice.value}
++                  className={`choice-card${mode === choice.value ? " choice-card-selected" : ""}`}
++                >
++                  <input
++                    type="radio"
++                    name="mode"
++                    value={choice.value}
++                    checked={mode === choice.value}
++                    onChange={() => setMode(choice.value)}
++                    required
++                  />
++                  <span className="choice-title">{choice.label}</span>
++                  <span className="choice-description">{choice.description}</span>
++                </label>
++              ))}
++            </div>
++          </fieldset>
++
++          <fieldset className="setup-group">
++            <legend>The basics</legend>
++
+             <label>
+-              Summary
+-              <input name="summary" type="text" />
++              Trip name
++              <input
++                name="title"
++                type="text"
++                required
++                maxLength={160}
++                value={title}
++                onChange={(event) => setTitle(event.target.value)}
++                placeholder="Client visit — Chicago"
++              />
+             </label>
++            <p className="field-hint">How you will recognise this trip in your list.</p>
++
+             <label>
+-              Mode
+-              <select name="mode" defaultValue="leisure">
+-                <option value="leisure">Leisure</option>
+-                <option value="business">Business</option>
+-              </select>
++              {isBusiness ? "Business purpose" : "What is this trip for?"}
++              <input
++                name="summary"
++                type="text"
++                maxLength={600}
++                value={purpose}
++                onChange={(event) => setPurpose(event.target.value)}
++                placeholder={
++                  isBusiness ? "Quarterly review with the Northwind account team" : "Long weekend away"
++                }
++              />
+             </label>
++            <p className="field-hint">
++              {isBusiness
++                ? "Approvers read this first. One sentence on why the travel is necessary."
++                : "Optional. A short note about the purpose of the trip."}
++            </p>
++
+             <label>
+-              Primary regions
+-              <input name="primaryRegions" type="text" placeholder="Kyoto, Osaka" />
++              Destinations
++              <input
++                name="primaryRegions"
++                type="text"
++                value={destinations}
++                onChange={(event) => setDestinations(event.target.value)}
++                placeholder="Chicago, IL"
++                aria-invalid={tooManyDestinations}
++                aria-describedby={tooManyDestinations ? "destinations-hint destinations-error" : "destinations-hint"}
++              />
+             </label>
++            <p className="field-hint" id="destinations-hint">
++              Where you are going. Separate multiple stops with semicolons — up to 8.
++              {destinationList.length > 0 ? ` Currently ${destinationList.length}.` : ""}
++            </p>
++            {tooManyDestinations ? (
++              <p className="field-error" id="destinations-error" role="alert">
++                That is more than 8 destinations. Remove a few, or plan them as separate trips.
++              </p>
++            ) : null}
+           </fieldset>
+-          <fieldset>
+-            <legend>When</legend>
++
++          <fieldset className="setup-group">
++            <legend>When are you travelling?</legend>
++            <p className="field-hint">
++              Dates drive cost estimates, and for business trips they decide which policy rates apply.
++            </p>
++
+             <label>
+-              Start date
+-              <input name="startDate" type="date" />
++              First day of travel
++              <input
++                name="startDate"
++                type="date"
++                value={startDate}
++                onChange={(event) => setStartDate(event.target.value)}
++                aria-invalid={datesInvalid}
++                aria-describedby={datesInvalid ? "dates-error" : undefined}
++              />
+             </label>
++
+             <label>
+-              End date
+-              <input name="endDate" type="date" />
++              Last day of travel
++              <input
++                name="endDate"
++                type="date"
++                value={endDate}
++                min={startDate || undefined}
++                onChange={(event) => setEndDate(event.target.value)}
++                aria-invalid={datesInvalid}
++                aria-describedby={datesInvalid ? "dates-error" : undefined}
++              />
+             </label>
++
++            {datesInvalid ? (
++              <p className="field-error" id="dates-error" role="alert">
++                The last day is before the first day. Check the dates.
++              </p>
++            ) : null}
++
+             <label>
+-              Duration days
+-              <input name="durationDays" type="number" min={1} defaultValue={7} />
++              Trip length (days)
++              <input
++                name="durationDays"
++                type="number"
++                min={1}
++                max={365}
++                value={durationValue}
++                onChange={(event) => setDurationOverride(event.target.value)}
++              />
+             </label>
++            <p className="field-hint">
++              {derivedDuration != null
++                ? `Worked out from your dates (${derivedDuration} days). Change it if the travel days differ.`
++                : "Fill in both dates and this is worked out for you."}
++            </p>
+           </fieldset>
+-          <fieldset>
+-            <legend>Travelers</legend>
++
++          <fieldset className="setup-group">
++            <legend>Who is travelling?</legend>
++
+             <label>
+-              Traveler party
+-              <select name="travelerKind" defaultValue="solo">
+-                <option value="solo">Solo</option>
+-                <option value="pair">Pair</option>
+-                <option value="family">Family</option>
+-                <option value="friends">Friends</option>
+-                <option value="team">Team</option>
++              Travelling as
++              <select
++                name="travelerKind"
++                value={travelerKind}
++                onChange={(event) => setTravelerKind(event.target.value)}
++              >
++                {PARTY_CHOICES.map((choice) => (
++                  <option key={choice.value} value={choice.value}>
++                    {choice.label}
++                  </option>
++                ))}
+               </select>
+             </label>
++
+             <label>
+-              Traveler count
+-              <input name="travelerCount" type="number" min={1} defaultValue={1} />
++              Number of travellers
++              <input
++                name="travelerCount"
++                type="number"
++                min={1}
++                max={50}
++                value={travelerCount}
++                onChange={(event) => setTravelerCount(event.target.value)}
++              />
+             </label>
++            <p className="field-hint">Used for per-person cost estimates and lodging options.</p>
++
+             <label>
+-              Traveler notes
+-              <input name="travelerNotes" type="text" />
++              Anything the planner should know
++              <input
++                name="travelerNotes"
++                type="text"
++                maxLength={240}
++                value={travelerNotes}
++                onChange={(event) => setTravelerNotes(event.target.value)}
++                placeholder="Arriving a day early; prefer non-stop flights"
++              />
+             </label>
++            <p className="field-hint">Optional. Accessibility needs, preferences, fixed commitments.</p>
+           </fieldset>
++
++          <aside className="setup-next" aria-label="What happens next">
++            <p className="status-label">What happens next</p>
++            {missing.length > 0 ? (
++              <p className="setup-next-blocked">
++                Still needed before the planner can assemble options: {missing.join(", ")}.
++              </p>
++            ) : (
++              <p>
++                The planner will assemble route and cost options for you to compare.
++                {isBusiness
++                  ? " You will then add a budget, check it against travel policy, and print an approval packet."
++                  : " You can then add a budget and keep notes as you decide."}
++              </p>
++            )}
++          </aside>
++
+           {errorMessage ? (
+             <p className="auth-error" role="alert">
+               {errorMessage}
+             </p>
+           ) : null}
+-          <button type="submit" disabled={isSubmitting}>
++
++          <button type="submit" disabled={isSubmitting || datesInvalid || tooManyDestinations}>
+             {isSubmitting ? "Creating trip..." : "Create trip"}
+           </button>
+         </form>
+diff --git a/frontend/src/routes/WorkspacePage.tsx b/frontend/src/routes/WorkspacePage.tsx
+index 5ed6528a..0f88326d 100644
+--- a/frontend/src/routes/WorkspacePage.tsx
++++ b/frontend/src/routes/WorkspacePage.tsx
+@@ -610,7 +610,8 @@ function buildScenarioReviewMetrics(
+ ): ScenarioReviewMetric[] {
+   const metrics: ScenarioReviewMetric[] = [
+     {
+-      label: "Estimated total",
++      // Not an estimate: generated from flat per-day rates that ignore the destination.
++      label: "Indicative cost",
+       value:
+         scenario.metrics.estimated_total == null
+           ? "Pending"
+diff --git a/frontend/src/styles.css b/frontend/src/styles.css
+index 4d627710..0fde0a62 100644
+--- a/frontend/src/styles.css
++++ b/frontend/src/styles.css
+@@ -1880,3 +1880,121 @@ a {
+     grid-template-columns: 1fr;
+   }
+ }
++
++/* --- Trip setup: guided inputs with inline help --------------------------- */
++
++.setup-card {
++  max-width: 40rem;
++}
++
++/* Hints sit directly under the control they explain, so the gap is tightened. */
++.setup-form .field-hint {
++  margin: calc(var(--space-3) * -1) 0 0;
++  color: var(--color-ink-soft);
++  font-size: 0.9rem;
++  line-height: 1.45;
++}
++
++.setup-form .field-error {
++  margin: calc(var(--space-3) * -1) 0 0;
++  color: var(--color-rose);
++  font-size: 0.9rem;
++}
++
++.setup-group > .field-hint:first-of-type {
++  margin-top: 0;
++}
++
++.choice-grid {
++  display: grid;
++  gap: var(--space-3);
++}
++
++.choice-card {
++  display: grid;
++  grid-template-columns: auto 1fr;
++  grid-template-areas:
++    "radio title"
++    "radio description";
++  gap: var(--space-1) var(--space-3);
++  align-items: start;
++  border: 1px solid rgba(19, 33, 44, 0.16);
++  border-radius: 16px;
++  padding: var(--space-4);
++  cursor: pointer;
++  font-weight: 400;
++  background: rgba(255, 255, 255, 0.95);
++}
++
++.choice-card:hover {
++  border-color: rgba(19, 33, 44, 0.32);
++}
++
++.choice-card:focus-within {
++  outline: 2px solid var(--color-ink);
++  outline-offset: 2px;
++}
++
++.choice-card-selected {
++  border-color: var(--color-ink);
++  box-shadow: inset 0 0 0 1px var(--color-ink);
++}
++
++.choice-card input[type="radio"] {
++  grid-area: radio;
++  width: 1.15rem;
++  height: 1.15rem;
++  margin: 0.15rem 0 0;
++  accent-color: var(--color-ink);
++}
++
++.choice-title {
++  grid-area: title;
++  font-weight: 700;
++}
++
++.choice-description {
++  grid-area: description;
++  color: var(--color-ink-soft);
++  font-size: 0.9rem;
++  line-height: 1.45;
++}
++
++.setup-next {
++  border: 1px dashed rgba(19, 33, 44, 0.24);
++  border-radius: 16px;
++  padding: var(--space-4);
++  display: grid;
++  gap: var(--space-2);
++}
++
++.setup-next p {
++  margin: 0;
++  color: var(--color-ink-soft);
++  line-height: 1.5;
++}
++
++.setup-next-blocked {
++  color: var(--color-ink) !important;
++  font-weight: 600;
++}
++
++/* Comfortable tap targets on small screens. */
++@media (max-width: 640px) {
++  .choice-card {
++    padding: var(--space-4) var(--space-3);
++  }
++
++  .setup-form input,
++  .setup-form select {
++    min-height: 44px;
++  }
++}
++
++/* Generated route options are not researched estimates; say so prominently. */
++.placeholder-costs-notice {
++  border-left: 3px solid var(--color-rose);
++  padding-left: var(--space-3);
++  color: var(--color-ink);
++  font-weight: 600;
++}
+diff --git a/tests/app/test_workspace_readiness.py b/tests/app/test_workspace_readiness.py
+new file mode 100644
+index 00000000..1b330823
+--- /dev/null
++++ b/tests/app/test_workspace_readiness.py
+@@ -0,0 +1,119 @@
++"""Readiness must reflect traveller-supplied context, not generated placeholders.
++
++A trip created with nothing but a title still receives generated inventory bundles and
++scenario drafts. Before this guard the workspace reported "Your trip plan is ready to
++review." for such a trip, which is the opposite of the truth.
++"""
++
++from __future__ import annotations
++
++from typing import Any
++
++from trip_planner.app.services.workspace_view_model import build_workspace_view_model
++
++
++def _payload(*, mode: str = "business", **frame: Any) -> dict[str, Any]:
++    trip_frame: dict[str, Any] = {
++        "start_date": None,
++        "end_date": None,
++        "duration_days": 7,
++        "primary_regions": [],
++        "traveler_party": {"kind": "solo", "traveler_count": 1, "notes": ""},
++    }
++    trip_frame.update(frame.pop("trip_frame", {}))
++    return {
++        "trip_record": {
++            "trip": {
++                "trip_id": "trip-test",
++                "title": "Test trip",
++                "summary": frame.pop("summary", ""),
++                "mode": mode,
++                "trip_frame": trip_frame,
++            }
++        },
++        # Placeholder artefacts that exist for every trip from the moment it is created.
++        "runtime_state": {"status": "ready"},
++        "saved_scenarios": [{"saved_scenario_id": "a"}, {"saved_scenario_id": "b"}],
++        "inventory_summary": {"bundle_count": 1},
++        "feasibility_summary": {},
++    }
++
++
++def _complete_frame() -> dict[str, Any]:
++    return {
++        "trip_frame": {
++            "start_date": "2026-10-12",
++            "end_date": "2026-10-15",
++            "duration_days": 4,
++            "primary_regions": ["Chicago, IL"],
++            "traveler_party": {"kind": "solo", "traveler_count": 1, "notes": ""},
++        },
++        "summary": "Quarterly review with the Northwind account team",
++    }
++
++
++def test_bare_trip_is_not_reported_as_ready_to_review() -> None:
++    model = build_workspace_view_model(_payload())
++    summary = model["user_summary"]
++
++    assert summary["status"] == "empty"
++    assert "ready to review" not in summary["headline"]
++    assert "a destination" in summary["headline"]
++    assert "travel dates" in summary["headline"]
++
++
++def test_bare_trip_does_not_claim_generated_artefacts_as_decisions() -> None:
++    model = build_workspace_view_model(_payload())
++
++    # Generated drafts/bundles must not be presented as progress the traveller made.
++    assert model["user_summary"]["decided"] == []
++    assert any("missing a destination" in item for item in model["user_summary"]["uncertain"])
++
++
++def test_business_trip_requires_a_purpose_for_the_approver() -> None:
++    frame = _complete_frame()
++    frame["summary"] = ""
++    model = build_workspace_view_model(_payload(mode="business", **frame))
++
++    assert model["user_summary"]["status"] == "empty"
++    assert "business purpose" in model["user_summary"]["headline"]
++
++
++def test_malformed_or_reversed_dates_do_not_make_trip_ready() -> None:
++    for start, end in (("bad-date", "2026-10-15"), ("2026-10-15", "2026-10-12")):
++        frame = _complete_frame()
++        frame["trip_frame"]["start_date"] = start
++        frame["trip_frame"]["end_date"] = end
++        model = build_workspace_view_model(_payload(**frame))
++        assert model["user_summary"]["status"] == "empty"
++        assert "travel dates" in model["user_summary"]["headline"]
++
++
++def test_leisure_trip_does_not_require_a_business_purpose() -> None:
++    frame = _complete_frame()
++    frame["summary"] = ""
++    model = build_workspace_view_model(_payload(mode="leisure", **frame))
++
++    assert model["user_summary"]["status"] == "ready"
++    assert "Nothing has been planned yet" in model["user_summary"]["headline"]
++
++
++def test_setup_complete_trip_does_not_claim_a_reviewable_plan() -> None:
++    """Generated route shapes are not a plan, and are never the traveller's decisions."""
++
++    model = build_workspace_view_model(_payload(**_complete_frame()))
++    summary = model["user_summary"]
++
++    assert summary["status"] == "ready"
++    assert "ready to review" not in summary["headline"]
++    assert summary["headline"] == "Trip setup is saved. Nothing has been planned yet."
++    next_step = build_workspace_view_model(_payload(**_complete_frame()))["next_step"]
++    assert "indicative only" in next_step["summary"]
++    # Auto-generated drafts and bundles are never reported as traveller decisions.
++    assert summary["decided"] == []
++
++
++def test_generated_artefacts_are_never_listed_as_decisions() -> None:
++    for mode in ("business", "leisure"):
++        model = build_workspace_view_model(_payload(mode=mode, **_complete_frame()))
++        assert model["user_summary"]["decided"] == [], mode
+diff --git a/trip_planner/app/services/workspace_view_model.py b/trip_planner/app/services/workspace_view_model.py
+index 41b593fa..ceb33422 100644
+--- a/trip_planner/app/services/workspace_view_model.py
++++ b/trip_planner/app/services/workspace_view_model.py
+@@ -6,6 +6,7 @@ growing the workspace integration module again.
+ 
+ from __future__ import annotations
+ 
++from datetime import date
+ from typing import Any
+ 
+ _TRIP_MODE_LABELS = {
+@@ -123,12 +124,66 @@ def _policy_presentation(*, active: bool, proposal_state: Any) -> dict[str, Any]
+     }
+ 
+ 
+-def _next_step(status: str) -> tuple[str, str, str, str, bool]:
++#: Trip-frame fields the traveller must supply before generated options mean anything.
++def _missing_trip_context(trip: dict[str, Any], *, mode: str) -> list[str]:
++    """Name the traveller-supplied inputs the planner still needs.
++
++    Generated inventory and scenarios exist for every trip, including one created with
++    nothing but a title, so they cannot be used to decide whether a plan is worth
++    reviewing. Readiness is derived from what the traveller actually provided.
++    """
++
++    frame = _dict(trip.get("trip_frame"))
++    missing: list[str] = []
++
++    regions = frame.get("primary_regions")
++    if not (isinstance(regions, list) and any(str(region).strip() for region in regions)):
++        missing.append("a destination")
++
++    try:
++        start_date = date.fromisoformat(str(frame.get("start_date") or ""))
++        end_date = date.fromisoformat(str(frame.get("end_date") or ""))
++        dates_valid = end_date >= start_date
++    except ValueError:
++        dates_valid = False
++    if not dates_valid:
++        missing.append("travel dates")
++
++    if mode == "business" and not str(trip.get("summary") or "").strip():
++        missing.append("a business purpose for the approver")
++
++    return missing
++
++
++def _humanise(items: list[str]) -> str:
++    if len(items) == 1:
++        return items[0]
++    return f"{', '.join(items[:-1])} and {items[-1]}"
++
++
++def _next_step(status: str, missing: list[str]) -> tuple[str, str, str, str, bool]:
++    if missing:
++        return (
++            f"This trip still needs {_humanise(missing)}.",
++            "Finish trip setup",
++            (
++                "The planner cannot suggest routes or costs worth reviewing until it knows "
++                f"{_humanise(missing)}."
++            ),
++            "Open trip setup",
++            True,
++        )
+     if status == "ready":
++        # Everything available at this point is generated from flat constants, so the
++        # traveller is told what these options actually are rather than being told a
++        # plan is "ready to review".
+         return (
+-            "Your trip plan is ready to review.",
+-            "Review and pick a scenario",
+-            "Compare the saved scenarios and choose one to keep planning around.",
++            "Trip setup is saved. Nothing has been planned yet.",
++            "Look over the starting options",
++            (
++                "The planner has laid out a few rough route shapes to react to. They are "
++                "indicative only — not priced for your destination."
++            ),
+             "Open scenario comparison",
+             False,
+         )
+@@ -164,25 +219,33 @@ def build_workspace_view_model(
+ 
+     saved_scenarios = payload.get("saved_scenarios")
+     saved_scenarios = saved_scenarios if isinstance(saved_scenarios, list) else []
+-    inventory = _dict(payload.get("inventory_summary"))
+     feasibility = _dict(payload.get("feasibility_summary"))
+-    decided = []
+-    if saved_scenarios:
+-        decided.append(f"{len(saved_scenarios)} saved scenario draft(s)")
+-    bundle_count = int(inventory.get("bundle_count") or 0)
+-    if bundle_count:
+-        decided.append(f"{bundle_count} inventory bundle(s) assembled")
++    # "Decided" means the traveller decided it. Route options and inventory bundles are
++    # generated automatically for every trip from flat constants, so they are never
++    # progress the traveller made and must not be reported as such.
++    decided: list[str] = []
++    missing_context = _missing_trip_context(trip, mode=mode)
++    if missing_context:
++        # Generated bundles must never present an unstarted trip as reviewable.
++        status = "empty"
++
+     uncertain = []
+     attention_count = int(feasibility.get("attention_bundle_count") or 0)
+     if attention_count:
+         uncertain.append(f"{attention_count} bundle(s) need attention")
+-    if status == "empty":
++    for item in missing_context:
++        uncertain.append(f"Trip setup is missing {item}.")
++    if status == "empty" and not missing_context:
+         uncertain.append("Trip context is not complete yet.")
+     elif status == "partial":
+         uncertain.append("Scenario comparison is not yet ready.")
+ 
+-    headline, next_title, next_summary, next_action, blocked = _next_step(status)
+-    next_target = {"ready": "scenario-comparison", "partial": "planner"}.get(status, "trip-setup")
++    headline, next_title, next_summary, next_action, blocked = _next_step(status, missing_context)
++    next_target = (
++        "trip-setup"
++        if missing_context
++        else {"ready": "scenario-comparison", "partial": "planner"}.get(status, "trip-setup")
++    )
+     proposal = payload.get("proposal_state")
+     active = _workspace_policy_state_is_active(
+         policy_state=payload.get("policy_state"), proposal_state=proposal

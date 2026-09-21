@@ -1,0 +1,81 @@
+commit bf2f8d8a0cb67f3592c71c0e218f533c690ae838
+Author: stranske <stranske@gmail.com>
+Date:   Sat Sep 19 21:37:52 2026 -0500
+
+    feat(docx): Word memo renderer for change and continuity memos (#5) (#20)
+    
+    * feat(docx): Word memo renderer for consultant change memos (#5)
+    
+    Add structured-store-driven change and continuity memo renderers with
+    render-docx-memo CLI, synthetic fixture, and pytest gates including T1
+    section assertions and deliberate-break coverage.
+    
+    Co-authored-by: Cursor <cursoragent@cursor.com>
+    
+    * chore(autofix): formatting/lint
+    
+    * fix(docx): resolve mypy errors in memo renderer
+    
+    Use TYPE_CHECKING import for Document type hints and pass str paths to
+    document.save() so Gate typecheck passes on PR #20.
+    
+    Co-authored-by: Cursor <cursoragent@cursor.com>
+    
+    * fix(deps): add PyYAML for CI dependency validation
+    
+    Gate python CI checks import yaml before running pytest; add pinned
+    PyYAML to project dependencies so dependency validation passes.
+    
+    Co-authored-by: Cursor <cursoragent@cursor.com>
+    
+    * fix(ci): map docx import to python-docx in dependency sync
+    
+    The test suite imports docx (python-docx) but MODULE_TO_PACKAGE lacked
+    the mapping, causing Gate dependency validation to fail even though
+    python-docx is already declared in project dependencies.
+    
+    Co-authored-by: Cursor <cursoragent@cursor.com>
+    
+    * fix(ci): pin docx/yaml in lockfile and isolate deliberate-break pytest
+    
+    requirements.lock was missing python-docx and pyyaml pins added in pyproject.toml.
+    Deliberate-break pytest now overrides pyproject cov addopts so Gate test-quality
+    can run without pytest-cov preinstalled.
+    
+    Co-authored-by: Cursor <cursoragent@cursor.com>
+    
+    * Fix review comments for DOCX memos
+    
+    - Regenerate requirements.lock with python-docx
+    - Move StructuredStore to store.py for schema unity
+    - Add CLI integration and validation tests
+    - Add assertions for rendered values in change memo test
+    
+    * chore(autofix): formatting/lint
+    
+    * fix(ci): resolve mypy type errors and formatting
+    
+    * chore: keep memo recovery scoped to product and validation changes
+    
+    ---------
+    
+    Co-authored-by: Cursor <cursoragent@cursor.com>
+    Co-authored-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
+
+ pyproject.toml                                     |  5 ++
+ requirements.lock                                  |  9 ++-
+ scripts/check_deliberate_break.py                  |  3 +-
+ scripts/sync_test_dependencies.py                  |  1 +
+ src/deliverable_render/cli/__init__.py             |  1 +
+ src/deliverable_render/cli/render_docx.py          | 39 ++++++++++
+ src/deliverable_render/docx/__init__.py            | 13 ++++
+ src/deliverable_render/docx/memo.py                | 69 ++++++++++++++++++
+ src/deliverable_render/store.py                    | 83 ++++++++++++++++++++++
+ tests/docx/test_change_memo_renderer.py            | 35 +++++++++
+ tests/docx/test_continuity_memo_renderer.py        | 18 +++++
+ tests/docx/test_validation_and_cli.py              | 70 ++++++++++++++++++
+ .../fixtures/stores/consultant_change_minimal.json | 35 +++++++++
+ tests/test_deck_completeness_gate.py               |  4 +-
+ tests/test_render_html_offline.py                  | 11 +--
+ tests/test_store.py                                |  2 +-
+ 16 files changed, 388 insertions(+), 10 deletions(-)

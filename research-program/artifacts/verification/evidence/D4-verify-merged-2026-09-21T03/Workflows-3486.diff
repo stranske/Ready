@@ -1,0 +1,167 @@
+commit fb2a8fc914fabc3608478d0192332893668f5f93
+Author: stranske <stranske@gmail.com>
+Date:   Sun Sep 20 01:45:58 2026 -0500
+
+    fix(sync): address canary review findings in source (#3486)
+    
+    Co-authored-by: closer-lane <automation@stranske.dev>
+
+diff --git a/docs/contracts/document-mirror-v1.md b/docs/contracts/document-mirror-v1.md
+index 45a9c836..af484c99 100644
+--- a/docs/contracts/document-mirror-v1.md
++++ b/docs/contracts/document-mirror-v1.md
+@@ -48,15 +48,17 @@ validators, HTML resolvers, and the future `doc-mirror` CLI can share one schema
+ 
+ ## Validation
+ 
+-Offline validation:
++Offline validation in a consumer checkout, using its own manifest:
+ 
+ ```bash
+ python scripts/validate_run_contract.py \
+-  --mirror-manifest tests/fixtures/backplane/valid_document_mirror.json \
++  --mirror-manifest path/to/your-manifest.json \
+   --schema-dir docs/contracts/schemas
+ ```
+ 
+-Contract tests:
++The canonical fixture and contract tests live in the
++[Workflows source repository](https://github.com/stranske/Workflows), not in
++consumer checkouts. From a Workflows checkout, run:
+ 
+ ```bash
+ python -m pytest tests/contracts/test_backplane_schemas.py::test_document_mirror_fixture_validates -q
+diff --git a/docs/contracts/mosaic-core-v1.md b/docs/contracts/mosaic-core-v1.md
+index 13592414..c2f8f4d0 100644
+--- a/docs/contracts/mosaic-core-v1.md
++++ b/docs/contracts/mosaic-core-v1.md
+@@ -94,10 +94,12 @@ format. Install `jsonschema` and `rfc3339-validator` when running it standalone;
+ both dependencies. The RFC 3339 checker is required, not an optional validation
+ step. Existing satellite schema validation behavior is unchanged.
+ 
+-## Validation evidence
++## Workflows source validation evidence
+ 
+-Synthetic fixtures for all four types live under `tests/fixtures/backplane/`.
+-Run `python -m pytest tests/contracts/test_backplane_schemas.py tests/contracts/test_validate_run_contract.py -q`; the named
++The synthetic fixtures and tests below live in the
++[Workflows source repository](https://github.com/stranske/Workflows), not in
++consumer checkouts. From a Workflows checkout, run
++`python -m pytest tests/contracts/test_backplane_schemas.py tests/contracts/test_validate_run_contract.py -q`; the named
+ acceptance gate is `test_mosaic_core_fixture_validates`. Negative tests exercise
+ discriminators, versions, empty join keys, evidence requirements, resolution
+ notes, and the additive manifest kinds with path rejection. Consumer-path tests
+diff --git a/docs/contracts/output-substrate-v1.md b/docs/contracts/output-substrate-v1.md
+index 15bca649..d0cd5da2 100644
+--- a/docs/contracts/output-substrate-v1.md
++++ b/docs/contracts/output-substrate-v1.md
+@@ -66,10 +66,13 @@ list and pass one document to `scripts/validate_run_contract.py`. The production
+ validator enforces the schema, including POSIX path rules on
+ `workspace_bundle_ref.path` and `manifest_csv_exports[].filename`.
+ 
+-## Validation evidence
++## Workflows source validation evidence
+ 
+-Synthetic fixture: `tests/fixtures/backplane/valid_output_substrate.json`.
+-Run `python -m pytest tests/contracts/test_backplane_schemas.py::test_output_substrate_fixture_validates -q`.
++The synthetic fixture `tests/fixtures/backplane/valid_output_substrate.json`
++and its test live in the
++[Workflows source repository](https://github.com/stranske/Workflows), not in
++consumer checkouts. From a Workflows checkout, run
++`python -m pytest tests/contracts/test_backplane_schemas.py::test_output_substrate_fixture_validates -q`.
+ 
+ Deliberate break: remove `renderer_profile` from the fixture, rerun the named
+ test, observe failure, restore the fixture, and observe success.
+diff --git a/scripts/runner_lib/core.py b/scripts/runner_lib/core.py
+index 91374dfc..806efb54 100644
+--- a/scripts/runner_lib/core.py
++++ b/scripts/runner_lib/core.py
+@@ -1291,9 +1291,9 @@ def _log_storage_failure(operation: str, exc: Exception, *, phase: str = "comple
+ 
+ def _unrecorded_completion(prior: dict[str, Any], key: str, reason: str) -> dict[str, Any]:
+     return {
++        **prior,
+         "status": "unknown",
+         "key": key,
+-        **prior,
+         "completion_recorded": False,
+         "completion_reason": reason,
+     }
+diff --git a/scripts/validate_run_contract.py b/scripts/validate_run_contract.py
+index 8137accd..e6b156c3 100644
+--- a/scripts/validate_run_contract.py
++++ b/scripts/validate_run_contract.py
+@@ -170,7 +170,8 @@ def validate_mirror_manifests(*, paths: list[Path], schema_dir: Path) -> Report:
+             validator.iter_errors(document),
+             key=lambda e: list(e.absolute_path),
+         ):
+-            report.fail(err.message, "/".join(str(p) for p in err.absolute_path))
++            pointer = "/".join(str(p) for p in err.absolute_path)
++            report.fail(err.message, f"{path}:/{pointer}")
+     return report
+ 
+ 
+diff --git a/tests/contracts/test_validate_run_contract.py b/tests/contracts/test_validate_run_contract.py
+index 1af9c2f6..6fbb439d 100644
+--- a/tests/contracts/test_validate_run_contract.py
++++ b/tests/contracts/test_validate_run_contract.py
+@@ -151,6 +151,20 @@ def test_mirror_manifest_cli_reports_invalid_utf8(tmp_path, capsys) -> None:
+     assert f"cannot load mirror manifest {path}" in capsys.readouterr().err
+ 
+ 
++def test_mirror_manifest_schema_violations_identify_each_input_file() -> None:
++    mod = _import_validator()
++    paths = [
++        FIXTURES / "invalid_document_mirror_bad_blob_path.json",
++        FIXTURES / "invalid_document_mirror_bad_urls.json",
++    ]
++    report = mod.validate_mirror_manifests(paths=paths, schema_dir=SCHEMA_DIR)
++    assert not report.conformant
++    assert all(
++        any(violation.path.startswith(f"{path}:/") for violation in report.violations)
++        for path in paths
++    )
++
++
+ def test_tracked_variables_and_mirror_manifest_are_mutually_exclusive(capsys) -> None:
+     mod = _import_validator()
+     with pytest.raises(SystemExit) as exc:
+diff --git a/tests/scripts/test_runner_lib.py b/tests/scripts/test_runner_lib.py
+index e5b3ed41..7039834e 100644
+--- a/tests/scripts/test_runner_lib.py
++++ b/tests/scripts/test_runner_lib.py
+@@ -1666,6 +1666,34 @@ def test_cli_reports_stale_completion_without_writing(
+     assert len(storage.writes) == writes
+ 
+ 
++def test_cli_unrecorded_completion_reports_current_key_and_unknown_status(
++    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
++) -> None:
++    storage = MemoryRunnerStorage()
++    monkeypatch.setattr(runner_core, "_storage_from_name", lambda _: storage)
++    monkeypatch.setenv("GITHUB_REPOSITORY", "owner/repo")
++    monkeypatch.setenv("GITHUB_RUN_ID", "200")
++    monkeypatch.setenv("GITHUB_RUN_ATTEMPT", "1")
++    common = ["--provider", "codex", "--pr-number", "42"]
++    assert runner_core.main(["should-dispatch", *common, "--head-sha", "aaa"]) == 0
++    capsys.readouterr()
++    writes = len(storage.writes)
++
++    assert (
++        runner_core.main(["record-completion", *common, "--head-sha", "bbb", "--summary", "Done"])
++        == 0
++    )
++    output = json.loads(capsys.readouterr().out)
++    assert output == {
++        "key": runner_core._runner_key(42, "bbb", "codex"),
++        "productive": "",
++        "reason": "stale-attempt",
++        "recorded": "false",
++        "status": "unknown",
++    }
++    assert len(storage.writes) == writes
++
++
+ def test_same_attempt_completion_across_jobs_is_idempotent(
+     monkeypatch: pytest.MonkeyPatch,
+ ) -> None:

@@ -1,0 +1,150 @@
+commit 372cbc25d2c3bbe5c7418391e3b48651cfb5b09a
+Author: stranske <stranske@gmail.com>
+Date:   Sat Sep 19 21:41:36 2026 -0500
+
+    fix(ci): align acceptance-test dependency bootstrap with source (#39)
+    
+    * fix(ci): align acceptance-test dependency bootstrap with source
+    
+    * Align Gate dependency bootstrap with merged source
+
+diff --git a/.github/workflows/pr-00-gate.yml b/.github/workflows/pr-00-gate.yml
+index c3098f2..5fabe62 100644
+--- a/.github/workflows/pr-00-gate.yml
++++ b/.github/workflows/pr-00-gate.yml
+@@ -354,7 +354,52 @@ jobs:
+         with:
+           python-version: '3.14'
+       - name: Install test-quality dependencies
+-        run: python -m pip install --upgrade pip pytest
++        # The named acceptance test has to actually RUN here. Installing only pytest meant any
++        # PR whose test imported a runtime dependency failed this gate on a collection-time
++        # ImportError — and the checker reported that identically to "the deliberate break was
++        # not demonstrated". Deliverable-Render #20 burned five autofix attempts on
++        # `ModuleNotFoundError: No module named 'docx'` while declaring python-docx correctly in
++        # pyproject.toml. Nothing the PR could do would pass, because the gate never installed it.
++        # Best-effort by design: a repo that is not pip-installable still gets the old behaviour
++        # rather than a hard failure here.
++        run: |
++          set -euo pipefail
++          python -m pip install --upgrade pip pytest
++          # Install the project's DEPENDENCIES but not the project. The check reruns the named
++          # test against an archived BASE revision on PYTHONPATH; a head distribution left in
++          # site-packages is not shadowed by that archive root under a src/ layout, so the base
++          # run would import HEAD code and the gate could report a break as demonstrated when it
++          # was not. Installing then uninstalling leaves the third-party dependencies resolved
++          # (which is the whole point) with nothing of the project itself importable.
++          for req in requirements-dev.lock requirements-dev.txt requirements.lock requirements.txt; do
++            if [ -f "$req" ]; then
++              python -m pip install -r "$req" \
++                || echo "::warning::Could not install $req."
++              break
++            fi
++          done
++          if [ -f pyproject.toml ] || [ -f setup.py ]; then
++            install_report="$(mktemp)"
++            trap 'rm -f "$install_report"' EXIT
++            if python -m pip install --report "$install_report" . ; then
++              dist_name="$(python - "$install_report" <<'PYEOF'
++          import json, pathlib, re, sys
++          report = json.loads(pathlib.Path(sys.argv[1]).read_text(encoding="utf-8"))
++          names = [entry.get("metadata", {}).get("name") for entry in report.get("install", [])
++                   if entry.get("requested") is True]
++          if len(names) != 1 or not isinstance(names[0], str) or not re.fullmatch(
++              r"[A-Za-z0-9][A-Za-z0-9._-]*", names[0]
++          ):
++              raise SystemExit("Cannot identify installed head distribution; refusing base test.")
++          print(names[0])
++          PYEOF
++          )"
++              # Cleanup must succeed before any archived-base proof can run.
++              python -m pip uninstall -y "$dist_name"
++            else
++              echo "::warning::Project install failed; the named test may not be importable."
++            fi
++          fi
+       # Consumer repos intentionally omit Workflows-specific
+       # check_gate_diff_quality.py; only check_deliberate_break.py is synced.
+       - name: Check deliberate-break acceptance criterion
+diff --git a/tests/test_gate_project_dependencies.py b/tests/test_gate_project_dependencies.py
+new file mode 100644
+index 0000000..8bd32a1
+--- /dev/null
++++ b/tests/test_gate_project_dependencies.py
+@@ -0,0 +1,76 @@
++"""Exercise the consumer-owned Gate's reviewed source dependency bootstrap."""
++
++import json
++import os
++import subprocess
++import textwrap
++from pathlib import Path
++
++import pytest
++
++
++@pytest.mark.parametrize("project_file", ["pyproject.toml", "setup.py"])
++@pytest.mark.parametrize("failure", ["", "missing-name", "ambiguous-name", "uninstall"])
++def test_gate_installs_dependencies_then_removes_head_project(tmp_path, project_file, failure):
++    root = Path(__file__).resolve().parents[1]
++    workflow = (root / ".github/workflows/pr-00-gate.yml").read_text(encoding="utf-8")
++    step = workflow.split("      - name: Install test-quality dependencies\n", 1)[1]
++    step = step.split("      # Consumer repos intentionally omit", 1)[0]
++    assert "        run: |\n" in step
++    script = textwrap.dedent(step.split("        run: |\n", 1)[1])
++    (tmp_path / project_file).write_text(
++        (
++            '[project]\nname = "manager-mosaic"\ndependencies = ["jsonschema==4.22.0"]\n'
++            if project_file.endswith("toml")
++            else "# setup.py fixture\n"
++        ),
++        encoding="utf-8",
++    )
++    report = tmp_path / "install-report.json"
++    installs = [
++        {"requested": False, "metadata": {"name": "jsonschema"}},
++        {
++            "requested": True,
++            "metadata": {} if failure == "missing-name" else {"name": "manager-mosaic"},
++        },
++    ]
++    if failure == "ambiguous-name":
++        installs.append({"requested": True, "metadata": {"name": "another-project"}})
++    report.write_text(json.dumps({"install": installs}), encoding="utf-8")
++    log = tmp_path / "pip-calls.log"
++    # Exercise the real workflow shell flow without changing this test environment.
++    shim = """
++python() {
++  if [ "$1" = "-m" ]; then
++    printf '%s\\n' "$*" >> "$PIP_TEST_LOG"
++    if [ "$3" = "install" ] && [ "$4" = "--report" ]; then
++      cp "$PIP_TEST_REPORT" "$5"
++    fi
++    if [ "$3" = "uninstall" ] && [ "$PIP_TEST_FAILURE" = "uninstall" ]; then
++      return 1
++    fi
++    return 0
++  fi
++  command python3 "$@"
++}
++"""
++    result = subprocess.run(
++        ["bash", "-c", shim + script],
++        cwd=tmp_path,
++        env={
++            **os.environ,
++            "PIP_TEST_LOG": str(log),
++            "PIP_TEST_REPORT": str(report),
++            "PIP_TEST_FAILURE": failure,
++        },
++        capture_output=True,
++        text=True,
++    )
++    if failure:
++        assert result.returncode != 0, "Unsafe base test must not run"
++    else:
++        assert result.returncode == 0, result.stdout + result.stderr
++        calls = log.read_text(encoding="utf-8").splitlines()
++        assert any(call.startswith("-m pip install --report ") for call in calls)
++        assert "-m pip uninstall -y manager-mosaic" in calls
++        assert "-m pip uninstall -y jsonschema" not in calls

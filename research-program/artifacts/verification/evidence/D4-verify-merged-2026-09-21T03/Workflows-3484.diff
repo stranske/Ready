@@ -1,0 +1,232 @@
+commit 994af8435a22fabd7cbf0f41ee4bed9c61ea289c
+Author: stranske <stranske@gmail.com>
+Date:   Sat Sep 19 22:48:37 2026 -0500
+
+    Scope due Maint 71 delivery dispatches to owned repositories (#3484)
+    
+    Co-authored-by: closer-lane <automation@stranske.dev>
+
+diff --git a/.github/scripts/__tests__/sync_dependency_campaign.test.js b/.github/scripts/__tests__/sync_dependency_campaign.test.js
+index 298cb2e6..8a03fc85 100644
+--- a/.github/scripts/__tests__/sync_dependency_campaign.test.js
++++ b/.github/scripts/__tests__/sync_dependency_campaign.test.js
+@@ -23,6 +23,7 @@ const {
+   paginateWithRetry,
+   parseCampaignMarker,
+   planMaint71Continuations,
++  selectMaint71ContinuationRepos,
+   replaceCampaignMarker,
+   verboseDryRunLoggingEnabled,
+   validateCampaignState,
+@@ -160,6 +161,50 @@ test('plans only due transient Maint 71 lanes and suppresses candidates during d
+   }).map((item) => item.lane), ['candidate']);
+ });
+ 
++test('delivery continuation scopes only exact-plan delivery branches, not candidates or manual admin', () => {
++  const binding = {
++    plan_id: 'plan-current', plan_scope: 'source-delta',
++    scope_base_sha: 'base', source_commit: 'source-current',
++  };
++  const handoff = (repository, branch, overrides = {}) => ({
++    schema: 'workflows-generated-delivery-handoff/v1',
++    repository, pr: 12, branch, head_sha: 'head', delivery_generation: 'generation',
++    disposition: 'awaiting-review-settlement', blocker_owner: 'reviewers',
++    next_command: 'rerun-after:2026-09-20T03:00:00Z',
++    check_state: 'ready', review_state: 'clear', observed_at: '2026-09-20T02:00:00Z',
++    ...binding,
++    continuation: {
++      class: 'transient', lane: branch === 'sync/workflows-delivery' ? 'delivery' : 'candidate',
++      reason: 'reviewer_settlement_pending', resume_after: '2026-09-20T03:00:00Z',
++    },
++    ...overrides,
++  });
++  const records = [
++    handoff('stranske/Collab-Admin', 'sync/workflows-delivery'),
++    handoff('stranske/Ready', 'sync/workflows-delivery'),
++    handoff('stranske/Travel', 'sync/workflows-candidate'),
++    handoff('stranske/Other', 'sync/workflows-delivery', { plan_id: 'plan-other' }),
++  ];
++  const registered = ['stranske/Collab-Admin', 'stranske/Ready', 'stranske/Travel', 'stranske/Other'];
++  const continuation = { lane: 'delivery', immutable_handoff: binding };
++  assert.deepEqual(selectMaint71ContinuationRepos(continuation, records, registered), ['stranske/Ready']);
++  assert.deepEqual(selectMaint71ContinuationRepos(
++    { lane: 'campaign', immutable_handoff: binding }, records, registered,
++  ), ['stranske/Ready', 'stranske/Travel', 'stranske/Other']);
++  assert.deepEqual(selectMaint71ContinuationRepos(
++    { lane: 'delivery', immutable_handoff: { ...binding, source_commit: 'stale' } },
++    records, registered,
++  ), []);
++  const nonManual = records.filter((record) => record.repository !== 'stranske/Collab-Admin');
++  assert.deepEqual(planMaint71Continuations(nonManual, {
++    now: '2026-09-20T03:01:00Z',
++  }).map((item) => item.lane), ['delivery']);
++  assert.deepEqual(planMaint71Continuations(
++    [records[0], records[2]].filter((record) => record.repository !== 'stranske/Collab-Admin'),
++    { now: '2026-09-20T03:01:00Z' },
++  ).map((item) => item.lane), ['candidate']);
++});
++
+ test('campaign continuations preserve idempotency and immutable plan bindings', () => {
+   const campaign = {
+     schema: 'workflows-generated-delivery-handoff/v1',
+diff --git a/.github/scripts/sync_dependency_campaign.js b/.github/scripts/sync_dependency_campaign.js
+index 9848ae8d..5b30cd37 100644
+--- a/.github/scripts/sync_dependency_campaign.js
++++ b/.github/scripts/sync_dependency_campaign.js
+@@ -484,6 +484,36 @@ function planMaint71Continuations(records = [], { now = new Date().toISOString()
+   return order.map((lane) => dueByLane.get(lane)).filter(Boolean);
+ }
+ 
++function selectMaint71ContinuationRepos(
++  continuation = {}, records = [], registeredRepos = [],
++  { excludedRepos = ['stranske/Collab-Admin'] } = {},
++) {
++  const excluded = new Set(excludedRepos);
++  const allowed = cleanArray(registeredRepos)
++    .map(cleanString)
++    .filter((repo) => repo && !excluded.has(repo));
++  if (continuation.lane === 'campaign' || continuation.lane === 'dev-tool') {
++    // Campaign authorization deliberately inspects the whole non-manual fleet.
++    return allowed;
++  }
++  if (continuation.lane !== 'delivery') return [];
++  const expected = continuation.immutable_handoff || {};
++  if (!expected.plan_id || !expected.source_commit || !expected.plan_scope) return [];
++  const registered = new Set(allowed);
++  return [...new Set(cleanArray(records)
++    .map((record) => normalizeDeliveryHandoff(record))
++    .filter((record) => record
++      && registered.has(record.repository)
++      && record.branch === 'sync/workflows-delivery'
++      && record.continuation?.lane === 'delivery'
++      && record.continuation?.class === 'transient'
++      && record.plan_id === expected.plan_id
++      && record.plan_scope === expected.plan_scope
++      && record.scope_base_sha === (expected.scope_base_sha || '')
++      && record.source_commit === expected.source_commit)
++    .map((record) => record.repository))];
++}
++
+ function formatMaint71ContinuationPlannerRows(records = [], { now = new Date().toISOString() } = {}) {
+   const handoffs = cleanArray(records)
+     .map((record) => normalizeDeliveryHandoff(record))
+@@ -1946,6 +1976,7 @@ module.exports = {
+   paginateWithRetry,
+   parseCampaignMarker,
+   planMaint71Continuations,
++  selectMaint71ContinuationRepos,
+   replaceCampaignMarker,
+   runCampaign,
+   validateCampaignState,
+diff --git a/.github/workflows/maint-82-sync-dependency-campaign.yml b/.github/workflows/maint-82-sync-dependency-campaign.yml
+index 7eba80df..11eddd77 100644
+--- a/.github/workflows/maint-82-sync-dependency-campaign.yml
++++ b/.github/workflows/maint-82-sync-dependency-campaign.yml
+@@ -147,10 +147,21 @@ jobs:
+               currentSyncHash,
+               deliveryHandoffRecords,
+             });
+-            const continuations = planMaint71Continuations(result.state.delivery_handoffs, {
++            // Collab-Admin is an explicit manual-reconciliation exception. It
++            // cannot wake a scheduled delivery selector for the rest of the fleet.
++            const eligibleHandoffs = (result.state.delivery_handoffs || []).filter(
++              (record) => record.repository !== 'stranske/Collab-Admin',
++            );
++            const continuations = planMaint71Continuations(eligibleHandoffs, {
+               now: new Date().toISOString(),
+             });
+             core.setOutput('maint71_continuations', JSON.stringify(continuations));
++            core.setOutput('maint71_delivery_handoffs', JSON.stringify(
++              eligibleHandoffs.filter((record) =>
++                record.branch === 'sync/workflows-delivery'
++                && record.continuation?.lane === 'delivery'
++              ),
++            ));
+ 
+             const stats = result.state.stats || {};
+             fs.writeFileSync(
+@@ -192,6 +203,7 @@ jobs:
+         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
+         env:
+           CONTINUATIONS_JSON: ${{ steps.campaign.outputs.maint71_continuations || '[]' }}
++          DELIVERY_HANDOFFS_JSON: ${{ steps.campaign.outputs.maint71_delivery_handoffs || '[]' }}
+           REGISTERED_REPOS: ${{ steps.registered.outputs.repos }}
+         with:
+           github-token: ${{ env.CAMPAIGN_TOKEN }}
+@@ -199,6 +211,9 @@ jobs:
+             const { createTokenAwareRetry } = require(
+               './.github/scripts/github-api-with-retry.js'
+             );
++            const { selectMaint71ContinuationRepos } = require(
++              './.github/scripts/sync_dependency_campaign.js'
++            );
+             const { withRetry } = await createTokenAwareRetry({
+               github,
+               core,
+@@ -207,10 +222,11 @@ jobs:
+               capabilities: ['actions:write'],
+             });
+             const continuations = JSON.parse(process.env.CONTINUATIONS_JSON || '[]');
+-            const nonAdminRepos = String(process.env.REGISTERED_REPOS || '')
++            const deliveryHandoffs = JSON.parse(process.env.DELIVERY_HANDOFFS_JSON || '[]');
++            const registeredRepos = String(process.env.REGISTERED_REPOS || '')
+               .split(',')
+               .map((repo) => repo.trim())
+-              .filter((repo) => repo && repo !== 'stranske/Collab-Admin');
++              .filter(Boolean);
+             const { data: runs } = await withRetry((client) =>
+               client.rest.actions.listWorkflowRuns({
+                 owner: context.repo.owner,
+@@ -261,7 +277,16 @@ jobs:
+                 inputs.campaign_no_change_evidence_json =
+                   continuation.campaign_no_change_evidence_json;
+               }
+-              if (selector !== 'candidate') inputs.repos = nonAdminRepos.join(',');
++              if (selector !== 'candidate') {
++                const scopedRepos = selectMaint71ContinuationRepos(
++                  continuation, deliveryHandoffs, registeredRepos,
++                );
++                if (!scopedRepos.length) {
++                  core.warning(`Maint 71 ${selector} continuation has no authorized repositories`);
++                  continue;
++                }
++                inputs.repos = scopedRepos.join(',');
++              }
+               await withRetry((client) => client.rest.actions.createWorkflowDispatch({
+                 owner: context.repo.owner,
+                 repo: context.repo.repo,
+diff --git a/docs/ops/CONSUMER_REPO_MAINTENANCE.md b/docs/ops/CONSUMER_REPO_MAINTENANCE.md
+index 23759b6f..8bd65bb7 100644
+--- a/docs/ops/CONSUMER_REPO_MAINTENANCE.md
++++ b/docs/ops/CONSUMER_REPO_MAINTENANCE.md
+@@ -410,6 +410,12 @@ pending checks, changed heads, review windows, reviewer settlement, sealed Gate
+ checks, and stable candidate base refreshes, so an absent event cannot strand
+ the lifecycle. It does not retry actionable CI failures, unresolved review
+ findings, or a dry-run-only sealed-head mismatch as if they were timer states.
++Scheduled Maint 82 continuations exclude the manual Collab-Admin exception.
++Its `delivery` selector targets only registered `sync/workflows-delivery`
++handoffs with the selected immutable plan, scope, base and source; candidate-only
++repositories are not sent to that lane as false `target_missing` failures.
++The `campaign` selector retains the non-manual fleet scope needed for exact-head
++authorization.
+ Promoted delivery commits carry their exact canary evidence in the verified
+ commit message so Maint 71 can replay the same promotion if a consumer base
+ advances during review; editable PR body fields never authorize that replay.
+diff --git a/tests/workflows/test_maint82_sync_campaign_contract.py b/tests/workflows/test_maint82_sync_campaign_contract.py
+index 1a2fd08d..20935e6b 100644
+--- a/tests/workflows/test_maint82_sync_campaign_contract.py
++++ b/tests/workflows/test_maint82_sync_campaign_contract.py
+@@ -101,3 +101,13 @@ def test_campaign_forwards_only_evidence_for_the_selected_maint71_lane():
+ 
+     assert "selector === 'candidate' && continuation.canary_baseline_evidence_json" in workflow
+     assert "selector === 'campaign' && continuation.campaign_no_change_evidence_json" in workflow
++
++
++def test_due_delivery_dispatch_is_scoped_and_manual_admin_cannot_wake_it():
++    workflow = WORKFLOW.read_text(encoding="utf-8")
++
++    assert "record.repository !== 'stranske/Collab-Admin'" in workflow
++    assert "planMaint71Continuations(eligibleHandoffs" in workflow
++    assert "maint71_delivery_handoffs" in workflow
++    assert "selectMaint71ContinuationRepos(" in workflow
++    assert "inputs.repos = scopedRepos.join(',')" in workflow

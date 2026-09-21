@@ -1,0 +1,43 @@
+commit 56bee4faf6658b7031be5d9c7cc81b82735361ee
+Author: stranske <stranske@gmail.com>
+Date:   Sun Sep 20 05:22:31 2026 -0500
+
+    Hash active optional report inputs in manifest provenance (#1078)
+    
+    * Hash active optional report inputs in manifest provenance
+    
+    * fix(provenance): gate screenshot manifest inputs on active PPT generator
+    
+    Only record screenshot_inputs in manifest provenance when ppt_screenshot
+    will actually run, matching _write_outputs. Add relative exposure_summary_xlsx
+    path-resolution coverage in the runtime-config paths test.
+    
+    Co-authored-by: Cursor <cursoragent@cursor.com>
+    
+    * chore(codex-keepalive): pre-timeout checkpoint (PR #1078)
+    
+    * chore(codex-autofix): apply updates (PR #1078)
+    
+    * fix: remove keepalive artifacts from provenance PR
+    
+    * chore(codex-keepalive): pre-timeout checkpoint (PR #1078)
+    
+    * chore(codex-keepalive): apply updates (PR #1078)
+    
+    * chore(codex-keepalive): pre-timeout checkpoint (PR #1078)
+    
+    * chore(codex-keepalive): pre-timeout checkpoint (PR #1078)
+    
+    * chore(codex-keepalive): pre-timeout checkpoint (PR #1078)
+    
+    ---------
+    
+    Co-authored-by: Cursor <cursoragent@cursor.com>
+    Co-authored-by: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+
+ .gitignore                                         |  10 ++
+ src/counter_risk/pipeline/manifest.py              |   4 +-
+ src/counter_risk/pipeline/run.py                   |  44 ++++++-
+ tests/pipeline/test_run_pipeline.py                | 144 +++++++++++++++++++++
+ .../test_run_pipeline_runtime_config_paths.py      |   2 +
+ 5 files changed, 202 insertions(+), 2 deletions(-)

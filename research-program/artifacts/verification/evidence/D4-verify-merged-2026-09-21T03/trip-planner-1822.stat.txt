@@ -1,0 +1,105 @@
+commit 25de5c34ea2d0f65670c4c2113c7e94bd904c537
+Author: stranske <stranske@gmail.com>
+Date:   Sun Sep 20 00:40:12 2026 -0500
+
+    Guided trip setup, and stop claiming a bare trip is ready to review (#1822)
+    
+    * fix(trip-setup): guided inputs with inline help, and honest readiness
+    
+    A trip created with nothing but a title reported "Your trip plan is ready to
+    review." and claimed "2 saved scenario draft(s)". Both were false: placeholder
+    inventory and scenario drafts are generated for every trip the moment it is
+    created, and readiness was derived from those generated artefacts rather than
+    from anything the traveller supplied.
+    
+    Readiness is now derived from traveller-supplied context. Until the trip has a
+    destination, travel dates, and (for business trips) a purpose for the approver,
+    the workspace names exactly what is missing instead of claiming a reviewable
+    plan, and generated drafts are not reported as decisions.
+    
+    The creation form was a bare list of unexplained inputs. It now:
+    - makes trip type an explicit choice with consequences spelled out, rather than
+      silently defaulting to Leisure in a product whose purpose is approval
+    - explains every field inline: why it is needed and how it is used
+    - derives trip length from the travel dates, and says so
+    - rejects an end date before the start date instead of posting it
+    - adapts the purpose field for business trips ("Approvers read this first")
+    - tells the traveller what is still missing, and what happens after submission
+    
+    Test gates:
+    - tests/app/test_workspace_readiness.py — a bare trip is not reported ready,
+      generated artefacts are not claimed as decisions, business trips require a
+      purpose, and a complete trip is still ready. Verified by deliberately removing
+      the gate: 3 of 5 fail, then pass again once restored.
+    - frontend/src/routes/NewTripPage.test.tsx — trip type cannot default silently,
+      duration derives from dates, an inverted range blocks submission, and every
+      field carries inline help.
+    
+    372 backend and 159 frontend tests pass.
+    
+    Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
+    
+    * fix(workspace): stop presenting generated placeholders as a finished plan
+    
+    The first screen after setup told the traveller their plan was "ready to review",
+    listed "2 saved scenario draft(s)" and "1 inventory bundle(s) assembled" under
+    DECIDED, and pointed them at a scenario comparison — when they had done nothing
+    but type setup details.
+    
+    None of that was real work:
+    
+    - Route options 2 and 3 are the base option plus fixed arithmetic
+      (_ensure_route_option_search_depth: +120.00/+240.00 cost, +45/+90 minutes,
+      +1/+2 transfers).
+    - The base cost is flat constants that ignore the destination entirely
+      (inventory.py: lodging = days x $230 business, transport = $165, activities
+      = $75, transport duration hard-coded to 45 minutes).
+    
+    Verified: trips to Reykjavik and Nairobi both return $1,160 / $1,280 / $1,400
+    with identical travel minutes and transfers. A flight to Nairobi is priced the
+    same as a cab across Chicago, and it was labelled "Estimated total" on a screen
+    whose purpose is to produce an employer approval request.
+    
+    Changes:
+    - Auto-generated drafts and bundles are never reported as traveller decisions.
+    - The post-setup headline says what is true: "Trip setup is saved. Nothing has
+      been planned yet.", and the next action describes the options as indicative
+      route shapes rather than a plan to review.
+    - The route tradeoffs panel carries an explicit notice that the figures are flat
+      per-day rates that do not vary by destination and must not be used for a budget
+      or an approval request.
+    - "Estimated total" is relabelled "Indicative cost".
+    
+    This does not make the numbers real. It stops the product asserting they are.
+    
+    373 backend and 159 frontend tests pass.
+    
+    Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
+    
+    * chore(autofix): formatting/lint
+    
+    * Revert "chore(autofix): formatting/lint"
+    
+    This reverts commit 8398023e94af903b714e338ffb58a99681d50212.
+    
+    * fix(trip setup): align readiness and review feedback
+    
+    * fix(workspace): reject unusable travel dates in readiness
+    
+    * fix(setup): preserve city-state destinations and validate trip context
+    
+    ---------
+    
+    Co-authored-by: Claude Opus 5 <noreply@anthropic.com>
+    Co-authored-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
+
+ .../workspace/ScenarioComparison.test.tsx          |   1 +
+ .../components/workspace/ScenarioComparison.tsx    |   2 +-
+ .../workspace/panels/RouteTradeoffsPanel.tsx       |   5 +
+ frontend/src/routes/NewTripPage.test.tsx           | 270 +++++++++++++---
+ frontend/src/routes/NewTripPage.tsx                | 346 +++++++++++++++++----
+ frontend/src/routes/WorkspacePage.tsx              |   3 +-
+ frontend/src/styles.css                            | 118 +++++++
+ tests/app/test_workspace_readiness.py              | 119 +++++++
+ trip_planner/app/services/workspace_view_model.py  |  91 +++++-
+ 9 files changed, 837 insertions(+), 118 deletions(-)

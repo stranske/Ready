@@ -1,0 +1,635 @@
+commit bf2f8d8a0cb67f3592c71c0e218f533c690ae838
+Author: stranske <stranske@gmail.com>
+Date:   Sat Sep 19 21:37:52 2026 -0500
+
+    feat(docx): Word memo renderer for change and continuity memos (#5) (#20)
+    
+    * feat(docx): Word memo renderer for consultant change memos (#5)
+    
+    Add structured-store-driven change and continuity memo renderers with
+    render-docx-memo CLI, synthetic fixture, and pytest gates including T1
+    section assertions and deliberate-break coverage.
+    
+    Co-authored-by: Cursor <cursoragent@cursor.com>
+    
+    * chore(autofix): formatting/lint
+    
+    * fix(docx): resolve mypy errors in memo renderer
+    
+    Use TYPE_CHECKING import for Document type hints and pass str paths to
+    document.save() so Gate typecheck passes on PR #20.
+    
+    Co-authored-by: Cursor <cursoragent@cursor.com>
+    
+    * fix(deps): add PyYAML for CI dependency validation
+    
+    Gate python CI checks import yaml before running pytest; add pinned
+    PyYAML to project dependencies so dependency validation passes.
+    
+    Co-authored-by: Cursor <cursoragent@cursor.com>
+    
+    * fix(ci): map docx import to python-docx in dependency sync
+    
+    The test suite imports docx (python-docx) but MODULE_TO_PACKAGE lacked
+    the mapping, causing Gate dependency validation to fail even though
+    python-docx is already declared in project dependencies.
+    
+    Co-authored-by: Cursor <cursoragent@cursor.com>
+    
+    * fix(ci): pin docx/yaml in lockfile and isolate deliberate-break pytest
+    
+    requirements.lock was missing python-docx and pyyaml pins added in pyproject.toml.
+    Deliberate-break pytest now overrides pyproject cov addopts so Gate test-quality
+    can run without pytest-cov preinstalled.
+    
+    Co-authored-by: Cursor <cursoragent@cursor.com>
+    
+    * Fix review comments for DOCX memos
+    
+    - Regenerate requirements.lock with python-docx
+    - Move StructuredStore to store.py for schema unity
+    - Add CLI integration and validation tests
+    - Add assertions for rendered values in change memo test
+    
+    * chore(autofix): formatting/lint
+    
+    * fix(ci): resolve mypy type errors and formatting
+    
+    * chore: keep memo recovery scoped to product and validation changes
+    
+    ---------
+    
+    Co-authored-by: Cursor <cursoragent@cursor.com>
+    Co-authored-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
+
+diff --git a/pyproject.toml b/pyproject.toml
+index 921dc51..875f789 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -21,9 +21,14 @@ classifiers = [
+     "Programming Language :: Python :: 3.13",
+ ]
+ dependencies = [
++    "python-docx==1.1.2",
+     "python-pptx==1.0.2",
++    "PyYAML==6.0.3",
+ ]
+ 
++[project.scripts]
++render-docx-memo = "deliverable_render.cli.render_docx:main"
++
+ [project.optional-dependencies]
+ dev = [
+     "pytest==9.1.1",
+diff --git a/requirements.lock b/requirements.lock
+index 4880521..ae9b9a6 100644
+--- a/requirements.lock
++++ b/requirements.lock
+@@ -17,7 +17,9 @@ iniconfig==2.3.0
+ librt==0.13.0 ; platform_python_implementation != 'PyPy'
+     # via mypy
+ lxml==6.1.3
+-    # via python-pptx
++    # via
++    #   python-docx
++    #   python-pptx
+ mypy==2.3.1
+     # via deliverable-render (pyproject.toml)
+ mypy-extensions==1.1.0
+@@ -48,15 +50,20 @@ pytest==9.1.1
+     #   pytest-cov
+ pytest-cov==7.1.0
+     # via deliverable-render (pyproject.toml)
++python-docx==1.1.2
++    # via deliverable-render (pyproject.toml)
+ python-pptx==1.0.2
+     # via deliverable-render (pyproject.toml)
+ pytokens==0.4.1
+     # via black
++pyyaml==6.0.3
++    # via deliverable-render (pyproject.toml)
+ ruff==0.16.7
+     # via deliverable-render (pyproject.toml)
+ typing-extensions==4.16.0
+     # via
+     #   mypy
++    #   python-docx
+     #   python-pptx
+ xlsxwriter==3.2.9
+     # via python-pptx
+diff --git a/scripts/check_deliberate_break.py b/scripts/check_deliberate_break.py
+index ff750e4..37c7801 100644
+--- a/scripts/check_deliberate_break.py
++++ b/scripts/check_deliberate_break.py
+@@ -249,7 +249,8 @@ def parse_deliberate_break_spec(markdown: str) -> DeliberateBreakSpec | None:
+ 
+ 
+ def _pytest_command(test_id: str) -> tuple[str, ...]:
+-    return (sys.executable, "-m", "pytest", test_id, "-q")
++    # Gate test-quality installs only pytest; override pyproject cov addopts.
++    return (sys.executable, "-m", "pytest", test_id, "-q", "-o", "addopts=")
+ 
+ 
+ def _supported_pyyaml_version(installed_version: str | None) -> bool:
+diff --git a/scripts/sync_test_dependencies.py b/scripts/sync_test_dependencies.py
+index 7a7d768..b3ef6d4 100644
+--- a/scripts/sync_test_dependencies.py
++++ b/scripts/sync_test_dependencies.py
+@@ -393,6 +393,7 @@ MODULE_TO_PACKAGE = {
+     "sklearn": "scikit-learn",
+     "cv2": "opencv-python",
+     "pre_commit": "pre-commit",
++    "docx": "python-docx",
+     "pptx": "python-pptx",
+ }
+ 
+diff --git a/src/deliverable_render/cli/__init__.py b/src/deliverable_render/cli/__init__.py
+new file mode 100644
+index 0000000..5343783
+--- /dev/null
++++ b/src/deliverable_render/cli/__init__.py
+@@ -0,0 +1 @@
++"""Command-line interfaces for Deliverable-Render."""
+diff --git a/src/deliverable_render/cli/render_docx.py b/src/deliverable_render/cli/render_docx.py
+new file mode 100644
+index 0000000..5c626ff
+--- /dev/null
++++ b/src/deliverable_render/cli/render_docx.py
+@@ -0,0 +1,39 @@
++"""CLI entry points for Word memo rendering."""
++
++from __future__ import annotations
++
++import argparse
++from pathlib import Path
++
++from deliverable_render.docx.memo import (
++    StructuredStore,
++    render_change_memo,
++    render_continuity_memo,
++)
++
++
++def build_parser() -> argparse.ArgumentParser:
++    parser = argparse.ArgumentParser(description="Render consultant memos to Word documents")
++    parser.add_argument("--store", required=True, type=Path, help="Structured store JSON path")
++    parser.add_argument("--out", required=True, type=Path, help="Output .docx path")
++    parser.add_argument(
++        "--kind",
++        choices=("change", "continuity"),
++        default="change",
++        help="Memo type to render (default: change)",
++    )
++    return parser
++
++
++def main(argv: list[str] | None = None) -> int:
++    args = build_parser().parse_args(argv)
++    store = StructuredStore.from_json(args.store)
++    if args.kind == "change":
++        render_change_memo(store, args.out)
++    else:
++        render_continuity_memo(store, args.out)
++    return 0
++
++
++if __name__ == "__main__":
++    raise SystemExit(main())
+diff --git a/src/deliverable_render/docx/__init__.py b/src/deliverable_render/docx/__init__.py
+new file mode 100644
+index 0000000..251f062
+--- /dev/null
++++ b/src/deliverable_render/docx/__init__.py
+@@ -0,0 +1,13 @@
++"""Word memo renderers for consultant change and continuity deliverables."""
++
++from deliverable_render.docx.memo import (
++    StructuredStore,
++    render_change_memo,
++    render_continuity_memo,
++)
++
++__all__ = [
++    "StructuredStore",
++    "render_change_memo",
++    "render_continuity_memo",
++]
+diff --git a/src/deliverable_render/docx/memo.py b/src/deliverable_render/docx/memo.py
+new file mode 100644
+index 0000000..24582fe
+--- /dev/null
++++ b/src/deliverable_render/docx/memo.py
+@@ -0,0 +1,69 @@
++"""Render consultant change and continuity memos from a structured store."""
++
++from __future__ import annotations
++
++from pathlib import Path
++from typing import TYPE_CHECKING
++
++from deliverable_render.store import ChangeRow, StructuredStore
++from deliverable_render.store import StoreValidationError as MemoValidationError
++from docx import Document as DocumentFactory
++
++__all__ = [
++    "MemoValidationError",
++    "StructuredStore",
++    "render_change_memo",
++    "render_continuity_memo",
++]
++
++if TYPE_CHECKING:
++    from docx.document import Document
++
++MATERIAL_TIERS = frozenset({"T1", "T2"})
++
++
++def _material_changes(store: StructuredStore) -> tuple[ChangeRow, ...]:
++    return tuple(row for row in store.changes if row.tier in MATERIAL_TIERS)
++
++
++def _write_change_sections(document: Document, rows: tuple[ChangeRow, ...]) -> None:
++    for row in rows:
++        document.add_heading(row.canonical_section, level=2)
++        document.add_paragraph(f"Change type: {row.change_type}")
++        document.add_paragraph(f"Tier: {row.tier}")
++        document.add_paragraph(f"Prior ({row.prior_text})")
++        document.add_paragraph(f"Current ({row.current_text})")
++
++
++def render_change_memo(store: StructuredStore, output_path: Path) -> Path:
++    """Write a change memo covering material T1/T2 ledger rows."""
++    output_path = Path(output_path)
++    document = DocumentFactory()
++    document.add_heading("Consultant Change Memo", level=0)
++    document.add_paragraph(f"{store.entity_ref}: {store.period_prior} to {store.period_current}")
++    material = _material_changes(store)
++    if not material:
++        raise MemoValidationError("No material T1/T2 changes to render")
++    _write_change_sections(document, material)
++    output_path.parent.mkdir(parents=True, exist_ok=True)
++    document.save(str(output_path))
++    return output_path
++
++
++def render_continuity_memo(store: StructuredStore, output_path: Path) -> Path:
++    """Write a continuity memo for unchanged ledger slices."""
++    output_path = Path(output_path)
++    document = DocumentFactory()
++    document.add_heading("Consultant Continuity Memo", level=0)
++    document.add_paragraph(
++        f"{store.entity_ref}: continuity from {store.period_prior} to {store.period_current}"
++    )
++    if not store.continuity:
++        raise MemoValidationError("No continuity rows to render")
++    for row in store.continuity:
++        document.add_heading(row.canonical_section, level=2)
++        document.add_paragraph(f"Prior: {row.prior_text}")
++        document.add_paragraph(f"Current: {row.current_text}")
++    output_path.parent.mkdir(parents=True, exist_ok=True)
++    document.save(str(output_path))
++    return output_path
+diff --git a/src/deliverable_render/store.py b/src/deliverable_render/store.py
+index b53ecd5..a1b46f5 100644
+--- a/src/deliverable_render/store.py
++++ b/src/deliverable_render/store.py
+@@ -230,3 +230,86 @@ class Store:
+             return cls.from_dict({"documents": documents, "records": records})
+         finally:
+             connection.close()
++
++
++@dataclass(frozen=True)
++class ChangeRow:
++    canonical_section: str
++    change_type: str
++    tier: str
++    prior_text: str
++    current_text: str
++
++    def __post_init__(self) -> None:
++        _string(self.canonical_section, "canonical_section")
++        _string(self.change_type, "change_type")
++        _string(self.tier, "tier")
++        _string(self.prior_text, "prior_text", allow_empty=True)
++        _string(self.current_text, "current_text", allow_empty=True)
++
++
++@dataclass(frozen=True)
++class ContinuityRow:
++    canonical_section: str
++    prior_text: str
++    current_text: str
++
++    def __post_init__(self) -> None:
++        _string(self.canonical_section, "canonical_section")
++        _string(self.prior_text, "prior_text", allow_empty=True)
++        _string(self.current_text, "current_text", allow_empty=True)
++
++
++@dataclass(frozen=True)
++class StructuredStore:
++    """Ledger-oriented store consumed by memo renderers."""
++
++    entity_ref: str
++    period_current: str
++    period_prior: str
++    changes: tuple[ChangeRow, ...]
++    continuity: tuple[ContinuityRow, ...] = ()
++
++    def __post_init__(self) -> None:
++        _string(self.entity_ref, "entity_ref")
++        _string(self.period_current, "period_current")
++        _string(self.period_prior, "period_prior")
++        object.__setattr__(self, "changes", _items(self.changes, "changes", ChangeRow))
++        object.__setattr__(self, "continuity", _items(self.continuity, "continuity", ContinuityRow))
++
++    @classmethod
++    def from_dict(cls, data: Mapping[str, object]) -> StructuredStore:
++        data = _object(data)
++        changes = []
++        for item in _array(data.get("changes"), "changes"):
++            obj = _object(item)
++            changes.append(
++                ChangeRow(
++                    canonical_section=_string(obj.get("canonical_section"), "canonical_section"),
++                    change_type=_string(obj.get("change_type"), "change_type"),
++                    tier=_string(obj.get("tier"), "tier"),
++                    prior_text=_string(obj.get("prior_text"), "prior_text", allow_empty=True),
++                    current_text=_string(obj.get("current_text"), "current_text", allow_empty=True),
++                )
++            )
++        continuity = []
++        for item in _array(data.get("continuity", []), "continuity"):
++            obj = _object(item)
++            continuity.append(
++                ContinuityRow(
++                    canonical_section=_string(obj.get("canonical_section"), "canonical_section"),
++                    prior_text=_string(obj.get("prior_text"), "prior_text", allow_empty=True),
++                    current_text=_string(obj.get("current_text"), "current_text", allow_empty=True),
++                )
++            )
++        return cls(
++            entity_ref=_string(data.get("entity_ref"), "entity_ref"),
++            period_current=_string(data.get("period_current"), "period_current"),
++            period_prior=_string(data.get("period_prior"), "period_prior"),
++            changes=tuple(changes),
++            continuity=tuple(continuity),
++        )
++
++    @classmethod
++    def from_json(cls, path: str | Path) -> StructuredStore:
++        return cls.from_dict(_object(json.loads(Path(path).read_text(encoding="utf-8"))))
+diff --git a/tests/docx/test_change_memo_renderer.py b/tests/docx/test_change_memo_renderer.py
+new file mode 100644
+index 0000000..def10be
+--- /dev/null
++++ b/tests/docx/test_change_memo_renderer.py
+@@ -0,0 +1,35 @@
++"""Change memo renderer tests."""
++
++from pathlib import Path
++
++from deliverable_render.docx.memo import StructuredStore, render_change_memo
++from docx import Document
++
++FIXTURE = Path("tests/fixtures/stores/consultant_change_minimal.json")
++
++
++def _paragraph_text(path: Path) -> str:
++    document = Document(str(path))
++    return "\n".join(paragraph.text for paragraph in document.paragraphs)
++
++
++def test_change_memo_includes_t1_sections(tmp_path: Path) -> None:
++    store = StructuredStore.from_json(FIXTURE)
++    output = render_change_memo(store, tmp_path / "change.docx")
++    text = _paragraph_text(output)
++    assert "Fee Schedule" in text
++    assert "Rate increase" in text
++    assert "T1" in text
++    assert "Management fee 1.00%" in text
++    assert "Management fee 1.25%" in text
++    assert "Reporting timeline" in text
++    assert "Clarification" in text
++    assert "Font styling" not in text
++
++
++def test_change_memo_smoke_command_shape(tmp_path: Path) -> None:
++    store = StructuredStore.from_json(FIXTURE)
++    output = tmp_path / "memo.docx"
++    render_change_memo(store, output)
++    assert output.exists()
++    assert output.stat().st_size > 0
+diff --git a/tests/docx/test_continuity_memo_renderer.py b/tests/docx/test_continuity_memo_renderer.py
+new file mode 100644
+index 0000000..82c6100
+--- /dev/null
++++ b/tests/docx/test_continuity_memo_renderer.py
+@@ -0,0 +1,18 @@
++"""Continuity memo renderer tests."""
++
++from pathlib import Path
++
++from deliverable_render.docx.memo import StructuredStore, render_continuity_memo
++from docx import Document
++
++FIXTURE = Path("tests/fixtures/stores/consultant_change_minimal.json")
++
++
++def test_continuity_memo_includes_governance_slice(tmp_path: Path) -> None:
++    store = StructuredStore.from_json(FIXTURE)
++    output = render_continuity_memo(store, tmp_path / "continuity.docx")
++    document = Document(str(output))
++    text = "\n".join(paragraph.text for paragraph in document.paragraphs)
++    assert "Governance" in text
++    assert "Policy approved by committee." in text
++    assert "Policy renewed without amendment." in text
+diff --git a/tests/docx/test_validation_and_cli.py b/tests/docx/test_validation_and_cli.py
+new file mode 100644
+index 0000000..0db1a05
+--- /dev/null
++++ b/tests/docx/test_validation_and_cli.py
+@@ -0,0 +1,70 @@
++"""Validation and CLI tests for docx memo renderer."""
++
++import json
++from pathlib import Path
++
++import pytest
++
++from deliverable_render.cli.render_docx import main
++from deliverable_render.docx.memo import (
++    MemoValidationError,
++    render_change_memo,
++    render_continuity_memo,
++)
++from deliverable_render.store import StructuredStore
++
++FIXTURE = Path("tests/fixtures/stores/consultant_change_minimal.json")
++
++
++def test_validation_malformed_row_fields() -> None:
++    data = json.loads(FIXTURE.read_text())
++    data["changes"][0]["tier"] = 123  # Not a string
++    with pytest.raises(MemoValidationError, match="tier must be a string"):
++        StructuredStore.from_dict(data)
++
++
++def test_validation_missing_or_non_array_changes() -> None:
++    data = json.loads(FIXTURE.read_text())
++    del data["changes"]
++    with pytest.raises(MemoValidationError, match="changes must be an array"):
++        StructuredStore.from_dict(data)
++
++    data["changes"] = "not an array"
++    with pytest.raises(MemoValidationError, match="changes must be an array"):
++        StructuredStore.from_dict(data)
++
++
++def test_validation_invalid_json(tmp_path: Path) -> None:
++    path = tmp_path / "bad.json"
++    path.write_text("{bad json")
++    with pytest.raises(json.JSONDecodeError):
++        StructuredStore.from_json(path)
++
++
++def test_renderer_no_material_changes(tmp_path: Path) -> None:
++    data = json.loads(FIXTURE.read_text())
++    for change in data["changes"]:
++        change["tier"] = "T3"
++    store = StructuredStore.from_dict(data)
++    with pytest.raises(MemoValidationError, match="No material T1/T2 changes to render"):
++        render_change_memo(store, tmp_path / "out.docx")
++
++
++def test_renderer_no_continuity_rows(tmp_path: Path) -> None:
++    data = json.loads(FIXTURE.read_text())
++    data["continuity"] = []
++    store = StructuredStore.from_dict(data)
++    with pytest.raises(MemoValidationError, match="No continuity rows to render"):
++        render_continuity_memo(store, tmp_path / "out.docx")
++
++
++def test_cli_change_memo(tmp_path: Path) -> None:
++    out = tmp_path / "change.docx"
++    assert main(["--store", str(FIXTURE), "--out", str(out), "--kind", "change"]) == 0
++    assert out.exists()
++
++
++def test_cli_continuity_memo(tmp_path: Path) -> None:
++    out = tmp_path / "continuity.docx"
++    assert main(["--store", str(FIXTURE), "--out", str(out), "--kind", "continuity"]) == 0
++    assert out.exists()
+diff --git a/tests/fixtures/stores/consultant_change_minimal.json b/tests/fixtures/stores/consultant_change_minimal.json
+new file mode 100644
+index 0000000..89f9e9e
+--- /dev/null
++++ b/tests/fixtures/stores/consultant_change_minimal.json
+@@ -0,0 +1,35 @@
++{
++  "entity_ref": "Example Fund",
++  "period_prior": "2024",
++  "period_current": "2025",
++  "changes": [
++    {
++      "canonical_section": "Fee Schedule",
++      "change_type": "Rate increase",
++      "tier": "T1",
++      "prior_text": "Management fee 1.00%",
++      "current_text": "Management fee 1.25%"
++    },
++    {
++      "canonical_section": "Reporting timeline",
++      "change_type": "Clarification",
++      "tier": "T2",
++      "prior_text": "Quarterly reports within 45 days",
++      "current_text": "Quarterly reports within 30 days"
++    },
++    {
++      "canonical_section": "Font styling",
++      "change_type": "Cosmetic",
++      "tier": "T3",
++      "prior_text": "Arial body text",
++      "current_text": "Calibri body text"
++    }
++  ],
++  "continuity": [
++    {
++      "canonical_section": "Governance",
++      "prior_text": "Policy approved by committee.",
++      "current_text": "Policy renewed without amendment."
++    }
++  ]
++}
+diff --git a/tests/test_deck_completeness_gate.py b/tests/test_deck_completeness_gate.py
+index e2c08e6..c667b53 100644
+--- a/tests/test_deck_completeness_gate.py
++++ b/tests/test_deck_completeness_gate.py
+@@ -44,7 +44,7 @@ def _slide_body_text(slide: object) -> str:
+         if shape == title_shape:
+             continue
+         if hasattr(shape, "text") and shape.text:
+-            return shape.text
++            return str(shape.text)
+     return ""
+ 
+ 
+@@ -190,7 +190,7 @@ def test_deliberate_break_gate_must_fail_then_restore() -> None:
+         _, summary = build_deck(TEMPLATE, current, STORE, prior=prior, template_dir=FIXTURES)
+         assert summary.slides_dropped_with_reason == 0
+     finally:
+-        manifest_module.enforce_completeness = original  # type: ignore[assignment]
++        manifest_module.enforce_completeness = original
+ 
+     with pytest.raises(DeckBuildError, match="slide_id 'risk'"):
+         build_deck(TEMPLATE, current, STORE, prior=prior, template_dir=FIXTURES)
+diff --git a/tests/test_render_html_offline.py b/tests/test_render_html_offline.py
+index d2f2649..df8a254 100644
+--- a/tests/test_render_html_offline.py
++++ b/tests/test_render_html_offline.py
+@@ -1,5 +1,6 @@
+ """Source #2 acceptance through persisted inputs and the production renderer."""
+ 
++import typing
+ from collections import Counter
+ from dataclasses import replace
+ from html.parser import HTMLParser
+@@ -24,11 +25,11 @@ EXPECTED_LINKS = [
+ class Markup(HTMLParser):
+     """Compare parsed structure, attribute sets and meaningful text, not bytes."""
+ 
+-    def __init__(self, source):
++    def __init__(self, source: str) -> None:
+         super().__init__(convert_charrefs=True)
+-        self.events = []
+-        self.tags = []
+-        self.text = []
++        self.events: list[typing.Any] = []
++        self.tags: list[typing.Any] = []
++        self.text: list[typing.Any] = []
+         self.feed(source)
+ 
+     def handle_starttag(self, tag, attrs):
+@@ -53,7 +54,7 @@ def store():
+     return Store.from_json(FIXTURES / "synthetic_store.json")
+ 
+ 
+-def spec(view, template=LOCAL):
++def spec(view: typing.Any, template: str = LOCAL) -> RenderSpec:
+     return RenderSpec("Synthetic evidence hub", template, view=view)
+ 
+ 
+diff --git a/tests/test_store.py b/tests/test_store.py
+index 67d8c3b..6af7760 100644
+--- a/tests/test_store.py
++++ b/tests/test_store.py
+@@ -212,7 +212,7 @@ def test_model_collections_reject_scalars_and_mappings(field, value):
+ 
+ 
+ def test_items_accepts_one_shot_generator_and_returns_validated_tuple():
+-    def pointers():
++    def pointers() -> typing.Iterator[typing.Any]:
+         yield EvidencePointer("doc-a", 1, "first")
+         yield EvidencePointer("doc-b", 2, "second")
+ 

@@ -1,0 +1,67 @@
+commit 2e03bfbc33f972b2505fab86589fcb3be9a6bc3d
+Author: stranske <stranske@gmail.com>
+Date:   Sun Sep 20 05:39:09 2026 -0500
+
+    Prevent replay of signed keepalive authority challenges (#3489)
+    
+    * fix(keepalive): consume signed authority challenges once per PR
+    
+    * fix(keepalive): use pinned Octokit requests and refresh drift baseline
+    
+    * style: format authority delivery test for CI
+    
+    * test: align summary/reporter permission assertions with write scope
+    
+    PR3491 elevates summary and reporter App token mint steps to
+    permission-contents: write for authority-challenge receipt writes.
+    Update consolidation tests after rebasing onto merged PR3490.
+    
+    Co-authored-by: Cursor <cursoragent@cursor.com>
+    
+    * test: reconcile authority delivery manifest and bridge diagnostics
+    
+    * fix: rotate confirmed authority generations and defer receipt confirmation
+    
+    Renew challenge generations after a confirmed boundary is human-resolved so
+    recurring auth failures are not stuck on a terminal receipt. Write confirmed
+    authority state only after needs-human is durably applied, and pass evaluate
+    outputs through step env vars to satisfy zizmor template-expansion checks.
+    
+    Co-authored-by: Cursor <cursoragent@cursor.com>
+    
+    * test: keep authority label stub in sync with PR state
+    
+    * fix: recover expired and unconfirmed authority challenges
+    
+    ---------
+    
+    Co-authored-by: closer-lane <automation@stranske.dev>
+    Co-authored-by: Cursor <cursoragent@cursor.com>
+
+ .../__tests__/keepalive-authority-state.test.js    | 227 +++++++++++++++
+ .../__tests__/keepalive-challenge-due.test.js      |  41 ++-
+ .github/scripts/__tests__/keepalive-loop.test.js   | 190 +++++++++++-
+ .github/scripts/keepalive_authority_state.js       | 318 +++++++++++++++++++++
+ .github/scripts/keepalive_challenge_due.js         |  43 ++-
+ .github/scripts/keepalive_loop.js                  | 136 ++++++++-
+ .github/sync-manifest.yml                          |   3 +
+ .../workflows/agents-keepalive-loop-reporter.yml   |   6 +-
+ .github/workflows/agents-keepalive-loop.yml        |  71 +++--
+ .github/workflows/agents-keepalive-sweep.yml       |  29 ++
+ config/template-drift-allowlist.txt                |  16 +-
+ docs/keepalive/Agents.md                           |   2 +-
+ docs/keepalive/GoalsAndPlumbing.md                 |   6 +-
+ docs/ops/CONSUMER_REPO_MAINTENANCE.md              |   4 +
+ renovate-presets/consumer-managed-paths.json       |   3 +-
+ scripts/runner_lib/core.py                         |  48 ++--
+ .../.github/scripts/keepalive_authority_state.js   | 318 +++++++++++++++++++++
+ .../.github/scripts/keepalive_challenge_due.js     |  43 ++-
+ .../.github/scripts/keepalive_loop.js              | 136 ++++++++-
+ .../.github/workflows/agents-81-gate-followups.yml |  67 +++--
+ .../workflows/agents-keepalive-loop-reporter.yml   |   6 +-
+ .../.github/workflows/agents-keepalive-sweep.yml   |  58 ++++
+ tests/scripts/test_runner_lib.py                   |  64 ++++-
+ tests/scripts/test_sync_manifest_compiler.py       |   2 +-
+ .../workflows/test_keepalive_authority_delivery.py |  55 ++++
+ .../test_workflow_agents_consolidation.py          |   6 +-
+ 26 files changed, 1746 insertions(+), 152 deletions(-)

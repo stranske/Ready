@@ -1,0 +1,25 @@
+commit 99c44fce63e39a478d2082ca6464d1db148539cc
+Author: stranske <stranske@gmail.com>
+Date:   Sat Sep 19 22:41:30 2026 -0500
+
+    fix(maintenance): reject invalid counts under unknown tiers (#686)
+    
+    * fix(maintenance): validate every supplied tier count
+    
+    * chore(codex-keepalive): apply updates (PR #686)
+    
+    * chore(codex-keepalive): apply updates (PR #686)
+    
+    * chore(codex-keepalive): apply updates (PR #686)
+    
+    * chore(codex-keepalive): apply updates (PR #686)
+    
+    * chore(codex-keepalive): apply updates (PR #686)
+    
+    ---------
+    
+    Co-authored-by: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+
+ src/lms/maintenance/budget.py                  |  5 +-
+ tests/maintenance/test_tiers_horizon_budget.py | 69 +++++++++++++++++++++++---
+ 2 files changed, 66 insertions(+), 8 deletions(-)

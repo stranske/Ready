@@ -1,0 +1,19 @@
+commit daf8e9226a455c0c4e66f209a7cf4a67e1db95c9
+Author: stranske <stranske@gmail.com>
+Date:   Sun Sep 20 05:39:20 2026 -0500
+
+    Count only persisted news identities in spike alerts (#1674)
+    
+    * fix: count only new persisted news identities in alerts
+    
+    * chore(codex-keepalive): apply updates (PR #1692)
+    
+    * fix(news): reconcile persisted identity review findings
+    
+    ---------
+    
+    Co-authored-by: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+
+ etl/news_flow.py        | 12 +++++--
+ tests/test_news_flow.py | 96 +++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 106 insertions(+), 2 deletions(-)

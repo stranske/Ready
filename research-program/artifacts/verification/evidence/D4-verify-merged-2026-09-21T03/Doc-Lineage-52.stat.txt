@@ -1,0 +1,20 @@
+commit f0bc2c1bf52616b520107c36c26c0ee1fa7df65b
+Author: stranske <stranske@gmail.com>
+Date:   Sun Sep 20 06:24:46 2026 -0500
+
+    Include fact-key-map fixture in source distributions (#52)
+    
+    * Include fact-key-map fixture in source archives
+    
+    * chore(codex-keepalive): apply updates (PR #52)
+    
+    * chore(codex-keepalive): apply updates (PR #52)
+    
+    ---------
+    
+    Co-authored-by: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+
+ MANIFEST.in                    |  1 +
+ README.md                      |  5 +--
+ tests/test_package_identity.py | 78 ++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 82 insertions(+), 2 deletions(-)

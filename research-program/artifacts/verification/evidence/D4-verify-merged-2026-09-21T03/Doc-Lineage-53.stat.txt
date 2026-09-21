@@ -1,0 +1,21 @@
+commit 00a383beb7002055c0df460784543e0be85f384f
+Author: stranske <stranske@gmail.com>
+Date:   Sun Sep 20 07:39:18 2026 -0500
+
+    Keep manifest scans within the resolved library root (#53)
+    
+    * Reject symlinked documents outside manifest root
+    
+    * chore(codex-keepalive): apply updates (PR #53)
+    
+    * Read manifest documents through root-anchored descriptors
+    
+    * Fail manifest scan on unexpected file errors
+    
+    ---------
+    
+    Co-authored-by: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+
+ src/doc_lineage/manifest.py     |  85 +++++++++++++++++++++++--------
+ tests/test_identity_manifest.py | 109 +++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 172 insertions(+), 22 deletions(-)

@@ -1,0 +1,250 @@
+commit e7748b7f33bf5cff7dce0c6e578f1faa6bfe6dec
+Author: stranske <stranske@gmail.com>
+Date:   Sun Sep 20 04:24:12 2026 -0500
+
+    Finalize distribution deck before PDF export (#1079)
+    
+    * Finalize concentration slide before distribution PDF export
+    
+    * chore(codex-keepalive): apply updates (PR #1079)
+    
+    * chore(codex-keepalive): apply updates (PR #1079)
+    
+    * chore(codex-keepalive): apply updates (PR #1079)
+    
+    ---------
+    
+    Co-authored-by: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+
+diff --git a/src/counter_risk/pipeline/run.py b/src/counter_risk/pipeline/run.py
+index 96914bd..25999a4 100644
+--- a/src/counter_risk/pipeline/run.py
++++ b/src/counter_risk/pipeline/run.py
+@@ -600,6 +600,7 @@ def run_pipeline(
+             as_of_date=as_of_date,
+             warnings=warnings,
+             parsed_by_variant=parsed_by_variant,
++            concentration_metrics_records=concentration_metrics_records,
+         )
+     except Exception as exc:
+         _record_stage_event("report-generation", started_at=report_stage_started_at, status="error")
+@@ -644,20 +645,6 @@ def run_pipeline(
+         LOGGER.exception("pipeline_failed stage=langsmith_fleet_artifact run_dir=%s", run_dir)
+         raise RuntimeError("Pipeline failed during LangSmith fleet artifact stage") from exc
+ 
+-    if runtime_config.include_concentration_table_in_ppt and concentration_metrics_records:
+-        dist_ppt_path = run_dir / resolve_ppt_output_names(as_of_date).distribution_filename
+-        if dist_ppt_path.exists():
+-            try:
+-                from counter_risk.ppt.concentration_table import append_concentration_table_slide
+-
+-                append_concentration_table_slide(dist_ppt_path, concentration_metrics_records)
+-                LOGGER.info("concentration_table_appended path=%s", dist_ppt_path)
+-            except Exception as exc:
+-                LOGGER.exception("pipeline_failed stage=concentration_table run_dir=%s", run_dir)
+-                raise RuntimeError(
+-                    "Pipeline failed during concentration table append stage"
+-                ) from exc
+-
+     try:
+         input_hashes = {
+             name: _sha256_file(path) for name, path in _resolve_input_paths(runtime_config).items()
+@@ -804,6 +791,7 @@ def _call_write_outputs(
+     as_of_date: date,
+     warnings: list[str],
+     parsed_by_variant: Mapping[str, Mapping[str, Any]],
++    concentration_metrics_records: list[dict[str, Any]],
+ ) -> tuple[list[Path], PptProcessingResult]:
+     write_outputs_kwargs: dict[str, Any] = {
+         "run_dir": run_dir,
+@@ -813,6 +801,8 @@ def _call_write_outputs(
+     }
+     if "parsed_by_variant" in inspect.signature(_write_outputs).parameters:
+         write_outputs_kwargs["parsed_by_variant"] = parsed_by_variant
++    if "concentration_metrics_records" in inspect.signature(_write_outputs).parameters:
++        write_outputs_kwargs["concentration_metrics_records"] = concentration_metrics_records
+     return _write_outputs(**write_outputs_kwargs)
+ 
+ 
+@@ -2628,6 +2618,7 @@ def _write_outputs(
+     as_of_date: date,
+     warnings: list[str],
+     parsed_by_variant: Mapping[str, Mapping[str, Any]] | None = None,
++    concentration_metrics_records: list[dict[str, Any]] | None = None,
+ ) -> tuple[list[Path], PptProcessingResult]:
+     LOGGER.info("write_outputs_start run_dir=%s", run_dir)
+     _validate_pdf_distribution_config(config)
+@@ -2814,6 +2805,19 @@ def _write_outputs(
+             # linger in run_dir alongside the Master/Distribution outputs.
+             with contextlib.suppress(OSError):
+                 chart_replaced_ppt.unlink()
++        if config.include_concentration_table_in_ppt and concentration_metrics_records:
++            try:
++                from counter_risk.ppt.concentration_table import append_concentration_table_slide
++
++                append_concentration_table_slide(
++                    target_distribution_ppt, concentration_metrics_records
++                )
++                LOGGER.info("concentration_table_appended path=%s", target_distribution_ppt)
++            except Exception as exc:
++                LOGGER.exception("pipeline_failed stage=concentration_table run_dir=%s", run_dir)
++                raise RuntimeError(
++                    "Pipeline failed during concentration table append stage"
++                ) from exc
+         try:
+             distribution_validation = validate_distribution_ppt_standalone(target_distribution_ppt)
+         except RuntimeError as exc:
+diff --git a/tests/pipeline/test_monthly_pipeline_ppt_outputs.py b/tests/pipeline/test_monthly_pipeline_ppt_outputs.py
+index a8b1259..ce3c9c3 100644
+--- a/tests/pipeline/test_monthly_pipeline_ppt_outputs.py
++++ b/tests/pipeline/test_monthly_pipeline_ppt_outputs.py
+@@ -2,6 +2,7 @@
+ 
+ from __future__ import annotations
+ 
++import csv
+ import shutil
+ from datetime import date
+ from pathlib import Path
+@@ -508,6 +509,141 @@ def test_pdf_request_with_distribution_disabled_is_explicit(
+     assert len(exported) == 1
+ 
+ 
++@pytest.mark.parametrize(
++    ("include_concentration", "export_pdf", "expected_slides"),
++    [(True, True, 24), (False, True, 23), (True, False, 24)],
++)
++def test_final_concentration_slide_precedes_pdf_export(
++    tmp_path: Path,
++    monkeypatch: pytest.MonkeyPatch,
++    include_concentration: bool,
++    export_pdf: bool,
++    expected_slides: int,
++) -> None:
++    fixtures = Path("tests/fixtures")
++    config_path = tmp_path / "config.yml"
++    config_path.write_text(
++        "\n".join(
++            [
++                "as_of_date: 2025-12-31",
++                f"mosers_all_programs_xlsx: {fixtures / 'MOSERS Counterparty Risk Summary 12-31-2025 - All Programs.xlsx'}",
++                f"mosers_ex_trend_xlsx: {fixtures / 'MOSERS Counterparty Risk Summary 12-31-2025 - Ex Trend.xlsx'}",
++                f"mosers_trend_xlsx: {fixtures / 'MOSERS Counterparty Risk Summary 12-31-2025 - Trend.xlsx'}",
++                f"hist_all_programs_3yr_xlsx: {fixtures / 'Historical Counterparty Risk Graphs - All Programs 3 Year.xlsx'}",
++                f"hist_ex_llc_3yr_xlsx: {fixtures / 'Historical Counterparty Risk Graphs - ex LLC 3 Year.xlsx'}",
++                f"hist_llc_3yr_xlsx: {fixtures / 'Historical Counterparty Risk Graphs - LLC 3 Year.xlsx'}",
++                f"monthly_pptx: {fixtures / 'Monthly Counterparty Exposure Report.pptx'}",
++                f"output_root: {tmp_path / 'runs'}",
++                f"include_concentration_table_in_ppt: {str(include_concentration).lower()}",
++                f"export_pdf: {str(export_pdf).lower()}",
++            ]
++        )
++        + "\n",
++        encoding="utf-8",
++    )
++    export_source: list[tuple[int, list[list[str]]]] = []
++
++    def _last_slide_table(pptx_path: Path) -> list[list[str]]:
++        presentation = Presentation(str(pptx_path))
++        tables = [shape.table for shape in presentation.slides[-1].shapes if shape.has_table]
++        if not tables:
++            return []
++        return [[cell.text for cell in row.cells] for row in tables[0].rows]
++
++    def _export_pdf(source: Path, target: Path) -> None:
++        export_source.append((len(Presentation(str(source)).slides), _last_slide_table(source)))
++        target.write_bytes(b"%PDF-1.4\n%test\n")
++
++    monkeypatch.setattr(
++        run_module,
++        "_build_pdf_export_output_generator",
++        lambda *, source_pptx, warnings: PDFExportGenerator(
++            source_pptx=source_pptx,
++            warnings=warnings,
++            com_availability_checker=lambda: True,
++            pptx_to_pdf_exporter=_export_pdf,
++        ),
++    )
++
++    run_dir = run_module.run_pipeline(config_path, output_dir=tmp_path / "run")
++    distribution = run_dir / resolve_ppt_output_names(date(2025, 12, 31)).distribution_filename
++    assert len(Presentation(str(distribution)).slides) == expected_slides
++    final_table = _last_slide_table(distribution)
++    if include_concentration:
++        with (run_dir / "concentration_metrics.csv").open(
++            newline="", encoding="utf-8"
++        ) as metrics_file:
++            metrics = list(csv.DictReader(metrics_file))
++        expected_table = [
++            ["Variant", "Segment", "Top 5 Share", "Top 10 Share", "HHI"],
++            *[
++                [
++                    metric["variant"],
++                    metric["segment"],
++                    f"{float(metric['top5_share']):.2%}",
++                    f"{float(metric['top10_share']):.2%}",
++                    f"{float(metric['hhi']):.4f}",
++                ]
++                for metric in metrics
++            ],
++        ]
++        assert final_table == expected_table
++    else:
++        assert final_table == []
++    if export_pdf:
++        assert export_source == [(expected_slides, final_table)]
++        assert distribution.with_suffix(".pdf").exists()
++    else:
++        assert export_source == []
++        assert not distribution.with_suffix(".pdf").exists()
++
++
++def test_final_concentration_validation_failure_prevents_pdf_export(
++    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
++) -> None:
++    config = _build_config(tmp_path, enable_ppt_output=True)
++    config.include_concentration_table_in_ppt = True
++    config.export_pdf = True
++    run_dir = tmp_path / "run"
++    run_dir.mkdir()
++    exported: list[Path] = []
++
++    def _invalid_final_deck(path: Path) -> PptStandaloneValidationResult:
++        assert len(Presentation(str(path)).slides) == 24
++        return PptStandaloneValidationResult(
++            is_valid=False,
++            external_relationship_count=1,
++            relationship_parts_scanned=("ppt/slides/_rels/slide24.xml.rels",),
++            external_relationship_parts=("ppt/slides/_rels/slide24.xml.rels",),
++        )
++
++    def _unexpected_export(source: Path, target: Path) -> None:
++        _ = target
++        exported.append(source)
++
++    monkeypatch.setattr(run_module, "validate_distribution_ppt_standalone", _invalid_final_deck)
++    monkeypatch.setattr(
++        run_module,
++        "_build_pdf_export_output_generator",
++        lambda *, source_pptx, warnings: PDFExportGenerator(
++            source_pptx=source_pptx,
++            warnings=warnings,
++            com_availability_checker=lambda: True,
++            pptx_to_pdf_exporter=_unexpected_export,
++        ),
++    )
++
++    with pytest.raises(RuntimeError, match="standalone validation failed"):
++        run_module._write_outputs(
++            run_dir=run_dir,
++            config=config,
++            as_of_date=date(2025, 12, 31),
++            warnings=[],
++            concentration_metrics_records=[{"variant": "all_programs", "segment": "fixture"}],
++        )
++    assert exported == []
++
++
+ def test_master_refresh_skipped_records_master_skipped_and_distribution_success(
+     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+ ) -> None:

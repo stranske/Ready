@@ -1,0 +1,39 @@
+commit 11300195bb4e7cf3135d1211a11a850efac10dba
+Author: stranske <stranske@gmail.com>
+Date:   Sat Sep 19 21:45:19 2026 -0500
+
+    Route Codex work by role and reasoning effort (#3482)
+    
+    * Route Codex workers by task role and effort
+    
+    * Keep old consumer effort inputs compatible and format tests
+    
+    * Validate Codex effort profiles and document runner outputs
+    
+    ---------
+    
+    Co-authored-by: closer-lane <automation@stranske.dev>
+
+ .github/agents/registry.yml                        | 60 ++++++++++++++++++-
+ .github/scripts/__tests__/agent-registry.test.js   | 32 ++++++++++-
+ .../keepalive-model-profile-contract.test.js       | 16 ++++++
+ .github/scripts/agent_registry.js                  |  9 +++
+ .github/workflows/agents-autofix-loop.yml          |  3 +
+ .github/workflows/agents-keepalive-loop.yml        |  3 +
+ .github/workflows/reusable-agents-verifier.yml     |  1 +
+ .github/workflows/reusable-codex-run.yml           | 25 +++++++-
+ config/model_registry.json                         |  1 +
+ docs/MODEL_SELECTION_POLICY.md                     |  5 ++
+ docs/ci/WORKFLOWS.md                               |  2 +-
+ docs/ci/WORKFLOW_OUTPUTS.md                        |  1 +
+ docs/ops/ASTRA_ROLLOUT.md                          | 13 +++--
+ docs/ops/CODEX_ROLE_ROUTING.md                     | 31 ++++++++++
+ .../consumer-repo/.github/agents/registry.yml      | 60 ++++++++++++++++++-
+ .../.github/scripts/agent_registry.js              |  9 +++
+ .../.github/workflows/agents-81-gate-followups.yml | 21 +++++++
+ templates/consumer-repo/config/model_registry.json |  1 +
+ templates/consumer-repo/tools/llm_registry.py      | 13 ++++-
+ tests/tools/test_llm_registry_selection.py         | 67 ++++++++++++++++++++++
+ tests/workflows/test_workflow_llm_installs.py      | 31 +++++++++-
+ tools/llm_registry.py                              | 13 ++++-
+ 22 files changed, 398 insertions(+), 19 deletions(-)

@@ -1,0 +1,22 @@
+commit 5bf78e9727548fa5c79043fedc06df2f8331dcb9
+Author: stranske <stranske@gmail.com>
+Date:   Sun Sep 20 02:43:02 2026 -0500
+
+    Expose Alerts management in full analyst UI (#1673)
+    
+    * Expose Alerts in the full analyst UI
+    
+    * fix(ui): include alert count in badge accessible name
+    
+    * chore(autofix): formatting/lint
+    
+    ---------
+    
+    Co-authored-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
+
+ tests/test_dashboard.py     | 11 ++++++++-
+ tests/test_ui_navigation.py | 60 +++++++++++++++++++++++++++++++++++++++++++++
+ ui/__init__.py              |  2 ++
+ ui/app.py                   | 17 ++++++++++++-
+ ui/dashboard.py             | 24 ++++++++++++------
+ 5 files changed, 104 insertions(+), 10 deletions(-)

@@ -1,0 +1,24 @@
+commit 4996ceb863a70c5a9ab48c783f8907635215f0e4
+Author: stranske <stranske@gmail.com>
+Date:   Sun Sep 20 03:41:00 2026 -0500
+
+    fix(verifier): prefer scoped App token for follow-up issues (#3490)
+    
+    * fix(verifier): prefer scoped App token for follow-up dispatch
+    
+    Isolates the two-workflow token change proposed in iamkayleb/Workflows#3446 on current main. Pins the App action, limits repository and API grants, retains PAT and workflow-token fallbacks, and documents the explicit dispatch behavior.
+    
+    * fix(verifier): omit unused pull request App grant
+    
+    * fix(verifier): separate model token and constrain App key
+    
+    ---------
+    
+    Co-authored-by: closer-lane <automation@stranske.dev>
+
+ .github/workflows/agents-verify-to-new-pr.yml      | 35 ++++++++-
+ docs/WORKFLOW_GUIDE.md                             |  2 +-
+ docs/ci/WORKFLOWS.md                               |  2 +-
+ .../.github/workflows/agents-verify-to-new-pr.yml  | 35 ++++++++-
+ tests/workflows/test_verify_to_new_pr_token.py     | 89 ++++++++++++++++++++++
+ 5 files changed, 153 insertions(+), 10 deletions(-)

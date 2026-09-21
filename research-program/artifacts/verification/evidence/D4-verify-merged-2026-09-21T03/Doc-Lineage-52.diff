@@ -1,0 +1,132 @@
+commit f0bc2c1bf52616b520107c36c26c0ee1fa7df65b
+Author: stranske <stranske@gmail.com>
+Date:   Sun Sep 20 06:24:46 2026 -0500
+
+    Include fact-key-map fixture in source distributions (#52)
+    
+    * Include fact-key-map fixture in source archives
+    
+    * chore(codex-keepalive): apply updates (PR #52)
+    
+    * chore(codex-keepalive): apply updates (PR #52)
+    
+    ---------
+    
+    Co-authored-by: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+
+diff --git a/MANIFEST.in b/MANIFEST.in
+index d671000..59152bb 100644
+--- a/MANIFEST.in
++++ b/MANIFEST.in
+@@ -1 +1,2 @@
+ recursive-include tests/export *.py
++include tests/fixtures/fact_key_map/tracked_variables.json
+diff --git a/README.md b/README.md
+index 1e26535..1dfc46d 100644
+--- a/README.md
++++ b/README.md
+@@ -25,8 +25,9 @@ blackline/diff, and the section-pairing issue does not yet define that lookup.
+ A path is not treated as a substitute comparison ID. File-pair export therefore
+ does not complete the ID-based scope of #15.
+ 
+-Source distributions include the export tests under `tests/export/` so the
+-native tracked-changes acceptance test can be run from the source archive.
++Source distributions include the export tests under `tests/export/` and their
++`tests/fixtures/fact_key_map/tracked_variables.json` fixture so the native
++tracked-changes acceptance tests can be run from the source archive.
+ 
+ ## Intent
+ 
+diff --git a/tests/test_package_identity.py b/tests/test_package_identity.py
+index de171e1..61ffc6d 100644
+--- a/tests/test_package_identity.py
++++ b/tests/test_package_identity.py
+@@ -8,6 +8,10 @@ from __future__ import annotations
+ 
+ import importlib
+ import pathlib
++import shutil
++import subprocess
++import sys
++import tarfile
+ import tomllib
+ 
+ 
+@@ -20,3 +24,77 @@ def test_distribution_and_package_names_are_not_the_template_placeholder() -> No
+ def test_package_imports_and_exposes_a_version() -> None:
+     mod = importlib.import_module("doc_lineage")
+     assert mod.__version__
++
++
++def test_sdist_includes_fact_key_map_fixture_with_export_tests(tmp_path: pathlib.Path) -> None:
++    fixture_path = pathlib.PurePosixPath("tests/fixtures/fact_key_map/tracked_variables.json")
++    expected_paths = {
++        pathlib.PurePosixPath("tests/export/test_fact_key_map.py"),
++        pathlib.PurePosixPath("tests/export/test_fact_key_map_cli.py"),
++        fixture_path,
++    }
++    source = tmp_path / "source"
++    shutil.copytree(
++        pathlib.Path(__file__).resolve().parents[1],
++        source,
++        ignore=shutil.ignore_patterns(
++            ".git",
++            ".gitnexus",
++            ".venv",
++            "build",
++            "dist",
++            "*.egg-info",
++            "__pycache__",
++            ".pytest_cache",
++            ".mypy_cache",
++            ".ruff_cache",
++        ),
++    )
++    output = source / "dist"
++    output.mkdir()
++    subprocess.run(
++        [
++            sys.executable,
++            "-c",
++            "from setuptools.build_meta import build_sdist; build_sdist('dist')",
++        ],
++        cwd=source,
++        check=True,
++        capture_output=True,
++        text=True,
++    )
++
++    archives = list(output.glob("*.tar.gz"))
++    assert len(archives) == 1
++    with tarfile.open(archives[0], "r:gz") as archive:
++        members = {
++            pathlib.PurePosixPath(*pathlib.PurePosixPath(member.name).parts[1:]): member
++            for member in archive.getmembers()
++        }
++        assert expected_paths <= members.keys()
++
++        archived_fixture = archive.extractfile(members[fixture_path])
++        assert archived_fixture is not None
++        assert archived_fixture.read() == (source / fixture_path).read_bytes()
++
++        extracted = tmp_path / "extracted"
++        archive.extractall(extracted, filter="data")
++
++    [sdist_root] = extracted.iterdir()
++    completed = subprocess.run(
++        [
++            sys.executable,
++            "-m",
++            "pytest",
++            "tests/export/test_fact_key_map.py",
++            "tests/export/test_fact_key_map_cli.py",
++            "-q",
++            "-m",
++            "not slow",
++        ],
++        cwd=sdist_root,
++        capture_output=True,
++        text=True,
++    )
++    assert completed.returncode == 0, completed.stdout + completed.stderr
++    assert "27 passed" in completed.stdout

@@ -1,0 +1,21 @@
+commit e7748b7f33bf5cff7dce0c6e578f1faa6bfe6dec
+Author: stranske <stranske@gmail.com>
+Date:   Sun Sep 20 04:24:12 2026 -0500
+
+    Finalize distribution deck before PDF export (#1079)
+    
+    * Finalize concentration slide before distribution PDF export
+    
+    * chore(codex-keepalive): apply updates (PR #1079)
+    
+    * chore(codex-keepalive): apply updates (PR #1079)
+    
+    * chore(codex-keepalive): apply updates (PR #1079)
+    
+    ---------
+    
+    Co-authored-by: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+
+ src/counter_risk/pipeline/run.py                   |  32 ++---
+ .../pipeline/test_monthly_pipeline_ppt_outputs.py  | 136 +++++++++++++++++++++
+ 2 files changed, 154 insertions(+), 14 deletions(-)

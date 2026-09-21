@@ -1,0 +1,151 @@
+commit 32a24eb87d883090953f8adda70beb3e08b873c4
+Author: stranske <stranske@gmail.com>
+Date:   Sun Sep 20 00:23:40 2026 -0500
+
+    Reject PDF export when distribution output is disabled (#1077)
+    
+    * fix: reject PDF export without distribution output
+    
+    * chore(codex-keepalive): apply updates (PR #1077)
+    
+    * chore(codex-keepalive): apply updates (PR #1077)
+    
+    ---------
+    
+    Co-authored-by: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+
+diff --git a/src/counter_risk/pipeline/run.py b/src/counter_risk/pipeline/run.py
+index 273cf2c..96914bd 100644
+--- a/src/counter_risk/pipeline/run.py
++++ b/src/counter_risk/pipeline/run.py
+@@ -945,6 +945,8 @@ def _resolve_input_paths(config: WorkflowConfig) -> dict[str, Path]:
+ 
+ 
+ def _validate_pipeline_config(config: WorkflowConfig) -> None:
++    _validate_pdf_distribution_config(config)
++
+     if config.output_root.exists() and not config.output_root.is_dir():
+         raise ValueError(f"output_root must be a directory path: {config.output_root}")
+ 
+@@ -1039,6 +1041,14 @@ def _validate_pipeline_config(config: WorkflowConfig) -> None:
+     )
+ 
+ 
++def _validate_pdf_distribution_config(config: WorkflowConfig) -> None:
++    if config.export_pdf and not config.enable_distribution_output:
++        raise ValueError(
++            "export_pdf requires enable_distribution_output; "
++            "the distribution PPT is the PDF export source"
++        )
++
++
+ def _validate_extension(*, field_name: str, path: Path, expected_suffix: str) -> None:
+     if path.suffix.lower() != expected_suffix:
+         raise ValueError(
+@@ -2620,6 +2630,7 @@ def _write_outputs(
+     parsed_by_variant: Mapping[str, Mapping[str, Any]] | None = None,
+ ) -> tuple[list[Path], PptProcessingResult]:
+     LOGGER.info("write_outputs_start run_dir=%s", run_dir)
++    _validate_pdf_distribution_config(config)
+ 
+     variant_inputs = [
+         _VariantInputs(
+diff --git a/tests/pipeline/test_monthly_pipeline_ppt_outputs.py b/tests/pipeline/test_monthly_pipeline_ppt_outputs.py
+index 325a559..a8b1259 100644
+--- a/tests/pipeline/test_monthly_pipeline_ppt_outputs.py
++++ b/tests/pipeline/test_monthly_pipeline_ppt_outputs.py
+@@ -11,6 +11,7 @@ from pptx import Presentation
+ 
+ import counter_risk.pipeline.run as run_module
+ from counter_risk.config import WorkflowConfig
++from counter_risk.outputs.pdf_export import PDFExportGenerator
+ from counter_risk.pipeline.manifest import ManifestBuilder
+ from counter_risk.pipeline.ppt_naming import resolve_ppt_output_names
+ from counter_risk.pipeline.ppt_validation import PptStandaloneValidationResult
+@@ -427,6 +428,86 @@ def test_distribution_disabled_keeps_master_and_records_skipped_manifest_entry(
+     }
+ 
+ 
++def test_pdf_request_with_distribution_disabled_is_explicit(
++    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
++) -> None:
++    exported: list[tuple[Path, Path]] = []
++
++    def _export_pdf(source: Path, target: Path) -> None:
++        exported.append((source, target))
++        target.write_bytes(b"%PDF-1.4\n%test\n")
++
++    monkeypatch.setattr(
++        run_module,
++        "_refresh_ppt_links",
++        lambda _path: run_module.PptProcessingResult(status=run_module.PptProcessingStatus.SUCCESS),
++    )
++    monkeypatch.setattr(
++        run_module,
++        "_build_pdf_export_output_generator",
++        lambda *, source_pptx, warnings: PDFExportGenerator(
++            source_pptx=source_pptx,
++            warnings=warnings,
++            com_availability_checker=lambda: True,
++            pptx_to_pdf_exporter=_export_pdf,
++        ),
++    )
++
++    disabled_config = _build_config(
++        tmp_path / "disabled", enable_ppt_output=True, enable_distribution_output=False
++    )
++    disabled_config.export_pdf = True
++    disabled_dir = tmp_path / "disabled" / "run"
++    disabled_dir.mkdir(parents=True)
++    with pytest.raises(ValueError, match="export_pdf requires enable_distribution_output"):
++        run_module._validate_pipeline_config(disabled_config)
++    with pytest.raises(ValueError, match="export_pdf requires enable_distribution_output"):
++        run_module._write_outputs(
++            run_dir=disabled_dir,
++            config=disabled_config,
++            as_of_date=date(2025, 12, 31),
++            warnings=[],
++        )
++    assert exported == []
++    assert list(disabled_dir.iterdir()) == []
++
++    enabled_config = _build_config(tmp_path / "enabled", enable_ppt_output=True)
++    enabled_config.export_pdf = True
++    run_module._validate_pipeline_config(enabled_config)
++    enabled_dir = tmp_path / "enabled" / "run"
++    enabled_dir.mkdir(parents=True)
++    output_paths, _ = run_module._write_outputs(
++        run_dir=enabled_dir,
++        config=enabled_config,
++        as_of_date=date(2025, 12, 31),
++        warnings=[],
++    )
++    assert len(exported) == 1
++    source, target = exported[0]
++    assert (
++        source == enabled_dir / resolve_ppt_output_names(date(2025, 12, 31)).distribution_filename
++    )
++    assert target == source.with_suffix(".pdf")
++    assert target in output_paths
++    assert target.read_bytes().startswith(b"%PDF-1.4")
++
++    no_pdf_config = _build_config(
++        tmp_path / "no-pdf", enable_ppt_output=True, enable_distribution_output=True
++    )
++    no_pdf_config.export_pdf = False
++    run_module._validate_pipeline_config(no_pdf_config)
++    no_pdf_dir = tmp_path / "no-pdf" / "run"
++    no_pdf_dir.mkdir(parents=True)
++    output_paths, _ = run_module._write_outputs(
++        run_dir=no_pdf_dir,
++        config=no_pdf_config,
++        as_of_date=date(2025, 12, 31),
++        warnings=[],
++    )
++    assert not any(path.suffix == ".pdf" for path in output_paths)
++    assert len(exported) == 1
++
++
+ def test_master_refresh_skipped_records_master_skipped_and_distribution_success(
+     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+ ) -> None:

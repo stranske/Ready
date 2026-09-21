@@ -1,0 +1,905 @@
+commit 11300195bb4e7cf3135d1211a11a850efac10dba
+Author: stranske <stranske@gmail.com>
+Date:   Sat Sep 19 21:45:19 2026 -0500
+
+    Route Codex work by role and reasoning effort (#3482)
+    
+    * Route Codex workers by task role and effort
+    
+    * Keep old consumer effort inputs compatible and format tests
+    
+    * Validate Codex effort profiles and document runner outputs
+    
+    ---------
+    
+    Co-authored-by: closer-lane <automation@stranske.dev>
+
+diff --git a/.github/agents/registry.yml b/.github/agents/registry.yml
+index 6bbdc563..a4484579 100644
+--- a/.github/agents/registry.yml
++++ b/.github/agents/registry.yml
+@@ -33,20 +33,76 @@ model_profile_trial_contract:
+ execution_profiles:
+   codex-default:
+     agent: codex
+-    model: gpt-6-astra
++    model: gpt-5.6-sol
+     fallback_model: gpt-5.5
+     runner: reusable-codex-run
+     capacity_pool: codex-standard
+     safety: standard
+     lifecycle: active
++    reasoning_effort: high
+   codex-fast:
+     agent: codex
+-    model: gpt-5.4
++    model: gpt-5.6-terra
++    fallback_model: gpt-5.5
++    runner: reusable-codex-run
++    capacity_pool: codex-standard
++    safety: standard
++    lifecycle: active
++    reasoning_effort: medium
++  codex-implement:
++    agent: codex
++    model: gpt-5.6-sol
++    fallback_model: gpt-5.5
++    runner: reusable-codex-run
++    capacity_pool: codex-standard
++    safety: standard
++    lifecycle: active
++    reasoning_effort: high
++  codex-coordinate:
++    agent: codex
++    model: gpt-5.6-sol
++    fallback_model: gpt-5.5
++    runner: reusable-codex-run
++    capacity_pool: codex-standard
++    safety: standard
++    lifecycle: active
++    reasoning_effort: medium
++  codex-routine:
++    agent: codex
++    model: gpt-5.6-terra
++    fallback_model: gpt-5.5
++    runner: reusable-codex-run
++    capacity_pool: codex-standard
++    safety: standard
++    lifecycle: active
++    reasoning_effort: medium
++  codex-extract:
++    agent: codex
++    model: gpt-5.6-luna
++    fallback_model: gpt-5.5
++    runner: reusable-codex-run
++    capacity_pool: codex-standard
++    safety: standard
++    lifecycle: active
++    reasoning_effort: low
++  codex-hard:
++    agent: codex
++    model: gpt-6-astra
++    fallback_model: gpt-5.5
++    runner: reusable-codex-run
++    capacity_pool: codex-standard
++    safety: standard
++    lifecycle: active
++    reasoning_effort: medium
++  codex-hardest:
++    agent: codex
++    model: gpt-6-astra
+     fallback_model: gpt-5.5
+     runner: reusable-codex-run
+     capacity_pool: codex-standard
+     safety: standard
+     lifecycle: active
++    reasoning_effort: high
+   codex-6-astra-high:
+     agent: codex
+     model: gpt-6-astra
+diff --git a/.github/scripts/__tests__/agent-registry.test.js b/.github/scripts/__tests__/agent-registry.test.js
+index ce29437e..f3ab60c8 100644
+--- a/.github/scripts/__tests__/agent-registry.test.js
++++ b/.github/scripts/__tests__/agent-registry.test.js
+@@ -222,11 +222,28 @@ test('resolveExecutionProfile returns registry-backed codex model contract', ()
+   const profile = resolveExecutionProfile('codex-default', { registryPath: REGISTRY_PATH });
+   assert.equal(profile.id, 'codex-default');
+   assert.equal(profile.agent, 'codex');
+-  assert.equal(profile.model, 'gpt-6-astra');
++  assert.equal(profile.model, 'gpt-5.6-sol');
++  assert.equal(profile.reasoning_effort, 'high');
+   assert.equal(profile.fallback_model, 'gpt-5.5');
+   assert.equal(profile.runner, 'reusable-codex-run');
+ });
+ 
++test('active role profiles resolve model and effort without changing trial arms', () => {
++  const roles = {
++    'codex-coordinate': ['gpt-5.6-sol', 'medium'],
++    'codex-routine': ['gpt-5.6-terra', 'medium'],
++    'codex-extract': ['gpt-5.6-luna', 'low'],
++    'codex-hard': ['gpt-6-astra', 'medium'],
++    'codex-hardest': ['gpt-6-astra', 'high'],
++  };
++  for (const [id, [model, reasoningEffort]] of Object.entries(roles)) {
++    const profile = resolveExecutionProfile(id, { registryPath: REGISTRY_PATH });
++    assert.equal(profile.model, model);
++    assert.equal(profile.reasoning_effort, reasoningEffort);
++    assert.equal(profile.lifecycle, 'active');
++  }
++});
++
+ test('resolveExecutionProfile rejects trial profiles from ordinary agent execution', () => {
+   for (const profileId of [
+     'codex-5.6-sol-high',
+@@ -273,6 +290,7 @@ test('validateAgentRegistry rejects unknown execution profile model ids', () =>
+               capacity_pool: 'codex-standard',
+               safety: 'standard',
+               lifecycle: 'active',
++              reasoning_effort: 'high',
+             },
+           },
+         },
+@@ -283,6 +301,18 @@ test('validateAgentRegistry rejects unknown execution profile model ids', () =>
+   );
+ });
+ 
++test('active Codex execution profiles require a supported reasoning effort', () => {
++  const registry = loadAgentRegistry({ registryPath: REGISTRY_PATH });
++  for (const effort of [undefined, 'medum']) {
++    const malformed = structuredClone(registry);
++    malformed.execution_profiles['codex-default'].reasoning_effort = effort;
++    assert.throws(
++      () => validateAgentRegistry(malformed),
++      /codex-default reasoning_effort must be one of: low, medium, high, xhigh, max/,
++    );
++  }
++});
++
+ test('validateAgentRegistry rejects invalid capacity entries', () => {
+   assert.throws(
+     () => {
+diff --git a/.github/scripts/__tests__/keepalive-model-profile-contract.test.js b/.github/scripts/__tests__/keepalive-model-profile-contract.test.js
+index 298c8eeb..61a72eb5 100644
+--- a/.github/scripts/__tests__/keepalive-model-profile-contract.test.js
++++ b/.github/scripts/__tests__/keepalive-model-profile-contract.test.js
+@@ -33,6 +33,20 @@ test('profile reaches codex runner', () => {
+     /codex_fallback_models:\s*\$\{\{\s*needs\.evaluate\.outputs\.worker_fallback_model\s*\}\}/,
+     'expected selected profile fallback chain in reusable runner inputs',
+   );
++  assert.match(
++    keepalive,
++    /codex_reasoning_effort:\s*\$\{\{\s*needs\.evaluate\.outputs\.worker_reasoning_effort\s*\|\|\s*'high'\s*\}\}/,
++    'expected selected profile effort, defaulting old registries to high, in reusable runner inputs',
++  );
++});
++
++test('consumer keepalive forwards registry model and effort for explicit escalation', () => {
++  const consumer = readWorkflow(
++    'templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml',
++  );
++  assert.match(consumer, /INPUT_EXECUTION_PROFILE:\s*\$\{\{\s*github\.event\.inputs\.execution_profile/);
++  assert.match(consumer, /codex_model:\s*\$\{\{\s*needs\.evaluate\.outputs\.worker_requested_model\s*\}\}/);
++  assert.match(consumer, /codex_reasoning_effort:\s*\$\{\{\s*needs\.evaluate\.outputs\.worker_reasoning_effort\s*\|\|\s*'high'\s*\}\}/);
+ });
+ 
+ test('workflow dispatch profile input is honored when PR body omits a profile', () => {
+@@ -72,6 +86,7 @@ test('reusable codex runner exposes worker model telemetry outputs', () => {
+   for (const outputName of [
+     'worker-profile-id',
+     'worker-requested-model',
++    'worker-reasoning-effort',
+     'worker-selected-model',
+     'worker-model-selection-reason',
+   ]) {
+@@ -82,6 +97,7 @@ test('reusable codex runner exposes worker model telemetry outputs', () => {
+     /worker-selected-model:\s*\$\{\{\s*steps\.run_codex\.outputs\.model\s*\}\}/,
+     'expected selected model to come from Run Codex step output',
+   );
++  assert.match(reusable, /-c "model_reasoning_effort=\\"\$REASONING_EFFORT\\""/);
+ });
+ 
+ test('reusable codex runner attempts selected profile fallback models', () => {
+diff --git a/.github/scripts/agent_registry.js b/.github/scripts/agent_registry.js
+index 69a90f50..4ac6ce44 100644
+--- a/.github/scripts/agent_registry.js
++++ b/.github/scripts/agent_registry.js
+@@ -4,6 +4,7 @@ const fs = require('node:fs');
+ const path = require('node:path');
+ 
+ const ALLOWED_CAPACITY_WINDOWS = new Set(['5h', 'weekly', 'daily']);
++const ALLOWED_CODEX_REASONING_EFFORTS = new Set(['low', 'medium', 'high', 'xhigh', 'max']);
+ 
+ function stripTrailingComment(rawLine) {
+   const line = String(rawLine ?? '');
+@@ -238,6 +239,14 @@ function validateExecutionProfile(profileId, profile, registry, options = {}) {
+       throw new Error(`Execution profile ${profileId} missing required field: ${field}`);
+     }
+   }
++  if (agent === 'codex' && profile.lifecycle === 'active') {
++    const effort = String(profile.reasoning_effort || '').trim();
++    if (!ALLOWED_CODEX_REASONING_EFFORTS.has(effort)) {
++      throw new Error(
++        `Execution profile ${profileId} reasoning_effort must be one of: ${Array.from(ALLOWED_CODEX_REASONING_EFFORTS).join(', ')}`,
++      );
++    }
++  }
+   if (options.knownModelIds) {
+     for (const field of ['model', 'fallback_model']) {
+       const modelId = String(profile[field] || '').trim();
+diff --git a/.github/workflows/agents-autofix-loop.yml b/.github/workflows/agents-autofix-loop.yml
+index 8b783ed0..2280559c 100644
+--- a/.github/workflows/agents-autofix-loop.yml
++++ b/.github/workflows/agents-autofix-loop.yml
+@@ -786,6 +786,9 @@ jobs:
+     with:
+       prompt_file: .github/codex/prompts/autofix_from_ci_failure.md
+       mode: autofix
++      execution_profile: codex-routine
++      codex_model: gpt-5.6-terra
++      codex_reasoning_effort: medium
+       pr_number: ${{ needs.prepare.outputs.pr_number }}
+       pr_ref: ${{ needs.prepare.outputs.head_ref }}
+       appendix: ${{ needs.prepare.outputs.appendix }}
+diff --git a/.github/workflows/agents-keepalive-loop.yml b/.github/workflows/agents-keepalive-loop.yml
+index b8b25d4a..3b40a96e 100644
+--- a/.github/workflows/agents-keepalive-loop.yml
++++ b/.github/workflows/agents-keepalive-loop.yml
+@@ -104,6 +104,7 @@ jobs:
+       execution_profile: ${{ steps.evaluate.outputs.execution_profile }}
+       worker_requested_model: ${{ steps.evaluate.outputs.worker_requested_model }}
+       worker_fallback_model: ${{ steps.evaluate.outputs.worker_fallback_model }}
++      worker_reasoning_effort: ${{ steps.evaluate.outputs.worker_reasoning_effort }}
+       delegation_reason: ${{ steps.evaluate.outputs.delegation_reason }}
+       delegation_should_switch: ${{ steps.evaluate.outputs.delegation_should_switch }}
+       delegation_source: ${{ steps.evaluate.outputs.delegation_source }}
+@@ -511,6 +512,7 @@ jobs:
+               execution_profile: String(result.executionProfile?.id || ''),
+               worker_requested_model: String(result.executionProfile?.model || ''),
+               worker_fallback_model: String(result.executionProfile?.fallback_model || ''),
++              worker_reasoning_effort: String(result.executionProfile?.reasoning_effort || ''),
+               delegation_reason: String(result.delegationReason || ''),
+               delegation_should_switch: String(result.delegationShouldSwitch ?? 'false'),
+               delegation_source: String(result.delegationSource || ''),
+@@ -917,6 +919,7 @@ jobs:
+       execution_profile: ${{ needs.evaluate.outputs.execution_profile }}
+       codex_model: ${{ needs.evaluate.outputs.worker_requested_model }}
+       codex_fallback_models: ${{ needs.evaluate.outputs.worker_fallback_model }}
++      codex_reasoning_effort: ${{ needs.evaluate.outputs.worker_reasoning_effort || 'high' }}
+       environment: >-
+         ${{
+           needs.evaluate.outputs.has_high_privilege == 'true' &&
+diff --git a/.github/workflows/reusable-agents-verifier.yml b/.github/workflows/reusable-agents-verifier.yml
+index 99f2b9c2..d1aa7646 100644
+--- a/.github/workflows/reusable-agents-verifier.yml
++++ b/.github/workflows/reusable-agents-verifier.yml
+@@ -613,6 +613,7 @@ jobs:
+               --sandbox read-only \
+               --skip-git-repo-check \
+               --model "$codex_model" \
++              -c 'model_reasoning_effort="medium"' \
+               --output-last-message codex-output.md \
+               "$(cat "$PROMPT_FILE")" \
+               > codex-stdout.log 2> codex-stderr.log
+diff --git a/.github/workflows/reusable-codex-run.yml b/.github/workflows/reusable-codex-run.yml
+index b5a3f579..44eb5194 100644
+--- a/.github/workflows/reusable-codex-run.yml
++++ b/.github/workflows/reusable-codex-run.yml
+@@ -60,7 +60,12 @@ on:
+       codex_model:
+         description: 'Codex model ID to pass to codex exec.'
+         required: false
+-        default: 'gpt-6-astra'
++        default: 'gpt-5.6-sol'
++        type: string
++      codex_reasoning_effort:
++        description: 'Reasoning effort for the selected Codex execution profile.'
++        required: false
++        default: 'high'
+         type: string
+       codex_fallback_models:
+         description: 'Space-separated fallback Codex model IDs for the selected profile.'
+@@ -204,6 +209,9 @@ on:
+       worker-requested-model:
+         description: 'Model requested through the registry execution profile'
+         value: ${{ jobs.codex.outputs.worker-requested-model }}
++      worker-reasoning-effort:
++        description: 'Reasoning effort supplied by the registry execution profile'
++        value: ${{ jobs.codex.outputs.worker-reasoning-effort }}
+       worker-selected-model:
+         description: 'Actual Codex model selected after runner fallback'
+         value: ${{ jobs.codex.outputs.worker-selected-model }}
+@@ -292,6 +300,7 @@ jobs:
+       terminal-disposition: ${{ steps.capability_evidence.outputs.terminal-disposition }}
+       worker-profile-id: ${{ inputs.execution_profile }}
+       worker-requested-model: ${{ inputs.codex_model }}
++      worker-reasoning-effort: ${{ inputs.codex_reasoning_effort }}
+       worker-selected-model: ${{ steps.run_codex.outputs.model }}
+       worker-model-selection-reason: ${{ steps.run_codex.outputs.model-selection-reason }}
+       error-category: ${{ steps.classify_failure.outputs.error_category }}
+@@ -847,7 +856,7 @@ jobs:
+       - name: Resolve Codex run model
+         id: codex_model
+         env:
+-          DEFAULT_CODEX_MODEL: gpt-6-astra
++          DEFAULT_CODEX_MODEL: gpt-5.6-sol
+           FALLBACK_CODEX_MODELS: ${{ inputs.codex_fallback_models }}
+           REQUESTED_MODEL: ${{ inputs.codex_model }}
+         run: |
+@@ -906,11 +915,20 @@ jobs:
+           PR_NUM: ${{ inputs.pr_number }}
+           SANDBOX: ${{ inputs.sandbox }}
+           EXTRA_ARGS_RAW: ${{ inputs.codex_args }}
++          REASONING_EFFORT: ${{ inputs.codex_reasoning_effort }}
+           MAX_RUNTIME_MIN: ${{ inputs.max_runtime_minutes }}
+           TARGET_BRANCH: ${{ inputs.pr_ref || github.ref_name }}
+         run: |
+           set -euo pipefail
+ 
++          # A consumer with the previous registry can pass an explicit empty
++          # effort while the source runner has already advanced at @main.
++          REASONING_EFFORT="${REASONING_EFFORT:-high}"
++          case "$REASONING_EFFORT" in
++            low|medium|high|xhigh|max) ;;
++            *) echo "::error::Unsupported Codex reasoning effort: $REASONING_EFFORT"; exit 1 ;;
++          esac
++
+           # Copy auth to CODEX_HOME
+           mkdir -p "$CODEX_HOME"
+           cp ~/.codex/auth.json "$CODEX_HOME/auth.json"
+@@ -1133,6 +1151,7 @@ jobs:
+               --skip-git-repo-check
+               --sandbox "$SANDBOX"
+               --model "$codex_model"
++              -c "model_reasoning_effort=\"$REASONING_EFFORT\""
+               --output-last-message "$OUTPUT_FILE"
+             )
+             if [ "${#EXTRA_ARGS[@]}" -gt 0 ]; then
+@@ -1250,6 +1269,7 @@ jobs:
+         env:
+           EXECUTION_PROFILE: ${{ inputs.execution_profile }}
+           WORKER_REQUESTED_MODEL: ${{ inputs.codex_model }}
++          WORKER_REASONING_EFFORT: ${{ inputs.codex_reasoning_effort }}
+           WORKER_FALLBACK_MODELS: ${{ inputs.codex_fallback_models }}
+           WORKER_SELECTED_MODEL: ${{ steps.run_codex.outputs.model }}
+           WORKER_MODEL_SELECTION_REASON: ${{ steps.run_codex.outputs.model-selection-reason }}
+@@ -1272,6 +1292,7 @@ jobs:
+               "cli_version": os.environ.get("CODEX_CLI_VERSION", ""),
+               "execution_profile": os.environ.get("EXECUTION_PROFILE", ""),
+               "requested_model": os.environ.get("WORKER_REQUESTED_MODEL", ""),
++              "reasoning_effort": os.environ.get("WORKER_REASONING_EFFORT", ""),
+               "fallback_models": [
+                   item for item in os.environ.get("WORKER_FALLBACK_MODELS", "").split()
+                   if item
+diff --git a/config/model_registry.json b/config/model_registry.json
+index fd15ca1b..bb6fe0c1 100644
+--- a/config/model_registry.json
++++ b/config/model_registry.json
+@@ -247,6 +247,7 @@
+       "provider": "openai",
+       "api": "chat",
+       "lifecycle": "current",
++      "legacy_bundled_slot_pin": true,
+       "positioning": "incumbent-verifier",
+       "source_ids": [
+         "openai-current-models-2026-07-10"
+diff --git a/docs/MODEL_SELECTION_POLICY.md b/docs/MODEL_SELECTION_POLICY.md
+index 3c9c45b3..07e278ba 100644
+--- a/docs/MODEL_SELECTION_POLICY.md
++++ b/docs/MODEL_SELECTION_POLICY.md
+@@ -33,6 +33,11 @@ prevents an inexpensive model from offsetting an unacceptable false-PASS rate.
+ 
+ `config/llm_slots.json` keeps consumer-specific provider preferences but carries
+ only a workload profile. Model versions resolve from the registry decision.
++Older consumer files may still contain `gpt-5.2` or `gpt-5.4` OpenAI pins
++because this file is create-only in the sync manifest. Those two bundled legacy
++pins are advisory; the reviewed `verifier-balanced` registry decision selects
++the runtime model. Other current bundled pins and an explicitly supplied
++`LANGCHAIN_SLOT_CONFIG` file remain overrides.
+ 
+ ## Benchmark Protocol
+ 
+diff --git a/docs/ci/WORKFLOWS.md b/docs/ci/WORKFLOWS.md
+index c0324bd4..537e1140 100644
+--- a/docs/ci/WORKFLOWS.md
++++ b/docs/ci/WORKFLOWS.md
+@@ -117,7 +117,7 @@ Final outputs advertise a patch only after its artifact upload succeeds, includi
+ when an earlier commit, patch, or push step failed.
+ 
+ * [`reusable-pr-context.yml`](../../.github/workflows/reusable-pr-context.yml) fetches comprehensive PR context via a single GraphQL query (60-80% API reduction vs REST). Returns PR metadata, labels, files, reviews, comments, and CI status as job outputs for downstream consumption.
+-* [`reusable-codex-run.yml`](../../.github/workflows/reusable-codex-run.yml) exposes a reusable Codex runner with the `gpt-6-astra` default (`gpt-5.5` fallback), prompt-file input, sandbox/safety defaults, artifact upload, and commit/push handling so keepalive, autofix, and verifier wrappers can share the same execution surface.
++* [`reusable-codex-run.yml`](../../.github/workflows/reusable-codex-run.yml) exposes a reusable Codex runner with the `gpt-5.6-sol` default and `codex_reasoning_effort: high` (`gpt-5.5` fallback), prompt-file input, sandbox/safety defaults, artifact upload, and commit/push handling so keepalive, autofix, and verifier wrappers can share the same execution surface. Callers can select a registry execution profile and pass its reasoning effort explicitly.
+ * [`reusable-model-profile-trial.yml`](../../.github/workflows/reusable-model-profile-trial.yml) is a separate immutable, read-only worker for one Astra/Sol/Terra/Luna instrumentation arm. A pinned helper checkout validates a target checkout that must equal current remote `main` before auth. It installs exactly Codex CLI 0.153.2, enforces high reasoning and the registry-backed `codex-standard` capacity mapping, and emits a strict v2 quarantine artifact with requested/CLI-reported identity and reasoning, GitHub provenance, and bounded source manifests before/after. It never commits, pushes, comments, refreshes auth, invokes an evaluator, or executes target-checkout code after auth; provider-resolved identity is explicitly null. Ordinary agent and Keepalive lanes reject these `lifecycle: trial` profiles.
+ * Optional exported Orchestrator skill context for opener/closer Codex lanes is documented in [`ORCHESTRATOR_SKILL_CONTEXT.md`](ORCHESTRATOR_SKILL_CONTEXT.md). Repos opt in via `.github/orchestrator_skill.json`; remote runs receive exported instructions only, not local Orchestrator runtime access.
+ * [`reusable-claude-run.yml`](../../.github/workflows/reusable-claude-run.yml) exposes a reusable Claude runner that builds a prompt from a file + optional appendix, runs the configured Claude CLI, and publishes the output and summary as artifacts.
+diff --git a/docs/ci/WORKFLOW_OUTPUTS.md b/docs/ci/WORKFLOW_OUTPUTS.md
+index ef30a7a4..3892472e 100644
+--- a/docs/ci/WORKFLOW_OUTPUTS.md
++++ b/docs/ci/WORKFLOW_OUTPUTS.md
+@@ -95,6 +95,7 @@ reusable workflow in the no-output section.
+ | `reusable-codex-run.yml` | `worker-profile-id` | string | Registry execution profile ID supplied by caller | `needs.codex.outputs.worker-profile-id` |
+ | `reusable-codex-run.yml` | `worker-requested-model` | string | Model requested through the registry execution profile | `needs.codex.outputs.worker-requested-model` |
+ | `reusable-codex-run.yml` | `worker-selected-model` | string | Actual Codex model selected after runner fallback | `needs.codex.outputs.worker-selected-model` |
++| `reusable-codex-run.yml` | `worker-reasoning-effort` | string | Reasoning effort supplied by the registry execution profile | `needs.codex.outputs.worker-reasoning-effort` |
+ | `reusable-codex-run.yml` | `worker-model-selection-reason` | string | Reason for the selected worker model | `needs.codex.outputs.worker-model-selection-reason` |
+ | `reusable-codex-run.yml` | `error-category` | string | Error category if failure occurred (transient/auth/resource/logic/unknown) | `needs.codex.outputs.error-category` |
+ | `reusable-codex-run.yml` | `error-type` | string | Error type if failure occurred (codex/infrastructure/auth/unknown) | `needs.codex.outputs.error-type` |
+diff --git a/docs/ops/ASTRA_ROLLOUT.md b/docs/ops/ASTRA_ROLLOUT.md
+index 4cc58611..56f24b88 100644
+--- a/docs/ops/ASTRA_ROLLOUT.md
++++ b/docs/ops/ASTRA_ROLLOUT.md
+@@ -1,12 +1,17 @@
+ # Astra high-reasoning execution
+ 
+ The owner requested GPT-6 Astra for high-reasoning work on 2026-09-04.
+-`codex-default`, the reusable Codex worker and checkbox verifier request
+-`gpt-6-astra`. Codex CLI is pinned to 0.153.2, matching the working local
+-installation. Explicit fast profiles and fallback identities remain independent.
++As of 2026-09-19, ordinary PR implementation uses `codex-default` and
++`gpt-5.6-sol` at high effort. The reusable Codex worker uses the same default;
++autofix callers explicitly use `gpt-5.6-terra` at medium effort. Explicit
++`codex-hard` and `codex-hardest` profiles retain Astra at medium and high effort
++for difficult judgment or design work. The Codex checkbox verifier remains on
++Astra at medium effort because a false PASS is consequential. Codex CLI is
++pinned to 0.153.2.
++The active role table and dispatch contract are in [CODEX_ROLE_ROUTING.md](CODEX_ROLE_ROUTING.md).
+ 
+ Astra is also available as a read-only profile-trial arm. The runner remains
+-pinned to an immutable commit; old Sol trial identities are retained.
++pinned to an immutable commit; Sol, Terra, and Luna trial identities are retained.
+ The auxiliary `verifier-balanced` selection remains provisional Terra, since
+ that is a separate balanced workload and no paired Astra benchmark is claimed.
+ 
+diff --git a/docs/ops/CODEX_ROLE_ROUTING.md b/docs/ops/CODEX_ROLE_ROUTING.md
+new file mode 100644
+index 00000000..5c5f0b04
+--- /dev/null
++++ b/docs/ops/CODEX_ROLE_ROUTING.md
+@@ -0,0 +1,31 @@
++# Codex role routing
++
++The shared coding-worker profiles live in `.github/agents/registry.yml` and
++its consumer template copy. Keepalive resolves an active profile before it calls
++`reusable-codex-run.yml`; the reusable runner passes the model and reasoning
++effort to Codex CLI. An omitted profile selects `codex-default`.
++
++| Work | Active profile | Model | Effort |
++| --- | --- | --- | --- |
++| Ordinary PR implementation and follow-up | `codex-default` or `codex-implement` | `gpt-5.6-sol` | high |
++| Coordination and bounded assessment | `codex-coordinate` | `gpt-5.6-sol` | medium |
++| Routine autofix and bounded execution | `codex-routine` or `codex-fast` | `gpt-5.6-terra` | medium |
++| Extraction and status summaries | `codex-extract` | `gpt-5.6-luna` | low |
++| Difficult judgment and design | `codex-hard` | `gpt-6-astra` | medium |
++| Hardest tasks after explicit escalation | `codex-hardest` | `gpt-6-astra` | high |
++
++The root and consumer keepalive workflows accept `execution_profile` on manual
++dispatch and honor a profile specified in the PR's keepalive configuration.
++Consumer autofix and root autofix callers explicitly select the routine profile;
++ordinary PR execution uses the default. The Codex checkbox verifier keeps Astra
++at medium effort for consequential acceptance judgments. Auxiliary API evaluators
++use `config/llm_slots.json` and `config/model_registry.json`; their benchmark
++selection is independent from coding-worker routing. Bundled legacy OpenAI
++`gpt-5.2` and `gpt-5.4` slot pins resolve through the reviewed registry
++decision; other current pins and caller-supplied slot files remain overrides.
++
++Read-only `reusable-model-profile-trial.yml` arms keep their original trial IDs,
++runner pins, and high-effort conditions. They cannot run through ordinary
++keepalive. Consumer registry changes are delivered through Maint 68 and the
++Maint 71 canary and promotion campaign; the reusable runner takes effect at
++`@main` after the source PR merges.
+diff --git a/templates/consumer-repo/.github/agents/registry.yml b/templates/consumer-repo/.github/agents/registry.yml
+index 6bbdc563..a4484579 100644
+--- a/templates/consumer-repo/.github/agents/registry.yml
++++ b/templates/consumer-repo/.github/agents/registry.yml
+@@ -33,20 +33,76 @@ model_profile_trial_contract:
+ execution_profiles:
+   codex-default:
+     agent: codex
+-    model: gpt-6-astra
++    model: gpt-5.6-sol
+     fallback_model: gpt-5.5
+     runner: reusable-codex-run
+     capacity_pool: codex-standard
+     safety: standard
+     lifecycle: active
++    reasoning_effort: high
+   codex-fast:
+     agent: codex
+-    model: gpt-5.4
++    model: gpt-5.6-terra
++    fallback_model: gpt-5.5
++    runner: reusable-codex-run
++    capacity_pool: codex-standard
++    safety: standard
++    lifecycle: active
++    reasoning_effort: medium
++  codex-implement:
++    agent: codex
++    model: gpt-5.6-sol
++    fallback_model: gpt-5.5
++    runner: reusable-codex-run
++    capacity_pool: codex-standard
++    safety: standard
++    lifecycle: active
++    reasoning_effort: high
++  codex-coordinate:
++    agent: codex
++    model: gpt-5.6-sol
++    fallback_model: gpt-5.5
++    runner: reusable-codex-run
++    capacity_pool: codex-standard
++    safety: standard
++    lifecycle: active
++    reasoning_effort: medium
++  codex-routine:
++    agent: codex
++    model: gpt-5.6-terra
++    fallback_model: gpt-5.5
++    runner: reusable-codex-run
++    capacity_pool: codex-standard
++    safety: standard
++    lifecycle: active
++    reasoning_effort: medium
++  codex-extract:
++    agent: codex
++    model: gpt-5.6-luna
++    fallback_model: gpt-5.5
++    runner: reusable-codex-run
++    capacity_pool: codex-standard
++    safety: standard
++    lifecycle: active
++    reasoning_effort: low
++  codex-hard:
++    agent: codex
++    model: gpt-6-astra
++    fallback_model: gpt-5.5
++    runner: reusable-codex-run
++    capacity_pool: codex-standard
++    safety: standard
++    lifecycle: active
++    reasoning_effort: medium
++  codex-hardest:
++    agent: codex
++    model: gpt-6-astra
+     fallback_model: gpt-5.5
+     runner: reusable-codex-run
+     capacity_pool: codex-standard
+     safety: standard
+     lifecycle: active
++    reasoning_effort: high
+   codex-6-astra-high:
+     agent: codex
+     model: gpt-6-astra
+diff --git a/templates/consumer-repo/.github/scripts/agent_registry.js b/templates/consumer-repo/.github/scripts/agent_registry.js
+index 69a90f50..4ac6ce44 100644
+--- a/templates/consumer-repo/.github/scripts/agent_registry.js
++++ b/templates/consumer-repo/.github/scripts/agent_registry.js
+@@ -4,6 +4,7 @@ const fs = require('node:fs');
+ const path = require('node:path');
+ 
+ const ALLOWED_CAPACITY_WINDOWS = new Set(['5h', 'weekly', 'daily']);
++const ALLOWED_CODEX_REASONING_EFFORTS = new Set(['low', 'medium', 'high', 'xhigh', 'max']);
+ 
+ function stripTrailingComment(rawLine) {
+   const line = String(rawLine ?? '');
+@@ -238,6 +239,14 @@ function validateExecutionProfile(profileId, profile, registry, options = {}) {
+       throw new Error(`Execution profile ${profileId} missing required field: ${field}`);
+     }
+   }
++  if (agent === 'codex' && profile.lifecycle === 'active') {
++    const effort = String(profile.reasoning_effort || '').trim();
++    if (!ALLOWED_CODEX_REASONING_EFFORTS.has(effort)) {
++      throw new Error(
++        `Execution profile ${profileId} reasoning_effort must be one of: ${Array.from(ALLOWED_CODEX_REASONING_EFFORTS).join(', ')}`,
++      );
++    }
++  }
+   if (options.knownModelIds) {
+     for (const field of ['model', 'fallback_model']) {
+       const modelId = String(profile[field] || '').trim();
+diff --git a/templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml b/templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml
+index a24bc36c..8b3f5b87 100644
+--- a/templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml
++++ b/templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml
+@@ -21,6 +21,11 @@ on:
+         required: false
+         default: true
+         type: boolean
++      execution_profile:
++        description: 'Active registry profile for the Codex worker'
++        required: false
++        default: 'codex-default'
++        type: string
+       authority_challenge_fingerprint:
+         description: 'Internal sweep provenance for one due authority challenge'
+         required: false
+@@ -85,6 +90,10 @@ jobs:
+       autofix_enabled: ${{ steps.evaluate.outputs.autofix_enabled }}
+       has_agent_label: ${{ steps.evaluate.outputs.has_agent_label }}
+       agent_type: ${{ steps.evaluate.outputs.agent_type }}
++      execution_profile: ${{ steps.evaluate.outputs.execution_profile }}
++      worker_requested_model: ${{ steps.evaluate.outputs.worker_requested_model }}
++      worker_fallback_model: ${{ steps.evaluate.outputs.worker_fallback_model }}
++      worker_reasoning_effort: ${{ steps.evaluate.outputs.worker_reasoning_effort }}
+       task_appendix: ${{ steps.evaluate.outputs.task_appendix }}
+       trace: ${{ steps.evaluate.outputs.trace }}
+       prompt_mode: ${{ steps.evaluate.outputs.prompt_mode }}
+@@ -294,6 +303,7 @@ jobs:
+         env:
+           INPUT_PR_NUMBER: ${{ github.event.inputs.pr_number || '' }}
+           INPUT_FORCE_RETRY: ${{ github.event.inputs.force_retry || 'false' }}
++          INPUT_EXECUTION_PROFILE: ${{ github.event.inputs.execution_profile || '' }}
+           ROUTE_WEIGHTS_URL: ${{ vars.ROUTE_WEIGHTS_URL }}
+         with:
+           github-token: ${{ secrets.GITHUB_TOKEN }}
+@@ -326,6 +336,10 @@ jobs:
+               autofix_enabled: String(result.config?.autofix_enabled ?? ''),
+               has_agent_label: String(result.hasAgentLabel ?? ''),
+               agent_type: String(result.agentType || ''),
++              execution_profile: String(result.executionProfile?.id || ''),
++              worker_requested_model: String(result.executionProfile?.model || ''),
++              worker_fallback_model: String(result.executionProfile?.fallback_model || ''),
++              worker_reasoning_effort: String(result.executionProfile?.reasoning_effort || ''),
+               trace: String(result.config?.trace || result.state?.trace || ''),
+               prompt_mode: String(result.promptMode || 'normal'),
+                 prompt_file: String(
+@@ -710,6 +724,10 @@ jobs:
+             needs.evaluate.outputs.action != 'conflict' }}
+       prompt_file: ${{ needs.evaluate.outputs.prompt_file }}
+       mode: keepalive
++      execution_profile: ${{ needs.evaluate.outputs.execution_profile }}
++      codex_model: ${{ needs.evaluate.outputs.worker_requested_model }}
++      codex_fallback_models: ${{ needs.evaluate.outputs.worker_fallback_model }}
++      codex_reasoning_effort: ${{ needs.evaluate.outputs.worker_reasoning_effort || 'high' }}
+       pr_number: ${{ needs.evaluate.outputs.pr_number }}
+       pr_ref: ${{ needs.evaluate.outputs.pr_ref }}
+       appendix: ${{ needs.evaluate.outputs.task_appendix }}
+@@ -1893,6 +1911,9 @@ jobs:
+     with:
+       prompt_file: .github/codex/prompts/autofix_from_ci_failure.md
+       mode: autofix
++      execution_profile: codex-routine
++      codex_model: gpt-5.6-terra
++      codex_reasoning_effort: medium
+       pr_number: ${{ needs.prepare.outputs.pr_number }}
+       pr_ref: ${{ needs.prepare.outputs.head_ref }}
+       appendix: ${{ needs.prepare.outputs.appendix }}
+diff --git a/templates/consumer-repo/config/model_registry.json b/templates/consumer-repo/config/model_registry.json
+index fd15ca1b..bb6fe0c1 100644
+--- a/templates/consumer-repo/config/model_registry.json
++++ b/templates/consumer-repo/config/model_registry.json
+@@ -247,6 +247,7 @@
+       "provider": "openai",
+       "api": "chat",
+       "lifecycle": "current",
++      "legacy_bundled_slot_pin": true,
+       "positioning": "incumbent-verifier",
+       "source_ids": [
+         "openai-current-models-2026-07-10"
+diff --git a/templates/consumer-repo/tools/llm_registry.py b/templates/consumer-repo/tools/llm_registry.py
+index c8ec92c5..8a4943c4 100644
+--- a/templates/consumer-repo/tools/llm_registry.py
++++ b/templates/consumer-repo/tools/llm_registry.py
+@@ -34,6 +34,7 @@ class ModelRegistryEntry:
+     model: str
+     blocked: bool
+     lifecycle: str = "unknown"
++    legacy_bundled_slot_pin: bool = False
+     # Retained as optional compatibility attributes for callers migrating from v1.
+     # They are deliberately not inputs to model selection.
+     quality: dict[str, float] | None = None
+@@ -151,6 +152,7 @@ def load_model_registry() -> list[ModelRegistryEntry]:
+                 model=model,
+                 blocked=bool(raw_entry.get("blocked", False)),
+                 lifecycle=str(raw_entry.get("lifecycle", "unknown")).strip().lower(),
++                legacy_bundled_slot_pin=bool(raw_entry.get("legacy_bundled_slot_pin", False)),
+             )
+         )
+     return entries
+@@ -381,12 +383,19 @@ def load_slot_config(*, github_default_model: str = "") -> list[SlotDefinition]:
+             and not configured_profile
+             and explicit_entry
+             and not (explicit_entry.blocked or explicit_entry.lifecycle != "current")
++            # Only registry-marked bundled OpenAI legacy pins yield to the
++            # reviewed selection. Preserve other current pins and explicit files.
++            and not (
++                provider == PROVIDER_OPENAI
++                and explicit_entry.legacy_bundled_slot_pin
++                and ENV_SLOT_CONFIG not in os.environ
++            )
+         ):
+             model = explicit_model
+         elif provider and explicit_model and explicit_model != model:
+             # A caller-supplied slot file is an allowlist and must fail closed.
+-            # The repository's bundled legacy file is advisory: retain a
+-            # current, unblocked pin; otherwise use the reviewed selection.
++            # The known legacy bundled OpenAI pins are advisory; other current
++            # bundled pins were handled above.
+             if ENV_SLOT_CONFIG in os.environ:
+                 logger.warning(
+                     "Skipping unresolved slot model pin %s/%s; reviewed %s selection is %s",
+diff --git a/tests/tools/test_llm_registry_selection.py b/tests/tools/test_llm_registry_selection.py
+index 325101c9..0ab7bd82 100644
+--- a/tests/tools/test_llm_registry_selection.py
++++ b/tests/tools/test_llm_registry_selection.py
+@@ -365,6 +365,73 @@ def test_bundled_stale_slot_pin_uses_reviewed_registry_selection(
+     ]
+ 
+ 
++@pytest.mark.parametrize("legacy_pin", ["gpt-5.2", "gpt-5.4"])
++def test_bundled_legacy_openai_pin_uses_reviewed_terra(
++    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, legacy_pin: str
++) -> None:
++    registry_path = tmp_path / "registry.json"
++    slots_path = tmp_path / "slots.json"
++    _write_registry(registry_path, selected="gpt-5.6-terra")
++    payload = json.loads(registry_path.read_text(encoding="utf-8"))
++    payload["models"].extend(
++        {
++            "provider": "openai",
++            "model_id": model,
++            "lifecycle": "current",
++            "legacy_bundled_slot_pin": model == "gpt-5.4",
++        }
++        for model in ("gpt-5.4", "gpt-5.6-terra")
++    )
++    registry_path.write_text(json.dumps(payload), encoding="utf-8")
++    _write_slots(slots_path, model=legacy_pin, profile="")
++    monkeypatch.setenv(registry.ENV_MODEL_REGISTRY_CONFIG, str(registry_path))
++    monkeypatch.delenv(registry.ENV_SLOT_CONFIG, raising=False)
++    monkeypatch.setattr(registry, "DEFAULT_SLOT_CONFIG_PATH", slots_path)
++
++    assert registry.load_slot_config()[0].model == "gpt-5.6-terra"
++
++
++@pytest.mark.parametrize("modern_pin", ["gpt-5.6-sol", "gpt-6-astra"])
++def test_bundled_modern_openai_pin_is_preserved(
++    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, modern_pin: str
++) -> None:
++    registry_path = tmp_path / "registry.json"
++    slots_path = tmp_path / "slots.json"
++    _write_registry(registry_path)
++    payload = json.loads(registry_path.read_text(encoding="utf-8"))
++    payload["models"].append({"provider": "openai", "model_id": modern_pin, "lifecycle": "current"})
++    registry_path.write_text(json.dumps(payload), encoding="utf-8")
++    _write_slots(slots_path, model=modern_pin, profile="")
++    monkeypatch.setenv(registry.ENV_MODEL_REGISTRY_CONFIG, str(registry_path))
++    monkeypatch.delenv(registry.ENV_SLOT_CONFIG, raising=False)
++    monkeypatch.setattr(registry, "DEFAULT_SLOT_CONFIG_PATH", slots_path)
++
++    assert registry.load_slot_config()[0].model == modern_pin
++
++
++def test_explicit_external_legacy_pin_is_preserved(
++    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
++) -> None:
++    registry_path = tmp_path / "registry.json"
++    slots_path = tmp_path / "slots.json"
++    _write_registry(registry_path)
++    payload = json.loads(registry_path.read_text(encoding="utf-8"))
++    payload["models"].append(
++        {
++            "provider": "openai",
++            "model_id": "gpt-5.4",
++            "lifecycle": "current",
++            "legacy_bundled_slot_pin": True,
++        }
++    )
++    registry_path.write_text(json.dumps(payload), encoding="utf-8")
++    _write_slots(slots_path, model="gpt-5.4", profile="")
++    monkeypatch.setenv(registry.ENV_MODEL_REGISTRY_CONFIG, str(registry_path))
++    monkeypatch.setenv(registry.ENV_SLOT_CONFIG, str(slots_path))
++
++    assert registry.load_slot_config()[0].model == "gpt-5.4"
++
++
+ def test_bundled_stale_slot_pin_is_debug_only(
+     monkeypatch: pytest.MonkeyPatch, tmp_path: Path, caplog: pytest.LogCaptureFixture
+ ) -> None:
+diff --git a/tests/workflows/test_workflow_llm_installs.py b/tests/workflows/test_workflow_llm_installs.py
+index b49e4188..19209456 100644
+--- a/tests/workflows/test_workflow_llm_installs.py
++++ b/tests/workflows/test_workflow_llm_installs.py
+@@ -25,6 +25,7 @@ REFERENCE_PACK_RUNNER_USES = "./.workflows-lib/.github/actions/agent-reference-p
+ REFERENCE_PACK_FIXTURES = Path("tests/workflows/fixtures/reference_packs")
+ MIN_CODEX_CLI_BY_RUN_MODEL = {
+     "gpt-6-astra": (0, 153, 2),
++    "gpt-5.6-sol": (0, 153, 2),
+     "gpt-5.6-terra": (0, 144, 1),
+     "gpt-5.5": (0, 125, 0),
+ }
+@@ -407,16 +408,17 @@ def test_codex_auth_health_fails_when_secret_is_unusable() -> None:
+     assert "exit 1" in run_script
+ 
+ 
+-def test_reusable_codex_run_prefers_gpt_56_terra_with_non_codex_fallback() -> None:
++def test_reusable_codex_run_prefers_sol_high_with_non_codex_fallback() -> None:
+     workflow = _load_workflow(REUSABLE_CODEX_RUN)
+     inputs = _workflow_call_inputs(workflow)
+     resolve_step = _find_step_by_name(workflow, "Resolve Codex run model")
+     run_step = _find_step_by_name(workflow, "Run Codex")
+ 
+-    assert inputs["codex_model"]["default"] == "gpt-6-astra"
++    assert inputs["codex_model"]["default"] == "gpt-5.6-sol"
++    assert inputs["codex_reasoning_effort"]["default"] == "high"
+     assert inputs["codex_cli_version"]["default"] == "0.153.2"
+     assert resolve_step.get("id") == "codex_model"
+-    assert resolve_step["env"]["DEFAULT_CODEX_MODEL"] == "gpt-6-astra"
++    assert resolve_step["env"]["DEFAULT_CODEX_MODEL"] == "gpt-5.6-sol"
+     assert inputs["codex_fallback_models"]["default"] == "gpt-5.5"
+     assert resolve_step["env"]["FALLBACK_CODEX_MODELS"] == "${{ inputs.codex_fallback_models }}"
+     assert "fallback-unsupported-chatgpt-codex-model" in resolve_step["run"]
+@@ -429,9 +431,32 @@ def test_reusable_codex_run_prefers_gpt_56_terra_with_non_codex_fallback() -> No
+     assert "CODEX_MODEL_CANDIDATES" in run_step["env"]
+     assert 'for codex_model in "${codex_models[@]}"; do' in run_step["run"]
+     assert '--model "$codex_model"' in run_step["run"]
++    assert 'REASONING_EFFORT="${REASONING_EFFORT:-high}"' in run_step["run"]
++    assert '-c "model_reasoning_effort=\\"$REASONING_EFFORT\\""' in run_step["run"]
+     assert "runtime-fallback-model-unavailable" in run_step["run"]
+ 
+ 
++@pytest.mark.parametrize(
++    ("requested_effort", "expected_effort"),
++    [("", "high"), ("xhigh", "xhigh"), ("max", "max")],
++)
++def test_reusable_codex_run_accepts_old_registry_empty_effort_and_manual_escalation(
++    requested_effort: str, expected_effort: str
++) -> None:
++    workflow = _load_workflow(REUSABLE_CODEX_RUN)
++    run_script = _find_step_by_name(workflow, "Run Codex")["run"]
++    start = run_script.index('REASONING_EFFORT="${REASONING_EFFORT:-high}"')
++    end = run_script.index("esac", start) + len("esac")
++    result = subprocess.run(
++        ["bash", "-c", run_script[start:end] + '\nprintf "%s" "$REASONING_EFFORT"'],
++        env={**os.environ, "REASONING_EFFORT": requested_effort},
++        capture_output=True,
++        text=True,
++        check=True,
++    )
++    assert result.stdout == expected_effort
++
++
+ def test_reusable_codex_run_model_cli_compatibility_contract() -> None:
+     workflow = _load_workflow(REUSABLE_CODEX_RUN)
+     inputs = _workflow_call_inputs(workflow)
+diff --git a/tools/llm_registry.py b/tools/llm_registry.py
+index c8ec92c5..8a4943c4 100644
+--- a/tools/llm_registry.py
++++ b/tools/llm_registry.py
+@@ -34,6 +34,7 @@ class ModelRegistryEntry:
+     model: str
+     blocked: bool
+     lifecycle: str = "unknown"
++    legacy_bundled_slot_pin: bool = False
+     # Retained as optional compatibility attributes for callers migrating from v1.
+     # They are deliberately not inputs to model selection.
+     quality: dict[str, float] | None = None
+@@ -151,6 +152,7 @@ def load_model_registry() -> list[ModelRegistryEntry]:
+                 model=model,
+                 blocked=bool(raw_entry.get("blocked", False)),
+                 lifecycle=str(raw_entry.get("lifecycle", "unknown")).strip().lower(),
++                legacy_bundled_slot_pin=bool(raw_entry.get("legacy_bundled_slot_pin", False)),
+             )
+         )
+     return entries
+@@ -381,12 +383,19 @@ def load_slot_config(*, github_default_model: str = "") -> list[SlotDefinition]:
+             and not configured_profile
+             and explicit_entry
+             and not (explicit_entry.blocked or explicit_entry.lifecycle != "current")
++            # Only registry-marked bundled OpenAI legacy pins yield to the
++            # reviewed selection. Preserve other current pins and explicit files.
++            and not (
++                provider == PROVIDER_OPENAI
++                and explicit_entry.legacy_bundled_slot_pin
++                and ENV_SLOT_CONFIG not in os.environ
++            )
+         ):
+             model = explicit_model
+         elif provider and explicit_model and explicit_model != model:
+             # A caller-supplied slot file is an allowlist and must fail closed.
+-            # The repository's bundled legacy file is advisory: retain a
+-            # current, unblocked pin; otherwise use the reviewed selection.
++            # The known legacy bundled OpenAI pins are advisory; other current
++            # bundled pins were handled above.
+             if ENV_SLOT_CONFIG in os.environ:
+                 logger.warning(
+                     "Skipping unresolved slot model pin %s/%s; reviewed %s selection is %s",

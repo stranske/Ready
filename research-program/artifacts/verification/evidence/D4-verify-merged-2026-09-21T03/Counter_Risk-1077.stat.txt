@@ -1,0 +1,19 @@
+commit 32a24eb87d883090953f8adda70beb3e08b873c4
+Author: stranske <stranske@gmail.com>
+Date:   Sun Sep 20 00:23:40 2026 -0500
+
+    Reject PDF export when distribution output is disabled (#1077)
+    
+    * fix: reject PDF export without distribution output
+    
+    * chore(codex-keepalive): apply updates (PR #1077)
+    
+    * chore(codex-keepalive): apply updates (PR #1077)
+    
+    ---------
+    
+    Co-authored-by: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+
+ src/counter_risk/pipeline/run.py                   | 11 +++
+ .../pipeline/test_monthly_pipeline_ppt_outputs.py  | 81 ++++++++++++++++++++++
+ 2 files changed, 92 insertions(+)

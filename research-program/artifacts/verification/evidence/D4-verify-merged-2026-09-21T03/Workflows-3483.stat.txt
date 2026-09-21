@@ -1,0 +1,21 @@
+commit 982c39f074f8e52611ad10e471cbeda7712f0a94
+Author: stranske <stranske@gmail.com>
+Date:   Sat Sep 19 22:44:01 2026 -0500
+
+    Pin weekly repo-review Codex child to Astra High (#3483)
+    
+    * fix(repo-review): pin substantive Codex reviewer to Astra High
+    
+    * style(repo-review): format model pin assertions
+    
+    * Guard Astra CLI compatibility and keep Codex body writing on Terra
+    
+    ---------
+    
+    Co-authored-by: closer-lane <automation@stranske.dev>
+
+ config/repo_review_automation.toml              |   8 +
+ scripts/repo_review_body_writer.py              |   1 +
+ scripts/repo_review_round2_runner.py            |  41 +++++
+ tests/scripts/test_repo_review_round2_runner.py | 201 +++++++++++++++++++++++-
+ 4 files changed, 246 insertions(+), 5 deletions(-)

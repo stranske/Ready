@@ -1,0 +1,56 @@
+commit 3adc29fdd019b08a96cdbc4694c06a043b00fcd9
+Author: stranske <stranske@gmail.com>
+Date:   Sat Sep 19 23:23:49 2026 -0500
+
+    feat(store): validate structured-store references and evidence (#25)
+    
+    * feat(store): validate semantic references and evidence projection for issue 6
+    
+    * chore(codex-keepalive): apply updates (PR #25)
+    
+    * chore(codex-autofix): apply updates (PR #25)
+    
+    * fix(store): address CodeRabbit review threads on evidence projection
+    
+    Pin jsonschema below 4.23, enforce enclosing fact_ref on native and legacy
+    pointers, reject non-finite JSON constants, preserve optional evidence fields,
+    and add pub.src plus packaged console-entry regression coverage.
+    
+    Co-authored-by: Cursor <cursoragent@cursor.com>
+    
+    * chore(codex-keepalive): apply updates (PR #25)
+    
+    * chore(autofix): formatting/lint
+    
+    * chore(codex-autofix): apply updates (PR #25)
+    
+    * chore(autofix): formatting/lint
+    
+    ---------
+    
+    Co-authored-by: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+    Co-authored-by: Cursor <cursoragent@cursor.com>
+    Co-authored-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
+
+ docs/STRUCTURED_STORE_VALIDATION.md                |  39 +++
+ pyproject.toml                                     |   5 +
+ requirements-dev.lock                              |  46 +++-
+ requirements.lock                                  |  17 ++
+ scripts/aggregate_agent_metrics.py                 |   5 +-
+ scripts/langchain/issue_optimizer.py               |   2 +-
+ scripts/langchain/structured_output.py             |   2 +-
+ scripts/orchestrator_skill.py                      |   6 +-
+ scripts/validate_structured_store.py               |  12 +
+ src/deliverable_render/html.py                     |   2 +-
+ .../{store.py => store/__init__.py}                |   0
+ .../store/evidence-object-v1.schema.json           |  61 +++++
+ src/deliverable_render/store/schema.py             |  42 ++++
+ src/deliverable_render/store/validate.py           | 279 +++++++++++++++++++++
+ tests/fixtures/stores/corrupted_dollar_amount.json |  10 +
+ tests/fixtures/stores/orphan_entry_id.json         |  10 +
+ tests/fixtures/stores/valid_evidence_store.json    |  18 ++
+ tests/store/test_dollar_substitution_corruption.py |  43 ++++
+ tests/store/test_evidence_object_projection.py     | 148 +++++++++++
+ tests/store/test_orphan_id_detection.py            |  41 +++
+ tests/store/test_schema.py                         |  13 +
+ 21 files changed, 785 insertions(+), 16 deletions(-)

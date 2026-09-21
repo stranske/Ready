@@ -1,0 +1,13 @@
+commit 372cbc25d2c3bbe5c7418391e3b48651cfb5b09a
+Author: stranske <stranske@gmail.com>
+Date:   Sat Sep 19 21:41:36 2026 -0500
+
+    fix(ci): align acceptance-test dependency bootstrap with source (#39)
+    
+    * fix(ci): align acceptance-test dependency bootstrap with source
+    
+    * Align Gate dependency bootstrap with merged source
+
+ .github/workflows/pr-00-gate.yml        | 47 +++++++++++++++++++-
+ tests/test_gate_project_dependencies.py | 76 +++++++++++++++++++++++++++++++++
+ 2 files changed, 122 insertions(+), 1 deletion(-)

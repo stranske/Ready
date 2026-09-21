@@ -1,0 +1,44 @@
+commit 6e00279d2ab8e7f1a600b32647a7d86d86c5e777
+Author: stranske <stranske@gmail.com>
+Date:   Sat Sep 19 20:26:42 2026 -0500
+
+    fix(scripts): map the `docx` import to python-docx in the shared dependency checker (#3462)
+    
+    * fix(scripts): map the `docx` import to python-docx
+    
+    `MODULE_TO_PACKAGE` in the shared test-dependency checker already carries
+    `pptx -> python-pptx`, but not its sibling `docx -> python-docx`. Any consumer
+    repo whose tests import `docx` therefore has `python-docx` reported as an
+    undeclared dependency even when it is declared in `pyproject.toml`, the
+    reusable Python CI's "Auto-fix missing dependencies" step runs and exits 1, and
+    both matrix legs fail with no test ever executed.
+    
+    Observed on stranske/Doc-Lineage#28 (run 35238378819, `python ci / python 3.12`
+    and `3.13`, 15s each): "Check for undeclared test dependencies" flags `docx`
+    while `python-docx==1.2.0` is declared in both `[project] dependencies` and the
+    dev extra.
+    
+    Applied to `scripts/sync_test_dependencies.py` and the consumer-repo template
+    copy in lockstep, since consumers run the synced copy.
+    
+    Test gate: `tests/scripts/test_sync_test_dependencies_mapping.py` asserts the
+    mapping in both copies, and a new end-to-end case writes a test file importing
+    `docx`, declares only `python-docx`, and asserts nothing is reported missing.
+    Deliberately removing the mapping fails all three cases; restoring it passes.
+    
+    Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>
+    
+    * chore(autofix): formatting/lint
+    
+    * test(deps): exercise docx mapping through both synchronizers
+    
+    ---------
+    
+    Co-authored-by: Claude Opus 5 (1M context) <noreply@anthropic.com>
+    Co-authored-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
+    Co-authored-by: closer-lane <automation@stranske.dev>
+
+ scripts/sync_test_dependencies.py                  |  1 +
+ .../scripts/sync_test_dependencies.py              |  1 +
+ .../scripts/test_sync_test_dependencies_mapping.py | 38 ++++++++++++++++++++++
+ 3 files changed, 40 insertions(+)

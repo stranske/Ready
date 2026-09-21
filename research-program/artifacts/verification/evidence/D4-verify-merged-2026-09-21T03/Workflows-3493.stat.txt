@@ -1,0 +1,22 @@
+commit 9a576d7aba32e52e77fae2b99c6b2b9b4c5e5253
+Author: stranske <stranske@gmail.com>
+Date:   Sun Sep 20 07:39:12 2026 -0500
+
+    Guard authority confirmation against PR state changes (#3493)
+    
+    * Guard authority receipts against PR state changes
+    
+    * Recover stale confirmed authority challenges
+    
+    * Test PR head change before authority claim write
+    
+    ---------
+    
+    Co-authored-by: closer-lane <automation@stranske.dev>
+
+ .../__tests__/keepalive-authority-state.test.js    | 110 ++++++++++++++++++++-
+ .github/scripts/keepalive_authority_state.js       |  47 +++++++--
+ docs/keepalive/Agents.md                           |   2 +
+ docs/keepalive/GoalsAndPlumbing.md                 |   2 +
+ .../.github/scripts/keepalive_authority_state.js   |  47 +++++++--
+ 5 files changed, 187 insertions(+), 21 deletions(-)

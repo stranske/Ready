@@ -1,0 +1,16 @@
+commit fb2a8fc914fabc3608478d0192332893668f5f93
+Author: stranske <stranske@gmail.com>
+Date:   Sun Sep 20 01:45:58 2026 -0500
+
+    fix(sync): address canary review findings in source (#3486)
+    
+    Co-authored-by: closer-lane <automation@stranske.dev>
+
+ docs/contracts/document-mirror-v1.md          |  8 +++++---
+ docs/contracts/mosaic-core-v1.md              |  8 +++++---
+ docs/contracts/output-substrate-v1.md         |  9 ++++++---
+ scripts/runner_lib/core.py                    |  2 +-
+ scripts/validate_run_contract.py              |  3 ++-
+ tests/contracts/test_validate_run_contract.py | 14 ++++++++++++++
+ tests/scripts/test_runner_lib.py              | 28 +++++++++++++++++++++++++++
+ 7 files changed, 61 insertions(+), 11 deletions(-)

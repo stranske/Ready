@@ -1,0 +1,282 @@
+commit 00a383beb7002055c0df460784543e0be85f384f
+Author: stranske <stranske@gmail.com>
+Date:   Sun Sep 20 07:39:18 2026 -0500
+
+    Keep manifest scans within the resolved library root (#53)
+    
+    * Reject symlinked documents outside manifest root
+    
+    * chore(codex-keepalive): apply updates (PR #53)
+    
+    * Read manifest documents through root-anchored descriptors
+    
+    * Fail manifest scan on unexpected file errors
+    
+    ---------
+    
+    Co-authored-by: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+
+diff --git a/src/doc_lineage/manifest.py b/src/doc_lineage/manifest.py
+index 2cc34ac..6311b88 100644
+--- a/src/doc_lineage/manifest.py
++++ b/src/doc_lineage/manifest.py
+@@ -2,8 +2,11 @@
+ 
+ from __future__ import annotations
+ 
++import errno
+ import json
+ import mimetypes
++import os
++import stat
+ from collections import defaultdict
+ from dataclasses import asdict, dataclass, replace
+ from datetime import UTC, datetime
+@@ -51,8 +54,7 @@ class ManifestRow:
+         return json.dumps(payload, sort_keys=True, separators=(",", ":"))
+ 
+ 
+-def _received_at(path: Path) -> str:
+-    timestamp = path.stat().st_mtime
++def _received_at(timestamp: float) -> str:
+     return datetime.fromtimestamp(timestamp, tz=UTC).isoformat()
+ 
+ 
+@@ -62,18 +64,49 @@ def _guess_mime(path: Path) -> str:
+ 
+ 
+ def _iter_documents(root: Path) -> list[Path]:
++    resolved_root = root.resolve()
+     documents: list[Path] = []
+-    for path in sorted(root.rglob("*")):
+-        if not path.is_file():
++    for path in sorted(resolved_root.rglob("*")):
++        if path.is_symlink() or not path.is_file():
+             continue
+         if path.name.startswith("."):
+             continue
+         if path.suffix.lower() not in DOCUMENT_SUFFIXES:
+             continue
++        if not path.resolve().is_relative_to(resolved_root):
++            continue
+         documents.append(path)
+     return documents
+ 
+ 
++def _read_document_under_root(root_fd: int, relative: Path) -> tuple[bytes, os.stat_result] | None:
++    """Read bytes and metadata from one root-anchored, no-follow file descriptor."""
++    if not hasattr(os, "O_NOFOLLOW") or not hasattr(os, "O_DIRECTORY"):
++        raise RuntimeError("secure manifest scanning requires no-follow directory opens")
++    directory_fd = os.dup(root_fd)
++    try:
++        for part in relative.parts[:-1]:
++            next_fd = os.open(
++                part, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW, dir_fd=directory_fd
++            )
++            os.close(directory_fd)
++            directory_fd = next_fd
++        file_fd = os.open(relative.name, os.O_RDONLY | os.O_NOFOLLOW, dir_fd=directory_fd)
++        with os.fdopen(file_fd, "rb") as source:
++            metadata = os.fstat(source.fileno())
++            if not stat.S_ISREG(metadata.st_mode):
++                return None
++            return source.read(), metadata
++    except OSError as error:
++        # A candidate can disappear or become a symlink after directory traversal.
++        # I/O, permissions, or descriptor exhaustion must fail the manifest.
++        if error.errno in {errno.ENOENT, errno.ENOTDIR, errno.ELOOP}:
++            return None
++        raise
++    finally:
++        os.close(directory_fd)
++
++
+ def _assign_supersedes(rows: list[ManifestRow]) -> list[ManifestRow]:
+     """Link increasing numeric prefixes, treating an unnumbered file as the original.
+ 
+@@ -144,24 +177,34 @@ def build_manifest_rows(root: Path) -> list[ManifestRow]:
+     if not root.is_dir():
+         raise ValueError(f"library root must be an existing directory: {root}")
+     rows: list[ManifestRow] = []
+-    for file_path in _iter_documents(root):
+-        identity = compute_identity(root, file_path)
+-        relative_path = file_path.relative_to(root).as_posix()
+-        rows.append(
+-            ManifestRow(
+-                stable_id=identity.stable_id,
+-                sha256=identity.sha256,
+-                path=relative_path,
+-                entity_slug=identity.entity_slug,
+-                category=identity.category,
+-                as_of=identity.as_of,
+-                received_at=_received_at(file_path),
+-                bytes=file_path.stat().st_size,
+-                mime=_guess_mime(file_path),
+-                supersedes=None,
+-                text_layer="unknown",
++    if not hasattr(os, "O_NOFOLLOW") or not hasattr(os, "O_DIRECTORY"):
++        raise RuntimeError("secure manifest scanning requires no-follow directory opens")
++    root_fd = os.open(root, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
++    try:
++        for file_path in _iter_documents(root):
++            relative = file_path.relative_to(root)
++            opened = _read_document_under_root(root_fd, relative)
++            if opened is None:
++                continue
++            content, metadata = opened
++            identity = compute_identity(root, file_path, content=content)
++            rows.append(
++                ManifestRow(
++                    stable_id=identity.stable_id,
++                    sha256=identity.sha256,
++                    path=relative.as_posix(),
++                    entity_slug=identity.entity_slug,
++                    category=identity.category,
++                    as_of=identity.as_of,
++                    received_at=_received_at(metadata.st_mtime),
++                    bytes=metadata.st_size,
++                    mime=_guess_mime(file_path),
++                    supersedes=None,
++                    text_layer="unknown",
++                )
+             )
+-        )
++    finally:
++        os.close(root_fd)
+     rows = _assign_supersedes(rows)
+     return sorted(rows, key=lambda row: row.path)
+ 
+diff --git a/tests/test_identity_manifest.py b/tests/test_identity_manifest.py
+index ce28d15..6c71b3c 100644
+--- a/tests/test_identity_manifest.py
++++ b/tests/test_identity_manifest.py
+@@ -2,6 +2,7 @@
+ 
+ from __future__ import annotations
+ 
++import errno
+ import json
+ import os
+ import shutil
+@@ -10,7 +11,8 @@ from pathlib import Path
+ 
+ import pytest
+ 
+-from doc_lineage.identity import compute_identity, sha256_bytes
++import doc_lineage.manifest as manifest_module
++from doc_lineage.identity import DocumentIdentity, compute_identity, sha256_bytes
+ from doc_lineage.manifest import build_manifest_rows, read_manifest, write_manifest
+ 
+ FIXTURE_ROOT = Path(__file__).parent / "fixtures" / "library"
+@@ -368,6 +370,111 @@ def test_document_output_inside_library_is_rejected(tmp_path: Path, existing: bo
+         assert not output.exists()
+ 
+ 
++@pytest.mark.parametrize("relative_target", [False, True], ids=["absolute", "relative"])
++def test_manifest_does_not_hash_out_of_root_document_symlink(
++    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, relative_target: bool
++) -> None:
++    library = tmp_path / "library"
++    documents = library / "alpha" / "reports"
++    documents.mkdir(parents=True)
++    regular = documents / "inside.pdf"
++    regular.write_bytes(b"inside document")
++    outside_content = b"external document must not be scanned"
++    outside = tmp_path / "outside.pdf"
++    outside.write_bytes(outside_content)
++    link_target = Path(os.path.relpath(outside, documents)) if relative_target else outside
++    (documents / "linked.pdf").symlink_to(link_target)
++
++    scanned_paths: list[Path] = []
++    original_compute_identity = manifest_module.compute_identity
++
++    def record_identity(
++        root: Path, file_path: Path, *, content: bytes | None = None
++    ) -> DocumentIdentity:
++        scanned_paths.append(file_path)
++        return original_compute_identity(root, file_path, content=content)
++
++    monkeypatch.setattr(manifest_module, "compute_identity", record_identity)
++    rows = build_manifest_rows(library)
++
++    assert all(row.sha256 != sha256_bytes(outside_content) for row in rows)
++    assert [row.path for row in rows] == ["alpha/reports/inside.pdf"]
++    assert scanned_paths == [regular]
++
++
++def test_manifest_does_not_include_in_root_document_symlink(tmp_path: Path) -> None:
++    library = tmp_path / "library"
++    documents = library / "alpha" / "reports"
++    documents.mkdir(parents=True)
++    (documents / "inside.pdf").write_bytes(b"inside document")
++    (documents / "linked.pdf").symlink_to("inside.pdf")
++
++    rows = build_manifest_rows(library)
++
++    assert [row.path for row in rows] == ["alpha/reports/inside.pdf"]
++
++
++@pytest.mark.parametrize("replace_directory", [False, True], ids=["file", "directory"])
++def test_manifest_rejects_symlink_swapped_after_listing(
++    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, replace_directory: bool
++) -> None:
++    library = tmp_path / "library"
++    documents = library / "alpha" / "reports"
++    documents.mkdir(parents=True)
++    candidate = documents / "inside.pdf"
++    candidate.write_bytes(b"inside document")
++    outside_directory = tmp_path / "outside"
++    outside_directory.mkdir()
++    outside = outside_directory / "inside.pdf"
++    outside.write_bytes(b"outside document must not be scanned")
++    original_iter = manifest_module._iter_documents
++
++    def swap_after_listing(root: Path) -> list[Path]:
++        listed = original_iter(root)
++        if replace_directory:
++            documents.rename(library / "alpha" / "reports-moved")
++            documents.symlink_to(outside_directory, target_is_directory=True)
++        else:
++            candidate.unlink()
++            candidate.symlink_to(outside)
++        return listed
++
++    monkeypatch.setattr(manifest_module, "_iter_documents", swap_after_listing)
++
++    assert build_manifest_rows(library) == []
++
++
++def test_manifest_propagates_unexpected_document_read_error(
++    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
++) -> None:
++    library = tmp_path / "library"
++    document = library / "alpha" / "reports" / "inside.pdf"
++    document.parent.mkdir(parents=True)
++    document.write_bytes(b"inside document")
++    original_open = manifest_module.os.open
++
++    def fail_document_open(path: str | Path, flags: int, *args: object, **kwargs: object) -> int:
++        if path == "inside.pdf":
++            raise OSError(errno.EIO, "simulated read failure")
++        return original_open(path, flags, *args, **kwargs)
++
++    monkeypatch.setattr(manifest_module.os, "open", fail_document_open)
++
++    with pytest.raises(OSError, match="simulated read failure"):
++        build_manifest_rows(library)
++
++
++def test_manifest_reports_missing_secure_open_support(
++    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
++) -> None:
++    library = tmp_path / "library"
++    library.mkdir()
++    monkeypatch.delattr(manifest_module.os, "O_NOFOLLOW")
++
++    with pytest.raises(RuntimeError, match="requires no-follow directory opens"):
++        build_manifest_rows(library)
++
++
+ @pytest.mark.parametrize("annotation", ["present", "absent"])
+ def test_text_layer_annotation_survives_unchanged_content(tmp_path: Path, annotation: str) -> None:
+     library = tmp_path / "library"

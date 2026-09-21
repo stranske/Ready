@@ -1,0 +1,3031 @@
+commit 2e03bfbc33f972b2505fab86589fcb3be9a6bc3d
+Author: stranske <stranske@gmail.com>
+Date:   Sun Sep 20 05:39:09 2026 -0500
+
+    Prevent replay of signed keepalive authority challenges (#3489)
+    
+    * fix(keepalive): consume signed authority challenges once per PR
+    
+    * fix(keepalive): use pinned Octokit requests and refresh drift baseline
+    
+    * style: format authority delivery test for CI
+    
+    * test: align summary/reporter permission assertions with write scope
+    
+    PR3491 elevates summary and reporter App token mint steps to
+    permission-contents: write for authority-challenge receipt writes.
+    Update consolidation tests after rebasing onto merged PR3490.
+    
+    Co-authored-by: Cursor <cursoragent@cursor.com>
+    
+    * test: reconcile authority delivery manifest and bridge diagnostics
+    
+    * fix: rotate confirmed authority generations and defer receipt confirmation
+    
+    Renew challenge generations after a confirmed boundary is human-resolved so
+    recurring auth failures are not stuck on a terminal receipt. Write confirmed
+    authority state only after needs-human is durably applied, and pass evaluate
+    outputs through step env vars to satisfy zizmor template-expansion checks.
+    
+    Co-authored-by: Cursor <cursoragent@cursor.com>
+    
+    * test: keep authority label stub in sync with PR state
+    
+    * fix: recover expired and unconfirmed authority challenges
+    
+    ---------
+    
+    Co-authored-by: closer-lane <automation@stranske.dev>
+    Co-authored-by: Cursor <cursoragent@cursor.com>
+
+diff --git a/.github/scripts/__tests__/keepalive-authority-state.test.js b/.github/scripts/__tests__/keepalive-authority-state.test.js
+new file mode 100644
+index 00000000..82b9b7b4
+--- /dev/null
++++ b/.github/scripts/__tests__/keepalive-authority-state.test.js
+@@ -0,0 +1,227 @@
++'use strict';
++
++const test = require('node:test');
++const assert = require('node:assert/strict');
++const crypto = require('node:crypto');
++const {
++  beginChallenge,
++  confirmChallenge,
++  consumeChallenge,
++  readAuthorityState,
++} = require('../keepalive_authority_state');
++
++const repository = 'owner/repo';
++const prNumber = 42;
++const fingerprint = 'a'.repeat(64);
++const headSha = 'd'.repeat(40);
++const ownerAttempt = 'owner/repo:100:1';
++
++function status(code) {
++  const error = new Error(`HTTP ${code}`);
++  error.status = code;
++  return error;
++}
++
++function fakeGitHub() {
++  let branch = false;
++  let content = null;
++  let beforePut = null;
++  let afterPut = null;
++  const request = async (method, path, body) => {
++    if (path.includes('/git/ref/heads/main') && method === 'GET') {
++      return { object: { sha: '1'.repeat(40) } };
++    }
++    if (path.endsWith('/pulls/42') && method === 'GET') {
++      return { state: 'open', head: { sha: headSha }, labels: [{ name: 'needs-human' }] };
++    }
++    if (path.includes('/git/ref/heads/keepalive-authority-state') && method === 'GET') {
++      if (!branch) throw status(404);
++      return { object: { sha: '2'.repeat(40) } };
++    }
++    if (path.endsWith('/git/refs') && method === 'POST') {
++      if (branch) throw status(422);
++      branch = true;
++      return {};
++    }
++    if (!path.includes('/contents/.github/keepalive-authority/42.json')) {
++      throw new Error(`Unexpected ${method} ${path}`);
++    }
++    if (method === 'GET') {
++      if (!branch || !content) throw status(404);
++      return { sha: crypto.createHash('sha1').update(content).digest('hex'), encoding: 'base64', content };
++    }
++    if (method === 'PUT') {
++      if (beforePut) await beforePut();
++      const sha = content ? crypto.createHash('sha1').update(content).digest('hex') : undefined;
++      if (body.sha !== sha) throw status(409);
++      content = body.content;
++      if (afterPut) await afterPut();
++      return {};
++    }
++    throw new Error(`Unexpected ${method} ${path}`);
++  };
++  return {
++    request,
++    setBeforePut(fn) { beforePut = fn; },
++    setAfterPut(fn) { afterPut = fn; },
++    expireChallenge() {
++      const state = JSON.parse(Buffer.from(content, 'base64').toString('utf8'));
++      state.expires_at = new Date(Date.now() - 1).toISOString();
++      content = Buffer.from(JSON.stringify(state)).toString('base64');
++    },
++    get content() { return content; },
++  };
++}
++
++function boundary() {
++  const dueAt = new Date(Date.now() - 60_000).toISOString();
++  const expiresAt = new Date(Date.now() + 3_600_000).toISOString();
++  return { dueAt, expiresAt };
++}
++
++function claim(state, nonce = 'b'.repeat(64)) {
++  return {
++    generation: state.generation,
++    boundary_fingerprint: fingerprint,
++    due_at: state.due_at,
++    expires_at: state.expires_at,
++    head_sha: headSha,
++    nonce,
++    sweep_run_id: '90',
++    sweep_run_attempt: '1',
++  };
++}
++
++test('one generation grants once across attempts, providers, heads and nonces', async () => {
++  const api = fakeGitHub();
++  const state = await beginChallenge({
++    request: api.request, repository, prNumber, defaultBranch: 'main',
++    fingerprint, ...boundary(),
++  });
++  const signed = claim(state);
++  const first = await consumeChallenge({
++    request: api.request, repository, prNumber, claim: signed,
++    ownerAttempt, provider: 'codex', headSha,
++  });
++  assert.equal(first.granted, true);
++  for (const options of [
++    { ownerAttempt },
++    { ownerAttempt: 'owner/repo:101:1' },
++    { ownerAttempt: 'owner/repo:102:1', provider: 'claude' },
++    { ownerAttempt: 'owner/repo:103:1', headSha: 'e'.repeat(40) },
++    { ownerAttempt: 'owner/repo:104:1', claim: claim(state, 'c'.repeat(64)) },
++  ]) {
++    const result = await consumeChallenge({
++      request: api.request, repository, prNumber, claim: signed,
++      ownerAttempt, provider: 'codex', headSha, ...options,
++    });
++    assert.equal(result.granted, false);
++  }
++  const repeated = await beginChallenge({
++    request: api.request, repository, prNumber, defaultBranch: 'main',
++    fingerprint, ...boundary(),
++  });
++  assert.equal(repeated.generation, state.generation);
++  assert.equal(repeated.status, 'consumed');
++  assert.equal(await confirmChallenge({
++    request: api.request, repository, prNumber, claim: signed,
++    ownerAttempt: 'owner/repo:999:1', headSha,
++    provider: 'codex',
++  }), false);
++  assert.equal(await confirmChallenge({
++    request: api.request, repository, prNumber, claim: signed,
++    ownerAttempt, provider: 'codex', headSha,
++  }), true);
++  assert.equal((await readAuthorityState(api.request, repository, prNumber)).state.status, 'confirmed');
++  const afterConfirmation = await beginChallenge({
++    request: api.request, repository, prNumber, defaultBranch: 'main',
++    fingerprint, ...boundary(),
++  });
++  assert.notEqual(afterConfirmation.generation, state.generation);
++  assert.equal(afterConfirmation.status, 'available');
++});
++
++test('expired consumed generation can be replaced after confirmation was omitted', async () => {
++  const api = fakeGitHub();
++  const first = await beginChallenge({
++    request: api.request, repository, prNumber, defaultBranch: 'main',
++    fingerprint, ...boundary(),
++  });
++  const consumed = await consumeChallenge({
++    request: api.request, repository, prNumber, claim: claim(first),
++    ownerAttempt, provider: 'codex', headSha,
++  });
++  assert.equal(consumed.granted, true);
++  api.expireChallenge();
++  const replacement = await beginChallenge({
++    request: api.request, repository, prNumber, defaultBranch: 'main',
++    fingerprint, expectedGeneration: first.generation, ...boundary(),
++  });
++  assert.equal(replacement.status, 'available');
++  assert.notEqual(replacement.generation, first.generation);
++});
++
++test('two racing consumers produce at most one grant through the conditional SHA', async () => {
++  const api = fakeGitHub();
++  const state = await beginChallenge({
++    request: api.request, repository, prNumber, defaultBranch: 'main',
++    fingerprint, ...boundary(),
++  });
++  let waiting = 0;
++  let release;
++  const gate = new Promise((resolve) => { release = resolve; });
++  api.setBeforePut(async () => {
++    waiting += 1;
++    if (waiting === 2) release();
++    await gate;
++  });
++  const results = await Promise.all([100, 101].map((run) => consumeChallenge({
++    request: api.request, repository, prNumber, claim: claim(state),
++    ownerAttempt: `owner/repo:${run}:1`, provider: 'codex', headSha,
++  })));
++  assert.equal(results.filter((result) => result.granted).length, 1);
++  assert.equal((await readAuthorityState(api.request, repository, prNumber)).state.status, 'consumed');
++});
++
++test('ambiguous write consumes if it landed but never grants a second execution', async () => {
++  const api = fakeGitHub();
++  const state = await beginChallenge({
++    request: api.request, repository, prNumber, defaultBranch: 'main',
++    fingerprint, ...boundary(),
++  });
++  let failOnce = true;
++  api.setAfterPut(async () => {
++    if (failOnce) {
++      failOnce = false;
++      throw status(503);
++    }
++  });
++  const first = await consumeChallenge({
++    request: api.request, repository, prNumber, claim: claim(state),
++    ownerAttempt, provider: 'codex', headSha,
++  });
++  assert.equal(first.granted, false);
++  const second = await consumeChallenge({
++    request: api.request, repository, prNumber, claim: claim(state),
++    ownerAttempt: 'owner/repo:101:1', provider: 'codex', headSha,
++  });
++  assert.equal(second.granted, false);
++});
++
++test('missing or corrupt authoritative state never grants', async () => {
++  const api = fakeGitHub();
++  await assert.rejects(readAuthorityState(api.request, repository, prNumber));
++  await assert.rejects(beginChallenge({
++    request: api.request, repository, prNumber, defaultBranch: 'main',
++    fingerprint, expectedGeneration: 'c'.repeat(64), ...boundary(),
++  }), /previously initialized/i);
++  const state = await beginChallenge({
++    request: api.request, repository, prNumber, defaultBranch: 'main',
++    fingerprint, ...boundary(),
++  });
++  const stale = { ...claim(state), generation: 'f'.repeat(64) };
++  assert.equal((await consumeChallenge({
++    request: api.request, repository, prNumber, claim: stale,
++    ownerAttempt, provider: 'codex', headSha,
++  })).granted, false);
++});
+diff --git a/.github/scripts/__tests__/keepalive-challenge-due.test.js b/.github/scripts/__tests__/keepalive-challenge-due.test.js
+index 70cee963..c1f58e21 100644
+--- a/.github/scripts/__tests__/keepalive-challenge-due.test.js
++++ b/.github/scripts/__tests__/keepalive-challenge-due.test.js
+@@ -17,7 +17,14 @@ const marker = (attention, { login = 'stranske-keepalive[bot]', type = 'Bot' } =
+   body: [
+     '<!-- keepalive-loop-summary -->',
+     'status',
+-    `<!-- keepalive-state:v1 ${JSON.stringify({ attention })} -->`,
++    `<!-- keepalive-state:v1 ${JSON.stringify({ attention: attention?.disposition === 'challenge-due'
++      ? {
++          generation: 'c'.repeat(64),
++          boundary_fingerprint: 'a'.repeat(64),
++          expires_at: '2026-08-13T12:00:00.000Z',
++          ...attention,
++        }
++      : attention })} -->`,
+   ].join('\n'),
+ });
+ 
+@@ -84,6 +91,10 @@ test('authority challenge claims bind the exact sweep selection', () => {
+     repository: 'stranske/Workflows',
+     prNumber: 3066,
+     boundaryFingerprint: 'a'.repeat(64),
++    generation: 'c'.repeat(64),
++    dueAt: '2026-08-12T12:00:00.000Z',
++    expiresAt: '2026-08-13T12:00:00.000Z',
++    headSha: 'd'.repeat(40),
+     nonce: 'b'.repeat(64),
+     sweepRunId: '31683971486',
+     sweepRunAttempt: '1',
+@@ -92,21 +103,29 @@ test('authority challenge claims bind the exact sweep selection', () => {
+   assert.equal(
+     authorityClaimPayload(claim),
+     [
+-      'keepalive-authority-claim:v1',
++      'keepalive-authority-claim:v2',
+       'repository=stranske/workflows',
+       'pr=3066',
+       `fingerprint=${'a'.repeat(64)}`,
++      `generation=${'c'.repeat(64)}`,
++      'due_at=2026-08-12T12:00:00.000Z',
++      'expires_at=2026-08-13T12:00:00.000Z',
++      `head_sha=${'d'.repeat(40)}`,
+       `nonce=${'b'.repeat(64)}`,
+       'sweep_run_id=31683971486',
+       'sweep_run_attempt=1',
+     ].join('\n'),
+   );
+-  assert.equal(signature, '54777445d7a5e2ddb9d22cc60e8477b2d54cf44892c419f1c7a80a52cb899b6b');
++  assert.match(signature, /^[0-9a-f]{64}$/);
+   assert.equal(verifyAuthorityChallengeClaim({ ...claim, signature }), true);
+   for (const mutation of [
+     { repository: 'stranske/Ready' },
+     { prNumber: 3067 },
+     { boundaryFingerprint: 'c'.repeat(64) },
++    { generation: 'e'.repeat(64) },
++    { dueAt: '2026-08-12T13:00:00.000Z' },
++    { expiresAt: '2026-08-13T13:00:00.000Z' },
++    { headSha: 'e'.repeat(40) },
+     { nonce: 'd'.repeat(64) },
+     { sweepRunId: '31683971487' },
+     { sweepRunAttempt: '2' },
+@@ -140,12 +159,20 @@ test('runner debounce bypass accepts only the signed due challenge envelope', ()
+     repository: 'stranske/Workflows',
+     prNumber: 3066,
+     boundaryFingerprint: 'a'.repeat(64),
++    generation: 'c'.repeat(64),
++    dueAt: '2026-08-12T12:00:00.000Z',
++    expiresAt: '2026-08-13T12:00:00.000Z',
++    headSha: 'd'.repeat(40),
+     nonce: 'b'.repeat(64),
+     sweepRunId: '31683971486',
+     sweepRunAttempt: '1',
+   };
+   const claimJson = JSON.stringify({
+     signature: signAuthorityChallengeClaim(selected),
++    generation: selected.generation,
++    due_at: selected.dueAt,
++    expires_at: selected.expiresAt,
++    head_sha: selected.headSha,
+     nonce: selected.nonce,
+     sweep_run_id: selected.sweepRunId,
+     sweep_run_attempt: selected.sweepRunAttempt,
+@@ -156,9 +183,11 @@ test('runner debounce bypass accepts only the signed due challenge envelope', ()
+     repository: selected.repository,
+     prNumber: selected.prNumber,
+     boundaryFingerprint: selected.boundaryFingerprint,
++    headSha: selected.headSha,
+   };
+   assert.equal(verifyAuthorityChallengeEnvelope(input), true);
+   assert.equal(verifyAuthorityChallengeEnvelope({ ...input, claimJson: '' }), false);
++  assert.equal(verifyAuthorityChallengeEnvelope({ ...input, headSha: 'e'.repeat(40) }), false);
+   assert.equal(
+     verifyAuthorityChallengeEnvelope({ ...input, boundaryFingerprint: 'c'.repeat(64) }),
+     false,
+@@ -173,15 +202,17 @@ test('selectDueAuthorityChallenge schedules an automation-owned due challenge',
+       disposition: 'challenge-due',
+       challenge_due_at: '2026-08-12T12:00:00Z',
+       key: 'auth',
+-      boundary_fingerprint: 'fingerprint-auth',
++      boundary_fingerprint: 'a'.repeat(64),
+       next_action: 'reproduce access failure',
+     })],
+     now: new Date('2026-08-12T13:00:00Z'),
+   });
+   assert.deepEqual(result, {
+     dueAt: '2026-08-12T12:00:00.000Z',
++    expiresAt: '2026-08-13T12:00:00.000Z',
++    generation: 'c'.repeat(64),
+     key: 'auth',
+-    boundaryFingerprint: 'fingerprint-auth',
++    boundaryFingerprint: 'a'.repeat(64),
+     nextAction: 'reproduce access failure',
+   });
+ });
+diff --git a/.github/scripts/__tests__/keepalive-loop.test.js b/.github/scripts/__tests__/keepalive-loop.test.js
+index 48ba51ae..42f0929c 100644
+--- a/.github/scripts/__tests__/keepalive-loop.test.js
++++ b/.github/scripts/__tests__/keepalive-loop.test.js
+@@ -5,6 +5,7 @@ const assert = require('node:assert/strict');
+ const fs = require('fs');
+ const os = require('os');
+ const path = require('path');
++const crypto = require('node:crypto');
+ 
+ const {
+   countCheckboxes,
+@@ -22,20 +23,33 @@ const { formatStateComment, parseStateComment } = require('../keepalive_state.js
+ const { signAuthorityChallengeClaim } = require('../keepalive_challenge_due.js');
+ const { stripPrTemplateContent, upsertBlock } = require('../agents_pr_meta_update_body.js');
+ 
++const TEST_DUE_AT = new Date(Date.now() - 60_000).toISOString();
++const TEST_EXPIRES_AT = new Date(Date.now() + 3_600_000).toISOString();
++
+ const authorityClaimInputs = (prNumber, boundaryFingerprint, overrides = {}) => {
+   const claim = {
+     signingKey: 'test-only-authority-signing-key',
+     repository: 'octo/workflows',
+     prNumber,
+     boundaryFingerprint,
++    generation: overrides.generation || 'c'.repeat(64),
++    dueAt: overrides.dueAt || TEST_DUE_AT,
++    expiresAt: overrides.expiresAt || TEST_EXPIRES_AT,
++    headSha: overrides.headSha || 'd'.repeat(40),
+     nonce: overrides.nonce || 'a'.repeat(64),
+     sweepRunId: overrides.sweepRunId || '987654321',
+     sweepRunAttempt: overrides.sweepRunAttempt || '1',
+   };
+   return {
+     authority_challenge_fingerprint: boundaryFingerprint,
++    head_sha: claim.headSha,
++    agent_execution_started: true,
+     authority_challenge_claim: JSON.stringify({
+       signature: signAuthorityChallengeClaim(claim),
++      generation: claim.generation,
++      due_at: claim.dueAt,
++      expires_at: claim.expiresAt,
++      head_sha: claim.headSha,
+       nonce: claim.nonce,
+       sweep_run_id: claim.sweepRunId,
+       sweep_run_attempt: claim.sweepRunAttempt,
+@@ -61,11 +75,91 @@ const buildGithubStub = ({
+   failNeedsAttentionRemoval = false,
+   failStateCommentWriteAt = 0,
+   failWorkflowDispatch = false,
++  authorityReceipt = false,
++  authorityLedger = false,
++  failAuthorityConfirmWrite = false,
+ } = {}) => {
+   const actions = [];
++  const currentLabels = new Set(labels);
+   let stateCommentWriteCount = 0;
+-  return {
++  const attention = comments.map((comment) => parseStateComment(comment.body)?.data?.attention)
++    .find((candidate) => candidate?.disposition === 'challenge-due' && candidate.generation);
++  let authorityBranch = Boolean(attention);
++  let authorityContent = null;
++  if (attention) {
++    const claim = {
++      generation: attention.generation,
++      boundary_fingerprint: attention.boundary_fingerprint,
++      due_at: attention.challenge_due_at,
++      expires_at: attention.expires_at,
++      head_sha: 'd'.repeat(40),
++      nonce: 'a'.repeat(64),
++      sweep_run_id: '987654321',
++      sweep_run_attempt: '1',
++    };
++    const receipt = authorityReceipt ? {
++      id: 'e'.repeat(64),
++      claim_digest: crypto.createHash('sha256').update(JSON.stringify(claim)).digest('hex'),
++      owner_attempt: 'octo/workflows:9001:1',
++      provider: 'codex',
++      head_sha: claim.head_sha,
++      consumed_at: new Date().toISOString(),
++    } : null;
++    authorityContent = Buffer.from(JSON.stringify({
++      version: 2, repository: 'octo/workflows', pr_number: 654,
++      generation: attention.generation,
++      boundary_fingerprint: attention.boundary_fingerprint,
++      due_at: attention.challenge_due_at,
++      expires_at: attention.expires_at,
++      status: receipt ? 'consumed' : 'available',
++      receipt, revision: 1,
++    })).toString('base64');
++  }
++  const stub = {
+     actions,
++    async request(route, body = {}) {
++      const [method, url] = route.split(' ');
++      if (method === 'GET' && url === '/repos/octo/workflows') {
++        return { data: { default_branch: 'main' } };
++      }
++      if (method === 'GET' && url.endsWith('/pulls/654')) {
++        return { data: { state: 'open', head: { sha: 'd'.repeat(40) },
++          labels: [...currentLabels].map((name) => ({ name })) } };
++      }
++      if (method === 'GET' && url.endsWith('/git/ref/heads/main')) {
++        return { data: { object: { sha: '1'.repeat(40) } } };
++      }
++      if (method === 'GET' && url.endsWith('/git/ref/heads/keepalive-authority-state')) {
++        if (!authorityBranch) throw Object.assign(new Error('not found'), { status: 404 });
++        return { data: { object: { sha: '2'.repeat(40) } } };
++      }
++      if (method === 'POST' && url.endsWith('/git/refs')) {
++        authorityBranch = true;
++        return { data: {} };
++      }
++      if (url.includes('/contents/.github/keepalive-authority/')) {
++        if (method === 'GET') {
++          if (!authorityContent) throw Object.assign(new Error('not found'), { status: 404 });
++          return { data: {
++            sha: crypto.createHash('sha1').update(authorityContent).digest('hex'),
++            encoding: 'base64', content: authorityContent,
++          } };
++        }
++        if (method === 'PUT') {
++          if (failAuthorityConfirmWrite &&
++              JSON.parse(Buffer.from(body.content, 'base64').toString('utf8')).status === 'confirmed') {
++            throw Object.assign(new Error('simulated confirmation conflict'), { status: 409 });
++          }
++          const priorSha = authorityContent
++            ? crypto.createHash('sha1').update(authorityContent).digest('hex')
++            : undefined;
++          if (body.sha !== priorSha) throw Object.assign(new Error('conflict'), { status: 409 });
++          authorityContent = body.content;
++          return { data: {} };
++        }
++      }
++      throw new Error(`Unexpected authority request: ${route}`);
++    },
+     rest: {
+       pulls: {
+         async get() {
+@@ -111,7 +205,7 @@ const buildGithubStub = ({
+           };
+         },
+         async listLabelsOnIssue() {
+-          return { data: labels.map((name) => ({ name })) };
++          return { data: [...currentLabels].map((name) => ({ name })) };
+         },
+         async updateComment({ body, comment_id: commentId }) {
+           stateCommentWriteCount += 1;
+@@ -141,6 +235,7 @@ const buildGithubStub = ({
+             throw new Error('simulated attention label failure');
+           }
+           actions.push({ type: 'label', labels });
++          labels.forEach((name) => currentLabels.add(name));
+           return { data: {} };
+         },
+         async removeLabel({ name }) {
+@@ -149,6 +244,7 @@ const buildGithubStub = ({
+             throw new Error('simulated attention label removal failure');
+           }
+           actions.push({ type: 'remove-label', name });
++          currentLabels.delete(name);
+           return { data: {} };
+         },
+       },
+@@ -158,6 +254,8 @@ const buildGithubStub = ({
+       return Array.isArray(response?.data) ? response.data : [];
+     },
+   };
++  if (!attention && !authorityLedger) delete stub.request;
++  return stub;
+ };
+ 
+ const buildContext = (prNumber = 101, runId = 9001, overrides = {}) => ({
+@@ -165,6 +263,7 @@ const buildContext = (prNumber = 101, runId = 9001, overrides = {}) => ({
+   repo: { owner: 'octo', repo: 'workflows' },
+   payload: overrides.payload ?? { pull_request: { number: prNumber } },
+   runId,
++  runAttempt: 1,
+ });
+ 
+ const buildCore = () => ({
+@@ -2942,6 +3041,7 @@ test('updateKeepaliveLoopSummary sends preflight auth failures without a runner
+   });
+   const github = buildGithubStub({
+     comments: [{ id: 88, body: existingState, html_url: 'https://example.com/88' }],
++    authorityLedger: true,
+   });
+ 
+   await updateKeepaliveLoopSummary({
+@@ -2993,7 +3093,9 @@ test('a scheduled recheck that reproduces auth failure records a terminal human
+       owner: 'automation',
+       disposition: 'challenge-due',
+       first_seen_at: '2026-08-12T12:00:00Z',
+-      challenge_due_at: '2026-08-12T12:05:00Z',
++      challenge_due_at: TEST_DUE_AT,
++      generation: 'c'.repeat(64),
++      expires_at: TEST_EXPIRES_AT,
+       key: 'agent-run-failed|failure|auth|agent|1',
+       boundary_fingerprint: boundary.fingerprint,
+       boundary_detail: boundary.detail,
+@@ -3001,6 +3103,7 @@ test('a scheduled recheck that reproduces auth failure records a terminal human
+   });
+   const github = buildGithubStub({
+     comments: [{ id: 89, body: existingState, html_url: 'https://example.com/89' }],
++    authorityReceipt: true,
+     labels: ['agent:codex', 'agent:needs-attention'],
+   });
+ 
+@@ -3066,6 +3169,48 @@ test('a scheduled recheck that reproduces auth failure records a terminal human
+   );
+ });
+ 
++test('failed authority confirmation reopens the challenge and removes its hard label', async () => {
++  const authSummary = 'Missing token ACTIONS_BOT_PAT for GitHub API repository dispatch.';
++  const boundary = buildAuthorityChallengeEvidence({ agentSummary: authSummary });
++  const existingState = formatStateComment({
++    trace: 'trace-confirm-conflict',
++    iteration: 2,
++    failure_threshold: 3,
++    failure: { reason: 'agent-run-failed', count: 1 },
++    attention: {
++      owner: 'automation', disposition: 'challenge-due',
++      challenge_due_at: TEST_DUE_AT, generation: 'c'.repeat(64),
++      expires_at: TEST_EXPIRES_AT,
++      boundary_fingerprint: boundary.fingerprint, boundary_detail: boundary.detail,
++    },
++  });
++  const github = buildGithubStub({
++    comments: [{ id: 91, body: existingState, html_url: 'https://example.com/91' }],
++    authorityReceipt: true, failAuthorityConfirmWrite: true,
++    labels: ['agent:codex', 'agent:needs-attention'],
++  });
++  await updateKeepaliveLoopSummary({
++    github, context: buildContext(654), core: buildCore(),
++    inputs: {
++      prNumber: 654, action: 'run', runResult: 'failure', gateConclusion: 'success',
++      tasksTotal: 3, tasksUnchecked: 3, keepaliveEnabled: true,
++      autofixEnabled: false, iteration: 2, maxIterations: 5,
++      failureThreshold: 3, trace: 'trace-confirm-conflict', forceRetry: true,
++      ...authorityClaimInputs(654, boundary.fingerprint),
++      agent_exit_code: '1', agent_summary: authSummary,
++    },
++  });
++  assert.ok(github.actions.some((action) =>
++    action.type === 'remove-label' && action.name === 'needs-human'));
++  const final = github.actions.filter((action) => action.type === 'update').at(-1);
++  assert.doesNotMatch(final.body, /Independent Authority Challenge Confirmed/);
++  const attention = parseStateComment(final.body).data.attention;
++  assert.equal(attention.owner, 'automation');
++  assert.equal(attention.disposition, 'challenge-due');
++  assert.equal(attention.confirmation_pending_label, false);
++  assert.notEqual(attention.generation, 'c'.repeat(64));
++});
++
+ test('a two-phase terminal transition reuses a newly created summary comment', async () => {
+   const authSummary = 'Missing token ACTIONS_BOT_PAT for GitHub API repository dispatch.';
+   const boundary = buildAuthorityChallengeEvidence({ agentSummary: authSummary });
+@@ -3078,7 +3223,9 @@ test('a two-phase terminal transition reuses a newly created summary comment', a
+       owner: 'automation',
+       disposition: 'challenge-due',
+       first_seen_at: '2026-08-12T12:00:00Z',
+-      challenge_due_at: '2026-08-12T12:05:00Z',
++      challenge_due_at: TEST_DUE_AT,
++      generation: 'c'.repeat(64),
++      expires_at: TEST_EXPIRES_AT,
+       key: 'agent-run-failed|failure|auth|agent|1',
+       boundary_fingerprint: boundary.fingerprint,
+       boundary_detail: boundary.detail,
+@@ -3088,6 +3235,7 @@ test('a two-phase terminal transition reuses a newly created summary comment', a
+     // GitHub comments always have ids; omitting it exercises the defensive
+     // create path while retaining the prior challenge state needed to confirm.
+     comments: [{ body: existingState }],
++    authorityReceipt: true,
+     labels: ['agent:codex', 'agent:needs-attention'],
+   });
+ 
+@@ -3140,7 +3288,9 @@ test('a failed hard label write keeps the authority challenge automation-owned',
+       owner: 'automation',
+       disposition: 'challenge-due',
+       first_seen_at: '2026-08-12T12:00:00Z',
+-      challenge_due_at: '2026-08-12T12:05:00Z',
++      challenge_due_at: TEST_DUE_AT,
++      generation: 'c'.repeat(64),
++      expires_at: TEST_EXPIRES_AT,
+       key: 'agent-run-failed|failure|auth|agent|1',
+       boundary_fingerprint: boundary.fingerprint,
+       boundary_detail: boundary.detail,
+@@ -3148,6 +3298,7 @@ test('a failed hard label write keeps the authority challenge automation-owned',
+   });
+   const github = buildGithubStub({
+     comments: [{ id: 93, body: existingState, html_url: 'https://example.com/93' }],
++    authorityReceipt: true,
+     labels: ['agent:codex', 'agent:needs-attention'],
+     failNeedsHumanLabel: true,
+   });
+@@ -3206,7 +3357,9 @@ test('a failed terminal state write leaves a durable actionable pending transiti
+       owner: 'automation',
+       disposition: 'challenge-due',
+       first_seen_at: '2026-08-12T12:00:00Z',
+-      challenge_due_at: '2026-08-12T12:05:00Z',
++      challenge_due_at: TEST_DUE_AT,
++      generation: 'c'.repeat(64),
++      expires_at: TEST_EXPIRES_AT,
+       key: 'agent-run-failed|failure|auth|agent|1',
+       boundary_fingerprint: boundary.fingerprint,
+       boundary_detail: boundary.detail,
+@@ -3214,6 +3367,7 @@ test('a failed terminal state write leaves a durable actionable pending transiti
+   });
+   const github = buildGithubStub({
+     comments: [{ id: 95, body: existingState, html_url: 'https://example.com/95' }],
++    authorityReceipt: true,
+     labels: ['agent:codex', 'agent:needs-attention'],
+     failStateCommentWriteAt: 2,
+   });
+@@ -3284,7 +3438,9 @@ test('a forged sweep claim cannot confirm an authority challenge', async () => {
+       owner: 'automation',
+       disposition: 'challenge-due',
+       first_seen_at: '2026-08-12T12:00:00Z',
+-      challenge_due_at: '2026-08-12T12:05:00Z',
++      challenge_due_at: TEST_DUE_AT,
++      generation: 'c'.repeat(64),
++      expires_at: TEST_EXPIRES_AT,
+       key: 'original-auth-boundary',
+       boundary_fingerprint: boundary.fingerprint,
+       boundary_detail: boundary.detail,
+@@ -3357,7 +3513,9 @@ test('a reproduced generic auth failure remains automation-owned', async () => {
+       owner: 'automation',
+       disposition: 'challenge-due',
+       first_seen_at: '2026-08-12T12:00:00Z',
+-      challenge_due_at: '2026-08-12T12:05:00Z',
++      challenge_due_at: TEST_DUE_AT,
++      generation: 'c'.repeat(64),
++      expires_at: TEST_EXPIRES_AT,
+       key: 'generic-auth-boundary',
+       boundary_fingerprint: boundary.fingerprint,
+       boundary_detail: boundary.detail,
+@@ -3421,7 +3579,9 @@ test('a forced recheck with a different auth boundary stays automation-owned', a
+       owner: 'automation',
+       disposition: 'challenge-due',
+       first_seen_at: '2026-08-12T12:00:00Z',
+-      challenge_due_at: '2026-08-12T12:05:00Z',
++      challenge_due_at: TEST_DUE_AT,
++      generation: 'c'.repeat(64),
++      expires_at: TEST_EXPIRES_AT,
+       key: 'original-auth-boundary',
+       boundary_fingerprint: original.fingerprint,
+       boundary_detail: original.detail,
+@@ -3488,7 +3648,9 @@ test('renewing an authority challenge never removes its existing soft label', as
+       owner: 'automation',
+       disposition: 'challenge-due',
+       first_seen_at: '2026-08-12T12:00:00Z',
+-      challenge_due_at: '2026-08-12T12:05:00Z',
++      challenge_due_at: TEST_DUE_AT,
++      generation: 'c'.repeat(64),
++      expires_at: TEST_EXPIRES_AT,
+       key: 'original-auth-boundary',
+       boundary_fingerprint: original.fingerprint,
+       boundary_detail: original.detail,
+@@ -4026,7 +4188,9 @@ test('a successful authority recheck clears the automation challenge with or wit
+         owner: 'automation',
+         disposition: 'challenge-due',
+         first_seen_at: '2026-08-12T12:00:00Z',
+-        challenge_due_at: '2026-08-12T12:05:00Z',
++        challenge_due_at: TEST_DUE_AT,
++      generation: 'c'.repeat(64),
++      expires_at: TEST_EXPIRES_AT,
+         key: 'agent-run-failed|failure|auth|agent|1',
+       },
+     });
+@@ -4081,7 +4245,9 @@ test('a recovered authority challenge retains automation ownership until its sof
+       owner: 'automation',
+       disposition: 'challenge-due',
+       first_seen_at: '2026-08-12T12:00:00Z',
+-      challenge_due_at: '2026-08-12T12:05:00Z',
++      challenge_due_at: TEST_DUE_AT,
++      generation: 'c'.repeat(64),
++      expires_at: TEST_EXPIRES_AT,
+       key: 'agent-run-failed|failure|auth|agent|1',
+     },
+   });
+diff --git a/.github/scripts/keepalive_authority_state.js b/.github/scripts/keepalive_authority_state.js
+new file mode 100644
+index 00000000..901a120c
+--- /dev/null
++++ b/.github/scripts/keepalive_authority_state.js
+@@ -0,0 +1,318 @@
++'use strict';
++
++// This branch is the authority for challenge generations and receipts. PR comments
++// are presentation only: a comment PATCH cannot provide a conditional write.
++const crypto = require('node:crypto');
++const { withRetry } = require('./github-api-with-retry.js');
++const BRANCH = 'keepalive-authority-state';
++const HEX = /^[0-9a-f]{64}$/;
++const HEAD = /^[0-9a-f]{40}$/;
++const ATTEMPT = /^[a-z0-9_.-]+\/[a-z0-9_.-]+:\d+:\d+$/;
++
++function exactTime(value) {
++  if (typeof value !== 'string' || !/^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d\.\d{3}Z$/.test(value)) return false;
++  return Number.isFinite(Date.parse(value)) && new Date(value).toISOString() === value;
++}
++
++function validState(state, repository, prNumber) {
++  return state && state.version === 2 &&
++    state.repository === String(repository).toLowerCase() &&
++    state.pr_number === Number(prNumber) &&
++    HEX.test(state.generation) && HEX.test(state.boundary_fingerprint) &&
++    exactTime(state.due_at) && exactTime(state.expires_at) &&
++    Date.parse(state.expires_at) > Date.parse(state.due_at) &&
++    Number.isSafeInteger(state.revision) && state.revision >= 1 &&
++    ['available', 'consumed', 'confirmed'].includes(state.status) &&
++    (state.status === 'available' ? state.receipt === null :
++      validReceipt(state.receipt));
++}
++
++function validReceipt(receipt) {
++  return receipt && HEX.test(receipt.id) && HEX.test(receipt.claim_digest) &&
++    ATTEMPT.test(receipt.owner_attempt) && HEAD.test(receipt.head_sha) &&
++    typeof receipt.provider === 'string' && /^[a-z][a-z0-9_-]*$/.test(receipt.provider) &&
++    exactTime(receipt.consumed_at);
++}
++
++function pathFor(repository, prNumber) {
++  if (!/^[a-z0-9_.-]+\/[a-z0-9_.-]+$/i.test(String(repository)) ||
++      !Number.isSafeInteger(Number(prNumber)) || Number(prNumber) < 1) {
++    throw new Error('Invalid challenge repository or PR number');
++  }
++  return `/repos/${String(repository).toLowerCase()}/contents/.github/keepalive-authority/${Number(prNumber)}.json`;
++}
++
++async function requestWithOctokit(github, method, path, body) {
++  try {
++    // Writes are conditional and intentionally get no automatic retry. An
++    // uncertain result must deny the grant even if GitHub committed the write.
++    const response = await withRetry(
++      (client) => client.request(`${method} ${path}`, body || {}),
++      { github, maxRetries: method === 'GET' ? 2 : 0,
++        tokenRegistry: null, task: 'keepalive-authority-state' },
++    );
++    return response.data;
++  } catch (error) {
++    error.status = error.status || error.response?.status;
++    throw error;
++  }
++}
++
++function requester(github) {
++  if (!github) {
++    const token = process.env.GH_TOKEN || process.env.GITHUB_TOKEN;
++    if (!token) throw new Error('Authority state token unavailable');
++    const { Octokit } = require('@octokit/rest');
++    github = new Octokit({ auth: token });
++  }
++  return (method, path, body) => requestWithOctokit(github, method, path, body);
++}
++
++async function ensureBranch(request, repository, defaultBranch) {
++  const repo = String(repository).toLowerCase();
++  try {
++    await request('GET', `/repos/${repo}/git/ref/heads/${BRANCH}`);
++    return;
++  } catch (error) {
++    if (error.status !== 404) throw error;
++  }
++  const base = await request('GET', `/repos/${repo}/git/ref/heads/${encodeURIComponent(defaultBranch)}`);
++  const sha = base?.object?.sha;
++  if (!/^[0-9a-f]{40}$/.test(String(sha))) throw new Error('Default branch SHA unavailable');
++  try {
++    await request('POST', `/repos/${repo}/git/refs`, { ref: `refs/heads/${BRANCH}`, sha });
++  } catch (error) {
++    // Another PR may have initialized the shared branch concurrently.
++    if (![409, 422].includes(error.status)) throw error;
++    await request('GET', `/repos/${repo}/git/ref/heads/${BRANCH}`);
++  }
++}
++
++async function readAuthorityState(request, repository, prNumber, { allowMissing = false } = {}) {
++  let file;
++  try {
++    file = await request('GET', `${pathFor(repository, prNumber)}?ref=${BRANCH}`);
++  } catch (error) {
++    if (allowMissing && error.status === 404) return null;
++    throw error;
++  }
++  let state;
++  try {
++    if (!/^[0-9a-f]{40}$/.test(String(file?.sha)) || file?.encoding !== 'base64') {
++      throw new Error('Invalid authority file metadata');
++    }
++    state = JSON.parse(Buffer.from(String(file.content).replace(/\s/g, ''), 'base64').toString('utf8'));
++  } catch (error) {
++    throw new Error(`Malformed authoritative challenge state: ${error.message}`);
++  }
++  if (!validState(state, repository, prNumber)) throw new Error('Invalid authoritative challenge state');
++  return { state, sha: file.sha };
++}
++
++async function writeAuthorityState(request, repository, prNumber, state, priorSha) {
++  if (!validState(state, repository, prNumber)) throw new Error('Refusing invalid authoritative challenge state');
++  const body = {
++    branch: BRANCH,
++    message: `keepalive authority PR #${Number(prNumber)} revision ${state.revision}`,
++    content: Buffer.from(`${JSON.stringify(state)}\n`).toString('base64'),
++    ...(priorSha ? { sha: priorSha } : {}),
++  };
++  return request('PUT', pathFor(repository, prNumber), body);
++}
++
++async function beginChallenge({ request, repository, prNumber, defaultBranch, fingerprint, dueAt, expiresAt, expectedGeneration = null }) {
++  if (!HEX.test(String(fingerprint)) || !exactTime(dueAt) || !exactTime(expiresAt) ||
++      Date.parse(expiresAt) <= Date.parse(dueAt)) throw new Error('Invalid challenge boundary');
++  await ensureBranch(request, repository, defaultBranch);
++  for (let attempt = 0; attempt < 3; attempt += 1) {
++    const prior = await readAuthorityState(request, repository, prNumber, { allowMissing: true });
++    if (expectedGeneration && (!prior || prior.state.generation !== expectedGeneration)) {
++      throw new Error('Previously initialized challenge generation is missing or superseded');
++    }
++    if (prior && prior.state.boundary_fingerprint === fingerprint) {
++      if (prior.state.status === 'confirmed') {
++        // A confirmed boundary was human-resolved; recurring failures need a new generation.
++      } else if (['consumed', 'available'].includes(prior.state.status) &&
++          Date.parse(prior.state.expires_at) > Date.now()) {
++        return prior.state;
++      }
++    }
++    const state = {
++      version: 2,
++      repository: String(repository).toLowerCase(),
++      pr_number: Number(prNumber),
++      generation: crypto.randomBytes(32).toString('hex'),
++      boundary_fingerprint: fingerprint,
++      due_at: dueAt,
++      expires_at: expiresAt,
++      status: 'available',
++      receipt: null,
++      revision: (prior?.state.revision || 0) + 1,
++    };
++    try {
++      await writeAuthorityState(request, repository, prNumber, state, prior?.sha);
++      return state;
++    } catch (error) {
++      if (![409, 422].includes(error.status)) throw error;
++    }
++  }
++  throw new Error('Concurrent challenge generation updates did not settle');
++}
++
++function claimMatchesState(claim, state, now = new Date()) {
++  return state.status === 'available' &&
++    claim.generation === state.generation &&
++    claim.boundary_fingerprint === state.boundary_fingerprint &&
++    claim.due_at === state.due_at && claim.expires_at === state.expires_at &&
++    Number.isFinite(now.getTime()) && Date.parse(state.due_at) <= now.getTime() &&
++    now.getTime() < Date.parse(state.expires_at);
++}
++
++async function consumeChallenge({ request, repository, prNumber, claim, ownerAttempt, provider, headSha, now = new Date() }) {
++  const prior = await readAuthorityState(request, repository, prNumber);
++  if (!claimMatchesState(claim, prior.state, now) || !ATTEMPT.test(String(ownerAttempt)) ||
++      !HEAD.test(String(headSha)) || claim.head_sha !== headSha) {
++    return { granted: false, reason: 'challenge-not-current' };
++  }
++  const receipt = {
++    id: crypto.randomBytes(32).toString('hex'),
++    claim_digest: crypto.createHash('sha256').update(JSON.stringify(claim)).digest('hex'),
++    owner_attempt: ownerAttempt,
++    provider,
++    head_sha: headSha,
++    consumed_at: now.toISOString(),
++  };
++  const next = { ...prior.state, status: 'consumed', receipt, revision: prior.state.revision + 1 };
++  try {
++    await writeAuthorityState(request, repository, prNumber, next, prior.sha);
++  } catch (error) {
++    // A conflict or an ambiguous write never grants an execution. If the write
++    // actually landed, its receipt stays consumed for every later attempt.
++    return { granted: false, reason: [409, 422].includes(error.status) ? 'challenge-conflict' : 'challenge-write-uncertain' };
++  }
++  return { granted: true, reason: 'due-authority-challenge', receipt };
++}
++
++async function confirmChallenge({ request, repository, prNumber, claim, ownerAttempt, provider, headSha }) {
++  const prior = await readAuthorityState(request, repository, prNumber);
++  const receipt = prior.state.receipt;
++  if (!receipt ||
++      Date.now() >= Date.parse(prior.state.expires_at) ||
++      prior.state.generation !== claim.generation ||
++      prior.state.boundary_fingerprint !== claim.boundary_fingerprint ||
++      prior.state.due_at !== claim.due_at || prior.state.expires_at !== claim.expires_at ||
++      receipt.claim_digest !== crypto.createHash('sha256').update(JSON.stringify(claim)).digest('hex') ||
++      receipt.owner_attempt !== ownerAttempt || receipt.provider !== provider ||
++      receipt.head_sha !== headSha) return false;
++  if (prior.state.status === 'confirmed') return true;
++  if (prior.state.status !== 'consumed') return false;
++  const pr = await request('GET', `/repos/${String(repository).toLowerCase()}/pulls/${Number(prNumber)}`);
++  const labels = new Set((pr?.labels || []).map((label) => String(label.name || '').toLowerCase()));
++  if (pr?.state !== 'open' || pr?.head?.sha !== headSha ||
++      !labels.has('needs-human')) return false;
++  const next = { ...prior.state, status: 'confirmed', revision: prior.state.revision + 1 };
++  try {
++    await writeAuthorityState(request, repository, prNumber, next, prior.sha);
++    return true;
++  } catch (_) {
++    const settled = await readAuthorityState(request, repository, prNumber).catch(() => null);
++    return settled?.state.status === 'confirmed' &&
++      settled.state.generation === claim.generation &&
++      settled.state.receipt?.id === receipt.id;
++  }
++}
++
++async function reopenUnconfirmedChallenge({ request, repository, prNumber, claim, ownerAttempt, provider, headSha }) {
++  const prior = await readAuthorityState(request, repository, prNumber);
++  const receipt = prior.state.receipt;
++  const matches = prior.state.generation === claim.generation &&
++    prior.state.boundary_fingerprint === claim.boundary_fingerprint &&
++    receipt?.claim_digest === crypto.createHash('sha256').update(JSON.stringify(claim)).digest('hex') &&
++    receipt.owner_attempt === ownerAttempt && receipt.provider === provider && receipt.head_sha === headSha;
++  if (matches && prior.state.status === 'confirmed') return { status: 'confirmed', state: prior.state };
++  if (!matches || prior.state.status !== 'consumed') return { status: 'uncertain', state: prior.state };
++  const now = Date.now();
++  const state = {
++    ...prior.state,
++    generation: crypto.randomBytes(32).toString('hex'),
++    due_at: new Date(now).toISOString(),
++    expires_at: new Date(now + 24 * 60 * 60 * 1000).toISOString(),
++    status: 'available', receipt: null, revision: prior.state.revision + 1,
++  };
++  try {
++    await writeAuthorityState(request, repository, prNumber, state, prior.sha);
++    return { status: 'reopened', state };
++  } catch (_) {
++    const settled = await readAuthorityState(request, repository, prNumber).catch(() => null);
++    if (settled?.state.status === 'confirmed' && settled.state.generation === claim.generation &&
++        settled.state.receipt?.id === receipt.id) return { status: 'confirmed', state: settled.state };
++    if (settled?.state.status === 'available' && settled.state.generation === state.generation) {
++      return { status: 'reopened', state: settled.state };
++    }
++    return { status: 'uncertain', state: settled?.state };
++  }
++}
++
++module.exports = {
++  BRANCH,
++  beginChallenge,
++  claimMatchesState,
++  confirmChallenge,
++  consumeChallenge,
++  readAuthorityState,
++  reopenUnconfirmedChallenge,
++  requester,
++  validState,
++};
++
++if (require.main === module) {
++  (async () => {
++    if (process.argv[2] !== 'consume') throw new Error('Unsupported authority state command');
++    const { verifyAuthorityChallengeEnvelope } = require('./keepalive_challenge_due');
++    const repository = String(process.env.GITHUB_REPOSITORY || '').toLowerCase();
++    const prNumber = Number(process.env.AUTHORITY_PR_NUMBER || '');
++    const headSha = String(process.env.AUTHORITY_HEAD_SHA || '').toLowerCase();
++    const provider = String(process.env.AUTHORITY_PROVIDER || '').toLowerCase();
++    const claimJson = process.env.AUTHORITY_CHALLENGE_CLAIM;
++    const ownerAttempt = `${repository}:${process.env.GITHUB_RUN_ID || ''}:${process.env.GITHUB_RUN_ATTEMPT || ''}`;
++    const verified = verifyAuthorityChallengeEnvelope({
++      claimJson,
++      signingKey: process.env.AUTHORITY_CHALLENGE_SIGNING_KEY,
++      repository,
++      prNumber,
++      boundaryFingerprint: process.env.AUTHORITY_CHALLENGE_FINGERPRINT,
++      headSha,
++    });
++    if (!verified || !ATTEMPT.test(ownerAttempt) ||
++        process.env.GITHUB_EVENT_NAME !== 'workflow_dispatch' ||
++        process.env.GITHUB_ACTOR !== 'github-actions[bot]') {
++      process.stdout.write(JSON.stringify({ granted: false, reason: 'invalid-signed-challenge' }));
++      return;
++    }
++    const request = requester();
++    const pr = await request('GET', `/repos/${repository}/pulls/${prNumber}`);
++    const labels = new Set((pr?.labels || []).map((label) => String(label.name || '').toLowerCase()));
++    if (pr?.state !== 'open' || pr?.head?.sha !== headSha ||
++        !labels.has('agent:needs-attention') || labels.has('needs-human')) {
++      process.stdout.write(JSON.stringify({ granted: false, reason: 'challenge-pr-state-changed' }));
++      return;
++    }
++    const claim = JSON.parse(claimJson);
++    const result = await consumeChallenge({
++      request, repository, prNumber, claim: {
++        generation: claim.generation,
++        boundary_fingerprint: process.env.AUTHORITY_CHALLENGE_FINGERPRINT,
++        due_at: claim.due_at,
++        expires_at: claim.expires_at,
++        head_sha: claim.head_sha,
++        nonce: claim.nonce,
++        sweep_run_id: claim.sweep_run_id,
++        sweep_run_attempt: claim.sweep_run_attempt,
++      }, ownerAttempt, provider, headSha,
++    });
++    process.stdout.write(JSON.stringify(result));
++  })().catch((error) => {
++    process.stderr.write(`Authority challenge unavailable: ${error.message}\n`);
++    process.stdout.write(JSON.stringify({ granted: false, reason: 'authority-state-unavailable' }));
++  });
++}
+diff --git a/.github/scripts/keepalive_challenge_due.js b/.github/scripts/keepalive_challenge_due.js
+index 59573347..de4f2caa 100644
+--- a/.github/scripts/keepalive_challenge_due.js
++++ b/.github/scripts/keepalive_challenge_due.js
+@@ -9,6 +9,11 @@ const TRUSTED_KEEPALIVE_STATE_AUTHORS = new Set([
+   'stranske-keepalive[bot]',
+ ]);
+ 
++function exactUtcTime(value) {
++  if (typeof value !== 'string' || !/^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d\.\d{3}Z$/.test(value)) return false;
++  return Number.isFinite(Date.parse(value)) && new Date(value).toISOString() === value;
++}
++
+ function isTrustedKeepaliveStateComment(comment = {}) {
+   const body = String(comment?.body || '');
+   const login = String(comment?.user?.login || '').trim().toLowerCase();
+@@ -24,6 +29,10 @@ function authorityClaimPayload({
+   repository,
+   prNumber,
+   boundaryFingerprint,
++  generation,
++  dueAt,
++  expiresAt,
++  headSha,
+   nonce,
+   sweepRunId,
+   sweepRunAttempt,
+@@ -32,6 +41,10 @@ function authorityClaimPayload({
+     repository: String(repository || '').toLowerCase(),
+     prNumber: String(prNumber || ''),
+     boundaryFingerprint: String(boundaryFingerprint || '').toLowerCase(),
++    generation: String(generation || '').toLowerCase(),
++    dueAt: String(dueAt || ''),
++    expiresAt: String(expiresAt || ''),
++    headSha: String(headSha || '').toLowerCase(),
+     nonce: String(nonce || '').toLowerCase(),
+     sweepRunId: String(sweepRunId || ''),
+     sweepRunAttempt: String(sweepRunAttempt || ''),
+@@ -40,6 +53,10 @@ function authorityClaimPayload({
+     !/^[a-z0-9_.-]+\/[a-z0-9_.-]+$/.test(fields.repository) ||
+     !/^\d+$/.test(fields.prNumber) ||
+     !/^[0-9a-f]{64}$/.test(fields.boundaryFingerprint) ||
++    !/^[0-9a-f]{64}$/.test(fields.generation) ||
++    !exactUtcTime(fields.dueAt) || !exactUtcTime(fields.expiresAt) ||
++    Date.parse(fields.expiresAt) <= Date.parse(fields.dueAt) ||
++    !/^[0-9a-f]{40}$/.test(fields.headSha) ||
+     !/^[0-9a-f]{64}$/.test(fields.nonce) ||
+     !/^\d+$/.test(fields.sweepRunId) ||
+     !/^\d+$/.test(fields.sweepRunAttempt)
+@@ -47,10 +64,14 @@ function authorityClaimPayload({
+     return '';
+   }
+   return [
+-    'keepalive-authority-claim:v1',
++    'keepalive-authority-claim:v2',
+     `repository=${fields.repository}`,
+     `pr=${fields.prNumber}`,
+     `fingerprint=${fields.boundaryFingerprint}`,
++    `generation=${fields.generation}`,
++    `due_at=${fields.dueAt}`,
++    `expires_at=${fields.expiresAt}`,
++    `head_sha=${fields.headSha}`,
+     `nonce=${fields.nonce}`,
+     `sweep_run_id=${fields.sweepRunId}`,
+     `sweep_run_attempt=${fields.sweepRunAttempt}`,
+@@ -77,6 +98,7 @@ function verifyAuthorityChallengeEnvelope({
+   repository,
+   prNumber,
+   boundaryFingerprint,
++  headSha,
+ } = {}) {
+   let claim;
+   try {
+@@ -91,6 +113,10 @@ function verifyAuthorityChallengeEnvelope({
+     repository,
+     prNumber,
+     boundaryFingerprint,
++    generation: claim.generation,
++    dueAt: claim.due_at,
++    expiresAt: claim.expires_at,
++    headSha,
+     nonce: claim.nonce,
+     sweepRunId: claim.sweep_run_id,
+     sweepRunAttempt: claim.sweep_run_attempt,
+@@ -102,11 +128,13 @@ function parseLatestKeepaliveState(comments = []) {
+   for (const comment of comments) {
+     if (!isTrustedKeepaliveStateComment(comment)) continue;
+     const body = String(comment?.body || '');
++    // A newer trusted but malformed summary invalidates the older projection.
++    latest = null;
+     for (const match of body.matchAll(STATE_RE)) {
+       try {
+         latest = JSON.parse(match[1]);
+       } catch (_) {
+-        // Ignore malformed or manually edited state markers and keep looking.
++        latest = null;
+       }
+     }
+   }
+@@ -122,17 +150,24 @@ function selectDueAuthorityChallenge({ labels = [], comments = [], now = new Dat
+   if (
+     attention?.owner !== 'automation' ||
+     attention?.disposition !== 'challenge-due' ||
+-    !attention?.challenge_due_at
++    !attention?.challenge_due_at ||
++    !/^[0-9a-f]{64}$/.test(String(attention?.generation || '')) ||
++    !/^[0-9a-f]{64}$/.test(String(attention?.boundary_fingerprint || '')) ||
++    !attention?.expires_at
+   ) {
+     return null;
+   }
+ 
+   const dueAt = Date.parse(attention.challenge_due_at);
++  const expiresAt = Date.parse(attention.expires_at);
+   const nowMs = now instanceof Date ? now.getTime() : Date.parse(String(now));
+-  if (!Number.isFinite(dueAt) || !Number.isFinite(nowMs) || dueAt > nowMs) return null;
++  if (!Number.isFinite(dueAt) || !Number.isFinite(expiresAt) ||
++      !Number.isFinite(nowMs) || dueAt > nowMs || nowMs >= expiresAt) return null;
+ 
+   return {
+     dueAt: new Date(dueAt).toISOString(),
++    expiresAt: new Date(expiresAt).toISOString(),
++    generation: attention.generation,
+     key: String(attention.key || ''),
+     boundaryFingerprint: String(attention.boundary_fingerprint || ''),
+     nextAction: String(attention.next_action || ''),
+diff --git a/.github/scripts/keepalive_loop.js b/.github/scripts/keepalive_loop.js
+index 311b8417..d279f3a9 100644
+--- a/.github/scripts/keepalive_loop.js
++++ b/.github/scripts/keepalive_loop.js
+@@ -18,6 +18,7 @@ const { detectConflicts } = require('./conflict_detector');
+ const { parseTimeoutConfig } = require('./timeout_config');
+ const { ensureRateLimitWrapped } = require('./github-rate-limited-wrapper');
+ const { verifyAuthorityChallengeClaim } = require('./keepalive_challenge_due');
++const { beginChallenge, confirmChallenge, reopenUnconfirmedChallenge, requester } = require('./keepalive_authority_state');
+ 
+ // Token load balancer for rate limit management
+ let tokenLoadBalancer = null;
+@@ -3682,6 +3683,10 @@ async function updateKeepaliveLoopSummary({ github: rawGithub, context, core, in
+       repository: `${context.repo.owner}/${context.repo.repo}`,
+       prNumber,
+       boundaryFingerprint: authorityChallengeFingerprint,
++      generation: authorityChallengeClaim.generation,
++      dueAt: authorityChallengeClaim.due_at,
++      expiresAt: authorityChallengeClaim.expires_at,
++      headSha: inputs.head_sha ?? inputs.headSha,
+       nonce: authorityChallengeClaim.nonce,
+       sweepRunId: authorityChallengeClaim.sweep_run_id,
+       sweepRunAttempt: authorityChallengeClaim.sweep_run_attempt,
+@@ -3690,7 +3695,11 @@ async function updateKeepaliveLoopSummary({ github: rawGithub, context, core, in
+       previousAuthorityChallenge &&
+       Boolean(authorityChallengeFingerprint) &&
+       authorityChallengeClaimVerified &&
+-      authorityChallengeFingerprint === previousAttention.boundary_fingerprint;
++      authorityChallengeFingerprint === previousAttention.boundary_fingerprint &&
++      authorityChallengeClaim.generation === previousAttention.generation &&
++      authorityChallengeClaim.due_at === previousAttention.challenge_due_at &&
++      authorityChallengeClaim.expires_at === previousAttention.expires_at &&
++      authorityChallengeClaim.head_sha === (inputs.head_sha ?? inputs.headSha);
+     const authorityEvidence = buildAuthorityChallengeEvidence({
+       agentSummary,
+       summaryReason,
+@@ -3700,18 +3709,30 @@ async function updateKeepaliveLoopSummary({ github: rawGithub, context, core, in
+     const escalationRequired =
+       ((action === 'run' || action === 'fix') && runResult && runResult !== 'success' && errorCategory !== ERROR_CATEGORIES.transient) ||
+       (action === 'stop' && !isSuccessStop && !isNeutralStop && errorCategory !== ERROR_CATEGORIES.transient);
+-    const authorityChallengeConfirmed =
++    const authorityChallengeProjection =
+       authorityChallengeProvenanceMatches &&
+       escalationRequired &&
+       errorCategory === ERROR_CATEGORIES.auth &&
++      agentExecutionStarted === true &&
+       Boolean(authorityEvidence.fingerprint) &&
+       authorityEvidence.actionable &&
+       authorityEvidence.fingerprint === authorityChallengeFingerprint;
++    const pendingAuthorityClaim = authorityChallengeProjection ? {
++      generation: authorityChallengeClaim.generation,
++      boundary_fingerprint: authorityChallengeFingerprint,
++      due_at: authorityChallengeClaim.due_at,
++      expires_at: authorityChallengeClaim.expires_at,
++      head_sha: authorityChallengeClaim.head_sha,
++      nonce: authorityChallengeClaim.nonce,
++      sweep_run_id: authorityChallengeClaim.sweep_run_id,
++      sweep_run_attempt: authorityChallengeClaim.sweep_run_attempt,
++    } : null;
++    let authorityChallengeConfirmed = false;
+     let escalationDisposition = selectEscalationDisposition({
+       required: escalationRequired || stop,
+       errorCategory,
+       summaryReason,
+-      authorityChallengeConfirmed,
++      authorityChallengeConfirmed: authorityChallengeProjection,
+     });
+     const recoveryLeaseReason = stop
+       ? normalise(summaryReason).replace(/-repeat$/, '')
+@@ -4485,9 +4506,34 @@ async function updateKeepaliveLoopSummary({ github: rawGithub, context, core, in
+       (previousAttention.owner === 'automation' &&
+         ['automation-retry', 'challenge-due'].includes(previousAttention.disposition)) ||
+       previousAttentionHasLegacyOwnership;
+-    const challengeDueAt = escalationDisposition === 'challenge-due'
+-      ? new Date().toISOString()
+-      : null;
++    let challengeState = null;
++    if (shouldEscalate && escalationDisposition === 'challenge-due' && authorityEvidence.fingerprint) {
++      try {
++        const repository = `${context.repo.owner}/${context.repo.repo}`;
++        const request = requester(github);
++        const repoInfo = await request('GET', `/repos/${repository}`);
++        const dueAt = new Date().toISOString();
++        const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
++        challengeState = await beginChallenge({
++          request, repository, prNumber,
++          defaultBranch: repoInfo.default_branch,
++          fingerprint: authorityEvidence.fingerprint,
++          dueAt, expiresAt,
++          expectedGeneration: previousAuthorityChallenge ? previousAttention.generation || null : null,
++        });
++        if (challengeState.status !== 'available' || Date.parse(challengeState.expires_at) <= Date.now()) {
++          escalationDisposition = 'automation-retry';
++          challengeState = null;
++        }
++      } catch (error) {
++        core?.warning?.(`Authority generation unavailable: ${error.message}`);
++        escalationDisposition = 'automation-retry';
++      }
++    }
++    if (escalationDisposition === 'challenge-due' && !challengeState) {
++      escalationDisposition = 'automation-retry';
++    }
++    const challengeDueAt = challengeState?.due_at || null;
+     if (shouldEscalate) {
+       const firstSeenAt = priorAttentionKey === attentionKey
+         ? previousAttention.first_seen_at || new Date().toISOString()
+@@ -4513,6 +4559,8 @@ async function updateKeepaliveLoopSummary({ github: rawGithub, context, core, in
+           owner: 'automation',
+           first_seen_at: firstSeenAt,
+           challenge_due_at: challengeDueAt,
++          generation: challengeState?.generation || '',
++          expires_at: challengeState?.expires_at || '',
+           boundary_fingerprint: escalationDisposition === 'challenge-due'
+             ? authorityEvidence.fingerprint
+             : '',
+@@ -4578,16 +4626,22 @@ async function updateKeepaliveLoopSummary({ github: rawGithub, context, core, in
+         // First persist a durable automation-owned transition containing the
+         // exact action. If either later API call fails, the PR never falls back
+         // to an actionless or falsely human-owned state.
++        const pendingAttention = {
++          key: attentionKey,
++          disposition: 'challenge-due',
++          owner: 'automation',
++          first_seen_at: previousAttention.first_seen_at || new Date().toISOString(),
++          challenge_due_at: pendingAuthorityClaim.due_at,
++          generation: pendingAuthorityClaim.generation,
++          expires_at: pendingAuthorityClaim.expires_at,
++          boundary_fingerprint: authorityEvidence.fingerprint,
++          boundary_detail: authorityEvidence.detail,
++          confirmation_pending_label: true,
++          next_action: authorityEvidence.humanAction,
++        };
+         const pendingState = {
+           ...newState,
+-          attention: {
+-            ...newState.attention,
+-            disposition: 'challenge-due',
+-            owner: 'automation',
+-            challenge_due_at: new Date().toISOString(),
+-            confirmation_pending_label: true,
+-            next_action: authorityEvidence.humanAction,
+-          },
++          attention: pendingAttention,
+         };
+         const pendingLines = [
+           ...summaryLines,
+@@ -4615,7 +4669,59 @@ async function updateKeepaliveLoopSummary({ github: rawGithub, context, core, in
+         }
+ 
+         if (hardHumanLabelApplied) {
+-          summaryLines.push(
++          if (pendingAuthorityClaim) {
++            const repository = `${context.repo.owner}/${context.repo.repo}`;
++            try {
++              authorityChallengeConfirmed = await confirmChallenge({
++                request: requester(github), repository, prNumber, claim: pendingAuthorityClaim,
++                ownerAttempt: `${repository.toLowerCase()}:${context.runId || process.env.GITHUB_RUN_ID || ''}:${context.runAttempt || process.env.GITHUB_RUN_ATTEMPT || ''}`,
++                provider: agentType,
++                headSha: inputs.head_sha ?? inputs.headSha,
++              });
++            } catch (error) {
++              core?.warning?.(`Authority receipt confirmation unavailable: ${error.message}`);
++              authorityChallengeConfirmed = false;
++            }
++            if (!authorityChallengeConfirmed) {
++              const repository = `${context.repo.owner}/${context.repo.repo}`;
++              let recovery = { status: 'uncertain' };
++              try {
++                recovery = await reopenUnconfirmedChallenge({
++                  request: requester(github), repository, prNumber, claim: pendingAuthorityClaim,
++                  ownerAttempt: `${repository.toLowerCase()}:${context.runId || process.env.GITHUB_RUN_ID || ''}:${context.runAttempt || process.env.GITHUB_RUN_ATTEMPT || ''}`,
++                  provider: agentType,
++                  headSha: inputs.head_sha ?? inputs.headSha,
++                });
++              } catch (error) {
++                core?.warning?.(`Authority confirmation reconciliation unavailable: ${error.message}`);
++              }
++              if (recovery.status === 'confirmed') {
++                authorityChallengeConfirmed = true;
++              } else {
++                escalationDisposition = 'challenge-due';
++                newState.attention = {
++                  ...pendingAttention,
++                  generation: recovery.state?.generation || pendingAttention.generation,
++                  challenge_due_at: recovery.state?.due_at || pendingAttention.challenge_due_at,
++                  expires_at: recovery.state?.expires_at || pendingAttention.expires_at,
++                  confirmation_pending_label: true,
++                  next_action: 'Reconcile the unconfirmed authority challenge and workflow-owned needs-human label.',
++                };
++                if (recovery.status === 'reopened') {
++                  try {
++                    await github.rest.issues.removeLabel({
++                      owner: context.repo.owner, repo: context.repo.repo,
++                      issue_number: prNumber, name: 'needs-human',
++                    });
++                    newState.attention.confirmation_pending_label = false;
++                  } catch (error) {
++                    core?.warning?.(`Failed to remove unconfirmed needs-human label: ${error.message}`);
++                  }
++                }
++              }
++            }
++          }
++          if (authorityChallengeConfirmed) summaryLines.push(
+             '',
+             '### 🛑 Independent Authority Challenge Confirmed',
+             '',
+diff --git a/.github/sync-manifest.yml b/.github/sync-manifest.yml
+index f59aeeed..4a9fe835 100644
+--- a/.github/sync-manifest.yml
++++ b/.github/sync-manifest.yml
+@@ -423,6 +423,9 @@ scripts:
+   - source: .github/scripts/keepalive_challenge_due.js
+     description: "Selects due automation-owned authority challenges for the hourly keepalive sweep"
+ 
++  - source: .github/scripts/keepalive_authority_state.js
++    description: "PR-wide conditional authority generation and single-use receipt ledger"
++
+   - source: .github/scripts/token_load_balancer.js
+     description: "Dynamic token load balancer for API rate limit management"
+ 
+diff --git a/.github/workflows/agents-keepalive-loop-reporter.yml b/.github/workflows/agents-keepalive-loop-reporter.yml
+index df2865ff..6b86dd85 100644
+--- a/.github/workflows/agents-keepalive-loop-reporter.yml
++++ b/.github/workflows/agents-keepalive-loop-reporter.yml
+@@ -6,7 +6,7 @@ on:
+     types: [completed]
+ 
+ permissions:
+-  contents: read
++  contents: write # conditional authority generation updates
+   pull-requests: write
+   issues: write
+   actions: read
+@@ -75,7 +75,7 @@ jobs:
+           owner: ${{ github.repository_owner }}
+           repositories: ${{ github.event.repository.name }}
+           permission-actions: write
+-          permission-contents: read
++          permission-contents: write
+           permission-issues: write
+           permission-pull-requests: read
+ 
+@@ -97,7 +97,7 @@ jobs:
+           owner: ${{ github.repository_owner }}
+           repositories: ${{ github.event.repository.name }}
+           permission-actions: write
+-          permission-contents: read
++          permission-contents: write
+           permission-issues: write
+           permission-pull-requests: read
+ 
+diff --git a/.github/workflows/agents-keepalive-loop.yml b/.github/workflows/agents-keepalive-loop.yml
+index 3b40a96e..ea2bfc7a 100644
+--- a/.github/workflows/agents-keepalive-loop.yml
++++ b/.github/workflows/agents-keepalive-loop.yml
+@@ -122,7 +122,7 @@ jobs:
+       force_retry: ${{ steps.evaluate.outputs.force_retry }}
+       fingerprint_should_run: ${{ steps.fingerprint.outputs.should_run || 'true' }}
+       fingerprint_reason: ${{ steps.fingerprint.outputs.reason }}
+-      dispatch_should_run: ${{ steps.runner_dispatch.outputs.should_dispatch || 'true' }}
++      dispatch_should_run: ${{ steps.runner_dispatch.outputs.should_dispatch || 'false' }}
+       dispatch_reason: ${{ steps.runner_dispatch.outputs.reason }}
+     steps:
+       - name: Checkout
+@@ -587,6 +587,7 @@ jobs:
+               github.actor == 'github-actions[bot]' &&
+               github.event.inputs.sweep_recheck == 'true' &&
+               github.event.inputs.authority_challenge_claim || '' }}
++          RAW_AUTHORITY_CHALLENGE_CLAIM: ${{ github.event.inputs.authority_challenge_claim || '' }}
+           AUTHORITY_CHALLENGE_SIGNING_KEY: >-
+             ${{ secrets.KEEPALIVE_AUTHORITY_SIGNING_KEY || '' }}
+         run: |
+@@ -600,6 +601,7 @@ jobs:
+             repository: process.env.GITHUB_REPOSITORY,
+             prNumber: process.env.PR_NUMBER,
+             boundaryFingerprint: process.env.AUTHORITY_CHALLENGE_FINGERPRINT,
++            headSha: process.env.HEAD_SHA,
+           });
+           process.exitCode = verified ? 0 : 1;
+           NODE
+@@ -613,6 +615,13 @@ jobs:
+               --authority-challenge
+             exit 0
+           fi
++          if [ -n "${RAW_AUTHORITY_CHALLENGE_CLAIM:-}" ]; then
++            {
++              echo "should_dispatch=false"
++              echo "reason=invalid-signed-authority-challenge"
++            } >> "$GITHUB_OUTPUT"
++            exit 0
++          fi
+           if [ -z "${PR_NUMBER:-}" ] || [ -z "${HEAD_SHA:-}" ]; then
+             {
+               echo "should_dispatch=true"
+@@ -1652,7 +1661,7 @@ jobs:
+           owner: ${{ github.repository_owner }}
+           repositories: ${{ github.event.repository.name }}
+           permission-actions: write
+-          permission-contents: read
++          permission-contents: write
+           permission-issues: write
+           permission-pull-requests: read
+ 
+@@ -1672,7 +1681,7 @@ jobs:
+           owner: ${{ github.repository_owner }}
+           repositories: ${{ github.event.repository.name }}
+           permission-actions: write
+-          permission-contents: read
++          permission-contents: write
+           permission-issues: write
+           permission-pull-requests: read
+ 
+@@ -1709,6 +1718,25 @@ jobs:
+             }}
+           PREFLIGHT_FAILURE_SUMMARY: ${{ needs.preflight.outputs.failure_summary || '' }}
+           DELEGATION_SOURCE: ${{ needs.evaluate.outputs.delegation_source }}
++          EVALUATE_PR_NUMBER: ${{ needs.evaluate.outputs.pr_number }}
++          EVALUATE_HEAD_SHA: ${{ needs.evaluate.outputs.head_sha }}
++          EVALUATE_ACTION: ${{ needs.evaluate.outputs.action }}
++          EVALUATE_REASON: ${{ needs.evaluate.outputs.reason }}
++          EVALUATE_GATE_CONCLUSION: ${{ needs.evaluate.outputs.gate_conclusion }}
++          EVALUATE_ITERATION: ${{ needs.evaluate.outputs.iteration }}
++          EVALUATE_MAX_ITERATIONS: ${{ needs.evaluate.outputs.max_iterations }}
++          EVALUATE_FAILURE_THRESHOLD: ${{ needs.evaluate.outputs.failure_threshold }}
++          EVALUATE_ROUNDS_WITHOUT_TASK_COMPLETION: ${{ needs.evaluate.outputs.rounds_without_task_completion }}
++          EVALUATE_TASKS_TOTAL: ${{ needs.evaluate.outputs.tasks_total }}
++          EVALUATE_TASKS_UNCHECKED: ${{ needs.evaluate.outputs.tasks_unchecked }}
++          EVALUATE_KEEPALIVE_ENABLED: ${{ needs.evaluate.outputs.keepalive_enabled }}
++          EVALUATE_AUTOFIX_ENABLED: ${{ needs.evaluate.outputs.autofix_enabled }}
++          EVALUATE_AGENT_TYPE: ${{ needs.evaluate.outputs.agent_type }}
++          EVALUATE_AGENT_ROUTING_MODE: ${{ needs.evaluate.outputs.agent_routing_mode }}
++          EVALUATE_DELEGATION_REASON: ${{ needs.evaluate.outputs.delegation_reason }}
++          EVALUATE_DELEGATION_SHOULD_SWITCH: ${{ needs.evaluate.outputs.delegation_should_switch }}
++          EVALUATE_TRACE: ${{ needs.evaluate.outputs.trace }}
++          EVALUATE_FORCE_RETRY: ${{ needs.evaluate.outputs.force_retry }}
+           AUTHORITY_CHALLENGE_FINGERPRINT: >-
+             ${{ github.event_name == 'workflow_dispatch' &&
+               github.actor == 'github-actions[bot]' &&
+@@ -1807,25 +1835,26 @@ jobs:
+               '${{ needs.run-cursor.outputs.llm-analysis-run }}' === 'true' ||
+               '${{ needs.run-gemini.outputs.llm-analysis-run }}' === 'true';
+             const inputs = {
+-              pr_number: Number('${{ needs.evaluate.outputs.pr_number }}') || 0,
+-              action: '${{ needs.evaluate.outputs.action }}',
+-              reason: '${{ needs.evaluate.outputs.reason }}',
+-              gate_conclusion: '${{ needs.evaluate.outputs.gate_conclusion }}',
+-              iteration: Number('${{ needs.evaluate.outputs.iteration }}') || 0,
+-              max_iterations: Number('${{ needs.evaluate.outputs.max_iterations }}') || 0,
+-              failure_threshold: Number('${{ needs.evaluate.outputs.failure_threshold }}') || 3,
++              pr_number: Number(process.env.EVALUATE_PR_NUMBER) || 0,
++              head_sha: process.env.EVALUATE_HEAD_SHA || '',
++              action: process.env.EVALUATE_ACTION || '',
++              reason: process.env.EVALUATE_REASON || '',
++              gate_conclusion: process.env.EVALUATE_GATE_CONCLUSION || '',
++              iteration: Number(process.env.EVALUATE_ITERATION) || 0,
++              max_iterations: Number(process.env.EVALUATE_MAX_ITERATIONS) || 0,
++              failure_threshold: Number(process.env.EVALUATE_FAILURE_THRESHOLD) || 3,
+               rounds_without_task_completion:
+-                Number('${{ needs.evaluate.outputs.rounds_without_task_completion }}') || 0,
+-              tasks_total: Number('${{ needs.evaluate.outputs.tasks_total }}') || 0,
+-              tasks_unchecked: Number('${{ needs.evaluate.outputs.tasks_unchecked }}') || 0,
+-              keepalive_enabled: '${{ needs.evaluate.outputs.keepalive_enabled }}',
+-              autofix_enabled: '${{ needs.evaluate.outputs.autofix_enabled }}',
+-              agent_type: '${{ needs.evaluate.outputs.agent_type }}',
+-              agent_routing_mode: '${{ needs.evaluate.outputs.agent_routing_mode }}',
+-              delegation_reason: '${{ needs.evaluate.outputs.delegation_reason }}',
+-              delegation_should_switch: '${{ needs.evaluate.outputs.delegation_should_switch }}',
++                Number(process.env.EVALUATE_ROUNDS_WITHOUT_TASK_COMPLETION) || 0,
++              tasks_total: Number(process.env.EVALUATE_TASKS_TOTAL) || 0,
++              tasks_unchecked: Number(process.env.EVALUATE_TASKS_UNCHECKED) || 0,
++              keepalive_enabled: process.env.EVALUATE_KEEPALIVE_ENABLED || '',
++              autofix_enabled: process.env.EVALUATE_AUTOFIX_ENABLED || '',
++              agent_type: process.env.EVALUATE_AGENT_TYPE || '',
++              agent_routing_mode: process.env.EVALUATE_AGENT_ROUTING_MODE || '',
++              delegation_reason: process.env.EVALUATE_DELEGATION_REASON || '',
++              delegation_should_switch: process.env.EVALUATE_DELEGATION_SHOULD_SWITCH || '',
+               delegation_source: process.env.DELEGATION_SOURCE || '',
+-              trace: '${{ needs.evaluate.outputs.trace }}',
++              trace: process.env.EVALUATE_TRACE || '',
+               // Agent run result - check which agent ran
+               run_result: runResult,
+               agent_execution_started: agentExecutionStarted,
+@@ -1840,7 +1869,7 @@ jobs:
+               llm_model: llmModel,
+               llm_confidence: llmConfidence,
+               llm_analysis_run: llmAnalysisRun,
+-              force_retry: '${{ needs.evaluate.outputs.force_retry }}',
++              force_retry: process.env.EVALUATE_FORCE_RETRY || '',
+               authority_challenge_fingerprint:
+                 process.env.AUTHORITY_CHALLENGE_FINGERPRINT || '',
+               authority_challenge_claim:
+diff --git a/.github/workflows/agents-keepalive-sweep.yml b/.github/workflows/agents-keepalive-sweep.yml
+index 3d03054b..a6bce9ff 100644
+--- a/.github/workflows/agents-keepalive-sweep.yml
++++ b/.github/workflows/agents-keepalive-sweep.yml
+@@ -51,6 +51,7 @@ jobs:
+             .github/scripts/error_classifier.js
+             .github/scripts/github-api-with-retry.js
+             .github/scripts/keepalive_challenge_due.js
++            .github/scripts/keepalive_authority_state.js
+             .github/scripts/token_load_balancer.js
+           sparse-checkout-cone-mode: false
+ 
+@@ -76,6 +77,8 @@ jobs:
+               selectDueAuthorityChallenge,
+               signAuthorityChallengeClaim,
+             } = require('./.github/scripts/keepalive_challenge_due.js');
++            const { readAuthorityState, requester } =
++              require('./.github/scripts/keepalive_authority_state.js');
+             const { withRetry } = await createTokenAwareRetry({
+               github,
+               core,
+@@ -125,6 +128,24 @@ jobs:
+                     comments,
+                     now: new Date(),
+                   });
++                  if (dueChallenge) {
++                    try {
++                      const { state } = await readAuthorityState(
++                        requester(github), repository, pr.number,
++                      );
++                      if (state.status !== 'available' ||
++                          state.generation !== dueChallenge.generation ||
++                          state.boundary_fingerprint !== dueChallenge.boundaryFingerprint ||
++                          state.due_at !== dueChallenge.dueAt ||
++                          state.expires_at !== dueChallenge.expiresAt ||
++                          Date.now() >= Date.parse(state.expires_at)) {
++                        dueChallenge = null;
++                      }
++                    } catch (error) {
++                      core.warning(`PR #${pr.number}: authority ledger unavailable: ${error.message}`);
++                      dueChallenge = null;
++                    }
++                  }
+                 }
+                 let authorityClaim = {};
+                 if (dueChallenge) {
+@@ -134,6 +155,10 @@ jobs:
+                     repository,
+                     prNumber: pr.number,
+                     boundaryFingerprint: dueChallenge.boundaryFingerprint,
++                    generation: dueChallenge.generation,
++                    dueAt: dueChallenge.dueAt,
++                    expiresAt: dueChallenge.expiresAt,
++                    headSha: pr.head.sha,
+                     nonce,
+                     sweepRunId,
+                     sweepRunAttempt,
+@@ -153,6 +178,10 @@ jobs:
+                     authorityClaim = {
+                       authority_challenge_claim: JSON.stringify({
+                         signature,
++                        generation: dueChallenge.generation,
++                        due_at: dueChallenge.dueAt,
++                        expires_at: dueChallenge.expiresAt,
++                        head_sha: pr.head.sha,
+                         nonce,
+                         sweep_run_id: sweepRunId,
+                         sweep_run_attempt: sweepRunAttempt,
+diff --git a/config/template-drift-allowlist.txt b/config/template-drift-allowlist.txt
+index 72232288..6af019c4 100644
+--- a/config/template-drift-allowlist.txt
++++ b/config/template-drift-allowlist.txt
+@@ -144,20 +144,20 @@ fingerprint_refreshed = 2026-09-02
+ [pair.12]
+ main = .github/workflows/agents-keepalive-loop-reporter.yml
+ template = templates/consumer-repo/.github/workflows/agents-keepalive-loop-reporter.yml
+-main_sha256 = b57ab568475f34cab079bdbb3b55229b393c2bd482dd91951b331b78a039c097
+-template_sha256 = fc2e824dc22b1f7677ca92f9877d0a27898975adb56e26b2933190f87787a2ea
+-divergence = client-id rename 2026-08-24: every create-github-app-token step moved from the deprecated `app-id` input to `client-id`, applied identically to root and consumer, with the secret VALUE unchanged (the action forwards either input to the same appId slot -- main.js:21, lib/main.js:37). Fingerprints refreshed for that change; the divergence itself is unchanged and was NOT re-reviewed, which is why divergence_reviewed keeps its old date. Prior divergence unchanged: Named-secrets rollout 2026-08-23: both surfaces now pass named setup-api-client secret inputs instead of the whole-secrets-context blob, applied identically to root and consumer, and scoped to each workflow's DECLARED workflow_call secrets where that context is a closed set. Removing that handoff is the demonstrated remedy for GitHub's suspicious-workflow hold (agents-dedup then ran at run_attempt 1 with nothing approved after 22 days held). Prior divergence unchanged: Intentional divergence re-reviewed 2026-08-15: both reporters mint the dedicated KEEPALIVE_APP token with WORKFLOWS_APP fallback, fail closed before trusted summary writes, and record the selected App writer. The root keeps its in-repo setup helpers while the consumer retains state fingerprinting and SHA-pinned actions; do not align wholesale.
++main_sha256 = a8267345a82bd809540462039f4efd122c7bf20fab9fcdd981f06e4140ea8d47
++template_sha256 = 650c5ebe8932c44d6111a54d2e0fd7bef5862a4afd33d0d6cbe2aae817d55009
++divergence = Authority-ledger contents-write rollout 2026-09-20: root and consumer reporter tokens both request contents write so conditional generation updates can persist; existing reporter topology divergence unchanged. client-id rename 2026-08-24: every create-github-app-token step moved from the deprecated `app-id` input to `client-id`, applied identically to root and consumer, with the secret VALUE unchanged (the action forwards either input to the same appId slot -- main.js:21, lib/main.js:37). Fingerprints refreshed for that change; the divergence itself is unchanged and was NOT re-reviewed, which is why divergence_reviewed keeps its old date. Prior divergence unchanged: Named-secrets rollout 2026-08-23: both surfaces now pass named setup-api-client secret inputs instead of the whole-secrets-context blob, applied identically to root and consumer, and scoped to each workflow's DECLARED workflow_call secrets where that context is a closed set. Removing that handoff is the demonstrated remedy for GitHub's suspicious-workflow hold (agents-dedup then ran at run_attempt 1 with nothing approved after 22 days held). Prior divergence unchanged: Intentional divergence re-reviewed 2026-08-15: both reporters mint the dedicated KEEPALIVE_APP token with WORKFLOWS_APP fallback, fail closed before trusted summary writes, and record the selected App writer. The root keeps its in-repo setup helpers while the consumer retains state fingerprinting and SHA-pinned actions; do not align wholesale.
+ divergence_reviewed = 2026-08-15
+-fingerprint_refreshed = 2026-08-24
++fingerprint_refreshed = 2026-09-20
+ 
+ [pair.13]
+ main = .github/workflows/agents-keepalive-sweep.yml
+ template = templates/consumer-repo/.github/workflows/agents-keepalive-sweep.yml
+-main_sha256 = a163e6a9ff5c55758bc9030e1ec5a1578eb4074876788a43195fe164cdf5cc04
+-template_sha256 = 526cd23f10c3de5d7b7cd33ef22da4f85d480459e5feecc327f7371473ba787b
+-divergence = Keepalive routing-label hardening re-reviewed 2026-09-03: root and both consumer mode sweeps normalize labels before eligibility, require a real executable routing label rather than disabled Aider or recovery-only labels, and use the normalized needs-attention signal for authority challenges. This preserves recovery dispatch for PRs that also carry a concrete route without changing the root/consumer dispatch topology. Prior divergence unchanged: Non-consolidated fallback re-reviewed 2026-09-01: consumer sweep now runs mutually exclusive sweep_consolidated / sweep_nonconsolidated jobs plus an ungated name_mode job that records the named skip reason when the consolidated path is inactive, so unset USE_CONSOLIDATED_WORKFLOWS still gets hourly re-evaluation via agents-81. Root retains its single inverted-mode sweep that targets agents-keepalive-loop.yml. Prior divergence unchanged: Intentional divergence re-reviewed 2026-08-13: root and consumer sweeps share HMAC-signed due-authority claims bound to repository, PR, fingerprint, nonce, and exact sweep run; missing signing material fails closed to ordinary non-forced rechecks. Both bypass state debounce for ordinary sweep recovery, retain completed-runner debounce for ordinary wakeups, and bypass runner debounce only for a verified signed due claim, while the consumer retains its consolidated gate-followup dispatch path and pinned action contract.
++main_sha256 = ea4564d6c8bc911e94cb17f43d7ecc578f3248c2324462aefc586f5994b9db53
++template_sha256 = 57c70bd958b2f40dde7d79256bee2cf029d9cdf296c28197a6c67679c3b0e1b5
++divergence = Authority-ledger sweep rollout 2026-09-20: root and both consumer modes verify the current generation before signing v2 claims; existing one-mode versus two-mode dispatch divergence unchanged. Keepalive routing-label hardening re-reviewed 2026-09-03: root and both consumer mode sweeps normalize labels before eligibility, require a real executable routing label rather than disabled Aider or recovery-only labels, and use the normalized needs-attention signal for authority challenges. This preserves recovery dispatch for PRs that also carry a concrete route without changing the root/consumer dispatch topology. Prior divergence unchanged: Non-consolidated fallback re-reviewed 2026-09-01: consumer sweep now runs mutually exclusive sweep_consolidated / sweep_nonconsolidated jobs plus an ungated name_mode job that records the named skip reason when the consolidated path is inactive, so unset USE_CONSOLIDATED_WORKFLOWS still gets hourly re-evaluation via agents-81. Root retains its single inverted-mode sweep that targets agents-keepalive-loop.yml. Prior divergence unchanged: Intentional divergence re-reviewed 2026-08-13: root and consumer sweeps share HMAC-signed due-authority claims bound to repository, PR, fingerprint, nonce, and exact sweep run; missing signing material fails closed to ordinary non-forced rechecks. Both bypass state debounce for ordinary sweep recovery, retain completed-runner debounce for ordinary wakeups, and bypass runner debounce only for a verified signed due claim, while the consumer retains its consolidated gate-followup dispatch path and pinned action contract.
+ divergence_reviewed = 2026-09-03
+-fingerprint_refreshed = 2026-09-03
++fingerprint_refreshed = 2026-09-20
+ 
+ [pair.14]
+ main = .github/workflows/agents-verifier.yml
+diff --git a/docs/keepalive/Agents.md b/docs/keepalive/Agents.md
+index d27bc2a0..1a9c032f 100644
+--- a/docs/keepalive/Agents.md
++++ b/docs/keepalive/Agents.md
+@@ -55,7 +55,7 @@ Auto-pilot pipeline:
+ 
+ 1. **PR body is the contract**: Auto-pilot writes structured tasks into the PR body. Keepalive reads these tasks via the task appendix. If the PR body format changes, both must be updated together.
+ 
+-2. **Labels are handoff signals**: Auto-pilot applies the selected registry-backed `agent:<name>` label (for example, `agent:codex` or `agent:claude`) and keepalive activates. Every non-transient run/fix failure records automation-owned recovery state and explicitly dispatches a bounded retry through the active workflow (`agents-keepalive-loop.yml` in the root lane or `agents-81-gate-followups.yml` in consolidated consumers). A failed direct dispatch defers that durable lease for the hourly sweep instead of adding a sticky `agent:retry` label; after 3 failures, the current strategy pauses for the same hourly recovery sweep. It does not infer that a human is required. Each hourly sweep wakeup bypasses state debounce so current state is re-evaluated, while ordinary wakeups retain completed-runner debounce. A possible authority boundary enters an independent scheduled challenge whose durable fingerprint is derived only from the routed agent's registry-backed required credentials, shared registry authority credentials, finite permission targets, and HTTP 401/403; arbitrary runner text is never copied or persisted. Both the root and consolidated consumer lanes require a dedicated keepalive or Workflows App token before marking an agent running or writing the final summary, so every mutation of App-owned state uses the same trusted writer class. Every keepalive reader selects durable state only from a marked summary comment owned by `stranske-keepalive[bot]`, `agents-workflows-bot[bot]`, the identity-checked PAT fallbacks `stranske` and `stranske-automation-bot`, or the migration-only legacy `github-actions[bot]` writer; arbitrary users cannot override an earlier trusted state marker. When the selected App encounters a summary from the known legacy writer or the other dedicated App, it preserves the parsed state in a new comment owned by that App because editing the old comment would retain its original author. Only the sweep passes a valid HMAC-signed claim using `KEEPALIVE_AUTHORITY_SIGNING_KEY` and binding that fingerprint to the repository, PR, random nonce, and exact sweep run/attempt; that signed due claim alone may bypass runner debounce and force-dispatch. A generic retry or another workflow sharing `github-actions[bot]` cannot confirm the challenge. Missing signing material fails closed to an ordinary non-forced recheck. A matching second failure may record the projected human action and apply `needs-human`. A different auth failure stays automation-owned and is challenged again on the next sweep.
++2. **Labels are handoff signals**: Auto-pilot applies the selected registry-backed `agent:<name>` label (for example, `agent:codex` or `agent:claude`) and keepalive activates. Every non-transient run/fix failure records automation-owned recovery state and explicitly dispatches a bounded retry through the active workflow (`agents-keepalive-loop.yml` in the root lane or `agents-81-gate-followups.yml` in consolidated consumers). A failed direct dispatch defers that durable lease for the hourly sweep instead of adding a sticky `agent:retry` label; after 3 failures, the current strategy pauses for the same hourly recovery sweep. It does not infer that a human is required. Each hourly sweep wakeup bypasses state debounce so current state is re-evaluated, while ordinary wakeups retain completed-runner debounce. A possible authority boundary enters an independent scheduled challenge whose durable fingerprint is derived only from the routed agent's registry-backed required credentials, shared registry authority credentials, finite permission targets, and HTTP 401/403; arbitrary runner text is never copied or persisted. Both the root and consolidated consumer lanes require a dedicated keepalive or Workflows App token before marking an agent running or writing the final summary, so every mutation of App-owned state uses the same trusted writer class. Every keepalive reader selects durable state only from a marked summary comment owned by `stranske-keepalive[bot]`, `agents-workflows-bot[bot]`, the identity-checked PAT fallbacks `stranske` and `stranske-automation-bot`, or the migration-only legacy `github-actions[bot]` writer; arbitrary users cannot override an earlier trusted state marker. When the selected App encounters a summary from the known legacy writer or the other dedicated App, it preserves the parsed state in a new comment owned by that App because editing the old comment would retain its original author. The hourly sweep signs a v2 claim binding repository, PR, current ledger generation, boundary fingerprint, due time, expiry, head, nonce, and exact sweep run/attempt. The claim grants a debounce bypass only after a conditional single-use receipt is written to the PR-wide authority ledger on `keepalive-authority-state`. A generic retry, replayed claim, or another workflow sharing `github-actions[bot]` cannot grant or confirm the challenge; the owning downstream attempt must present its receipt and actual worker execution evidence. Missing signing material fails closed to an ordinary non-forced recheck. A matching second failure may record the projected human action and apply `needs-human`. A different auth failure stays automation-owned and is challenged again on the next sweep.
+ 
+ 3. **Gate is the trigger**: Keepalive is event-driven via Gate `workflow_run` completion. The root loop accepts Gate runs whose source event was `pull_request` or `workflow_dispatch`, so push-to-default-branch Gate runs are rejected at the job condition before a runner is allocated without suppressing operator reruns. A PR or manual Gate whose `pull_requests` association is empty remains eligible and is resolved by head SHA inside `evaluateKeepaliveLoop`. Auto-pilot's `monitor-pr` step watches for keepalive progress. Neither polls — both react to events.
+ 
+diff --git a/docs/keepalive/GoalsAndPlumbing.md b/docs/keepalive/GoalsAndPlumbing.md
+index 5dbb81fe..6ccf634b 100644
+--- a/docs/keepalive/GoalsAndPlumbing.md
++++ b/docs/keepalive/GoalsAndPlumbing.md
+@@ -101,7 +101,7 @@ If any requirement fails, keepalive stays silent—no PR comments. Operators may
+ - Respect the `agents:paused` label, which blocks *all* keepalive activity.
+ - Every non-transient run/fix failure records automation-owned retry state and explicitly dispatches a bounded retry while below the failure threshold. If direct dispatch fails, the durable lease is deferred for the hourly sweep to retry directly; automation does not add a sticky `agent:retry` label.
+ - After repeated failures (default: 3), the loop pauses the current strategy and dispatches one non-recursive forced recovery lease. A complete-but-failing Gate uses that lease for one real fix attempt even when its ordinary Gate-fix budget is exhausted; after the forced run, the hourly keepalive sweep owns the next recovery review.
+-- A possible access or authority boundary adds `agent:needs-attention` with an immediately due independent challenge. Durable state extracts only a closed allowlist of facts: a credential named by the routed agent's registry-backed `required_secrets` or the registry's shared authority list, a finite permission target, and HTTP 401/403. Its fingerprint and human action are derived only from those facts; arbitrary runner text is never copied or persisted. Every hourly sweep wakeup bypasses state debounce so an unchanged zero-commit round is re-evaluated, while ordinary wakeups retain completed-runner debounce. Both the root and consolidated consumer lanes require a dedicated keepalive or Workflows App token before marking an agent running or writing the final summary, so every mutation of App-owned state uses the same trusted writer class. Every keepalive reader selects durable state only from a marked summary comment authored by `stranske-keepalive[bot]`, `agents-workflows-bot[bot]`, the identity-checked PAT fallbacks `stranske` and `stranske-automation-bot`, or the migration-only legacy `github-actions[bot]` writer; an arbitrary later commenter cannot replace the preceding trusted state. If a selected App finds a summary from the known legacy writer or the other dedicated App, it migrates the parsed state to a newly created App-owned comment instead of editing the old marker in place, because GitHub preserves the original author. Only a due claim carrying that exact fingerprint in an HMAC signed with the dedicated `KEEPALIVE_AUTHORITY_SIGNING_KEY` and bound to the repository, PR, random nonce, and exact sweep run/attempt may bypass runner debounce and force-dispatch. Generic retries and other workflows sharing `github-actions[bot]` cannot confirm the challenge; missing or invalid signing material fails closed to an ordinary non-forced recheck. A green recheck clears the challenge. Only the signed sweep-selected projection failing again may record its allowlisted credential or permission remedy before replacing `agent:needs-attention` with `needs-human`; a different auth failure starts a new automation-owned challenge that the next sweep can evaluate. The reviewed-repo controller challenges confirmed holds again after 24 hours.
++- A possible access or authority boundary adds `agent:needs-attention` with an immediately due independent challenge. Durable state extracts only a closed allowlist of facts: a credential named by the routed agent's registry-backed `required_secrets` or the registry's shared authority list, a finite permission target, and HTTP 401/403. Its fingerprint and human action are derived only from those facts; arbitrary runner text is never copied or persisted. Every hourly sweep wakeup bypasses state debounce so an unchanged zero-commit round is re-evaluated, while ordinary wakeups retain completed-runner debounce. Both the root and consolidated consumer lanes require a dedicated keepalive or Workflows App token before marking an agent running or writing the final summary, so every mutation of App-owned state uses the same trusted writer class. Every keepalive reader selects durable state only from a marked summary comment authored by `stranske-keepalive[bot]`, `agents-workflows-bot[bot]`, the identity-checked PAT fallbacks `stranske` and `stranske-automation-bot`, or the migration-only legacy `github-actions[bot]` writer; an arbitrary later commenter cannot replace the preceding trusted state. If a selected App finds a summary from the known legacy writer or the other dedicated App, it migrates the parsed state to a newly created App-owned comment instead of editing the old marker in place, because GitHub preserves the original author. The sweep signs a v2 claim over the current authoritative challenge generation, exact fingerprint and due/expiry times, PR head, repository/PR, nonce, and sweep run/attempt. A matching claim may bypass runner debounce only after a conditional, PR-wide single-use receipt is persisted on `keepalive-authority-state`. Generic retries, old envelopes, and other workflows sharing `github-actions[bot]` cannot consume or confirm the challenge. Missing signing material permits an ordinary recheck without a challenge claim; a supplied invalid claim or unavailable ledger denies the challenge path. A green recheck clears the challenge. Only the signed sweep-selected projection failing again may record its allowlisted credential or permission remedy before replacing `agent:needs-attention` with `needs-human`; a different auth failure starts a new automation-owned challenge that the next sweep can evaluate. The reviewed-repo controller challenges confirmed holds again after 24 hours.
+ - Agent delegation treats two consecutive zero-progress rounds as stalled. Commit churn is not progress unless it advances checklist state or reaches a green Gate.
+ - When `agent:auto` stalls and switches agents, `decideNextAgent` may consult the Orchestrator route-weights export (`ROUTE_WEIGHTS_URL`, defaulting to the `exports/route-weights` branch JSON documented in `stranske/Orchestrator`). Any fetch/parse/staleness failure falls back to today's static preference without blocking keepalive.
+ 
+@@ -115,6 +115,10 @@ Do not edit the state marker manually. Use the supported `agent:retry` or workfl
+ 
+ ---
+ 
++### Authority challenge ledger (v2)
++
++The dedicated `keepalive-authority-state` branch stores `.github/keepalive-authority/<PR>.json` for each PR. The first challenge generation is initialized from the repository default branch by a workflow with `contents: write`. Each update supplies the previous file SHA to the Contents API; a conflicting or ambiguous consumption write grants no run. The record contains a generation, boundary fingerprint, canonical due/expiry times, monotonic revision, and at most one receipt naming the downstream workflow attempt, provider, and head. Ordinary runner reservations and completions never write this record. Missing or malformed previously initialized state fails closed; the summary comment and labels are projections and cannot restore authority. The owner attempt must have actually started a worker before receipt-backed confirmation may apply `needs-human`. A crash after a successful consumption can leave zero executions, so the guarantee is at most one grant; the hourly sweep and automation retry handle recovery without treating the consumed claim as reusable.
++
+ ## 5. No-Noise Policy
+ 
+ When preconditions are missing (labels absent, Gate not green, run cap reached), keepalive must not add new PR comments. At most, log a concise operator summary explaining the skipped action.
+diff --git a/docs/ops/CONSUMER_REPO_MAINTENANCE.md b/docs/ops/CONSUMER_REPO_MAINTENANCE.md
+index 8bd65bb7..7c00e1b1 100644
+--- a/docs/ops/CONSUMER_REPO_MAINTENANCE.md
++++ b/docs/ops/CONSUMER_REPO_MAINTENANCE.md
+@@ -87,6 +87,10 @@ maintenance is grouped into the same weekly maintenance window.
+ 
+ ---
+ 
++### Keepalive authority state delivery
++
++The authority challenge helper is source-owned by Workflows and declared in `.github/sync-manifest.yml`. Sync the helper, consumer sweep, Gate Followups, and reporter workflow together through Maint 71 before enabling v2 challenge dispatch in a consumer. The sweep needs `contents: read`; Gate Followups and its reporter need `contents: write` to initialize and conditionally update the `keepalive-authority-state` branch. No operator-created branch or secret is needed beyond `KEEPALIVE_AUTHORITY_SIGNING_KEY`; a missing branch is initialized on the first new challenge. A missing file for a generation already projected in the trusted summary is an error and must be repaired from authoritative evidence, never from the comment alone.
++
+ ## Bug Triage Process
+ 
+ Signed keepalive recovery challenges must reserve their current workflow attempt
+diff --git a/renovate-presets/consumer-managed-paths.json b/renovate-presets/consumer-managed-paths.json
+index 09c03a3c..2f9f235d 100644
+--- a/renovate-presets/consumer-managed-paths.json
++++ b/renovate-presets/consumer-managed-paths.json
+@@ -3,7 +3,7 @@
+   "description": "GENERATED by scripts/generate_consumer_renovate_ownership.py -- do not edit by hand. Disables Renovate dependency extraction for the paths that maint-68-sync-consumer-repos.yml overwrites from .github/sync-manifest.yml, and only in the consumer repos where that overwrite actually applies. Without this boundary a consumer's Renovate opens PRs against centrally-copied files (Inv-Man-Intake#838, Manager-Database#1347) that the next sync silently reverts. Renovate stays enabled for create-only/skipped paths the consumer owns, and for every canonical source file in stranske/Workflows, which is the sync source rather than a consumer. Regenerate with `python scripts/generate_consumer_renovate_ownership.py`; `--check` fails on drift and runs in scripts/dev_check.sh.",
+   "packageRules": [
+     {
+-      "description": "Maint 68 overwrites these 223 manifest-managed paths in every registered consumer; Renovate edits there are reverted on the next sync.",
++      "description": "Maint 68 overwrites these 224 manifest-managed paths in every registered consumer; Renovate edits there are reverted on the next sync.",
+       "matchRepositories": [
+         "stranske/Collab-Admin",
+         "stranske/Counter_Risk",
+@@ -86,6 +86,7 @@
+         ".github/scripts/issue_format.py",
+         ".github/scripts/issue_pr_locator.js",
+         ".github/scripts/issue_scope_parser.js",
++        ".github/scripts/keepalive_authority_state.js",
+         ".github/scripts/keepalive_challenge_due.js",
+         ".github/scripts/keepalive_contract.js",
+         ".github/scripts/keepalive_gate.js",
+diff --git a/scripts/runner_lib/core.py b/scripts/runner_lib/core.py
+index 806efb54..4d61316a 100644
+--- a/scripts/runner_lib/core.py
++++ b/scripts/runner_lib/core.py
+@@ -1143,8 +1143,6 @@ def should_dispatch(
+     two runs later.
+     """
+     provider = _validate_provider(provider)
+-    if authority_challenge and not _verified_authority_challenge(pr_number):
+-        raise ValueError("Authority challenge reservation requires a verified signed claim.")
+     storage = storage or _storage_from_name("auto")
+     if authority_challenge and not isinstance(storage, FallbackRunnerStorage):
+         raise ValueError("Authority challenge reservation requires authoritative auto storage.")
+@@ -1169,6 +1167,8 @@ def should_dispatch(
+     unproductive_completions = _unproductive_completion_count(prior)
+ 
+     if authority_challenge:
++        if not _consume_authority_challenge(pr_number, head_sha, provider):
++            return DebounceDecision(False, "invalid-or-consumed-authority-challenge", key)
+         return _reserve_dispatch(
+             storage,
+             pr_number,
+@@ -1242,37 +1242,45 @@ def should_dispatch(
+     return _reserve_dispatch(storage, pr_number, head_sha, provider, key, prior, reason=reason)
+ 
+ 
+-def _verified_authority_challenge(pr_number: int) -> bool:
+-    """Use the existing HMAC verifier; never accept a caller's boolean assertion."""
++def _consume_authority_challenge(pr_number: int, head_sha: str, provider: str) -> bool:
++    """Grant only after the v2 claim is conditionally consumed in PR-wide state."""
+     if (
+         not _workflow_attempt_id()
+         or os.environ.get("GITHUB_EVENT_NAME") != "workflow_dispatch"
+         or os.environ.get("GITHUB_ACTOR") != "github-actions[bot]"
+     ):
+         return False
+-    script = """
+-const { verifyAuthorityChallengeEnvelope } =
+-  require('./.github/scripts/keepalive_challenge_due.js');
+-const verified = verifyAuthorityChallengeEnvelope({
+-  claimJson: process.env.AUTHORITY_CHALLENGE_CLAIM,
+-  signingKey: process.env.AUTHORITY_CHALLENGE_SIGNING_KEY,
+-  repository: process.env.GITHUB_REPOSITORY,
+-  prNumber: process.argv[1],
+-  boundaryFingerprint: process.env.AUTHORITY_CHALLENGE_FINGERPRINT,
+-});
+-process.exitCode = verified ? 0 : 1;
+-"""
++    environment = os.environ.copy()
++    environment.update(
++        {
++            "AUTHORITY_PR_NUMBER": str(pr_number),
++            "AUTHORITY_HEAD_SHA": head_sha,
++            "AUTHORITY_PROVIDER": provider,
++        }
++    )
+     try:
+         result = subprocess.run(
+-            ["node", "-e", script, str(pr_number)],
++            ["node", ".github/scripts/keepalive_authority_state.js", "consume"],
+             cwd=Path(__file__).resolve().parents[2],
+             capture_output=True,
+-            timeout=15,
++            timeout=30,
+             check=False,
++            env=environment,
++        )
++    except (OSError, subprocess.TimeoutExpired) as exc:
++        print(
++            f"warning: authority challenge helper unavailable: {type(exc).__name__}",
++            file=sys.stderr,
+         )
+-    except (OSError, subprocess.TimeoutExpired):
+         return False
+-    return result.returncode == 0
++    if result.returncode != 0:
++        print(f"warning: authority challenge helper exited {result.returncode}", file=sys.stderr)
++        return False
++    try:
++        return json.loads(result.stdout).get("granted") is True
++    except (ValueError, AttributeError):
++        print("warning: authority challenge helper emitted invalid JSON", file=sys.stderr)
++        return False
+ 
+ 
+ def _log_storage_failure(operation: str, exc: Exception, *, phase: str = "completion") -> None:
+diff --git a/templates/consumer-repo/.github/scripts/keepalive_authority_state.js b/templates/consumer-repo/.github/scripts/keepalive_authority_state.js
+new file mode 100644
+index 00000000..901a120c
+--- /dev/null
++++ b/templates/consumer-repo/.github/scripts/keepalive_authority_state.js
+@@ -0,0 +1,318 @@
++'use strict';
++
++// This branch is the authority for challenge generations and receipts. PR comments
++// are presentation only: a comment PATCH cannot provide a conditional write.
++const crypto = require('node:crypto');
++const { withRetry } = require('./github-api-with-retry.js');
++const BRANCH = 'keepalive-authority-state';
++const HEX = /^[0-9a-f]{64}$/;
++const HEAD = /^[0-9a-f]{40}$/;
++const ATTEMPT = /^[a-z0-9_.-]+\/[a-z0-9_.-]+:\d+:\d+$/;
++
++function exactTime(value) {
++  if (typeof value !== 'string' || !/^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d\.\d{3}Z$/.test(value)) return false;
++  return Number.isFinite(Date.parse(value)) && new Date(value).toISOString() === value;
++}
++
++function validState(state, repository, prNumber) {
++  return state && state.version === 2 &&
++    state.repository === String(repository).toLowerCase() &&
++    state.pr_number === Number(prNumber) &&
++    HEX.test(state.generation) && HEX.test(state.boundary_fingerprint) &&
++    exactTime(state.due_at) && exactTime(state.expires_at) &&
++    Date.parse(state.expires_at) > Date.parse(state.due_at) &&
++    Number.isSafeInteger(state.revision) && state.revision >= 1 &&
++    ['available', 'consumed', 'confirmed'].includes(state.status) &&
++    (state.status === 'available' ? state.receipt === null :
++      validReceipt(state.receipt));
++}
++
++function validReceipt(receipt) {
++  return receipt && HEX.test(receipt.id) && HEX.test(receipt.claim_digest) &&
++    ATTEMPT.test(receipt.owner_attempt) && HEAD.test(receipt.head_sha) &&
++    typeof receipt.provider === 'string' && /^[a-z][a-z0-9_-]*$/.test(receipt.provider) &&
++    exactTime(receipt.consumed_at);
++}
++
++function pathFor(repository, prNumber) {
++  if (!/^[a-z0-9_.-]+\/[a-z0-9_.-]+$/i.test(String(repository)) ||
++      !Number.isSafeInteger(Number(prNumber)) || Number(prNumber) < 1) {
++    throw new Error('Invalid challenge repository or PR number');
++  }
++  return `/repos/${String(repository).toLowerCase()}/contents/.github/keepalive-authority/${Number(prNumber)}.json`;
++}
++
++async function requestWithOctokit(github, method, path, body) {
++  try {
++    // Writes are conditional and intentionally get no automatic retry. An
++    // uncertain result must deny the grant even if GitHub committed the write.
++    const response = await withRetry(
++      (client) => client.request(`${method} ${path}`, body || {}),
++      { github, maxRetries: method === 'GET' ? 2 : 0,
++        tokenRegistry: null, task: 'keepalive-authority-state' },
++    );
++    return response.data;
++  } catch (error) {
++    error.status = error.status || error.response?.status;
++    throw error;
++  }
++}
++
++function requester(github) {
++  if (!github) {
++    const token = process.env.GH_TOKEN || process.env.GITHUB_TOKEN;
++    if (!token) throw new Error('Authority state token unavailable');
++    const { Octokit } = require('@octokit/rest');
++    github = new Octokit({ auth: token });
++  }
++  return (method, path, body) => requestWithOctokit(github, method, path, body);
++}
++
++async function ensureBranch(request, repository, defaultBranch) {
++  const repo = String(repository).toLowerCase();
++  try {
++    await request('GET', `/repos/${repo}/git/ref/heads/${BRANCH}`);
++    return;
++  } catch (error) {
++    if (error.status !== 404) throw error;
++  }
++  const base = await request('GET', `/repos/${repo}/git/ref/heads/${encodeURIComponent(defaultBranch)}`);
++  const sha = base?.object?.sha;
++  if (!/^[0-9a-f]{40}$/.test(String(sha))) throw new Error('Default branch SHA unavailable');
++  try {
++    await request('POST', `/repos/${repo}/git/refs`, { ref: `refs/heads/${BRANCH}`, sha });
++  } catch (error) {
++    // Another PR may have initialized the shared branch concurrently.
++    if (![409, 422].includes(error.status)) throw error;
++    await request('GET', `/repos/${repo}/git/ref/heads/${BRANCH}`);
++  }
++}
++
++async function readAuthorityState(request, repository, prNumber, { allowMissing = false } = {}) {
++  let file;
++  try {
++    file = await request('GET', `${pathFor(repository, prNumber)}?ref=${BRANCH}`);
++  } catch (error) {
++    if (allowMissing && error.status === 404) return null;
++    throw error;
++  }
++  let state;
++  try {
++    if (!/^[0-9a-f]{40}$/.test(String(file?.sha)) || file?.encoding !== 'base64') {
++      throw new Error('Invalid authority file metadata');
++    }
++    state = JSON.parse(Buffer.from(String(file.content).replace(/\s/g, ''), 'base64').toString('utf8'));
++  } catch (error) {
++    throw new Error(`Malformed authoritative challenge state: ${error.message}`);
++  }
++  if (!validState(state, repository, prNumber)) throw new Error('Invalid authoritative challenge state');
++  return { state, sha: file.sha };
++}
++
++async function writeAuthorityState(request, repository, prNumber, state, priorSha) {
++  if (!validState(state, repository, prNumber)) throw new Error('Refusing invalid authoritative challenge state');
++  const body = {
++    branch: BRANCH,
++    message: `keepalive authority PR #${Number(prNumber)} revision ${state.revision}`,
++    content: Buffer.from(`${JSON.stringify(state)}\n`).toString('base64'),
++    ...(priorSha ? { sha: priorSha } : {}),
++  };
++  return request('PUT', pathFor(repository, prNumber), body);
++}
++
++async function beginChallenge({ request, repository, prNumber, defaultBranch, fingerprint, dueAt, expiresAt, expectedGeneration = null }) {
++  if (!HEX.test(String(fingerprint)) || !exactTime(dueAt) || !exactTime(expiresAt) ||
++      Date.parse(expiresAt) <= Date.parse(dueAt)) throw new Error('Invalid challenge boundary');
++  await ensureBranch(request, repository, defaultBranch);
++  for (let attempt = 0; attempt < 3; attempt += 1) {
++    const prior = await readAuthorityState(request, repository, prNumber, { allowMissing: true });
++    if (expectedGeneration && (!prior || prior.state.generation !== expectedGeneration)) {
++      throw new Error('Previously initialized challenge generation is missing or superseded');
++    }
++    if (prior && prior.state.boundary_fingerprint === fingerprint) {
++      if (prior.state.status === 'confirmed') {
++        // A confirmed boundary was human-resolved; recurring failures need a new generation.
++      } else if (['consumed', 'available'].includes(prior.state.status) &&
++          Date.parse(prior.state.expires_at) > Date.now()) {
++        return prior.state;
++      }
++    }
++    const state = {
++      version: 2,
++      repository: String(repository).toLowerCase(),
++      pr_number: Number(prNumber),
++      generation: crypto.randomBytes(32).toString('hex'),
++      boundary_fingerprint: fingerprint,
++      due_at: dueAt,
++      expires_at: expiresAt,
++      status: 'available',
++      receipt: null,
++      revision: (prior?.state.revision || 0) + 1,
++    };
++    try {
++      await writeAuthorityState(request, repository, prNumber, state, prior?.sha);
++      return state;
++    } catch (error) {
++      if (![409, 422].includes(error.status)) throw error;
++    }
++  }
++  throw new Error('Concurrent challenge generation updates did not settle');
++}
++
++function claimMatchesState(claim, state, now = new Date()) {
++  return state.status === 'available' &&
++    claim.generation === state.generation &&
++    claim.boundary_fingerprint === state.boundary_fingerprint &&
++    claim.due_at === state.due_at && claim.expires_at === state.expires_at &&
++    Number.isFinite(now.getTime()) && Date.parse(state.due_at) <= now.getTime() &&
++    now.getTime() < Date.parse(state.expires_at);
++}
++
++async function consumeChallenge({ request, repository, prNumber, claim, ownerAttempt, provider, headSha, now = new Date() }) {
++  const prior = await readAuthorityState(request, repository, prNumber);
++  if (!claimMatchesState(claim, prior.state, now) || !ATTEMPT.test(String(ownerAttempt)) ||
++      !HEAD.test(String(headSha)) || claim.head_sha !== headSha) {
++    return { granted: false, reason: 'challenge-not-current' };
++  }
++  const receipt = {
++    id: crypto.randomBytes(32).toString('hex'),
++    claim_digest: crypto.createHash('sha256').update(JSON.stringify(claim)).digest('hex'),
++    owner_attempt: ownerAttempt,
++    provider,
++    head_sha: headSha,
++    consumed_at: now.toISOString(),
++  };
++  const next = { ...prior.state, status: 'consumed', receipt, revision: prior.state.revision + 1 };
++  try {
++    await writeAuthorityState(request, repository, prNumber, next, prior.sha);
++  } catch (error) {
++    // A conflict or an ambiguous write never grants an execution. If the write
++    // actually landed, its receipt stays consumed for every later attempt.
++    return { granted: false, reason: [409, 422].includes(error.status) ? 'challenge-conflict' : 'challenge-write-uncertain' };
++  }
++  return { granted: true, reason: 'due-authority-challenge', receipt };
++}
++
++async function confirmChallenge({ request, repository, prNumber, claim, ownerAttempt, provider, headSha }) {
++  const prior = await readAuthorityState(request, repository, prNumber);
++  const receipt = prior.state.receipt;
++  if (!receipt ||
++      Date.now() >= Date.parse(prior.state.expires_at) ||
++      prior.state.generation !== claim.generation ||
++      prior.state.boundary_fingerprint !== claim.boundary_fingerprint ||
++      prior.state.due_at !== claim.due_at || prior.state.expires_at !== claim.expires_at ||
++      receipt.claim_digest !== crypto.createHash('sha256').update(JSON.stringify(claim)).digest('hex') ||
++      receipt.owner_attempt !== ownerAttempt || receipt.provider !== provider ||
++      receipt.head_sha !== headSha) return false;
++  if (prior.state.status === 'confirmed') return true;
++  if (prior.state.status !== 'consumed') return false;
++  const pr = await request('GET', `/repos/${String(repository).toLowerCase()}/pulls/${Number(prNumber)}`);
++  const labels = new Set((pr?.labels || []).map((label) => String(label.name || '').toLowerCase()));
++  if (pr?.state !== 'open' || pr?.head?.sha !== headSha ||
++      !labels.has('needs-human')) return false;
++  const next = { ...prior.state, status: 'confirmed', revision: prior.state.revision + 1 };
++  try {
++    await writeAuthorityState(request, repository, prNumber, next, prior.sha);
++    return true;
++  } catch (_) {
++    const settled = await readAuthorityState(request, repository, prNumber).catch(() => null);
++    return settled?.state.status === 'confirmed' &&
++      settled.state.generation === claim.generation &&
++      settled.state.receipt?.id === receipt.id;
++  }
++}
++
++async function reopenUnconfirmedChallenge({ request, repository, prNumber, claim, ownerAttempt, provider, headSha }) {
++  const prior = await readAuthorityState(request, repository, prNumber);
++  const receipt = prior.state.receipt;
++  const matches = prior.state.generation === claim.generation &&
++    prior.state.boundary_fingerprint === claim.boundary_fingerprint &&
++    receipt?.claim_digest === crypto.createHash('sha256').update(JSON.stringify(claim)).digest('hex') &&
++    receipt.owner_attempt === ownerAttempt && receipt.provider === provider && receipt.head_sha === headSha;
++  if (matches && prior.state.status === 'confirmed') return { status: 'confirmed', state: prior.state };
++  if (!matches || prior.state.status !== 'consumed') return { status: 'uncertain', state: prior.state };
++  const now = Date.now();
++  const state = {
++    ...prior.state,
++    generation: crypto.randomBytes(32).toString('hex'),
++    due_at: new Date(now).toISOString(),
++    expires_at: new Date(now + 24 * 60 * 60 * 1000).toISOString(),
++    status: 'available', receipt: null, revision: prior.state.revision + 1,
++  };
++  try {
++    await writeAuthorityState(request, repository, prNumber, state, prior.sha);
++    return { status: 'reopened', state };
++  } catch (_) {
++    const settled = await readAuthorityState(request, repository, prNumber).catch(() => null);
++    if (settled?.state.status === 'confirmed' && settled.state.generation === claim.generation &&
++        settled.state.receipt?.id === receipt.id) return { status: 'confirmed', state: settled.state };
++    if (settled?.state.status === 'available' && settled.state.generation === state.generation) {
++      return { status: 'reopened', state: settled.state };
++    }
++    return { status: 'uncertain', state: settled?.state };
++  }
++}
++
++module.exports = {
++  BRANCH,
++  beginChallenge,
++  claimMatchesState,
++  confirmChallenge,
++  consumeChallenge,
++  readAuthorityState,
++  reopenUnconfirmedChallenge,
++  requester,
++  validState,
++};
++
++if (require.main === module) {
++  (async () => {
++    if (process.argv[2] !== 'consume') throw new Error('Unsupported authority state command');
++    const { verifyAuthorityChallengeEnvelope } = require('./keepalive_challenge_due');
++    const repository = String(process.env.GITHUB_REPOSITORY || '').toLowerCase();
++    const prNumber = Number(process.env.AUTHORITY_PR_NUMBER || '');
++    const headSha = String(process.env.AUTHORITY_HEAD_SHA || '').toLowerCase();
++    const provider = String(process.env.AUTHORITY_PROVIDER || '').toLowerCase();
++    const claimJson = process.env.AUTHORITY_CHALLENGE_CLAIM;
++    const ownerAttempt = `${repository}:${process.env.GITHUB_RUN_ID || ''}:${process.env.GITHUB_RUN_ATTEMPT || ''}`;
++    const verified = verifyAuthorityChallengeEnvelope({
++      claimJson,
++      signingKey: process.env.AUTHORITY_CHALLENGE_SIGNING_KEY,
++      repository,
++      prNumber,
++      boundaryFingerprint: process.env.AUTHORITY_CHALLENGE_FINGERPRINT,
++      headSha,
++    });
++    if (!verified || !ATTEMPT.test(ownerAttempt) ||
++        process.env.GITHUB_EVENT_NAME !== 'workflow_dispatch' ||
++        process.env.GITHUB_ACTOR !== 'github-actions[bot]') {
++      process.stdout.write(JSON.stringify({ granted: false, reason: 'invalid-signed-challenge' }));
++      return;
++    }
++    const request = requester();
++    const pr = await request('GET', `/repos/${repository}/pulls/${prNumber}`);
++    const labels = new Set((pr?.labels || []).map((label) => String(label.name || '').toLowerCase()));
++    if (pr?.state !== 'open' || pr?.head?.sha !== headSha ||
++        !labels.has('agent:needs-attention') || labels.has('needs-human')) {
++      process.stdout.write(JSON.stringify({ granted: false, reason: 'challenge-pr-state-changed' }));
++      return;
++    }
++    const claim = JSON.parse(claimJson);
++    const result = await consumeChallenge({
++      request, repository, prNumber, claim: {
++        generation: claim.generation,
++        boundary_fingerprint: process.env.AUTHORITY_CHALLENGE_FINGERPRINT,
++        due_at: claim.due_at,
++        expires_at: claim.expires_at,
++        head_sha: claim.head_sha,
++        nonce: claim.nonce,
++        sweep_run_id: claim.sweep_run_id,
++        sweep_run_attempt: claim.sweep_run_attempt,
++      }, ownerAttempt, provider, headSha,
++    });
++    process.stdout.write(JSON.stringify(result));
++  })().catch((error) => {
++    process.stderr.write(`Authority challenge unavailable: ${error.message}\n`);
++    process.stdout.write(JSON.stringify({ granted: false, reason: 'authority-state-unavailable' }));
++  });
++}
+diff --git a/templates/consumer-repo/.github/scripts/keepalive_challenge_due.js b/templates/consumer-repo/.github/scripts/keepalive_challenge_due.js
+index 59573347..de4f2caa 100644
+--- a/templates/consumer-repo/.github/scripts/keepalive_challenge_due.js
++++ b/templates/consumer-repo/.github/scripts/keepalive_challenge_due.js
+@@ -9,6 +9,11 @@ const TRUSTED_KEEPALIVE_STATE_AUTHORS = new Set([
+   'stranske-keepalive[bot]',
+ ]);
+ 
++function exactUtcTime(value) {
++  if (typeof value !== 'string' || !/^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d\.\d{3}Z$/.test(value)) return false;
++  return Number.isFinite(Date.parse(value)) && new Date(value).toISOString() === value;
++}
++
+ function isTrustedKeepaliveStateComment(comment = {}) {
+   const body = String(comment?.body || '');
+   const login = String(comment?.user?.login || '').trim().toLowerCase();
+@@ -24,6 +29,10 @@ function authorityClaimPayload({
+   repository,
+   prNumber,
+   boundaryFingerprint,
++  generation,
++  dueAt,
++  expiresAt,
++  headSha,
+   nonce,
+   sweepRunId,
+   sweepRunAttempt,
+@@ -32,6 +41,10 @@ function authorityClaimPayload({
+     repository: String(repository || '').toLowerCase(),
+     prNumber: String(prNumber || ''),
+     boundaryFingerprint: String(boundaryFingerprint || '').toLowerCase(),
++    generation: String(generation || '').toLowerCase(),
++    dueAt: String(dueAt || ''),
++    expiresAt: String(expiresAt || ''),
++    headSha: String(headSha || '').toLowerCase(),
+     nonce: String(nonce || '').toLowerCase(),
+     sweepRunId: String(sweepRunId || ''),
+     sweepRunAttempt: String(sweepRunAttempt || ''),
+@@ -40,6 +53,10 @@ function authorityClaimPayload({
+     !/^[a-z0-9_.-]+\/[a-z0-9_.-]+$/.test(fields.repository) ||
+     !/^\d+$/.test(fields.prNumber) ||
+     !/^[0-9a-f]{64}$/.test(fields.boundaryFingerprint) ||
++    !/^[0-9a-f]{64}$/.test(fields.generation) ||
++    !exactUtcTime(fields.dueAt) || !exactUtcTime(fields.expiresAt) ||
++    Date.parse(fields.expiresAt) <= Date.parse(fields.dueAt) ||
++    !/^[0-9a-f]{40}$/.test(fields.headSha) ||
+     !/^[0-9a-f]{64}$/.test(fields.nonce) ||
+     !/^\d+$/.test(fields.sweepRunId) ||
+     !/^\d+$/.test(fields.sweepRunAttempt)
+@@ -47,10 +64,14 @@ function authorityClaimPayload({
+     return '';
+   }
+   return [
+-    'keepalive-authority-claim:v1',
++    'keepalive-authority-claim:v2',
+     `repository=${fields.repository}`,
+     `pr=${fields.prNumber}`,
+     `fingerprint=${fields.boundaryFingerprint}`,
++    `generation=${fields.generation}`,
++    `due_at=${fields.dueAt}`,
++    `expires_at=${fields.expiresAt}`,
++    `head_sha=${fields.headSha}`,
+     `nonce=${fields.nonce}`,
+     `sweep_run_id=${fields.sweepRunId}`,
+     `sweep_run_attempt=${fields.sweepRunAttempt}`,
+@@ -77,6 +98,7 @@ function verifyAuthorityChallengeEnvelope({
+   repository,
+   prNumber,
+   boundaryFingerprint,
++  headSha,
+ } = {}) {
+   let claim;
+   try {
+@@ -91,6 +113,10 @@ function verifyAuthorityChallengeEnvelope({
+     repository,
+     prNumber,
+     boundaryFingerprint,
++    generation: claim.generation,
++    dueAt: claim.due_at,
++    expiresAt: claim.expires_at,
++    headSha,
+     nonce: claim.nonce,
+     sweepRunId: claim.sweep_run_id,
+     sweepRunAttempt: claim.sweep_run_attempt,
+@@ -102,11 +128,13 @@ function parseLatestKeepaliveState(comments = []) {
+   for (const comment of comments) {
+     if (!isTrustedKeepaliveStateComment(comment)) continue;
+     const body = String(comment?.body || '');
++    // A newer trusted but malformed summary invalidates the older projection.
++    latest = null;
+     for (const match of body.matchAll(STATE_RE)) {
+       try {
+         latest = JSON.parse(match[1]);
+       } catch (_) {
+-        // Ignore malformed or manually edited state markers and keep looking.
++        latest = null;
+       }
+     }
+   }
+@@ -122,17 +150,24 @@ function selectDueAuthorityChallenge({ labels = [], comments = [], now = new Dat
+   if (
+     attention?.owner !== 'automation' ||
+     attention?.disposition !== 'challenge-due' ||
+-    !attention?.challenge_due_at
++    !attention?.challenge_due_at ||
++    !/^[0-9a-f]{64}$/.test(String(attention?.generation || '')) ||
++    !/^[0-9a-f]{64}$/.test(String(attention?.boundary_fingerprint || '')) ||
++    !attention?.expires_at
+   ) {
+     return null;
+   }
+ 
+   const dueAt = Date.parse(attention.challenge_due_at);
++  const expiresAt = Date.parse(attention.expires_at);
+   const nowMs = now instanceof Date ? now.getTime() : Date.parse(String(now));
+-  if (!Number.isFinite(dueAt) || !Number.isFinite(nowMs) || dueAt > nowMs) return null;
++  if (!Number.isFinite(dueAt) || !Number.isFinite(expiresAt) ||
++      !Number.isFinite(nowMs) || dueAt > nowMs || nowMs >= expiresAt) return null;
+ 
+   return {
+     dueAt: new Date(dueAt).toISOString(),
++    expiresAt: new Date(expiresAt).toISOString(),
++    generation: attention.generation,
+     key: String(attention.key || ''),
+     boundaryFingerprint: String(attention.boundary_fingerprint || ''),
+     nextAction: String(attention.next_action || ''),
+diff --git a/templates/consumer-repo/.github/scripts/keepalive_loop.js b/templates/consumer-repo/.github/scripts/keepalive_loop.js
+index 311b8417..d279f3a9 100644
+--- a/templates/consumer-repo/.github/scripts/keepalive_loop.js
++++ b/templates/consumer-repo/.github/scripts/keepalive_loop.js
+@@ -18,6 +18,7 @@ const { detectConflicts } = require('./conflict_detector');
+ const { parseTimeoutConfig } = require('./timeout_config');
+ const { ensureRateLimitWrapped } = require('./github-rate-limited-wrapper');
+ const { verifyAuthorityChallengeClaim } = require('./keepalive_challenge_due');
++const { beginChallenge, confirmChallenge, reopenUnconfirmedChallenge, requester } = require('./keepalive_authority_state');
+ 
+ // Token load balancer for rate limit management
+ let tokenLoadBalancer = null;
+@@ -3682,6 +3683,10 @@ async function updateKeepaliveLoopSummary({ github: rawGithub, context, core, in
+       repository: `${context.repo.owner}/${context.repo.repo}`,
+       prNumber,
+       boundaryFingerprint: authorityChallengeFingerprint,
++      generation: authorityChallengeClaim.generation,
++      dueAt: authorityChallengeClaim.due_at,
++      expiresAt: authorityChallengeClaim.expires_at,
++      headSha: inputs.head_sha ?? inputs.headSha,
+       nonce: authorityChallengeClaim.nonce,
+       sweepRunId: authorityChallengeClaim.sweep_run_id,
+       sweepRunAttempt: authorityChallengeClaim.sweep_run_attempt,
+@@ -3690,7 +3695,11 @@ async function updateKeepaliveLoopSummary({ github: rawGithub, context, core, in
+       previousAuthorityChallenge &&
+       Boolean(authorityChallengeFingerprint) &&
+       authorityChallengeClaimVerified &&
+-      authorityChallengeFingerprint === previousAttention.boundary_fingerprint;
++      authorityChallengeFingerprint === previousAttention.boundary_fingerprint &&
++      authorityChallengeClaim.generation === previousAttention.generation &&
++      authorityChallengeClaim.due_at === previousAttention.challenge_due_at &&
++      authorityChallengeClaim.expires_at === previousAttention.expires_at &&
++      authorityChallengeClaim.head_sha === (inputs.head_sha ?? inputs.headSha);
+     const authorityEvidence = buildAuthorityChallengeEvidence({
+       agentSummary,
+       summaryReason,
+@@ -3700,18 +3709,30 @@ async function updateKeepaliveLoopSummary({ github: rawGithub, context, core, in
+     const escalationRequired =
+       ((action === 'run' || action === 'fix') && runResult && runResult !== 'success' && errorCategory !== ERROR_CATEGORIES.transient) ||
+       (action === 'stop' && !isSuccessStop && !isNeutralStop && errorCategory !== ERROR_CATEGORIES.transient);
+-    const authorityChallengeConfirmed =
++    const authorityChallengeProjection =
+       authorityChallengeProvenanceMatches &&
+       escalationRequired &&
+       errorCategory === ERROR_CATEGORIES.auth &&
++      agentExecutionStarted === true &&
+       Boolean(authorityEvidence.fingerprint) &&
+       authorityEvidence.actionable &&
+       authorityEvidence.fingerprint === authorityChallengeFingerprint;
++    const pendingAuthorityClaim = authorityChallengeProjection ? {
++      generation: authorityChallengeClaim.generation,
++      boundary_fingerprint: authorityChallengeFingerprint,
++      due_at: authorityChallengeClaim.due_at,
++      expires_at: authorityChallengeClaim.expires_at,
++      head_sha: authorityChallengeClaim.head_sha,
++      nonce: authorityChallengeClaim.nonce,
++      sweep_run_id: authorityChallengeClaim.sweep_run_id,
++      sweep_run_attempt: authorityChallengeClaim.sweep_run_attempt,
++    } : null;
++    let authorityChallengeConfirmed = false;
+     let escalationDisposition = selectEscalationDisposition({
+       required: escalationRequired || stop,
+       errorCategory,
+       summaryReason,
+-      authorityChallengeConfirmed,
++      authorityChallengeConfirmed: authorityChallengeProjection,
+     });
+     const recoveryLeaseReason = stop
+       ? normalise(summaryReason).replace(/-repeat$/, '')
+@@ -4485,9 +4506,34 @@ async function updateKeepaliveLoopSummary({ github: rawGithub, context, core, in
+       (previousAttention.owner === 'automation' &&
+         ['automation-retry', 'challenge-due'].includes(previousAttention.disposition)) ||
+       previousAttentionHasLegacyOwnership;
+-    const challengeDueAt = escalationDisposition === 'challenge-due'
+-      ? new Date().toISOString()
+-      : null;
++    let challengeState = null;
++    if (shouldEscalate && escalationDisposition === 'challenge-due' && authorityEvidence.fingerprint) {
++      try {
++        const repository = `${context.repo.owner}/${context.repo.repo}`;
++        const request = requester(github);
++        const repoInfo = await request('GET', `/repos/${repository}`);
++        const dueAt = new Date().toISOString();
++        const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
++        challengeState = await beginChallenge({
++          request, repository, prNumber,
++          defaultBranch: repoInfo.default_branch,
++          fingerprint: authorityEvidence.fingerprint,
++          dueAt, expiresAt,
++          expectedGeneration: previousAuthorityChallenge ? previousAttention.generation || null : null,
++        });
++        if (challengeState.status !== 'available' || Date.parse(challengeState.expires_at) <= Date.now()) {
++          escalationDisposition = 'automation-retry';
++          challengeState = null;
++        }
++      } catch (error) {
++        core?.warning?.(`Authority generation unavailable: ${error.message}`);
++        escalationDisposition = 'automation-retry';
++      }
++    }
++    if (escalationDisposition === 'challenge-due' && !challengeState) {
++      escalationDisposition = 'automation-retry';
++    }
++    const challengeDueAt = challengeState?.due_at || null;
+     if (shouldEscalate) {
+       const firstSeenAt = priorAttentionKey === attentionKey
+         ? previousAttention.first_seen_at || new Date().toISOString()
+@@ -4513,6 +4559,8 @@ async function updateKeepaliveLoopSummary({ github: rawGithub, context, core, in
+           owner: 'automation',
+           first_seen_at: firstSeenAt,
+           challenge_due_at: challengeDueAt,
++          generation: challengeState?.generation || '',
++          expires_at: challengeState?.expires_at || '',
+           boundary_fingerprint: escalationDisposition === 'challenge-due'
+             ? authorityEvidence.fingerprint
+             : '',
+@@ -4578,16 +4626,22 @@ async function updateKeepaliveLoopSummary({ github: rawGithub, context, core, in
+         // First persist a durable automation-owned transition containing the
+         // exact action. If either later API call fails, the PR never falls back
+         // to an actionless or falsely human-owned state.
++        const pendingAttention = {
++          key: attentionKey,
++          disposition: 'challenge-due',
++          owner: 'automation',
++          first_seen_at: previousAttention.first_seen_at || new Date().toISOString(),
++          challenge_due_at: pendingAuthorityClaim.due_at,
++          generation: pendingAuthorityClaim.generation,
++          expires_at: pendingAuthorityClaim.expires_at,
++          boundary_fingerprint: authorityEvidence.fingerprint,
++          boundary_detail: authorityEvidence.detail,
++          confirmation_pending_label: true,
++          next_action: authorityEvidence.humanAction,
++        };
+         const pendingState = {
+           ...newState,
+-          attention: {
+-            ...newState.attention,
+-            disposition: 'challenge-due',
+-            owner: 'automation',
+-            challenge_due_at: new Date().toISOString(),
+-            confirmation_pending_label: true,
+-            next_action: authorityEvidence.humanAction,
+-          },
++          attention: pendingAttention,
+         };
+         const pendingLines = [
+           ...summaryLines,
+@@ -4615,7 +4669,59 @@ async function updateKeepaliveLoopSummary({ github: rawGithub, context, core, in
+         }
+ 
+         if (hardHumanLabelApplied) {
+-          summaryLines.push(
++          if (pendingAuthorityClaim) {
++            const repository = `${context.repo.owner}/${context.repo.repo}`;
++            try {
++              authorityChallengeConfirmed = await confirmChallenge({
++                request: requester(github), repository, prNumber, claim: pendingAuthorityClaim,
++                ownerAttempt: `${repository.toLowerCase()}:${context.runId || process.env.GITHUB_RUN_ID || ''}:${context.runAttempt || process.env.GITHUB_RUN_ATTEMPT || ''}`,
++                provider: agentType,
++                headSha: inputs.head_sha ?? inputs.headSha,
++              });
++            } catch (error) {
++              core?.warning?.(`Authority receipt confirmation unavailable: ${error.message}`);
++              authorityChallengeConfirmed = false;
++            }
++            if (!authorityChallengeConfirmed) {
++              const repository = `${context.repo.owner}/${context.repo.repo}`;
++              let recovery = { status: 'uncertain' };
++              try {
++                recovery = await reopenUnconfirmedChallenge({
++                  request: requester(github), repository, prNumber, claim: pendingAuthorityClaim,
++                  ownerAttempt: `${repository.toLowerCase()}:${context.runId || process.env.GITHUB_RUN_ID || ''}:${context.runAttempt || process.env.GITHUB_RUN_ATTEMPT || ''}`,
++                  provider: agentType,
++                  headSha: inputs.head_sha ?? inputs.headSha,
++                });
++              } catch (error) {
++                core?.warning?.(`Authority confirmation reconciliation unavailable: ${error.message}`);
++              }
++              if (recovery.status === 'confirmed') {
++                authorityChallengeConfirmed = true;
++              } else {
++                escalationDisposition = 'challenge-due';
++                newState.attention = {
++                  ...pendingAttention,
++                  generation: recovery.state?.generation || pendingAttention.generation,
++                  challenge_due_at: recovery.state?.due_at || pendingAttention.challenge_due_at,
++                  expires_at: recovery.state?.expires_at || pendingAttention.expires_at,
++                  confirmation_pending_label: true,
++                  next_action: 'Reconcile the unconfirmed authority challenge and workflow-owned needs-human label.',
++                };
++                if (recovery.status === 'reopened') {
++                  try {
++                    await github.rest.issues.removeLabel({
++                      owner: context.repo.owner, repo: context.repo.repo,
++                      issue_number: prNumber, name: 'needs-human',
++                    });
++                    newState.attention.confirmation_pending_label = false;
++                  } catch (error) {
++                    core?.warning?.(`Failed to remove unconfirmed needs-human label: ${error.message}`);
++                  }
++                }
++              }
++            }
++          }
++          if (authorityChallengeConfirmed) summaryLines.push(
+             '',
+             '### 🛑 Independent Authority Challenge Confirmed',
+             '',
+diff --git a/templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml b/templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml
+index 8b3f5b87..510cf159 100644
+--- a/templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml
++++ b/templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml
+@@ -105,7 +105,7 @@ jobs:
+       agent_routing_mode: ${{ steps.evaluate.outputs.agent_routing_mode }}
+       security_blocked: ${{ steps.security_gate.outputs.blocked }}
+       security_reason: ${{ steps.security_gate.outputs.reason }}
+-      dispatch_should_run: ${{ steps.runner_dispatch.outputs.should_dispatch || 'true' }}
++      dispatch_should_run: ${{ steps.runner_dispatch.outputs.should_dispatch || 'false' }}
+       dispatch_reason: ${{ steps.runner_dispatch.outputs.reason }}
+       fingerprint_should_run: ${{ steps.fingerprint.outputs.should_run || 'true' }}
+       fingerprint_reason: ${{ steps.fingerprint.outputs.reason }}
+@@ -379,6 +379,7 @@ jobs:
+               github.actor == 'github-actions[bot]' &&
+               github.event.inputs.sweep_recheck == 'true' &&
+               github.event.inputs.authority_challenge_claim || '' }}
++          RAW_AUTHORITY_CHALLENGE_CLAIM: ${{ github.event.inputs.authority_challenge_claim || '' }}
+           AUTHORITY_CHALLENGE_SIGNING_KEY: >-
+             ${{ secrets.KEEPALIVE_AUTHORITY_SIGNING_KEY || '' }}
+         run: |
+@@ -392,6 +393,7 @@ jobs:
+             repository: process.env.GITHUB_REPOSITORY,
+             prNumber: process.env.PR_NUMBER,
+             boundaryFingerprint: process.env.AUTHORITY_CHALLENGE_FINGERPRINT,
++            headSha: process.env.HEAD_SHA,
+           });
+           process.exitCode = verified ? 0 : 1;
+           NODE
+@@ -405,6 +407,13 @@ jobs:
+               --authority-challenge
+             exit 0
+           fi
++          if [ -n "${RAW_AUTHORITY_CHALLENGE_CLAIM:-}" ]; then
++            {
++              echo "should_dispatch=false"
++              echo "reason=invalid-signed-authority-challenge"
++            } >> "$GITHUB_OUTPUT"
++            exit 0
++          fi
+           if [ -z "${PR_NUMBER:-}" ] || [ -z "${HEAD_SHA:-}" ]; then
+             {
+               echo "should_dispatch=true"
+@@ -1163,7 +1172,7 @@ jobs:
+           owner: ${{ github.repository_owner }}
+           repositories: ${{ github.event.repository.name }}
+           permission-actions: write
+-          permission-contents: read
++          permission-contents: write
+           permission-issues: write
+           permission-pull-requests: read
+ 
+@@ -1183,7 +1192,7 @@ jobs:
+           owner: ${{ github.repository_owner }}
+           repositories: ${{ github.event.repository.name }}
+           permission-actions: write
+-          permission-contents: read
++          permission-contents: write
+           permission-issues: write
+           permission-pull-requests: read
+ 
+@@ -1220,6 +1229,23 @@ jobs:
+             }}
+           PREFLIGHT_FAILURE_SUMMARY: ${{ needs.preflight.outputs.failure_summary || '' }}
+           DELEGATION_SOURCE: ${{ needs.evaluate.outputs.delegation_source }}
++          EVALUATE_PR_NUMBER: ${{ needs.evaluate.outputs.pr_number }}
++          EVALUATE_HEAD_SHA: ${{ needs.evaluate.outputs.head_sha }}
++          EVALUATE_ACTION: ${{ needs.evaluate.outputs.action }}
++          EVALUATE_REASON: ${{ needs.evaluate.outputs.reason }}
++          EVALUATE_GATE_CONCLUSION: ${{ needs.evaluate.outputs.gate_conclusion }}
++          EVALUATE_ITERATION: ${{ needs.evaluate.outputs.iteration }}
++          EVALUATE_MAX_ITERATIONS: ${{ needs.evaluate.outputs.max_iterations }}
++          EVALUATE_FAILURE_THRESHOLD: ${{ needs.evaluate.outputs.failure_threshold }}
++          EVALUATE_TASKS_TOTAL: ${{ needs.evaluate.outputs.tasks_total }}
++          EVALUATE_TASKS_UNCHECKED: ${{ needs.evaluate.outputs.tasks_unchecked }}
++          EVALUATE_KEEPALIVE_ENABLED: ${{ needs.evaluate.outputs.keepalive_enabled }}
++          EVALUATE_AUTOFIX_ENABLED: ${{ needs.evaluate.outputs.autofix_enabled }}
++          EVALUATE_AGENT_TYPE: ${{ needs.evaluate.outputs.agent_type }}
++          EVALUATE_AGENT_ROUTING_MODE: ${{ needs.evaluate.outputs.agent_routing_mode }}
++          EVALUATE_DELEGATION_REASON: ${{ needs.evaluate.outputs.delegation_reason }}
++          EVALUATE_DELEGATION_SHOULD_SWITCH: ${{ needs.evaluate.outputs.delegation_should_switch }}
++          EVALUATE_TRACE: ${{ needs.evaluate.outputs.trace }}
+           FORCE_RETRY: ${{ github.event.inputs.force_retry || 'false' }}
+           AUTHORITY_CHALLENGE_FINGERPRINT: >-
+             ${{ github.event_name == 'workflow_dispatch' &&
+@@ -1309,24 +1335,25 @@ jobs:
+               '${{ needs.run-gemini.outputs.llm-analysis-run }}' === 'true';
+ 
+             const inputs = {
+-              pr_number: Number('${{ needs.evaluate.outputs.pr_number }}') || 0,
+-              action: '${{ needs.evaluate.outputs.action }}',
+-              reason: '${{ needs.evaluate.outputs.reason }}',
+-              gate_conclusion: '${{ needs.evaluate.outputs.gate_conclusion }}',
+-              iteration: Number('${{ needs.evaluate.outputs.iteration }}') || 0,
+-              max_iterations: Number('${{ needs.evaluate.outputs.max_iterations }}') || 0,
+-              failure_threshold: Number('${{ needs.evaluate.outputs.failure_threshold }}') || 3,
+-              tasks_total: Number('${{ needs.evaluate.outputs.tasks_total }}') || 0,
+-              tasks_unchecked: Number('${{ needs.evaluate.outputs.tasks_unchecked }}') || 0,
+-              keepalive_enabled: '${{ needs.evaluate.outputs.keepalive_enabled }}',
+-              autofix_enabled: '${{ needs.evaluate.outputs.autofix_enabled }}',
+-              agent_type: '${{ needs.evaluate.outputs.agent_type }}',
+-              trace: '${{ needs.evaluate.outputs.trace }}',
++              pr_number: Number(process.env.EVALUATE_PR_NUMBER) || 0,
++              head_sha: process.env.EVALUATE_HEAD_SHA || '',
++              action: process.env.EVALUATE_ACTION || '',
++              reason: process.env.EVALUATE_REASON || '',
++              gate_conclusion: process.env.EVALUATE_GATE_CONCLUSION || '',
++              iteration: Number(process.env.EVALUATE_ITERATION) || 0,
++              max_iterations: Number(process.env.EVALUATE_MAX_ITERATIONS) || 0,
++              failure_threshold: Number(process.env.EVALUATE_FAILURE_THRESHOLD) || 3,
++              tasks_total: Number(process.env.EVALUATE_TASKS_TOTAL) || 0,
++              tasks_unchecked: Number(process.env.EVALUATE_TASKS_UNCHECKED) || 0,
++              keepalive_enabled: process.env.EVALUATE_KEEPALIVE_ENABLED || '',
++              autofix_enabled: process.env.EVALUATE_AUTOFIX_ENABLED || '',
++              agent_type: process.env.EVALUATE_AGENT_TYPE || '',
++              trace: process.env.EVALUATE_TRACE || '',
+               // Delegation policy outputs (agent:auto mode)
+-              delegation_reason: '${{ needs.evaluate.outputs.delegation_reason }}',
+-              delegation_should_switch: '${{ needs.evaluate.outputs.delegation_should_switch }}',
++              delegation_reason: process.env.EVALUATE_DELEGATION_REASON || '',
++              delegation_should_switch: process.env.EVALUATE_DELEGATION_SHOULD_SWITCH || '',
+               delegation_source: process.env.DELEGATION_SOURCE || '',
+-              agent_routing_mode: '${{ needs.evaluate.outputs.agent_routing_mode }}',
++              agent_routing_mode: process.env.EVALUATE_AGENT_ROUTING_MODE || '',
+               // Agent run result - check which agent ran
+               run_result: runResult,
+               agent_execution_started: agentExecutionStarted,
+@@ -1409,7 +1436,7 @@ jobs:
+       gate_run_id: ${{ steps.evaluate.outputs.gate_run_id }}
+       security_blocked: ${{ steps.security_gate.outputs.blocked }}
+       security_reason: ${{ steps.security_gate.outputs.reason }}
+-      dispatch_should_run: ${{ steps.runner_dispatch.outputs.should_dispatch || 'true' }}
++      dispatch_should_run: ${{ steps.runner_dispatch.outputs.should_dispatch || 'false' }}
+       dispatch_reason: ${{ steps.runner_dispatch.outputs.reason }}
+     steps:
+       - name: Checkout (for security gate + agent registry)
+diff --git a/templates/consumer-repo/.github/workflows/agents-keepalive-loop-reporter.yml b/templates/consumer-repo/.github/workflows/agents-keepalive-loop-reporter.yml
+index 99633760..3b641630 100644
+--- a/templates/consumer-repo/.github/workflows/agents-keepalive-loop-reporter.yml
++++ b/templates/consumer-repo/.github/workflows/agents-keepalive-loop-reporter.yml
+@@ -6,7 +6,7 @@ on:
+     types: [completed]
+ 
+ permissions:
+-  contents: read
++  contents: write # conditional authority generation updates
+   pull-requests: write
+   issues: write
+   actions: read
+@@ -97,7 +97,7 @@ jobs:
+           owner: ${{ github.repository_owner }}
+           repositories: ${{ github.event.repository.name }}
+           permission-actions: write
+-          permission-contents: read
++          permission-contents: write
+           permission-issues: write
+           permission-pull-requests: read
+ 
+@@ -120,7 +120,7 @@ jobs:
+           owner: ${{ github.repository_owner }}
+           repositories: ${{ github.event.repository.name }}
+           permission-actions: write
+-          permission-contents: read
++          permission-contents: write
+           permission-issues: write
+           permission-pull-requests: read
+ 
+diff --git a/templates/consumer-repo/.github/workflows/agents-keepalive-sweep.yml b/templates/consumer-repo/.github/workflows/agents-keepalive-sweep.yml
+index 792972df..73fe0057 100644
+--- a/templates/consumer-repo/.github/workflows/agents-keepalive-sweep.yml
++++ b/templates/consumer-repo/.github/workflows/agents-keepalive-sweep.yml
+@@ -78,6 +78,7 @@ jobs:
+             .github/scripts/error_classifier.js
+             .github/scripts/github-api-with-retry.js
+             .github/scripts/keepalive_challenge_due.js
++            .github/scripts/keepalive_authority_state.js
+             .github/scripts/token_load_balancer.js
+           sparse-checkout-cone-mode: false
+ 
+@@ -103,6 +104,8 @@ jobs:
+               selectDueAuthorityChallenge,
+               signAuthorityChallengeClaim,
+             } = require('./.github/scripts/keepalive_challenge_due.js');
++            const { readAuthorityState, requester } =
++              require('./.github/scripts/keepalive_authority_state.js');
+             const { withRetry } = await createTokenAwareRetry({
+               github,
+               core,
+@@ -152,6 +155,24 @@ jobs:
+                     comments,
+                     now: new Date(),
+                   });
++                  if (dueChallenge) {
++                    try {
++                      const { state } = await readAuthorityState(
++                        requester(github), repository, pr.number,
++                      );
++                      if (state.status !== 'available' ||
++                          state.generation !== dueChallenge.generation ||
++                          state.boundary_fingerprint !== dueChallenge.boundaryFingerprint ||
++                          state.due_at !== dueChallenge.dueAt ||
++                          state.expires_at !== dueChallenge.expiresAt ||
++                          Date.now() >= Date.parse(state.expires_at)) {
++                        dueChallenge = null;
++                      }
++                    } catch (error) {
++                      core.warning(`PR #${pr.number}: authority ledger unavailable: ${error.message}`);
++                      dueChallenge = null;
++                    }
++                  }
+                 }
+                 let authorityClaim = {};
+                 if (dueChallenge) {
+@@ -161,6 +182,10 @@ jobs:
+                     repository,
+                     prNumber: pr.number,
+                     boundaryFingerprint: dueChallenge.boundaryFingerprint,
++                    generation: dueChallenge.generation,
++                    dueAt: dueChallenge.dueAt,
++                    expiresAt: dueChallenge.expiresAt,
++                    headSha: pr.head.sha,
+                     nonce,
+                     sweepRunId,
+                     sweepRunAttempt,
+@@ -180,6 +205,10 @@ jobs:
+                     authorityClaim = {
+                       authority_challenge_claim: JSON.stringify({
+                         signature,
++                        generation: dueChallenge.generation,
++                        due_at: dueChallenge.dueAt,
++                        expires_at: dueChallenge.expiresAt,
++                        head_sha: pr.head.sha,
+                         nonce,
+                         sweep_run_id: sweepRunId,
+                         sweep_run_attempt: sweepRunAttempt,
+@@ -232,6 +261,7 @@ jobs:
+             .github/scripts/error_classifier.js
+             .github/scripts/github-api-with-retry.js
+             .github/scripts/keepalive_challenge_due.js
++            .github/scripts/keepalive_authority_state.js
+             .github/scripts/token_load_balancer.js
+           sparse-checkout-cone-mode: false
+ 
+@@ -254,6 +284,8 @@ jobs:
+               selectDueAuthorityChallenge,
+               signAuthorityChallengeClaim,
+             } = require('./.github/scripts/keepalive_challenge_due.js');
++            const { readAuthorityState, requester } =
++              require('./.github/scripts/keepalive_authority_state.js');
+             const { withRetry } = await createTokenAwareRetry({
+               github,
+               core,
+@@ -306,6 +338,24 @@ jobs:
+                     comments,
+                     now: new Date(),
+                   });
++                  if (dueChallenge) {
++                    try {
++                      const { state } = await readAuthorityState(
++                        requester(github), repository, pr.number,
++                      );
++                      if (state.status !== 'available' ||
++                          state.generation !== dueChallenge.generation ||
++                          state.boundary_fingerprint !== dueChallenge.boundaryFingerprint ||
++                          state.due_at !== dueChallenge.dueAt ||
++                          state.expires_at !== dueChallenge.expiresAt ||
++                          Date.now() >= Date.parse(state.expires_at)) {
++                        dueChallenge = null;
++                      }
++                    } catch (error) {
++                      core.warning(`PR #${pr.number}: authority ledger unavailable: ${error.message}`);
++                      dueChallenge = null;
++                    }
++                  }
+                 }
+                 let authorityClaim = {};
+                 if (dueChallenge) {
+@@ -315,6 +365,10 @@ jobs:
+                     repository,
+                     prNumber: pr.number,
+                     boundaryFingerprint: dueChallenge.boundaryFingerprint,
++                    generation: dueChallenge.generation,
++                    dueAt: dueChallenge.dueAt,
++                    expiresAt: dueChallenge.expiresAt,
++                    headSha: pr.head.sha,
+                     nonce,
+                     sweepRunId,
+                     sweepRunAttempt,
+@@ -334,6 +388,10 @@ jobs:
+                     authorityClaim = {
+                       authority_challenge_claim: JSON.stringify({
+                         signature,
++                        generation: dueChallenge.generation,
++                        due_at: dueChallenge.dueAt,
++                        expires_at: dueChallenge.expiresAt,
++                        head_sha: pr.head.sha,
+                         nonce,
+                         sweep_run_id: sweepRunId,
+                         sweep_run_attempt: sweepRunAttempt,
+diff --git a/tests/scripts/test_runner_lib.py b/tests/scripts/test_runner_lib.py
+index 7039834e..23295068 100644
+--- a/tests/scripts/test_runner_lib.py
++++ b/tests/scripts/test_runner_lib.py
+@@ -79,6 +79,7 @@ def _signed_challenge_environment(monkeypatch):
+ @pytest.mark.parametrize("prior_status", [None, "completed", "pending"])
+ def test_signed_challenge_reserves_own_attempt_and_records_completion(monkeypatch, prior_status):
+     _signed_challenge_environment(monkeypatch)
++    monkeypatch.setattr(runner_core, "_consume_authority_challenge", lambda *args: True)
+     primary = MemoryRunnerStorage()
+     fallback = MemoryRunnerStorage()
+     storage = runner_core.FallbackRunnerStorage(primary, fallback)
+@@ -100,36 +101,69 @@ def test_signed_challenge_reserves_own_attempt_and_records_completion(monkeypatc
+     assert not fallback.writes
+ 
+ 
++def test_challenge_cannot_reserve_without_authoritative_consumption(monkeypatch):
++    _signed_challenge_environment(monkeypatch)
++    monkeypatch.setattr(runner_core, "_consume_authority_challenge", lambda *args: False)
++    primary, fallback = MemoryRunnerStorage(), MemoryRunnerStorage()
++    decision = should_dispatch(
++        42,
++        "aaa",
++        "codex",
++        storage=runner_core.FallbackRunnerStorage(primary, fallback),
++        authority_challenge=True,
++    )
++    assert not decision.should_dispatch
++    assert decision.reason == "invalid-or-consumed-authority-challenge"
++    assert not primary.writes and not fallback.writes
++
++
+ @pytest.mark.parametrize(
+     "key,value",
+     [
+-        ("AUTHORITY_CHALLENGE_CLAIM", "{}"),
+-        ("AUTHORITY_CHALLENGE_SIGNING_KEY", "wrong"),
+-        ("AUTHORITY_CHALLENGE_FINGERPRINT", "c" * 64),
+-        ("GITHUB_REPOSITORY", "other/repo"),
+         ("GITHUB_ACTOR", "untrusted"),
+         ("GITHUB_EVENT_NAME", "pull_request"),
+         ("GITHUB_RUN_ATTEMPT", ""),
+     ],
+ )
+-def test_challenge_cannot_reserve_with_invalid_authority(monkeypatch, key, value):
++def test_challenge_consumption_rejects_untrusted_workflow_context(monkeypatch, key, value):
+     _signed_challenge_environment(monkeypatch)
+     monkeypatch.setenv(key, value)
+-    primary, fallback = MemoryRunnerStorage(), MemoryRunnerStorage()
+-    with pytest.raises(ValueError, match="verified signed claim"):
+-        should_dispatch(
+-            42,
+-            "aaa",
+-            "codex",
+-            storage=runner_core.FallbackRunnerStorage(primary, fallback),
+-            authority_challenge=True,
+-        )
+-    assert not primary.writes and not fallback.writes
++    assert not runner_core._consume_authority_challenge(42, "a" * 40, "codex")
++
++
++@pytest.mark.parametrize(
++    "returncode,stdout,granted,diagnostic",
++    [
++        (0, b'{"granted":true}', True, ""),
++        (0, b'{"granted":false}', False, ""),
++        (7, b"", False, "exited 7"),
++        (0, b"not-json", False, "invalid JSON"),
++    ],
++)
++def test_authority_bridge_hands_v2_claim_to_node_and_fails_closed(
++    monkeypatch, capsys, returncode, stdout, granted, diagnostic
++):
++    _signed_challenge_environment(monkeypatch)
++    captured = {}
++
++    def fake_run(args, **kwargs):
++        captured.update(args=args, **kwargs)
++        return subprocess.CompletedProcess(args, returncode, stdout, b"sensitive helper detail")
++
++    monkeypatch.setattr(runner_core.subprocess, "run", fake_run)
++    assert runner_core._consume_authority_challenge(42, "a" * 40, "codex") is granted
++    assert captured["args"] == ["node", ".github/scripts/keepalive_authority_state.js", "consume"]
++    assert captured["env"]["AUTHORITY_CHALLENGE_CLAIM"]
++    assert captured["env"]["AUTHORITY_PR_NUMBER"] == "42"
++    assert captured["env"]["AUTHORITY_HEAD_SHA"] == "a" * 40
++    assert captured["env"]["AUTHORITY_PROVIDER"] == "codex"
++    assert diagnostic in capsys.readouterr().err
+ 
+ 
+ @pytest.mark.parametrize("operation", ["read_record", "write_record"])
+ def test_signed_challenge_storage_failure_never_dispatches(monkeypatch, operation):
+     _signed_challenge_environment(monkeypatch)
++    monkeypatch.setattr(runner_core, "_consume_authority_challenge", lambda *args: True)
+     primary, fallback = MemoryRunnerStorage(), MemoryRunnerStorage()
+ 
+     def fail(*args):
+diff --git a/tests/scripts/test_sync_manifest_compiler.py b/tests/scripts/test_sync_manifest_compiler.py
+index 67d984c0..e1918e0f 100644
+--- a/tests/scripts/test_sync_manifest_compiler.py
++++ b/tests/scripts/test_sync_manifest_compiler.py
+@@ -487,7 +487,7 @@ def test_real_manifest_compiles_every_declared_copy_entry() -> None:
+ 
+     assert plan["schema"] == PLAN_SCHEMA
+     Draft202012Validator(schema).validate(plan)
+-    assert len(plan["entries"]) == 234
++    assert len(plan["entries"]) == 235
+     assert {
+         "docs/contracts/document-mirror-v1.md",
+         "docs/contracts/schemas/document-mirror-v1.schema.json",
+diff --git a/tests/workflows/test_keepalive_authority_delivery.py b/tests/workflows/test_keepalive_authority_delivery.py
+new file mode 100644
+index 00000000..e66e57be
+--- /dev/null
++++ b/tests/workflows/test_keepalive_authority_delivery.py
+@@ -0,0 +1,55 @@
++"""Guard the source/template delivery boundary for single-use authority claims."""
++
++from pathlib import Path
++
++import yaml
++
++ROOT = Path(__file__).resolve().parents[2]
++TEMPLATE = ROOT / "templates/consumer-repo"
++
++
++def test_authority_helpers_are_manifested_and_byte_aligned() -> None:
++    manifest = yaml.safe_load((ROOT / ".github/sync-manifest.yml").read_text())
++    sources = {entry["source"] for entry in manifest["scripts"]}
++    for name in (
++        "keepalive_authority_state.js",
++        "keepalive_challenge_due.js",
++        "keepalive_loop.js",
++    ):
++        source = Path(".github/scripts") / name
++        assert source.as_posix() in sources
++        assert (ROOT / source).read_bytes() == (TEMPLATE / source).read_bytes()
++
++
++def test_every_sweep_mode_checks_the_ledger_before_signing() -> None:
++    for path, modes in (
++        (ROOT / ".github/workflows/agents-keepalive-sweep.yml", 1),
++        (TEMPLATE / ".github/workflows/agents-keepalive-sweep.yml", 2),
++    ):
++        text = path.read_text()
++        assert text.count("readAuthorityState(") == modes
++        assert text.count("generation: dueChallenge.generation") == modes * 2
++        assert text.count(".github/scripts/keepalive_authority_state.js") == modes * 2
++
++
++def test_gate_paths_deny_invalid_claims_and_reporters_can_persist_generation() -> None:
++    for path in (
++        ROOT / ".github/workflows/agents-keepalive-loop.yml",
++        TEMPLATE / ".github/workflows/agents-81-gate-followups.yml",
++    ):
++        text = path.read_text()
++        assert "RAW_AUTHORITY_CHALLENGE_CLAIM" in text
++        assert "reason=invalid-signed-authority-challenge" in text
++        assert (
++            "dispatch_should_run: ${{ steps.runner_dispatch.outputs.should_dispatch || 'false' }}"
++            in text
++        )
++        assert "headSha: process.env.HEAD_SHA" in text
++        assert text.count("permission-contents: write") >= 2
++    for path in (
++        ROOT / ".github/workflows/agents-keepalive-loop-reporter.yml",
++        TEMPLATE / ".github/workflows/agents-keepalive-loop-reporter.yml",
++    ):
++        workflow = yaml.safe_load(path.read_text())
++        assert workflow["permissions"]["contents"].startswith("write")
++        assert path.read_text().count("permission-contents: write") == 2
+diff --git a/tests/workflows/test_workflow_agents_consolidation.py b/tests/workflows/test_workflow_agents_consolidation.py
+index 33b4b12e..0ed39472 100644
+--- a/tests/workflows/test_workflow_agents_consolidation.py
++++ b/tests/workflows/test_workflow_agents_consolidation.py
+@@ -966,7 +966,7 @@ def test_keepalive_failure_reporter_uses_trusted_app_token():
+         assert text.count("repositories: ${{ github.event.repository.name }}") == 2
+         for permission in (
+             "permission-actions: write",
+-            "permission-contents: read",
++            "permission-contents: write",
+             "permission-issues: write",
+             "permission-pull-requests: read",
+         ):
+@@ -1037,7 +1037,7 @@ def test_keepalive_recovery_uses_active_lane_and_forces_only_due_challenges():
+     assert root_summary.count("repositories: ${{ github.event.repository.name }}") == 2
+     for permission in (
+         "permission-actions: write",
+-        "permission-contents: read",
++        "permission-contents: write",
+         "permission-issues: write",
+         "permission-pull-requests: read",
+     ):
+@@ -1058,7 +1058,7 @@ def test_keepalive_recovery_uses_active_lane_and_forces_only_due_challenges():
+     assert consumer_summary.count("repositories: ${{ github.event.repository.name }}") == 2
+     for permission in (
+         "permission-actions: write",
+-        "permission-contents: read",
++        "permission-contents: write",
+         "permission-issues: write",
+         "permission-pull-requests: read",
+     ):

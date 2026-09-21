@@ -1,0 +1,130 @@
+commit 6e00279d2ab8e7f1a600b32647a7d86d86c5e777
+Author: stranske <stranske@gmail.com>
+Date:   Sat Sep 19 20:26:42 2026 -0500
+
+    fix(scripts): map the `docx` import to python-docx in the shared dependency checker (#3462)
+    
+    * fix(scripts): map the `docx` import to python-docx
+    
+    `MODULE_TO_PACKAGE` in the shared test-dependency checker already carries
+    `pptx -> python-pptx`, but not its sibling `docx -> python-docx`. Any consumer
+    repo whose tests import `docx` therefore has `python-docx` reported as an
+    undeclared dependency even when it is declared in `pyproject.toml`, the
+    reusable Python CI's "Auto-fix missing dependencies" step runs and exits 1, and
+    both matrix legs fail with no test ever executed.
+    
+    Observed on stranske/Doc-Lineage#28 (run 35238378819, `python ci / python 3.12`
+    and `3.13`, 15s each): "Check for undeclared test dependencies" flags `docx`
+    while `python-docx==1.2.0` is declared in both `[project] dependencies` and the
+    dev extra.
+    
+    Applied to `scripts/sync_test_dependencies.py` and the consumer-repo template
+    copy in lockstep, since consumers run the synced copy.
+    
+    Test gate: `tests/scripts/test_sync_test_dependencies_mapping.py` asserts the
+    mapping in both copies, and a new end-to-end case writes a test file importing
+    `docx`, declares only `python-docx`, and asserts nothing is reported missing.
+    Deliberately removing the mapping fails all three cases; restoring it passes.
+    
+    Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>
+    
+    * chore(autofix): formatting/lint
+    
+    * test(deps): exercise docx mapping through both synchronizers
+    
+    ---------
+    
+    Co-authored-by: Claude Opus 5 (1M context) <noreply@anthropic.com>
+    Co-authored-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
+    Co-authored-by: closer-lane <automation@stranske.dev>
+
+diff --git a/scripts/sync_test_dependencies.py b/scripts/sync_test_dependencies.py
+index 7a7d7687..9d69828b 100644
+--- a/scripts/sync_test_dependencies.py
++++ b/scripts/sync_test_dependencies.py
+@@ -390,6 +390,7 @@ MODULE_TO_PACKAGE = {
+     "jwt": "PyJWT",
+     "yaml": "PyYAML",
+     "PIL": "Pillow",
++    "docx": "python-docx",
+     "sklearn": "scikit-learn",
+     "cv2": "opencv-python",
+     "pre_commit": "pre-commit",
+diff --git a/templates/consumer-repo/scripts/sync_test_dependencies.py b/templates/consumer-repo/scripts/sync_test_dependencies.py
+index 2f5559cf..6bba267d 100644
+--- a/templates/consumer-repo/scripts/sync_test_dependencies.py
++++ b/templates/consumer-repo/scripts/sync_test_dependencies.py
+@@ -389,6 +389,7 @@ MODULE_TO_PACKAGE = {
+     "jwt": "PyJWT",
+     "yaml": "PyYAML",
+     "PIL": "Pillow",
++    "docx": "python-docx",
+     "sklearn": "scikit-learn",
+     "cv2": "opencv-python",
+     "pre_commit": "pre-commit",
+diff --git a/tests/scripts/test_sync_test_dependencies_mapping.py b/tests/scripts/test_sync_test_dependencies_mapping.py
+index 39a83f1e..8928c002 100644
+--- a/tests/scripts/test_sync_test_dependencies_mapping.py
++++ b/tests/scripts/test_sync_test_dependencies_mapping.py
+@@ -3,6 +3,8 @@ from __future__ import annotations
+ import importlib.util
+ from pathlib import Path
+ 
++import pytest
++
+ 
+ def _load_module(module_name: str, path: Path):
+     spec = importlib.util.spec_from_file_location(module_name, path)
+@@ -20,6 +22,7 @@ def test_import_exceptions_map_to_package_names_in_repo_script():
+     )
+ 
+     assert module.MODULE_TO_PACKAGE["pptx"] == "python-pptx"
++    assert module.MODULE_TO_PACKAGE["docx"] == "python-docx"
+     assert module.MODULE_TO_PACKAGE["jwt"] == "PyJWT"
+     assert {"html", "http", "secrets"}.issubset(module.STDLIB_MODULES)
+ 
+@@ -31,9 +34,44 @@ def test_import_exceptions_map_to_package_names_in_consumer_template():
+     )
+ 
+     assert module.MODULE_TO_PACKAGE["pptx"] == "python-pptx"
++    assert module.MODULE_TO_PACKAGE["docx"] == "python-docx"
+     assert module.MODULE_TO_PACKAGE["jwt"] == "PyJWT"
+ 
+ 
++@pytest.mark.parametrize(
++    "script",
++    [
++        "scripts/sync_test_dependencies.py",
++        "templates/consumer-repo/scripts/sync_test_dependencies.py",
++    ],
++)
++def test_python_docx_import_is_not_reported_as_undeclared(tmp_path, monkeypatch, script):
++    """A test importing ``docx`` with ``python-docx`` declared must not be flagged.
++
++    The import name and the distribution name differ, which is the whole reason
++    MODULE_TO_PACKAGE exists. Without the entry the checker reports ``docx`` as
++    undeclared, the auto-fix step exits 1, and the consumer's Python CI fails on
++    a dependency that is in fact declared.
++    """
++    module = _load_module(
++        "sync_test_dependencies_repo_docx",
++        Path(script).resolve(),
++    )
++
++    (tmp_path / "tests").mkdir()
++    test_file = tmp_path / "tests/test_uses_docx.py"
++    test_file.write_text("from docx import Document\n", encoding="utf-8")
++
++    pyproject = tmp_path / "pyproject.toml"
++    pyproject.write_text('[project]\nname = "fixture"\ndependencies = ["python-docx"]\n')
++    monkeypatch.chdir(tmp_path)
++    monkeypatch.setattr(module, "PYPROJECT_FILE", pyproject)
++    assert module.find_missing_dependencies() == set()
++    # Prove the real production path needs this mapping in both synchronizers.
++    monkeypatch.delitem(module.MODULE_TO_PACKAGE, "docx")
++    assert module.find_missing_dependencies() == {"docx"}
++
++
+ def test_stdlib_imports_from_sync_pr_logs_are_ignored_in_repo_script():
+     module = _load_module(
+         "sync_test_dependencies_repo_stdlib",
