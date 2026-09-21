@@ -1,9 +1,9 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-21T06:52:04Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-21T09:44:36Z)
 
-Units: 150 — done 147, failed 3
+Units: 151 — done 148, failed 3
 Paused: False   Phase stops: []
-Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=warn vibe=ok aider=ok
-Orchestrator evidence (30d): offload runs 190, bound to a research round 145, scored 145 (PASS 102, FAIL 43, infra 19) — codex 26/26 (P9 F17 I6), cursor 60/93 (P54 F6 I2), gemini 56/67 (P37 F19 I11), vibe 3/4 (P2 F1 I0)
+Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
+Orchestrator evidence (30d): offload runs 191, bound to a research round 146, scored 146 (PASS 103, FAIL 43, infra 19) — codex 26/26 (P9 F17 I6), cursor 61/94 (P55 F6 I2), gemini 56/67 (P37 F19 I11), vibe 3/4 (P2 F1 I0)
 Claude conservation: off (weekly window available)
 Owner inbox: https://github.com/stranske/Ready/issues/553
 
@@ -114,6 +114,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Counter_Risk--2026-09-20T20-25-21Z | D | D | done | cursor | driver | Audit stranske/Counter_Risk and file issues (supply 2 <= 2) |
 | D-audit-Deliverable-Render--2026-09-20T08-24-39Z | D | D | failed | codex |  | Audit stranske/Deliverable-Render and file issues (supply 1 <= 2) |
 | D-audit-Deliverable-Render--2026-09-20T20-25-18Z | D | D | done | cursor | driver | Audit stranske/Deliverable-Render and file issues (supply 1 <= 2) |
+| D-audit-Deliverable-Render--2026-09-21T08-38-08Z | D | D | done | cursor | driver | Audit stranske/Deliverable-Render and file issues (supply 2 <= 2) |
 | D-audit-Doc-Lineage--2026-09-19T20-12-10Z | D | D | done | codex | codex | Audit stranske/Doc-Lineage and file issues (supply 2 <= 2) |
 | D-audit-Fine-Art-Archive--2026-09-05T04-00-31Z | D | D | done | codex | codex | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 2) |
 | D-audit-Fine-Art-Archive--2026-09-06T04-25-53Z | D | D | done | codex | driver | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 3) |
@@ -162,18 +163,18 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-20T21:12:08Z — D4-verify-merged-2026-09-20T20 — route — router picked cursor from ['codex', 'cursor']
-- 2026-09-20T21:12:08Z — D4-verify-merged-2026-09-20T20 — claimed by codex (agent cursor)
-- 2026-09-20T21:18:24Z — D-audit-Manager-Database--2026-09-20T20-25-22Z — done — cursor produced 626 words at artifacts/audits/Manager-Database-2026-09-20.md in 404s
-- 2026-09-20T21:18:48Z — D4-verify-merged-2026-09-20T20 — done — Verified 20 recent merged PRs: 17 delivered, two missing deliberate-break evidence with follow-ups filed, and one dependency chore excluded.
-- 2026-09-21T03:11:45Z — verify — enqueued D4-verify-merged-2026-09-21T03
-- 2026-09-21T03:11:45Z — D4-verify-merged-2026-09-21T03 — route — router picked cursor from ['codex', 'cursor']
-- 2026-09-21T03:11:45Z — D4-verify-merged-2026-09-21T03 — claimed by codex (agent cursor)
-- 2026-09-21T03:17:35Z — D4-verify-merged-2026-09-21T03 — done — Audited 20 oldest eligible merged PRs: 7 verified, 5 partial for specified acceptance gaps, and 8 excluded; follow-ups blocked by gh authentication.
-- 2026-09-21T04:15:20Z — unblock — enqueued D3-unblock-sweep-2026-09-21T04
-- 2026-09-21T04:15:20Z — D3-unblock-sweep-2026-09-21T04 — route — router picked cursor from ['codex', 'cursor']
-- 2026-09-21T04:15:20Z — D3-unblock-sweep-2026-09-21T04 — claimed by driver (agent cursor)
-- 2026-09-21T04:17:49Z — D3-unblock-sweep-2026-09-21T04 — done — cursor produced 579 words at artifacts/sweeps/D3-unblock-sweep-2026-09-21T04.md in 121s
+- 2026-09-21T08:11:47Z — mirror — deferred — Ready#583 exact-head sync review; publication resumes by 2026-09-21T09:37:08+00:00; local work continues
+- 2026-09-21T08:22:45Z — mirror — deferred — Ready#583 exact-head sync review; publication resumes by 2026-09-21T09:37:08+00:00; local work continues
+- 2026-09-21T08:38:08Z — refill — Deliverable-Render: open=2 <= 2 → audit queued
+- 2026-09-21T08:38:15Z — D-audit-Deliverable-Render--2026-09-21T08-38-08Z — route — router picked cursor from ['codex', 'cursor']
+- 2026-09-21T08:38:15Z — D-audit-Deliverable-Render--2026-09-21T08-38-08Z — claimed by driver (agent cursor)
+- 2026-09-21T08:38:15Z — mirror — deferred — Ready#583 exact-head sync review; publication resumes by 2026-09-21T09:37:08+00:00; local work continues
+- 2026-09-21T08:44:24Z — D-audit-Deliverable-Render--2026-09-21T08-38-08Z — done — cursor produced 576 words at artifacts/audits/Deliverable-Render-2026-09-21.md in 366s
+- 2026-09-21T08:44:25Z — mirror — deferred — Ready#583 exact-head sync review; publication resumes by 2026-09-21T09:37:08+00:00; local work continues
+- 2026-09-21T08:59:28Z — mirror — deferred — Ready#583 exact-head sync review; publication resumes by 2026-09-21T09:37:08+00:00; local work continues
+- 2026-09-21T09:12:23Z — mirror — deferred — Ready#583 exact-head sync review; publication resumes by 2026-09-21T09:37:08+00:00; local work continues
+- 2026-09-21T09:14:30Z — mirror — deferred — Ready#583 exact-head sync review; publication resumes by 2026-09-21T09:37:08+00:00; local work continues
+- 2026-09-21T09:29:33Z — mirror — deferred — Ready#583 exact-head sync review; publication resumes by 2026-09-21T09:37:08+00:00; local work continues
 
 ## Questions
 

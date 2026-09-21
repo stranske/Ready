@@ -1481,3 +1481,21 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-21T04:15:20Z — D3-unblock-sweep-2026-09-21T04 — route — router picked cursor from ['codex', 'cursor']
 ## 2026-09-21T04:15:20Z — D3-unblock-sweep-2026-09-21T04 — claimed by driver (agent cursor)
 ## 2026-09-21T04:17:49Z — D3-unblock-sweep-2026-09-21T04 — done — cursor produced 579 words at artifacts/sweeps/D3-unblock-sweep-2026-09-21T04.md in 121s
+## 2026-09-21T07:07:30Z — mirror — deferred — Ready#583 exact-head sync review; publication resumes by 2026-09-21T09:06:50+00:00; local work continues
+## 2026-09-21T07:12:21Z — mirror — deferred — Ready#583 exact-head sync review; publication resumes by 2026-09-21T09:06:50+00:00; local work continues
+## 2026-09-21T07:22:33Z — mirror — deferred — Ready#583 exact-head sync review; publication resumes by 2026-09-21T09:06:50+00:00; local work continues
+## 2026-09-21T07:37:36Z — mirror — deferred — Ready#583 exact-head sync review; publication resumes by 2026-09-21T09:37:08+00:00; local work continues
+## 2026-09-21T07:52:39Z — mirror — deferred — Ready#583 exact-head sync review; publication resumes by 2026-09-21T09:37:08+00:00; local work continues
+## 2026-09-21T08:07:42Z — mirror — deferred — Ready#583 exact-head sync review; publication resumes by 2026-09-21T09:37:08+00:00; local work continues
+## 2026-09-21T08:11:47Z — mirror — deferred — Ready#583 exact-head sync review; publication resumes by 2026-09-21T09:37:08+00:00; local work continues
+## 2026-09-21T08:22:45Z — mirror — deferred — Ready#583 exact-head sync review; publication resumes by 2026-09-21T09:37:08+00:00; local work continues
+## 2026-09-21T08:38:08Z — refill — Deliverable-Render: open=2 <= 2 → audit queued
+## 2026-09-21T08:38:15Z — D-audit-Deliverable-Render--2026-09-21T08-38-08Z — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-21T08:38:15Z — D-audit-Deliverable-Render--2026-09-21T08-38-08Z — claimed by driver (agent cursor)
+## 2026-09-21T08:38:15Z — mirror — deferred — Ready#583 exact-head sync review; publication resumes by 2026-09-21T09:37:08+00:00; local work continues
+## 2026-09-21T08:44:24Z — D-audit-Deliverable-Render--2026-09-21T08-38-08Z — done — cursor produced 576 words at artifacts/audits/Deliverable-Render-2026-09-21.md in 366s
+## 2026-09-21T08:44:25Z — mirror — deferred — Ready#583 exact-head sync review; publication resumes by 2026-09-21T09:37:08+00:00; local work continues
+## 2026-09-21T08:59:28Z — mirror — deferred — Ready#583 exact-head sync review; publication resumes by 2026-09-21T09:37:08+00:00; local work continues
+## 2026-09-21T09:12:23Z — mirror — deferred — Ready#583 exact-head sync review; publication resumes by 2026-09-21T09:37:08+00:00; local work continues
+## 2026-09-21T09:14:30Z — mirror — deferred — Ready#583 exact-head sync review; publication resumes by 2026-09-21T09:37:08+00:00; local work continues
+## 2026-09-21T09:29:33Z — mirror — deferred — Ready#583 exact-head sync review; publication resumes by 2026-09-21T09:37:08+00:00; local work continues
