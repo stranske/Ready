@@ -1,35 +1,19 @@
 {
  "mark": "backfill:2026-09-20",
- "bound": 118,
- "skipped": 44,
+ "bound": 18,
+ "skipped": 26,
  "errors": {},
  "per_arm": {
-  "codex:durable": 7,
-  "gemini:durable": 70,
-  "gemini:broke_later": 4,
-  "gemini:pending": 15,
-  "codex:pending": 14,
-  "cursor:durable": 8
+  "codex:pending": 8,
+  "cursor:pending": 7,
+  "cursor:durable": 2,
+  "gemini:durable": 6,
+  "gemini:pending": 1
  },
  "rounds": [
-  "domain/tpp-templates-wiring-2026-08-29:review-corpus:2026-08-29",
-  "stranske/counter_risk:d-audit:2026-09-07T04-47-32Z",
-  "stranske/counter_risk:d-audit:2026-09-09T05-14-45Z",
-  "stranske/counter_risk:d-audit:2026-09-09T17-29-35Z",
-  "stranske/counter_risk:d-audit:2026-09-10T17-45-12Z",
-  "stranske/counter_risk:d-audit:2026-09-13T18-41-41Z",
-  "stranske/fine-art-archive:d-audit:2026-09-06T04-25-53Z",
-  "stranske/learning-management-system:d-audit:2026-09-05T04-00-30Z",
-  "stranske/learning-management-system:d-audit:2026-09-06T16-33-31Z",
-  "stranske/learning-management-system:d-audit:2026-09-09T05-14-48Z",
-  "stranske/learning-management-system:d-audit:2026-09-10T05-35-47Z",
-  "stranske/learning-management-system:d-audit:2026-09-10T17-45-16Z",
-  "stranske/learning-management-system:d-audit:2026-09-20T08-24-44Z",
-  "stranske/manager-database:d-audit:2026-09-10T17-45-13Z",
-  "stranske/manager-database:d-audit:2026-09-14T19-00-22Z",
-  "stranske/portable-alpha-extension-model:d-audit:2026-09-07T17-01-44Z",
-  "stranske/travel-plan-permission:d-audit:2026-09-06T04-25-49Z",
-  "stranske/travel-plan-permission:d-audit:2026-09-06T16-33-27Z",
-  "stranske/travel-plan-permission:d-audit:2026-09-07T17-01-43Z"
+  "stranske/doc-lineage:d-audit:2026-09-19T20-12-10Z",
+  "stranske/manager-mosaic:d-audit:2026-09-05T04-00-25Z",
+  "stranske/manager-mosaic:d-audit:2026-09-19T20-12-04Z",
+  "stranske/portable-alpha-extension-model:d-audit:2026-09-07T17-01-44Z"
  ]
 }
