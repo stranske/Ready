@@ -14,8 +14,10 @@ from collections import Counter
 from pathlib import Path
 
 if __package__:
+    from .check_publication_safety import load_allowlist
     from .publication_patterns import PRIVATE_KEY_BLOCK, PRIVATE_KEY_HEADER
 else:
+    from check_publication_safety import load_allowlist
     from publication_patterns import PRIVATE_KEY_BLOCK, PRIVATE_KEY_HEADER
 
 REPLACEMENTS = (
@@ -50,11 +52,13 @@ TEXT_CAPTURE_JSON = frozenset(
 )
 
 
-def redact_text(text: str, counts: Counter[str]) -> str:
+def redact_text(
+    text: str, counts: Counter[str], *, allow_incomplete_private_key: bool = False
+) -> str:
     for rule, pattern, replacement in REPLACEMENTS:
         text, count = pattern.subn(replacement, text)
         counts[rule] += count
-    if PRIVATE_KEY_HEADER.search(text):
+    if PRIVATE_KEY_HEADER.search(text) and not allow_incomplete_private_key:
         raise ValueError("incomplete private-key block cannot be safely redacted")
     return text
 
@@ -69,20 +73,41 @@ def unique_json_object(pairs: list[tuple[str, object]]) -> dict[str, object]:
     return result
 
 
-def redact_value(value: object, counts: Counter[str]) -> object:
+def redact_value(
+    value: object, counts: Counter[str], *, allow_incomplete_private_key: bool = False
+) -> object:
     if isinstance(value, float) and not math.isfinite(value):
         raise ValueError("non-finite JSON number")
     if isinstance(value, str):
-        return redact_text(value, counts)
+        return redact_text(
+            value,
+            counts,
+            allow_incomplete_private_key=allow_incomplete_private_key,
+        )
     if isinstance(value, list):
-        return [redact_value(item, counts) for item in value]
+        return [
+            redact_value(
+                item,
+                counts,
+                allow_incomplete_private_key=allow_incomplete_private_key,
+            )
+            for item in value
+        ]
     if isinstance(value, dict):
         result = {}
         for key, item in value.items():
-            new_key = redact_text(key, counts)
+            new_key = redact_text(
+                key,
+                counts,
+                allow_incomplete_private_key=allow_incomplete_private_key,
+            )
             if new_key in result:
                 raise ValueError("redaction would collapse distinct JSON keys")
-            result[new_key] = redact_value(item, counts)
+            result[new_key] = redact_value(
+                item,
+                counts,
+                allow_incomplete_private_key=allow_incomplete_private_key,
+            )
         return result
     return value
 
@@ -100,13 +125,18 @@ def needs_redaction(text: str, structured: bool) -> bool:
     return False
 
 
-def prepare_copy(root: Path) -> Counter[str]:
+def prepare_copy(root: Path, allowlist: Path | None = None) -> Counter[str]:
     """Operate only on the caller's staging tree; fail before writing on errors."""
     if not root.is_dir() or root.is_symlink():
         raise ValueError("publication copy must be an existing non-symlink directory")
     counts: Counter[str] = Counter()
     pending: list[tuple[Path, bytes]] = []
     files = 0
+    allowed: set[tuple[str, str]] = set()
+    if allowlist is not None:
+        allowed, errors = load_allowlist(root, allowlist)
+        if errors or not allowlist.is_file() or allowlist.is_symlink():
+            raise ValueError("publication allowlist is invalid")
 
     def walk_error(error: OSError) -> None:
         raise error
@@ -117,6 +147,8 @@ def prepare_copy(root: Path) -> Counter[str]:
                 raise ValueError("publication copy contains a symlink")
         for name in filenames:
             path = directory / name
+            relative_name = path.relative_to(root).as_posix()
+            allow_incomplete_private_key = (relative_name, "private-key") in allowed
             if not path.is_file():
                 # read_bytes() on a FIFO BLOCKS FOREVER waiting for a writer, so an unsafe
                 # staging tree would hang preparation instead of being rejected by it. The
@@ -142,11 +174,17 @@ def prepare_copy(root: Path) -> Counter[str]:
                     if path.relative_to(root).as_posix() in TEXT_CAPTURE_JSON:
                         value = {
                             "capture_format": "raw-process-output",
-                            "text": redact_text(text, file_counts),
+                            "text": redact_text(
+                                text,
+                                file_counts,
+                                allow_incomplete_private_key=allow_incomplete_private_key,
+                            ),
                         }
                     else:
                         value = redact_value(
-                            json.loads(text, object_pairs_hook=unique_json_object), file_counts
+                            json.loads(text, object_pairs_hook=unique_json_object),
+                            file_counts,
+                            allow_incomplete_private_key=allow_incomplete_private_key,
                         )
                     replacement = json.dumps(value, ensure_ascii=False, indent=2) + "\n"
                 elif path.suffix.lower() == ".jsonl":
@@ -157,6 +195,7 @@ def prepare_copy(root: Path) -> Counter[str]:
                                     redact_value(
                                         json.loads(line, object_pairs_hook=unique_json_object),
                                         file_counts,
+                                        allow_incomplete_private_key=allow_incomplete_private_key,
                                     ),
                                     ensure_ascii=False,
                                 )
@@ -168,7 +207,11 @@ def prepare_copy(root: Path) -> Counter[str]:
                         + "\n"
                     )
                 else:
-                    replacement = redact_text(text, file_counts)
+                    replacement = redact_text(
+                        text,
+                        file_counts,
+                        allow_incomplete_private_key=allow_incomplete_private_key,
+                    )
             except (ValueError, TypeError) as exc:
                 raise ValueError(
                     "publication copy has invalid or ambiguous structured data"
@@ -188,9 +231,10 @@ def prepare_copy(root: Path) -> Counter[str]:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--staging-root", type=Path, required=True)
+    parser.add_argument("--allowlist", type=Path, default=None)
     args = parser.parse_args()
     try:
-        counts = prepare_copy(args.staging_root)
+        counts = prepare_copy(args.staging_root, args.allowlist)
     except (OSError, ValueError):
         print("ERROR: publication preparation failed; do not publish this copy")
         return 1
