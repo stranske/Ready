@@ -1,9 +1,9 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-21T21:13:23Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-21T21:22:12Z)
 
-Units: 157 — claimed 2, done 152, failed 3
+Units: 157 — claimed 1, done 153, failed 3
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
-Orchestrator evidence (30d): offload runs 195, bound to a research round 150, scored 150 (PASS 107, FAIL 43, infra 19) — codex 26/26 (P9 F17 I6), cursor 64/97 (P58 F6 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
+Orchestrator evidence (30d): offload runs 196, bound to a research round 151, scored 151 (PASS 107, FAIL 44, infra 19) — codex 26/26 (P9 F17 I6), cursor 65/98 (P58 F7 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
 Claude conservation: off (weekly window available)
 Owner inbox: https://github.com/stranske/Ready/issues/553
 
@@ -127,7 +127,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Manager-Database--2026-09-14T06-49-50Z | D | D | done | codex | codex | Audit stranske/Manager-Database and file issues (supply 2 <= 2) |
 | D-audit-Manager-Database--2026-09-14T19-00-22Z | D | D | done | codex | codex | Audit stranske/Manager-Database and file issues (supply 2 <= 2) |
 | D-audit-Manager-Database--2026-09-20T20-25-22Z | D | D | done | cursor | driver | Audit stranske/Manager-Database and file issues (supply 1 <= 2) |
-| D-audit-Manager-Database--2026-09-21T20-41-04Z | D | D | claimed | cursor | codex | Audit stranske/Manager-Database and file issues (supply 1 <= 2) |
+| D-audit-Manager-Database--2026-09-21T20-41-04Z | D | D | done | cursor | codex | Audit stranske/Manager-Database and file issues (supply 1 <= 2) |
 | D-audit-Manager-Mosaic--2026-09-05T04-00-25Z | D | D | done | codex | driver | Audit stranske/Manager-Mosaic and file issues (supply 2 <= 2) |
 | D-audit-Manager-Mosaic--2026-09-19T20-12-04Z | D | D | done | codex | codex | Audit stranske/Manager-Mosaic and file issues (supply 3 <= 3) |
 | D-audit-Portable-Alpha-Extension-Model--2026-09-07T04-47-31Z | D | D | done | codex | codex | Audit stranske/Portable-Alpha-Extension-Model and file issues (supply  |
@@ -169,7 +169,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-21T20:22:05Z — D3-unblock-sweep-2026-09-21T20 — claimed by driver (agent cursor)
 - 2026-09-21T20:25:34Z — D3-unblock-sweep-2026-09-21T20 — done — cursor produced 624 words at artifacts/sweeps/D3-unblock-sweep-2026-09-21T20.md in 182s
 - 2026-09-21T20:41:01Z — refill — Deliverable-Render: open=1 <= 2 → audit queued
 - 2026-09-21T20:41:04Z — refill — Counter_Risk: open=2 <= 3 → audit queued
@@ -181,6 +180,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-21T21:12:04Z — D-audit-Deliverable-Render--2026-09-21T20-41-01Z — claimed by codex (agent cursor)
 - 2026-09-21T21:12:27Z — D-audit-Manager-Database--2026-09-21T20-41-04Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-21T21:12:27Z — D-audit-Manager-Database--2026-09-21T20-41-04Z — claimed by codex (agent cursor)
+- 2026-09-21T21:22:12Z — D-audit-Manager-Database--2026-09-21T20-41-04Z — done — Scorecard: 6 work / 0 partial / 1 broken / 0 fabricated / 0 not exercised of 8; journey: passes (register manager → search → chat → dashboard empty-state); surf
 
 ## Questions
 
