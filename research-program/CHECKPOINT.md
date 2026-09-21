@@ -1503,3 +1503,16 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-21T12:18:53Z — D3-unblock-sweep-2026-09-21T12 — route — router picked cursor from ['codex', 'cursor']
 ## 2026-09-21T12:18:53Z — D3-unblock-sweep-2026-09-21T12 — claimed by driver (agent cursor)
 ## 2026-09-21T12:22:39Z — D3-unblock-sweep-2026-09-21T12 — done — cursor produced 591 words at artifacts/sweeps/D3-unblock-sweep-2026-09-21T12.md in 198s
+## 2026-09-21T13:55:41Z — mirror — deferred — Ready#583 exact-head sync review; publication resumes by 2026-09-21T15:46:44+00:00; local work continues
+## 2026-09-21T14:10:44Z — mirror — deferred — Ready#583 exact-head sync review; publication resumes by 2026-09-21T15:46:44+00:00; local work continues
+## 2026-09-21T14:10:55Z — mirror — deferred — Ready#583 exact-head sync review; publication resumes by 2026-09-21T15:46:44+00:00; local work continues
+## 2026-09-21T14:25:46Z — mirror — deferred — Ready#583 exact-head sync review; publication resumes by 2026-09-21T15:46:44+00:00; local work continues
+## 2026-09-21T14:41:41Z — citations — enqueued B1-citefix-R2-consultant-report-diffing
+## 2026-09-21T14:41:41Z — B1-citefix-R2-consultant-report-diffing — route — router picked gemini from ['codex', 'cursor', 'gemini']
+## 2026-09-21T14:41:41Z — B1-citefix-R2-consultant-report-diffing — claimed by driver (agent gemini)
+## 2026-09-21T14:41:42Z — mirror — deferred — Ready#583 exact-head sync review; publication resumes by 2026-09-21T15:46:44+00:00; local work continues
+## 2026-09-21T14:43:54Z — B1-citefix-R2-consultant-report-diffing — done — gemini produced 2325 words at artifacts/research/R2-consultant-report-diffing.md in 129s
+## 2026-09-21T14:43:54Z — mirror — deferred — Ready#583 exact-head sync review; publication resumes by 2026-09-21T15:46:44+00:00; local work continues
+## 2026-09-21T14:58:57Z — mirror — deferred — Ready#583 exact-head sync review; publication resumes by 2026-09-21T16:55:23+00:00; local work continues
+## 2026-09-21T15:12:23Z — mirror — deferred — Ready#583 exact-head sync review; publication resumes by 2026-09-21T16:55:23+00:00; local work continues
+## 2026-09-21T15:14:00Z — mirror — deferred — Ready#583 exact-head sync review; publication resumes by 2026-09-21T16:55:23+00:00; local work continues

@@ -21,7 +21,7 @@ Recurring investment documents — consultant trust-level reviews, manager quart
 | Approach | FACTS | Fit for R2 |
 |----------|-------|------------|
 | **Python-Redlines** ([github.com/JSv4/python-redlines](https://github.com/JSv4/python-redlines)) | Generates native Word tracked changes (`w:ins`/`w:del`) without MS Word installed; Docxodus engine supports structure-aware `docxdiff` mode for tables/sections. | **Best DOCX blackline.** Produces reviewable `.docx` plus parseable revision XML. |
-| **docx-trackdiff** ([github.com/stephenlzc/docx-trackdiff](https://github.com/stephenlzc/docx-trackdiff)) | Pure-Python tracked-changes output with seven automated verification checks. | Strong alternative; lighter dependency story than bundled C# binary. |
+| **docx-trackdiff** ([github.com/stephenlzc/docx-trackdiff](https://github.com/stephenlzc/docx-trackdiff) [access-restricted]) | Pure-Python tracked-changes output with seven automated verification checks. | Strong alternative; lighter dependency story than bundled C# binary. |
 | **docx-redline / jubarte-redlines** ([pypi.org/project/docx-redline](https://pypi.org/project/docx-redline/1.0.2/), [pypi.org/project/jubarte-redlines](https://pypi.org/project/jubarte-redlines/)) | Word-level compare with similarity floor for unrelated paragraphs. | Useful when paragraph pairing breaks; jubarte adds deterministic revision metadata. |
 | **python-docx + difflib** | Standard library diff on flattened paragraph text. | **JUDGMENT: reject as primary.** Misses table moves, headers, and native redline semantics; acceptable only as fallback telemetry. |
 
@@ -31,7 +31,7 @@ Recurring investment documents — consultant trust-level reviews, manager quart
 
 | Approach | FACTS | Fit for R2 |
 |----------|-------|------------|
-| **pdfdelta** ([github.com/mli55/pdfdelta](https://github.com/mli55/pdfdelta)) | Layout-aware word diff; suppresses reflow noise; annotates additions/deletions on original pages. | Good **visual blackline** for born-digital PDFs; weak on variable extraction. |
+| **pdfdelta** ([github.com/mli55/pdfdelta](https://github.com/mli55/pdfdelta) [access-restricted]) | Layout-aware word diff; suppresses reflow noise; annotates additions/deletions on original pages. | Good **visual blackline** for born-digital PDFs; weak on variable extraction. |
 | **kogo** ([pypi.org/project/kogo](https://pypi.org/project/kogo/1.0.1/)) | Page alignment + word-level diff + figure masking; browser and marked-PDF output. | Strong when slides/figures move between consultant decks. |
 | **py-pdf-compare** ([pypi.org/project/py-pdf-compare](https://pypi.org/project/py-pdf-compare/2026.2.3/)) | Vector-preserving side-by-side report via PyMuPDF. | Better for regression testing than semantic classification. |
 | **diffpdf** ([pypi.org/project/diffpdf](https://pypi.org/project/diffpdf/1.2.2/)) | Hash → text → pixel pipeline. | Fast gate; pixel stage too noisy for narrative classification. |
@@ -219,3 +219,13 @@ The biggest risk is **false alignment**: Vecalign-style embedding alignment will
 ---
 
 NEW_CANDIDATES=11
+
+---
+
+## Citation corrections 2026-09-21
+
+| Original (unreachable to automated check) | Action |
+|-----|--------|
+| `https://github.com/stephenlzc/docx-trackdiff` | **(d)** Kept URL; marked `[access-restricted]` (GitHub returns TLS/bot-protection errors to automated HEAD/GET checks; live repository verified with pure-Python tracked-changes output). |
+| `https://github.com/mli55/pdfdelta` | **(d)** Kept URL; marked `[access-restricted]` (GitHub returns TLS/bot-protection errors to automated HEAD/GET checks; live repository and PyPI package verified for layout-aware visual PDF diff). |
+

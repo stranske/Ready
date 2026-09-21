@@ -1,9 +1,9 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-21T13:40:15Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-21T15:29:02Z)
 
-Units: 152 — done 149, failed 3
+Units: 153 — done 150, failed 3
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
-Orchestrator evidence (30d): offload runs 192, bound to a research round 147, scored 147 (PASS 104, FAIL 43, infra 19) — codex 26/26 (P9 F17 I6), cursor 62/95 (P56 F6 I2), gemini 56/67 (P37 F19 I11), vibe 3/4 (P2 F1 I0)
+Orchestrator evidence (30d): offload runs 193, bound to a research round 148, scored 148 (PASS 105, FAIL 43, infra 19) — codex 26/26 (P9 F17 I6), cursor 62/95 (P56 F6 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
 Claude conservation: off (weekly window available)
 Owner inbox: https://github.com/stranske/Ready/issues/553
 
@@ -32,6 +32,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | A-dossier-docx | A | A3 | done | cursor | codex | Word versions of all verified dossiers (venv + python-docx) |
 | B1-citefix-B3-interop-architecture | B | B1 | done | cursor | driver | Fix unreachable citations in B3-interop-architecture.md |
 | B1-citefix-R1-legal-decomposition | B | B1 | done | cursor | driver | Fix unreachable citations in R1-legal-decomposition.md |
+| B1-citefix-R2-consultant-report-diffing | B | B1 | done | gemini | driver | Fix unreachable citations in R2-consultant-report-diffing.md |
 | B1-citefix-R3-manager-mosaic-synthesis | B | B1 | done | gemini | driver | Fix unreachable citations in R3-manager-mosaic-synthesis.md |
 | B1-citefix-R4-document-access-substrate | B | B1 | done | cursor | driver | Fix unreachable citations in R4-document-access-substrate.md |
 | B1-citefix-R5-output-substrate | B | B1 | done | codex | codex | Fix unreachable citations in R5-output-substrate.md |
@@ -164,18 +165,18 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-21T08:38:15Z — D-audit-Deliverable-Render--2026-09-21T08-38-08Z — claimed by driver (agent cursor)
-- 2026-09-21T08:38:15Z — mirror — deferred — Ready#583 exact-head sync review; publication resumes by 2026-09-21T09:37:08+00:00; local work continues
-- 2026-09-21T08:44:24Z — D-audit-Deliverable-Render--2026-09-21T08-38-08Z — done — cursor produced 576 words at artifacts/audits/Deliverable-Render-2026-09-21.md in 366s
-- 2026-09-21T08:44:25Z — mirror — deferred — Ready#583 exact-head sync review; publication resumes by 2026-09-21T09:37:08+00:00; local work continues
-- 2026-09-21T08:59:28Z — mirror — deferred — Ready#583 exact-head sync review; publication resumes by 2026-09-21T09:37:08+00:00; local work continues
-- 2026-09-21T09:12:23Z — mirror — deferred — Ready#583 exact-head sync review; publication resumes by 2026-09-21T09:37:08+00:00; local work continues
-- 2026-09-21T09:14:30Z — mirror — deferred — Ready#583 exact-head sync review; publication resumes by 2026-09-21T09:37:08+00:00; local work continues
-- 2026-09-21T09:29:33Z — mirror — deferred — Ready#583 exact-head sync review; publication resumes by 2026-09-21T09:37:08+00:00; local work continues
-- 2026-09-21T12:18:53Z — unblock — enqueued D3-unblock-sweep-2026-09-21T12
-- 2026-09-21T12:18:53Z — D3-unblock-sweep-2026-09-21T12 — route — router picked cursor from ['codex', 'cursor']
-- 2026-09-21T12:18:53Z — D3-unblock-sweep-2026-09-21T12 — claimed by driver (agent cursor)
-- 2026-09-21T12:22:39Z — D3-unblock-sweep-2026-09-21T12 — done — cursor produced 591 words at artifacts/sweeps/D3-unblock-sweep-2026-09-21T12.md in 198s
+- 2026-09-21T14:10:44Z — mirror — deferred — Ready#583 exact-head sync review; publication resumes by 2026-09-21T15:46:44+00:00; local work continues
+- 2026-09-21T14:10:55Z — mirror — deferred — Ready#583 exact-head sync review; publication resumes by 2026-09-21T15:46:44+00:00; local work continues
+- 2026-09-21T14:25:46Z — mirror — deferred — Ready#583 exact-head sync review; publication resumes by 2026-09-21T15:46:44+00:00; local work continues
+- 2026-09-21T14:41:41Z — citations — enqueued B1-citefix-R2-consultant-report-diffing
+- 2026-09-21T14:41:41Z — B1-citefix-R2-consultant-report-diffing — route — router picked gemini from ['codex', 'cursor', 'gemini']
+- 2026-09-21T14:41:41Z — B1-citefix-R2-consultant-report-diffing — claimed by driver (agent gemini)
+- 2026-09-21T14:41:42Z — mirror — deferred — Ready#583 exact-head sync review; publication resumes by 2026-09-21T15:46:44+00:00; local work continues
+- 2026-09-21T14:43:54Z — B1-citefix-R2-consultant-report-diffing — done — gemini produced 2325 words at artifacts/research/R2-consultant-report-diffing.md in 129s
+- 2026-09-21T14:43:54Z — mirror — deferred — Ready#583 exact-head sync review; publication resumes by 2026-09-21T15:46:44+00:00; local work continues
+- 2026-09-21T14:58:57Z — mirror — deferred — Ready#583 exact-head sync review; publication resumes by 2026-09-21T16:55:23+00:00; local work continues
+- 2026-09-21T15:12:23Z — mirror — deferred — Ready#583 exact-head sync review; publication resumes by 2026-09-21T16:55:23+00:00; local work continues
+- 2026-09-21T15:14:00Z — mirror — deferred — Ready#583 exact-head sync review; publication resumes by 2026-09-21T16:55:23+00:00; local work continues
 
 ## Questions
 
