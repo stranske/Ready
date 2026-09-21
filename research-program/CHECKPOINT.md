@@ -1473,3 +1473,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-20T21:12:08Z — D4-verify-merged-2026-09-20T20 — claimed by codex (agent cursor)
 ## 2026-09-20T21:18:24Z — D-audit-Manager-Database--2026-09-20T20-25-22Z — done — cursor produced 626 words at artifacts/audits/Manager-Database-2026-09-20.md in 404s
 ## 2026-09-20T21:18:48Z — D4-verify-merged-2026-09-20T20 — done — Verified 20 recent merged PRs: 17 delivered, two missing deliberate-break evidence with follow-ups filed, and one dependency chore excluded.
+## 2026-09-21T03:11:45Z — verify — enqueued D4-verify-merged-2026-09-21T03
+## 2026-09-21T03:11:45Z — D4-verify-merged-2026-09-21T03 — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-21T03:11:45Z — D4-verify-merged-2026-09-21T03 — claimed by codex (agent cursor)
