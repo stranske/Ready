@@ -215,6 +215,37 @@ def test_incomplete_private_key_fails_before_any_write(tmp_path, monkeypatch, su
     assert invalid.read_text() == content
 
 
+@pytest.mark.parametrize("suffix", [".txt", ".json", ".jsonl"])
+def test_documented_private_key_fixture_can_survive_publication_copy(tmp_path, suffix):
+    path = tmp_path / ("historical-evidence" + suffix)
+    content = "-----BEGIN PRIVATE KEY-----\nSYNTHETIC_TEST_MARKER"
+    if suffix != ".txt":
+        content = json.dumps({"fixture": content})
+    path.write_text(content)
+    allowlist = tmp_path / ".publication-allow"
+    allowlist.write_text(
+        f"{path.name}:private-key # Reviewed synthetic historical evidence.\n"
+    )
+
+    counts = prepare.prepare_copy(tmp_path, allowlist)
+
+    assert counts["files_redacted"] == 0
+    assert path.read_text() == content
+    assert guard.scan(tmp_path, allowlist) == 0
+
+
+def test_invalid_publication_allowlist_fails_before_any_write(tmp_path):
+    path = tmp_path / "evidence.txt"
+    path.write_text("clones/example")
+    allowlist = tmp_path / ".publication-allow"
+    allowlist.write_text("evidence.txt:private-key\n")
+
+    with pytest.raises(ValueError, match="allowlist"):
+        prepare.prepare_copy(tmp_path, allowlist)
+
+    assert path.read_text() == "clones/example"
+
+
 @pytest.mark.parametrize("suffix", [".json", ".jsonl"])
 @pytest.mark.parametrize(
     "number",
