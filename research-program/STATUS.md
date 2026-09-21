@@ -1,9 +1,9 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-21T20:41:07Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-21T20:57:58Z)
 
-Units: 157 — claimed 1, done 151, failed 3, queued 2
+Units: 157 — done 152, failed 3, queued 2
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
-Orchestrator evidence (30d): offload runs 194, bound to a research round 149, scored 149 (PASS 106, FAIL 43, infra 19) — codex 26/26 (P9 F17 I6), cursor 63/96 (P57 F6 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
+Orchestrator evidence (30d): offload runs 195, bound to a research round 150, scored 150 (PASS 107, FAIL 43, infra 19) — codex 26/26 (P9 F17 I6), cursor 64/97 (P58 F6 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
 Claude conservation: off (weekly window available)
 Owner inbox: https://github.com/stranske/Ready/issues/553
 
@@ -115,7 +115,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Counter_Risk--2026-09-13T18-41-41Z | D | D | done | codex | codex | Audit stranske/Counter_Risk and file issues (supply 1 <= 2) |
 | D-audit-Counter_Risk--2026-09-14T06-49-49Z | D | D | failed | codex |  | Audit stranske/Counter_Risk and file issues (supply 1 <= 2) |
 | D-audit-Counter_Risk--2026-09-20T20-25-21Z | D | D | done | cursor | driver | Audit stranske/Counter_Risk and file issues (supply 2 <= 2) |
-| D-audit-Counter_Risk--2026-09-21T20-41-04Z | D | D | claimed | cursor | driver | Audit stranske/Counter_Risk and file issues (supply 2 <= 3) |
+| D-audit-Counter_Risk--2026-09-21T20-41-04Z | D | D | done | cursor | driver | Audit stranske/Counter_Risk and file issues (supply 2 <= 3) |
 | D-audit-Deliverable-Render--2026-09-20T08-24-39Z | D | D | failed | codex |  | Audit stranske/Deliverable-Render and file issues (supply 1 <= 2) |
 | D-audit-Deliverable-Render--2026-09-20T20-25-18Z | D | D | done | cursor | driver | Audit stranske/Deliverable-Render and file issues (supply 1 <= 2) |
 | D-audit-Deliverable-Render--2026-09-21T08-38-08Z | D | D | done | cursor | driver | Audit stranske/Deliverable-Render and file issues (supply 2 <= 2) |
@@ -169,7 +169,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-21T14:58:57Z — mirror — deferred — Ready#583 exact-head sync review; publication resumes by 2026-09-21T16:55:23+00:00; local work continues
 - 2026-09-21T15:12:23Z — mirror — deferred — Ready#583 exact-head sync review; publication resumes by 2026-09-21T16:55:23+00:00; local work continues
 - 2026-09-21T15:14:00Z — mirror — deferred — Ready#583 exact-head sync review; publication resumes by 2026-09-21T16:55:23+00:00; local work continues
 - 2026-09-21T20:22:05Z — unblock — enqueued D3-unblock-sweep-2026-09-21T20
@@ -181,6 +180,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-21T20:41:04Z — refill — Manager-Database: open=1 <= 2 → audit queued
 - 2026-09-21T20:41:07Z — D-audit-Counter_Risk--2026-09-21T20-41-04Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-21T20:41:07Z — D-audit-Counter_Risk--2026-09-21T20-41-04Z — claimed by driver (agent cursor)
+- 2026-09-21T20:57:58Z — D-audit-Counter_Risk--2026-09-21T20-41-04Z — done — cursor produced 415 words at artifacts/audits/Counter_Risk-2026-09-21.md in 984s
 
 ## Questions
 
