@@ -1,0 +1,676 @@
+{
+  "issues": [
+    {
+      "body": "## Why\n\nCurrent latent break on tip 54e4f406: `get_conviction_scores` in `api/signals.py:443-453` declares `min_conviction_pct: float = Query(0.0, ge=0.0)`, which accepts positive infinity, and the SQL filter at `api/signals.py:317` compares with `>=` without a finite guard. Verified: `GET /api/signals/conviction/1?min_conviction_pct=inf` returns HTTP 200 with an empty list instead of HTTP 422. Closed #1623 fixed non-finite JSON output serialization; this input boundary remains open.\n\n## Scope\n\nQuery-parameter validation for conviction score list routes in `api/signals.py`.\n\n## Non-Goals\n\nDo not change conviction scoring formulas in `etl/conviction_flow.py` or alert rule parsing covered by closed #1299. Scaffold-only completion does NOT count: documenting infinity as unsupported without rejecting it at the API boundary is a failure of this issue.\n\n## Tasks\n\n- [ ] Add a finite upper bound and `math.isfinite` validation for `min_conviction_pct` on `get_conviction_scores` in `api/signals.py:443-453`, matching the finite guards used elsewhere in the signals module.\n- [ ] Return HTTP 422 with a field error when `min_conviction_pct` is NaN, infinity, or above 100.\n- [ ] Add `tests/test_signals_api.py::test_conviction_scores_rejects_non_finite_min_conviction_pct` covering `inf` and a valid finite control case.\n\n## Acceptance Criteria\n\n- Named test: `tests/test_signals_api.py::test_conviction_scores_rejects_non_finite_min_conviction_pct` must pass and assert HTTP 422 for `min_conviction_pct=inf`.\n- Deliberate-break \u2192 revert: restore the bare `Query(0.0, ge=0.0)` declaration; the named test must fail because infinity returns HTTP 200; revert and rerun pytest tests/test_signals_api.py.\n\n## Implementation Notes\n\nNaN already returns HTTP 422 via Pydantic; infinity is the inconsistent case. The named test should also assert a finite value such as `0.5` still returns HTTP 200.\n",
+      "labels": [
+        {
+          "id": "LA_kwDOO4LcjM8AAAACCXfJHw",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        },
+        {
+          "id": "LA_kwDOO4LcjM8AAAACg4nSog",
+          "name": "priority:normal",
+          "description": "Normal-priority weekly repo-review work",
+          "color": "fbca04"
+        },
+        {
+          "id": "LA_kwDOO4LcjM8AAAACpMAUyQ",
+          "name": "testing",
+          "description": "Tests or coverage work",
+          "color": "5319E7"
+        }
+      ],
+      "number": 1699,
+      "title": "[P2] Conviction scores API accepts min_conviction_pct=inf",
+      "updatedAt": "2026-09-20T21:16:28Z",
+      "url": "https://github.com/stranske/Manager-Database/issues/1699"
+    },
+    {
+      "body": "## Why\n\nCurrent break on tip 54e4f406: product contract MDB-2 expects `GET /managers` name/search filtering (`docs/PRODUCT_CONTRACT.md:14-22`), but `list_managers` in `api/managers.py:983-1007` accepts only `jurisdiction` and `tag`, and `_count_managers` / `_fetch_managers` in `api/managers.py:498-549` implement no text predicates. Verified: after creating managers \"OnlyOne\" and \"Other\", `GET /managers?search=OnlyOne` returns `total=2` with both names.\n\n## Scope\n\nPaginated manager list filtering for optional `search` and `name` query parameters on the REST route and its OpenAPI schema.\n\n## Non-Goals\n\nDo not change universal search at `api/search.py` or remove the existing jurisdiction and tag filters. Scaffold-only completion does NOT count: documenting ignored parameters without SQL filtering is a failure of this issue.\n\n## Tasks\n\n- [ ] Add optional `search` and `name` query parameters to `list_managers` in `api/managers.py:983-1007` and thread them through `_count_managers` and `_fetch_managers` in `api/managers.py:498-549`.\n- [ ] Implement case-insensitive substring matching on `managers.name` and alias JSON for `search`, and exact or prefix match for `name`, with dialect-portable SQL consistent with the existing jurisdiction and tag filters.\n- [ ] Extend `tests/test_manager_api.py` with two-manager fixtures asserting `search` and `name` each return one row while the unfiltered list returns two.\n\n## Acceptance Criteria\n\n- Named test: `tests/test_manager_api.py::test_list_managers_search_and_name_filters` must pass for both query parameters.\n- Deliberate-break \u2192 revert: drop the new WHERE clauses in `api/managers.py:498-549`; the named test must fail because both filters return two managers; revert and rerun pytest tests/test_manager_api.py.\n\n## Implementation Notes\n\nUniversal search already finds managers by text via `GET /api/search`, but the list route advertises pagination filters in the product contract and currently ignores the parameters entirely.\n",
+      "labels": [
+        {
+          "id": "LA_kwDOO4LcjM8AAAACCXfJHw",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        },
+        {
+          "id": "LA_kwDOO4LcjM8AAAACg4nSog",
+          "name": "priority:normal",
+          "description": "Normal-priority weekly repo-review work",
+          "color": "fbca04"
+        },
+        {
+          "id": "LA_kwDOO4LcjM8AAAACpMAUyQ",
+          "name": "testing",
+          "description": "Tests or coverage work",
+          "color": "5319E7"
+        }
+      ],
+      "number": 1698,
+      "title": "[P2] GET /managers ignores search and name query filters",
+      "updatedAt": "2026-09-20T21:16:27Z",
+      "url": "https://github.com/stranske/Manager-Database/issues/1698"
+    },
+    {
+      "body": "## Why\n\nCurrent break on tip 54e4f406: `DELETE /managers/{id}` returns 204 while related filings and documents remain, so the advertised one-click GDPR erasure path in `Manager-Intel-Platform.md:104` does not remove manager intelligence data. `api/managers.py:488-495` deletes only the `managers` row; `schema.sql:29-31` defines `filings.manager_id` with a foreign key and no `ON DELETE CASCADE`, and `documents` rows are likewise left behind (verified live: after DELETE, `filings=1` and `documents=1` remain).\n\n## Scope\n\nManager deletion semantics across SQLite and Postgres: cascade or explicitly purge filings, holdings, documents, embeddings, and object-storage keys tied to the manager before returning success.\n\n## Non-Goals\n\nDo not remove the DELETE route or change list/create manager validation. Scaffold-only completion does NOT count: returning 204 while any manager-linked filing, document, or blob remains is a failure of this issue.\n\n## Tasks\n\n- [ ] Replace the single-row delete in `api/managers.py:488-495` with an ordered cascade that removes dependent filings, holdings, documents, embeddings, and MinIO blobs referenced by those rows before deleting the manager record.\n- [ ] Map every foreign-key child of `managers` in `schema.sql` and ensure each is covered by the cascade or an explicit purge step with dialect-portable SQL via `adapters/base.py`.\n- [ ] Add `tests/test_manager_api.py` coverage that seeds a manager plus filing and document rows, calls DELETE, and asserts zero remaining rows in each dependent table.\n\n## Acceptance Criteria\n\n- Named test: `tests/test_manager_api.py::test_delete_manager_cascades_related_records` must pass and assert zero filings and documents remain after a successful DELETE.\n- Deliberate-break \u2192 revert: restore the single-row delete in `api/managers.py:488-495` so dependent rows survive; the named test must fail; revert and rerun pytest.\n\n## Implementation Notes\n\nReproduction on audited tip: create manager id 1 with one filing and one document; `DELETE /managers/1` \u2192 204; SQLite still contains the filing and document rows. On Postgres with enforced FKs the same call fails instead of erasing data\u2014both outcomes violate the product contract.\n",
+      "labels": [
+        {
+          "id": "LA_kwDOO4LcjM8AAAACCXfJHw",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        },
+        {
+          "id": "LA_kwDOO4LcjM8AAAACg4nSYg",
+          "name": "priority:high",
+          "description": "High-priority weekly repo-review work",
+          "color": "b60205"
+        },
+        {
+          "id": "LA_kwDOO4LcjM8AAAACpMAUyQ",
+          "name": "testing",
+          "description": "Tests or coverage work",
+          "color": "5319E7"
+        }
+      ],
+      "number": 1696,
+      "title": "[P1] DELETE /managers/{id} leaves filings and documents after 204 success",
+      "updatedAt": "2026-09-20T21:16:25Z",
+      "url": "https://github.com/stranske/Manager-Database/issues/1696"
+    },
+    {
+      "body": "## Why (verified evidence)\n\nPost-merge verification (D4-verify-merged-2026-09-16T02) of stranske/Manager-Database#1678 (merge `25e497f834e10333b7f7f830bbe8c57c3ea7b974`) against #1669 found junction-table logic and SQLite tests landed, but Postgres acceptance is opt-in only.\n\n- Migration `alembic/versions/022_document_managers.py`, `embeddings.py` association inserts, and SQLite tests are present in squash diff.\n- `tests/test_document_managers_migration.py` Postgres leg uses `pytest.skip` unless `DOCUMENT_TEST_POSTGRES_URL` is set \u2014 issue #1669 acceptance requires disposable Postgres verification in CI, not skip-by-default.\n\n## Scope\n\nWire the existing Postgres service in `.github/workflows/ci.yml` to run document-manager association tests without manual env setup.\n\n## Tasks\n\n- [ ] In `.github/workflows/ci.yml`, extend the `postgres-integration` job to export `DOCUMENT_TEST_POSTGRES_URL` from the existing `MGRDB_PG_TEST_URL` service and run `pytest tests/test_document_managers_migration.py -k document_association -v`.\n- [ ] In `tests/test_embeddings.py::test_shared_document_preserves_each_manager`, ensure the shared-document regression still passes on SQLite and is included in the Gate pytest selection alongside `tests/test_document_managers_migration.py`.\n\n## Acceptance Criteria\n\n- [ ] Named test: `pytest tests/test_document_managers_migration.py -k document_association` passes on Gate with Postgres available (no skip of postgres leg).\n- [ ] Deliberate-break \u2192 revert: disable `document_managers` insert in `embeddings.py` \u2192 shared-document test FAILS on Postgres \u2192 restore \u2192 passes.\n\n## Non-Goals\n\n- Do NOT remove SQLite coverage from #1678.\n- No scaffolding / TODO-only changes.\n\n_Surfaced by D4-verify-merged-2026-09-16T02; verified against squash diff `Manager-Database-1678.diff` and issue #1669. Related: #1669, merged PR #1678._",
+      "labels": [
+        {
+          "id": "LA_kwDOO4LcjM8AAAACUHujJQ",
+          "name": "agents:formatted",
+          "description": "Issue has been formatted to AGENT_ISSUE_TEMPLATE",
+          "color": "1D76DB"
+        }
+      ],
+      "number": 1682,
+      "title": "[P1] Document-manager associations: run Postgres acceptance leg in CI",
+      "updatedAt": "2026-09-16T10:23:34Z",
+      "url": "https://github.com/stranske/Manager-Database/issues/1682"
+    },
+    {
+      "body": "This issue lists Renovate updates and detected dependencies. Read the [Dependency Dashboard](https://docs.renovatebot.com/key-concepts/dashboard/) docs to learn more.<br>[View this repository on the Mend.io Web Portal](https://developer.mend.io/github/stranske/Manager-Database).\n\n## Repository Problems\n\nThese problems occurred while renovating this repository. [View logs](https://developer.mend.io//github/stranske/Manager-Database).\n\n - \u26a0\ufe0f WARN: pip-compile: dependency not found in lock file\n\n## Awaiting Schedule\n\nThe following updates are awaiting their schedule. To get an update now, click on a checkbox below.\n\n - [ ] <!-- unschedule-branch=renovate/non-major-updates -->fix(deps): update non-major updates (`edgartools`, `streamlit`)\n - [ ] <!-- unschedule-branch=renovate/lock-file-maintenance-weekly-lock-file-maintenance -->chore(deps): lock file maintenance\n - [ ] <!-- create-all-awaiting-schedule-prs -->\ud83d\udd10 **Create all awaiting schedule PRs at once** \ud83d\udd10\n\n## PR Closed (Blocked)\n\nThe following updates are blocked by an existing closed PR. To recreate the PR, click on a checkbox below.\n\n - [ ] <!-- recreate-branch=renovate/actions-setup-python-7.x -->[chore(deps): update actions/setup-python action to v7](../pull/1441)\n\n## Detected Dependencies\n\n<details><summary>docker-compose (1)</summary>\n<blockquote>\n\n<details><summary>docker-compose.yml</summary>\n\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>dockerfile (3)</summary>\n<blockquote>\n\n<details><summary>api/Dockerfile (1)</summary>\n\n - `python 3.14-slim`\n\n</details>\n\n<details><summary>etl/Dockerfile (1)</summary>\n\n - `python 3.14-slim`\n\n</details>\n\n<details><summary>ui/Dockerfile (1)</summary>\n\n - `python 3.14-slim`\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>github-actions (39)</summary>\n<blockquote>\n\n<details><summary>.github/actions/agent-run-base/action.yml</summary>\n\n\n</details>\n\n<details><summary>.github/actions/artifact-cache/action.yml</summary>\n\n\n</details>\n\n<details><summary>.github/actions/resolve-default-branch/action.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-71-codex-belt-dispatcher.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-72-codex-belt-worker.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-73-codex-belt-conveyor.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-80-pr-event-hub.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-81-gate-followups.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-auto-label.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-auto-pilot.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-autofix-dispatcher.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-capability-check.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-decompose.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-dedup.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-guard.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-issue-format-guard.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-issue-intake.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-issue-optimizer.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-keepalive-loop-reporter.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-keepalive-sweep.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-pr-health.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-verifier.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-verify-to-new-pr.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-weekly-metrics.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/autofix.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/backplane-conformance.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/ci.yml (14)</summary>\n\n - `stranske/Workflows main`\n - `actions/checkout v7`\n - `actions/setup-python v6` \u2192 [Updates: `v7`]\n - `actions/checkout v7`\n - `actions/setup-python v6` \u2192 [Updates: `v7`]\n - `actions/checkout v7`\n - `actions/setup-python v6` \u2192 [Updates: `v7`]\n - `actions/checkout v7@3d3c42e5aac5ba805825da76410c181273ba90b1`\n - `actions/setup-python v6@ece7cb06caefa5fff74198d8649806c4678c61a1` \u2192 [Updates: `v7`]\n - `actions/upload-artifact v7@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a`\n - `python 3.14`\n - `python 3.14`\n - `python 3.14`\n - `python 3.14`\n\n</details>\n\n<details><summary>.github/workflows/cross-repo-smoke.yml (1)</summary>\n\n - `stranske/Workflows main`\n\n</details>\n\n<details><summary>.github/workflows/database-snapshot.yml (3)</summary>\n\n - `actions/checkout v7`\n - `actions/setup-python v6` \u2192 [Updates: `v7`]\n - `python 3.14`\n\n</details>\n\n<details><summary>.github/workflows/list-llm-models.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/maint-76-claude-code-review.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/maint-87-docs-drift-fix-agent.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/maint-coverage-guard.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/maint-dependabot-auto-lock.yml (3)</summary>\n\n - `actions/checkout v7`\n - `actions/setup-python v6@ece7cb06caefa5fff74198d8649806c4678c61a1` \u2192 [Updates: `v7`]\n - `python 3.14`\n\n</details>\n\n<details><summary>.github/workflows/nightly.yml (3)</summary>\n\n - `actions/checkout v7`\n - `actions/setup-python v6` \u2192 [Updates: `v7`]\n - `python 3.14`\n\n</details>\n\n<details><summary>.github/workflows/pr-00-gate.yml (4)</summary>\n\n - `actions/checkout v7`\n - `stranske/Workflows main`\n - `actions/checkout v7`\n - `actions/github-script v9.0.0`\n\n</details>\n\n<details><summary>.github/workflows/pr-46-dependency-repair-contract.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/reusable-pr-context.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/schema-idempotence.yml (1)</summary>\n\n - `actions/checkout v7@3d3c42e5aac5ba805825da76410c181273ba90b1`\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>npm (1)</summary>\n<blockquote>\n\n<details><summary>.github/scripts/package.json</summary>\n\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>pip-compile (1)</summary>\n<blockquote>\n\n<details><summary>pyproject.toml (18)</summary>\n\n - `python >=3.12`\n - `edgartools >=5.44,<5.45` \u2192 [Updates: `>=5.58,<5.59`]\n - `jsonschema >=4.26.0,<4.27.0`\n - `streamlit ==1.60.0` \u2192 [Updates: `==1.64.0`]\n - `streamlit-authenticator ==0.4.2`\n - `langchain >=1.2,<2.0`\n - `langchain-core >=1.2,<2.0`\n - `langchain-openai >=0.3,<2.0`\n - `langchain-anthropic >=0.3,<2.0`\n - `langsmith >=0.7.30,<1.0`\n - `extra-streamlit-components ==0.1.81`\n - `langchain >=1.2,<2.0`\n - `langchain-core >=1.2,<2.0`\n - `langchain-openai >=0.3,<2.0`\n - `langchain-anthropic >=0.3,<2.0`\n - `langsmith >=0.7.30,<1.0`\n - `pytest-regressions >=2.8`\n - `setuptools >=82.0.1`\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>pip_requirements (2)</summary>\n<blockquote>\n\n<details><summary>requirements.txt (8)</summary>\n\n - `edgartools >=5.44,<5.45` \u2192 [Updates: `>=5.58,<5.59`]\n - `streamlit ==1.60.0` \u2192 [Updates: `==1.64.0`]\n - `streamlit-authenticator ==0.4.2`\n - `langchain >=1.2,<2.0`\n - `langchain-core >=1.2,<2.0`\n - `langchain-openai >=0.3,<2.0`\n - `langchain-anthropic >=0.3,<2.0`\n - `langsmith >=0.7.30,<1.0`\n\n</details>\n\n<details><summary>tools/requirements-llm.txt</summary>\n\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>poetry (1)</summary>\n<blockquote>\n\n<details><summary>pyproject.toml (11)</summary>\n\n - `edgartools >=5.44,<5.45` \u2192 [Updates: `>=5.58,<5.59`]\n - `jsonschema >=4.26.0,<4.27.0`\n - `streamlit ==1.60.0` \u2192 [Updates: `==1.64.0`]\n - `streamlit-authenticator ==0.4.2`\n - `langchain >=1.2,<2.0`\n - `langchain-core >=1.2,<2.0`\n - `langchain-openai >=0.3,<2.0`\n - `langchain-anthropic >=0.3,<2.0`\n - `langsmith >=0.7.30,<1.0`\n - `extra-streamlit-components ==0.1.81`\n - `pytest-regressions >=2.8`\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>renovate-config (1)</summary>\n<blockquote>\n\n<details><summary>.github/renovate.json</summary>\n\n\n</details>\n\n</blockquote>\n</details>\n\n---\n\n- [ ] <!-- manual job -->Check this box to trigger a request for Renovate to run again on this repository\n\n",
+      "labels": [
+        {
+          "id": "LA_kwDOO4LcjM8AAAACxDIKDg",
+          "name": "tracker:durable",
+          "description": "Permanently-open tracker; excluded from open-issue backlog counts",
+          "color": "c5def5"
+        }
+      ],
+      "number": 1164,
+      "title": "Dependency Dashboard",
+      "updatedAt": "2026-09-21T01:39:49Z",
+      "url": "https://github.com/stranske/Manager-Database/issues/1164"
+    },
+    {
+      "body": "Tracking issue for weekly agent workflow metrics.\n\n# Agent Metrics Summary\n\nGenerated: 2026-04-27T07:03:19Z\nRecords: 63 (keepalive 40, autofix 0, verifier 1, terminal dispositions 21, verifier follow-up ledgers 1, codex CLI freshness 0, autopilot 0, unknown 0)\nParse errors: 0\nRange: 2026-04-27T03:20:16.888000Z to 2026-04-27T06:45:52.355000Z\n\n## Keepalive\n- Runs: 40\n- PRs: 6\n- Avg iterations: 0.0\n- Stop reasons: missing-agent-label (20)\n- Actions: wait (20)\n- Gate conclusions: cancelled (9), success (7)\n- Tasks complete rate: 0.0% (0/40)\n\n## Autofix\n- Attempts: 0\n- PRs: 0\n- Fixes applied: n/a\n- Trigger reasons: n/a\n- Gate results after: n/a\n\n## Verifier\n- Runs: 1\n- PRs: 7\n- Verdicts: CONCERNS (1), concerns (1)\n- Issues created: 0\n- Avg acceptance criteria: 6.0\n- Terminal disposition records: 21\n- Terminal dispositions: wrapper-skipped (20), needs-human (1)\n- Terminal disposition sources: review-thread:920 (1), review-thread:24974899837 (1), review-thread:921 (1), review-thread:24975254372 (1), review-thread:922 (1), review-thread:24975940138 (1), review-thread:24975941597 (1), review-thread:24975991984 (1), review-thread:923 (1), review-thread:24976250651 (1), review-thread:24976298404 (1), review-thread:24976425920 (1), review-thread:24976452850 (1), review-thread:924 (1), review-thread:24978034550 (1), review-thread:24978090691 (1), review-thread:925 (1), review-thread:24980327187 (1), review-thread:24980443575 (1), review-thread:926 (1), pull-request:923 (1)\n- Terminal artifact families: review-thread-terminal-disposition: selected (20/81), verifier-terminal-disposition: selected (1/1)\n- Missing terminal artifact families: none\n- Verifier follow-up ledger records: 1\n- Verifier follow-up ledger dispositions: needs-human (1)\n- Verifier follow-up ledger PRs: 1\n- Verifier follow-up issues linked: 0\n- Verifier follow-up needs-human records: 1\n- Verifier follow-up avg chain depth: 0.0\n- Verifier follow-up max chain depth: 0\n- Verifier follow-up policy records: 1\n- Verifier follow-up policy actions: needs-human (1)\n- Verifier follow-up policy triggers: verifier-concerns (1)\n- Verifier follow-up depth-limit records: 0\n- Verifier models: gpt-5.5 (2)\n- Verifier CLI versions: codex-cli 0.125.0 (2)\n- Unsupported verifier models: n/a\n- Unsupported model dispositions: n/a\n- Missing verifier model metadata: n/a\n- Legacy missing verifier model metadata: n/a\n- Model selection reasons: default (2)\n- Verifier modes: compare (2)\n\n## Codex CLI Freshness\n- Records: 0\n- Statuses: n/a\n- Packages: n/a\n- Pinned versions: n/a\n- Latest versions: n/a\n- Outdated records: 0\n- Latest unavailable records: 0\n- Max version delta: major 0, minor 0, patch 0\n- Update targets: n/a\n\n## Weekly Metrics Artifact Selection\n\n- Schema: workflows-weekly-metrics-artifact-selection/v1\n- Status: pass\n- Lookback days: 14\n- Scan cap: 5 pages x 100 artifacts\n- Priority producer scan cap: 10 runs per source workflow\n- Download cap: 80 total, 20 per family\n- Scanned artifacts: 500\n- Candidate artifacts: 335\n- Selected artifacts: 62\n- Missing priority families: codex-cli-freshness, bot-comment-auth-coverage-wrapper, bot-comment-auth-coverage-reusable, pr-source-context\n- Ignored: 0 old, 0 expired, 165 non-metrics, 273 over family cap, 0 over total cap\n\n| Artifact family | Candidates | Selected |\n|-----------------|------------|----------|\n| agents-autofix-metrics | 135 | 20 |\n| agents-verifier-metrics | 1 | 1 |\n| keepalive-metrics | 117 | 20 |\n| review-thread-terminal-disposition | 81 | 20 |\n| verifier-terminal-disposition | 1 | 1 |\n\n| Priority family | Status | Candidates | Selected artifact |\n|-----------------|--------|------------|-------------------|\n| codex-cli-freshness | missing | 0 | none |\n| verifier-terminal-disposition | selected | 1 | verifier-terminal-disposition-24976250601 |\n| review-thread-terminal-disposition | selected | 81 | review-thread-terminal-disposition-24980566098 |\n| bot-comment-auth-coverage-wrapper | missing | 0 | none |\n| bot-comment-auth-coverage-reusable | missing | 0 | none |\n| pr-source-context | missing | 0 | none |\n\n## Weekly Metrics Artifact Downloads\n\n- Schema: workflows-weekly-metrics-artifact-download-manifest/v1\n- Status: pass\n- Selected artifacts: 62\n- Downloads: 62 passed, 0 failed\n- Unzip: 62 passed, 0 failed, 0 skipped\n\n| Artifact | ID | Download | Unzip | Path |\n|----------|----|----------|-------|------|\n| verifier-terminal-disposition-24976250601 | 6653222101 | pass | pass | artifacts/verifier-terminal-disposition-24976250601/6653222101 |\n| review-thread-terminal-disposition-24980566098 | 6654675663 | pass | pass | artifacts/review-thread-terminal-disposition-24980566098/6654675663 |\n| keepalive-metrics | 6654682547 | pass | pass | artifacts/keepalive-metrics/6654682547 |\n| agents-autofix-metrics | 6654674995 | pass | pass | artifacts/agents-autofix-metrics/6654674995 |\n| keepalive-metrics | 6654645301 | pass | pass | artifacts/keepalive-metrics/6654645301 |\n| agents-autofix-metrics | 6654639279 | pass | pass | artifacts/agents-autofix-metrics/6654639279 |\n| review-thread-terminal-disposition-24980443575 | 6654634535 | pass | pass | artifacts/review-thread-terminal-disposition-24980443575/6654634535 |\n| keepalive-metrics | 6654630127 | pass | pass | artifacts/keepalive-metrics/6654630127 |\n| agents-autofix-metrics | 6654619681 | pass | pass | artifacts/agents-autofix-metrics/6654619681 |\n| review-thread-terminal-disposition-24980327187 | 6654615836 | pass | pass | artifacts/review-thread-terminal-disposition-24980327187/6654615836 |\n| agents-autofix-metrics | 6654610936 | pass | pass | artifacts/agents-autofix-metrics/6654610936 |\n| keepalive-metrics | 6653827499 | pass | pass | artifacts/keepalive-metrics/6653827499 |\n| review-thread-terminal-disposition-24978163910 | 6653825402 | pass | pass | artifacts/review-thread-terminal-disposition-24978163910/6653825402 |\n| agents-autofix-metrics | 6653822560 | pass | pass | artifacts/agents-autofix-metrics/6653822560 |\n| keepalive-metrics | 6653815621 | pass | pass | artifacts/keepalive-metrics/6653815621 |\n| agents-autofix-metrics | 6653813907 | pass | pass | artifacts/agents-autofix-metrics/6653813907 |\n| review-thread-terminal-disposition-24978090691 | 6653799378 | pass | pass | artifacts/review-thread-terminal-disposition-24978090691/6653799378 |\n| agents-autofix-metrics | 6653797228 | pass | pass | artifacts/agents-autofix-metrics/6653797228 |\n| keepalive-metrics | 6653794545 | pass | pass | artifacts/keepalive-metrics/6653794545 |\n| review-thread-terminal-disposition-24978034550 | 6653783684 | pass | pass | artifacts/review-thread-terminal-disposition-24978034550/6653783684 |\n| agents-autofix-metrics | 6653777259 | pass | pass | artifacts/agents-autofix-metrics/6653777259 |\n| keepalive-metrics | 6653620509 | pass | pass | artifacts/keepalive-metrics/6653620509 |\n| keepalive-metrics | 6653296062 | pass | pass | artifacts/keepalive-metrics/6653296062 |\n| review-thread-terminal-disposition-24976539789 | 6653292645 | pass | pass | artifacts/review-thread-terminal-disposition-24976539789/6653292645 |\n| agents-autofix-metrics | 6653291966 | pass | pass | artifacts/agents-autofix-metrics/6653291966 |\n| keepalive-metrics | 6653281287 | pass | pass | artifacts/keepalive-metrics/6653281287 |\n| review-thread-terminal-disposition-24976452850 | 6653270010 | pass | pass | artifacts/review-thread-terminal-disposition-24976452850/6653270010 |\n| keepalive-metrics | 6653267604 | pass | pass | artifacts/keepalive-metrics/6653267604 |\n| agents-autofix-metrics | 6653267042 | pass | pass | artifacts/agents-autofix-metrics/6653267042 |\n| agents-autofix-metrics | 6653259631 | pass | pass | artifacts/agents-autofix-metrics/6653259631 |\n| review-thread-terminal-disposition-24976425920 | 6653258809 | pass | pass | artifacts/review-thread-terminal-disposition-24976425920/6653258809 |\n| agents-autofix-metrics | 6653253922 | pass | pass | artifacts/agents-autofix-metrics/6653253922 |\n| agents-verifier-metrics | 6653222233 | pass | pass | artifacts/agents-verifier-metrics/6653222233 |\n| keepalive-metrics | 6653212713 | pass | pass | artifacts/keepalive-metrics/6653212713 |\n| review-thread-terminal-disposition-24976298404 | 6653209905 | pass | pass | artifacts/review-thread-terminal-disposition-24976298404/6653209905 |\n| agents-autofix-metrics | 6653209902 | pass | pass | artifacts/agents-autofix-metrics/6653209902 |\n| keepalive-metrics | 6653195729 | pass | pass | artifacts/keepalive-metrics/6653195729 |\n| review-thread-terminal-disposition-24976250651 | 6653193091 | pass | pass | artifacts/review-thread-terminal-disposition-24976250651/6653193091 |\n| agents-autofix-metrics | 6653192729 | pass | pass | artifacts/agents-autofix-metrics/6653192729 |\n| review-thread-terminal-disposition-24975940138 | 6653171085 | pass | pass | artifacts/review-thread-terminal-disposition-24975940138/6653171085 |\n| keepalive-metrics | 6653136617 | pass | pass | artifacts/keepalive-metrics/6653136617 |\n| agents-autofix-metrics | 6653135790 | pass | pass | artifacts/agents-autofix-metrics/6653135790 |\n| review-thread-terminal-disposition-24976078494 | 6653135135 | pass | pass | artifacts/review-thread-terminal-disposition-24976078494/6653135135 |\n| keepalive-metrics | 6653127936 | pass | pass | artifacts/keepalive-metrics/6653127936 |\n| keepalive-metrics | 6653120803 | pass | pass | artifacts/keepalive-metrics/6653120803 |\n| agents-autofix-metrics | 6653113695 | pass | pass | artifacts/agents-autofix-metrics/6653113695 |\n| review-thread-terminal-disposition-24975991984 | 6653112289 | pass | pass | artifacts/review-thread-terminal-disposition-24975991984/6653112289 |\n| keepalive-metrics | 6653108482 | pass | pass | artifacts/keepalive-metrics/6653108482 |\n| agents-autofix-metrics | 6653103646 | pass | pass | artifacts/agents-autofix-metrics/6653103646 |\n| review-thread-terminal-disposition-24975941597 | 6653101053 | pass | pass | artifacts/review-thread-terminal-disposition-24975941597/6653101053 |\n| agents-autofix-metrics | 6653097123 | pass | pass | artifacts/agents-autofix-metrics/6653097123 |\n| keepalive-metrics | 6652914167 | pass | pass | artifacts/keepalive-metrics/6652914167 |\n| review-thread-terminal-disposition-24975342859 | 6652912315 | pass | pass | artifacts/review-thread-terminal-disposition-24975342859/6652912315 |\n| agents-autofix-metrics | 6652911294 | pass | pass | artifacts/agents-autofix-metrics/6652911294 |\n| keepalive-metrics | 6652904564 | pass | pass | artifacts/keepalive-metrics/6652904564 |\n| keepalive-metrics | 6652893737 | pass | pass | artifacts/keepalive-metrics/6652893737 |\n| agents-autofix-metrics | 6652890133 | pass | pass | artifacts/agents-autofix-metrics/6652890133 |\n| review-thread-terminal-disposition-24975254372 | 6652886410 | pass | pass | artifacts/review-thread-terminal-disposition-24975254372/6652886410 |\n| keepalive-metrics | 6652796189 | pass | pass | artifacts/keepalive-metrics/6652796189 |\n| review-thread-terminal-disposition-24974977631 | 6652792410 | pass | pass | artifacts/review-thread-terminal-disposition-24974977631/6652792410 |\n| review-thread-terminal-disposition-24974899837 | 6652780097 | pass | pass | artifacts/review-thread-terminal-disposition-24974899837/6652780097 |\n| review-thread-terminal-disposition-24974895867 | 6652776472 | pass | pass | artifacts/review-thread-terminal-disposition-24974895867/6652776472 |\n\n## Terminal Disposition Coverage Preflight\n\n- Mode: warning-only (does not block merges or automation)\n- Requested mode: warning-only\n- Status: pass\n- Coverage status: pass\n- Hard block eligible: true\n- Hard block active: false\n- Input files: 21\n- Scanned records: 21\n- Terminal disposition records: 21\n- Non-terminal records: 0\n- Observed sources: 21\n- Expected review-thread sources: 7\n- Missing review-thread sources: 0\n- Parse errors: 0\n- Artifact selector status: pass\n- Terminal artifacts selected: 21\n- Terminal artifacts candidates: 82\n- Verifier model compatibility: pass\n- Unsupported verifier model records: 0\n- Missing verifier model metadata records: 0\n- Missing verifier model metadata records with unknown mode: 0\n- Legacy missing verifier model metadata records: 0\n- Unsupported verifier models: gpt-5.2-codex\n\n| Observed source | Records | Dispositions | PRs |\n|-----------------|---------|--------------|-----|\n| pull-request:923 | 1 | needs-human (1) | #923 |\n| review-thread:24974899837 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24975254372 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24975940138 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24975941597 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24975991984 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24976250651 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24976298404 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24976425920 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24976452850 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24978034550 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24978090691 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24980327187 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24980443575 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:920 | 1 | wrapper-skipped (1) | #920 |\n| review-thread:921 | 1 | wrapper-skipped (1) | #921 |\n| review-thread:922 | 1 | wrapper-skipped (1) | #922 |\n| review-thread:923 | 1 | wrapper-skipped (1) | #923 |\n| review-thread:924 | 1 | wrapper-skipped (1) | #924 |\n| review-thread:925 | 1 | wrapper-skipped (1) | #925 |\n| review-thread:926 | 1 | wrapper-skipped (1) | #926 |\n\n| Terminal artifact family | Status | Candidates | Selected | Latest artifact |\n|--------------------------|--------|------------|----------|-----------------|\n| review-thread-terminal-disposition | selected | 81 | 20 | review-thread-terminal-disposition-24980566098 |\n| verifier-terminal-disposition | selected | 1 | 1 | verifier-terminal-disposition-24976250601 |\n\n## Bot Comment App Auth Coverage\n\n- Schema: workflows-bot-comment-auth-coverage-summary/v1\n- Status: no-data\n- Coverage status: no-data\n- Mode: warning-only\n- Hard block eligible: false\n- Hard block active: false\n- Input files: 0\n- Parsed JSON files: 0\n- Auth records: 0\n- Non-auth records: 0\n- Parse errors: 0\n- Read errors: 0\n- Artifact selection status: pass\n- Selected auth artifacts: 0\n- Required organic events: pull_request, workflow_run\n- Organic evidence status: no-data\n- Missing organic requirements: agents-bot-comment-handler-wrapper/pull_request, agents-bot-comment-handler-wrapper/workflow_run, reusable-bot-comment-handler/pull_request, reusable-bot-comment-handler/workflow_run\n- Blockers: missing-organic-agents-bot-comment-handler-wrapper-pull_request, missing-organic-agents-bot-comment-handler-wrapper-workflow_run, missing-organic-reusable-bot-comment-handler-pull_request, missing-organic-reusable-bot-comment-handler-workflow_run\n\n| Component | Latest mode | Records | Expected | Allowed | Blockers |\n|-----------|-------------|---------|----------|---------|----------|\n| agents-bot-comment-handler-wrapper | missing | 0 | client-id | client-id | missing-agents-bot-comment-handler-wrapper |\n| reusable-bot-comment-handler | missing | 0 | any | client-id, none | missing-reusable-bot-comment-handler |\n",
+      "labels": [
+        {
+          "id": "LA_kwDOO4LcjM8AAAACxDIKDg",
+          "name": "tracker:durable",
+          "description": "Permanently-open tracker; excluded from open-issue backlog counts",
+          "color": "c5def5"
+        }
+      ],
+      "number": 927,
+      "title": "Agent metrics weekly summary",
+      "updatedAt": "2026-09-14T06:33:19Z",
+      "url": "https://github.com/stranske/Manager-Database/issues/927"
+    }
+  ],
+  "prs": [
+    {
+      "body": "## Sync Summary\n\n### Files Updated\n- runner_lib/ (1 files): Shared runner prompt assembly, output parsing, and dispatch debounce helpers\n- validate_run_contract.py: Validates a repo's emitted run-contract/v1 run envelope (producer/bridge) or ingested satellite object (consumer) against the canonical Workflows schemas + opt-in participant registry. Offline/deterministic; opt-in skip for non-participants. Synced so participants can validate locally and the reusable conformance gate can invoke it.\n- mosaic-core-v1.md: Mosaic-core/v1 record types and fact-key join semantics\n- document-mirror-v1.md: Document-mirror/v1 specification for offline blob catalogs and triple-link resolvers\n- output-substrate-v1.md: Output-substrate/v1 renderer profiles, workspace bundle refs, and manifest CSV exports\n\n---\n\n### Review Checklist\n- [ ] CI passes with updated workflows\n- [ ] No repo-specific customizations were overwritten\n\n**Source:** stranske/Workflows\n**Source SHA:** `fb2a8fc914fabc3608478d0192332893668f5f93`\n**Template hash:** `7773d74e5580`\n**Consumer-sync plan ID:** `sha256:7773d74e558056f6b05f1ced33d7aecd812db23771c6b2935ce723c51bcd97b5`\n**Plan scope:** `source-delta`\n**Scope base SHA:** `994af8435a22fabd7cbf0f41ee4bed9c61ea289c`\n**Sync phase:** `promote`\n**Sync branch:** `sync/workflows-delivery`\n**Consumer repo:** `stranske/Manager-Database`\n**Manifest:** `.github/sync-manifest.yml`\n\n<!-- workflow-source:sync_campaign -->\n<!-- workflows-consumer-sync:v1 {\"schema\":\"workflows-consumer-sync-pr/v1\",\"consumer_repo\":\"stranske/Manager-Database\",\"source_repository\":\"stranske/Workflows\",\"source_sha\":\"fb2a8fc914fabc3608478d0192332893668f5f93\",\"template_hash\":\"7773d74e5580\",\"plan_id\":\"sha256:7773d74e558056f6b05f1ced33d7aecd812db23771c6b2935ce723c51bcd97b5\",\"plan_scope\":\"source-delta\",\"scope_base_sha\":\"994af8435a22fabd7cbf0f41ee4bed9c61ea289c\",\"source_commit\":\"fb2a8fc914fabc3608478d0192332893668f5f93\",\"sync_phase\":\"promote\",\"sync_branch\":\"sync/workflows-delivery\",\"manifest\":\".github/sync-manifest.yml\",\"lifecycle_state\":\"staging\",\"run_id\":\"35496527361\",\"run_attempt\":\"1\",\"changes_count\":5} -->\n<!-- sync-pr-delivery-record:v1 {\"schema\":\"sync-pr-delivery-record/v1\",\"durable_issue_url\":\"https://github.com/stranske/Workflows/issues/1836\",\"plan_id\":\"sha256:7773d74e558056f6b05f1ced33d7aecd812db23771c6b2935ce723c51bcd97b5\",\"generation\":\"7773d74e5580\",\"repository\":\"stranske/Manager-Database\",\"desired_tree_hash\":\"548e2f6cb49d699846d861345ca949a13424d21c\",\"source_commit\":\"fb2a8fc914fabc3608478d0192332893668f5f93\",\"head_observed_sha\":\"ce65ba7c2cc46a7551f1fee03cfee4f9da627f6a\",\"head_observed_at\":\"2026-09-20T07:19:35Z\",\"lease_expires_at\":\"2026-09-23T07:19:36Z\",\"predecessor_prs\":[],\"successor_prs\":[],\"delivery_state\":\"sealed\",\"review_started_at\":\"2026-09-20T07:32:05.125Z\",\"sealed_at\":\"2026-09-20T07:47:10.635Z\",\"sealed_head_sha\":\"ce65ba7c2cc46a7551f1fee03cfee4f9da627f6a\",\"review_evidence\":{\"policy_schema\":\"workflows.consumer-sync-review-policy/v1\",\"reason\":\"review_timeout_degraded\",\"degraded\":true,\"responded_reviewers\":[],\"unavailable_reviewers\":[]},\"terminal_disposition\":\"\"} -->\n\nautofix: false",
+      "closingIssuesReferences": [],
+      "isDraft": false,
+      "labels": [
+        {
+          "id": "LA_kwDOO4LcjM8AAAACThBM5A",
+          "name": "sync",
+          "description": "Automated sync from Workflows",
+          "color": "0e8a16"
+        },
+        {
+          "id": "LA_kwDOO4LcjM8AAAACThBNIQ",
+          "name": "automated",
+          "description": "Automated sync from Workflows",
+          "color": "0e8a16"
+        },
+        {
+          "id": "LA_kwDOO4LcjM8AAAACvmrUZQ",
+          "name": "workflow:source-sync",
+          "description": "PR source is a sync or maintenance campaign",
+          "color": "1d76db"
+        },
+        {
+          "id": "LA_kwDOO4LcjM8AAAACv7rsMQ",
+          "name": "sync:delivery-staging",
+          "description": "Generated delivery is mutable and must not merge",
+          "color": "d93f0b"
+        },
+        {
+          "id": "LA_kwDOO4LcjM8AAAACv7rsaA",
+          "name": "sync:delivery-ready",
+          "description": "Generated delivery is sealed to its exact reviewed head",
+          "color": "0e8a16"
+        }
+      ],
+      "number": 1691,
+      "title": "chore: sync workflow templates",
+      "updatedAt": "2026-09-20T07:47:15Z",
+      "url": "https://github.com/stranske/Manager-Database/pull/1691"
+    }
+  ],
+  "runs": [
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-21T04:10:40Z",
+      "databaseId": 35560003449,
+      "headSha": "c8b6e512d07dc510d2b2061f1595acc6ae826d4b",
+      "name": "Agents PR Health",
+      "status": "completed",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/35560003449",
+      "workflowName": "Agents PR Health"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-21T04:02:31Z",
+      "databaseId": 35559540483,
+      "headSha": "c8b6e512d07dc510d2b2061f1595acc6ae826d4b",
+      "name": "Nightly Regression",
+      "status": "completed",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/35559540483",
+      "workflowName": "Nightly Regression"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-21T03:38:53Z",
+      "databaseId": 35558227091,
+      "headSha": "c8b6e512d07dc510d2b2061f1595acc6ae826d4b",
+      "name": "Agents Keepalive Sweep",
+      "status": "completed",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/35558227091",
+      "workflowName": "Agents Keepalive Sweep"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-21T03:11:16Z",
+      "databaseId": 35556668409,
+      "headSha": "c8b6e512d07dc510d2b2061f1595acc6ae826d4b",
+      "name": "Agents PR Health",
+      "status": "completed",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/35556668409",
+      "workflowName": "Agents PR Health"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-21T02:42:11Z",
+      "databaseId": 35555040153,
+      "headSha": "c8b6e512d07dc510d2b2061f1595acc6ae826d4b",
+      "name": "Agents Keepalive Sweep",
+      "status": "completed",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/35555040153",
+      "workflowName": "Agents Keepalive Sweep"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-21T02:14:58Z",
+      "databaseId": 35553548166,
+      "headSha": "c8b6e512d07dc510d2b2061f1595acc6ae826d4b",
+      "name": "Agents PR Health",
+      "status": "completed",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/35553548166",
+      "workflowName": "Agents PR Health"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-21T01:45:54Z",
+      "databaseId": 35551960641,
+      "headSha": "c8b6e512d07dc510d2b2061f1595acc6ae826d4b",
+      "name": "Autofix",
+      "status": "completed",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/35551960641",
+      "workflowName": "Autofix"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-21T01:44:52Z",
+      "databaseId": 35551901097,
+      "headSha": "c8b6e512d07dc510d2b2061f1595acc6ae826d4b",
+      "name": "Agents Keepalive Sweep",
+      "status": "completed",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/35551901097",
+      "workflowName": "Agents Keepalive Sweep"
+    },
+    {
+      "conclusion": "skipped",
+      "createdAt": "2026-09-21T01:44:32Z",
+      "databaseId": 35551882476,
+      "headSha": "c8b6e512d07dc510d2b2061f1595acc6ae826d4b",
+      "name": "Keepalive Loop Reporter",
+      "status": "completed",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/35551882476",
+      "workflowName": "Keepalive Loop Reporter"
+    },
+    {
+      "conclusion": "skipped",
+      "createdAt": "2026-09-21T01:44:19Z",
+      "databaseId": 35551869252,
+      "headSha": "c8b6e512d07dc510d2b2061f1595acc6ae826d4b",
+      "name": "Agents PR Event Hub",
+      "status": "completed",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/35551869252",
+      "workflowName": "Agents PR Event Hub"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-21T01:44:19Z",
+      "databaseId": 35551869266,
+      "headSha": "c8b6e512d07dc510d2b2061f1595acc6ae826d4b",
+      "name": "Agents Gate Followups",
+      "status": "completed",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/35551869266",
+      "workflowName": "Agents Gate Followups"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-21T01:44:19Z",
+      "databaseId": 35551869285,
+      "headSha": "c8b6e512d07dc510d2b2061f1595acc6ae826d4b",
+      "name": "Autofix",
+      "status": "completed",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/35551869285",
+      "workflowName": "Autofix"
+    },
+    {
+      "conclusion": "skipped",
+      "createdAt": "2026-09-21T01:40:01Z",
+      "databaseId": 35551634207,
+      "headSha": "c8b6e512d07dc510d2b2061f1595acc6ae826d4b",
+      "name": "Keepalive Loop Reporter",
+      "status": "completed",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/35551634207",
+      "workflowName": "Keepalive Loop Reporter"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-21T01:39:52Z",
+      "databaseId": 35551626701,
+      "headSha": "c8b6e512d07dc510d2b2061f1595acc6ae826d4b",
+      "name": "Auto-Label Issues",
+      "status": "completed",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/35551626701",
+      "workflowName": "Auto-Label Issues"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-21T01:39:52Z",
+      "databaseId": 35551626733,
+      "headSha": "c8b6e512d07dc510d2b2061f1595acc6ae826d4b",
+      "name": "Agents Issue Format Guard",
+      "status": "completed",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/35551626733",
+      "workflowName": "Agents Issue Format Guard"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-21T01:39:07Z",
+      "databaseId": 35551587423,
+      "headSha": "c8b6e512d07dc510d2b2061f1595acc6ae826d4b",
+      "name": "Agents Issue Format Guard",
+      "status": "completed",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/35551587423",
+      "workflowName": "Agents Issue Format Guard"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-21T01:39:07Z",
+      "databaseId": 35551587407,
+      "headSha": "c8b6e512d07dc510d2b2061f1595acc6ae826d4b",
+      "name": "Agents Auto-Pilot",
+      "status": "completed",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/35551587407",
+      "workflowName": "Agents Auto-Pilot"
+    },
+    {
+      "conclusion": "skipped",
+      "createdAt": "2026-09-21T01:39:06Z",
+      "databaseId": 35551586674,
+      "headSha": "c8b6e512d07dc510d2b2061f1595acc6ae826d4b",
+      "name": "Cross-Repo Smoke",
+      "status": "completed",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/35551586674",
+      "workflowName": "Cross-Repo Smoke"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-21T01:39:06Z",
+      "databaseId": 35551586715,
+      "headSha": "c8b6e512d07dc510d2b2061f1595acc6ae826d4b",
+      "name": "CI",
+      "status": "completed",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/35551586715",
+      "workflowName": "CI"
+    },
+    {
+      "conclusion": "skipped",
+      "createdAt": "2026-09-21T01:29:34Z",
+      "databaseId": 35551064028,
+      "headSha": "32770982bcbdf8e1ff949b2017c814fcd335d42a",
+      "name": "Keepalive Loop Reporter",
+      "status": "completed",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/35551064028",
+      "workflowName": "Keepalive Loop Reporter"
+    },
+    {
+      "conclusion": "skipped",
+      "createdAt": "2026-09-21T01:29:24Z",
+      "databaseId": 35551055543,
+      "headSha": "32770982bcbdf8e1ff949b2017c814fcd335d42a",
+      "name": "Agents PR Event Hub",
+      "status": "completed",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/35551055543",
+      "workflowName": "Agents PR Event Hub"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-21T01:29:24Z",
+      "databaseId": 35551055466,
+      "headSha": "32770982bcbdf8e1ff949b2017c814fcd335d42a",
+      "name": "Agents Gate Followups",
+      "status": "completed",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/35551055466",
+      "workflowName": "Agents Gate Followups"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-21T01:29:24Z",
+      "databaseId": 35551055463,
+      "headSha": "32770982bcbdf8e1ff949b2017c814fcd335d42a",
+      "name": "Autofix",
+      "status": "completed",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/35551055463",
+      "workflowName": "Autofix"
+    },
+    {
+      "conclusion": "skipped",
+      "createdAt": "2026-09-21T01:25:32Z",
+      "databaseId": 35550853683,
+      "headSha": "32770982bcbdf8e1ff949b2017c814fcd335d42a",
+      "name": "Keepalive Loop Reporter",
+      "status": "completed",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/35550853683",
+      "workflowName": "Keepalive Loop Reporter"
+    },
+    {
+      "conclusion": "skipped",
+      "createdAt": "2026-09-21T01:25:27Z",
+      "databaseId": 35550849179,
+      "headSha": "32770982bcbdf8e1ff949b2017c814fcd335d42a",
+      "name": "Agents PR Event Hub",
+      "status": "completed",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/35550849179",
+      "workflowName": "Agents PR Event Hub"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-21T01:24:52Z",
+      "databaseId": 35550814968,
+      "headSha": "32770982bcbdf8e1ff949b2017c814fcd335d42a",
+      "name": "Agents PR Health",
+      "status": "completed",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/35550814968",
+      "workflowName": "Agents PR Health"
+    },
+    {
+      "conclusion": "skipped",
+      "createdAt": "2026-09-21T01:15:09Z",
+      "databaseId": 35550292816,
+      "headSha": "32770982bcbdf8e1ff949b2017c814fcd335d42a",
+      "name": "Keepalive Loop Reporter",
+      "status": "completed",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/35550292816",
+      "workflowName": "Keepalive Loop Reporter"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-21T01:14:54Z",
+      "databaseId": 35550277204,
+      "headSha": "32770982bcbdf8e1ff949b2017c814fcd335d42a",
+      "name": "Autofix",
+      "status": "completed",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/35550277204",
+      "workflowName": "Autofix"
+    },
+    {
+      "conclusion": "skipped",
+      "createdAt": "2026-09-21T01:14:54Z",
+      "databaseId": 35550277209,
+      "headSha": "32770982bcbdf8e1ff949b2017c814fcd335d42a",
+      "name": "Agents PR Event Hub",
+      "status": "completed",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/35550277209",
+      "workflowName": "Agents PR Event Hub"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-21T01:14:54Z",
+      "databaseId": 35550277289,
+      "headSha": "32770982bcbdf8e1ff949b2017c814fcd335d42a",
+      "name": "Agents Gate Followups",
+      "status": "completed",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/35550277289",
+      "workflowName": "Agents Gate Followups"
+    },
+    {
+      "conclusion": "skipped",
+      "createdAt": "2026-09-21T01:10:19Z",
+      "databaseId": 35550015168,
+      "headSha": "32770982bcbdf8e1ff949b2017c814fcd335d42a",
+      "name": "Keepalive Loop Reporter",
+      "status": "completed",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/35550015168",
+      "workflowName": "Keepalive Loop Reporter"
+    },
+    {
+      "conclusion": "skipped",
+      "createdAt": "2026-09-21T01:10:07Z",
+      "databaseId": 35550002017,
+      "headSha": "32770982bcbdf8e1ff949b2017c814fcd335d42a",
+      "name": "Keepalive Loop Reporter",
+      "status": "completed",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/35550002017",
+      "workflowName": "Keepalive Loop Reporter"
+    },
+    {
+      "conclusion": "skipped",
+      "createdAt": "2026-09-21T01:10:00Z",
+      "databaseId": 35549993273,
+      "headSha": "32770982bcbdf8e1ff949b2017c814fcd335d42a",
+      "name": "Agents PR Event Hub",
+      "status": "completed",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/35549993273",
+      "workflowName": "Agents PR Event Hub"
+    },
+    {
+      "conclusion": "skipped",
+      "createdAt": "2026-09-21T01:09:56Z",
+      "databaseId": 35549990227,
+      "headSha": "32770982bcbdf8e1ff949b2017c814fcd335d42a",
+      "name": "Agents PR Event Hub",
+      "status": "completed",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/35549990227",
+      "workflowName": "Agents PR Event Hub"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-21T01:09:56Z",
+      "databaseId": 35549990202,
+      "headSha": "32770982bcbdf8e1ff949b2017c814fcd335d42a",
+      "name": "Autofix",
+      "status": "completed",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/35549990202",
+      "workflowName": "Autofix"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-21T01:09:56Z",
+      "databaseId": 35549990246,
+      "headSha": "32770982bcbdf8e1ff949b2017c814fcd335d42a",
+      "name": "Agents Gate Followups",
+      "status": "completed",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/35549990246",
+      "workflowName": "Agents Gate Followups"
+    },
+    {
+      "conclusion": "skipped",
+      "createdAt": "2026-09-21T01:09:55Z",
+      "databaseId": 35549989223,
+      "headSha": "32770982bcbdf8e1ff949b2017c814fcd335d42a",
+      "name": "Keepalive Loop Reporter",
+      "status": "completed",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/35549989223",
+      "workflowName": "Keepalive Loop Reporter"
+    },
+    {
+      "conclusion": "skipped",
+      "createdAt": "2026-09-21T01:09:54Z",
+      "databaseId": 35549988648,
+      "headSha": "32770982bcbdf8e1ff949b2017c814fcd335d42a",
+      "name": "Keepalive Loop Reporter",
+      "status": "completed",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/35549988648",
+      "workflowName": "Keepalive Loop Reporter"
+    },
+    {
+      "conclusion": "skipped",
+      "createdAt": "2026-09-21T01:09:52Z",
+      "databaseId": 35549986468,
+      "headSha": "32770982bcbdf8e1ff949b2017c814fcd335d42a",
+      "name": "Keepalive Loop Reporter",
+      "status": "completed",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/35549986468",
+      "workflowName": "Keepalive Loop Reporter"
+    },
+    {
+      "conclusion": "skipped",
+      "createdAt": "2026-09-21T01:09:52Z",
+      "databaseId": 35549986832,
+      "headSha": "32770982bcbdf8e1ff949b2017c814fcd335d42a",
+      "name": "Keepalive Loop Reporter",
+      "status": "completed",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/35549986832",
+      "workflowName": "Keepalive Loop Reporter"
+    },
+    {
+      "conclusion": "skipped",
+      "createdAt": "2026-09-21T01:09:51Z",
+      "databaseId": 35549985747,
+      "headSha": "32770982bcbdf8e1ff949b2017c814fcd335d42a",
+      "name": "Agents PR Event Hub",
+      "status": "completed",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/35549985747",
+      "workflowName": "Agents PR Event Hub"
+    },
+    {
+      "conclusion": "skipped",
+      "createdAt": "2026-09-21T01:09:51Z",
+      "databaseId": 35549985614,
+      "headSha": "32770982bcbdf8e1ff949b2017c814fcd335d42a",
+      "name": "Keepalive Loop Reporter",
+      "status": "completed",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/35549985614",
+      "workflowName": "Keepalive Loop Reporter"
+    },
+    {
+      "conclusion": "cancelled",
+      "createdAt": "2026-09-21T01:09:51Z",
+      "databaseId": 35549985779,
+      "headSha": "32770982bcbdf8e1ff949b2017c814fcd335d42a",
+      "name": "Autofix",
+      "status": "completed",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/35549985779",
+      "workflowName": "Autofix"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-21T01:09:51Z",
+      "databaseId": 35549985894,
+      "headSha": "32770982bcbdf8e1ff949b2017c814fcd335d42a",
+      "name": "Agents Gate Followups",
+      "status": "completed",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/35549985894",
+      "workflowName": "Agents Gate Followups"
+    },
+    {
+      "conclusion": "skipped",
+      "createdAt": "2026-09-21T01:09:49Z",
+      "databaseId": 35549983972,
+      "headSha": "32770982bcbdf8e1ff949b2017c814fcd335d42a",
+      "name": "Keepalive Loop Reporter",
+      "status": "completed",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/35549983972",
+      "workflowName": "Keepalive Loop Reporter"
+    },
+    {
+      "conclusion": "cancelled",
+      "createdAt": "2026-09-21T01:09:49Z",
+      "databaseId": 35549983896,
+      "headSha": "32770982bcbdf8e1ff949b2017c814fcd335d42a",
+      "name": "Autofix",
+      "status": "completed",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/35549983896",
+      "workflowName": "Autofix"
+    },
+    {
+      "conclusion": "cancelled",
+      "createdAt": "2026-09-21T01:09:49Z",
+      "databaseId": 35549983889,
+      "headSha": "32770982bcbdf8e1ff949b2017c814fcd335d42a",
+      "name": "Agents Gate Followups",
+      "status": "completed",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/35549983889",
+      "workflowName": "Agents Gate Followups"
+    },
+    {
+      "conclusion": "skipped",
+      "createdAt": "2026-09-21T01:09:49Z",
+      "databaseId": 35549983933,
+      "headSha": "32770982bcbdf8e1ff949b2017c814fcd335d42a",
+      "name": "Agents PR Event Hub",
+      "status": "completed",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/35549983933",
+      "workflowName": "Agents PR Event Hub"
+    },
+    {
+      "conclusion": "cancelled",
+      "createdAt": "2026-09-21T01:09:49Z",
+      "databaseId": 35549983963,
+      "headSha": "32770982bcbdf8e1ff949b2017c814fcd335d42a",
+      "name": "Autofix",
+      "status": "completed",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/35549983963",
+      "workflowName": "Autofix"
+    },
+    {
+      "conclusion": "skipped",
+      "createdAt": "2026-09-21T01:09:49Z",
+      "databaseId": 35549983956,
+      "headSha": "32770982bcbdf8e1ff949b2017c814fcd335d42a",
+      "name": "Agents PR Event Hub",
+      "status": "completed",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/35549983956",
+      "workflowName": "Agents PR Event Hub"
+    }
+  ],
+  "observedAt": "2026-09-21T04:16:35.519990+00:00"
+}

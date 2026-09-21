@@ -1,0 +1,750 @@
+{
+  "issues": [
+    {
+      "body": "## Why\n\n`src/counter_risk/parsers/cprs_ch.py:385-386` checks `\"all\" in title` before `\"trend\" in title` in `_detect_variant`. A Trend workbook copied to a filename containing both substrings (for example `mosers-trend-all.xlsx`) is classified as `all_programs` and fails with missing segments `futures_cdx, repo, swaps`. Verified: copying `tests/fixtures/CPRS-CH Fixture - Trend.xlsx` to `/tmp/mosers-trend-all.xlsx` raises that ValueError while the original filename parses successfully.\n\n## Scope\n\nPrevent spurious `all_programs` classification when the workbook content is Trend-only.\n\n## Non-Goals\n\nNo change to segment validation rules for genuine all_programs workbooks. Scaffold-only completion does NOT count: reordering checks without a regression test is a failure of this issue.\n\n## Tasks\n\n- [ ] In `src/counter_risk/parsers/cprs_ch.py:381`, tighten `_detect_variant` so explicit `trend` markers win over incidental `all` substrings in generated filenames.\n- [ ] In `tests/parsers/test_cprs_ch.py`, add `test_parse_cprs_ch_trend_workbook_not_misclassified_when_filename_contains_all` using a Trend fixture copied to an all-containing filename.\n\n## Acceptance Criteria\n\n- Named test: `tests/parsers/test_cprs_ch.py::test_parse_cprs_ch_trend_workbook_not_misclassified_when_filename_contains_all` parses the Trend fixture under an all-containing filename without missing-segment errors.\n- Deliberate-break \u2192 revert: restore the current `\"all\" in title` precedence; the named test must fail; revert and confirm pass.\n- `python -m pytest tests/parsers/test_cprs_ch.py::test_parse_cprs_ch_trend_workbook_not_misclassified_when_filename_contains_all -q` passes.\n\n_Surfaced by Track D audit 2026-09-20; verified by parse_cprs_ch repro on tip 56bee4fa._\n",
+      "labels": [
+        {
+          "id": "LA_kwDORPCqTs8AAAACX8YqvQ",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        },
+        {
+          "id": "LA_kwDORPCqTs8AAAACg4J5qg",
+          "name": "priority:normal",
+          "description": "Normal-priority weekly repo-review work",
+          "color": "fbca04"
+        }
+      ],
+      "number": 1090,
+      "title": "[P2] Fix trend CPRS misclassification when filename contains spurious all",
+      "updatedAt": "2026-09-20T20:35:19Z",
+      "url": "https://github.com/stranske/Counter_Risk/issues/1090"
+    },
+    {
+      "body": "## Why\n\n`src/counter_risk/pipeline/manifest.py:235-248` marks master PPT status `\"failed\"` when `ppt_status == \"failed\"` but always sets distribution status to `\"success\"` whenever the distribution artifact path is present at `:246`. Verified: `ManifestBuilder.build(..., ppt_status='failed')` with both master and distribution paths yields master `failed` and distribution `success`.\n\n## Scope\n\nAlign distribution PPT status with master generation failure when both artifacts are listed.\n\n## Non-Goals\n\nNo change to distribution generation ordering or PDF export sequencing. Scaffold-only completion does NOT count: changing master status alone without distribution is a failure of this issue.\n\n## Tasks\n\n- [ ] In `src/counter_risk/pipeline/manifest.py:246`, set distribution `status` to `\"failed\"` when `ppt_status == \"failed\"` even if the distribution filename is present in output paths.\n- [ ] In `tests/pipeline/test_manifest.py`, add `test_build_ppt_outputs_marks_distribution_failed_when_ppt_status_failed` asserting both roles report failed status.\n\n## Acceptance Criteria\n\n- Named test: `tests/pipeline/test_manifest.py::test_build_ppt_outputs_marks_distribution_failed_when_ppt_status_failed` asserts distribution status is `failed` when master generation failed.\n- Deliberate-break \u2192 revert: restore unconditional distribution success; the named test must fail; revert and confirm pass.\n- `python -m pytest tests/pipeline/test_manifest.py::test_build_ppt_outputs_marks_distribution_failed_when_ppt_status_failed -q` passes.\n\n_Surfaced by Track D audit 2026-09-20; verified by ManifestBuilder repro on tip 56bee4fa._\n",
+      "labels": [
+        {
+          "id": "LA_kwDORPCqTs8AAAACX8YqvQ",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        },
+        {
+          "id": "LA_kwDORPCqTs8AAAACg4J5qg",
+          "name": "priority:normal",
+          "description": "Normal-priority weekly repo-review work",
+          "color": "fbca04"
+        }
+      ],
+      "number": 1089,
+      "title": "[P2] Mark distribution PPT failed when master generation fails",
+      "updatedAt": "2026-09-20T20:35:17Z",
+      "url": "https://github.com/stranske/Counter_Risk/issues/1089"
+    },
+    {
+      "body": "## Why\n\n`src/counter_risk/pipeline/reconciliation.py:177-178` computes `missing_clearing_houses` with a raw set difference against historical headers, while counterparties use normalized matching at `:152-167`. Verified: clearing house `ICE` in parsed data against historical header `ICE Clear US` yields `missing_from_historical: ['ICE']` and `gap_count: 1` despite normalized equivalence available via `normalize_clearing_house` at `:184`.\n\n## Scope\n\nApply clearing-house normalization when detecting missing historical headers, mirroring counterparty normalization.\n\n## Non-Goals\n\nNo change to counterparty registry inclusion policy or fail/warn reconciliation modes. Scaffold-only completion does NOT count: normalizing only the data side without historical headers is a failure of this issue.\n\n## Tasks\n\n- [ ] In `src/counter_risk/pipeline/reconciliation.py:177`, compare normalized clearing-house labels from parsed data against normalized historical headers instead of raw string difference.\n- [ ] In `tests/pipeline/test_reconciliation.py`, add `test_reconcile_clearing_house_canonical_label_does_not_false_flag_missing_from_historical` with ICE vs ICE Clear US fixture.\n\n## Acceptance Criteria\n\n- Named test: `tests/pipeline/test_reconciliation.py::test_reconcile_clearing_house_canonical_label_does_not_false_flag_missing_from_historical` asserts `gap_count == 0` for the ICE alias fixture.\n- Deliberate-break \u2192 revert: restore raw set difference; the named test must fail; revert and confirm pass.\n- `python -m pytest tests/pipeline/test_reconciliation.py::test_reconcile_clearing_house_canonical_label_does_not_false_flag_missing_from_historical -q` passes.\n\n_Surfaced by Track D audit 2026-09-20; verified by reconcile_series_coverage repro on tip 56bee4fa._\n",
+      "labels": [
+        {
+          "id": "LA_kwDORPCqTs8AAAACX8YqvQ",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        },
+        {
+          "id": "LA_kwDORPCqTs8AAAACg4J5qg",
+          "name": "priority:normal",
+          "description": "Normal-priority weekly repo-review work",
+          "color": "fbca04"
+        }
+      ],
+      "number": 1088,
+      "title": "[P2] Normalize clearing-house labels in reconciliation gap detection",
+      "updatedAt": "2026-09-20T20:35:16Z",
+      "url": "https://github.com/stranske/Counter_Risk/issues/1088"
+    },
+    {
+      "body": "## Why\n\n`src/counter_risk/gui/runner.py:84` and `:200-203` support `export_pdf` in `GuiRunState` and `_build_cli_args`, but `_state_from_form` at `:468-478` never sets `export_pdf` and the Tk form exposes no PDF toggle. Operators using the GUI cannot enable or disable PDF export without editing YAML outside the runner.\n\n## Scope\n\nAdd an Export PDF checkbox bound through `_state_from_form` to the existing CLI flag wiring.\n\n## Non-Goals\n\nNo change to PDF generation order (#1068) or distribution/PDF compatibility rules (#1066). Scaffold-only completion does NOT count: a label without `_state_from_form` wiring is a failure of this issue.\n\n## Tasks\n\n- [ ] In `src/counter_risk/gui/runner.py`, add an Export PDF checkbox variable and control in the operator form next to existing run settings.\n- [ ] In `src/counter_risk/gui/runner.py:468`, set `export_pdf` from the checkbox in `_state_from_form` and preserve it through `_build_cli_args` at `:200-203`.\n- [ ] In `tests/gui/test_runner.py`, add `test_gui_state_from_form_preserves_export_pdf_flag` asserting True/False propagate to CLI args.\n\n## Acceptance Criteria\n\n- Named test: `tests/gui/test_runner.py::test_gui_state_from_form_preserves_export_pdf_flag` asserts `--export-pdf` or `--no-export-pdf` appears in built CLI args from form state.\n- Deliberate-break \u2192 revert: omit `export_pdf` from `_state_from_form`; the named test must fail; revert and confirm pass.\n- `python -m pytest tests/gui/test_runner.py::test_gui_state_from_form_preserves_export_pdf_flag -q` passes.\n\n_Surfaced by Track D audit 2026-09-20; verified by reading GuiRunState and _state_from_form on tip 56bee4fa._\n",
+      "labels": [
+        {
+          "id": "LA_kwDORPCqTs8AAAACX8YqvQ",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        },
+        {
+          "id": "LA_kwDORPCqTs8AAAACg4J5qg",
+          "name": "priority:normal",
+          "description": "Normal-priority weekly repo-review work",
+          "color": "fbca04"
+        }
+      ],
+      "number": 1087,
+      "title": "[P2] Add Export PDF toggle to Tk GUI runner form",
+      "updatedAt": "2026-09-20T20:35:15Z",
+      "url": "https://github.com/stranske/Counter_Risk/issues/1087"
+    },
+    {
+      "body": "## Why\n\nRepo-cash reconciliation warnings emitted from `src/counter_risk/pipeline/run.py:1232-1375` use structured codes such as duplicate counterparty names, but `src/counter_risk/pipeline/data_quality.py:506-547` auto-generates truncated codes via `_code_from_message` with `category: pipeline` instead of `cash`. Verified: `build_data_quality(['Repo Cash source has duplicate counterparty names after normalization: CIBC.'])` yields code `REPO_CASH_SOURCE_HAS_DUPLICATE_COUNTERPARTY_NAMES_AFTER_NORMALIZ` and category `pipeline`.\n\n## Scope\n\nRegister stable `REPO_CASH_*` codes and cash category mappings for repo-cash reconciliation warning messages.\n\n## Non-Goals\n\nNo change to repo-cash injection math or duplicate-collapse behavior (#1019 scope). Scaffold-only completion does NOT count: adding constants without wiring `_code_from_message` is a failure of this issue.\n\n## Tasks\n\n- [ ] In `src/counter_risk/pipeline/data_quality.py:11`, add `_SEVERITY_BY_CODE` and `_CATEGORY_BY_CODE` entries for repo-cash duplicate, orphan, and missing-counterparty warning codes used in `src/counter_risk/pipeline/run.py:1232-1375`.\n- [ ] In `src/counter_risk/pipeline/data_quality.py:506`, teach `_code_from_message` to return the stable repo-cash codes instead of truncated auto-generated tokens.\n- [ ] In `tests/pipeline/test_manifest_data_quality.py`, add `test_manifest_data_quality_maps_repo_cash_duplicate_counterparty_code` asserting category `cash` and the stable code.\n\n## Acceptance Criteria\n\n- Named test: `tests/pipeline/test_manifest_data_quality.py::test_manifest_data_quality_maps_repo_cash_duplicate_counterparty_code` asserts category `cash` and a stable `REPO_CASH_*` code for duplicate-counterparty warnings.\n- Deliberate-break \u2192 revert: remove the new code mapping; the named test must fail; revert and confirm pass.\n- `python -m pytest tests/pipeline/test_manifest_data_quality.py::test_manifest_data_quality_maps_repo_cash_duplicate_counterparty_code -q` passes.\n\n_Surfaced by Track D audit 2026-09-20; verified by build_data_quality repro on tip 56bee4fa._\n",
+      "labels": [
+        {
+          "id": "LA_kwDORPCqTs8AAAACX8YqvQ",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        },
+        {
+          "id": "LA_kwDORPCqTs8AAAACg4J5qg",
+          "name": "priority:normal",
+          "description": "Normal-priority weekly repo-review work",
+          "color": "fbca04"
+        }
+      ],
+      "number": 1086,
+      "title": "[P2] Map repo-cash reconciliation codes in data_quality manifest rollup",
+      "updatedAt": "2026-09-20T20:35:14Z",
+      "url": "https://github.com/stranske/Counter_Risk/issues/1086"
+    },
+    {
+      "body": "## Why\n\n`src/counter_risk/compute/rollups.py:411-437` reads `notional_change` via bare `float(...)` without a finite guard, unlike `_find_numeric` used elsewhere. NaN propagates to `absolute_change` and breaks sort order in `top_changes`. Verified: `top_changes([{..., 'notional_change': float('nan')}])` yields `absolute_change: nan`.\n\n## Scope\n\nApply the same finite numeric validation used by `_find_numeric` to `notional_change` and derived change values in `top_changes`.\n\n## Non-Goals\n\nNo change to concentration metrics or pipeline exposure builders already guarded elsewhere. Scaffold-only completion does NOT count: documenting NaN behavior without raising is a failure of this issue.\n\n## Tasks\n\n- [ ] In `src/counter_risk/compute/rollups.py:414`, validate `notional_change` and derived change values with `math.isfinite` and raise `ValueError` on non-finite input.\n- [ ] In `tests/compute/test_rollups.py`, add `test_top_changes_rejects_non_finite_notional_change` covering NaN and Infinity inputs.\n\n## Acceptance Criteria\n\n- Named test: `tests/compute/test_rollups.py::test_top_changes_rejects_non_finite_notional_change` asserts `ValueError` for NaN `notional_change`.\n- Deliberate-break \u2192 revert: remove the finite guard; the named test must fail; revert and confirm pass.\n- `python -m pytest tests/compute/test_rollups.py::test_top_changes_rejects_non_finite_notional_change -q` passes.\n\n_Surfaced by Track D audit 2026-09-20; verified by top_changes NaN repro on tip 56bee4fa._\n",
+      "labels": [
+        {
+          "id": "LA_kwDORPCqTs8AAAACX8YqvQ",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        },
+        {
+          "id": "LA_kwDORPCqTs8AAAACg4J5qg",
+          "name": "priority:normal",
+          "description": "Normal-priority weekly repo-review work",
+          "color": "fbca04"
+        }
+      ],
+      "number": 1085,
+      "title": "[P2] Reject non-finite notional_change in top_changes rollup",
+      "updatedAt": "2026-09-20T20:35:12Z",
+      "url": "https://github.com/stranske/Counter_Risk/issues/1085"
+    },
+    {
+      "body": "## Why\n\n`src/counter_risk/pipeline/run.py:725` sets `data_quality_status = \"warning\" if warnings else \"success\"` for LangSmith fleet records and never `\"fail\"`, even when `build_data_quality` would return `overall_status: fail` for fail-severity limit breaches passed via `limit_breach_summary`. Fleet telemetry therefore under-reports severity relative to the manifest operators review.\n\n## Scope\n\nDerive fleet `data_quality_status` from manifest-grade severity, including fail limit breaches.\n\n## Non-Goals\n\nNo change to LangSmith schema version or unrelated observability fields. Scaffold-only completion does NOT count: copying warnings length without reading limit breach severity is a failure of this issue.\n\n## Tasks\n\n- [ ] In `src/counter_risk/pipeline/run.py:725`, set fleet `data_quality_status` from `build_data_quality` overall status or `limit_breach_summary.max_severity`, mapping fail to `\"fail\"`.\n- [ ] In `tests/pipeline/test_langsmith_fleet.py`, add `test_fleet_data_quality_status_reflects_fail_limit_breaches` with fail-severity limit summary input.\n\n## Acceptance Criteria\n\n- Named test: `tests/pipeline/test_langsmith_fleet.py::test_fleet_data_quality_status_reflects_fail_limit_breaches` asserts emitted fleet records use `data_quality_status: fail` when fail breaches are present.\n- Deliberate-break \u2192 revert: restore `\"warning\" if warnings else \"success\"`; the named test must fail; revert and confirm pass.\n- `python -m pytest tests/pipeline/test_langsmith_fleet.py::test_fleet_data_quality_status_reflects_fail_limit_breaches -q` passes.\n\n_Surfaced by Track D audit 2026-09-20; verified at run.py:725 against build_data_quality fail path on tip 56bee4fa._\n",
+      "labels": [
+        {
+          "id": "LA_kwDORPCqTs8AAAACX8YqvQ",
+          "name": "bug",
+          "description": "Something isn't working",
+          "color": "d73a4a"
+        },
+        {
+          "id": "LA_kwDORPCqTs8AAAACg4J5qg",
+          "name": "priority:normal",
+          "description": "Normal-priority weekly repo-review work",
+          "color": "fbca04"
+        }
+      ],
+      "number": 1084,
+      "title": "[P2] LangSmith fleet data_quality_status must reflect fail limit breaches",
+      "updatedAt": "2026-09-20T20:35:11Z",
+      "url": "https://github.com/stranske/Counter_Risk/issues/1084"
+    },
+    {
+      "body": "## Why (verified evidence)\n\nPost-merge verification (D4-verify-merged-2026-09-16T02) of stranske/Counter_Risk#1060 (merge `537c913cf54bab0f8bfe59a72edea4bfc575d862`) against #1058 found the behavioral fix in `src/counter_risk/pipeline/run.py` landed, but the **named acceptance gate was not satisfied**.\n\n- Issue #1058 requires the regression in `tests/pipeline/test_reconciliation.py` with `pytest tests/pipeline/test_reconciliation.py --cov=src/counter_risk/pipeline/run.py --cov-report=term-missing`.\n- Squash diff adds `tests/pipeline/test_cprs_ch_workbook_total.py` only; `test_reconciliation.py` is untouched.\n- PR body in evidence does not record baseline coverage, measured delta, or deliberate-break output for the named command.\n\n## Tasks\n\n- [ ] Move or duplicate the invalid-workbook-total regression into `tests/pipeline/test_reconciliation.py` (or extend that file) so the issue-named gate exercises the same branch.\n- [ ] Run `pytest tests/pipeline/test_reconciliation.py --cov=src/counter_risk/pipeline/run.py --cov-report=term-missing` on main and record baseline + delta in the PR body.\n- [ ] Add deliberate-break evidence: break the `math.isfinite`/bool guard in `src/counter_risk/pipeline/run.py` \u2192 named pytest fails \u2192 revert \u2192 passes; retain literal output in PR body.\n\n## Acceptance Criteria\n\n- Named test: `pytest tests/pipeline/test_reconciliation.py --cov=src/counter_risk/pipeline/run.py --cov-report=term-missing` exits 0 with coverage delta recorded in the PR body.\n- Deliberate-break \u2192 revert: remove the finite-total guard in `src/counter_risk/pipeline/run.py` \u2192 confirm the new regression in `test_reconciliation.py` FAILS \u2192 revert \u2192 passes; both runs recorded in PR body.\n\n## Non-Goals\n\n- Do NOT change CI or workflow configuration (#1058 non-goal).\n- No scaffolding / TODO-only changes; every task is verified by the gate above.\n\n_Surfaced by D4-verify-merged-2026-09-16T02; verified against squash diff `Counter_Risk-1060.diff` and closed issue #1058 acceptance criteria. Related: #1058, merged PR #1060._\n",
+      "labels": [],
+      "number": 1073,
+      "title": "[P1] Coverage round 4 gate uses wrong test file \u2014 move regression to test_reconciliation.py",
+      "updatedAt": "2026-09-16T02:32:28Z",
+      "url": "https://github.com/stranske/Counter_Risk/issues/1073"
+    },
+    {
+      "body": "## Why\n\nFleet coverage initiative round 5 remains below the 90% objective. The next slice must prove real validation branches in distribution PPT standalone checks, not pad the metric.\n\n## Scope\n\nAdd a discriminating regression in `tests/pipeline/test_ppt_validation.py` for uncovered error and external-link branches in `src/counter_risk/pipeline/ppt_validation.py`.\n\n## Non-Goals\n\n- Do NOT change CI or workflow configuration.\n- Do NOT add trivial getter or import-only tests.\n\n## Tasks\n\n- [ ] Run `pytest tests/pipeline/test_ppt_validation.py --cov=src/counter_risk/pipeline/ppt_validation.py --cov-report=term-missing` and record baseline in the PR body.\n- [ ] In `tests/pipeline/test_ppt_validation.py`, add regressions for missing-file, corrupt-archive, and external-relationship rejection paths in `validate_distribution_ppt_standalone` in `src/counter_risk/pipeline/ppt_validation.py`, and record deliberate-break plus measured coverage delta in the PR body.\n\n## Acceptance Criteria\n\n- [ ] `pytest tests/pipeline/test_ppt_validation.py --cov=src/counter_risk/pipeline/ppt_validation.py --cov-report=term-missing` exits 0 with measured coverage delta recorded in the PR body.\n- [ ] The new regressions fail when their selected validation branch is deliberately broken, then pass after revert; both recorded in the PR body.\n\n## Implementation Notes\n\nCoverage-autopilot round 5; low blast radius only. If measured coverage is already at or above 90%, comment and close without opening a PR.\n",
+      "labels": [
+        {
+          "id": "LA_kwDORPCqTs8AAAACX8bCNQ",
+          "name": "agents:formatted",
+          "description": "Issue has been formatted to AGENT_ISSUE_TEMPLATE",
+          "color": "1D76DB"
+        }
+      ],
+      "number": 1072,
+      "title": "Raise test coverage toward 90% (autopilot round 5, low blast radius only)",
+      "updatedAt": "2026-09-15T18:01:02Z",
+      "url": "https://github.com/stranske/Counter_Risk/issues/1072"
+    },
+    {
+      "body": "This issue lists Renovate updates and detected dependencies. Read the [Dependency Dashboard](https://docs.renovatebot.com/key-concepts/dashboard/) docs to learn more.<br>[View this repository on the Mend.io Web Portal](https://developer.mend.io/github/stranske/Counter_Risk).\n\n## Awaiting Schedule\n\nThe following updates are awaiting their schedule. To get an update now, click on a checkbox below.\n\n - [ ] <!-- unschedule-branch=renovate/non-major-updates -->fix(deps): update dependency types-pyyaml to v6.0.12.20260906\n - [ ] <!-- unschedule-branch=renovate/lock-file-maintenance-weekly-lock-file-maintenance -->chore(deps): lock file maintenance\n - [ ] <!-- create-all-awaiting-schedule-prs -->\ud83d\udd10 **Create all awaiting schedule PRs at once** \ud83d\udd10\n\n## Detected Dependencies\n\n<details><summary>github-actions (39)</summary>\n<blockquote>\n\n<details><summary>.github/actions/agent-run-base/action.yml</summary>\n\n\n</details>\n\n<details><summary>.github/actions/artifact-cache/action.yml</summary>\n\n\n</details>\n\n<details><summary>.github/actions/resolve-default-branch/action.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-71-codex-belt-dispatcher.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-72-codex-belt-worker.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-73-codex-belt-conveyor.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-80-pr-event-hub.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-81-gate-followups.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-auto-label.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-auto-pilot.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-autofix-dispatcher.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-capability-check.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-decompose.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-dedup.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-guard.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-issue-format-guard.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-issue-intake.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-issue-optimizer.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-keepalive-loop-reporter.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-keepalive-sweep.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-pr-health.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-verifier.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-verify-to-new-pr.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/agents-weekly-metrics.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/autofix.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/backplane-conformance.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/ci.yml (1)</summary>\n\n - `stranske/Workflows main`\n\n</details>\n\n<details><summary>.github/workflows/cross-repo-smoke.yml (1)</summary>\n\n - `stranske/Workflows main`\n\n</details>\n\n<details><summary>.github/workflows/demo-artifact.yml (4)</summary>\n\n - `actions/checkout v7`\n - `actions/setup-python v7`\n - `actions/upload-artifact v7`\n - `python 3.14`\n\n</details>\n\n<details><summary>.github/workflows/list-llm-models.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/maint-76-claude-code-review.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/maint-87-docs-drift-fix-agent.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/maint-coverage-guard.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/maint-dependabot-auto-lock.yml (3)</summary>\n\n - `actions/checkout v7`\n - `actions/setup-python v7@5fda3b95a4ea91299a34e894583c3862153e4b97`\n - `python 3.14`\n\n</details>\n\n<details><summary>.github/workflows/pr-00-gate.yml (4)</summary>\n\n - `actions/checkout v7`\n - `stranske/Workflows main`\n - `actions/checkout v7`\n - `actions/github-script v9.0.0`\n\n</details>\n\n<details><summary>.github/workflows/pr-46-dependency-repair-contract.yml</summary>\n\n\n</details>\n\n<details><summary>.github/workflows/release-e2e.yml (3)</summary>\n\n - `actions/checkout v7`\n - `actions/setup-python v7`\n - `python 3.14`\n\n</details>\n\n<details><summary>.github/workflows/release.yml (9)</summary>\n\n - `actions/checkout v7`\n - `actions/upload-artifact v7`\n - `actions/checkout v7`\n - `actions/setup-python v7`\n - `actions/upload-artifact v7`\n - `actions/download-artifact v8`\n - `actions/upload-artifact v7`\n - `actions/upload-artifact v7`\n - `python 3.14`\n\n</details>\n\n<details><summary>.github/workflows/reusable-pr-context.yml</summary>\n\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>npm (1)</summary>\n<blockquote>\n\n<details><summary>.github/scripts/package.json</summary>\n\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>pip_requirements (2)</summary>\n<blockquote>\n\n<details><summary>requirements.txt (11)</summary>\n\n - `pydantic >=2.13.3,<3`\n - `Pillow >=12.2.0,<14`\n - `PyYAML >=6.0.3,<7`\n - `python-pptx ==1.0.2`\n - `openpyxl >=3.1.5,<4`\n - `langchain-openai >=1.1.14,<2`\n - `langchain-anthropic >=1.4.2,<2`\n - `pandas >=2.3,<4`\n - `pyinstaller >=6.20.0,<7`\n - `pywin32 >=306`\n - `setuptools >=82.0.1`\n\n</details>\n\n<details><summary>tools/requirements-llm.txt</summary>\n\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>poetry (1)</summary>\n<blockquote>\n\n<details><summary>pyproject.toml (13)</summary>\n\n - `pydantic >=2.13.3,<3`\n - `Pillow >=12.2.0,<14`\n - `PyYAML >=6.0.3,<7`\n - `python-pptx ==1.0.2`\n - `openpyxl >=3.1.5,<4`\n - `pandas >=2.3,<4`\n - `langchain-openai >=1.1.14,<2`\n - `langchain-anthropic >=1.4.2,<2`\n - `pywin32 >=306`\n - `pytest-regressions ==2.11.0`\n - `numpy >=2.0,<3`\n - `types-pyyaml ==6.0.12.20260724` \u2192 [Updates: `==6.0.12.20260906`]\n - `tomlkit >=0.14.0`\n\n</details>\n\n</blockquote>\n</details>\n\n<details><summary>renovate-config (1)</summary>\n<blockquote>\n\n<details><summary>.github/renovate.json</summary>\n\n\n</details>\n\n</blockquote>\n</details>\n\n---\n\n- [ ] <!-- manual job -->Check this box to trigger a request for Renovate to run again on this repository\n\n",
+      "labels": [
+        {
+          "id": "LA_kwDORPCqTs8AAAACrdtCOQ",
+          "name": "tracker:durable",
+          "description": "Permanently-open tracker; excluded from open-issue backlog counts",
+          "color": "c5def5"
+        }
+      ],
+      "number": 724,
+      "title": "Dependency Dashboard",
+      "updatedAt": "2026-09-21T02:41:45Z",
+      "url": "https://github.com/stranske/Counter_Risk/issues/724"
+    },
+    {
+      "body": "Tracking issue for weekly agent workflow metrics.\n\n# Agent Metrics Summary\n\nGenerated: 2026-04-27T06:53:38Z\nRecords: 63 (keepalive 40, autofix 0, verifier 1, terminal dispositions 21, verifier follow-up ledgers 1, codex CLI freshness 0, autopilot 0, unknown 0)\nParse errors: 0\nRange: 2026-04-27T03:21:07.421000Z to 2026-04-27T06:48:07.506000Z\n\n## Keepalive\n- Runs: 40\n- PRs: 5\n- Avg iterations: 0.0\n- Stop reasons: missing-agent-label (20)\n- Actions: wait (20)\n- Gate conclusions: cancelled (8), success (7)\n- Tasks complete rate: 0.0% (0/40)\n\n## Autofix\n- Attempts: 0\n- PRs: 0\n- Fixes applied: n/a\n- Trigger reasons: n/a\n- Gate results after: n/a\n\n## Verifier\n- Runs: 1\n- PRs: 7\n- Verdicts: CONCERNS (1), concerns (1)\n- Issues created: 0\n- Avg acceptance criteria: 10.0\n- Terminal disposition records: 21\n- Terminal dispositions: wrapper-skipped (20), needs-human (1)\n- Terminal disposition sources: review-thread:492 (1), review-thread:493 (1), review-thread:24975215338 (1), review-thread:24975266856 (1), review-thread:494 (1), review-thread:24975940449 (1), review-thread:24975942138 (1), review-thread:24975995920 (1), review-thread:495 (1), review-thread:24976248468 (1), review-thread:24976378200 (1), review-thread:24976428903 (1), review-thread:24976462441 (1), review-thread:496 (1), review-thread:24978033946 (1), review-thread:24978087542 (1), review-thread:497 (1), review-thread:24980321509 (1), review-thread:24980378374 (1), review-thread:498 (1), pull-request:495 (1)\n- Terminal artifact families: review-thread-terminal-disposition: selected (20/84), verifier-terminal-disposition: selected (1/1)\n- Missing terminal artifact families: none\n- Verifier follow-up ledger records: 1\n- Verifier follow-up ledger dispositions: needs-human (1)\n- Verifier follow-up ledger PRs: 1\n- Verifier follow-up issues linked: 0\n- Verifier follow-up needs-human records: 1\n- Verifier follow-up avg chain depth: 0.0\n- Verifier follow-up max chain depth: 0\n- Verifier follow-up policy records: 1\n- Verifier follow-up policy actions: needs-human (1)\n- Verifier follow-up policy triggers: verifier-concerns (1)\n- Verifier follow-up depth-limit records: 0\n- Verifier models: gpt-5.5 (2)\n- Verifier CLI versions: codex-cli 0.125.0 (2)\n- Unsupported verifier models: n/a\n- Unsupported model dispositions: n/a\n- Missing verifier model metadata: n/a\n- Legacy missing verifier model metadata: n/a\n- Model selection reasons: default (2)\n- Verifier modes: compare (2)\n\n## Codex CLI Freshness\n- Records: 0\n- Statuses: n/a\n- Packages: n/a\n- Pinned versions: n/a\n- Latest versions: n/a\n- Outdated records: 0\n- Latest unavailable records: 0\n- Max version delta: major 0, minor 0, patch 0\n- Update targets: n/a\n\n## Weekly Metrics Artifact Selection\n\n- Schema: workflows-weekly-metrics-artifact-selection/v1\n- Status: pass\n- Lookback days: 14\n- Scan cap: 5 pages x 100 artifacts\n- Priority producer scan cap: 10 runs per source workflow\n- Download cap: 80 total, 20 per family\n- Scanned artifacts: 500\n- Candidate artifacts: 384\n- Selected artifacts: 62\n- Missing priority families: codex-cli-freshness, bot-comment-auth-coverage-wrapper, bot-comment-auth-coverage-reusable, pr-source-context\n- Ignored: 0 old, 0 expired, 116 non-metrics, 322 over family cap, 0 over total cap\n\n| Artifact family | Candidates | Selected |\n|-----------------|------------|----------|\n| agents-autofix-metrics | 158 | 20 |\n| agents-verifier-metrics | 1 | 1 |\n| keepalive-metrics | 140 | 20 |\n| review-thread-terminal-disposition | 84 | 20 |\n| verifier-terminal-disposition | 1 | 1 |\n\n| Priority family | Status | Candidates | Selected artifact |\n|-----------------|--------|------------|-------------------|\n| codex-cli-freshness | missing | 0 | none |\n| verifier-terminal-disposition | selected | 1 | verifier-terminal-disposition-24976248463 |\n| review-thread-terminal-disposition | selected | 84 | review-thread-terminal-disposition-24980641811 |\n| bot-comment-auth-coverage-wrapper | missing | 0 | none |\n| bot-comment-auth-coverage-reusable | missing | 0 | none |\n| pr-source-context | missing | 0 | none |\n\n## Weekly Metrics Artifact Downloads\n\n- Schema: workflows-weekly-metrics-artifact-download-manifest/v1\n- Status: pass\n- Selected artifacts: 62\n- Downloads: 62 passed, 0 failed\n- Unzip: 62 passed, 0 failed, 0 skipped\n\n| Artifact | ID | Download | Unzip | Path |\n|----------|----|----------|-------|------|\n| verifier-terminal-disposition-24976248463 | 6653257213 | pass | pass | artifacts/verifier-terminal-disposition-24976248463/6653257213 |\n| review-thread-terminal-disposition-24980641811 | 6654704706 | pass | pass | artifacts/review-thread-terminal-disposition-24980641811/6654704706 |\n| keepalive-metrics | 6654712259 | pass | pass | artifacts/keepalive-metrics/6654712259 |\n| agents-autofix-metrics | 6654704548 | pass | pass | artifacts/agents-autofix-metrics/6654704548 |\n| keepalive-metrics | 6654656447 | pass | pass | artifacts/keepalive-metrics/6654656447 |\n| review-thread-terminal-disposition-24980378374 | 6654634136 | pass | pass | artifacts/review-thread-terminal-disposition-24980378374/6654634136 |\n| keepalive-metrics | 6654622963 | pass | pass | artifacts/keepalive-metrics/6654622963 |\n| agents-autofix-metrics | 6654617416 | pass | pass | artifacts/agents-autofix-metrics/6654617416 |\n| agents-autofix-metrics | 6654608842 | pass | pass | artifacts/agents-autofix-metrics/6654608842 |\n| review-thread-terminal-disposition-24980321509 | 6654600064 | pass | pass | artifacts/review-thread-terminal-disposition-24980321509/6654600064 |\n| agents-autofix-metrics | 6654590225 | pass | pass | artifacts/agents-autofix-metrics/6654590225 |\n| keepalive-metrics | 6653853143 | pass | pass | artifacts/keepalive-metrics/6653853143 |\n| review-thread-terminal-disposition-24978240029 | 6653850229 | pass | pass | artifacts/review-thread-terminal-disposition-24978240029/6653850229 |\n| agents-autofix-metrics | 6653850162 | pass | pass | artifacts/agents-autofix-metrics/6653850162 |\n| keepalive-metrics | 6653829135 | pass | pass | artifacts/keepalive-metrics/6653829135 |\n| keepalive-metrics | 6653822131 | pass | pass | artifacts/keepalive-metrics/6653822131 |\n| review-thread-terminal-disposition-24978087542 | 6653803124 | pass | pass | artifacts/review-thread-terminal-disposition-24978087542/6653803124 |\n| agents-autofix-metrics | 6653795543 | pass | pass | artifacts/agents-autofix-metrics/6653795543 |\n| keepalive-metrics | 6653789236 | pass | pass | artifacts/keepalive-metrics/6653789236 |\n| agents-autofix-metrics | 6653782282 | pass | pass | artifacts/agents-autofix-metrics/6653782282 |\n| review-thread-terminal-disposition-24978033946 | 6653777705 | pass | pass | artifacts/review-thread-terminal-disposition-24978033946/6653777705 |\n| agents-autofix-metrics | 6653772374 | pass | pass | artifacts/agents-autofix-metrics/6653772374 |\n| keepalive-metrics | 6653666041 | pass | pass | artifacts/keepalive-metrics/6653666041 |\n| keepalive-metrics | 6653319805 | pass | pass | artifacts/keepalive-metrics/6653319805 |\n| review-thread-terminal-disposition-24976623470 | 6653317781 | pass | pass | artifacts/review-thread-terminal-disposition-24976623470/6653317781 |\n| agents-autofix-metrics | 6653317229 | pass | pass | artifacts/agents-autofix-metrics/6653317229 |\n| keepalive-metrics | 6653281684 | pass | pass | artifacts/keepalive-metrics/6653281684 |\n| review-thread-terminal-disposition-24976462441 | 6653274161 | pass | pass | artifacts/review-thread-terminal-disposition-24976462441/6653274161 |\n| keepalive-metrics | 6653272075 | pass | pass | artifacts/keepalive-metrics/6653272075 |\n| agents-autofix-metrics | 6653270026 | pass | pass | artifacts/agents-autofix-metrics/6653270026 |\n| agents-autofix-metrics | 6653267936 | pass | pass | artifacts/agents-autofix-metrics/6653267936 |\n| review-thread-terminal-disposition-24976428903 | 6653264253 | pass | pass | artifacts/review-thread-terminal-disposition-24976428903/6653264253 |\n| agents-autofix-metrics | 6653261282 | pass | pass | artifacts/agents-autofix-metrics/6653261282 |\n| agents-verifier-metrics | 6653257299 | pass | pass | artifacts/agents-verifier-metrics/6653257299 |\n| keepalive-metrics | 6653242601 | pass | pass | artifacts/keepalive-metrics/6653242601 |\n| review-thread-terminal-disposition-24976378200 | 6653239234 | pass | pass | artifacts/review-thread-terminal-disposition-24976378200/6653239234 |\n| agents-autofix-metrics | 6653238414 | pass | pass | artifacts/agents-autofix-metrics/6653238414 |\n| keepalive-metrics | 6653195424 | pass | pass | artifacts/keepalive-metrics/6653195424 |\n| review-thread-terminal-disposition-24976248468 | 6653193099 | pass | pass | artifacts/review-thread-terminal-disposition-24976248468/6653193099 |\n| agents-autofix-metrics | 6653192118 | pass | pass | artifacts/agents-autofix-metrics/6653192118 |\n| review-thread-terminal-disposition-24975940449 | 6653170446 | pass | pass | artifacts/review-thread-terminal-disposition-24975940449/6653170446 |\n| keepalive-metrics | 6653168048 | pass | pass | artifacts/keepalive-metrics/6653168048 |\n| review-thread-terminal-disposition-24976171605 | 6653164760 | pass | pass | artifacts/review-thread-terminal-disposition-24976171605/6653164760 |\n| agents-autofix-metrics | 6653164390 | pass | pass | artifacts/agents-autofix-metrics/6653164390 |\n| keepalive-metrics | 6653122183 | pass | pass | artifacts/keepalive-metrics/6653122183 |\n| review-thread-terminal-disposition-24975995920 | 6653118707 | pass | pass | artifacts/review-thread-terminal-disposition-24975995920/6653118707 |\n| agents-autofix-metrics | 6653111893 | pass | pass | artifacts/agents-autofix-metrics/6653111893 |\n| keepalive-metrics | 6653111198 | pass | pass | artifacts/keepalive-metrics/6653111198 |\n| agents-autofix-metrics | 6653106485 | pass | pass | artifacts/agents-autofix-metrics/6653106485 |\n| review-thread-terminal-disposition-24975942138 | 6653101470 | pass | pass | artifacts/review-thread-terminal-disposition-24975942138/6653101470 |\n| agents-autofix-metrics | 6653098025 | pass | pass | artifacts/agents-autofix-metrics/6653098025 |\n| keepalive-metrics | 6652940626 | pass | pass | artifacts/keepalive-metrics/6652940626 |\n| review-thread-terminal-disposition-24975425575 | 6652938132 | pass | pass | artifacts/review-thread-terminal-disposition-24975425575/6652938132 |\n| agents-autofix-metrics | 6652937341 | pass | pass | artifacts/agents-autofix-metrics/6652937341 |\n| keepalive-metrics | 6652903981 | pass | pass | artifacts/keepalive-metrics/6652903981 |\n| keepalive-metrics | 6652896126 | pass | pass | artifacts/keepalive-metrics/6652896126 |\n| agents-autofix-metrics | 6652891976 | pass | pass | artifacts/agents-autofix-metrics/6652891976 |\n| review-thread-terminal-disposition-24975266856 | 6652889941 | pass | pass | artifacts/review-thread-terminal-disposition-24975266856/6652889941 |\n| review-thread-terminal-disposition-24975215338 | 6652882431 | pass | pass | artifacts/review-thread-terminal-disposition-24975215338/6652882431 |\n| keepalive-metrics | 6652880369 | pass | pass | artifacts/keepalive-metrics/6652880369 |\n| review-thread-terminal-disposition-24975052603 | 6652818685 | pass | pass | artifacts/review-thread-terminal-disposition-24975052603/6652818685 |\n| review-thread-terminal-disposition-24974954572 | 6652784003 | pass | pass | artifacts/review-thread-terminal-disposition-24974954572/6652784003 |\n\n## Terminal Disposition Coverage Preflight\n\n- Mode: warning-only (does not block merges or automation)\n- Requested mode: warning-only\n- Status: pass\n- Coverage status: pass\n- Hard block eligible: true\n- Hard block active: false\n- Input files: 21\n- Scanned records: 21\n- Terminal disposition records: 21\n- Non-terminal records: 0\n- Observed sources: 21\n- Expected review-thread sources: 7\n- Missing review-thread sources: 0\n- Parse errors: 0\n- Artifact selector status: pass\n- Terminal artifacts selected: 21\n- Terminal artifacts candidates: 85\n- Verifier model compatibility: pass\n- Unsupported verifier model records: 0\n- Missing verifier model metadata records: 0\n- Missing verifier model metadata records with unknown mode: 0\n- Legacy missing verifier model metadata records: 0\n- Unsupported verifier models: gpt-5.2-codex\n\n| Observed source | Records | Dispositions | PRs |\n|-----------------|---------|--------------|-----|\n| pull-request:495 | 1 | needs-human (1) | #495 |\n| review-thread:24975215338 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24975266856 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24975940449 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24975942138 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24975995920 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24976248468 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24976378200 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24976428903 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24976462441 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24978033946 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24978087542 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24980321509 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:24980378374 | 1 | wrapper-skipped (1) | n/a |\n| review-thread:492 | 1 | wrapper-skipped (1) | #492 |\n| review-thread:493 | 1 | wrapper-skipped (1) | #493 |\n| review-thread:494 | 1 | wrapper-skipped (1) | #494 |\n| review-thread:495 | 1 | wrapper-skipped (1) | #495 |\n| review-thread:496 | 1 | wrapper-skipped (1) | #496 |\n| review-thread:497 | 1 | wrapper-skipped (1) | #497 |\n| review-thread:498 | 1 | wrapper-skipped (1) | #498 |\n\n| Terminal artifact family | Status | Candidates | Selected | Latest artifact |\n|--------------------------|--------|------------|----------|-----------------|\n| review-thread-terminal-disposition | selected | 84 | 20 | review-thread-terminal-disposition-24980641811 |\n| verifier-terminal-disposition | selected | 1 | 1 | verifier-terminal-disposition-24976248463 |\n\n## Bot Comment App Auth Coverage\n\n- Schema: workflows-bot-comment-auth-coverage-summary/v1\n- Status: no-data\n- Coverage status: no-data\n- Mode: warning-only\n- Hard block eligible: false\n- Hard block active: false\n- Input files: 0\n- Parsed JSON files: 0\n- Auth records: 0\n- Non-auth records: 0\n- Parse errors: 0\n- Read errors: 0\n- Artifact selection status: pass\n- Selected auth artifacts: 0\n- Required organic events: pull_request, workflow_run\n- Organic evidence status: no-data\n- Missing organic requirements: agents-bot-comment-handler-wrapper/pull_request, agents-bot-comment-handler-wrapper/workflow_run, reusable-bot-comment-handler/pull_request, reusable-bot-comment-handler/workflow_run\n- Blockers: missing-organic-agents-bot-comment-handler-wrapper-pull_request, missing-organic-agents-bot-comment-handler-wrapper-workflow_run, missing-organic-reusable-bot-comment-handler-pull_request, missing-organic-reusable-bot-comment-handler-workflow_run\n\n| Component | Latest mode | Records | Expected | Allowed | Blockers |\n|-----------|-------------|---------|----------|---------|----------|\n| agents-bot-comment-handler-wrapper | missing | 0 | client-id | client-id | missing-agents-bot-comment-handler-wrapper |\n| reusable-bot-comment-handler | missing | 0 | any | client-id, none | missing-reusable-bot-comment-handler |\n",
+      "labels": [
+        {
+          "id": "LA_kwDORPCqTs8AAAACrdtCOQ",
+          "name": "tracker:durable",
+          "description": "Permanently-open tracker; excluded from open-issue backlog counts",
+          "color": "c5def5"
+        }
+      ],
+      "number": 499,
+      "title": "Agent metrics weekly summary",
+      "updatedAt": "2026-09-14T06:19:17Z",
+      "url": "https://github.com/stranske/Counter_Risk/issues/499"
+    }
+  ],
+  "prs": [
+    {
+      "body": "## Sync Summary\n\n### Files Updated\n- runner_lib/ (2 files): Shared runner prompt assembly, output parsing, and dispatch debounce helpers\n- validate_run_contract.py: Validates a repo's emitted run-contract/v1 run envelope (producer/bridge) or ingested satellite object (consumer) against the canonical Workflows schemas + opt-in participant registry. Offline/deterministic; opt-in skip for non-participants. Synced so participants can validate locally and the reusable conformance gate can invoke it.\n- mosaic-core-v1.md: Mosaic-core/v1 record types and fact-key join semantics\n- document-mirror-v1.md: Document-mirror/v1 specification for offline blob catalogs and triple-link resolvers\n- output-substrate-v1.md: Output-substrate/v1 renderer profiles, workspace bundle refs, and manifest CSV exports\n\n---\n\n### Review Checklist\n- [ ] CI passes with updated workflows\n- [ ] No repo-specific customizations were overwritten\n\n**Source:** stranske/Workflows\n**Source SHA:** `fb2a8fc914fabc3608478d0192332893668f5f93`\n**Template hash:** `7773d74e5580`\n**Consumer-sync plan ID:** `sha256:7773d74e558056f6b05f1ced33d7aecd812db23771c6b2935ce723c51bcd97b5`\n**Plan scope:** `source-delta`\n**Scope base SHA:** `994af8435a22fabd7cbf0f41ee4bed9c61ea289c`\n**Sync phase:** `promote`\n**Sync branch:** `sync/workflows-delivery`\n**Consumer repo:** `stranske/Counter_Risk`\n**Manifest:** `.github/sync-manifest.yml`\n\n<!-- workflow-source:sync_campaign -->\n<!-- workflows-consumer-sync:v1 {\"schema\":\"workflows-consumer-sync-pr/v1\",\"consumer_repo\":\"stranske/Counter_Risk\",\"source_repository\":\"stranske/Workflows\",\"source_sha\":\"fb2a8fc914fabc3608478d0192332893668f5f93\",\"template_hash\":\"7773d74e5580\",\"plan_id\":\"sha256:7773d74e558056f6b05f1ced33d7aecd812db23771c6b2935ce723c51bcd97b5\",\"plan_scope\":\"source-delta\",\"scope_base_sha\":\"994af8435a22fabd7cbf0f41ee4bed9c61ea289c\",\"source_commit\":\"fb2a8fc914fabc3608478d0192332893668f5f93\",\"sync_phase\":\"promote\",\"sync_branch\":\"sync/workflows-delivery\",\"manifest\":\".github/sync-manifest.yml\",\"lifecycle_state\":\"staging\",\"run_id\":\"35496527361\",\"run_attempt\":\"1\",\"changes_count\":5} -->\n<!-- sync-pr-delivery-record:v1 {\"schema\":\"sync-pr-delivery-record/v1\",\"durable_issue_url\":\"https://github.com/stranske/Workflows/issues/1836\",\"plan_id\":\"sha256:7773d74e558056f6b05f1ced33d7aecd812db23771c6b2935ce723c51bcd97b5\",\"generation\":\"7773d74e5580\",\"repository\":\"stranske/Counter_Risk\",\"desired_tree_hash\":\"6dee025ffcb3f50725eb90bf4260415a18e2f6e2\",\"source_commit\":\"fb2a8fc914fabc3608478d0192332893668f5f93\",\"head_observed_sha\":\"3215724ff079d36f06aab65405fe715809ce0841\",\"head_observed_at\":\"2026-09-20T07:19:35Z\",\"lease_expires_at\":\"2026-09-23T07:19:35Z\",\"predecessor_prs\":[],\"successor_prs\":[],\"delivery_state\":\"sealed\",\"review_started_at\":\"2026-09-20T07:44:20.448Z\",\"sealed_at\":\"2026-09-20T08:15:31.065Z\",\"sealed_head_sha\":\"3215724ff079d36f06aab65405fe715809ce0841\",\"review_evidence\":{\"policy_schema\":\"workflows.consumer-sync-review-policy/v1\",\"reason\":\"review_timeout_degraded\",\"degraded\":true,\"responded_reviewers\":[],\"unavailable_reviewers\":[]},\"terminal_disposition\":\"\"} -->\n\nautofix: false",
+      "closingIssuesReferences": [],
+      "isDraft": false,
+      "labels": [
+        {
+          "id": "LA_kwDORPCqTs8AAAACX8bBXw",
+          "name": "sync",
+          "description": "Automated sync from Workflows",
+          "color": "0e8a16"
+        },
+        {
+          "id": "LA_kwDORPCqTs8AAAACX8bB4Q",
+          "name": "automated",
+          "description": "Automated sync from Workflows",
+          "color": "0e8a16"
+        },
+        {
+          "id": "LA_kwDORPCqTs8AAAACvmrFUw",
+          "name": "workflow:source-sync",
+          "description": "PR source is a sync or maintenance campaign",
+          "color": "1d76db"
+        },
+        {
+          "id": "LA_kwDORPCqTs8AAAACv73grw",
+          "name": "sync:delivery-staging",
+          "description": "Generated delivery is mutable and must not merge",
+          "color": "d93f0b"
+        },
+        {
+          "id": "LA_kwDORPCqTs8AAAACv73g0A",
+          "name": "sync:delivery-ready",
+          "description": "Generated delivery is sealed to its exact reviewed head",
+          "color": "0e8a16"
+        }
+      ],
+      "number": 1080,
+      "title": "chore: sync workflow templates",
+      "updatedAt": "2026-09-20T08:24:13Z",
+      "url": "https://github.com/stranske/Counter_Risk/pull/1080"
+    }
+  ],
+  "runs": [
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-09T09:32:33Z",
+      "databaseId": 34335286474,
+      "headSha": "1f57e9a0e556b881083a9be80b597790a7ad4e9b",
+      "name": "Agents Keepalive Sweep",
+      "status": "completed",
+      "url": "https://github.com/stranske/Counter_Risk/actions/runs/34335286474",
+      "workflowName": "Agents Keepalive Sweep"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-09T09:28:02Z",
+      "databaseId": 34334856027,
+      "headSha": "1f57e9a0e556b881083a9be80b597790a7ad4e9b",
+      "name": "Agents Auto-Pilot",
+      "status": "completed",
+      "url": "https://github.com/stranske/Counter_Risk/actions/runs/34334856027",
+      "workflowName": "Agents Auto-Pilot"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-09T09:28:02Z",
+      "databaseId": 34334855996,
+      "headSha": "1f57e9a0e556b881083a9be80b597790a7ad4e9b",
+      "name": "Agents Issue Format Guard",
+      "status": "completed",
+      "url": "https://github.com/stranske/Counter_Risk/actions/runs/34334855996",
+      "workflowName": "Agents Issue Format Guard"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-09T09:28:00Z",
+      "databaseId": 34334853401,
+      "headSha": "1f57e9a0e556b881083a9be80b597790a7ad4e9b",
+      "name": "Agents PR Event Hub",
+      "status": "completed",
+      "url": "https://github.com/stranske/Counter_Risk/actions/runs/34334853401",
+      "workflowName": "Agents PR Event Hub"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-09T09:27:58Z",
+      "databaseId": 34334848798,
+      "headSha": "1f57e9a0e556b881083a9be80b597790a7ad4e9b",
+      "name": "Agents Issue Format Guard",
+      "status": "completed",
+      "url": "https://github.com/stranske/Counter_Risk/actions/runs/34334848798",
+      "workflowName": "Agents Issue Format Guard"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-09T09:27:58Z",
+      "databaseId": 34334848861,
+      "headSha": "1f57e9a0e556b881083a9be80b597790a7ad4e9b",
+      "name": "Agents Auto-Pilot",
+      "status": "completed",
+      "url": "https://github.com/stranske/Counter_Risk/actions/runs/34334848861",
+      "workflowName": "Agents Auto-Pilot"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-09T09:27:57Z",
+      "databaseId": 34334847091,
+      "headSha": "1f57e9a0e556b881083a9be80b597790a7ad4e9b",
+      "name": "Agents PR Event Hub",
+      "status": "completed",
+      "url": "https://github.com/stranske/Counter_Risk/actions/runs/34334847091",
+      "workflowName": "Agents PR Event Hub"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-09T09:17:05Z",
+      "databaseId": 34333834735,
+      "headSha": "1f57e9a0e556b881083a9be80b597790a7ad4e9b",
+      "name": "Agents PR Health",
+      "status": "completed",
+      "url": "https://github.com/stranske/Counter_Risk/actions/runs/34333834735",
+      "workflowName": "Agents PR Health"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-09T08:52:20Z",
+      "databaseId": 34331512369,
+      "headSha": "1f57e9a0e556b881083a9be80b597790a7ad4e9b",
+      "name": "Autofix",
+      "status": "completed",
+      "url": "https://github.com/stranske/Counter_Risk/actions/runs/34331512369",
+      "workflowName": "Autofix"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-09T08:48:24Z",
+      "databaseId": 34331149706,
+      "headSha": "1f57e9a0e556b881083a9be80b597790a7ad4e9b",
+      "name": "Autofix",
+      "status": "completed",
+      "url": "https://github.com/stranske/Counter_Risk/actions/runs/34331149706",
+      "workflowName": "Autofix"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-09T08:42:16Z",
+      "databaseId": 34330575976,
+      "headSha": "1f57e9a0e556b881083a9be80b597790a7ad4e9b",
+      "name": "Keepalive Loop Reporter",
+      "status": "completed",
+      "url": "https://github.com/stranske/Counter_Risk/actions/runs/34330575976",
+      "workflowName": "Keepalive Loop Reporter"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-09T08:41:32Z",
+      "databaseId": 34330510493,
+      "headSha": "1f57e9a0e556b881083a9be80b597790a7ad4e9b",
+      "name": "Agents PR Event Hub",
+      "status": "completed",
+      "url": "https://github.com/stranske/Counter_Risk/actions/runs/34330510493",
+      "workflowName": "Agents PR Event Hub"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-09T08:41:32Z",
+      "databaseId": 34330510444,
+      "headSha": "1f57e9a0e556b881083a9be80b597790a7ad4e9b",
+      "name": "Agents Gate Followups",
+      "status": "completed",
+      "url": "https://github.com/stranske/Counter_Risk/actions/runs/34330510444",
+      "workflowName": "Agents Gate Followups"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-09T08:41:32Z",
+      "databaseId": 34330510367,
+      "headSha": "1f57e9a0e556b881083a9be80b597790a7ad4e9b",
+      "name": "Autofix",
+      "status": "completed",
+      "url": "https://github.com/stranske/Counter_Risk/actions/runs/34330510367",
+      "workflowName": "Autofix"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-09T08:39:55Z",
+      "databaseId": 34330356598,
+      "headSha": "1f57e9a0e556b881083a9be80b597790a7ad4e9b",
+      "name": "Keepalive Loop Reporter",
+      "status": "completed",
+      "url": "https://github.com/stranske/Counter_Risk/actions/runs/34330356598",
+      "workflowName": "Keepalive Loop Reporter"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-09T08:37:09Z",
+      "databaseId": 34330106375,
+      "headSha": "1f57e9a0e556b881083a9be80b597790a7ad4e9b",
+      "name": "Agents PR Event Hub",
+      "status": "completed",
+      "url": "https://github.com/stranske/Counter_Risk/actions/runs/34330106375",
+      "workflowName": "Agents PR Event Hub"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-09T08:37:09Z",
+      "databaseId": 34330106305,
+      "headSha": "1f57e9a0e556b881083a9be80b597790a7ad4e9b",
+      "name": "Autofix",
+      "status": "completed",
+      "url": "https://github.com/stranske/Counter_Risk/actions/runs/34330106305",
+      "workflowName": "Autofix"
+    },
+    {
+      "conclusion": "failure",
+      "createdAt": "2026-09-09T08:37:09Z",
+      "databaseId": 34330106451,
+      "headSha": "1f57e9a0e556b881083a9be80b597790a7ad4e9b",
+      "name": "Agents Gate Followups",
+      "status": "completed",
+      "url": "https://github.com/stranske/Counter_Risk/actions/runs/34330106451",
+      "workflowName": "Agents Gate Followups"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-09T08:35:34Z",
+      "databaseId": 34329960735,
+      "headSha": "1f57e9a0e556b881083a9be80b597790a7ad4e9b",
+      "name": "Agents Keepalive Sweep",
+      "status": "completed",
+      "url": "https://github.com/stranske/Counter_Risk/actions/runs/34329960735",
+      "workflowName": "Agents Keepalive Sweep"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-09T08:34:49Z",
+      "databaseId": 34329891037,
+      "headSha": "1f57e9a0e556b881083a9be80b597790a7ad4e9b",
+      "name": "Keepalive Loop Reporter",
+      "status": "completed",
+      "url": "https://github.com/stranske/Counter_Risk/actions/runs/34329891037",
+      "workflowName": "Keepalive Loop Reporter"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-09T08:34:20Z",
+      "databaseId": 34329846821,
+      "headSha": "1f57e9a0e556b881083a9be80b597790a7ad4e9b",
+      "name": "Keepalive Loop Reporter",
+      "status": "completed",
+      "url": "https://github.com/stranske/Counter_Risk/actions/runs/34329846821",
+      "workflowName": "Keepalive Loop Reporter"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-09T08:33:41Z",
+      "databaseId": 34329786866,
+      "headSha": "1f57e9a0e556b881083a9be80b597790a7ad4e9b",
+      "name": "Autofix",
+      "status": "completed",
+      "url": "https://github.com/stranske/Counter_Risk/actions/runs/34329786866",
+      "workflowName": "Autofix"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-09T08:33:41Z",
+      "databaseId": 34329786857,
+      "headSha": "1f57e9a0e556b881083a9be80b597790a7ad4e9b",
+      "name": "Agents PR Event Hub",
+      "status": "completed",
+      "url": "https://github.com/stranske/Counter_Risk/actions/runs/34329786857",
+      "workflowName": "Agents PR Event Hub"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-09T08:33:41Z",
+      "databaseId": 34329786777,
+      "headSha": "1f57e9a0e556b881083a9be80b597790a7ad4e9b",
+      "name": "Agents Gate Followups",
+      "status": "completed",
+      "url": "https://github.com/stranske/Counter_Risk/actions/runs/34329786777",
+      "workflowName": "Agents Gate Followups"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-09T08:30:49Z",
+      "databaseId": 34329520838,
+      "headSha": "1f57e9a0e556b881083a9be80b597790a7ad4e9b",
+      "name": "Keepalive Loop Reporter",
+      "status": "completed",
+      "url": "https://github.com/stranske/Counter_Risk/actions/runs/34329520838",
+      "workflowName": "Keepalive Loop Reporter"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-09T08:30:17Z",
+      "databaseId": 34329467733,
+      "headSha": "1f57e9a0e556b881083a9be80b597790a7ad4e9b",
+      "name": "Auto-Label Issues",
+      "status": "completed",
+      "url": "https://github.com/stranske/Counter_Risk/actions/runs/34329467733",
+      "workflowName": "Auto-Label Issues"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-09T08:30:17Z",
+      "databaseId": 34329467725,
+      "headSha": "1f57e9a0e556b881083a9be80b597790a7ad4e9b",
+      "name": "Agents Issue Format Guard",
+      "status": "completed",
+      "url": "https://github.com/stranske/Counter_Risk/actions/runs/34329467725",
+      "workflowName": "Agents Issue Format Guard"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-09T08:29:36Z",
+      "databaseId": 34329402458,
+      "headSha": "1f57e9a0e556b881083a9be80b597790a7ad4e9b",
+      "name": "Agents Issue Intake",
+      "status": "completed",
+      "url": "https://github.com/stranske/Counter_Risk/actions/runs/34329402458",
+      "workflowName": "Agents Issue Intake"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-09T08:29:36Z",
+      "databaseId": 34329403108,
+      "headSha": "1f57e9a0e556b881083a9be80b597790a7ad4e9b",
+      "name": "Agents PR Event Hub",
+      "status": "completed",
+      "url": "https://github.com/stranske/Counter_Risk/actions/runs/34329403108",
+      "workflowName": "Agents PR Event Hub"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-09T08:29:35Z",
+      "databaseId": 34329401046,
+      "headSha": "1f57e9a0e556b881083a9be80b597790a7ad4e9b",
+      "name": "Auto-Label Issues",
+      "status": "completed",
+      "url": "https://github.com/stranske/Counter_Risk/actions/runs/34329401046",
+      "workflowName": "Auto-Label Issues"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-09T08:29:35Z",
+      "databaseId": 34329401135,
+      "headSha": "1f57e9a0e556b881083a9be80b597790a7ad4e9b",
+      "name": "Agents Issue Format Guard",
+      "status": "completed",
+      "url": "https://github.com/stranske/Counter_Risk/actions/runs/34329401135",
+      "workflowName": "Agents Issue Format Guard"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-09T08:29:31Z",
+      "databaseId": 34329395145,
+      "headSha": "1f57e9a0e556b881083a9be80b597790a7ad4e9b",
+      "name": "Agents Auto-Pilot",
+      "status": "completed",
+      "url": "https://github.com/stranske/Counter_Risk/actions/runs/34329395145",
+      "workflowName": "Agents Auto-Pilot"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-09T08:29:31Z",
+      "databaseId": 34329395053,
+      "headSha": "1f57e9a0e556b881083a9be80b597790a7ad4e9b",
+      "name": "Agents Issue Format Guard",
+      "status": "completed",
+      "url": "https://github.com/stranske/Counter_Risk/actions/runs/34329395053",
+      "workflowName": "Agents Issue Format Guard"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-09T08:29:30Z",
+      "databaseId": 34329393971,
+      "headSha": "1f57e9a0e556b881083a9be80b597790a7ad4e9b",
+      "name": "CI",
+      "status": "completed",
+      "url": "https://github.com/stranske/Counter_Risk/actions/runs/34329393971",
+      "workflowName": "CI"
+    },
+    {
+      "conclusion": "skipped",
+      "createdAt": "2026-09-09T08:29:30Z",
+      "databaseId": 34329393954,
+      "headSha": "1f57e9a0e556b881083a9be80b597790a7ad4e9b",
+      "name": "Cross-Repo Smoke",
+      "status": "completed",
+      "url": "https://github.com/stranske/Counter_Risk/actions/runs/34329393954",
+      "workflowName": "Cross-Repo Smoke"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-09T08:28:59Z",
+      "databaseId": 34329347801,
+      "headSha": "c72f3337443ab84587a6609da00507b739ba1484",
+      "name": "Agents PR Event Hub",
+      "status": "completed",
+      "url": "https://github.com/stranske/Counter_Risk/actions/runs/34329347801",
+      "workflowName": "Agents PR Event Hub"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-09T08:26:42Z",
+      "databaseId": 34329142715,
+      "headSha": "c72f3337443ab84587a6609da00507b739ba1484",
+      "name": "Auto-Label Issues",
+      "status": "completed",
+      "url": "https://github.com/stranske/Counter_Risk/actions/runs/34329142715",
+      "workflowName": "Auto-Label Issues"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-09T08:26:41Z",
+      "databaseId": 34329142226,
+      "headSha": "c72f3337443ab84587a6609da00507b739ba1484",
+      "name": "Agents Issue Format Guard",
+      "status": "completed",
+      "url": "https://github.com/stranske/Counter_Risk/actions/runs/34329142226",
+      "workflowName": "Agents Issue Format Guard"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-09T08:26:39Z",
+      "databaseId": 34329139001,
+      "headSha": "c72f3337443ab84587a6609da00507b739ba1484",
+      "name": "Keepalive Loop Reporter",
+      "status": "completed",
+      "url": "https://github.com/stranske/Counter_Risk/actions/runs/34329139001",
+      "workflowName": "Keepalive Loop Reporter"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-09T08:26:23Z",
+      "databaseId": 34329113187,
+      "headSha": "c72f3337443ab84587a6609da00507b739ba1484",
+      "name": "Agents Issue Intake",
+      "status": "completed",
+      "url": "https://github.com/stranske/Counter_Risk/actions/runs/34329113187",
+      "workflowName": "Agents Issue Intake"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-09T08:26:22Z",
+      "databaseId": 34329112444,
+      "headSha": "c72f3337443ab84587a6609da00507b739ba1484",
+      "name": "Agents Issue Format Guard",
+      "status": "completed",
+      "url": "https://github.com/stranske/Counter_Risk/actions/runs/34329112444",
+      "workflowName": "Agents Issue Format Guard"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-09T08:26:22Z",
+      "databaseId": 34329112424,
+      "headSha": "c72f3337443ab84587a6609da00507b739ba1484",
+      "name": "Auto-Label Issues",
+      "status": "completed",
+      "url": "https://github.com/stranske/Counter_Risk/actions/runs/34329112424",
+      "workflowName": "Auto-Label Issues"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-09T08:25:52Z",
+      "databaseId": 34329068088,
+      "headSha": "c72f3337443ab84587a6609da00507b739ba1484",
+      "name": "CI",
+      "status": "completed",
+      "url": "https://github.com/stranske/Counter_Risk/actions/runs/34329068088",
+      "workflowName": "CI"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-09T08:25:49Z",
+      "databaseId": 34329064643,
+      "headSha": "50f6201d24681b94d653b6c39f0ae9383df50888",
+      "name": "Agents PR Event Hub",
+      "status": "completed",
+      "url": "https://github.com/stranske/Counter_Risk/actions/runs/34329064643",
+      "workflowName": "Agents PR Event Hub"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-09T07:50:26Z",
+      "databaseId": 34325915154,
+      "headSha": "50f6201d24681b94d653b6c39f0ae9383df50888",
+      "name": "Autofix",
+      "status": "completed",
+      "url": "https://github.com/stranske/Counter_Risk/actions/runs/34325915154",
+      "workflowName": "Autofix"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-09T07:28:21Z",
+      "databaseId": 34324007662,
+      "headSha": "50f6201d24681b94d653b6c39f0ae9383df50888",
+      "name": "CI",
+      "status": "completed",
+      "url": "https://github.com/stranske/Counter_Risk/actions/runs/34324007662",
+      "workflowName": "CI"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-09T07:24:44Z",
+      "databaseId": 34323701053,
+      "headSha": "0cf9d1fdf056e0a48a5c568841046bb7cdef60d0",
+      "name": "Autofix",
+      "status": "completed",
+      "url": "https://github.com/stranske/Counter_Risk/actions/runs/34323701053",
+      "workflowName": "Autofix"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-09T05:29:44Z",
+      "databaseId": 34315099096,
+      "headSha": "0cf9d1fdf056e0a48a5c568841046bb7cdef60d0",
+      "name": "Agents Keepalive Sweep",
+      "status": "completed",
+      "url": "https://github.com/stranske/Counter_Risk/actions/runs/34315099096",
+      "workflowName": "Agents Keepalive Sweep"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-09T05:17:51Z",
+      "databaseId": 34314313068,
+      "headSha": "0cf9d1fdf056e0a48a5c568841046bb7cdef60d0",
+      "name": "Duplicate Detection",
+      "status": "completed",
+      "url": "https://github.com/stranske/Counter_Risk/actions/runs/34314313068",
+      "workflowName": "Duplicate Detection"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-09-09T05:17:51Z",
+      "databaseId": 34314313136,
+      "headSha": "0cf9d1fdf056e0a48a5c568841046bb7cdef60d0",
+      "name": "Auto-Label Issues",
+      "status": "completed",
+      "url": "https://github.com/stranske/Counter_Risk/actions/runs/34314313136",
+      "workflowName": "Auto-Label Issues"
+    }
+  ],
+  "observedAt": "2026-09-21T04:16:35.519990+00:00"
+}

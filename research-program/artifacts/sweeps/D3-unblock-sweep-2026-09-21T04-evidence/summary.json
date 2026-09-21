@@ -1,0 +1,127 @@
+{
+  "unit": "D3-unblock-sweep-2026-09-21T04",
+  "observedAt": "2026-09-21T04:16:35.519990+00:00",
+  "covered": [
+    "Workflows",
+    "Travel-Plan-Permission",
+    "Trend_Model_Project",
+    "Portable-Alpha-Extension-Model",
+    "Counter_Risk",
+    "Manager-Database",
+    "Inv-Man-Intake",
+    "Pension-Data"
+  ],
+  "deferred": [
+    "Ready",
+    "trip-planner",
+    "learning-management-system",
+    "Fine-Art-Archive",
+    "Doc-Lineage",
+    "Deliverable-Render",
+    "Manager-Mosaic"
+  ],
+  "results": [
+    {
+      "repo": "Workflows",
+      "frozen_found": 1,
+      "frozen_repaired": 0,
+      "frozen_left": [
+        [
+          3123,
+          "bot-maintained LangSmith observability tracker"
+        ]
+      ],
+      "silent_released": [],
+      "silent_stale": [],
+      "reroutes": [],
+      "branch_state": "Agents Keepalive Sweep success",
+      "supply": 32,
+      "priority": "0/32"
+    },
+    {
+      "repo": "Travel-Plan-Permission",
+      "frozen_found": 0,
+      "frozen_repaired": 0,
+      "frozen_left": [],
+      "silent_released": [],
+      "silent_stale": [],
+      "reroutes": [],
+      "branch_state": "Agents PR Health success",
+      "supply": 5,
+      "priority": "0/5"
+    },
+    {
+      "repo": "Trend_Model_Project",
+      "frozen_found": 0,
+      "frozen_repaired": 0,
+      "frozen_left": [],
+      "silent_released": [],
+      "silent_stale": [],
+      "reroutes": [],
+      "branch_state": "CI success",
+      "supply": 3,
+      "priority": "0/3"
+    },
+    {
+      "repo": "Portable-Alpha-Extension-Model",
+      "frozen_found": 0,
+      "frozen_repaired": 0,
+      "frozen_left": [],
+      "silent_released": [],
+      "silent_stale": [],
+      "reroutes": [],
+      "branch_state": "Agents PR Health success",
+      "supply": 4,
+      "priority": "3/4"
+    },
+    {
+      "repo": "Counter_Risk",
+      "frozen_found": 0,
+      "frozen_repaired": 0,
+      "frozen_left": [],
+      "silent_released": [],
+      "silent_stale": [],
+      "reroutes": [],
+      "branch_state": "Agents Gate Followups success",
+      "supply": 9,
+      "priority": "7/9"
+    },
+    {
+      "repo": "Manager-Database",
+      "frozen_found": 0,
+      "frozen_repaired": 0,
+      "frozen_left": [],
+      "silent_released": [],
+      "silent_stale": [],
+      "reroutes": [],
+      "branch_state": "Agents Gate Followups success",
+      "supply": 4,
+      "priority": "3/4"
+    },
+    {
+      "repo": "Inv-Man-Intake",
+      "frozen_found": 0,
+      "frozen_repaired": 0,
+      "frozen_left": [],
+      "silent_released": [],
+      "silent_stale": [],
+      "reroutes": [],
+      "branch_state": "CI success",
+      "supply": 4,
+      "priority": "0/4"
+    },
+    {
+      "repo": "Pension-Data",
+      "frozen_found": 0,
+      "frozen_repaired": 0,
+      "frozen_left": [],
+      "silent_released": [],
+      "silent_stale": [],
+      "reroutes": [],
+      "branch_state": "Agents Gate Followups failure (https://github.com/stranske/Pension-Data/actions/runs/34867655474)",
+      "supply": 8,
+      "priority": "0/8"
+    }
+  ],
+  "actions": []
+}
