@@ -7,7 +7,7 @@
 | B7-PROGRAM-PLAN-v3.md | 2 | 2 | 0 |
 | C-skill-curriculum.md | 0 | 0 | 0 |
 | R1-legal-decomposition.md | 17 | 17 | 0 |
-| R2-consultant-report-diffing.md | 16 | 14 | 2 |
+| R2-consultant-report-diffing.md | 16 | 16 | 0 |
 | R3-manager-mosaic-synthesis.md | 12 | 11 | 1 |
 | R4-document-access-substrate.md | 15 | 10 | 5 |
 | R5-output-substrate.md | 10 | 8 | 2 |
@@ -17,11 +17,6 @@
 ## Unreachable in B3-interop-architecture.md
 
 - https://…
-
-## Unreachable in R2-consultant-report-diffing.md
-
-- https://github.com/mli55/pdfdelta
-- https://github.com/stephenlzc/docx-trackdiff
 
 ## Unreachable in R3-manager-mosaic-synthesis.md
 
