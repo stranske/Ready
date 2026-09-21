@@ -29,3 +29,7 @@
 ## 2026-09-21T21:20Z — Manager-Database Phase 3-4 adversarial verification complete (4 findings)
 
 ## 2026-09-21T21:22Z — Manager-Database Phase 5 complete; issues #1706-#1709 filed; report at Manager-Database-2026-09-21.md
+
+## 2026-09-21T23:15Z — Deliverable-Render audit attempt 2 started (D-audit-Deliverable-Render--2026-09-21T20-41-01Z); tip 3e479ba after morning #31/#32 fixes merged.
+
+## 2026-09-21T23:20Z — Deliverable-Render attempt 2 complete; issues #36 #37 filed; report at Deliverable-Render-2026-09-21.md
