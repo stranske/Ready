@@ -1477,3 +1477,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-21T03:11:45Z — D4-verify-merged-2026-09-21T03 — route — router picked cursor from ['codex', 'cursor']
 ## 2026-09-21T03:11:45Z — D4-verify-merged-2026-09-21T03 — claimed by codex (agent cursor)
 ## 2026-09-21T03:17:35Z — D4-verify-merged-2026-09-21T03 — done — Audited 20 oldest eligible merged PRs: 7 verified, 5 partial for specified acceptance gaps, and 8 excluded; follow-ups blocked by gh authentication.
+## 2026-09-21T04:15:20Z — unblock — enqueued D3-unblock-sweep-2026-09-21T04
+## 2026-09-21T04:15:20Z — D3-unblock-sweep-2026-09-21T04 — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-21T04:15:20Z — D3-unblock-sweep-2026-09-21T04 — claimed by driver (agent cursor)
