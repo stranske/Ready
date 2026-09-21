@@ -1520,3 +1520,8 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-21T20:22:05Z — D3-unblock-sweep-2026-09-21T20 — route — router picked cursor from ['codex', 'cursor']
 ## 2026-09-21T20:22:05Z — D3-unblock-sweep-2026-09-21T20 — claimed by driver (agent cursor)
 ## 2026-09-21T20:25:34Z — D3-unblock-sweep-2026-09-21T20 — done — cursor produced 624 words at artifacts/sweeps/D3-unblock-sweep-2026-09-21T20.md in 182s
+## 2026-09-21T20:41:01Z — refill — Deliverable-Render: open=1 <= 2 → audit queued
+## 2026-09-21T20:41:04Z — refill — Counter_Risk: open=2 <= 3 → audit queued
+## 2026-09-21T20:41:04Z — refill — Manager-Database: open=1 <= 2 → audit queued
+## 2026-09-21T20:41:07Z — D-audit-Counter_Risk--2026-09-21T20-41-04Z — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-21T20:41:07Z — D-audit-Counter_Risk--2026-09-21T20-41-04Z — claimed by driver (agent cursor)

@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-21T20:25:34Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-21T20:41:07Z)
 
-Units: 154 — done 151, failed 3
+Units: 157 — claimed 1, done 151, failed 3, queued 2
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 Orchestrator evidence (30d): offload runs 194, bound to a research round 149, scored 149 (PASS 106, FAIL 43, infra 19) — codex 26/26 (P9 F17 I6), cursor 63/96 (P57 F6 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
@@ -115,9 +115,11 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Counter_Risk--2026-09-13T18-41-41Z | D | D | done | codex | codex | Audit stranske/Counter_Risk and file issues (supply 1 <= 2) |
 | D-audit-Counter_Risk--2026-09-14T06-49-49Z | D | D | failed | codex |  | Audit stranske/Counter_Risk and file issues (supply 1 <= 2) |
 | D-audit-Counter_Risk--2026-09-20T20-25-21Z | D | D | done | cursor | driver | Audit stranske/Counter_Risk and file issues (supply 2 <= 2) |
+| D-audit-Counter_Risk--2026-09-21T20-41-04Z | D | D | claimed | cursor | driver | Audit stranske/Counter_Risk and file issues (supply 2 <= 3) |
 | D-audit-Deliverable-Render--2026-09-20T08-24-39Z | D | D | failed | codex |  | Audit stranske/Deliverable-Render and file issues (supply 1 <= 2) |
 | D-audit-Deliverable-Render--2026-09-20T20-25-18Z | D | D | done | cursor | driver | Audit stranske/Deliverable-Render and file issues (supply 1 <= 2) |
 | D-audit-Deliverable-Render--2026-09-21T08-38-08Z | D | D | done | cursor | driver | Audit stranske/Deliverable-Render and file issues (supply 2 <= 2) |
+| D-audit-Deliverable-Render--2026-09-21T20-41-01Z | D | D | queued | claude |  | Audit stranske/Deliverable-Render and file issues (supply 1 <= 2) |
 | D-audit-Doc-Lineage--2026-09-19T20-12-10Z | D | D | done | codex | codex | Audit stranske/Doc-Lineage and file issues (supply 2 <= 2) |
 | D-audit-Fine-Art-Archive--2026-09-05T04-00-31Z | D | D | done | codex | codex | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 2) |
 | D-audit-Fine-Art-Archive--2026-09-06T04-25-53Z | D | D | done | codex | driver | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 3) |
@@ -125,6 +127,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Manager-Database--2026-09-14T06-49-50Z | D | D | done | codex | codex | Audit stranske/Manager-Database and file issues (supply 2 <= 2) |
 | D-audit-Manager-Database--2026-09-14T19-00-22Z | D | D | done | codex | codex | Audit stranske/Manager-Database and file issues (supply 2 <= 2) |
 | D-audit-Manager-Database--2026-09-20T20-25-22Z | D | D | done | cursor | driver | Audit stranske/Manager-Database and file issues (supply 1 <= 2) |
+| D-audit-Manager-Database--2026-09-21T20-41-04Z | D | D | queued | claude |  | Audit stranske/Manager-Database and file issues (supply 1 <= 2) |
 | D-audit-Manager-Mosaic--2026-09-05T04-00-25Z | D | D | done | codex | driver | Audit stranske/Manager-Mosaic and file issues (supply 2 <= 2) |
 | D-audit-Manager-Mosaic--2026-09-19T20-12-04Z | D | D | done | codex | codex | Audit stranske/Manager-Mosaic and file issues (supply 3 <= 3) |
 | D-audit-Portable-Alpha-Extension-Model--2026-09-07T04-47-31Z | D | D | done | codex | codex | Audit stranske/Portable-Alpha-Extension-Model and file issues (supply  |
@@ -166,11 +169,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-21T14:41:41Z — B1-citefix-R2-consultant-report-diffing — route — router picked gemini from ['codex', 'cursor', 'gemini']
-- 2026-09-21T14:41:41Z — B1-citefix-R2-consultant-report-diffing — claimed by driver (agent gemini)
-- 2026-09-21T14:41:42Z — mirror — deferred — Ready#583 exact-head sync review; publication resumes by 2026-09-21T15:46:44+00:00; local work continues
-- 2026-09-21T14:43:54Z — B1-citefix-R2-consultant-report-diffing — done — gemini produced 2325 words at artifacts/research/R2-consultant-report-diffing.md in 129s
-- 2026-09-21T14:43:54Z — mirror — deferred — Ready#583 exact-head sync review; publication resumes by 2026-09-21T15:46:44+00:00; local work continues
 - 2026-09-21T14:58:57Z — mirror — deferred — Ready#583 exact-head sync review; publication resumes by 2026-09-21T16:55:23+00:00; local work continues
 - 2026-09-21T15:12:23Z — mirror — deferred — Ready#583 exact-head sync review; publication resumes by 2026-09-21T16:55:23+00:00; local work continues
 - 2026-09-21T15:14:00Z — mirror — deferred — Ready#583 exact-head sync review; publication resumes by 2026-09-21T16:55:23+00:00; local work continues
@@ -178,6 +176,11 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-21T20:22:05Z — D3-unblock-sweep-2026-09-21T20 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-21T20:22:05Z — D3-unblock-sweep-2026-09-21T20 — claimed by driver (agent cursor)
 - 2026-09-21T20:25:34Z — D3-unblock-sweep-2026-09-21T20 — done — cursor produced 624 words at artifacts/sweeps/D3-unblock-sweep-2026-09-21T20.md in 182s
+- 2026-09-21T20:41:01Z — refill — Deliverable-Render: open=1 <= 2 → audit queued
+- 2026-09-21T20:41:04Z — refill — Counter_Risk: open=2 <= 3 → audit queued
+- 2026-09-21T20:41:04Z — refill — Manager-Database: open=1 <= 2 → audit queued
+- 2026-09-21T20:41:07Z — D-audit-Counter_Risk--2026-09-21T20-41-04Z — route — router picked cursor from ['codex', 'cursor']
+- 2026-09-21T20:41:07Z — D-audit-Counter_Risk--2026-09-21T20-41-04Z — claimed by driver (agent cursor)
 
 ## Questions
 
