@@ -1563,3 +1563,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-22T09:11:57Z — D-audit-Manager-Database--2026-09-22T08-41-14Z — route — router picked cursor from ['codex', 'cursor']
 ## 2026-09-22T09:11:57Z — D-audit-Manager-Database--2026-09-22T08-41-14Z — claimed by codex (agent cursor)
 ## 2026-09-22T09:13:17Z — D-audit-Manager-Database--2026-09-22T08-41-14Z — done — Scorecard: 7 work / 1 partial / 0 broken / 0 fabricated / 0 not exercised of 8; journey: passes; surfaces unscored 0; closed-still-broken 0; three verified P1 i
+## 2026-09-22T12:41:02Z — unblock — enqueued D3-unblock-sweep-2026-09-22T12
+## 2026-09-22T12:41:02Z — D3-unblock-sweep-2026-09-22T12 — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-22T12:41:02Z — D3-unblock-sweep-2026-09-22T12 — claimed by driver (agent cursor)
