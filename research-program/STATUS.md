@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-22T03:10:26Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-22T03:13:13Z)
 
-Units: 157 — done 154, failed 3
+Units: 158 — claimed 1, done 154, failed 3
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 Orchestrator evidence (30d): offload runs 197, bound to a research round 152, scored 152 (PASS 108, FAIL 44, infra 19) — codex 26/26 (P9 F17 I6), cursor 66/99 (P59 F7 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
@@ -166,12 +166,10 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D4-verify-merged-2026-09-20T03 | D | D | done | cursor | codex | Verify merged PRs against their issues' acceptance criteria |
 | D4-verify-merged-2026-09-20T20 | D | D | done | cursor | codex | Verify merged PRs against their issues' acceptance criteria |
 | D4-verify-merged-2026-09-21T03 | D | D | done | cursor | codex | Verify merged PRs against their issues' acceptance criteria |
+| D4-verify-merged-2026-09-22T03 | D | D | claimed | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
 
 ## Last checkpoints
 
-- 2026-09-21T20:41:07Z — D-audit-Counter_Risk--2026-09-21T20-41-04Z — route — router picked cursor from ['codex', 'cursor']
-- 2026-09-21T20:41:07Z — D-audit-Counter_Risk--2026-09-21T20-41-04Z — claimed by driver (agent cursor)
-- 2026-09-21T20:57:58Z — D-audit-Counter_Risk--2026-09-21T20-41-04Z — done — cursor produced 415 words at artifacts/audits/Counter_Risk-2026-09-21.md in 984s
 - 2026-09-21T21:12:04Z — D-audit-Deliverable-Render--2026-09-21T20-41-01Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-21T21:12:04Z — D-audit-Deliverable-Render--2026-09-21T20-41-01Z — claimed by codex (agent cursor)
 - 2026-09-21T21:12:27Z — D-audit-Manager-Database--2026-09-21T20-41-04Z — route — router picked cursor from ['codex', 'cursor']
@@ -181,6 +179,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-21T23:16:49Z — D-audit-Deliverable-Render--2026-09-21T20-41-01Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-21T23:16:49Z — D-audit-Deliverable-Render--2026-09-21T20-41-01Z — claimed by driver (agent cursor)
 - 2026-09-21T23:21:02Z — D-audit-Deliverable-Render--2026-09-21T20-41-01Z — done — cursor produced 560 words at artifacts/audits/Deliverable-Render-2026-09-21.md in 228s
+- 2026-09-22T03:13:13Z — verify — enqueued D4-verify-merged-2026-09-22T03
+- 2026-09-22T03:13:13Z — D4-verify-merged-2026-09-22T03 — route — router picked cursor from ['codex', 'cursor']
+- 2026-09-22T03:13:13Z — D4-verify-merged-2026-09-22T03 — claimed by driver (agent cursor)
 
 ## Questions
 
