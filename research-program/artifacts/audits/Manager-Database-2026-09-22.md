@@ -1,37 +1,19 @@
-Scorecard: 7 work / 1 partial / 0 broken / 0 fabricated / 0 not exercised of 8; journey: passes; surfaces unscored 0; closed-still-broken 0.
+Scorecard: 8 work / 0 partial / 0 broken / 0 fabricated / 0 not exercised of 8; journey: passes; surfaces unscored 0; closed-still-broken 0.
 
-Issues filed: #1715, #1716, #1717 (3 P1).
+# Manager-Database Track D follow-up audit — 2026-09-22
 
-# Manager-Database Track D audit — 2026-09-22
+**Audited tip:** `77be429e8d2f04c9c6ed83303e9fd835d757a521` (`main`)
 
-**Tip:** `3c7d3f9c2f28d931cebb955f28c3f72db1a506a2`  
-**Trigger:** audit refill (1 open agent-ready ≤ 25% of last set of 4)
+The previous refill's three P1 findings have all landed and were re-exercised before this disposition: #1715 fixes the Postgres document-owner join in `embeddings.py:307-327`; #1716 makes `net` alert rules match emitted buy/sell deltas in `alerts/engine.py:88-98`; and #1717 merges Postgres vector-document hits into unified search in `api/search.py:491-526`. All three issues are closed. The independently launched Cursor read pass did not produce an artifact and was stopped after four minutes, so this conclusion rests only on the recorded local evidence and current remote CI.
 
-## Summary
+## Product scorecard
 
-Re-audited after the 2026-09-21 batch merged (#1706-#1709). All four prior fixes re-verified on tip. Eight core functions exercised live; MDB-4 scored PARTIAL because production Postgres paths lack semantic search parity and mis-attribute manager names in filtered vector retrieval. Three new P1 issues filed.
+The primary journey—register manager, ingest/search, research, dashboard, and alerts—passes in the isolated SQLite/API harness. Focused real-entry-point tests exercised distinct manager IDs and duplicate-CIK rejection (MDB-1), changed list-filter results (MDB-2), holdings diff fixtures (MDB-3), document and vector search (MDB-4), chat endpoint (MDB-5), the no-filings dashboard empty state (MDB-6), text/Markdown upload persistence (MDB-7), and positive/negative alert matching (MDB-8). The targeted product probes passed 5/5; the broader regression set passed 162 tests with one intentional skip. Current scheduled and maintenance workflows on the audited SHA are green.
 
-## Closed-issue re-probe
+## Audit outcome
 
-| issue | result |
-|---|---|
-| #1706 new_filing alert keys | fixed — AlertEngine fires |
-| #1707 acknowledge-all filters | fixed — merged |
-| #1708 duplicate CIK | fixed — HTTP 409 |
-| #1709 bulk import atomicity | fixed — merged #1713 |
+No new actionable defect was established. I reviewed the newly merged seam code and its dedicated tests, rechecked open issues (only #1682 is an existing Postgres-CI coverage item; the other two open entries are durable holders), and did not file speculative duplicates. The only prospective concern—how multiple manager associations are presented by the Postgres vector branch—does not have a live failure reproduction, so it is not a filing candidate.
 
-## Findings filed
+## Coverage and reconciliation
 
-1. **#1715** — `embeddings.py:303-308` Postgres `search_documents` joins `m.manager_id` to the filter literal instead of the document owner (MDB-4).
-2. **#1716** — `ui/alerts.py:172-186` offers `delta_type: net` but ETL only emits `buy`/`sell` (MDB-8).
-3. **#1717** — `api/search.py` Postgres branch uses FTS only; SQLite merges pgvector hits (MDB-4).
-
-## Declined
-
-- `diff_holdings.py:96-103` duplicate CUSIP dict overwrite — MINOR interior data-quality; no user-visible failure path filed.
-
-## Artifacts
-
-- Scorecard: `Code/Audits/Manager-Database/2026-09-22-SCORECARD.md`
-- Issue bodies: `Code/Audits/Manager-Database/2026-09-22-issue-bodies/`
-- Dimension notes: `artifacts/audits/Manager-Database-2026-09-22-dim-findings.md`
+App-local paths were audited; synced `tools/`, `scripts/langchain/`, and CI wrappers remain out of scope. Dimension 1–4 evidence came from live targeted tests and line-by-line verification of the new search/alert seams. Dimensions 5–8 were reconciled against the current ledger and open-issue set; no new evidence supports a product, tooling, or automation issue. Every candidate is either verified fixed, already tracked, or insufficiently evidenced. No issue bodies or measurement-intake rows were created in this round.
