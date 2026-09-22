@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-22T20:46:25Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-22T21:01:49Z)
 
-Units: 165 — done 159, failed 3, queued 3
+Units: 165 — claimed 1, done 159, failed 3, queued 2
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 Orchestrator evidence (30d): offload runs 203, bound to a research round 158, scored 158 (PASS 112, FAIL 46, infra 19) — codex 26/26 (P9 F17 I6), cursor 72/105 (P63 F9 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
@@ -123,7 +123,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Deliverable-Render--2026-09-20T20-25-18Z | D | D | done | cursor | driver | Audit stranske/Deliverable-Render and file issues (supply 1 <= 2) |
 | D-audit-Deliverable-Render--2026-09-21T08-38-08Z | D | D | done | cursor | driver | Audit stranske/Deliverable-Render and file issues (supply 2 <= 2) |
 | D-audit-Deliverable-Render--2026-09-21T20-41-01Z | D | D | done | cursor | driver | Audit stranske/Deliverable-Render and file issues (supply 1 <= 2) |
-| D-audit-Deliverable-Render--2026-09-22T20-42-40Z | D | D | queued | claude |  | Audit stranske/Deliverable-Render and file issues (supply 2 <= 2) |
+| D-audit-Deliverable-Render--2026-09-22T20-42-40Z | D | D | claimed | cursor | driver | Audit stranske/Deliverable-Render and file issues (supply 2 <= 2) |
 | D-audit-Doc-Lineage--2026-09-19T20-12-10Z | D | D | done | codex | codex | Audit stranske/Doc-Lineage and file issues (supply 2 <= 2) |
 | D-audit-Fine-Art-Archive--2026-09-05T04-00-31Z | D | D | done | codex | codex | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 2) |
 | D-audit-Fine-Art-Archive--2026-09-06T04-25-53Z | D | D | done | codex | driver | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 3) |
@@ -177,8 +177,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-22T09:13:17Z — D-audit-Manager-Database--2026-09-22T08-41-14Z — done — Scorecard: 7 work / 1 partial / 0 broken / 0 fabricated / 0 not exercised of 8; journey: passes; surfaces unscored 0; closed-still-broken 0; three verified P1 i
-- 2026-09-22T12:41:02Z — unblock — enqueued D3-unblock-sweep-2026-09-22T12
 - 2026-09-22T12:41:02Z — D3-unblock-sweep-2026-09-22T12 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-22T12:41:02Z — D3-unblock-sweep-2026-09-22T12 — claimed by driver (agent cursor)
 - 2026-09-22T12:43:58Z — D3-unblock-sweep-2026-09-22T12 — done — cursor produced 647 words at artifacts/sweeps/D3-unblock-sweep-2026-09-22T12.md in 148s
@@ -189,6 +187,8 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-22T20:42:46Z — D3-unblock-sweep-2026-09-22T20 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-22T20:42:46Z — D3-unblock-sweep-2026-09-22T20 — claimed by driver (agent cursor)
 - 2026-09-22T20:46:24Z — D3-unblock-sweep-2026-09-22T20 — done — cursor produced 692 words at artifacts/sweeps/D3-unblock-sweep-2026-09-22T20.md in 191s
+- 2026-09-22T21:01:49Z — D-audit-Deliverable-Render--2026-09-22T20-42-40Z — route — router picked cursor from ['codex', 'cursor']
+- 2026-09-22T21:01:49Z — D-audit-Deliverable-Render--2026-09-22T20-42-40Z — claimed by driver (agent cursor)
 
 ## Questions
 
