@@ -1,0 +1,178 @@
+diff --git a/src/counter_risk/pipeline/run.py b/src/counter_risk/pipeline/run.py
+index 5446970..e8bf560 100644
+--- a/src/counter_risk/pipeline/run.py
++++ b/src/counter_risk/pipeline/run.py
+@@ -75,6 +75,7 @@ from counter_risk.parsers.repo_cash_sources import (
+     load_repo_cash_overrides_csv,
+     load_repo_cash_structured_source,
+ )
++from counter_risk.pipeline.data_quality import build_data_quality
+ from counter_risk.pipeline.evidence import top_exposure_evidence
+ from counter_risk.pipeline.manifest import ManifestBuilder
+ from counter_risk.pipeline.parsing_types import (
+@@ -723,7 +724,7 @@ def _write_langsmith_fleet_artifact(
+         if _is_relative_to(path, run_dir)
+     ]
+     risk_proxy_status = "success" if risk_proxy_summary else "skipped"
+-    data_quality_status = "warning" if warnings else "success"
++    data_quality_status = _derive_fleet_data_quality_status(warnings, limit_breach_summary)
+     records = build_fleet_records(
+         context=context,
+         data_quality_status=data_quality_status,
+@@ -768,6 +769,26 @@ def _resolve_error_category_for_fleet() -> str:
+     return "none"
+ 
+ 
++def _derive_fleet_data_quality_status(
++    warnings: Sequence[Any],
++    limit_breach_summary: Mapping[str, Any],
++) -> str:
++    """Map manifest-grade data quality severity to LangSmith fleet status."""
++
++    overall_status = build_data_quality(
++        list(warnings),
++        limit_breach_summary=limit_breach_summary,
++    )["overall_status"]
++    if overall_status == "fail":
++        return "fail"
++    max_severity = _limit_summary_max_severity(limit_breach_summary)
++    if max_severity == "fail":
++        return "fail"
++    if overall_status == "warn" or max_severity == "warning":
++        return "warning"
++    return "success"
++
++
+ def _limit_summary_max_severity(
+     limit_breach_summary: Mapping[str, Any],
+ ) -> Literal["warning", "fail"] | None:
+diff --git a/tests/pipeline/test_langsmith_fleet_data_quality_status.py b/tests/pipeline/test_langsmith_fleet_data_quality_status.py
+new file mode 100644
+index 0000000..0c47c17
+--- /dev/null
++++ b/tests/pipeline/test_langsmith_fleet_data_quality_status.py
+@@ -0,0 +1,124 @@
++"""Pipeline-level LangSmith fleet data_quality_status mapper tests."""
++
++from __future__ import annotations
++
++import json
++from datetime import date
++from pathlib import Path
++
++from counter_risk.pipeline import run as run_module
++
++
++def _write_fleet(
++    tmp_path: Path,
++    *,
++    warnings: list[object],
++    limit_breach_summary: dict[str, object],
++) -> list[dict[str, object]]:
++    run_dir = tmp_path / "2025-12-31"
++    run_dir.mkdir()
++    artifact_path = run_module._write_langsmith_fleet_artifact(
++        run_dir=run_dir,
++        as_of_date=date(2025, 12, 31),
++        output_paths=[],
++        warnings=warnings,
++        concentration_metrics_records=[],
++        risk_proxy_summary={},
++        limit_breach_summary=limit_breach_summary,
++    )
++    return [
++        json.loads(line)
++        for line in artifact_path.read_text(encoding="utf-8").splitlines()
++        if line
++    ]
++
++
++def test_fleet_data_quality_status_reflects_fail_limit_breaches(tmp_path: Path) -> None:
++    records = _write_fleet(
++        tmp_path,
++        warnings=[],
++        limit_breach_summary={
++            "has_breaches": True,
++            "breach_count": 1,
++            "max_severity": "fail",
++            "warning_breach_count": 0,
++            "fail_breach_count": 1,
++        },
++    )
++    assert records
++    assert all(record["domain"]["data_quality_status"] == "fail" for record in records)
++    data_quality_record = next(record for record in records if record["operation"] == "data-quality")
++    assert data_quality_record["domain"]["stage_status"] == "fail"
++
++
++def test_fleet_data_quality_status_fail_when_max_severity_omitted_with_fail_breaches(
++    tmp_path: Path,
++) -> None:
++    records = _write_fleet(
++        tmp_path,
++        warnings=[],
++        limit_breach_summary={
++            "has_breaches": True,
++            "breach_count": 2,
++            "warning_breach_count": 0,
++            "fail_breach_count": 2,
++        },
++    )
++    assert all(record["domain"]["data_quality_status"] == "fail" for record in records)
++
++
++def test_fleet_data_quality_status_warning_for_warning_limit_breaches(tmp_path: Path) -> None:
++    records = _write_fleet(
++        tmp_path,
++        warnings=[],
++        limit_breach_summary={
++            "has_breaches": True,
++            "breach_count": 1,
++            "max_severity": "warning",
++            "warning_breach_count": 1,
++            "fail_breach_count": 0,
++        },
++    )
++    assert all(record["domain"]["data_quality_status"] == "warning" for record in records)
++
++
++def test_fleet_data_quality_status_warning_for_warn_severity_warnings(tmp_path: Path) -> None:
++    records = _write_fleet(
++        tmp_path,
++        warnings=["Portfolio concentration exceeds policy threshold"],
++        limit_breach_summary={
++            "has_breaches": False,
++            "breach_count": 0,
++            "warning_breach_count": 0,
++            "fail_breach_count": 0,
++        },
++    )
++    assert all(record["domain"]["data_quality_status"] == "warning" for record in records)
++
++
++def test_fleet_data_quality_status_success_for_info_only_warnings(tmp_path: Path) -> None:
++    records = _write_fleet(
++        tmp_path,
++        warnings=["Applied repo cash values to all_programs totals"],
++        limit_breach_summary={
++            "has_breaches": False,
++            "breach_count": 0,
++            "warning_breach_count": 0,
++            "fail_breach_count": 0,
++        },
++    )
++    assert all(record["domain"]["data_quality_status"] == "success" for record in records)
++
++
++def test_fleet_data_quality_status_success_when_no_findings(tmp_path: Path) -> None:
++    records = _write_fleet(
++        tmp_path,
++        warnings=[],
++        limit_breach_summary={
++            "has_breaches": False,
++            "breach_count": 0,
++            "warning_breach_count": 0,
++            "fail_breach_count": 0,
++        },
++    )
++    assert all(record["domain"]["data_quality_status"] == "success" for record in records)

@@ -1,0 +1,49 @@
+diff --git a/src/counter_risk/pipeline/run.py b/src/counter_risk/pipeline/run.py
+index 054c78a..7be0b6e 100644
+--- a/src/counter_risk/pipeline/run.py
++++ b/src/counter_risk/pipeline/run.py
+@@ -35,6 +35,7 @@ from counter_risk.compute.limits import (
+     write_limit_breaches_csv,
+ )
+ from counter_risk.compute.rollups import (
++    _counterparty_label_from_totals_row,
+     _find_numeric,
+     apply_repo_cash_to_totals,
+     compute_concentration_metrics,
+@@ -2302,7 +2303,7 @@ def _build_concentration_exposure_rows(
+     for variant, parsed in parsed_by_variant.items():
+         totals_records = _records(parsed["totals"])
+         for record in totals_records:
+-            counterparty = str(record.get("counterparty", "")).strip()
++            counterparty = _counterparty_label_from_totals_row(record)
+             if not counterparty:
+                 continue
+             # Individual asset class segments
+diff --git a/tests/pipeline/test_run_pipeline.py b/tests/pipeline/test_run_pipeline.py
+index 88ce1a8..716f598 100644
+--- a/tests/pipeline/test_run_pipeline.py
++++ b/tests/pipeline/test_run_pipeline.py
+@@ -335,6 +335,23 @@ def test_exposure_builders_default_missing_notionals_to_zero() -> None:
+     assert counterparty_row["notional"] == futures_row["notional"] == 0.0
+ 
+ 
++def test_concentration_includes_group_name_only_counterparty_rows() -> None:
++    parsed = {
++        "all_programs": {
++            "totals": [
++                {"group_type": "counterparty", "group_name": " Alpha ", "Notional": 100.0},
++                {"counterparty": "Beta", "Notional": 50.0},
++                {"group_type": "sector", "group_name": "Equity", "Notional": 150.0},
++            ]
++        }
++    }
++
++    assert run_module._build_concentration_exposure_rows(parsed) == [
++        {"variant": "all_programs", "segment": "total", "counterparty": "Alpha", "notional": 100.0},
++        {"variant": "all_programs", "segment": "total", "counterparty": "Beta", "notional": 50.0},
++    ]
++
++
+ @pytest.mark.parametrize("value", [float("nan"), float("inf"), -float("inf"), "NaN", "Inf", "-Inf"])
+ @pytest.mark.parametrize("include_finite", [False, True])
+ def test_concentration_metrics_write_finite_values(

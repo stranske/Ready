@@ -1,0 +1,1254 @@
+diff --git a/.gitignore b/.gitignore
+index ea47ace..0a53475 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -99,4 +99,6 @@ node_modules/
+ # Build artifacts: setuptools regenerates these. The committed copy still named
+ # stranske/Template in its metadata, which is exactly the kind of stale fact a
+ # generated file carries into a repo unnoticed.
++build/
+ *.egg-info/
++.coverage
+diff --git a/README.md b/README.md
+index 01143c8..bcdb7c7 100644
+--- a/README.md
++++ b/README.md
+@@ -24,7 +24,36 @@ render/probe        capability probes an operator can run in a locked-down envir
+ 
+ ## Interoperability
+ 
+-The structured-store contract is aligned with the fleet's shared formats in `docs/contracts/` (run records, artifact manifests, evidence objects, identity conventions) and with the field names already in use in the owner's work tools, so a store produced there renders here without a translation step.
++The renderer's compact store contract is aligned with the fleet's shared formats
++in `docs/contracts/` (run records, artifact manifests, evidence objects, identity
++conventions). The communication-synthesis format has a documented adapter below.
++
++### Communication-synthesis rendering profile
++
++The communication-synthesis format uses `fund`, `periods`, `entries`,
++`themes`, `documents`, and `gaps`. The local commands below validate it, then
++adapt it to the existing renderer inputs. Supply the local document paths
++explicitly in JSON, keyed by source ID. For a DOCX memo, also supply reviewed
++period IDs and change/continuity rows; the source format does not contain
++change tiers or prior memo text.
++
++```bash
++render-html-hub --store tests/fixtures/stores/communication_render.json \
++  --document-paths tests/fixtures/stores/communication_paths.json --out hub.html
++render-pptx-deck --store tests/fixtures/stores/communication_render.json \
++  --document-paths tests/fixtures/stores/communication_paths.json \
++  --manifest tests/fixtures/stores/communication_deck.json \
++  --template tests/fixtures/deck/synthetic_template.pptx --out deck.pptx
++render-docx-memo --profile communication-synthesis \
++  --store tests/fixtures/stores/communication_render.json \
++  --document-paths tests/fixtures/stores/communication_paths.json \
++  --memo-overlay tests/fixtures/stores/communication_memo.json --out memo.docx
++```
++
++The HTML page contains local-file evidence links and no network resources.
++The deck requires an explicit manifest and template. The synthesis-profile
++commands leave an existing output alone unless `--force` is supplied. See
++`docs/STRUCTURED_STORE_VALIDATION.md` for mapping diagnostics and record IDs.
+ 
+ ## Offline HTML hub
+ 
+diff --git a/docs/STRUCTURED_STORE_VALIDATION.md b/docs/STRUCTURED_STORE_VALIDATION.md
+index d95e68a..5f52bf6 100644
+--- a/docs/STRUCTURED_STORE_VALIDATION.md
++++ b/docs/STRUCTURED_STORE_VALIDATION.md
+@@ -35,5 +35,29 @@ such data against its source before relying on it.
+ 
+ Existing `Store` and `StructuredStore` loaders for renderer input remain
+ unchanged. This semantic validator is an explicit gate for the separate
+-communication-synthesis format, not a new implicit validation step on every
+-legacy renderer load.
++communication-synthesis format. The `communication-synthesis` rendering profile
++validates that format before projecting it into the existing HTML/PPTX `Store`.
++The renderer also requires an explicit JSON document-path map, keyed by each
++`documents[].stable_id` (or `name` when no stable ID exists). A missing map or
++a citation without a positive one-based page fails before publishing output.
++Paths are operator supplied and must be absolute local paths. The adapter does
++not infer a path from a document name or require that a path exists on the
++machine that builds the deliverable. Python callers can use
++`adapt_profile(store_path, paths_path)` from
++`deliverable_render.store.communication` as the single validated adapter entry
++point used by the HTML and PPTX commands.
++
++Each mention becomes `record:entry-<entry-array-index>-mention-<mention-index>`
++for a deck manifest. An entry with a thesis also becomes
++`record:entry-<entry-array-index>-thesis`. Publication evidence becomes a
++separate `record:entry-<entry-array-index>-publication`. Those IDs are stable
++for identical input order, but change when entries or mentions are reordered.
++The compact rendering model retains source ID, page, and excerpt for HTML
++links; it does not include every provenance field from evidence-object/v1.
++
++DOCX change/continuity memo rows require a reviewed JSON overlay with
++`period_prior`, `period_current` (distinct IDs from the source's `periods`),
++`changes` and optional `continuity`. The rows use the existing
++`StructuredStore` fields. The adapter never infers a change tier, previous
++text, or continuity from mentions. A change memo with no T1/T2 rows fails
++without publishing a file. Existing legacy memo input remains supported.
+diff --git a/pyproject.toml b/pyproject.toml
+index 7de0c49..800285b 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -29,6 +29,8 @@ dependencies = [
+ 
+ [project.scripts]
+ render-docx-memo = "deliverable_render.cli.render_docx:main"
++render-html-hub = "deliverable_render.cli.render_html:main"
++render-pptx-deck = "deliverable_render.cli.render_pptx:main"
+ validate-structured-store = "deliverable_render.store.validate:main"
+ 
+ [tool.setuptools.package-data]
+@@ -36,6 +38,8 @@ validate-structured-store = "deliverable_render.store.validate:main"
+ 
+ [project.optional-dependencies]
+ dev = [
++    "setuptools==83.0.0",
++    "wheel==0.47.0",
+     "pytest==9.1.1",
+     "pytest-cov==7.1.0",
+     "ruff==0.16.7",
+diff --git a/requirements-dev.lock b/requirements-dev.lock
+index 136ef21..4abb9ce 100644
+--- a/requirements-dev.lock
++++ b/requirements-dev.lock
+@@ -72,11 +72,15 @@ rpds-py==2026.6.3
+     #   referencing
+ ruff==0.16.7
+     # via deliverable-render (pyproject.toml)
++setuptools==83.0.0
++    # via deliverable-render (pyproject.toml)
+ typing-extensions==4.15.0
+     # via
+     #   mypy
+     #   python-docx
+     #   python-pptx
+     #   referencing
++wheel==0.47.0
++    # via deliverable-render (pyproject.toml)
+ xlsxwriter==3.2.9
+     # via python-pptx
+diff --git a/requirements.lock b/requirements.lock
+index 274fa07..513cc3c 100644
+--- a/requirements.lock
++++ b/requirements.lock
+@@ -76,11 +76,15 @@ rpds-py==2026.6.3
+     #   referencing
+ ruff==0.16.7
+     # via deliverable-render (pyproject.toml)
++setuptools==83.0.0
++    # via deliverable-render (pyproject.toml)
+ typing-extensions==4.16.0
+     # via
+     #   mypy
+     #   python-docx
+     #   python-pptx
+     #   referencing
++wheel==0.47.0
++    # via deliverable-render (pyproject.toml)
+ xlsxwriter==3.2.9
+     # via python-pptx
+diff --git a/src/deliverable_render/cli/_output.py b/src/deliverable_render/cli/_output.py
+new file mode 100644
+index 0000000..6882eca
+--- /dev/null
++++ b/src/deliverable_render/cli/_output.py
+@@ -0,0 +1,29 @@
++"""Safe publication shared by local rendering commands."""
++
++from __future__ import annotations
++
++import os
++import tempfile
++from pathlib import Path
++
++
++def publish(output: Path, content: bytes, inputs: tuple[Path, ...], *, force: bool = False) -> None:
++    target = output.resolve()
++    if any(target == item.resolve() for item in inputs):
++        raise ValueError("output path aliases a rendering input")
++    output.parent.mkdir(parents=True, exist_ok=True)
++    descriptor, name = tempfile.mkstemp(prefix=f".{output.name}.", dir=output.parent)
++    try:
++        with os.fdopen(descriptor, "wb") as stream:
++            stream.write(content)
++        if force:
++            os.replace(name, output)
++        else:
++            try:
++                os.link(name, output)
++            except FileExistsError as exc:
++                raise ValueError(
++                    f"output already exists: {output} (pass --force to replace)"
++                ) from exc
++    finally:
++        Path(name).unlink(missing_ok=True)
+diff --git a/src/deliverable_render/cli/render_docx.py b/src/deliverable_render/cli/render_docx.py
+index 5c626ff..0cec07b 100644
+--- a/src/deliverable_render/cli/render_docx.py
++++ b/src/deliverable_render/cli/render_docx.py
+@@ -3,19 +3,29 @@
+ from __future__ import annotations
+ 
+ import argparse
++import sys
++import tempfile
+ from pathlib import Path
+ 
++from deliverable_render.cli._output import publish
+ from deliverable_render.docx.memo import (
+     StructuredStore,
+     render_change_memo,
+     render_continuity_memo,
+ )
++from deliverable_render.store.communication import adapt_memo, adapt_store, load_profile
+ 
+ 
+ def build_parser() -> argparse.ArgumentParser:
+     parser = argparse.ArgumentParser(description="Render consultant memos to Word documents")
+     parser.add_argument("--store", required=True, type=Path, help="Structured store JSON path")
+     parser.add_argument("--out", required=True, type=Path, help="Output .docx path")
++    parser.add_argument(
++        "--profile", choices=("legacy", "communication-synthesis"), default="legacy"
++    )
++    parser.add_argument("--document-paths", type=Path, help="Explicit source ID to local path JSON")
++    parser.add_argument("--memo-overlay", type=Path, help="Reviewed memo rows and period IDs JSON")
++    parser.add_argument("--force", action="store_true", help="Replace an existing output")
+     parser.add_argument(
+         "--kind",
+         choices=("change", "continuity"),
+@@ -27,11 +37,49 @@ def build_parser() -> argparse.ArgumentParser:
+ 
+ def main(argv: list[str] | None = None) -> int:
+     args = build_parser().parse_args(argv)
+-    store = StructuredStore.from_json(args.store)
+-    if args.kind == "change":
+-        render_change_memo(store, args.out)
+-    else:
+-        render_continuity_memo(store, args.out)
++    try:
++        if args.profile == "legacy":
++            if args.document_paths is not None or args.memo_overlay is not None:
++                raise ValueError(
++                    "--document-paths and --memo-overlay require "
++                    "--profile communication-synthesis; the legacy profile does not use "
++                    "document-path mappings or memo overlays"
++                )
++            store = StructuredStore.from_json(args.store)
++            with tempfile.TemporaryDirectory(prefix="render-docx-") as folder:
++                staged = Path(folder) / "memo.docx"
++                if args.kind == "change":
++                    render_change_memo(store, staged)
++                else:
++                    render_continuity_memo(store, staged)
++                publish(args.out, staged.read_bytes(), (args.store,), force=args.force)
++            return 0
++        if args.document_paths is None or args.memo_overlay is None:
++            raise ValueError("communication-synthesis requires --document-paths and --memo-overlay")
++        data, paths = load_profile(args.store, args.document_paths)
++        # Require the same complete evidence mapping as the other outputs.
++        render_store = adapt_store(data, paths)
++        store = adapt_memo(data, args.memo_overlay)
++        with tempfile.TemporaryDirectory(prefix="render-docx-") as folder:
++            staged = Path(folder) / "memo.docx"
++            if args.kind == "change":
++                render_change_memo(store, staged)
++            else:
++                render_continuity_memo(store, staged)
++            publish(
++                args.out,
++                staged.read_bytes(),
++                (
++                    args.store,
++                    args.document_paths,
++                    args.memo_overlay,
++                    *(Path(document.path) for document in render_store.documents),
++                ),
++                force=args.force,
++            )
++    except (OSError, ValueError, KeyError) as exc:
++        print(f"render-docx-memo: {exc}", file=sys.stderr)
++        return 2
+     return 0
+ 
+ 
+diff --git a/src/deliverable_render/cli/render_html.py b/src/deliverable_render/cli/render_html.py
+new file mode 100644
+index 0000000..695ccfc
+--- /dev/null
++++ b/src/deliverable_render/cli/render_html.py
+@@ -0,0 +1,45 @@
++"""Render a validated communication-synthesis store as an offline HTML hub."""
++
++from __future__ import annotations
++
++import argparse
++import sys
++from pathlib import Path
++
++from deliverable_render.cli._output import publish
++from deliverable_render.html import RenderSpec, render_html
++from deliverable_render.store.communication import adapt_profile
++
++
++def main(argv: list[str] | None = None) -> int:
++    parser = argparse.ArgumentParser(description="Render an offline evidence hub")
++    parser.add_argument("--store", required=True, type=Path)
++    parser.add_argument("--document-paths", required=True, type=Path)
++    parser.add_argument("--out", required=True, type=Path)
++    parser.add_argument("--title", default="Evidence hub")
++    parser.add_argument("--view", choices=("list", "grid"), default="list")
++    parser.add_argument("--force", action="store_true")
++    args = parser.parse_args(argv)
++    try:
++        store = adapt_profile(args.store, args.document_paths)
++        html = render_html(
++            store,
++            RenderSpec(
++                title=args.title, document_url_template="file://{path}#page={page}", view=args.view
++            ),
++        )
++        source_documents = tuple(Path(document.path) for document in store.documents)
++        publish(
++            args.out,
++            html.encode("utf-8"),
++            (args.store, args.document_paths, *source_documents),
++            force=args.force,
++        )
++    except (OSError, ValueError, KeyError) as exc:
++        print(f"render-html-hub: {exc}", file=sys.stderr)
++        return 2
++    return 0
++
++
++if __name__ == "__main__":
++    raise SystemExit(main())
+diff --git a/src/deliverable_render/cli/render_pptx.py b/src/deliverable_render/cli/render_pptx.py
+new file mode 100644
+index 0000000..e1e5aa4
+--- /dev/null
++++ b/src/deliverable_render/cli/render_pptx.py
+@@ -0,0 +1,58 @@
++"""Render a manifest-gated deck from a communication-synthesis store."""
++
++from __future__ import annotations
++
++import argparse
++import json
++import sys
++from pathlib import Path
++
++from pptx.exc import PythonPptxError
++
++from deliverable_render.cli._output import publish
++from deliverable_render.pptx.manifest import DeckManifest, build_deck
++from deliverable_render.store.communication import adapt_profile
++
++
++def _load_manifest_mapping(path: Path) -> dict[str, object]:
++    payload = json.loads(path.read_text(encoding="utf-8"))
++    if not isinstance(payload, dict):
++        raise ValueError(f"manifest must be a JSON object: {path}")
++    return payload
++
++
++def main(argv: list[str] | None = None) -> int:
++    parser = argparse.ArgumentParser(description="Render a manifest-gated PowerPoint deck")
++    parser.add_argument("--store", required=True, type=Path)
++    parser.add_argument("--document-paths", required=True, type=Path)
++    parser.add_argument("--manifest", required=True, type=Path)
++    parser.add_argument("--template", required=True, type=Path)
++    parser.add_argument("--prior-manifest", type=Path)
++    parser.add_argument("--out", required=True, type=Path)
++    parser.add_argument("--force", action="store_true")
++    args = parser.parse_args(argv)
++    try:
++        store = adapt_profile(args.store, args.document_paths)
++        manifest = DeckManifest.from_mapping(_load_manifest_mapping(args.manifest))
++        prior = None
++        if args.prior_manifest:
++            prior = DeckManifest.from_mapping(_load_manifest_mapping(args.prior_manifest))
++        content, _ = build_deck(args.template, manifest, store, prior=prior)
++        inputs = [args.store, args.document_paths, args.manifest, args.template]
++        if args.prior_manifest:
++            inputs.append(args.prior_manifest)
++        inputs.extend(Path(document.path) for document in store.documents)
++        inputs.extend(
++            args.template.parent / slide.source.removeprefix("static:")
++            for slide in manifest.slides
++            if slide.dropped_reason is None and slide.source.startswith("static:")
++        )
++        publish(args.out, content, tuple(inputs), force=args.force)
++    except (OSError, ValueError, KeyError, PythonPptxError) as exc:
++        print(f"render-pptx-deck: {exc}", file=sys.stderr)
++        return 2
++    return 0
++
++
++if __name__ == "__main__":
++    raise SystemExit(main())
+diff --git a/src/deliverable_render/store/communication.py b/src/deliverable_render/store/communication.py
+new file mode 100644
+index 0000000..8b7477b
+--- /dev/null
++++ b/src/deliverable_render/store/communication.py
+@@ -0,0 +1,188 @@
++"""Explicit rendering profile for validated communication-synthesis stores.
++
++The semantic validator checks references and evidence provenance. Rendering also
++needs document paths and page-level citations, supplied here without inference.
++"""
++
++from __future__ import annotations
++
++import json
++from pathlib import Path, PureWindowsPath
++from typing import Any
++
++from deliverable_render.store import (
++    Document,
++    EvidencePointer,
++    Record,
++    Store,
++    StoreValidationError,
++    StructuredStore,
++)
++from deliverable_render.store.validate import project_evidence, validate_store
++
++
++class CommunicationRenderError(StoreValidationError):
++    """A valid synthesis store lacks explicit data required for rendering."""
++
++
++def _text(value: Any, location: str, *, allow_empty: bool = False) -> str:
++    if not isinstance(value, str) or (not allow_empty and not value.strip()):
++        raise CommunicationRenderError(f"{location} must be a nonempty string")
++    return value
++
++
++def _validate_document_paths(paths: object) -> dict[str, str]:
++    """Copy and validate the explicit source-ID-to-absolute-path mapping."""
++    if not isinstance(paths, dict):
++        raise CommunicationRenderError("document-path mapping must be a JSON object")
++    validated: dict[str, str] = {}
++    for raw_key, raw_value in paths.items():
++        key = _text(raw_key, "document-path mapping key")
++        value = _text(raw_value, f"document-path mapping for {key!r}")
++        if not (Path(value).is_absolute() or PureWindowsPath(value).is_absolute()):
++            raise CommunicationRenderError(
++                f"document-path mapping for {key!r} must be an absolute local path"
++            )
++        validated[key] = value
++    return validated
++
++
++def load_profile(store_path: Path, paths_path: Path) -> tuple[dict[str, Any], dict[str, str]]:
++    """Validate the source and load its separate, explicit document-path map."""
++    report = validate_store(store_path)
++    if not report.valid:
++        first = report.issues[0]
++        raise CommunicationRenderError(f"store validation: {first.path}: {first.message}")
++    data = json.loads(store_path.read_text(encoding="utf-8"))
++    try:
++        paths = json.loads(paths_path.read_text(encoding="utf-8"))
++    except (OSError, ValueError) as exc:
++        raise CommunicationRenderError(f"document-path mapping: {exc}") from exc
++    return data, _validate_document_paths(paths)
++
++
++def _evidence(pointer: dict[str, Any], fact_ref: str, known: set[str]) -> EvidencePointer:
++    projected = project_evidence(pointer, fact_ref=fact_ref)
++    source = _text(projected["source_id"], f"{fact_ref} source_id")
++    if source not in known:
++        raise CommunicationRenderError(f"{fact_ref}: source {source!r} is not a declared document")
++    locator = projected.get("locator") or {}
++    page = locator.get("page")
++    if type(page) is not int or page < 1:
++        raise CommunicationRenderError(f"{fact_ref}: positive one-based evidence page required")
++    excerpt = projected.get("excerpt")
++    if excerpt is not None and not isinstance(excerpt, str):
++        raise CommunicationRenderError(f"{fact_ref}: evidence excerpt must be text or null")
++    return EvidencePointer(source, page, excerpt or "")
++
++
++def adapt_store(data: dict[str, Any], paths: dict[str, str]) -> Store:
++    """Project validated synthesis entries into existing HTML/PPTX input types."""
++    paths = _validate_document_paths(paths)
++    documents: list[Document] = []
++    known: set[str] = set()
++    for index, raw in enumerate(data["documents"]):
++        identity_field = "stable_id" if "stable_id" in raw else "name"
++        source = _text(raw.get(identity_field), f"documents[{index}].{identity_field}")
++        if source in known:
++            raise CommunicationRenderError(f"duplicate document identity {source!r}")
++        known.add(source)
++        if source not in paths:
++            raise CommunicationRenderError(f"document-path mapping missing for {source!r}")
++        documents.append(Document(source, paths[source]))
++
++    records: list[Record] = []
++    for entry_index, entry in enumerate(data["entries"]):
++        entry_id = _text(entry.get("id"), f"entries[{entry_index}].id")
++        section = _text(entry.get("name") or entry_id, f"entries[{entry_index}].name")
++        mentions = entry.get("mentions", [])
++        if not isinstance(mentions, list):
++            raise CommunicationRenderError(f"entries[{entry_index}].mentions must be an array")
++        for mention_index, mention in enumerate(mentions):
++            if not isinstance(mention, dict):
++                raise CommunicationRenderError("mention must be an object")
++            if "entry_id" in mention and mention["entry_id"] != entry_id:
++                raise CommunicationRenderError(
++                    f"entries[{entry_index}].mentions[{mention_index}] names another entry"
++                )
++            fact_ref = f"entries/{entry_id}/mentions/{mention_index}"
++            pointer = mention.get("src")
++            evidence = (_evidence(pointer, fact_ref, known),) if isinstance(pointer, dict) else ()
++            text = _text(mention.get("text", ""), f"{fact_ref}.text", allow_empty=True)
++            if text.strip() or evidence:
++                records.append(
++                    Record(
++                        record_id=f"entry-{entry_index}-mention-{mention_index}",
++                        entity_ref=entry_id,
++                        period=_text(mention.get("q"), f"{fact_ref}.q"),
++                        section=section,
++                        text=text,
++                        evidence=evidence,
++                    )
++                )
++        thesis = entry.get("thesis")
++        if isinstance(thesis, str) and thesis.strip():
++            period = entry.get("last") or entry.get("first")
++            records.append(
++                Record(
++                    f"entry-{entry_index}-thesis",
++                    entry_id,
++                    _text(period, f"entries[{entry_index}] thesis period"),
++                    section,
++                    thesis,
++                )
++            )
++        publication = entry.get("pub")
++        if isinstance(publication, dict) and "src" in publication:
++            detail = publication.get("detail") or publication.get("state")
++            fact_ref = f"entries/{entry_id}/pub"
++            records.append(
++                Record(
++                    f"entry-{entry_index}-publication",
++                    entry_id,
++                    _text(entry.get("last") or entry.get("first"), f"{fact_ref} period"),
++                    section,
++                    _text(detail, f"{fact_ref} detail"),
++                    (_evidence(publication["src"], fact_ref, known),),
++                )
++            )
++    if not records:
++        raise CommunicationRenderError("communication store has no renderable entry text")
++    return Store(tuple(records), tuple(documents))
++
++
++def adapt_profile(store_path: Path, paths_path: Path) -> Store:
++    """Validate and adapt a communication-synthesis file for HTML/PPTX renderers."""
++    data, paths = load_profile(store_path, paths_path)
++    return adapt_store(data, paths)
++
++
++def adapt_memo(data: dict[str, Any], overlay_path: Path) -> StructuredStore:
++    """Use reviewed memo rows and period IDs; never infer change materiality."""
++    try:
++        overlay = json.loads(overlay_path.read_text(encoding="utf-8"))
++    except (OSError, ValueError) as exc:
++        raise CommunicationRenderError(f"memo overlay: {exc}") from exc
++    if not isinstance(overlay, dict):
++        raise CommunicationRenderError("memo overlay must be a JSON object")
++    period_ids = {period.get("id") for period in data["periods"]}
++    current = _text(overlay.get("period_current"), "memo period_current")
++    prior = _text(overlay.get("period_prior"), "memo period_prior")
++    if current == prior or current not in period_ids or prior not in period_ids:
++        raise CommunicationRenderError(
++            "memo period_current and period_prior must be distinct store period IDs"
++        )
++    entity = _text(data["fund"].get("name"), "fund.name")
++    memo = StructuredStore.from_dict(
++        {
++            "entity_ref": entity,
++            "period_current": current,
++            "period_prior": prior,
++            "changes": overlay.get("changes"),
++            "continuity": overlay.get("continuity", []),
++        }
++    )
++    for row in memo.changes:
++        if row.tier not in {"T1", "T2", "T3"}:
++            raise CommunicationRenderError(f"memo change tier {row.tier!r} is unsupported")
++    return memo
+diff --git a/tests/docx/test_validation_and_cli.py b/tests/docx/test_validation_and_cli.py
+index 0db1a05..9cd402c 100644
+--- a/tests/docx/test_validation_and_cli.py
++++ b/tests/docx/test_validation_and_cli.py
+@@ -68,3 +68,24 @@ def test_cli_continuity_memo(tmp_path: Path) -> None:
+     out = tmp_path / "continuity.docx"
+     assert main(["--store", str(FIXTURE), "--out", str(out), "--kind", "continuity"]) == 0
+     assert out.exists()
++
++
++def test_cli_preserves_existing_output_unless_forced(tmp_path: Path) -> None:
++    out = tmp_path / "change.docx"
++    out.write_bytes(b"existing")
++    args = ["--store", str(FIXTURE), "--out", str(out)]
++
++    assert main(args) == 2
++    assert out.read_bytes() == b"existing"
++
++    assert main([*args, "--force"]) == 0
++    assert out.read_bytes().startswith(b"PK")
++
++
++def test_cli_cannot_replace_its_input_store(tmp_path: Path) -> None:
++    store = tmp_path / "store.json"
++    original = FIXTURE.read_bytes()
++    store.write_bytes(original)
++
++    assert main(["--store", str(store), "--out", str(store), "--force"]) == 2
++    assert store.read_bytes() == original
+diff --git a/tests/fixtures/stores/communication_deck.json b/tests/fixtures/stores/communication_deck.json
+new file mode 100644
+index 0000000..df9924e
+--- /dev/null
++++ b/tests/fixtures/stores/communication_deck.json
+@@ -0,0 +1,8 @@
++{
++  "slides": [{
++    "slide_id": "capital",
++    "title": "Capital",
++    "layout": "Title and Content",
++    "source": "record:entry-0-mention-0"
++  }]
++}
+diff --git a/tests/fixtures/stores/communication_memo.json b/tests/fixtures/stores/communication_memo.json
+new file mode 100644
+index 0000000..d0d2c93
+--- /dev/null
++++ b/tests/fixtures/stores/communication_memo.json
+@@ -0,0 +1,16 @@
++{
++  "period_prior": "2025Q1",
++  "period_current": "2025Q2",
++  "changes": [{
++    "canonical_section": "Capital",
++    "change_type": "Increase",
++    "tier": "T1",
++    "prior_text": "Assets of $30B",
++    "current_text": "Assets of $36B"
++  }],
++  "continuity": [{
++    "canonical_section": "Governance",
++    "prior_text": "Policy approved",
++    "current_text": "Policy unchanged"
++  }]
++}
+diff --git a/tests/fixtures/stores/communication_paths.json b/tests/fixtures/stores/communication_paths.json
+new file mode 100644
+index 0000000..a33cf9c
+--- /dev/null
++++ b/tests/fixtures/stores/communication_paths.json
+@@ -0,0 +1 @@
++{"doc-1": "/synthetic/source document.pdf"}
+diff --git a/tests/fixtures/stores/communication_render.json b/tests/fixtures/stores/communication_render.json
+new file mode 100644
+index 0000000..7303962
+--- /dev/null
++++ b/tests/fixtures/stores/communication_render.json
+@@ -0,0 +1,22 @@
++{
++  "fund": {"name": "Synthetic Fund", "manager": "Example Manager"},
++  "periods": [
++    {"id": "2025Q1", "sort": 1},
++    {"id": "2025Q2", "sort": 2}
++  ],
++  "entries": [{
++    "id": "entry-1", "name": "Capital", "first": "2025Q1", "last": "2025Q2",
++    "thesis": "Assets of $36B",
++    "pub": {
++      "state": "COMPLETED", "detail": "Quarterly letter published",
++      "src": {"stable_id": "doc-1", "page": 4, "quote": "Quarterly letter", "method": "parser"}
++    },
++    "mentions": [{
++      "q": "2025Q2", "entry_id": "entry-1", "text": "Capital of $36B",
++      "src": {"stable_id": "doc-1", "page": 3, "quote": "Assets of $36B", "method": "parser"}
++    }]
++  }],
++  "themes": [],
++  "documents": [{"name": "doc-1", "date": "2025-01-01"}],
++  "gaps": []
++}
+diff --git a/tests/store/test_communication_render_profile.py b/tests/store/test_communication_render_profile.py
+new file mode 100644
+index 0000000..a089925
+--- /dev/null
++++ b/tests/store/test_communication_render_profile.py
+@@ -0,0 +1,523 @@
++"""End-to-end synthesis profile: one validated store, three public commands."""
++
++from __future__ import annotations
++
++import json
++import shutil
++import subprocess
++from copy import deepcopy
++from pathlib import Path
++
++import pytest
++from pptx import Presentation
++
++from deliverable_render.cli.render_docx import main as docx_main
++from deliverable_render.cli.render_html import main as html_main
++from deliverable_render.cli.render_pptx import main as pptx_main
++from deliverable_render.store.communication import (
++    CommunicationRenderError,
++    adapt_profile,
++    adapt_store,
++    load_profile,
++)
++from deliverable_render.store.validate import validate_store
++from docx import Document
++
++HERE = Path(__file__).parent.parent
++FIXTURES = HERE / "fixtures" / "stores"
++STORE = FIXTURES / "communication_render.json"
++PATHS = FIXTURES / "communication_paths.json"
++MEMO = FIXTURES / "communication_memo.json"
++MANIFEST = FIXTURES / "communication_deck.json"
++TEMPLATE = HERE / "fixtures" / "deck" / "synthetic_template.pptx"
++
++
++def test_validated_store_renders_all_three_public_outputs(tmp_path: Path) -> None:
++    assert validate_store(STORE).valid
++    data, paths = load_profile(STORE, PATHS)
++    adapted = adapt_store(data, paths)
++    assert [record.record_id for record in adapted.records] == [
++        "entry-0-mention-0",
++        "entry-0-thesis",
++        "entry-0-publication",
++    ]
++    assert adapted.records[0].evidence[0].page == 3
++    assert adapted.records[1].text == "Assets of $36B"
++    assert adapted.records[2].text == "Quarterly letter published"
++    assert adapted.records[2].evidence[0].page == 4
++
++    html = tmp_path / "hub.html"
++    pptx = tmp_path / "deck.pptx"
++    docx = tmp_path / "memo.docx"
++    assert (
++        html_main(["--store", str(STORE), "--document-paths", str(PATHS), "--out", str(html)]) == 0
++    )
++    assert (
++        pptx_main(
++            [
++                "--store",
++                str(STORE),
++                "--document-paths",
++                str(PATHS),
++                "--manifest",
++                str(MANIFEST),
++                "--template",
++                str(TEMPLATE),
++                "--out",
++                str(pptx),
++            ]
++        )
++        == 0
++    )
++    assert (
++        docx_main(
++            [
++                "--profile",
++                "communication-synthesis",
++                "--store",
++                str(STORE),
++                "--document-paths",
++                str(PATHS),
++                "--memo-overlay",
++                str(MEMO),
++                "--out",
++                str(docx),
++            ]
++        )
++        == 0
++    )
++    assert all(path.stat().st_size > 100 for path in (html, pptx, docx))
++    page = html.read_text(encoding="utf-8")
++    assert "file:///synthetic/source%20document.pdf#page=3" in page
++    assert "https://" not in page and "http://" not in page
++    assert "Capital of $36B" in page
++    assert "Quarterly letter published" in page
++    assert "file:///synthetic/source%20document.pdf#page=4" in page
++    assert Presentation(pptx).slides[0].shapes.title.text == "Capital"
++    assert "Assets of $36B" in " ".join(p.text for p in Document(docx).paragraphs)
++
++
++def test_installed_console_commands_render_all_three_outputs(tmp_path: Path) -> None:
++    outputs = {
++        "render-html-hub": tmp_path / "console-hub.html",
++        "render-pptx-deck": tmp_path / "console-deck.pptx",
++        "render-docx-memo": tmp_path / "console-memo.docx",
++    }
++    arguments = {
++        "render-html-hub": [
++            "--store",
++            str(STORE),
++            "--document-paths",
++            str(PATHS),
++        ],
++        "render-pptx-deck": [
++            "--store",
++            str(STORE),
++            "--document-paths",
++            str(PATHS),
++            "--manifest",
++            str(MANIFEST),
++            "--template",
++            str(TEMPLATE),
++        ],
++        "render-docx-memo": [
++            "--profile",
++            "communication-synthesis",
++            "--store",
++            str(STORE),
++            "--document-paths",
++            str(PATHS),
++            "--memo-overlay",
++            str(MEMO),
++        ],
++    }
++
++    for command, output in outputs.items():
++        executable = shutil.which(command)
++        assert executable is not None, f"console script is not installed: {command}"
++        result = subprocess.run(
++            [executable, *arguments[command], "--out", str(output)],
++            capture_output=True,
++            text=True,
++            check=False,
++        )
++        assert result.returncode == 0, result.stdout + result.stderr
++        assert output.stat().st_size > 100
++
++    page = outputs["render-html-hub"].read_text(encoding="utf-8")
++    assert "https://" not in page and "http://" not in page
++
++
++def test_missing_document_path_fails_before_output(
++    tmp_path: Path, capsys: pytest.CaptureFixture[str]
++) -> None:
++    mapping = tmp_path / "paths.json"
++    mapping.write_text("{}", encoding="utf-8")
++    commands = (
++        (
++            html_main,
++            ["--store", str(STORE), "--document-paths", str(mapping)],
++            tmp_path / "hub.html",
++        ),
++        (
++            pptx_main,
++            [
++                "--store",
++                str(STORE),
++                "--document-paths",
++                str(mapping),
++                "--manifest",
++                str(MANIFEST),
++                "--template",
++                str(TEMPLATE),
++            ],
++            tmp_path / "deck.pptx",
++        ),
++        (
++            docx_main,
++            [
++                "--profile",
++                "communication-synthesis",
++                "--store",
++                str(STORE),
++                "--document-paths",
++                str(mapping),
++                "--memo-overlay",
++                str(MEMO),
++            ],
++            tmp_path / "memo.docx",
++        ),
++    )
++    for command, args, out in commands:
++        assert command([*args, "--out", str(out)]) == 2
++        assert not out.exists()
++
++    errors = capsys.readouterr().err
++    assert errors.count("document-path mapping missing") == len(commands)
++    data = json.loads(STORE.read_text(encoding="utf-8"))
++    with pytest.raises(CommunicationRenderError, match="must be an absolute local path"):
++        adapt_store(data, {"doc-1": "relative/source.pdf"})
++
++
++def test_adapter_requires_mapping_for_uncited_documents(tmp_path: Path) -> None:
++    data = json.loads(STORE.read_text(encoding="utf-8"))
++    data["documents"].append({"name": "uncited-doc", "date": "2025-02-01"})
++    store_path = tmp_path / "store.json"
++    store_path.write_text(json.dumps(data), encoding="utf-8")
++    assert validate_store(store_path).valid
++
++    with pytest.raises(
++        CommunicationRenderError, match="document-path mapping missing for 'uncited-doc'"
++    ):
++        adapt_profile(store_path, PATHS)
++
++
++def test_adapter_does_not_replace_an_explicit_blank_stable_id_with_name() -> None:
++    data = json.loads(STORE.read_text(encoding="utf-8"))
++    data["documents"][0]["stable_id"] = ""
++
++    with pytest.raises(CommunicationRenderError, match=r"documents\[0\]\.stable_id"):
++        adapt_store(data, json.loads(PATHS.read_text(encoding="utf-8")))
++
++
++def test_missing_page_fails_projection_even_when_store_validates(tmp_path: Path) -> None:
++    for pointer_path in (("mentions", 0, "src"), ("pub", "src")):
++        data = json.loads(STORE.read_text(encoding="utf-8"))
++        pointer = data["entries"][0]
++        for part in pointer_path:
++            pointer = pointer[part]
++        del pointer["page"]
++        without_page = tmp_path / f"missing-page-{pointer_path[0]}.json"
++        without_page.write_text(json.dumps(data), encoding="utf-8")
++        assert validate_store(without_page).valid  # validator allows document-only citations
++        out = tmp_path / f"hub-{pointer_path[0]}.html"
++        assert (
++            html_main(
++                ["--store", str(without_page), "--document-paths", str(PATHS), "--out", str(out)]
++            )
++            == 2
++        )
++        assert not out.exists()
++
++
++def test_blank_unsourced_mention_is_skipped(tmp_path: Path) -> None:
++    data = json.loads(STORE.read_text(encoding="utf-8"))
++    data["entries"] = [
++        {
++            "id": "solo",
++            "name": "Solo",
++            "first": "2025-Q1",
++            "mentions": [{"q": "2025-Q1", "text": "   "}],
++        }
++    ]
++    with pytest.raises(CommunicationRenderError, match="no renderable entry text"):
++        adapt_store(data, json.loads(PATHS.read_text(encoding="utf-8")))
++
++
++def test_non_object_manifest_exits_with_diagnostic(
++    tmp_path: Path, capsys: pytest.CaptureFixture[str]
++) -> None:
++    manifest = tmp_path / "array-manifest.json"
++    manifest.write_text("[]", encoding="utf-8")
++    out = tmp_path / "deck.pptx"
++    assert (
++        pptx_main(
++            [
++                "--store",
++                str(STORE),
++                "--document-paths",
++                str(PATHS),
++                "--manifest",
++                str(manifest),
++                "--template",
++                str(TEMPLATE),
++                "--out",
++                str(out),
++            ]
++        )
++        == 2
++    )
++    assert not out.exists()
++    assert "manifest must be a JSON object" in capsys.readouterr().err
++
++
++@pytest.mark.parametrize("template_contents", [None, b"not a PowerPoint package"])
++def test_invalid_template_exits_with_diagnostic_without_output(
++    tmp_path: Path,
++    capsys: pytest.CaptureFixture[str],
++    template_contents: bytes | None,
++) -> None:
++    template = tmp_path / "invalid-template.pptx"
++    if template_contents is not None:
++        template.write_bytes(template_contents)
++    out = tmp_path / "deck.pptx"
++
++    assert (
++        pptx_main(
++            [
++                "--store",
++                str(STORE),
++                "--document-paths",
++                str(PATHS),
++                "--manifest",
++                str(MANIFEST),
++                "--template",
++                str(template),
++                "--out",
++                str(out),
++            ]
++        )
++        == 2
++    )
++    assert not out.exists()
++    assert "render-pptx-deck: Package not found" in capsys.readouterr().err
++
++
++def test_cross_entry_mention_is_not_silently_reassigned(tmp_path: Path) -> None:
++    data = json.loads(STORE.read_text(encoding="utf-8"))
++    second = deepcopy(data["entries"][0])
++    second["id"] = "other"
++    second["mentions"] = []
++    data["entries"].append(second)
++    data["entries"][0]["mentions"][0]["entry_id"] = "other"
++    store_path = tmp_path / "cross-entry.json"
++    store_path.write_text(json.dumps(data), encoding="utf-8")
++    assert validate_store(store_path).valid
++    with pytest.raises(CommunicationRenderError, match="names another entry"):
++        adapt_store(data, json.loads(PATHS.read_text(encoding="utf-8")))
++
++
++def test_memo_requires_reviewed_rows_and_distinct_periods(tmp_path: Path) -> None:
++    out = tmp_path / "memo.docx"
++    assert (
++        docx_main(
++            [
++                "--profile",
++                "communication-synthesis",
++                "--store",
++                str(STORE),
++                "--document-paths",
++                str(PATHS),
++                "--out",
++                str(out),
++            ]
++        )
++        == 2
++    )
++    assert not out.exists()
++    overlay = json.loads(MEMO.read_text(encoding="utf-8"))
++    overlay["period_prior"] = overlay["period_current"]
++    path = tmp_path / "overlay.json"
++    path.write_text(json.dumps(overlay), encoding="utf-8")
++    assert (
++        docx_main(
++            [
++                "--profile",
++                "communication-synthesis",
++                "--store",
++                str(STORE),
++                "--document-paths",
++                str(PATHS),
++                "--memo-overlay",
++                str(path),
++                "--out",
++                str(out),
++            ]
++        )
++        == 2
++    )
++    assert not out.exists()
++
++
++def test_docx_rejects_communication_options_with_legacy_profile(
++    tmp_path: Path, capsys: pytest.CaptureFixture[str]
++) -> None:
++    out = tmp_path / "memo.docx"
++
++    assert (
++        docx_main(
++            [
++                "--store",
++                str(STORE),
++                "--document-paths",
++                str(PATHS),
++                "--memo-overlay",
++                str(MEMO),
++                "--out",
++                str(out),
++            ]
++        )
++        == 2
++    )
++    assert not out.exists()
++    error = capsys.readouterr().err
++    assert "--profile communication-synthesis" in error
++    assert "document-path mappings" in error
++
++
++def test_no_material_change_and_existing_output_are_preserved(tmp_path: Path) -> None:
++    overlay = json.loads(MEMO.read_text(encoding="utf-8"))
++    overlay["changes"][0]["tier"] = "T3"
++    path = tmp_path / "overlay.json"
++    path.write_text(json.dumps(overlay), encoding="utf-8")
++    docx = tmp_path / "memo.docx"
++    assert (
++        docx_main(
++            [
++                "--profile",
++                "communication-synthesis",
++                "--store",
++                str(STORE),
++                "--document-paths",
++                str(PATHS),
++                "--memo-overlay",
++                str(path),
++                "--out",
++                str(docx),
++            ]
++        )
++        == 2
++    )
++    assert not docx.exists()
++
++    html = tmp_path / "hub.html"
++    html.write_text("existing", encoding="utf-8")
++    args = ["--store", str(STORE), "--document-paths", str(PATHS), "--out", str(html)]
++    assert html_main(args) == 2
++    assert html.read_text(encoding="utf-8") == "existing"
++    assert html_main(args + ["--force"]) == 0
++    assert "Capital of $36B" in html.read_text(encoding="utf-8")
++
++
++def test_force_cannot_replace_a_mapped_source_document(
++    tmp_path: Path, capsys: pytest.CaptureFixture[str]
++) -> None:
++    source = tmp_path / "source.pdf"
++    source.write_bytes(b"original source")
++    mapping = tmp_path / "paths.json"
++    mapping.write_text(json.dumps({"doc-1": str(source)}), encoding="utf-8")
++
++    command_args = (
++        (
++            html_main,
++            ["--store", str(STORE), "--document-paths", str(mapping)],
++        ),
++        (
++            pptx_main,
++            [
++                "--store",
++                str(STORE),
++                "--document-paths",
++                str(mapping),
++                "--manifest",
++                str(MANIFEST),
++                "--template",
++                str(TEMPLATE),
++            ],
++        ),
++        (
++            docx_main,
++            [
++                "--profile",
++                "communication-synthesis",
++                "--store",
++                str(STORE),
++                "--document-paths",
++                str(mapping),
++                "--memo-overlay",
++                str(MEMO),
++            ],
++        ),
++    )
++    for command, args in command_args:
++        assert command([*args, "--out", str(source), "--force"]) == 2
++        assert source.read_bytes() == b"original source"
++
++    errors = capsys.readouterr().err
++    assert errors.count("output path aliases a rendering input") == 3
++
++
++def test_force_cannot_replace_a_static_deck_asset(
++    tmp_path: Path, capsys: pytest.CaptureFixture[str]
++) -> None:
++    asset = tmp_path / "slide.txt"
++    asset.write_text("Reviewed static slide copy", encoding="utf-8")
++    template = tmp_path / "template.pptx"
++    shutil.copyfile(TEMPLATE, template)
++    manifest = tmp_path / "manifest.json"
++    manifest.write_text(
++        json.dumps(
++            {
++                "slides": [
++                    {
++                        "slide_id": "static-slide",
++                        "title": "Static slide",
++                        "layout": "Title and Content",
++                        "source": "static:slide.txt",
++                    }
++                ]
++            }
++        ),
++        encoding="utf-8",
++    )
++
++    assert (
++        pptx_main(
++            [
++                "--store",
++                str(STORE),
++                "--document-paths",
++                str(PATHS),
++                "--manifest",
++                str(manifest),
++                "--template",
++                str(template),
++                "--out",
++                str(asset),
++                "--force",
++            ]
++        )
++        == 2
++    )
++    assert asset.read_text(encoding="utf-8") == "Reviewed static slide copy"
++    assert "output path aliases a rendering input" in capsys.readouterr().err
+diff --git a/tests/store/test_evidence_object_projection.py b/tests/store/test_evidence_object_projection.py
+index efa449c..211aace 100644
+--- a/tests/store/test_evidence_object_projection.py
++++ b/tests/store/test_evidence_object_projection.py
+@@ -116,7 +116,17 @@ def test_packaged_console_entry_rejects_orphan(tmp_path):
+     wheel_dir.mkdir()
+     install_dir.mkdir()
+     build = subprocess.run(
+-        [sys.executable, "-m", "pip", "wheel", ".", "-w", str(wheel_dir)],
++        [
++            sys.executable,
++            "-m",
++            "pip",
++            "wheel",
++            ".",
++            "--no-build-isolation",
++            "--no-deps",
++            "-w",
++            str(wheel_dir),
++        ],
+         cwd=ROOT,
+         capture_output=True,
+         text=True,
+@@ -125,7 +135,16 @@ def test_packaged_console_entry_rejects_orphan(tmp_path):
+     assert build.returncode == 0, build.stdout + build.stderr
+     wheel = next(wheel_dir.glob("deliverable_render-*.whl"))
+     install = subprocess.run(
+-        [sys.executable, "-m", "pip", "install", "--target", str(install_dir), str(wheel)],
++        [
++            sys.executable,
++            "-m",
++            "pip",
++            "install",
++            "--no-deps",
++            "--target",
++            str(install_dir),
++            str(wheel),
++        ],
+         capture_output=True,
+         text=True,
+         check=False,

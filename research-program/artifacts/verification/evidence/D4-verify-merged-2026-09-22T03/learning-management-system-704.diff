@@ -1,0 +1,606 @@
+diff --git a/src/lms/ui/api.py b/src/lms/ui/api.py
+index 811de74..43bb690 100644
+--- a/src/lms/ui/api.py
++++ b/src/lms/ui/api.py
+@@ -14,6 +14,7 @@ from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
+ 
+ from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
+ from fastapi.responses import HTMLResponse, RedirectResponse, Response
++from pydantic import ValidationError
+ from sqlalchemy import select
+ from sqlalchemy.orm import Session
+ 
+@@ -80,6 +81,7 @@ from lms.scheduling.service import (
+ )
+ from lms.sources.models import SourceReference
+ from lms.sources.repository import list_source_references
++from lms.ui.forms import FormValueError, optional_float, optional_int
+ from lms.ui.shell import empty_state, render_page
+ 
+ router = APIRouter(tags=["learner-ui"])
+@@ -125,6 +127,8 @@ def _learn_surface(
+     session: Session,
+     learner_id: str,
+     prompt_id: str | None,
++    error: str | None = None,
++    response_text: str = "",
+ ) -> str:
+     """Return a mobile-friendly Learn surface wired to the attempt API."""
+     prompt = session.get(Prompt, prompt_id) if prompt_id is not None else None
+@@ -143,6 +147,7 @@ def _learn_surface(
+             <p class="eyebrow">Assigned next task</p>
+             <h1>Learn</h1>
+           </header>
++          {_notice(None, error)}
+           <section aria-labelledby="prompt-heading">
+             <h2 id="prompt-heading">Prompt</h2>
+             <p class="prompt-text">{escape(prompt_body)}</p>
+@@ -152,7 +157,7 @@ def _learn_surface(
+             <input type="hidden" name="learner_id" value="{escape(learner_id)}">
+             <input type="hidden" name="prompt_id" value="{escape(prompt_id or "")}">
+             <label for="response_text">Response</label>
+-            <textarea id="response_text" name="response_text" rows="6"></textarea>
++            <textarea id="response_text" name="response_text" rows="6">{escape(response_text)}</textarea>
+             <label for="confidence_rating">Confidence</label>
+             <select id="confidence_rating" name="confidence_rating">
+               <option value="1">1 - unsure</option>
+@@ -197,18 +202,36 @@ async def submit_learn_attempt_route(
+         settings=settings,
+         requested=form.get("learner_id") or None,
+     )
+-    payload = AttemptCreate(
+-        learner_id=learner_id,
+-        prompt_id=form.get("prompt_id", ""),
+-        response_text=form.get("response_text", ""),
+-        confidence_rating=_optional_int(form.get("confidence_rating")),
+-        reference_accessed=form.get("reference_accessed") == "true",
+-        feedback=StructuredFeedback(
+-            goal="Record learner attempt",
+-            observed_evidence=form.get("response_text", ""),
+-            next_action="Review feedback and continue practice.",
+-        ),
+-    )
++    try:
++        confidence_rating = optional_int(form.get("confidence_rating"))
++        payload = AttemptCreate(
++            learner_id=learner_id,
++            prompt_id=form.get("prompt_id", ""),
++            response_text=form.get("response_text", ""),
++            confidence_rating=confidence_rating,
++            reference_accessed=form.get("reference_accessed") == "true",
++            feedback=StructuredFeedback(
++                goal="Record learner attempt",
++                observed_evidence=form.get("response_text", ""),
++                next_action="Review feedback and continue practice.",
++            ),
++        )
++    except FormValueError as exc:
++        return _learn_surface(
++            session=session,
++            learner_id=learner_id,
++            prompt_id=form.get("prompt_id") or None,
++            error=str(exc),
++            response_text=form.get("response_text", ""),
++        )
++    except (ValidationError, ValueError):
++        return _learn_surface(
++            session=session,
++            learner_id=learner_id,
++            prompt_id=form.get("prompt_id") or None,
++            error="Enter a response and a confidence rating between 1 and 5 before submitting.",
++            response_text=form.get("response_text", ""),
++        )
+     recorded = record_attempt(session, **payload.model_dump())
+     session.commit()
+     attempt = recorded.attempt
+@@ -706,6 +729,7 @@ async def create_author_edge_route(request: Request, session: SessionDep) -> str
+     form = await _read_form(request)
+     ownership_scope = form.get("ownership_scope", "personal")
+     try:
++        confidence = optional_float(form.get("confidence"))
+         create_knowledge_edge(
+             session,
+             source_node_id=form.get("source_node_id", ""),
+@@ -714,12 +738,20 @@ async def create_author_edge_route(request: Request, session: SessionDep) -> str
+             scope=ownership_scope,
+             target_scope=form.get("target_scope") or ownership_scope,
+             is_graph_reference=form.get("is_graph_reference") == "true",
+-            confidence=_optional_float(form.get("confidence")),
++            confidence=confidence,
+             status=form.get("status", "draft"),
+             actor_id="author-ui",
+             source_subsystem="author-ui",
+         )
+         session.commit()
++    except FormValueError as exc:
++        session.rollback()
++        return _author_knowledge_surface(
++            session=session,
++            ownership_scope=ownership_scope,
++            message=None,
++            error=str(exc),
++        )
+     except ValueError as exc:
+         session.rollback()
+         return _author_knowledge_surface(
+@@ -1415,12 +1447,6 @@ def _confidence_label(value: int | None) -> str:
+     return "not recorded" if value is None else f"{value}/5"
+ 
+ 
+-def _optional_int(value: str | None) -> int | None:
+-    if value is None or value == "":
+-        return None
+-    return int(value)
+-
+-
+ async def _read_form(request: Request) -> dict[str, str]:
+     raw_form = parse_qs((await request.body()).decode(), keep_blank_values=True)
+     return {key: values[-1] for key, values in raw_form.items()}
+@@ -1917,12 +1943,6 @@ def _split_ids(value: str) -> list[str]:
+     return [part.strip() for part in value.replace("\n", ",").split(",") if part.strip()]
+ 
+ 
+-def _optional_float(value: str | None) -> float | None:
+-    if value is None or value == "":
+-        return None
+-    return float(value)
+-
+-
+ def _confidence_value(value: float | None) -> str:
+     return "not recorded" if value is None else f"{value:.2f}"
+ 
+diff --git a/src/lms/ui/attempts.py b/src/lms/ui/attempts.py
+index a75ab3b..a3301b5 100644
+--- a/src/lms/ui/attempts.py
++++ b/src/lms/ui/attempts.py
+@@ -38,6 +38,7 @@ from lms.scheduling.service import (
+     SchedulerSettings,
+     get_review_queue_overview,
+ )
++from lms.ui.forms import FormValueError, optional_int
+ from lms.ui.shell import empty_state, render_page
+ 
+ router = APIRouter(tags=["learner-ui"])
+@@ -91,21 +92,30 @@ async def submit_attempt_route(
+             learner_id=learner_id,
+             prompt_id=prompt_id,
+             response_text=form.get("response_text", ""),
+-            confidence_rating=_optional_int(form.get("confidence_rating")),
++            confidence_rating=optional_int(form.get("confidence_rating")),
+             reference_accessed=form.get("reference_accessed") == "true",
+-            elapsed_seconds=_optional_int(form.get("elapsed_seconds")),
++            elapsed_seconds=optional_int(form.get("elapsed_seconds")),
+             feedback=StructuredFeedback(
+                 goal="Record learner attempt",
+                 observed_evidence=form.get("response_text", "") or "(no response captured)",
+                 next_action="Review feedback and continue practice.",
+             ),
+         )
++    except FormValueError:
++        return _attempt_start_surface(
++            session=session,
++            learner_id=learner_id,
++            prompt_id=prompt_id or None,
++            error="Enter a response and a confidence rating between 1 and 5 before submitting.",
++            response_text=form.get("response_text", ""),
++        )
+     except (ValidationError, ValueError):
+         return _attempt_start_surface(
+             session=session,
+             learner_id=learner_id,
+             prompt_id=prompt_id or None,
+             error="Enter a response and a confidence rating between 1 and 5 before submitting.",
++            response_text=form.get("response_text", ""),
+         )
+ 
+     recorded = record_attempt(session, **payload.model_dump())
+@@ -214,6 +224,7 @@ def _attempt_start_surface(
+     learner_id: str,
+     prompt_id: str | None,
+     error: str | None,
++    response_text: str = "",
+ ) -> str:
+     prompt = session.get(Prompt, prompt_id) if prompt_id else None
+ 
+@@ -271,7 +282,7 @@ def _attempt_start_surface(
+           <input type="hidden" name="prompt_id" value="{escape(prompt.id)}">
+           <input type="hidden" id="elapsed_seconds" name="elapsed_seconds" value="">
+           <label for="response_text">Your response</label>
+-          <textarea id="response_text" name="response_text" rows="6" required></textarea>
++          <textarea id="response_text" name="response_text" rows="6" required>{escape(response_text)}</textarea>
+           <label for="confidence_rating">Confidence</label>
+           <select id="confidence_rating" name="confidence_rating">
+             <option value="1">1 - unsure</option>
+@@ -586,7 +597,3 @@ def _feedback_url(*, learner_id: str, prompt_id: str) -> str:
+     return f"{FEEDBACK_PATH}?learner_id={quote_plus(learner_id)}&prompt_id={quote_plus(prompt_id)}"
+ 
+ 
+-def _optional_int(value: str | None) -> int | None:
+-    if value is None or value == "":
+-        return None
+-    return int(value)
+diff --git a/src/lms/ui/capability_gap.py b/src/lms/ui/capability_gap.py
+index f27d6cf..7207a00 100644
+--- a/src/lms/ui/capability_gap.py
++++ b/src/lms/ui/capability_gap.py
+@@ -60,6 +60,7 @@ from lms.learners.identity import (
+ )
+ from lms.learners.models import LearningGoal
+ from lms.settings import Settings
++from lms.ui.forms import FormValueError, optional_float
+ from lms.ui.shell import empty_state, render_page
+ 
+ router = APIRouter(tags=["learner-ui"])
+@@ -890,12 +891,9 @@ def _split_tokens(raw: str) -> list[str]:
+ 
+ 
+ def _optional_float(raw: str) -> float | None:
+-    text = raw.strip()
+-    if not text:
+-        return None
+     try:
+-        return float(text)
+-    except ValueError:
++        return optional_float(raw)
++    except FormValueError:
+         return None
+ 
+ 
+diff --git a/src/lms/ui/feedback.py b/src/lms/ui/feedback.py
+index 9a58972..2526fe9 100644
+--- a/src/lms/ui/feedback.py
++++ b/src/lms/ui/feedback.py
+@@ -37,6 +37,7 @@ from lms.feedback.repository import (
+     submit_revision_request,
+ )
+ from lms.learners.identity import CurrentUserDep, LearnerIdDep, require_learner_ownership
++from lms.ui.forms import FormValueError, optional_int
+ from lms.ui.shell import empty_state, render_page
+ 
+ router = APIRouter(tags=["learner-feedback-ui"])
+@@ -191,10 +192,13 @@ async def learner_revision_submit_route(
+             session,
+             revision,
+             response_text=response_text,
+-            confidence_rating=_optional_int(form.get("confidence_rating")),
++            confidence_rating=optional_int(form.get("confidence_rating")),
+         )
+         session.commit()
+         session.refresh(revision)
++    except FormValueError as exc:
++        session.rollback()
++        return HTMLResponse(_feedback_detail_page(session, record, error=str(exc)), status_code=422)
+     except ValueError as exc:
+         session.rollback()
+         return HTMLResponse(_feedback_detail_page(session, record, error=str(exc)), status_code=422)
+@@ -433,12 +437,6 @@ async def _read_form(request: Request) -> dict[str, str]:
+     return {key: values[-1] for key, values in raw_form.items()}
+ 
+ 
+-def _optional_int(value: str | None) -> int | None:
+-    if value is None or value == "":
+-        return None
+-    return int(value)
+-
+-
+ def _notice(text: str | None, class_name: str) -> str:
+     if text is None:
+         return ""
+diff --git a/src/lms/ui/forms.py b/src/lms/ui/forms.py
+new file mode 100644
+index 0000000..955e59f
+--- /dev/null
++++ b/src/lms/ui/forms.py
+@@ -0,0 +1,44 @@
++"""Shared helpers for parsing untrusted HTML form numeric fields."""
++
++from __future__ import annotations
++
++import math
++
++
++class FormValueError(ValueError):
++    """Raised when a posted form field cannot be parsed as the expected numeric type."""
++
++
++def optional_int(value: str | None) -> int | None:
++    """Parse optional integer form text, returning None for blank values."""
++    if value is None:
++        return None
++    text = value.strip()
++    if not text:
++        return None
++    try:
++        return int(text)
++    except ValueError:
++        raise FormValueError(
++            "Enter a valid whole number for numeric form fields."
++        ) from None
++
++
++def optional_float(value: str | None) -> float | None:
++    """Parse optional float form text, returning None for blank values."""
++    if value is None:
++        return None
++    text = value.strip()
++    if not text:
++        return None
++    try:
++        parsed = float(text)
++    except ValueError:
++        raise FormValueError(
++            "Enter a valid number for numeric form fields."
++        ) from None
++    if not math.isfinite(parsed):
++        raise FormValueError(
++            "Enter a finite number for numeric form fields."
++        ) from None
++    return parsed
+diff --git a/src/lms/ui/graph_design.py b/src/lms/ui/graph_design.py
+index 2c15d9d..2216489 100644
+--- a/src/lms/ui/graph_design.py
++++ b/src/lms/ui/graph_design.py
+@@ -24,6 +24,7 @@ from lms.graphs.repository import (
+ )
+ from lms.llm.proposals import LLMProposal
+ from lms.mastery.service import mastery_estimates_for_learner
++from lms.ui.forms import FormValueError, optional_float
+ from lms.ui.shell import render_page
+ 
+ router = APIRouter(tags=["graph-design-ui"])
+@@ -87,6 +88,7 @@ async def create_graph_edge_route(request: Request, session: SessionDep) -> str:
+     form = await _form_data(request)
+     scope = _scope(form.get("ownership_scope"))
+     try:
++        confidence = optional_float(form.get("confidence"))
+         create_knowledge_edge(
+             session,
+             source_node_id=form.get("source_node_id", "").strip(),
+@@ -95,7 +97,7 @@ async def create_graph_edge_route(request: Request, session: SessionDep) -> str:
+             scope=scope,
+             target_scope=_scope(form.get("target_scope") or scope),
+             is_graph_reference=form.get("is_graph_reference") == "true",
+-            confidence=_optional_float(form.get("confidence")),
++            confidence=confidence,
+             status=form.get("status", "draft"),
+             notes=form.get("notes") or None,
+             actor_id="graph-ui",
+@@ -103,6 +105,9 @@ async def create_graph_edge_route(request: Request, session: SessionDep) -> str:
+         )
+         session.commit()
+         message = "Edge saved."
++    except FormValueError as exc:
++        session.rollback()
++        message = str(exc)
+     except ValueError as exc:
+         session.rollback()
+         message = str(exc)
+@@ -437,7 +442,3 @@ def _metric_percent(value: object) -> str:
+     return f"{float(value):.0%}" if isinstance(value, int | float) else "pending"
+ 
+ 
+-def _optional_float(value: str | None) -> float | None:
+-    if value is None or value == "":
+-        return None
+-    return float(value)
+diff --git a/tests/ui/test_form_coercion.py b/tests/ui/test_form_coercion.py
+new file mode 100644
+index 0000000..48832a5
+--- /dev/null
++++ b/tests/ui/test_form_coercion.py
+@@ -0,0 +1,215 @@
++"""Route-level and helper tests for shared UI numeric form coercion."""
++
++from __future__ import annotations
++
++import pytest
++from fastapi.testclient import TestClient
++from sqlalchemy import select
++from sqlalchemy.orm import Session, sessionmaker
++
++from lms.evidence.models import Attempt
++from lms.feedback.models import RevisionRequest
++from lms.feedback.repository import create_feedback_record
++from lms.ui.forms import FormValueError, optional_float, optional_int
++
++ATTEMPTS_PATH = "/app/learner/attempts"
++
++
++def test_non_numeric_confidence_does_not_500(
++    api_client: tuple[TestClient, sessionmaker[Session]],
++) -> None:
++    client, session_factory = api_client
++    with session_factory() as session:
++        _seed_prompt(session)
++
++    response = client.post(
++        ATTEMPTS_PATH,
++        data={
++            "learner_id": "learner-1",
++            "prompt_id": "prompt-1",
++            "response_text": "A response with invalid confidence.",
++            "confidence_rating": "abc",
++        },
++    )
++
++    assert response.status_code < 500
++    assert "validation-error" in response.text
++    assert "A response with invalid confidence." in response.text
++    with session_factory() as session:
++        assert session.scalars(select(Attempt)).all() == []
++
++
++def test_learn_route_preserves_response_on_invalid_confidence(
++    api_client: tuple[TestClient, sessionmaker[Session]],
++) -> None:
++    client, session_factory = api_client
++    with session_factory() as session:
++        _seed_prompt(session)
++
++    response = client.post(
++        "/learn/attempts",
++        data={
++            "learner_id": "learner-1",
++            "prompt_id": "prompt-1",
++            "response_text": "A response with invalid confidence.",
++            "confidence_rating": "abc",
++        },
++    )
++
++    assert response.status_code < 500
++    assert "validation-error" in response.text
++    assert "A response with invalid confidence." in response.text
++    with session_factory() as session:
++        assert session.scalars(select(Attempt)).all() == []
++
++
++def test_learn_route_rejects_out_of_range_confidence(
++    api_client: tuple[TestClient, sessionmaker[Session]],
++) -> None:
++    client, session_factory = api_client
++    with session_factory() as session:
++        _seed_prompt(session)
++
++    response = client.post(
++        "/learn/attempts",
++        data={
++            "learner_id": "learner-1",
++            "prompt_id": "prompt-1",
++            "response_text": "A response with invalid confidence.",
++            "confidence_rating": "6",
++        },
++    )
++
++    assert response.status_code < 500
++    assert "validation-error" in response.text
++    assert "A response with invalid confidence." in response.text
++    with session_factory() as session:
++        assert session.scalars(select(Attempt)).all() == []
++
++
++def test_blank_numeric_field_is_treated_as_absent(
++    api_client: tuple[TestClient, sessionmaker[Session]],
++) -> None:
++    client, session_factory = api_client
++    with session_factory() as session:
++        _seed_prompt(session)
++
++    response = client.post(
++        ATTEMPTS_PATH,
++        data={
++            "learner_id": "learner-1",
++            "prompt_id": "prompt-1",
++            "response_text": "A response without confidence.",
++            "confidence_rating": "",
++        },
++    )
++
++    assert response.status_code == 200
++    with session_factory() as session:
++        attempt = session.scalars(select(Attempt).where(Attempt.learner_id == "learner-1")).one()
++    assert attempt.confidence_rating is None
++
++
++def test_optional_int_rejects_non_numeric() -> None:
++    with pytest.raises(FormValueError):
++        optional_int("abc")
++    assert optional_int("") is None
++    assert optional_int(None) is None
++
++
++@pytest.mark.parametrize("value", ["abc", "nan", "inf", "-inf"])
++def test_optional_float_rejects_invalid_or_non_finite_values(value: str) -> None:
++    with pytest.raises(FormValueError):
++        optional_float(value)
++
++
++def test_optional_float_treats_blank_values_as_absent() -> None:
++    assert optional_float("") is None
++    assert optional_float("   ") is None
++    assert optional_float(None) is None
++
++
++def test_non_numeric_feedback_confidence_does_not_persist_revision(
++    api_client: tuple[TestClient, sessionmaker[Session]],
++) -> None:
++    client, session_factory = api_client
++    with session_factory() as session:
++        _seed_prompt(session)
++        attempt = Attempt(
++            learner_id="learner-1",
++            prompt_id="prompt-1",
++            response_text="Initial response",
++            feedback={"goal": "Improve the response", "next_action": "Revise"},
++        )
++        session.add(attempt)
++        session.flush()
++        record = create_feedback_record(
++            session,
++            learner_id="learner-1",
++            attempt_id=attempt.id,
++            prompt_id="prompt-1",
++            goal="Revise with a clearer reason",
++            observed_evidence="The initial response was incomplete.",
++            gap="Needs a revised explanation",
++        )
++        session.commit()
++        record_id = record.id
++
++    response = client.post(
++        f"/app/learner/feedback/{record_id}/revision",
++        data={
++            "response_text": "A revision that should not be persisted.",
++            "confidence_rating": "abc",
++        },
++    )
++
++    assert response.status_code == 422
++    assert "Enter a valid whole number for numeric form fields." in response.text
++    with session_factory() as session:
++        assert session.scalars(select(RevisionRequest)).all() == []
++
++
++def _seed_prompt(session: Session) -> None:
++    from lms.auth.models import utc_now
++    from lms.graphs.models import KnowledgeNode
++    from lms.prompts.models import Prompt, PromptVersion
++    from lms.sources.models import SourceReference
++
++    source = SourceReference(
++        id="source-1",
++        source_type="markdown-file",
++        stable_locator="https://example.test/source",
++        passage_range="L1-L4",
++        content_hash="hash-123",
++        source_visibility="public",
++        drift_status="current",
++    )
++    prompt = Prompt(
++        id="prompt-1",
++        target_node_id="node-1",
++        learning_goal_id="goal-1",
++        knowledge_type="conceptual",
++        intended_cognitive_action="explain",
++        demand_level="medium",
++        expected_answer_form="short-text",
++        status="published",
++        authoring_method="human-authored",
++        authoring_actor="author-1",
++        reviewing_actor="reviewer-1",
++        approval_timestamp=utc_now(),
++        source_references=[source],
++    )
++    prompt.versions.append(
++        PromptVersion(version_number=1, body="Explain the retrieval practice idea.", created_by="a")
++    )
++    session.add(
++        KnowledgeNode(
++            id="node-1",
++            title="Retrieval practice",
++            knowledge_type="conceptual",
++            ownership_scope="personal",
++            status="published",
++        )
++    )
++    session.add(prompt)
++    session.commit()

@@ -1,0 +1,192 @@
+diff --git a/src/lms/export_import.py b/src/lms/export_import.py
+index 55171ca..52322ac 100644
+--- a/src/lms/export_import.py
++++ b/src/lms/export_import.py
+@@ -406,7 +406,12 @@ PERSISTED_RELATIONSHIP_KEYS = {
+     ("LLMFeedbackEvent", "source_reference_ids"),
+ }
+ 
+-PII_FIELDS = {"User": {"email"}}
++# Privacy-preserving exports omit these columns unless include_pii="all" with confirm_all.
++# User.email, User.username, User.display_name, and Learner.display_name are PII.
++PII_FIELDS = {
++    "User": {"email", "username", "display_name"},
++    "Learner": {"display_name"},
++}
+ # Credentials never belong in portable exports, even when all PII is requested.
+ EXCLUDED_EXPORT_FIELDS = {"User": {"password_hash"}}
+ SOURCE_CONTENT_FIELDS = {"body", "content", "raw_content", "source_content", "text"}
+@@ -723,12 +728,24 @@ def _relationship_dependency_type(key: str) -> str:
+     raise ExportImportError(f"unsupported relationship key {key!r}")
+ 
+ 
++def _apply_pii_import_defaults(record_type: str, record: dict[str, Any]) -> None:
++    """Fill required identity columns omitted from privacy-preserving exports."""
++    if record_type == "User":
++        if "username" not in record:
++            record["username"] = f"imported-{record['id']}"
++        if "display_name" not in record:
++            record["display_name"] = "Imported user"
++    elif record_type == "Learner" and "display_name" not in record:
++        record["display_name"] = "Imported learner"
++
++
+ def _apply_entries(session: Session, entries: Iterable[dict[str, Any]]) -> None:
+     pending_relationships: list[tuple[str, str, str, list[str]]] = []
+     pending_session_parents: list[tuple[LLMSession, str]] = []
+     for entry in entries:
+         model = MODEL_BY_TYPE[entry["type"]]
+         record = dict(entry["record"])
++        _apply_pii_import_defaults(entry["type"], record)
+         for key in RELATIONSHIP_KEYS.get(entry["type"], ()):
+             if (entry["type"], key) in PERSISTED_RELATIONSHIP_KEYS:
+                 continue  # Validate persisted JSON links without removing their values.
+diff --git a/tests/export_import/test_export_contract.py b/tests/export_import/test_export_contract.py
+index e90f377..f053e2a 100644
+--- a/tests/export_import/test_export_contract.py
++++ b/tests/export_import/test_export_contract.py
+@@ -37,7 +37,7 @@ from lms.feedback.models import (
+     RevisionRequest,
+ )
+ from lms.graphs.models import KnowledgeEdge, KnowledgeNode
+-from lms.learners.models import LearnerReflection
++from lms.learners.models import Learner, LearnerReflection
+ from lms.llm.models import LearningInteractionSkill, LLMFeedbackEvent, LLMSession
+ from lms.llm.proposals import LLMProposal
+ from lms.maintenance.models import DraftRejection, GradeDispute, MaintenanceItem
+@@ -97,6 +97,40 @@ def test_export_emits_jsonl_typed_records_in_dependency_order(db_session: Sessio
+     assert "email" not in records[0]["record"]
+ 
+ 
++def test_default_export_omits_user_and_learner_names(db_session: Session) -> None:
++    user = User(id="user-1", email="ada@example.com", username="ada", display_name="Ada")
++    learner = Learner(id="learner-1", user_id=user.id, display_name="Ada Learner")
++    db_session.add_all([user, learner])
++    db_session.commit()
++
++    records = {json.loads(line)["type"]: json.loads(line)["record"] for line in export_jsonl(db_session)}
++
++    user_record = records["User"]
++    learner_record = records["Learner"]
++    assert "email" not in user_record
++    assert "username" not in user_record
++    assert "display_name" not in user_record
++    assert "display_name" not in learner_record
++
++
++def test_include_pii_all_still_emits_names(db_session: Session) -> None:
++    user = User(id="user-1", email="ada@example.com", username="ada", display_name="Ada")
++    learner = Learner(id="learner-1", user_id=user.id, display_name="Ada Learner")
++    db_session.add_all([user, learner])
++    db_session.commit()
++
++    records = {
++        json.loads(line)["type"]: json.loads(line)["record"]
++        for line in export_jsonl(db_session, include_pii="all", confirm_all=True)
++    }
++
++    user_record = records["User"]
++    learner_record = records["Learner"]
++    assert user_record["username"] == "ada"
++    assert user_record["display_name"] == "Ada"
++    assert learner_record["display_name"] == "Ada Learner"
++
++
+ def test_export_requires_confirmation_for_all_pii(db_session: Session) -> None:
+     db_session.add(User(id="user-1", email="ada@example.com", username="ada", display_name="Ada"))
+     db_session.commit()
+@@ -159,7 +193,10 @@ def test_export_excludes_password_hash_and_users_remain_importable(
+             imported = destination.get(User, user.id)
+             assert summary.counts == {"User": 1}
+             assert imported is not None
+-            assert imported.username == user.username
++            if include_pii == "all":
++                assert imported.username == user.username
++            else:
++                assert imported.username.startswith("imported-")
+             assert imported.password_hash is None
+     finally:
+         engine.dispose()
+diff --git a/tests/export_import/test_import_apply.py b/tests/export_import/test_import_apply.py
+index 302989a..3838059 100644
+--- a/tests/export_import/test_import_apply.py
++++ b/tests/export_import/test_import_apply.py
+@@ -55,6 +55,78 @@ def test_apply_writes_after_dry_run_validation_passes(tmp_path: Path, db_session
+     assert db_session.get(Learner, "learner-1") is not None
+ 
+ 
++def test_apply_accepts_user_without_withheld_pii_fields(
++    tmp_path: Path, db_session: Session
++) -> None:
++    path = tmp_path / "privacy-preserving-user.jsonl"
++    _write_jsonl(
++        path,
++        [
++            {
++                "type": "User",
++                "schema_version": 1,
++                "record": {
++                    "id": "user-1",
++                    "is_local": True,
++                },
++            },
++            {
++                "type": "Learner",
++                "schema_version": 1,
++                "record": {
++                    "id": "learner-1",
++                    "user_id": "user-1",
++                    "timezone": "UTC",
++                    "locale": "en-US",
++                },
++            },
++        ],
++    )
++
++    summary = import_jsonl(db_session, path, dry_run=False)
++    db_session.commit()
++
++    assert summary.counts == {"User": 1, "Learner": 1}
++    user = db_session.get(User, "user-1")
++    learner = db_session.get(Learner, "learner-1")
++    assert user is not None
++    assert learner is not None
++    assert user.username.startswith("imported-")
++    assert user.display_name == "Imported user"
++    assert learner.display_name == "Imported learner"
++
++
++def test_apply_generates_unique_usernames_for_ids_with_shared_prefix(
++    tmp_path: Path, db_session: Session
++) -> None:
++    first_id = "aaaaaaaa-aaaa-4000-8000-000000000001"
++    second_id = "aaaaaaaa-aaaa-4000-8000-000000000002"
++    path = tmp_path / "privacy-preserving-users.jsonl"
++    _write_jsonl(
++        path,
++        [
++            {
++                "type": "User",
++                "schema_version": 1,
++                "record": {"id": user_id, "is_local": True},
++            }
++            for user_id in (first_id, second_id)
++        ],
++    )
++
++    summary = import_jsonl(db_session, path, dry_run=False)
++    db_session.commit()
++
++    assert summary.counts == {"User": 2}
++    first = db_session.get(User, first_id)
++    second = db_session.get(User, second_id)
++    assert first is not None
++    assert second is not None
++    assert first.username == f"imported-{first_id}"
++    assert second.username == f"imported-{second_id}"
++    assert first.username != second.username
++
++
+ def test_apply_rolls_back_on_partial_failure(tmp_path: Path, db_session: Session) -> None:
+     path = tmp_path / "invalid.jsonl"
+     _write_jsonl(

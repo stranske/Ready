@@ -1,0 +1,166 @@
+diff --git a/.github/workflows/database-snapshot.yml b/.github/workflows/database-snapshot.yml
+index b509686..c62b0ae 100644
+--- a/.github/workflows/database-snapshot.yml
++++ b/.github/workflows/database-snapshot.yml
+@@ -4,14 +4,24 @@ on:
+   schedule:
+     - cron: "15 5 * * *"
+   workflow_dispatch:
++    inputs:
++      dry_run:
++        description: Validate client installation and backup plan without production credentials
++        type: boolean
++        default: true
++
++permissions:
++  contents: read
+ 
+ jobs:
+   postgres-snapshot:
+     runs-on: ubuntu-latest
+     env:
+-      DB_SNAPSHOT_DATABASE_URL: ${{ secrets.DB_SNAPSHOT_DATABASE_URL }}
+-      DB_SNAPSHOT_S3_URI: ${{ secrets.DB_SNAPSHOT_S3_URI }}
+-      DB_SNAPSHOT_KMS_KEY_ID: ${{ secrets.DB_SNAPSHOT_KMS_KEY_ID }}
++      AWS_CLI_VERSION: "2.36.49"
++      AWS_CLI_SHA256: "6b51b62d232217350e72d8f2493f47d3461239d011d1d5eef960dfcd8cb07069"
++      DB_SNAPSHOT_DATABASE_URL: ${{ (github.event_name == 'schedule' || !inputs.dry_run) && secrets.DB_SNAPSHOT_DATABASE_URL || '' }}
++      DB_SNAPSHOT_S3_URI: ${{ (github.event_name == 'schedule' || !inputs.dry_run) && secrets.DB_SNAPSHOT_S3_URI || '' }}
++      DB_SNAPSHOT_KMS_KEY_ID: ${{ (github.event_name == 'schedule' || !inputs.dry_run) && secrets.DB_SNAPSHOT_KMS_KEY_ID || '' }}
+     steps:
+       - uses: actions/checkout@v7
+       - uses: actions/setup-python@v6
+@@ -20,12 +30,32 @@ jobs:
+       - name: Install backup clients
+         run: |
+           sudo apt-get update
+-          sudo apt-get install -y postgresql-client awscli
++          sudo apt-get install -y postgresql-client unzip
++          curl --fail --silent --show-error --location \
++            "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-${AWS_CLI_VERSION}.zip" \
++            --output "$RUNNER_TEMP/awscliv2.zip"
++          printf '%s  %s\n' "$AWS_CLI_SHA256" "$RUNNER_TEMP/awscliv2.zip" | sha256sum --check
++          unzip -q "$RUNNER_TEMP/awscliv2.zip" -d "$RUNNER_TEMP/awscli-installer"
++          "$RUNNER_TEMP/awscli-installer/aws/install" \
++            --install-dir "$RUNNER_TEMP/aws-cli" --bin-dir "$RUNNER_TEMP/aws-cli-bin"
++          echo "$RUNNER_TEMP/aws-cli-bin" >> "$GITHUB_PATH"
++      - name: Verify backup client versions
++        run: |
++          aws_version="$(aws --version)"
++          printf '%s\n' "$aws_version"
++          [[ "$aws_version" == "aws-cli/${AWS_CLI_VERSION} "* ]]
++          pg_dump --version
++      - name: Verify dry-run credential isolation
++        if: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run }}
++        run: |
++          test -z "$DB_SNAPSHOT_DATABASE_URL"
++          test -z "$DB_SNAPSHOT_S3_URI"
++          test -z "$DB_SNAPSHOT_KMS_KEY_ID"
+       - name: Validate backup contract without production credentials
+         env:
+           DB_SNAPSHOT_DATABASE_URL: postgresql://snapshot:snapshot@example.invalid:5432/manager
+           DB_SNAPSHOT_S3_URI: s3://manager-db-backups/dry-run
+         run: python scripts/db_snapshot_restore.py backup --dry-run
+       - name: Run encrypted Postgres snapshot
+-        if: ${{ env.DB_SNAPSHOT_DATABASE_URL != '' && env.DB_SNAPSHOT_S3_URI != '' }}
++        if: ${{ !inputs.dry_run && env.DB_SNAPSHOT_DATABASE_URL != '' && env.DB_SNAPSHOT_S3_URI != '' }}
+         run: python scripts/db_snapshot_restore.py backup
+diff --git a/docs/runbooks/database-backup-restore.md b/docs/runbooks/database-backup-restore.md
+index 29519b2..b768611 100644
+--- a/docs/runbooks/database-backup-restore.md
++++ b/docs/runbooks/database-backup-restore.md
+@@ -18,6 +18,29 @@ The workflow always runs a dry-run contract check without credentials. It only
+ executes the live backup step when both `DB_SNAPSHOT_DATABASE_URL` and
+ `DB_SNAPSHOT_S3_URI` are configured as repository secrets.
+ 
++Manual dispatch defaults to `dry_run=true`: production snapshot secrets are not
++passed to the job, and the live backup step is skipped even when secrets exist.
++The scheduled run retains its normal live-backup behavior. To request a manual
++live backup, explicitly set `dry_run=false`.
++
++The workflow installs a pinned AWS CLI v2 release from the official AWS Linux
++installer, checks its SHA-256 before execution, and adds its isolated binary
++directory to `GITHUB_PATH`. PostgreSQL clients still come from apt. Both `aws`
++and `pg_dump` versions must print before the backup dry run succeeds. Update
++`AWS_CLI_VERSION` and `AWS_CLI_SHA256` together when upgrading the installer.
++
++Validate a revised branch without production credentials:
++
++```bash
++gh workflow run database-snapshot.yml --repo stranske/Manager-Database \
++  --ref <branch> -f dry_run=true
++```
++
++Record the resulting Actions run URL in the PR. Its install, version, credential
++isolation, and dry-run steps must succeed, and `Run encrypted Postgres snapshot`
++must be skipped. Local `pytest tests/test_db_snapshot_restore.py` checks the
++installation contract but does not replace this runner evidence.
++
+ ## Operator Backup Command
+ 
+ ```bash
+diff --git a/tests/test_db_snapshot_restore.py b/tests/test_db_snapshot_restore.py
+index 3c04347..d4ef8c3 100644
+--- a/tests/test_db_snapshot_restore.py
++++ b/tests/test_db_snapshot_restore.py
+@@ -1,5 +1,6 @@
+ import datetime as dt
+ import json
++import re
+ import subprocess
+ 
+ import pytest
+@@ -81,8 +82,13 @@ def test_database_snapshot_workflow_runs_dry_run_and_conditional_live_backup():
+     steps = job["steps"]
+ 
+     assert triggers["schedule"] == [{"cron": "15 5 * * *"}]
+-    assert triggers["workflow_dispatch"] is None
+-    assert job["env"]["DB_SNAPSHOT_DATABASE_URL"] == "${{ secrets.DB_SNAPSHOT_DATABASE_URL }}"
++    dry_run_input = triggers["workflow_dispatch"]["inputs"]["dry_run"]
++    assert dry_run_input["type"] == "boolean"
++    assert dry_run_input["default"] is True
++    for name in ("DB_SNAPSHOT_DATABASE_URL", "DB_SNAPSHOT_S3_URI", "DB_SNAPSHOT_KMS_KEY_ID"):
++        expression = job["env"][name]
++        assert "(github.event_name == 'schedule' || !inputs.dry_run)" in expression
++        assert f"&& secrets.{name} || ''" in expression
+     assert any(
+         step.get("run") == "python scripts/db_snapshot_restore.py backup --dry-run"
+         for step in steps
+@@ -92,4 +98,37 @@ def test_database_snapshot_workflow_runs_dry_run_and_conditional_live_backup():
+         step for step in steps if step.get("name") == "Run encrypted Postgres snapshot"
+     )
+     assert "DB_SNAPSHOT_DATABASE_URL" in live_step["if"]
++    assert "!inputs.dry_run" in live_step["if"]
+     assert live_step["run"] == "python scripts/db_snapshot_restore.py backup"
++
++
++def test_database_snapshot_workflow_installs_verified_clients_before_dry_run():
++    workflow = yaml.safe_load(open(".github/workflows/database-snapshot.yml", encoding="utf-8"))
++    job = workflow["jobs"]["postgres-snapshot"]
++    steps = job["steps"]
++    install = next(step for step in steps if step.get("name") == "Install backup clients")
++    version = next(step for step in steps if step.get("name") == "Verify backup client versions")
++    isolation = next(
++        step for step in steps if step.get("name") == "Verify dry-run credential isolation"
++    )
++    dry_run = next(step for step in steps if "backup --dry-run" in step.get("run", ""))
++
++    assert not re.search(r"apt-get install[^\n]*\bawscli\b", install["run"])
++    assert "apt-get install -y postgresql-client" in install["run"]
++    assert re.fullmatch(r"2\.\d+\.\d+", job["env"]["AWS_CLI_VERSION"])
++    assert re.fullmatch(r"[0-9a-f]{64}", job["env"]["AWS_CLI_SHA256"])
++    assert (
++        "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-${AWS_CLI_VERSION}.zip"
++        in install["run"]
++    )
++    assert "sha256sum --check" in install["run"]
++    assert install["run"].index("sha256sum --check") < install["run"].index("/aws/install")
++    assert 'echo "$RUNNER_TEMP/aws-cli-bin" >> "$GITHUB_PATH"' in install["run"]
++    assert "aws --version" in version["run"]
++    assert '"aws-cli/${AWS_CLI_VERSION} "' in version["run"]
++    assert "pg_dump --version" in version["run"]
++    assert steps.index(install) < steps.index(version) < steps.index(dry_run)
++    assert "inputs.dry_run" in isolation["if"]
++    assert steps.index(isolation) < steps.index(dry_run)
++    for name in ("DB_SNAPSHOT_DATABASE_URL", "DB_SNAPSHOT_S3_URI", "DB_SNAPSHOT_KMS_KEY_ID"):
++        assert f'test -z "${name}"' in isolation["run"]

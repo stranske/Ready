@@ -1,0 +1,110 @@
+diff --git a/tests/test_dashboard.py b/tests/test_dashboard.py
+index ea65f2c..86671e3 100644
+--- a/tests/test_dashboard.py
++++ b/tests/test_dashboard.py
+@@ -450,6 +450,59 @@ def test_load_delta_counts(tmp_path: Path, monkeypatch):
+     assert list(df["filings"]) == [1, 1, 1]
+ 
+ 
++def test_load_delta_returns_empty_frame_without_filings_table(tmp_path: Path, monkeypatch):
++    db_path = tmp_path / "managers_only.db"
++    with sqlite3.connect(db_path) as conn:
++        conn.execute("CREATE TABLE managers (id INTEGER PRIMARY KEY, name TEXT NOT NULL)")
++        conn.execute("INSERT INTO managers (name) VALUES ('Example Manager')")
++    monkeypatch.setenv("DB_PATH", str(db_path))
++
++    df = load_delta()
++
++    assert df.empty
++    assert list(df.columns) == ["date", "filings"]
++
++
++@pytest.mark.parametrize("has_filings_table", [False, True])
++def test_load_delta_closes_connection_on_empty_or_query_error(monkeypatch, has_filings_table):
++    class ConnectionSpy:
++        closed = False
++
++        def close(self):
++            self.closed = True
++
++    conn = ConnectionSpy()
++    monkeypatch.setattr(dashboard, "connect_db", lambda: conn)
++    monkeypatch.setattr(dashboard, "table_exists", lambda connection, table: has_filings_table)
++
++    def query_fails(*_args, **_kwargs):
++        raise RuntimeError("query failed")
++
++    monkeypatch.setattr(dashboard.pd, "read_sql_query", query_fails)
++    if has_filings_table:
++        with pytest.raises(RuntimeError, match="query failed"):
++            load_delta()
++    else:
++        assert load_delta().empty
++
++    assert conn.closed
++
++
++def test_historical_filing_trend_labels_empty_state(monkeypatch):
++    captions: list[str] = []
++    monkeypatch.setattr(dashboard, "load_delta", lambda: pd.DataFrame(columns=["date", "filings"]))
++    monkeypatch.setattr(dashboard.st, "caption", captions.append)
++    monkeypatch.setattr(
++        dashboard.st,
++        "altair_chart",
++        lambda *_args, **_kwargs: pytest.fail("empty state must not render a chart"),
++    )
++
++    render_historical_filing_trend()
++
++    assert captions == ["No historical filings available yet."]
++
++
+ def test_load_delta_groups_repeated_filing_dates(tmp_path: Path, monkeypatch):
+     """load_delta must run against the production column set and group by filing date.
+ 
+diff --git a/ui/dashboard.py b/ui/dashboard.py
+index 0d8f11f..0c4baf0 100644
+--- a/ui/dashboard.py
++++ b/ui/dashboard.py
+@@ -12,7 +12,7 @@ import httpx
+ import pandas as pd
+ import streamlit as st
+ 
+-from adapters.base import connect_db, resolve_manager_id_column
++from adapters.base import connect_db, resolve_manager_id_column, table_exists
+ from api.activism import (
+     query_active_campaigns,
+     query_activism_events,
+@@ -55,13 +55,16 @@ def load_delta() -> pd.DataFrame:
+     """
+ 
+     conn = connect_db()
+-    df = pd.read_sql_query(
+-        "SELECT filed_date AS date, COUNT(*) AS filings FROM filings "
+-        "WHERE filed_date IS NOT NULL GROUP BY filed_date ORDER BY filed_date",
+-        conn,
+-    )
+-    conn.close()
+-    return df
++    try:
++        if not table_exists(conn, "filings"):
++            return pd.DataFrame(columns=["date", "filings"])
++        return pd.read_sql_query(
++            "SELECT filed_date AS date, COUNT(*) AS filings FROM filings "
++            "WHERE filed_date IS NOT NULL GROUP BY filed_date ORDER BY filed_date",
++            conn,
++        )
++    finally:
++        conn.close()
+ 
+ 
+ def load_filing_timeline(manager_id: int) -> pd.DataFrame:
+@@ -1198,7 +1201,7 @@ def render_manager_dashboard(selected_manager_id: int) -> None:
+ def render_historical_filing_trend() -> None:
+     df = load_delta()
+     if df.empty:
+-        st.info("No data available")
++        st.caption("No historical filings available yet.")
+         return
+     chart = alt.Chart(df).mark_line().encode(x="date:T", y="filings:Q")
+     st.altair_chart(chart, use_container_width=True)

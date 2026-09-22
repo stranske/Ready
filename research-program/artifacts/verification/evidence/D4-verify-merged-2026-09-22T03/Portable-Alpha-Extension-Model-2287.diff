@@ -1,0 +1,215 @@
+diff --git a/pa_core/viz/export_backend.py b/pa_core/viz/export_backend.py
+index 9c52a4c..7b18401 100644
+--- a/pa_core/viz/export_backend.py
++++ b/pa_core/viz/export_backend.py
+@@ -85,7 +85,8 @@ def figure_to_image_bytes(fig: Any, *, format: str = "png", **opts: Any) -> byte
+             "Browser Plotly PNG export was requested before async pre-render completed. "
+             "Call pa_core.viz.export_backend.prerender_png_cache at the export action boundary."
+         )
+-    return cast(bytes, fig.to_image(format=format, engine="kaleido", **clean_opts))
++    # Plotly 7 removes the engine keyword; Kaleido is selected automatically.
++    return cast(bytes, fig.to_image(format=format, **clean_opts))
+ 
+ 
+ def write_figure_image(
+@@ -97,7 +98,7 @@ def write_figure_image(
+ ) -> None:
+     clean_opts = _without_engine(opts)
+     if not is_browser_runtime():
+-        write_opts: dict[str, Any] = {"engine": "kaleido", **clean_opts}
++        write_opts: dict[str, Any] = dict(clean_opts)
+         if format is not None:
+             write_opts["format"] = format
+         fig.write_image(path, **write_opts)
+diff --git a/pyproject.toml b/pyproject.toml
+index 5cf204b..cc925fd 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -116,7 +116,7 @@ dependencies = [
+     "openpyxl",
+     "pydantic",
+     "rich",
+-    "plotly>=6.7.0",
++    "plotly>=6.7.0,<7",  # Plotly 7 needs a newer Kaleido/Choreographer export stack.
+     "kaleido",
+     "pypdf",
+     "streamlit>=1.35",
+diff --git a/requirements-dev.txt b/requirements-dev.txt
+index 453b1bf..2d7e596 100644
+--- a/requirements-dev.txt
++++ b/requirements-dev.txt
+@@ -10,7 +10,7 @@ pydantic
+ rich
+ PyYAML>=6
+ tqdm
+-plotly>=5.19
++plotly>=6.7.0,<7
+ kaleido            # Plotly static export driver
+ streamlit>=1.35
+ python-pptx        # PPTX helper for board packs
+diff --git a/requirements.txt b/requirements.txt
+index 7961d91..d7a4cf1 100644
+--- a/requirements.txt
++++ b/requirements.txt
+@@ -17,7 +17,7 @@ mypy               # Type checking
+ black              # Code formatting
+ types-PyYAML       # Type stubs for PyYAML
+ 
+-plotly>=5.19
++plotly>=6.7.0,<7
+ kaleido            # Plotly static export driver
+ pypdf              # Multi-page PDF report merge backend
+ streamlit>=1.35
+diff --git a/scripts/smoke_plotly_export.py b/scripts/smoke_plotly_export.py
+new file mode 100644
+index 0000000..ca160ab
+--- /dev/null
++++ b/scripts/smoke_plotly_export.py
+@@ -0,0 +1,65 @@
++"""Run the real CLI chart export and require an image in the output workbook.
++
++Run with an environment containing Plotly, Kaleido and a compatible Chrome:
++    python scripts/smoke_plotly_export.py
++
++The CLI must run without its CI/pytest chart bypass. An exit-zero workbook with
++no Summary image is a failure, even if the chart renderer swallowed an exception.
++"""
++
++from __future__ import annotations
++
++import importlib.metadata
++import os
++import subprocess
++import sys
++import tempfile
++from pathlib import Path
++
++import openpyxl
++
++
++def main() -> None:
++    repo = Path(__file__).resolve().parents[1]
++    env = os.environ.copy()
++    env.pop("CI", None)
++    env.pop("PYTEST_CURRENT_TEST", None)
++    with tempfile.TemporaryDirectory(prefix="paem-plotly-smoke-") as output_dir:
++        workbook = Path(output_dir) / "sweep.xlsx"
++        result = subprocess.run(
++            [
++                sys.executable,
++                "-m",
++                "pa_core.cli",
++                "--config",
++                "examples/scenarios/my_first_scenario.yml",
++                "--index",
++                "data/sp500tr_fred_divyield.csv",
++                "--mode",
++                "capital",
++                "--output",
++                str(workbook),
++                "--seed",
++                "42",
++            ],
++            cwd=repo,
++            env=env,
++            capture_output=True,
++            text=True,
++            timeout=180,
++            check=True,
++        )
++        summary = openpyxl.load_workbook(workbook)["Summary"]
++        if summary.max_row <= 1 or len(summary._images) < 1:
++            raise RuntimeError(
++                "CLI produced a workbook without a populated Summary and embedded chart; "
++                f"stdout={result.stdout!r} stderr={result.stderr!r}"
++            )
++        print(
++            f"PASS plotly={importlib.metadata.version('plotly')} "
++            f"summary_rows={summary.max_row} images={len(summary._images)}"
++        )
++
++
++if __name__ == "__main__":
++    main()
+diff --git a/tests/test_export_backend.py b/tests/test_export_backend.py
+index 34c5a8b..9bf8f40 100644
+--- a/tests/test_export_backend.py
++++ b/tests/test_export_backend.py
+@@ -3,11 +3,13 @@ from __future__ import annotations
+ import sys
+ import asyncio
+ import base64
++import tomllib
+ import types
+ import zipfile
+ from pathlib import Path
+ 
+ import pytest
++from packaging.requirements import Requirement
+ 
+ from pa_core.viz import export_backend
+ from pa_core.viz import pptx_export
+@@ -29,12 +31,49 @@ def test_module_exposes_figure_to_png_bytes() -> None:
+     assert callable(export_backend.figure_to_png_bytes)
+ 
+ 
++def test_plotly_dependency_excludes_unverified_major() -> None:
++    root = Path(__file__).resolve().parents[1]
++    pyproject = root / "pyproject.toml"
++    dependencies = tomllib.loads(pyproject.read_text())["project"]["dependencies"]
++    for requirements in (
++        dependencies,
++        (root / "requirements.txt").read_text().splitlines(),
++        (root / "requirements-dev.txt").read_text().splitlines(),
++    ):
++        plotly = next(Requirement(dep) for dep in requirements if dep.startswith("plotly"))
++        assert any(spec.operator == ">=" and spec.version == "6.7.0" for spec in plotly.specifier)
++        assert "7.0.0" not in plotly.specifier
++        assert any(spec.operator == "<" and spec.version == "7" for spec in plotly.specifier)
++
++
+ def test_server_branch_uses_kaleido(monkeypatch: pytest.MonkeyPatch) -> None:
+     monkeypatch.setattr(sys, "platform", "darwin")
+     fig = _Figure()
+ 
+     assert export_backend.figure_to_png_bytes(fig, scale=2) == b"kaleido-png"
+-    assert fig.calls == [{"format": "png", "engine": "kaleido", "scale": 2}]
++    assert fig.calls == [{"format": "png", "scale": 2}]
++
++
++def test_server_static_exports_accept_plotly7_signature(
++    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
++) -> None:
++    """The removed engine keyword must not reach either Plotly export method."""
++    monkeypatch.setattr(sys, "platform", "darwin")
++
++    class Plotly7Figure:
++        def to_image(self, *, format: str, scale: int) -> bytes:
++            assert (format, scale) == ("png", 2)
++            return b"png-bytes"
++
++        def write_image(self, path: str | Path, *, format: str, scale: int) -> None:
++            assert (format, scale) == ("png", 2)
++            Path(path).write_bytes(b"png-bytes")
++
++    fig = Plotly7Figure()
++    assert export_backend.figure_to_png_bytes(fig, scale=2, engine="kaleido") == b"png-bytes"
++    output = tmp_path / "plotly7.png"
++    export_backend.write_figure_image(fig, output, format="png", scale=2, engine="kaleido")
++    assert output.read_bytes() == b"png-bytes"
+ 
+ 
+ def test_browser_branch_uses_plotlyjs_bridge(monkeypatch: pytest.MonkeyPatch) -> None:
+diff --git a/uv.lock b/uv.lock
+index da2c901..fd52de5 100644
+--- a/uv.lock
++++ b/uv.lock
+@@ -3086,7 +3086,7 @@ requires-dist = [
+     { name = "openpyxl" },
+     { name = "packaging", marker = "extra == 'dev'" },
+     { name = "pandas" },
+-    { name = "plotly", specifier = ">=6.7.0" },
++    { name = "plotly", specifier = ">=6.7.0,<7" },
+     { name = "pre-commit", marker = "extra == 'dev'" },
+     { name = "pyarrow", marker = "extra == 'parquet'" },
+     { name = "pydantic" },

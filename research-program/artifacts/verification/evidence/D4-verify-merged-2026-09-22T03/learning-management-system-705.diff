@@ -1,0 +1,150 @@
+diff --git a/src/lms/api/inspect.py b/src/lms/api/inspect.py
+index 300e419..00aad85 100644
+--- a/src/lms/api/inspect.py
++++ b/src/lms/api/inspect.py
+@@ -125,7 +125,7 @@ def learner_overview_route(
+         session.scalars(
+             select(EvidenceRecord)
+             .where(EvidenceRecord.learner_id == learner_id)
+-            .order_by(EvidenceRecord.observed_at.desc())
++            .order_by(EvidenceRecord.observed_at.desc(), EvidenceRecord.id)
+             .limit(25)
+         )
+     )
+@@ -138,7 +138,7 @@ def learner_overview_route(
+                 .options(selectinload(Prompt.versions))
+                 .join(KnowledgeNode, KnowledgeNode.id == Prompt.target_node_id)
+                 .where(KnowledgeNode.ownership_scope == ownership_scope)
+-                .order_by(Prompt.updated_at.desc())
++                .order_by(Prompt.updated_at.desc(), Prompt.id)
+                 .limit(25)
+             )
+         )
+diff --git a/src/lms/ui/api.py b/src/lms/ui/api.py
+index 43bb690..a78cfe9 100644
+--- a/src/lms/ui/api.py
++++ b/src/lms/ui/api.py
+@@ -477,7 +477,7 @@ def _attempt_link(session: Session, item: ReviewQueueItem) -> str:
+                 Prompt.target_node_id == item.knowledge_node_id,
+                 Prompt.status == "published",
+             )
+-            .order_by(Prompt.created_at)
++            .order_by(Prompt.created_at, Prompt.id)
+             .limit(1)
+         ).first()
+     if prompt_id is None:
+@@ -1418,7 +1418,7 @@ def _latest_attempt_summary(session: Session, *, learner_id: str, prompt_id: str
+     attempt = session.scalars(
+         select(Attempt)
+         .where(Attempt.learner_id == learner_id, Attempt.prompt_id == prompt_id)
+-        .order_by(Attempt.created_at.desc())
++        .order_by(Attempt.created_at.desc(), Attempt.id.desc())
+         .limit(1)
+     ).first()
+     if attempt is None:
+diff --git a/src/lms/ui/attempts.py b/src/lms/ui/attempts.py
+index a3301b5..84c7c4b 100644
+--- a/src/lms/ui/attempts.py
++++ b/src/lms/ui/attempts.py
+@@ -396,7 +396,7 @@ def _score_block(session: Session, attempt: Attempt) -> str:
+     score = session.scalars(
+         select(RubricScore)
+         .where(RubricScore.attempt_id == attempt.id)
+-        .order_by(RubricScore.created_at.desc())
++        .order_by(RubricScore.created_at.desc(), RubricScore.id.desc())
+         .limit(1)
+     ).first()
+     if score is not None:
+diff --git a/tests/ui/test_latest_record_ordering.py b/tests/ui/test_latest_record_ordering.py
+new file mode 100644
+index 0000000..40e67b4
+--- /dev/null
++++ b/tests/ui/test_latest_record_ordering.py
+@@ -0,0 +1,87 @@
++"""Regression coverage for deterministic latest-record selection."""
++
++from __future__ import annotations
++
++from datetime import UTC, datetime
++
++from fastapi.testclient import TestClient
++from sqlalchemy.orm import Session, sessionmaker
++
++from lms.evidence.models import Attempt, EvidenceRecord
++from lms.ui.api import _latest_attempt_summary
++
++
++def test_latest_attempt_is_stable_under_tied_timestamps(
++    api_client: tuple[TestClient, sessionmaker[Session]],
++) -> None:
++    _, session_factory = api_client
++    tied_at = datetime(2026, 1, 2, 3, 4, 5, tzinfo=UTC)
++    with session_factory() as session:
++        session.add_all(
++            [
++                Attempt(
++                    id="attempt-a",
++                    learner_id="learner-stable",
++                    prompt_id="prompt-stable",
++                    response_text="Inserted first",
++                    confidence_rating=1,
++                    feedback={},
++                    created_at=tied_at,
++                ),
++                Attempt(
++                    id="attempt-z",
++                    learner_id="learner-stable",
++                    prompt_id="prompt-stable",
++                    response_text="Stable descending-id winner",
++                    confidence_rating=5,
++                    feedback={},
++                    created_at=tied_at,
++                ),
++            ]
++        )
++        session.commit()
++
++        summaries = [
++            _latest_attempt_summary(
++                session,
++                learner_id="learner-stable",
++                prompt_id="prompt-stable",
++            )
++            for _ in range(2)
++        ]
++
++    assert summaries == [
++        "Latest evidence: confidence 5/5; correctness pending scoring evidence.",
++        "Latest evidence: confidence 5/5; correctness pending scoring evidence.",
++    ]
++
++
++def test_inspect_evidence_page_is_stable_under_tied_timestamps(
++    api_client: tuple[TestClient, sessionmaker[Session]],
++) -> None:
++    client, session_factory = api_client
++    tied_at = datetime(2026, 1, 2, 3, 4, 5, tzinfo=UTC)
++    inserted_ids = ["evidence-b", "evidence-a", "evidence-c"]
++    with session_factory() as session:
++        session.add_all(
++            [
++                EvidenceRecord(
++                    id=record_id,
++                    learner_id="learner-stable",
++                    knowledge_node_id=f"node-{record_id}",
++                    observed_at=tied_at,
++                )
++                for record_id in inserted_ids
++            ]
++        )
++        session.commit()
++
++    reads = [client.get("/inspect/learners/learner-stable/overview") for _ in range(2)]
++
++    assert all(response.status_code == 200 for response in reads)
++    assert [row["id"] for row in reads[0].json()["recent_evidence"]] == [
++        "evidence-a",
++        "evidence-b",
++        "evidence-c",
++    ]
++    assert reads[1].json()["recent_evidence"] == reads[0].json()["recent_evidence"]

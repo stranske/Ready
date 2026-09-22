@@ -1,9 +1,9 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-22T03:13:13Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-22T03:17:20Z)
 
-Units: 158 — claimed 1, done 154, failed 3
+Units: 158 — done 155, failed 3
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
-Orchestrator evidence (30d): offload runs 197, bound to a research round 152, scored 152 (PASS 108, FAIL 44, infra 19) — codex 26/26 (P9 F17 I6), cursor 66/99 (P59 F7 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
+Orchestrator evidence (30d): offload runs 198, bound to a research round 153, scored 153 (PASS 109, FAIL 44, infra 19) — codex 26/26 (P9 F17 I6), cursor 67/100 (P60 F7 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
 Claude conservation: off (weekly window available)
 Owner inbox: https://github.com/stranske/Ready/issues/553
 
@@ -166,11 +166,10 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D4-verify-merged-2026-09-20T03 | D | D | done | cursor | codex | Verify merged PRs against their issues' acceptance criteria |
 | D4-verify-merged-2026-09-20T20 | D | D | done | cursor | codex | Verify merged PRs against their issues' acceptance criteria |
 | D4-verify-merged-2026-09-21T03 | D | D | done | cursor | codex | Verify merged PRs against their issues' acceptance criteria |
-| D4-verify-merged-2026-09-22T03 | D | D | claimed | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
+| D4-verify-merged-2026-09-22T03 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
 
 ## Last checkpoints
 
-- 2026-09-21T21:12:04Z — D-audit-Deliverable-Render--2026-09-21T20-41-01Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-21T21:12:04Z — D-audit-Deliverable-Render--2026-09-21T20-41-01Z — claimed by codex (agent cursor)
 - 2026-09-21T21:12:27Z — D-audit-Manager-Database--2026-09-21T20-41-04Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-21T21:12:27Z — D-audit-Manager-Database--2026-09-21T20-41-04Z — claimed by codex (agent cursor)
@@ -182,6 +181,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-22T03:13:13Z — verify — enqueued D4-verify-merged-2026-09-22T03
 - 2026-09-22T03:13:13Z — D4-verify-merged-2026-09-22T03 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-22T03:13:13Z — D4-verify-merged-2026-09-22T03 — claimed by driver (agent cursor)
+- 2026-09-22T03:17:20Z — D4-verify-merged-2026-09-22T03 — done — cursor produced 1171 words at artifacts/verification/D4-verify-merged-2026-09-22T03.md in 221s
 
 ## Questions
 

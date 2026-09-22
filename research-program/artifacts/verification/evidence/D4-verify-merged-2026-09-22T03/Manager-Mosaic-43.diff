@@ -1,0 +1,93 @@
+diff --git a/src/manager_mosaic/thesis.py b/src/manager_mosaic/thesis.py
+index 951ab14..fad8676 100644
+--- a/src/manager_mosaic/thesis.py
++++ b/src/manager_mosaic/thesis.py
+@@ -10,8 +10,8 @@ from typing import Literal
+ 
+ from manager_mosaic.discrepancy import FactRecord
+ 
+-_QUARTER_YEAR = re.compile(r"^(\d{4})Q([1-4])$", re.IGNORECASE)
+-_YEAR_QUARTER = re.compile(r"^Q([1-4])\s+(\d{4})$", re.IGNORECASE)
++_YEAR_FIRST_QUARTER = re.compile(r"^(?P<year>\d{4})(?:Q|-Q)(?P<quarter>[1-4])$", re.IGNORECASE)
++_QUARTER_FIRST_YEAR = re.compile(r"^Q(?P<quarter>[1-4])\s+(?P<year>\d{4})$", re.IGNORECASE)
+ 
+ ThesisVerdict = Literal[
+     "supported",
+@@ -23,15 +23,13 @@ ExpectedPattern = Literal["min", "max"]
+ 
+ 
+ def _period_chronology_key(period: str) -> tuple[int, int, str]:
+-    """Return a sortable, normalized key for common quarter period labels."""
++    """Normalize ``YYYYQn``, ``YYYY-Qn``, and ``Qn YYYY`` for sorting."""
+     normalized = period.strip()
+-    match = _QUARTER_YEAR.match(normalized)
+-    if match:
+-        return (int(match.group(1)), int(match.group(2)), "")
+-    match = _YEAR_QUARTER.match(normalized)
+-    if match:
+-        return (int(match.group(2)), int(match.group(1)), "")
+-    return (0, 0, normalized)
++    for pattern in (_YEAR_FIRST_QUARTER, _QUARTER_FIRST_YEAR):
++        match = pattern.match(normalized)
++        if match:
++            return (int(match.group("year")), int(match.group("quarter")), "")
++    raise ValueError(f"unsupported period label: {period!r}")
+ 
+ 
+ @dataclass(frozen=True)
+diff --git a/tests/test_thesis_monitoring.py b/tests/test_thesis_monitoring.py
+index dbb7c8e..f84897c 100644
+--- a/tests/test_thesis_monitoring.py
++++ b/tests/test_thesis_monitoring.py
+@@ -191,15 +191,39 @@ def test_evaluate_claim_selects_chronologically_latest_across_period_formats() -
+     assert check.evidence_ids == ("ev-2025q1",)
+ 
+ 
++def test_evaluate_claim_selects_hyphenated_later_quarter() -> None:
++    claim = _irr_min_claim()
++    facts = [
++        FactRecord("performance.irr", "fund-alpha", "2024Q4", 12.0, "ev-old"),
++        FactRecord("performance.irr", "fund-alpha", "2025-Q1", 8.0, "ev-new"),
++    ]
++
++    check = evaluate_claim(claim, facts)
++
++    assert check.verdict == "contradicted"
++    assert check.evidence_ids == ("ev-new",)
++
++
++def test_evaluate_claim_rejects_unorderable_period() -> None:
++    claim = _irr_min_claim()
++    facts = [
++        FactRecord("performance.irr", "fund-alpha", "2024Q4", 12.0, "ev-old"),
++        FactRecord("performance.irr", "fund-alpha", "FY2025", 8.0, "ev-new"),
++    ]
++
++    with pytest.raises(ValueError, match="unsupported period label.*FY2025"):
++        evaluate_claim(claim, facts)
++
++
+ @pytest.mark.parametrize("claim", [_irr_min_claim(), _irr_max_claim()])
+ def test_evaluate_claim_same_period_conflict_is_independent_of_evidence_id_order(
+     claim: ThesisClaim,
+ ) -> None:
+     """Relabeling equivalent conflicting facts must not change the thesis check."""
+-    values = (8.0, 18.0)
+-    equivalent_latest_periods = ("2025Q1", "Q1 2025")
++    values = (8.0, 18.0, 12.0)
++    equivalent_latest_periods = ("2025Q1", "2025-Q1", "Q1 2025")
+     checks = []
+-    for assigned_ids in (("ev-a", "ev-z"), ("ev-z", "ev-a")):
++    for assigned_ids in (("ev-a", "ev-z", "ev-m"), ("ev-z", "ev-m", "ev-a")):
+         facts = [
+             FactRecord("performance.irr", "fund-alpha", "2024Q4", 12.0, "ev-old"),
+             *(
+@@ -214,7 +238,7 @@ def test_evaluate_claim_same_period_conflict_is_independent_of_evidence_id_order
+         checks.append(check)
+ 
+         assert check.verdict == "at_risk"
+-        assert check.evidence_ids == ("ev-a", "ev-z")
++        assert check.evidence_ids == ("ev-a", "ev-m", "ev-z")
+ 
+     assert checks[0] == checks[1]
+ 

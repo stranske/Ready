@@ -119,3 +119,10 @@
 - Follow-ups filed: 2 (Workflows#3494, learning-management-system#700)
 - OUT: [LOCAL_HOME]/.codex/automations/research-program/artifacts/verification/D4-verify-merged-2026-09-20T20.md
 - Checkpoint: [LOCAL_HOME]/.codex/automations/research-program/artifacts/verification/D4-verify-merged-2026-09-20T20.CHECKPOINT.md
+
+## Unit D4-verify-merged-2026-09-22T03 Completed
+- Total PRs verified: 20
+- Verdicts: 4 VERIFIED, 16 PARTIAL, 0 NOT IMPLEMENTED
+- Follow-ups filed: 0 (gh auth invalid)
+- OUT: [LOCAL_HOME]/.codex/automations/research-program/artifacts/verification/D4-verify-merged-2026-09-22T03.md
+- Checkpoint: [LOCAL_HOME]/.codex/automations/research-program/artifacts/verification/D4-verify-merged-2026-09-22T03.CHECKPOINT.md

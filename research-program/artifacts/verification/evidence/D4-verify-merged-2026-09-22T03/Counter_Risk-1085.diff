@@ -1,0 +1,65 @@
+diff --git a/src/counter_risk/compute/rollups.py b/src/counter_risk/compute/rollups.py
+index 52831f5..7747ce5 100644
+--- a/src/counter_risk/compute/rollups.py
++++ b/src/counter_risk/compute/rollups.py
+@@ -424,6 +424,11 @@ def top_changes(totals_df: Any, n: int = 10) -> Any:
+             )
+             change_value = notional - prior_notional
+ 
++        if not math.isfinite(change_value):
++            raise ValueError(
++                f"totals_df notional_change values must be finite, got {change_value!r}"
++            )
++
+         group_type = str(row.get("group_type", "")).strip() or "unknown"
+         group_name = str(row.get("group_name", "")).strip() or "unknown"
+ 
+diff --git a/tests/compute/test_rollups.py b/tests/compute/test_rollups.py
+index 793f5ad..c6c725d 100644
+--- a/tests/compute/test_rollups.py
++++ b/tests/compute/test_rollups.py
+@@ -2,6 +2,7 @@
+ 
+ from __future__ import annotations
+ 
++import sys
+ from pathlib import Path
+ from typing import Any, cast
+ 
+@@ -399,6 +400,36 @@ def test_top_changes_sorts_by_absolute_change() -> None:
+     assert [row["group_name"] for row in top] == ["B", "Cash"]
+ 
+ 
++@pytest.mark.parametrize("notional_change", [float("nan"), float("inf"), float("-inf")])
++def test_top_changes_rejects_non_finite_notional_change(notional_change: float) -> None:
++    totals = [
++        {
++            "group_type": "counterparty",
++            "group_name": "A",
++            "notional": 100.0,
++            "prior_notional": 100.0,
++            "notional_change": notional_change,
++        }
++    ]
++
++    with pytest.raises(ValueError, match="notional_change values must be finite"):
++        top_changes(totals)
++
++
++def test_top_changes_rejects_non_finite_derived_change() -> None:
++    totals = [
++        {
++            "group_type": "counterparty",
++            "group_name": "A",
++            "notional": sys.float_info.max,
++            "prior_notional": -sys.float_info.max,
++        }
++    ]
++
++    with pytest.raises(ValueError, match="notional_change values must be finite"):
++        top_changes(totals)
++
++
+ def test_compute_risk_proxies_calculates_notional_times_annualized_volatility(
+     notional_annualized_volatility_exposures: list[dict[str, float | str]],
+ ) -> None:
