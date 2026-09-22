@@ -1,9 +1,9 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-22T08:41:18Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-22T09:04:23Z)
 
 Units: 160 — claimed 1, done 156, failed 3
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=warn vibe=ok aider=ok
-Orchestrator evidence (30d): offload runs 199, bound to a research round 154, scored 154 (PASS 110, FAIL 44, infra 19) — codex 26/26 (P9 F17 I6), cursor 68/101 (P61 F7 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
+Orchestrator evidence (30d): offload runs 200, bound to a research round 155, scored 155 (PASS 110, FAIL 45, infra 19) — codex 26/26 (P9 F17 I6), cursor 69/102 (P61 F8 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
 Claude conservation: off (weekly window available)
 Owner inbox: https://github.com/stranske/Ready/issues/553
 
@@ -172,9 +172,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-22T05:54:23Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-22T07:33:11+00:00; local work continues
-- 2026-09-22T06:09:25Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-22T07:33:11+00:00; local work continues
-- 2026-09-22T06:12:08Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-22T07:33:11+00:00; local work continues
 - 2026-09-22T06:24:28Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-22T07:33:11+00:00; local work continues
 - 2026-09-22T06:39:30Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-22T07:33:11+00:00; local work continues
 - 2026-09-22T06:54:32Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-22T07:33:11+00:00; local work continues
@@ -184,6 +181,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-22T08:41:14Z — refill — Manager-Database: open=1 <= 2 → audit queued
 - 2026-09-22T08:41:18Z — D-audit-Manager-Database--2026-09-22T08-41-14Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-22T08:41:18Z — D-audit-Manager-Database--2026-09-22T08-41-14Z — claimed by driver (agent cursor)
+- 2026-09-22T08:49:21Z — D-audit-Manager-Database--2026-09-22T08-41-14Z — fail — cursor produced 227 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Manager-Database-2026-09-22.md (min 400); rotating agent
+- 2026-09-22T09:04:23Z — D-audit-Manager-Database--2026-09-22T08-41-14Z — route — router picked cursor from ['codex', 'cursor']
+- 2026-09-22T09:04:23Z — D-audit-Manager-Database--2026-09-22T08-41-14Z — claimed by driver (agent cursor)
 
 ## Questions
 

@@ -33,3 +33,11 @@
 ## 2026-09-21T23:15Z — Deliverable-Render audit attempt 2 started (D-audit-Deliverable-Render--2026-09-21T20-41-01Z); tip 3e479ba after morning #31/#32 fixes merged.
 
 ## 2026-09-21T23:20Z — Deliverable-Render attempt 2 complete; issues #36 #37 filed; report at Deliverable-Render-2026-09-21.md
+
+## 2026-09-22T08:41Z — Manager-Database audit Phase 0 started (D-audit-Manager-Database--2026-09-22T08-41-14Z); tip 3c7d3f9.
+
+## 2026-09-22T08:44Z — Manager-Database Phase 1 orient complete.
+
+## 2026-09-22T08:46Z — Manager-Database Phase 1.5 scorecard complete (8/8; MDB-4 partial).
+
+## 2026-09-22T08:48Z — Manager-Database Phase 3-5 complete; issues #1715 #1716 #1717 filed; report at Manager-Database-2026-09-22.md
