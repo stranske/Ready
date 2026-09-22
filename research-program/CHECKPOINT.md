@@ -1553,3 +1553,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-22T07:09:34Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-22T07:33:11+00:00; local work continues
 ## 2026-09-22T07:11:26Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-22T07:33:11+00:00; local work continues
 ## 2026-09-22T07:24:36Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-22T07:33:11+00:00; local work continues
+## 2026-09-22T08:41:14Z — refill — Manager-Database: open=1 <= 2 → audit queued
+## 2026-09-22T08:41:18Z — D-audit-Manager-Database--2026-09-22T08-41-14Z — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-22T08:41:18Z — D-audit-Manager-Database--2026-09-22T08-41-14Z — claimed by driver (agent cursor)
