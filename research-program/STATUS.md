@@ -1,9 +1,9 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-22T09:04:23Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-22T09:11:57Z)
 
 Units: 160 — claimed 1, done 156, failed 3
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=warn vibe=ok aider=ok
-Orchestrator evidence (30d): offload runs 200, bound to a research round 155, scored 155 (PASS 110, FAIL 45, infra 19) — codex 26/26 (P9 F17 I6), cursor 69/102 (P61 F8 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
+Orchestrator evidence (30d): offload runs 201, bound to a research round 156, scored 156 (PASS 110, FAIL 46, infra 19) — codex 26/26 (P9 F17 I6), cursor 70/103 (P61 F9 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
 Claude conservation: off (weekly window available)
 Owner inbox: https://github.com/stranske/Ready/issues/553
 
@@ -129,7 +129,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Manager-Database--2026-09-14T19-00-22Z | D | D | done | codex | codex | Audit stranske/Manager-Database and file issues (supply 2 <= 2) |
 | D-audit-Manager-Database--2026-09-20T20-25-22Z | D | D | done | cursor | driver | Audit stranske/Manager-Database and file issues (supply 1 <= 2) |
 | D-audit-Manager-Database--2026-09-21T20-41-04Z | D | D | done | cursor | codex | Audit stranske/Manager-Database and file issues (supply 1 <= 2) |
-| D-audit-Manager-Database--2026-09-22T08-41-14Z | D | D | claimed | cursor | driver | Audit stranske/Manager-Database and file issues (supply 1 <= 2) |
+| D-audit-Manager-Database--2026-09-22T08-41-14Z | D | D | claimed | cursor | codex | Audit stranske/Manager-Database and file issues (supply 1 <= 2) |
 | D-audit-Manager-Mosaic--2026-09-05T04-00-25Z | D | D | done | codex | driver | Audit stranske/Manager-Mosaic and file issues (supply 2 <= 2) |
 | D-audit-Manager-Mosaic--2026-09-19T20-12-04Z | D | D | done | codex | codex | Audit stranske/Manager-Mosaic and file issues (supply 3 <= 3) |
 | D-audit-Portable-Alpha-Extension-Model--2026-09-07T04-47-31Z | D | D | done | codex | codex | Audit stranske/Portable-Alpha-Extension-Model and file issues (supply  |
@@ -172,9 +172,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-22T06:24:28Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-22T07:33:11+00:00; local work continues
-- 2026-09-22T06:39:30Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-22T07:33:11+00:00; local work continues
-- 2026-09-22T06:54:32Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-22T07:33:11+00:00; local work continues
 - 2026-09-22T07:09:34Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-22T07:33:11+00:00; local work continues
 - 2026-09-22T07:11:26Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-22T07:33:11+00:00; local work continues
 - 2026-09-22T07:24:36Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-22T07:33:11+00:00; local work continues
@@ -184,6 +181,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-22T08:49:21Z — D-audit-Manager-Database--2026-09-22T08-41-14Z — fail — cursor produced 227 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Manager-Database-2026-09-22.md (min 400); rotating agent
 - 2026-09-22T09:04:23Z — D-audit-Manager-Database--2026-09-22T08-41-14Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-22T09:04:23Z — D-audit-Manager-Database--2026-09-22T08-41-14Z — claimed by driver (agent cursor)
+- 2026-09-22T09:05:25Z — D-audit-Manager-Database--2026-09-22T08-41-14Z — fail — cursor did not write a fresh output artifact
+- 2026-09-22T09:11:57Z — D-audit-Manager-Database--2026-09-22T08-41-14Z — route — router picked cursor from ['codex', 'cursor']
+- 2026-09-22T09:11:57Z — D-audit-Manager-Database--2026-09-22T08-41-14Z — claimed by codex (agent cursor)
 
 ## Questions
 
