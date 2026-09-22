@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-22T05:23:56Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-22T07:39:38Z)
 
 Units: 159 — done 156, failed 3
 Paused: False   Phase stops: []
@@ -171,18 +171,18 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-21T23:16:48Z — D-audit-Deliverable-Render--2026-09-21T20-41-01Z — claim released (stale)
-- 2026-09-21T23:16:49Z — D-audit-Deliverable-Render--2026-09-21T20-41-01Z — route — router picked cursor from ['codex', 'cursor']
-- 2026-09-21T23:16:49Z — D-audit-Deliverable-Render--2026-09-21T20-41-01Z — claimed by driver (agent cursor)
-- 2026-09-21T23:21:02Z — D-audit-Deliverable-Render--2026-09-21T20-41-01Z — done — cursor produced 560 words at artifacts/audits/Deliverable-Render-2026-09-21.md in 228s
-- 2026-09-22T03:13:13Z — verify — enqueued D4-verify-merged-2026-09-22T03
-- 2026-09-22T03:13:13Z — D4-verify-merged-2026-09-22T03 — route — router picked cursor from ['codex', 'cursor']
-- 2026-09-22T03:13:13Z — D4-verify-merged-2026-09-22T03 — claimed by driver (agent cursor)
-- 2026-09-22T03:17:20Z — D4-verify-merged-2026-09-22T03 — done — cursor produced 1171 words at artifacts/verification/D4-verify-merged-2026-09-22T03.md in 221s
-- 2026-09-22T04:34:31Z — unblock — enqueued D3-unblock-sweep-2026-09-22T04
-- 2026-09-22T04:34:32Z — D3-unblock-sweep-2026-09-22T04 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-22T04:34:32Z — D3-unblock-sweep-2026-09-22T04 — claimed by driver (agent cursor)
 - 2026-09-22T04:37:39Z — D3-unblock-sweep-2026-09-22T04 — done — cursor produced 647 words at artifacts/sweeps/D3-unblock-sweep-2026-09-22T04.md in 161s
+- 2026-09-22T05:39:22Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-22T07:33:11+00:00; local work continues
+- 2026-09-22T05:54:23Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-22T07:33:11+00:00; local work continues
+- 2026-09-22T06:09:25Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-22T07:33:11+00:00; local work continues
+- 2026-09-22T06:12:08Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-22T07:33:11+00:00; local work continues
+- 2026-09-22T06:24:28Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-22T07:33:11+00:00; local work continues
+- 2026-09-22T06:39:30Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-22T07:33:11+00:00; local work continues
+- 2026-09-22T06:54:32Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-22T07:33:11+00:00; local work continues
+- 2026-09-22T07:09:34Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-22T07:33:11+00:00; local work continues
+- 2026-09-22T07:11:26Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-22T07:33:11+00:00; local work continues
+- 2026-09-22T07:24:36Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-22T07:33:11+00:00; local work continues
 
 ## Questions
 
