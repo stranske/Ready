@@ -50,6 +50,6 @@
 
 ## 2026-09-22T21:05Z — Deliverable-Render Phase 4-5 complete; issues #40 #41 filed; report at Deliverable-Render-2026-09-22.md
 
-## 2026-09-22T21:43Z — Manager-Database audit Phase 0-1 complete (D-audit-Manager-Database--2026-09-22T20-42-44Z); remote main tip 77be429, dossier, previous scorecard, ledger, prior issues, CI and app-local scope re-read.
+## 2026-09-22T21:12Z — Manager-Database audit Phase 0-1 complete (D-audit-Manager-Database--2026-09-22T20-42-44Z); remote main tip 77be429, dossier, previous scorecard, ledger, prior issues, CI and app-local scope re-read.
 
-## 2026-09-22T21:48Z — Manager-Database Phase 1.5-5 complete; all 8 core functions are working after #1715-#1717 merged, no fresh reproducible finding was filed, and report is Manager-Database-2026-09-22.md.
+## 2026-09-22T21:19Z — Manager-Database Phase 1.5-5 complete; all 8 core functions are working after #1715-#1717 merged, no fresh reproducible finding was filed, and report is Manager-Database-2026-09-22.md.

@@ -1581,3 +1581,5 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-22T21:11:32Z — D-audit-Manager-Database--2026-09-22T20-42-44Z — claimed by codex (agent cursor)
 ## 2026-09-22T21:20:00Z — D-audit-Manager-Database--2026-09-22T20-42-44Z — done — Scorecard: 8 work / 0 partial / 0 broken / 0 fabricated / 0 not exercised of 8; journey: passes; surfaces unscored 0; closed-still-broken 0. The refreshed audit
 ## 2026-09-22T21:20:00Z — D-audit-Manager-Database--2026-09-22T20-42-44Z — evidence — 1 unscored offload run(s) recorded PASS (executor codex report)
+## 2026-09-22T21:20:56Z — D-audit-learning-management-system--2026-09-22T20-42-45Z — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-22T21:20:56Z — D-audit-learning-management-system--2026-09-22T20-42-45Z — claimed by driver (agent cursor)

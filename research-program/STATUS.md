@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-22T21:20:00Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-22T21:20:56Z)
 
-Units: 165 — done 161, failed 3, queued 1
+Units: 165 — claimed 1, done 161, failed 3
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 Orchestrator evidence (30d): offload runs 205, bound to a research round 160, scored 160 (PASS 114, FAIL 46, infra 19) — codex 26/26 (P9 F17 I6), cursor 74/107 (P65 F9 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
@@ -153,7 +153,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-learning-management-system--2026-09-10T05-35-47Z | D | D | done | codex | driver | Audit stranske/learning-management-system and file issues (supply 1 <= |
 | D-audit-learning-management-system--2026-09-10T17-45-16Z | D | D | done | codex | driver | Audit stranske/learning-management-system and file issues (supply 2 <= |
 | D-audit-learning-management-system--2026-09-20T08-24-44Z | D | D | done | codex | claude | Audit stranske/learning-management-system and file issues (supply 2 <= |
-| D-audit-learning-management-system--2026-09-22T20-42-45Z | D | D | queued | claude |  | Audit stranske/learning-management-system and file issues (supply 2 <= |
+| D-audit-learning-management-system--2026-09-22T20-42-45Z | D | D | claimed | cursor | driver | Audit stranske/learning-management-system and file issues (supply 2 <= |
 | D-audit-trip-planner--2026-09-07T04-47-34Z | D | D | done | codex | codex | Audit stranske/trip-planner and file issues (supply 2 <= 2) |
 | D4-verify-merged-2026-09-05T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
 | D4-verify-merged-2026-09-06T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |
@@ -177,8 +177,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-22T20:42:44Z — refill — Manager-Database: open=1 <= 2 → audit queued
-- 2026-09-22T20:42:45Z — refill — learning-management-system: open=2 <= 2 → audit queued
 - 2026-09-22T20:42:46Z — D3-unblock-sweep-2026-09-22T20 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-22T20:42:46Z — D3-unblock-sweep-2026-09-22T20 — claimed by driver (agent cursor)
 - 2026-09-22T20:46:24Z — D3-unblock-sweep-2026-09-22T20 — done — cursor produced 692 words at artifacts/sweeps/D3-unblock-sweep-2026-09-22T20.md in 191s
@@ -189,6 +187,8 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-22T21:11:32Z — D-audit-Manager-Database--2026-09-22T20-42-44Z — claimed by codex (agent cursor)
 - 2026-09-22T21:20:00Z — D-audit-Manager-Database--2026-09-22T20-42-44Z — done — Scorecard: 8 work / 0 partial / 0 broken / 0 fabricated / 0 not exercised of 8; journey: passes; surfaces unscored 0; closed-still-broken 0. The refreshed audit
 - 2026-09-22T21:20:00Z — D-audit-Manager-Database--2026-09-22T20-42-44Z — evidence — 1 unscored offload run(s) recorded PASS (executor codex report)
+- 2026-09-22T21:20:56Z — D-audit-learning-management-system--2026-09-22T20-42-45Z — route — router picked cursor from ['codex', 'cursor']
+- 2026-09-22T21:20:56Z — D-audit-learning-management-system--2026-09-22T20-42-45Z — claimed by driver (agent cursor)
 
 ## Questions
 
