@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-22T21:05:31Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-22T21:11:32Z)
 
-Units: 165 — done 160, failed 3, queued 2
+Units: 165 — claimed 1, done 160, failed 3, queued 1
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 Orchestrator evidence (30d): offload runs 204, bound to a research round 159, scored 159 (PASS 113, FAIL 46, infra 19) — codex 26/26 (P9 F17 I6), cursor 73/106 (P64 F9 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
@@ -133,7 +133,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Manager-Database--2026-09-20T20-25-22Z | D | D | done | cursor | driver | Audit stranske/Manager-Database and file issues (supply 1 <= 2) |
 | D-audit-Manager-Database--2026-09-21T20-41-04Z | D | D | done | cursor | codex | Audit stranske/Manager-Database and file issues (supply 1 <= 2) |
 | D-audit-Manager-Database--2026-09-22T08-41-14Z | D | D | done | cursor | codex | Audit stranske/Manager-Database and file issues (supply 1 <= 2) |
-| D-audit-Manager-Database--2026-09-22T20-42-44Z | D | D | queued | claude |  | Audit stranske/Manager-Database and file issues (supply 1 <= 2) |
+| D-audit-Manager-Database--2026-09-22T20-42-44Z | D | D | claimed | cursor | codex | Audit stranske/Manager-Database and file issues (supply 1 <= 2) |
 | D-audit-Manager-Mosaic--2026-09-05T04-00-25Z | D | D | done | codex | driver | Audit stranske/Manager-Mosaic and file issues (supply 2 <= 2) |
 | D-audit-Manager-Mosaic--2026-09-19T20-12-04Z | D | D | done | codex | codex | Audit stranske/Manager-Mosaic and file issues (supply 3 <= 3) |
 | D-audit-Portable-Alpha-Extension-Model--2026-09-07T04-47-31Z | D | D | done | codex | codex | Audit stranske/Portable-Alpha-Extension-Model and file issues (supply  |
@@ -177,8 +177,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-22T12:41:02Z — D3-unblock-sweep-2026-09-22T12 — claimed by driver (agent cursor)
-- 2026-09-22T12:43:58Z — D3-unblock-sweep-2026-09-22T12 — done — cursor produced 647 words at artifacts/sweeps/D3-unblock-sweep-2026-09-22T12.md in 148s
 - 2026-09-22T20:42:40Z — unblock — enqueued D3-unblock-sweep-2026-09-22T20
 - 2026-09-22T20:42:40Z — refill — Deliverable-Render: open=2 <= 2 → audit queued
 - 2026-09-22T20:42:44Z — refill — Manager-Database: open=1 <= 2 → audit queued
@@ -189,6 +187,8 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-22T21:01:49Z — D-audit-Deliverable-Render--2026-09-22T20-42-40Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-22T21:01:49Z — D-audit-Deliverable-Render--2026-09-22T20-42-40Z — claimed by driver (agent cursor)
 - 2026-09-22T21:05:31Z — D-audit-Deliverable-Render--2026-09-22T20-42-40Z — done — cursor produced 521 words at artifacts/audits/Deliverable-Render-2026-09-22.md in 198s
+- 2026-09-22T21:11:32Z — D-audit-Manager-Database--2026-09-22T20-42-44Z — route — router picked cursor from ['codex', 'cursor']
+- 2026-09-22T21:11:32Z — D-audit-Manager-Database--2026-09-22T20-42-44Z — claimed by codex (agent cursor)
 
 ## Questions
 
