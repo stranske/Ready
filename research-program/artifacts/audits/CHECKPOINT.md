@@ -1,3 +1,5 @@
+## 2026-09-23T17:50Z — Manager-Mosaic Track D attempt 2 verified @ e0fe240; #53 repro holds; gh unauth; report unchanged at Manager-Mosaic-2026-09-23.md
+
 ## 2026-09-23T11:25Z — Manager-Mosaic Track D refill complete; scorecard 5/1/0/0/0 of 6; issues #52 #53 filed; report at Manager-Mosaic-2026-09-23.md
 
 ## 2026-09-23T11:40Z — Inv-Man-Intake Track D refill complete; scorecard 5/2/0/0/0 of 7; 0 issues filed (GH_TOKEN invalid); REFUTED #693; report at Inv-Man-Intake-2026-09-23.md

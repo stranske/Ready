@@ -5,7 +5,7 @@ Issues filed: 2 — https://github.com/stranske/Manager-Mosaic/issues/53 (P1 cor
 # Manager-Mosaic Track D audit — 2026-09-23
 
 **Tip:** `e0fe2405d34ed61c47d238ffd57cf16dcff05ee3`  
-**Unit:** `D-audit-Manager-Mosaic--2026-09-23T09-11-14Z`
+**Unit:** `D-audit-Manager-Mosaic--2026-09-23T09-11-14Z` (attempt 2: resumed from unit checkpoint; adversarial re-verify on unchanged tip)
 
 ## Run report
 
@@ -27,8 +27,10 @@ Shallow-cloned `main` and ran Phase 0 scope from README, mosaic-core contract, p
 | --- | --- |
 | `pytest -q --no-cov` | 78 passed |
 | `issue_format.py` pre-flight | Both bodies agent-processable |
-| `agents:formatted` on #52–#53 | Present after `agents:format` trigger |
-| Agents Issue Intake workflow | success on both issues |
+| `agents:formatted` on #52–#53 | Filed in attempt 1; `gh` 401 in attempt 2 (no live re-check) |
+| Agents Issue Intake workflow | success in attempt 1; not re-run attempt 2 |
+| #53 `Reproduction:` on tip | `alias 0` / `same 1` (still broken) |
+| Intake log `intake-2026-09-04.log` | lines for #52–#53 present |
 
 ## Artifacts
 
