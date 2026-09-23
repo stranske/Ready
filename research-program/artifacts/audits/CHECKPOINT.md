@@ -5,6 +5,7 @@
 - Filed #6053–#6055
 - Unit checkpoint: `D-audit-Trend_Model_Project--2026-09-23T09-11-16Z.CHECKPOINT.md`
 - Attempt 2: tip re-verify @ `adda9a41`; OUT `artifacts/audits/Trend_Model_Project-2026-09-23.md` refreshed (no new issues; gh auth absent)
+- Attempt 3: format guard re-query + `agents:formatted` applied on #6053–#6055; OUT attempt 3 section
 
 ## 2026-09-23 — Travel-Plan-Permission (D-audit-Travel-Plan-Permission--2026-09-23T09-11-15Z)
 - Phase 1.5 scorecard complete → `Code/Audits/Travel-Plan-Permission/2026-09-23-SCORECARD.md`
