@@ -1,9 +1,9 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-23T10:23:09Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-23T10:42:07Z)
 
 Units: 179 — claimed 1, done 167, failed 3, queued 8
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=warn vibe=ok aider=ok
-Orchestrator evidence (30d): offload runs 214, bound to a research round 168, scored 168 (PASS 119, FAIL 49, infra 19) — codex 26/27 (P9 F17 I6), cursor 82/115 (P70 F12 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
+Orchestrator evidence (30d): offload runs 215, bound to a research round 169, scored 169 (PASS 119, FAIL 50, infra 19) — codex 26/27 (P9 F17 I6), cursor 83/116 (P70 F13 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
 Claude conservation: off (weekly window available)
 Owner inbox: https://github.com/stranske/Ready/issues/553
 
@@ -191,9 +191,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-23T10:07:36Z — D-audit-Doc-Lineage--2026-09-23T09-11-20Z — done — cursor produced 493 words at artifacts/audits/Doc-Lineage-2026-09-23.md in 132s
-- 2026-09-23T10:07:37Z — D-audit-Doc-Lineage--2026-09-23T09-11-20Z — refutation posted — stranske/Doc-Lineage#47
-- 2026-09-23T10:07:39Z — D-audit-Doc-Lineage--2026-09-23T09-11-20Z — refutation posted — stranske/Doc-Lineage#48
 - 2026-09-23T10:07:40Z — D-audit-Doc-Lineage--2026-09-23T09-11-20Z — refutation posted — stranske/Doc-Lineage#49
 - 2026-09-23T10:07:42Z — D-audit-Doc-Lineage--2026-09-23T09-11-20Z — refutation posted — stranske/Doc-Lineage#50
 - 2026-09-23T10:07:43Z — D-audit-Doc-Lineage--2026-09-23T09-11-20Z — refutation posted — stranske/Doc-Lineage#51
@@ -203,6 +200,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-23T10:19:24Z — D-audit-Fine-Art-Archive--2026-09-23T09-11-19Z — evidence — 1 unscored offload run(s) recorded FAIL (executor codex report)
 - 2026-09-23T10:23:09Z — D-audit-Fine-Art-Archive--2026-09-23T09-11-19Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-23T10:23:09Z — D-audit-Fine-Art-Archive--2026-09-23T09-11-19Z — claimed by driver (agent cursor)
+- 2026-09-23T10:27:05Z — D-audit-Fine-Art-Archive--2026-09-23T09-11-19Z — fail — cursor produced 209 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Fine-Art-Archive-2026-09-23.md (min 400); rotating agent
+- 2026-09-23T10:42:07Z — D-audit-Fine-Art-Archive--2026-09-23T09-11-19Z — route — router picked cursor from ['codex', 'cursor']
+- 2026-09-23T10:42:07Z — D-audit-Fine-Art-Archive--2026-09-23T09-11-19Z — claimed by driver (agent cursor)
 
 ## Questions
 
