@@ -1,9 +1,9 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-23T11:57:51Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-23T11:59:32Z)
 
-Units: 179 — claimed 1, done 169, failed 4, queued 5
+Units: 179 — done 170, failed 4, queued 5
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
-Orchestrator evidence (30d): offload runs 220, bound to a research round 174, scored 174 (PASS 120, FAIL 54, infra 19) — codex 26/27 (P9 F17 I6), cursor 88/121 (P71 F17 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
+Orchestrator evidence (30d): offload runs 221, bound to a research round 175, scored 175 (PASS 121, FAIL 54, infra 19) — codex 26/27 (P9 F17 I6), cursor 89/122 (P72 F17 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
 Claude conservation: off (weekly window available)
 Owner inbox: https://github.com/stranske/Ready/issues/553
 
@@ -143,7 +143,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Manager-Database--2026-09-23T09-11-17Z | D | D | done | cursor | codex | Audit stranske/Manager-Database and file issues (scorecard 2026-09-22  | 8W/0P/0B/0F of 8 |
 | D-audit-Manager-Mosaic--2026-09-05T04-00-25Z | D | D | done | codex | driver | Audit stranske/Manager-Mosaic and file issues (supply 2 <= 2) |  |
 | D-audit-Manager-Mosaic--2026-09-19T20-12-04Z | D | D | done | codex | codex | Audit stranske/Manager-Mosaic and file issues (supply 3 <= 3) |  |
-| D-audit-Manager-Mosaic--2026-09-23T09-11-14Z | D | D | claimed | cursor | driver | Audit stranske/Manager-Mosaic and file issues (scorecard 2026-09-20 ha |  |
+| D-audit-Manager-Mosaic--2026-09-23T09-11-14Z | D | D | done | cursor | driver | Audit stranske/Manager-Mosaic and file issues (scorecard 2026-09-20 ha | 5W/1P/0B/0F of 6 |
 | D-audit-Pension-Data--2026-09-23T09-11-18Z | D | D | queued | claude |  | Audit stranske/Pension-Data and file issues (scorecard 2026-09-20 has  |  |
 | D-audit-Portable-Alpha-Extension-Model--2026-09-07T04-47-31Z | D | D | done | codex | codex | Audit stranske/Portable-Alpha-Extension-Model and file issues (supply  |  |
 | D-audit-Portable-Alpha-Extension-Model--2026-09-07T17-01-44Z | D | D | done | codex | driver | Audit stranske/Portable-Alpha-Extension-Model and file issues (supply  |  |
@@ -191,7 +191,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-23T11:12:07Z — D-audit-Manager-Database--2026-09-23T09-11-17Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-23T11:12:07Z — D-audit-Manager-Database--2026-09-23T09-11-17Z — claimed by codex (agent cursor)
 - 2026-09-23T11:20:01Z — D-audit-Manager-Mosaic--2026-09-23T09-11-14Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-23T11:20:01Z — D-audit-Manager-Mosaic--2026-09-23T09-11-14Z — claimed by driver (agent cursor)
@@ -203,6 +202,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-23T11:42:48Z — D-audit-Manager-Mosaic--2026-09-23T09-11-14Z — fail — cursor produced 389 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Manager-Mosaic-2026-09-23.md (min 400); rotating agent
 - 2026-09-23T11:57:51Z — D-audit-Manager-Mosaic--2026-09-23T09-11-14Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-23T11:57:51Z — D-audit-Manager-Mosaic--2026-09-23T09-11-14Z — claimed by driver (agent cursor)
+- 2026-09-23T11:59:32Z — D-audit-Manager-Mosaic--2026-09-23T09-11-14Z — done — cursor produced 432 words at artifacts/audits/Manager-Mosaic-2026-09-23.md in 74s
 
 ## Questions
 
