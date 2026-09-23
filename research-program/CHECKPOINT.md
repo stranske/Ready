@@ -1677,3 +1677,5 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-23T11:06:44Z — D-audit-Inv-Man-Intake--2026-09-23T09-11-17Z — default recorded — q-D-audit-Inv-Man-Intake--2026-09-23T09-11-17Z
 ## 2026-09-23T11:07:55Z — D-audit-Inv-Man-Intake--2026-09-23T09-11-17Z — done — Scorecard: 5 work / 2 partial / 0 broken / 0 fabricated / 0 not exercised of 7; journey: passes; surfaces unscored 1; closed-still-broken 0. 0 issues filed: the
 ## 2026-09-23T11:07:56Z — D-audit-Inv-Man-Intake--2026-09-23T09-11-17Z — refutation posted — stranske/Inv-Man-Intake#693
+## 2026-09-23T11:12:07Z — D-audit-Manager-Database--2026-09-23T09-11-17Z — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-23T11:12:07Z — D-audit-Manager-Database--2026-09-23T09-11-17Z — claimed by codex (agent cursor)
