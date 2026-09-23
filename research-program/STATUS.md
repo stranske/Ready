@@ -1,9 +1,9 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-23T10:04:57Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-23T10:07:43Z)
 
-Units: 179 — claimed 1, done 166, failed 3, queued 9
+Units: 179 — done 167, failed 3, queued 9
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=warn vibe=ok aider=ok
-Orchestrator evidence (30d): offload runs 212, bound to a research round 166, scored 166 (PASS 118, FAIL 48, infra 19) — codex 26/27 (P9 F17 I6), cursor 80/113 (P69 F11 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
+Orchestrator evidence (30d): offload runs 213, bound to a research round 167, scored 167 (PASS 119, FAIL 48, infra 19) — codex 26/27 (P9 F17 I6), cursor 81/114 (P70 F11 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
 Claude conservation: off (weekly window available)
 Owner inbox: https://github.com/stranske/Ready/issues/553
 
@@ -128,7 +128,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Deliverable-Render--2026-09-22T20-42-40Z | D | D | done | cursor | driver | Audit stranske/Deliverable-Render and file issues (supply 2 <= 2) |  |
 | D-audit-Deliverable-Render--2026-09-23T09-11-14Z | D | D | done | cursor | driver | Audit stranske/Deliverable-Render and file issues (scorecard 2026-09-2 | 7W/0P/0B/0F of 7 |
 | D-audit-Doc-Lineage--2026-09-19T20-12-10Z | D | D | done | codex | codex | Audit stranske/Doc-Lineage and file issues (supply 2 <= 2) |  |
-| D-audit-Doc-Lineage--2026-09-23T09-11-20Z | D | D | claimed | cursor | driver | Audit stranske/Doc-Lineage and file issues (scorecard 2026-09-20 has n |  |
+| D-audit-Doc-Lineage--2026-09-23T09-11-20Z | D | D | done | cursor | driver | Audit stranske/Doc-Lineage and file issues (scorecard 2026-09-20 has n | 4W/1P/0B/0F of 5 |
 | D-audit-Fine-Art-Archive--2026-09-05T04-00-31Z | D | D | done | codex | codex | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 2) |  |
 | D-audit-Fine-Art-Archive--2026-09-06T04-25-53Z | D | D | done | codex | driver | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 3) |  |
 | D-audit-Fine-Art-Archive--2026-09-23T09-11-19Z | D | D | queued | claude |  | Audit stranske/Fine-Art-Archive and file issues (scorecard 2026-09-20  |  |
@@ -191,18 +191,18 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-23T09:11:20Z — D-audit-Counter_Risk--2026-09-23T09-11-16Z — claimed by codex (agent cursor)
-- 2026-09-23T09:19:12Z — D-audit-Counter_Risk--2026-09-23T09-11-16Z — done — Scorecard: 4 work / 1 partial / 0 broken / 0 fabricated / 2 not exercised of 7; journey: passes; surfaces unscored 2; closed-still-broken 0. Filed #1112 to corr
-- 2026-09-23T09:22:52Z — D-audit-Deliverable-Render--2026-09-23T09-11-14Z — route — router picked cursor from ['codex', 'cursor']
-- 2026-09-23T09:22:52Z — D-audit-Deliverable-Render--2026-09-23T09-11-14Z — claimed by driver (agent cursor)
-- 2026-09-23T09:27:18Z — D-audit-Deliverable-Render--2026-09-23T09-11-14Z — done — cursor produced 480 words at artifacts/audits/Deliverable-Render-2026-09-23.md in 240s
-- 2026-09-23T09:27:20Z — D-audit-Deliverable-Render--2026-09-23T09-11-14Z — refutation posted — stranske/Deliverable-Render#40
 - 2026-09-23T09:27:22Z — D-audit-Deliverable-Render--2026-09-23T09-11-14Z — refutation posted — stranske/Deliverable-Render#41
 - 2026-09-23T09:42:47Z — D-audit-Doc-Lineage--2026-09-23T09-11-20Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-23T09:42:47Z — D-audit-Doc-Lineage--2026-09-23T09-11-20Z — claimed by driver (agent cursor)
 - 2026-09-23T09:48:58Z — D-audit-Doc-Lineage--2026-09-23T09-11-20Z — fail — cursor produced 384 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Doc-Lineage-2026-09-23.md (min 400); rotating agent
 - 2026-09-23T10:04:57Z — D-audit-Doc-Lineage--2026-09-23T09-11-20Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-23T10:04:57Z — D-audit-Doc-Lineage--2026-09-23T09-11-20Z — claimed by driver (agent cursor)
+- 2026-09-23T10:07:36Z — D-audit-Doc-Lineage--2026-09-23T09-11-20Z — done — cursor produced 493 words at artifacts/audits/Doc-Lineage-2026-09-23.md in 132s
+- 2026-09-23T10:07:37Z — D-audit-Doc-Lineage--2026-09-23T09-11-20Z — refutation posted — stranske/Doc-Lineage#47
+- 2026-09-23T10:07:39Z — D-audit-Doc-Lineage--2026-09-23T09-11-20Z — refutation posted — stranske/Doc-Lineage#48
+- 2026-09-23T10:07:40Z — D-audit-Doc-Lineage--2026-09-23T09-11-20Z — refutation posted — stranske/Doc-Lineage#49
+- 2026-09-23T10:07:42Z — D-audit-Doc-Lineage--2026-09-23T09-11-20Z — refutation posted — stranske/Doc-Lineage#50
+- 2026-09-23T10:07:43Z — D-audit-Doc-Lineage--2026-09-23T09-11-20Z — refutation posted — stranske/Doc-Lineage#51
 
 ## Questions
 

@@ -1,3 +1,5 @@
+## 2026-09-23T11:15Z — Doc-Lineage Track D refill attempt 2 complete; scorecard 4/1/0/0/0 of 5; 0 issues filed (gh unauth); #47–#51 re-refuted; report at Doc-Lineage-2026-09-23.md
+
 ## 2026-09-23T10:30Z — Doc-Lineage Track D refill complete; scorecard 4/1/0/0/0 of 5; 0 issues filed (gh unauth); #47–#51 refuted on tip; report at Doc-Lineage-2026-09-23.md
 
 ## 2026-09-23T09:26Z — Deliverable-Render Track D refill complete; scorecard 7/0/0/0/0 of 7; issue #47 filed; report at Deliverable-Render-2026-09-23.md

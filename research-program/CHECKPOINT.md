@@ -1653,3 +1653,9 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-23T09:48:58Z — D-audit-Doc-Lineage--2026-09-23T09-11-20Z — fail — cursor produced 384 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Doc-Lineage-2026-09-23.md (min 400); rotating agent
 ## 2026-09-23T10:04:57Z — D-audit-Doc-Lineage--2026-09-23T09-11-20Z — route — router picked cursor from ['codex', 'cursor']
 ## 2026-09-23T10:04:57Z — D-audit-Doc-Lineage--2026-09-23T09-11-20Z — claimed by driver (agent cursor)
+## 2026-09-23T10:07:36Z — D-audit-Doc-Lineage--2026-09-23T09-11-20Z — done — cursor produced 493 words at artifacts/audits/Doc-Lineage-2026-09-23.md in 132s
+## 2026-09-23T10:07:37Z — D-audit-Doc-Lineage--2026-09-23T09-11-20Z — refutation posted — stranske/Doc-Lineage#47
+## 2026-09-23T10:07:39Z — D-audit-Doc-Lineage--2026-09-23T09-11-20Z — refutation posted — stranske/Doc-Lineage#48
+## 2026-09-23T10:07:40Z — D-audit-Doc-Lineage--2026-09-23T09-11-20Z — refutation posted — stranske/Doc-Lineage#49
+## 2026-09-23T10:07:42Z — D-audit-Doc-Lineage--2026-09-23T09-11-20Z — refutation posted — stranske/Doc-Lineage#50
+## 2026-09-23T10:07:43Z — D-audit-Doc-Lineage--2026-09-23T09-11-20Z — refutation posted — stranske/Doc-Lineage#51
