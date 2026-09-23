@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-23T06:36:38Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-23T09:07:26Z)
 
 Units: 167 — done 164, failed 3
 Paused: False   Phase stops: []
@@ -179,18 +179,18 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-23T03:27:40Z — D4-verify-merged-2026-09-23T03 — done — cursor produced 814 words at artifacts/verification/D4-verify-merged-2026-09-23T03.md in 408s
-- 2026-09-23T03:27:40Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-23T04:30:18+00:00; local work continues
-- 2026-09-23T03:42:42Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
-- 2026-09-23T03:42:43Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-23T04:30:18+00:00; local work continues
-- 2026-09-23T03:58:13Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-23T04:30:18+00:00; local work continues
-- 2026-09-23T04:12:05Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-23T04:30:18+00:00; local work continues
-- 2026-09-23T04:13:15Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-23T04:30:18+00:00; local work continues
-- 2026-09-23T04:28:17Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-23T04:30:18+00:00; local work continues
-- 2026-09-23T04:43:19Z — unblock — enqueued D3-unblock-sweep-2026-09-23T04
-- 2026-09-23T04:43:19Z — D3-unblock-sweep-2026-09-23T04 — route — router picked cursor from ['codex', 'cursor']
-- 2026-09-23T04:43:19Z — D3-unblock-sweep-2026-09-23T04 — claimed by driver (agent cursor)
-- 2026-09-23T04:48:47Z — D3-unblock-sweep-2026-09-23T04 — done — cursor produced 674 words at artifacts/sweeps/D3-unblock-sweep-2026-09-23T04.md in 288s
+- 2026-09-23T07:07:06Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-23T08:56:20+00:00; local work continues
+- 2026-09-23T07:10:36Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-23T08:56:20+00:00; local work continues
+- 2026-09-23T07:22:09Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-23T08:56:20+00:00; local work continues
+- 2026-09-23T07:37:11Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-23T08:56:20+00:00; local work continues
+- 2026-09-23T07:52:13Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-23T08:56:20+00:00; local work continues
+- 2026-09-23T08:07:15Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-23T08:56:20+00:00; local work continues
+- 2026-09-23T08:10:37Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-23T08:56:20+00:00; local work continues
+- 2026-09-23T08:22:18Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-23T08:56:20+00:00; local work continues
+- 2026-09-23T08:37:20Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-23T08:56:20+00:00; local work continues
+- 2026-09-23T08:52:23Z — refill — error — PermissionError(1, 'Operation not permitted')
+- 2026-09-23T08:52:23Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-23T08:56:20+00:00; local work continues
+- 2026-09-23T09:07:26Z — refill — error — PermissionError(1, 'Operation not permitted')
 
 ## Questions
 
