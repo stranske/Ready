@@ -1699,3 +1699,5 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-23T12:17:47Z — digest — posted
 ## 2026-09-23T12:23:32Z — D-audit-Portable-Alpha-Extension-Model--2026-09-23T09-11-16Z — done — cursor produced 400 words at artifacts/audits/Portable-Alpha-Extension-Model-2026-09-23.md in 486s
 ## 2026-09-23T12:23:34Z — D-audit-Portable-Alpha-Extension-Model--2026-09-23T09-11-16Z — refutation posted — stranske/Portable-Alpha-Extension-Model#1910
+## 2026-09-23T12:39:00Z — D-audit-Travel-Plan-Permission--2026-09-23T09-11-15Z — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-23T12:39:00Z — D-audit-Travel-Plan-Permission--2026-09-23T09-11-15Z — claimed by driver (agent cursor)

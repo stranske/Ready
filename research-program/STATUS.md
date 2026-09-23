@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-23T12:23:34Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-23T12:39:00Z)
 
-Units: 179 — done 172, failed 4, queued 3
+Units: 179 — claimed 1, done 172, failed 4, queued 2
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 Orchestrator evidence (30d): offload runs 223, bound to a research round 177, scored 177 (PASS 123, FAIL 54, infra 19) — codex 26/27 (P9 F17 I6), cursor 91/124 (P74 F17 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
@@ -154,7 +154,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Travel-Plan-Permission--2026-09-06T16-33-27Z | D | D | done | codex | driver | Audit stranske/Travel-Plan-Permission and file issues (supply 2 <= 2) |  |
 | D-audit-Travel-Plan-Permission--2026-09-07T04-47-30Z | D | D | done | codex | codex | Audit stranske/Travel-Plan-Permission and file issues (supply 2 <= 3) |  |
 | D-audit-Travel-Plan-Permission--2026-09-07T17-01-43Z | D | D | done | codex | claude | Audit stranske/Travel-Plan-Permission and file issues (supply 1 <= 2) |  |
-| D-audit-Travel-Plan-Permission--2026-09-23T09-11-15Z | D | D | queued | claude |  | Audit stranske/Travel-Plan-Permission and file issues (no scorecard) |  |
+| D-audit-Travel-Plan-Permission--2026-09-23T09-11-15Z | D | D | claimed | cursor | driver | Audit stranske/Travel-Plan-Permission and file issues (no scorecard) |  |
 | D-audit-Trend_Model_Project--2026-09-19T08-08-54Z | D | D | done | codex | codex | Audit stranske/Trend_Model_Project and file issues (supply 2 <= 3) |  |
 | D-audit-Trend_Model_Project--2026-09-19T20-12-05Z | D | D | failed | codex |  | Audit stranske/Trend_Model_Project and file issues (supply 0 <= 2) |  |
 | D-audit-Trend_Model_Project--2026-09-23T09-11-16Z | D | D | queued | claude |  | Audit stranske/Trend_Model_Project and file issues (scorecard 2026-09- |  |
@@ -191,8 +191,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-23T11:57:51Z — D-audit-Manager-Mosaic--2026-09-23T09-11-14Z — route — router picked cursor from ['codex', 'cursor']
-- 2026-09-23T11:57:51Z — D-audit-Manager-Mosaic--2026-09-23T09-11-14Z — claimed by driver (agent cursor)
 - 2026-09-23T11:59:32Z — D-audit-Manager-Mosaic--2026-09-23T09-11-14Z — done — cursor produced 432 words at artifacts/audits/Manager-Mosaic-2026-09-23.md in 74s
 - 2026-09-23T12:10:39Z — D-audit-Pension-Data--2026-09-23T09-11-18Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-23T12:10:39Z — D-audit-Pension-Data--2026-09-23T09-11-18Z — claimed by codex (agent cursor)
@@ -203,6 +201,8 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-23T12:17:47Z — digest — posted
 - 2026-09-23T12:23:32Z — D-audit-Portable-Alpha-Extension-Model--2026-09-23T09-11-16Z — done — cursor produced 400 words at artifacts/audits/Portable-Alpha-Extension-Model-2026-09-23.md in 486s
 - 2026-09-23T12:23:34Z — D-audit-Portable-Alpha-Extension-Model--2026-09-23T09-11-16Z — refutation posted — stranske/Portable-Alpha-Extension-Model#1910
+- 2026-09-23T12:39:00Z — D-audit-Travel-Plan-Permission--2026-09-23T09-11-15Z — route — router picked cursor from ['codex', 'cursor']
+- 2026-09-23T12:39:00Z — D-audit-Travel-Plan-Permission--2026-09-23T09-11-15Z — claimed by driver (agent cursor)
 
 ## Questions
 
