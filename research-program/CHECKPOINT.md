@@ -1720,3 +1720,4 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-23T14:06:01Z — D-audit-Trend_Model_Project--2026-09-23T09-11-16Z — done — cursor produced 407 words at artifacts/audits/Trend_Model_Project-2026-09-23.md in 129s
 ## 2026-09-23T14:10:40Z — D-audit-Workflows--2026-09-23T09-11-15Z — route — router picked codex from ['codex', 'cursor']
 ## 2026-09-23T14:10:40Z — D-audit-Workflows--2026-09-23T09-11-15Z — claimed by codex (agent codex)
+## 2026-09-23T14:18:22Z — D-audit-Workflows--2026-09-23T09-11-15Z — done — Scorecard: 4 work / 0 partial / 1 broken / 0 fabricated / 2 not exercised of 7; journey stops at belt scan; verified and filed Workflows #3525 for its recurring

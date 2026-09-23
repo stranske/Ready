@@ -1,18 +1,7 @@
-# Track D audit checkpoints (append-only)
+## 2026-09-23T14:11:15Z — D-audit-Workflows--2026-09-23T09-11-15Z — claimed
 
-## 2026-09-23 — Trend_Model_Project (D-audit-Trend_Model_Project--2026-09-23T09-11-16Z)
-- Phase 1.5 scorecard → `Code/Audits/Trend_Model_Project/2026-09-23-SCORECARD.md`
-- Filed #6053–#6055
-- Unit checkpoint: `D-audit-Trend_Model_Project--2026-09-23T09-11-16Z.CHECKPOINT.md`
-- Attempt 2: tip re-verify @ `adda9a41`; OUT `artifacts/audits/Trend_Model_Project-2026-09-23.md` refreshed (no new issues; gh auth absent)
-- Attempt 3: format guard re-query + `agents:formatted` applied on #6053–#6055; OUT attempt 3 section
+Phase 0 complete: read the mandatory D-audit brief, owner notes, Workflows dossier, repo-audit method and its current references, prior Workflows records, and current GitHub issue inventory. Fresh shallow clone is at `[LOCAL_WORKSPACE]/Workflows`, remote `main` tip `864b6e3053ce5135e8bc56cfac308edd56fa0108`. Proceeding with bash-only orientation and live CLI scorecard probes.
 
-## 2026-09-23 — Travel-Plan-Permission (D-audit-Travel-Plan-Permission--2026-09-23T09-11-15Z)
-- Phase 1.5 scorecard complete → `Code/Audits/Travel-Plan-Permission/2026-09-23-SCORECARD.md`
-- Filed #1592–#1596
-- Unit checkpoint: `D-audit-Travel-Plan-Permission--2026-09-23T09-11-15Z.CHECKPOINT.md`
+## 2026-09-23T14:17:33Z — D-audit-Workflows--2026-09-23T09-11-15Z — audit complete pending engine close
 
-## 2026-09-23 — Portable-Alpha-Extension-Model (D-audit-Portable-Alpha-Extension-Model--2026-09-23T09-11-16Z)
-- Phase 1.5 scorecard complete → `Code/Audits/Portable-Alpha-Extension-Model/2026-09-23-SCORECARD.md`
-- Filed #2306, #2307
-- Unit checkpoint: `D-audit-Portable-Alpha-Extension-Model--2026-09-23T09-11-16Z.CHECKPOINT.md`
+Completed the scorecard and eight-dimension reconciliation. Live deterministic probes passed for sync compilation, run-contract validation, capability/prompt selection, and metrics output; focused regression gates passed 123 Python and 20 Node tests. Found a reproducible broken belt-promotion preflight: 14 of the last 15 scheduled Agents 70 runs fail on the wrapped-client `__getTokenSource` Proxy invariant before candidate discovery, despite capacity. Dedup found no matching issue; filed Workflows #3525 after the local format guard passed. Updated Code/Audits continuity and intake measurement; OUT is `artifacts/audits/Workflows-2026-09-23.md`.
