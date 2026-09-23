@@ -13,3 +13,7 @@
 
 ### ANSWERED 2026-09-13T20:43:28Z
 All three open questions are answered from the owner's standing direction and closed: the mosaic has its own repo (created 2026-09-04), and mechanical default-branch fixes are authorized in a pull request without asking. The executor prompt now says so, so this class of question should not recur.
+
+### q-D-audit-Inv-Man-Intake--2026-09-23T09-11-17Z (2026-09-23T11:06:44Z) — unit D-audit-Inv-Man-Intake--2026-09-23T09-11-17Z
+**Question:** Inv-Man-Intake IMI-5: production scoring is deliberately disabled because 4 of 5 score components (performance_consistency 0.80, risk_adjusted_returns 0.78, operational_quality 0.69, transparency 0.74 in v1_smoke._score_components) are constants, and compute_score rejects missing components. How should production components be derived from submitted evidence — e.g. map Sharpe/volatility/drawdown/track-record completeness to 0..1, and either extract or explicitly drop operational_quality/team_experience/transparency (renormalizing weights)?
+**Default being followed:** File no implementation issue; IMI-5 stays PARTIAL as a documented methodology gap; the 2026-09-23 candidate body is withdrawn because its Task 1 (reuse _score_components) would reintroduce fabricated production scores.
