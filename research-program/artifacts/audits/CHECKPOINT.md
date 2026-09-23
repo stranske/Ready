@@ -25,3 +25,9 @@ Phase 0/1 complete: read the mandatory brief, owner notes, dossier, prior scorec
 ## 2026-09-23T23:12:36Z — D-audit-Inv-Man-Intake--2026-09-23T22-11-16Z — complete
 
 Revalidated the changed export/evidence slice: 36 dedicated tests passed; 57 focused pre-existing core regression assertions passed, with the partial-run exit caused only by the repository-wide 80% coverage gate (36% for that narrow slice). Current open issue #948 is unrelated; no reproducible non-duplicate finding was filed. Scorecard remains 5 work / 2 partial / 0 broken / 0 fabricated / 0 not exercised of 7; journey passes; surfaces unscored 1; closed-still-broken 0. OUT is `artifacts/audits/Inv-Man-Intake-2026-09-23.md`.
+
+## 2026-09-23T23:22Z — D-audit-Manager-Mosaic--2026-09-23T22-11-13Z — complete with external-storage blocker
+
+Scorecard: 6 work / 0 partial / 0 broken / 0 fabricated / 0 not exercised of 6; journey: passes; surfaces unscored 2; closed-still-broken 0.
+
+Remote `main` advanced to `52b7f4b`, fixing the former period-alias discrepancy (reproduction now `alias 1` / `same 1`); 0 new issues filed. The triggering canonical `Code/Audits/Manager-Mosaic/2026-09-23-SCORECARD.md` still lacks its required parseable headline. This executor attempted the minimal backfill but the filesystem sandbox rejected writes outside the research-program workspace; `gh` authentication was also unavailable, so remote issue and format-guard state are unknown. OUT: `artifacts/audits/Manager-Mosaic-2026-09-23.md`.

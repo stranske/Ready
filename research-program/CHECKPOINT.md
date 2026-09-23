@@ -1769,3 +1769,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-23T23:14:18Z — D-audit-Fine-Art-Archive--2026-09-23T22-11-18Z — done — Scorecard: 4 work / 1 partial / 0 broken / 0 fabricated / 0 not exercised of 5; journey: passes; surfaces unscored 9; closed-still-broken 0. Filed #741 (C4 week
 ## 2026-09-23T23:23:01Z — D-audit-Manager-Mosaic--2026-09-23T22-11-13Z — route — router picked codex from ['codex', 'cursor']
 ## 2026-09-23T23:23:01Z — D-audit-Manager-Mosaic--2026-09-23T22-11-13Z — claimed by driver (agent codex)
+## 2026-09-23T23:27:25Z — D-audit-Manager-Mosaic--2026-09-23T22-11-13Z — fail — offload to codex exited 70; agent reported OFFLOAD_INCOMPLETE
+## 2026-09-23T23:42:27Z — D-audit-Manager-Mosaic--2026-09-23T22-11-13Z — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-23T23:42:27Z — D-audit-Manager-Mosaic--2026-09-23T22-11-13Z — claimed by driver (agent cursor)
