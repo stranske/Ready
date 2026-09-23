@@ -1723,3 +1723,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-23T14:18:22Z — D-audit-Workflows--2026-09-23T09-11-15Z — done — Scorecard: 4 work / 0 partial / 1 broken / 0 fabricated / 2 not exercised of 7; journey stops at belt scan; verified and filed Workflows #3525 for its recurring
 ## 2026-09-23T15:11:40Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
 ## 2026-09-23T20:48:06Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+## 2026-09-23T21:03:32Z — unblock — enqueued D3-unblock-sweep-2026-09-23T21
+## 2026-09-23T21:03:32Z — D3-unblock-sweep-2026-09-23T21 — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-23T21:03:32Z — D3-unblock-sweep-2026-09-23T21 — claimed by driver (agent cursor)

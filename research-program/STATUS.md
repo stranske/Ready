@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-23T20:48:06Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-23T21:03:32Z)
 
-Units: 180 — done 176, failed 4
+Units: 181 — claimed 1, done 176, failed 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 Orchestrator evidence (30d): offload runs 228, bound to a research round 182, scored 182 (PASS 125, FAIL 57, infra 19) — codex 26/27 (P9 F17 I6), cursor 96/129 (P76 F20 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
@@ -111,6 +111,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D3-unblock-sweep-2026-09-22T20 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-2026-09-23T04 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-2026-09-23T13 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
+| D3-unblock-sweep-2026-09-23T21 | D | D | claimed | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-pass2-20260913T2023 | D | D | done | cursor | driver | Unblock sweep pass 2: the seven repos the budgeted first pass deferred |  |
 | D-audit-Counter_Risk--2026-09-07T04-47-32Z | D | D | done | codex | driver | Audit stranske/Counter_Risk and file issues (supply 2 <= 2) |  |
 | D-audit-Counter_Risk--2026-09-08T17-11-36Z | D | D | done | codex | codex | Audit stranske/Counter_Risk and file issues (supply 1 <= 2) |  |
@@ -192,9 +193,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-23T13:30:37Z — D-audit-Trend_Model_Project--2026-09-23T09-11-16Z — fail — cursor produced 332 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Trend_Model_Project-2026-09-23.md (min 400); rotating agent
-- 2026-09-23T13:45:39Z — D-audit-Trend_Model_Project--2026-09-23T09-11-16Z — route — router picked cursor from ['codex', 'cursor']
-- 2026-09-23T13:45:39Z — D-audit-Trend_Model_Project--2026-09-23T09-11-16Z — claimed by driver (agent cursor)
 - 2026-09-23T13:48:17Z — D-audit-Trend_Model_Project--2026-09-23T09-11-16Z — fail — cursor produced 344 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Trend_Model_Project-2026-09-23.md (min 400); rotating agent
 - 2026-09-23T14:03:19Z — D-audit-Trend_Model_Project--2026-09-23T09-11-16Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-23T14:03:19Z — D-audit-Trend_Model_Project--2026-09-23T09-11-16Z — claimed by driver (agent cursor)
@@ -204,6 +202,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-23T14:18:22Z — D-audit-Workflows--2026-09-23T09-11-15Z — done — Scorecard: 4 work / 0 partial / 1 broken / 0 fabricated / 2 not exercised of 7; journey stops at belt scan; verified and filed Workflows #3525 for its recurring
 - 2026-09-23T15:11:40Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
 - 2026-09-23T20:48:06Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+- 2026-09-23T21:03:32Z — unblock — enqueued D3-unblock-sweep-2026-09-23T21
+- 2026-09-23T21:03:32Z — D3-unblock-sweep-2026-09-23T21 — route — router picked cursor from ['codex', 'cursor']
+- 2026-09-23T21:03:32Z — D3-unblock-sweep-2026-09-23T21 — claimed by driver (agent cursor)
 
 ## Questions
 
