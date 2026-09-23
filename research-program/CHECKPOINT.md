@@ -1696,3 +1696,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-23T12:14:58Z — D-audit-Portable-Alpha-Extension-Model--2026-09-23T09-11-16Z — claimed by driver (agent cursor)
 ## 2026-09-23T12:17:21Z — D-audit-Pension-Data--2026-09-23T09-11-18Z — done — Scorecard: 2 work / 1 partial / 0 broken / 0 fabricated / 0 not exercised of 3; journey: passes; surfaces unscored 0; closed-still-broken 0. Verified PR #912’s 
 ## 2026-09-23T12:17:21Z — D-audit-Pension-Data--2026-09-23T09-11-18Z — evidence — 1 unscored offload run(s) recorded PASS (executor codex report)
+## 2026-09-23T12:17:47Z — digest — posted
+## 2026-09-23T12:23:32Z — D-audit-Portable-Alpha-Extension-Model--2026-09-23T09-11-16Z — done — cursor produced 400 words at artifacts/audits/Portable-Alpha-Extension-Model-2026-09-23.md in 486s
+## 2026-09-23T12:23:34Z — D-audit-Portable-Alpha-Extension-Model--2026-09-23T09-11-16Z — refutation posted — stranske/Portable-Alpha-Extension-Model#1910

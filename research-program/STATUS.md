@@ -1,9 +1,9 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-23T12:17:21Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-23T12:23:34Z)
 
-Units: 179 — claimed 1, done 171, failed 4, queued 3
+Units: 179 — done 172, failed 4, queued 3
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
-Orchestrator evidence (30d): offload runs 223, bound to a research round 177, scored 176 (PASS 122, FAIL 54, infra 19) — codex 26/27 (P9 F17 I6), cursor 90/124 (P73 F17 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
+Orchestrator evidence (30d): offload runs 223, bound to a research round 177, scored 177 (PASS 123, FAIL 54, infra 19) — codex 26/27 (P9 F17 I6), cursor 91/124 (P74 F17 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
 Claude conservation: off (weekly window available)
 Owner inbox: https://github.com/stranske/Ready/issues/553
 
@@ -147,7 +147,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Pension-Data--2026-09-23T09-11-18Z | D | D | done | cursor | codex | Audit stranske/Pension-Data and file issues (scorecard 2026-09-20 has  | 2W/1P/0B/0F of 3 |
 | D-audit-Portable-Alpha-Extension-Model--2026-09-07T04-47-31Z | D | D | done | codex | codex | Audit stranske/Portable-Alpha-Extension-Model and file issues (supply  |  |
 | D-audit-Portable-Alpha-Extension-Model--2026-09-07T17-01-44Z | D | D | done | codex | driver | Audit stranske/Portable-Alpha-Extension-Model and file issues (supply  |  |
-| D-audit-Portable-Alpha-Extension-Model--2026-09-23T09-11-16Z | D | D | claimed | cursor | driver | Audit stranske/Portable-Alpha-Extension-Model and file issues (scoreca |  |
+| D-audit-Portable-Alpha-Extension-Model--2026-09-23T09-11-16Z | D | D | done | cursor | driver | Audit stranske/Portable-Alpha-Extension-Model and file issues (scoreca | 2W/1P/0B/0F of 6 |
 | D-audit-Ready--2026-09-07T04-47-33Z | D | D | done | codex | driver | Audit stranske/Ready and file issues (supply 1 <= 2) |  |
 | D-audit-Travel-Plan-Permission--2026-09-05T16-11-36Z | D | D | done | codex | codex | Audit stranske/Travel-Plan-Permission and file issues (supply 3 <= 3) |  |
 | D-audit-Travel-Plan-Permission--2026-09-06T04-25-49Z | D | D | done | codex | driver | Audit stranske/Travel-Plan-Permission and file issues (supply 1 <= 2) |  |
@@ -191,9 +191,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-23T11:41:22Z — D-audit-Manager-Mosaic--2026-09-23T09-11-14Z — route — router picked cursor from ['codex', 'cursor']
-- 2026-09-23T11:41:22Z — D-audit-Manager-Mosaic--2026-09-23T09-11-14Z — claimed by driver (agent cursor)
-- 2026-09-23T11:42:48Z — D-audit-Manager-Mosaic--2026-09-23T09-11-14Z — fail — cursor produced 389 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Manager-Mosaic-2026-09-23.md (min 400); rotating agent
 - 2026-09-23T11:57:51Z — D-audit-Manager-Mosaic--2026-09-23T09-11-14Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-23T11:57:51Z — D-audit-Manager-Mosaic--2026-09-23T09-11-14Z — claimed by driver (agent cursor)
 - 2026-09-23T11:59:32Z — D-audit-Manager-Mosaic--2026-09-23T09-11-14Z — done — cursor produced 432 words at artifacts/audits/Manager-Mosaic-2026-09-23.md in 74s
@@ -203,6 +200,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-23T12:14:58Z — D-audit-Portable-Alpha-Extension-Model--2026-09-23T09-11-16Z — claimed by driver (agent cursor)
 - 2026-09-23T12:17:21Z — D-audit-Pension-Data--2026-09-23T09-11-18Z — done — Scorecard: 2 work / 1 partial / 0 broken / 0 fabricated / 0 not exercised of 3; journey: passes; surfaces unscored 0; closed-still-broken 0. Verified PR #912’s 
 - 2026-09-23T12:17:21Z — D-audit-Pension-Data--2026-09-23T09-11-18Z — evidence — 1 unscored offload run(s) recorded PASS (executor codex report)
+- 2026-09-23T12:17:47Z — digest — posted
+- 2026-09-23T12:23:32Z — D-audit-Portable-Alpha-Extension-Model--2026-09-23T09-11-16Z — done — cursor produced 400 words at artifacts/audits/Portable-Alpha-Extension-Model-2026-09-23.md in 486s
+- 2026-09-23T12:23:34Z — D-audit-Portable-Alpha-Extension-Model--2026-09-23T09-11-16Z — refutation posted — stranske/Portable-Alpha-Extension-Model#1910
 
 ## Questions
 
