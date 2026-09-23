@@ -1659,3 +1659,5 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-23T10:07:40Z — D-audit-Doc-Lineage--2026-09-23T09-11-20Z — refutation posted — stranske/Doc-Lineage#49
 ## 2026-09-23T10:07:42Z — D-audit-Doc-Lineage--2026-09-23T09-11-20Z — refutation posted — stranske/Doc-Lineage#50
 ## 2026-09-23T10:07:43Z — D-audit-Doc-Lineage--2026-09-23T09-11-20Z — refutation posted — stranske/Doc-Lineage#51
+## 2026-09-23T10:12:06Z — D-audit-Fine-Art-Archive--2026-09-23T09-11-19Z — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-23T10:12:06Z — D-audit-Fine-Art-Archive--2026-09-23T09-11-19Z — claimed by codex (agent cursor)
