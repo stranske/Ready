@@ -1,0 +1,60 @@
+diff --git a/src/counter_risk/parsers/cprs_ch.py b/src/counter_risk/parsers/cprs_ch.py
+index e6553956e..a476bb375 100644
+--- a/src/counter_risk/parsers/cprs_ch.py
++++ b/src/counter_risk/parsers/cprs_ch.py
+@@ -382,7 +382,9 @@ def _detect_variant(*, file_path: Path, sheet_name: str) -> str | None:
+     title = normalize_variant_text(f"{file_path.name} {sheet_name}")
+     if "ex trend" in title:
+         return "ex_trend"
+-    if "all" in title:
++    # Keep explicit all-programs markers, but do not let an incidental "all"
++    # substring (for example, "trend-allocation") override the Trend variant.
++    if "all programs" in title or ("all" in title and "trend" not in title):
+         return "all_programs"
+     # Generated pipeline artifacts often include both "trend" and
+     # "mosers input" in the filename; prioritize the explicit
+diff --git a/tests/parsers/test_cprs_ch.py b/tests/parsers/test_cprs_ch.py
+index 9a81b6ead..335a9f5d2 100644
+--- a/tests/parsers/test_cprs_ch.py
++++ b/tests/parsers/test_cprs_ch.py
+@@ -5,6 +5,7 @@
+ import sys
+ import types
+ from pathlib import Path
++from shutil import copyfile
+ from typing import Any
+ 
+ import pytest
+@@ -135,6 +136,32 @@ def test_parse_trend_variant_maps_swaps_to_futures(fake_pandas: None) -> None:
+     assert {row["Segment"] for row in records} == {"futures"}
+ 
+ 
++@pytest.mark.parametrize(
++    "filename", ["mosers-trend-all.xlsx", "small-trend.xlsx", "trend-allocation.xlsx"]
++)
++def test_parse_cprs_ch_trend_workbook_not_misclassified_when_filename_contains_all(
++    fake_pandas: None, tmp_path: Path, filename: str
++) -> None:
++    source = _fixture(_TREND_FIXTURE)
++    renamed = tmp_path / filename
++    copyfile(source, renamed)
++
++    records = parse_cprs_ch(renamed).to_records()
++
++    assert records == parse_cprs_ch(source).to_records()
++    assert {row["Segment"] for row in records} == {"futures"}
++
++
++def test_parse_cprs_ch_explicit_all_programs_marker_retains_segment_validation(
++    fake_pandas: None, tmp_path: Path
++) -> None:
++    renamed = tmp_path / "all_programs-trend.xlsx"
++    copyfile(_fixture(_TREND_FIXTURE), renamed)
++
++    with pytest.raises(ValueError, match="Missing expected CPRS-CH segments: futures_cdx, repo"):
++        parse_cprs_ch(renamed)
++
++
+ def _build_real_shape_workbook(tmp_path: Path, name: str) -> Path:
+     """Build a minimal workbook reproducing two real-world layout quirks seen in
+     actual MOSERS exports:

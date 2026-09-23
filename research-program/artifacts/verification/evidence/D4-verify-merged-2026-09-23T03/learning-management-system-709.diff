@@ -1,0 +1,304 @@
+diff --git a/config/README.md b/config/README.md
+new file mode 100644
+index 00000000..87987418
+--- /dev/null
++++ b/config/README.md
+@@ -0,0 +1,20 @@
++# Configuration ownership
++
++The running LMS reads its LLM provider, model, and budget settings from
++environment variables in `src/lms/llm/config.py`. It does not load the JSON
++files in this directory. `LLM_DEFAULT_PROVIDER=fake` selects the in-process
++provider even when an Anthropic key is present; an unset value uses credential
++detection. A value absent from the registered provider map raises an error.
++
++The files here support the agent fleet, CI, and maintenance tools:
++
++| File | Reader or purpose |
++| --- | --- |
++| `model_registry.json` | `tools/` model registry and `.github/` agent checks |
++| `model_selection_policy.json` | `tools/` model benchmark and freshness checks |
++| `llm_slots.json` | `tools/` slot checks and `.github/` agent routing |
++| `source_of_truth_docs.yml` | documentation drift maintenance script |
++| `coverage-baseline.json` | CI coverage guard and trend tools |
++
++These files are metadata for development and automation. Editing them does not
++change a running application's LLM routing.
+diff --git a/docs/llm/PROVIDER_LIVE_VERIFICATION.md b/docs/llm/PROVIDER_LIVE_VERIFICATION.md
+index f60e41b9..cfe3e371 100644
+--- a/docs/llm/PROVIDER_LIVE_VERIFICATION.md
++++ b/docs/llm/PROVIDER_LIVE_VERIFICATION.md
+@@ -66,17 +66,20 @@ authoring-assist proposal complete: proposal=<uuid> node=<uuid> prompt=<uuid> mo
+ 
+ ## study-coach Routing Check
+ 
+-To verify the `study-coach` mode routes to Anthropic when a key is present, inspect the
+-`LLM_DEFAULT_PROVIDER` environment variable path:
++To verify the provider chosen by the running API client, inspect the resolved
++client configuration (without issuing a provider call):
+ 
+ ```python
+-from lms.llm.config import load_llm_config_from_env
+-import os
++from lms.llm.api import _default_client
+ 
+-config = load_llm_config_from_env(dict(os.environ))
+-print(config.default_provider)   # "anthropic" when key present, "fake" otherwise
++print(_default_client().config.default_provider)
++# "anthropic" when a key is present and no override is set; "fake" without a
++# key or when LLM_DEFAULT_PROVIDER=fake is set.
+ ```
+ 
++The three model JSON files in `config/` configure agent/CI tools, not this
++runtime client. See `config/README.md` for the ownership of all five files.
++
+ ## Redaction Observable
+ 
+ The `LLMResponse.redaction` field is always populated (never `None`) after a real call.
+diff --git a/render.yaml b/render.yaml
+index ea14bb27..e37893a7 100644
+--- a/render.yaml
++++ b/render.yaml
+@@ -81,6 +81,11 @@ services:
+       # study-coach path is exercised.
+       - key: CLAUDE_API_STRANSKE
+         sync: false
++      # Optional provider override. Set to "fake" in the dashboard to suspend
++      # live LLM calls while keeping the Anthropic key configured. Unset it to
++      # use credential detection; an unavailable provider causes a clear error.
++      - key: LLM_DEFAULT_PROVIDER
++        sync: false
+       # LangSmith tracing key (M5).
+       - key: LANGSMITH_API_KEY
+         sync: false
+diff --git a/src/lms/__main__.py b/src/lms/__main__.py
+index 562449a0..4f48a136 100644
+--- a/src/lms/__main__.py
++++ b/src/lms/__main__.py
+@@ -408,6 +408,7 @@ def main() -> None:
+             )
+             config = load_runtime_llm_config(
+                 default_provider=default_provider,
++                providers=providers,
+                 defaults={**DEFAULT_MODE_MODELS, "authoring-assist": authoring_model},
+             )
+             client = LLMClient(
+@@ -470,7 +471,7 @@ def main() -> None:
+             # without one, the fake provider keeps replays runnable offline.
+             api_key = get_settings().anthropic_api_key
+             providers, default_provider = build_default_providers(anthropic_api_key=api_key)
+-            config = load_runtime_llm_config(default_provider=default_provider)
++            config = load_runtime_llm_config(default_provider=default_provider, providers=providers)
+             client = LLMClient(
+                 config=config,
+                 providers=providers,
+diff --git a/src/lms/llm/api.py b/src/lms/llm/api.py
+index 508a9cf2..d69cd265 100644
+--- a/src/lms/llm/api.py
++++ b/src/lms/llm/api.py
+@@ -185,6 +185,7 @@ def _default_client() -> LLMClient:
+     )
+     config = load_runtime_llm_config(
+         default_provider=default_provider,
++        providers=providers,
+         defaults=dict.fromkeys(DEFAULT_MODE_MODELS, default_model),
+     )
+     return LLMClient(
+diff --git a/src/lms/llm/client.py b/src/lms/llm/client.py
+index b5e94e6a..9bed8d4a 100644
+--- a/src/lms/llm/client.py
++++ b/src/lms/llm/client.py
+@@ -108,10 +108,7 @@ def complete(
+         self._validate_coaching_intensity(coaching_intensity)
+ 
+         derived_provider, model = self.config.provider_and_model_for(mode)
+-        # Resolution order: explicit per-call provider_name > provider embedded
+-        # in the model config string (e.g. "anthropic:claude-sonnet-4-5") >
+-        # config.default_provider fallback (handled inside _resolve_provider).
+-        provider = self._resolve_provider(provider_name or derived_provider)
++        provider = self._resolve_provider(self._provider_name(provider_name, derived_provider))
+ 
+         projected_cost = self._estimate_cost(provider, prompt=prompt, max_tokens=max_tokens)
+         # Reserve atomically (check-and-debit in one critical section) so two
+@@ -210,7 +207,7 @@ def replay(
+         self._validate_trace_class(gold_set_entry.trace_class)
+ 
+         derived_provider, model = self.config.provider_and_model_for(mode)
+-        provider = self._resolve_provider(provider_name or derived_provider)
++        provider = self._resolve_provider(self._provider_name(provider_name, derived_provider))
+         provider_response = provider.complete(
+             model=model,
+             prompt=gold_set_entry.prompt,
+@@ -266,6 +263,15 @@ def _resolve_provider(self, provider_name: str | None) -> ProviderAdapter:
+         except KeyError as exc:
+             raise LLMError(f"no provider adapter registered for '{name}'") from exc
+ 
++    def _provider_name(self, per_call: str | None, model_provider: str | None) -> str | None:
++        # An explicit per-call choice remains highest priority. The operator's
++        # fake switch must suppress live calls even for provider-qualified models.
++        if per_call is not None:
++            return per_call
++        if self.config.force_fake_provider:
++            return "fake"
++        return model_provider
++
+     @staticmethod
+     def _estimate_cost(provider: ProviderAdapter, *, prompt: str, max_tokens: int | None) -> int:
+         """Conservative preflight cost estimate used for budget preflight.
+diff --git a/src/lms/llm/config.py b/src/lms/llm/config.py
+index f7eac5bd..c90228f4 100644
+--- a/src/lms/llm/config.py
++++ b/src/lms/llm/config.py
+@@ -2,6 +2,8 @@
+ 
+ Per project-plan ``LLM client wrapper interface (v1)`` and Segment 10, mode
+ routing is config-driven (env vars) so a model decision is a one-line change.
++The JSON files in ``config/`` are agent-fleet/CI metadata, not application
++runtime policy; the running client reads environment variables here.
+ """
+ 
+ from __future__ import annotations
+@@ -30,6 +32,7 @@ class LLMConfig:
+     per_mode_daily_cap_micro_usd: Mapping[str, int] = field(default_factory=dict)
+     default_provider: str = "fake"
+     default_timeout_seconds: float = 30.0
++    force_fake_provider: bool = False
+ 
+     def model_for(self, mode: str) -> str:
+         if mode not in LLM_MODES:
+@@ -97,15 +100,25 @@ def load_llm_config_from_env(
+ def load_runtime_llm_config(
+     *,
+     default_provider: str,
++    providers: Mapping[str, object],
+     defaults: Mapping[str, str] = DEFAULT_MODE_MODELS,
+ ) -> LLMConfig:
+-    """Resolve environment policy while retaining the initialized provider choice.
++    """Resolve environment policy against the initialized provider registry.
+ 
+     Web and CLI callers select a real or fake provider from available credentials
+-    before resolving model and budget overrides. Keep that choice so a missing
+-    API key still permits offline use.
++    before resolving model and budget overrides. An explicit override may select
++    any registered provider, including ``fake`` when a real key is configured.
++    Without an override, retain the credential-derived choice for offline use.
+     """
++    override = os.environ.get("LLM_DEFAULT_PROVIDER")
++    if override is not None and override not in providers:
++        available = ", ".join(sorted(providers))
++        raise ValueError(
++            f"LLM_DEFAULT_PROVIDER={override!r} is not registered; "
++            f"available providers: {available}"
++        )
+     return replace(
+         load_llm_config_from_env(defaults=defaults),
+-        default_provider=default_provider,
++        default_provider=override if override is not None else default_provider,
++        force_fake_provider=override == "fake",
+     )
+diff --git a/tests/llm/test_client_routing.py b/tests/llm/test_client_routing.py
+index 1f1aac39..92b03faf 100644
+--- a/tests/llm/test_client_routing.py
++++ b/tests/llm/test_client_routing.py
+@@ -385,8 +385,8 @@ def test_default_api_client_applies_runtime_policy(
+             monkeypatch.delenv(name, raising=False)
+         else:
+             monkeypatch.setenv(name, value)
+-    # Credential-driven provider choice wins over a contradictory env default.
+-    monkeypatch.setenv("LLM_DEFAULT_PROVIDER", "fake" if api_key else "anthropic")
++    # Without an explicit override, credential detection selects the provider.
++    monkeypatch.delenv("LLM_DEFAULT_PROVIDER", raising=False)
+     monkeypatch.setenv("LLM_MODEL_STUDY_COACH", "api-override-coach")
+ 
+     client = llm_api._default_client()
+@@ -408,3 +408,68 @@ def test_default_api_client_applies_runtime_policy(
+     with pytest.raises(BudgetExceeded, match="global daily cap"):
+         client.budget.reserve("practice", 1)
+     client.budget.release(reservation)
++
++
++def test_explicit_provider_override_is_honored(
++    monkeypatch: pytest.MonkeyPatch, request: pytest.FixtureRequest
++) -> None:
++    """An operator can suspend live provider calls without removing the key."""
++    from lms.llm import api as llm_api
++
++    llm_api._default_client.cache_clear()
++    request.addfinalizer(llm_api._default_client.cache_clear)
++    monkeypatch.setattr(
++        llm_api,
++        "get_settings",
++        lambda: SimpleNamespace(anthropic_api_key="[REDACTED_CREDENTIAL]"),
++    )
++    monkeypatch.setenv("LLM_DEFAULT_PROVIDER", "fake")
++
++    client = llm_api._default_client()
++
++    assert client.config.default_provider == "fake"
++    assert isinstance(client.providers["anthropic"], AnthropicProvider)
++    assert isinstance(client.providers["fake"], FakeProvider)
++    response = client.complete(mode="study-coach", prompt="hello", trace_class="formative")
++    assert response.session.provider == "fake"
++
++    monkeypatch.setenv("LLM_MODEL_STUDY_COACH", "anthropic:claude-haiku-4-5")
++    llm_api._default_client.cache_clear()
++    client = llm_api._default_client()
++    assert (
++        client.complete(
++            mode="study-coach", prompt="hello", trace_class="formative"
++        ).session.provider
++        == "fake"
++    )
++    assert (
++        client.replay(
++            GoldSetEntry(entry_id="fake-override", mode="study-coach", prompt="hello")
++        ).session.provider
++        == "fake"
++    )
++    client.providers["anthropic"] = FakeProvider(name="anthropic")
++    assert (
++        client.complete(
++            mode="study-coach", prompt="hello", trace_class="formative", provider_name="anthropic"
++        ).session.provider
++        == "anthropic"
++    )
++
++
++@pytest.mark.parametrize("override", ["unregistered", "anthropic"])
++def test_unregistered_provider_override_is_rejected(
++    monkeypatch: pytest.MonkeyPatch,
++    request: pytest.FixtureRequest,
++    override: str,
++) -> None:
++    """The override must exist in the registry built from available keys."""
++    from lms.llm import api as llm_api
++
++    llm_api._default_client.cache_clear()
++    request.addfinalizer(llm_api._default_client.cache_clear)
++    monkeypatch.setattr(llm_api, "get_settings", lambda: SimpleNamespace(anthropic_api_key=None))
++    monkeypatch.setenv("LLM_DEFAULT_PROVIDER", override)
++
++    with pytest.raises(ValueError, match=f"LLM_DEFAULT_PROVIDER='{override}' is not registered"):
++        llm_api._default_client()
+diff --git a/tests/test_cli_entrypoint.py b/tests/test_cli_entrypoint.py
+index 858a00c9..1e4a8f33 100644
+--- a/tests/test_cli_entrypoint.py
++++ b/tests/test_cli_entrypoint.py
+@@ -237,7 +237,7 @@ class _FakeResult:
+         monkeypatch.setenv(key, value)
+     if override_model:
+         monkeypatch.setenv("LLM_MODEL_AUTHORING_ASSIST", "operator-authoring-model")
+-    monkeypatch.setenv("LLM_DEFAULT_PROVIDER", "anthropic")
++    monkeypatch.delenv("LLM_DEFAULT_PROVIDER", raising=False)
+     monkeypatch.setattr(
+         lms_main, "get_settings", lambda: SimpleNamespace(anthropic_api_key=api_key)
+     )
+@@ -411,7 +411,7 @@ def test_replay_eval_uses_environment_llm_config(
+         monkeypatch.delenv(key, raising=False)
+     for key, value in policy_env.items():
+         monkeypatch.setenv(key, value)
+-    monkeypatch.setenv("LLM_DEFAULT_PROVIDER", "anthropic")
++    monkeypatch.delenv("LLM_DEFAULT_PROVIDER", raising=False)
+     monkeypatch.setattr(lms_main, "get_settings", lambda: SimpleNamespace(anthropic_api_key=None))
+ 
+     def refuse_production_session() -> None:

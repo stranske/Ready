@@ -126,3 +126,10 @@
 - Follow-ups filed: 0 (gh auth invalid)
 - OUT: [LOCAL_HOME]/.codex/automations/research-program/artifacts/verification/D4-verify-merged-2026-09-22T03.md
 - Checkpoint: [LOCAL_HOME]/.codex/automations/research-program/artifacts/verification/D4-verify-merged-2026-09-22T03.CHECKPOINT.md
+
+## Unit D4-verify-merged-2026-09-23T03 Completed
+- Total PRs verified: 20
+- Verdicts: 11 VERIFIED, 7 PARTIAL, 0 NOT IMPLEMENTED, 2 EXCLUDED
+- Follow-ups filed: 7 (Counter_Risk#1110, #1111; Deliverable-Render#44, #45; learning-management-system#717; Manager-Database#1721, #1722)
+- OUT: [LOCAL_HOME]/.codex/automations/research-program/artifacts/verification/D4-verify-merged-2026-09-23T03.md
+- Checkpoint: [LOCAL_HOME]/.codex/automations/research-program/artifacts/verification/D4-verify-merged-2026-09-23T03.CHECKPOINT.md

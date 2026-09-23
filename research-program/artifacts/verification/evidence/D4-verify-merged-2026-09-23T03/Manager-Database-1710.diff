@@ -1,0 +1,208 @@
+diff --git a/alerts/engine.py b/alerts/engine.py
+index 228fc410..f30a937a 100644
+--- a/alerts/engine.py
++++ b/alerts/engine.py
+@@ -69,6 +69,16 @@ def _evaluate_condition(self, condition: dict[str, Any], event: AlertEvent) -> b
+ 
+         payload = event.payload
+         for key, expected in condition.items():
++            if event.event_type == "new_filing" and key == "filing_type":
++                # Rules saved by the old UI used filing_type; ETL emits type.
++                if payload.get("type") != expected:
++                    return False
++                continue
++            if event.event_type == "new_filing" and key == "source" and expected == "sec":
++                # Preserve existing SEC rules after the UI moves to the EDGAR source name.
++                if payload.get("source") != "edgar":
++                    return False
++                continue
+             if key == "value_usd_gt":
+                 value = _as_float(payload.get("value_usd"))
+                 threshold = _as_float(expected)
+diff --git a/tests/test_alert_integration.py b/tests/test_alert_integration.py
+index ff437c2a..81de68e6 100644
+--- a/tests/test_alert_integration.py
++++ b/tests/test_alert_integration.py
+@@ -1,5 +1,6 @@
+ from __future__ import annotations
+ 
++import json
+ import sqlite3
+ from datetime import UTC, datetime, timedelta
+ from pathlib import Path
+@@ -7,6 +8,7 @@
+ import pytest
+ 
+ from alerts.db import ensure_alert_tables, fetch_rule_by_id, insert_pending_alert, rule_from_row
++from alerts.engine import AlertEngine
+ from alerts.integration import (
+     build_new_filing_event,
+     evaluate_and_record_alerts,
+@@ -69,6 +71,42 @@ def test_build_new_filing_event_requires_type():
+         build_new_filing_event(filing_id=1, manager_id=1)
+ 
+ 
++def test_saved_legacy_new_filing_rule_matches_edgar_event(tmp_path):
++    conn = _setup_db(tmp_path / "legacy-alerts.db")
++    try:
++        rule_id = _insert_rule(conn)
++        conn.execute(
++            "UPDATE alert_rules SET condition_json = ? WHERE rule_id = ?",
++            (json.dumps({"filing_type": "13F-HR", "source": "sec"}), rule_id),
++        )
++        event = build_new_filing_event(
++            filing_id=42,
++            manager_id=1,
++            filing_type="13F-HR",
++            payload={"accession": "0000000000-24-000001", "source": "edgar"},
++        )
++
++        assert len(AlertEngine(conn).evaluate(event)) == 1
++        assert (
++            AlertEngine(conn).evaluate(
++                build_new_filing_event(
++                    filing_id=43, manager_id=1, filing_type="13D", payload={"source": "edgar"}
++                )
++            )
++            == []
++        )
++        assert (
++            AlertEngine(conn).evaluate(
++                build_new_filing_event(
++                    filing_id=44, manager_id=1, filing_type="13F-HR", payload={"source": "manual"}
++                )
++            )
++            == []
++        )
++    finally:
++        conn.close()
++
++
+ def test_evaluate_and_record_alerts_persists_alert_history(tmp_path):
+     conn = _setup_db(tmp_path / "alerts.db")
+     try:
+diff --git a/tests/test_ui_alerts.py b/tests/test_ui_alerts.py
+index 59f97667..a7e84cdb 100644
+--- a/tests/test_ui_alerts.py
++++ b/tests/test_ui_alerts.py
+@@ -1,5 +1,6 @@
+ from __future__ import annotations
+ 
++import json
+ import sqlite3
+ from datetime import date
+ from typing import Any
+@@ -9,6 +10,7 @@
+ import streamlit as st
+ 
+ from alerts.engine import AlertEngine
++from alerts.integration import build_new_filing_event
+ from alerts.models import AlertEvent
+ from ui import alerts as alerts_ui
+ 
+@@ -642,7 +644,7 @@ def test_condition_inputs_new_filing_returns_the_chosen_type_and_source(monkeypa
+     monkeypatch.setattr(alerts_ui, "st", fake_st)
+ 
+     assert alerts_ui._condition_inputs("new_filing") == {
+-        "filing_type": "13D",
++        "type": "13D",
+         "source": "manual",
+     }
+ 
+@@ -659,7 +661,66 @@ def test_condition_inputs_new_filing_unknown_defaults_fall_back_to_first_option(
+     filing_options, filing_index = calls["filing_type"]
+     assert filing_options[filing_index] == "13F-HR"
+     source_options, source_index = calls["source"]
+-    assert source_options[source_index] == "sec"
++    assert source_options[source_index] == "edgar"
++
++
++def test_condition_inputs_new_filing_reads_saved_legacy_defaults(monkeypatch):
++    fake_st = _ConditionStreamlit()
++    monkeypatch.setattr(alerts_ui, "st", fake_st)
++
++    alerts_ui._condition_inputs("new_filing", defaults={"filing_type": "13D", "source": "sec"})
++
++    calls = {label: (options, index) for label, options, index in fake_st.selectbox_calls}
++    assert calls["filing_type"][0][calls["filing_type"][1]] == "13D"
++    assert calls["source"][0][calls["source"][1]] == "edgar"
++
++
++def test_condition_inputs_new_filing_reads_current_defaults(monkeypatch):
++    fake_st = _ConditionStreamlit()
++    monkeypatch.setattr(alerts_ui, "st", fake_st)
++
++    condition = alerts_ui._condition_inputs(
++        "new_filing", defaults={"type": "13D", "source": "manual"}
++    )
++
++    assert condition == {"type": "13D", "source": "manual"}
++    calls = {label: (options, index) for label, options, index in fake_st.selectbox_calls}
++    assert calls["filing_type"][0][calls["filing_type"][1]] == "13D"
++    assert calls["source"][0][calls["source"][1]] == "manual"
++
++
++def test_new_filing_ui_condition_matches_edgar_event(monkeypatch):
++    fake_st = _ConditionStreamlit()
++    monkeypatch.setattr(alerts_ui, "st", fake_st)
++    condition = alerts_ui._condition_inputs("new_filing")
++    event = build_new_filing_event(
++        filing_id=42,
++        manager_id=1,
++        filing_type="13F-HR",
++        payload={"accession": "0000000000-24-000001", "source": "edgar"},
++    )
++
++    assert condition == {"type": "13F-HR", "source": "edgar"}
++    conn = sqlite3.connect(":memory:")
++    try:
++        engine = AlertEngine(conn)
++        conn.execute(
++            """INSERT INTO alert_rules
++               (name, event_type, condition_json, channels, enabled, manager_id)
++               VALUES (?, ?, ?, ?, ?, ?)""",
++            ("UI new filing", "new_filing", json.dumps(condition), '["streamlit"]', 1, 1),
++        )
++        assert len(engine.evaluate(event)) == 1
++        assert (
++            engine.evaluate(
++                build_new_filing_event(
++                    filing_id=43, manager_id=1, filing_type="13D", payload={"source": "edgar"}
++                )
++            )
++            == []
++        )
++    finally:
++        conn.close()
+ 
+ 
+ @pytest.mark.parametrize(
+diff --git a/ui/alerts.py b/ui/alerts.py
+index 159d933c..07a94ac7 100644
+--- a/ui/alerts.py
++++ b/ui/alerts.py
+@@ -183,18 +183,20 @@ def _condition_inputs(event_type: str, defaults: dict[str, Any] | None = None) -
+         return {"delta_type": delta_type, "value_usd_gt": value_usd_gt}
+     if event_type == "new_filing":
+         filing_options = ["13F-HR", "13D", "13G"]
+-        default_filing = str(defaults.get("filing_type") or "13F-HR")
++        default_filing = str(defaults.get("type") or defaults.get("filing_type") or "13F-HR")
+         filing_index = (
+             filing_options.index(default_filing) if default_filing in filing_options else 0
+         )
+         filing_type = st.selectbox("filing_type", filing_options, index=filing_index)
+-        source_options = ["sec", "manual"]
+-        default_source = str(defaults.get("source") or "sec")
++        source_options = ["edgar", "manual"]
++        default_source = str(defaults.get("source") or "edgar")
++        if default_source == "sec":
++            default_source = "edgar"
+         source_index = (
+             source_options.index(default_source) if default_source in source_options else 0
+         )
+         source = st.selectbox("source", source_options, index=source_index)
+-        return {"filing_type": filing_type, "source": source}
++        return {"type": filing_type, "source": source}
+     # Every other ALERT_EVENT_TYPES member (news_spike, crowded_trade_change,
+     # contrarian_signal, missing_filing, etl_failure) falls through to here. This used to
+     # render a "field"/"changed_to" filter and return it unconditionally -- but no event

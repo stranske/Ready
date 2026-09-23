@@ -1584,3 +1584,33 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-22T21:20:56Z — D-audit-learning-management-system--2026-09-22T20-42-45Z — route — router picked cursor from ['codex', 'cursor']
 ## 2026-09-22T21:20:56Z — D-audit-learning-management-system--2026-09-22T20-42-45Z — claimed by driver (agent cursor)
 ## 2026-09-22T21:29:00Z — D-audit-learning-management-system--2026-09-22T20-42-45Z — done — cursor produced 515 words at artifacts/audits/learning-management-system-2026-09-22.md in 459s
+## 2026-09-23T00:35:17Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-23T02:29:43+00:00; local work continues
+## 2026-09-23T00:50:20Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-23T02:29:43+00:00; local work continues
+## 2026-09-23T01:05:23Z — mirror — FAILED — RuntimeError; pending commits retained for next tick
+## 2026-09-23T01:10:33Z — mirror — FAILED — RuntimeError; pending commits retained for next tick
+## 2026-09-23T01:20:25Z — mirror — FAILED — RuntimeError; pending commits retained for next tick
+## 2026-09-23T01:35:28Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+## 2026-09-23T01:35:29Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-23T02:29:43+00:00; local work continues
+## 2026-09-23T01:50:31Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-23T02:29:43+00:00; local work continues
+## 2026-09-23T02:05:34Z — mirror — FAILED — RuntimeError; pending commits retained for next tick
+## 2026-09-23T02:12:33Z — mirror — FAILED — RuntimeError; pending commits retained for next tick
+## 2026-09-23T02:20:37Z — mirror — FAILED — RuntimeError; pending commits retained for next tick
+## 2026-09-23T02:35:40Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-23T04:30:18+00:00; local work continues
+## 2026-09-23T02:50:43Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-23T04:30:18+00:00; local work continues
+## 2026-09-23T03:05:46Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-23T04:30:18+00:00; local work continues
+## 2026-09-23T03:12:05Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-23T04:30:18+00:00; local work continues
+## 2026-09-23T03:20:47Z — verify — enqueued D4-verify-merged-2026-09-23T03
+## 2026-09-23T03:20:48Z — D4-verify-merged-2026-09-23T03 — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-23T03:20:48Z — D4-verify-merged-2026-09-23T03 — claimed by driver (agent cursor)
+## 2026-09-23T03:20:48Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-23T04:30:18+00:00; local work continues
+## 2026-09-23T03:27:40Z — D4-verify-merged-2026-09-23T03 — done — cursor produced 814 words at artifacts/verification/D4-verify-merged-2026-09-23T03.md in 408s
+## 2026-09-23T03:27:40Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-23T04:30:18+00:00; local work continues
+## 2026-09-23T03:42:42Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+## 2026-09-23T03:42:43Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-23T04:30:18+00:00; local work continues
+## 2026-09-23T03:58:13Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-23T04:30:18+00:00; local work continues
+## 2026-09-23T04:12:05Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-23T04:30:18+00:00; local work continues
+## 2026-09-23T04:13:15Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-23T04:30:18+00:00; local work continues
+## 2026-09-23T04:28:17Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-23T04:30:18+00:00; local work continues
+## 2026-09-23T04:43:19Z — unblock — enqueued D3-unblock-sweep-2026-09-23T04
+## 2026-09-23T04:43:19Z — D3-unblock-sweep-2026-09-23T04 — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-23T04:43:19Z — D3-unblock-sweep-2026-09-23T04 — claimed by driver (agent cursor)

@@ -1,0 +1,1413 @@
+diff --git a/README.md b/README.md
+index 739f0b144..dcd00b511 100644
+--- a/README.md
++++ b/README.md
+@@ -272,6 +272,7 @@ Use these env vars only when you are intentionally exercising an integration sea
+ - `TRIP_PLANNER_DATA_ZONE`: explicit data-zone switch for integration seams. Use `synthetic` for local/demo data (the default) or `proprietary` for real traveler/company data inside the perimeter.
+ - `TRIP_PLANNER_OPENAI_AUTHORIZED_ENDPOINT`: marker for an approved no-train OpenAI endpoint. In `TRIP_PLANNER_DATA_ZONE=proprietary`, the planner refuses the OpenAI path and stays in deterministic fallback unless this marker is set. The outbound planner prompt redaction hook still runs before model invocation when the OpenAI path is enabled.
+ - `TPP_BASE_URL`, `TPP_ACCESS_TOKEN`, `TPP_OIDC_PROVIDER`: enable the live `Travel-Plan-Permission` transport client. If they are unset, the repo should continue to present stored-policy and passive/local TPP seams rather than implying a real remote policy round-trip. In `TRIP_PLANNER_DATA_ZONE=proprietary`, `TPP_BASE_URL` must point only at an in-perimeter service.
++- `TPP_ORGANIZATION_ID`: deployment-owned organization for workspace policy sync. Configure it alongside the live TPP transport; travellers cannot override it through the sync API. Without it, policy sync returns 503 naming this key.
+ - `TPP_REPO_PATH`: optional sibling checkout path used by `make full-product-check` when it needs to start a local Travel-Plan-Permission service instead of using `TPP_BASE_URL`.
+ 
+ TPP transport policy env overrides (used only when live TPP transport is enabled):
+diff --git a/frontend/src/api/workspace.ts b/frontend/src/api/workspace.ts
+index ea6e82809..bf3ee70bf 100644
+--- a/frontend/src/api/workspace.ts
++++ b/frontend/src/api/workspace.ts
+@@ -4,6 +4,8 @@ import {
+   buildProposalSubmissionPayload,
+   type ProposalEvaluationPayload,
+   type ProposalSubmissionPayload,
++  readPolicyContext,
++  resolveSubmissionScenarioId,
+ } from "../lib/proposalSubmission";
+ import type { PlannerPanelState } from "../../../bundle/planner/orchestration-contracts";
+ 
+@@ -880,6 +882,23 @@ export async function submitWorkspaceProposal(
+   return response?.proposal_state ?? null;
+ }
+ 
++/** Server-owned submission: proposal and TPP envelope are derived on the backend. */
++export async function submitWorkspaceProposalViaServer(
++  tripId: string,
++  scenarioId?: string | null
++): Promise<WorkspaceData["proposal_state"]> {
++  const response = await fetchJson<WorkspaceProposalApiResponse>({
++    path: `/api/workspace/${tripId}/proposal/submit`,
++    method: "POST",
++    credentials: "include",
++    headers: {
++      "Content-Type": "application/json",
++    },
++    body: JSON.stringify({ scenario_id: scenarioId ?? null }),
++  });
++  return response?.proposal_state ?? null;
++}
++
+ export async function submitWorkspaceProposalEvaluation(
+   tripId: string,
+   payload: ProposalEvaluationPayload
+@@ -925,8 +944,8 @@ export async function submitTripForApproval(
+   scenarioId?: string | null
+ ): Promise<WorkspaceData["proposal_state"]> {
+   const tripId = workspace.trip_record.trip.trip_id;
+-  const submission = buildProposalSubmissionPayload(workspace, scenarioId);
+-  let proposalState = await submitWorkspaceProposal(tripId, submission);
++  const resolvedScenarioId = resolveSubmissionScenarioId(workspace, scenarioId);
++  let proposalState = await submitWorkspaceProposalViaServer(tripId, resolvedScenarioId);
+   if (proposalState?.evaluation.evaluation_result) {
+     return proposalState;
+   }
+@@ -954,17 +973,21 @@ export type PrepareApprovalPacketHandlers = {
+   preloadPlannerSession?: (tripId: string) => Promise<unknown>;
+ };
+ 
+-/** Policy-tab entry point before an approval packet exists. */
+-export function prepareApprovalPacketFromPolicyTab(
+-  tripId: string,
+-  handlers: PrepareApprovalPacketHandlers
+-): void {
+-  handlers.focusPlanTab();
+-  handlers.preloadPlannerSession?.(tripId).catch(() => {
+-    // Preloading the planner session is best-effort; the Plan tab reloads it.
++/** Fetch this trip's travel policy from TPP and store it on the workspace. */
++export async function syncWorkspacePolicy(
++  tripId: string
++): Promise<WorkspaceData["policy_state"]> {
++  const response = await fetchJson<{ policy_state: WorkspaceData["policy_state"] }>({
++    path: `/api/workspace/${tripId}/policy/sync`,
++    method: "POST",
++    credentials: "include",
++    headers: { "Content-Type": "application/json" },
++    body: JSON.stringify({}),
+   });
++  return response.policy_state;
+ }
+ 
++
+ /** Retry hook used by the service-unavailable policy state. */
+ export async function retryPolicyServiceCheck(
+   tripId: string
+diff --git a/frontend/src/lib/proposalSubmission.ts b/frontend/src/lib/proposalSubmission.ts
+index b7219ef1e..b2c4fe1e7 100644
+--- a/frontend/src/lib/proposalSubmission.ts
++++ b/frontend/src/lib/proposalSubmission.ts
+@@ -62,7 +62,7 @@ function selectedScenario(
+   return comparison.scenarios.find((scenario) => scenario.scenario_id === resolvedId) ?? null;
+ }
+ 
+-function readPolicyContext(workspace: WorkspaceData): PolicyContext | null {
++export function readPolicyContext(workspace: WorkspaceData): PolicyContext | null {
+   return (
+     policyContextFromPayload(workspace.policy_state) ??
+     policyContextFromPayload(workspace.view_model?.debug_state?.sections?.policy_state?.payload)
+diff --git a/frontend/src/routes/WorkspacePage.test.tsx b/frontend/src/routes/WorkspacePage.test.tsx
+index 1640eda67..25bce81ae 100644
+--- a/frontend/src/routes/WorkspacePage.test.tsx
++++ b/frontend/src/routes/WorkspacePage.test.tsx
+@@ -17,6 +17,7 @@ import {
+   submitPlannerOptionFeedback,
+   submitRouteOptionAction,
+   submitTripForApproval,
++  syncWorkspacePolicy,
+   updateNotebookItem,
+   updateWorkspacePlanningMode,
+   type PlanningLedgerEntry,
+@@ -41,6 +42,7 @@ vi.mock("../api/workspace", async () => {
+     recordWorkspaceSpendEvent: vi.fn(),
+     refreshWorkspaceProposalStatus: vi.fn(),
+     submitTripForApproval: vi.fn(),
++    syncWorkspacePolicy: vi.fn(),
+     createNotebookItem: vi.fn(),
+     updateNotebookItem: vi.fn(),
+     deleteNotebookItem: vi.fn(),
+@@ -67,6 +69,7 @@ const mockedSaveWorkspaceBudget = vi.mocked(saveWorkspaceBudget);
+ const mockedRecordWorkspaceSpendEvent = vi.mocked(recordWorkspaceSpendEvent);
+ const mockedRefreshWorkspaceProposalStatus = vi.mocked(refreshWorkspaceProposalStatus);
+ const mockedSubmitTripForApproval = vi.mocked(submitTripForApproval);
++const mockedSyncWorkspacePolicy = vi.mocked(syncWorkspacePolicy);
+ const mockedCreateNotebookItem = vi.mocked(createNotebookItem);
+ const mockedUpdateNotebookItem = vi.mocked(updateNotebookItem);
+ const mockedDeleteNotebookItem = vi.mocked(deleteNotebookItem);
+@@ -912,6 +915,9 @@ describe("WorkspacePage", () => {
+     mockedFetchPlannerSession.mockResolvedValue(plannerSessionPayload);
+     mockedSubmitPlannerTurn.mockResolvedValue(plannerSessionPayload);
+     mockedSubmitRouteOptionAction.mockResolvedValue(workspacePayload);
++    // A workspace with no policy now syncs one before submitting; these fixtures have
++    // none, so the sync is stubbed and returns the same workspace.
++    mockedSyncWorkspacePolicy.mockResolvedValue(null);
+   });
+ 
+   afterEach(() => {
+@@ -927,6 +933,7 @@ describe("WorkspacePage", () => {
+     mockedAnswerPlannerDecision.mockReset();
+     mockedFetchPlannerSession.mockReset();
+     mockedSubmitPlannerOptionFeedback.mockReset();
++    mockedSyncWorkspacePolicy.mockReset();
+     mockedSubmitRouteOptionAction.mockReset();
+     mockedSubmitPlannerTurn.mockReset();
+     mockedUpdateWorkspacePlanningMode.mockReset();
+@@ -2974,6 +2981,53 @@ describe("WorkspacePage", () => {
+     expect(screen.getByText(/Submitted for approval:/)).toBeInTheDocument();
+   });
+ 
++  it("syncs the travel policy before submitting when the workspace has none", async () => {
++    // Issue #1731: policy_state was absent for every trip, so buildProposalSubmissionPayload
++    // threw "Policy context is not available for this workspace" and the button appeared
++    // to do nothing. Nothing in the product ever fetched a policy.
++    const syncedPolicy = {
++      organization_id: "org-northwind",
++      constraint_set: { policy_id: "policy-northwind" },
++    };
++    let resolvePolicy!: (policy: typeof syncedPolicy) => void;
++    mockedSyncWorkspacePolicy.mockReturnValue(
++      new Promise((resolve) => {
++        resolvePolicy = resolve;
++      })
++    );
++    mockedSubmitTripForApproval.mockResolvedValue(workspacePayload.proposal_state);
++    mockedUseLoaderData.mockReturnValue({
++      workspace: Promise.resolve({
++        ...workspacePayload,
++        trip_record: { ...workspacePayload.trip_record, trip: tripComparisonPayload[1] },
++        proposal_state: null,
++        policy_state: null,
++      }),
++      trips: Promise.resolve(tripComparisonPayload),
++    });
++
++    renderWorkspacePage();
++    await selectWorkspaceTab("Policy");
++    const user = userEvent.setup();
++    await user.click(await screen.findByRole("button", { name: "Submit for approval" }));
++
++    await waitFor(() => {
++      expect(mockedSyncWorkspacePolicy).toHaveBeenCalledWith("trip-business-tokyo-summit");
++    });
++    expect(screen.getByText("Fetching your travel policy…")).toBeInTheDocument();
++    expect(mockedSubmitTripForApproval).not.toHaveBeenCalled();
++    resolvePolicy(syncedPolicy);
++    await waitFor(() => {
++      expect(mockedSubmitTripForApproval).toHaveBeenCalledWith(
++        expect.objectContaining({ policy_state: syncedPolicy }),
++        expect.anything()
++      );
++    });
++    expect(mockedSyncWorkspacePolicy.mock.invocationCallOrder[0]).toBeLessThan(
++      mockedSubmitTripForApproval.mock.invocationCallOrder[0]
++    );
++  });
++
+   it("surfaces an error when approval submission fails", async () => {
+     mockedSubmitTripForApproval.mockRejectedValue(new Error("Policy gateway unavailable."));
+     mockedUseLoaderData.mockReturnValue({
+diff --git a/frontend/src/routes/WorkspacePage.tsx b/frontend/src/routes/WorkspacePage.tsx
+index 0f88326da..e9e3d3adc 100644
+--- a/frontend/src/routes/WorkspacePage.tsx
++++ b/frontend/src/routes/WorkspacePage.tsx
+@@ -1,6 +1,8 @@
+ import { startTransition, useEffect, useMemo, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
+ import { useLoaderData } from "react-router-dom";
+ 
++import { readPolicyContext } from "../lib/proposalSubmission";
++
+ import type { TripRecord } from "../api/trips";
+ import {
+   answerPlannerDecision,
+@@ -9,6 +11,7 @@ import {
+   fetchPlannerSession,
+   recordWorkspaceSpendEvent,
+   refreshWorkspaceProposalStatus,
++  syncWorkspacePolicy,
+   retryPolicyServiceCheck,
+   saveWorkspaceBudget,
+   setNotebookFocus,
+@@ -1728,7 +1731,22 @@ function WorkspacePageContent({
+     setProposalStatusMessage(null);
+     const refreshVersion = ++proposalRefreshVersion.current;
+     try {
+-      const nextProposalState = await submitTripForApproval(currentWorkspace, selectedScenarioId);
++      let submissionWorkspace = currentWorkspace;
++      if (readPolicyContext(submissionWorkspace) == null) {
++        // The step nothing ever performed. Without it buildProposalSubmissionPayload
++        // throws "Policy context is not available for this workspace." and the button
++        // appears to do nothing at all.
++        setProposalBusyLabel("Fetching your travel policy…");
++        const syncedPolicy = await syncWorkspacePolicy(
++          submissionWorkspace.trip_record.trip.trip_id
++        );
++        // Merge the synced policy in rather than refetching, so nothing else the
++        // traveller has on screen is replaced underneath them.
++        submissionWorkspace = { ...submissionWorkspace, policy_state: syncedPolicy };
++        setCurrentWorkspace(submissionWorkspace);
++        setProposalBusyLabel("Submitting for approval…");
++      }
++      const nextProposalState = await submitTripForApproval(submissionWorkspace, selectedScenarioId);
+       if (refreshVersion !== proposalRefreshVersion.current) {
+         return;
+       }
+diff --git a/render.yaml b/render.yaml
+index 51dfbd148..a82b15246 100644
+--- a/render.yaml
++++ b/render.yaml
+@@ -19,6 +19,8 @@ services:
+         sync: false
+       - key: TPP_BASE_URL
+         sync: false
++      - key: TPP_ORGANIZATION_ID
++        sync: false
+       - key: TPP_ACCESS_TOKEN
+         sync: false
+       - key: TPP_OIDC_PROVIDER
+diff --git a/tests/app/test_policy_sync_route.py b/tests/app/test_policy_sync_route.py
+new file mode 100644
+index 000000000..1079b5219
+--- /dev/null
++++ b/tests/app/test_policy_sync_route.py
+@@ -0,0 +1,285 @@
++"""The workspace must be able to obtain a policy, or approval can never begin.
++
++Issue #1731 was closed as completed while `policy_state` stayed absent for every trip,
++so `buildProposalSubmissionPayload` threw "Policy context is not available for this
++workspace" and the Policy tab's button appeared to do nothing. Nothing in the product
++called `PUT /workspace/{id}/policy`, and no caller could reasonably hand-assemble a
++TPPRequestEnvelope.
++"""
++
++from __future__ import annotations
++
++import json
++from collections.abc import Iterator
++from pathlib import Path
++
++import pytest
++from fastapi.testclient import TestClient
++
++from trip_planner.app.main import create_app
++from trip_planner.app.services.policy import resolve_configured_organization_id
++from trip_planner.app.services.proposal import (
++    _home_airport_from_workspace,
++    _selected_scenario_row,
++    _submission_cost_details,
++    _validate_persisted_scenario_id,
++)
++from trip_planner.integrations.tpp import TPPResponseEnvelope
++from trip_planner.persistence.db import reset_database_state
++
++
++@pytest.fixture
++def client(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Iterator[TestClient]:
++    monkeypatch.setenv("TRIP_PLANNER_DATABASE_URL", f"sqlite:///{tmp_path / 'sync.db'}")
++    reset_database_state()
++    app = create_app()
++    with TestClient(app) as test_client:
++        test_client.post(
++            "/api/auth/signup",
++            json={
++                "email": "sync@example.com",
++                "password": "password123",
++                "display_name": "Sync Owner",
++            },
++        )
++        yield test_client
++    reset_database_state()
++
++
++def _business_trip(client: TestClient) -> str:
++    created = client.post(
++        "/api/trips",
++        json={
++            "title": "Client visit",
++            "summary": "Quarterly review",
++            "mode": "business",
++            "trip_frame": {
++                "start_date": "2026-10-12",
++                "end_date": "2026-10-15",
++                "duration_days": 4,
++                "primary_regions": ["Chicago"],
++                "traveler_party": {"kind": "solo", "traveler_count": 1, "notes": ""},
++            },
++        },
++    )
++    assert created.status_code == 201, created.text
++    return created.json()["trip"]["trip_id"]
++
++
++def test_sync_endpoint_is_reachable_and_not_a_404(client: TestClient) -> None:
++    """The route must exist. Before this change there was no way to obtain a policy."""
++    trip_id = _business_trip(client)
++    response = client.post(f"/api/workspace/{trip_id}/policy/sync", json={})
++    # Whatever the TPP outcome, the endpoint must be routed and must not 404/405.
++    assert response.status_code not in {404, 405}
++
++
++def test_sync_persists_policy_from_successful_tpp_response(
++    client: TestClient, monkeypatch: pytest.MonkeyPatch
++) -> None:
++    import trip_planner.app.services.policy as policy_service
++
++    monkeypatch.setenv("TPP_ORGANIZATION_ID", "org-acme")
++    fixture_path = (
++        Path(__file__).resolve().parents[1]
++        / "fixtures/integrations/tpp/policy/standard_policy_sync.json"
++    )
++    fixture = json.loads(fixture_path.read_text(encoding="utf-8"))
++
++    def tpp_response(request, _response_payload, *, trip_plan_payload):
++        assert request.organization_id == "org-acme"
++        assert request.trip_id == trip_id
++        assert trip_plan_payload
++        response = fixture["response"].copy()
++        response["request_id"] = request.request_id
++        response["correlation_id"] = request.correlation_id.to_dict()
++        return TPPResponseEnvelope.from_dict(response)
++
++    monkeypatch.setattr(policy_service, "_resolve_policy_response", tpp_response)
++    trip_id = _business_trip(client)
++    response = client.post(f"/api/workspace/{trip_id}/policy/sync", json={})
++    assert response.status_code == 200, response.text
++    policy_state = response.json()["policy_state"]
++    assert policy_state["organization_id"] == "org-acme"
++    assert policy_state["constraint_set"]["policy_id"] == "policy-standard-2026-02"
++    workspace = client.get(f"/api/workspace/{trip_id}")
++    assert workspace.status_code == 200, workspace.text
++    persisted = workspace.json()["policy_state"]
++    assert persisted["organization_id"] == "org-acme"
++    assert persisted["constraint_set"]["policy_id"] == "policy-standard-2026-02"
++
++
++def test_submission_rejects_scenario_outside_trip_workspace() -> None:
++    workspace = {
++        "route_comparison": {
++            "scenarios": [{"scenario_id": "scenario:trip-one:1", "title": "Own scenario"}]
++        }
++    }
++    assert (
++        _selected_scenario_row(workspace, "scenario:trip-one:1")
++        == workspace["route_comparison"]["scenarios"][0]
++    )
++    with pytest.raises(ValueError, match="not in this trip's workspace"):
++        _selected_scenario_row(workspace, "scenario:trip-two:1")
++
++
++def test_submission_maps_current_saved_snapshot_to_materialized_row() -> None:
++    saved_row = {"scenario_id": "saved:one", "title": "Saved itinerary"}
++    workspace = {
++        "route_comparison": {
++            "lead_scenario_id": "other",
++            "scenarios": [
++                {"scenario_id": "other"},
++                saved_row,
++            ],
++        },
++        "session": {"current_saved_scenario_id": "saved:one"},
++        "saved_scenarios": [
++            {
++                "saved_scenario_id": "saved:one",
++                "current_version_id": "version:one",
++                "versions": [
++                    {
++                        "version_id": "version:one",
++                        "snapshot_refs": {
++                            "itinerary_scenario_id": "snapshot:one",
++                        },
++                    }
++                ],
++            }
++        ],
++    }
++    assert _selected_scenario_row(workspace, None) == saved_row
++    assert _selected_scenario_row(workspace, "snapshot:one") == saved_row
++    with pytest.raises(ValueError, match="not in this trip's workspace"):
++        _selected_scenario_row(workspace, "snapshot:foreign")
++
++
++def test_submission_implicit_selection_uses_comparison_when_saved_ref_is_stale() -> None:
++    lead = {"scenario_id": "scenario:lead"}
++    workspace = {
++        "route_comparison": {"lead_scenario_id": "scenario:lead", "scenarios": [lead]},
++        "saved_scenarios": [
++            {
++                "saved_scenario_id": "saved:stale",
++                "current_version_id": "version:stale",
++                "versions": [
++                    {
++                        "version_id": "version:stale",
++                        "snapshot_refs": {
++                            "itinerary_scenario_id": "snapshot:stale",
++                        },
++                    }
++                ],
++            }
++        ],
++    }
++    assert _selected_scenario_row(workspace, None) == lead
++
++
++def test_submission_uses_persisted_origin_not_destination_regions() -> None:
++    workspace = {
++        "trip_record": {"trip": {"trip_frame": {"origin": "Boston", "primary_regions": ["Japan"]}}}
++    }
++    assert _home_airport_from_workspace(workspace) == "Boston"
++
++
++def test_submission_cost_range_uses_resolved_budget_fallback() -> None:
++    workspace = {"budget_state": {"summary": {"currency": "USD", "planned_total": 780}}}
++    currency, typical, cost_range = _submission_cost_details(
++        workspace, {"metrics": {"estimated_total": {"currency": "USD"}}}
++    )
++    assert currency == "USD"
++    assert typical == 780
++    assert cost_range.typical_amount == cost_range.min_amount == cost_range.max_amount == 780
++
++
++def test_persisted_scenario_validation_allows_legacy_fixture_ids_without_workspace() -> None:
++    assert _validate_persisted_scenario_id({}, "scenario-a") == "scenario-a"
++
++
++def test_persisted_scenario_validation_rejects_foreign_ids_when_workspace_has_scenarios(
++    monkeypatch: pytest.MonkeyPatch,
++) -> None:
++    monkeypatch.delenv("TRIP_PLANNER_ALLOW_FIXTURE_TPP_RESPONSES", raising=False)
++    workspace = {
++        "route_comparison": {
++            "scenarios": [{"scenario_id": "scenario:trip-one:1", "title": "Own scenario"}]
++        }
++    }
++    assert (
++        _validate_persisted_scenario_id(workspace, "scenario:trip-one:1") == "scenario:trip-one:1"
++    )
++    with pytest.raises(ValueError, match="not in this trip's workspace"):
++        _validate_persisted_scenario_id(workspace, "scenario:trip-two:1")
++    with pytest.raises(ValueError, match="not in this trip's workspace"):
++        _validate_persisted_scenario_id(workspace, "scenario-a")
++
++
++def test_sync_without_configured_organization_says_so(
++    client: TestClient, monkeypatch: pytest.MonkeyPatch
++) -> None:
++    monkeypatch.delenv("TPP_ORGANIZATION_ID", raising=False)
++    trip_id = _business_trip(client)
++    response = client.post(f"/api/workspace/{trip_id}/policy/sync", json={})
++    assert response.status_code == 503
++    assert "TPP_ORGANIZATION_ID" in response.text
++
++
++def test_organization_comes_from_deployment_config_not_the_caller(
++    monkeypatch: pytest.MonkeyPatch,
++) -> None:
++    """A traveller must never be asked to type an organization id."""
++    monkeypatch.delenv("TPP_ORGANIZATION_ID", raising=False)
++    with pytest.raises(ValueError, match="TPP_ORGANIZATION_ID"):
++        resolve_configured_organization_id()
++    monkeypatch.setenv("TPP_ORGANIZATION_ID", "org-northwind")
++    assert resolve_configured_organization_id() == "org-northwind"
++
++
++def test_sync_rejects_caller_selected_organization(
++    client: TestClient, monkeypatch: pytest.MonkeyPatch
++) -> None:
++    monkeypatch.setenv("TPP_ORGANIZATION_ID", "org-northwind")
++    trip_id = _business_trip(client)
++    response = client.post(
++        f"/api/workspace/{trip_id}/policy/sync",
++        json={"organization_id": "org-unrelated"},
++    )
++    assert response.status_code == 422
++
++
++def test_submit_missing_trip_returns_not_found(client: TestClient) -> None:
++    response = client.post("/api/workspace/missing-trip/proposal/submit", json={})
++    assert response.status_code == 404
++
++
++def test_submit_without_a_policy_explains_the_missing_step(client: TestClient) -> None:
++    """The old failure mode was a silent no-op; it must now say what is missing."""
++    trip_id = _business_trip(client)
++    response = client.post(f"/api/workspace/{trip_id}/proposal/submit", json={})
++    assert response.status_code == 400
++    assert "policy" in response.text.lower()
++
++
++def test_submit_builds_costed_proposal_not_policy_preview(
++    client: TestClient, monkeypatch: pytest.MonkeyPatch
++) -> None:
++    """Server submit must not reuse the zero-cost policy preview envelope."""
++    monkeypatch.setenv("TPP_ORGANIZATION_ID", "org-northwind")
++    trip_id = _business_trip(client)
++    sync_response = client.post(f"/api/workspace/{trip_id}/policy/sync", json={})
++    assert sync_response.status_code not in {404, 405}
++    if sync_response.status_code != 200:
++        pytest.skip(f"TPP unavailable in this environment: {sync_response.status_code}")
++
++    submit_response = client.post(f"/api/workspace/{trip_id}/proposal/submit", json={})
++    if submit_response.status_code == 400 and "scenario" in submit_response.text.lower():
++        pytest.skip("Workspace has no runtime scenario comparison in this fixture trip.")
++    assert submit_response.status_code in {200, 502, 503}, submit_response.text
++    if submit_response.status_code == 200:
++        proposal_state = submit_response.json()["proposal_state"]
++        proposal_payload = proposal_state["proposal_payload"]
++        assert proposal_payload["proposal_id"] == f"proposal:{trip_id}"
++        assert "proposal-preview" not in proposal_payload["proposal_id"]
++        assert proposal_payload["cost_summary"]["total_estimated_cost"] >= 0
+diff --git a/tests/app/test_proposal.py b/tests/app/test_proposal.py
+index 6bd52bc23..423d0475e 100644
+--- a/tests/app/test_proposal.py
++++ b/tests/app/test_proposal.py
+@@ -234,6 +234,8 @@ def test_client_supplied_response_cannot_set_approval_ready(
+         },
+     )
+     trip_id = created.json()["trip"]["trip_id"]
++    workspace = client.get(f"/api/workspace/{trip_id}").json()
++    scenario_id = workspace["route_comparison"]["scenarios"][0]["scenario_id"]
+     fixture = _load_fixture("results", "approved_evaluation.json")
+     fixture["request"]["trip_id"] = trip_id
+     fixture["request"]["proposal_id"] = f"proposal:{trip_id}"
+@@ -246,7 +248,7 @@ def test_client_supplied_response_cannot_set_approval_ready(
+             "request": fixture["request"],
+             "response": fixture["response"],
+             "proposal_version": "proposal-v3",
+-            "scenario_id": "scenario-a",
++            "scenario_id": scenario_id,
+         },
+     )
+ 
+diff --git a/tests/contracts/test_trip.py b/tests/contracts/test_trip.py
+index b4c4e4fd6..5995fc4a2 100644
+--- a/tests/contracts/test_trip.py
++++ b/tests/contracts/test_trip.py
+@@ -39,6 +39,11 @@ def test_trip_serializes_valid_leisure_container() -> None:
+     assert payload["artifacts"]["option_set_ids"] == ["optset-1", "optset-2"]
+ 
+ 
++def test_trip_frame_round_trip_preserves_origin() -> None:
++    frame = TripFrameSummary.from_dict({"origin": "Chicago", "primary_regions": ["Japan"]})
++    assert frame.to_dict()["origin"] == "Chicago"
++
++
+ def test_trip_serializes_valid_business_container() -> None:
+     trip = Trip(
+         trip_id="trip-business-1",
+diff --git a/trip_planner/app/routes/policy.py b/trip_planner/app/routes/policy.py
+index 2636dd6de..7d9d0b119 100644
+--- a/trip_planner/app/routes/policy.py
++++ b/trip_planner/app/routes/policy.py
+@@ -4,13 +4,16 @@
+ from trip_planner.app.routes.errors import public_http_error
+ from trip_planner.app.schemas.policy import (
+     PolicySyncImportRequest,
++    PolicySyncRequest,
+     WorkspacePolicyResponse,
+ )
+ from trip_planner.app.services.auth import AuthenticatedUser, require_authenticated_user
+ from trip_planner.app.services.policy import (
++    PolicyConfigurationError,
+     WorkspacePolicyNotFoundError,
+     get_workspace_policy_payload,
+     import_workspace_policy_constraints,
++    sync_workspace_policy_from_tpp,
+ )
+ from trip_planner.integrations.tpp import TPPTransportError
+ from trip_planner.persistence.db import get_db_session
+@@ -72,3 +75,42 @@ def save_workspace_policy(
+             message="The workspace policy request was invalid.",
+         ) from error
+     return WorkspacePolicyResponse.model_validate(result)
++
++
++@router.post("/workspace/{trip_id}/policy/sync", response_model=WorkspacePolicyResponse)
++def sync_workspace_policy(
++    trip_id: str,
++    payload: PolicySyncRequest,
++    user: AuthenticatedUser = Depends(require_authenticated_user),
++    db_session: Session = Depends(get_db_session),
++) -> WorkspacePolicyResponse:
++    """Fetch this trip's travel policy from TPP and store it on the workspace.
++
++    The organization and request envelope are resolved server-side from deployment
++    configuration and the persisted trip; no verdict is accepted from the caller.
++    """
++
++    try:
++        result = sync_workspace_policy_from_tpp(
++            db_session,
++            user=user,
++            trip_id=trip_id,
++        )
++    except WorkspacePolicyNotFoundError as error:
++        raise public_http_error(
++            error, status_code=404, message="The requested trip was not found."
++        ) from error
++    except TPPTransportError as error:
++        raise public_http_error(
++            error,
++            status_code=error.status_code,
++            message="The policy service could not be reached, so no policy was applied.",
++        ) from error
++    except PolicyConfigurationError as error:
++        # Safe to surface verbatim: names a configuration key, carries no user data.
++        raise public_http_error(error, status_code=503, message=str(error)) from error
++    except ValueError as error:
++        raise public_http_error(
++            error, status_code=400, message="This trip cannot sync policy yet."
++        ) from error
++    return WorkspacePolicyResponse.model_validate(result)
+diff --git a/trip_planner/app/routes/proposal.py b/trip_planner/app/routes/proposal.py
+index ba7c896ff..b2bf528c8 100644
+--- a/trip_planner/app/routes/proposal.py
++++ b/trip_planner/app/routes/proposal.py
+@@ -5,6 +5,7 @@
+ 
+ from trip_planner.app.routes.errors import public_http_error
+ from trip_planner.app.schemas.proposal import (
++    WorkspaceProposalSubmitRequest,
+     WorkspaceProposalEvaluationRequest,
+     WorkspaceProposalFollowUpRequest,
+     WorkspaceProposalReoptimizeRequest,
+@@ -12,8 +13,11 @@
+     WorkspaceProposalSubmissionRequest,
+ )
+ from trip_planner.app.services.auth import AuthenticatedUser, require_authenticated_user
++from trip_planner.app.services.policy import WorkspacePolicyNotFoundError
+ from trip_planner.app.services.proposal import (
++    submit_workspace_proposal_for_trip,
+     WorkspaceProposalNotFoundError,
++    WorkspacePolicyMissingForSubmissionError,
+     get_workspace_proposal_payload,
+     refresh_workspace_proposal_status,
+     save_workspace_proposal_evaluation,
+@@ -237,3 +241,39 @@ def reoptimize_workspace_proposal(
+             message="The workspace proposal request was invalid.",
+         ) from error
+     return WorkspaceProposalResponse.model_validate(result)
++
++
++@router.post("/workspace/{trip_id}/proposal/submit", response_model=WorkspaceProposalResponse)
++def submit_workspace_proposal(
++    trip_id: str,
++    payload: WorkspaceProposalSubmitRequest,
++    user: AuthenticatedUser = Depends(require_authenticated_user),
++    db_session: Session = Depends(get_db_session),
++) -> WorkspaceProposalResponse:
++    """Submit the planned trip to TPP for a policy verdict."""
++
++    try:
++        result = submit_workspace_proposal_for_trip(
++            db_session, user=user, trip_id=trip_id, scenario_id=payload.scenario_id
++        )
++    except (WorkspaceProposalNotFoundError, WorkspacePolicyNotFoundError) as error:
++        raise public_http_error(
++            error, status_code=404, message="The requested trip was not found."
++        ) from error
++    except TPPTransportError as error:
++        raise public_http_error(
++            error,
++            status_code=error.status_code,
++            message="The policy service could not be reached, so nothing was submitted.",
++        ) from error
++    except WorkspacePolicyMissingForSubmissionError as error:
++        raise public_http_error(
++            error,
++            status_code=400,
++            message="Sync this trip's travel policy before submitting for approval.",
++        ) from error
++    except ValueError as error:
++        raise public_http_error(
++            error, status_code=400, message="The workspace proposal request was invalid."
++        ) from error
++    return WorkspaceProposalResponse.model_validate(result)
+diff --git a/trip_planner/app/schemas/policy.py b/trip_planner/app/schemas/policy.py
+index d3c63be78..981cf1e14 100644
+--- a/trip_planner/app/schemas/policy.py
++++ b/trip_planner/app/schemas/policy.py
+@@ -21,3 +21,9 @@ class WorkspacePolicyResponse(BaseModel):
+     proposal: dict[str, Any] | None = None
+     policy_evaluation: dict[str, Any] | None = None
+     summary: dict[str, Any] = Field(default_factory=dict)
++
++
++class PolicySyncRequest(BaseModel):
++    """Policy sync takes no traveller-controlled organization or verdict."""
++
++    model_config = {"extra": "forbid"}
+diff --git a/trip_planner/app/schemas/proposal.py b/trip_planner/app/schemas/proposal.py
+index 57b723126..c17741260 100644
+--- a/trip_planner/app/schemas/proposal.py
++++ b/trip_planner/app/schemas/proposal.py
+@@ -18,6 +18,12 @@ class WorkspaceProposalSubmissionRequest(BaseModel):
+     scenario_id: str | None = Field(default=None, max_length=96)
+ 
+ 
++class WorkspaceProposalSubmitRequest(BaseModel):
++    """All the traveller supplies: which scenario, if they have chosen one."""
++
++    scenario_id: str | None = Field(default=None, max_length=96)
++
++
+ class WorkspaceProposalEvaluationRequest(BaseModel):
+     request: dict[str, Any] = Field(
+         description="Serialized TPPRequestEnvelope payload used to ingest evaluation state."
+diff --git a/trip_planner/app/services/policy.py b/trip_planner/app/services/policy.py
+index 5a62c4c28..b1fd9f8ad 100644
+--- a/trip_planner/app/services/policy.py
++++ b/trip_planner/app/services/policy.py
+@@ -1,7 +1,9 @@
+ from __future__ import annotations
+ 
++import os
+ from datetime import UTC, datetime
+ from typing import Any
++from uuid import uuid4
+ 
+ from sqlalchemy import select
+ from sqlalchemy.orm import Session
+@@ -25,6 +27,7 @@
+     PolicyFreshness,
+     TPPPolicyRequirement,
+     TPPPolicySyncService,
++    TPPCorrelationId,
+     TPPRequestEnvelope,
+     TPPResponseEnvelope,
+     TPPTransportError,
+@@ -676,6 +679,84 @@ def get_workspace_policy_payload(
+     )
+ 
+ 
++def build_policy_sync_request(
++    record: PersistedTrip, *, user: AuthenticatedUser, organization_id: str
++) -> dict[str, Any]:
++    """Build the TPP fetch request for a trip, server-side.
++
++    The traveller cannot be expected to hand-assemble a TPPRequestEnvelope, and the
++    frontend must never be the thing that decides what policy applies. Everything here
++    is derived from the persisted trip.
++    """
++
++    return TPPRequestEnvelope(
++        operation="fetch_policy_constraints",
++        request_id=f"policy-sync:{uuid4().hex}",
++        correlation_id=TPPCorrelationId.from_value(f"policy-sync:{record.trip_id}"),
++        payload={"trip_plan": _tpp_trip_plan_payload(record, user=user)},
++        transport_pattern="sync",
++        organization_id=organization_id,
++        trip_id=record.trip_id,
++        proposal_id=None,
++        submitted_at=datetime.now(UTC).isoformat(),
++        metadata={"source": "workspace_policy_sync"},
++    ).to_dict()
++
++
++class PolicyConfigurationError(ValueError):
++    """The deployment is missing configuration the traveller cannot supply.
++
++    Distinguished from a normal ValueError because its message names a config key and
++    contains no user data, so it is safe — and necessary — to show the operator rather
++    than replacing it with a correlation id.
++    """
++
++
++def resolve_configured_organization_id() -> str:
++    """The organization whose travel policy applies, from deployment config.
++
++    Deployment-level, not per-trip: a traveller should never be asked to type an
++    organization id, and the UI must not be the thing that decides what policy applies.
++    """
++
++    organization_id = os.getenv("TPP_ORGANIZATION_ID", "").strip()
++    if not organization_id:
++        msg = (
++            "No organization is configured for policy sync. Set TPP_ORGANIZATION_ID "
++            "so the planner knows whose travel policy applies."
++        )
++        raise PolicyConfigurationError(msg)
++    return organization_id
++
++
++def sync_workspace_policy_from_tpp(
++    db_session: Session,
++    *,
++    user: AuthenticatedUser,
++    trip_id: str,
++) -> dict[str, Any]:
++    """Fetch this trip's policy from TPP and persist it as the workspace policy state.
++
++    This is the step that was missing: `policy_state` stayed absent for every trip, so
++    the approval path could never begin. No verdict is accepted from the caller.
++    """
++
++    trip_record = _get_owned_trip_record(db_session, user=user, trip_id=trip_id)
++    resolved_organization = resolve_configured_organization_id()
++    return import_workspace_policy_constraints(
++        db_session,
++        user=user,
++        trip_id=trip_id,
++        request_payload=build_policy_sync_request(
++            trip_record, user=user, organization_id=resolved_organization
++        ),
++        response_payload=None,
++        source_kind="tpp_sync",
++        tags=["workspace-sync"],
++        notes=["Synced from the workspace Policy tab."],
++    )
++
++
+ def import_workspace_policy_constraints(
+     db_session: Session,
+     *,
+diff --git a/trip_planner/app/services/proposal.py b/trip_planner/app/services/proposal.py
+index 0438623f8..c20c4a400 100644
+--- a/trip_planner/app/services/proposal.py
++++ b/trip_planner/app/services/proposal.py
+@@ -1,6 +1,8 @@
+ from __future__ import annotations
+ 
+ import logging
++import math
++import os
+ from datetime import UTC, datetime
+ from typing import Any
+ from uuid import uuid4
+@@ -8,12 +10,19 @@
+ from sqlalchemy import select
+ from sqlalchemy.orm import Session
+ 
++from trip_planner._option_contracts import MoneyRange
+ from trip_planner.app.services.auth import AuthenticatedUser
+ from trip_planner.business import (
+     ExceptionRequest,
+     PolicyEvaluationResult,
+     TripPlanProposal,
+ )
++from trip_planner.business.policy_contracts import (
++    ComparableOption,
++    ProposalCostSummary,
++    SelectedOptionSummary,
++)
++from trip_planner.business.profile import TravelerContext
+ from trip_planner.integrations.tpp import (
+     BaseTPPIntegrationClient,
+     EvaluationResultIngestionError,
+@@ -44,6 +53,10 @@ class WorkspaceProposalNotFoundError(ValueError):
+     """Raised when workspace proposal state or trip ownership is missing."""
+ 
+ 
++class WorkspacePolicyMissingForSubmissionError(ValueError):
++    """The trip must have a synced policy before proposal submission."""
++
++
+ def _owner_profile_id(record: PersistedTrip) -> str:
+     if record.mode == "business" and record.business_profile_id:
+         return record.business_profile_id
+@@ -824,6 +837,394 @@ def _persist_submission_refresh_failure(
+     record.submission_record = submission_record
+ 
+ 
++def _route_comparison(workspace: dict[str, Any]) -> dict[str, Any]:
++    comparison = workspace.get("route_comparison") or workspace.get("runtime_scenario_comparison")
++    return comparison if isinstance(comparison, dict) else {}
++
++
++def _workspace_scenario_ids(workspace: dict[str, Any]) -> set[str]:
++    ids: set[str] = set()
++    comparison = _route_comparison(workspace)
++    lead_scenario_id = comparison.get("lead_scenario_id")
++    if lead_scenario_id:
++        ids.add(str(lead_scenario_id))
++    scenarios = comparison.get("scenarios")
++    if isinstance(scenarios, list):
++        for row in scenarios:
++            if isinstance(row, dict) and row.get("scenario_id"):
++                ids.add(str(row["scenario_id"]))
++
++    saved_scenarios = workspace.get("saved_scenarios")
++    if isinstance(saved_scenarios, list):
++        for saved in saved_scenarios:
++            if not isinstance(saved, dict):
++                continue
++            versions = saved.get("versions")
++            if not isinstance(versions, list):
++                continue
++            for version in versions:
++                if not isinstance(version, dict):
++                    continue
++                snapshot_refs = version.get("snapshot_refs")
++                if isinstance(snapshot_refs, dict) and snapshot_refs.get("itinerary_scenario_id"):
++                    ids.add(str(snapshot_refs["itinerary_scenario_id"]))
++    return ids
++
++
++def _fixture_proposal_flow_enabled() -> bool:
++    environment = os.getenv("TRIP_PLANNER_ENV", "local").strip().lower()
++    return environment in {"local", "development", "dev", "test", "testing"} and (
++        os.getenv("TRIP_PLANNER_ALLOW_FIXTURE_TPP_RESPONSES", "").strip().lower()
++        in {"1", "true", "yes"}
++    )
++
++
++def _looks_like_materialized_scenario_id(scenario_id: str) -> bool:
++    return scenario_id.startswith("scenario:") and (
++        ":trip-" in scenario_id
++        or ":route-option:" in scenario_id
++        or scenario_id.endswith(":workspace-bootstrap")
++    )
++
++
++def _validate_persisted_scenario_id(
++    workspace: dict[str, Any],
++    scenario_id: str | None,
++    *,
++    existing_scenario_id: str | None = None,
++) -> str | None:
++    """Reject client scenario identifiers that are not owned by this trip workspace."""
++
++    if scenario_id is None:
++        return None
++    if existing_scenario_id is not None and scenario_id == existing_scenario_id:
++        return scenario_id
++
++    valid_ids = _workspace_scenario_ids(workspace)
++    if scenario_id in valid_ids:
++        return scenario_id
++    if not valid_ids:
++        return scenario_id
++    if _looks_like_materialized_scenario_id(scenario_id):
++        raise ValueError("Selected scenario is not in this trip's workspace.")
++    if _fixture_proposal_flow_enabled():
++        return scenario_id
++    raise ValueError("Selected scenario is not in this trip's workspace.")
++
++
++def _resolve_submission_scenario_id(
++    workspace: dict[str, Any],
++    scenario_id: str | None,
++) -> str | None:
++    if scenario_id:
++        return scenario_id
++
++    saved_scenarios = workspace.get("saved_scenarios")
++    if isinstance(saved_scenarios, list) and saved_scenarios:
++        session = workspace.get("session")
++        current_saved_id = (
++            session.get("current_saved_scenario_id") if isinstance(session, dict) else None
++        )
++        saved = next(
++            (
++                record
++                for record in saved_scenarios
++                if isinstance(record, dict) and record.get("saved_scenario_id") == current_saved_id
++            ),
++            saved_scenarios[0] if isinstance(saved_scenarios[0], dict) else None,
++        )
++        if isinstance(saved, dict):
++            versions = saved.get("versions")
++            current_version_id = saved.get("current_version_id")
++            if isinstance(versions, list):
++                active_version = next(
++                    (
++                        version
++                        for version in versions
++                        if isinstance(version, dict)
++                        and version.get("version_id") == current_version_id
++                    ),
++                    None,
++                )
++                if isinstance(active_version, dict):
++                    snapshot_refs = active_version.get("snapshot_refs")
++                    if isinstance(snapshot_refs, dict):
++                        itinerary_id = snapshot_refs.get("itinerary_scenario_id")
++                        if itinerary_id:
++                            return str(itinerary_id)
++
++    comparison = _route_comparison(workspace)
++    lead_scenario_id = comparison.get("lead_scenario_id")
++    if lead_scenario_id:
++        return str(lead_scenario_id)
++    scenarios = comparison.get("scenarios")
++    if isinstance(scenarios, list) and scenarios:
++        first = scenarios[0]
++        if isinstance(first, dict) and first.get("scenario_id"):
++            return str(first["scenario_id"])
++    return None
++
++
++def _saved_comparison_row(
++    workspace: dict[str, Any], scenarios: list[Any], resolved_id: str
++) -> dict[str, Any] | None:
++    saved_scenarios = workspace.get("saved_scenarios")
++    if not isinstance(saved_scenarios, list):
++        return None
++    session = workspace.get("session")
++    current_saved_id = (
++        session.get("current_saved_scenario_id") if isinstance(session, dict) else None
++    )
++    ordered = sorted(
++        (saved for saved in saved_scenarios if isinstance(saved, dict)),
++        key=lambda saved: saved.get("saved_scenario_id") != current_saved_id,
++    )
++    for saved in ordered:
++        versions = saved.get("versions")
++        if not isinstance(versions, list):
++            continue
++        active_version = next(
++            (
++                v
++                for v in versions
++                if isinstance(v, dict) and v.get("version_id") == saved.get("current_version_id")
++            ),
++            None,
++        )
++        refs = active_version.get("snapshot_refs") if isinstance(active_version, dict) else None
++        if not isinstance(refs, dict) or refs.get("itinerary_scenario_id") != resolved_id:
++            continue
++        return next(
++            (
++                row
++                for row in scenarios
++                if isinstance(row, dict)
++                and row.get("scenario_id") == saved.get("saved_scenario_id")
++            ),
++            None,
++        )
++    return None
++
++
++def _selected_scenario_row(
++    workspace: dict[str, Any],
++    scenario_id: str | None,
++) -> dict[str, Any] | None:
++    resolved_id = _resolve_submission_scenario_id(workspace, scenario_id)
++    comparison = _route_comparison(workspace)
++    scenarios = comparison.get("scenarios")
++    if not isinstance(scenarios, list) or not scenarios:
++        return None
++    if resolved_id:
++        direct = next(
++            (
++                row
++                for row in scenarios
++                if isinstance(row, dict) and row.get("scenario_id") == resolved_id
++            ),
++            None,
++        )
++        if direct is not None:
++            return direct
++        saved_row = _saved_comparison_row(workspace, scenarios, resolved_id)
++        if saved_row is not None:
++            return saved_row
++        if scenario_id is not None:
++            raise ValueError("Selected scenario is not in this trip's workspace.")
++        lead_id = comparison.get("lead_scenario_id")
++        lead = next(
++            (
++                row
++                for row in scenarios
++                if isinstance(row, dict) and row.get("scenario_id") == lead_id
++            ),
++            None,
++        )
++        if lead is not None:
++            return lead
++    return next((row for row in scenarios if isinstance(row, dict)), None)
++
++
++def _policy_context_from_workspace(workspace: dict[str, Any]) -> tuple[str, str]:
++    policy = workspace.get("policy_state")
++    if not isinstance(policy, dict):
++        msg = (
++            "This trip has no travel policy yet. Sync the policy for your organization "
++            "before submitting for approval."
++        )
++        raise WorkspacePolicyMissingForSubmissionError(msg)
++    organization_id = str(policy.get("organization_id") or "")
++    constraint_set = policy.get("constraint_set")
++    constraint_set_id = ""
++    if isinstance(constraint_set, dict):
++        constraint_set_id = str(constraint_set.get("policy_id") or "")
++    if not organization_id or not constraint_set_id:
++        msg = (
++            "This trip has no travel policy yet. Sync the policy for your organization "
++            "before submitting for approval."
++        )
++        raise WorkspacePolicyMissingForSubmissionError(msg)
++    return organization_id, constraint_set_id
++
++
++def _money_range_from_estimated(estimated: Any, fallback_currency: str) -> MoneyRange:
++    if isinstance(estimated, dict):
++        currency = str(estimated.get("currency") or fallback_currency)
++        typical_amount = estimated.get("typical_amount")
++        if typical_amount is None:
++            typical_amount = 0.0
++        typical = float(typical_amount)
++        return MoneyRange(
++            currency=currency,
++            typical_amount=typical,
++            min_amount=typical,
++            max_amount=typical,
++        )
++    return MoneyRange(
++        currency=fallback_currency,
++        typical_amount=0.0,
++        min_amount=0.0,
++        max_amount=0.0,
++    )
++
++
++def _trip_title_from_workspace(workspace: dict[str, Any], trip_id: str) -> str:
++    trip_record = workspace.get("trip_record")
++    if isinstance(trip_record, dict):
++        trip = trip_record.get("trip")
++        if isinstance(trip, dict) and trip.get("title"):
++            return str(trip["title"])
++    return trip_id
++
++
++def _home_airport_from_workspace(workspace: dict[str, Any]) -> str:
++    trip_record = workspace.get("trip_record")
++    if isinstance(trip_record, dict):
++        trip = trip_record.get("trip")
++        if isinstance(trip, dict):
++            trip_frame = trip.get("trip_frame")
++            if isinstance(trip_frame, dict) and trip_frame.get("origin"):
++                return str(trip_frame["origin"])
++    return "workspace"
++
++
++def _submission_cost_details(
++    workspace: dict[str, Any],
++    scenario_row: dict[str, Any],
++) -> tuple[str, float, MoneyRange]:
++    metrics = scenario_row.get("metrics")
++    estimated_total = metrics.get("estimated_total") if isinstance(metrics, dict) else None
++    budget_state = workspace.get("budget_state")
++    budget_summary = budget_state.get("summary") if isinstance(budget_state, dict) else {}
++    if not isinstance(budget_summary, dict):
++        budget_summary = {}
++
++    currency = str(budget_summary.get("currency") or "USD")
++    typical_amount = float(budget_summary.get("planned_total") or 0.0)
++    if isinstance(estimated_total, dict):
++        currency = str(estimated_total.get("currency") or currency)
++        if estimated_total.get("typical_amount") is not None:
++            typical_amount = float(estimated_total["typical_amount"])
++    if not math.isfinite(typical_amount):
++        raise ValueError("Proposal cost must be a finite number.")
++    cost_range = MoneyRange(
++        currency=currency,
++        typical_amount=typical_amount,
++        min_amount=typical_amount,
++        max_amount=typical_amount,
++    )
++    return currency, typical_amount, cost_range
++
++
++def _booking_channel_from_workspace(workspace: dict[str, Any]) -> str:
++    policy_state = workspace.get("policy_state")
++    org_context = policy_state.get("organization_context") if isinstance(policy_state, dict) else {}
++    if isinstance(org_context, dict):
++        raw_channels = org_context.get("required_booking_channels")
++        if isinstance(raw_channels, list):
++            channels = [str(channel) for channel in raw_channels if channel]
++            if channels:
++                return channels[0]
++    return "workspace"
++
++
++def _justification_refs_from_scenario(scenario_row: dict[str, Any]) -> list[str]:
++    highlights = scenario_row.get("highlights")
++    if isinstance(highlights, list) and highlights:
++        return [str(item) for item in highlights if item]
++    return ["workspace-scenario"]
++
++
++def build_workspace_submission_proposal(
++    db_session: Session,
++    *,
++    user: AuthenticatedUser,
++    trip_id: str,
++    scenario_id: str | None = None,
++) -> TripPlanProposal:
++    """Build a costed proposal from the persisted workspace, not a policy preview."""
++
++    from trip_planner.app.services.workspace import get_workspace_payload
++
++    workspace = get_workspace_payload(db_session, user=user, trip_id=trip_id, include_debug=True)
++    if workspace is None:
++        raise WorkspaceProposalNotFoundError(f"Trip '{trip_id}' was not found.")
++
++    organization_id, constraint_set_id = _policy_context_from_workspace(workspace)
++    scenario_row = _selected_scenario_row(workspace, scenario_id)
++    if scenario_row is None:
++        raise ValueError("No scenario is available for proposal submission.")
++
++    resolved_scenario_id = str(scenario_row.get("scenario_id") or f"scenario:{trip_id}")
++    trip_title = _trip_title_from_workspace(workspace, trip_id)
++    scenario_label = str(scenario_row.get("title") or trip_title)
++    currency, typical_amount, cost_range = _submission_cost_details(workspace, scenario_row)
++    booking_channel = _booking_channel_from_workspace(workspace)
++    justification_refs = _justification_refs_from_scenario(scenario_row)
++
++    selected_option = SelectedOptionSummary(
++        category="itinerary",
++        option_id=resolved_scenario_id,
++        label=scenario_label,
++        vendor=organization_id,
++        booking_channel=booking_channel,
++        estimated_cost=cost_range,
++        justification_refs=justification_refs,
++    )
++    summary_note = str(scenario_row.get("summary") or "Built from the selected workspace scenario.")
++    return TripPlanProposal(
++        proposal_id=f"proposal:{trip_id}",
++        trip_id=trip_id,
++        mode="business",
++        traveler_context=TravelerContext(
++            employee_type="employee",
++            traveler_experience="occasional",
++            home_airport=_home_airport_from_workspace(workspace),
++            loyalty_programs=[],
++            mobility_or_access_needs=[],
++        ),
++        selected_options=[selected_option],
++        cost_summary=ProposalCostSummary(
++            currency=currency,
++            total_estimated_cost=typical_amount,
++            category_estimates={"itinerary": typical_amount} if typical_amount > 0 else {},
++            notes=[summary_note],
++        ),
++        comparables=[
++            ComparableOption(
++                category="itinerary",
++                label=scenario_label,
++                vendor=organization_id,
++                booking_channel=booking_channel,
++                estimated_cost=cost_range,
++                notes=[str(scenario_row.get("comparison_note") or "Selected scenario")],
++            )
++        ],
++        approval_notes=["Submitted from the workspace Policy tab."],
++        constraint_set_id=constraint_set_id,
++    )
++
++
+ def get_workspace_proposal_payload(
+     db_session: Session,
+     *,
+@@ -843,6 +1244,61 @@ def get_workspace_proposal_payload(
+     }
+ 
+ 
++def submit_workspace_proposal_for_trip(
++    db_session: Session,
++    *,
++    user: AuthenticatedUser,
++    trip_id: str,
++    scenario_id: str | None = None,
++) -> dict[str, Any]:
++    """Submit this trip to TPP for a policy verdict, building everything server-side.
++
++    The traveller presses one button. The proposal and the TPP request envelope are
++    derived from the persisted trip and its synced policy; no verdict is accepted from
++    the caller, and no TPP payload is assembled in the browser.
++    """
++
++    from trip_planner.app.services.policy import get_workspace_policy_payload
++
++    proposal = build_workspace_submission_proposal(
++        db_session,
++        user=user,
++        trip_id=trip_id,
++        scenario_id=scenario_id,
++    )
++    proposal_payload = proposal.to_dict()
++    policy_payload = get_workspace_policy_payload(db_session, user=user, trip_id=trip_id)
++    policy_state = policy_payload.get("policy_state")
++    organization_id = ""
++    if isinstance(policy_state, dict):
++        organization_id = str(policy_state.get("organization_id") or "")
++
++    proposal_id = proposal.proposal_id
++    request_payload = TPPRequestEnvelope(
++        operation="submit_proposal",
++        request_id=f"submit-proposal:{uuid4().hex}",
++        correlation_id=TPPCorrelationId.from_value(f"submit-proposal:{trip_id}"),
++        payload={"proposal": proposal_payload},
++        transport_pattern="sync",
++        organization_id=organization_id or None,
++        trip_id=trip_id,
++        proposal_id=proposal_id,
++        submitted_at=_now_iso(),
++        metadata={"source": "workspace_policy_tab"},
++    ).to_dict()
++
++    return save_workspace_proposal_submission(
++        db_session,
++        user=user,
++        trip_id=trip_id,
++        proposal_payload=proposal_payload,
++        request_payload=request_payload,
++        response_payload=None,
++        proposal_version=str(proposal_payload.get("proposal_version") or "v1"),
++        scenario_id=proposal.selected_options[0].option_id,
++    )
++
++
+ def save_workspace_proposal_submission(
+     db_session: Session,
+     *,
+@@ -858,6 +1314,13 @@ def save_workspace_proposal_submission(
+     if trip_record.mode != "business":
+         raise ValueError("Only business trips can persist proposal lifecycle state.")
+ 
++    from trip_planner.app.services.workspace import get_workspace_payload
++
++    workspace = get_workspace_payload(db_session, user=user, trip_id=trip_id, include_debug=True)
++    if workspace is None:
++        raise WorkspaceProposalNotFoundError(f"Trip '{trip_id}' was not found.")
++    scenario_id = _validate_persisted_scenario_id(workspace, scenario_id)
++
+     proposal = TripPlanProposal.from_dict(proposal_payload)
+     if proposal.trip_id != trip_id:
+         raise ValueError("proposal.trip_id must match the workspace trip.")
+@@ -957,6 +1420,17 @@ def save_workspace_proposal_evaluation(
+             "Proposal evaluation cannot be stored before a proposal submission exists."
+         )
+ 
++    from trip_planner.app.services.workspace import get_workspace_payload
++
++    workspace = get_workspace_payload(db_session, user=user, trip_id=trip_id, include_debug=True)
++    if workspace is None:
++        raise WorkspaceProposalNotFoundError(f"Trip '{trip_id}' was not found.")
++    scenario_id = _validate_persisted_scenario_id(
++        workspace,
++        scenario_id,
++        existing_scenario_id=existing.scenario_id,
++    )
++
+     request = _normalize_evaluation_request(
+         TPPRequestEnvelope.from_dict(request_payload),
+         existing=existing,
+diff --git a/trip_planner/app/services/workspace.py b/trip_planner/app/services/workspace.py
+index 2c2c36c38..268ce6b88 100644
+--- a/trip_planner/app/services/workspace.py
++++ b/trip_planner/app/services/workspace.py
+@@ -1074,6 +1074,7 @@ def _serialize_persisted_trip_record(record: PersistedTrip) -> dict[str, Any]:
+             "mode": record.mode,
+             "status": record.status,
+             "trip_frame": {
++                "origin": record.origin,
+                 "start_date": record.start_date,
+                 "end_date": record.end_date,
+                 "duration_days": record.duration_days,
+diff --git a/trip_planner/contracts/trip.py b/trip_planner/contracts/trip.py
+index ffc7e645f..df58ac2b6 100644
+--- a/trip_planner/contracts/trip.py
++++ b/trip_planner/contracts/trip.py
+@@ -77,6 +77,7 @@ def to_dict(self) -> dict[str, Any]:
+     @classmethod
+     def from_dict(cls, payload: dict[str, Any]) -> TripFrameSummary:
+         return cls(
++            origin=payload.get("origin"),
+             start_date=payload.get("start_date"),
+             end_date=payload.get("end_date"),
+             duration_days=payload.get("duration_days"),

@@ -1,0 +1,75 @@
+diff --git a/src/deliverable_render/store/__init__.py b/src/deliverable_render/store/__init__.py
+index a1b46f5..30aca00 100644
+--- a/src/deliverable_render/store/__init__.py
++++ b/src/deliverable_render/store/__init__.py
+@@ -43,6 +43,9 @@ class StoreValidationError(ValueError):
+     """The input does not satisfy the rendering store contract."""
+ 
+ 
++MATERIALITY_TIERS = frozenset({"T1", "T2", "T3"})
++
++
+ def _string(value: object, field: str, *, allow_empty: bool = False) -> str:
+     if not isinstance(value, str) or (not allow_empty and not value.strip()):
+         raise StoreValidationError(
+@@ -243,7 +246,10 @@ class ChangeRow:
+     def __post_init__(self) -> None:
+         _string(self.canonical_section, "canonical_section")
+         _string(self.change_type, "change_type")
+-        _string(self.tier, "tier")
++        tier = _string(self.tier, "tier")
++        if tier not in MATERIALITY_TIERS:
++            allowed = ", ".join(sorted(MATERIALITY_TIERS))
++            raise StoreValidationError(f"tier must be one of {allowed}; got {tier!r}")
+         _string(self.prior_text, "prior_text", allow_empty=True)
+         _string(self.current_text, "current_text", allow_empty=True)
+ 
+diff --git a/tests/docx/test_validation_and_cli.py b/tests/docx/test_validation_and_cli.py
+index 9cd402c..59bf1bf 100644
+--- a/tests/docx/test_validation_and_cli.py
++++ b/tests/docx/test_validation_and_cli.py
+@@ -11,7 +11,7 @@
+     render_change_memo,
+     render_continuity_memo,
+ )
+-from deliverable_render.store import StructuredStore
++from deliverable_render.store import StoreValidationError, StructuredStore
+ 
+ FIXTURE = Path("tests/fixtures/stores/consultant_change_minimal.json")
+ 
+@@ -23,6 +23,14 @@ def test_validation_malformed_row_fields() -> None:
+         StructuredStore.from_dict(data)
+ 
+ 
++def test_validation_rejects_unknown_tier_before_render() -> None:
++    data = json.loads(FIXTURE.read_text())
++    data["changes"][0]["tier"] = "T9"
++
++    with pytest.raises(StoreValidationError, match=r"tier must be one of T1, T2, T3; got 'T9'"):
++        StructuredStore.from_dict(data)
++
++
+ def test_validation_missing_or_non_array_changes() -> None:
+     data = json.loads(FIXTURE.read_text())
+     del data["changes"]
+@@ -70,6 +78,20 @@ def test_cli_continuity_memo(tmp_path: Path) -> None:
+     assert out.exists()
+ 
+ 
++def test_cli_rejects_unknown_tier_without_writing_output(
++    tmp_path: Path, capsys: pytest.CaptureFixture[str]
++) -> None:
++    data = json.loads(FIXTURE.read_text())
++    data["changes"][0]["tier"] = "T9"
++    store = tmp_path / "invalid-tier.json"
++    store.write_text(json.dumps(data))
++    out = tmp_path / "change.docx"
++
++    assert main(["--store", str(store), "--out", str(out), "--kind", "change"]) == 2
++    assert not out.exists()
++    assert "tier must be one of T1, T2, T3; got 'T9'" in capsys.readouterr().err
++
++
+ def test_cli_preserves_existing_output_unless_forced(tmp_path: Path) -> None:
+     out = tmp_path / "change.docx"
+     out.write_bytes(b"existing")

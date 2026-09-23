@@ -1,0 +1,288 @@
+diff --git a/api/alerts.py b/api/alerts.py
+index 6a4bf3da..938bf8b3 100644
+--- a/api/alerts.py
++++ b/api/alerts.py
+@@ -73,6 +73,36 @@ def _to_alert_response(row: tuple[Any, ...]) -> AlertHistoryResponse:
+     )
+ 
+ 
++def _history_where(
++    conn: Any,
++    *,
++    since: datetime | None,
++    until: datetime | None,
++    acknowledged: bool | None,
++    event_type: str | None,
++    prefix: str = "",
++) -> tuple[str, list[Any]]:
++    """Build the same history filters for listing and bulk acknowledgement."""
++    ph = get_placeholder(conn)
++    clauses: list[str] = []
++    params: list[Any] = []
++    if since is not None:
++        clauses.append(f"{prefix}fired_at >= {ph}")
++        params.append(since.isoformat(sep=" "))
++    if until is not None:
++        clauses.append(f"{prefix}fired_at < {ph}")
++        params.append(until.isoformat(sep=" "))
++    if acknowledged is not None:
++        clauses.append(f"{prefix}acknowledged = {ph}")
++        params.append(
++            1 if is_sqlite(conn) and acknowledged else 0 if is_sqlite(conn) else acknowledged
++        )
++    if event_type is not None:
++        clauses.append(f"{prefix}event_type = {ph}")
++        params.append(event_type)
++    return " AND ".join(clauses), params
++
++
+ @router.post("/api/alerts/rules", response_model=AlertRule, status_code=201)
+ async def create_rule(rule: AlertRuleCreate) -> AlertRule:
+     """Create a new alert rule."""
+@@ -292,6 +322,7 @@ async def delete_rule(rule_id: int = Path(..., ge=1, description="Alert rule ide
+ @router.get("/api/alerts/history", response_model=list[AlertHistoryResponse])
+ async def list_alerts(
+     since: datetime | None = None,
++    until: datetime | None = None,
+     acknowledged: bool | None = None,
+     event_type: str | None = None,
+     limit: int = Query(100, ge=1, le=1000),
+@@ -308,20 +339,15 @@ async def list_alerts(
+         conn = connect_db()
+         ensure_alert_tables(conn)
+         ph = get_placeholder(conn)
+-        where_clauses: list[str] = []
+-        params: list[Any] = []
+-        if since is not None:
+-            where_clauses.append(f"ah.fired_at >= {ph}")
+-            params.append(since.isoformat(sep=" "))
+-        if acknowledged is not None:
+-            where_clauses.append(f"ah.acknowledged = {ph}")
+-            params.append(
+-                1 if is_sqlite(conn) and acknowledged else 0 if is_sqlite(conn) else acknowledged
+-            )
+-        if event_type is not None:
+-            where_clauses.append(f"ah.event_type = {ph}")
+-            params.append(event_type)
+-        where_sql = f"WHERE {' AND '.join(where_clauses)}" if where_clauses else ""
++        conditions, params = _history_where(
++            conn,
++            since=since,
++            until=until,
++            acknowledged=acknowledged,
++            event_type=event_type,
++            prefix="ah.",
++        )
++        where_sql = f"WHERE {conditions}" if conditions else ""
+         params.append(limit)
+         cursor = conn.execute(
+             f"""SELECT ah.alert_id, ar.name AS rule_name, ah.event_type, ah.payload_json,
+@@ -397,20 +423,43 @@ async def acknowledge_alert(
+ 
+ 
+ @router.post("/api/alerts/history/acknowledge-all")
+-async def acknowledge_all(by: str = Query("user", min_length=1, max_length=120)) -> dict[str, int]:
+-    """Acknowledge all unacknowledged alerts. Returns {"acknowledged": N}."""
++async def acknowledge_all(
++    by: str = Query("user", min_length=1, max_length=120),
++    since: datetime | None = None,
++    until: datetime | None = None,
++    acknowledged: bool | None = None,
++    event_type: str | None = None,
++) -> dict[str, int]:
++    """Acknowledge unacknowledged alerts matching the history filters."""
+     by = _normalize_actor(by)
++    if event_type is not None:
++        try:
++            event_type = normalize_event_type(event_type)
++        except ValueError as exc:
++            raise HTTPException(status_code=400, detail=str(exc)) from exc
+     conn = None
+     try:
+         conn = connect_db()
+         ensure_alert_tables(conn)
+         ph = get_placeholder(conn)
+         now = datetime.now(UTC).isoformat(sep=" ")
++        conditions, filter_params = _history_where(
++            conn, since=since, until=until, acknowledged=acknowledged, event_type=event_type
++        )
++        where_sql = f"acknowledged = {ph}"
++        if conditions:
++            where_sql += f" AND {conditions}"
+         cursor = conn.execute(
+             f"""UPDATE alert_history
+                 SET acknowledged = {ph}, acknowledged_by = {ph}, acknowledged_at = {ph}
+-                WHERE acknowledged = {ph}""",
+-            (1 if is_sqlite(conn) else True, by, now, 0 if is_sqlite(conn) else False),
++                WHERE {where_sql}""",
++            (
++                1 if is_sqlite(conn) else True,
++                by,
++                now,
++                0 if is_sqlite(conn) else False,
++                *filter_params,
++            ),
+         )
+         if is_sqlite(conn):
+             conn.commit()
+diff --git a/tests/test_alerts_api.py b/tests/test_alerts_api.py
+index 7e6d2e97..b5af28fc 100644
+--- a/tests/test_alerts_api.py
++++ b/tests/test_alerts_api.py
+@@ -513,6 +513,61 @@ def test_alert_acknowledge_and_count_flow(tmp_path, monkeypatch):
+     assert final_count.json() == {"count": 0}
+ 
+ 
++def test_acknowledge_all_respects_event_type_filter(tmp_path, monkeypatch):
++    db_path = tmp_path / "alerts.db"
++    monkeypatch.setenv("DB_PATH", str(db_path))
++    assert (
++        asyncio.run(_request("POST", "/api/alerts/rules", json=_create_rule_payload())).status_code
++        == 201
++    )
++    _seed_alert_history(db_path)
++    _seed_alert_for_rule(db_path, rule_id=2, event_type="new_filing")
++
++    response = asyncio.run(
++        _request(
++            "POST",
++            "/api/alerts/history/acknowledge-all",
++            params={"by": "tester", "event_type": "large_delta"},
++        )
++    )
++    assert response.status_code == 200
++    assert response.json() == {"acknowledged": 2}
++    remaining = asyncio.run(_request("GET", "/api/alerts/history", params={"acknowledged": False}))
++    assert [row["event_type"] for row in remaining.json()] == ["new_filing"]
++
++
++def test_acknowledge_all_respects_status_and_date_range(tmp_path, monkeypatch):
++    db_path = tmp_path / "alerts.db"
++    monkeypatch.setenv("DB_PATH", str(db_path))
++    assert (
++        asyncio.run(_request("POST", "/api/alerts/rules", json=_create_rule_payload())).status_code
++        == 201
++    )
++    _seed_alert_history(db_path)
++    with sqlite3.connect(db_path) as conn:
++        conn.execute("UPDATE alert_history SET fired_at = '2026-03-01 12:00:00' WHERE alert_id = 1")
++        conn.execute("UPDATE alert_history SET fired_at = '2026-03-03 12:00:00' WHERE alert_id = 2")
++
++    filters = {
++        "since": "2026-03-01T00:00:00",
++        "until": "2026-03-02T00:00:00",
++        "acknowledged": False,
++    }
++    visible = asyncio.run(_request("GET", "/api/alerts/history", params=filters))
++    assert [row["alert_id"] for row in visible.json()] == [1]
++    response = asyncio.run(
++        _request("POST", "/api/alerts/history/acknowledge-all", params={"by": "tester", **filters})
++    )
++    assert response.status_code == 200
++    assert response.json() == {"acknowledged": 1}
++    remaining = asyncio.run(_request("GET", "/api/alerts/history", params={"acknowledged": False}))
++    assert [row["alert_id"] for row in remaining.json()] == [2]
++    already_acknowledged = asyncio.run(
++        _request("POST", "/api/alerts/history/acknowledge-all", params={"acknowledged": True})
++    )
++    assert already_acknowledged.json() == {"acknowledged": 0}
++
++
+ def test_alert_history_invalid_event_type_rejected(tmp_path, monkeypatch):
+     db_path = tmp_path / "alerts.db"
+     monkeypatch.setenv("DB_PATH", str(db_path))
+diff --git a/tests/test_ui_alerts.py b/tests/test_ui_alerts.py
+index a7e84cdb..876fde9c 100644
+--- a/tests/test_ui_alerts.py
++++ b/tests/test_ui_alerts.py
+@@ -224,7 +224,7 @@ def _fake_api_request(method: str, path: str, *, params=None, json_body=None):
+ 
+ def test_render_alert_inbox_acknowledges_all(monkeypatch):
+     fake_st = _FakeStreamlit(
+-        select_values={"event_type": "all", "acknowledged": "all"},
++        select_values={"event_type": "large_delta", "acknowledged": "unacknowledged"},
+         date_range=(date(2026, 3, 1), date(2026, 3, 2)),
+         button_presses={("Acknowledge All", None): True},
+     )
+@@ -236,7 +236,7 @@ def test_render_alert_inbox_acknowledges_all(monkeypatch):
+             {
+                 "alert_id": 20,
+                 "rule_name": "Rule 20",
+-                "event_type": "new_filing",
++                "event_type": "large_delta",
+                 "payload_json": {"filing_type": "13F-HR"},
+                 "fired_at": "2026-03-01T09:00:00+00:00",
+                 "acknowledged": False,
+@@ -258,7 +258,19 @@ def _fake_api_request(method: str, path: str, *, params=None, json_body=None):
+     with pytest.raises(_RerunTriggered):
+         alerts_ui._render_alert_inbox()
+ 
+-    assert api_calls == [("POST", "/api/alerts/history/acknowledge-all", {"by": "ui"})]
++    assert api_calls == [
++        (
++            "POST",
++            "/api/alerts/history/acknowledge-all",
++            {
++                "by": "ui",
++                "since": "2026-03-01T00:00:00",
++                "until": "2026-03-03T00:00:00",
++                "acknowledged": False,
++                "event_type": "large_delta",
++            },
++        )
++    ]
+     assert fake_st.successes == ["Acknowledged 1 alerts"]
+     assert cleared["value"] is True
+ 
+diff --git a/ui/alerts.py b/ui/alerts.py
+index 07a94ac7..f67b2e28 100644
+--- a/ui/alerts.py
++++ b/ui/alerts.py
+@@ -101,10 +101,13 @@ def _load_alerts(
+     acknowledged: bool | None,
+     event_type: str | None,
+     limit: int,
++    until_iso: str | None = None,
+ ) -> list[dict[str, Any]]:
+     params: dict[str, Any] = {"limit": limit}
+     if since_iso is not None:
+         params["since"] = since_iso
++    if until_iso is not None:
++        params["until"] = until_iso
+     if acknowledged is not None:
+         params["acknowledged"] = acknowledged
+     if event_type:
+@@ -365,11 +368,15 @@ def _render_alert_inbox() -> None:
+         start_date = date.today() - timedelta(days=30)
+         end_date = date.today()
+ 
++    since_iso = f"{start_date.isoformat()}T00:00:00"
++    until_iso = f"{(end_date + timedelta(days=1)).isoformat()}T00:00:00"
++    active_type = None if selected_type == "all" else selected_type
+     alerts = _load_alerts(
+-        f"{start_date.isoformat()}T00:00:00",
++        since_iso,
+         selected_ack,
+-        None if selected_type == "all" else selected_type,
++        active_type,
+         500,
++        until_iso=until_iso,
+     )
+ 
+     filtered: list[dict[str, Any]] = []
+@@ -381,9 +388,12 @@ def _render_alert_inbox() -> None:
+         filtered.append(alert)
+ 
+     if st.button("Acknowledge All"):
+-        ok, payload = _api_request(
+-            "POST", "/api/alerts/history/acknowledge-all", params={"by": "ui"}
+-        )
++        params: dict[str, Any] = {"by": "ui", "since": since_iso, "until": until_iso}
++        if selected_ack is not None:
++            params["acknowledged"] = selected_ack
++        if active_type is not None:
++            params["event_type"] = active_type
++        ok, payload = _api_request("POST", "/api/alerts/history/acknowledge-all", params=params)
+         if ok:
+             st.success(f"Acknowledged {payload['acknowledged']} alerts")
+             _clear_alert_caches()

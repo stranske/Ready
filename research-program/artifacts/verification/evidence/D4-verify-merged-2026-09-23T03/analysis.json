@@ -1,0 +1,712 @@
+{
+  "Counter_Risk-1102": {
+    "repo": "Counter_Risk",
+    "pr": 1102,
+    "title": "fix(manifest): mark distribution PPT failed when master generation fails",
+    "merged_at": "2026-09-21T15:28:33Z",
+    "issue": 1089,
+    "issue_title": "[P2] Mark distribution PPT failed when master generation fails",
+    "issue_state": "closed",
+    "diff": {
+      "files": [
+        "src/counter_risk/pipeline/manifest.py",
+        "tests/pipeline/test_manifest.py"
+      ],
+      "n_files": 2,
+      "prod_files": [
+        "src/counter_risk/pipeline/manifest.py"
+      ],
+      "test_files": [
+        "tests/pipeline/test_manifest.py"
+      ],
+      "belt_only": false,
+      "new_tests": [
+        "test_build_ppt_outputs_marks_distribution_failed_when_ppt_status_failed",
+        "test_build_ppt_outputs_keeps_distribution_success_when_ppt_status_success"
+      ],
+      "n_new_tests": 2
+    },
+    "pr_deliberate_break": true,
+    "issue_gate_mentions_break": true,
+    "has_reproduction": false,
+    "ac_snip": "Acceptance Criteria\n\n- Named test: `tests/pipeline/test_manifest.py::test_build_ppt_outputs_marks_distribution_failed_when_ppt_status_failed` asserts distribution status is `failed` when master generation failed.\n- Deliberate-break \u2192 revert: restore unconditional distribution success; the named test must fail; revert and confirm pass.\n- `python -m pytest tests/pipeline/test_manifest.py::test_build_ppt_outputs_marks_distribution_failed_when_ppt_status_failed -q` passes.\n\n_Surfaced by Track D audit 2026-09-20; verified by ManifestBuilder repro on tip 56bee4fa._\n"
+  },
+  "Manager-Database-1703": {
+    "repo": "Manager-Database",
+    "pr": 1703,
+    "title": "fix(managers): cascade manager deletion",
+    "merged_at": "2026-09-21T15:44:36Z",
+    "issue": 1696,
+    "issue_title": "[P1] DELETE /managers/{id} leaves filings and documents after 204 success",
+    "issue_state": "closed",
+    "diff": {
+      "files": [
+        "alembic/versions/023_manager_deletion_ledger.py",
+        "api/managers.py",
+        "etl/activism_flow.py",
+        "etl/edgar_flow.py",
+        "etl/ingest_flow.py",
+        "schema.sql",
+        "services/__init__.py",
+        "services/manager_deletion.py",
+        "tests/test_edgar_flow.py",
+        "tests/test_ingest_flow.py",
+        "tests/test_manager_api.py"
+      ],
+      "n_files": 11,
+      "prod_files": [
+        "alembic/versions/023_manager_deletion_ledger.py",
+        "api/managers.py",
+        "etl/activism_flow.py",
+        "etl/edgar_flow.py",
+        "etl/ingest_flow.py",
+        "schema.sql",
+        "services/__init__.py",
+        "services/manager_deletion.py"
+      ],
+      "test_files": [
+        "tests/test_edgar_flow.py",
+        "tests/test_ingest_flow.py",
+        "tests/test_manager_api.py"
+      ],
+      "belt_only": false,
+      "new_tests": [
+        "test_delete_manager_cascades_related_records",
+        "test_delete_manager_blocks_ambiguous_legacy_object_key",
+        "test_delete_manager_retries_after_object_storage_failure",
+        "test_delete_manager_waits_for_inflight_ingestion_fence"
+      ],
+      "n_new_tests": 4
+    },
+    "pr_deliberate_break": true,
+    "issue_gate_mentions_break": true,
+    "has_reproduction": false,
+    "ac_snip": "Acceptance Criteria\n\n- Named test: `tests/test_manager_api.py::test_delete_manager_cascades_related_records` must pass and assert zero filings and documents remain after a successful DELETE.\n- Deliberate-break \u2192 revert: restore the single-row delete in `api/managers.py:488-495` so dependent rows survive; the named test must fail; revert and rerun pytest.\n\n## Implementation Notes\n\nReproduction on audited tip: create manager id 1 with one filing and one document; `DELETE /managers/1` \u2192 204; SQLite still contains the filing and document rows. On Postgres with enforced FKs the same call fails instead of erasing data\u2014both outcomes violate the product contract.\n"
+  },
+  "Counter_Risk-1103": {
+    "repo": "Counter_Risk",
+    "pr": 1103,
+    "title": "fix(cprs): prefer Trend variant over incidental all in filenames",
+    "merged_at": "2026-09-21T16:26:56Z",
+    "issue": 1090,
+    "issue_title": "[P2] Fix trend CPRS misclassification when filename contains spurious all",
+    "issue_state": "closed",
+    "diff": {
+      "files": [
+        "src/counter_risk/parsers/cprs_ch.py",
+        "tests/parsers/test_cprs_ch.py"
+      ],
+      "n_files": 2,
+      "prod_files": [
+        "src/counter_risk/parsers/cprs_ch.py"
+      ],
+      "test_files": [
+        "tests/parsers/test_cprs_ch.py"
+      ],
+      "belt_only": false,
+      "new_tests": [
+        "test_parse_cprs_ch_trend_workbook_not_misclassified_when_filename_contains_all",
+        "test_parse_cprs_ch_explicit_all_programs_marker_retains_segment_validation"
+      ],
+      "n_new_tests": 2
+    },
+    "pr_deliberate_break": true,
+    "issue_gate_mentions_break": true,
+    "has_reproduction": false,
+    "ac_snip": "Acceptance Criteria\n\n- Named test: `tests/parsers/test_cprs_ch.py::test_parse_cprs_ch_trend_workbook_not_misclassified_when_filename_contains_all` parses the Trend fixture under an all-containing filename without missing-segment errors.\n- Deliberate-break \u2192 revert: restore the current `\"all\" in title` precedence; the named test must fail; revert and confirm pass.\n- `python -m pytest tests/parsers/test_cprs_ch.py::test_parse_cprs_ch_trend_workbook_not_misclassified_when_filename_contains_all -q` passes.\n\n_Surfaced by Track D audit 2026-09-20; verified by parse_cprs_ch repro on tip 56bee4fa._\n"
+  },
+  "Deliverable-Render-34": {
+    "repo": "Deliverable-Render",
+    "pr": 34,
+    "title": "fix(store): reject unknown memo tiers (#28)",
+    "merged_at": "2026-09-21T16:27:11Z",
+    "issue": 28,
+    "issue_title": "[P2] Unknown memo tier T9 passes loading then fails as empty material set",
+    "issue_state": "closed",
+    "diff": {
+      "files": [
+        "src/deliverable_render/store/__init__.py",
+        "tests/docx/test_validation_and_cli.py"
+      ],
+      "n_files": 2,
+      "prod_files": [
+        "src/deliverable_render/store/__init__.py"
+      ],
+      "test_files": [
+        "tests/docx/test_validation_and_cli.py"
+      ],
+      "belt_only": false,
+      "new_tests": [
+        "test_validation_rejects_unknown_tier_before_render",
+        "test_cli_rejects_unknown_tier_without_writing_output"
+      ],
+      "n_new_tests": 2
+    },
+    "pr_deliberate_break": true,
+    "issue_gate_mentions_break": true,
+    "has_reproduction": false,
+    "ac_snip": "Acceptance Criteria\n\n- [ ] `python3 -m pytest tests/docx/test_validation_and_cli.py -q` passes with separate assertions for invalid `T9` and valid non-material `T3` input.\n- [ ] `tests/docx/test_validation_and_cli.py` proves an invalid tier raises `StoreValidationError` before `src/deliverable_render/docx/memo.py` receives a `StructuredStore`.\n- [ ] Deliberate-break gate: temporarily remove the tier-membership check in `src/deliverable_render/store/__init__.py`; the named invalid-tier test must fail, then revert the temporary change before review.\n\n## Implementation Notes\n\nThe existing fixture already demonstrates `T1`, `T2`, and `T3` at `tests/fixtures/stores/consultant_change_minimal.json:7-23`. Keep the public exception type `StoreValidationError` so CLI callers receive an input-validat"
+  },
+  "Manager-Database-1704": {
+    "repo": "Manager-Database",
+    "pr": 1704,
+    "title": "fix(managers): honor search and name list filters",
+    "merged_at": "2026-09-21T17:42:56Z",
+    "issue": 1698,
+    "issue_title": "[P2] GET /managers ignores search and name query filters",
+    "issue_state": "closed",
+    "diff": {
+      "files": [
+        "api/managers.py",
+        "tests/test_manager_api.py",
+        "tests/test_openapi_schema.py"
+      ],
+      "n_files": 3,
+      "prod_files": [
+        "api/managers.py"
+      ],
+      "test_files": [
+        "tests/test_manager_api.py",
+        "tests/test_openapi_schema.py"
+      ],
+      "belt_only": false,
+      "new_tests": [
+        "test_list_managers_search_and_name_filters",
+        "test_manager_postgres_list_filters_use_portable_array_and_like_predicates"
+      ],
+      "n_new_tests": 2
+    },
+    "pr_deliberate_break": true,
+    "issue_gate_mentions_break": true,
+    "has_reproduction": false,
+    "ac_snip": "Acceptance Criteria\n\n- Named test: `tests/test_manager_api.py::test_list_managers_search_and_name_filters` must pass for both query parameters.\n- Deliberate-break \u2192 revert: drop the new WHERE clauses in `api/managers.py:498-549`; the named test must fail because both filters return two managers; revert and rerun pytest tests/test_manager_api.py.\n\n## Implementation Notes\n\nUniversal search already finds managers by text via `GET /api/search`, but the list route advertises pagination filters in the product contract and currently ignores the parameters entirely.\n"
+  },
+  "Manager-Database-1705": {
+    "repo": "Manager-Database",
+    "pr": 1705,
+    "title": "fix(signals): reject invalid conviction thresholds",
+    "merged_at": "2026-09-21T18:45:44Z",
+    "issue": 1699,
+    "issue_title": "[P2] Conviction scores API accepts min_conviction_pct=inf",
+    "issue_state": "closed",
+    "diff": {
+      "files": [
+        "api/signals.py",
+        "tests/test_signals_api.py"
+      ],
+      "n_files": 2,
+      "prod_files": [
+        "api/signals.py"
+      ],
+      "test_files": [
+        "tests/test_signals_api.py"
+      ],
+      "belt_only": false,
+      "new_tests": [
+        "test_conviction_scores_rejects_non_finite_min_conviction_pct",
+        "test_query_conviction_scores_rejects_invalid_minimums"
+      ],
+      "n_new_tests": 2
+    },
+    "pr_deliberate_break": true,
+    "issue_gate_mentions_break": true,
+    "has_reproduction": false,
+    "ac_snip": "Acceptance Criteria\n\n- Named test: `tests/test_signals_api.py::test_conviction_scores_rejects_non_finite_min_conviction_pct` must pass and assert HTTP 422 for `min_conviction_pct=inf`.\n- Deliberate-break \u2192 revert: restore the bare `Query(0.0, ge=0.0)` declaration; the named test must fail because infinity returns HTTP 200; revert and rerun pytest tests/test_signals_api.py.\n\n## Implementation Notes\n\nNaN already returns HTTP 422 via Pydantic; infinity is the inconsistent case. The named test should also assert a finite value such as `0.5` still returns HTTP 200.\n"
+  },
+  "Deliverable-Render-35": {
+    "repo": "Deliverable-Render",
+    "pr": 35,
+    "title": "fix(store): reject duplicate document identities (#32)",
+    "merged_at": "2026-09-21T20:24:40Z",
+    "issue": 32,
+    "issue_title": "[P2] Duplicate documents[] identity passes validate-structured-store then fails at render",
+    "issue_state": "closed",
+    "diff": {
+      "files": [
+        "docs/STRUCTURED_STORE_VALIDATION.md",
+        "src/deliverable_render/store/validate.py",
+        "tests/store/test_communication_render_profile.py"
+      ],
+      "n_files": 3,
+      "prod_files": [
+        "docs/STRUCTURED_STORE_VALIDATION.md",
+        "src/deliverable_render/store/validate.py"
+      ],
+      "test_files": [
+        "tests/store/test_communication_render_profile.py"
+      ],
+      "belt_only": false,
+      "new_tests": [
+        "test_validator_rejects_duplicate_document_identity",
+        "test_validator_rejects_duplicate_document_stable_id",
+        "test_validator_prefers_distinct_stable_ids_over_equal_names"
+      ],
+      "n_new_tests": 3
+    },
+    "pr_deliberate_break": true,
+    "issue_gate_mentions_break": true,
+    "has_reproduction": false,
+    "ac_snip": "Acceptance Criteria\n\n- Named test: `test_validator_rejects_duplicate_document_identity` asserting validation fails before any render command is invoked.\n- Deliberate-break \u2192 revert: remove the duplicate scan \u2192 confirm `test_validator_rejects_duplicate_document_identity` FAILS \u2192 revert.\n\n## Non-Goals\n\n- Do NOT change how `adapt_store` detects duplicates in `communication.py`.\n- Do NOT add filesystem existence checks for mapped paths (out of scope).\n- No scaffolding / TODO-only changes.\n\n_Surfaced by Track D audit 2026-09-21; verified by live repro on tip 3e4c68a._\n"
+  },
+  "learning-management-system-709": {
+    "repo": "learning-management-system",
+    "pr": 709,
+    "title": "fix(llm): honor registered provider override (#695)",
+    "merged_at": "2026-09-21T20:48:52Z",
+    "issue": 695,
+    "issue_title": "Wire or document the inert LLM configuration surface",
+    "issue_state": "closed",
+    "diff": {
+      "files": [
+        "config/README.md",
+        "docs/llm/PROVIDER_LIVE_VERIFICATION.md",
+        "render.yaml",
+        "src/lms/__main__.py",
+        "src/lms/llm/api.py",
+        "src/lms/llm/client.py",
+        "src/lms/llm/config.py",
+        "tests/llm/test_client_routing.py",
+        "tests/test_cli_entrypoint.py"
+      ],
+      "n_files": 9,
+      "prod_files": [
+        "config/README.md",
+        "docs/llm/PROVIDER_LIVE_VERIFICATION.md",
+        "render.yaml",
+        "src/lms/__main__.py",
+        "src/lms/llm/api.py",
+        "src/lms/llm/client.py",
+        "src/lms/llm/config.py"
+      ],
+      "test_files": [
+        "tests/llm/test_client_routing.py",
+        "tests/test_cli_entrypoint.py"
+      ],
+      "belt_only": false,
+      "new_tests": [
+        "test_explicit_provider_override_is_honored",
+        "test_unregistered_provider_override_is_rejected"
+      ],
+      "n_new_tests": 2
+    },
+    "pr_deliberate_break": true,
+    "issue_gate_mentions_break": true,
+    "has_reproduction": false,
+    "ac_snip": "Acceptance Criteria\n\n- [ ] `tests/llm/test_client_routing.py::test_explicit_provider_override_is_honored` builds the runtime client with `LLM_DEFAULT_PROVIDER=fake` and an Anthropic key, then asserts `LLMConfig.default_provider == \"fake\"`.\n- [ ] `tests/llm/test_client_routing.py::test_unregistered_provider_override_is_rejected` sets `LLM_DEFAULT_PROVIDER` to a name absent from the providers map and asserts a clear error is raised.\n- [ ] `grep -rn \"model_registry.json\\|model_selection_policy.json\\|llm_slots.json\" src/lms/` returns no matches, and the added documentation states this boundary.\n- [ ] Reverting `load_runtime_llm_config` to unconditional `replace(..., default_provider=default_provider)` causes `uv run pytest tests/llm/test_client_routing.py -q` to fail `test_explicit_provider_ov"
+  },
+  "Counter_Risk-1107": {
+    "repo": "Counter_Risk",
+    "pr": 1107,
+    "title": "fix(repo-cash): surface correct notional changes in manifest",
+    "merged_at": "2026-09-21T21:41:04Z",
+    "issue": 1104,
+    "issue_title": "[P1] Repo-cash overlay leaves NotionalChange stale \u2014 manifest top_changes under-report deltas",
+    "issue_state": "closed",
+    "diff": {
+      "files": [
+        "src/counter_risk/compute/rollups.py",
+        "tests/compute/test_rollups.py"
+      ],
+      "n_files": 2,
+      "prod_files": [
+        "src/counter_risk/compute/rollups.py"
+      ],
+      "test_files": [
+        "tests/compute/test_rollups.py"
+      ],
+      "belt_only": false,
+      "new_tests": [
+        "test_apply_repo_cash_syncs_notional_change_columns"
+      ],
+      "n_new_tests": 1
+    },
+    "pr_deliberate_break": true,
+    "issue_gate_mentions_break": true,
+    "has_reproduction": false,
+    "ac_snip": "Acceptance Criteria\n\n- Named test: `pytest tests/compute/test_rollups.py::test_apply_repo_cash_syncs_notional_change_columns -q` passes.\n- Deliberate-break \u2192 revert: remove the `NotionalChange` assignment for new rows in `src/counter_risk/compute/rollups.py:304` \u2192 confirm `test_apply_repo_cash_syncs_notional_change_columns` FAILS \u2192 revert \u2192 passes.\n\n## Non-Goals\n\n- Do NOT change repo-cash warning code mappings in `src/counter_risk/pipeline/data_quality.py` (already fixed in #1086).\n- Scaffold-only completion does NOT count: adding a test that does not assert both `notional_change` and `NotionalChange` plus manifest `top_changes_per_variant` is a failure of this issue.\n\n## Implementation Notes\n\nVerified by live Python repro against tip `1f72351` during Track D audit 2026-09-21.\n\n_Surfaced b"
+  },
+  "Manager-Database-1710": {
+    "repo": "Manager-Database",
+    "pr": 1710,
+    "title": "fix(alerts): match new filing rules to EDGAR events",
+    "merged_at": "2026-09-21T22:45:21Z",
+    "issue": 1706,
+    "issue_title": "[P1] new_filing alert rules from Alerts UI never match EDGAR events",
+    "issue_state": "closed",
+    "diff": {
+      "files": [
+        "alerts/engine.py",
+        "tests/test_alert_integration.py",
+        "tests/test_ui_alerts.py",
+        "ui/alerts.py"
+      ],
+      "n_files": 4,
+      "prod_files": [
+        "alerts/engine.py",
+        "ui/alerts.py"
+      ],
+      "test_files": [
+        "tests/test_alert_integration.py",
+        "tests/test_ui_alerts.py"
+      ],
+      "belt_only": false,
+      "new_tests": [
+        "test_saved_legacy_new_filing_rule_matches_edgar_event",
+        "test_condition_inputs_new_filing_reads_saved_legacy_defaults",
+        "test_condition_inputs_new_filing_reads_current_defaults",
+        "test_new_filing_ui_condition_matches_edgar_event"
+      ],
+      "n_new_tests": 4
+    },
+    "pr_deliberate_break": false,
+    "issue_gate_mentions_break": true,
+    "has_reproduction": false,
+    "ac_snip": "Acceptance Criteria\n\n- Named test: `test_new_filing_ui_condition_matches_edgar_event` asserting `AlertEngine.evaluate` returns a match when the rule condition mirrors what `_condition_inputs(\"new_filing\")` returns and the event is built like `etl/edgar_flow.py:460-466`.\n- Deliberate-break \u2192 revert: restore `filing_type`/`sec` mismatch \u2192 named test FAILS \u2192 revert.\n\n## Non-Goals\n\n- Do NOT change unrelated alert event types or channel dispatch.\n- No scaffolding / TODO-only changes; every task is a concrete edit verified by the gate above.\n\n_Surfaced by repo-audit Track D refill 2026-09-21; verified by live AlertEngine reproduction on tip d3d3405._\n"
+  },
+  "Manager-Database-1711": {
+    "repo": "Manager-Database",
+    "pr": 1711,
+    "title": "fix(alerts): scope Acknowledge All to inbox filters",
+    "merged_at": "2026-09-21T23:23:32Z",
+    "issue": 1707,
+    "issue_title": "[P1] Alerts inbox Acknowledge All ignores active filters",
+    "issue_state": "closed",
+    "diff": {
+      "files": [
+        "api/alerts.py",
+        "tests/test_alerts_api.py",
+        "tests/test_ui_alerts.py",
+        "ui/alerts.py"
+      ],
+      "n_files": 4,
+      "prod_files": [
+        "api/alerts.py",
+        "ui/alerts.py"
+      ],
+      "test_files": [
+        "tests/test_alerts_api.py",
+        "tests/test_ui_alerts.py"
+      ],
+      "belt_only": false,
+      "new_tests": [
+        "test_acknowledge_all_respects_event_type_filter",
+        "test_acknowledge_all_respects_status_and_date_range"
+      ],
+      "n_new_tests": 2
+    },
+    "pr_deliberate_break": false,
+    "issue_gate_mentions_break": true,
+    "has_reproduction": false,
+    "ac_snip": "Acceptance Criteria\n\n- Named test: `test_acknowledge_all_respects_event_type_filter` \u2014 seed two event types, call acknowledge-all with `event_type=large_delta`, assert only matching rows are acknowledged.\n- Deliberate-break \u2192 revert: remove filter clause from UPDATE \u2192 named test FAILS \u2192 revert.\n\n## Non-Goals\n\n- Do NOT change single-alert acknowledgement behavior.\n- No scaffolding / TODO-only changes; every task is a concrete edit verified by the gate above.\n\n_Surfaced by repo-audit Track D refill 2026-09-21; verified by ASGI TestClient reproduction on tip d3d3405._\n"
+  },
+  "Manager-Database-1712": {
+    "repo": "Manager-Database",
+    "pr": 1712,
+    "title": "fix(managers): reject duplicate CIK on SQLite bootstrap path",
+    "merged_at": "2026-09-21T23:44:19Z",
+    "issue": 1708,
+    "issue_title": "[P1] POST /managers allows duplicate CIKs on SQLite bootstrap path",
+    "issue_state": "closed",
+    "diff": {
+      "files": [
+        "api/managers.py",
+        "tests/test_manager_api.py",
+        "tests/test_openapi_schema.py"
+      ],
+      "n_files": 3,
+      "prod_files": [
+        "api/managers.py"
+      ],
+      "test_files": [
+        "tests/test_manager_api.py",
+        "tests/test_openapi_schema.py"
+      ],
+      "belt_only": false,
+      "new_tests": [
+        "test_create_manager_rejects_duplicate_cik_on_sqlite_bootstrap",
+        "test_create_manager_normalizes_cik_before_duplicate_lookup",
+        "test_create_manager_rejects_legacy_whitespace_cik",
+        "test_create_manager_reports_legacy_duplicate_ciks",
+        "test_create_manager_maps_insert_race_to_cik_conflict"
+      ],
+      "n_new_tests": 5
+    },
+    "pr_deliberate_break": false,
+    "issue_gate_mentions_break": true,
+    "has_reproduction": true,
+    "ac_snip": "Acceptance Criteria\n\n- Named test: `test_create_manager_rejects_duplicate_cik_on_sqlite_bootstrap` asserting the second POST with the same CIK returns 409 and only one row exists.\n- Deliberate-break \u2192 revert: skip unique index / existence check \u2192 named test FAILS \u2192 revert.\n\n## Non-Goals\n\n- Do NOT change Postgres migration semantics beyond matching existing `idx_managers_cik_unique` behavior.\n- No scaffolding / TODO-only changes; every task is a concrete edit verified by the gate above.\n\n_Surfaced by repo-audit Track D refill 2026-09-21; verified by ASGI TestClient reproduction on tip d3d3405._\n"
+  },
+  "Manager-Database-1713": {
+    "repo": "Manager-Database",
+    "pr": 1713,
+    "title": "fix(managers): roll back bulk import on mid-batch failure (#1709)",
+    "merged_at": "2026-09-22T03:23:40Z",
+    "issue": 1709,
+    "issue_title": "[P1] Bulk manager import commits partial rows on mid-batch failure",
+    "issue_state": "closed",
+    "diff": {
+      "files": [
+        "api/managers.py",
+        "tests/test_manager_bulk_api.py"
+      ],
+      "n_files": 2,
+      "prod_files": [
+        "api/managers.py"
+      ],
+      "test_files": [
+        "tests/test_manager_bulk_api.py"
+      ],
+      "belt_only": false,
+      "new_tests": [
+        "test_bulk_import_rolls_back_on_mid_batch_failure",
+        "test_bulk_import_postgres_transaction_state",
+        "test_bulk_import_preserves_original_error_when_postgres_cleanup_fails",
+        "test_bulk_import_reports_postgres_close_failure"
+      ],
+      "n_new_tests": 4
+    },
+    "pr_deliberate_break": false,
+    "issue_gate_mentions_break": true,
+    "has_reproduction": false,
+    "ac_snip": "Acceptance Criteria\n\n- Named test: `test_bulk_import_rolls_back_on_mid_batch_failure` \u2014 patch insert to fail on row 2, assert 503/validation failure and zero managers persisted.\n- Deliberate-break \u2192 revert: restore per-row `commit()` \u2192 named test FAILS \u2192 revert.\n\n## Non-Goals\n\n- Do NOT change single-manager `POST /managers` commit semantics outside the bulk path.\n- No scaffolding / TODO-only changes; every task is a concrete edit verified by the gate above.\n\n_Surfaced by repo-audit Track D refill 2026-09-21; verified by patched `_insert_manager` reproduction on tip d3d3405._\n"
+  },
+  "Workflows-3478": {
+    "repo": "Workflows",
+    "pr": 3478,
+    "title": "fix(sync): isolate named deliberate-break pytest options",
+    "merged_at": "2026-09-22T03:45:12Z",
+    "issue": 1836,
+    "issue_title": "Sync/Dependency campaign queue",
+    "issue_state": "open",
+    "diff": {
+      "files": [
+        ".github/sync-manifest.yml",
+        "docs/keepalive/GoalsAndPlumbing.md",
+        "docs/ops/CONSUMER_REPO_MAINTENANCE.md",
+        "scripts/check_deliberate_break.py",
+        "templates/consumer-repo/scripts/check_deliberate_break.py",
+        "tests/scripts/test_check_deliberate_break.py"
+      ],
+      "n_files": 6,
+      "prod_files": [
+        ".github/sync-manifest.yml",
+        "docs/keepalive/GoalsAndPlumbing.md",
+        "docs/ops/CONSUMER_REPO_MAINTENANCE.md",
+        "scripts/check_deliberate_break.py",
+        "templates/consumer-repo/scripts/check_deliberate_break.py"
+      ],
+      "test_files": [
+        "tests/scripts/test_check_deliberate_break.py"
+      ],
+      "belt_only": false,
+      "new_tests": [
+        "test_named_pytest_command_ignores_suite_wide_addopts",
+        "test_explicit_deliberate_break_command_preserves_author_options"
+      ],
+      "n_new_tests": 2
+    },
+    "pr_deliberate_break": false,
+    "issue_gate_mentions_break": true,
+    "has_reproduction": false,
+    "ac_snip": "# Sync/Dependency Campaign Queue\n\n> **Durable tracker** \u2014 see [`docs/ops/DURABLE_TRACKING_ISSUES.md`](https://github.com/stranske/Workflows/blob/main/docs/ops/DURABLE_TRACKING_ISSUES.md). The body below is regenerated each cycle by `maint-82-sync-dependency-campaign.yml`; do not close as part of routine triage.\n\n\nRemote discovery found more review-thread work than fits in a full GitHub issue body. The marker below retains the compact machine-readable queue for the local watcher.\n\n- Updated: 2026"
+  },
+  "trip-planner-1828": {
+    "repo": "trip-planner",
+    "pr": 1828,
+    "title": "Sync the trip's travel policy so approval can actually begin (#1731)",
+    "merged_at": "2026-09-22T04:42:07Z",
+    "issue": 1731,
+    "issue_title": "Approval submission is unreachable from the UI: backend routes exist but no control calls them",
+    "issue_state": "closed",
+    "diff": {
+      "files": [
+        "README.md",
+        "frontend/src/api/workspace.ts",
+        "frontend/src/lib/proposalSubmission.ts",
+        "frontend/src/routes/WorkspacePage.test.tsx",
+        "frontend/src/routes/WorkspacePage.tsx",
+        "render.yaml",
+        "tests/app/test_policy_sync_route.py",
+        "tests/app/test_proposal.py",
+        "tests/contracts/test_trip.py",
+        "trip_planner/app/routes/policy.py",
+        "trip_planner/app/routes/proposal.py",
+        "trip_planner/app/schemas/policy.py",
+        "trip_planner/app/schemas/proposal.py",
+        "trip_planner/app/services/policy.py",
+        "trip_planner/app/services/proposal.py",
+        "trip_planner/app/services/workspace.py",
+        "trip_planner/contracts/trip.py"
+      ],
+      "n_files": 17,
+      "prod_files": [
+        "README.md",
+        "frontend/src/api/workspace.ts",
+        "frontend/src/lib/proposalSubmission.ts",
+        "frontend/src/routes/WorkspacePage.tsx",
+        "render.yaml",
+        "trip_planner/app/routes/policy.py",
+        "trip_planner/app/routes/proposal.py",
+        "trip_planner/app/schemas/policy.py"
+      ],
+      "test_files": [
+        "frontend/src/routes/WorkspacePage.test.tsx",
+        "tests/app/test_policy_sync_route.py",
+        "tests/app/test_proposal.py",
+        "tests/contracts/test_trip.py"
+      ],
+      "belt_only": false,
+      "new_tests": [
+        "test_sync_endpoint_is_reachable_and_not_a_404",
+        "test_sync_persists_policy_from_successful_tpp_response",
+        "test_submission_rejects_scenario_outside_trip_workspace",
+        "test_submission_maps_current_saved_snapshot_to_materialized_row",
+        "test_submission_implicit_selection_uses_comparison_when_saved_ref_is_stale",
+        "test_submission_uses_persisted_origin_not_destination_regions",
+        "test_submission_cost_range_uses_resolved_budget_fallback",
+        "test_persisted_scenario_validation_allows_legacy_fixture_ids_without_workspace",
+        "test_persisted_scenario_validation_rejects_foreign_ids_when_workspace_has_scenarios",
+        "test_sync_without_configured_organization_says_so",
+        "test_organization_comes_from_deployment_config_not_the_caller",
+        "test_sync_rejects_caller_selected_organization"
+      ],
+      "n_new_tests": 16
+    },
+    "pr_deliberate_break": true,
+    "issue_gate_mentions_break": true,
+    "has_reproduction": false,
+    "ac_snip": "Acceptance Criteria\n\n- [ ] From a fresh account, a business trip can be submitted for evaluation and reach a terminal\n      verdict state entirely through the UI, with no direct API calls.\n- [ ] Clicking the Policy tab CTA issues a request to `/proposal` or `/proposal/evaluation`\n      (asserted, not assumed).\n- [ ] No UI control's label promises an action it does not perform.\n- [ ] `rg '/proposal' frontend/src -g '*.ts*' -g '!*.test.*'` returns the submission and evaluation\n      paths, not only `/proposal/refresh`.\n- [ ] \"Open scenario comparison\" resolves to an element with a button or link role.\n- [ ] Named gate: `frontend/src/routes/WorkspacePage.test.tsx` gains\n      `test(\"submitting a business trip for approval calls the proposal endpoint and renders the verdict\")`,\n      and `cd f"
+  },
+  "trip-planner-1834": {
+    "repo": "trip-planner",
+    "pr": 1834,
+    "title": "Fix first-use browser canary for the trip setup form",
+    "merged_at": "2026-09-22T05:44:17Z",
+    "issue": 1828,
+    "issue_title": "Sync the trip's travel policy so approval can actually begin (#1731)",
+    "issue_state": "closed",
+    "diff": {
+      "files": [
+        "frontend/e2e/two-trip-canary.spec.ts"
+      ],
+      "n_files": 1,
+      "prod_files": [
+        "frontend/e2e/two-trip-canary.spec.ts"
+      ],
+      "test_files": [],
+      "belt_only": false,
+      "new_tests": [],
+      "n_new_tests": 0
+    },
+    "pr_deliberate_break": false,
+    "issue_gate_mentions_break": true,
+    "has_reproduction": false,
+    "ac_snip": "Reopens and fixes **#1731**, which was closed as completed while the journey still stopped dead.\n\n## What was actually missing\n\nThe submission machinery all existed \u2014 `submitTripForApproval`, polling, evaluation ingestion, and a wired `handleSubmitForApproval`. But `policy_state` was absent for **every** trip, so `buildProposalSubmissionPayload` threw *\"Policy context is not available for this workspace\"* and the Policy tab's button appeared to do nothing at all.\n\nNothing in the product ever fet"
+  },
+  "Manager-Database-1718": {
+    "repo": "Manager-Database",
+    "pr": 1718,
+    "title": "fix(embeddings): join managers on document owner in Postgres search",
+    "merged_at": "2026-09-22T09:27:02Z",
+    "issue": 1715,
+    "issue_title": "[P1] Postgres search_documents manager join uses filter id instead of document owner",
+    "issue_state": "closed",
+    "diff": {
+      "files": [
+        "embeddings.py",
+        "tests/test_embeddings.py"
+      ],
+      "n_files": 2,
+      "prod_files": [
+        "embeddings.py"
+      ],
+      "test_files": [
+        "tests/test_embeddings.py"
+      ],
+      "belt_only": false,
+      "new_tests": [
+        "test_search_documents_postgres_manager_join_uses_document_owner"
+      ],
+      "n_new_tests": 1
+    },
+    "pr_deliberate_break": true,
+    "issue_gate_mentions_break": true,
+    "has_reproduction": true,
+    "ac_snip": "Acceptance Criteria\n\n- [ ] `test_search_documents_postgres_manager_join_uses_document_owner` asserts Postgres SQL contains `d.manager_id = m.manager_id`, not the filter literal, and returns the linked manager name.\n- [ ] Restoring `manager_join = str(int(manager_id))` causes the named test to fail.\n- [ ] `pytest tests/test_embeddings.py -q` passes.\n\n## Implementation Notes\n\nAlso consumed by `chains/rag_search.py` via `_vector_search` \u2192 `search_documents`. Core function: MDB-4.\n\n<details>\n<summary>Original Issue</summary>\n\n````text\n## Why\n\nPostgres `search_documents(manager_id=\u2026)` mis-joins the managers table, so filtered vector hits show the filter manager's name on every row instead of each document's owner (MDB-4 / RAG context).\n\nVerified on tip `3c7d3f9`:\n\n- `embeddings.py:303-308` sets"
+  },
+  "Manager-Database-1719": {
+    "repo": "Manager-Database",
+    "pr": 1719,
+    "title": "fix(alerts): make net large_delta rules fire",
+    "merged_at": "2026-09-22T10:24:31Z",
+    "issue": 1716,
+    "issue_title": "[P1] large_delta alert rules with delta_type net never fire",
+    "issue_state": "closed",
+    "diff": {
+      "files": [
+        "alerts/engine.py",
+        "tests/test_alert_integration.py"
+      ],
+      "n_files": 2,
+      "prod_files": [
+        "alerts/engine.py"
+      ],
+      "test_files": [
+        "tests/test_alert_integration.py"
+      ],
+      "belt_only": false,
+      "new_tests": [
+        "test_large_delta_net_rule_matches_buy_and_sell_events"
+      ],
+      "n_new_tests": 1
+    },
+    "pr_deliberate_break": true,
+    "issue_gate_mentions_break": true,
+    "has_reproduction": false,
+    "ac_snip": "Acceptance Criteria\n\n- Named test `test_large_delta_net_rule_matches_buy_and_sell_events` in `tests/test_alert_integration.py` asserts `AlertEngine.evaluate` returns a match for both buy and sell payloads when the rule condition is `{\"delta_type\": \"net\", \"value_usd_gt\": 0}`.\n- Deliberate-break \u2192 revert: restore exact-match-only behavior for `net` \u2192 named test FAILS \u2192 revert.\n- `pytest tests/test_alert_integration.py -q` passes.\n\n## Implementation Notes\n\nDistinct from fixed #1706 (`new_filing` key mismatch). Core function: MDB-8.\n"
+  },
+  "Workflows-3503": {
+    "repo": "Workflows",
+    "pr": 3503,
+    "title": "fix(gate): allow reviewed assertion replacement for issue 36",
+    "merged_at": "2026-09-22T10:42:19Z",
+    "issue": 3502,
+    "issue_title": "Gate rejects issue-mandated assertion changes",
+    "issue_state": "closed",
+    "diff": {
+      "files": [],
+      "n_files": 0,
+      "prod_files": [],
+      "test_files": [],
+      "belt_only": false,
+      "new_tests": [],
+      "n_new_tests": 0
+    },
+    "pr_deliberate_break": true,
+    "issue_gate_mentions_break": true,
+    "has_reproduction": false,
+    "ac_snip": "## Why\n\nDeliverable-Render PR #39 implements source issue #36, which explicitly requires changing a test assertion from `validate_store(without_page).valid` to false because missing evidence pages must now fail validation. The focused suite passes 41/41, but Gate `test-quality` run 35710324790/job/106689200982 returns `FAIL_BROKEN` / `test-assertion-tamper`: the synced `scripts/check_deliberate_break.py::_changed_assertions` treats every removed assertion line as tampering without inspecting the"
+  },
+  "Deliverable-Render-39": {
+    "repo": "Deliverable-Render",
+    "pr": 39,
+    "title": "fix(store): reject invalid evidence pages during validation",
+    "merged_at": "2026-09-22T11:41:16Z",
+    "issue": 36,
+    "issue_title": "[P1] Evidence page 0, missing, or float passes validate-structured-store then fails at render",
+    "issue_state": "closed",
+    "diff": {
+      "files": [],
+      "n_files": 0,
+      "prod_files": [],
+      "test_files": [],
+      "belt_only": false,
+      "new_tests": [],
+      "n_new_tests": 0
+    },
+    "pr_deliberate_break": true,
+    "issue_gate_mentions_break": true,
+    "has_reproduction": false,
+    "ac_snip": "Acceptance Criteria\n\n- Named test: `test_validator_rejects_invalid_evidence_page_values` in `tests/store/test_communication_render_profile.py` asserting `validate_store` fails for zero, missing, and float pages on both `mentions[].src` and `pub.src` pointers.\n- Deliberate-break \u2192 revert: temporarily restore the pre-fix validator (no page check) \u2192 confirm the named test FAILS \u2192 revert.\n- `python3 -m pytest tests/store/test_communication_render_profile.py -q` passes.\n\n## Non-Goals\n\n- Do not relax the render adapter rules in `src/deliverable_render/store/communication.py:69-72`.\n- Do not change evidence-object schema minimums in `src/deliverable_render/store/evidence-object-v1.schema.json` without matching validator semantics.\n- No scaffolding / TODO-only changes; every task is a concrete edi"
+  }
+}

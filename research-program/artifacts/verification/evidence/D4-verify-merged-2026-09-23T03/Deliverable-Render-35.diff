@@ -1,0 +1,114 @@
+diff --git a/docs/STRUCTURED_STORE_VALIDATION.md b/docs/STRUCTURED_STORE_VALIDATION.md
+index 5f52bf6..46eb36b 100644
+--- a/docs/STRUCTURED_STORE_VALIDATION.md
++++ b/docs/STRUCTURED_STORE_VALIDATION.md
+@@ -17,6 +17,9 @@ does **not** describe a `mentions` field on the top-level entries list
+ referencing entry IDs. An explicit entry reference is supported where producers
+ provide one, while the documented `q` join is always checked.
+ 
++Document identities must also be unique. The validator and renderer both use
++`documents[].stable_id` when that field is present, otherwise `documents[].name`.
++
+ An evidence pointer in `mentions[].src` or `entries[].pub.src` must contain
+ `stable_id` (or `source_id`), `method`, and `quote` (or `excerpt`, which
+ may explicitly be null). The validator deterministically derives an
+diff --git a/src/deliverable_render/store/validate.py b/src/deliverable_render/store/validate.py
+index ab8c0ee..40ef519 100644
+--- a/src/deliverable_render/store/validate.py
++++ b/src/deliverable_render/store/validate.py
+@@ -74,14 +74,24 @@ def _ids(items: list[dict[str, Any]], path: str, report: ValidationReport) -> se
+     return found
+ 
+ 
+-def _document_identities(items: list[dict[str, Any]]) -> set[str]:
+-    """Return render-facing document identities without inventing fallbacks."""
++def _document_identities(
++    items: list[dict[str, Any]], path: str, report: ValidationReport
++) -> set[str]:
++    """Return unique render-facing document identities without inventing fallbacks."""
+     identities: set[str] = set()
+-    for item in items:
++    for index, item in enumerate(items):
+         identity_field = "stable_id" if "stable_id" in item else "name"
+         identity = item.get(identity_field)
+         if isinstance(identity, str) and identity.strip():
+-            identities.add(identity)
++            identity_path = _path(_path(path, index), identity_field)
++            if identity in identities:
++                report.fail(
++                    "duplicate-document-identity",
++                    identity_path,
++                    f"duplicate document identity {identity!r}",
++                )
++            else:
++                identities.add(identity)
+     return identities
+ 
+ 
+@@ -216,7 +226,7 @@ def validate_store(path: Path) -> ValidationReport:
+     }
+     entry_ids = _ids(sections.get("entries", []), "/entries", report)
+     period_ids = _ids(sections.get("periods", []), "/periods", report)
+-    document_ids = _document_identities(sections.get("documents", []))
++    document_ids = _document_identities(sections.get("documents", []), "/documents", report)
+     validator = Draft202012Validator(evidence_schema())
+ 
+     for entry_index, entry in enumerate(sections.get("entries", [])):
+diff --git a/tests/store/test_communication_render_profile.py b/tests/store/test_communication_render_profile.py
+index 8812ab2..46240cc 100644
+--- a/tests/store/test_communication_render_profile.py
++++ b/tests/store/test_communication_render_profile.py
+@@ -235,6 +235,53 @@ def test_validator_rejects_evidence_source_not_in_documents(
+     )
+ 
+ 
++def test_validator_rejects_duplicate_document_identity(tmp_path: Path) -> None:
++    data = json.loads(STORE.read_text(encoding="utf-8"))
++    data["documents"].append({"name": "doc-1"})
++    store_path = tmp_path / "duplicate-document.json"
++    store_path.write_text(json.dumps(data), encoding="utf-8")
++
++    report = validate_store(store_path)
++
++    assert not report.valid
++    assert any(
++        issue.code == "duplicate-document-identity"
++        and issue.path == "/documents/1/name"
++        and "duplicate document identity 'doc-1'" in issue.message
++        for issue in report.issues
++    )
++
++
++def test_validator_rejects_duplicate_document_stable_id(tmp_path: Path) -> None:
++    data = json.loads(STORE.read_text(encoding="utf-8"))
++    data["documents"][0]["stable_id"] = "doc-1"
++    data["documents"].append({"name": "doc-2", "stable_id": "doc-1"})
++    store_path = tmp_path / "duplicate-document-stable-id.json"
++    store_path.write_text(json.dumps(data), encoding="utf-8")
++
++    report = validate_store(store_path)
++
++    assert not report.valid
++    assert any(
++        issue.code == "duplicate-document-identity"
++        and issue.path == "/documents/1/stable_id"
++        and "duplicate document identity 'doc-1'" in issue.message
++        for issue in report.issues
++    )
++
++
++def test_validator_prefers_distinct_stable_ids_over_equal_names(tmp_path: Path) -> None:
++    data = json.loads(STORE.read_text(encoding="utf-8"))
++    data["documents"][0]["stable_id"] = "doc-1"
++    data["documents"].append({"name": "doc-1", "stable_id": "doc-2"})
++    store_path = tmp_path / "same-name-distinct-stable-ids.json"
++    store_path.write_text(json.dumps(data), encoding="utf-8")
++
++    report = validate_store(store_path)
++
++    assert report.valid
++
++
+ def test_adapter_does_not_replace_an_explicit_blank_stable_id_with_name() -> None:
+     data = json.loads(STORE.read_text(encoding="utf-8"))
+     data["documents"][0]["stable_id"] = ""

@@ -1,0 +1,97 @@
+diff --git a/src/counter_risk/compute/rollups.py b/src/counter_risk/compute/rollups.py
+index 7747ce505..272efa676 100644
+--- a/src/counter_risk/compute/rollups.py
++++ b/src/counter_risk/compute/rollups.py
+@@ -249,7 +249,7 @@ def apply_repo_cash_to_totals(
+ 
+     For matched counterparties, this increments both ``Cash`` and ``Notional``.
+     For unmatched counterparties, a new totals row is appended with zeroes for
+-    non-cash asset classes and ``NotionalChange`` defaulted to ``0.0``.
++    non-cash asset classes and its repo-cash amount as ``NotionalChange``.
+     """
+ 
+     rows = _iter_rows(totals_df, arg_name="totals_df")
+@@ -301,7 +301,7 @@ def apply_repo_cash_to_totals(
+                     "prior_notional": 0.0,
+                     "notional_change": amount,
+                     "Notional": amount,
+-                    "NotionalChange": 0.0,
++                    "NotionalChange": amount,
+                 }
+             )
+             normalized_index[normalized] = len(records) - 1
+@@ -312,7 +312,14 @@ def apply_repo_cash_to_totals(
+         _add_amount_to_aliases(row=row, aliases=("notional", "Notional"), amount=amount)
+         if row.get("group_type") == "counterparty":
+             row["group_name"] = _counterparty_label_from_totals_row(row) or counterparty
+-            row["notional_change"] = float(row.get("notional_change", 0.0) or 0.0) + amount
++
++        existing_change = row.get("notional_change")
++        if existing_change is None or (
++            isinstance(existing_change, str) and not existing_change.strip()
++        ):
++            existing_change = row.get("NotionalChange", 0.0)
++        row["notional_change"] = float(existing_change or 0.0) + amount
++        row["NotionalChange"] = row["notional_change"]
+ 
+     return _to_dataframe_or_records(records=records, columns=tuple(output_columns))
+ 
+diff --git a/tests/compute/test_rollups.py b/tests/compute/test_rollups.py
+index c6c725dfb..065ef2d34 100644
+--- a/tests/compute/test_rollups.py
++++ b/tests/compute/test_rollups.py
+@@ -333,6 +333,54 @@ def test_apply_repo_cash_to_totals_updates_counterparty_group_rows_from_rollups_
+     assert float(asl["Cash"]) == pytest.approx(1.0)
+ 
+ 
++def test_apply_repo_cash_syncs_notional_change_columns() -> None:
++    totals_rows = [
++        {
++            "counterparty": "CIBC",
++            "group_type": "counterparty",
++            "group_name": "CIBC",
++            "Notional": 10.0,
++            "NotionalChange": 1.0,
++            "notional_change": 2.0,
++        },
++        {
++            "counterparty": "Legacy FCM",
++            "Notional": 20.0,
++            "NotionalChange": 4.0,
++        },
++        {
++            "counterparty": "Blank Delta",
++            "Notional": 30.0,
++            "NotionalChange": 7.0,
++            "notional_change": "",
++        },
++    ]
++
++    updated = _as_records(
++        apply_repo_cash_to_totals(
++            totals_rows,
++            {"CIBC": 3.5, "Legacy FCM": 2.0, "Blank Delta": 1.0, "ASL": 250.0},
++        )
++    )
++    by_counterparty = {row["counterparty"]: row for row in updated}
++    assert by_counterparty["CIBC"]["notional_change"] == pytest.approx(5.5)
++    assert by_counterparty["CIBC"]["NotionalChange"] == pytest.approx(5.5)
++    assert by_counterparty["ASL"]["notional_change"] == pytest.approx(250.0)
++    assert by_counterparty["ASL"]["NotionalChange"] == pytest.approx(250.0)
++    assert by_counterparty["Legacy FCM"]["notional_change"] == pytest.approx(6.0)
++    assert by_counterparty["Legacy FCM"]["NotionalChange"] == pytest.approx(6.0)
++    assert by_counterparty["Blank Delta"]["notional_change"] == pytest.approx(8.0)
++    assert by_counterparty["Blank Delta"]["NotionalChange"] == pytest.approx(8.0)
++
++    _, top_changes = _compute_metrics({"all": {"totals": updated}})
++    assert top_changes["all"][0] == {"counterparty": "ASL", "notional_change": 250.0}
++    assert top_changes["all"][1:] == [
++        {"counterparty": "Blank Delta", "notional_change": 8.0},
++        {"counterparty": "Legacy FCM", "notional_change": 6.0},
++        {"counterparty": "CIBC", "notional_change": 5.5},
++    ]
++
++
+ def test_top_exposures_is_deterministic_for_ties() -> None:
+     exposures = [
+         {"counterparty": "Bravo", "asset_class": "Equity", "notional": 100.0},

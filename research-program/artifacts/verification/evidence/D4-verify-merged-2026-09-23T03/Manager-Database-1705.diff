@@ -1,0 +1,149 @@
+diff --git a/api/signals.py b/api/signals.py
+index 42833a6e..4b0f1f93 100644
+--- a/api/signals.py
++++ b/api/signals.py
+@@ -3,6 +3,7 @@
+ from __future__ import annotations
+ 
+ import json
++import math
+ import os
+ from datetime import date, datetime
+ from typing import Any
+@@ -303,6 +304,9 @@ def query_conviction_scores(
+     min_conviction_pct: float = 0.0,
+     limit: int = 100,
+ ) -> list[ConvictionScoreResponse]:
++    if not math.isfinite(min_conviction_pct) or not 0.0 <= min_conviction_pct <= 100.0:
++        raise ValueError("min_conviction_pct must be finite and between 0 and 100")
++
+     if not table_exists(conn, "conviction_scores"):
+         return []
+ 
+@@ -388,6 +392,36 @@ def query_conviction_scores(
+     return out
+ 
+ 
++def _min_conviction_pct_error(message: str, error_type: str) -> Exception:
++    try:
++        from fastapi import HTTPException
++    except ModuleNotFoundError:
++        return ValueError(message)
++    return HTTPException(
++        status_code=422,
++        detail=[
++            {
++                "loc": ["query", "min_conviction_pct"],
++                "msg": message,
++                "type": error_type,
++            }
++        ],
++    )
++
++
++def _parse_min_conviction_pct(value: str) -> float:
++    try:
++        parsed = float(value)
++    except (TypeError, ValueError) as exc:
++        raise _min_conviction_pct_error("Input should be a valid number", "float_parsing") from exc
++
++    if not math.isfinite(parsed) or not 0.0 <= parsed <= 100.0:
++        raise _min_conviction_pct_error(
++            "Input should be finite and between 0 and 100", "value_error"
++        )
++    return parsed
++
++
+ @router.get(
+     "/api/signals/crowded",
+     response_model=list[CrowdedTradeResponse],
+@@ -440,16 +474,23 @@ async def get_contrarian_signals(
+ async def get_conviction_scores(
+     manager_id: int,
+     filing_id: int | None = None,
+-    min_conviction_pct: float = Query(0.0, ge=0.0),
++    # Parse explicitly so this repository's validation-error handler cannot turn
++    # a query-field failure into HTTP 400. json_schema_extra preserves the public
++    # numeric OpenAPI contract and its bounds for generated clients.
++    min_conviction_pct: str = Query(
++        "0.0",
++        json_schema_extra={"type": "number", "minimum": 0.0, "maximum": 100.0},
++    ),
+     limit: int = Query(100, ge=1, le=500),
+ ) -> list[ConvictionScoreResponse]:
++    parsed_min_conviction_pct = _parse_min_conviction_pct(min_conviction_pct)
+     conn = connect_db()
+     try:
+         return query_conviction_scores(
+             conn,
+             manager_id,
+             filing_id=filing_id,
+-            min_conviction_pct=min_conviction_pct,
++            min_conviction_pct=parsed_min_conviction_pct,
+             limit=limit,
+         )
+     finally:
+diff --git a/tests/test_signals_api.py b/tests/test_signals_api.py
+index 1289b00f..46c3182d 100644
+--- a/tests/test_signals_api.py
++++ b/tests/test_signals_api.py
+@@ -5,6 +5,7 @@
+ from typing import Any, cast
+ 
+ import httpx
++import pytest
+ 
+ sys.path.append(str(Path(__file__).resolve().parents[1]))
+ 
+@@ -321,6 +322,51 @@ def test_get_conviction_scores_defaults_to_latest_filing(tmp_path, monkeypatch):
+     assert payload[0]["conviction_pct"] == 66.67
+ 
+ 
++def test_conviction_scores_rejects_non_finite_min_conviction_pct(tmp_path, monkeypatch):
++    db_path = tmp_path / "signals.db"
++    _seed_db(db_path)
++    monkeypatch.setenv("DB_PATH", str(db_path))
++
++    for invalid_value in ("not-a-number", "-0.01", "nan", "inf", "100.01"):
++        response = asyncio.run(
++            _request(
++                "/api/signals/conviction/1",
++                params={"min_conviction_pct": invalid_value},
++            )
++        )
++
++        assert response.status_code == 422
++        assert any(
++            error["loc"] == ["query", "min_conviction_pct"] for error in response.json()["detail"]
++        )
++
++    for valid_value in ("0", "0.5", "100"):
++        finite_response = asyncio.run(
++            _request(
++                "/api/signals/conviction/1",
++                params={"min_conviction_pct": valid_value},
++            )
++        )
++        assert finite_response.status_code == 200
++
++    parameter = next(
++        parameter
++        for parameter in app.openapi()["paths"]["/api/signals/conviction/{manager_id}"]["get"][
++            "parameters"
++        ]
++        if parameter["name"] == "min_conviction_pct"
++    )
++    assert parameter["schema"]["type"] == "number"
++    assert parameter["schema"]["minimum"] == 0.0
++    assert parameter["schema"]["maximum"] == 100.0
++
++
++def test_query_conviction_scores_rejects_invalid_minimums():
++    for invalid_value in (float("nan"), float("inf"), -0.01, 100.01):
++        with pytest.raises(ValueError, match="finite and between 0 and 100"):
++            query_conviction_scores(None, 1, min_conviction_pct=invalid_value)
++
++
+ def test_get_conviction_scores_exposes_optional_short_interest_context(tmp_path, monkeypatch):
+     db_path = tmp_path / "signals.db"
+     _seed_db(db_path)

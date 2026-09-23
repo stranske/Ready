@@ -1,9 +1,9 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-23T00:19:39Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-23T04:43:19Z)
 
-Units: 165 — done 162, failed 3
+Units: 167 — claimed 1, done 163, failed 3
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
-Orchestrator evidence (30d): offload runs 207, bound to a research round 161, scored 161 (PASS 115, FAIL 46, infra 19) — codex 26/27 (P9 F17 I6), cursor 75/108 (P66 F9 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
+Orchestrator evidence (30d): offload runs 208, bound to a research round 162, scored 162 (PASS 116, FAIL 46, infra 19) — codex 26/27 (P9 F17 I6), cursor 76/109 (P67 F9 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
 Claude conservation: off (weekly window available)
 Owner inbox: https://github.com/stranske/Ready/issues/553
 
@@ -109,6 +109,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D3-unblock-sweep-2026-09-22T04 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-2026-09-22T12 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-2026-09-22T20 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
+| D3-unblock-sweep-2026-09-23T04 | D | D | claimed | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-pass2-20260913T2023 | D | D | done | cursor | driver | Unblock sweep pass 2: the seven repos the budgeted first pass deferred |  |
 | D-audit-Counter_Risk--2026-09-07T04-47-32Z | D | D | done | codex | driver | Audit stranske/Counter_Risk and file issues (supply 2 <= 2) |  |
 | D-audit-Counter_Risk--2026-09-08T17-11-36Z | D | D | done | codex | codex | Audit stranske/Counter_Risk and file issues (supply 1 <= 2) |  |
@@ -174,21 +175,22 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D4-verify-merged-2026-09-20T20 | D | D | done | cursor | codex | Verify merged PRs against their issues' acceptance criteria |  |
 | D4-verify-merged-2026-09-21T03 | D | D | done | cursor | codex | Verify merged PRs against their issues' acceptance criteria |  |
 | D4-verify-merged-2026-09-22T03 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
+| D4-verify-merged-2026-09-23T03 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
 
 ## Last checkpoints
 
-- 2026-09-22T20:42:46Z — D3-unblock-sweep-2026-09-22T20 — claimed by driver (agent cursor)
-- 2026-09-22T20:46:24Z — D3-unblock-sweep-2026-09-22T20 — done — cursor produced 692 words at artifacts/sweeps/D3-unblock-sweep-2026-09-22T20.md in 191s
-- 2026-09-22T21:01:49Z — D-audit-Deliverable-Render--2026-09-22T20-42-40Z — route — router picked cursor from ['codex', 'cursor']
-- 2026-09-22T21:01:49Z — D-audit-Deliverable-Render--2026-09-22T20-42-40Z — claimed by driver (agent cursor)
-- 2026-09-22T21:05:31Z — D-audit-Deliverable-Render--2026-09-22T20-42-40Z — done — cursor produced 521 words at artifacts/audits/Deliverable-Render-2026-09-22.md in 198s
-- 2026-09-22T21:11:32Z — D-audit-Manager-Database--2026-09-22T20-42-44Z — route — router picked cursor from ['codex', 'cursor']
-- 2026-09-22T21:11:32Z — D-audit-Manager-Database--2026-09-22T20-42-44Z — claimed by codex (agent cursor)
-- 2026-09-22T21:20:00Z — D-audit-Manager-Database--2026-09-22T20-42-44Z — done — Scorecard: 8 work / 0 partial / 0 broken / 0 fabricated / 0 not exercised of 8; journey: passes; surfaces unscored 0; closed-still-broken 0. The refreshed audit
-- 2026-09-22T21:20:00Z — D-audit-Manager-Database--2026-09-22T20-42-44Z — evidence — 1 unscored offload run(s) recorded PASS (executor codex report)
-- 2026-09-22T21:20:56Z — D-audit-learning-management-system--2026-09-22T20-42-45Z — route — router picked cursor from ['codex', 'cursor']
-- 2026-09-22T21:20:56Z — D-audit-learning-management-system--2026-09-22T20-42-45Z — claimed by driver (agent cursor)
-- 2026-09-22T21:29:00Z — D-audit-learning-management-system--2026-09-22T20-42-45Z — done — cursor produced 515 words at artifacts/audits/learning-management-system-2026-09-22.md in 459s
+- 2026-09-23T03:20:48Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-23T04:30:18+00:00; local work continues
+- 2026-09-23T03:27:40Z — D4-verify-merged-2026-09-23T03 — done — cursor produced 814 words at artifacts/verification/D4-verify-merged-2026-09-23T03.md in 408s
+- 2026-09-23T03:27:40Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-23T04:30:18+00:00; local work continues
+- 2026-09-23T03:42:42Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+- 2026-09-23T03:42:43Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-23T04:30:18+00:00; local work continues
+- 2026-09-23T03:58:13Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-23T04:30:18+00:00; local work continues
+- 2026-09-23T04:12:05Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-23T04:30:18+00:00; local work continues
+- 2026-09-23T04:13:15Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-23T04:30:18+00:00; local work continues
+- 2026-09-23T04:28:17Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-23T04:30:18+00:00; local work continues
+- 2026-09-23T04:43:19Z — unblock — enqueued D3-unblock-sweep-2026-09-23T04
+- 2026-09-23T04:43:19Z — D3-unblock-sweep-2026-09-23T04 — route — router picked cursor from ['codex', 'cursor']
+- 2026-09-23T04:43:19Z — D3-unblock-sweep-2026-09-23T04 — claimed by driver (agent cursor)
 
 ## Questions
 
