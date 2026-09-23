@@ -31,3 +31,7 @@ Revalidated the changed export/evidence slice: 36 dedicated tests passed; 57 foc
 Scorecard: 6 work / 0 partial / 0 broken / 0 fabricated / 0 not exercised of 6; journey: passes; surfaces unscored 2; closed-still-broken 0.
 
 Remote `main` advanced to `52b7f4b`, fixing the former period-alias discrepancy (reproduction now `alias 1` / `same 1`); 0 new issues filed. The triggering canonical `Code/Audits/Manager-Mosaic/2026-09-23-SCORECARD.md` still lacks its required parseable headline. This executor attempted the minimal backfill but the filesystem sandbox rejected writes outside the research-program workspace; `gh` authentication was also unavailable, so remote issue and format-guard state are unknown. OUT: `artifacts/audits/Manager-Mosaic-2026-09-23.md`.
+
+## 2026-09-24T00:45Z — D-audit-Manager-Mosaic--2026-09-23T22-11-13Z — attempt 2 complete
+
+Canonical scorecard headline backfilled; ledger/report updated. Tip `52b7f4b`; 80 tests passed; 0 new issues; #53 refuted on tip (fixed #54). Format guard confirmed on #52/#53 intake. OUT line 1 parseable.
