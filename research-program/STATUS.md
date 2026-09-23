@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-23T23:07:35Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-23T23:10:19Z)
 
-Units: 192 — claimed 2, done 179, failed 4, queued 7
+Units: 192 — claimed 3, done 179, failed 4, queued 6
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 Orchestrator evidence (30d): offload runs 232, bound to a research round 186, scored 186 (PASS 128, FAIL 58, infra 19) — codex 27/28 (P9 F18 I6), cursor 99/132 (P79 F20 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
@@ -139,7 +139,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Fine-Art-Archive--2026-09-23T09-11-19Z | D | D | failed | cursor |  | Audit stranske/Fine-Art-Archive and file issues (scorecard 2026-09-20  |  |
 | D-audit-Fine-Art-Archive--2026-09-23T22-11-18Z | D | D | claimed | cursor | claude | Audit stranske/Fine-Art-Archive and file issues (scorecard 2026-09-23  |  |
 | D-audit-Inv-Man-Intake--2026-09-23T09-11-17Z | D | D | done | cursor | claude | Audit stranske/Inv-Man-Intake and file issues (scorecard 2026-09-20 ha | 5W/2P/0B/0F of 7 |
-| D-audit-Inv-Man-Intake--2026-09-23T22-11-16Z | D | D | queued | claude |  | Audit stranske/Inv-Man-Intake and file issues (scorecard 2026-09-23 ha |  |
+| D-audit-Inv-Man-Intake--2026-09-23T22-11-16Z | D | D | claimed | cursor | codex | Audit stranske/Inv-Man-Intake and file issues (scorecard 2026-09-23 ha |  |
 | D-audit-Manager-Database--2026-09-10T17-45-13Z | D | D | done | codex | driver | Audit stranske/Manager-Database and file issues (supply 0 <= 2) |  |
 | D-audit-Manager-Database--2026-09-14T06-49-50Z | D | D | done | codex | codex | Audit stranske/Manager-Database and file issues (supply 2 <= 2) |  |
 | D-audit-Manager-Database--2026-09-14T19-00-22Z | D | D | done | codex | codex | Audit stranske/Manager-Database and file issues (supply 2 <= 2) |  |
@@ -204,8 +204,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-23T22:43:24Z — D-audit-Doc-Lineage--2026-09-23T22-11-18Z — claimed by driver (agent codex)
-- 2026-09-23T22:49:32Z — D-audit-Doc-Lineage--2026-09-23T22-11-18Z — fail — offload to codex exited 70; agent reported OFFLOAD_INCOMPLETE
 - 2026-09-23T23:04:34Z — D-audit-Doc-Lineage--2026-09-23T22-11-18Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-23T23:04:34Z — D-audit-Doc-Lineage--2026-09-23T22-11-18Z — claimed by driver (agent cursor)
 - 2026-09-23T23:05:07Z — D-audit-Fine-Art-Archive--2026-09-23T22-11-18Z — route — router picked cursor from ['codex', 'cursor']
@@ -216,6 +214,8 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-23T23:07:31Z — D-audit-Doc-Lineage--2026-09-23T22-11-18Z — refutation posted — stranske/Doc-Lineage#49
 - 2026-09-23T23:07:33Z — D-audit-Doc-Lineage--2026-09-23T22-11-18Z — refutation posted — stranske/Doc-Lineage#50
 - 2026-09-23T23:07:34Z — D-audit-Doc-Lineage--2026-09-23T22-11-18Z — refutation posted — stranske/Doc-Lineage#51
+- 2026-09-23T23:10:19Z — D-audit-Inv-Man-Intake--2026-09-23T22-11-16Z — route — router picked cursor from ['codex', 'cursor']
+- 2026-09-23T23:10:19Z — D-audit-Inv-Man-Intake--2026-09-23T22-11-16Z — claimed by codex (agent cursor)
 
 ## Questions
 
