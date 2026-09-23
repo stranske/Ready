@@ -9,3 +9,7 @@ Completed the scorecard and eight-dimension reconciliation. Live deterministic p
 ## 2026-09-23T22:40:00Z — D-audit-Deliverable-Render--2026-09-23T22-11-12Z — complete
 
 Refill re-run on tip `a867f3f`: scorecard 7/7 WORKS, journey passes. Re-verified #37/#47 open seams; refuted #40/#41 on tip. 0 new issues filed (#47 already from 09:11Z unit). OUT `artifacts/audits/Deliverable-Render-2026-09-23.md` line 1 scorecard headline confirmed parseable.
+
+## 2026-09-23T22:31:00Z — D-audit-Doc-Lineage--2026-09-23T22-11-18Z — complete
+
+Re-audit on `09681ce`: scorecard 4 WORKS / 1 PARTIAL (OCR executable unavailable), primary journey passes, and no unscored CLI surfaces. Live ingest varied-output, fact-key-map export, fixture harvest, and DOCX redline passed; 113 focused tests passed. Closed #47–#51 were refuted on tip. No fresh filable defect survived; `gh` authentication/CI and format-guard readback are unknown. OUT `artifacts/audits/Doc-Lineage-2026-09-23.md` starts with the required parseable scorecard line.

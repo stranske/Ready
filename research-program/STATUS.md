@@ -1,9 +1,9 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-23T22:43:24Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-23T23:04:34Z)
 
 Units: 192 — claimed 2, done 178, failed 4, queued 8
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
-Orchestrator evidence (30d): offload runs 230, bound to a research round 184, scored 184 (PASS 127, FAIL 57, infra 19) — codex 26/27 (P9 F17 I6), cursor 98/131 (P78 F20 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
+Orchestrator evidence (30d): offload runs 231, bound to a research round 185, scored 185 (PASS 127, FAIL 58, infra 19) — codex 27/28 (P9 F18 I6), cursor 98/131 (P78 F20 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
 Claude conservation: off (weekly window available)
 Owner inbox: https://github.com/stranske/Ready/issues/553
 
@@ -133,7 +133,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Deliverable-Render--2026-09-23T22-11-12Z | D | D | done | cursor | driver | Audit stranske/Deliverable-Render and file issues (scorecard 2026-09-2 | 7W/0P/0B/0F of 7 |
 | D-audit-Doc-Lineage--2026-09-19T20-12-10Z | D | D | done | codex | codex | Audit stranske/Doc-Lineage and file issues (supply 2 <= 2) |  |
 | D-audit-Doc-Lineage--2026-09-23T09-11-20Z | D | D | done | cursor | driver | Audit stranske/Doc-Lineage and file issues (scorecard 2026-09-20 has n | 4W/1P/0B/0F of 5 |
-| D-audit-Doc-Lineage--2026-09-23T22-11-18Z | D | D | claimed | codex | driver | Audit stranske/Doc-Lineage and file issues (scorecard 2026-09-23 has n |  |
+| D-audit-Doc-Lineage--2026-09-23T22-11-18Z | D | D | claimed | cursor | driver | Audit stranske/Doc-Lineage and file issues (scorecard 2026-09-23 has n |  |
 | D-audit-Fine-Art-Archive--2026-09-05T04-00-31Z | D | D | done | codex | codex | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 2) |  |
 | D-audit-Fine-Art-Archive--2026-09-06T04-25-53Z | D | D | done | codex | driver | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 3) |  |
 | D-audit-Fine-Art-Archive--2026-09-23T09-11-19Z | D | D | failed | cursor |  | Audit stranske/Fine-Art-Archive and file issues (scorecard 2026-09-20  |  |
@@ -204,9 +204,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-23T22:11:16Z — refill — Pension-Data: scorecard 2026-09-23 has no parseable headline → audit queued
-- 2026-09-23T22:11:18Z — refill — Fine-Art-Archive: scorecard 2026-09-23 has no parseable headline → audit queued
-- 2026-09-23T22:11:18Z — refill — Doc-Lineage: scorecard 2026-09-23 has no parseable headline → audit queued
 - 2026-09-23T22:11:18Z — D-audit-Counter_Risk--2026-09-23T22-11-15Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-23T22:11:18Z — D-audit-Counter_Risk--2026-09-23T22-11-15Z — claimed by codex (agent cursor)
 - 2026-09-23T22:24:41Z — D-audit-Deliverable-Render--2026-09-23T22-11-12Z — route — router picked cursor from ['codex', 'cursor']
@@ -216,6 +213,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-23T22:27:55Z — D-audit-Deliverable-Render--2026-09-23T22-11-12Z — refutation posted — stranske/Deliverable-Render#41
 - 2026-09-23T22:43:24Z — D-audit-Doc-Lineage--2026-09-23T22-11-18Z — route — router picked codex from ['codex', 'cursor']
 - 2026-09-23T22:43:24Z — D-audit-Doc-Lineage--2026-09-23T22-11-18Z — claimed by driver (agent codex)
+- 2026-09-23T22:49:32Z — D-audit-Doc-Lineage--2026-09-23T22-11-18Z — fail — offload to codex exited 70; agent reported OFFLOAD_INCOMPLETE
+- 2026-09-23T23:04:34Z — D-audit-Doc-Lineage--2026-09-23T22-11-18Z — route — router picked cursor from ['codex', 'cursor']
+- 2026-09-23T23:04:34Z — D-audit-Doc-Lineage--2026-09-23T22-11-18Z — claimed by driver (agent cursor)
 
 ## Questions
 

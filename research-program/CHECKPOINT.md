@@ -1751,3 +1751,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-23T22:27:55Z — D-audit-Deliverable-Render--2026-09-23T22-11-12Z — refutation posted — stranske/Deliverable-Render#41
 ## 2026-09-23T22:43:24Z — D-audit-Doc-Lineage--2026-09-23T22-11-18Z — route — router picked codex from ['codex', 'cursor']
 ## 2026-09-23T22:43:24Z — D-audit-Doc-Lineage--2026-09-23T22-11-18Z — claimed by driver (agent codex)
+## 2026-09-23T22:49:32Z — D-audit-Doc-Lineage--2026-09-23T22-11-18Z — fail — offload to codex exited 70; agent reported OFFLOAD_INCOMPLETE
+## 2026-09-23T23:04:34Z — D-audit-Doc-Lineage--2026-09-23T22-11-18Z — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-23T23:04:34Z — D-audit-Doc-Lineage--2026-09-23T22-11-18Z — claimed by driver (agent cursor)
