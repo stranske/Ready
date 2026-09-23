@@ -1,9 +1,9 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-23T13:45:39Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-23T14:03:19Z)
 
 Units: 180 — claimed 1, done 174, failed 4, queued 1
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
-Orchestrator evidence (30d): offload runs 226, bound to a research round 180, scored 180 (PASS 124, FAIL 56, infra 19) — codex 26/27 (P9 F17 I6), cursor 94/127 (P75 F19 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
+Orchestrator evidence (30d): offload runs 227, bound to a research round 181, scored 181 (PASS 124, FAIL 57, infra 19) — codex 26/27 (P9 F17 I6), cursor 95/128 (P75 F20 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
 Claude conservation: off (weekly window available)
 Owner inbox: https://github.com/stranske/Ready/issues/553
 
@@ -192,9 +192,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-23T13:00:27Z — unblock — enqueued D3-unblock-sweep-2026-09-23T13
-- 2026-09-23T13:00:27Z — D3-unblock-sweep-2026-09-23T13 — route — router picked cursor from ['codex', 'cursor']
-- 2026-09-23T13:00:27Z — D3-unblock-sweep-2026-09-23T13 — claimed by driver (agent cursor)
 - 2026-09-23T13:05:01Z — D3-unblock-sweep-2026-09-23T13 — done — cursor produced 766 words at artifacts/sweeps/D3-unblock-sweep-2026-09-23T13.md in 244s
 - 2026-09-23T13:10:41Z — D-audit-Travel-Plan-Permission--2026-09-23T09-11-15Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-23T13:10:41Z — D-audit-Travel-Plan-Permission--2026-09-23T09-11-15Z — claimed by codex (agent cursor)
@@ -204,6 +201,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-23T13:30:37Z — D-audit-Trend_Model_Project--2026-09-23T09-11-16Z — fail — cursor produced 332 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Trend_Model_Project-2026-09-23.md (min 400); rotating agent
 - 2026-09-23T13:45:39Z — D-audit-Trend_Model_Project--2026-09-23T09-11-16Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-23T13:45:39Z — D-audit-Trend_Model_Project--2026-09-23T09-11-16Z — claimed by driver (agent cursor)
+- 2026-09-23T13:48:17Z — D-audit-Trend_Model_Project--2026-09-23T09-11-16Z — fail — cursor produced 344 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Trend_Model_Project-2026-09-23.md (min 400); rotating agent
+- 2026-09-23T14:03:19Z — D-audit-Trend_Model_Project--2026-09-23T09-11-16Z — route — router picked cursor from ['codex', 'cursor']
+- 2026-09-23T14:03:19Z — D-audit-Trend_Model_Project--2026-09-23T09-11-16Z — claimed by driver (agent cursor)
 
 ## Questions
 
