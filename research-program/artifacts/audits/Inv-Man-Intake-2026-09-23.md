@@ -56,3 +56,14 @@ Closed issues #966 and #943 (production performance and TOML finiteness) hold on
 | Owner question | parked with the default recorded |
 
 **Lesson:** a verified symptom is not a verified fix. Open the code the Tasks tell the agent to reuse before filing.
+
+## Refill rerun — 2026-09-23T23:12Z
+
+**Unit:** `D-audit-Inv-Man-Intake--2026-09-23T22-11-16Z`  
+**Current tip:** `5f95244ae1b7871bc62aee5d86cd3807130224ae`
+
+The prior scorecard was reproduced as still applicable: no changed file alters ingestion, field extraction, threshold evaluation, workbook-performance normalization, scoring, or validation-queue behavior. The primary journey therefore remains passing, with IMI-5 and IMI-6 remaining the two documented partial functions and the static operator demo still the one unscored interior surface.
+
+Six commits after the earlier scorecard add evidence-closure validation and compose `report-spec.json` with the one-pager export. The changed-surface gate passed: `python3 -m pytest -q --no-cov tests/emit/test_evidence_object_emitter.py tests/export/test_one_pager.py tests/export/test_report_spec.py` reported **36 passed**. Existing core regression files also reported **57 passed** (`test_pipeline_threshold_config.py`, `test_weights_config.py`, and `test_validation_queue_api.py`); pytest then returned nonzero solely because that narrow selection produced 36% aggregate repository coverage against the configured 80% global threshold, not because of a failed assertion. Test collection remains 1,010.
+
+The only current agent-formatted product issue is #948, which is unrelated to the changed evidence/export paths. No new candidate survived dedup or current-tip verification, so no issue was filed. The former IMI-5 proposal remains withdrawn: it would publish hardcoded smoke components as a production score without an owner-approved evidence-to-component methodology.

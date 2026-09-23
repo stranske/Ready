@@ -17,3 +17,11 @@ Re-audit on `09681ce`: scorecard 4 WORKS / 1 PARTIAL (OCR executable unavailable
 ## 2026-09-23T23:10:00Z — D-audit-Doc-Lineage--2026-09-23T22-11-18Z — attempt 2 complete
 
 Attempt 2 re-verified scorecard probes and #47–#51 regressions on unchanged tip; OUT headline confirmed parseable; 0 issues filed (`gh` unauthenticated). Product slice 203 passed / 1 env-coupled console-script failure.
+
+## 2026-09-23T23:12:36Z — D-audit-Inv-Man-Intake--2026-09-23T22-11-16Z — claimed
+
+Phase 0/1 complete: read the mandatory brief, owner notes, dossier, prior scorecard and ledger, repo-audit method/reference set, current issue inventory, and fresh remote tip. `[LOCAL_WORKSPACE]/Inv-Man-Intake` was advanced from the prior scored `62811ac` to `5f95244`; the six changed commits are limited to emitted-evidence validation, one-pager/report-spec export composition, and the static SPA module list. No scorecard core-function implementation changed.
+
+## 2026-09-23T23:12:36Z — D-audit-Inv-Man-Intake--2026-09-23T22-11-16Z — complete
+
+Revalidated the changed export/evidence slice: 36 dedicated tests passed; 57 focused pre-existing core regression assertions passed, with the partial-run exit caused only by the repository-wide 80% coverage gate (36% for that narrow slice). Current open issue #948 is unrelated; no reproducible non-duplicate finding was filed. Scorecard remains 5 work / 2 partial / 0 broken / 0 fabricated / 0 not exercised of 7; journey passes; surfaces unscored 1; closed-still-broken 0. OUT is `artifacts/audits/Inv-Man-Intake-2026-09-23.md`.
