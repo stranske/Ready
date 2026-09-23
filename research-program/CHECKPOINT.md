@@ -1727,3 +1727,4 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-23T21:03:32Z — D3-unblock-sweep-2026-09-23T21 — route — router picked cursor from ['codex', 'cursor']
 ## 2026-09-23T21:03:32Z — D3-unblock-sweep-2026-09-23T21 — claimed by driver (agent cursor)
 ## 2026-09-23T21:07:25Z — D3-unblock-sweep-2026-09-23T21 — done — cursor produced 805 words at artifacts/sweeps/D3-unblock-sweep-2026-09-23T21.md in 204s
+## 2026-09-23T21:22:52Z — refill — error — PermissionError(1, 'Operation not permitted')

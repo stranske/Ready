@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-23T21:10:14Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-23T21:22:52Z)
 
 Units: 181 — done 177, failed 4
 Paused: False   Phase stops: []
@@ -193,7 +193,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-23T14:03:19Z — D-audit-Trend_Model_Project--2026-09-23T09-11-16Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-23T14:03:19Z — D-audit-Trend_Model_Project--2026-09-23T09-11-16Z — claimed by driver (agent cursor)
 - 2026-09-23T14:06:01Z — D-audit-Trend_Model_Project--2026-09-23T09-11-16Z — done — cursor produced 407 words at artifacts/audits/Trend_Model_Project-2026-09-23.md in 129s
 - 2026-09-23T14:10:40Z — D-audit-Workflows--2026-09-23T09-11-15Z — route — router picked codex from ['codex', 'cursor']
@@ -205,6 +204,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-23T21:03:32Z — D3-unblock-sweep-2026-09-23T21 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-23T21:03:32Z — D3-unblock-sweep-2026-09-23T21 — claimed by driver (agent cursor)
 - 2026-09-23T21:07:25Z — D3-unblock-sweep-2026-09-23T21 — done — cursor produced 805 words at artifacts/sweeps/D3-unblock-sweep-2026-09-23T21.md in 204s
+- 2026-09-23T21:22:52Z — refill — error — PermissionError(1, 'Operation not permitted')
 
 ## Questions
 
