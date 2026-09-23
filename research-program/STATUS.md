@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-23T15:11:15Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-23T15:23:24Z)
 
 Units: 180 — done 176, failed 4
 Paused: False   Phase stops: []
@@ -192,7 +192,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-23T13:20:34Z — D-audit-Trend_Model_Project--2026-09-23T09-11-16Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-23T13:20:34Z — D-audit-Trend_Model_Project--2026-09-23T09-11-16Z — claimed by driver (agent cursor)
 - 2026-09-23T13:30:37Z — D-audit-Trend_Model_Project--2026-09-23T09-11-16Z — fail — cursor produced 332 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Trend_Model_Project-2026-09-23.md (min 400); rotating agent
 - 2026-09-23T13:45:39Z — D-audit-Trend_Model_Project--2026-09-23T09-11-16Z — route — router picked cursor from ['codex', 'cursor']
@@ -204,6 +203,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-23T14:10:40Z — D-audit-Workflows--2026-09-23T09-11-15Z — route — router picked codex from ['codex', 'cursor']
 - 2026-09-23T14:10:40Z — D-audit-Workflows--2026-09-23T09-11-15Z — claimed by codex (agent codex)
 - 2026-09-23T14:18:22Z — D-audit-Workflows--2026-09-23T09-11-15Z — done — Scorecard: 4 work / 0 partial / 1 broken / 0 fabricated / 2 not exercised of 7; journey stops at belt scan; verified and filed Workflows #3525 for its recurring
+- 2026-09-23T15:11:40Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
 
 ## Questions
 
