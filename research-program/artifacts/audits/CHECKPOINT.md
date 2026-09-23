@@ -1,3 +1,5 @@
+## 2026-09-23T17:45Z — Fine-Art-Archive Track D attempt 3 verified @ 5fb9a7d; no new issues; gh unauth; report at Fine-Art-Archive-2026-09-23.md
+
 ## 2026-09-23T11:40Z — Fine-Art-Archive Track D refill complete; scorecard 4/0/1/0/0 of 5; issues #737 #738 #739 verified; report at Fine-Art-Archive-2026-09-23.md
 
 ## 2026-09-23T11:15Z — Doc-Lineage Track D refill attempt 2 complete; scorecard 4/1/0/0/0 of 5; 0 issues filed (gh unauth); #47–#51 re-refuted; report at Doc-Lineage-2026-09-23.md
