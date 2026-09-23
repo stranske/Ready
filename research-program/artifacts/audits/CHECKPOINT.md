@@ -69,3 +69,5 @@
 ## 2026-09-22T21:19Z — Manager-Database Phase 1.5-5 complete; all 8 core functions are working after #1715-#1717 merged, no fresh reproducible finding was filed, and report is Manager-Database-2026-09-22.md.
 
 ## 2026-09-23T09:18Z — Counter_Risk Track D refill complete @ 2f92b17; scorecard 4/1/0/0/2 of 7; #1112 filed; report Counter_Risk-2026-09-23.md
+
+## 2026-09-23T11:07Z — Inv-Man-Intake Track D attempt 2 complete; scorecard 5/2/0/0/0 of 7; IMI-5 candidate withdrawn, parked; 0 issues filed; report at Inv-Man-Intake-2026-09-23.md
