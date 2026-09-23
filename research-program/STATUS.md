@@ -1,9 +1,9 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-23T04:43:19Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-23T04:48:47Z)
 
-Units: 167 — claimed 1, done 163, failed 3
+Units: 167 — done 164, failed 3
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
-Orchestrator evidence (30d): offload runs 208, bound to a research round 162, scored 162 (PASS 116, FAIL 46, infra 19) — codex 26/27 (P9 F17 I6), cursor 76/109 (P67 F9 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
+Orchestrator evidence (30d): offload runs 209, bound to a research round 163, scored 163 (PASS 117, FAIL 46, infra 19) — codex 26/27 (P9 F17 I6), cursor 77/110 (P68 F9 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
 Claude conservation: off (weekly window available)
 Owner inbox: https://github.com/stranske/Ready/issues/553
 
@@ -109,7 +109,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D3-unblock-sweep-2026-09-22T04 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-2026-09-22T12 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-2026-09-22T20 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
-| D3-unblock-sweep-2026-09-23T04 | D | D | claimed | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
+| D3-unblock-sweep-2026-09-23T04 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-pass2-20260913T2023 | D | D | done | cursor | driver | Unblock sweep pass 2: the seven repos the budgeted first pass deferred |  |
 | D-audit-Counter_Risk--2026-09-07T04-47-32Z | D | D | done | codex | driver | Audit stranske/Counter_Risk and file issues (supply 2 <= 2) |  |
 | D-audit-Counter_Risk--2026-09-08T17-11-36Z | D | D | done | codex | codex | Audit stranske/Counter_Risk and file issues (supply 1 <= 2) |  |
@@ -179,7 +179,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-23T03:20:48Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-23T04:30:18+00:00; local work continues
 - 2026-09-23T03:27:40Z — D4-verify-merged-2026-09-23T03 — done — cursor produced 814 words at artifacts/verification/D4-verify-merged-2026-09-23T03.md in 408s
 - 2026-09-23T03:27:40Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-23T04:30:18+00:00; local work continues
 - 2026-09-23T03:42:42Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
@@ -191,6 +190,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-23T04:43:19Z — unblock — enqueued D3-unblock-sweep-2026-09-23T04
 - 2026-09-23T04:43:19Z — D3-unblock-sweep-2026-09-23T04 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-23T04:43:19Z — D3-unblock-sweep-2026-09-23T04 — claimed by driver (agent cursor)
+- 2026-09-23T04:48:47Z — D3-unblock-sweep-2026-09-23T04 — done — cursor produced 674 words at artifacts/sweeps/D3-unblock-sweep-2026-09-23T04.md in 288s
 
 ## Questions
 

@@ -1021,3 +1021,12 @@
 - 2026-09-22T20:46:00Z D3-unblock-sweep-2026-09-22T20: Deliverable-Render complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch green; supply 1; priority 1/1.
 - 2026-09-22T20:46:00Z D3-unblock-sweep-2026-09-22T20: Manager-Mosaic complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch green; supply 2; priority 2/2.
 - 2026-09-22T20:46:00Z D3-unblock-sweep-2026-09-22T20: sweep complete; 7 covered 8 deferred; 0 frozen repaired; 0 silent claims released; 0 reroutes; Ready CI red; total supply 24 (excl frozen #735).
+- 2026-09-23T04:48Z D3-unblock-sweep-2026-09-23T04: Workflows complete; frozen 1/0; owner 1 (#3123); silent 0/0; reroutes 0; branch hub-only; supply 28; priority 26/28.
+- 2026-09-23T04:48Z D3-unblock-sweep-2026-09-23T04: Travel-Plan-Permission complete; frozen 3/3 (#1588,#1589,#1591); owner 0; silent 0/0; reroutes 0; branch green; supply 7; priority 7/7.
+- 2026-09-23T04:48Z D3-unblock-sweep-2026-09-23T04: Trend_Model_Project complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch green; supply 3; priority 3/3.
+- 2026-09-23T04:48Z D3-unblock-sweep-2026-09-23T04: Portable-Alpha-Extension-Model complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch green; supply 4; priority 4/4.
+- 2026-09-23T04:48Z D3-unblock-sweep-2026-09-23T04: Counter_Risk complete; frozen 2/2 (#1110,#1111); owner 0; silent 0/0; reroutes 0; branch RED (Black format); supply 5; priority 5/5.
+- 2026-09-23T04:48Z D3-unblock-sweep-2026-09-23T04: Manager-Database complete; frozen 2/2 (#1721,#1722); owner 0; silent 0/0; reroutes 0; branch green; supply 3; priority 3/3.
+- 2026-09-23T04:48Z D3-unblock-sweep-2026-09-23T04: Inv-Man-Intake complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch green; supply 3; priority 3/3.
+- 2026-09-23T04:48Z D3-unblock-sweep-2026-09-23T04: Pension-Data complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch green; supply 6; priority 6/6.
+- 2026-09-23T04:48Z D3-unblock-sweep-2026-09-23T04: sweep complete; 8 covered 7 deferred; 7 frozen repaired; 0 silent claims released; 0 reroutes; Counter_Risk CI red; total supply 59.
