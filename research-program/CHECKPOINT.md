@@ -1642,3 +1642,4 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-23T09:11:20Z — refill — Doc-Lineage: scorecard 2026-09-20 has no parseable headline → audit queued
 ## 2026-09-23T09:11:20Z — D-audit-Counter_Risk--2026-09-23T09-11-16Z — route — router picked cursor from ['codex', 'cursor']
 ## 2026-09-23T09:11:20Z — D-audit-Counter_Risk--2026-09-23T09-11-16Z — claimed by codex (agent cursor)
+## 2026-09-23T09:19:12Z — D-audit-Counter_Risk--2026-09-23T09-11-16Z — done — Scorecard: 4 work / 1 partial / 0 broken / 0 fabricated / 2 not exercised of 7; journey: passes; surfaces unscored 2; closed-still-broken 0. Filed #1112 to corr

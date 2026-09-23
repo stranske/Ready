@@ -1,9 +1,9 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-23T09:11:20Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-23T09:19:12Z)
 
-Units: 179 — claimed 1, done 164, failed 3, queued 11
+Units: 179 — done 165, failed 3, queued 11
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=warn vibe=ok aider=ok
-Orchestrator evidence (30d): offload runs 209, bound to a research round 163, scored 163 (PASS 117, FAIL 46, infra 19) — codex 26/27 (P9 F17 I6), cursor 77/110 (P68 F9 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
+Orchestrator evidence (30d): offload runs 210, bound to a research round 164, scored 164 (PASS 117, FAIL 47, infra 19) — codex 26/27 (P9 F17 I6), cursor 78/111 (P68 F10 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
 Claude conservation: off (weekly window available)
 Owner inbox: https://github.com/stranske/Ready/issues/553
 
@@ -120,7 +120,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Counter_Risk--2026-09-14T06-49-49Z | D | D | failed | codex |  | Audit stranske/Counter_Risk and file issues (supply 1 <= 2) |  |
 | D-audit-Counter_Risk--2026-09-20T20-25-21Z | D | D | done | cursor | driver | Audit stranske/Counter_Risk and file issues (supply 2 <= 2) |  |
 | D-audit-Counter_Risk--2026-09-21T20-41-04Z | D | D | done | cursor | driver | Audit stranske/Counter_Risk and file issues (supply 2 <= 3) |  |
-| D-audit-Counter_Risk--2026-09-23T09-11-16Z | D | D | claimed | cursor | codex | Audit stranske/Counter_Risk and file issues (scorecard 2026-09-21 has  |  |
+| D-audit-Counter_Risk--2026-09-23T09-11-16Z | D | D | done | cursor | codex | Audit stranske/Counter_Risk and file issues (scorecard 2026-09-21 has  | 4W/1P/0B/0F of 7 |
 | D-audit-Deliverable-Render--2026-09-20T08-24-39Z | D | D | failed | codex |  | Audit stranske/Deliverable-Render and file issues (supply 1 <= 2) |  |
 | D-audit-Deliverable-Render--2026-09-20T20-25-18Z | D | D | done | cursor | driver | Audit stranske/Deliverable-Render and file issues (supply 1 <= 2) |  |
 | D-audit-Deliverable-Render--2026-09-21T08-38-08Z | D | D | done | cursor | driver | Audit stranske/Deliverable-Render and file issues (supply 2 <= 2) |  |
@@ -191,7 +191,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-23T09:11:15Z — refill — Workflows: scorecard 2026-09-20 has no parseable headline → audit queued
 - 2026-09-23T09:11:15Z — refill — Travel-Plan-Permission: no scorecard → audit queued
 - 2026-09-23T09:11:16Z — refill — Trend_Model_Project: scorecard 2026-09-20 has no parseable headline → audit queued
 - 2026-09-23T09:11:16Z — refill — Portable-Alpha-Extension-Model: scorecard 2026-09-20 has no parseable headline → audit queued
@@ -203,6 +202,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-23T09:11:20Z — refill — Doc-Lineage: scorecard 2026-09-20 has no parseable headline → audit queued
 - 2026-09-23T09:11:20Z — D-audit-Counter_Risk--2026-09-23T09-11-16Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-23T09:11:20Z — D-audit-Counter_Risk--2026-09-23T09-11-16Z — claimed by codex (agent cursor)
+- 2026-09-23T09:19:12Z — D-audit-Counter_Risk--2026-09-23T09-11-16Z — done — Scorecard: 4 work / 1 partial / 0 broken / 0 fabricated / 2 not exercised of 7; journey: passes; surfaces unscored 2; closed-still-broken 0. Filed #1112 to corr
 
 ## Questions
 
