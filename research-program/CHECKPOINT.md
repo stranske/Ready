@@ -1661,3 +1661,7 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-23T10:07:43Z — D-audit-Doc-Lineage--2026-09-23T09-11-20Z — refutation posted — stranske/Doc-Lineage#51
 ## 2026-09-23T10:12:06Z — D-audit-Fine-Art-Archive--2026-09-23T09-11-19Z — route — router picked cursor from ['codex', 'cursor']
 ## 2026-09-23T10:12:06Z — D-audit-Fine-Art-Archive--2026-09-23T09-11-19Z — claimed by codex (agent cursor)
+## 2026-09-23T10:19:24Z — D-audit-Fine-Art-Archive--2026-09-23T09-11-19Z — fail — offload-infra: bound Cursor audit produced no artifact or checkpoint after five minutes; fresh clone and Phase 0/1 orientation are recorded
+## 2026-09-23T10:19:24Z — D-audit-Fine-Art-Archive--2026-09-23T09-11-19Z — evidence — 1 unscored offload run(s) recorded FAIL (executor codex report)
+## 2026-09-23T10:23:09Z — D-audit-Fine-Art-Archive--2026-09-23T09-11-19Z — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-23T10:23:09Z — D-audit-Fine-Art-Archive--2026-09-23T09-11-19Z — claimed by driver (agent cursor)
