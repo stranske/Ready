@@ -1722,3 +1722,4 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-23T14:10:40Z — D-audit-Workflows--2026-09-23T09-11-15Z — claimed by codex (agent codex)
 ## 2026-09-23T14:18:22Z — D-audit-Workflows--2026-09-23T09-11-15Z — done — Scorecard: 4 work / 0 partial / 1 broken / 0 fabricated / 2 not exercised of 7; journey stops at belt scan; verified and filed Workflows #3525 for its recurring
 ## 2026-09-23T15:11:40Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-23T20:48:06Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
