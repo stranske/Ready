@@ -6,8 +6,8 @@
 | B3-interop-architecture.md | 1 | 0 | 1 |
 | B7-PROGRAM-PLAN-v3.md | 2 | 2 | 0 |
 | C-skill-curriculum.md | 0 | 0 | 0 |
-| R1-legal-decomposition.md | 17 | 16 | 1 |
-| R2-consultant-report-diffing.md | 16 | 14 | 2 |
+| R1-legal-decomposition.md | 17 | 17 | 0 |
+| R2-consultant-report-diffing.md | 16 | 16 | 0 |
 | R3-manager-mosaic-synthesis.md | 12 | 11 | 1 |
 | R4-document-access-substrate.md | 15 | 10 | 5 |
 | R5-output-substrate.md | 10 | 8 | 2 |
@@ -17,15 +17,6 @@
 ## Unreachable in B3-interop-architecture.md
 
 - https://…
-
-## Unreachable in R1-legal-decomposition.md
-
-- https://pypi.org/project/contractex/
-
-## Unreachable in R2-consultant-report-diffing.md
-
-- https://pypi.org/project/diffpdf/1.2.2/
-- https://pypi.org/project/kogo/1.0.1/
 
 ## Unreachable in R3-manager-mosaic-synthesis.md
 
