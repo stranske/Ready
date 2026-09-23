@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-23T13:12:03Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-23T13:20:34Z)
 
-Units: 180 — done 174, failed 4, queued 2
+Units: 180 — claimed 1, done 174, failed 4, queued 1
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 Orchestrator evidence (30d): offload runs 225, bound to a research round 179, scored 179 (PASS 124, FAIL 55, infra 19) — codex 26/27 (P9 F17 I6), cursor 93/126 (P75 F18 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
@@ -158,7 +158,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Travel-Plan-Permission--2026-09-23T09-11-15Z | D | D | done | cursor | codex | Audit stranske/Travel-Plan-Permission and file issues (no scorecard) | 6W/1P/0B/0F of 7 |
 | D-audit-Trend_Model_Project--2026-09-19T08-08-54Z | D | D | done | codex | codex | Audit stranske/Trend_Model_Project and file issues (supply 2 <= 3) |  |
 | D-audit-Trend_Model_Project--2026-09-19T20-12-05Z | D | D | failed | codex |  | Audit stranske/Trend_Model_Project and file issues (supply 0 <= 2) |  |
-| D-audit-Trend_Model_Project--2026-09-23T09-11-16Z | D | D | queued | claude |  | Audit stranske/Trend_Model_Project and file issues (scorecard 2026-09- |  |
+| D-audit-Trend_Model_Project--2026-09-23T09-11-16Z | D | D | claimed | cursor | driver | Audit stranske/Trend_Model_Project and file issues (scorecard 2026-09- |  |
 | D-audit-Workflows--2026-09-23T09-11-15Z | D | D | queued | claude |  | Audit stranske/Workflows and file issues (scorecard 2026-09-20 has no  |  |
 | D-audit-learning-management-system--2026-09-05T04-00-30Z | D | D | done | codex | driver | Audit stranske/learning-management-system and file issues (supply 2 <= |  |
 | D-audit-learning-management-system--2026-09-06T16-33-31Z | D | D | done | codex | driver | Audit stranske/learning-management-system and file issues (supply 1 <= |  |
@@ -192,8 +192,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-23T12:23:32Z — D-audit-Portable-Alpha-Extension-Model--2026-09-23T09-11-16Z — done — cursor produced 400 words at artifacts/audits/Portable-Alpha-Extension-Model-2026-09-23.md in 486s
-- 2026-09-23T12:23:34Z — D-audit-Portable-Alpha-Extension-Model--2026-09-23T09-11-16Z — refutation posted — stranske/Portable-Alpha-Extension-Model#1910
 - 2026-09-23T12:39:00Z — D-audit-Travel-Plan-Permission--2026-09-23T09-11-15Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-23T12:39:00Z — D-audit-Travel-Plan-Permission--2026-09-23T09-11-15Z — claimed by driver (agent cursor)
 - 2026-09-23T12:45:24Z — D-audit-Travel-Plan-Permission--2026-09-23T09-11-15Z — fail — cursor produced 364 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Travel-Plan-Permission-2026-09-23.md (min 400); rotating agent
@@ -204,6 +202,8 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-23T13:10:41Z — D-audit-Travel-Plan-Permission--2026-09-23T09-11-15Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-23T13:10:41Z — D-audit-Travel-Plan-Permission--2026-09-23T09-11-15Z — claimed by codex (agent cursor)
 - 2026-09-23T13:12:03Z — D-audit-Travel-Plan-Permission--2026-09-23T09-11-15Z — done — Scorecard: 6 work / 1 partial / 0 broken / 0 fabricated / 0 not exercised of 7; journey: passes; surfaces unscored 12; closed-still-broken 0. Five verified issu
+- 2026-09-23T13:20:34Z — D-audit-Trend_Model_Project--2026-09-23T09-11-16Z — route — router picked cursor from ['codex', 'cursor']
+- 2026-09-23T13:20:34Z — D-audit-Trend_Model_Project--2026-09-23T09-11-16Z — claimed by driver (agent cursor)
 
 ## Questions
 

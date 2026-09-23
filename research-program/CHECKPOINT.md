@@ -1709,3 +1709,5 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-23T13:10:41Z — D-audit-Travel-Plan-Permission--2026-09-23T09-11-15Z — route — router picked cursor from ['codex', 'cursor']
 ## 2026-09-23T13:10:41Z — D-audit-Travel-Plan-Permission--2026-09-23T09-11-15Z — claimed by codex (agent cursor)
 ## 2026-09-23T13:12:03Z — D-audit-Travel-Plan-Permission--2026-09-23T09-11-15Z — done — Scorecard: 6 work / 1 partial / 0 broken / 0 fabricated / 0 not exercised of 7; journey: passes; surfaces unscored 12; closed-still-broken 0. Five verified issu
+## 2026-09-23T13:20:34Z — D-audit-Trend_Model_Project--2026-09-23T09-11-16Z — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-23T13:20:34Z — D-audit-Trend_Model_Project--2026-09-23T09-11-16Z — claimed by driver (agent cursor)
