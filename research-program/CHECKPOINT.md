@@ -1731,3 +1731,16 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-23T21:38:18Z — refill — error — PermissionError(1, 'Operation not permitted')
 ## 2026-09-23T21:53:46Z — refill — error — PermissionError(1, 'Operation not permitted')
 ## 2026-09-23T22:09:13Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-23T22:11:12Z — refill — Deliverable-Render: scorecard 2026-09-23 has no parseable headline → audit queued
+## 2026-09-23T22:11:13Z — refill — Manager-Mosaic: scorecard 2026-09-23 has no parseable headline → audit queued
+## 2026-09-23T22:11:13Z — refill — Workflows: scorecard 2026-09-23 has no parseable headline → audit queued
+## 2026-09-23T22:11:14Z — refill — Travel-Plan-Permission: scorecard 2026-09-23 has no parseable headline → audit queued
+## 2026-09-23T22:11:14Z — refill — Trend_Model_Project: scorecard 2026-09-23 has no parseable headline → audit queued
+## 2026-09-23T22:11:14Z — refill — Portable-Alpha-Extension-Model: scorecard 2026-09-23 has no parseable headline → audit queued
+## 2026-09-23T22:11:15Z — refill — Counter_Risk: scorecard 2026-09-23 has no parseable headline → audit queued
+## 2026-09-23T22:11:16Z — refill — Inv-Man-Intake: scorecard 2026-09-23 has no parseable headline → audit queued
+## 2026-09-23T22:11:16Z — refill — Pension-Data: scorecard 2026-09-23 has no parseable headline → audit queued
+## 2026-09-23T22:11:18Z — refill — Fine-Art-Archive: scorecard 2026-09-23 has no parseable headline → audit queued
+## 2026-09-23T22:11:18Z — refill — Doc-Lineage: scorecard 2026-09-23 has no parseable headline → audit queued
+## 2026-09-23T22:11:18Z — D-audit-Counter_Risk--2026-09-23T22-11-15Z — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-23T22:11:18Z — D-audit-Counter_Risk--2026-09-23T22-11-15Z — claimed by codex (agent cursor)
