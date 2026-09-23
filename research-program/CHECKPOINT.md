@@ -1701,3 +1701,7 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-23T12:23:34Z — D-audit-Portable-Alpha-Extension-Model--2026-09-23T09-11-16Z — refutation posted — stranske/Portable-Alpha-Extension-Model#1910
 ## 2026-09-23T12:39:00Z — D-audit-Travel-Plan-Permission--2026-09-23T09-11-15Z — route — router picked cursor from ['codex', 'cursor']
 ## 2026-09-23T12:39:00Z — D-audit-Travel-Plan-Permission--2026-09-23T09-11-15Z — claimed by driver (agent cursor)
+## 2026-09-23T12:45:24Z — D-audit-Travel-Plan-Permission--2026-09-23T09-11-15Z — fail — cursor produced 364 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Travel-Plan-Permission-2026-09-23.md (min 400); rotating agent
+## 2026-09-23T13:00:27Z — unblock — enqueued D3-unblock-sweep-2026-09-23T13
+## 2026-09-23T13:00:27Z — D3-unblock-sweep-2026-09-23T13 — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-23T13:00:27Z — D3-unblock-sweep-2026-09-23T13 — claimed by driver (agent cursor)
