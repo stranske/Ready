@@ -1,0 +1,353 @@
+{
+  "schema_version": "trend.run_artifacts/1",
+  "run_id": "94905c699248410a02caedfc831e989258c2736a483c08638c11e17fc50e6511",
+  "created": "2026-09-23T13:23:48.567787Z",
+  "config_path": "[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Trend_Model_Project-2026-09-23-assets/evidence/short72/config.yml",
+  "input_path": "[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Trend_Model_Project-2026-09-23-assets/evidence/short72/returns.csv",
+  "config_sha256": "4aeff7107a769b686b63ca9bc85a546f686ed7e15f60fae889917276e00970f6",
+  "git_hash": "adda9a41e8a5de37a3c73ea5f19832d75baf571c",
+  "data_window": {
+    "rows": 72,
+    "start": "2015-01-31T00:00:00+00:00",
+    "end": "2020-12-31T00:00:00+00:00",
+    "instrument_count": 22
+  },
+  "data_reality": {
+    "policy": "drop",
+    "policy_limit": null,
+    "policy_summary": "default=drop(unbounded)",
+    "frequency_missing_periods": 0,
+    "frequency_max_gap_periods": 0,
+    "instruments": [
+      {
+        "label": "Mgr_01",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "Mgr_02",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "Mgr_03",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "Mgr_04",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "Mgr_05",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "Mgr_06",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "Mgr_07",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "Mgr_08",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "Mgr_09",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "Mgr_10",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "Mgr_11",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "Mgr_12",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "Mgr_13",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "Mgr_14",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "Mgr_15",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "Mgr_16",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "Mgr_17",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "Mgr_18",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "Mgr_19",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "Mgr_20",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "SPX",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "RF",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      }
+    ],
+    "filled": [],
+    "dropped": [],
+    "unknown": []
+  },
+  "metrics": {},
+  "metrics_overview": {},
+  "selected_funds": [],
+  "selected_entities": [],
+  "artifacts": [
+    {
+      "name": "analysis_metrics.csv",
+      "source": "[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Trend_Model_Project-2026-09-23-assets/evidence/short72/exports/analysis_metrics.csv",
+      "size": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "name": "analysis_narrative.csv",
+      "source": "[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Trend_Model_Project-2026-09-23-assets/evidence/short72/exports/analysis_narrative.csv",
+      "size": 988,
+      "sha256": "99412d0279b22f7c60bf45d5de287c46484ae377c7c2d11fc2a93afc7251d088"
+    },
+    {
+      "name": "analysis_summary.csv",
+      "source": "[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Trend_Model_Project-2026-09-23-assets/evidence/short72/exports/analysis_summary.csv",
+      "size": 166,
+      "sha256": "1081810d8ac08c31ebbf1bfbf64f119e4aa7e2d43d05295fe0b094692d097f07"
+    },
+    {
+      "name": "analysis.xlsx",
+      "source": "[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Trend_Model_Project-2026-09-23-assets/evidence/short72/exports/analysis.xlsx",
+      "size": 7632,
+      "sha256": "23debe3f22142e00e3d27ead19932e404574dcb2b55637894c242e26a3f2f482"
+    },
+    {
+      "name": "analysis_metrics.json",
+      "source": "[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Trend_Model_Project-2026-09-23-assets/evidence/short72/exports/analysis_metrics.json",
+      "size": 4,
+      "sha256": "ace810d7e2cbb4f8c40ce09dc8e191ae466adb4e1a7d49c59f2215b411d38b05"
+    },
+    {
+      "name": "analysis_narrative.json",
+      "source": "[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Trend_Model_Project-2026-09-23-assets/evidence/short72/exports/analysis_narrative.json",
+      "size": 1162,
+      "sha256": "76497da22fb07e12fe6388d9e9569854fb8d48cd09de8c2ce1960ad720200ced"
+    },
+    {
+      "name": "analysis_summary.json",
+      "source": "[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Trend_Model_Project-2026-09-23-assets/evidence/short72/exports/analysis_summary.json",
+      "size": 4,
+      "sha256": "ace810d7e2cbb4f8c40ce09dc8e191ae466adb4e1a7d49c59f2215b411d38b05"
+    },
+    {
+      "name": "analysis_metrics.txt",
+      "source": "[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Trend_Model_Project-2026-09-23-assets/evidence/short72/exports/analysis_metrics.txt",
+      "size": 37,
+      "sha256": "fc432bd1f27953c67931eb66493c4b22b04285c7462cdd9133536587a1f51d28"
+    },
+    {
+      "name": "analysis_narrative.txt",
+      "source": "[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Trend_Model_Project-2026-09-23-assets/evidence/short72/exports/analysis_narrative.txt",
+      "size": 1619,
+      "sha256": "9ce0a277a0f1901fe75fece40e7e7d6d6cfd72cf3a3a891603ca05365c79da45"
+    },
+    {
+      "name": "analysis_summary.txt",
+      "source": "[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Trend_Model_Project-2026-09-23-assets/evidence/short72/exports/analysis_summary.txt",
+      "size": 219,
+      "sha256": "f0a54c15c5924f0391f510c29a28bf38d26dbae8da83e01e410bc0d25e61a4ec"
+    }
+  ],
+  "config_snapshot": {
+    "version": "1",
+    "data": {
+      "csv_path": "[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Trend_Model_Project-2026-09-23-assets/evidence/short72/returns.csv",
+      "universe_membership_path": null,
+      "managers_glob": null,
+      "date_column": "Date",
+      "frequency": "ME",
+      "timezone": "UTC",
+      "missing_policy": "drop",
+      "missing_limit": null,
+      "risk_free_column": null,
+      "allow_risk_free_fallback": true
+    },
+    "preprocessing": {
+      "missing_data": {
+        "limit": 2,
+        "policy": "ffill"
+      }
+    },
+    "vol_adjust": {
+      "enabled": false,
+      "target_vol": 0.1,
+      "window": null,
+      "floor_vol": 0.015,
+      "warmup_periods": 0
+    },
+    "sample_split": {
+      "in_end": "2022-12",
+      "in_start": "2015-01",
+      "out_end": "2024-12",
+      "out_start": "2023-01"
+    },
+    "portfolio": {
+      "rebalance_calendar": "NYSE",
+      "rebalance_freq": null,
+      "max_turnover": 1.0,
+      "lambda_tc": 0.0,
+      "min_tenure_n": 0,
+      "ci_level": 0.0,
+      "cost_model": {
+        "per_trade_bps": 0.0,
+        "half_spread_bps": 0.0
+      },
+      "turnover_cap": null,
+      "weight_policy": null,
+      "cooldown_periods": null,
+      "custom_weights": {
+        "Mgr_01": 60,
+        "Mgr_02": 40
+      },
+      "rank": {
+        "inclusion_approach": "top_n",
+        "n": 5,
+        "score_by": "Sharpe"
+      },
+      "selection_mode": "rank",
+      "selector": {
+        "name": "rank",
+        "params": {
+          "rank_column": "Sharpe",
+          "top_n": 5
+        }
+      },
+      "weighting": {
+        "name": "equal",
+        "params": {}
+      }
+    },
+    "benchmarks": {
+      "spx": "SPX"
+    },
+    "metrics": {
+      "registry": [
+        "annual_return",
+        "volatility",
+        "sharpe_ratio",
+        "sortino_ratio",
+        "information_ratio",
+        "max_drawdown"
+      ]
+    },
+    "regime": {
+      "annualise_volatility": true,
+      "enabled": true,
+      "lookback": 24,
+      "method": "rolling_return",
+      "min_observations": 3,
+      "model": "binary_threshold",
+      "neutral_band": 0.0015,
+      "proxy": "SPX",
+      "smoothing": 3,
+      "threshold": 0.0
+    },
+    "robustness": {},
+    "signals": {},
+    "export": {
+      "directory": "[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Trend_Model_Project-2026-09-23-assets/evidence/short72/exports",
+      "formats": [
+        "csv",
+        "xlsx",
+        "json",
+        "txt"
+      ]
+    },
+    "performance": {},
+    "identity": {},
+    "extra": {},
+    "run": {
+      "checkpoint_dir": "demo/checkpoints",
+      "jobs": 1,
+      "seed": 42
+    },
+    "multi_period": {
+      "end": "2024-12",
+      "frequency": "ME",
+      "in_sample_len": 36,
+      "out_sample_len": 12,
+      "start": "2018-01"
+    },
+    "strategy": {},
+    "walk_forward": {},
+    "seed": 42
+  },
+  "input_sha256": "4ab73c043333dd1221eec1f09372d1f3ec731d5e91939f02f2852432c5a2b3a4",
+  "summary_text": "Vol-Adj Trend Analysis\nIn:  2015-01 → 2022-12\nOut: 2023-01 → 2024-12\nFrequency: Unknown; NA policy: Drop\n\nName Weight OS Total Return OS Months OS CAGR OS Vol OS Sharpe OS Sortino OS IR OS MaxDD IS Total Return IS Months IS CAGR IS Vol IS Sharpe IS Sortino IS IR IS MaxDD\n                                                                                                                                                                     ",
+  "html_report": "report.html",
+  "run_directory": "[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Trend_Model_Project-2026-09-23-assets/evidence/short72/exports/runs/20260923_132348_567787_94905c69"
+}

@@ -1,0 +1,55 @@
+Run log: [LOCAL_HOME]/.codex/automations/research-program/[LOCAL_WORKSPACE]/Trend_Model_Project/perf/runs/20260923-132345/app.log
+Vol-Adj Trend Analysis
+In:  2015-01 → 2022-12
+Out: 2023-01 → 2024-12
+Frequency: Unknown; NA policy: Drop
+
+        Name Weight OS Total Return OS Months OS CAGR OS Vol OS Sharpe OS Sortino OS IR OS MaxDD IS Total Return IS Months IS CAGR IS Vol IS Sharpe IS Sortino IS IR IS MaxDD
+Equal Weight                                     1.49   8.33     -0.11      -0.19 -0.07    10.65                             20.26   8.80      2.22       5.16  2.09     7.08
+ User Weight                                     1.49   8.33     -0.11      -0.19 -0.07    10.65                             20.26   8.80      2.22       5.16  2.09     7.08
+                                                                                                                                                                             
+      Mgr_18  20.00                              8.61  21.24      0.28       0.67  0.38    27.27                             29.67  19.39      1.49       4.22  1.41    27.27
+      Mgr_12  20.00                              6.89  23.86      0.18       0.30  0.30    38.00                             22.97  22.50      0.99       1.66  1.01    38.00
+      Mgr_09  20.00                             16.07  15.00      0.90       1.82  0.92    13.88                             14.61  14.62      0.95       2.01  0.97    16.99
+      Mgr_03  10.00                            -10.81  14.89     -0.84      -1.33 -0.82    27.01                              9.77  13.43      0.65       1.03  0.69    20.96
+      Mgr_08   5.00                            -47.07  31.78     -1.48      -1.73 -1.79    48.34                             12.28  18.10      0.67       1.04  0.73    24.12
+      Mgr_04  10.00                              7.42  19.68      0.23       0.36  0.32    25.20                             11.64  18.07      0.63       1.14  0.69    27.11
+      Mgr_10  10.00                            -19.44  28.49     -0.76      -1.34 -0.71    48.23                             15.18  25.99      0.57       1.36  0.66    31.93
+      Mgr_07   5.00                            -13.29  14.47     -1.15      -1.71 -1.19    13.27                             20.21  21.86      0.82       1.27  0.87    18.63
+
+Cache statistics:
+  Entries: 0
+  Hits: 0
+  Misses: 0
+  Incremental_updates: 0
+Structured log: outputs/logs/run_523fd0fa2a66ef4ff819ca2214f8ad517571ff1a549c7272e0ecad127ff56e86.jsonl
+
+---stderr---
+2026-09-23T08:23:45Z INFO [root] Logging initialised
+2026-09-23T08:23:45Z WARNING [trend.commands.report_export] Failed to apply run_id to config: "_PydanticConfigImpl" object has no field "run_id"
+2026-09-23T08:23:45Z INFO [trend_analysis.api] run_simulation start
+2026-09-23T08:23:45Z INFO [trend_analysis.performance] stage=rolling_cache duration_ms=0.000 status=disabled method=regime_rolling_return_thr0.000000_smooth1_band0.001500 window=6 freq=M hash=d16adf61bf35 storage=primary
+2026-09-23T08:23:45Z INFO [trend_analysis.data] Risk-free column: RF
+2026-09-23T08:23:45Z INFO [trend_analysis.pipeline] Using lowest-volatility column 'RF' as risk-free (fallback enabled)
+2026-09-23T08:23:45Z INFO [trend_analysis.performance] stage=rolling_cache duration_ms=0.000 status=disabled method=regime_rolling_return_thr0.000000_smooth1_band0.001500 window=6 freq=M hash=2971b621f421 storage=primary
+[LOCAL_HOME]/.codex/automations/research-program/[LOCAL_WORKSPACE]/Trend_Model_Project/analysis/results.py:86: UserWarning: data file missing: [LOCAL_HOME]/.codex/automations/research-program/[LOCAL_WORKSPACE]/Trend_Model_Project/data/Trend Universe Data.csv
+  warnings.warn(message, UserWarning)
+2026-09-23T08:23:45Z INFO [trend_analysis.performance] stage=rolling_cache duration_ms=0.000 status=disabled method=regime_rolling_return_thr0.000000_smooth1_band0.001500 window=6 freq=M hash=5bc2cea3cd0f storage=primary
+2026-09-23T08:23:45Z INFO [trend_analysis.data] Risk-free column: RF
+2026-09-23T08:23:45Z INFO [trend_analysis.pipeline] Using lowest-volatility column 'RF' as risk-free (fallback enabled)
+2026-09-23T08:23:45Z INFO [trend_analysis.performance] stage=rolling_cache duration_ms=0.000 status=disabled method=regime_rolling_return_thr0.000000_smooth1_band0.001500 window=6 freq=M hash=2971b621f421 storage=primary
+[LOCAL_HOME]/.codex/automations/research-program/[LOCAL_WORKSPACE]/Trend_Model_Project/analysis/results.py:86: UserWarning: data file missing: [LOCAL_HOME]/.codex/automations/research-program/[LOCAL_WORKSPACE]/Trend_Model_Project/data/Trend Universe Data.csv
+  warnings.warn(message, UserWarning)
+2026-09-23T08:23:45Z INFO [trend_analysis.performance] stage=rolling_cache duration_ms=0.000 status=disabled method=regime_rolling_return_thr0.000000_smooth1_band0.001500 window=6 freq=M hash=3e13b759eb3f storage=primary
+2026-09-23T08:23:45Z INFO [trend_analysis.data] Risk-free column: RF
+2026-09-23T08:23:45Z INFO [trend_analysis.pipeline] Using lowest-volatility column 'RF' as risk-free (fallback enabled)
+2026-09-23T08:23:45Z INFO [trend_analysis.performance] stage=rolling_cache duration_ms=0.000 status=disabled method=regime_rolling_return_thr0.000000_smooth1_band0.001500 window=6 freq=M hash=2971b621f421 storage=primary
+[LOCAL_HOME]/.codex/automations/research-program/[LOCAL_WORKSPACE]/Trend_Model_Project/analysis/results.py:86: UserWarning: data file missing: [LOCAL_HOME]/.codex/automations/research-program/[LOCAL_WORKSPACE]/Trend_Model_Project/data/Trend Universe Data.csv
+  warnings.warn(message, UserWarning)
+2026-09-23T08:23:45Z INFO [trend_analysis.performance] stage=rolling_cache duration_ms=0.000 status=disabled method=regime_rolling_return_thr0.000000_smooth1_band0.001500 window=6 freq=M hash=a0379682ef43 storage=primary
+2026-09-23T08:23:45Z INFO [trend_analysis.data] Risk-free column: RF
+2026-09-23T08:23:45Z INFO [trend_analysis.pipeline] Using lowest-volatility column 'RF' as risk-free (fallback enabled)
+2026-09-23T08:23:45Z INFO [trend_analysis.performance] stage=rolling_cache duration_ms=0.000 status=disabled method=regime_rolling_return_thr0.000000_smooth1_band0.001500 window=6 freq=M hash=2971b621f421 storage=primary
+[LOCAL_HOME]/.codex/automations/research-program/[LOCAL_WORKSPACE]/Trend_Model_Project/analysis/results.py:86: UserWarning: data file missing: [LOCAL_HOME]/.codex/automations/research-program/[LOCAL_WORKSPACE]/Trend_Model_Project/data/Trend Universe Data.csv
+  warnings.warn(message, UserWarning)
+2026-09-23T08:23:45Z INFO [trend.commands.report_export] No turnover diagnostics captured for ledger persistence.

@@ -1,9 +1,9 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-23T13:20:34Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-23T13:45:39Z)
 
 Units: 180 — claimed 1, done 174, failed 4, queued 1
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
-Orchestrator evidence (30d): offload runs 225, bound to a research round 179, scored 179 (PASS 124, FAIL 55, infra 19) — codex 26/27 (P9 F17 I6), cursor 93/126 (P75 F18 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
+Orchestrator evidence (30d): offload runs 226, bound to a research round 180, scored 180 (PASS 124, FAIL 56, infra 19) — codex 26/27 (P9 F17 I6), cursor 94/127 (P75 F19 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
 Claude conservation: off (weekly window available)
 Owner inbox: https://github.com/stranske/Ready/issues/553
 
@@ -192,9 +192,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-23T12:39:00Z — D-audit-Travel-Plan-Permission--2026-09-23T09-11-15Z — route — router picked cursor from ['codex', 'cursor']
-- 2026-09-23T12:39:00Z — D-audit-Travel-Plan-Permission--2026-09-23T09-11-15Z — claimed by driver (agent cursor)
-- 2026-09-23T12:45:24Z — D-audit-Travel-Plan-Permission--2026-09-23T09-11-15Z — fail — cursor produced 364 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Travel-Plan-Permission-2026-09-23.md (min 400); rotating agent
 - 2026-09-23T13:00:27Z — unblock — enqueued D3-unblock-sweep-2026-09-23T13
 - 2026-09-23T13:00:27Z — D3-unblock-sweep-2026-09-23T13 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-23T13:00:27Z — D3-unblock-sweep-2026-09-23T13 — claimed by driver (agent cursor)
@@ -204,6 +201,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-23T13:12:03Z — D-audit-Travel-Plan-Permission--2026-09-23T09-11-15Z — done — Scorecard: 6 work / 1 partial / 0 broken / 0 fabricated / 0 not exercised of 7; journey: passes; surfaces unscored 12; closed-still-broken 0. Five verified issu
 - 2026-09-23T13:20:34Z — D-audit-Trend_Model_Project--2026-09-23T09-11-16Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-23T13:20:34Z — D-audit-Trend_Model_Project--2026-09-23T09-11-16Z — claimed by driver (agent cursor)
+- 2026-09-23T13:30:37Z — D-audit-Trend_Model_Project--2026-09-23T09-11-16Z — fail — cursor produced 332 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Trend_Model_Project-2026-09-23.md (min 400); rotating agent
+- 2026-09-23T13:45:39Z — D-audit-Trend_Model_Project--2026-09-23T09-11-16Z — route — router picked cursor from ['codex', 'cursor']
+- 2026-09-23T13:45:39Z — D-audit-Trend_Model_Project--2026-09-23T09-11-16Z — claimed by driver (agent cursor)
 
 ## Questions
 

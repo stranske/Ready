@@ -1711,3 +1711,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-23T13:12:03Z — D-audit-Travel-Plan-Permission--2026-09-23T09-11-15Z — done — Scorecard: 6 work / 1 partial / 0 broken / 0 fabricated / 0 not exercised of 7; journey: passes; surfaces unscored 12; closed-still-broken 0. Five verified issu
 ## 2026-09-23T13:20:34Z — D-audit-Trend_Model_Project--2026-09-23T09-11-16Z — route — router picked cursor from ['codex', 'cursor']
 ## 2026-09-23T13:20:34Z — D-audit-Trend_Model_Project--2026-09-23T09-11-16Z — claimed by driver (agent cursor)
+## 2026-09-23T13:30:37Z — D-audit-Trend_Model_Project--2026-09-23T09-11-16Z — fail — cursor produced 332 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Trend_Model_Project-2026-09-23.md (min 400); rotating agent
+## 2026-09-23T13:45:39Z — D-audit-Trend_Model_Project--2026-09-23T09-11-16Z — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-23T13:45:39Z — D-audit-Trend_Model_Project--2026-09-23T09-11-16Z — claimed by driver (agent cursor)

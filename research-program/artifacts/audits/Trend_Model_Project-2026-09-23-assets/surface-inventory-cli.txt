@@ -1,0 +1,14 @@
+usage: trend check [-h]
+usage: trend run [-h] [-c CONFIG] [-i RETURNS] [--seed SEED]
+usage: trend report [-h] [-c CONFIG] [-i RETURNS] [--out OUT]
+usage: trend stress [-h] [-c CONFIG] [--scenario {2008,2020}]
+usage: trend mc [-h] {list,validate,run,viz} ...
+usage: trend app [-h]
+usage: trend quick-report [-h] [--run-id RUN_ID] [--artifacts ARTIFACTS]
+usage: trend explain [-h] [--details DETAILS] [--run-id RUN_ID]
+usage: trend nl [-h] [--in INPUT_PATH] [--out OUTPUT_PATH] [--diff]
+1_Data.py
+2_Model.py
+3_Results.py
+4_Help.py
+5_Monte_Carlo.py

@@ -1,0 +1,81 @@
+benchmarks:
+  spx: SPX
+data:
+  allow_risk_free_fallback: true
+  csv_path: [LOCAL_HOME]/.codex/automations/research-program/[LOCAL_WORKSPACE]/Trend_Model_Project/demo/demo_returns.csv
+  date_column: Date
+  frequency: ME
+  missing_limit: null
+  missing_policy: drop
+  risk_free_column: null
+export:
+  directory: [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Trend_Model_Project-2026-09-23-assets/evidence/vol_on/exports
+  formats:
+  - csv
+  - xlsx
+  - json
+  - txt
+metrics:
+  registry:
+  - annual_return
+  - volatility
+  - sharpe_ratio
+  - sortino_ratio
+  - information_ratio
+  - max_drawdown
+multi_period:
+  end: 2024-12
+  frequency: ME
+  in_sample_len: 36
+  out_sample_len: 12
+  start: 2018-01
+portfolio:
+  cost_model:
+    half_spread_bps: 0
+    per_trade_bps: 0
+  custom_weights:
+    Mgr_01: 60
+    Mgr_02: 40
+  max_turnover: 1.0
+  rank:
+    inclusion_approach: top_n
+    n: 5
+    score_by: Sharpe
+  rebalance_calendar: NYSE
+  selection_mode: rank
+  selector:
+    name: rank
+    params:
+      rank_column: Sharpe
+      top_n: 5
+  weighting:
+    name: equal
+    params: {}
+preprocessing:
+  missing_data:
+    limit: 2
+    policy: ffill
+regime:
+  annualise_volatility: true
+  enabled: true
+  lookback: 24
+  method: rolling_return
+  min_observations: 3
+  model: binary_threshold
+  neutral_band: 0.0015
+  proxy: SPX
+  smoothing: 3
+  threshold: 0.0
+run:
+  checkpoint_dir: demo/checkpoints
+  jobs: 1
+  seed: 42
+sample_split:
+  in_end: 2022-12
+  in_start: 2015-01
+  out_end: 2024-12
+  out_start: 2023-01
+version: '1'
+vol_adjust:
+  enabled: true
+  target_vol: 0.05

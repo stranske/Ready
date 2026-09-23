@@ -1,0 +1,20 @@
+Run log: [LOCAL_HOME]/.codex/automations/research-program/[LOCAL_WORKSPACE]/Trend_Model_Project/perf/runs/20260923-132348/app.log
+Vol-Adj Trend Analysis
+In:  2015-01 → 2022-12
+Out: 2023-01 → 2024-12
+Frequency: Unknown; NA policy: Drop
+
+Name Weight OS Total Return OS Months OS CAGR OS Vol OS Sharpe OS Sortino OS IR OS MaxDD IS Total Return IS Months IS CAGR IS Vol IS Sharpe IS Sortino IS IR IS MaxDD
+                                                                                                                                                                     
+Structured log: outputs/logs/run_94905c699248410a02caedfc831e989258c2736a483c08638c11e17fc50e6511.jsonl
+
+---stderr---
+2026-09-23T08:23:48Z INFO [root] Logging initialised
+2026-09-23T08:23:48Z WARNING [trend.commands.report_export] Failed to apply run_id to config: "_PydanticConfigImpl" object has no field "run_id"
+2026-09-23T08:23:48Z INFO [trend_analysis.api] run_simulation start
+2026-09-23T08:23:48Z WARNING [trend_analysis.multi_period.engine] Multi-period analysis skipped period 2018-01-31/2021-01-31 (PIPELINE_SAMPLE_WINDOW_EMPTY): In-sample or out-of-sample window is empty.
+2026-09-23T08:23:48Z WARNING [trend_analysis.multi_period.engine] Multi-period analysis skipped period 2019-01-31/2022-01-31 (PIPELINE_SAMPLE_WINDOW_EMPTY): In-sample or out-of-sample window is empty.
+2026-09-23T08:23:48Z WARNING [trend_analysis.multi_period.engine] Multi-period analysis skipped period 2020-01-31/2023-01-31 (PIPELINE_SAMPLE_WINDOW_EMPTY): In-sample or out-of-sample window is empty.
+2026-09-23T08:23:48Z WARNING [trend_analysis.multi_period.engine] Multi-period analysis skipped period 2021-01-31/2024-01-31 (PIPELINE_SAMPLE_WINDOW_EMPTY): In-sample or out-of-sample window is empty.
+2026-09-23T08:23:48Z WARNING [trend_analysis.api] Multi-period simulation returned no results
+2026-09-23T08:23:48Z INFO [trend.commands.report_export] No turnover diagnostics captured for ledger persistence.
