@@ -1,9 +1,9 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-23T11:20:28Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-23T11:41:22Z)
 
 Units: 179 — claimed 1, done 169, failed 4, queued 5
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
-Orchestrator evidence (30d): offload runs 219, bound to a research round 173, scored 172 (PASS 120, FAIL 52, infra 19) — codex 26/27 (P9 F17 I6), cursor 86/120 (P71 F15 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
+Orchestrator evidence (30d): offload runs 219, bound to a research round 173, scored 173 (PASS 120, FAIL 53, infra 19) — codex 26/27 (P9 F17 I6), cursor 87/120 (P71 F16 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
 Claude conservation: off (weekly window available)
 Owner inbox: https://github.com/stranske/Ready/issues/553
 
@@ -191,9 +191,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-23T11:04:58Z — D-audit-Inv-Man-Intake--2026-09-23T09-11-17Z — fail — cursor produced 357 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Inv-Man-Intake-2026-09-23.md (min 400); rotating agent
-- 2026-09-23T11:05:07Z — D-audit-Inv-Man-Intake--2026-09-23T09-11-17Z — route — router picked cursor from ['codex', 'cursor']
-- 2026-09-23T11:05:07Z — D-audit-Inv-Man-Intake--2026-09-23T09-11-17Z — claimed by claude (agent cursor)
 - 2026-09-23T11:06:44Z — D-audit-Inv-Man-Intake--2026-09-23T09-11-17Z — default recorded — q-D-audit-Inv-Man-Intake--2026-09-23T09-11-17Z
 - 2026-09-23T11:07:55Z — D-audit-Inv-Man-Intake--2026-09-23T09-11-17Z — done — Scorecard: 5 work / 2 partial / 0 broken / 0 fabricated / 0 not exercised of 7; journey: passes; surfaces unscored 1; closed-still-broken 0. 0 issues filed: the
 - 2026-09-23T11:07:56Z — D-audit-Inv-Man-Intake--2026-09-23T09-11-17Z — refutation posted — stranske/Inv-Man-Intake#693
@@ -203,6 +200,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-23T11:20:01Z — D-audit-Manager-Mosaic--2026-09-23T09-11-14Z — claimed by driver (agent cursor)
 - 2026-09-23T11:20:27Z — D-audit-Manager-Database--2026-09-23T09-11-17Z — done — Scorecard: 8 work / 0 partial / 0 broken / 0 fabricated / 0 not exercised of 8; journey: passes; surfaces unscored 0; closed-still-broken 0. Fresh tip c68194a d
 - 2026-09-23T11:20:28Z — D-audit-Manager-Database--2026-09-23T09-11-17Z — evidence — 1 unscored offload run(s) recorded PASS (executor codex report)
+- 2026-09-23T11:26:20Z — D-audit-Manager-Mosaic--2026-09-23T09-11-14Z — fail — cursor produced 342 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Manager-Mosaic-2026-09-23.md (min 400); rotating agent
+- 2026-09-23T11:41:22Z — D-audit-Manager-Mosaic--2026-09-23T09-11-14Z — route — router picked cursor from ['codex', 'cursor']
+- 2026-09-23T11:41:22Z — D-audit-Manager-Mosaic--2026-09-23T09-11-14Z — claimed by driver (agent cursor)
 
 ## Questions
 

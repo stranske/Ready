@@ -1683,3 +1683,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-23T11:20:01Z — D-audit-Manager-Mosaic--2026-09-23T09-11-14Z — claimed by driver (agent cursor)
 ## 2026-09-23T11:20:27Z — D-audit-Manager-Database--2026-09-23T09-11-17Z — done — Scorecard: 8 work / 0 partial / 0 broken / 0 fabricated / 0 not exercised of 8; journey: passes; surfaces unscored 0; closed-still-broken 0. Fresh tip c68194a d
 ## 2026-09-23T11:20:28Z — D-audit-Manager-Database--2026-09-23T09-11-17Z — evidence — 1 unscored offload run(s) recorded PASS (executor codex report)
+## 2026-09-23T11:26:20Z — D-audit-Manager-Mosaic--2026-09-23T09-11-14Z — fail — cursor produced 342 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Manager-Mosaic-2026-09-23.md (min 400); rotating agent
+## 2026-09-23T11:41:22Z — D-audit-Manager-Mosaic--2026-09-23T09-11-14Z — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-23T11:41:22Z — D-audit-Manager-Mosaic--2026-09-23T09-11-14Z — claimed by driver (agent cursor)
