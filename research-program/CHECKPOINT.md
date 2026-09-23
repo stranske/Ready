@@ -1694,3 +1694,5 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-23T12:10:39Z — D-audit-Pension-Data--2026-09-23T09-11-18Z — claimed by codex (agent cursor)
 ## 2026-09-23T12:14:58Z — D-audit-Portable-Alpha-Extension-Model--2026-09-23T09-11-16Z — route — router picked cursor from ['codex', 'cursor']
 ## 2026-09-23T12:14:58Z — D-audit-Portable-Alpha-Extension-Model--2026-09-23T09-11-16Z — claimed by driver (agent cursor)
+## 2026-09-23T12:17:21Z — D-audit-Pension-Data--2026-09-23T09-11-18Z — done — Scorecard: 2 work / 1 partial / 0 broken / 0 fabricated / 0 not exercised of 3; journey: passes; surfaces unscored 0; closed-still-broken 0. Verified PR #912’s 
+## 2026-09-23T12:17:21Z — D-audit-Pension-Data--2026-09-23T09-11-18Z — evidence — 1 unscored offload run(s) recorded PASS (executor codex report)
