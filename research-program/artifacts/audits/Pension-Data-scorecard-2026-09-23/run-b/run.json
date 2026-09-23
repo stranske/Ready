@@ -1,0 +1,104 @@
+{
+  "actor": {
+    "id": "backplane-reference-run",
+    "intent": "emit Pension-Data one-PDF pilot reference envelope",
+    "kind": "ci"
+  },
+  "cost": {
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "usd": 0
+  },
+  "data_quality": {
+    "coerced_rows": 0,
+    "conflict": false,
+    "dropped_rows": 0,
+    "findings": [
+      {
+        "code": "missing-required-metrics",
+        "count": 0
+      },
+      {
+        "code": "component-coverage",
+        "valid": true
+      }
+    ],
+    "overall_status": "ok"
+  },
+  "evidence_refs": [
+    "evidence:0a21742a812f6c1ecd364b4d8941a5788247194c60c0711d275d2a693bdebb8d",
+    "evidence:209fa3450a65e34ff5baabb8864fdbdc968295c8c8ecd9308b3c487b467fe5ee",
+    "evidence:59ac49c994e8135c1fffa8c123f7289ba2719798fddc4cf80ce968c4bc548d9b",
+    "evidence:6d92f003fdd635a986f9d44563cb0fc076273b4c8c8d266d83cd210f5ee3e474",
+    "evidence:cabab328648acde20a2fe4137eb2e8d355d36c8a52dfa441c1aee282f81bde9b",
+    "evidence:dceed2748694858fbd60ca8f0febdc65ed27ebf9d8335a381f2c16ab55f5c91a",
+    "evidence:f87f45bc295cb93e7fa0edc9d712ac46cd4c5dd17764fcc28f5406ea72a7c515"
+  ],
+  "github_issue": "stranske/Pension-Data#703",
+  "identity_refs": [
+    "pension:syn_plan_b"
+  ],
+  "inputs": {
+    "refs": [
+      "sha256:9b5d761374f55581a5da1f54db6a2dc5c71afc10311f80a60077261eae00ce69"
+    ],
+    "summary": {
+      "effective_date": "2025-06-30",
+      "plan_id": "SYN-PLAN-B",
+      "plan_period": "FY2025",
+      "source_document_id": "pilot:SYN-PLAN-B:FY2025:9b5d761374f55581",
+      "source_pdf_sha256": "9b5d761374f55581a5da1f54db6a2dc5c71afc10311f80a60077261eae00ce69"
+    },
+    "validated": true
+  },
+  "latency": {
+    "wall_ms": 9.722499875351787
+  },
+  "outputs": {
+    "artifact_ids": [
+      "one-pdf-pilot:component_coverage_report_json",
+      "one-pdf-pilot:coverage_summary_json",
+      "one-pdf-pilot:extraction_warnings_json",
+      "one-pdf-pilot:orchestration_ledger_json",
+      "one-pdf-pilot:orchestration_published_rows_json",
+      "one-pdf-pilot:orchestration_review_queue_rows_json",
+      "one-pdf-pilot:orchestration_state_json",
+      "one-pdf-pilot:parser_result_json",
+      "one-pdf-pilot:persistence_contract_json",
+      "one-pdf-pilot:schema_component_datasets_manifest_json",
+      "one-pdf-pilot:staging_core_metrics_json",
+      "one-pdf-pilot:staging_manager_fund_vehicle_relationships_json",
+      "one-pdf-pilot:workspace_bundle_json",
+      "evidence:0a21742a812f6c1ecd364b4d8941a5788247194c60c0711d275d2a693bdebb8d",
+      "evidence:209fa3450a65e34ff5baabb8864fdbdc968295c8c8ecd9308b3c487b467fe5ee",
+      "evidence:59ac49c994e8135c1fffa8c123f7289ba2719798fddc4cf80ce968c4bc548d9b",
+      "evidence:6d92f003fdd635a986f9d44563cb0fc076273b4c8c8d266d83cd210f5ee3e474",
+      "evidence:cabab328648acde20a2fe4137eb2e8d355d36c8a52dfa441c1aee282f81bde9b",
+      "evidence:dceed2748694858fbd60ca8f0febdc65ed27ebf9d8335a381f2c16ab55f5c91a",
+      "evidence:f87f45bc295cb93e7fa0edc9d712ac46cd4c5dd17764fcc28f5406ea72a7c515",
+      "identity-map:pension"
+    ],
+    "manifest_ref": "artifact:manifest.json",
+    "summary": {
+      "component_expected_count": 19,
+      "document_outcome_count": 1,
+      "ledger_status": "success",
+      "relationship_row_count": 0,
+      "staging_core_metric_count": 7
+    }
+  },
+  "provenance": {
+    "code_version": "33a29aa53dde12c1d3f267b12712a11ee067544d",
+    "git_sha": "33a29aa53dde12c1d3f267b12712a11ee067544d",
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "python_version": "3.12.2",
+    "tool_version": "0.1.0"
+  },
+  "recorded_at": "2026-09-23T12:13:21+00:00",
+  "repo": "stranske/Pension-Data",
+  "run_id": "scorecard-b",
+  "schema_version": "run-contract/v1",
+  "status": "success",
+  "tool": "one-pdf-pilot",
+  "warnings": []
+}

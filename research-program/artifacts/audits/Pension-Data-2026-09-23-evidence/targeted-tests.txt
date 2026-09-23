@@ -1,0 +1,96 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.2, pytest-9.1.1, pluggy-1.6.0
+rootdir: [LOCAL_HOME]/.codex/automations/research-program/[LOCAL_WORKSPACE]/Pension-Data
+configfile: pyproject.toml
+plugins: langsmith-0.10.9, cov-7.1.0, xdist-3.8.0, rerunfailures-16.3, datadir-1.8.0, typeguard-4.5.1, asyncio-1.3.0, pytest_httpserver-1.1.3, hypothesis-6.155.7, regressions-2.11.0, Faker-40.39.0, anyio-4.13.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 37 items
+
+[LOCAL_WORKSPACE]/Pension-Data/tests/ops/test_one_pdf_pilot_cli.py ........         [ 21%]
+[LOCAL_WORKSPACE]/Pension-Data/tests/query/test_saved_views.py ............         [ 54%]
+[LOCAL_WORKSPACE]/Pension-Data/tests/query/test_metric_history.py .......           [ 72%]
+[LOCAL_WORKSPACE]/Pension-Data/tests/export/test_workspace_bundle.py .......        [ 91%]
+[LOCAL_WORKSPACE]/Pension-Data/tests/web/test_build_workspace_bundle.py F.F         [100%]
+
+=================================== FAILURES ===================================
+_____________ test_generator_emits_runtime_valid_generated_bundle ______________
+
+tmp_path = PosixPath('/private/var/folders/qm/w0dtc0j132gd6ymf1hxtd2p00000gp/T/pytest-of-teacher/pytest-3405/test_generator_emits_runtime_v0')
+
+    def test_generator_emits_runtime_valid_generated_bundle(tmp_path: Path) -> None:
+        run_dir = _write_fixture_pilot_run(tmp_path)
+        payload = build_workspace_bundle.build_workspace_bundle(run_dir)
+    
+>       web_smoke_test._assert_workspace_bundle(
+            payload,
+            path_label="data/workspace.json",
+            reject_fixture=True,
+        )
+
+[LOCAL_WORKSPACE]/Pension-Data/tests/web/test_build_workspace_bundle.py:89: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+[LOCAL_WORKSPACE]/Pension-Data/scripts/web/smoke_test.py:65: in _assert_workspace_bundle
+    contract = load_runtime_contract()
+               ^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+contract_path = PosixPath('apps/contracts/runtime-contract.json')
+
+    def load_runtime_contract(contract_path: Path = CONTRACT_PATH) -> dict[str, Any]:
+        """Load and structurally validate the runtime contract JSON."""
+        if not contract_path.exists():
+>           raise WorkspaceContractError(f"runtime contract missing: {contract_path}")
+E           workspace_contract.WorkspaceContractError: runtime contract missing: apps/contracts/runtime-contract.json
+
+[LOCAL_WORKSPACE]/Pension-Data/scripts/web/workspace_contract.py:30: WorkspaceContractError
+______________ test_cli_writes_bundle_that_runtime_smoke_accepts _______________
+
+tmp_path = PosixPath('/private/var/folders/qm/w0dtc0j132gd6ymf1hxtd2p00000gp/T/pytest-of-teacher/pytest-3405/test_cli_writes_bundle_that_ru0')
+
+    def test_cli_writes_bundle_that_runtime_smoke_accepts(tmp_path: Path) -> None:
+        run_dir = _write_fixture_pilot_run(tmp_path)
+        out = tmp_path / "workspace.json"
+    
+        result = subprocess.run(
+            [
+                sys.executable,
+                str(BUILDER_PATH),
+                "--pilot-run-dir",
+                str(run_dir),
+                "--out",
+                str(out),
+            ],
+            check=True,
+            capture_output=True,
+            cwd=tmp_path,
+            text=True,
+        )
+    
+        assert "wrote generated workspace bundle" in result.stdout
+        payload = json.loads(out.read_text(encoding="utf-8"))
+>       web_smoke_test._assert_workspace_bundle(
+            payload,
+            path_label="data/workspace.json",
+            reject_fixture=True,
+        )
+
+[LOCAL_WORKSPACE]/Pension-Data/tests/web/test_build_workspace_bundle.py:190: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+[LOCAL_WORKSPACE]/Pension-Data/scripts/web/smoke_test.py:65: in _assert_workspace_bundle
+    contract = load_runtime_contract()
+               ^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+contract_path = PosixPath('apps/contracts/runtime-contract.json')
+
+    def load_runtime_contract(contract_path: Path = CONTRACT_PATH) -> dict[str, Any]:
+        """Load and structurally validate the runtime contract JSON."""
+        if not contract_path.exists():
+>           raise WorkspaceContractError(f"runtime contract missing: {contract_path}")
+E           workspace_contract.WorkspaceContractError: runtime contract missing: apps/contracts/runtime-contract.json
+
+[LOCAL_WORKSPACE]/Pension-Data/scripts/web/workspace_contract.py:30: WorkspaceContractError
+=========================== short test summary info ============================
+FAILED [LOCAL_WORKSPACE]/Pension-Data/tests/web/test_build_workspace_bundle.py::test_generator_emits_runtime_valid_generated_bundle
+FAILED [LOCAL_WORKSPACE]/Pension-Data/tests/web/test_build_workspace_bundle.py::test_cli_writes_bundle_that_runtime_smoke_accepts
+========================= 2 failed, 35 passed in 0.66s =========================

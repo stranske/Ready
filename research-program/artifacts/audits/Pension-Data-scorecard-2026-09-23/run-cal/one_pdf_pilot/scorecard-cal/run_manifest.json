@@ -1,0 +1,63 @@
+{
+  "artifact_files": {
+    "component_coverage_report_json": "[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Pension-Data-scorecard-2026-09-23/run-cal/one_pdf_pilot/scorecard-cal/coverage/component_coverage_report.json",
+    "coverage_summary_json": "[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Pension-Data-scorecard-2026-09-23/run-cal/one_pdf_pilot/scorecard-cal/coverage/component_coverage_summary.json",
+    "extraction_warnings_json": "[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Pension-Data-scorecard-2026-09-23/run-cal/one_pdf_pilot/scorecard-cal/extraction_persistence/extraction_warnings.json",
+    "orchestration_ledger_json": "[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Pension-Data-scorecard-2026-09-23/run-cal/one_pdf_pilot/scorecard-cal/document_orchestration/scorecard-cal/ledger.json",
+    "orchestration_published_rows_json": "[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Pension-Data-scorecard-2026-09-23/run-cal/one_pdf_pilot/scorecard-cal/document_orchestration/scorecard-cal/published_rows.json",
+    "orchestration_review_queue_rows_json": "[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Pension-Data-scorecard-2026-09-23/run-cal/one_pdf_pilot/scorecard-cal/document_orchestration/scorecard-cal/review_queue_rows.json",
+    "orchestration_state_json": "[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Pension-Data-scorecard-2026-09-23/run-cal/one_pdf_pilot/scorecard-cal/document_orchestration/scorecard-cal/state.json",
+    "parser_result_json": "[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Pension-Data-scorecard-2026-09-23/run-cal/one_pdf_pilot/scorecard-cal/parser_result.json",
+    "persistence_contract_json": "[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Pension-Data-scorecard-2026-09-23/run-cal/one_pdf_pilot/scorecard-cal/extraction_persistence/persistence_contract.json",
+    "schema_component_datasets_manifest_json": "[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Pension-Data-scorecard-2026-09-23/run-cal/one_pdf_pilot/scorecard-cal/extraction_persistence/component_datasets_manifest.json",
+    "staging_core_metrics_json": "[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Pension-Data-scorecard-2026-09-23/run-cal/one_pdf_pilot/scorecard-cal/extraction_persistence/staging_core_metrics.json",
+    "staging_manager_fund_vehicle_relationships_json": "[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Pension-Data-scorecard-2026-09-23/run-cal/one_pdf_pilot/scorecard-cal/extraction_persistence/staging_manager_fund_vehicle_relationships.json",
+    "workspace_bundle_json": "[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Pension-Data-scorecard-2026-09-23/run-cal/one_pdf_pilot/scorecard-cal/workspace-bundle.json"
+  },
+  "document_outcome_count": 1,
+  "input": {
+    "default_money_unit_scale": "million_usd",
+    "effective_date": "2024-06-30",
+    "fetched_at": "2026-09-23T12:13:21.976117+00:00",
+    "ingestion_date": "2026-01-01",
+    "mime_type": "application/pdf",
+    "pdf_path": "[LOCAL_HOME]/.codex/automations/research-program/[LOCAL_WORKSPACE]/Pension-Data/tests/parser/fixtures/calpers_fy2024_excerpt.pdf",
+    "plan_id": "CA-PERS",
+    "plan_period": "FY2024",
+    "source_document_id": "pilot:CA-PERS:FY2024:6bd2797703aeb535",
+    "source_url": "file://[LOCAL_HOME]/.codex/automations/research-program/[LOCAL_WORKSPACE]/Pension-Data/tests/parser/fixtures/calpers_fy2024_excerpt.pdf"
+  },
+  "ledger_status": "success",
+  "run_id": "scorecard-cal",
+  "state": {
+    "artifact_records": [
+      {
+        "artifact_id": "artifact:610b84fc9397e3481a377ff7",
+        "byte_size": 225,
+        "checksum_sha256": "6bd2797703aeb535ef5ea4176808cd1897bd09f8f0d1818a05194ed0037a8d05",
+        "fetched_at": "2026-09-23T12:13:21.976117Z",
+        "first_seen_at": "2026-09-23T12:13:21.976117Z",
+        "is_active": true,
+        "last_seen_at": "2026-09-23T12:13:21.976117Z",
+        "mime_type": "application/pdf",
+        "plan_id": "CA-PERS",
+        "plan_period": "FY2024",
+        "source_url": "file://[LOCAL_HOME]/.codex/automations/research-program/[LOCAL_WORKSPACE]/Pension-Data/tests/parser/fixtures/calpers_fy2024_excerpt.pdf",
+        "superseded_by_artifact_id": null,
+        "supersedes_artifact_id": null
+      }
+    ],
+    "processed_artifact_ids": [
+      "artifact:610b84fc9397e3481a377ff7"
+    ],
+    "published_fact_ids": [
+      "fact:0c7c995197b2b733b723",
+      "fact:17565d20d6afd97b959b",
+      "fact:69f33cc429392eda5144",
+      "fact:7a8595c856070e0d9dbb",
+      "fact:8c5510d73c82606f8b24",
+      "fact:940730a1054e7b9e8271",
+      "fact:b100c0854318f515dc5c"
+    ]
+  }
+}

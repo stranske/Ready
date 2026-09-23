@@ -1,0 +1,114 @@
+{
+  "contractVersion": "1.0.0",
+  "data_origin": "generated",
+  "datasets": [
+    {
+      "domain": "pension",
+      "freshness": "generated",
+      "id": "one-pdf-pilot-scorecard-b",
+      "kind": "core_metrics",
+      "lastUpdated": "2025-06-30",
+      "name": "One-PDF Pilot Generated Metrics (scorecard-b)",
+      "rows": [
+        {
+          "confidence": 0.93,
+          "entity": "SYN-PLAN-B",
+          "metric": "discount_rate",
+          "metric_family": "actuarial",
+          "plan_period": "FY2025",
+          "provenance": {
+            "evidence_refs": [
+              "p.1#table"
+            ],
+            "source_document": "pilot:SYN-PLAN-B:FY2025:9b5d761374f55581"
+          },
+          "value": 0.068
+        },
+        {
+          "confidence": 0.93,
+          "entity": "SYN-PLAN-B",
+          "metric": "employee_contribution_rate",
+          "metric_family": "actuarial",
+          "plan_period": "FY2025",
+          "provenance": {
+            "evidence_refs": [
+              "p.1#table"
+            ],
+            "source_document": "pilot:SYN-PLAN-B:FY2025:9b5d761374f55581"
+          },
+          "value": 0.075
+        },
+        {
+          "confidence": 0.93,
+          "entity": "SYN-PLAN-B",
+          "metric": "employer_contribution_rate",
+          "metric_family": "actuarial",
+          "plan_period": "FY2025",
+          "provenance": {
+            "evidence_refs": [
+              "p.1#table"
+            ],
+            "source_document": "pilot:SYN-PLAN-B:FY2025:9b5d761374f55581"
+          },
+          "value": 0.124
+        },
+        {
+          "confidence": 0.93,
+          "entity": "SYN-PLAN-B",
+          "metric": "participant_count",
+          "metric_family": "actuarial",
+          "plan_period": "FY2025",
+          "provenance": {
+            "evidence_refs": [
+              "p.1#table"
+            ],
+            "source_document": "pilot:SYN-PLAN-B:FY2025:9b5d761374f55581"
+          },
+          "value": 325000.0
+        },
+        {
+          "confidence": 0.93,
+          "entity": "SYN-PLAN-B",
+          "metric": "aal_usd",
+          "metric_family": "funded",
+          "plan_period": "FY2025",
+          "provenance": {
+            "evidence_refs": [
+              "p.1#table"
+            ],
+            "source_document": "pilot:SYN-PLAN-B:FY2025:9b5d761374f55581"
+          },
+          "value": 640000000.0
+        },
+        {
+          "confidence": 0.93,
+          "entity": "SYN-PLAN-B",
+          "metric": "ava_usd",
+          "metric_family": "funded",
+          "plan_period": "FY2025",
+          "provenance": {
+            "evidence_refs": [
+              "p.1#table"
+            ],
+            "source_document": "pilot:SYN-PLAN-B:FY2025:9b5d761374f55581"
+          },
+          "value": 501800000.0
+        },
+        {
+          "confidence": 0.93,
+          "entity": "SYN-PLAN-B",
+          "metric": "funded_ratio",
+          "metric_family": "funded",
+          "plan_period": "FY2025",
+          "provenance": {
+            "evidence_refs": [
+              "p.1#table"
+            ],
+            "source_document": "pilot:SYN-PLAN-B:FY2025:9b5d761374f55581"
+          },
+          "value": 0.784
+        }
+      ]
+    }
+  ]
+}

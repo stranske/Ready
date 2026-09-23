@@ -1,0 +1,114 @@
+{
+  "contractVersion": "1.0.0",
+  "data_origin": "generated",
+  "datasets": [
+    {
+      "domain": "pension",
+      "freshness": "generated",
+      "id": "one-pdf-pilot-scorecard-cal",
+      "kind": "core_metrics",
+      "lastUpdated": "2024-06-30",
+      "name": "One-PDF Pilot Generated Metrics (scorecard-cal)",
+      "rows": [
+        {
+          "confidence": 0.93,
+          "entity": "CA-PERS",
+          "metric": "discount_rate",
+          "metric_family": "actuarial",
+          "plan_period": "FY2024",
+          "provenance": {
+            "evidence_refs": [
+              "p.2#table"
+            ],
+            "source_document": "pilot:CA-PERS:FY2024:6bd2797703aeb535"
+          },
+          "value": 0.068
+        },
+        {
+          "confidence": 0.93,
+          "entity": "CA-PERS",
+          "metric": "employee_contribution_rate",
+          "metric_family": "actuarial",
+          "plan_period": "FY2024",
+          "provenance": {
+            "evidence_refs": [
+              "p.2#table"
+            ],
+            "source_document": "pilot:CA-PERS:FY2024:6bd2797703aeb535"
+          },
+          "value": 0.08
+        },
+        {
+          "confidence": 0.93,
+          "entity": "CA-PERS",
+          "metric": "employer_contribution_rate",
+          "metric_family": "actuarial",
+          "plan_period": "FY2024",
+          "provenance": {
+            "evidence_refs": [
+              "p.2#table"
+            ],
+            "source_document": "pilot:CA-PERS:FY2024:6bd2797703aeb535"
+          },
+          "value": 0.131
+        },
+        {
+          "confidence": 0.93,
+          "entity": "CA-PERS",
+          "metric": "participant_count",
+          "metric_family": "actuarial",
+          "plan_period": "FY2024",
+          "provenance": {
+            "evidence_refs": [
+              "p.2#table"
+            ],
+            "source_document": "pilot:CA-PERS:FY2024:6bd2797703aeb535"
+          },
+          "value": 1934000.0
+        },
+        {
+          "confidence": 0.93,
+          "entity": "CA-PERS",
+          "metric": "aal_usd",
+          "metric_family": "funded",
+          "plan_period": "FY2024",
+          "provenance": {
+            "evidence_refs": [
+              "p.1#table"
+            ],
+            "source_document": "pilot:CA-PERS:FY2024:6bd2797703aeb535"
+          },
+          "value": 607500000.0
+        },
+        {
+          "confidence": 0.93,
+          "entity": "CA-PERS",
+          "metric": "ava_usd",
+          "metric_family": "funded",
+          "plan_period": "FY2024",
+          "provenance": {
+            "evidence_refs": [
+              "p.1#table"
+            ],
+            "source_document": "pilot:CA-PERS:FY2024:6bd2797703aeb535"
+          },
+          "value": 466800000.0
+        },
+        {
+          "confidence": 0.93,
+          "entity": "CA-PERS",
+          "metric": "funded_ratio",
+          "metric_family": "funded",
+          "plan_period": "FY2024",
+          "provenance": {
+            "evidence_refs": [
+              "p.1#table"
+            ],
+            "source_document": "pilot:CA-PERS:FY2024:6bd2797703aeb535"
+          },
+          "value": 0.768
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "artifact_files": {
+    "component_coverage_report_json": "[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Pension-Data-scorecard-2026-09-23/run-b/one_pdf_pilot/scorecard-b/coverage/component_coverage_report.json",
+    "coverage_summary_json": "[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Pension-Data-scorecard-2026-09-23/run-b/one_pdf_pilot/scorecard-b/coverage/component_coverage_summary.json",
+    "extraction_warnings_json": "[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Pension-Data-scorecard-2026-09-23/run-b/one_pdf_pilot/scorecard-b/extraction_persistence/extraction_warnings.json",
+    "orchestration_ledger_json": "[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Pension-Data-scorecard-2026-09-23/run-b/one_pdf_pilot/scorecard-b/document_orchestration/scorecard-b/ledger.json",
+    "orchestration_published_rows_json": "[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Pension-Data-scorecard-2026-09-23/run-b/one_pdf_pilot/scorecard-b/document_orchestration/scorecard-b/published_rows.json",
+    "orchestration_review_queue_rows_json": "[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Pension-Data-scorecard-2026-09-23/run-b/one_pdf_pilot/scorecard-b/document_orchestration/scorecard-b/review_queue_rows.json",
+    "orchestration_state_json": "[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Pension-Data-scorecard-2026-09-23/run-b/one_pdf_pilot/scorecard-b/document_orchestration/scorecard-b/state.json",
+    "parser_result_json": "[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Pension-Data-scorecard-2026-09-23/run-b/one_pdf_pilot/scorecard-b/parser_result.json",
+    "persistence_contract_json": "[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Pension-Data-scorecard-2026-09-23/run-b/one_pdf_pilot/scorecard-b/extraction_persistence/persistence_contract.json",
+    "schema_component_datasets_manifest_json": "[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Pension-Data-scorecard-2026-09-23/run-b/one_pdf_pilot/scorecard-b/extraction_persistence/component_datasets_manifest.json",
+    "staging_core_metrics_json": "[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Pension-Data-scorecard-2026-09-23/run-b/one_pdf_pilot/scorecard-b/extraction_persistence/staging_core_metrics.json",
+    "staging_manager_fund_vehicle_relationships_json": "[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Pension-Data-scorecard-2026-09-23/run-b/one_pdf_pilot/scorecard-b/extraction_persistence/staging_manager_fund_vehicle_relationships.json",
+    "workspace_bundle_json": "[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Pension-Data-scorecard-2026-09-23/run-b/one_pdf_pilot/scorecard-b/workspace-bundle.json"
+  },
+  "document_outcome_count": 1,
+  "input": {
+    "default_money_unit_scale": "million_usd",
+    "effective_date": "2025-06-30",
+    "fetched_at": "2026-09-23T12:13:21.726855+00:00",
+    "ingestion_date": "2026-02-01",
+    "mime_type": "application/pdf",
+    "pdf_path": "[LOCAL_HOME]/.codex/automations/research-program/[LOCAL_WORKSPACE]/Pension-Data/tests/golden/one_pdf_pilot/fixture_synthetic.pdf",
+    "plan_id": "SYN-PLAN-B",
+    "plan_period": "FY2025",
+    "source_document_id": "pilot:SYN-PLAN-B:FY2025:9b5d761374f55581",
+    "source_url": "file://[LOCAL_HOME]/.codex/automations/research-program/[LOCAL_WORKSPACE]/Pension-Data/tests/golden/one_pdf_pilot/fixture_synthetic.pdf"
+  },
+  "ledger_status": "success",
+  "run_id": "scorecard-b",
+  "state": {
+    "artifact_records": [
+      {
+        "artifact_id": "artifact:e9729427df3de0324211d97a",
+        "byte_size": 171,
+        "checksum_sha256": "9b5d761374f55581a5da1f54db6a2dc5c71afc10311f80a60077261eae00ce69",
+        "fetched_at": "2026-09-23T12:13:21.726855Z",
+        "first_seen_at": "2026-09-23T12:13:21.726855Z",
+        "is_active": true,
+        "last_seen_at": "2026-09-23T12:13:21.726855Z",
+        "mime_type": "application/pdf",
+        "plan_id": "SYN-PLAN-B",
+        "plan_period": "FY2025",
+        "source_url": "file://[LOCAL_HOME]/.codex/automations/research-program/[LOCAL_WORKSPACE]/Pension-Data/tests/golden/one_pdf_pilot/fixture_synthetic.pdf",
+        "superseded_by_artifact_id": null,
+        "supersedes_artifact_id": null
+      }
+    ],
+    "processed_artifact_ids": [
+      "artifact:e9729427df3de0324211d97a"
+    ],
+    "published_fact_ids": [
+      "fact:2af8b7ccb326412d2418",
+      "fact:565a6b9494e4ce09d85c",
+      "fact:941485ba67a6d667981c",
+      "fact:affccf5a8ef81795ac65",
+      "fact:b06cf869f8d70794108f",
+      "fact:bc7579d0cc7b5ea070a7",
+      "fact:dac0109199c13e55257c"
+    ]
+  }
+}

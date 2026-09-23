@@ -1,0 +1,180 @@
+{
+  "additional_components": [
+    "consultant_attribution_observation",
+    "plan_financial_flow"
+  ],
+  "component_manifest_path": "component_datasets_manifest.json",
+  "component_status": {
+    "benchmark_definition": "partial",
+    "benchmark_version": "present",
+    "consultant_entity": "not_disclosed",
+    "consultant_recommendation": "not_disclosed",
+    "document_version": "present",
+    "evidence_reference": "present",
+    "fee_observation": "not_disclosed",
+    "fund_vehicle_entity": "not_disclosed",
+    "investment_exposure": "not_disclosed",
+    "manager_entity": "not_disclosed",
+    "manager_lifecycle_event": "not_disclosed",
+    "metric_observation": "present",
+    "pension_plan": "present",
+    "performance_observation": "partial",
+    "plan_consultant_engagement": "not_disclosed",
+    "plan_manager_fund_position": "not_disclosed",
+    "plan_period": "present",
+    "risk_exposure_observation": "not_disclosed",
+    "source_document": "present"
+  },
+  "expected_component_count": 19,
+  "expected_components": [
+    "pension_plan",
+    "source_document",
+    "document_version",
+    "plan_period",
+    "metric_observation",
+    "evidence_reference",
+    "investment_exposure",
+    "manager_entity",
+    "fund_vehicle_entity",
+    "plan_manager_fund_position",
+    "manager_lifecycle_event",
+    "benchmark_definition",
+    "benchmark_version",
+    "performance_observation",
+    "fee_observation",
+    "risk_exposure_observation",
+    "consultant_entity",
+    "plan_consultant_engagement",
+    "consultant_recommendation"
+  ],
+  "invalid_state_rows": [],
+  "is_valid": true,
+  "metadata_violations": [],
+  "missing_components": [],
+  "observed_component_count": 19,
+  "observed_components": [
+    "benchmark_definition",
+    "benchmark_version",
+    "consultant_entity",
+    "consultant_recommendation",
+    "document_version",
+    "evidence_reference",
+    "fee_observation",
+    "fund_vehicle_entity",
+    "investment_exposure",
+    "manager_entity",
+    "manager_lifecycle_event",
+    "metric_observation",
+    "pension_plan",
+    "performance_observation",
+    "plan_consultant_engagement",
+    "plan_manager_fund_position",
+    "plan_period",
+    "risk_exposure_observation",
+    "source_document"
+  ],
+  "per_component": [
+    {
+      "component_name": "pension_plan",
+      "row_count": 1,
+      "status": "present"
+    },
+    {
+      "component_name": "source_document",
+      "row_count": 1,
+      "status": "present"
+    },
+    {
+      "component_name": "document_version",
+      "row_count": 1,
+      "status": "present"
+    },
+    {
+      "component_name": "plan_period",
+      "row_count": 1,
+      "status": "present"
+    },
+    {
+      "component_name": "metric_observation",
+      "row_count": 7,
+      "status": "present"
+    },
+    {
+      "component_name": "evidence_reference",
+      "row_count": 2,
+      "status": "present"
+    },
+    {
+      "component_name": "investment_exposure",
+      "row_count": 0,
+      "status": "not_disclosed"
+    },
+    {
+      "component_name": "manager_entity",
+      "row_count": 0,
+      "status": "not_disclosed"
+    },
+    {
+      "component_name": "fund_vehicle_entity",
+      "row_count": 0,
+      "status": "not_disclosed"
+    },
+    {
+      "component_name": "plan_manager_fund_position",
+      "row_count": 0,
+      "status": "not_disclosed"
+    },
+    {
+      "component_name": "manager_lifecycle_event",
+      "row_count": 0,
+      "status": "not_disclosed"
+    },
+    {
+      "component_name": "benchmark_definition",
+      "row_count": 0,
+      "status": "partial"
+    },
+    {
+      "component_name": "benchmark_version",
+      "row_count": 1,
+      "status": "present"
+    },
+    {
+      "component_name": "performance_observation",
+      "row_count": 0,
+      "status": "partial"
+    },
+    {
+      "component_name": "fee_observation",
+      "row_count": 0,
+      "status": "not_disclosed"
+    },
+    {
+      "component_name": "risk_exposure_observation",
+      "row_count": 0,
+      "status": "not_disclosed"
+    },
+    {
+      "component_name": "consultant_entity",
+      "row_count": 0,
+      "status": "not_disclosed"
+    },
+    {
+      "component_name": "plan_consultant_engagement",
+      "row_count": 0,
+      "status": "not_disclosed"
+    },
+    {
+      "component_name": "consultant_recommendation",
+      "row_count": 0,
+      "status": "not_disclosed"
+    }
+  ],
+  "run_id": "scorecard-cal",
+  "status_counts": {
+    "not_disclosed": 10,
+    "partial": 2,
+    "present": 7
+  },
+  "unexpected_components": []
+}
