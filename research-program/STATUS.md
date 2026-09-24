@@ -1,8 +1,8 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-24T10:36:18Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-24T12:11:45Z)
 
-Units: 197 — done 191, failed 6
+Units: 198 — done 192, failed 6
 Paused: False   Phase stops: []
-Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=warn vibe=ok aider=ok
+Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 Orchestrator evidence (30d): offload runs 247, bound to a research round 201, scored 201 (PASS 134, FAIL 67, infra 19) — codex 28/29 (P9 F19 I6), cursor 113/146 (P85 F28 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
 Claude conservation: off (weekly window available)
 Owner inbox: https://github.com/stranske/Ready/issues/553
@@ -176,6 +176,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Trend_Model_Project--2026-09-23T22-11-14Z | D | D | done | cursor | codex | Audit stranske/Trend_Model_Project and file issues (scorecard 2026-09- | 3W/1P/0B/0F of 4 |
 | D-audit-Workflows--2026-09-23T09-11-15Z | D | D | done | codex | codex | Audit stranske/Workflows and file issues (scorecard 2026-09-20 has no  | 4W/0P/1B/0F of 7 |
 | D-audit-Workflows--2026-09-23T22-11-13Z | D | D | failed | cursor |  | Audit stranske/Workflows and file issues (scorecard 2026-09-23 has no  |  |
+| D-audit-Workflows--2026-09-24T11-10-38Z | D | D | done | cursor | codex | Audit stranske/Workflows and file issues (scorecard 2026-09-24: 1 brok | 4W/0P/1B/0F of 7 |
 | D-audit-learning-management-system--2026-09-05T04-00-30Z | D | D | done | codex | driver | Audit stranske/learning-management-system and file issues (supply 2 <= |  |
 | D-audit-learning-management-system--2026-09-06T16-33-31Z | D | D | done | codex | driver | Audit stranske/learning-management-system and file issues (supply 1 <= |  |
 | D-audit-learning-management-system--2026-09-08T05-06-08Z | D | D | done | codex | codex | Audit stranske/learning-management-system and file issues (supply 1 <= |  |
@@ -209,18 +210,18 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-24T07:49:06Z — mirror — deferred — Ready#586 exact-head sync review; publication resumes by 2026-09-24T09:36:38+00:00; local work continues
-- 2026-09-24T08:04:09Z — mirror — deferred — Ready#586 exact-head sync review; publication resumes by 2026-09-24T09:36:38+00:00; local work continues
-- 2026-09-24T08:11:00Z — mirror — deferred — Ready#586 exact-head sync review; publication resumes by 2026-09-24T09:36:38+00:00; local work continues
-- 2026-09-24T08:19:11Z — mirror — deferred — Ready#586 exact-head sync review; publication resumes by 2026-09-24T09:36:38+00:00; local work continues
-- 2026-09-24T08:34:14Z — mirror — deferred — Ready#586 exact-head sync review; publication resumes by 2026-09-24T09:36:38+00:00; local work continues
-- 2026-09-24T08:49:16Z — mirror — deferred — Ready#586 exact-head sync review; publication resumes by 2026-09-24T09:36:38+00:00; local work continues
 - 2026-09-24T09:04:18Z — mirror — deferred — Ready#586 exact-head sync review; publication resumes by 2026-09-24T09:36:38+00:00; local work continues
 - 2026-09-24T09:11:37Z — mirror — deferred — Ready#586 exact-head sync review; publication resumes by 2026-09-24T09:36:38+00:00; local work continues
 - 2026-09-24T09:19:21Z — mirror — deferred — Ready#586 exact-head sync review; publication resumes by 2026-09-24T09:36:38+00:00; local work continues
 - 2026-09-24T09:34:23Z — mirror — deferred — Ready#586 exact-head sync review; publication resumes by 2026-09-24T09:36:38+00:00; local work continues
 - 2026-09-24T10:20:51Z — refill — error — PermissionError(1, 'Operation not permitted')
 - 2026-09-24T10:36:18Z — refill — error — PermissionError(1, 'Operation not permitted')
+- 2026-09-24T10:51:45Z — refill — error — PermissionError(1, 'Operation not permitted')
+- 2026-09-24T11:07:12Z — refill — error — PermissionError(1, 'Operation not permitted')
+- 2026-09-24T11:10:38Z — refill — Workflows: scorecard 2026-09-24: 1 broken / 0 fabricated → audit queued
+- 2026-09-24T11:10:44Z — D-audit-Workflows--2026-09-24T11-10-38Z — route — router picked cursor from ['codex', 'cursor']
+- 2026-09-24T11:10:44Z — D-audit-Workflows--2026-09-24T11-10-38Z — claimed by codex (agent cursor)
+- 2026-09-24T11:15:07Z — D-audit-Workflows--2026-09-24T11-10-38Z — done — Scorecard: 4 work / 0 partial / 1 broken / 0 fabricated / 2 not exercised of 7; journey: stops at "Scan belt promotion queue"; surfaces unscored 2; closed-still
 
 ## Questions
 
