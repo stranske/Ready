@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-24T15:42:08Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-24T16:43:13Z)
 
 Units: 199 — done 193, failed 6
 Paused: False   Phase stops: []
@@ -211,10 +211,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-24T13:15:34Z — D3-unblock-sweep-2026-09-24T13 — refutation posted — stranske/trip-planner#1844
-- 2026-09-24T13:15:59Z — digest — posted
-- 2026-09-24T13:26:21Z — mirror — deferred — Ready#586 exact-head sync review; publication resumes by 2026-09-24T15:21:30+00:00; local work continues
-- 2026-09-24T13:41:24Z — mirror — deferred — Ready#586 exact-head sync review; publication resumes by 2026-09-24T15:21:30+00:00; local work continues
 - 2026-09-24T13:56:26Z — mirror — deferred — Ready#586 exact-head sync review; publication resumes by 2026-09-24T15:21:30+00:00; local work continues
 - 2026-09-24T14:11:14Z — mirror — deferred — Ready#586 exact-head sync review; publication resumes by 2026-09-24T15:21:30+00:00; local work continues
 - 2026-09-24T14:11:28Z — mirror — deferred — Ready#586 exact-head sync review; publication resumes by 2026-09-24T15:21:30+00:00; local work continues
@@ -223,6 +219,10 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-24T14:56:36Z — mirror — deferred — Ready#586 exact-head sync review; publication resumes by 2026-09-24T15:21:30+00:00; local work continues
 - 2026-09-24T15:10:15Z — mirror — deferred — Ready#586 exact-head sync review; publication resumes by 2026-09-24T15:21:30+00:00; local work continues
 - 2026-09-24T15:11:38Z — mirror — deferred — Ready#586 exact-head sync review; publication resumes by 2026-09-24T15:21:30+00:00; local work continues
+- 2026-09-24T15:57:36Z — mirror — deferred — Ready#586 exact-head sync review; publication resumes by 2026-09-24T17:49:45+00:00; local work continues
+- 2026-09-24T16:10:46Z — mirror — deferred — Ready#586 exact-head sync review; publication resumes by 2026-09-24T17:49:45+00:00; local work continues
+- 2026-09-24T16:12:39Z — mirror — deferred — Ready#586 exact-head sync review; publication resumes by 2026-09-24T17:49:45+00:00; local work continues
+- 2026-09-24T16:28:10Z — mirror — deferred — Ready#586 exact-head sync review; publication resumes by 2026-09-24T17:49:45+00:00; local work continues
 
 ## Questions
 
