@@ -47,3 +47,7 @@ Resumed the already-complete attempt 2 on unchanged tip `388a06a`. Revalidated t
 ## 2026-09-24T00:21Z — D-audit-Counter_Risk--2026-09-23T22-11-15Z — complete
 
 Attempt 2 on unchanged tip `2f92b17`: backfilled missing `Scorecard:` headline in `Code/Audits/Counter_Risk/2026-09-23-SCORECARD.md` (root cause of refill re-queue). Re-ran CF1/CF3–CF5 probes; REFUTED #1062; filed #1113 (PRODUCT_CONTRACT status stale). Format guard success run 35938041921. OUT `artifacts/audits/Counter_Risk-2026-09-23.md` line 1 parseable via `newest_scorecard`.
+
+## 2026-09-24T00:50Z — D-audit-Counter_Risk--2026-09-23T22-11-15Z — attempt 3 complete
+
+Attempt 3 on unchanged tip `2f92b17`: confirmed `newest_scorecard` parses canonical headline; re-ran CF1 fixture replay and CF3–CF5 pytest gates (19 cases). No new reproducible non-duplicate finding; 0 issues filed (`gh` unauthenticated). OUT `artifacts/audits/Counter_Risk-2026-09-23.md` line 1 parseable.

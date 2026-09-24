@@ -1,29 +1,31 @@
 Scorecard: 4 work / 1 partial / 0 broken / 0 fabricated / 2 not exercised of 7; journey: passes; surfaces unscored 2; closed-still-broken 0.
 
-Issues filed: 1 (this attempt) — https://github.com/stranske/Counter_Risk/issues/1113 ([P2] PRODUCT_CONTRACT status stale). Prior same-day attempt filed #1112 (still open).
+Issues filed: 0 (this attempt). Same-day prior attempts: #1112, #1113 (both filed earlier on tip `2f92b17`; `gh` unauthenticated here — open state and format guard not re-checked).
 
-REFUTED: https://github.com/stranske/Counter_Risk/issues/1062 — split Alpha rows now consolidate before HHI (`rollups.py:598-608`; `test_split_counterparty_preserves_concentration` PASS on tip).
-
-## Run report — Track D refill attempt 2 — 2026-09-23
+## Run report — Track D refill attempt 3 — 2026-09-23
 
 **Unit:** `D-audit-Counter_Risk--2026-09-23T22-11-15Z`  
-**Tip:** `2f92b174303f3ef977828ed4588794fcec42e6ef` (unchanged since morning attempt).
+**Tip:** `2f92b174303f3ef977828ed4588794fcec42e6ef` (unchanged since attempts 1–2).
 
-### Why attempt 2 ran
+### Why attempt 3 ran
 
-`program.py` `newest_scorecard(Counter_Risk)` read `Code/Audits/Counter_Risk/2026-09-23-SCORECARD.md` and returned **no parseable headline** — the morning round wrote the scorecard tables but omitted the load-bearing `Scorecard: …` line required by `reference/product-scorecard.md`. That falsely re-triggered Track D despite a complete morning audit.
+The fleet re-queued Counter_Risk because `program.newest_scorecard('Counter_Risk')` had returned **no parseable headline** from `Code/Audits/Counter_Risk/2026-09-23-SCORECARD.md` (morning round omitted the load-bearing `Scorecard: …` line). Attempt 2 inserted that line; this attempt confirms the parser now succeeds and that a full Phase 1.5 re-probe on the same tip does not surface a new filable defect.
 
-### Corrective + verification actions
+### Verification (attempt 3)
 
-- Inserted the canonical headline into `Code/Audits/Counter_Risk/2026-09-23-SCORECARD.md` (line 3).
-- Re-ran Phase 1.5 probes on tip: fixture-replay CF1 → `/tmp/cr-audit-20260923-attempt2`; CF3–CF5 targeted pytest gates green (13 + 5 + 1 tests).
-- Phase 3: closed #1062 reproduction no longer shows split-row concentration drift; #1104/#1107 fixes remain green.
-- Phase 4: filed #1113 for stale `docs/PRODUCT_CONTRACT.md` status (distinct from #1112 audit-log supersession). Open #1106 (`_format_deltas` first-mover-only) unchanged and not re-filed.
+- `newest_scorecard(Counter_Risk)` → headline parsed (`4 work / 1 partial`, journey `passes`, `not_exercised` 2).
+- CF1: `counter-risk run --fixture-replay --config config/fixture_replay.yml --output-dir /tmp/cr-audit-20260923-attempt3` → `manifest.json` present.
+- CF3–CF5: 13 + 5 + 6 targeted pytest cases green (`test_split_counterparty_preserves_concentration` included; split Alpha rows consolidate at `src/counter_risk/compute/rollups.py:598-608`).
+- CLI surface unchanged: `{run, gui}`; unscored CF6 (Runner.xlsm COM), CF7 (frozen bundle).
 
-### Surface inventory
+### Dedup / filing
 
-CLI unchanged: `counter-risk {run,gui}`, `mapping_diff_report`. Unscored: Runner.xlsm COM workflow (CF6), frozen PyInstaller bundle (CF7).
+No new verified finding beyond open docs-debt issues already filed (#1112 audit-log supersession; #1113 stale `docs/PRODUCT_CONTRACT.md` status table still shows C3 `BROKEN` and C1/C4 `PARTIAL` while tip tests pass). Known code seam #1106 (`_format_deltas` first-mover-only) remains open and was not re-filed.
+
+### Limits
+
+`GH_TOKEN` / `GITHUB_TOKEN` unset — could not run `gh issue list`, file issues, or read Agents Issue Format Guard on this host. Confidence in “0 new issues” is high for product regressions (live probes + tests on tip); confidence in GitHub-side dedup is medium-low without API access.
 
 ### Format guard
 
-Agents Issue Format Guard: success on #1113 (run 35938041921).
+Not checked this attempt (no new filing).
