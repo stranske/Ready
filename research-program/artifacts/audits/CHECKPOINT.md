@@ -1,3 +1,7 @@
+## 2026-09-24T02:40:00Z — D-audit-Workflows--2026-09-23T22-11-13Z — complete
+
+Track D refill on tip `37a83f28` (+3 commits since `864b6e30`): scorecard 4 work / 0 partial / 1 broken / 0 fabricated / 2 not exercised of 7; journey stops at belt scan; surfaces unscored 2. Backfilled headline on canonical `2026-09-23-SCORECARD.md`; new `2026-09-24-SCORECARD.md`. #3525 belt proxy still reproduces locally; 0 issues filed (`gh` HTTP 401). OUT `artifacts/audits/Workflows-2026-09-23.md`.
+
 ## 2026-09-24T02:30:00Z — D-audit-Trend_Model_Project--2026-09-23T22-11-14Z — complete
 
 Track D refill on tip `eb7ecfb` (+1 commit, PR #6056): scorecard 3 work / 1 partial / 0 broken / 0 fabricated / 0 not exercised of 4; journey passes; surfaces unscored 0. Backfilled headline on canonical `2026-09-23-SCORECARD.md`; new `2026-09-24-SCORECARD.md`. REFUTED #6053; #6054/#6055 still reproduce. 0 issues filed (`gh` HTTP 401). OUT `artifacts/audits/Trend_Model_Project-2026-09-23.md`.

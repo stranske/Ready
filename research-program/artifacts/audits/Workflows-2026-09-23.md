@@ -1,9 +1,34 @@
-Scorecard: 4 work / 0 partial / 1 broken / 0 fabricated / 2 not exercised of 7; journey: stops at "Scan belt promotion queue"; surfaces unscored 0; closed-still-broken 0.
+Scorecard: 4 work / 0 partial / 1 broken / 0 fabricated / 2 not exercised of 7; journey: stops at "Scan belt promotion queue"; surfaces unscored 2; closed-still-broken 0.
 
-# Workflows audit — 2026-09-23
+# Workflows audit — Track D refill — 2026-09-24
 
-Audited fresh `stranske/Workflows` `main` at `864b6e3053ce5135e8bc56cfac308edd56fa0108`. The live deterministic core is healthy: current consumer-manifest compilation produced 238 copy entries and 17 removals; run-contract self-smoke accepted its valid fixture and rejected five malformed cases; capability selection varied correctly across matching/nonmatching repositories; and the metrics pipeline produced materially different alpha/beta figures. Focused regression gates also passed: 123 Python tests and 20 Node tests.
+Audited `stranske/Workflows` `main` at `37a83f28367428cabd2820fc3d0331d62cc9d26c` (+3 commits since the morning scorecard at `864b6e30`: #3529 consumer schema co-delivery, #3526 backplane evidence closure, #3391 belt ledger completion evidence).
 
-The primary belt-promotion journey is broken before discovery. Exact-tip scheduled Actions runs 35862732312, 35865818556, and 35868514826 all fail the scan with a JavaScript Proxy invariant error when `checkRateLimitStatus` reads the wrapped client's non-configurable `__getTokenSource`; the last 15 workflow runs contain 14 failures. The current `WORKFLOWS_APP` credential had 4,728 remaining calls, so this is not provider capacity. No existing issue matches the error.
+**Refill trigger:** canonical `Code/Audits/Workflows/2026-09-23-SCORECARD.md` omitted the load-bearing `Scorecard:` headline (`newest_scorecard` could not parse). Backfilled on that file; full re-score recorded in `Code/Audits/Workflows/2026-09-24-SCORECARD.md`.
 
-Filed one verified P1 issue for the proxy metadata invariant, with an AGENT_ISSUE_FORMAT body, named Node test gate, deliberate-break/revert proof, and post-merge Actions observation. Consumer delivery and Gate-on-a-real-PR are intentionally marked not exercised because the audit did not mutate consumer repositories or fabricate a production event. Canonical scorecard and evidence live in `Code/Audits/Workflows/2026-09-23-*`.
+## Scorecard summary
+
+| CF | Result | Note |
+|---|---|---|
+| C1 sync compile | WORKS | 240 copies / 17 removals |
+| C2 run-contract self-smoke | WORKS | six fixture modes pass |
+| C3 capability bundle | WORKS | matching vs non-matching repo selection differs |
+| C4 metrics dashboard | WORKS | `tests/e2e/test_metrics_dashboard.py` |
+| C5 belt scan preflight | **BROKEN** | Proxy invariant on `__getTokenSource` still reproduces with real Octokit-shaped client (`createRateLimitedGithub`) — same failure mode as #3525 |
+| C6 consumer sync delivery | NOT-EXERCISED | no production consumer mutation |
+| C7 Gate on consumer PR | NOT-EXERCISED | no synthetic PR event |
+
+## Issues filed
+
+**0** — GitHub API returns HTTP 401 (`gh` unauthenticated in this executor). Open **#3525** already tracks the verified C5 defect; no duplicate filed.
+
+## Dimension notes (abbreviated)
+
+- **Wiring:** backplane registry validator warns stale reference-run only; 44 focused backplane/belt tests pass on tip.
+- **New surfaces:** `scripts/belt_ledger_completion.py` and `scripts/audit_belt_ledger_completion.py` (interior to C5); unscored count 2.
+- **Product contract:** no `docs/PRODUCT_CONTRACT.md`; adoption issue body not filed (auth blocked). Draft may live under `Code/Audits/Workflows/2026-09-24-issue-bodies/` when auth returns.
+
+## Evidence paths
+
+- `work/workflows-audit-2026-09-24/evidence/` (sync, self-smoke, capability, belt proxy repro, pytest)
+- Canonical scorecard: `[LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Workflows/2026-09-24-SCORECARD.md`

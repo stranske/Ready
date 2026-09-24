@@ -1,9 +1,9 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-24T02:30:45Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-24T02:49:46Z)
 
 Units: 195 — claimed 1, done 189, failed 5
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
-Orchestrator evidence (30d): offload runs 243, bound to a research round 197, scored 197 (PASS 133, FAIL 64, infra 19) — codex 28/29 (P9 F19 I6), cursor 109/142 (P84 F25 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
+Orchestrator evidence (30d): offload runs 244, bound to a research round 198, scored 198 (PASS 133, FAIL 65, infra 19) — codex 28/29 (P9 F19 I6), cursor 110/143 (P84 F26 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
 Claude conservation: off (weekly window available)
 Owner inbox: https://github.com/stranske/Ready/issues/553
 
@@ -207,9 +207,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-24T02:11:33Z — mirror — FAILED — RuntimeError; pending commits retained for next tick
-- 2026-09-24T02:15:37Z — D-audit-Travel-Plan-Permission--2026-09-23T22-11-14Z — done — cursor produced 435 words at artifacts/audits/Travel-Plan-Permission-2026-09-23.md in 307s
-- 2026-09-24T02:15:38Z — D-audit-Travel-Plan-Permission--2026-09-23T22-11-14Z — refutation posted — stranske/Travel-Plan-Permission#1592
 - 2026-09-24T02:15:39Z — D-audit-Travel-Plan-Permission--2026-09-23T22-11-14Z — refutation posted — stranske/Travel-Plan-Permission#1593
 - 2026-09-24T02:15:40Z — D-audit-Travel-Plan-Permission--2026-09-23T22-11-14Z — refutation posted — stranske/Travel-Plan-Permission#1595
 - 2026-09-24T02:15:42Z — D-audit-Travel-Plan-Permission--2026-09-23T22-11-14Z — refutation posted — stranske/Travel-Plan-Permission#1596
@@ -219,6 +216,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-24T02:17:33Z — mirror — FAILED — RuntimeError; pending commits retained for next tick
 - 2026-09-24T02:30:45Z — D-audit-Workflows--2026-09-23T22-11-13Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-24T02:30:45Z — D-audit-Workflows--2026-09-23T22-11-13Z — claimed by driver (agent cursor)
+- 2026-09-24T02:34:44Z — D-audit-Workflows--2026-09-23T22-11-13Z — fail — cursor produced 293 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Workflows-2026-09-23.md (min 400); rotating agent
+- 2026-09-24T02:49:46Z — D-audit-Workflows--2026-09-23T22-11-13Z — route — router picked cursor from ['codex', 'cursor']
+- 2026-09-24T02:49:46Z — D-audit-Workflows--2026-09-23T22-11-13Z — claimed by driver (agent cursor)
 
 ## Questions
 
