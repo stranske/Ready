@@ -43,3 +43,7 @@ Canonical scorecard headline backfilled; ledger/report updated. Tip `52b7f4b`; 8
 ## 2026-09-24T00:13:32Z — D-audit-Pension-Data--2026-09-23T22-11-16Z — closeout complete
 
 Resumed the already-complete attempt 2 on unchanged tip `388a06a`. Revalidated the core staging path and filed documentation gap: 37 focused tests passed; proprietary serving without `PENSION_DATA_QUERY_ARTIFACT_ROOT` returns the #918 503 and the artifact-root-backed F2 regression is green. Corrected a stale `42/42` report/ledger count to `37/37`; scorecard remains 3 work / 0 partial / 0 broken / 0 fabricated / 0 not exercised of 3.
+
+## 2026-09-24T00:21Z — D-audit-Counter_Risk--2026-09-23T22-11-15Z — complete
+
+Attempt 2 on unchanged tip `2f92b17`: backfilled missing `Scorecard:` headline in `Code/Audits/Counter_Risk/2026-09-23-SCORECARD.md` (root cause of refill re-queue). Re-ran CF1/CF3–CF5 probes; REFUTED #1062; filed #1113 (PRODUCT_CONTRACT status stale). Format guard success run 35938041921. OUT `artifacts/audits/Counter_Risk-2026-09-23.md` line 1 parseable via `newest_scorecard`.

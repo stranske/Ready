@@ -1,9 +1,9 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-24T00:18:41Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-24T00:37:31Z)
 
 Units: 192 — claimed 1, done 183, failed 4, queued 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
-Orchestrator evidence (30d): offload runs 235, bound to a research round 189, scored 189 (PASS 129, FAIL 60, infra 19) — codex 28/29 (P9 F19 I6), cursor 101/134 (P80 F21 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
+Orchestrator evidence (30d): offload runs 236, bound to a research round 190, scored 190 (PASS 129, FAIL 61, infra 19) — codex 28/29 (P9 F19 I6), cursor 102/135 (P80 F22 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
 Claude conservation: off (weekly window available)
 Owner inbox: https://github.com/stranske/Ready/issues/553
 
@@ -204,9 +204,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-23T23:44:47Z — D-audit-Manager-Mosaic--2026-09-23T22-11-13Z — done — cursor produced 428 words at artifacts/audits/Manager-Mosaic-2026-09-23.md in 113s
-- 2026-09-23T23:44:48Z — D-audit-Manager-Mosaic--2026-09-23T22-11-13Z — refutation posted — stranske/Manager-Mosaic#53
-- 2026-09-24T00:00:17Z — D-audit-Pension-Data--2026-09-23T22-11-16Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-24T00:00:17Z — D-audit-Pension-Data--2026-09-23T22-11-16Z — claimed by driver (agent cursor)
 - 2026-09-24T00:03:39Z — D-audit-Pension-Data--2026-09-23T22-11-16Z — fail — cursor produced 378 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Pension-Data-2026-09-23.md (min 400); rotating agent
 - 2026-09-24T00:11:16Z — D-audit-Pension-Data--2026-09-23T22-11-16Z — route — router picked cursor from ['codex', 'cursor']
@@ -216,6 +213,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-24T00:18:40Z — D-audit-Counter_Risk--2026-09-23T22-11-15Z — claim released (stale)
 - 2026-09-24T00:18:41Z — D-audit-Counter_Risk--2026-09-23T22-11-15Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-24T00:18:41Z — D-audit-Counter_Risk--2026-09-23T22-11-15Z — claimed by driver (agent cursor)
+- 2026-09-24T00:22:28Z — D-audit-Counter_Risk--2026-09-23T22-11-15Z — fail — cursor produced 222 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Counter_Risk-2026-09-23.md (min 400); rotating agent
+- 2026-09-24T00:37:31Z — D-audit-Counter_Risk--2026-09-23T22-11-15Z — route — router picked cursor from ['codex', 'cursor']
+- 2026-09-24T00:37:31Z — D-audit-Counter_Risk--2026-09-23T22-11-15Z — claimed by driver (agent cursor)
 
 ## Questions
 
