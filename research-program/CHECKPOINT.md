@@ -1843,3 +1843,18 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-24T03:24:02Z — D4-verify-merged-2026-09-24T03 — route — router picked cursor from ['codex', 'cursor']
 ## 2026-09-24T03:24:02Z — D4-verify-merged-2026-09-24T03 — claimed by driver (agent cursor)
 ## 2026-09-24T03:29:23Z — D4-verify-merged-2026-09-24T03 — done — cursor produced 732 words at artifacts/verification/D4-verify-merged-2026-09-24T03.md in 293s
+## 2026-09-24T03:44:50Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-24T05:37:45+00:00; local work continues
+## 2026-09-24T03:59:53Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-24T05:37:45+00:00; local work continues
+## 2026-09-24T04:10:58Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-24T05:37:45+00:00; local work continues
+## 2026-09-24T04:15:09Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-24T05:37:45+00:00; local work continues
+## 2026-09-24T04:30:11Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-24T05:37:45+00:00; local work continues
+## 2026-09-24T04:45:14Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-24T05:37:45+00:00; local work continues
+## 2026-09-24T05:00:17Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-24T05:37:45+00:00; local work continues
+## 2026-09-24T05:11:00Z — unblock — enqueued D3-unblock-sweep-2026-09-24T05
+## 2026-09-24T05:11:00Z — D3-unblock-sweep-2026-09-24T05 — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-24T05:11:00Z — D3-unblock-sweep-2026-09-24T05 — claimed by codex (agent cursor)
+## 2026-09-24T05:11:00Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-24T05:37:45+00:00; local work continues
+## 2026-09-24T05:15:19Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-24T05:37:45+00:00; local work continues
+## 2026-09-24T05:16:07Z — D3-unblock-sweep-2026-09-24T05 — done — Repaired 33 mechanically paused follow-up issue bodies across eight repositories; no stale claims or stalled agent PRs required routing.
+## 2026-09-24T05:16:08Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-24T05:37:45+00:00; local work continues
+## 2026-09-24T05:30:22Z — mirror — deferred — Ready#585 exact-head sync review; publication resumes by 2026-09-24T05:37:45+00:00; local work continues
