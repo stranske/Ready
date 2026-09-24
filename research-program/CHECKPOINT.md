@@ -1774,3 +1774,5 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-23T23:42:27Z — D-audit-Manager-Mosaic--2026-09-23T22-11-13Z — claimed by driver (agent cursor)
 ## 2026-09-23T23:44:47Z — D-audit-Manager-Mosaic--2026-09-23T22-11-13Z — done — cursor produced 428 words at artifacts/audits/Manager-Mosaic-2026-09-23.md in 113s
 ## 2026-09-23T23:44:48Z — D-audit-Manager-Mosaic--2026-09-23T22-11-13Z — refutation posted — stranske/Manager-Mosaic#53
+## 2026-09-24T00:00:17Z — D-audit-Pension-Data--2026-09-23T22-11-16Z — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-24T00:00:17Z — D-audit-Pension-Data--2026-09-23T22-11-16Z — claimed by driver (agent cursor)
