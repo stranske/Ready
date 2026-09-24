@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-24T19:17:42Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-24T20:18:18Z)
 
 Units: 199 — done 193, failed 6
 Paused: False   Phase stops: []
@@ -211,10 +211,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-24T13:56:26Z — mirror — deferred — Ready#586 exact-head sync review; publication resumes by 2026-09-24T15:21:30+00:00; local work continues
-- 2026-09-24T14:11:14Z — mirror — deferred — Ready#586 exact-head sync review; publication resumes by 2026-09-24T15:21:30+00:00; local work continues
-- 2026-09-24T14:11:28Z — mirror — deferred — Ready#586 exact-head sync review; publication resumes by 2026-09-24T15:21:30+00:00; local work continues
-- 2026-09-24T14:26:30Z — mirror — deferred — Ready#586 exact-head sync review; publication resumes by 2026-09-24T15:21:30+00:00; local work continues
 - 2026-09-24T14:41:33Z — mirror — FAILED — RuntimeError; pending commits retained for next tick
 - 2026-09-24T14:56:36Z — mirror — deferred — Ready#586 exact-head sync review; publication resumes by 2026-09-24T15:21:30+00:00; local work continues
 - 2026-09-24T15:10:15Z — mirror — deferred — Ready#586 exact-head sync review; publication resumes by 2026-09-24T15:21:30+00:00; local work continues
@@ -223,6 +219,10 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-24T16:10:46Z — mirror — deferred — Ready#586 exact-head sync review; publication resumes by 2026-09-24T17:49:45+00:00; local work continues
 - 2026-09-24T16:12:39Z — mirror — deferred — Ready#586 exact-head sync review; publication resumes by 2026-09-24T17:49:45+00:00; local work continues
 - 2026-09-24T16:28:10Z — mirror — deferred — Ready#586 exact-head sync review; publication resumes by 2026-09-24T17:49:45+00:00; local work continues
+- 2026-09-24T19:33:09Z — mirror — deferred — Ready#590 exact-head sync review; publication resumes by 2026-09-24T21:29:14+00:00; local work continues
+- 2026-09-24T19:48:13Z — mirror — deferred — Ready#590 exact-head sync review; publication resumes by 2026-09-24T21:29:14+00:00; local work continues
+- 2026-09-24T20:03:16Z — mirror — deferred — Ready#590 exact-head sync review; publication resumes by 2026-09-24T21:29:14+00:00; local work continues
+- 2026-09-24T20:10:49Z — mirror — deferred — Ready#590 exact-head sync review; publication resumes by 2026-09-24T21:29:14+00:00; local work continues
 
 ## Questions
 
