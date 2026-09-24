@@ -1872,3 +1872,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-24T10:36:18Z — refill — error — PermissionError(1, 'Operation not permitted')
 ## 2026-09-24T10:51:45Z — refill — error — PermissionError(1, 'Operation not permitted')
 ## 2026-09-24T11:07:12Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-24T11:10:38Z — refill — Workflows: scorecard 2026-09-24: 1 broken / 0 fabricated → audit queued
+## 2026-09-24T11:10:44Z — D-audit-Workflows--2026-09-24T11-10-38Z — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-24T11:10:44Z — D-audit-Workflows--2026-09-24T11-10-38Z — claimed by codex (agent cursor)
