@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-24T00:13:53Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-24T00:18:41Z)
 
 Units: 192 — claimed 1, done 183, failed 4, queued 4
 Paused: False   Phase stops: []
@@ -123,7 +123,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Counter_Risk--2026-09-20T20-25-21Z | D | D | done | cursor | driver | Audit stranske/Counter_Risk and file issues (supply 2 <= 2) |  |
 | D-audit-Counter_Risk--2026-09-21T20-41-04Z | D | D | done | cursor | driver | Audit stranske/Counter_Risk and file issues (supply 2 <= 3) |  |
 | D-audit-Counter_Risk--2026-09-23T09-11-16Z | D | D | done | cursor | codex | Audit stranske/Counter_Risk and file issues (scorecard 2026-09-21 has  | 4W/1P/0B/0F of 7 |
-| D-audit-Counter_Risk--2026-09-23T22-11-15Z | D | D | claimed | cursor | codex | Audit stranske/Counter_Risk and file issues (scorecard 2026-09-23 has  |  |
+| D-audit-Counter_Risk--2026-09-23T22-11-15Z | D | D | claimed | cursor | driver | Audit stranske/Counter_Risk and file issues (scorecard 2026-09-23 has  |  |
 | D-audit-Deliverable-Render--2026-09-20T08-24-39Z | D | D | failed | codex |  | Audit stranske/Deliverable-Render and file issues (supply 1 <= 2) |  |
 | D-audit-Deliverable-Render--2026-09-20T20-25-18Z | D | D | done | cursor | driver | Audit stranske/Deliverable-Render and file issues (supply 1 <= 2) |  |
 | D-audit-Deliverable-Render--2026-09-21T08-38-08Z | D | D | done | cursor | driver | Audit stranske/Deliverable-Render and file issues (supply 2 <= 2) |  |
@@ -204,9 +204,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-23T23:27:25Z — D-audit-Manager-Mosaic--2026-09-23T22-11-13Z — fail — offload to codex exited 70; agent reported OFFLOAD_INCOMPLETE
-- 2026-09-23T23:42:27Z — D-audit-Manager-Mosaic--2026-09-23T22-11-13Z — route — router picked cursor from ['codex', 'cursor']
-- 2026-09-23T23:42:27Z — D-audit-Manager-Mosaic--2026-09-23T22-11-13Z — claimed by driver (agent cursor)
 - 2026-09-23T23:44:47Z — D-audit-Manager-Mosaic--2026-09-23T22-11-13Z — done — cursor produced 428 words at artifacts/audits/Manager-Mosaic-2026-09-23.md in 113s
 - 2026-09-23T23:44:48Z — D-audit-Manager-Mosaic--2026-09-23T22-11-13Z — refutation posted — stranske/Manager-Mosaic#53
 - 2026-09-24T00:00:17Z — D-audit-Pension-Data--2026-09-23T22-11-16Z — route — router picked cursor from ['codex', 'cursor']
@@ -216,6 +213,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-24T00:11:16Z — D-audit-Pension-Data--2026-09-23T22-11-16Z — claimed by codex (agent cursor)
 - 2026-09-24T00:13:51Z — D-audit-Pension-Data--2026-09-23T22-11-16Z — done — Scorecard: 3 work / 0 partial / 0 broken / 0 fabricated / 0 not exercised of 3; journey: passes; surfaces unscored 0; closed-still-broken 0. Exact-tip closeout 
 - 2026-09-24T00:13:52Z — D-audit-Pension-Data--2026-09-23T22-11-16Z — refutation posted — stranske/Pension-Data#914
+- 2026-09-24T00:18:40Z — D-audit-Counter_Risk--2026-09-23T22-11-15Z — claim released (stale)
+- 2026-09-24T00:18:41Z — D-audit-Counter_Risk--2026-09-23T22-11-15Z — route — router picked cursor from ['codex', 'cursor']
+- 2026-09-24T00:18:41Z — D-audit-Counter_Risk--2026-09-23T22-11-15Z — claimed by driver (agent cursor)
 
 ## Questions
 
