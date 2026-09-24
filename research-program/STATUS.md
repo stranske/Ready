@@ -1,9 +1,9 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-24T00:54:24Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-24T01:11:31Z)
 
 Units: 192 — claimed 1, done 183, failed 5, queued 3
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
-Orchestrator evidence (30d): offload runs 237, bound to a research round 191, scored 191 (PASS 129, FAIL 62, infra 19) — codex 28/29 (P9 F19 I6), cursor 103/136 (P80 F23 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
+Orchestrator evidence (30d): offload runs 238, bound to a research round 192, scored 192 (PASS 129, FAIL 63, infra 19) — codex 28/29 (P9 F19 I6), cursor 104/137 (P80 F24 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
 Claude conservation: off (weekly window available)
 Owner inbox: https://github.com/stranske/Ready/issues/553
 
@@ -157,7 +157,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Portable-Alpha-Extension-Model--2026-09-07T04-47-31Z | D | D | done | codex | codex | Audit stranske/Portable-Alpha-Extension-Model and file issues (supply  |  |
 | D-audit-Portable-Alpha-Extension-Model--2026-09-07T17-01-44Z | D | D | done | codex | driver | Audit stranske/Portable-Alpha-Extension-Model and file issues (supply  |  |
 | D-audit-Portable-Alpha-Extension-Model--2026-09-23T09-11-16Z | D | D | done | cursor | driver | Audit stranske/Portable-Alpha-Extension-Model and file issues (scoreca | 2W/1P/0B/0F of 6 |
-| D-audit-Portable-Alpha-Extension-Model--2026-09-23T22-11-14Z | D | D | claimed | cursor | driver | Audit stranske/Portable-Alpha-Extension-Model and file issues (scoreca |  |
+| D-audit-Portable-Alpha-Extension-Model--2026-09-23T22-11-14Z | D | D | claimed | cursor | codex | Audit stranske/Portable-Alpha-Extension-Model and file issues (scoreca |  |
 | D-audit-Ready--2026-09-07T04-47-33Z | D | D | done | codex | driver | Audit stranske/Ready and file issues (supply 1 <= 2) |  |
 | D-audit-Travel-Plan-Permission--2026-09-05T16-11-36Z | D | D | done | codex | codex | Audit stranske/Travel-Plan-Permission and file issues (supply 3 <= 3) |  |
 | D-audit-Travel-Plan-Permission--2026-09-06T04-25-49Z | D | D | done | codex | driver | Audit stranske/Travel-Plan-Permission and file issues (supply 1 <= 2) |  |
@@ -204,9 +204,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-24T00:11:16Z — D-audit-Pension-Data--2026-09-23T22-11-16Z — claimed by codex (agent cursor)
-- 2026-09-24T00:13:51Z — D-audit-Pension-Data--2026-09-23T22-11-16Z — done — Scorecard: 3 work / 0 partial / 0 broken / 0 fabricated / 0 not exercised of 3; journey: passes; surfaces unscored 0; closed-still-broken 0. Exact-tip closeout 
-- 2026-09-24T00:13:52Z — D-audit-Pension-Data--2026-09-23T22-11-16Z — refutation posted — stranske/Pension-Data#914
 - 2026-09-24T00:18:40Z — D-audit-Counter_Risk--2026-09-23T22-11-15Z — claim released (stale)
 - 2026-09-24T00:18:41Z — D-audit-Counter_Risk--2026-09-23T22-11-15Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-24T00:18:41Z — D-audit-Counter_Risk--2026-09-23T22-11-15Z — claimed by driver (agent cursor)
@@ -216,6 +213,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-24T00:39:21Z — D-audit-Counter_Risk--2026-09-23T22-11-15Z — fail — cursor produced 293 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Counter_Risk-2026-09-23.md (min 400); rotating agent
 - 2026-09-24T00:54:24Z — D-audit-Portable-Alpha-Extension-Model--2026-09-23T22-11-14Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-24T00:54:24Z — D-audit-Portable-Alpha-Extension-Model--2026-09-23T22-11-14Z — claimed by driver (agent cursor)
+- 2026-09-24T01:00:17Z — D-audit-Portable-Alpha-Extension-Model--2026-09-23T22-11-14Z — fail — cursor produced 378 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Portable-Alpha-Extension-Model-2026-09-23.md (min 400); rotatin
+- 2026-09-24T01:11:31Z — D-audit-Portable-Alpha-Extension-Model--2026-09-23T22-11-14Z — route — router picked cursor from ['codex', 'cursor']
+- 2026-09-24T01:11:31Z — D-audit-Portable-Alpha-Extension-Model--2026-09-23T22-11-14Z — claimed by codex (agent cursor)
 
 ## Questions
 

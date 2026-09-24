@@ -51,3 +51,7 @@ Attempt 2 on unchanged tip `2f92b17`: backfilled missing `Scorecard:` headline i
 ## 2026-09-24T00:50Z — D-audit-Counter_Risk--2026-09-23T22-11-15Z — attempt 3 complete
 
 Attempt 3 on unchanged tip `2f92b17`: confirmed `newest_scorecard` parses canonical headline; re-ran CF1 fixture replay and CF3–CF5 pytest gates (19 cases). No new reproducible non-duplicate finding; 0 issues filed (`gh` unauthenticated). OUT `artifacts/audits/Counter_Risk-2026-09-23.md` line 1 parseable.
+
+## 2026-09-23T23:08Z — D-audit-Portable-Alpha-Extension-Model--2026-09-23T22-11-14Z — complete
+
+Evening refill on `43a86ec` (+1 commit, #2306 merged). Scorecard F1–F2 WORKS, F3 PARTIAL (#2307), F4–F6 NOT-EXERCISED. REFUTED #2306; 0 issues filed (`gh` unauthenticated). OUT `artifacts/audits/Portable-Alpha-Extension-Model-2026-09-23.md` line 1 parseable headline.

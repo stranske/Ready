@@ -1790,3 +1790,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-24T00:39:21Z — D-audit-Counter_Risk--2026-09-23T22-11-15Z — fail — cursor produced 293 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Counter_Risk-2026-09-23.md (min 400); rotating agent
 ## 2026-09-24T00:54:24Z — D-audit-Portable-Alpha-Extension-Model--2026-09-23T22-11-14Z — route — router picked cursor from ['codex', 'cursor']
 ## 2026-09-24T00:54:24Z — D-audit-Portable-Alpha-Extension-Model--2026-09-23T22-11-14Z — claimed by driver (agent cursor)
+## 2026-09-24T01:00:17Z — D-audit-Portable-Alpha-Extension-Model--2026-09-23T22-11-14Z — fail — cursor produced 378 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Portable-Alpha-Extension-Model-2026-09-23.md (min 400); rotatin
+## 2026-09-24T01:11:31Z — D-audit-Portable-Alpha-Extension-Model--2026-09-23T22-11-14Z — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-24T01:11:31Z — D-audit-Portable-Alpha-Extension-Model--2026-09-23T22-11-14Z — claimed by codex (agent cursor)
