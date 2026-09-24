@@ -1,9 +1,9 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-24T13:11:13Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-24T13:15:34Z)
 
-Units: 199 — claimed 1, done 192, failed 6
+Units: 199 — done 193, failed 6
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
-Orchestrator evidence (30d): offload runs 247, bound to a research round 201, scored 201 (PASS 134, FAIL 67, infra 19) — codex 28/29 (P9 F19 I6), cursor 113/146 (P85 F28 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
+Orchestrator evidence (30d): offload runs 248, bound to a research round 201, scored 201 (PASS 134, FAIL 67, infra 19) — codex 28/30 (P9 F19 I6), cursor 113/146 (P85 F28 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
 Claude conservation: off (weekly window available)
 Owner inbox: https://github.com/stranske/Ready/issues/553
 
@@ -113,7 +113,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D3-unblock-sweep-2026-09-23T13 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-2026-09-23T21 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-2026-09-24T05 | D | D | done | cursor | codex | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
-| D3-unblock-sweep-2026-09-24T13 | D | D | claimed | cursor | codex | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
+| D3-unblock-sweep-2026-09-24T13 | D | D | done | cursor | codex | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-pass2-20260913T2023 | D | D | done | cursor | driver | Unblock sweep pass 2: the seven repos the budgeted first pass deferred |  |
 | D-audit-Counter_Risk--2026-09-07T04-47-32Z | D | D | done | codex | driver | Audit stranske/Counter_Risk and file issues (supply 2 <= 2) |  |
 | D-audit-Counter_Risk--2026-09-08T17-11-36Z | D | D | done | codex | codex | Audit stranske/Counter_Risk and file issues (supply 1 <= 2) |  |
@@ -211,8 +211,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-24T09:34:23Z — mirror — deferred — Ready#586 exact-head sync review; publication resumes by 2026-09-24T09:36:38+00:00; local work continues
-- 2026-09-24T10:20:51Z — refill — error — PermissionError(1, 'Operation not permitted')
 - 2026-09-24T10:36:18Z — refill — error — PermissionError(1, 'Operation not permitted')
 - 2026-09-24T10:51:45Z — refill — error — PermissionError(1, 'Operation not permitted')
 - 2026-09-24T11:07:12Z — refill — error — PermissionError(1, 'Operation not permitted')
@@ -223,6 +221,8 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-24T13:11:13Z — unblock — enqueued D3-unblock-sweep-2026-09-24T13
 - 2026-09-24T13:11:13Z — D3-unblock-sweep-2026-09-24T13 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-24T13:11:13Z — D3-unblock-sweep-2026-09-24T13 — claimed by codex (agent cursor)
+- 2026-09-24T13:15:32Z — D3-unblock-sweep-2026-09-24T13 — done — Completed the deferred seven-repository unblock sweep: released two verified Trip Planner format pauses, refuted #1844 at current merged main, and recorded genu
+- 2026-09-24T13:15:34Z — D3-unblock-sweep-2026-09-24T13 — refutation posted — stranske/trip-planner#1844
 
 ## Questions
 

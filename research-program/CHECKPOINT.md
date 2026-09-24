@@ -1879,3 +1879,5 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-24T13:11:13Z — unblock — enqueued D3-unblock-sweep-2026-09-24T13
 ## 2026-09-24T13:11:13Z — D3-unblock-sweep-2026-09-24T13 — route — router picked cursor from ['codex', 'cursor']
 ## 2026-09-24T13:11:13Z — D3-unblock-sweep-2026-09-24T13 — claimed by codex (agent cursor)
+## 2026-09-24T13:15:32Z — D3-unblock-sweep-2026-09-24T13 — done — Completed the deferred seven-repository unblock sweep: released two verified Trip Planner format pauses, refuted #1844 at current merged main, and recorded genu
+## 2026-09-24T13:15:34Z — D3-unblock-sweep-2026-09-24T13 — refutation posted — stranske/trip-planner#1844

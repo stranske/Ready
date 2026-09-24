@@ -1058,3 +1058,12 @@
 - 2026-09-24T05:15:20Z D3-unblock-sweep-2026-09-24T05: Inv-Man-Intake complete; frozen 1/1 repaired (#985); owner 0; silent 0/0; reroutes 0; Agents Gate Followups success; supply 2; priority 2/2.
 - 2026-09-24T05:15:20Z D3-unblock-sweep-2026-09-24T05: Pension-Data complete; frozen 4/4 repaired (#919-#922); owner 0; silent 0/0; reroutes 0; branch hub-only; supply 6; priority 6/6.
 - 2026-09-24T05:15:20Z D3-unblock-sweep-2026-09-24T05: sweep complete; 8 covered 7 deferred (plus Orchestrator out of scope); 33 frozen format pauses repaired; 0 silent claims released; 0 PR reroutes; no current sampled default-branch Gate/CI failure; total supply 94.
+
+- 2026-09-24T13:14:48Z D3-unblock-sweep-2026-09-24T13: Ready complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; historical Gate failure with no current product CI sampled; supply 3; priority 3/3.
+- 2026-09-24T13:14:48Z D3-unblock-sweep-2026-09-24T13: trip-planner complete; frozen 4/2 repaired (#1837,#1838); #1844 refuted at merged #1862/current 259148b; #1842 remains paused for cross-repo contract boundary; silent 0/0; reroutes 0; hub-only; supply 4; priority 3/4.
+- 2026-09-24T13:14:48Z D3-unblock-sweep-2026-09-24T13: learning-management-system complete; frozen 1/0; #718 remains historical-evidence pause; silent 0/0; reroutes 0; green; supply 3; priority 3/3.
+- 2026-09-24T13:14:48Z D3-unblock-sweep-2026-09-24T13: Fine-Art-Archive complete; frozen 1/0; owner 1 (#735 Dropbox state reconciliation); silent 0/0; reroutes 0; green; supply 3; priority 3/3.
+- 2026-09-24T13:14:48Z D3-unblock-sweep-2026-09-24T13: Doc-Lineage complete; frozen 1/0 (Dependency Dashboard); owner 0; silent 0/0; reroutes 0; green; supply 4; priority 4/4.
+- 2026-09-24T13:14:48Z D3-unblock-sweep-2026-09-24T13: Deliverable-Render complete; frozen 1/0 (Dependency Dashboard); owner 0; silent 0/0; reroutes 0; green; supply 5; priority 5/5.
+- 2026-09-24T13:14:48Z D3-unblock-sweep-2026-09-24T13: Manager-Mosaic complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; green; supply 14; priority 3/14.
+- 2026-09-24T13:14:48Z D3-unblock-sweep-2026-09-24T13: sweep complete; 7 covered after the prior run's first 8 (all 15 supported repos covered; Orchestrator out of scope); 2 frozen format pauses released; 1 refuted; 0 silent claims released; 0 PR reroutes; total supply 36.
