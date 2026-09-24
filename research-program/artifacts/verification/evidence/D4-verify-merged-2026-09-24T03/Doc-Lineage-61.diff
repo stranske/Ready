@@ -1,0 +1,306 @@
+diff --git a/README.md b/README.md
+index f0bdb7c..1185010 100644
+--- a/README.md
++++ b/README.md
+@@ -55,6 +55,35 @@ output is never mistaken for a Docling parse. Pages with no readable text layer
+ reported in `pages_without_text_layer` rather than dropped — recognition (issue #3) is a
+ required stage here, so a page that yields nothing is a finding, not a silence.
+ 
++## PDF extraction for metric consumers
++
++The public extraction API returns page-attributed spans with two text views:
++
++```python
++from doc_lineage.extract import ExtractCache, extract
++
++document = extract("report.pdf", cache=ExtractCache())
++for span in document.spans:
++    print(span.page, span.text)  # existing normalized text
++    print(span.text_lines)      # source lines before PDF whitespace normalization
++```
++
++`text_lines` preserves line breaks and horizontal spacing within each extracted
++line, so neighboring monetary units or percentage markers need not share a
++downstream metric-input block. It also preserves the OCR recognizer's lines.
++This is extracted text, not a table schema or a guarantee of metric accuracy;
++consumers still need value, unit, and provenance tests. Office spans may leave
++the additive field as `None`.
++
++Disk caches retain the field. Older native-PDF cache entries without line data
++are refreshed from the source; old OCR entries can recover lines from their
++unflattened text. `ExtractCache()` uses memory only. OCR still requires the
++`ocr` extra and a working local Tesseract installation; unreadable pages remain
++visible in `document.coverage.pages_unreadable`.
++
++Run `python -m pytest tests/test_extract_lines.py tests/test_extract_coverage.py -q`
++to verify preserved lines, page attribution, OCR routing, and cache reloads.
++
+ ## Interoperability
+ 
+ Identifiers and evidence objects follow the fleet conventions in `docs/contracts/` (`run-contract/v1`, `evidence-object/v1`, identity-map conventions). The versioned [legal clause vocabulary](vocab/legal-clauses.json) publishes 25 stable `ontology_key` values so sibling repos (`Inv-Man-Intake`, `Manager-Database`, `Pension-Data`) can adopt the same names. Load the full document with `from doc_lineage.vocab import load_legal_clauses` and `load_legal_clauses()`.
+diff --git a/src/doc_lineage/extract/cache.py b/src/doc_lineage/extract/cache.py
+index c2e4eaf..c830615 100644
+--- a/src/doc_lineage/extract/cache.py
++++ b/src/doc_lineage/extract/cache.py
+@@ -90,15 +90,32 @@ def _parse_payload(payload: object) -> tuple[str, list[Span]]:
+             items = payload
+         if not isinstance(items, list):
+             raise TypeError("cached spans payload is not a list")
+-        spans = [
+-            Span(
+-                text=item["text"],
+-                page=item["page"],
+-                bbox=tuple(item["bbox"]) if item["bbox"] is not None else None,
+-                source=item["source"],
++        spans = []
++        for item in items:
++            if not isinstance(item, dict):
++                raise TypeError("cached span must be an object")
++            if not isinstance(item["text"], str):
++                raise TypeError("cached span text must be a string")
++            lines = item.get("text_lines")
++            if lines is not None and (
++                not isinstance(lines, list) or any(not isinstance(line, str) for line in lines)
++            ):
++                raise TypeError("cached span text_lines must be a list of strings or null")
++            if lines == [] and item["source"] == "text_layer" and item["text"]:
++                raise TypeError("cached text-layer span with text must have text_lines")
++            # OCR text was never flattened, so old OCR entries retain enough
++            # information to recover their original lines without another OCR run.
++            if lines is None and item["source"] == "ocr":
++                lines = item["text"].splitlines()
++            spans.append(
++                Span(
++                    text=item["text"],
++                    page=item["page"],
++                    bbox=tuple(item["bbox"]) if item["bbox"] is not None else None,
++                    source=item["source"],
++                    text_lines=tuple(lines) if lines is not None else None,
++                )
+             )
+-            for item in items
+-        ]
+         return mode, spans
+ 
+     @staticmethod
+diff --git a/src/doc_lineage/extract/models.py b/src/doc_lineage/extract/models.py
+index ec44eb7..354a30e 100644
+--- a/src/doc_lineage/extract/models.py
++++ b/src/doc_lineage/extract/models.py
+@@ -16,6 +16,9 @@ class Span:
+     page: int
+     bbox: tuple[float, float, float, float] | None
+     source: SpanSource
++    # PDF source lines before whitespace normalization. None means unavailable
++    # (for example, an older cache entry or an Office extractor).
++    text_lines: tuple[str, ...] | None = None
+ 
+ 
+ @dataclass(frozen=True)
+diff --git a/src/doc_lineage/extract/pdf.py b/src/doc_lineage/extract/pdf.py
+index 0dd176f..9a7dfbf 100644
+--- a/src/doc_lineage/extract/pdf.py
++++ b/src/doc_lineage/extract/pdf.py
+@@ -35,6 +35,12 @@ def extract_pdf(
+ 
+     for page_index, page in enumerate(reader.pages, start=1):
+         cached = cache.get(stable_id, page_index, mode)
++        if cached and any(
++            span.source == "text_layer" and span.text_lines is None for span in cached
++        ):
++            # Old native-text entries have already lost their line boundaries.
++            # Re-extract from the PDF rather than inventing lines from flat text.
++            cached = None
+         if cached is not None:
+             spans.extend(cached)
+             outcome = _page_outcome(cached)
+@@ -71,7 +77,8 @@ def _extract_pdf_page(
+     from pypdf import PageObject
+ 
+     assert isinstance(page, PageObject)
+-    text = (page.extract_text() or "").strip()
++    raw_text = page.extract_text() or ""
++    text = raw_text.strip()
+     rotation = int(page.get("/Rotate", 0) or 0)
+ 
+     if text:
+@@ -80,6 +87,7 @@ def _extract_pdf_page(
+             page=page_number,
+             bbox=None,
+             source="text_layer",
++            text_lines=tuple(raw_text.splitlines()),
+         )
+         return [span], "text_layer"
+ 
+@@ -98,6 +106,7 @@ def _extract_pdf_page(
+             page=page_number,
+             bbox=None,
+             source="ocr",
++            text_lines=tuple(recognized.splitlines()),
+         )
+         return [span], "ocr"
+ 
+diff --git a/tests/test_extract_lines.py b/tests/test_extract_lines.py
+new file mode 100644
+index 0000000..8f25059
+--- /dev/null
++++ b/tests/test_extract_lines.py
+@@ -0,0 +1,158 @@
++"""Public PDF extraction keeps source lines alongside normalized text."""
++
++from __future__ import annotations
++
++import json
++from pathlib import Path
++
++import pytest
++from PIL import Image
++from reportlab.lib.utils import ImageReader
++from reportlab.pdfgen import canvas
++
++from doc_lineage.extract import ExtractCache, extract
++from doc_lineage.extract.ocr import CallableOCRBackend
++
++METRIC_LINES = (
++    "AAL  $600 million",
++    "AVA  $0.5 billion",
++    "Funded ratio  0.8",
++    "Discount rate  6%",
++    "Funded ratio | 2023 | 2024 | 78.0% | 80.0%",
++)
++
++
++def _metric_pdf(path: Path) -> None:
++    pdf = canvas.Canvas(str(path), invariant=1)
++    for index, line in enumerate(METRIC_LINES):
++        pdf.drawString(72, 720 - index * 24, line)
++    pdf.showPage()
++    pdf.drawString(72, 720, "Participant count  120000")
++    pdf.showPage()
++    pdf.save()
++
++
++def test_pdf_preserves_metric_lines_and_normalized_text(tmp_path: Path) -> None:
++    source = tmp_path / "metrics.pdf"
++    _metric_pdf(source)
++    document = extract(source, ocr_enabled=False, cache=ExtractCache())
++
++    assert document.spans[0].text_lines == METRIC_LINES
++    assert document.spans[0].text == " ".join(" ".join(METRIC_LINES).split())
++    assert document.spans[0].page == 1
++    assert document.spans[1].text_lines == ("Participant count  120000",)
++    assert document.spans[1].page == 2
++    assert document.coverage.pages_with_text_layer == 2
++
++
++def test_line_data_survives_fresh_disk_cache(tmp_path: Path, monkeypatch) -> None:
++    from doc_lineage.extract import pdf as pdf_module
++
++    source = tmp_path / "metrics.pdf"
++    _metric_pdf(source)
++    cache_root = tmp_path / "cache"
++    first = extract(source, ocr_enabled=False, cache=ExtractCache(cache_root))
++
++    def unexpected_extraction(*args, **kwargs):
++        pytest.fail("a valid cache entry should retain lines without re-extraction")
++
++    monkeypatch.setattr(pdf_module, "_extract_pdf_page", unexpected_extraction)
++    second = extract(source, ocr_enabled=False, cache=ExtractCache(cache_root))
++    assert second == first
++    assert second.spans[0].text_lines == METRIC_LINES
++
++
++@pytest.mark.parametrize("cached_lines", [None, "not-a-line-array", [7], []])
++def test_legacy_or_invalid_native_lines_are_refreshed(tmp_path: Path, cached_lines) -> None:
++    source = tmp_path / "metrics.pdf"
++    _metric_pdf(source)
++    cache_root = tmp_path / "cache"
++    first = extract(source, ocr_enabled=False, cache=ExtractCache(cache_root))
++    entry = cache_root / first.stable_id / "page-1.json"
++    payload = json.loads(entry.read_text())
++    span = payload["spans"][0]
++    if cached_lines is None:
++        span.pop("text_lines")
++    else:
++        span["text_lines"] = cached_lines
++    span["text"] = "stale flattened content"
++    entry.write_text(json.dumps(payload))
++
++    second = extract(source, ocr_enabled=False, cache=ExtractCache(cache_root))
++    assert second.spans[0].text_lines == METRIC_LINES
++    assert second.spans[0].text == first.spans[0].text
++    assert json.loads(entry.read_text())["spans"][0]["text_lines"] == list(METRIC_LINES)
++
++
++def test_ocr_lines_preserve_page_number_after_unreadable_gap(tmp_path: Path) -> None:
++    source = tmp_path / "scan.pdf"
++    pdf = canvas.Canvas(str(source), invariant=1)
++    pdf.showPage()  # unreadable page one must not renumber the recognized page
++    image = Image.new("RGB", (240, 120), "white")
++    image.paste("black", (20, 50, 220, 70))
++    pdf.drawImage(ImageReader(image), 72, 600, width=240, height=120)
++    pdf.showPage()
++    pdf.save()
++    seen: list[tuple[int, int]] = []
++    recognized = "AAL  $600 million\nAVA  $0.5 billion"
++
++    def recognize(rendered: Image.Image, *, rotation: int = 0) -> str | None:
++        seen.append(rendered.size)
++        return recognized if rendered.convert("L").getextrema()[0] < 128 else None
++
++    document = extract(source, ocr_backend=CallableOCRBackend(recognize), cache=ExtractCache())
++    assert len(seen) == 2 and all(min(size) > 1 for size in seen)
++    assert document.coverage.pages_unreadable == 1
++    assert document.coverage.pages_recognized == 1
++    assert len(document.spans) == 1
++    assert document.spans[0].page == 2
++    assert document.spans[0].text == recognized
++    assert document.spans[0].text_lines == tuple(recognized.splitlines())
++
++
++def test_legacy_ocr_cache_recovers_lines_without_recognition(tmp_path: Path) -> None:
++    payload = {
++        "ocr_mode": "ocr",
++        "spans": [{"text": "first row\nsecond row", "page": 2, "bbox": None, "source": "ocr"}],
++    }
++    root = tmp_path / "cache"
++    entry = root / "identity" / "page-2.json"
++    entry.parent.mkdir(parents=True)
++    entry.write_text(json.dumps(payload))
++    spans = ExtractCache(root).get("identity", 2, "ocr")
++    assert spans is not None
++    assert spans[0].text_lines == ("first row", "second row")
++    assert spans[0].page == 2
++
++
++def test_malformed_legacy_ocr_text_is_reextracted(tmp_path: Path) -> None:
++    source = tmp_path / "metrics.pdf"
++    _metric_pdf(source)
++    cache_root = tmp_path / "cache"
++    first = extract(source, ocr_enabled=False, cache=ExtractCache(cache_root))
++    entry = cache_root / first.stable_id / "page-1.json"
++    payload = json.loads(entry.read_text())
++    payload["spans"][0].update(source="ocr", text=None)
++    payload["spans"][0].pop("text_lines")
++    entry.write_text(json.dumps(payload))
++
++    second = extract(source, ocr_enabled=False, cache=ExtractCache(cache_root))
++    assert second.spans[0] == first.spans[0]
++    assert json.loads(entry.read_text())["spans"][0]["source"] == "text_layer"
++
++
++def test_pdf_source_lines_keep_boundary_whitespace(tmp_path: Path) -> None:
++    from pypdf import PdfReader
++
++    source = tmp_path / "whitespace.pdf"
++    pdf = canvas.Canvas(str(source), invariant=1)
++    pdf.drawString(72, 720, "  First line")
++    pdf.drawString(72, 696, "Last line  ")
++    pdf.save()
++    raw_text = PdfReader(str(source)).pages[0].extract_text()
++    assert raw_text.startswith("  First line")
++    assert "Last line  " in raw_text
++
++    document = extract(source, ocr_enabled=False, cache=ExtractCache())
++    assert document.spans[0].text_lines == tuple(raw_text.splitlines())
++    assert document.spans[0].text == "First line Last line"

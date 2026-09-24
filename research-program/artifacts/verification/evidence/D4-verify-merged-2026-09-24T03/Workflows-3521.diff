@@ -1,0 +1,609 @@
+diff --git a/.github/scripts/__tests__/agent_delegation_policy.test.js b/.github/scripts/__tests__/agent_delegation_policy.test.js
+index a014ce55e..00326a3df 100644
+--- a/.github/scripts/__tests__/agent_delegation_policy.test.js
++++ b/.github/scripts/__tests__/agent_delegation_policy.test.js
+@@ -75,6 +75,123 @@ const freshRouteWeights = {
+   },
+ };
+ 
++test('initial selection seeds from a co-present concrete label', () => {
++  const result = decideNextAgent({
++    state: {},
++    labels: ['agent:auto', 'agent:claude'],
++    secrets: mockSecrets,
++    registry: mockRegistry,
++    routeWeights: freshRouteWeights,
++  });
++
++  assert.equal(result.agent, 'claude');
++  assert.equal(result.reason, 'initial-selection-label');
++  assert.equal(result.delegationSource, 'static');
++  assert.equal(result.shouldSwitch, false);
++});
++
++test('initial selection uses route weights without a concrete label', () => {
++  const result = decideNextAgent({
++    state: {},
++    labels: ['agent:auto'],
++    secrets: mockSecrets,
++    registry: mockRegistry,
++    routeWeights: freshRouteWeights,
++  });
++
++  assert.equal(result.agent, 'cursor');
++  assert.equal(result.reason, 'initial-selection-route-weights');
++  assert.equal(result.delegationSource, 'route_weights');
++  assert.equal(result.shouldSwitch, false);
++});
++
++test('initial selection falls back to the default agent without evidence', () => {
++  const result = decideNextAgent({
++    state: {},
++    labels: ['agent:auto'],
++    secrets: mockSecrets,
++    registry: mockRegistry,
++    routeWeights: {
++      ...freshRouteWeights,
++      task_types: {
++        implement: {
++          evidence_ok: false,
++          ranking: [{ agent: 'cursor', posterior: 0.99 }],
++        },
++      },
++    },
++  });
++
++  assert.equal(result.agent, 'codex');
++  assert.equal(result.reason, 'initial-selection');
++  assert.equal(result.delegationSource, 'static');
++  assert.equal(result.shouldSwitch, false);
++});
++
++test('initial selection skips an unavailable concrete label', () => {
++  const result = decideNextAgent({
++    state: {},
++    labels: ['agent:auto', 'agent:claude'],
++    secrets: {
++      CODEX_AUTH_JSON: true,
++      CURSOR_API_KEY: true,
++    },
++    registry: mockRegistry,
++    routeWeights: freshRouteWeights,
++  });
++
++  assert.equal(result.agent, 'cursor');
++  assert.equal(result.reason, 'initial-selection-route-weights');
++  assert.equal(result.delegationSource, 'route_weights');
++  assert.equal(result.shouldSwitch, false);
++});
++
++test('agent:auto rejects multiple distinct concrete labels before selection', () => {
++  for (const labels of [
++    ['agent:auto', 'agent:codex', 'agent:claude'],
++    ['agent:auto', 'agent:claude', 'agent:codex'],
++  ]) {
++    const result = decideNextAgent({
++      state: {},
++      labels,
++      secrets: mockSecrets,
++      registry: mockRegistry,
++      routeWeights: freshRouteWeights,
++    });
++
++    assert.deepEqual(result, {
++      agent: '',
++      reason: 'multiple-agent-labels',
++      shouldSwitch: false,
++      alternatives: [],
++      delegationSource: 'static',
++    });
++  }
++
++  const persisted = decideNextAgent({
++    state: { current_agent: 'codex', iteration: 3 },
++    labels: ['agent:auto', 'agent:codex', 'agent:claude'],
++    secrets: { CODEX_AUTH_JSON: true },
++    registry: mockRegistry,
++    routeWeights: null,
++  });
++  assert.equal(persisted.agent, '');
++  assert.equal(persisted.reason, 'multiple-agent-labels');
++});
++
++test('agent:auto treats duplicate normalized concrete labels as one seed', () => {
++  const result = decideNextAgent({
++    state: {},
++    labels: ['agent:auto', 'agent:claude', { name: ' Agent:Claude ' }],
++    secrets: mockSecrets,
++    registry: mockRegistry,
++    routeWeights: freshRouteWeights,
++  });
++
++  assert.equal(result.agent, 'claude');
++  assert.equal(result.reason, 'initial-selection-label');
++});
++
+ test('fixture document → evidence-ranked choice', () => {
+   const result = decideNextAgent({
+     state: stalledStateCodex,
+diff --git a/.github/scripts/__tests__/keepalive-loop.test.js b/.github/scripts/__tests__/keepalive-loop.test.js
+index c25bfcde0..399bf2742 100644
+--- a/.github/scripts/__tests__/keepalive-loop.test.js
++++ b/.github/scripts/__tests__/keepalive-loop.test.js
+@@ -6553,3 +6553,59 @@ test('evaluateKeepaliveLoop resolves agent:auto via delegation policy with deleg
+     }
+   }
+ });
++
++test('evaluateKeepaliveLoop disables dispatch for multiple concrete agent labels', async () => {
++  const previousEnv = {
++    HAS_CODEX_AUTH: process.env.HAS_CODEX_AUTH,
++    HAS_CLAUDE_OAUTH: process.env.HAS_CLAUDE_OAUTH,
++    ROUTE_WEIGHTS_URL: process.env.ROUTE_WEIGHTS_URL,
++  };
++  const previousFetch = global.fetch;
++  global.fetch = async () => {
++    throw new Error('route weights fetch must not determine invalid mixed routing');
++  };
++  process.env.HAS_CODEX_AUTH = 'true';
++  process.env.HAS_CLAUDE_OAUTH = 'true';
++  process.env.ROUTE_WEIGHTS_URL = 'http://127.0.0.1:9/route-weights-unreachable.json';
++
++  try {
++    const pr = {
++      number: 3517,
++      head: { ref: 'codex/issue-3517-initial-agent-routing', sha: 'sha-3517' },
++      labels: [
++        { name: 'agent:auto' },
++        { name: 'agent:codex' },
++        { name: 'agent:claude' },
++        { name: 'agents:keepalive' },
++      ],
++      body: prBodyFixture,
++    };
++    const github = buildGithubStub({
++      pr,
++      workflowRuns: [{ head_sha: 'sha-3517', conclusion: 'success' }],
++    });
++
++    const result = await evaluateKeepaliveLoop({
++      github,
++      context: buildContext(pr.number),
++      core: buildCore(),
++    });
++
++    assert.equal(result.agentRoutingMode, 'auto');
++    assert.equal(result.agentType, '');
++    assert.equal(result.hasAgentLabel, false);
++    assert.equal(result.keepaliveEnabled, false);
++    assert.equal(result.delegationReason, 'multiple-agent-labels');
++    assert.equal(result.action, 'wait');
++    assert.equal(result.reason, 'multiple-agent-labels');
++  } finally {
++    global.fetch = previousFetch;
++    for (const [key, value] of Object.entries(previousEnv)) {
++      if (value === undefined) {
++        delete process.env[key];
++      } else {
++        process.env[key] = value;
++      }
++    }
++  }
++});
+diff --git a/.github/scripts/agent_delegation_policy.js b/.github/scripts/agent_delegation_policy.js
+index 4396ad98f..c0fd35dfd 100644
+--- a/.github/scripts/agent_delegation_policy.js
++++ b/.github/scripts/agent_delegation_policy.js
+@@ -253,6 +253,18 @@ function decideNextAgent({
+   // agent:auto is present - run delegation logic
+   core?.info?.('agent:auto detected - running delegation policy');
+ 
++  const explicitAgents = getExplicitAgentsFromLabels(labels, agents);
++  if (explicitAgents.length > 1) {
++    core?.warning?.(`Multiple concrete agent labels are invalid: ${explicitAgents.join(', ')}`);
++    return {
++      agent: '',
++      reason: 'multiple-agent-labels',
++      shouldSwitch: false,
++      alternatives: [],
++      delegationSource: 'static',
++    };
++  }
++
+   const currentAgent = state.current_agent || '';
+   const lastSwitchIteration = state.last_switch_iteration || 0;
+   const currentIteration = state.iteration || 0;
+@@ -287,8 +299,44 @@ function decideNextAgent({
+     };
+   }
+ 
+-  // If no current agent, select default if available
++  const taskType = ROUTE_WEIGHT_TASK_TYPES[roundKind] || ROUTE_WEIGHT_TASK_TYPES.implement;
++
++  // If no current agent, preserve an explicit opener choice first, then use
++  // evidence-bearing route weights, and finally fall back to the registry
++  // default. The explicit label intentionally ignores reserve because it is
++  // the seat that opened the PR; agent:auto governs subsequent delegation.
+   if (!currentAgent) {
++    const explicitAgent = getExplicitAgentFromLabels(labels, agents);
++    if (explicitAgent && availableAgents.includes(explicitAgent)) {
++      core?.info?.(`Initial agent selection from concrete label: ${explicitAgent}`);
++      return {
++        agent: explicitAgent,
++        reason: 'initial-selection-label',
++        shouldSwitch: false,
++        alternatives: availableAgents.filter((agent) => agent !== explicitAgent),
++        delegationSource: 'static',
++      };
++    }
++
++    const weighted = selectAgentFromRouteWeights({
++      routeWeights,
++      taskType,
++      currentAgent: '',
++      availableAgents,
++      agents,
++      reserve: routeWeights?.reserve,
++    });
++    if (weighted.agent) {
++      core?.info?.(`Initial agent selection from route weights: ${weighted.agent}`);
++      return {
++        agent: weighted.agent,
++        reason: 'initial-selection-route-weights',
++        shouldSwitch: false,
++        alternatives: availableAgents.filter((agent) => agent !== weighted.agent),
++        delegationSource: 'route_weights',
++      };
++    }
++
+     const initialAgent = availableAgents.includes(defaultAgent) ? defaultAgent : availableAgents[0];
+     core?.info?.(`Initial agent selection: ${initialAgent}`);
+     return {
+@@ -347,7 +395,6 @@ function decideNextAgent({
+   // Rule: Switch if stalled
+   if (stall.isStalled) {
+     const alternatives = availableAgents.filter((a) => a !== currentAgent);
+-    const taskType = ROUTE_WEIGHT_TASK_TYPES[roundKind] || ROUTE_WEIGHT_TASK_TYPES.implement;
+     const reservedAgents = new Set(getRouteWeightReserveAgents(routeWeights?.reserve, taskType));
+     const weighted = selectAgentFromRouteWeights({
+       routeWeights,
+@@ -565,15 +612,28 @@ function detectStall({ history = [], threshold = 2, core }) {
+ 
+ /**
+  * Get explicit agent from labels (agent:codex, agent:claude, etc.)
+- * Returns null if agent:auto is present (auto mode takes precedence)
++ * Skips agent:auto and non-routing control labels while finding a concrete agent.
+  *
+  * @param {Array<string>} labels - PR labels
+  * @param {Object} agents - Registry agents object
+  * @returns {string|null} - Agent key or null
+  */
+ function getExplicitAgentFromLabels(labels, agents) {
++  const explicitAgents = getExplicitAgentsFromLabels(labels, agents);
++  return explicitAgents.length === 1 ? explicitAgents[0] : null;
++}
++
++/**
++ * Get all distinct recognized concrete agents from labels.
++ *
++ * @param {Array<string>} labels - PR labels
++ * @param {Object} agents - Registry agents object
++ * @returns {Array<string>} - Distinct concrete agent keys
++ */
++function getExplicitAgentsFromLabels(labels, agents) {
+   const agentPrefix = 'agent:';
+   const agentKeys = Object.keys(agents || {});
++  const explicitAgents = new Set();
+ 
+   for (const label of labels) {
+     const normalized = normalizeLabel(label);
+@@ -584,12 +644,12 @@ function getExplicitAgentFromLabels(labels, agents) {
+         continue;
+       }
+       if (agentKeys.includes(agentKey)) {
+-        return agentKey;
++        explicitAgents.add(agentKey);
+       }
+     }
+   }
+ 
+-  return null;
++  return [...explicitAgents];
+ }
+ 
+ /**
+diff --git a/.github/scripts/keepalive_loop.js b/.github/scripts/keepalive_loop.js
+index b2598e757..b7b00e740 100644
+--- a/.github/scripts/keepalive_loop.js
++++ b/.github/scripts/keepalive_loop.js
+@@ -2645,7 +2645,7 @@ async function evaluateKeepaliveLoop({ github: rawGithub, context, core, payload
+       }
+     }
+     const hasHighPrivilege = labels.includes('agent-high-privilege');
+-    const keepaliveEnabled = config.keepalive_enabled && hasAgentLabel;
++    let keepaliveEnabled = config.keepalive_enabled && hasAgentLabel;
+ 
+     // Operator stop-controls (#2267). The canonical event-driven loop must enforce the
+     // documented pause / human-block guardrails itself — previously they lived only on
+@@ -2757,6 +2757,14 @@ async function evaluateKeepaliveLoop({ github: rawGithub, context, core, payload
+           );
+         } else {
+           core?.warning?.(`Delegation policy returned no agent: ${decision.reason}`);
++          if (decision.reason === 'multiple-agent-labels') {
++            agentType = '';
++            hasAgentLabel = false;
++            keepaliveEnabled = false;
++            delegationReason = decision.reason;
++            delegationShouldSwitch = false;
++            delegationSource = decision.delegationSource || 'static';
++          }
+         }
+       } catch (err) {
+         core?.warning?.(`Delegation policy failed, keeping ${agentType}: ${err.message}`);
+@@ -2937,6 +2945,9 @@ async function evaluateKeepaliveLoop({ github: rawGithub, context, core, payload
+     } else if (runnerUnavailable) {
+       action = 'skip';
+       reason = `no-runner-for-agent:${agentType}`;
++    } else if (delegationReason === 'multiple-agent-labels') {
++      action = 'wait';
++      reason = delegationReason;
+     } else if (!hasAgentLabel) {
+       action = 'wait';
+       reason = 'missing-agent-label';
+diff --git a/docs/LABELS.md b/docs/LABELS.md
+index 8c15c8fe2..f29de590d 100644
+--- a/docs/LABELS.md
++++ b/docs/LABELS.md
+@@ -237,12 +237,12 @@ dispatch a runner. See
+ 
+ **Effect:**
+ 1. Delegates routing to the auto-delegation policy in `.github/scripts/agent_delegation_policy.js`
+-2. The policy switches between Codex and Claude based on stall/effectiveness signals
+-3. Used to recover from capacity-stuck PRs: **add** `agent:auto` to the PR (alongside the existing `agent:<name>` label); keepalive will override the concrete label and route through auto-delegation
+-4. Selects a runner through the delegation policy without mutating labels; if no current agent is recorded, the policy chooses the default available agent or the first available alternative
++2. The policy selects an eligible registered agent using the initial-selection order below, then uses stall/effectiveness signals to decide whether to switch
++3. Used to recover from capacity-stuck PRs: **add** `agent:auto` to the PR (alongside the existing `agent:<name>` label); keepalive uses the available concrete label as the initial seed, then routes subsequent choices through auto-delegation
++4. Selects a runner through the delegation policy without mutating labels; if no current agent is recorded, the policy first uses a co-present available concrete `agent:<name>` label, otherwise uses evidence-bearing route weights, and otherwise chooses the default available agent or the first available alternative
+ 
+ **Prerequisites:**
+-- When `agent:auto` is present, any co-present concrete `agent:<name>` label is silently ignored; `agent:auto` always wins
++- When `agent:auto` is present, a co-present concrete `agent:<name>` label seeds the first round's agent, and the delegation policy decides after that; `agent:auto` always wins
+ - Only keepalive routing honors the pair today: `resolveAgentRoutingFromLabels` in `.github/scripts/agent_registry.js` still rejects `agent:auto` beside a concrete label, so its other callers (the verifier, verify-to-new-pr, the autofix loop and the bot-comment handler) fall back to a default agent; tracked in #3519
+ - Existing delegation state improves switch decisions, but the initial-selection path can choose an agent without a concrete label
+ 
+@@ -803,8 +803,8 @@ These labels are used for categorization but do not trigger workflows.
+ | (none) | `agent:codex` | Triggers agent assignment (Codex runner)
+ | (none) | `agent:claude` | Triggers agent assignment (Claude runner)
+ | (none) | `agent:auto` | Delegates routing to `agent_delegation_policy.js`
+-| `agent:codex` | `agent:auto` | `agent:auto` wins: keepalive ignores the co-present `agent:codex` and routes through `agent_delegation_policy.js`; keep both labels
+-| `agent:claude` | `agent:auto` | `agent:auto` wins: keepalive ignores the co-present `agent:claude` and routes through `agent_delegation_policy.js`; keep both labels
++| `agent:codex` | `agent:auto` | `agent:auto` wins: when no current agent is recorded, the available `agent:codex` label seeds initial selection; subsequent routing uses `agent_delegation_policy.js`; keep both labels
++| `agent:claude` | `agent:auto` | `agent:auto` wins: when no current agent is recorded, the available `agent:claude` label seeds initial selection; subsequent routing uses `agent_delegation_policy.js`; keep both labels
+ | `agent:codex` | `agent:claude` | Invalid mixed routing: two concrete labels resolve no route, so keepalive does not dispatch; keep exactly one concrete label
+ | `agent:<name>` + `agents:keepalive` | `agent:retry` | Consolidated: records a recovery request; root/non-consolidated: forces the keepalive retry and cleanup handler
+ | `agent:retry` | Manual Gate-followups dispatch | Consolidated only: forces the retry and does not imply automatic label cleanup
+diff --git a/docs/keepalive/GoalsAndPlumbing.md b/docs/keepalive/GoalsAndPlumbing.md
+index 496172fef..55521f374 100644
+--- a/docs/keepalive/GoalsAndPlumbing.md
++++ b/docs/keepalive/GoalsAndPlumbing.md
+@@ -103,7 +103,7 @@ If any requirement fails, keepalive stays silent—no PR comments. Operators may
+ - After repeated failures (default: 3), the loop pauses the current strategy and dispatches one non-recursive forced recovery lease. A complete-but-failing Gate uses that lease for one real fix attempt even when its ordinary Gate-fix budget is exhausted; after the forced run, the hourly keepalive sweep owns the next recovery review.
+ - A possible access or authority boundary adds `agent:needs-attention` with an immediately due independent challenge. Durable state extracts only a closed allowlist of facts: a credential named by the routed agent's registry-backed `required_secrets` or the registry's shared authority list, a finite permission target, and HTTP 401/403. Its fingerprint and human action are derived only from those facts; arbitrary runner text is never copied or persisted. Every hourly sweep wakeup bypasses state debounce so an unchanged zero-commit round is re-evaluated, while ordinary wakeups retain completed-runner debounce. Both the root and consolidated consumer lanes require a dedicated keepalive or Workflows App token before marking an agent running or writing the final summary, so every mutation of App-owned state uses the same trusted writer class. Every keepalive reader selects durable state only from a marked summary comment authored by `stranske-keepalive[bot]`, `agents-workflows-bot[bot]`, the identity-checked PAT fallbacks `stranske` and `stranske-automation-bot`, or the migration-only legacy `github-actions[bot]` writer; an arbitrary later commenter cannot replace the preceding trusted state. If a selected App finds a summary from the known legacy writer or the other dedicated App, it migrates the parsed state to a newly created App-owned comment instead of editing the old marker in place, because GitHub preserves the original author. The sweep signs a v2 claim over the current authoritative challenge generation, exact fingerprint and due/expiry times, PR head, repository/PR, nonce, and sweep run/attempt. A matching claim may bypass runner debounce only after a conditional, PR-wide single-use receipt is persisted on `keepalive-authority-state`. Generic retries, old envelopes, and other workflows sharing `github-actions[bot]` cannot consume or confirm the challenge. Missing signing material permits an ordinary recheck without a challenge claim; a supplied invalid claim or unavailable ledger denies the challenge path. A green recheck clears the challenge. Only the signed sweep-selected projection failing again may record its allowlisted credential or permission remedy before replacing `agent:needs-attention` with `needs-human`; a different auth failure starts a new automation-owned challenge that the next sweep can evaluate. The reviewed-repo controller challenges confirmed holds again after 24 hours.
+ - Agent delegation treats two consecutive zero-progress rounds as stalled. Commit churn is not progress unless it advances checklist state or reaches a green Gate.
+-- When `agent:auto` stalls and switches agents, `decideNextAgent` may consult the Orchestrator route-weights export (`ROUTE_WEIGHTS_URL`, defaulting to the `exports/route-weights` branch JSON documented in `stranske/Orchestrator`). Any fetch/parse/staleness failure falls back to today's static preference without blocking keepalive.
++- On an `agent:auto` PR with no recorded current agent, `decideNextAgent` first honors an available co-present concrete `agent:<name>` label. Without one, it may consult the Orchestrator route-weights export for the first choice. When an `agent:auto` PR later stalls and switches agents, it may consult the same export (`ROUTE_WEIGHTS_URL`, defaulting to the `exports/route-weights` branch JSON documented in `stranske/Orchestrator`). Any fetch/parse/staleness or insufficient-evidence result falls back to today's static preference without blocking keepalive.
+ 
+ **To resume after failure:**
+ 1. Investigate the failure reason in the keepalive summary comment
+diff --git a/templates/consumer-repo/.github/scripts/agent_delegation_policy.js b/templates/consumer-repo/.github/scripts/agent_delegation_policy.js
+index 4396ad98f..c0fd35dfd 100644
+--- a/templates/consumer-repo/.github/scripts/agent_delegation_policy.js
++++ b/templates/consumer-repo/.github/scripts/agent_delegation_policy.js
+@@ -253,6 +253,18 @@ function decideNextAgent({
+   // agent:auto is present - run delegation logic
+   core?.info?.('agent:auto detected - running delegation policy');
+ 
++  const explicitAgents = getExplicitAgentsFromLabels(labels, agents);
++  if (explicitAgents.length > 1) {
++    core?.warning?.(`Multiple concrete agent labels are invalid: ${explicitAgents.join(', ')}`);
++    return {
++      agent: '',
++      reason: 'multiple-agent-labels',
++      shouldSwitch: false,
++      alternatives: [],
++      delegationSource: 'static',
++    };
++  }
++
+   const currentAgent = state.current_agent || '';
+   const lastSwitchIteration = state.last_switch_iteration || 0;
+   const currentIteration = state.iteration || 0;
+@@ -287,8 +299,44 @@ function decideNextAgent({
+     };
+   }
+ 
+-  // If no current agent, select default if available
++  const taskType = ROUTE_WEIGHT_TASK_TYPES[roundKind] || ROUTE_WEIGHT_TASK_TYPES.implement;
++
++  // If no current agent, preserve an explicit opener choice first, then use
++  // evidence-bearing route weights, and finally fall back to the registry
++  // default. The explicit label intentionally ignores reserve because it is
++  // the seat that opened the PR; agent:auto governs subsequent delegation.
+   if (!currentAgent) {
++    const explicitAgent = getExplicitAgentFromLabels(labels, agents);
++    if (explicitAgent && availableAgents.includes(explicitAgent)) {
++      core?.info?.(`Initial agent selection from concrete label: ${explicitAgent}`);
++      return {
++        agent: explicitAgent,
++        reason: 'initial-selection-label',
++        shouldSwitch: false,
++        alternatives: availableAgents.filter((agent) => agent !== explicitAgent),
++        delegationSource: 'static',
++      };
++    }
++
++    const weighted = selectAgentFromRouteWeights({
++      routeWeights,
++      taskType,
++      currentAgent: '',
++      availableAgents,
++      agents,
++      reserve: routeWeights?.reserve,
++    });
++    if (weighted.agent) {
++      core?.info?.(`Initial agent selection from route weights: ${weighted.agent}`);
++      return {
++        agent: weighted.agent,
++        reason: 'initial-selection-route-weights',
++        shouldSwitch: false,
++        alternatives: availableAgents.filter((agent) => agent !== weighted.agent),
++        delegationSource: 'route_weights',
++      };
++    }
++
+     const initialAgent = availableAgents.includes(defaultAgent) ? defaultAgent : availableAgents[0];
+     core?.info?.(`Initial agent selection: ${initialAgent}`);
+     return {
+@@ -347,7 +395,6 @@ function decideNextAgent({
+   // Rule: Switch if stalled
+   if (stall.isStalled) {
+     const alternatives = availableAgents.filter((a) => a !== currentAgent);
+-    const taskType = ROUTE_WEIGHT_TASK_TYPES[roundKind] || ROUTE_WEIGHT_TASK_TYPES.implement;
+     const reservedAgents = new Set(getRouteWeightReserveAgents(routeWeights?.reserve, taskType));
+     const weighted = selectAgentFromRouteWeights({
+       routeWeights,
+@@ -565,15 +612,28 @@ function detectStall({ history = [], threshold = 2, core }) {
+ 
+ /**
+  * Get explicit agent from labels (agent:codex, agent:claude, etc.)
+- * Returns null if agent:auto is present (auto mode takes precedence)
++ * Skips agent:auto and non-routing control labels while finding a concrete agent.
+  *
+  * @param {Array<string>} labels - PR labels
+  * @param {Object} agents - Registry agents object
+  * @returns {string|null} - Agent key or null
+  */
+ function getExplicitAgentFromLabels(labels, agents) {
++  const explicitAgents = getExplicitAgentsFromLabels(labels, agents);
++  return explicitAgents.length === 1 ? explicitAgents[0] : null;
++}
++
++/**
++ * Get all distinct recognized concrete agents from labels.
++ *
++ * @param {Array<string>} labels - PR labels
++ * @param {Object} agents - Registry agents object
++ * @returns {Array<string>} - Distinct concrete agent keys
++ */
++function getExplicitAgentsFromLabels(labels, agents) {
+   const agentPrefix = 'agent:';
+   const agentKeys = Object.keys(agents || {});
++  const explicitAgents = new Set();
+ 
+   for (const label of labels) {
+     const normalized = normalizeLabel(label);
+@@ -584,12 +644,12 @@ function getExplicitAgentFromLabels(labels, agents) {
+         continue;
+       }
+       if (agentKeys.includes(agentKey)) {
+-        return agentKey;
++        explicitAgents.add(agentKey);
+       }
+     }
+   }
+ 
+-  return null;
++  return [...explicitAgents];
+ }
+ 
+ /**
+diff --git a/templates/consumer-repo/.github/scripts/keepalive_loop.js b/templates/consumer-repo/.github/scripts/keepalive_loop.js
+index b2598e757..b7b00e740 100644
+--- a/templates/consumer-repo/.github/scripts/keepalive_loop.js
++++ b/templates/consumer-repo/.github/scripts/keepalive_loop.js
+@@ -2645,7 +2645,7 @@ async function evaluateKeepaliveLoop({ github: rawGithub, context, core, payload
+       }
+     }
+     const hasHighPrivilege = labels.includes('agent-high-privilege');
+-    const keepaliveEnabled = config.keepalive_enabled && hasAgentLabel;
++    let keepaliveEnabled = config.keepalive_enabled && hasAgentLabel;
+ 
+     // Operator stop-controls (#2267). The canonical event-driven loop must enforce the
+     // documented pause / human-block guardrails itself — previously they lived only on
+@@ -2757,6 +2757,14 @@ async function evaluateKeepaliveLoop({ github: rawGithub, context, core, payload
+           );
+         } else {
+           core?.warning?.(`Delegation policy returned no agent: ${decision.reason}`);
++          if (decision.reason === 'multiple-agent-labels') {
++            agentType = '';
++            hasAgentLabel = false;
++            keepaliveEnabled = false;
++            delegationReason = decision.reason;
++            delegationShouldSwitch = false;
++            delegationSource = decision.delegationSource || 'static';
++          }
+         }
+       } catch (err) {
+         core?.warning?.(`Delegation policy failed, keeping ${agentType}: ${err.message}`);
+@@ -2937,6 +2945,9 @@ async function evaluateKeepaliveLoop({ github: rawGithub, context, core, payload
+     } else if (runnerUnavailable) {
+       action = 'skip';
+       reason = `no-runner-for-agent:${agentType}`;
++    } else if (delegationReason === 'multiple-agent-labels') {
++      action = 'wait';
++      reason = delegationReason;
+     } else if (!hasAgentLabel) {
+       action = 'wait';
+       reason = 'missing-agent-label';
+diff --git a/templates/consumer-repo/docs/LABELS.md b/templates/consumer-repo/docs/LABELS.md
+index e66a6997a..82f876e7f 100644
+--- a/templates/consumer-repo/docs/LABELS.md
++++ b/templates/consumer-repo/docs/LABELS.md
+@@ -188,12 +188,12 @@ runner and registry entry ship, applying this label will not dispatch a runner.
+ 
+ **Effect:**
+ 1. Delegates routing to the auto-delegation policy in `.github/scripts/agent_delegation_policy.js`
+-2. The policy switches between Codex and Claude based on stall/effectiveness signals
+-3. Used to recover from capacity-stuck PRs: **add** `agent:auto` to the PR (alongside the existing `agent:<name>` label); keepalive will override the concrete label and route through auto-delegation
+-4. Selects a runner through the delegation policy without mutating labels; if no current agent is recorded, the policy chooses the default available agent or the first available alternative
++2. The policy selects an eligible registered agent using the initial-selection order below, then uses stall/effectiveness signals to decide whether to switch
++3. Used to recover from capacity-stuck PRs: **add** `agent:auto` to the PR (alongside the existing `agent:<name>` label); keepalive uses the available concrete label as the initial seed, then routes subsequent choices through auto-delegation
++4. Selects a runner through the delegation policy without mutating labels; if no current agent is recorded, the policy first uses a co-present available concrete `agent:<name>` label, otherwise uses evidence-bearing route weights, and otherwise chooses the default available agent or the first available alternative
+ 
+ **Prerequisites:**
+-- When `agent:auto` is present, any co-present concrete `agent:<name>` label is silently ignored; `agent:auto` always wins
++- When `agent:auto` is present, a co-present concrete `agent:<name>` label seeds the first round's agent, and the delegation policy decides after that; `agent:auto` always wins
+ - Only keepalive routing honors the pair today: `resolveAgentRoutingFromLabels` in `.github/scripts/agent_registry.js` still rejects `agent:auto` beside a concrete label, so its other callers (the verifier, verify-to-new-pr, the autofix loop and the bot-comment handler) fall back to a default agent; tracked in #3519
+ - Existing delegation state improves switch decisions, but the initial-selection path can choose an agent without a concrete label
+ 
+@@ -750,8 +750,8 @@ These labels are used for categorization but do not trigger workflows.
+ | (none) | `agent:codex` | Triggers agent assignment (Codex runner)
+ | (none) | `agent:claude` | Triggers agent assignment (Claude runner)
+ | (none) | `agent:auto` | Delegates routing to `agent_delegation_policy.js`
+-| `agent:codex` | `agent:auto` | `agent:auto` wins: keepalive ignores the co-present `agent:codex` and routes through `agent_delegation_policy.js`; keep both labels
+-| `agent:claude` | `agent:auto` | `agent:auto` wins: keepalive ignores the co-present `agent:claude` and routes through `agent_delegation_policy.js`; keep both labels
++| `agent:codex` | `agent:auto` | `agent:auto` wins: when no current agent is recorded, the available `agent:codex` label seeds initial selection; subsequent routing uses `agent_delegation_policy.js`; keep both labels
++| `agent:claude` | `agent:auto` | `agent:auto` wins: when no current agent is recorded, the available `agent:claude` label seeds initial selection; subsequent routing uses `agent_delegation_policy.js`; keep both labels
+ | `agent:codex` | `agent:claude` | Invalid mixed routing: two concrete labels resolve no route, so keepalive does not dispatch; keep exactly one concrete label
+ | `agent:<name>` + `agents:keepalive` | `agent:retry` | Consolidated: records a recovery request; root/non-consolidated: forces the keepalive retry and cleanup handler
+ | `agent:retry` | Manual Gate-followups dispatch | Consolidated only: forces the retry and does not imply automatic label cleanup
+diff --git a/tests/docs/test_labels_agent_auto_coexistence.py b/tests/docs/test_labels_agent_auto_coexistence.py
+index a0f414b29..979fffa49 100644
+--- a/tests/docs/test_labels_agent_auto_coexistence.py
++++ b/tests/docs/test_labels_agent_auto_coexistence.py
+@@ -35,6 +35,7 @@ def test_agent_auto_section_states_co_presence(guide: Path) -> None:
+     section = _section(guide.read_text(encoding="utf-8"), "### `agent:auto`")
+     assert "alongside the existing `agent:<name>` label" in section
+     assert "`agent:auto` always wins" in section
++    assert "uses the available concrete label as the initial seed" in section
+ 
+ 
+ @pytest.mark.parametrize("guide", GUIDES, ids=str)
+@@ -66,6 +67,7 @@ def test_interaction_matrix_row_matches_the_section(guide: Path, concrete: str)
+     ]
+     assert len(rows) == 1, rows
+     assert "`agent:auto` wins" in rows[0]
++    assert "seeds initial selection" in rows[0]
+     assert "keep both labels" in rows[0]
+ 
+ 

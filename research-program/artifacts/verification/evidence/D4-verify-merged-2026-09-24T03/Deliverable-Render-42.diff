@@ -1,0 +1,82 @@
+diff --git a/src/deliverable_render/store/communication.py b/src/deliverable_render/store/communication.py
+index 8b7477b..4d6e3e7 100644
+--- a/src/deliverable_render/store/communication.py
++++ b/src/deliverable_render/store/communication.py
+@@ -134,7 +134,9 @@ def adapt_store(data: dict[str, Any], paths: dict[str, str]) -> Store:
+             )
+         publication = entry.get("pub")
+         if isinstance(publication, dict) and "src" in publication:
+-            detail = publication.get("detail") or publication.get("state")
++            detail = publication.get("detail")
++            if not isinstance(detail, str) or not detail.strip():
++                detail = publication.get("state")
+             fact_ref = f"entries/{entry_id}/pub"
+             records.append(
+                 Record(
+diff --git a/src/deliverable_render/store/validate.py b/src/deliverable_render/store/validate.py
+index 4f4709b..cd0f2cf 100644
+--- a/src/deliverable_render/store/validate.py
++++ b/src/deliverable_render/store/validate.py
+@@ -280,6 +280,16 @@ def validate_store(path: Path) -> ValidationReport:
+                 document_ids,
+                 report,
+             )
++            detail = publication.get("detail")
++            state = publication.get("state")
++            has_detail = isinstance(detail, str) and detail.strip()
++            has_state = isinstance(state, str) and state.strip()
++            if not has_detail and not has_state:
++                report.fail(
++                    "missing-pub-detail",
++                    _path(entry_path, "pub"),
++                    "publication with src evidence requires a nonempty detail or state string",
++                )
+         for field_name in ("first", "last"):
+             if entry.get(field_name) not in (None, ""):
+                 _reference(
+diff --git a/tests/store/test_communication_render_profile.py b/tests/store/test_communication_render_profile.py
+index 44694c5..b697037 100644
+--- a/tests/store/test_communication_render_profile.py
++++ b/tests/store/test_communication_render_profile.py
+@@ -235,6 +235,41 @@ def test_validator_rejects_evidence_source_not_in_documents(
+     )
+ 
+ 
++def test_validator_rejects_pub_without_detail_or_state(tmp_path: Path) -> None:
++    data = json.loads(STORE.read_text(encoding="utf-8"))
++    publication = data["entries"][0].get("pub")
++    assert isinstance(publication, dict)
++    publication.pop("detail", None)
++    publication.pop("state", None)
++    store_path = tmp_path / "pub-no-detail.json"
++    store_path.write_text(json.dumps(data), encoding="utf-8")
++
++    report = validate_store(store_path)
++
++    assert not report.valid
++    assert any(
++        issue.code == "missing-pub-detail"
++        and issue.path == "/entries/0/pub"
++        and "nonempty detail or state" in issue.message
++        for issue in report.issues
++    )
++
++
++def test_publication_render_falls_back_from_blank_detail_to_state() -> None:
++    data = json.loads(STORE.read_text(encoding="utf-8"))
++    publication = data["entries"][0].get("pub")
++    assert isinstance(publication, dict)
++    publication["detail"] = "   "
++    publication["state"] = "Published via state fallback"
++
++    adapted = adapt_store(data, json.loads(PATHS.read_text(encoding="utf-8")))
++
++    publication_record = next(
++        record for record in adapted.records if record.record_id == "entry-0-publication"
++    )
++    assert publication_record.text == "Published via state fallback"
++
++
+ def test_validator_rejects_duplicate_document_identity(tmp_path: Path) -> None:
+     data = json.loads(STORE.read_text(encoding="utf-8"))
+     data["documents"].append({"name": "doc-1"})

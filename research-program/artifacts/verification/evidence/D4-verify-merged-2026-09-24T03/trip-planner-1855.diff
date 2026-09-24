@@ -1,0 +1,718 @@
+diff --git a/frontend/src/components/workspace/panels/RouteTradeoffsPanel.tsx b/frontend/src/components/workspace/panels/RouteTradeoffsPanel.tsx
+index 7a78dfbab..d8cefa4f3 100644
+--- a/frontend/src/components/workspace/panels/RouteTradeoffsPanel.tsx
++++ b/frontend/src/components/workspace/panels/RouteTradeoffsPanel.tsx
+@@ -39,11 +39,6 @@ export function RouteTradeoffsPanel({
+           ? "Cost, route burden, feasibility, and per-scenario policy preview stay scannable here. Previews are advisory only — final TPP evaluation is authoritative."
+           : "Cost, route burden, and feasibility stay scannable here without forcing you into raw planning notes."}
+       </p>
+-      <p className="placeholder-costs-notice" role="note">
+-        These are rough starting shapes, not researched options. The figures come from flat
+-        per-day rates that do not vary by destination, so do not use them for a budget or an
+-        approval request.
+-      </p>
+       {scenarios.length > 0 ? (
+         <div className="scenario-review-grid" aria-label="Scenario review board">
+           {scenarios.map((scenario) => (
+diff --git a/frontend/src/routes/NewTripPage.test.tsx b/frontend/src/routes/NewTripPage.test.tsx
+index 36b2eb714..51807bf4c 100644
+--- a/frontend/src/routes/NewTripPage.test.tsx
++++ b/frontend/src/routes/NewTripPage.test.tsx
+@@ -276,6 +276,22 @@ describe("NewTripPage", () => {
+     expect(screen.getByText(/print an approval packet/)).toBeInTheDocument();
+   });
+ 
++  it("promises no cost estimate, because the planner produces none (issue 1840)", () => {
++    const { container } = renderPage();
++    fireEvent.click(screen.getByRole("radio", { name: /Business trip/ }));
++    fireEvent.change(screen.getByLabelText(/Travelling from/), { target: { value: "Seattle" } });
++    fireEvent.change(screen.getByLabelText(/Destinations/), { target: { value: "Chicago, IL" } });
++    fireEvent.change(screen.getByLabelText(/First day of travel/), { target: { value: "2026-10-12" } });
++    fireEvent.change(screen.getByLabelText(/Last day of travel/), { target: { value: "2026-10-15" } });
++    fireEvent.change(screen.getByLabelText(/Business purpose/), { target: { value: "Client review" } });
++
++    const text = container.textContent ?? "";
++    expect(text).not.toMatch(/cost estimates?/i);
++    expect(text).not.toMatch(/route and cost options/i);
++    expect(text).not.toMatch(/transport cost/i);
++    expect(text).toMatch(/enter the prices you hold/i);
++  });
++
+   it("asks a business traveller for the purpose an approver will read", () => {
+     renderPage();
+ 
+diff --git a/frontend/src/routes/NewTripPage.tsx b/frontend/src/routes/NewTripPage.tsx
+index d5b519c3a..527b4f33c 100644
+--- a/frontend/src/routes/NewTripPage.tsx
++++ b/frontend/src/routes/NewTripPage.tsx
+@@ -144,7 +144,7 @@ export function NewTripPage() {
+         <p className="status-label">New trip</p>
+         <h2>Set up your trip</h2>
+         <p className="lede">
+-          Tell the planner the essentials and it will assemble route and cost options you can compare.
++          Tell the planner the essentials and it will measure the route and travel time from your origin. You enter the prices you hold.
+           You can change any of this later.
+         </p>
+ 
+@@ -223,8 +223,8 @@ export function NewTripPage() {
+               />
+             </label>
+             <p className="field-hint">
+-              Where the journey starts. The planner measures the route from here, so distance,
+-              travel time and transport cost all depend on it.
++              Where the journey starts. The planner measures the route from here, so distance and
++              travel time depend on it.
+             </p>
+ 
+             <label>
+@@ -253,7 +253,7 @@ export function NewTripPage() {
+           <fieldset className="setup-group">
+             <legend>When are you travelling?</legend>
+             <p className="field-hint">
+-              Dates drive cost estimates, and for business trips they decide which policy rates apply.
++              For business trips the dates decide which policy rates apply.
+             </p>
+ 
+             <label>
+@@ -334,7 +334,7 @@ export function NewTripPage() {
+                 onChange={(event) => setTravelerCount(event.target.value)}
+               />
+             </label>
+-            <p className="field-hint">Used for per-person cost estimates and lodging options.</p>
++            <p className="field-hint">Tells the approver how many people are travelling.</p>
+ 
+             <label>
+               Anything the planner should know
+@@ -358,10 +358,10 @@ export function NewTripPage() {
+               </p>
+             ) : (
+               <p>
+-                The planner will assemble route and cost options for you to compare.
++                The planner will measure the route options from your origin.
+                 {isBusiness
+-                  ? " You will then add a budget, check it against travel policy, and print an approval packet."
+-                  : " You can then add a budget and keep notes as you decide."}
++                  ? " You will then enter the prices you hold, check the trip against travel policy, and print an approval packet."
++                  : " You can then enter the prices you hold and keep notes as you decide."}
+               </p>
+             )}
+           </aside>
+diff --git a/frontend/src/routes/WorkspacePage.test.tsx b/frontend/src/routes/WorkspacePage.test.tsx
+index 8c3d6cb93..c603fea03 100644
+--- a/frontend/src/routes/WorkspacePage.test.tsx
++++ b/frontend/src/routes/WorkspacePage.test.tsx
+@@ -1054,6 +1054,54 @@ describe("WorkspacePage", () => {
+     });
+   });
+ 
++  it("sends an unpriced trip's next step to the Budget tab (issue 1840)", async () => {
++    const unpriced: WorkspaceData = {
++      ...workspacePayload,
++      view_model: {
++        user_summary: {
++          trip_title: workspacePayload.trip_record.trip.title,
++          trip_mode: "leisure",
++          mode_label: "Leisure trip",
++          status: "ready",
++          headline: "Trip setup is saved. No prices have been entered yet.",
++          decided: [],
++          uncertain: [],
++        },
++        next_step: {
++          title: "Enter the prices you have",
++          summary: "The planner measures routes and travel time but does not quote prices.",
++          action_label: "Open Budget",
++          action_target: "budget",
++          blocked: false,
++        },
++        panel_visibility: {
++          show_budget_panel: true,
++          show_policy_posture: false,
++          show_proposal_panel: false,
++          show_approval_readiness_panel: false,
++        },
++        policy_presentation: {
++          active_policy_state: false,
++          posture_label: "Not applicable",
++          approval_status_label: "Not applicable",
++          next_step_label: "No policy action needed",
++          summary: "Policy approval is not part of this workspace yet.",
++        },
++        business_summary: null,
++        debug_state: { sections: {} },
++      },
++    };
++    mockedUseLoaderData.mockReturnValue({
++      workspace: Promise.resolve(unpriced),
++      trips: Promise.resolve(tripComparisonPayload),
++    });
++    renderWorkspacePage();
++
++    const user = userEvent.setup();
++    await user.click(await screen.findByRole("button", { name: "Open Budget" }));
++    expect(screen.getByRole("tab", { name: "Budget" })).toHaveAttribute("aria-selected", "true");
++  });
++
+   it("does not render raw runtime/provider/debug labels for default leisure workspaces", async () => {
+     const leisureWorkspaceWithViewModel: WorkspaceData = {
+       ...workspacePayload,
+diff --git a/frontend/src/routes/WorkspacePage.tsx b/frontend/src/routes/WorkspacePage.tsx
+index 93018e849..28226f047 100644
+--- a/frontend/src/routes/WorkspacePage.tsx
++++ b/frontend/src/routes/WorkspacePage.tsx
+@@ -1940,6 +1940,10 @@ function WorkspacePageContent({
+         setActiveTab("policy");
+         workspaceTabRefs.current.policy?.focus();
+         return;
++      case "budget":
++        setActiveTab("budget");
++        workspaceTabRefs.current.budget?.focus();
++        return;
+       case "trip-setup":
+       default:
+         setActiveTab("plan");
+diff --git a/frontend/src/styles.css b/frontend/src/styles.css
+index 229a87f38..db8e37cc2 100644
+--- a/frontend/src/styles.css
++++ b/frontend/src/styles.css
+@@ -2041,13 +2041,6 @@ a {
+ }
+ 
+ /* Generated route options are not researched estimates; say so prominently. */
+-.placeholder-costs-notice {
+-  border-left: 3px solid var(--color-rose);
+-  padding-left: var(--space-3);
+-  color: var(--color-ink);
+-  font-weight: 600;
+-}
+-
+ /* Trip cost entry: one row per component, collapsing to stacked fields on narrow screens. */
+ .trip-price-list {
+   display: grid;
+diff --git a/tests/app/test_trip_prices.py b/tests/app/test_trip_prices.py
+index b2a4d9e6e..52f277a48 100644
+--- a/tests/app/test_trip_prices.py
++++ b/tests/app/test_trip_prices.py
+@@ -54,9 +54,9 @@ def _create_trip(client: TestClient) -> str:
+     )
+     assert response.status_code == 201, response.text
+     created = response.json()["trip"]
+-    assert created["trip_frame"]["primary_regions"] == ["Chicago"], (
+-        "the trip did not keep its destination, so this gate would be testing a blank trip"
+-    )
++    assert created["trip_frame"]["primary_regions"] == [
++        "Chicago"
++    ], "the trip did not keep its destination, so this gate would be testing a blank trip"
+     return str(created["trip_id"])
+ 
+ 
+@@ -205,3 +205,22 @@ def test_another_users_trip_is_not_priceable(client: TestClient) -> None:
+         json={"component": "transport", "amount": 486.0},
+     )
+     assert response.status_code == 404
++
++
++def test_the_workspace_header_advances_once_a_price_is_entered(client: TestClient) -> None:
++    """Issue 1840: after pricing a trip the header still said nothing had been planned."""
++
++    trip_id = _create_trip(client)
++    before = client.get(f"/api/workspace/{trip_id}").json()["view_model"]
++    assert before["next_step"]["title"] == "Enter the prices you have"
++
++    saved = client.put(
++        f"/api/workspace/{trip_id}/prices",
++        json={"component": "transport", "amount": 486.0, "currency": "USD", "note": "United"},
++    )
++    assert saved.status_code == 200, saved.text
++
++    after = client.get(f"/api/workspace/{trip_id}").json()["view_model"]
++    assert after["next_step"]["title"] == "Submit for approval"
++    assert after["user_summary"]["headline"].startswith("Prices entered for 1 item(s).")
++    assert "Nothing has been planned" not in after["user_summary"]["headline"]
+diff --git a/tests/app/test_workspace.py b/tests/app/test_workspace.py
+index 9af23e908..12b49c26e 100644
+--- a/tests/app/test_workspace.py
++++ b/tests/app/test_workspace.py
+@@ -2773,8 +2773,7 @@ def test_workspace_route_option_actions_update_comparison_and_ledger(
+     if len(route_options) > 1:
+         # An alternative can be promoted; the sole option already is the baseline.
+         assert any(
+-            action["action_type"] == "make_baseline"
+-            for action in reopened_row["available_actions"]
++            action["action_type"] == "make_baseline" for action in reopened_row["available_actions"]
+         )
+     assert f"reopened:{rejected_id}" not in json.dumps(reopened_payload)
+ 
+@@ -3737,11 +3736,12 @@ def test_workspace_view_model_builder_preserves_business_empty_proposal_status()
+ 
+     view_model = workspace_service._build_workspace_view_model(payload)
+ 
+-    assert view_model["business_summary"] == {
+-        "approval_status": "not_ready",
+-        "headline": "Approval is not ready yet.",
+-        "blockers": [],
+-    }
++    assert view_model["business_summary"]["approval_status"] == "not_ready"
++    assert view_model["business_summary"]["blockers"] == []
++    # The headline names the first missing step rather than stopping at "not ready" (#1840).
++    assert view_model["business_summary"]["headline"].startswith(
++        "Approval is not ready yet: this trip still needs a destination"
++    )
+ 
+ 
+ def test_leisure_trip_still_reports_approval_not_required() -> None:
+diff --git a/tests/app/test_workspace_readiness.py b/tests/app/test_workspace_readiness.py
+index 1b3308234..5eefd6c01 100644
+--- a/tests/app/test_workspace_readiness.py
++++ b/tests/app/test_workspace_readiness.py
+@@ -95,7 +95,7 @@ def test_leisure_trip_does_not_require_a_business_purpose() -> None:
+     model = build_workspace_view_model(_payload(mode="leisure", **frame))
+ 
+     assert model["user_summary"]["status"] == "ready"
+-    assert "Nothing has been planned yet" in model["user_summary"]["headline"]
++    assert "No prices have been entered yet" in model["user_summary"]["headline"]
+ 
+ 
+ def test_setup_complete_trip_does_not_claim_a_reviewable_plan() -> None:
+@@ -106,9 +106,10 @@ def test_setup_complete_trip_does_not_claim_a_reviewable_plan() -> None:
+ 
+     assert summary["status"] == "ready"
+     assert "ready to review" not in summary["headline"]
+-    assert summary["headline"] == "Trip setup is saved. Nothing has been planned yet."
+-    next_step = build_workspace_view_model(_payload(**_complete_frame()))["next_step"]
+-    assert "indicative only" in next_step["summary"]
++    assert summary["headline"] == "Trip setup is saved. No prices have been entered yet."
++    next_step = model["next_step"]
++    assert next_step["title"] == "Enter the prices you have"
++    assert next_step["action_target"] == "budget"
+     # Auto-generated drafts and bundles are never reported as traveller decisions.
+     assert summary["decided"] == []
+ 
+@@ -117,3 +118,92 @@ def test_generated_artefacts_are_never_listed_as_decisions() -> None:
+     for mode in ("business", "leisure"):
+         model = build_workspace_view_model(_payload(mode=mode, **_complete_frame()))
+         assert model["user_summary"]["decided"] == [], mode
++
++
++# --- Issue 1840: the header advances with what the traveller has done -----------------
++
++_PRICED = {"priced_component_count": 2, "unpriced_component_count": 2}
++
++
++def _submitted(summary: dict[str, Any]) -> dict[str, Any]:
++    payload = _payload(**_complete_frame())
++    payload["proposal_state"] = {"summary": summary}
++    return payload
++
++
++def test_priced_business_trip_is_told_to_submit_for_approval() -> None:
++    model = build_workspace_view_model(_payload(**_complete_frame()), entered_prices=_PRICED)
++
++    assert model["next_step"]["title"] == "Submit for approval"
++    assert model["next_step"]["action_target"] == "approval"
++    assert "Nothing has been planned" not in model["user_summary"]["headline"]
++    assert model["business_summary"]["headline"] == (
++        "Approval is not ready yet: the trip has not been submitted to the policy check."
++    )
++
++
++def test_blocked_submission_names_what_the_policy_flagged() -> None:
++    model = build_workspace_view_model(
++        _submitted(
++            {
++                "submission_outcome": "blocked_by_policy",
++                "submission_blocking_codes": ["fare_evidence", "fare_comparison"],
++                "follow_up": {
++                    "failure_reasons": [
++                        {
++                            "code": "fare_evidence",
++                            "message": "Screenshot or fare evidence must be attached.",
++                        }
++                    ]
++                },
++            }
++        ),
++        entered_prices=_PRICED,
++    )
++
++    step = model["next_step"]
++    assert step["title"] == "Fix what the policy flagged"
++    assert "Screenshot or fare evidence must be attached. (rule fare_evidence)" in step["summary"]
++    assert "fare_comparison" in step["summary"]
++    assert model["business_summary"]["approval_status"] == "needs_attention"
++    assert model["business_summary"]["blockers"][0].startswith("Screenshot or fare evidence")
++
++
++def test_compliant_trip_is_told_to_print_the_packet() -> None:
++    model = build_workspace_view_model(
++        _submitted({"submission_outcome": "succeeded", "evaluation_result_status": "compliant"}),
++        entered_prices=_PRICED,
++    )
++
++    assert model["user_summary"]["headline"] == "This trip passed the travel policy check."
++    assert model["next_step"]["title"] == "Print the approval packet"
++    assert model["business_summary"]["approval_status"] == "approved"
++
++
++def test_unreachable_policy_service_is_not_reported_as_a_verdict() -> None:
++    model = build_workspace_view_model(
++        _submitted({"submission_outcome": "failed"}), entered_prices=_PRICED
++    )
++
++    assert model["next_step"]["title"] == "Submit again"
++    assert "did not reach the policy service" in model["next_step"]["summary"]
++
++
++def test_unpriced_trip_explains_why_approval_is_not_ready() -> None:
++    model = build_workspace_view_model(_payload(**_complete_frame()), entered_prices=None)
++
++    assert model["business_summary"]["headline"] == (
++        "Approval is not ready yet: no prices have been entered."
++    )
++
++
++def test_workspace_payload_passes_prices_to_the_header() -> None:
++    """The seam the served payload uses must forward the price record, or none of the above
++    reaches a traveller."""
++
++    from trip_planner.app.services import workspace as workspace_service
++
++    model = workspace_service._build_workspace_view_model(
++        _payload(**_complete_frame()), trip_mode="business", entered_prices=_PRICED
++    )
++    assert model["next_step"]["title"] == "Submit for approval"
+diff --git a/trip_planner/app/services/workspace.py b/trip_planner/app/services/workspace.py
+index d0b7fc847..df9e88651 100644
+--- a/trip_planner/app/services/workspace.py
++++ b/trip_planner/app/services/workspace.py
+@@ -457,8 +457,6 @@ def _adjust_estimated_total(
+     return adjusted
+ 
+ 
+-
+-
+ def _build_runtime_scenario_search_for_trip(
+     *,
+     record: PersistedTrip,
+@@ -480,18 +478,16 @@ def _build_runtime_scenario_search_for_trip(
+         # to three by cloning the lead with fixed offsets (+45 / +90 minutes, +1 / +2
+         # transfers, -0.08 / -0.14 score), so the "alternatives" were constant across every
+         # trip. One real option is better than three where two are invented.
+-        return (
+-            _build_scenario_search(
+-                trip_id=record.trip_id,
+-                trip_mode=record.mode,
+-                bundles=inventory_bundles,
+-                trip_title=record.title,
+-                primary_regions=tuple(record.primary_regions),
+-                duration_days=record.duration_days,
+-                traveler_party_kind=record.traveler_party_kind,
+-                organization_comparable_requirements=organization_comparable_requirements,
+-            ).to_dict()
+-        )
++        return _build_scenario_search(
++            trip_id=record.trip_id,
++            trip_mode=record.mode,
++            bundles=inventory_bundles,
++            trip_title=record.title,
++            primary_regions=tuple(record.primary_regions),
++            duration_days=record.duration_days,
++            traveler_party_kind=record.traveler_party_kind,
++            organization_comparable_requirements=organization_comparable_requirements,
++        ).to_dict()
+ 
+     if saved_scenarios:
+         return _build_saved_scenario_runtime_search(
+@@ -922,9 +918,7 @@ def _build_runtime_scenario_comparison(
+     return {
+         "trip_id": trip_id,
+         "title": scenario_search.get("title") or "Workspace scenario comparison",
+-        "summary": (
+-            _comparison_summary(len(rows), trip_title)
+-        ),
++        "summary": (_comparison_summary(len(rows), trip_title)),
+         "comparison_axes": comparison_axes,
+         "lead_scenario_id": lead["scenario_id"],
+         "scenarios": rows,
+@@ -1748,6 +1742,7 @@ def _build_persisted_trip_workspace(
+         payload,
+         trip_mode=record.mode,
+         include_debug=context.include_debug,
++        entered_prices=entered_prices,
+     )
+     return payload
+ 
+@@ -1949,10 +1944,16 @@ def _build_workspace_view_model(
+     *,
+     trip_mode: str | None = None,
+     include_debug: bool = True,
++    entered_prices: dict[str, Any] | None = None,
+ ) -> dict[str, Any]:
+     """Compatibility seam for callers that imported the original private mapper."""
+ 
+-    return build_workspace_view_model(payload, trip_mode=trip_mode, include_debug=include_debug)
++    return build_workspace_view_model(
++        payload,
++        trip_mode=trip_mode,
++        include_debug=include_debug,
++        entered_prices=entered_prices,
++    )
+ 
+ 
+ def _build_workspace_runtime_state(
+diff --git a/trip_planner/app/services/workspace_view_model.py b/trip_planner/app/services/workspace_view_model.py
+index ceb33422d..2208690b2 100644
+--- a/trip_planner/app/services/workspace_view_model.py
++++ b/trip_planner/app/services/workspace_view_model.py
+@@ -68,11 +68,14 @@ def _workspace_approval_status(
+     evaluation = str(
+         summary.get("evaluation_result_status") or summary.get("submission_status") or ""
+     ).lower()
+-    if summary.get("approval_ready"):
++    if summary.get("approval_ready") or evaluation == "compliant":
+         return "approved", "Your trip is ready for approval.", []
++    # The public payload carries the outcome, not the raw transport status (#1130 / #1152).
++    if str(summary.get("submission_outcome") or "") == "blocked_by_policy":
++        return "needs_attention", "The travel policy blocked this trip.", _blocking_reasons(summary)
+     if evaluation in {"in_review", "pending", "submitted"}:
+         return "in_review", "Your trip approval is in review.", []
+-    if evaluation in {"failed", "rejected", "needs_attention"} or follow_up in {
++    if evaluation in {"failed", "rejected", "needs_attention", "non_compliant"} or follow_up in {
+         "exception_required",
+         "reoptimization_required",
+         "remediation_required",
+@@ -161,31 +164,137 @@ def _humanise(items: list[str]) -> str:
+     return f"{', '.join(items[:-1])} and {items[-1]}"
+ 
+ 
+-def _next_step(status: str, missing: list[str]) -> tuple[str, str, str, str, bool]:
++_Step = tuple[str, str, str, str, bool, str]
++
++
++def _priced_count(entered_prices: Any) -> int:
++    try:
++        return int(_dict(entered_prices).get("priced_component_count") or 0)
++    except (TypeError, ValueError):
++        return 0
++
++
++def _proposal_summary(proposal_state: Any) -> dict[str, Any]:
++    return _dict(_dict(proposal_state).get("summary"))
++
++
++def _blocking_reasons(summary: dict[str, Any]) -> list[str]:
++    """TPP's own words for each blocking rule, falling back to the rule code."""
++
++    messages: dict[str, str] = {}
++    for reason in _dict(summary.get("follow_up")).get("failure_reasons") or []:
++        reason = _dict(reason)
++        if reason.get("code") and reason.get("message"):
++            messages[str(reason["code"])] = str(reason["message"])
++    codes = [str(code) for code in summary.get("submission_blocking_codes") or []] or list(messages)
++    return [f"{messages[code]} (rule {code})" if code in messages else code for code in codes]
++
++
++def _submitted_step(summary: dict[str, Any]) -> _Step | None:
++    """Where a trip stands once it has been sent to the travel policy service."""
++
++    verdict = str(summary.get("evaluation_result_status") or "").lower()
++    outcome = str(summary.get("submission_outcome") or "").lower()
++    if verdict == "compliant":
++        return (
++            "This trip passed the travel policy check.",
++            "Print the approval packet",
++            "Hand the packet to your approver. It carries the costs you entered, who entered "
++            "them, and the policy result.",
++            "Open the approval packet",
++            False,
++            "approval",
++        )
++    if outcome == "blocked_by_policy" or verdict == "non_compliant":
++        reasons = _blocking_reasons(summary)
++        detail = "; ".join(reasons) if reasons else "the policy service did not say which rules"
++        return (
++            "The travel policy blocked this trip.",
++            "Fix what the policy flagged",
++            f"Flagged: {detail}. Change the trip or its prices, then submit again.",
++            "Open the policy check",
++            False,
++            "approval",
++        )
++    if outcome == "failed":
++        return (
++            "The travel policy check could not be reached.",
++            "Submit again",
++            "Nothing was reviewed: the request did not reach the policy service.",
++            "Open the policy check",
++            False,
++            "approval",
++        )
++    if outcome not in {"", "not_submitted"}:
++        return (
++            "Submitted to the travel policy check.",
++            "Check the policy result",
++            "The policy service has the request. Refresh the policy check to read its result.",
++            "Open the policy check",
++            False,
++            "approval",
++        )
++    return None
++
++
++def _journey_step(*, mode: str, priced: int, proposal_state: Any) -> _Step:
++    """The next step once trip setup is complete, advancing with what the traveller did."""
++
++    if priced == 0:
++        return (
++            "Trip setup is saved. No prices have been entered yet.",
++            "Enter the prices you have",
++            "The planner measures routes and travel time but does not quote prices. Enter the "
++            "fares and rates you hold on the Budget tab; each is recorded as entered by you.",
++            "Open Budget",
++            False,
++            "budget",
++        )
++    if mode == "business":
++        submitted = _submitted_step(_proposal_summary(proposal_state))
++        if submitted is not None:
++            return submitted
++        return (
++            f"Prices entered for {priced} item(s). Not yet checked against travel policy.",
++            "Submit for approval",
++            "Send the trip and the prices you entered to the travel policy check.",
++            "Open the policy check",
++            False,
++            "approval",
++        )
++    return (
++        f"Prices entered for {priced} item(s).",
++        "Compare the route options",
++        "Compare shows the measured routes with the total you entered.",
++        "Open scenario comparison",
++        False,
++        "scenario-comparison",
++    )
++
++
++def _next_step(
++    status: str,
++    missing: list[str],
++    *,
++    mode: str = "leisure",
++    entered_prices: Any = None,
++    proposal_state: Any = None,
++) -> _Step:
+     if missing:
+         return (
+             f"This trip still needs {_humanise(missing)}.",
+             "Finish trip setup",
+             (
+-                "The planner cannot suggest routes or costs worth reviewing until it knows "
++                "The planner cannot measure routes or check policy until it knows "
+                 f"{_humanise(missing)}."
+             ),
+             "Open trip setup",
+             True,
++            "trip-setup",
+         )
+     if status == "ready":
+-        # Everything available at this point is generated from flat constants, so the
+-        # traveller is told what these options actually are rather than being told a
+-        # plan is "ready to review".
+-        return (
+-            "Trip setup is saved. Nothing has been planned yet.",
+-            "Look over the starting options",
+-            (
+-                "The planner has laid out a few rough route shapes to react to. They are "
+-                "indicative only — not priced for your destination."
+-            ),
+-            "Open scenario comparison",
+-            False,
++        return _journey_step(
++            mode=mode, priced=_priced_count(entered_prices), proposal_state=proposal_state
+         )
+     if status == "partial":
+         return (
+@@ -194,6 +303,7 @@ def _next_step(status: str, missing: list[str]) -> tuple[str, str, str, str, boo
+             "Inventory is in place; resolve the open uncertainties to unlock scenario comparison.",
+             "Continue planning",
+             False,
++            "planner",
+         )
+     return (
+         "Trip planning hasn't started yet.",
+@@ -201,13 +311,38 @@ def _next_step(status: str, missing: list[str]) -> tuple[str, str, str, str, boo
+         "Add the missing trip context to start assembling scenarios.",
+         "Open trip setup",
+         True,
++        "trip-setup",
+     )
+ 
+ 
++def _not_ready_reason(*, missing: list[str], priced: int, proposal_state: Any) -> str:
++    """Why approval is not ready: the first step the traveller has not done."""
++
++    if missing:
++        return f"Approval is not ready yet: this trip still needs {_humanise(missing)}."
++    if priced == 0:
++        return "Approval is not ready yet: no prices have been entered."
++    if (
++        not _proposal_summary(proposal_state).get("submission_outcome")
++        or _proposal_summary(proposal_state).get("submission_outcome") == "not_submitted"
++    ):
++        return "Approval is not ready yet: the trip has not been submitted to the policy check."
++    return "Approval is not ready yet: the policy check has not returned a result."
++
++
+ def build_workspace_view_model(
+-    payload: dict[str, Any], *, trip_mode: str | None = None, include_debug: bool = True
++    payload: dict[str, Any],
++    *,
++    trip_mode: str | None = None,
++    include_debug: bool = True,
++    entered_prices: dict[str, Any] | None = None,
+ ) -> dict[str, Any]:
+-    """Map internal workspace state into the stable product-facing model."""
++    """Map internal workspace state into the stable product-facing model.
++
++    `entered_prices` is the traveller's price record (`build_trip_prices_payload`). Without
++    it the header cannot tell an unpriced trip from a priced one, which is how it said
++    "Nothing has been planned yet" after a trip had been priced and submitted (issue 1840).
++    """
+ 
+     trip_record = _dict(payload.get("trip_record"))
+     trip = _dict(trip_record.get("trip"))
+@@ -240,13 +375,14 @@ def build_workspace_view_model(
+     elif status == "partial":
+         uncertain.append("Scenario comparison is not yet ready.")
+ 
+-    headline, next_title, next_summary, next_action, blocked = _next_step(status, missing_context)
+-    next_target = (
+-        "trip-setup"
+-        if missing_context
+-        else {"ready": "scenario-comparison", "partial": "planner"}.get(status, "trip-setup")
+-    )
+     proposal = payload.get("proposal_state")
++    headline, next_title, next_summary, next_action, blocked, next_target = _next_step(
++        status,
++        missing_context,
++        mode=mode,
++        entered_prices=entered_prices,
++        proposal_state=proposal,
++    )
+     active = _workspace_policy_state_is_active(
+         policy_state=payload.get("policy_state"), proposal_state=proposal
+     )
+@@ -256,6 +392,12 @@ def build_workspace_view_model(
+         approval_status, approval_headline, blockers = _workspace_approval_status(
+             _dict(proposal), trip_mode=mode
+         )
++        if approval_status == "not_ready":
++            approval_headline = _not_ready_reason(
++                missing=missing_context,
++                priced=_priced_count(entered_prices),
++                proposal_state=proposal,
++            )
+         business_summary = {
+             "approval_status": approval_status,
+             "headline": approval_headline,

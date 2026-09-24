@@ -1,0 +1,595 @@
+diff --git a/frontend/src/api/health.ts b/frontend/src/api/health.ts
+index 29f6b9d62..7addf9ab7 100644
+--- a/frontend/src/api/health.ts
++++ b/frontend/src/api/health.ts
+@@ -5,6 +5,8 @@ export type HealthStatus = {
+   status: string;
+   environment: string;
+   version: string;
++  /** Database readiness as last observed; absent from backends older than issue 1851. */
++  database?: { ready: boolean; reason: string | null; checked_at: string | null } | null;
+ };
+ 
+ let inFlightHealthProbe: Promise<HealthStatus> | null = null;
+diff --git a/frontend/src/components/budget/TripPricesPanel.test.tsx b/frontend/src/components/budget/TripPricesPanel.test.tsx
+index 20ccb0ea5..1b0cc6db5 100644
+--- a/frontend/src/components/budget/TripPricesPanel.test.tsx
++++ b/frontend/src/components/budget/TripPricesPanel.test.tsx
+@@ -82,7 +82,7 @@ describe("TripPricesPanel", () => {
+     expect(screen.getByTestId("trip-prices-total")).toHaveTextContent("$486");
+     expect(screen.getByTestId("trip-prices-total")).toHaveTextContent("Dana Chen");
+     expect(screen.getByTestId("trip-price-source-transport")).toHaveTextContent(
+-      "Entered by Dana Chen on 2026-09-21"
++      "Entered by Dana Chen on September 21, 2026"
+     );
+     expect(screen.getByTestId("trip-price-source-lodging")).toHaveTextContent(
+       "No source has priced this yet."
+diff --git a/frontend/src/components/budget/TripPricesPanel.tsx b/frontend/src/components/budget/TripPricesPanel.tsx
+index b692a89ce..3a9c5f93e 100644
+--- a/frontend/src/components/budget/TripPricesPanel.tsx
++++ b/frontend/src/components/budget/TripPricesPanel.tsx
+@@ -1,6 +1,7 @@
+ import { useEffect, useState } from "react";
+ 
+ import type { TripPriceComponent, TripPricesState } from "../../api/workspace";
++import { formatInstantDate } from "../../lib/dates";
+ import { formatMoney } from "../../lib/money";
+ 
+ export type TripPricesPanelProps = {
+@@ -36,7 +37,7 @@ function sourceLine(component: TripPriceComponent): string | null {
+   if (component.price_source == null) {
+     return null;
+   }
+-  const captured = component.price_source.captured_at.slice(0, 10);
++  const captured = formatInstantDate(component.price_source.captured_at);
+   return `Entered by ${component.price_source.attributed_to} on ${captured}`;
+ }
+ 
+diff --git a/frontend/src/components/workspace/ApprovalPacket.test.tsx b/frontend/src/components/workspace/ApprovalPacket.test.tsx
+index ea821166c..64c93ab95 100644
+--- a/frontend/src/components/workspace/ApprovalPacket.test.tsx
++++ b/frontend/src/components/workspace/ApprovalPacket.test.tsx
+@@ -14,6 +14,9 @@ import { afterEach, describe, expect, it, vi } from "vitest";
+ import type { TripPricesState, WorkspaceData } from "../../api/workspace";
+ import { ApprovalPacket } from "./ApprovalPacket";
+ 
++// Vitest runs in Node; the frontend tsconfig carries no Node types, so reach the env this way.
++const env = (globalThis as unknown as { process: { env: Record<string, string | undefined> } }).process.env;
++
+ afterEach(() => {
+   cleanup();
+ });
+@@ -108,7 +111,7 @@ describe("ApprovalPacket", () => {
+     expect(costs).toHaveTextContent("Flights and ground travel");
+     expect(costs).toHaveTextContent("$486");
+     expect(costs).toHaveTextContent("United.com economy");
+-    expect(costs).toHaveTextContent("Entered by Priya Raman on 2026-09-22");
++    expect(costs).toHaveTextContent("Entered by Priya Raman on September 22, 2026");
+     expect(costs).toHaveTextContent("$612");
+     expect(screen.getByTestId("approval-packet-trip-cost")).toHaveTextContent("$1,098");
+     expect(costs).toHaveTextContent("1 item(s) not priced");
+@@ -236,4 +239,41 @@ describe("ApprovalPacket", () => {
+     render(<ApprovalPacket workspace={workspace()} prices={PRICED} onPrint={vi.fn()} />);
+     expect(screen.queryByTestId("approval-packet-policy-limit")).toBeNull();
+   });
++
++  it("dates every line in the same calendar, the reader's own (issue 1853)", () => {
++    // A US evening: 21:30 in New York is 01:30 the next day in UTC. The packet used to print
++    // "Prepared September 22" beside "Entered … on 2026-09-23" for a price entered minutes earlier.
++    const previousTz = env.TZ;
++    env.TZ = "America/New_York";
++    try {
++      const lateSource = { ...SOURCE, captured_at: "2026-09-23T01:30:00+00:00" };
++      const lateEntry: TripPricesState = {
++        ...PRICED,
++        components: PRICED.components.map((component) =>
++          component.price_source ? { ...component, price_source: lateSource } : component
++        ),
++      };
++      render(
++        <ApprovalPacket
++          workspace={workspace()}
++          prices={lateEntry}
++          preparedOn={new Date("2026-09-23T01:45:00+00:00")}
++          onPrint={vi.fn()}
++        />
++      );
++
++      const text = documentText();
++      expect(text).toContain("September 22, 2026");
++      expect(screen.getByTestId("approval-packet-costs")).toHaveTextContent("on September 22, 2026");
++      expect(text).not.toMatch(/2026-09-23|September 23/);
++      // Trip dates are calendar days and never shift with the reader's timezone.
++      expect(text).toContain("October 5, 2026 to October 7, 2026");
++    } finally {
++      if (previousTz === undefined) {
++        delete env.TZ;
++      } else {
++        env.TZ = previousTz;
++      }
++    }
++  });
+ });
+diff --git a/frontend/src/components/workspace/ApprovalPacket.tsx b/frontend/src/components/workspace/ApprovalPacket.tsx
+index 983ad8054..26ef8ad56 100644
+--- a/frontend/src/components/workspace/ApprovalPacket.tsx
++++ b/frontend/src/components/workspace/ApprovalPacket.tsx
+@@ -1,5 +1,6 @@
+ import type { TripPricesState, WorkspaceData } from "../../api/workspace";
+ import { formatMoney } from "../../lib/money";
++import { formatCalendarDate, formatInstantDate } from "../../lib/dates";
+ import { explainPolicyCode } from "../../lib/policyCodes";
+ 
+ /**
+@@ -84,15 +85,6 @@ function policyTripLimit(workspace: WorkspaceData): { amount: number; ruleId: st
+   return { amount, ruleId: typeof rules.rule_id === "string" ? rules.rule_id : "policy limit" };
+ }
+ 
+-function formatDate(value: string | null | undefined): string {
+-  if (!value) {
+-    return "Not set";
+-  }
+-  const parsed = new Date(`${value}T00:00:00`);
+-  return Number.isNaN(parsed.getTime())
+-    ? value
+-    : parsed.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+-}
+ 
+ export function ApprovalPacket({
+   workspace,
+@@ -144,7 +136,7 @@ export function ApprovalPacket({
+         </div>
+         <div>
+           <dt>Prepared</dt>
+-          <dd>{preparedOn.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</dd>
++          <dd>{formatInstantDate(preparedOn)}</dd>
+         </div>
+         <div>
+           <dt>Journey</dt>
+@@ -155,7 +147,7 @@ export function ApprovalPacket({
+         <div>
+           <dt>Dates</dt>
+           <dd>
+-            {formatDate(frame.start_date)} to {formatDate(frame.end_date)}
++            {formatCalendarDate(frame.start_date)} to {formatCalendarDate(frame.end_date)}
+           </dd>
+         </div>
+         <div>
+@@ -199,7 +191,7 @@ export function ApprovalPacket({
+                   <td>
+                     {component.note ? `${component.note}. ` : ""}
+                     {component.price_source
+-                      ? `Entered by ${component.price_source.attributed_to} on ${component.price_source.captured_at.slice(0, 10)}`
++                      ? `Entered by ${component.price_source.attributed_to} on ${formatInstantDate(component.price_source.captured_at)}`
+                       : null}
+                   </td>
+                 </tr>
+diff --git a/frontend/src/lib/dates.test.ts b/frontend/src/lib/dates.test.ts
+new file mode 100644
+index 000000000..dd2c67450
+--- /dev/null
++++ b/frontend/src/lib/dates.test.ts
+@@ -0,0 +1,37 @@
++import { afterEach, describe, expect, it } from "vitest";
++
++import { formatCalendarDate, formatInstantDate } from "./dates";
++
++// Vitest runs in Node; the frontend tsconfig carries no Node types, so reach the env this way.
++const env = (globalThis as unknown as { process: { env: Record<string, string | undefined> } }).process.env;
++
++const originalTz = env.TZ;
++
++afterEach(() => {
++  if (originalTz === undefined) {
++    delete env.TZ;
++  } else {
++    env.TZ = originalTz;
++  }
++});
++
++describe("dates", () => {
++  it("keeps a calendar date on its day in a timezone west of UTC", () => {
++    env.TZ = "America/Los_Angeles";
++    // new Date("2026-10-05") is UTC midnight, which is October 4 in Los Angeles.
++    expect(formatCalendarDate("2026-10-05")).toBe("October 5, 2026");
++  });
++
++  it("shows an instant as the reader's local day", () => {
++    env.TZ = "America/New_York";
++    expect(formatInstantDate("2026-09-23T01:30:00+00:00")).toBe("September 22, 2026");
++    env.TZ = "Asia/Tokyo";
++    expect(formatInstantDate("2026-09-22T20:00:00+00:00")).toBe("September 23, 2026");
++  });
++
++  it("says a date is absent rather than printing a blank or an invalid date", () => {
++    expect(formatCalendarDate(null)).toBe("Not set");
++    expect(formatInstantDate("")).toBe("Not recorded");
++    expect(formatInstantDate("not a date")).toBe("Not recorded");
++  });
++});
+diff --git a/frontend/src/lib/dates.ts b/frontend/src/lib/dates.ts
+new file mode 100644
+index 000000000..a70b890a5
+--- /dev/null
++++ b/frontend/src/lib/dates.ts
+@@ -0,0 +1,36 @@
++/**
++ * Dates as a traveller and an approver read them, formatted one way everywhere.
++ *
++ * Two kinds of value reach the screen and they must not be confused:
++ * - calendar dates ("2026-10-12"), which name a day and must never shift with the viewer's
++ *   timezone; and
++ * - instants ("2026-09-23T01:30:00+00:00"), which are shown as the viewer's local day.
++ *
++ * The approval packet used to print the prepared date in local time and entry dates as the
++ * first ten characters of a UTC timestamp, so on a US evening one page said both
++ * "September 22" and "2026-09-23".
++ */
++
++const LONG_DATE: Intl.DateTimeFormatOptions = { year: "numeric", month: "long", day: "numeric" };
++
++/** "2026-10-12" → "October 12, 2026", read as that calendar day in any timezone. */
++export function formatCalendarDate(value: string | null | undefined, fallback = "Not set"): string {
++  if (!value) {
++    return fallback;
++  }
++  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value.trim());
++  if (!match) {
++    return value;
++  }
++  const [, year, month, day] = match;
++  return new Date(Number(year), Number(month) - 1, Number(day)).toLocaleDateString("en-US", LONG_DATE);
++}
++
++/** An instant (ISO timestamp or Date) as the viewer's local calendar day. */
++export function formatInstantDate(value: string | Date | null | undefined, fallback = "Not recorded"): string {
++  if (value == null || value === "") {
++    return fallback;
++  }
++  const date = value instanceof Date ? value : new Date(value);
++  return Number.isNaN(date.getTime()) ? fallback : date.toLocaleDateString("en-US", LONG_DATE);
++}
+diff --git a/frontend/src/routes/HealthPage.test.tsx b/frontend/src/routes/HealthPage.test.tsx
+index 8c45e12bd..bff2952fd 100644
+--- a/frontend/src/routes/HealthPage.test.tsx
++++ b/frontend/src/routes/HealthPage.test.tsx
+@@ -1,4 +1,4 @@
+-import { render, screen, waitFor } from "@testing-library/react";
++import { cleanup, render, screen, waitFor } from "@testing-library/react";
+ import { useLoaderData } from "react-router-dom";
+ import { afterEach, describe, expect, it, vi } from "vitest";
+ 
+@@ -25,6 +25,7 @@ function renderHealthPage() {
+ 
+ describe("HealthPage", () => {
+   afterEach(() => {
++    cleanup();
+     vi.clearAllMocks();
+   });
+ 
+@@ -51,6 +52,32 @@ describe("HealthPage", () => {
+     expect(screen.getByText("0.1.0")).toBeInTheDocument();
+   });
+ 
++  it("says the backend is degraded and why, when its database is not ready (issue 1851)", async () => {
++    mockedUseLoaderData.mockReturnValue({
++      health: Promise.resolve({
++        service: "trip-planner-api",
++        status: "degraded",
++        environment: "production",
++        version: "0.1.0",
++        database: {
++          ready: false,
++          reason: "OperationalError: database initialisation failed",
++          checked_at: "2026-09-22T15:00:00+00:00",
++        },
++      }),
++    });
++
++    renderHealthPage();
++
++    await waitFor(() => {
++      expect(screen.getByTestId("health-state")).toHaveTextContent("degraded");
++    });
++    expect(screen.getByTestId("health-database")).toHaveTextContent(
++      "Not ready: OperationalError: database initialisation failed"
++    );
++    expect(screen.getByTestId("health-database")).toHaveTextContent("Trips cannot be saved or loaded");
++  });
++
+   it("renders route-level loading and error treatment through the shared client seam", async () => {
+     let rejectRequest: ((reason?: unknown) => void) | undefined;
+     mockedUseLoaderData.mockReturnValue({
+diff --git a/frontend/src/routes/HealthPage.tsx b/frontend/src/routes/HealthPage.tsx
+index ca81f617f..d1698b873 100644
+--- a/frontend/src/routes/HealthPage.tsx
++++ b/frontend/src/routes/HealthPage.tsx
+@@ -3,6 +3,7 @@ import { useLoaderData } from "react-router-dom";
+ import { AsyncRouteContent } from "../lib/routes/AsyncRouteContent";
+ import { createDeferredLoader } from "../lib/routes/loaders";
+ import { fetchHealthStatus, type HealthStatus } from "../api/health";
++import { formatInstantDate } from "../lib/dates";
+ 
+ type LoaderData = {
+   health: Promise<HealthStatus>;
+@@ -10,6 +11,17 @@ type LoaderData = {
+ 
+ export const healthLoader = createDeferredLoader("health", async () => fetchHealthStatus());
+ 
++function describeDatabase(database: HealthStatus["database"]): string {
++  if (database == null) {
++    return "Not reported by this backend";
++  }
++  if (database.ready) {
++    return "Ready";
++  }
++  const checked = database.checked_at ? ` (last checked ${formatInstantDate(database.checked_at)})` : "";
++  return `Not ready: ${database.reason ?? "no reason recorded"}${checked}. Trips cannot be saved or loaded until it is.`;
++}
++
+ function HealthStatusCard({ health }: { health: HealthStatus }) {
+   return (
+     <section className="status-card">
+@@ -18,7 +30,11 @@ function HealthStatusCard({ health }: { health: HealthStatus }) {
+       <dl className="status-grid">
+         <div>
+           <dt>State</dt>
+-          <dd>{health.status}</dd>
++          <dd data-testid="health-state">{health.status}</dd>
++        </div>
++        <div>
++          <dt>Database</dt>
++          <dd data-testid="health-database">{describeDatabase(health.database)}</dd>
+         </div>
+         <div>
+           <dt>Environment</dt>
+diff --git a/tests/app/test_health.py b/tests/app/test_health.py
+index 08551de0f..132a0ddfb 100644
+--- a/tests/app/test_health.py
++++ b/tests/app/test_health.py
+@@ -1,5 +1,6 @@
+ from fastapi.testclient import TestClient
+ 
++from trip_planner.app import database_status
+ from trip_planner.app import main as main_module
+ from trip_planner.app.main import app, create_app
+ 
+@@ -10,20 +11,24 @@ def test_health_endpoint_returns_live_status_contract() -> None:
+     response = client.get("/api/health")
+ 
+     assert response.status_code == 200
+-    assert response.json() == {
++    body = response.json()
++    assert {key: body[key] for key in ("service", "status", "environment", "version")} == {
+         "service": "trip-planner-api",
+         "status": "ok",
+         "environment": "local",
+         "version": "0.1.0",
+     }
++    assert body["database"]["ready"] is True
++    assert body["database"]["reason"] is None
+ 
+ 
+ def test_startup_degrades_when_database_initialization_fails(monkeypatch) -> None:
+-    """Resilient startup: if ensure_database_ready() raises (e.g. an expired/
+-    unreachable database), the service must still start and serve /api/health
+-    rather than crash the deploy. Reaching a 200 here proves the guard caught the
+-    failure — without it, entering the TestClient context (which runs lifespan)
+-    would raise."""
++    """Resilient startup, reported truthfully (issue 1851).
++
++    If ensure_database_ready() raises (an expired or unreachable database), the service must
++    still start and answer /api/health with 200, so the deploy is not failed. It must not say
++    "ok": every trip request in that state errors, and the status page used to call it healthy.
++    """
+ 
+     def _raise_database_outage() -> None:
+         raise RuntimeError("simulated database outage at startup")
+@@ -35,4 +40,42 @@ def _raise_database_outage() -> None:
+         response = client.get("/api/health")
+ 
+     assert response.status_code == 200
+-    assert response.json()["status"] == "ok"
++    body = response.json()
++    assert body["status"] == "degraded"
++    assert body["database"]["ready"] is False
++    assert body["database"]["reason"] == "RuntimeError: database initialisation failed"
++    assert body["database"]["checked_at"]
++    # The reason names the failure class only; connection details never reach the page.
++    assert "simulated" not in body["database"]["reason"]
++
++
++def test_degraded_health_clears_when_the_database_comes_back(monkeypatch) -> None:
++    """The degraded report is not a latch: a retry that finds the database clears it."""
++
++    outage = {"on": True}
++
++    def _database() -> None:
++        if outage["on"]:
++            raise RuntimeError("down")
++
++    monkeypatch.setattr(main_module, "ensure_database_ready", _database)
++    clock = {"now": 1000.0}
++    monkeypatch.setattr(database_status.time, "monotonic", lambda: clock["now"])
++
++    with TestClient(create_app()) as client:
++        assert client.get("/api/health").json()["status"] == "degraded"
++
++        outage["on"] = False
++        # Inside the retry interval the last observation stands (health is polled often).
++        clock["now"] += database_status.RETRY_INTERVAL_SECONDS / 2
++        assert client.get("/api/health").json()["status"] == "degraded"
++
++        clock["now"] += database_status.RETRY_INTERVAL_SECONDS
++        recovered = client.get("/api/health").json()
++
++    assert recovered["status"] == "ok"
++    assert recovered["database"] == {
++        "ready": True,
++        "reason": None,
++        "checked_at": recovered["database"]["checked_at"],
++    }
+diff --git a/trip_planner/app/database_status.py b/trip_planner/app/database_status.py
+new file mode 100644
+index 000000000..153b5628f
+--- /dev/null
++++ b/trip_planner/app/database_status.py
+@@ -0,0 +1,56 @@
++"""Whether this process's database is ready, as observed rather than assumed.
++
++The service deliberately starts when database initialisation fails, so a deploy is not marked
++failed by an expired or briefly unreachable database. Until issue 1851, /api/health then said
++"ok" regardless, which is how a deployment answered every trip request with an error while its
++status page reported a healthy backend.
++
++The record is not a latch. A failed check is retried from the health route, at most once per
++``RETRY_INTERVAL_SECONDS``, so the report clears on its own once the database is reachable, and
++it carries when it was last checked so a stale failure is visible as stale.
++"""
++
++from __future__ import annotations
++
++import logging
++import time
++from collections.abc import Callable
++from dataclasses import dataclass
++from datetime import UTC, datetime
++
++logger = logging.getLogger(__name__)
++
++RETRY_INTERVAL_SECONDS = 30.0
++
++
++@dataclass
++class DatabaseStatus:
++    initialise: Callable[[], None]
++    ready: bool = False
++    reason: str | None = "not checked yet"
++    checked_at: datetime | None = None
++    _checked_monotonic: float | None = None
++
++    def check(self) -> DatabaseStatus:
++        try:
++            self.initialise()
++        except Exception as error:  # noqa: BLE001 - any failure means "not ready"
++            logger.exception("Database initialisation failed; the service is degraded.")
++            self.ready = False
++            self.reason = f"{type(error).__name__}: database initialisation failed"
++        else:
++            self.ready = True
++            self.reason = None
++        self.checked_at = datetime.now(UTC)
++        self._checked_monotonic = time.monotonic()
++        return self
++
++    def refresh_if_due(self) -> DatabaseStatus:
++        """Retry a failed check once the interval has passed; a ready database is not re-probed."""
++
++        if self.ready:
++            return self
++        last = self._checked_monotonic
++        if last is None or time.monotonic() - last >= RETRY_INTERVAL_SECONDS:
++            return self.check()
++        return self
+diff --git a/trip_planner/app/main.py b/trip_planner/app/main.py
+index 5cac992ac..95af048a4 100644
+--- a/trip_planner/app/main.py
++++ b/trip_planner/app/main.py
+@@ -10,6 +10,7 @@
+ from fastapi.responses import JSONResponse
+ 
+ from trip_planner.app import APP_VERSION
++from trip_planner.app.database_status import DatabaseStatus
+ from trip_planner.app.routes.auth import router as auth_router
+ from trip_planner.app.routes.budget import router as budget_router
+ from trip_planner.app.routes.trip_prices import router as trip_prices_router
+@@ -58,19 +59,13 @@ def _json_safe_validation_value(value: Any) -> Any:
+ 
+ 
+ @asynccontextmanager
+-async def lifespan(_: FastAPI):
++async def lifespan(app: FastAPI):
+     # Resilient startup: a transient or expired database must not crash the whole
+     # service. If it did, the health check would fail and every deploy would be
+     # marked failed (the exact failure mode when the managed Postgres expired).
+-    # Degrade instead: keep the API up so /api/health passes, and let DB-backed
+-    # routes surface their own errors until the database is reachable again.
+-    try:
+-        ensure_database_ready()
+-    except Exception:
+-        logger.exception(
+-            "Database initialization failed at startup; continuing in degraded "
+-            "mode (database-backed routes will error until the database is reachable)."
+-        )
++    # Degrade instead: keep the API up, record what happened, and let /api/health
++    # report "degraded" until a retry finds the database reachable (issue 1851).
++    app.state.database_status = DatabaseStatus(initialise=lambda: ensure_database_ready()).check()
+     yield
+ 
+ 
+diff --git a/trip_planner/app/routes/health.py b/trip_planner/app/routes/health.py
+index 798fcf461..d3ed1a951 100644
+--- a/trip_planner/app/routes/health.py
++++ b/trip_planner/app/routes/health.py
+@@ -2,16 +2,30 @@
+ 
+ from fastapi import APIRouter, Request
+ 
+-from trip_planner.app.schemas.health import HealthStatus
++from trip_planner.app.database_status import DatabaseStatus
++from trip_planner.app.schemas.health import DatabaseHealth, HealthStatus
++from trip_planner.persistence import db
+ 
+ router = APIRouter(tags=["health"])
+ 
+ 
+ @router.get("/health", response_model=HealthStatus)
+ def read_health(request: Request) -> HealthStatus:
++    # Always 200, so a deploy is not failed by the database; the body says whether it is usable.
++    status = getattr(request.app.state, "database_status", None)
++    if not isinstance(status, DatabaseStatus):
++        # Startup did not run (an app served without its lifespan): check now rather than assume.
++        status = DatabaseStatus(initialise=lambda: db.ensure_database_ready())
++        request.app.state.database_status = status
++    status.refresh_if_due()
+     return HealthStatus(
+         service="trip-planner-api",
+-        status="ok",
++        status="ok" if status.ready else "degraded",
+         environment=os.getenv("TRIP_PLANNER_ENV", "local"),
+         version=request.app.version,
++        database=DatabaseHealth(
++            ready=status.ready,
++            reason=status.reason,
++            checked_at=status.checked_at.isoformat() if status.checked_at else None,
++        ),
+     )
+diff --git a/trip_planner/app/schemas/health.py b/trip_planner/app/schemas/health.py
+index 0aca0a9a6..e525704d4 100644
+--- a/trip_planner/app/schemas/health.py
++++ b/trip_planner/app/schemas/health.py
+@@ -1,8 +1,23 @@
+ from pydantic import BaseModel, Field
+ 
+ 
++class DatabaseHealth(BaseModel):
++    ready: bool = Field(
++        description="Whether the database was initialised and reachable when last checked."
++    )
++    reason: str | None = Field(
++        default=None, description="Why it is not ready: the error class, never a connection string."
++    )
++    checked_at: str | None = Field(
++        default=None, description="When readiness was last checked (UTC, ISO 8601)."
++    )
++
++
+ class HealthStatus(BaseModel):
+     service: str = Field(description="Service name exposed to the frontend shell.")
+-    status: str = Field(description="Operational state for the current process.")
++    status: str = Field(description='"ok", or "degraded" when the database is not usable.')
+     environment: str = Field(description="Named environment for local or deployed runs.")
+     version: str = Field(description="Application version surfaced to the UI.")
++    database: DatabaseHealth | None = Field(
++        default=None, description="Database readiness, as last observed."
++    )

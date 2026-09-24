@@ -1,0 +1,71 @@
+diff --git a/src/deliverable_render/store/validate.py b/src/deliverable_render/store/validate.py
+index cd0f2cf..91f0ad8 100644
+--- a/src/deliverable_render/store/validate.py
++++ b/src/deliverable_render/store/validate.py
+@@ -254,13 +254,23 @@ def validate_store(path: Path) -> ValidationReport:
+             # explicit entry_id, if supplied, names an entry.
+             _reference(mention.get("q"), period_ids, _path(mention_path, "q"), "periods", report)
+             if "entry_id" in mention:
++                mention_entry_id = mention["entry_id"]
+                 _reference(
+-                    mention["entry_id"],
++                    mention_entry_id,
+                     entry_ids,
+                     _path(mention_path, "entry_id"),
+                     "entries",
+                     report,
+                 )
++                if mention_entry_id != entry_id:
++                    report.fail(
++                        "cross-entry-mention",
++                        _path(mention_path, "entry_id"),
++                        (
++                            f"mention entry_id '{mention_entry_id}' names another entry; "
++                            f"enclosing entry id is '{entry_id}'"
++                        ),
++                    )
+             if "src" in mention:
+                 _validate_pointer(
+                     mention["src"],
+diff --git a/tests/store/test_communication_render_profile.py b/tests/store/test_communication_render_profile.py
+index b697037..4aae050 100644
+--- a/tests/store/test_communication_render_profile.py
++++ b/tests/store/test_communication_render_profile.py
+@@ -455,6 +455,28 @@ def test_invalid_template_exits_with_diagnostic_without_output(
+     assert "render-pptx-deck: Package not found" in capsys.readouterr().err
+ 
+ 
++def test_validator_rejects_cross_entry_mention_id(tmp_path: Path) -> None:
++    data = json.loads(STORE.read_text(encoding="utf-8"))
++    second = deepcopy(data["entries"][0])
++    second["id"] = "other"
++    second["mentions"] = []
++    data["entries"].append(second)
++    data["entries"][0]["mentions"][0]["entry_id"] = "other"
++    store_path = tmp_path / "cross-entry.json"
++    store_path.write_text(json.dumps(data), encoding="utf-8")
++
++    report = validate_store(store_path)
++
++    assert not report.valid
++    assert any(
++        issue.code == "cross-entry-mention"
++        and issue.path == "/entries/0/mentions/0/entry_id"
++        and "'other'" in issue.message
++        and "enclosing entry id" in issue.message
++        for issue in report.issues
++    )
++
++
+ def test_cross_entry_mention_is_not_silently_reassigned(tmp_path: Path) -> None:
+     data = json.loads(STORE.read_text(encoding="utf-8"))
+     second = deepcopy(data["entries"][0])
+@@ -464,7 +486,7 @@ def test_cross_entry_mention_is_not_silently_reassigned(tmp_path: Path) -> None:
+     data["entries"][0]["mentions"][0]["entry_id"] = "other"
+     store_path = tmp_path / "cross-entry.json"
+     store_path.write_text(json.dumps(data), encoding="utf-8")
+-    assert validate_store(store_path).valid
++    assert not validate_store(store_path).valid
+     with pytest.raises(CommunicationRenderError, match="names another entry"):
+         adapt_store(data, json.loads(PATHS.read_text(encoding="utf-8")))
+ 

@@ -1,0 +1,99 @@
+diff --git a/src/counter_risk/chat/session.py b/src/counter_risk/chat/session.py
+index 574741d13..e8a517858 100644
+--- a/src/counter_risk/chat/session.py
++++ b/src/counter_risk/chat/session.py
+@@ -748,13 +748,35 @@ def _format_deltas(deltas: dict[str, list[dict[str, object]]]) -> str:
+             continue
+ 
+         counterparty = str(first.get("counterparty") or first.get("name") or "unknown")
+-        metric, metric_value = _find_delta_metric(first)
+-        lines.append(f"{variant}: {counterparty} {metric}={metric_value}")
++        metric = _find_delta_metric(first)
++        if metric is None:
++            continue
++
++        metric_name, metric_value = metric
++        lines.append(f"{variant}: {counterparty} {metric_name}={metric_value}")
+ 
+     return "; ".join(lines) if lines else "Top deltas: none."
+ 
+ 
+-def _find_delta_metric(record: dict[str, object]) -> tuple[str, str]:
++def _format_metric_value(value: object) -> str | None:
++    parsed = _parse_float(value)
++    if parsed is not None:
++        if parsed.is_integer():
++            return str(int(parsed))
++        return str(parsed)
++
++    # Preserve non-numeric untrusted values for the existing prompt sanitizer,
++    # but reject numeric values that parsed as NaN or infinity.
++    if isinstance(value, str):
++        normalized = value.strip().replace(",", "")
++        try:
++            float(normalized)
++        except (ValueError, OverflowError):
++            return value
++    return None
++
++
++def _find_delta_metric(record: dict[str, object]) -> tuple[str, str] | None:
+     candidate_keys = (
+         "notional_change",
+         "delta",
+@@ -765,12 +787,18 @@ def _find_delta_metric(record: dict[str, object]) -> tuple[str, str]:
+     )
+     for key in candidate_keys:
+         if key in record:
+-            return key, str(record[key])
++            formatted = _format_metric_value(record[key])
++            if formatted is None:
++                return None
++            return key, formatted
+ 
+     for key, value in record.items():
+         if key in {"counterparty", "name"}:
+             continue
+-        return str(key), str(value)
++        formatted = _format_metric_value(value)
++        if formatted is None:
++            return None
++        return str(key), formatted
+ 
+     return "value", "unknown"
+ 
+diff --git a/tests/test_chat_session.py b/tests/test_chat_session.py
+index 08a260fec..ff9573146 100644
+--- a/tests/test_chat_session.py
++++ b/tests/test_chat_session.py
+@@ -913,6 +913,30 @@ def test_warning_formatter_handles_empty_and_truncated_collections() -> None:
+     )
+ 
+ 
++def test_format_deltas_omits_non_finite_notional_change() -> None:
++    nan_deltas = cast(
++        dict[str, list[dict[str, object]]],
++        {"all_programs": [{"counterparty": "X", "notional_change": float("nan")}]},
++    )
++    inf_deltas = cast(
++        dict[str, list[dict[str, object]]],
++        {"all_programs": [{"counterparty": "Y", "notional_change": float("inf")}]},
++    )
++    fallback_nan_deltas = cast(
++        dict[str, list[dict[str, object]]],
++        {"all_programs": [{"counterparty": "Z", "custom_change": float("nan")}]},
++    )
++
++    assert session_module._format_deltas(nan_deltas) == "Top deltas: none."
++    assert session_module._format_deltas(inf_deltas) == "Top deltas: none."
++    assert session_module._format_deltas(fallback_nan_deltas) == "Top deltas: none."
++
++
++def test_format_metric_value_normalizes_finite_floats() -> None:
++    assert session_module._format_metric_value(3.0) == "3"
++    assert session_module._format_metric_value(1.25) == "1.25"
++
++
+ def test_delta_formatter_skips_malformed_variants_and_uses_stable_fallbacks() -> None:
+     assert session_module._format_deltas({}) == "Top deltas: none."
+     deltas = cast(

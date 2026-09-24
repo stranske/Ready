@@ -1,9 +1,9 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-24T03:24:02Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-24T03:29:23Z)
 
-Units: 196 — claimed 1, done 189, failed 6
+Units: 196 — done 190, failed 6
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
-Orchestrator evidence (30d): offload runs 246, bound to a research round 200, scored 200 (PASS 133, FAIL 67, infra 19) — codex 28/29 (P9 F19 I6), cursor 112/145 (P84 F28 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
+Orchestrator evidence (30d): offload runs 247, bound to a research round 201, scored 201 (PASS 134, FAIL 67, infra 19) — codex 28/29 (P9 F19 I6), cursor 113/146 (P85 F28 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
 Claude conservation: off (weekly window available)
 Owner inbox: https://github.com/stranske/Ready/issues/553
 
@@ -204,11 +204,10 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D4-verify-merged-2026-09-21T03 | D | D | done | cursor | codex | Verify merged PRs against their issues' acceptance criteria |  |
 | D4-verify-merged-2026-09-22T03 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
 | D4-verify-merged-2026-09-23T03 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
-| D4-verify-merged-2026-09-24T03 | D | D | claimed | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
+| D4-verify-merged-2026-09-24T03 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
 
 ## Last checkpoints
 
-- 2026-09-24T02:30:45Z — D-audit-Workflows--2026-09-23T22-11-13Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-24T02:30:45Z — D-audit-Workflows--2026-09-23T22-11-13Z — claimed by driver (agent cursor)
 - 2026-09-24T02:34:44Z — D-audit-Workflows--2026-09-23T22-11-13Z — fail — cursor produced 293 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Workflows-2026-09-23.md (min 400); rotating agent
 - 2026-09-24T02:49:46Z — D-audit-Workflows--2026-09-23T22-11-13Z — route — router picked cursor from ['codex', 'cursor']
@@ -220,6 +219,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-24T03:24:02Z — verify — enqueued D4-verify-merged-2026-09-24T03
 - 2026-09-24T03:24:02Z — D4-verify-merged-2026-09-24T03 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-24T03:24:02Z — D4-verify-merged-2026-09-24T03 — claimed by driver (agent cursor)
+- 2026-09-24T03:29:23Z — D4-verify-merged-2026-09-24T03 — done — cursor produced 732 words at artifacts/verification/D4-verify-merged-2026-09-24T03.md in 293s
 
 ## Questions
 

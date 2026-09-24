@@ -1,0 +1,326 @@
+diff --git a/frontend/src/components/budget/TripPricesPanel.test.tsx b/frontend/src/components/budget/TripPricesPanel.test.tsx
+index 1b0cc6db5..5a0c56dd2 100644
+--- a/frontend/src/components/budget/TripPricesPanel.test.tsx
++++ b/frontend/src/components/budget/TripPricesPanel.test.tsx
+@@ -64,7 +64,7 @@ describe("TripPricesPanel", () => {
+     fireEvent.change(screen.getByLabelText("Where the Flights and ground travel figure came from"), {
+       target: { value: "United.com" },
+     });
+-    fireEvent.click(screen.getAllByRole("button", { name: "Save" })[0]!);
++    fireEvent.click(screen.getByRole("button", { name: "Save Flights and ground travel" }));
+ 
+     await waitFor(() => {
+       expect(onSave).toHaveBeenCalledWith("transport", 486, "United.com", {
+@@ -93,7 +93,7 @@ describe("TripPricesPanel", () => {
+     const onSave = vi.fn();
+     render(<TripPricesPanel prices={PRICED} busy={false} errorMessage={null} onSave={onSave} />);
+ 
+-    fireEvent.click(screen.getByRole("button", { name: "Remove" }));
++    fireEvent.click(screen.getByRole("button", { name: "Remove Flights and ground travel" }));
+ 
+     await waitFor(() => {
+       // null withdraws; 0 would assert the leg is free, which nobody said.
+@@ -106,7 +106,7 @@ describe("TripPricesPanel", () => {
+     render(<TripPricesPanel prices={PRICED} busy={false} errorMessage={null} onSave={onSave} />);
+ 
+     fireEvent.change(screen.getByLabelText("Flights and ground travel"), { target: { value: "" } });
+-    fireEvent.click(screen.getByRole("button", { name: "Update" }));
++    fireEvent.click(screen.getByRole("button", { name: "Update Flights and ground travel" }));
+ 
+     await waitFor(() => {
+       expect(onSave).toHaveBeenCalledWith("transport", null, "United.com", {
+@@ -133,7 +133,7 @@ describe("TripPricesPanel", () => {
+     );
+     fireEvent.change(screen.getByLabelText("Cabin booked"), { target: { value: "economy" } });
+     fireEvent.change(screen.getByLabelText("Longest flight, in hours"), { target: { value: "4.5" } });
+-    fireEvent.click(screen.getAllByRole("button", { name: "Save" })[0]!);
++    fireEvent.click(screen.getByRole("button", { name: "Save Flights and ground travel" }));
+ 
+     await waitFor(() => {
+       expect(onSave).toHaveBeenCalledWith("transport", 486, "", {
+@@ -149,4 +149,29 @@ describe("TripPricesPanel", () => {
+     render(<TripPricesPanel prices={EMPTY} busy={false} errorMessage={null} onSave={vi.fn()} />);
+     expect(screen.getAllByLabelText("Lowest fare you found for the same journey")).toHaveLength(1);
+   });
++
++  it("names every save button after its item, so a screen reader can tell them apart (issue 1843)", () => {
++    const four: TripPricesState = {
++      ...EMPTY,
++      components: [
++        ...EMPTY.components,
++        { component: "activities", label: "Meals and activities", currency: "USD", typical_amount: null, note: "", price_source: null },
++        { component: "other", label: "Other costs", currency: "USD", typical_amount: null, note: "", price_source: null },
++      ],
++      unpriced_component_count: 4,
++    };
++    render(<TripPricesPanel prices={four} busy={false} errorMessage={null} onSave={vi.fn()} />);
++
++    const names = screen
++      .getAllByRole("button")
++      .map((button) => button.getAttribute("aria-label") ?? button.textContent ?? "");
++    expect(names).toEqual([
++      "Save Flights and ground travel",
++      "Save Accommodation",
++      "Save Meals and activities",
++      "Save Other costs",
++    ]);
++    expect(screen.queryByRole("button", { name: "Save" })).toBeNull();
++    expect(screen.getByTestId("trip-price-source-other")).toHaveTextContent("Enter 0 if there are none");
++  });
+ });
+diff --git a/frontend/src/components/budget/TripPricesPanel.tsx b/frontend/src/components/budget/TripPricesPanel.tsx
+index 3a9c5f93e..a13a6bfea 100644
+--- a/frontend/src/components/budget/TripPricesPanel.tsx
++++ b/frontend/src/components/budget/TripPricesPanel.tsx
+@@ -125,7 +125,7 @@ export function TripPricesPanel({ prices, busy, errorMessage, onSave }: TripPric
+         </div>
+       </dl>
+ 
+-      <ul className="focus-area-list trip-price-list">
++      <ul className="trip-price-list">
+         {prices.components.map((component) => {
+           const attribution = sourceLine(component);
+           return (
+@@ -163,6 +163,7 @@ export function TripPricesPanel({ prices, busy, errorMessage, onSave }: TripPric
+               <button
+                 type="button"
+                 disabled={busy}
++                aria-label={`${component.typical_amount == null ? "Save" : "Update"} ${component.label}`}
+                 onClick={() => {
+                   const raw = (drafts[component.component] ?? "").trim();
+                   const lowestRaw = lowestFare.trim();
+@@ -188,6 +189,7 @@ export function TripPricesPanel({ prices, busy, errorMessage, onSave }: TripPric
+                   type="button"
+                   className="link-button"
+                   disabled={busy}
++                  aria-label={`Remove ${component.label}`}
+                   onClick={() => onSave(component.component, null, "")}
+                 >
+                   Remove
+@@ -254,7 +256,10 @@ export function TripPricesPanel({ prices, busy, errorMessage, onSave }: TripPric
+                 </div>
+               ) : null}
+               <p className="field-hint" data-testid={`trip-price-source-${component.component}`}>
+-                {attribution ?? "No source has priced this yet."}
++                {attribution ??
++                  (component.component === "other"
++                    ? "No source has priced this yet. Enter 0 if there are none, so the trip counts as fully priced."
++                    : "No source has priced this yet.")}
+               </p>
+             </li>
+           );
+diff --git a/frontend/src/components/budget/WorkspaceBudgetPanel.test.tsx b/frontend/src/components/budget/WorkspaceBudgetPanel.test.tsx
+index c641cf877..174d80381 100644
+--- a/frontend/src/components/budget/WorkspaceBudgetPanel.test.tsx
++++ b/frontend/src/components/budget/WorkspaceBudgetPanel.test.tsx
+@@ -1,10 +1,14 @@
+-import { render, screen } from "@testing-library/react";
++import { cleanup, render, screen } from "@testing-library/react";
+ import userEvent from "@testing-library/user-event";
+-import { describe, expect, it, vi } from "vitest";
++import { afterEach, describe, expect, it, vi } from "vitest";
+ 
+ import type { BudgetWorkspaceState } from "../../api/workspace";
+ import { WorkspaceBudgetPanel } from "./WorkspaceBudgetPanel";
+ 
++afterEach(() => {
++  cleanup();
++});
++
+ const budgetState: BudgetWorkspaceState = {
+   budget_plan: {
+     budget_plan_id: "budget:kyoto",
+@@ -101,4 +105,38 @@ describe("WorkspaceBudgetPanel", () => {
+ 
+     expect(title).toHaveValue("Unsaved Kyoto edits");
+   });
++
++  it("never prints a negative zero, and says when no budget is set (issue 1843)", () => {
++    const props = {
++      tripMode: "business",
++      busyLabel: null,
++      errorMessage: null,
++      onSaveBudget: vi.fn(),
++      onRecordSpend: vi.fn(),
++    };
++    const unset: BudgetWorkspaceState = {
++      ...budgetState,
++      budget_plan: null,
++      summary: {
++        ...budgetState.summary,
++        has_budget_plan: false,
++        planned_total: 0,
++        remaining_total: -0,
++        category_summaries: [],
++      },
++    };
++    const view = render(<WorkspaceBudgetPanel budgetState={unset} {...props} />);
++    expect(view.container.textContent ?? "").not.toMatch(/-\$0/);
++    expect(screen.getByTestId("budget-remaining-total")).toHaveTextContent("No budget set");
++    view.unmount();
++
++    const drained: BudgetWorkspaceState = {
++      ...budgetState,
++      summary: { ...budgetState.summary, remaining_total: -0.001 },
++    };
++    const second = render(<WorkspaceBudgetPanel budgetState={drained} {...props} />);
++    expect(screen.getByTestId("budget-remaining-total")).toHaveTextContent("$0.00");
++    expect(second.container.textContent ?? "").not.toMatch(/-\$0/);
++    expect(second.container.textContent ?? "").not.toMatch(/should feed later planner/);
++  });
+ });
+diff --git a/frontend/src/components/budget/WorkspaceBudgetPanel.tsx b/frontend/src/components/budget/WorkspaceBudgetPanel.tsx
+index 5bab3007e..58f0d2bb3 100644
+--- a/frontend/src/components/budget/WorkspaceBudgetPanel.tsx
++++ b/frontend/src/components/budget/WorkspaceBudgetPanel.tsx
+@@ -37,12 +37,14 @@ function titleCaseCategory(categoryKey: string): string {
+ }
+ 
+ function formatCurrency(amount: number, currency: string): string {
++  // Round first and fold negative zero, so an empty budget never reads "-$0.00" (issue 1843).
++  const rounded = Math.round(amount * 100) / 100;
+   return new Intl.NumberFormat("en-US", {
+     style: "currency",
+     currency,
+     minimumFractionDigits: 2,
+     maximumFractionDigits: 2,
+-  }).format(amount);
++  }).format(rounded === 0 ? 0 : rounded);
+ }
+ 
+ function getActiveScenario(budgetState: BudgetWorkspaceState) {
+@@ -255,11 +257,12 @@ export function WorkspaceBudgetPanel({
+ 
+   return (
+     <section className="status-card budget-panel-card">
+-      <p className="status-label">Budget state</p>
++      <p className="status-label">Your own budget</p>
+       <h2>Budget vs actual</h2>
+       <p className="muted-copy">
+-        Planned caps, actual spend drift, and remaining category headroom should feed later planner tradeoff
+-        reasoning and in-trip replans.
++        Optional. Set a cap per category and record what you actually spend during or after the
++        trip. The approval packet itemises the prices above, and shows a cap you set here as
++        your own budget.
+       </p>
+       {busyLabel ? <p className="muted-copy">{busyLabel}</p> : null}
+       {errorMessage ? <p className="planner-inline-error">{errorMessage}</p> : null}
+@@ -269,15 +272,27 @@ export function WorkspaceBudgetPanel({
+       <dl className="budget-summary-grid">
+         <div>
+           <dt>Planned total</dt>
+-          <dd>{formatCurrency(budgetState.summary.planned_total, budgetState.summary.currency)}</dd>
++          <dd data-testid="budget-planned-total">
++            {budgetState.summary.has_budget_plan
++              ? formatCurrency(budgetState.summary.planned_total, budgetState.summary.currency)
++              : "No budget set"}
++          </dd>
+         </div>
+         <div>
+           <dt>Actual total</dt>
+-          <dd>{formatCurrency(budgetState.summary.actual_total, budgetState.summary.currency)}</dd>
++          <dd>
++            {budgetState.summary.spend_event_count > 0
++              ? formatCurrency(budgetState.summary.actual_total, budgetState.summary.currency)
++              : "Nothing recorded"}
++          </dd>
+         </div>
+         <div>
+           <dt>Remaining</dt>
+-          <dd>{formatCurrency(budgetState.summary.remaining_total, budgetState.summary.currency)}</dd>
++          <dd data-testid="budget-remaining-total">
++            {budgetState.summary.has_budget_plan
++              ? formatCurrency(budgetState.summary.remaining_total, budgetState.summary.currency)
++              : "No budget set"}
++          </dd>
+         </div>
+         <div>
+           <dt>Spend events</dt>
+diff --git a/frontend/src/routes/WorkspacePage.test.tsx b/frontend/src/routes/WorkspacePage.test.tsx
+index 8c3d6cb93..2cbfaf14c 100644
+--- a/frontend/src/routes/WorkspacePage.test.tsx
++++ b/frontend/src/routes/WorkspacePage.test.tsx
+@@ -962,6 +962,12 @@ describe("WorkspacePage", () => {
+     const user = userEvent.setup();
+     await user.click(screen.getByRole("tab", { name: "Budget" }));
+     expect(screen.getByRole("heading", { name: "Budget vs actual" })).toBeInTheDocument();
++    // The optional tracker sits behind a disclosure, open only once the traveller uses it
++    // (issue 1843), so it is not read as a second trip total.
++    const tracker = screen.getByTestId("budget-tracking-disclosure");
++    const summary = workspacePayload.budget_state.summary;
++    expect(tracker.hasAttribute("open")).toBe(summary.has_budget_plan || summary.spend_event_count > 0);
++    expect(tracker).toHaveTextContent("Track your own budget and actual spend (optional)");
+ 
+     await user.click(screen.getByRole("tab", { name: "Plan" }));
+     expect(screen.queryByRole("heading", { name: "Budget vs actual" })).not.toBeInTheDocument();
+diff --git a/frontend/src/routes/WorkspacePage.tsx b/frontend/src/routes/WorkspacePage.tsx
+index 93018e849..095273098 100644
+--- a/frontend/src/routes/WorkspacePage.tsx
++++ b/frontend/src/routes/WorkspacePage.tsx
+@@ -2696,14 +2696,26 @@ function WorkspacePageContent({
+             onSave={handleTripPriceSave}
+           />
+           {panelVisibility.showBudgetPanel ? (
+-            <WorkspaceBudgetPanel
+-              budgetState={currentWorkspace.budget_state}
+-              tripMode={trip.mode}
+-              busyLabel={budgetBusyLabel}
+-              errorMessage={budgetError}
+-              onSaveBudget={handleBudgetSave}
+-              onRecordSpend={handleSpendRecord}
+-            />
++            // One money panel leads: the prices the packet uses. The optional budget tracker
++            // sits behind a disclosure so the two are not read as rival totals (issue 1843).
++            <details
++              className="budget-tracking-disclosure"
++              data-testid="budget-tracking-disclosure"
++              open={
++                currentWorkspace.budget_state.summary.has_budget_plan ||
++                currentWorkspace.budget_state.summary.spend_event_count > 0
++              }
++            >
++              <summary>Track your own budget and actual spend (optional)</summary>
++              <WorkspaceBudgetPanel
++                budgetState={currentWorkspace.budget_state}
++                tripMode={trip.mode}
++                busyLabel={budgetBusyLabel}
++                errorMessage={budgetError}
++                onSaveBudget={handleBudgetSave}
++                onRecordSpend={handleSpendRecord}
++              />
++            </details>
+           ) : (
+             <section className={STATUS_CARD_CLASS}>
+               <p className="status-label">Budget</p>
+diff --git a/frontend/src/styles.css b/frontend/src/styles.css
+index 229a87f38..f10ef263f 100644
+--- a/frontend/src/styles.css
++++ b/frontend/src/styles.css
+@@ -775,7 +775,13 @@ a {
+   border-radius: 999px;
+   width: fit-content;
+   background: rgba(132, 86, 35, 0.12);
+-  text-transform: capitalize;
++}
++
++/* Sentence case for chips built from keys ("route burden" -> "Route burden"). The old
++   text-transform: capitalize turned every sentence in these lists into Title Case
++   ("No Source Has Priced This Yet.", "Transfer(S)"), issue 1843. */
++.focus-area-list li::first-letter {
++  text-transform: uppercase;
+ }
+ 
+ .muted-copy {
+@@ -2049,6 +2055,12 @@ a {
+ }
+ 
+ /* Trip cost entry: one row per component, collapsing to stacked fields on narrow screens. */
++.budget-tracking-disclosure > summary {
++  cursor: pointer;
++  font-weight: 600;
++  margin: var(--space-4) 0 var(--space-2);
++}
++
+ .trip-price-list {
+   display: grid;
+   gap: 1rem;

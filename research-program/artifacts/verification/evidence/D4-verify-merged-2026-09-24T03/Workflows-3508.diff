@@ -1,0 +1,429 @@
+diff --git a/.github/sync-manifest.yml b/.github/sync-manifest.yml
+index dc59a450b..72ca4a5ad 100644
+--- a/.github/sync-manifest.yml
++++ b/.github/sync-manifest.yml
+@@ -836,6 +836,10 @@ docs:
+     target: docs/CODEX_TOKEN_REFRESH.md
+     description: "Codex OAuth token refresh guide"
+ 
++  - source: docs/TARGET_WORK_ENVIRONMENT.md
++    target: docs/TARGET_WORK_ENVIRONMENT.md
++    description: "Confirmed target work-environment capabilities and blocked delivery shapes"
++
+   - source: AGENTS.md
+     target: AGENTS.md
+     description: "Context file for agents and coding assistants"
+diff --git a/config/source_of_truth_docs.yml b/config/source_of_truth_docs.yml
+index c5e8539bc..f510dc5dd 100644
+--- a/config/source_of_truth_docs.yml
++++ b/config/source_of_truth_docs.yml
+@@ -1,5 +1,5 @@
+ # Source-of-truth docs that the weekly doc-drift scanner classifies for drift
+-# against current implementation. Issue #2090.
++# against current implementation.
+ #
+ # Scope: docs cited from CLAUDE.md / AGENTS.md / README.md as authoritative
+ # operational entry points. Design proposals, archives, and historical
+@@ -39,6 +39,8 @@ repos:
+         focus: operational overview and execution entry points
+       - path: AGENTS.md
+         focus: agent runtime constraints and repo-specific guardrails
++      - path: docs/TARGET_WORK_ENVIRONMENT.md
++        focus: confirmed work-environment delivery constraints for fleet design
+   stranske/Counter_Risk:
+     local_path: Counter_Risk
+     docs:
+@@ -46,6 +48,13 @@ repos:
+         focus: operational overview and execution entry points
+       - path: AGENTS.md
+         focus: agent runtime constraints and repo-specific guardrails
++      - path: docs/TARGET_WORK_ENVIRONMENT.md
++        focus: confirmed work-environment delivery constraints for fleet design
++  stranske/Fine-Art-Archive:
++    local_path: Fine-Art-Archive
++    docs:
++      - path: docs/TARGET_WORK_ENVIRONMENT.md
++        focus: confirmed work-environment delivery constraints for fleet design
+   stranske/Inv-Man-Intake:
+     local_path: Inv-Man-Intake
+     docs:
+@@ -53,6 +62,8 @@ repos:
+         focus: operational overview and execution entry points
+       - path: AGENTS.md
+         focus: agent runtime constraints and repo-specific guardrails
++      - path: docs/TARGET_WORK_ENVIRONMENT.md
++        focus: confirmed work-environment delivery constraints for fleet design
+   stranske/Manager-Database:
+     local_path: Manager-Database
+     docs:
+@@ -60,6 +71,8 @@ repos:
+         focus: operational overview and execution entry points
+       - path: AGENTS.md
+         focus: agent runtime constraints and repo-specific guardrails
++      - path: docs/TARGET_WORK_ENVIRONMENT.md
++        focus: confirmed work-environment delivery constraints for fleet design
+   stranske/Pension-Data:
+     local_path: Pension-Data
+     docs:
+@@ -67,6 +80,13 @@ repos:
+         focus: operational overview and execution entry points
+       - path: AGENTS.md
+         focus: agent runtime constraints and repo-specific guardrails
++      - path: docs/TARGET_WORK_ENVIRONMENT.md
++        focus: confirmed work-environment delivery constraints for fleet design
++  stranske/Orchestrator:
++    local_path: Orchestrator
++    docs:
++      - path: docs/TARGET_WORK_ENVIRONMENT.md
++        focus: confirmed work-environment delivery constraints for fleet design
+   stranske/Portable-Alpha-Extension-Model:
+     local_path: Portable-Alpha-Extension-Model
+     docs:
+@@ -74,6 +94,13 @@ repos:
+         focus: operational overview and execution entry points
+       - path: AGENTS.md
+         focus: agent runtime constraints and repo-specific guardrails
++      - path: docs/TARGET_WORK_ENVIRONMENT.md
++        focus: confirmed work-environment delivery constraints for fleet design
++  stranske/Ready:
++    local_path: Ready
++    docs:
++      - path: docs/TARGET_WORK_ENVIRONMENT.md
++        focus: confirmed work-environment delivery constraints for fleet design
+   stranske/Template:
+     local_path: Template
+     docs:
+@@ -81,6 +108,8 @@ repos:
+         focus: template contract and consumer defaults
+       - path: AGENTS.md
+         focus: agent runtime constraints and repo-specific guardrails
++      - path: docs/TARGET_WORK_ENVIRONMENT.md
++        focus: confirmed work-environment delivery constraints for fleet design
+   stranske/Travel-Plan-Permission:
+     local_path: Travel-Plan-Permission
+     docs:
+@@ -88,6 +117,8 @@ repos:
+         focus: operational overview and execution entry points
+       - path: AGENTS.md
+         focus: agent runtime constraints and repo-specific guardrails
++      - path: docs/TARGET_WORK_ENVIRONMENT.md
++        focus: confirmed work-environment delivery constraints for fleet design
+   stranske/Trend_Model_Project:
+     local_path: Trend_Model_Project
+     docs:
+@@ -95,6 +126,8 @@ repos:
+         focus: operational overview and execution entry points
+       - path: Agents.md
+         focus: agent runtime constraints and repo-specific guardrails
++      - path: docs/TARGET_WORK_ENVIRONMENT.md
++        focus: confirmed work-environment delivery constraints for fleet design
+   stranske/tim-bot:
+     local_path: tim-bot
+     docs:
+@@ -109,6 +142,8 @@ repos:
+         focus: operational overview and execution entry points
+       - path: AGENTS.md
+         focus: agent runtime constraints and repo-specific guardrails
++      - path: docs/TARGET_WORK_ENVIRONMENT.md
++        focus: confirmed work-environment delivery constraints for fleet design
+   stranske/Workflows-Integration-Tests:
+     local_path: Workflows-Integration-Tests
+     docs:
+@@ -160,18 +195,26 @@ repos:
+         focus: design plan; Phase 1 Minimum Core, Minimum Demo Criterion, Milestone 0-4 deliverables and acceptance criteria, SchedulerEvidenceAdapter, ownership-boundary enforcement, export/import contract
+       - path: docs/product/early-design-decisions.md
+         focus: segmented decision queue; especially Segments 2 (mastery), 7 (stack), 8 (sustainability), 9 (privacy), 10 (LLM cost/routing)
++      - path: docs/TARGET_WORK_ENVIRONMENT.md
++        focus: confirmed work-environment delivery constraints for fleet design
+   stranske/Doc-Lineage:
+     local_path: Doc-Lineage
+     docs:
+       - path: README.md
+         focus: intent, scope and interoperability commitments of the document-lineage engine
++      - path: docs/TARGET_WORK_ENVIRONMENT.md
++        focus: confirmed work-environment delivery constraints for fleet design
+   stranske/Deliverable-Render:
+     local_path: Deliverable-Render
+     docs:
+       - path: README.md
+         focus: renderer scope and the environment constraints the outputs must respect
++      - path: docs/TARGET_WORK_ENVIRONMENT.md
++        focus: confirmed work-environment delivery constraints for fleet design
+   stranske/Manager-Mosaic:
+     local_path: Manager-Mosaic
+     docs:
+       - path: README.md
+         focus: the fact, evidence and thesis model and how it joins the document tools
++      - path: docs/TARGET_WORK_ENVIRONMENT.md
++        focus: confirmed work-environment delivery constraints for fleet design
+diff --git a/docs/INTEGRATION_GUIDE.md b/docs/INTEGRATION_GUIDE.md
+index 66d10d25b..58e4b150d 100644
+--- a/docs/INTEGRATION_GUIDE.md
++++ b/docs/INTEGRATION_GUIDE.md
+@@ -835,9 +835,11 @@ curl -sL https://raw.githubusercontent.com/stranske/Workflows/main/templates/con
+ curl -sL https://raw.githubusercontent.com/stranske/Workflows/main/templates/consumer-repo/.github/workflows/autofix.yml -o .github/workflows/autofix.yml
+ curl -sL https://raw.githubusercontent.com/stranske/Workflows/main/templates/consumer-repo/.github/workflows/pr-00-gate.yml -o .github/workflows/pr-00-gate.yml
+ 
+-# Root agent guidance files synced through .github/sync-manifest.yml
++# Root agent guidance and target-environment contract synced through .github/sync-manifest.yml
++mkdir -p docs
+ curl -sL https://raw.githubusercontent.com/stranske/Workflows/main/templates/consumer-repo/AGENTS.md -o AGENTS.md
+ curl -sL https://raw.githubusercontent.com/stranske/Workflows/main/templates/consumer-repo/CLAUDE.md -o CLAUDE.md
++curl -sL https://raw.githubusercontent.com/stranske/Workflows/main/templates/consumer-repo/docs/TARGET_WORK_ENVIRONMENT.md -o docs/TARGET_WORK_ENVIRONMENT.md
+ 
+ # These examples track the live Workflows source via /main/, which is the
+ # supported pin. For a one-off reproducible bootstrap you may replace /main/
+@@ -858,7 +860,7 @@ curl -sL https://raw.githubusercontent.com/stranske/Workflows/main/templates/con
+ | `pr-00-gate.yml` | Required PR gate and summary status | PR |
+ | `cross-repo-smoke.yml` | Optional cross-repo integration smoke (host + pinned dependency checkout) | push, PR, manual (opt-in via `CROSS_REPO_SMOKE_*` vars) |
+ | `autofix-versions.env` | Pins tool versions | N/A |
+-| `AGENTS.md` / `CLAUDE.md` | Repo-local agent guidance synced from Workflows | N/A |
++| `AGENTS.md` / `CLAUDE.md` / `docs/TARGET_WORK_ENVIRONMENT.md` | Repo-local agent guidance and delivery constraints synced from Workflows | N/A |
+ 
+ ### Consolidated Workflow Migration (Notice Period)
+ 
+diff --git a/renovate-presets/consumer-managed-paths.json b/renovate-presets/consumer-managed-paths.json
+index 3b8250876..b106d03ae 100644
+--- a/renovate-presets/consumer-managed-paths.json
++++ b/renovate-presets/consumer-managed-paths.json
+@@ -3,7 +3,7 @@
+   "description": "GENERATED by scripts/generate_consumer_renovate_ownership.py -- do not edit by hand. Disables Renovate dependency extraction for the paths that maint-68-sync-consumer-repos.yml overwrites from .github/sync-manifest.yml, and only in the consumer repos where that overwrite actually applies. Without this boundary a consumer's Renovate opens PRs against centrally-copied files (Inv-Man-Intake#838, Manager-Database#1347) that the next sync silently reverts. Renovate stays enabled for create-only/skipped paths the consumer owns, and for every canonical source file in stranske/Workflows, which is the sync source rather than a consumer. Regenerate with `python scripts/generate_consumer_renovate_ownership.py`; `--check` fails on drift and runs in scripts/dev_check.sh.",
+   "packageRules": [
+     {
+-      "description": "Maint 68 overwrites these 225 manifest-managed paths in every registered consumer; Renovate edits there are reverted on the next sync.",
++      "description": "Maint 68 overwrites these 226 manifest-managed paths in every registered consumer; Renovate edits there are reverted on the next sync.",
+       "matchRepositories": [
+         "stranske/Collab-Admin",
+         "stranske/Counter_Risk",
+@@ -167,6 +167,7 @@
+         "docs/LABELS.md",
+         "docs/MODEL_SELECTION_POLICY.md",
+         "docs/SETUP_CHECKLIST.md",
++        "docs/TARGET_WORK_ENVIRONMENT.md",
+         "docs/contracts/agent-runner-output.md",
+         "docs/contracts/capability-bundle-v1.md",
+         "docs/contracts/document-identity-conventions.md",
+diff --git a/templates/consumer-repo/AGENTS.md b/templates/consumer-repo/AGENTS.md
+index d36705ded..e54e41ed4 100644
+--- a/templates/consumer-repo/AGENTS.md
++++ b/templates/consumer-repo/AGENTS.md
+@@ -6,6 +6,10 @@
+ 
+ Your job is correct judgment, not agreement. Evaluate claims, designs, and instructions on the merits before agreeing — including the orchestrator's and the user's. When something is wrong, weaker than an alternative, or missing, say so plainly and lead with the strongest objection. Separate "this is correct" from "I'll do as asked." State your confidence and what would change your mind; flag what you are unsure of. Do not soften a real problem to be agreeable, and do not manufacture disagreement to seem rigorous — calibrated dissent, not maximal.
+ 
++## Target Work Environment
++
++Before proposing a delivery shape, read `docs/TARGET_WORK_ENVIRONMENT.md`. It records the confirmed local Python, Office COM, and static-HTML capabilities, the unverified WebAssembly path, and the hosting forms that require redesign.
++
+ ## This Is A Consumer Repo
+ 
+ Most workflow logic for this repository lives in `stranske/Workflows`. The consumer repo should only carry repo-specific configuration unless it has an explicitly documented exception.
+diff --git a/templates/consumer-repo/CLAUDE.md b/templates/consumer-repo/CLAUDE.md
+index 8e375c851..fa64fb4f2 100644
+--- a/templates/consumer-repo/CLAUDE.md
++++ b/templates/consumer-repo/CLAUDE.md
+@@ -6,6 +6,10 @@
+ 
+ Your job is correct judgment, not agreement. Evaluate claims, designs, and instructions on the merits before agreeing — including the orchestrator's and the user's. When something is wrong, weaker than an alternative, or missing, say so plainly and lead with the strongest objection. Separate "this is correct" from "I'll do as asked." State your confidence and what would change your mind; flag what you are unsure of. Do not soften a real problem to be agreeable, and do not manufacture disagreement to seem rigorous — calibrated dissent, not maximal.
+ 
++## Target Work Environment
++
++Before proposing a delivery shape, read `docs/TARGET_WORK_ENVIRONMENT.md`. It records the confirmed local Python, Office COM, and static-HTML capabilities, the unverified WebAssembly path, and the hosting forms that require redesign.
++
+ ## This Is A Consumer Repo
+ 
+ Most workflow logic for this repository lives in `stranske/Workflows`. The consumer repo should only carry repo-specific configuration unless it has an explicitly documented exception.
+diff --git a/templates/consumer-repo/config/source_of_truth_docs.yml b/templates/consumer-repo/config/source_of_truth_docs.yml
+index a16824382..cd507a01f 100644
+--- a/templates/consumer-repo/config/source_of_truth_docs.yml
++++ b/templates/consumer-repo/config/source_of_truth_docs.yml
+@@ -10,3 +10,5 @@ consumer:
+     - path: AGENTS.md
+       case_insensitive: true
+       focus: agent runtime constraints and repo-specific guardrails
++    - path: docs/TARGET_WORK_ENVIRONMENT.md
++      focus: confirmed work-environment delivery constraints for fleet design
+diff --git a/templates/consumer-repo/docs/TARGET_WORK_ENVIRONMENT.md b/templates/consumer-repo/docs/TARGET_WORK_ENVIRONMENT.md
+new file mode 100644
+index 000000000..a99405ef8
+--- /dev/null
++++ b/templates/consumer-repo/docs/TARGET_WORK_ENVIRONMENT.md
+@@ -0,0 +1,24 @@
++# Target Work Environment
++
++Read this before proposing a delivery shape for a fleet consumer. These constraints describe the confirmed target work environment; they are not a general assessment of what the repositories can run in CI or in a developer environment.
++
++## Confirmed
++
++- Local Python is available through a non-`PATH`, application-bundled interpreter. Do not assume that the operating system's `python` command resolves to it.
++- Excel macros and Word automation work through Office COM. Direct `.docx` generation is also proven.
++- Static HTML/CSS/JavaScript opened as a local file works, including deep links from the page to specific local source-document pages.
++
++## Unverified
++
++- WebAssembly, including Pyodide or stlite delivery, is unverified. Ordinary browser JavaScript working locally is not evidence that a `.wasm` payload works in the target environment.
++- Conventional installers and administrator-dependent setup are unverified. Do not make them a prerequisite without a documented live test.
++
++## Blocked Without Redesign
++
++The authoritative environment response records the current hosting boundary:
++
++> There is no server-hosted, database-backed application running anywhere I've seen.
++
++Treat internal web services, hosted application servers, and database-backed services as blocked delivery shapes until the hosting gap is explicitly resolved. Prefer local scripts, Office artifacts, or self-contained static HTML when those forms satisfy the product need.
++
++Source: [`stranske/Ready` work-environment response, sections A, E, and F](https://github.com/stranske/Ready/blob/main/research-program/artifacts/work-bundle/INFORMATION-REQUEST-RESPONSE.md).
+diff --git a/tests/docs/test_integration_guide_current_defaults.py b/tests/docs/test_integration_guide_current_defaults.py
+index c145dff1d..d0dc69687 100644
+--- a/tests/docs/test_integration_guide_current_defaults.py
++++ b/tests/docs/test_integration_guide_current_defaults.py
+@@ -31,6 +31,7 @@ def test_integration_guide_quick_setup_uses_current_consumer_defaults() -> None:
+         "pr-00-gate.yml",
+         "AGENTS.md",
+         "CLAUDE.md",
++        "docs/TARGET_WORK_ENVIRONMENT.md",
+     ]
+ 
+     for filename in expected_defaults:
+@@ -43,6 +44,13 @@ def test_integration_guide_quick_setup_uses_current_consumer_defaults() -> None:
+     for legacy_entry in legacy_defaults:
+         assert legacy_entry not in section
+ 
++    assert "mkdir -p docs" in section
++    assert (
++        "templates/consumer-repo/docs/TARGET_WORK_ENVIRONMENT.md "
++        "-o docs/TARGET_WORK_ENVIRONMENT.md"
++    ) in section
++    assert section.count("docs/TARGET_WORK_ENVIRONMENT.md") == 2
++
+ 
+ def test_integration_guide_workflow_summary_matches_agent_docs_defaults() -> None:
+     section = _workflow_summary_section()
+@@ -54,11 +62,13 @@ def test_integration_guide_workflow_summary_matches_agent_docs_defaults() -> Non
+         "pr-00-gate.yml",
+         "AGENTS.md",
+         "CLAUDE.md",
++        "docs/TARGET_WORK_ENVIRONMENT.md",
+     ]:
+         assert filename in section
+ 
+     assert "agents-orchestrator.yml" not in section
+     assert "agents-pr-meta.yml" not in section
++    assert section.count("docs/TARGET_WORK_ENVIRONMENT.md") == 1
+ 
+ 
+ def test_integration_guide_migration_table_marks_legacy_replacements() -> None:
+diff --git a/tests/scripts/test_docs_drift_fix_agent.py b/tests/scripts/test_docs_drift_fix_agent.py
+index 03399be1f..b4c5aeb13 100644
+--- a/tests/scripts/test_docs_drift_fix_agent.py
++++ b/tests/scripts/test_docs_drift_fix_agent.py
+@@ -212,6 +212,10 @@ def test_trend_config_uses_historical_agents_filename(tmp_path: Path) -> None:
+         root / "Agents.md",
+         "Read `docs/WORKFLOW_GUIDE.md` from stranske/Workflows before editing.\n",
+     )
++    _write(
++        root / "docs/TARGET_WORK_ENVIRONMENT.md",
++        "Confirmed work-environment delivery constraints.\n",
++    )
+     _write(
+         root / fix_agent.DEFAULT_DOCS_CONFIG,
+         (ROOT / fix_agent.DEFAULT_DOCS_CONFIG).read_text(encoding="utf-8"),
+@@ -220,6 +224,7 @@ def test_trend_config_uses_historical_agents_filename(tmp_path: Path) -> None:
+     assert fix_agent.default_docs_from_config(root, repo="stranske/Trend_Model_Project") == [
+         "README.md",
+         "Agents.md",
++        "docs/TARGET_WORK_ENVIRONMENT.md",
+     ]
+     assert (
+         fix_agent.build_plan(repo_root=root, repo="stranske/Trend_Model_Project")["finding_count"]
+diff --git a/tests/scripts/test_sync_manifest_compiler.py b/tests/scripts/test_sync_manifest_compiler.py
+index 9686d9aff..57a14a153 100644
+--- a/tests/scripts/test_sync_manifest_compiler.py
++++ b/tests/scripts/test_sync_manifest_compiler.py
+@@ -487,7 +487,7 @@ def test_real_manifest_compiles_every_declared_copy_entry() -> None:
+ 
+     assert plan["schema"] == PLAN_SCHEMA
+     Draft202012Validator(schema).validate(plan)
+-    assert len(plan["entries"]) == 236
++    assert len(plan["entries"]) == 237
+     assert {
+         "docs/contracts/document-identity-conventions.md",
+         "docs/contracts/document-mirror-v1.md",
+diff --git a/tests/workflows/test_target_work_environment_template.py b/tests/workflows/test_target_work_environment_template.py
+new file mode 100644
+index 000000000..2ccd73847
+--- /dev/null
++++ b/tests/workflows/test_target_work_environment_template.py
+@@ -0,0 +1,72 @@
++from pathlib import Path
++
++import yaml
++from scripts.list_registered_consumer_repos import extract_repos
++
++ROOT = Path(__file__).resolve().parents[2]
++TEMPLATE_DOC = ROOT / "templates/consumer-repo/docs/TARGET_WORK_ENVIRONMENT.md"
++DOC_PATH = "docs/TARGET_WORK_ENVIRONMENT.md"
++DOC_FOCUS = "confirmed work-environment delivery constraints for fleet design"
++
++
++def test_template_documents_hosting_block() -> None:
++    text = TEMPLATE_DOC.read_text(encoding="utf-8")
++
++    assert "## Blocked Without Redesign" in text
++    assert "no server-hosted, database-backed application" in text
++
++
++def test_webassembly_marked_unverified() -> None:
++    text = TEMPLATE_DOC.read_text(encoding="utf-8")
++
++    assert "## Unverified" in text
++    assert "WebAssembly" in text
++    assert "Pyodide" in text
++
++
++def test_template_doc_is_linked_and_manifest_managed() -> None:
++    for context_file in ("AGENTS.md", "CLAUDE.md"):
++        context = (ROOT / "templates/consumer-repo" / context_file).read_text(encoding="utf-8")
++        assert DOC_PATH in context
++
++    manifest = yaml.safe_load((ROOT / ".github/sync-manifest.yml").read_text(encoding="utf-8"))
++    matching_entries = [entry for entry in manifest["docs"] if entry.get("target") == DOC_PATH]
++    assert matching_entries == [
++        {
++            "source": DOC_PATH,
++            "target": DOC_PATH,
++            "description": "Confirmed target work-environment capabilities and blocked delivery shapes",
++        }
++    ]
++
++
++def test_every_registered_consumer_tracks_target_environment_doc() -> None:
++    local_config = yaml.safe_load(
++        (ROOT / "templates/consumer-repo/config/source_of_truth_docs.yml").read_text(
++            encoding="utf-8"
++        )
++    )
++    assert {entry["path"]: entry["focus"] for entry in local_config["consumer"]["docs"]}[
++        DOC_PATH
++    ] == DOC_FOCUS
++
++    fleet_config = yaml.safe_load(
++        (ROOT / "config/source_of_truth_docs.yml").read_text(encoding="utf-8")
++    )
++    registered = extract_repos(ROOT / ".github/workflows/maint-68-sync-consumer-repos.yml")
++
++    missing = []
++    wrong_focus = []
++    for repo in registered:
++        repo_config = fleet_config["repos"].get(repo)
++        if repo_config is None:
++            missing.append(repo)
++            continue
++        docs = {entry["path"]: entry["focus"] for entry in repo_config.get("docs", [])}
++        if DOC_PATH not in docs:
++            missing.append(repo)
++        elif docs[DOC_PATH] != DOC_FOCUS:
++            wrong_focus.append(repo)
++
++    assert not missing, f"registered consumers missing {DOC_PATH}: {missing}"
++    assert not wrong_focus, f"registered consumers with wrong focus: {wrong_focus}"

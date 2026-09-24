@@ -1,0 +1,279 @@
+diff --git a/src/lms/scheduling/api.py b/src/lms/scheduling/api.py
+index f798274e..9248eba8 100644
+--- a/src/lms/scheduling/api.py
++++ b/src/lms/scheduling/api.py
+@@ -13,6 +13,7 @@
+ from lms.learners.identity import require_learner_ownership, resolve_learner_id
+ from lms.scheduling.models import ReviewQueueItem
+ from lms.scheduling.repository import (
++    clear_remediation_queue_item,
+     complete_review_queue_item,
+     count_review_queue_for_learner,
+     create_remediation_trigger,
+@@ -128,11 +129,18 @@ def complete_review_queue_item_route(
+         session, user=current_user, settings=settings, learner_id=existing.learner_id
+     )
+     try:
+-        item = complete_review_queue_item(
+-            session,
+-            review_queue_item_id=review_queue_item_id,
+-            actor_id=current_user.id,
+-        )
++        if existing.reason_code == "remediation":
++            item = clear_remediation_queue_item(
++                session,
++                review_queue_item_id=review_queue_item_id,
++                actor_id=current_user.id,
++            )
++        else:
++            item = complete_review_queue_item(
++                session,
++                review_queue_item_id=review_queue_item_id,
++                actor_id=current_user.id,
++            )
+     except ValueError as exc:
+         session.rollback()
+         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(exc)) from exc
+diff --git a/src/lms/scheduling/repository.py b/src/lms/scheduling/repository.py
+index 16929b43..2257c473 100644
+--- a/src/lms/scheduling/repository.py
++++ b/src/lms/scheduling/repository.py
+@@ -147,6 +147,49 @@ def complete_review_queue_item(
+     return item
+ 
+ 
++def clear_remediation_queue_item(
++    session: Session,
++    *,
++    review_queue_item_id: str,
++    actor_id: str,
++) -> ReviewQueueItem | None:
++    """Mark a remediation item cleared after the learner finishes remedial work."""
++    item = session.get(ReviewQueueItem, review_queue_item_id)
++    if item is None:
++        return None
++    if item.status == "completed":
++        return item
++    if item.reason_code != "remediation":
++        raise ValueError(
++            "only remediation queue items can be cleared through the remediation drain path"
++        )
++
++    completed_at = utc_now()
++    log = dict(item.decision_log or {})
++    events = list(log.get("events", []))
++    events.append(
++        {
++            "rule": "remediation-cleared",
++            "at": completed_at.isoformat(),
++            "actor_id": actor_id,
++            "previous_status": item.status,
++        }
++    )
++    log["events"] = events
++    item.status = "completed"
++    item.updated_at = completed_at
++    item.decision_log = log
++
++    schedules = session.scalars(
++        select(ReviewSchedule).where(ReviewSchedule.review_queue_item_id == item.id)
++    )
++    for schedule in schedules:
++        schedule.schedule_state = "completed"
++        schedule.updated_at = completed_at
++    session.flush()
++    return item
++
++
+ def get_or_create_review_policy(
+     session: Session,
+     *,
+diff --git a/src/lms/ui/api.py b/src/lms/ui/api.py
+index a78cfe96..c1fec60a 100644
+--- a/src/lms/ui/api.py
++++ b/src/lms/ui/api.py
+@@ -68,6 +68,7 @@
+ from lms.prompts.repository import create_prompt, list_prompts
+ from lms.scheduling.models import ReviewPolicy, ReviewQueueItem, ReviewSchedule, SchedulerDecision
+ from lms.scheduling.repository import (
++    clear_remediation_queue_item,
+     complete_review_queue_item,
+     list_review_policies,
+     list_review_schedules,
+@@ -318,11 +319,18 @@ async def complete_review_from_ui_route(
+             detail="Review queue item not found for this learner.",
+         )
+     try:
+-        complete_review_queue_item(
+-            session,
+-            review_queue_item_id=review_queue_item_id,
+-            actor_id=current_user.id,
+-        )
++        if item.reason_code == "remediation":
++            clear_remediation_queue_item(
++                session,
++                review_queue_item_id=review_queue_item_id,
++                actor_id=current_user.id,
++            )
++        else:
++            complete_review_queue_item(
++                session,
++                review_queue_item_id=review_queue_item_id,
++                actor_id=current_user.id,
++            )
+     except ValueError as exc:
+         session.rollback()
+         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(exc)) from exc
+@@ -492,11 +500,17 @@ def _complete_review_form(item: ReviewQueueItem) -> str:
+     """Per-item completion control so the ramp can advance from the UI."""
+     if item.status != "pending":
+         return ""
++    if item.reason_code == "remediation":
++        button_label = "Clear remediation"
++    elif item.reason_code in {"due-review", "new-learning"}:
++        button_label = "Mark reviewed"
++    else:
++        return ""
+     return (
+         f'<form method="post" action="/app/learner/reviews/{escape(item.id)}/complete" '
+         'class="complete-review">'
+         f'<input type="hidden" name="learner_id" value="{escape(item.learner_id)}">'
+-        '<button type="submit">Mark reviewed</button>'
++        f'<button type="submit">{button_label}</button>'
+         "</form>"
+     )
+ 
+diff --git a/tests/scheduling/test_attempt_to_next_review_e2e.py b/tests/scheduling/test_attempt_to_next_review_e2e.py
+index a74c596f..705794bb 100644
+--- a/tests/scheduling/test_attempt_to_next_review_e2e.py
++++ b/tests/scheduling/test_attempt_to_next_review_e2e.py
+@@ -38,7 +38,7 @@
+ from lms.learners.repository import create_learner_for_user, create_learning_goal
+ from lms.main import create_app
+ from lms.prompts.repository import create_prompt, publish_prompt
+-from lms.scheduling.models import ReviewQueueItem
++from lms.scheduling.models import ReviewQueueItem, ReviewSchedule
+ from lms.sources.repository import create_source_reference
+ 
+ ACTOR = "system:e2e-loop-test"
+@@ -296,3 +296,42 @@ def test_configured_remediation_trigger_fires_on_production_path(
+     assert (
+         "remediation" in reason_codes
+     ), "a matching high-confidence-error trigger must create a remediation item"
++
++
++def test_remediation_queue_item_can_be_cleared_after_failure(
++    loop_client: tuple[TestClient, sessionmaker[Session]],
++) -> None:
++    """Failed attempts enqueue remediation items the learner can clear from the UI."""
++    client, session_factory = loop_client
++    learner_id, node_id, prompt_id = _seed_learner_node_prompt(session_factory)
++
++    payload = _attempt_payload(learner_id, node_id, prompt_id, response_text="Wrong answer.")
++    evidence = payload["evidence"]
++    assert isinstance(evidence, dict)
++    evidence.update({"correctness": False, "raw_score": 0.0, "normalized_score": 0.0})
++
++    response = client.post("/attempts", json=payload)
++    assert response.status_code == 201, response.text
++
++    items = _queue_items(session_factory, learner_id)
++    assert len(items) == 1
++    remediation = items[0]
++    assert remediation.reason_code == "remediation"
++    assert remediation.status == "pending"
++
++    completion = client.post(
++        f"/app/learner/reviews/{remediation.id}/complete",
++        data={"learner_id": learner_id},
++    )
++    assert completion.status_code == 303, completion.text
++
++    items = _queue_items(session_factory, learner_id)
++    assert len(items) == 1
++    assert items[0].status == "completed"
++    assert items[0].decision_log["events"][-1]["rule"] == "remediation-cleared"
++    with session_factory() as session:
++        schedule = session.scalar(
++            select(ReviewSchedule).where(ReviewSchedule.review_queue_item_id == remediation.id)
++        )
++        assert schedule is not None
++        assert schedule.schedule_state == "completed"
+diff --git a/tests/scheduling/test_runtime_wiring.py b/tests/scheduling/test_runtime_wiring.py
+index 33c821bd..7ef6d07c 100644
+--- a/tests/scheduling/test_runtime_wiring.py
++++ b/tests/scheduling/test_runtime_wiring.py
+@@ -182,10 +182,10 @@ def test_complete_review_queue_route_is_authorized_and_idempotent(
+         assert schedule.schedule_state == "completed"
+ 
+ 
+-def test_complete_review_queue_route_rejects_non_success_reason(
++def test_complete_review_queue_route_clears_remediation(
+     scheduling_api_client: tuple[TestClient, sessionmaker[Session], User],
+ ) -> None:
+-    """Remediation items cannot be mislabeled as successful reviews."""
++    """The completion route clears remediation items and their schedules."""
+     client, session_factory, current_user = scheduling_api_client
+     item_id = _queue_item_for_user(
+         session_factory,
+@@ -196,8 +196,19 @@ def test_complete_review_queue_route_rejects_non_success_reason(
+ 
+     response = client.post(f"/review-queue/{item_id}/complete")
+ 
+-    assert response.status_code == 409
+-    assert "due-review and new-learning" in response.json()["detail"]
++    assert response.status_code == 200, response.text
++    assert response.json()["status"] == "completed"
++
++    with session_factory() as session:
++        item = session.get(ReviewQueueItem, item_id)
++        assert item is not None
++        assert item.status == "completed"
++        assert item.decision_log["events"][-1]["rule"] == "remediation-cleared"
++        schedule = session.scalar(
++            select(ReviewSchedule).where(ReviewSchedule.review_queue_item_id == item_id)
++        )
++        assert schedule is not None
++        assert schedule.schedule_state == "completed"
+ 
+ 
+ def test_complete_review_queue_route_rejects_other_learners_item(
+diff --git a/tests/ui/test_review_schedule_surface.py b/tests/ui/test_review_schedule_surface.py
+index 144bb538..a95e6e68 100644
+--- a/tests/ui/test_review_schedule_surface.py
++++ b/tests/ui/test_review_schedule_surface.py
+@@ -70,6 +70,17 @@ def test_review_surface_shows_schedule_and_decision_reason(
+             source_attempt_id="attempt-1",
+             decision_log={"source": "test"},
+         )
++        remediation_item = ReviewQueueItem(
++            id="queue-remediation",
++            learner_id="learner-1",
++            knowledge_node_id="node-review",
++            reason_code="remediation",
++            reason_explanation="Repair the missed retrieval.",
++            due_at=now,
++            priority=0.9,
++            source_attempt_id="attempt-1",
++            decision_log={"source": "test"},
++        )
+         schedule = ReviewSchedule(
+             id="schedule-1",
+             learner_id="learner-1",
+@@ -98,7 +109,7 @@ def test_review_surface_shows_schedule_and_decision_reason(
+             support_level="none",
+             decision_log={"rule": "first_success"},
+         )
+-        session.add_all([prompt, attempt, policy, queue_item, schedule, decision])
++        session.add_all([prompt, attempt, policy, queue_item, remediation_item, schedule, decision])
+         session.commit()
+ 
+     response = client.get("/app/learner/reviews?learner_id=learner-1&daily_cap=10")
+@@ -116,6 +127,7 @@ def test_review_surface_shows_schedule_and_decision_reason(
+     # drops prompt_id — the attempt surface is the correct target.
+     assert 'href="/app/learner/attempts?learner_id=learner-1&amp;prompt_id=prompt-review"' in html
+     assert "Mark reviewed" in html
++    assert "Clear remediation" in html
+     assert "attempt_id=attempt-1" not in html
+     assert 'data-action="pause-review" disabled' in html
+     assert 'name="viewport"' in html

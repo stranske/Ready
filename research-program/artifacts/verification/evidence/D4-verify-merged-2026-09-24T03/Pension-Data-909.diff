@@ -1,0 +1,325 @@
+diff --git a/src/pension_data/harvest/__init__.py b/src/pension_data/harvest/__init__.py
+index 28ff16f3..bb2dc717 100644
+--- a/src/pension_data/harvest/__init__.py
++++ b/src/pension_data/harvest/__init__.py
+@@ -1,13 +1,17 @@
+-"""Public-document harvesting helpers."""
++"""Public-document harvesting helpers and offline source adapters."""
+ 
+ from pension_data.harvest.calpers_ic import (
+     CalpersICDocument,
+     build_public_doc_manifest,
+     parse_calpers_ic_page,
+ )
++from pension_data.harvest.ncsr_sample import NCSRFiling, NCSRSampleIngest, ingest_ncsr_sample
+ 
+ __all__ = [
+     "CalpersICDocument",
++    "NCSRFiling",
++    "NCSRSampleIngest",
+     "build_public_doc_manifest",
++    "ingest_ncsr_sample",
+     "parse_calpers_ic_page",
+ ]
+diff --git a/src/pension_data/harvest/ncsr_sample.py b/src/pension_data/harvest/ncsr_sample.py
+new file mode 100644
+index 00000000..4abfbb35
+--- /dev/null
++++ b/src/pension_data/harvest/ncsr_sample.py
+@@ -0,0 +1,167 @@
++"""Offline ingest for one recorded-shape SEC N-CSR filing sample."""
++
++from __future__ import annotations
++
++import hashlib
++import json
++import re
++from collections.abc import Mapping
++from dataclasses import dataclass
++from datetime import date
++from pathlib import Path, PurePosixPath
++from urllib.parse import urlparse
++
++_ACCESSION_RE = re.compile(r"^[0-9]{10}-[0-9]{2}-[0-9]{6}$")
++
++FORM_NCSR = "N-CSR"
++
++
++@dataclass(frozen=True, slots=True)
++class NCSRFiling:
++    """Validated metadata for one SEC N-CSR filing."""
++
++    accession_number: str
++    cik: str
++    registrant_name: str
++    filing_date: str
++    report_date: str
++    primary_document: str
++    source_url: str
++
++
++@dataclass(frozen=True, slots=True)
++class NCSRSampleIngest:
++    """Parsed filing metadata and its artifact-manifest registration."""
++
++    filing: NCSRFiling
++    manifest: dict[str, object]
++
++
++def ingest_ncsr_sample(filing_path: str | Path, *, run_id: str) -> NCSRSampleIngest:
++    """Read one offline N-CSR sample and register it in ``artifact-manifest/v1``."""
++    normalized_run_id = run_id.strip()
++    if not normalized_run_id:
++        raise ValueError("run_id must be non-empty")
++
++    path = Path(filing_path)
++    content = path.read_bytes()
++    if not content:
++        raise ValueError("N-CSR sample is empty")
++    try:
++        raw_payload: object = json.loads(content)
++    except json.JSONDecodeError as exc:
++        raise ValueError(f"N-CSR sample is not valid JSON: {exc}") from exc
++    if not isinstance(raw_payload, dict):
++        raise ValueError("N-CSR sample must be a JSON object")
++
++    payload: Mapping[str, object] = raw_payload
++    form = _required_text(payload, "form")
++    if form != FORM_NCSR:
++        raise ValueError(f"expected form {FORM_NCSR}, got {form}")
++
++    accession_number = _required_accession_number(payload, "accession_number")
++    cik = _required_text(payload, "cik")
++    primary_document = _required_text(payload, "primary_document")
++    source_url = _required_sec_url(
++        payload,
++        "source_url",
++        cik=cik,
++        accession_number=accession_number,
++        primary_document=primary_document,
++    )
++    filing = NCSRFiling(
++        accession_number=accession_number,
++        cik=cik,
++        registrant_name=_required_text(payload, "registrant_name"),
++        filing_date=_required_iso_date(payload, "filing_date"),
++        report_date=_required_iso_date(payload, "report_date"),
++        primary_document=primary_document,
++        source_url=source_url,
++    )
++
++    accession_slug = filing.accession_number.replace("-", "")
++    artifact_path = str(PurePosixPath("ncsr", filing.filing_date, f"{accession_slug}.json"))
++    artifact = {
++        "artifact_id": f"public-doc:sec-ncsr:{accession_slug}",
++        "name": f"{filing.registrant_name} N-CSR filed {filing.filing_date}",
++        "kind": "data",
++        "path": artifact_path,
++        "sha256": hashlib.sha256(content).hexdigest(),
++        "bytes": len(content),
++        "media_type": "application/json",
++        "source_url": filing.source_url,
++        "accession_number": filing.accession_number,
++        "form": FORM_NCSR,
++        "filing_date": filing.filing_date,
++        "report_date": filing.report_date,
++        "registrant_name": filing.registrant_name,
++        "cik": filing.cik,
++        "primary_document": filing.primary_document,
++    }
++    manifest: dict[str, object] = {
++        "schema_version": "artifact-manifest/v1",
++        "run_id": normalized_run_id,
++        "tool": "pension-data-ncsr-sample-ingest",
++        "artifacts": [artifact],
++    }
++    return NCSRSampleIngest(filing=filing, manifest=manifest)
++
++
++def _required_text(payload: Mapping[str, object], key: str) -> str:
++    value = payload.get(key)
++    if not isinstance(value, str) or not value.strip():
++        raise ValueError(f"N-CSR sample requires non-empty {key}")
++    return value.strip()
++
++
++def _required_iso_date(payload: Mapping[str, object], key: str) -> str:
++    value = _required_text(payload, key)
++    try:
++        parsed = date.fromisoformat(value)
++    except ValueError as exc:
++        raise ValueError(f"N-CSR sample {key} must be an ISO date") from exc
++    return parsed.isoformat()
++
++
++def _required_accession_number(payload: Mapping[str, object], key: str) -> str:
++    value = _required_text(payload, key)
++    if not _ACCESSION_RE.fullmatch(value):
++        raise ValueError(
++            "accession_number must match SEC format ##########-##-###### (ASCII digits only)"
++        )
++    return value
++
++
++def _cik_archive_segment(cik: str) -> str:
++    digits = cik.strip()
++    if not digits.isascii() or not digits.isdigit():
++        raise ValueError("cik must be an ASCII digit string")
++    normalized = digits.lstrip("0") or "0"
++    return normalized
++
++
++def _required_sec_url(
++    payload: Mapping[str, object],
++    key: str,
++    *,
++    cik: str,
++    accession_number: str,
++    primary_document: str,
++) -> str:
++    value = _required_text(payload, key)
++    parsed = urlparse(value)
++    hostname = (parsed.hostname or "").rstrip(".").casefold()
++    if parsed.scheme.casefold() != "https" or not (
++        hostname == "sec.gov" or hostname.endswith(".sec.gov")
++    ):
++        raise ValueError("N-CSR sample source_url must use an official sec.gov HTTPS host")
++
++    accession_slug = accession_number.replace("-", "")
++    cik_segment = _cik_archive_segment(cik)
++    path = parsed.path or ""
++    expected_suffix = f"/edgar/data/{cik_segment}/{accession_slug}/{primary_document}"
++    if not path.casefold().endswith(expected_suffix.casefold()):
++        raise ValueError(
++            "source_url must reference the same CIK, accession number, and primary document"
++        )
++    return value
+diff --git a/tests/harvest/fixtures/ncsr_sample.json b/tests/harvest/fixtures/ncsr_sample.json
+new file mode 100644
+index 00000000..51223663
+--- /dev/null
++++ b/tests/harvest/fixtures/ncsr_sample.json
+@@ -0,0 +1,10 @@
++{
++  "accession_number": "0001104659-25-117601",
++  "cik": "0000872323",
++  "filing_date": "2025-12-02",
++  "form": "N-CSR",
++  "primary_document": "tm2528754d1_ncsr.htm",
++  "registrant_name": "HARRIS ASSOCIATES INVESTMENT TRUST",
++  "report_date": "2025-09-30",
++  "source_url": "https://www.sec.gov/Archives/edgar/data/872323/000110465925117601/tm2528754d1_ncsr.htm"
++}
+diff --git a/tests/harvest/test_ncsr_sample_offline.py b/tests/harvest/test_ncsr_sample_offline.py
+new file mode 100644
+index 00000000..5f2a09ec
+--- /dev/null
++++ b/tests/harvest/test_ncsr_sample_offline.py
+@@ -0,0 +1,107 @@
++"""Offline acceptance coverage for the single-sample N-CSR ingest lane."""
++
++from __future__ import annotations
++
++import hashlib
++import json
++from pathlib import Path
++
++import pytest
++from jsonschema import Draft202012Validator
++
++from pension_data.harvest.ncsr_sample import ingest_ncsr_sample
++
++FIXTURE = Path(__file__).parent / "fixtures" / "ncsr_sample.json"
++MANIFEST_SCHEMA = (
++    Path(__file__).parents[2]
++    / "docs"
++    / "contracts"
++    / "schemas"
++    / "artifact-manifest-v1.schema.json"
++)
++
++
++def test_ncsr_fixture_ingests() -> None:
++    result = ingest_ncsr_sample(FIXTURE, run_id="ncsr-sample-2025-12-02")
++
++    assert result.filing.filing_date == "2025-12-02"
++    assert result.filing.report_date == "2025-09-30"
++    assert result.filing.accession_number == "0001104659-25-117601"
++
++    schema = json.loads(MANIFEST_SCHEMA.read_text(encoding="utf-8"))
++    Draft202012Validator(schema).validate(result.manifest)
++    assert result.manifest["schema_version"] == "artifact-manifest/v1"
++    artifacts = result.manifest["artifacts"]
++    assert isinstance(artifacts, list)
++    assert len(artifacts) == 1
++    artifact = artifacts[0]
++    assert artifact["filing_date"] == "2025-12-02"
++    assert artifact["source_url"].startswith("https://www.sec.gov/Archives/")
++    assert artifact["path"] == "ncsr/2025-12-02/000110465925117601.json"
++    assert artifact["sha256"] == hashlib.sha256(FIXTURE.read_bytes()).hexdigest()
++
++
++def test_ncsr_fixture_requires_filing_date(tmp_path: Path) -> None:
++    payload = json.loads(FIXTURE.read_text(encoding="utf-8"))
++    payload.pop("filing_date")
++    missing_date = tmp_path / "ncsr-missing-date.json"
++    missing_date.write_text(json.dumps(payload), encoding="utf-8")
++
++    with pytest.raises(ValueError, match="requires non-empty filing_date"):
++        ingest_ncsr_sample(missing_date, run_id="ncsr-missing-date")
++
++
++def _write_payload(tmp_path: Path, name: str, payload: dict) -> Path:
++    path = tmp_path / name
++    path.write_text(json.dumps(payload), encoding="utf-8")
++    return path
++
++
++def test_ncsr_rejects_unicode_digit_accession(tmp_path: Path) -> None:
++    payload = json.loads(FIXTURE.read_text(encoding="utf-8"))
++    payload["accession_number"] = "٠٠٠1104659-25-117601"
++    path = _write_payload(tmp_path, "unicode-accession.json", payload)
++    with pytest.raises(ValueError, match="SEC format"):
++        ingest_ncsr_sample(path, run_id="unicode-accession")
++
++
++def test_ncsr_rejects_malformed_accession_separator(tmp_path: Path) -> None:
++    payload = json.loads(FIXTURE.read_text(encoding="utf-8"))
++    payload["accession_number"] = "0001104659-25-117601-extra"
++    path = _write_payload(tmp_path, "bad-accession.json", payload)
++    with pytest.raises(ValueError, match="SEC format"):
++        ingest_ncsr_sample(path, run_id="bad-accession")
++
++
++def test_ncsr_rejects_wrong_form(tmp_path: Path) -> None:
++    payload = json.loads(FIXTURE.read_text(encoding="utf-8"))
++    payload["form"] = "10-K"
++    path = _write_payload(tmp_path, "wrong-form.json", payload)
++    with pytest.raises(ValueError, match="expected form N-CSR"):
++        ingest_ncsr_sample(path, run_id="wrong-form")
++
++
++def test_ncsr_rejects_malformed_filing_date(tmp_path: Path) -> None:
++    payload = json.loads(FIXTURE.read_text(encoding="utf-8"))
++    payload["filing_date"] = "12/02/2025"
++    path = _write_payload(tmp_path, "bad-date.json", payload)
++    with pytest.raises(ValueError, match="ISO date"):
++        ingest_ncsr_sample(path, run_id="bad-date")
++
++
++def test_ncsr_rejects_sec_url_for_different_filing(tmp_path: Path) -> None:
++    payload = json.loads(FIXTURE.read_text(encoding="utf-8"))
++    payload["source_url"] = (
++        "https://www.sec.gov/Archives/edgar/data/872323/000110465925117602/tm2528754d1_ncsr.htm"
++    )
++    path = _write_payload(tmp_path, "wrong-url-accession.json", payload)
++    with pytest.raises(ValueError, match="same CIK, accession"):
++        ingest_ncsr_sample(path, run_id="wrong-url")
++
++
++def test_ncsr_rejects_non_sec_url(tmp_path: Path) -> None:
++    payload = json.loads(FIXTURE.read_text(encoding="utf-8"))
++    payload["source_url"] = "https://example.com/filing.json"
++    path = _write_payload(tmp_path, "bad-host.json", payload)
++    with pytest.raises(ValueError, match="official sec.gov"):
++        ingest_ncsr_sample(path, run_id="bad-host")
