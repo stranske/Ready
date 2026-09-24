@@ -1779,3 +1779,5 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-24T00:03:39Z — D-audit-Pension-Data--2026-09-23T22-11-16Z — fail — cursor produced 378 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Pension-Data-2026-09-23.md (min 400); rotating agent
 ## 2026-09-24T00:11:16Z — D-audit-Pension-Data--2026-09-23T22-11-16Z — route — router picked cursor from ['codex', 'cursor']
 ## 2026-09-24T00:11:16Z — D-audit-Pension-Data--2026-09-23T22-11-16Z — claimed by codex (agent cursor)
+## 2026-09-24T00:13:51Z — D-audit-Pension-Data--2026-09-23T22-11-16Z — done — Scorecard: 3 work / 0 partial / 0 broken / 0 fabricated / 0 not exercised of 3; journey: passes; surfaces unscored 0; closed-still-broken 0. Exact-tip closeout 
+## 2026-09-24T00:13:52Z — D-audit-Pension-Data--2026-09-23T22-11-16Z — refutation posted — stranske/Pension-Data#914

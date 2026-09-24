@@ -39,3 +39,7 @@ Remote `main` advanced to `52b7f4b`, fixing the former period-alias discrepancy 
 ## 2026-09-24T00:45Z — D-audit-Manager-Mosaic--2026-09-23T22-11-13Z — attempt 2 complete
 
 Canonical scorecard headline backfilled; ledger/report updated. Tip `52b7f4b`; 80 tests passed; 0 new issues; #53 refuted on tip (fixed #54). Format guard confirmed on #52/#53 intake. OUT line 1 parseable.
+
+## 2026-09-24T00:13:32Z — D-audit-Pension-Data--2026-09-23T22-11-16Z — closeout complete
+
+Resumed the already-complete attempt 2 on unchanged tip `388a06a`. Revalidated the core staging path and filed documentation gap: 37 focused tests passed; proprietary serving without `PENSION_DATA_QUERY_ARTIFACT_ROOT` returns the #918 503 and the artifact-root-backed F2 regression is green. Corrected a stale `42/42` report/ledger count to `37/37`; scorecard remains 3 work / 0 partial / 0 broken / 0 fabricated / 0 not exercised of 3.

@@ -32,7 +32,7 @@ OpenAPI surface inventory unchanged (7 paths); Doc-Lineage staging import and re
 | Already open (dedup) | [#915](https://github.com/stranske/Pension-Data/issues/915) — stale `run-contract-v1.md` emitter claim |
 | Closed verified | [#914](https://github.com/stranske/Pension-Data/issues/914) — API staging wiring (refuted on tip as still broken) |
 
-Focused regression selection: **42/42** passed (`tests/api/*`, pilot CLI, workspace export/build, doc-lineage staging, replay corpus).
+Focused regression selection: **37/37** passed (`tests/api/test_app_serving.py`, pilot CLI, workspace export/build, doc-lineage staging, replay corpus). A closeout re-run on the unchanged exact tip confirmed this count; the former 42/42 total was stale.
 
 Agents Issue Format Guard for #918: run `35936550851` concluded **skipped** (same pattern as #914/#915 this morning); `priority:normal` present, `agents:formatted` not yet applied.
 
