@@ -1793,3 +1793,8 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-24T01:00:17Z — D-audit-Portable-Alpha-Extension-Model--2026-09-23T22-11-14Z — fail — cursor produced 378 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Portable-Alpha-Extension-Model-2026-09-23.md (min 400); rotatin
 ## 2026-09-24T01:11:31Z — D-audit-Portable-Alpha-Extension-Model--2026-09-23T22-11-14Z — route — router picked cursor from ['codex', 'cursor']
 ## 2026-09-24T01:11:31Z — D-audit-Portable-Alpha-Extension-Model--2026-09-23T22-11-14Z — claimed by codex (agent cursor)
+## 2026-09-24T01:13:07Z — refill — Deliverable-Render: scorecard 2026-09-23 has no parseable headline → audit queued
+## 2026-09-24T01:13:11Z — refill — Inv-Man-Intake: scorecard 2026-09-23 has no parseable headline → audit queued
+## 2026-09-24T01:13:13Z — refill — Doc-Lineage: scorecard 2026-09-23 has no parseable headline → audit queued
+## 2026-09-24T01:14:44Z — D-audit-Portable-Alpha-Extension-Model--2026-09-23T22-11-14Z — done — Scorecard: 2 work / 1 partial / 0 broken / 0 fabricated / 3 not exercised of 6; journey: passes via CLI simulate and sweep Excel on default configs, stops at si
+## 2026-09-24T01:14:46Z — D-audit-Portable-Alpha-Extension-Model--2026-09-23T22-11-14Z — refutation posted — stranske/Portable-Alpha-Extension-Model#2306

@@ -44,3 +44,7 @@ No new verified defect beyond open **#2307** and the existing 2026-09-07 backlog
 - OUT (this file): `artifacts/audits/Portable-Alpha-Extension-Model-2026-09-23.md`
 - Evidence: `artifacts/audits/paem-20260923-evidence-43a86ec/`
 - Unit checkpoint: `artifacts/audits/D-audit-Portable-Alpha-Extension-Model--2026-09-23T22-11-14Z.CHECKPOINT.md`
+
+### Attempt 2 reconciliation — 2026-09-24
+
+The reissued unit was a stale queue claim, not a new scorecard failure: `program.newest_scorecard("Portable-Alpha-Extension-Model")` reads the canonical 2026-09-23 scorecard and parses the headline as 2 work / 1 partial / 0 broken / 0 fabricated / 3 not exercised; `refill_trigger_for` returns healthy. On the unchanged remote tip `43a86ec47b8aba361eb7a108013db9e5e1d7d3fe`, re-ran the exact open #2307 reproduction in the isolated audit venv: exit 0, workbook present, zero PNG artifacts. Evidence: `artifacts/audits/paem-20260923-evidence-43a86ec/attempt2-2307-observation.txt`. No new non-duplicate issue was filed. The closed #2306 claim remains refuted by the live disclaimer text at `pa_core/reporting/disclaimers.py:20-21`.

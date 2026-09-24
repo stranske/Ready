@@ -55,3 +55,7 @@ Attempt 3 on unchanged tip `2f92b17`: confirmed `newest_scorecard` parses canoni
 ## 2026-09-23T23:08Z — D-audit-Portable-Alpha-Extension-Model--2026-09-23T22-11-14Z — complete
 
 Evening refill on `43a86ec` (+1 commit, #2306 merged). Scorecard F1–F2 WORKS, F3 PARTIAL (#2307), F4–F6 NOT-EXERCISED. REFUTED #2306; 0 issues filed (`gh` unauthenticated). OUT `artifacts/audits/Portable-Alpha-Extension-Model-2026-09-23.md` line 1 parseable headline.
+
+## 2026-09-24T01:15:00Z — D-audit-Portable-Alpha-Extension-Model--2026-09-23T22-11-14Z — attempt 2 reconciliation complete
+
+The canonical 2026-09-23 scorecard parses on the live engine (`refill_trigger_for`: healthy), so the reissued claim was stale queue state rather than a headline defect. At unchanged tip `43a86ec`, the exact #2307 reproduction still exits 0 with its workbook present and zero PNG artifacts; #2307 remains the open, non-duplicate product gap. #2306 remains refuted on live disclaimer text. No new issue filed; OUT updated in place.
