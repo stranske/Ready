@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-24T10:36:18Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-24T10:51:45Z)
 
 Units: 197 — done 191, failed 6
 Paused: False   Phase stops: []
@@ -209,7 +209,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-24T07:49:06Z — mirror — deferred — Ready#586 exact-head sync review; publication resumes by 2026-09-24T09:36:38+00:00; local work continues
 - 2026-09-24T08:04:09Z — mirror — deferred — Ready#586 exact-head sync review; publication resumes by 2026-09-24T09:36:38+00:00; local work continues
 - 2026-09-24T08:11:00Z — mirror — deferred — Ready#586 exact-head sync review; publication resumes by 2026-09-24T09:36:38+00:00; local work continues
 - 2026-09-24T08:19:11Z — mirror — deferred — Ready#586 exact-head sync review; publication resumes by 2026-09-24T09:36:38+00:00; local work continues
@@ -221,6 +220,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-24T09:34:23Z — mirror — deferred — Ready#586 exact-head sync review; publication resumes by 2026-09-24T09:36:38+00:00; local work continues
 - 2026-09-24T10:20:51Z — refill — error — PermissionError(1, 'Operation not permitted')
 - 2026-09-24T10:36:18Z — refill — error — PermissionError(1, 'Operation not permitted')
+- 2026-09-24T10:51:45Z — refill — error — PermissionError(1, 'Operation not permitted')
 
 ## Questions
 
