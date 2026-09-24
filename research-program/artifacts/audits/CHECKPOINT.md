@@ -6,6 +6,10 @@ Phase 0 complete: read the mandatory D-audit brief, owner notes, Workflows dossi
 
 Completed the scorecard and eight-dimension reconciliation. Live deterministic probes passed for sync compilation, run-contract validation, capability/prompt selection, and metrics output; focused regression gates passed 123 Python and 20 Node tests. Found a reproducible broken belt-promotion preflight: 14 of the last 15 scheduled Agents 70 runs fail on the wrapped-client `__getTokenSource` Proxy invariant before candidate discovery, despite capacity. Dedup found no matching issue; filed Workflows #3525 after the local format guard passed. Updated Code/Audits continuity and intake measurement; OUT is `artifacts/audits/Workflows-2026-09-23.md`.
 
+## 2026-09-24T02:10:00Z — D-audit-Doc-Lineage--2026-09-24T01-13-13Z — complete
+
+Track D refill on unchanged tip `09681ce`: scorecard 4 work / 1 partial / 0 broken / 0 fabricated / 0 not exercised of 5; journey passes; surfaces unscored 0. Backfilled parseable headline on canonical `2026-09-23-SCORECARD.md`; new `2026-09-24-SCORECARD.md`. #47–#51 refuted on tip. 0 issues filed (`gh` unauthenticated). OUT `artifacts/audits/Doc-Lineage-2026-09-24.md`.
+
 ## 2026-09-24T01:30:00Z — D-audit-Deliverable-Render--2026-09-24T01-13-07Z — complete
 
 Refill on unchanged tip `a867f3f`: scorecard 7/7 WORKS, journey passes. Root cause of re-queue: missing headline in canonical `2026-09-23-SCORECARD.md` (fixed). #37/#47 still reproduce; 0 new issues filed (`gh` unauthenticated). OUT `artifacts/audits/Deliverable-Render-2026-09-24.md`.
