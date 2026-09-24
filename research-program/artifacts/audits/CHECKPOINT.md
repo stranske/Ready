@@ -95,3 +95,7 @@ The canonical 2026-09-23 scorecard parses on the live engine (`refill_trigger_fo
 ## 2026-09-24T02:27:00Z — D-audit-Trend_Model_Project--2026-09-23T22-11-14Z — complete
 
 Reconciled the malformed 2026-09-23 scorecard headline and refreshed the audit clone to `eb7ecfb`. #6056 merged #6053; the focused multi-period regime-export gate passed 3/3, moving C2/C4 to WORKS. Current scorecard: 3 work / 1 partial / 0 broken / 0 fabricated / 0 not exercised of 4; journey passes; surfaces unscored 0. #6054/#6055 remain open; no new issue filed. OUT `artifacts/audits/Trend_Model_Project-2026-09-23.md`.
+
+## 2026-09-24T11:13:18Z — D-audit-Workflows--2026-09-24T11-10-38Z — complete
+
+Rechecked current remote `main` at `887d590`. Scorecard remains 4 work / 0 partial / 1 broken / 0 fabricated / 2 not exercised of 7; C1 compilation, C2 contract tests (127), C3 capability tests (13), C4 metrics tests (2), and wrapper/API focused tests (43) passed. A fresh actual wrapped-client probe still raises the #3525 `__getTokenSource` Proxy invariant before belt scanning; current Agents 70 runs were eligibility-only with Execute skipped, so they do not refute it. No duplicate issue filed. OUT `artifacts/audits/Workflows-2026-09-24.md`.

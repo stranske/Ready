@@ -1875,3 +1875,4 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-24T11:10:38Z — refill — Workflows: scorecard 2026-09-24: 1 broken / 0 fabricated → audit queued
 ## 2026-09-24T11:10:44Z — D-audit-Workflows--2026-09-24T11-10-38Z — route — router picked cursor from ['codex', 'cursor']
 ## 2026-09-24T11:10:44Z — D-audit-Workflows--2026-09-24T11-10-38Z — claimed by codex (agent cursor)
+## 2026-09-24T11:15:07Z — D-audit-Workflows--2026-09-24T11-10-38Z — done — Scorecard: 4 work / 0 partial / 1 broken / 0 fabricated / 2 not exercised of 7; journey: stops at "Scan belt promotion queue"; surfaces unscored 2; closed-still
