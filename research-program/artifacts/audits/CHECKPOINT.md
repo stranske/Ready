@@ -14,6 +14,10 @@ Refill re-run on tip `a867f3f`: scorecard 7/7 WORKS, journey passes. Re-verified
 
 Re-audit on `09681ce`: scorecard 4 WORKS / 1 PARTIAL (OCR executable unavailable), primary journey passes, and no unscored CLI surfaces. Live ingest varied-output, fact-key-map export, fixture harvest, and DOCX redline passed; 113 focused tests passed. Closed #47–#51 were refuted on tip. No fresh filable defect survived; `gh` authentication/CI and format-guard readback are unknown. OUT `artifacts/audits/Doc-Lineage-2026-09-23.md` starts with the required parseable scorecard line.
 
+## 2026-09-24T00:23:00Z — D-audit-Pension-Data--2026-09-23T22-11-16Z — complete
+
+Attempt 2 on tip `388a06a`: scorecard 3 WORKS / 0 partial; REFUTED #914; filed #918 (operator docs omit `PENSION_DATA_QUERY_ARTIFACT_ROOT`); #915 dedup open. OUT `artifacts/audits/Pension-Data-2026-09-23.md` line 1 parseable headline.
+
 ## 2026-09-23T23:10:00Z — D-audit-Doc-Lineage--2026-09-23T22-11-18Z — attempt 2 complete
 
 Attempt 2 re-verified scorecard probes and #47–#51 regressions on unchanged tip; OUT headline confirmed parseable; 0 issues filed (`gh` unauthenticated). Product slice 203 passed / 1 env-coupled console-script failure.
