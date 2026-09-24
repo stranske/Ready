@@ -1839,3 +1839,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-24T03:06:43Z — D-audit-Workflows--2026-09-23T22-11-13Z — route — router picked cursor from ['codex', 'cursor']
 ## 2026-09-24T03:06:43Z — D-audit-Workflows--2026-09-23T22-11-13Z — claimed by driver (agent cursor)
 ## 2026-09-24T03:09:00Z — D-audit-Workflows--2026-09-23T22-11-13Z — fail — cursor produced 313 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Workflows-2026-09-23.md (min 400); rotating agent
+## 2026-09-24T03:24:02Z — verify — enqueued D4-verify-merged-2026-09-24T03
+## 2026-09-24T03:24:02Z — D4-verify-merged-2026-09-24T03 — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-24T03:24:02Z — D4-verify-merged-2026-09-24T03 — claimed by driver (agent cursor)

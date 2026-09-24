@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-24T03:12:02Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-24T03:24:02Z)
 
-Units: 195 — done 189, failed 6
+Units: 196 — claimed 1, done 189, failed 6
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 Orchestrator evidence (30d): offload runs 246, bound to a research round 200, scored 200 (PASS 133, FAIL 67, infra 19) — codex 28/29 (P9 F19 I6), cursor 112/145 (P84 F28 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
@@ -204,12 +204,10 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D4-verify-merged-2026-09-21T03 | D | D | done | cursor | codex | Verify merged PRs against their issues' acceptance criteria |  |
 | D4-verify-merged-2026-09-22T03 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
 | D4-verify-merged-2026-09-23T03 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
+| D4-verify-merged-2026-09-24T03 | D | D | claimed | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
 
 ## Last checkpoints
 
-- 2026-09-24T02:17:31Z — D-audit-Trend_Model_Project--2026-09-23T22-11-14Z — done — Scorecard: 3 work / 1 partial / 0 broken / 0 fabricated / 0 not exercised of 4; journey: passes; surfaces unscored 0; closed-still-broken 0. Backfilled the malf
-- 2026-09-24T02:17:32Z — D-audit-Trend_Model_Project--2026-09-23T22-11-14Z — refutation posted — stranske/Trend_Model_Project#6053
-- 2026-09-24T02:17:33Z — mirror — FAILED — RuntimeError; pending commits retained for next tick
 - 2026-09-24T02:30:45Z — D-audit-Workflows--2026-09-23T22-11-13Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-24T02:30:45Z — D-audit-Workflows--2026-09-23T22-11-13Z — claimed by driver (agent cursor)
 - 2026-09-24T02:34:44Z — D-audit-Workflows--2026-09-23T22-11-13Z — fail — cursor produced 293 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Workflows-2026-09-23.md (min 400); rotating agent
@@ -219,6 +217,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-24T03:06:43Z — D-audit-Workflows--2026-09-23T22-11-13Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-24T03:06:43Z — D-audit-Workflows--2026-09-23T22-11-13Z — claimed by driver (agent cursor)
 - 2026-09-24T03:09:00Z — D-audit-Workflows--2026-09-23T22-11-13Z — fail — cursor produced 313 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Workflows-2026-09-23.md (min 400); rotating agent
+- 2026-09-24T03:24:02Z — verify — enqueued D4-verify-merged-2026-09-24T03
+- 2026-09-24T03:24:02Z — D4-verify-merged-2026-09-24T03 — route — router picked cursor from ['codex', 'cursor']
+- 2026-09-24T03:24:02Z — D4-verify-merged-2026-09-24T03 — claimed by driver (agent cursor)
 
 ## Questions
 
