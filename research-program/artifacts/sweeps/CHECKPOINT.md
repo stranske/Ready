@@ -1067,3 +1067,13 @@
 - 2026-09-24T13:14:48Z D3-unblock-sweep-2026-09-24T13: Deliverable-Render complete; frozen 1/0 (Dependency Dashboard); owner 0; silent 0/0; reroutes 0; green; supply 5; priority 5/5.
 - 2026-09-24T13:14:48Z D3-unblock-sweep-2026-09-24T13: Manager-Mosaic complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; green; supply 14; priority 3/14.
 - 2026-09-24T13:14:48Z D3-unblock-sweep-2026-09-24T13: sweep complete; 7 covered after the prior run's first 8 (all 15 supported repos covered; Orchestrator out of scope); 2 frozen format pauses released; 1 refuted; 0 silent claims released; 0 PR reroutes; total supply 36.
+
+- 2026-09-24T21:17:35Z D3-unblock-sweep-2026-09-24T21: Workflows complete; frozen 7/6 repaired (#3549,#3556-#3558,#3567-#3568); owner 1 (#3123 LangSmith health); silent 0/0; reroutes 0; branch hub-only; supply 41; priority 28/41.
+- 2026-09-24T21:17:35Z D3-unblock-sweep-2026-09-24T21: Travel-Plan-Permission complete; frozen 26/26 repaired (#1598-#1622,#1627); owner 0; silent 0/0; reroutes 0; branch green; supply 33; priority 8/33.
+- 2026-09-24T21:17:35Z D3-unblock-sweep-2026-09-24T21: Trend_Model_Project complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch green/in-progress health; supply 5; priority 5/5.
+- 2026-09-24T21:17:35Z D3-unblock-sweep-2026-09-24T21: Portable-Alpha-Extension-Model complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch green; supply 5; priority 5/5.
+- 2026-09-24T21:17:35Z D3-unblock-sweep-2026-09-24T21: Counter_Risk complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; branch green; supply 7; priority 7/7.
+- 2026-09-24T21:17:35Z D3-unblock-sweep-2026-09-24T21: Manager-Database complete; frozen 0/0; owner 0; silent 0/0; reroutes 0; last sampled CI green; supply 3; priority 3/3.
+- 2026-09-24T21:17:35Z D3-unblock-sweep-2026-09-24T21: Inv-Man-Intake complete; frozen 1/1 repaired (#985); owner 0; silent 0/0; reroutes 0; branch green/in-progress health; supply 2; priority 2/2.
+- 2026-09-24T21:17:35Z D3-unblock-sweep-2026-09-24T21: Pension-Data complete; frozen 4/4 repaired (#919-#922); owner 0; silent 0/0; reroutes 0; last sampled CI green; supply 6; priority 6/6.
+- 2026-09-24T21:17:35Z D3-unblock-sweep-2026-09-24T21: sweep complete; 8 covered 7 deferred (plus Orchestrator out of scope); 37 frozen format pauses repaired; 0 silent claims released; 0 PR reroutes; no current sampled default-branch Gate/CI failure; total supply 102.

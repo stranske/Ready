@@ -1903,3 +1903,4 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-24T21:11:54Z — unblock — enqueued D3-unblock-sweep-2026-09-24T21
 ## 2026-09-24T21:11:55Z — D3-unblock-sweep-2026-09-24T21 — route — router picked cursor from ['codex', 'cursor']
 ## 2026-09-24T21:11:55Z — D3-unblock-sweep-2026-09-24T21 — claimed by codex (agent cursor)
+## 2026-09-24T21:18:08Z — D3-unblock-sweep-2026-09-24T21 — done — Covered the first eight supported repositories, repaired 37 mechanical format pauses, and retained only the genuine LangSmith owner gate.
