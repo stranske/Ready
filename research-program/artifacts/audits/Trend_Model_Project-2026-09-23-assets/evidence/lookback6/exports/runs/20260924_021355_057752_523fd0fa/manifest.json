@@ -1,0 +1,379 @@
+{
+  "schema_version": "trend.run_artifacts/1",
+  "run_id": "523fd0fa2a66ef4ff819ca2214f8ad517571ff1a549c7272e0ecad127ff56e86",
+  "created": "2026-09-24T02:13:55.057752Z",
+  "config_path": "[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Trend_Model_Project-2026-09-24-assets/evidence/lookback6/config.yml",
+  "input_path": "[LOCAL_HOME]/.codex/automations/research-program/[LOCAL_WORKSPACE]/Trend_Model_Project/demo/demo_returns.csv",
+  "config_sha256": "2d0c2f8223ec4737da2fecd7157388969dc85d04da2b7f95d9e7efde76616a01",
+  "git_hash": "eb7ecfb0b10afa2c0c628986f61cd1856d79c633",
+  "data_window": {
+    "rows": 120,
+    "start": "2015-01-31T00:00:00+00:00",
+    "end": "2024-12-31T00:00:00+00:00",
+    "instrument_count": 22
+  },
+  "data_reality": {
+    "policy": "drop",
+    "policy_limit": null,
+    "policy_summary": "default=drop(unbounded)",
+    "frequency_missing_periods": 0,
+    "frequency_max_gap_periods": 0,
+    "instruments": [
+      {
+        "label": "Mgr_01",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "Mgr_02",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "Mgr_03",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "Mgr_04",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "Mgr_05",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "Mgr_06",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "Mgr_07",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "Mgr_08",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "Mgr_09",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "Mgr_10",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "Mgr_11",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "Mgr_12",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "Mgr_13",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "Mgr_14",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "Mgr_15",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "Mgr_16",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "Mgr_17",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "Mgr_18",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "Mgr_19",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "Mgr_20",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "SPX",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "RF",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      }
+    ],
+    "filled": [],
+    "dropped": [],
+    "unknown": []
+  },
+  "metrics": {
+    "cagr": 0.014860390821652247,
+    "vol": 0.08331129462495879,
+    "sharpe": -0.11018493918806148,
+    "sortino": -0.1912679385903182,
+    "max_drawdown": 0.10646122148464177,
+    "information_ratio": -0.07002119229061574
+  },
+  "metrics_overview": {
+    "avg_cagr": -0.06451843173526044,
+    "max_cagr": 0.1607236122427962,
+    "min_cagr": -0.4706613086239839,
+    "avg_vol": 0.21177523144638571,
+    "max_vol": 0.31782361083276334,
+    "min_vol": 0.1447006250679088,
+    "avg_sharpe": -0.33064501224362797,
+    "max_sharpe": 0.8964184091292415,
+    "min_sharpe": -1.4833818634302285,
+    "avg_sortino": -0.3696414112960346,
+    "max_sortino": 1.824043131958816,
+    "min_sortino": -1.7300330820440302,
+    "avg_max_drawdown": 0.3015119226597391,
+    "max_max_drawdown": 0.4834425894070281,
+    "min_max_drawdown": 0.13272646617783812,
+    "avg_information_ratio": -0.32468743304790715,
+    "max_information_ratio": 0.9177169129590422,
+    "min_information_ratio": -1.7924540361531958
+  },
+  "selected_funds": [],
+  "selected_entities": [],
+  "artifacts": [
+    {
+      "name": "analysis_metrics.csv",
+      "source": "[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Trend_Model_Project-2026-09-23-assets/evidence/lookback6/exports/analysis_metrics.csv",
+      "size": 1030,
+      "sha256": "efa74908fd363cbe13ee1f4e6cda9cbcb878e5594dca0740335962b37f152255"
+    },
+    {
+      "name": "analysis_narrative.csv",
+      "source": "[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Trend_Model_Project-2026-09-23-assets/evidence/lookback6/exports/analysis_narrative.csv",
+      "size": 998,
+      "sha256": "2681370bc32357cc65361cec5f5190ef8158e1abd77f198c34270c3b9233b1d0"
+    },
+    {
+      "name": "analysis_summary.csv",
+      "source": "[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Trend_Model_Project-2026-09-23-assets/evidence/lookback6/exports/analysis_summary.csv",
+      "size": 2624,
+      "sha256": "a1ca871cb5f0f2bef0be3272fbdb4b7f84c83ce1f010eb076a93209e6cf4cff9"
+    },
+    {
+      "name": "analysis.xlsx",
+      "source": "[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Trend_Model_Project-2026-09-23-assets/evidence/lookback6/exports/analysis.xlsx",
+      "size": 13235,
+      "sha256": "4b8bed7d4ec0137b3552cc2618999a9e6445a5d1473e1a118c8cfa7a34d8c0a7"
+    },
+    {
+      "name": "analysis_metrics.json",
+      "source": "[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Trend_Model_Project-2026-09-23-assets/evidence/lookback6/exports/analysis_metrics.json",
+      "size": 1859,
+      "sha256": "5b1f2605c008e493d780cf762748a3c35687c4ff83dee5105649a9f341f602d5"
+    },
+    {
+      "name": "analysis_narrative.json",
+      "source": "[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Trend_Model_Project-2026-09-23-assets/evidence/lookback6/exports/analysis_narrative.json",
+      "size": 1158,
+      "sha256": "a86bf7e59626e8596d786aff6077abf47a98f35a342d3f3b8b70da6188a53924"
+    },
+    {
+      "name": "analysis_summary.json",
+      "source": "[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Trend_Model_Project-2026-09-23-assets/evidence/lookback6/exports/analysis_summary.json",
+      "size": 5362,
+      "sha256": "f2ca00e68cf38c698cd8b75d08eef0b581d0dc6946ef97c486b7c7b90907b287"
+    },
+    {
+      "name": "analysis_metrics.txt",
+      "source": "[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Trend_Model_Project-2026-09-23-assets/evidence/lookback6/exports/analysis_metrics.txt",
+      "size": 881,
+      "sha256": "6995cd25adef33d5ced6f7835b57c352e24332805c6affd565bf0ac014680612"
+    },
+    {
+      "name": "analysis_narrative.txt",
+      "source": "[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Trend_Model_Project-2026-09-23-assets/evidence/lookback6/exports/analysis_narrative.txt",
+      "size": 1619,
+      "sha256": "64915b6c988d5465b9c8effa6dc80b3e388b8053f59c0828b26a5bef6ec4372c"
+    },
+    {
+      "name": "analysis_summary.txt",
+      "source": "[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Trend_Model_Project-2026-09-23-assets/evidence/lookback6/exports/analysis_summary.txt",
+      "size": 2399,
+      "sha256": "1433c2528c4238ab9f94b5db4841f74ea6911d3054d46c390122aaff7b989730"
+    }
+  ],
+  "config_snapshot": {
+    "version": "1",
+    "data": {
+      "csv_path": "[LOCAL_HOME]/.codex/automations/research-program/[LOCAL_WORKSPACE]/Trend_Model_Project/demo/demo_returns.csv",
+      "universe_membership_path": null,
+      "managers_glob": null,
+      "date_column": "Date",
+      "frequency": "ME",
+      "timezone": "UTC",
+      "missing_policy": "drop",
+      "missing_limit": null,
+      "risk_free_column": null,
+      "allow_risk_free_fallback": true
+    },
+    "preprocessing": {
+      "missing_data": {
+        "limit": 2,
+        "policy": "ffill"
+      }
+    },
+    "vol_adjust": {
+      "enabled": false,
+      "target_vol": 0.1,
+      "window": null,
+      "floor_vol": 0.015,
+      "warmup_periods": 0
+    },
+    "sample_split": {
+      "in_end": "2022-12",
+      "in_start": "2015-01",
+      "out_end": "2024-12",
+      "out_start": "2023-01"
+    },
+    "portfolio": {
+      "rebalance_calendar": "NYSE",
+      "rebalance_freq": null,
+      "max_turnover": 1.0,
+      "lambda_tc": 0.0,
+      "min_tenure_n": 0,
+      "ci_level": 0.0,
+      "cost_model": {
+        "per_trade_bps": 0.0,
+        "half_spread_bps": 0.0
+      },
+      "turnover_cap": null,
+      "weight_policy": null,
+      "cooldown_periods": null,
+      "custom_weights": {
+        "Mgr_01": 60,
+        "Mgr_02": 40
+      },
+      "rank": {
+        "inclusion_approach": "top_n",
+        "n": 5,
+        "score_by": "Sharpe"
+      },
+      "selection_mode": "rank",
+      "selector": {
+        "name": "rank",
+        "params": {
+          "rank_column": "Sharpe",
+          "top_n": 5
+        }
+      },
+      "weighting": {
+        "name": "equal",
+        "params": {}
+      }
+    },
+    "benchmarks": {
+      "spx": "SPX"
+    },
+    "metrics": {
+      "registry": [
+        "annual_return",
+        "volatility",
+        "sharpe_ratio",
+        "sortino_ratio",
+        "information_ratio",
+        "max_drawdown"
+      ]
+    },
+    "regime": {
+      "annualise_volatility": true,
+      "enabled": true,
+      "lookback": 6,
+      "method": "rolling_return",
+      "min_observations": 3,
+      "model": "binary_threshold",
+      "neutral_band": 0.0015,
+      "proxy": "SPX",
+      "smoothing": 1,
+      "threshold": 0.0
+    },
+    "robustness": {},
+    "signals": {},
+    "export": {
+      "directory": "[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Trend_Model_Project-2026-09-23-assets/evidence/lookback6/exports",
+      "formats": [
+        "csv",
+        "xlsx",
+        "json",
+        "txt"
+      ]
+    },
+    "performance": {},
+    "identity": {},
+    "extra": {},
+    "run": {
+      "checkpoint_dir": "demo/checkpoints",
+      "jobs": 1,
+      "seed": 42
+    },
+    "multi_period": {
+      "end": "2024-12",
+      "frequency": "ME",
+      "in_sample_len": 36,
+      "out_sample_len": 12,
+      "start": "2018-01"
+    },
+    "strategy": {},
+    "walk_forward": {},
+    "seed": 42
+  },
+  "input_sha256": "0f9b09c37b9ef19f9c525157e66f5abb5208d57b17f4408732ba567262d2bea8",
+  "summary_text": "Vol-Adj Trend Analysis\nIn:  2015-01 → 2022-12\nOut: 2023-01 → 2024-12\nFrequency: Unknown; NA policy: Drop\n\n        Name Weight OS Total Return OS Months OS CAGR OS Vol OS Sharpe OS Sortino OS IR OS MaxDD IS Total Return IS Months IS CAGR IS Vol IS Sharpe IS Sortino IS IR IS MaxDD\nEqual Weight                                     1.49   8.33     -0.11      -0.19 -0.07    10.65                             20.26   8.80      2.22       5.16  2.09     7.08\n User Weight                                     1.49   8.33     -0.11      -0.19 -0.07    10.65                             20.26   8.80      2.22       5.16  2.09     7.08\n                                                                                                                                                                             \n      Mgr_18  20.00                              8.61  21.24      0.28       0.67  0.38    27.27                             29.67  19.39      1.49       4.22  1.41    27.27\n      Mgr_12  20.00                              6.89  23.86      0.18       0.30  0.30    38.00                             22.97  22.50      0.99       1.66  1.01    38.00\n      Mgr_09  20.00                             16.07  15.00      0.90       1.82  0.92    13.88                             14.61  14.62      0.95       2.01  0.97    16.99\n      Mgr_03  10.00                            -10.81  14.89     -0.84      -1.33 -0.82    27.01                              9.77  13.43      0.65       1.03  0.69    20.96\n      Mgr_08   5.00                            -47.07  31.78     -1.48      -1.73 -1.79    48.34                             12.28  18.10      0.67       1.04  0.73    24.12\n      Mgr_04  10.00                              7.42  19.68      0.23       0.36  0.32    25.20                             11.64  18.07      0.63       1.14  0.69    27.11\n      Mgr_10  10.00                            -19.44  28.49     -0.76      -1.34 -0.71    48.23                             15.18  25.99      0.57       1.36  0.66    31.93\n      Mgr_07   5.00                            -13.29  14.47     -1.15      -1.71 -1.19    13.27                             20.21  21.86      0.82       1.27  0.87    18.63\n\nPerformance by regime (CAGR / Sharpe / MaxDD / Hit / Obs):\n  User:\n    Risk-On: 0.6% CAGR, Sharpe -0.19, MaxDD 10.6%, Hit 57.1%, Obs 42\n    Risk-Off: 7.8% CAGR, Sharpe 0.52, MaxDD 1.5%, Hit 50.0%, Obs 6\n    All: 1.5% CAGR, Sharpe -0.11, MaxDD 10.6%, Hit 56.2%, Obs 48\n  Equal-Weight:\n    Risk-On: 0.6% CAGR, Sharpe -0.19, MaxDD 10.6%, Hit 57.1%, Obs 42\n    Risk-Off: 7.8% CAGR, Sharpe 0.52, MaxDD 1.5%, Hit 50.0%, Obs 6\n    All: 1.5% CAGR, Sharpe -0.11, MaxDD 10.6%, Hit 56.2%, Obs 48\n\nRegime insight: Risk-Off windows outperformed risk-on stretches (7.8% vs 0.6% CAGR).",
+  "html_report": "report.html",
+  "run_directory": "[LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Trend_Model_Project-2026-09-23-assets/evidence/lookback6/exports/runs/20260924_021355_057752_523fd0fa"
+}

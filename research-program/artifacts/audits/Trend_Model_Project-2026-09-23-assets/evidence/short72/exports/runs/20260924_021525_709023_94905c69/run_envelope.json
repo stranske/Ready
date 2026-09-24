@@ -1,0 +1,180 @@
+{
+  "schema_version": "trend.run_envelope/1",
+  "run_id": "94905c699248410a02caedfc831e989258c2736a483c08638c11e17fc50e6511",
+  "inputs": {
+    "config_sha256": "4aeff7107a769b686b63ca9bc85a546f686ed7e15f60fae889917276e00970f6",
+    "input_sha256": "4ab73c043333dd1221eec1f09372d1f3ec731d5e91939f02f2852432c5a2b3a4"
+  },
+  "outputs": {
+    "manifest": "manifest.json",
+    "artifacts": [
+      "analysis_metrics.csv",
+      "analysis_narrative.csv",
+      "analysis_summary.csv",
+      "analysis.xlsx",
+      "analysis_metrics.json",
+      "analysis_narrative.json",
+      "analysis_summary.json",
+      "analysis_metrics.txt",
+      "analysis_narrative.txt",
+      "analysis_summary.txt"
+    ]
+  },
+  "provenance": {
+    "git_hash": "eb7ecfb0b10afa2c0c628986f61cd1856d79c633",
+    "environment": {
+      "python": "3.12.2",
+      "numpy": "2.5.0",
+      "pandas": "3.0.3"
+    }
+  },
+  "cost_latency": {
+    "wall_ms": 60.714291874319315
+  },
+  "warnings": [],
+  "data_reality": {
+    "policy": "drop",
+    "policy_limit": null,
+    "policy_summary": "default=drop(unbounded)",
+    "frequency_missing_periods": 0,
+    "frequency_max_gap_periods": 0,
+    "instruments": [
+      {
+        "label": "Mgr_01",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "Mgr_02",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "Mgr_03",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "Mgr_04",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "Mgr_05",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "Mgr_06",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "Mgr_07",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "Mgr_08",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "Mgr_09",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "Mgr_10",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "Mgr_11",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "Mgr_12",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "Mgr_13",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "Mgr_14",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "Mgr_15",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "Mgr_16",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "Mgr_17",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "Mgr_18",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "Mgr_19",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "Mgr_20",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "SPX",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      },
+      {
+        "label": "RF",
+        "missing_count": 0,
+        "disposition": "kept",
+        "reason": "complete"
+      }
+    ],
+    "filled": [],
+    "dropped": [],
+    "unknown": []
+  },
+  "diagnostic": null
+}

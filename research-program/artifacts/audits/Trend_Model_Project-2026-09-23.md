@@ -1,39 +1,32 @@
-Scorecard: 1 work / 2 partial / 1 broken / 0 fabricated / 0 not exercised of 4; journey: passes with regime export gap; surfaces unscored 0; closed-still-broken 0.
+Scorecard: 3 work / 1 partial / 0 broken / 0 fabricated / 0 not exercised of 4; journey: passes; surfaces unscored 0; closed-still-broken 0.
 
-Issues filed: 3 — https://github.com/stranske/Trend_Model_Project/issues/6053, https://github.com/stranske/Trend_Model_Project/issues/6054, https://github.com/stranske/Trend_Model_Project/issues/6055.
+Issues filed: 0 (`gh`/GitHub API HTTP 401 on this host). Staged body: `Code/Audits/Trend_Model_Project/2026-09-24-issue-bodies/product-contract-stale-status.md`. Open validation issues #6054/#6055 still reproduce on tip; not re-filed.
 
-## Run report (Track D, 2026-09-23, attempt 3)
+REFUTED: https://github.com/stranske/Trend_Model_Project/issues/6053 — multi_period `trend report` HTML includes Performance by Regime after PR #6056 on tip `eb7ecfb` (0× "Regime analysis unavailable").
 
-**Tip:** `adda9a41e8a5de37a3c73ea5f19832d75baf571c` on `main` (`git pull` up to date). Resumed from unit checkpoint after attempts 1–2; no duplicate filing.
+## Run report (Track D, 2026-09-24, unit `D-audit-Trend_Model_Project--2026-09-23T22-11-14Z`)
 
-**Phase 1 (orientation):** Unchanged from attempt 2 (~57k LOC `src/`, CLI subcommands `check run report stress mc app quick-report explain nl`).
+**Tip:** `eb7ecfb0b10afa2c0c628986f61cd1856d79c633` on `main` (+1 commit since 2026-09-23 audit: merge PR #6056 for #6053).
 
-**Phase 1.5 (scorecard):** Prior live evidence retained under `artifacts/audits/Trend_Model_Project-2026-09-23-assets/evidence/`. Re-checked on tip:
+**Refill trigger:** Prior canonical `Code/Audits/Trend_Model_Project/2026-09-23-SCORECARD.md` omitted the load-bearing `Scorecard:` headline line (backfilled 2026-09-24). Agent-ready supply ≤25% per `artifacts/audit-refill.md`.
+
+**Phase 1 (orientation):** ~57.5k LOC `src/`; CLI subcommands unchanged; `pytest --collect-only` reports 5980 tests with 2 collection errors from host `anaconda` xarray vs NumPy 2.0 (not used as verdict).
+
+**Phase 1.5 (scorecard):** Live exercises under `artifacts/audits/Trend_Model_Project-2026-09-24-assets/evidence/`:
 
 | Check | Result |
 |---|---|
-| C1 `trend run` on full demo | Prior exports valid; 72-row truncate still yields empty holdings (not baseline reuse) |
-| C2/C4 `report-baseline.html` | `#regimes` still **Regime analysis unavailable** (`artifacts/.../report-baseline.html:141`) |
-| C3 `lookback6` vs baseline `analysis_summary.csv` | Still byte-identical (2624 bytes each) |
-| C3 `vol_adjust` variant | Prior CAGR/weight delta retained |
-| Code seam #6053 | `src/trend_analysis/api.py:132-284` `_run_multi_period_simulation` has no `build_regime_payload`; single-period path still calls it at `src/trend_analysis/stages/portfolio.py:889-897` |
-| #6054 | `CostModelSettings` at `src/trend_analysis/config/model.py:344-353` still accepts `inf`/`nan` (repro in `.venv` session) |
-| #6055 | `RiskSettings._validate_floor` at `src/trend_analysis/config/model.py:614-623` checks negativity only, not `math.isfinite` (contrast `target_vol` at `:608-609`); `inf`/`nan` still accepted in session repro |
+| C1 `trend run` full demo + 72-row truncate | Weighted holdings on full run; truncate → 166 B empty `analysis_summary.csv` |
+| C2/C4 `trend report` | `#regimes` shows Performance by Regime; regime table rows present |
+| C3 `lookback6` vs baseline | `analysis_summary.csv` MD5 identical; CLI regime insight text differs for lookback6 |
+| C3 `vol_on` | User Weight OS CAGR 1.49% → 2.61% |
+| #6053 seam | `api.run_simulation` populates `performance_by_regime` (`src/trend_analysis/api.py:278-291`); `tests/test_multi_period_regime_exports.py` 3/3 pass |
+| #6054/#6055 | `load_config` still accepts `inf`/`nan` cost bps and non-finite `floor_vol` (`src/trend_analysis/config/model.py:344-353`, `:614-623`) |
 
-**Dimensions (scoped):** Wiring/deliverable contract (dim 3) only; no additional verified, dedup-clean findings beyond the three filed issues. `regime.lookback` inertness on visible multi_period metrics remains C3 partial; no dedicated issue (no existing open/closed duplicate; subordinate to analyst-visible config sensitivity, not a separate broken core function).
+**Dimensions (scoped):** Product scorecard + config validation wiring (dim 3). No additional verified code defect beyond open #6054/#6055. `docs/PRODUCT_CONTRACT.md` status table stale (C3 `FABRICATED`, missing C4) — docs issue body staged, not filed.
 
-**Findings filed (attempt 1):**
+**Dedup:** #6053 fixed on tip (REFUTED). #6054/#6055 assumed still open from prior round; could not `gh issue list` to confirm.
 
-| Issue | Severity | Summary |
-|---|---|---|
-| #6053 | P1 | Wire Performance by Regime into multi_period `run_simulation` / exports |
-| #6054 | P2 | Reject non-finite `portfolio.cost_model` bps on pydantic path |
-| #6055 | P2 | Reject non-finite `vol_adjust.floor_vol` before `_scale_factors` (`src/trend_analysis/risk.py:115-134`) |
+**Delivery:** Canonical scorecard `Code/Audits/Trend_Model_Project/2026-09-24-SCORECARD.md`; audit-run note `2026-09-24-audit-run.md`; ledger appended. Intake log not appended (`gh` unavailable).
 
-**Format guard (attempt 3 re-query):** `gh run list` — success on #6053 (run `35867204110`), #6054 (`35867230003`), #6055 (`35867231296`). All three lacked `agents:formatted` despite success; applied label via `gh issue edit` so opener routing matches guard verdict.
-
-**Dedup / refutation:** No new candidates. Closed regime finite-control issues remain distinct from #6053 export seam. No `REFUTED:` lines.
-
-**Delivery:** Ledger + `intake-2026-09-04.log` unchanged (attempt 1). Canonical scorecard: `Code/Audits/Trend_Model_Project/2026-09-23-SCORECARD.md`.
-
-**Confidence:** High on scorecard row and the three defects (CLI/HTML evidence + live pydantic repro + line-level code read). Medium-low that a fourth issue for lookback-only inertness would pass dedup/value bar without overlapping #6053/C3 narrative.
+**Confidence:** High on scorecard row and #6053 refutation (live HTML + tests). High that #6054/#6055 still reproduce (direct `load_config` repro). Medium-low on GitHub dedup and filing completeness without API access.

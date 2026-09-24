@@ -1,9 +1,9 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-24T01:37:08Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-24T02:30:45Z)
 
-Units: 195 — done 186, failed 5, queued 4
+Units: 195 — claimed 1, done 189, failed 5
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
-Orchestrator evidence (30d): offload runs 240, bound to a research round 194, scored 194 (PASS 131, FAIL 63, infra 19) — codex 28/29 (P9 F19 I6), cursor 106/139 (P82 F24 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
+Orchestrator evidence (30d): offload runs 243, bound to a research round 197, scored 197 (PASS 133, FAIL 64, infra 19) — codex 28/29 (P9 F19 I6), cursor 109/142 (P84 F25 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
 Claude conservation: off (weekly window available)
 Owner inbox: https://github.com/stranske/Ready/issues/553
 
@@ -142,7 +142,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Fine-Art-Archive--2026-09-23T22-11-18Z | D | D | done | cursor | claude | Audit stranske/Fine-Art-Archive and file issues (scorecard 2026-09-23  | 4W/1P/0B/0F of 5 |
 | D-audit-Inv-Man-Intake--2026-09-23T09-11-17Z | D | D | done | cursor | claude | Audit stranske/Inv-Man-Intake and file issues (scorecard 2026-09-20 ha | 5W/2P/0B/0F of 7 |
 | D-audit-Inv-Man-Intake--2026-09-23T22-11-16Z | D | D | done | cursor | codex | Audit stranske/Inv-Man-Intake and file issues (scorecard 2026-09-23 ha | 5W/2P/0B/0F of 7 |
-| D-audit-Inv-Man-Intake--2026-09-24T01-13-11Z | D | D | queued | claude |  | Audit stranske/Inv-Man-Intake and file issues (scorecard 2026-09-23 ha |  |
+| D-audit-Inv-Man-Intake--2026-09-24T01-13-11Z | D | D | done | cursor | driver | Audit stranske/Inv-Man-Intake and file issues (scorecard 2026-09-23 ha | 5W/2P/0B/0F of 7 |
 | D-audit-Manager-Database--2026-09-10T17-45-13Z | D | D | done | codex | driver | Audit stranske/Manager-Database and file issues (supply 0 <= 2) |  |
 | D-audit-Manager-Database--2026-09-14T06-49-50Z | D | D | done | codex | codex | Audit stranske/Manager-Database and file issues (supply 2 <= 2) |  |
 | D-audit-Manager-Database--2026-09-14T19-00-22Z | D | D | done | codex | codex | Audit stranske/Manager-Database and file issues (supply 2 <= 2) |  |
@@ -168,13 +168,13 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Travel-Plan-Permission--2026-09-07T04-47-30Z | D | D | done | codex | codex | Audit stranske/Travel-Plan-Permission and file issues (supply 2 <= 3) |  |
 | D-audit-Travel-Plan-Permission--2026-09-07T17-01-43Z | D | D | done | codex | claude | Audit stranske/Travel-Plan-Permission and file issues (supply 1 <= 2) |  |
 | D-audit-Travel-Plan-Permission--2026-09-23T09-11-15Z | D | D | done | cursor | codex | Audit stranske/Travel-Plan-Permission and file issues (no scorecard) | 6W/1P/0B/0F of 7 |
-| D-audit-Travel-Plan-Permission--2026-09-23T22-11-14Z | D | D | queued | claude |  | Audit stranske/Travel-Plan-Permission and file issues (scorecard 2026- |  |
+| D-audit-Travel-Plan-Permission--2026-09-23T22-11-14Z | D | D | done | cursor | driver | Audit stranske/Travel-Plan-Permission and file issues (scorecard 2026- | 6W/1P/0B/0F of 7 |
 | D-audit-Trend_Model_Project--2026-09-19T08-08-54Z | D | D | done | codex | codex | Audit stranske/Trend_Model_Project and file issues (supply 2 <= 3) |  |
 | D-audit-Trend_Model_Project--2026-09-19T20-12-05Z | D | D | failed | codex |  | Audit stranske/Trend_Model_Project and file issues (supply 0 <= 2) |  |
 | D-audit-Trend_Model_Project--2026-09-23T09-11-16Z | D | D | done | cursor | driver | Audit stranske/Trend_Model_Project and file issues (scorecard 2026-09- | 1W/2P/1B/0F of 4 |
-| D-audit-Trend_Model_Project--2026-09-23T22-11-14Z | D | D | queued | claude |  | Audit stranske/Trend_Model_Project and file issues (scorecard 2026-09- |  |
+| D-audit-Trend_Model_Project--2026-09-23T22-11-14Z | D | D | done | cursor | codex | Audit stranske/Trend_Model_Project and file issues (scorecard 2026-09- | 3W/1P/0B/0F of 4 |
 | D-audit-Workflows--2026-09-23T09-11-15Z | D | D | done | codex | codex | Audit stranske/Workflows and file issues (scorecard 2026-09-20 has no  | 4W/0P/1B/0F of 7 |
-| D-audit-Workflows--2026-09-23T22-11-13Z | D | D | queued | claude |  | Audit stranske/Workflows and file issues (scorecard 2026-09-23 has no  |  |
+| D-audit-Workflows--2026-09-23T22-11-13Z | D | D | claimed | cursor | driver | Audit stranske/Workflows and file issues (scorecard 2026-09-23 has no  |  |
 | D-audit-learning-management-system--2026-09-05T04-00-30Z | D | D | done | codex | driver | Audit stranske/learning-management-system and file issues (supply 2 <= |  |
 | D-audit-learning-management-system--2026-09-06T16-33-31Z | D | D | done | codex | driver | Audit stranske/learning-management-system and file issues (supply 1 <= |  |
 | D-audit-learning-management-system--2026-09-08T05-06-08Z | D | D | done | codex | codex | Audit stranske/learning-management-system and file issues (supply 1 <= |  |
@@ -207,18 +207,18 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-24T01:14:46Z — D-audit-Portable-Alpha-Extension-Model--2026-09-23T22-11-14Z — refutation posted — stranske/Portable-Alpha-Extension-Model#2306
-- 2026-09-24T01:15:20Z — D-audit-Deliverable-Render--2026-09-24T01-13-07Z — route — router picked cursor from ['codex', 'cursor']
-- 2026-09-24T01:15:20Z — D-audit-Deliverable-Render--2026-09-24T01-13-07Z — claimed by driver (agent cursor)
-- 2026-09-24T01:17:45Z — D-audit-Deliverable-Render--2026-09-24T01-13-07Z — done — cursor produced 482 words at artifacts/audits/Deliverable-Render-2026-09-24.md in 107s
-- 2026-09-24T01:33:27Z — D-audit-Doc-Lineage--2026-09-24T01-13-13Z — route — router picked cursor from ['codex', 'cursor']
-- 2026-09-24T01:33:27Z — D-audit-Doc-Lineage--2026-09-24T01-13-13Z — claimed by driver (agent cursor)
-- 2026-09-24T01:37:01Z — D-audit-Doc-Lineage--2026-09-24T01-13-13Z — done — cursor produced 427 words at artifacts/audits/Doc-Lineage-2026-09-24.md in 182s
-- 2026-09-24T01:37:02Z — D-audit-Doc-Lineage--2026-09-24T01-13-13Z — refutation posted — stranske/Doc-Lineage#47
-- 2026-09-24T01:37:04Z — D-audit-Doc-Lineage--2026-09-24T01-13-13Z — refutation posted — stranske/Doc-Lineage#48
-- 2026-09-24T01:37:05Z — D-audit-Doc-Lineage--2026-09-24T01-13-13Z — refutation posted — stranske/Doc-Lineage#49
-- 2026-09-24T01:37:07Z — D-audit-Doc-Lineage--2026-09-24T01-13-13Z — refutation posted — stranske/Doc-Lineage#50
-- 2026-09-24T01:37:08Z — D-audit-Doc-Lineage--2026-09-24T01-13-13Z — refutation posted — stranske/Doc-Lineage#51
+- 2026-09-24T02:11:33Z — mirror — FAILED — RuntimeError; pending commits retained for next tick
+- 2026-09-24T02:15:37Z — D-audit-Travel-Plan-Permission--2026-09-23T22-11-14Z — done — cursor produced 435 words at artifacts/audits/Travel-Plan-Permission-2026-09-23.md in 307s
+- 2026-09-24T02:15:38Z — D-audit-Travel-Plan-Permission--2026-09-23T22-11-14Z — refutation posted — stranske/Travel-Plan-Permission#1592
+- 2026-09-24T02:15:39Z — D-audit-Travel-Plan-Permission--2026-09-23T22-11-14Z — refutation posted — stranske/Travel-Plan-Permission#1593
+- 2026-09-24T02:15:40Z — D-audit-Travel-Plan-Permission--2026-09-23T22-11-14Z — refutation posted — stranske/Travel-Plan-Permission#1595
+- 2026-09-24T02:15:42Z — D-audit-Travel-Plan-Permission--2026-09-23T22-11-14Z — refutation posted — stranske/Travel-Plan-Permission#1596
+- 2026-09-24T02:15:42Z — mirror — FAILED — RuntimeError; pending commits retained for next tick
+- 2026-09-24T02:17:31Z — D-audit-Trend_Model_Project--2026-09-23T22-11-14Z — done — Scorecard: 3 work / 1 partial / 0 broken / 0 fabricated / 0 not exercised of 4; journey: passes; surfaces unscored 0; closed-still-broken 0. Backfilled the malf
+- 2026-09-24T02:17:32Z — D-audit-Trend_Model_Project--2026-09-23T22-11-14Z — refutation posted — stranske/Trend_Model_Project#6053
+- 2026-09-24T02:17:33Z — mirror — FAILED — RuntimeError; pending commits retained for next tick
+- 2026-09-24T02:30:45Z — D-audit-Workflows--2026-09-23T22-11-13Z — route — router picked cursor from ['codex', 'cursor']
+- 2026-09-24T02:30:45Z — D-audit-Workflows--2026-09-23T22-11-13Z — claimed by driver (agent cursor)
 
 ## Questions
 

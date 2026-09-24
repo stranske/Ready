@@ -1,3 +1,15 @@
+## 2026-09-24T02:30:00Z — D-audit-Trend_Model_Project--2026-09-23T22-11-14Z — complete
+
+Track D refill on tip `eb7ecfb` (+1 commit, PR #6056): scorecard 3 work / 1 partial / 0 broken / 0 fabricated / 0 not exercised of 4; journey passes; surfaces unscored 0. Backfilled headline on canonical `2026-09-23-SCORECARD.md`; new `2026-09-24-SCORECARD.md`. REFUTED #6053; #6054/#6055 still reproduce. 0 issues filed (`gh` HTTP 401). OUT `artifacts/audits/Trend_Model_Project-2026-09-23.md`.
+
+## 2026-09-24T02:22:00Z — D-audit-Travel-Plan-Permission--2026-09-23T22-11-14Z — complete
+
+Track D refill on tip `82ff0e9` (+4 commits since `3aee8e8`): scorecard 6 work / 1 partial / 0 broken / 0 fabricated / 0 not exercised of 7; journey passes; surfaces unscored 12. Backfilled parseable headline on canonical `2026-09-23-SCORECARD.md`; new `2026-09-24-SCORECARD.md`. REFUTED #1592/#1593/#1595/#1596; #1594 still reproduces. 0 issues filed (`gh` unauthenticated). OUT `artifacts/audits/Travel-Plan-Permission-2026-09-23.md`.
+
+## 2026-09-24T02:18:00Z — D-audit-Inv-Man-Intake--2026-09-24T01-13-11Z — complete
+
+Track D refill on unchanged tip `5f95244`: scorecard 5 work / 2 partial / 0 broken / 0 fabricated / 0 not exercised of 7; journey passes; surfaces unscored 1. Backfilled parseable headline on canonical `2026-09-23-SCORECARD.md`; new `2026-09-24-SCORECARD.md`. REFUTED #693; 0 issues filed (`gh` unauthenticated). OUT `artifacts/audits/Inv-Man-Intake-2026-09-24.md`.
+
 ## 2026-09-23T14:11:15Z — D-audit-Workflows--2026-09-23T09-11-15Z — claimed
 
 Phase 0 complete: read the mandatory D-audit brief, owner notes, Workflows dossier, repo-audit method and its current references, prior Workflows records, and current GitHub issue inventory. Fresh shallow clone is at `[LOCAL_WORKSPACE]/Workflows`, remote `main` tip `864b6e3053ce5135e8bc56cfac308edd56fa0108`. Proceeding with bash-only orientation and live CLI scorecard probes.
@@ -67,3 +79,7 @@ Evening refill on `43a86ec` (+1 commit, #2306 merged). Scorecard F1–F2 WORKS, 
 ## 2026-09-24T01:15:00Z — D-audit-Portable-Alpha-Extension-Model--2026-09-23T22-11-14Z — attempt 2 reconciliation complete
 
 The canonical 2026-09-23 scorecard parses on the live engine (`refill_trigger_for`: healthy), so the reissued claim was stale queue state rather than a headline defect. At unchanged tip `43a86ec`, the exact #2307 reproduction still exits 0 with its workbook present and zero PNG artifacts; #2307 remains the open, non-duplicate product gap. #2306 remains refuted on live disclaimer text. No new issue filed; OUT updated in place.
+
+## 2026-09-24T02:27:00Z — D-audit-Trend_Model_Project--2026-09-23T22-11-14Z — complete
+
+Reconciled the malformed 2026-09-23 scorecard headline and refreshed the audit clone to `eb7ecfb`. #6056 merged #6053; the focused multi-period regime-export gate passed 3/3, moving C2/C4 to WORKS. Current scorecard: 3 work / 1 partial / 0 broken / 0 fabricated / 0 not exercised of 4; journey passes; surfaces unscored 0. #6054/#6055 remain open; no new issue filed. OUT `artifacts/audits/Trend_Model_Project-2026-09-23.md`.

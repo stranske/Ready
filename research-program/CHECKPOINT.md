@@ -1809,3 +1809,26 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-24T01:37:05Z — D-audit-Doc-Lineage--2026-09-24T01-13-13Z — refutation posted — stranske/Doc-Lineage#49
 ## 2026-09-24T01:37:07Z — D-audit-Doc-Lineage--2026-09-24T01-13-13Z — refutation posted — stranske/Doc-Lineage#50
 ## 2026-09-24T01:37:08Z — D-audit-Doc-Lineage--2026-09-24T01-13-13Z — refutation posted — stranske/Doc-Lineage#51
+## 2026-09-24T01:52:56Z — D-audit-Inv-Man-Intake--2026-09-24T01-13-11Z — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-24T01:52:56Z — D-audit-Inv-Man-Intake--2026-09-24T01-13-11Z — claimed by driver (agent cursor)
+## 2026-09-24T01:52:56Z — mirror — FAILED — RuntimeError; pending commits retained for next tick
+## 2026-09-24T01:55:22Z — D-audit-Inv-Man-Intake--2026-09-24T01-13-11Z — done — cursor produced 400 words at artifacts/audits/Inv-Man-Intake-2026-09-24.md in 137s
+## 2026-09-24T01:55:24Z — D-audit-Inv-Man-Intake--2026-09-24T01-13-11Z — refutation posted — stranske/Inv-Man-Intake#693
+## 2026-09-24T01:55:24Z — mirror — FAILED — RuntimeError; pending commits retained for next tick
+## 2026-09-24T02:10:26Z — D-audit-Travel-Plan-Permission--2026-09-23T22-11-14Z — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-24T02:10:26Z — D-audit-Travel-Plan-Permission--2026-09-23T22-11-14Z — claimed by driver (agent cursor)
+## 2026-09-24T02:10:27Z — mirror — FAILED — RuntimeError; pending commits retained for next tick
+## 2026-09-24T02:11:33Z — D-audit-Trend_Model_Project--2026-09-23T22-11-14Z — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-24T02:11:33Z — D-audit-Trend_Model_Project--2026-09-23T22-11-14Z — claimed by codex (agent cursor)
+## 2026-09-24T02:11:33Z — mirror — FAILED — RuntimeError; pending commits retained for next tick
+## 2026-09-24T02:15:37Z — D-audit-Travel-Plan-Permission--2026-09-23T22-11-14Z — done — cursor produced 435 words at artifacts/audits/Travel-Plan-Permission-2026-09-23.md in 307s
+## 2026-09-24T02:15:38Z — D-audit-Travel-Plan-Permission--2026-09-23T22-11-14Z — refutation posted — stranske/Travel-Plan-Permission#1592
+## 2026-09-24T02:15:39Z — D-audit-Travel-Plan-Permission--2026-09-23T22-11-14Z — refutation posted — stranske/Travel-Plan-Permission#1593
+## 2026-09-24T02:15:40Z — D-audit-Travel-Plan-Permission--2026-09-23T22-11-14Z — refutation posted — stranske/Travel-Plan-Permission#1595
+## 2026-09-24T02:15:42Z — D-audit-Travel-Plan-Permission--2026-09-23T22-11-14Z — refutation posted — stranske/Travel-Plan-Permission#1596
+## 2026-09-24T02:15:42Z — mirror — FAILED — RuntimeError; pending commits retained for next tick
+## 2026-09-24T02:17:31Z — D-audit-Trend_Model_Project--2026-09-23T22-11-14Z — done — Scorecard: 3 work / 1 partial / 0 broken / 0 fabricated / 0 not exercised of 4; journey: passes; surfaces unscored 0; closed-still-broken 0. Backfilled the malf
+## 2026-09-24T02:17:32Z — D-audit-Trend_Model_Project--2026-09-23T22-11-14Z — refutation posted — stranske/Trend_Model_Project#6053
+## 2026-09-24T02:17:33Z — mirror — FAILED — RuntimeError; pending commits retained for next tick
+## 2026-09-24T02:30:45Z — D-audit-Workflows--2026-09-23T22-11-13Z — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-24T02:30:45Z — D-audit-Workflows--2026-09-23T22-11-13Z — claimed by driver (agent cursor)
