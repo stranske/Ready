@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-24T01:17:45Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-24T01:33:27Z)
 
-Units: 195 — done 185, failed 5, queued 5
+Units: 195 — claimed 1, done 185, failed 5, queued 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 Orchestrator evidence (30d): offload runs 239, bound to a research round 193, scored 193 (PASS 130, FAIL 63, infra 19) — codex 28/29 (P9 F19 I6), cursor 105/138 (P81 F24 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
@@ -135,7 +135,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Doc-Lineage--2026-09-19T20-12-10Z | D | D | done | codex | codex | Audit stranske/Doc-Lineage and file issues (supply 2 <= 2) |  |
 | D-audit-Doc-Lineage--2026-09-23T09-11-20Z | D | D | done | cursor | driver | Audit stranske/Doc-Lineage and file issues (scorecard 2026-09-20 has n | 4W/1P/0B/0F of 5 |
 | D-audit-Doc-Lineage--2026-09-23T22-11-18Z | D | D | done | cursor | driver | Audit stranske/Doc-Lineage and file issues (scorecard 2026-09-23 has n | 4W/1P/0B/0F of 5 |
-| D-audit-Doc-Lineage--2026-09-24T01-13-13Z | D | D | queued | claude |  | Audit stranske/Doc-Lineage and file issues (scorecard 2026-09-23 has n |  |
+| D-audit-Doc-Lineage--2026-09-24T01-13-13Z | D | D | claimed | cursor | driver | Audit stranske/Doc-Lineage and file issues (scorecard 2026-09-23 has n |  |
 | D-audit-Fine-Art-Archive--2026-09-05T04-00-31Z | D | D | done | codex | codex | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 2) |  |
 | D-audit-Fine-Art-Archive--2026-09-06T04-25-53Z | D | D | done | codex | driver | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 3) |  |
 | D-audit-Fine-Art-Archive--2026-09-23T09-11-19Z | D | D | failed | cursor |  | Audit stranske/Fine-Art-Archive and file issues (scorecard 2026-09-20  |  |
@@ -207,8 +207,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-24T00:54:24Z — D-audit-Portable-Alpha-Extension-Model--2026-09-23T22-11-14Z — claimed by driver (agent cursor)
-- 2026-09-24T01:00:17Z — D-audit-Portable-Alpha-Extension-Model--2026-09-23T22-11-14Z — fail — cursor produced 378 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Portable-Alpha-Extension-Model-2026-09-23.md (min 400); rotatin
 - 2026-09-24T01:11:31Z — D-audit-Portable-Alpha-Extension-Model--2026-09-23T22-11-14Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-24T01:11:31Z — D-audit-Portable-Alpha-Extension-Model--2026-09-23T22-11-14Z — claimed by codex (agent cursor)
 - 2026-09-24T01:13:07Z — refill — Deliverable-Render: scorecard 2026-09-23 has no parseable headline → audit queued
@@ -219,6 +217,8 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-24T01:15:20Z — D-audit-Deliverable-Render--2026-09-24T01-13-07Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-24T01:15:20Z — D-audit-Deliverable-Render--2026-09-24T01-13-07Z — claimed by driver (agent cursor)
 - 2026-09-24T01:17:45Z — D-audit-Deliverable-Render--2026-09-24T01-13-07Z — done — cursor produced 482 words at artifacts/audits/Deliverable-Render-2026-09-24.md in 107s
+- 2026-09-24T01:33:27Z — D-audit-Doc-Lineage--2026-09-24T01-13-13Z — route — router picked cursor from ['codex', 'cursor']
+- 2026-09-24T01:33:27Z — D-audit-Doc-Lineage--2026-09-24T01-13-13Z — claimed by driver (agent cursor)
 
 ## Questions
 

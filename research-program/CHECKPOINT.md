@@ -1801,3 +1801,5 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-24T01:15:20Z — D-audit-Deliverable-Render--2026-09-24T01-13-07Z — route — router picked cursor from ['codex', 'cursor']
 ## 2026-09-24T01:15:20Z — D-audit-Deliverable-Render--2026-09-24T01-13-07Z — claimed by driver (agent cursor)
 ## 2026-09-24T01:17:45Z — D-audit-Deliverable-Render--2026-09-24T01-13-07Z — done — cursor produced 482 words at artifacts/audits/Deliverable-Render-2026-09-24.md in 107s
+## 2026-09-24T01:33:27Z — D-audit-Doc-Lineage--2026-09-24T01-13-13Z — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-24T01:33:27Z — D-audit-Doc-Lineage--2026-09-24T01-13-13Z — claimed by driver (agent cursor)
