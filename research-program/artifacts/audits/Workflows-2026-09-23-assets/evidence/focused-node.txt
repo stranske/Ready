@@ -1,0 +1,89 @@
+Switching to token SERVICE_BOT_PAT due to primary rate limit
+Switching to token TOKEN_B due to primary rate limit
+Switching to token TOKEN_B due to primary rate limit
+Primary rate limit exhausted and no alternative token found. Token: TOKEN_A. Check token rotation and rate limit budgets.
+Primary rate limit exhausted and no alternative token found. Token: TOKEN_A. Check token rotation and rate limit budgets.
+Primary rate limit exhausted and no alternative token found. Token: TOKEN_A. Check token rotation and rate limit budgets.
+secondary rate limit (attempt 1/3). Retrying in 0s...
+✔ exports rate limit classifiers for workflow fail-open guards (0.607667ms)
+✔ GraphQL quota errors rotate but permission errors do not (0.1885ms)
+✔ withRetry rotates a statusless GraphQL quota response for a read (1.612875ms)
+✔ withRetry switches tokens on primary rate limit errors (0.288334ms)
+✔ paginateWithRetry switches tokens on primary rate limit errors (0.8935ms)
+✔ createTokenAwareRetry initializes registry from env secrets (0.638417ms)
+✔ createTokenAwareRetry falls back when registry initialization fails (1.2055ms)
+✔ createTokenAwareRetry skips registry initialization when no token inputs exist (0.159ms)
+✔ createTokenAwareRetry falls back when token selection fails (0.372458ms)
+✔ withRetry ignores token selection errors (36.284333ms)
+✔ withRetry records token usage on rate limit errors without headers (0.459375ms)
+✔ withRetry records token usage when headers lack rate limit fields (0.139584ms)
+✔ withRetry fails fast on primary rate limit exhaustion and logs incident (31.437375ms)
+secondary rate limit (attempt 2/3). Retrying in 0s...
+Max retries (2) reached for secondary rate limit
+Max retries (2) reached for secondary rate limit. Token: unknown. A secondary rate limit (abuse detection) was repeatedly hit. Reduce concurrency or spread requests over a longer period.
+Max retries (0) reached for transient error
+Max retries (0) reached for transient error. Token: unknown. Repeated transient failures despite retries. Check network conditions and GitHub status.
+Primary rate limit exhausted and no alternative token found. Token: TOKEN_A. Check token rotation and rate limit budgets.
+Primary rate limit exhausted and no alternative token found. Token: TOKEN_A. Check token rotation and rate limit budgets.
+Primary rate limit exhausted and no alternative token found. Token: TOKEN_A. Check token rotation and rate limit budgets.
+Failed to check rate limit: probe failed
+Failed to check rate limit: probe failed
+Rate limit low: 50/5000 remaining (99% used). Required: 1000 (0 reserve + 0 forecast). Resets at 2023-11-14T22:13:20.000Z
+Rate limit low: 249/1000 remaining (75% used). Required: 250 (150 reserve + 100 forecast). Resets at 2023-11-14T22:13:20.000Z
+Rate limit OK: 4000/5000 remaining (20% used)
+✔ withRetry preserves retries for secondary rate limit errors (74.10825ms)
+✔ withRetry does not record ordinary transient failures as rate-limit incidents (0.949041ms)
+✔ withRetry incident logging appends to and preserves existing NDJSON rows (0.799042ms)
+✔ withRetry only defaults the incident log path under artifacts/ when GITHUB_ACTIONS=true (0.702958ms)
+✔ checkRateLimitStatus fails closed on probe errors by default (0.708333ms)
+✔ checkRateLimitStatus can fail open for ancillary probes (0.10075ms)
+✔ checkRateLimitStatus blocks API-heavy work below threshold (1.236625ms)
+✔ checkRateLimitStatus protects a percentage reserve plus forecast cost (0.188584ms)
+✔ checkRateLimitStatus probes an already wrapped consuming pool without reselection (0.182042ms)
+✔ isRateLimitWrapped returns false for plain object (0.574833ms)
+✔ isRateLimitWrapped returns false for null (0.066125ms)
+✔ isRateLimitWrapped returns false for undefined (0.741333ms)
+✔ isRateLimitWrapped returns true for object with __rateLimitWrapped (0.555917ms)
+✔ isRateLimitWrapped returns false for object with __rateLimitWrapped=false (0.09625ms)
+✔ isTestMock returns false for null (0.086042ms)
+✔ isTestMock returns false for undefined (0.057125ms)
+✔ isTestMock returns true for simple mock with only rest property (1.187834ms)
+✔ isTestMock returns true for object with __testMock marker (0.220917ms)
+✔ isTestMock returns false for Octokit-like object with request and hook (1.13075ms)
+✔ wrapWithRateLimitedGithub module exports expected functions (0.133ms)
+✔ wrapWithRateLimitedGithub returns a function (0.091792ms)
+✔ createRateLimitedGithub throws without github client (1.336167ms)
+✔ createRateLimitedGithub throws with null github client (31.886375ms)
+✔ wrapped client preserves paginate.iterator method (3.549042ms)
+✔ wrapped paginate.iterator returns async iterable (22.388792ms)
+✔ wrapped paginate.iterator exposes full AsyncIterator interface (0.608958ms)
+✔ wrapped paginate.iterator return() delegates to original (0.199875ms)
+✔ wrapped paginate.iterator throw() delegates to original (0.180875ms)
+✔ Maint 71 review reads prefer the service-bot quota over the owner quota (1.266958ms)
+✔ GraphQL read selection ignores exhausted REST core and rejects exhausted GraphQL (0.182083ms)
+✔ shouldDefer: returns false when at least one token exceeds the threshold (0.109084ms)
+✔ shouldDefer: returns true when all tokens are below the threshold (0.084417ms)
+✔ shouldDefer: returns true when exactly at threshold (< not <=) (0.087416ms)
+✔ shouldDefer: returns true when registry is empty (0.05125ms)
+✔ shouldDefer: respects custom minRemaining argument (0.203ms)
+✔ getBestAvailableToken: returns the token with highest remaining capacity (0.159667ms)
+✔ getBestAvailableToken: returns null when registry is empty (0.068417ms)
+✔ getBestAvailableToken: returns the only token when registry has one entry (0.10775ms)
+✔ getBestAvailableToken: handles tokens with zero remaining (0.580167ms)
+✔ hasHealthyTokens: returns true when a token has healthy remaining (>50%) (0.1415ms)
+✔ hasHealthyTokens: returns true when a token is moderate (>20% and <=50%) (1.131375ms)
+✔ hasHealthyTokens: returns false when all tokens are at critical level (0.070208ms)
+✔ hasHealthyTokens: returns false when all tokens are at low level (0.048125ms)
+✔ hasHealthyTokens: returns false when registry is empty (0.229958ms)
+✔ hasHealthyTokens: returns true when mixed critical and healthy tokens exist (0.096042ms)
+✔ TOKEN_CAPABILITIES: statuses is held by GITHUB_TOKEN and PAT but NOT by APP (0.07125ms)
+✔ a broad write-repo request still accepts APP, so the fix narrowed nothing else (49.39825ms)
+✔ statuses:write with only an APP registered returns no token rather than a doomed one (12.783334ms)
+ℹ tests 61
+ℹ suites 0
+ℹ pass 61
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 212.952916

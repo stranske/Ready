@@ -1,0 +1,21 @@
+✔ valid bundle passes content-hash and safety validation (1.402666ms)
+✔ hash mismatch blocks dispatch (0.310708ms)
+✔ unknown capability id is rejected (0.106417ms)
+✔ runtime validation matches schema patterns and top-level fields (0.1905ms)
+✔ missing required owner and rollback fields are rejected (0.13ms)
+✔ unsafe inline prompt or credential fields are rejected (0.148166ms)
+✔ unsafe command-style nested fields and blank gates are rejected (0.214542ms)
+✔ standalone bundle document loads without bundles wrapper (1.058417ms)
+✔ prompt composer applies matching capability and reports exact id and hash (0.823375ms)
+✔ nonmatching bundle reports rejection reason and applies no fragment (0.160583ms)
+✔ keepalive metrics carry applied bundle metadata and rejection reasons (1.4555ms)
+✔ keepalive metrics ignore malformed capability bundle entries (0.081584ms)
+✔ capability bundle metrics input parser preserves applied and rejected arrays (0.11875ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 70.013584

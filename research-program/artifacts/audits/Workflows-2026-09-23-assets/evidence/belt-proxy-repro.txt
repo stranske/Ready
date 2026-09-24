@@ -1,0 +1,3 @@
+tip fccf1c6aa3510fa75fbe7efe1a8f4a3a4538b722
+__rateLimitWrapped true
+Reproduction: 'get' on proxy: property '__getTokenSource' is a read-only and non-configurable data property on the proxy target but the proxy did not return its actual value (expected '() => currentTokenSource' but got 'function () { [native code] }')

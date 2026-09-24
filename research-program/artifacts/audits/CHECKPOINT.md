@@ -1,3 +1,7 @@
+## 2026-09-24T03:55:00Z — D-audit-Workflows--2026-09-23T22-11-13Z — attempt 2 complete
+
+Track D refill attempt 2 on tip `fccf1c6` (+1 commit #3530 since attempt 1): scorecard 4 work / 0 partial / 1 broken / 0 fabricated / 2 not exercised of 7; journey stops at belt scan; surfaces unscored 2. #3525 belt proxy still reproduces on tip (not refuted). 0 issues filed (`gh` HTTP 401). OUT `artifacts/audits/Workflows-2026-09-23.md` line 1 parseable.
+
 ## 2026-09-24T02:40:00Z — D-audit-Workflows--2026-09-23T22-11-13Z — complete
 
 Track D refill on tip `37a83f28` (+3 commits since `864b6e30`): scorecard 4 work / 0 partial / 1 broken / 0 fabricated / 2 not exercised of 7; journey stops at belt scan; surfaces unscored 2. Backfilled headline on canonical `2026-09-23-SCORECARD.md`; new `2026-09-24-SCORECARD.md`. #3525 belt proxy still reproduces locally; 0 issues filed (`gh` HTTP 401). OUT `artifacts/audits/Workflows-2026-09-23.md`.
