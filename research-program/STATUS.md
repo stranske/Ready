@@ -1,8 +1,8 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-24T11:53:32Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-24T12:08:58Z)
 
 Units: 198 — done 192, failed 6
 Paused: False   Phase stops: []
-Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=warn vibe=ok aider=ok
+Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 Orchestrator evidence (30d): offload runs 247, bound to a research round 201, scored 201 (PASS 134, FAIL 67, infra 19) — codex 28/29 (P9 F19 I6), cursor 113/146 (P85 F28 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
 Claude conservation: off (weekly window available)
 Owner inbox: https://github.com/stranske/Ready/issues/553
