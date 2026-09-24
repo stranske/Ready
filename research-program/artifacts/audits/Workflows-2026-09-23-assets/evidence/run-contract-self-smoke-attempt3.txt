@@ -1,0 +1,16 @@
+PASS schema loads + valid Draft202012: artifact-manifest-v1.schema.json
+PASS schema loads + valid Draft202012: capability-bundle-v1.schema.json
+PASS schema loads + valid Draft202012: consumer-sync-plan-v1.schema.json
+PASS schema loads + valid Draft202012: document-mirror-v1.schema.json
+PASS schema loads + valid Draft202012: evidence-object-v1.schema.json
+PASS schema loads + valid Draft202012: langsmith-fleet-v1.schema.json
+PASS schema loads + valid Draft202012: mosaic-core-v1.schema.json
+PASS schema loads + valid Draft202012: output-substrate-v1.schema.json
+PASS schema loads + valid Draft202012: run-contract-v1.schema.json
+PASS schema loads + valid Draft202012: tracked-variable-v1.schema.json
+PASS fixture valid_run.json: expected conform, got conform
+PASS fixture missing_cost.json: expected reject, got reject
+PASS fixture unsafe_rows_inline.json: expected reject, got reject
+PASS fixture unsafe_prompt_inline.json: expected reject, got reject
+PASS fixture artifact_not_in_manifest.json: expected reject, got reject
+PASS fixture bad_identity_ref.json: expected reject, got reject

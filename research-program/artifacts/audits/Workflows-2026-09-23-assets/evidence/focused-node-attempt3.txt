@@ -1,0 +1,69 @@
+Switching to token SERVICE_BOT_PAT due to primary rate limit
+Switching to token TOKEN_B due to primary rate limit
+Switching to token TOKEN_B due to primary rate limit
+Primary rate limit exhausted and no alternative token found. Token: TOKEN_A. Check token rotation and rate limit budgets.
+Primary rate limit exhausted and no alternative token found. Token: TOKEN_A. Check token rotation and rate limit budgets.
+Primary rate limit exhausted and no alternative token found. Token: TOKEN_A. Check token rotation and rate limit budgets.
+secondary rate limit (attempt 1/3). Retrying in 0s...
+✔ exports rate limit classifiers for workflow fail-open guards (0.711291ms)
+✔ GraphQL quota errors rotate but permission errors do not (0.108625ms)
+✔ withRetry rotates a statusless GraphQL quota response for a read (3.886875ms)
+✔ withRetry switches tokens on primary rate limit errors (0.989958ms)
+✔ paginateWithRetry switches tokens on primary rate limit errors (0.223625ms)
+✔ createTokenAwareRetry initializes registry from env secrets (0.325125ms)
+✔ createTokenAwareRetry falls back when registry initialization fails (0.159167ms)
+✔ createTokenAwareRetry skips registry initialization when no token inputs exist (0.102083ms)
+✔ createTokenAwareRetry falls back when token selection fails (0.145708ms)
+✔ withRetry ignores token selection errors (2.506458ms)
+✔ withRetry records token usage on rate limit errors without headers (2.882875ms)
+✔ withRetry records token usage when headers lack rate limit fields (0.164833ms)
+✔ withRetry fails fast on primary rate limit exhaustion and logs incident (2.795334ms)
+secondary rate limit (attempt 2/3). Retrying in 0s...
+Max retries (2) reached for secondary rate limit
+Max retries (2) reached for secondary rate limit. Token: unknown. A secondary rate limit (abuse detection) was repeatedly hit. Reduce concurrency or spread requests over a longer period.
+Max retries (0) reached for transient error
+Max retries (0) reached for transient error. Token: unknown. Repeated transient failures despite retries. Check network conditions and GitHub status.
+Primary rate limit exhausted and no alternative token found. Token: TOKEN_A. Check token rotation and rate limit budgets.
+Primary rate limit exhausted and no alternative token found. Token: TOKEN_A. Check token rotation and rate limit budgets.
+Primary rate limit exhausted and no alternative token found. Token: TOKEN_A. Check token rotation and rate limit budgets.
+Failed to check rate limit: probe failed
+Failed to check rate limit: probe failed
+Rate limit low: 50/5000 remaining (99% used). Required: 1000 (0 reserve + 0 forecast). Resets at 2023-11-14T22:13:20.000Z
+Rate limit low: 249/1000 remaining (75% used). Required: 250 (150 reserve + 100 forecast). Resets at 2023-11-14T22:13:20.000Z
+Rate limit OK: 4000/5000 remaining (20% used)
+✔ withRetry preserves retries for secondary rate limit errors (69.106125ms)
+✔ withRetry does not record ordinary transient failures as rate-limit incidents (4.956375ms)
+✔ withRetry incident logging appends to and preserves existing NDJSON rows (1.874333ms)
+✔ withRetry only defaults the incident log path under artifacts/ when GITHUB_ACTIONS=true (1.556708ms)
+✔ checkRateLimitStatus fails closed on probe errors by default (1.0475ms)
+✔ checkRateLimitStatus can fail open for ancillary probes (0.118458ms)
+✔ checkRateLimitStatus blocks API-heavy work below threshold (6.130791ms)
+✔ checkRateLimitStatus protects a percentage reserve plus forecast cost (0.478916ms)
+✔ checkRateLimitStatus probes an already wrapped consuming pool without reselection (0.586167ms)
+✔ isRateLimitWrapped returns false for plain object (5.030041ms)
+✔ isRateLimitWrapped returns false for null (0.144667ms)
+✔ isRateLimitWrapped returns false for undefined (0.127208ms)
+✔ isRateLimitWrapped returns true for object with __rateLimitWrapped (0.379375ms)
+✔ isRateLimitWrapped returns false for object with __rateLimitWrapped=false (0.098542ms)
+✔ isTestMock returns false for null (0.436584ms)
+✔ isTestMock returns false for undefined (1.522584ms)
+✔ isTestMock returns true for simple mock with only rest property (0.177625ms)
+✔ isTestMock returns true for object with __testMock marker (1.962666ms)
+✔ isTestMock returns false for Octokit-like object with request and hook (0.222542ms)
+✔ wrapWithRateLimitedGithub module exports expected functions (0.087292ms)
+✔ wrapWithRateLimitedGithub returns a function (0.0865ms)
+✔ createRateLimitedGithub throws without github client (1.11525ms)
+✔ createRateLimitedGithub throws with null github client (0.108375ms)
+✔ wrapped client preserves paginate.iterator method (2.916792ms)
+✔ wrapped paginate.iterator returns async iterable (0.576417ms)
+✔ wrapped paginate.iterator exposes full AsyncIterator interface (0.18ms)
+✔ wrapped paginate.iterator return() delegates to original (0.171917ms)
+✔ wrapped paginate.iterator throw() delegates to original (0.185667ms)
+ℹ tests 41
+ℹ suites 0
+ℹ pass 41
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 208.744375
