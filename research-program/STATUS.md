@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-24T23:08:56Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-24T23:11:25Z)
 
-Units: 200 — done 194, failed 6
+Units: 201 — claimed 1, done 194, failed 6
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 Orchestrator evidence (30d): offload runs 248, bound to a research round 201, scored 201 (PASS 134, FAIL 67, infra 19) — codex 28/30 (P9 F19 I6), cursor 113/146 (P85 F28 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
@@ -179,6 +179,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Workflows--2026-09-23T09-11-15Z | D | D | done | codex | codex | Audit stranske/Workflows and file issues (scorecard 2026-09-20 has no  | 4W/0P/1B/0F of 7 |
 | D-audit-Workflows--2026-09-23T22-11-13Z | D | D | failed | cursor |  | Audit stranske/Workflows and file issues (scorecard 2026-09-23 has no  |  |
 | D-audit-Workflows--2026-09-24T11-10-38Z | D | D | done | cursor | codex | Audit stranske/Workflows and file issues (scorecard 2026-09-24: 1 brok | 4W/0P/1B/0F of 7 |
+| D-audit-Workflows--2026-09-24T23-11-20Z | D | D | claimed | cursor | codex | Audit stranske/Workflows and file issues (scorecard 2026-09-24: 1 brok |  |
 | D-audit-learning-management-system--2026-09-05T04-00-30Z | D | D | done | codex | driver | Audit stranske/learning-management-system and file issues (supply 2 <= |  |
 | D-audit-learning-management-system--2026-09-06T16-33-31Z | D | D | done | codex | driver | Audit stranske/learning-management-system and file issues (supply 1 <= |  |
 | D-audit-learning-management-system--2026-09-08T05-06-08Z | D | D | done | codex | codex | Audit stranske/learning-management-system and file issues (supply 1 <= |  |
@@ -212,9 +213,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-24T15:57:36Z — mirror — deferred — Ready#586 exact-head sync review; publication resumes by 2026-09-24T17:49:45+00:00; local work continues
-- 2026-09-24T16:10:46Z — mirror — deferred — Ready#586 exact-head sync review; publication resumes by 2026-09-24T17:49:45+00:00; local work continues
-- 2026-09-24T16:12:39Z — mirror — deferred — Ready#586 exact-head sync review; publication resumes by 2026-09-24T17:49:45+00:00; local work continues
 - 2026-09-24T16:28:10Z — mirror — deferred — Ready#586 exact-head sync review; publication resumes by 2026-09-24T17:49:45+00:00; local work continues
 - 2026-09-24T19:33:09Z — mirror — deferred — Ready#590 exact-head sync review; publication resumes by 2026-09-24T21:29:14+00:00; local work continues
 - 2026-09-24T19:48:13Z — mirror — deferred — Ready#590 exact-head sync review; publication resumes by 2026-09-24T21:29:14+00:00; local work continues
@@ -224,6 +222,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-24T21:11:55Z — D3-unblock-sweep-2026-09-24T21 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-24T21:11:55Z — D3-unblock-sweep-2026-09-24T21 — claimed by codex (agent cursor)
 - 2026-09-24T21:18:08Z — D3-unblock-sweep-2026-09-24T21 — done — Covered the first eight supported repositories, repaired 37 mechanical format pauses, and retained only the genuine LangSmith owner gate.
+- 2026-09-24T23:11:20Z — refill — Workflows: scorecard 2026-09-24: 1 broken / 0 fabricated → audit queued
+- 2026-09-24T23:11:25Z — D-audit-Workflows--2026-09-24T23-11-20Z — route — router picked cursor from ['codex', 'cursor']
+- 2026-09-24T23:11:25Z — D-audit-Workflows--2026-09-24T23-11-20Z — claimed by codex (agent cursor)
 
 ## Questions
 
