@@ -223,9 +223,7 @@ def test_documented_private_key_fixture_can_survive_publication_copy(tmp_path, s
         content = json.dumps({"fixture": content})
     path.write_text(content)
     allowlist = tmp_path / ".publication-allow"
-    allowlist.write_text(
-        f"{path.name}:private-key # Reviewed synthetic historical evidence.\n"
-    )
+    allowlist.write_text(f"{path.name}:private-key # Reviewed synthetic historical evidence.\n")
 
     counts = prepare.prepare_copy(tmp_path, allowlist)
 
