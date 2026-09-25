@@ -135,14 +135,12 @@ def test_black_force_exclude_required_for_explicit_paths(tmp_path: Path) -> None
     artifact.parent.mkdir(parents=True)
     unformatted = "values=[1,2,3]\n"
     artifact.write_text(unformatted)
-    # Isolate force-exclude: extend-exclude would otherwise satisfy explicit-path skips.
+    # Keep extend-exclude from pyproject.toml; only force-exclude is varied below.
     command = [
         sys.executable,
         "-m",
         "black",
         "--check",
-        "--extend-exclude",
-        "",
         "research-program/artifacts/nested/probe.py",
     ]
 
