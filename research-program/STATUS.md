@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-25T00:57:10Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-25T01:11:53Z)
 
 Units: 201 — claimed 1, done 194, failed 6
 Paused: False   Phase stops: []
@@ -213,9 +213,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-24T16:28:10Z — mirror — deferred — Ready#586 exact-head sync review; publication resumes by 2026-09-24T17:49:45+00:00; local work continues
-- 2026-09-24T19:33:09Z — mirror — deferred — Ready#590 exact-head sync review; publication resumes by 2026-09-24T21:29:14+00:00; local work continues
-- 2026-09-24T19:48:13Z — mirror — deferred — Ready#590 exact-head sync review; publication resumes by 2026-09-24T21:29:14+00:00; local work continues
 - 2026-09-24T20:03:16Z — mirror — deferred — Ready#590 exact-head sync review; publication resumes by 2026-09-24T21:29:14+00:00; local work continues
 - 2026-09-24T20:10:49Z — mirror — deferred — Ready#590 exact-head sync review; publication resumes by 2026-09-24T21:29:14+00:00; local work continues
 - 2026-09-24T21:11:54Z — unblock — enqueued D3-unblock-sweep-2026-09-24T21
@@ -225,6 +222,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-24T23:11:20Z — refill — Workflows: scorecard 2026-09-24: 1 broken / 0 fabricated → audit queued
 - 2026-09-24T23:11:25Z — D-audit-Workflows--2026-09-24T23-11-20Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-24T23:11:25Z — D-audit-Workflows--2026-09-24T23-11-20Z — claimed by codex (agent cursor)
+- 2026-09-25T01:11:53Z — D-audit-Workflows--2026-09-24T23-11-20Z — claim released (stale)
+- 2026-09-25T01:11:53Z — D-audit-Workflows--2026-09-24T23-11-20Z — route — router picked cursor from ['codex', 'cursor']
+- 2026-09-25T01:11:53Z — D-audit-Workflows--2026-09-24T23-11-20Z — claimed by codex (agent cursor)
 
 ## Questions
 

@@ -1907,3 +1907,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-24T23:11:20Z — refill — Workflows: scorecard 2026-09-24: 1 broken / 0 fabricated → audit queued
 ## 2026-09-24T23:11:25Z — D-audit-Workflows--2026-09-24T23-11-20Z — route — router picked cursor from ['codex', 'cursor']
 ## 2026-09-24T23:11:25Z — D-audit-Workflows--2026-09-24T23-11-20Z — claimed by codex (agent cursor)
+## 2026-09-25T01:11:53Z — D-audit-Workflows--2026-09-24T23-11-20Z — claim released (stale)
+## 2026-09-25T01:11:53Z — D-audit-Workflows--2026-09-24T23-11-20Z — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-25T01:11:53Z — D-audit-Workflows--2026-09-24T23-11-20Z — claimed by codex (agent cursor)
