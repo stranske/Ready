@@ -1077,3 +1077,11 @@
 - 2026-09-24T21:17:35Z D3-unblock-sweep-2026-09-24T21: Inv-Man-Intake complete; frozen 1/1 repaired (#985); owner 0; silent 0/0; reroutes 0; branch green/in-progress health; supply 2; priority 2/2.
 - 2026-09-24T21:17:35Z D3-unblock-sweep-2026-09-24T21: Pension-Data complete; frozen 4/4 repaired (#919-#922); owner 0; silent 0/0; reroutes 0; last sampled CI green; supply 6; priority 6/6.
 - 2026-09-24T21:17:35Z D3-unblock-sweep-2026-09-24T21: sweep complete; 8 covered 7 deferred (plus Orchestrator out of scope); 37 frozen format pauses repaired; 0 silent claims released; 0 PR reroutes; no current sampled default-branch Gate/CI failure; total supply 102.
+- 2026-09-25T05:35:16Z D3-unblock-sweep-2026-09-25T05: Workflows complete; frozen remaining 1 (#3123); repaired 6; supply 42; branch green.
+- 2026-09-25T05:35:16Z D3-unblock-sweep-2026-09-25T05: Travel-Plan-Permission complete; frozen remaining 0; repaired 26; supply 34; branch green.
+- 2026-09-25T05:35:16Z D3-unblock-sweep-2026-09-25T05: Trend_Model_Project complete; frozen remaining 0; repaired 0; supply 5; branch green.
+- 2026-09-25T05:35:16Z D3-unblock-sweep-2026-09-25T05: Portable-Alpha-Extension-Model complete; frozen remaining 0; repaired 0; supply 5; branch skipped-sample.
+- 2026-09-25T05:35:16Z D3-unblock-sweep-2026-09-25T05: Counter_Risk complete; frozen remaining 0; repaired 0; supply 7; branch green.
+- 2026-09-25T05:35:16Z D3-unblock-sweep-2026-09-25T05: Manager-Database complete; frozen remaining 0; repaired 0; supply 3; branch green.
+- 2026-09-25T05:35:16Z D3-unblock-sweep-2026-09-25T05: Inv-Man-Intake complete; frozen remaining 0; repaired 1; supply 2; branch green.
+- 2026-09-25T05:35:16Z D3-unblock-sweep-2026-09-25T05: Pension-Data complete; frozen remaining 0; repaired 4; supply 6; branch green.

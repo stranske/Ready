@@ -1,0 +1,12 @@
+[
+  {
+    "n": 985,
+    "title": "D4 follow-up: deliberate-break transcript missing for #949 (merged PR #981)",
+    "labels": [
+      "agents:auto-pilot-pause",
+      "priority:normal"
+    ],
+    "body_head": "## Why\n\nD4 verification found that merged PR #981 lacks a durable deliberate-break fail-to-pass transcript for this follow-up.\n\n## Scope\n\nRecover only existing evidence from PR #981 and the linked sou",
+    "guard": "\u26a0\ufe0f **Workflow failed**\n\nThe agents-issue-optimizer workflow encountered an error.\n\n**Details**: [View workflow run](https://github.com/stranske/Inv-Man-Intake/actions/runs/36060672679)\n\n**Format validation report:**\n```text\nThis issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Tasks` item must name a concrete file, symbol, path, config key, job, or command: `Post a sourced disposition to PR #981 or the linked source issue, or open a narrowly scoped evidence follow-up"
+  }
+]

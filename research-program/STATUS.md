@@ -1,9 +1,9 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-25T05:26:38Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-25T05:51:27Z)
 
 Units: 203 — claimed 1, done 196, failed 6
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
-Orchestrator evidence (30d): offload runs 250, bound to a research round 203, scored 203 (PASS 136, FAIL 67, infra 19) — codex 28/30 (P9 F19 I6), cursor 115/148 (P87 F28 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
+Orchestrator evidence (30d): offload runs 251, bound to a research round 204, scored 204 (PASS 136, FAIL 68, infra 19) — codex 28/30 (P9 F19 I6), cursor 116/149 (P87 F29 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
 Claude conservation: off (weekly window available)
 Owner inbox: https://github.com/stranske/Ready/issues/553
 
@@ -215,9 +215,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-25T01:11:53Z — D-audit-Workflows--2026-09-24T23-11-20Z — claimed by codex (agent cursor)
-- 2026-09-25T01:17:01Z — D-audit-Workflows--2026-09-24T23-11-20Z — done — Scorecard: 4 work / 0 partial / 1 broken / 0 fabricated / 2 not exercised of 7; journey: stops at "Scan belt promotion queue"; surfaces unscored 2; closed-still
-- 2026-09-25T01:17:01Z — D-audit-Workflows--2026-09-24T23-11-20Z — evidence — 1 unscored offload run(s) recorded PASS (executor codex report)
 - 2026-09-25T03:32:33Z — verify — enqueued D4-verify-merged-2026-09-25T03
 - 2026-09-25T03:32:33Z — D4-verify-merged-2026-09-25T03 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-25T03:32:33Z — D4-verify-merged-2026-09-25T03 — claimed by driver (agent cursor)
@@ -227,6 +224,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-25T05:26:38Z — unblock — enqueued D3-unblock-sweep-2026-09-25T05
 - 2026-09-25T05:26:38Z — D3-unblock-sweep-2026-09-25T05 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-25T05:26:38Z — D3-unblock-sweep-2026-09-25T05 — claimed by driver (agent cursor)
+- 2026-09-25T05:36:25Z — D3-unblock-sweep-2026-09-25T05 — fail — cursor produced 345 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/sweeps/D3-unblock-sweep-2026-09-25T05.md (min 400); rotating agent
+- 2026-09-25T05:51:27Z — D3-unblock-sweep-2026-09-25T05 — route — router picked cursor from ['codex', 'cursor']
+- 2026-09-25T05:51:27Z — D3-unblock-sweep-2026-09-25T05 — claimed by driver (agent cursor)
 
 ## Questions
 

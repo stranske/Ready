@@ -1,0 +1,82 @@
+[
+  {
+    "n": 3579,
+    "title": "[sync-review] Fix upstream manifest-synced paths blocking stranske/Portable-Alph",
+    "labels": [
+      "automation",
+      "agents:auto-pilot-pause",
+      "consumer-sync"
+    ],
+    "body_head": "## Upstream sync review debt\n\nConsumer delivery PR: stranske/Portable-Alpha-Extension-Model#2313\n\nManifest-synced paths with unresolved bot review threads:\n- consumer `.github/workflows/agents-auto-pi",
+    "guard": "<!-- format-guard:attempt-cap -->\nAutomated formatting stopped after 3 optimizer attempts. Fix the issue body manually, then remove agents:auto-pilot-pause before retrying.\n"
+  },
+  {
+    "n": 3558,
+    "title": "[sync-review] Fix upstream manifest-synced paths blocking stranske/Travel-Plan-P",
+    "labels": [
+      "automation",
+      "agents:auto-pilot-pause",
+      "consumer-sync"
+    ],
+    "body_head": "## Why\n\nA consumer sync review reports unresolved threads for the manifest-synced source path docs/contracts/schemas/mosaic-core-v1.schema.json. The path was verified at the current Workflows tip.\n\n##",
+    "guard": "<!-- format-guard:attempt-cap -->\nAutomated formatting stopped after 3 optimizer attempts. Fix the issue body manually, then remove agents:auto-pilot-pause before retrying.\n"
+  },
+  {
+    "n": 3557,
+    "title": "[sync-review] Fix upstream manifest-synced paths blocking stranske/Portable-Alph",
+    "labels": [
+      "automation",
+      "agents:auto-pilot-pause",
+      "consumer-sync"
+    ],
+    "body_head": "## Why\n\nA consumer sync review reports unresolved threads for the manifest-synced source path .github/scripts/belt_claim_reclaim.js. The path was verified at the current Workflows tip.\n\n## Scope\n\nRevi",
+    "guard": "<!-- format-guard:attempt-cap -->\nAutomated formatting stopped after 3 optimizer attempts. Fix the issue body manually, then remove agents:auto-pilot-pause before retrying.\n"
+  },
+  {
+    "n": 3556,
+    "title": "[sync-review] Fix upstream manifest-synced paths blocking stranske/Travel-Plan-P",
+    "labels": [
+      "automation",
+      "agents:auto-pilot-pause",
+      "consumer-sync"
+    ],
+    "body_head": "## Why\n\nA consumer sync review reports unresolved threads for the manifest-synced source path templates/consumer-repo/.github/workflows/agents-keepalive-sweep.yml. The path was verified at the current",
+    "guard": "<!-- format-guard:attempt-cap -->\nAutomated formatting stopped after 3 optimizer attempts. Fix the issue body manually, then remove agents:auto-pilot-pause before retrying.\n"
+  },
+  {
+    "n": 3549,
+    "title": "[sync-review] Fix upstream manifest-synced paths blocking stranske/Orchestrator#",
+    "labels": [
+      "automation",
+      "agents:auto-pilot-pause",
+      "consumer-sync"
+    ],
+    "body_head": "## Why\n\nA consumer sync review reports unresolved threads for the manifest-synced source path templates/consumer-repo/.github/workflows/agents-guard.yml. The path was verified at the current Workflows",
+    "guard": "<!-- format-guard:attempt-cap -->\nAutomated formatting stopped after 3 optimizer attempts. Fix the issue body manually, then remove agents:auto-pilot-pause before retrying.\n"
+  },
+  {
+    "n": 3449,
+    "title": "[sync-review] Fix upstream manifest-synced paths blocking stranske/Ready#573",
+    "labels": [
+      "automation",
+      "agents:auto-pilot-pause",
+      "consumer-sync",
+      "priority:normal"
+    ],
+    "body_head": "## Why\n\nConsumer sync PR stranske/Ready#573 (also stranske/Doc-Lineage#26) has unresolved bot review threads on two manifest-synced paths whose upstream sources live in Workflows:\n\n1. `templates/consu",
+    "guard": "<!-- format-guard:attempt-cap -->\nAutomated formatting stopped after 3 optimizer attempts. Fix the issue body manually, then remove agents:auto-pilot-pause before retrying.\n"
+  },
+  {
+    "n": 3123,
+    "title": "\ud83d\udd2d LangSmith Observability Health",
+    "labels": [
+      "needs-human",
+      "agent:needs-attention",
+      "metrics",
+      "automated",
+      "tracker:durable"
+    ],
+    "body_head": "<!-- langsmith-observability-health:v1 status=degraded -->\n\n# LangSmith Observability Health\n\n- Overall status: **degraded**\n- Generated: 2026-09-24T10:27:30.638464+00:00\n\n| Component | Status | Lates",
+    "guard": "Observability health changed from **healthy** to **degraded**. See run https://github.com/stranske/Workflows/actions/runs/35085029071."
+  }
+]
