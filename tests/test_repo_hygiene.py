@@ -126,6 +126,42 @@ def test_black_extend_exclude_independently_skips_artifacts(tmp_path: Path) -> N
     check_black(0)
 
 
+def test_black_force_exclude_required_for_explicit_paths(tmp_path: Path) -> None:
+    """Explicit-path Black invocations still skip artifacts only when force-exclude is set."""
+    config_text = (Path(__file__).resolve().parents[1] / "pyproject.toml").read_text()
+    config_path = tmp_path / "pyproject.toml"
+    config_path.write_text(config_text)
+    artifact = tmp_path / "research-program" / "artifacts" / "nested" / "probe.py"
+    artifact.parent.mkdir(parents=True)
+    unformatted = "values=[1,2,3]\n"
+    artifact.write_text(unformatted)
+    # Isolate force-exclude: extend-exclude would otherwise satisfy explicit-path skips.
+    command = [
+        sys.executable,
+        "-m",
+        "black",
+        "--check",
+        "--extend-exclude",
+        "",
+        "research-program/artifacts/nested/probe.py",
+    ]
+
+    def check_black(expected_code: int) -> subprocess.CompletedProcess[str]:
+        result = subprocess.run(command, cwd=tmp_path, capture_output=True, text=True, timeout=30)
+        assert result.returncode == expected_code, result.stdout + result.stderr
+        assert artifact.read_text() == unformatted
+        return result
+
+    check_black(0)
+    config_path.write_text(
+        config_text.replace('force-exclude = "research-program/artifacts/"', "")
+    )
+    rejected = check_black(1)
+    assert "probe.py" in rejected.stderr
+    config_path.write_text(config_text)
+    check_black(0)
+
+
 @pytest.mark.parametrize(
     "targets",
     [["."], ["research-program/artifacts/nested/probe.py", "source.py"]],
