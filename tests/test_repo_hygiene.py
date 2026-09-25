@@ -151,9 +151,7 @@ def test_black_force_exclude_required_for_explicit_paths(tmp_path: Path) -> None
         return result
 
     check_black(0)
-    config_path.write_text(
-        config_text.replace('force-exclude = "research-program/artifacts/"', "")
-    )
+    config_path.write_text(config_text.replace('force-exclude = "research-program/artifacts/"', ""))
     rejected = check_black(1)
     assert "probe.py" in rejected.stderr
     config_path.write_text(config_text)
