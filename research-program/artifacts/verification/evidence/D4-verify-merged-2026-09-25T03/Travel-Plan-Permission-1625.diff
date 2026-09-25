@@ -1,0 +1,146 @@
+diff --git a/src/travel_plan_permission/validation.py b/src/travel_plan_permission/validation.py
+index 38685c49..5d5f40ab 100644
+--- a/src/travel_plan_permission/validation.py
++++ b/src/travel_plan_permission/validation.py
+@@ -238,9 +238,12 @@ def evaluate(
+         *,
+         reference_date: date | None = None,
+     ) -> list[ValidationResult]:
++        # Provider contracts govern the travel date by default. Explicit dates remain
++        # available to callers that need to evaluate a historical or proposed policy state.
++        provider_reference_date = reference_date or plan.departure_date
+         registry = ProviderRegistry.from_file(self.providers_path)
+         try:
+-            registry.assert_has_active_providers(reference_date=reference_date)
++            registry.assert_has_active_providers(reference_date=provider_reference_date)
+         except ValueError as exc:
+             return [self._result(message=str(exc))]
+         destination = plan.destination
+@@ -256,7 +259,7 @@ def evaluate(
+                 provider_name,
+                 provider_type,
+                 destination,
+-                reference_date=reference_date,
++                reference_date=provider_reference_date,
+             ):
+                 continue
+             readable_type = provider_type.value.replace("_", " ")
+diff --git a/tests/python/test_policy_api.py b/tests/python/test_policy_api.py
+index e144b04a..b3c4c0e7 100644
+--- a/tests/python/test_policy_api.py
++++ b/tests/python/test_policy_api.py
+@@ -121,6 +121,59 @@ def test_check_trip_plan_reports_policy_issues(trip_plan: TripPlan) -> None:
+         assert issue.context["rule_id"] == issue.code
+ 
+ 
++def test_check_trip_plan_uses_departure_date_for_provider_contract(
++    trip_plan: TripPlan,
++    monkeypatch: pytest.MonkeyPatch,
++    tmp_path: Path,
++) -> None:
++    today = date.today()
++    departure = today + timedelta(days=30)
++    providers_path = tmp_path / "providers.yaml"
++    providers_path.write_text(
++        (
++            "version: future-contract\n"
++            f"updated_at: {today.isoformat()}\n"
++            "approver: Test\n"
++            "providers:\n"
++            "  - name: Future Air\n"
++            "    type: airline\n"
++            "    contract_id: future-air-1\n"
++            f"    valid_from: {(today + timedelta(days=1)).isoformat()}\n"
++            f"    valid_to: {(departure + timedelta(days=30)).isoformat()}\n"
++            "    destinations:\n"
++            "      - new york\n"
++        ),
++        encoding="utf-8",
++    )
++    validator = PolicyValidator(
++        [
++            validation_module.ProviderApprovalRule(
++                name="provider_departure_date",
++                code="PROV-DEPARTURE",
++                providers_path=str(providers_path),
++            )
++        ]
++    )
++    monkeypatch.setattr(
++        PolicyValidator,
++        "from_runtime_config",
++        classmethod(lambda _cls: validator),
++    )
++    plan = trip_plan.model_copy(
++        update={
++            "departure_date": departure,
++            "return_date": departure + timedelta(days=4),
++            "selected_providers": {ExpenseCategory.AIRFARE: "Future Air"},
++        }
++    )
++
++    verdict = check_trip_plan(plan)
++    snapshot = get_policy_snapshot(plan)
++
++    assert "PROV-DEPARTURE" not in {issue.code for issue in verdict.issues}
++    assert "PROV-DEPARTURE" not in {trigger.code for trigger in snapshot.approval_triggers}
++
++
+ def test_check_trip_plan_honors_configured_validation_source(
+     trip_plan: TripPlan,
+     monkeypatch: pytest.MonkeyPatch,
+diff --git a/tests/python/test_validation.py b/tests/python/test_validation.py
+index 279ece5c..d6137214 100644
+--- a/tests/python/test_validation.py
++++ b/tests/python/test_validation.py
+@@ -2,7 +2,7 @@
+ 
+ from __future__ import annotations
+ 
+-from datetime import date
++from datetime import date, timedelta
+ from decimal import Decimal
+ from pathlib import Path
+ 
+@@ -251,6 +251,41 @@ def test_allows_duration_within_limit(self) -> None:
+ class TestProviderApprovalRule:
+     """Provider approval rule behavior."""
+ 
++    def test_defaults_contract_activity_to_trip_departure(self, tmp_path: Path) -> None:
++        today = date.today()
++        departure = today + timedelta(days=30)
++        providers_path = tmp_path / "providers.yaml"
++        providers_path.write_text(
++            (
++                "version: future-contract\n"
++                f"updated_at: {today.isoformat()}\n"
++                "approver: Test\n"
++                "providers:\n"
++                "  - name: Future Air\n"
++                "    type: airline\n"
++                "    contract_id: future-air-1\n"
++                f"    valid_from: {(today + timedelta(days=1)).isoformat()}\n"
++                f"    valid_to: {(departure + timedelta(days=30)).isoformat()}\n"
++                "    destinations:\n"
++                "      - new york\n"
++            ),
++            encoding="utf-8",
++        )
++        rule = ProviderApprovalRule(
++            name="provider_warning",
++            code="PROV-TEST",
++            providers_path=str(providers_path),
++        )
++        plan = _build_plan(
++            departure=departure,
++            return_date=departure + timedelta(days=4),
++            destination="New York, NY",
++        )
++        plan.selected_providers = {ExpenseCategory.AIRFARE: "Future Air"}
++
++        assert rule.evaluate(plan) == []
++        assert rule.evaluate(plan, reference_date=today)
++
+     def test_warns_when_provider_not_approved(self) -> None:
+         rule = ProviderApprovalRule(
+             name="provider_warning",

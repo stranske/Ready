@@ -1,0 +1,231 @@
+diff --git a/src/trend_analysis/api.py b/src/trend_analysis/api.py
+index f0aaea310..342ff3d40 100644
+--- a/src/trend_analysis/api.py
++++ b/src/trend_analysis/api.py
+@@ -40,9 +40,12 @@
+     _resolve_target_vol,
+ )
+ from .pipeline_runner import _run_analysis_with_diagnostics
++from .regimes import build_regime_payload
+ from .risk import periods_per_year_from_code
+ from .stages.portfolio import calc_portfolio_returns
++from .timefreq import MONTHLY_DATE_FREQ
+ from .util.hash import normalise_for_json as _normalise_for_json
++from .util.frequency import detect_frequency
+ from .util.risk_free import resolve_risk_free_settings
+ from .util.weights import normalize_weights
+ from .weights.robust_config import weight_engine_params_from_robustness
+@@ -198,6 +201,14 @@ def _run_multi_period_simulation(
+ 
+     # Build combined portfolio returns series
+     portfolio_series = _build_multi_period_portfolio(period_results)
++    equal_weight_series = _combine_multi_period_series(
++        period_results,
++        "portfolio_equal_weight",
++    )
++    risk_free_series = _combine_multi_period_series(
++        period_results,
++        "risk_free_out_sample",
++    )
+ 
+     # Aggregate results across all periods (may fail if period results lack keys)
+     try:
+@@ -227,9 +238,59 @@ def _run_multi_period_simulation(
+     details["period_count"] = len(period_results)
+     if portfolio_series is not None:
+         details["portfolio_user_weight_combined"] = portfolio_series
++    if equal_weight_series is not None:
++        details["portfolio_equal_weight_combined"] = equal_weight_series
+     if turnover_series is not None:
+         details["turnover"] = turnover_series
+ 
++    regime_returns: dict[str, pd.Series] = {}
++    if portfolio_series is not None:
++        regime_returns["User"] = portfolio_series
++    if equal_weight_series is not None:
++        regime_returns["Equal-Weight"] = equal_weight_series
++    if regime_returns:
++        data_cfg = getattr(config, "data", {}) or {}
++        multi_period_cfg = getattr(config, "multi_period", {}) or {}
++        frequency = str(data_cfg.get("frequency") or multi_period_cfg.get("frequency") or "M")
++        period_ppy: float | None = None
++        for period_result in period_results:
++            candidate = period_result.get("periods_per_year")
++            if isinstance(candidate, (int, float)):
++                period_ppy = float(candidate)
++                break
++        if period_ppy is None:
++            period_ppy = float(periods_per_year_from_code(frequency))
++        regime_index = pd.DatetimeIndex(
++            pd.to_datetime(next(iter(regime_returns.values())).index, utc=True)
++        ).tz_localize(None)
++        regime_data = _prepare_multi_period_regime_data(returns, regime_index)
++        normalised_regime_returns = {
++            name: series.set_axis(
++                pd.DatetimeIndex(pd.to_datetime(series.index, utc=True)).tz_localize(None)
++            )
++            for name, series in regime_returns.items()
++        }
++        normalised_risk_free = risk_free_series
++        if risk_free_series is not None:
++            normalised_risk_free = risk_free_series.set_axis(
++                pd.DatetimeIndex(pd.to_datetime(risk_free_series.index, utc=True)).tz_localize(None)
++            )
++        regime_payload = build_regime_payload(
++            data=regime_data,
++            out_index=regime_index,
++            returns_map=normalised_regime_returns,
++            risk_free=normalised_risk_free if normalised_risk_free is not None else 0.0,
++            config=getattr(config, "regime", {}) or {},
++            freq_code=frequency,
++            periods_per_year=period_ppy,
++        )
++        details["performance_by_regime"] = regime_payload.get("table", pd.DataFrame())
++        details["regime_labels"] = regime_payload.get("labels", pd.Series(dtype="string"))
++        details["regime_labels_out"] = regime_payload.get("out_labels", pd.Series(dtype="string"))
++        details["regime_notes"] = regime_payload.get("notes", [])
++        details["regime_settings"] = regime_payload.get("settings", {})
++        details["regime_summary"] = regime_payload.get("summary")
++
+     # Surface a silent risk-weighting -> equal-weight fallback recorded by the
+     # multi-period engine so the Results page banner fires (see
+     # multi_period/engine.py and 3_Results.py).
+@@ -373,6 +434,46 @@ def _build_multi_period_portfolio(
+     return combined.sort_index()
+ 
+ 
++def _combine_multi_period_series(
++    period_results: list[dict[str, Any]],
++    key: str,
++) -> pd.Series | None:
++    """Combine a named out-of-sample series across multi-period results."""
++
++    series = [
++        value.astype(float)
++        for result in period_results
++        if isinstance((value := result.get(key)), pd.Series) and not value.empty
++    ]
++    if not series:
++        return None
++
++    combined = pd.concat(series)
++    combined = combined[~combined.index.duplicated(keep="last")]
++    return combined.sort_index()
++
++
++def _prepare_multi_period_regime_data(
++    returns: pd.DataFrame,
++    out_index: pd.DatetimeIndex,
++) -> pd.DataFrame:
++    """Align regime inputs with the multi-period engine's reporting calendar."""
++
++    prepared = returns.copy()
++    prepared["Date"] = pd.to_datetime(prepared["Date"], utc=True).dt.tz_localize(None)
++    prepared.sort_values("Date", inplace=True)
++    prepared = prepared.groupby("Date", as_index=False, sort=True).last()
++
++    if detect_frequency(prepared["Date"]).resampled and not detect_frequency(out_index).resampled:
++        value_columns = [column for column in prepared.columns if column != "Date"]
++        numeric = prepared[value_columns].apply(pd.to_numeric, errors="coerce")
++        numeric.index = pd.DatetimeIndex(prepared["Date"], name="Date")
++        monthly = (1 + numeric).resample(MONTHLY_DATE_FREQ).prod(min_count=1) - 1
++        prepared = monthly.reset_index()
++
++    return prepared
++
++
+ def _build_combined_portfolio_series(
+     weights: Mapping[str, float] | None,
+     in_df: pd.DataFrame | None,
+diff --git a/tests/test_multi_period_regime_exports.py b/tests/test_multi_period_regime_exports.py
+new file mode 100644
+index 000000000..a4225df2b
+--- /dev/null
++++ b/tests/test_multi_period_regime_exports.py
+@@ -0,0 +1,86 @@
++from __future__ import annotations
++
++from pathlib import Path
++
++import numpy as np
++import pandas as pd
++import pytest
++
++from trend.reporting.unified import generate_unified_report
++from trend_analysis import api, export
++from trend_analysis.config import load
++
++from tests.test_pipeline_integration_direct import _build_demo_config, _make_returns_frame
++
++
++def test_multi_period_run_populates_performance_by_regime(tmp_path: Path) -> None:
++    returns = _make_returns_frame()
++    csv_path = tmp_path / "synthetic.csv"
++    returns.to_csv(csv_path, index=False)
++
++    config_data = _build_demo_config(tmp_path, csv_path)
++    config_data["regime"] = {
++        "enabled": True,
++        "proxy": "SPX",
++        "lookback": 3,
++        "smoothing": 1,
++        "min_observations": 2,
++    }
++    config = load(config_data)
++
++    result = api.run_simulation(config, returns.copy())
++
++    regime_table = result.details["performance_by_regime"]
++    assert not regime_table.empty
++    assert ("User", "All") in regime_table.columns
++    assert ("Equal-Weight", "All") in regime_table.columns
++    assert np.isfinite(regime_table.loc["Observations", ("User", "All")])
++    assert regime_table.loc["Observations", ("User", "All")] >= 2
++    assert result.details["regime_settings"]["min_obs"] == 2
++
++    summary = export.format_summary_text(
++        result.details,
++        config.sample_split["in_start"],
++        config.sample_split["in_end"],
++        config.sample_split["out_start"],
++        config.sample_split["out_end"],
++    )
++    assert "Performance by regime" in summary
++
++    report = generate_unified_report(result, config, run_id="multi-period-regime")
++    assert "Performance by Regime" in report.html
++    assert "Regime analysis unavailable" not in report.html
++
++
++def test_multi_period_regime_data_normalises_timezone_and_daily_cadence() -> None:
++    daily_dates = pd.date_range("2024-01-29", periods=6, freq="D", tz="UTC")
++    returns = pd.DataFrame(
++        {
++            "Date": daily_dates.astype(str),
++            "SPX": [0.01, 0.02, -0.01, 0.03, 0.01, -0.02],
++        }
++    )
++    out_index = pd.DatetimeIndex(["2024-01-31", "2024-02-29"])
++
++    prepared = api._prepare_multi_period_regime_data(returns, out_index)
++
++    assert prepared["Date"].tolist() == list(out_index)
++    assert prepared["Date"].dt.tz is None
++    assert prepared.loc[0, "SPX"] == pytest.approx(1.01 * 1.02 * 0.99 - 1)
++    assert prepared.loc[1, "SPX"] == pytest.approx(1.03 * 1.01 * 0.98 - 1)
++
++
++def test_combine_multi_period_series_prefers_later_period_and_sorts() -> None:
++    periods = [
++        {"series": pd.Series([1.0, 2.0], index=pd.to_datetime(["2024-02-29", "2024-01-31"]))},
++        {"series": pd.Series([3.0, 4.0], index=pd.to_datetime(["2024-02-29", "2024-03-31"]))},
++    ]
++
++    combined = api._combine_multi_period_series(periods, "series")
++
++    assert combined is not None
++    assert combined.index.tolist() == list(
++        pd.to_datetime(["2024-01-31", "2024-02-29", "2024-03-31"])
++    )
++    assert combined.loc[pd.Timestamp("2024-02-29")] == 3.0
++    assert api._combine_multi_period_series([{"other": pd.Series([1.0])}], "series") is None

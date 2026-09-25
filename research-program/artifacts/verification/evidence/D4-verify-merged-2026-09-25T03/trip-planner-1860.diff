@@ -1,0 +1,1036 @@
+diff --git a/frontend/src/api/trips.ts b/frontend/src/api/trips.ts
+index b6868701c..1bb8e4bd0 100644
+--- a/frontend/src/api/trips.ts
++++ b/frontend/src/api/trips.ts
+@@ -135,6 +135,27 @@ export async function createTrip(payload: CreateTripPayload): Promise<TripRecord
+   return response.trip;
+ }
+ 
++export type UpdateTripPayload = {
++  title?: string;
++  summary?: string;
++  trip_frame?: Partial<TripFrame>;
++};
++
++/** Change a trip's setup. `verdictCleared` is true when the edit removed a saved policy verdict. */
++export async function updateTrip(
++  tripId: string,
++  payload: UpdateTripPayload
++): Promise<{ trip: TripRecord; verdictCleared: boolean }> {
++  const response = await fetchJson<{ trip: TripRecord; verdict_cleared?: boolean }>({
++    path: `/api/trips/${tripId}`,
++    method: "PATCH",
++    credentials: "include",
++    headers: { "Content-Type": "application/json" },
++    body: JSON.stringify(payload),
++  });
++  return { trip: response.trip, verdictCleared: response.verdict_cleared === true };
++}
++
+ export async function deleteTrip(tripId: string): Promise<void> {
+   await fetchJson<unknown>({
+     path: `/api/trips/${tripId}`,
+diff --git a/frontend/src/router.tsx b/frontend/src/router.tsx
+index 790d2c9c7..0dcbb8c19 100644
+--- a/frontend/src/router.tsx
++++ b/frontend/src/router.tsx
+@@ -16,6 +16,7 @@ import { fetchWorkspace } from "./api/workspace";
+ import App, { InitialRouteFallback, RootErrorBoundary } from "./App";
+ import { ApiClientError } from "./lib/api/errors";
+ import { healthLoader, HealthPage } from "./routes/HealthPage";
++import { EditTripPage } from "./routes/EditTripPage";
+ import { LoginPage } from "./routes/LoginPage";
+ import { NewTripPage } from "./routes/NewTripPage";
+ import { SignupPage } from "./routes/SignupPage";
+@@ -121,6 +122,14 @@ export async function protectedTripDetailLoader({
+   };
+ }
+ 
++export async function protectedEditTripLoader({ params, request }: LoaderFunctionArgs) {
++  const { session } = await loadSession(request);
++  if (!session) {
++    redirectToLogin(request);
++  }
++  return { trip: fetchTrip(params.tripId ?? "") };
++}
++
+ export async function protectedCreateTripLoader({ request }: LoaderFunctionArgs) {
+   const { session } = await loadSession(request);
+   if (!session) {
+@@ -179,6 +188,11 @@ export const appRoutes: RouteObject[] = [
+         element: <NewTripPage />,
+         loader: protectedCreateTripLoader,
+       },
++      {
++        path: "trips/:tripId/edit",
++        element: <EditTripPage />,
++        loader: protectedEditTripLoader,
++      },
+       {
+         path: "trips/:tripId",
+         element: <TripDetailPage />,
+diff --git a/frontend/src/routes/EditTripPage.tsx b/frontend/src/routes/EditTripPage.tsx
+new file mode 100644
+index 000000000..bf0738824
+--- /dev/null
++++ b/frontend/src/routes/EditTripPage.tsx
+@@ -0,0 +1,26 @@
++import { useLoaderData } from "react-router-dom";
++
++import type { TripRecord } from "../api/trips";
++import { AsyncRouteContent } from "../lib/routes/AsyncRouteContent";
++import { NewTripPage } from "./NewTripPage";
++
++type LoaderData = { trip: Promise<TripRecord> };
++
++/** Edit an existing trip's setup with the same form that created it (issue 1841). */
++export function EditTripPage() {
++  const { trip } = useLoaderData() as LoaderData;
++
++  return (
++    <AsyncRouteContent
++      resolve={trip}
++      loading={{ label: "Trip setup", title: "Loading trip setup", message: "Reading the saved trip." }}
++      error={{
++        label: "Trip setup",
++        title: "Trip setup unavailable",
++        message: "The app could not load this trip, so it cannot be edited.",
++      }}
++    >
++      {(resolvedTrip) => <NewTripPage key={resolvedTrip.trip_id} existingTrip={resolvedTrip} />}
++    </AsyncRouteContent>
++  );
++}
+diff --git a/frontend/src/routes/NewTripPage.test.tsx b/frontend/src/routes/NewTripPage.test.tsx
+index 51807bf4c..fc0814edf 100644
+--- a/frontend/src/routes/NewTripPage.test.tsx
++++ b/frontend/src/routes/NewTripPage.test.tsx
+@@ -1,15 +1,22 @@
+ import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
+ import { afterEach, describe, expect, it, vi } from "vitest";
+ 
+-import { createTrip } from "../api/trips";
+-import { NewTripPage, missingTripContext, travelDaysInclusive } from "./NewTripPage";
++import { createTrip, updateTrip } from "../api/trips";
++import {
++  NewTripPage,
++  VERDICT_CLEARED_NOTICE,
++  missingTripContext,
++  travelDaysInclusive,
++} from "./NewTripPage";
+ import { TestMemoryRouter } from "../test/router";
+ 
+ vi.mock("../api/trips", () => ({
+   createTrip: vi.fn(),
++  updateTrip: vi.fn(),
+ }));
+ 
+ const mockedCreateTrip = vi.mocked(createTrip);
++const mockedUpdateTrip = vi.mocked(updateTrip);
+ const mockedNavigate = vi.fn();
+ 
+ vi.mock("react-router-dom", async () => {
+@@ -313,3 +320,70 @@ describe("NewTripPage", () => {
+     expect(mockedCreateTrip).not.toHaveBeenCalled();
+   });
+ });
++
++describe("NewTripPage editing an existing trip (issue 1841)", () => {
++  afterEach(() => {
++    cleanup();
++    vi.clearAllMocks();
++  });
++
++  function existing() {
++    const trip = tripResponse();
++    return {
++      ...trip,
++      mode: "business",
++      summary: "Client review",
++      trip_frame: {
++        ...trip.trip_frame,
++        origin: "Seattle",
++        start_date: "2026-10-05",
++        end_date: "2026-10-07",
++        duration_days: 3,
++        primary_regions: ["Chicago, IL", "Milwaukee, WI"],
++      },
++    };
++  }
++
++  function renderEdit() {
++    return render(
++      <TestMemoryRouter>
++        <NewTripPage existingTrip={existing()} />
++      </TestMemoryRouter>
++    );
++  }
++
++  it("opens with the trip's saved setup", () => {
++    renderEdit();
++
++    expect(screen.getByRole("heading", { name: "Edit trip setup" })).toBeInTheDocument();
++    expect(screen.getByLabelText(/Trip name/)).toHaveValue("Kyoto Spring");
++    expect(screen.getByLabelText(/Travelling from/)).toHaveValue("Seattle");
++    expect(screen.getByLabelText(/Destinations/)).toHaveValue("Chicago, IL; Milwaukee, WI");
++    expect(screen.getByLabelText(/First day of travel/)).toHaveValue("2026-10-05");
++    // The type is fixed once created; the API refuses to change it.
++    expect(screen.getByRole("radio", { name: /Business trip/ })).toBeChecked();
++    expect(screen.getByRole("radio", { name: /Business trip/ })).toBeDisabled();
++  });
++
++  it("saves the change and tells the traveller when it removed a policy result", async () => {
++    mockedUpdateTrip.mockResolvedValue({ trip: existing(), verdictCleared: true });
++    renderEdit();
++
++    fireEvent.change(screen.getByLabelText(/Destinations/), { target: { value: "Denver, CO" } });
++    fireEvent.click(screen.getByRole("button", { name: "Save changes" }));
++
++    await waitFor(() => {
++      expect(mockedUpdateTrip).toHaveBeenCalledWith(
++        "trip-kyoto-123abc",
++        expect.objectContaining({
++          trip_frame: expect.objectContaining({ primary_regions: ["Denver, CO"], origin: "Seattle" }),
++        })
++      );
++    });
++    expect(mockedCreateTrip).not.toHaveBeenCalled();
++    expect(mockedNavigate).toHaveBeenCalledWith("/workspace/trip-kyoto-123abc", {
++      state: { setupNotice: VERDICT_CLEARED_NOTICE },
++    });
++  });
++});
++
+diff --git a/frontend/src/routes/NewTripPage.tsx b/frontend/src/routes/NewTripPage.tsx
+index 527b4f33c..70547f850 100644
+--- a/frontend/src/routes/NewTripPage.tsx
++++ b/frontend/src/routes/NewTripPage.tsx
+@@ -1,7 +1,7 @@
+ import { FormEvent, startTransition, useMemo, useState } from "react";
+ import { useNavigate } from "react-router-dom";
+ 
+-import { createTrip } from "../api/trips";
++import { createTrip, updateTrip, type TripRecord } from "../api/trips";
+ import { getErrorMessage } from "../lib/api/errors";
+ 
+ type TripMode = "business" | "leisure";
+@@ -69,22 +69,42 @@ export function missingTripContext(values: {
+   return missing;
+ }
+ 
+-export function NewTripPage() {
++/** Shown on the workspace after an edit removed a saved policy verdict. */
++export const VERDICT_CLEARED_NOTICE =
++  "Trip setup saved. The earlier travel policy result was removed because the trip changed; submit it again for a new result.";
++
++/**
++ * Trip setup. With `existingTrip` it edits that trip (issue 1841): setup always promised
++ * "You can change any of this later", and until now nothing could.
++ */
++export function NewTripPage({ existingTrip = null }: { existingTrip?: TripRecord | null } = {}) {
+   const navigate = useNavigate();
++  const isEditing = existingTrip != null;
++  const existingFrame = existingTrip?.trip_frame;
+   const [isSubmitting, setIsSubmitting] = useState(false);
+   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+ 
+-  const [mode, setMode] = useState<TripMode | "">("");
+-  const [title, setTitle] = useState("");
+-  const [purpose, setPurpose] = useState("");
+-  const [origin, setOrigin] = useState("");
+-  const [destinations, setDestinations] = useState("");
+-  const [startDate, setStartDate] = useState("");
+-  const [endDate, setEndDate] = useState("");
+-  const [durationOverride, setDurationOverride] = useState<string>("");
+-  const [travelerKind, setTravelerKind] = useState("solo");
+-  const [travelerCount, setTravelerCount] = useState("1");
+-  const [travelerNotes, setTravelerNotes] = useState("");
++  const [mode, setMode] = useState<TripMode | "">(
++    existingTrip?.mode === "business" || existingTrip?.mode === "leisure" ? existingTrip.mode : ""
++  );
++  const [title, setTitle] = useState(existingTrip?.title ?? "");
++  const [purpose, setPurpose] = useState(existingTrip?.summary ?? "");
++  const [origin, setOrigin] = useState(existingFrame?.origin ?? "");
++  const [destinations, setDestinations] = useState((existingFrame?.primary_regions ?? []).join("; "));
++  const [startDate, setStartDate] = useState(existingFrame?.start_date ?? "");
++  const [endDate, setEndDate] = useState(existingFrame?.end_date ?? "");
++  const [durationOverride, setDurationOverride] = useState<string>(
++    existingFrame?.duration_days != null &&
++      existingFrame.duration_days !==
++        travelDaysInclusive(existingFrame.start_date ?? "", existingFrame.end_date ?? "")
++      ? String(existingFrame.duration_days)
++      : ""
++  );
++  const [travelerKind, setTravelerKind] = useState(existingFrame?.traveler_party.kind ?? "solo");
++  const [travelerCount, setTravelerCount] = useState(
++    String(existingFrame?.traveler_party.traveler_count ?? 1)
++  );
++  const [travelerNotes, setTravelerNotes] = useState(existingFrame?.traveler_party.notes ?? "");
+ 
+   const derivedDuration = useMemo(() => travelDaysInclusive(startDate, endDate), [startDate, endDate]);
+   const durationValue = durationOverride !== "" ? durationOverride : derivedDuration != null ? String(derivedDuration) : "";
+@@ -110,29 +130,45 @@ export function NewTripPage() {
+     setIsSubmitting(true);
+     setErrorMessage(null);
+ 
++    const tripFrame = {
++      origin: origin.trim() || null,
++      start_date: startDate || null,
++      end_date: endDate || null,
++      duration_days: durationValue ? Number(durationValue) : null,
++      primary_regions: destinationList,
++      traveler_party: {
++        kind: travelerKind,
++        traveler_count: Number(travelerCount) || 1,
++        notes: travelerNotes.trim(),
++      },
++    };
+     try {
++      if (existingTrip) {
++        const { verdictCleared } = await updateTrip(existingTrip.trip_id, {
++          title: title.trim(),
++          summary: purpose.trim(),
++          trip_frame: tripFrame,
++        });
++        startTransition(() => {
++          navigate(`/workspace/${existingTrip.trip_id}`, {
++            state: { setupNotice: verdictCleared ? VERDICT_CLEARED_NOTICE : "Trip setup saved." },
++          });
++        });
++        return;
++      }
+       const trip = await createTrip({
+         title: title.trim(),
+         summary: purpose.trim(),
+         mode: mode || "leisure",
+-        trip_frame: {
+-          origin: origin.trim() || null,
+-          start_date: startDate || null,
+-          end_date: endDate || null,
+-          duration_days: durationValue ? Number(durationValue) : null,
+-          primary_regions: destinationList,
+-          traveler_party: {
+-            kind: travelerKind,
+-            traveler_count: Number(travelerCount) || 1,
+-            notes: travelerNotes.trim(),
+-          },
+-        },
++        trip_frame: tripFrame,
+       });
+       startTransition(() => {
+         navigate(`/workspace/${trip.trip_id}`);
+       });
+     } catch (error) {
+-      setErrorMessage(getErrorMessage(error, "Trip creation failed."));
++      setErrorMessage(
++        getErrorMessage(error, isEditing ? "Saving the trip setup failed." : "Trip creation failed.")
++      );
+     } finally {
+       setIsSubmitting(false);
+     }
+@@ -141,18 +177,21 @@ export function NewTripPage() {
+   return (
+     <section className="auth-layout">
+       <article className="status-card auth-card setup-card">
+-        <p className="status-label">New trip</p>
+-        <h2>Set up your trip</h2>
++        <p className="status-label">{isEditing ? "Trip setup" : "New trip"}</p>
++        <h2>{isEditing ? "Edit trip setup" : "Set up your trip"}</h2>
+         <p className="lede">
+-          Tell the planner the essentials and it will measure the route and travel time from your origin. You enter the prices you hold.
+-          You can change any of this later.
++          {isEditing
++            ? "Change anything below. The route is measured again from the new setup; your entered prices and notes stay. If the trip was already checked against travel policy, changing its purpose, origin, dates, destinations or travellers removes that result."
++            : "Tell the planner the essentials and it will measure the route and travel time from your origin. You enter the prices you hold. You can change any of this later."}
+         </p>
+ 
+         <form className="auth-form setup-form" onSubmit={handleSubmit}>
+           <fieldset className="setup-group">
+             <legend>What kind of trip is this?</legend>
+             <p className="field-hint">
+-              This decides whether the trip goes through travel policy and approval.
++              {isEditing
++                ? "The trip type cannot be changed after the trip is created."
++                : "This decides whether the trip goes through travel policy and approval."}
+             </p>
+             <div className="choice-grid" role="radiogroup" aria-label="Trip type">
+               {MODE_CHOICES.map((choice) => (
+@@ -166,6 +205,7 @@ export function NewTripPage() {
+                     value={choice.value}
+                     checked={mode === choice.value}
+                     onChange={() => setMode(choice.value)}
++                    disabled={isEditing}
+                     required
+                   />
+                   <span className="choice-title">{choice.label}</span>
+@@ -373,7 +413,13 @@ export function NewTripPage() {
+           ) : null}
+ 
+           <button type="submit" disabled={isSubmitting || datesInvalid || tooManyDestinations}>
+-            {isSubmitting ? "Creating trip..." : "Create trip"}
++            {isEditing
++              ? isSubmitting
++                ? "Saving..."
++                : "Save changes"
++              : isSubmitting
++                ? "Creating trip..."
++                : "Create trip"}
+           </button>
+         </form>
+       </article>
+diff --git a/frontend/src/routes/WorkspacePage.test.tsx b/frontend/src/routes/WorkspacePage.test.tsx
+index 702a49b58..5fe918057 100644
+--- a/frontend/src/routes/WorkspacePage.test.tsx
++++ b/frontend/src/routes/WorkspacePage.test.tsx
+@@ -950,6 +950,14 @@ describe("WorkspacePage", () => {
+     mockedSetNotebookFocus.mockReset();
+   });
+ 
++  it("offers to edit the trip setup from the workspace header (issue 1841)", async () => {
++    mockedUseLoaderData.mockReturnValue({ workspace: Promise.resolve(workspacePayload) });
++    renderWorkspacePage();
++
++    const link = await screen.findByRole("link", { name: "Edit trip setup" });
++    expect(link).toHaveAttribute("href", `/trips/${workspacePayload.trip_record.trip.trip_id}/edit`);
++  });
++
+   it("does not render a panel from two tabs", async () => {
+     mockedUseLoaderData.mockReturnValue({ workspace: Promise.resolve(workspacePayload) });
+     renderWorkspacePage();
+diff --git a/frontend/src/routes/WorkspacePage.tsx b/frontend/src/routes/WorkspacePage.tsx
+index 22af0491a..3851a9aa5 100644
+--- a/frontend/src/routes/WorkspacePage.tsx
++++ b/frontend/src/routes/WorkspacePage.tsx
+@@ -1,5 +1,5 @@
+ import { startTransition, useEffect, useMemo, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
+-import { useLoaderData } from "react-router-dom";
++import { Link, useLoaderData, useLocation, useNavigate } from "react-router-dom";
+ 
+ import { readPolicyContext } from "../lib/proposalSubmission";
+ 
+@@ -1167,6 +1167,9 @@ function WorkspacePageContent({
+   workspace: WorkspaceData;
+   trips: TripRecord[];
+ }) {
++  const navigate = useNavigate();
++  // Set by the trip setup form after an edit, e.g. to say a policy verdict was removed.
++  const setupNotice = (useLocation().state as { setupNotice?: string } | null)?.setupNotice ?? null;
+   const [currentWorkspace, setCurrentWorkspace] = useState(workspace);
+   const [selectedScenarioId, setSelectedScenarioId] = useState(() =>
+     resolveMapScenarioId(workspace)
+@@ -1946,6 +1949,9 @@ function WorkspacePageContent({
+         workspaceTabRefs.current.budget?.focus();
+         return;
+       case "trip-setup":
++        // Setup is incomplete: open the setup form itself, not a tab that cannot edit it.
++        navigate(`/trips/${trip.trip_id}/edit`);
++        return;
+       default:
+         setActiveTab("plan");
+         workspaceTabRefs.current.plan?.focus();
+@@ -2014,6 +2020,14 @@ function WorkspacePageContent({
+         </p>
+         <h1>{productView?.user_summary.trip_title ?? trip.title}</h1>
+         <p>{productView?.user_summary.headline ?? trip.summary}</p>
++        <p className="workspace-hero-actions">
++          <Link to={`/trips/${trip.trip_id}/edit`}>Edit trip setup</Link>
++        </p>
++        {setupNotice ? (
++          <p className="planner-inline-notice" role="status" data-testid="setup-notice">
++            {setupNotice}
++          </p>
++        ) : null}
+         {currentWorkspace.sample_data?.is_sample ? (
+           <p className="muted-copy" role="status">
+             {currentWorkspace.sample_data.label}: {currentWorkspace.sample_data.description}
+diff --git a/tests/app/conftest.py b/tests/app/conftest.py
+new file mode 100644
+index 000000000..8df385df5
+--- /dev/null
++++ b/tests/app/conftest.py
+@@ -0,0 +1,65 @@
++"""Shared fixtures for the app tests.
++
++`tpp_client` is an app client whose TPP transport is intercepted: submissions are
++captured in `TPP_SENT` and answered "queued", and a policy sync returns the standard
++fixture. It lets a test create a real submission and verdict record without a live
++policy service.
++"""
++
++import json
++from collections.abc import Iterator
++from pathlib import Path
++from typing import Any
++
++import pytest
++from fastapi.testclient import TestClient
++
++from trip_planner.app.main import create_app
++from trip_planner.integrations.tpp import client as tpp_client_module
++from trip_planner.integrations.tpp.contracts import TPPResponseEnvelope
++
++from tests.app.tpp_intercept import TPP_SENT, _blocked_response
++from trip_planner.persistence.db import ensure_database_ready, reset_database_state
++
++
++@pytest.fixture
++def tpp_client(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Iterator[TestClient]:
++    monkeypatch.setenv("TRIP_PLANNER_DATABASE_URL", f"sqlite:///{tmp_path / 'payload.db'}")
++    monkeypatch.setenv("TPP_BASE_URL", "http://tpp.invalid")
++    monkeypatch.setenv("TPP_ACCESS_TOKEN", "test-token-long-enough")
++    monkeypatch.setenv("TPP_ORGANIZATION_ID", "org-acme")
++    monkeypatch.setenv("TPP_OIDC_PROVIDER", "okta")
++
++    def capture(self: Any, request: Any) -> TPPResponseEnvelope:
++        if request.operation == "submit_proposal":
++            TPP_SENT.append(dict(request.payload.get("trip_plan") or {}))
++        return _blocked_response(request)
++
++    monkeypatch.setattr(tpp_client_module.HTTPTPPIntegrationClient, "submit_proposal", capture)
++
++    import trip_planner.app.services.policy as policy_service
++
++    fixture = json.loads(
++        (
++            Path(__file__).resolve().parents[1]
++            / "fixtures/integrations/tpp/policy/standard_policy_sync.json"
++        ).read_text(encoding="utf-8")
++    )
++
++    def policy_response(request: Any, _response_payload: Any, *, trip_plan_payload: Any) -> Any:
++        response = fixture["response"].copy()
++        response["request_id"] = request.request_id
++        response["correlation_id"] = request.correlation_id.to_dict()
++        return TPPResponseEnvelope.from_dict(response)
++
++    monkeypatch.setattr(policy_service, "_resolve_policy_response", policy_response)
++    TPP_SENT.clear()
++    reset_database_state()
++    ensure_database_ready()
++    with TestClient(create_app()) as test_client:
++        test_client.post(
++            "/api/auth/signup",
++            json={"email": "p@example.com", "password": "password123", "display_name": "Dana Chen"},
++        )
++        yield test_client
++    reset_database_state()
+diff --git a/tests/app/test_proposal_payload_truth.py b/tests/app/test_proposal_payload_truth.py
+index 916c147ab..9ab3302d8 100644
+--- a/tests/app/test_proposal_payload_truth.py
++++ b/tests/app/test_proposal_payload_truth.py
+@@ -9,76 +9,19 @@
+ TPP client, and assert on that — not on an internal helper.
+ """
+ 
+-import json
+-from collections.abc import Iterator
+-from pathlib import Path
+ from typing import Any
+ 
+ import pytest
+ from fastapi.testclient import TestClient
+ 
+-from trip_planner.app.main import create_app
+-from trip_planner.integrations.tpp import client as tpp_client
+-from trip_planner.integrations.tpp.contracts import TPPResponseEnvelope
+-from trip_planner.persistence.db import ensure_database_ready, reset_database_state
++from tests.app.tpp_intercept import TPP_SENT, seed_policy
+ 
+-_SENT: list[dict[str, Any]] = []
+-
+-
+-def _blocked_response(request: Any) -> TPPResponseEnvelope:
+-    return TPPResponseEnvelope.from_dict(
+-        {
+-            "operation": request.operation,
+-            "request_id": request.request_id,
+-            "correlation_id": request.correlation_id.to_dict(),
+-            "transport_pattern": "sync",
+-            "execution_status": {"state": "accepted", "terminal": False, "summary": "queued"},
+-            "result_payload": {"execution_id": "exec-test", "queue_state": "queued"},
+-        }
+-    )
++_SENT = TPP_SENT
+ 
+ 
+ @pytest.fixture
+-def client(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Iterator[TestClient]:
+-    monkeypatch.setenv("TRIP_PLANNER_DATABASE_URL", f"sqlite:///{tmp_path / 'payload.db'}")
+-    monkeypatch.setenv("TPP_BASE_URL", "http://tpp.invalid")
+-    monkeypatch.setenv("TPP_ACCESS_TOKEN", "test-token-long-enough")
+-    monkeypatch.setenv("TPP_ORGANIZATION_ID", "org-acme")
+-    monkeypatch.setenv("TPP_OIDC_PROVIDER", "okta")
+-
+-    def capture(self: Any, request: Any) -> TPPResponseEnvelope:
+-        if request.operation == "submit_proposal":
+-            _SENT.append(dict(request.payload.get("trip_plan") or {}))
+-        return _blocked_response(request)
+-
+-    monkeypatch.setattr(tpp_client.HTTPTPPIntegrationClient, "submit_proposal", capture)
+-
+-    import trip_planner.app.services.policy as policy_service
+-
+-    fixture = json.loads(
+-        (
+-            Path(__file__).resolve().parents[1]
+-            / "fixtures/integrations/tpp/policy/standard_policy_sync.json"
+-        ).read_text(encoding="utf-8")
+-    )
+-
+-    def policy_response(request: Any, _response_payload: Any, *, trip_plan_payload: Any) -> Any:
+-        response = fixture["response"].copy()
+-        response["request_id"] = request.request_id
+-        response["correlation_id"] = request.correlation_id.to_dict()
+-        return TPPResponseEnvelope.from_dict(response)
+-
+-    monkeypatch.setattr(policy_service, "_resolve_policy_response", policy_response)
+-    _SENT.clear()
+-    reset_database_state()
+-    ensure_database_ready()
+-    with TestClient(create_app()) as test_client:
+-        test_client.post(
+-            "/api/auth/signup",
+-            json={"email": "p@example.com", "password": "password123", "display_name": "Dana Chen"},
+-        )
+-        yield test_client
+-    reset_database_state()
++def client(tpp_client: TestClient) -> TestClient:
++    return tpp_client
+ 
+ 
+ def _business_trip(client: TestClient) -> str:
+@@ -101,9 +44,7 @@ def _business_trip(client: TestClient) -> str:
+     return str(response.json()["trip"]["trip_id"])
+ 
+ 
+-def _seed_policy(client: TestClient, trip_id: str) -> None:
+-    response = client.post(f"/api/workspace/{trip_id}/policy/sync", json={})
+-    assert response.status_code == 200, response.text
++_seed_policy = seed_policy
+ 
+ 
+ def _submit(client: TestClient, trip_id: str) -> Any:
+diff --git a/tests/app/test_trips_api.py b/tests/app/test_trips_api.py
+new file mode 100644
+index 000000000..266dbadda
+--- /dev/null
++++ b/tests/app/test_trips_api.py
+@@ -0,0 +1,133 @@
++"""A trip can be corrected after it is created, and a mis-shaped request is refused (issue 1841).
++
++Every assertion reads the served API. Before this there was no way to edit a trip (setup
++promised "You can change any of this later"), and POST /api/trips answered 201 for dates
++and destinations sent beside `trip_frame`, silently dropping them.
++"""
++
++from typing import Any
++
++import pytest
++from fastapi.testclient import TestClient
++
++from tests.app.tpp_intercept import seed_policy
++
++_FRAME = {
++    "origin": "Seattle",
++    "start_date": "2026-10-05",
++    "end_date": "2026-10-07",
++    "duration_days": 3,
++    "primary_regions": ["Chicago, IL"],
++}
++
++
++@pytest.fixture
++def client(tpp_client: TestClient) -> TestClient:
++    # tpp_client (tests/app/conftest.py) intercepts TPP, so a real submission and saved
++    # verdict record exist without a live policy service.
++    return tpp_client
++
++
++def _create(client: TestClient, **overrides: Any) -> str:
++    body: dict[str, Any] = {
++        "title": "Client review",
++        "summary": "Quarterly review.",
++        "mode": "business",
++    }
++    body.update(overrides)
++    body.setdefault("trip_frame", _FRAME)
++    response = client.post("/api/trips", json=body)
++    assert response.status_code == 201, response.text
++    return str(response.json()["trip"]["trip_id"])
++
++
++def _lead(client: TestClient, trip_id: str) -> dict[str, Any]:
++    (row,) = client.get(f"/api/workspace/{trip_id}").json()["runtime_scenario_comparison"][
++        "scenarios"
++    ]
++    return dict(row)
++
++
++def test_fields_sent_outside_trip_frame_are_refused_by_name(client: TestClient) -> None:
++    response = client.post(
++        "/api/trips",
++        json={
++            "title": "x",
++            "summary": "x",
++            "mode": "business",
++            "start_date": "2026-10-05",
++            "primary_regions": ["Chicago"],
++        },
++    )
++
++    assert response.status_code == 422
++    named = {tuple(item["loc"])[-1] for item in response.json()["detail"]}
++    assert {"start_date", "primary_regions"} <= named
++
++
++def test_an_unknown_trip_frame_field_is_refused(client: TestClient) -> None:
++    response = client.post(
++        "/api/trips",
++        json={"title": "x", "mode": "business", "trip_frame": {"destination": "Chicago"}},
++    )
++    assert response.status_code == 422
++    assert "destination" in response.text
++
++
++def test_editing_the_destination_moves_the_measured_route(client: TestClient) -> None:
++    trip_id = _create(client)
++    before = _lead(client, trip_id)
++
++    edited = client.patch(
++        f"/api/trips/{trip_id}", json={"trip_frame": {"primary_regions": ["Denver, CO"]}}
++    )
++
++    assert edited.status_code == 200, edited.text
++    frame = edited.json()["trip"]["trip_frame"]
++    assert frame["primary_regions"] == ["Denver, CO"]
++    # Untouched fields keep their values.
++    assert frame["origin"] == "Seattle" and frame["start_date"] == "2026-10-05"
++    after = _lead(client, trip_id)
++    assert after["metrics"]["travel_minutes"] != before["metrics"]["travel_minutes"]
++    assert any("denver" in stop for stop in after["route_sequence"])
++
++
++def test_a_changed_trip_loses_the_verdict_reached_before_the_change(client: TestClient) -> None:
++    trip_id = _create(client)
++    seed_policy(client, trip_id)
++    client.put(f"/api/workspace/{trip_id}/prices", json={"component": "lodging", "amount": 400.0})
++    submitted = client.post(f"/api/workspace/{trip_id}/proposal/submit", json={})
++    assert submitted.status_code == 200, submitted.text
++    assert client.get(f"/api/workspace/{trip_id}").json()["proposal_state"] is not None
++
++    # A title is not sent to the policy service: the submission stands.
++    renamed = client.patch(f"/api/trips/{trip_id}", json={"title": "Chicago client review"})
++    assert renamed.json()["verdict_cleared"] is False
++    assert client.get(f"/api/workspace/{trip_id}").json()["proposal_state"] is not None
++
++    # New dates are a different request: the old verdict no longer describes the trip.
++    redated = client.patch(
++        f"/api/trips/{trip_id}",
++        json={"trip_frame": {"start_date": "2026-11-02", "end_date": "2026-11-04"}},
++    )
++    assert redated.json()["verdict_cleared"] is True
++    assert client.get(f"/api/workspace/{trip_id}").json()["proposal_state"] is None
++
++
++def test_a_blank_title_and_an_unknown_field_are_refused_on_edit(client: TestClient) -> None:
++    trip_id = _create(client)
++    assert client.patch(f"/api/trips/{trip_id}", json={"title": "   "}).status_code == 400
++    assert client.patch(f"/api/trips/{trip_id}", json={"mode": "leisure"}).status_code == 422
++
++
++def test_deleting_a_trip_removes_its_prices(client: TestClient) -> None:
++    trip_id = _create(client)
++    client.put(f"/api/workspace/{trip_id}/prices", json={"component": "lodging", "amount": 400.0})
++
++    assert client.delete(f"/api/trips/{trip_id}").status_code == 200
++
++    from trip_planner.persistence.db import get_session_factory
++    from trip_planner.persistence.models.trip_price import PersistedTripPrice
++
++    with get_session_factory()() as session:
++        assert session.query(PersistedTripPrice).filter_by(trip_id=trip_id).count() == 0
+diff --git a/tests/app/tpp_intercept.py b/tests/app/tpp_intercept.py
+new file mode 100644
+index 000000000..ee20d5fbb
+--- /dev/null
++++ b/tests/app/tpp_intercept.py
+@@ -0,0 +1,31 @@
++"""TPP interception shared by the app tests (see `tpp_client` in conftest.py).
++
++State lives here, not in conftest.py: pytest imports conftest under its own module name,
++so a list defined there and imported by a test module would be a second, empty copy.
++"""
++
++from typing import Any
++
++from fastapi.testclient import TestClient
++
++from trip_planner.integrations.tpp.contracts import TPPResponseEnvelope
++
++TPP_SENT: list[dict[str, Any]] = []
++
++
++def _blocked_response(request: Any) -> TPPResponseEnvelope:
++    return TPPResponseEnvelope.from_dict(
++        {
++            "operation": request.operation,
++            "request_id": request.request_id,
++            "correlation_id": request.correlation_id.to_dict(),
++            "transport_pattern": "sync",
++            "execution_status": {"state": "accepted", "terminal": False, "summary": "queued"},
++            "result_payload": {"execution_id": "exec-test", "queue_state": "queued"},
++        }
++    )
++
++
++def seed_policy(client: TestClient, trip_id: str) -> None:
++    response = client.post(f"/api/workspace/{trip_id}/policy/sync", json={})
++    assert response.status_code == 200, response.text
+diff --git a/trip_planner/app/routes/trips.py b/trip_planner/app/routes/trips.py
+index 51fe26261..a14b29b8c 100644
+--- a/trip_planner/app/routes/trips.py
++++ b/trip_planner/app/routes/trips.py
+@@ -6,6 +6,7 @@
+     DeleteTripResponse,
+     TripListResponse,
+     TripResponse,
++    UpdateTripRequest,
+ )
+ from trip_planner.app.services.auth import AuthenticatedUser, require_authenticated_user
+ from trip_planner.app.services.trips import (
+@@ -13,6 +14,7 @@
+     delete_trip,
+     get_trip,
+     list_trips,
++    update_trip,
+ )
+ from trip_planner.persistence.db import get_db_session
+ 
+@@ -63,6 +65,37 @@ def read_trip_detail(
+     return TripResponse(trip=trip)
+ 
+ 
++@router.patch("/trips/{trip_id}", response_model=TripResponse)
++def update_trip_record(
++    trip_id: str,
++    payload: UpdateTripRequest,
++    user: AuthenticatedUser = Depends(require_authenticated_user),
++    db_session: Session = Depends(get_db_session),
++) -> TripResponse:
++    changes: dict[str, object] = {
++        field: getattr(payload, field)
++        for field in ("title", "summary")
++        if field in payload.model_fields_set
++    }
++    frame = payload.trip_frame
++    if frame is not None:
++        for field in ("origin", "start_date", "end_date", "duration_days", "primary_regions"):
++            if field in frame.model_fields_set:
++                changes[field] = getattr(frame, field)
++        party = frame.traveler_party
++        if party is not None:
++            changes.update(
++                traveler_party_kind=party.kind,
++                traveler_count=party.traveler_count,
++                traveler_notes=party.notes,
++            )
++    result = update_trip(db_session, user=user, trip_id=trip_id, changes=changes)
++    if result is None:
++        raise HTTPException(status_code=404, detail=f"Trip '{trip_id}' was not found.")
++    trip, determinants = result
++    return TripResponse(trip=trip, verdict_cleared=bool(determinants))
++
++
+ @router.delete("/trips/{trip_id}", response_model=DeleteTripResponse)
+ def delete_trip_record(
+     trip_id: str,
+diff --git a/trip_planner/app/schemas/trips.py b/trip_planner/app/schemas/trips.py
+index 831409737..fd7171729 100644
+--- a/trip_planner/app/schemas/trips.py
++++ b/trip_planner/app/schemas/trips.py
+@@ -4,7 +4,7 @@
+ 
+ from typing import Literal, cast
+ 
+-from pydantic import BaseModel, Field
++from pydantic import BaseModel, ConfigDict, Field
+ 
+ from trip_planner.contracts.trip import TRAVELER_PARTY_KINDS
+ 
+@@ -12,13 +12,24 @@
+ DEFAULT_TRAVELER_PARTY_KIND = cast(TravelerPartyKind, TRAVELER_PARTY_KINDS[0])
+ 
+ 
+-class TravelerPartyRequest(BaseModel):
++class _StrictRequest(BaseModel):
++    """Refuse fields the API does not know, naming them.
++
++    `POST /api/trips` used to answer 201 for dates and destinations sent beside
++    `trip_frame` instead of inside it, silently dropping them, so the trip had no
++    destination and no dates (issue 1841).
++    """
++
++    model_config = ConfigDict(extra="forbid")
++
++
++class TravelerPartyRequest(_StrictRequest):
+     kind: TravelerPartyKind = Field(default=DEFAULT_TRAVELER_PARTY_KIND)
+     traveler_count: int = Field(default=1, ge=1, le=50)
+     notes: str = Field(default="", max_length=240)
+ 
+ 
+-class TripFrameRequest(BaseModel):
++class TripFrameRequest(_StrictRequest):
+     origin: str | None = Field(default=None, max_length=120)
+     start_date: str | None = Field(default=None, max_length=32)
+     end_date: str | None = Field(default=None, max_length=32)
+@@ -27,15 +38,35 @@ class TripFrameRequest(BaseModel):
+     traveler_party: TravelerPartyRequest = Field(default_factory=TravelerPartyRequest)
+ 
+ 
+-class CreateTripRequest(BaseModel):
++class CreateTripRequest(_StrictRequest):
+     title: str = Field(min_length=1, max_length=160)
+     summary: str = Field(default="", max_length=600)
+     mode: str = Field(min_length=1, max_length=32)
+     trip_frame: TripFrameRequest = Field(default_factory=TripFrameRequest)
+ 
+ 
++class TripFramePatch(_StrictRequest):
++    """Only the fields sent are changed; each replaces the stored value."""
++
++    origin: str | None = Field(default=None, max_length=120)
++    start_date: str | None = Field(default=None, max_length=32)
++    end_date: str | None = Field(default=None, max_length=32)
++    duration_days: int | None = Field(default=None, ge=1, le=365)
++    primary_regions: list[str] | None = Field(default=None, max_length=8)
++    traveler_party: TravelerPartyRequest | None = None
++
++
++class UpdateTripRequest(_StrictRequest):
++    title: str | None = Field(default=None, min_length=1, max_length=160)
++    summary: str | None = Field(default=None, max_length=600)
++    trip_frame: TripFramePatch | None = None
++
++
+ class TripResponse(BaseModel):
+     trip: dict
++    #: True when an edit changed what the policy was asked about and the saved verdict
++    #: was therefore removed; the client says so rather than letting it vanish silently.
++    verdict_cleared: bool = False
+ 
+ 
+ class TripListResponse(BaseModel):
+diff --git a/trip_planner/app/services/trips.py b/trip_planner/app/services/trips.py
+index 51949300a..91eaf9b92 100644
+--- a/trip_planner/app/services/trips.py
++++ b/trip_planner/app/services/trips.py
+@@ -39,6 +39,7 @@
+ from trip_planner.persistence.models.scenario import PersistedSavedScenario
+ from trip_planner.persistence.models.session import PersistedPlanningSessionState
+ from trip_planner.persistence.models.trip import PersistedTrip
++from trip_planner.persistence.models.trip_price import PersistedTripPrice
+ 
+ _SLUG_RE = re.compile(r"[^a-z0-9]+")
+ _TRIP_ID_PREFIX = "trip-"
+@@ -194,9 +195,7 @@ def list_trips(db_session: Session, *, user: AuthenticatedUser) -> list[dict]:
+     return [serialize_trip(record) for record in records]
+ 
+ 
+-def get_trip(
+-    db_session: Session, *, user: AuthenticatedUser, trip_id: str
+-) -> dict | None:
++def get_trip(db_session: Session, *, user: AuthenticatedUser, trip_id: str) -> dict | None:
+     record = db_session.scalar(
+         select(PersistedTrip)
+         .where(PersistedTrip.trip_id == trip_id)
+@@ -207,6 +206,80 @@ def get_trip(
+     return serialize_trip(record)
+ 
+ 
++#: Changing any of these changes what the travel policy was asked about, so a verdict
++#: reached before the change no longer describes the trip. Title and traveller notes are
++#: not sent to the policy service.
++VERDICT_DETERMINANTS = (
++    "summary",
++    "origin",
++    "start_date",
++    "end_date",
++    "duration_days",
++    "primary_regions",
++    "traveler_party_kind",
++    "traveler_count",
++)
++
++
++#: Blank optional text is stored as NULL, as trip creation does.
++_NULLABLE_TEXT_FIELDS = ("origin", "start_date", "end_date")
++_TEXT_FIELDS = ("title", "summary", "traveler_notes", *_NULLABLE_TEXT_FIELDS)
++
++
++def _normalized_changes(changes: dict[str, object]) -> dict[str, object]:
++    normalized = dict(changes)
++    for field in _TEXT_FIELDS:
++        value = normalized.get(field)
++        if isinstance(value, str):
++            stripped = value.strip()
++            normalized[field] = stripped or (None if field in _NULLABLE_TEXT_FIELDS else "")
++    if "title" in normalized and not normalized["title"]:
++        raise _bad_request("Trip title is required.")
++    if "primary_regions" in normalized:
++        regions = normalized["primary_regions"]
++        normalized["primary_regions"] = _normalize_regions(
++            [str(region) for region in regions] if isinstance(regions, list) else []
++        )
++    return normalized
++
++
++def update_trip(
++    db_session: Session,
++    *,
++    user: AuthenticatedUser,
++    trip_id: str,
++    changes: dict[str, object],
++) -> tuple[dict, list[str]] | None:
++    """Apply the changed setup fields. Returns the trip and the determinants that changed.
++
++    When a determinant changes, the saved submission and verdict are deleted: a verdict
++    for Chicago must not print on the packet of a trip now going to Denver (issue 1841).
++    """
++
++    record = db_session.scalar(
++        select(PersistedTrip)
++        .where(PersistedTrip.trip_id == trip_id)
++        .where(PersistedTrip.user_id == user.user_id)
++    )
++    if record is None:
++        return None
++    changes = _normalized_changes(changes)
++
++    changed: list[str] = []
++    for field, value in changes.items():
++        if getattr(record, field) != value:
++            setattr(record, field, value)
++            changed.append(field)
++    determinants = [field for field in changed if field in VERDICT_DETERMINANTS]
++    if determinants:
++        db_session.execute(
++            delete(PersistedProposalState).where(PersistedProposalState.trip_id == trip_id)
++        )
++    db_session.commit()
++    db_session.refresh(record)
++    return serialize_trip(record), determinants
++
++
+ def delete_trip(db_session: Session, *, user: AuthenticatedUser, trip_id: str) -> bool:
+     record = db_session.scalar(
+         select(PersistedTrip)
+@@ -232,6 +305,8 @@ def delete_trip(db_session: Session, *, user: AuthenticatedUser, trip_id: str) -
+         PersistedProposalState,
+         PersistedSavedScenario,
+         PersistedPlanningSessionState,
++        # Entered prices belong to the trip; they were left behind as orphans.
++        PersistedTripPrice,
+     ):
+         db_session.execute(delete(model).where(model.trip_id == trip_id))
+ 

@@ -1,0 +1,696 @@
+diff --git a/pyproject.toml b/pyproject.toml
+index d45d3aa6..4bfb1670 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -85,6 +85,9 @@ reviewable-findings-artifact = "scripts.langchain.build_reviewable_findings_arti
+ [tool.setuptools.packages.find]
+ where = ["src"]
+ 
++[tool.setuptools.package-data]
++"pension_data.staging.schemas" = ["*.json"]
++
+ [tool.pytest.ini_options]
+ testpaths = ["tests"]
+ addopts = "-v"
+@@ -158,6 +161,12 @@ ignore_missing_imports = true
+ module = ["openpyxl", "openpyxl.*"]
+ ignore_missing_imports = true
+ 
++# jsonschema does not publish inline typing metadata; some developer environments
++# provide third-party stubs, but the base CI environment intentionally does not.
++[[tool.mypy.overrides]]
++module = ["jsonschema", "jsonschema.*"]
++ignore_missing_imports = true
++
+ [tool.black]
+ line-length = 100
+ target-version = ["py312"]
+diff --git a/src/pension_data/staging/__init__.py b/src/pension_data/staging/__init__.py
+new file mode 100644
+index 00000000..00090504
+--- /dev/null
++++ b/src/pension_data/staging/__init__.py
+@@ -0,0 +1,13 @@
++"""Import adapters for external research-backplane staging artifacts."""
++
++from pension_data.staging.doc_lineage_vars import (
++    DocLineageVariableRow,
++    import_tracked_variables,
++    stage_tracked_variables,
++)
++
++__all__ = [
++    "DocLineageVariableRow",
++    "import_tracked_variables",
++    "stage_tracked_variables",
++]
+diff --git a/src/pension_data/staging/doc_lineage_vars.py b/src/pension_data/staging/doc_lineage_vars.py
+new file mode 100644
+index 00000000..651538eb
+--- /dev/null
++++ b/src/pension_data/staging/doc_lineage_vars.py
+@@ -0,0 +1,160 @@
++"""Stage Doc-Lineage ``tracked-variable/v1`` artifacts for pension joins."""
++
++from __future__ import annotations
++
++import copy
++import json
++import math
++from collections.abc import Mapping, Sequence
++from dataclasses import dataclass
++from importlib.resources import files
++from pathlib import Path
++from typing import Any, Never
++
++from jsonschema import Draft202012Validator
++
++_SCHEMA_PACKAGE = "pension_data.staging.schemas"
++
++
++@dataclass(frozen=True, slots=True)
++class DocLineageVariableRow:
++    """One validated tracked variable ready for Pension-Data staging joins."""
++
++    variable_id: str
++    ontology_key: str
++    entity_ref: str
++    ontology_family: str | None
++    period: str | None
++    status: str | None
++    value_text: str | None
++    value_structured: Mapping[str, Any] | None
++    confidence: float | None
++    supersedes_variable_id: str | None
++    evidence: Mapping[str, Any]
++    provenance: Mapping[str, Any]
++
++
++def _load_schema(name: str) -> dict[str, Any]:
++    payload = json.loads(files(_SCHEMA_PACKAGE).joinpath(name).read_text(encoding="utf-8"))
++    if not isinstance(payload, dict):  # pragma: no cover - repository integrity guard
++        raise RuntimeError(f"packaged schema {name} must be a JSON object")
++    return payload
++
++
++def _validator() -> Draft202012Validator:
++    tracked_schema = copy.deepcopy(_load_schema("tracked-variable-v1.schema.json"))
++    evidence_schema = _load_schema("evidence-object-v1.schema.json")
++    properties = tracked_schema.get("properties")
++    if not isinstance(properties, dict):  # pragma: no cover - repository integrity guard
++        raise RuntimeError("tracked-variable schema must define object properties")
++    properties["evidence"] = evidence_schema
++    Draft202012Validator.check_schema(tracked_schema)
++    return Draft202012Validator(tracked_schema)
++
++
++def _non_empty_string(payload: Mapping[str, Any], field: str, *, index: int) -> str:
++    value = payload.get(field)
++    if not isinstance(value, str) or not value.strip():
++        raise ValueError(f"tracked variable at index {index} requires non-empty {field}")
++    return value.strip()
++
++
++def _optional_string(payload: Mapping[str, Any], field: str) -> str | None:
++    value = payload.get(field)
++    if value is None:
++        return None
++    if not isinstance(value, str):
++        raise ValueError(f"tracked variable field {field} must be a string or null")
++    stripped = value.strip()
++    return stripped or None
++
++
++def _objects(payload: object) -> list[Mapping[str, Any]]:
++    candidates: Sequence[object]
++    if isinstance(payload, Mapping):
++        candidates = [payload]
++    elif isinstance(payload, list):
++        candidates = payload
++    else:
++        raise ValueError("tracked-variable input must be a JSON object or array of objects")
++
++    objects: list[Mapping[str, Any]] = []
++    for index, candidate in enumerate(candidates):
++        if not isinstance(candidate, Mapping):
++            raise ValueError(f"tracked variable at index {index} must be a JSON object")
++        objects.append(candidate)
++    return objects
++
++
++def _reject_json_constant(value: str) -> Never:
++    raise ValueError(f"non-standard JSON constant {value} is not allowed")
++
++
++def stage_tracked_variables(payload: object) -> tuple[DocLineageVariableRow, ...]:
++    """Validate and normalize one Doc-Lineage variable object or array."""
++    validator = _validator()
++    rows: list[DocLineageVariableRow] = []
++    seen_ids: set[str] = set()
++
++    for index, item in enumerate(_objects(payload)):
++        errors = sorted(validator.iter_errors(item), key=lambda error: list(error.absolute_path))
++        if errors:
++            error = errors[0]
++            location = ".".join(str(part) for part in error.absolute_path) or "<root>"
++            raise ValueError(
++                f"tracked variable at index {index} fails tracked-variable/v1 "
++                f"at {location}: {error.message}"
++            )
++
++        variable_id = _non_empty_string(item, "variable_id", index=index)
++        ontology_key = _non_empty_string(item, "ontology_key", index=index)
++        entity_ref = _non_empty_string(item, "entity_ref", index=index)
++        if variable_id in seen_ids:
++            raise ValueError(f"duplicate tracked variable_id: {variable_id}")
++        seen_ids.add(variable_id)
++
++        evidence = item["evidence"]
++        provenance = item["provenance"]
++        if not isinstance(evidence, Mapping) or not isinstance(provenance, Mapping):
++            raise ValueError(f"tracked variable at index {index} has invalid evidence/provenance")
++
++        value_structured = item.get("value_structured")
++        if value_structured is not None and not isinstance(value_structured, Mapping):
++            raise ValueError("tracked variable field value_structured must be an object or null")
++
++        confidence = item.get("confidence")
++        normalized_confidence = float(confidence) if confidence is not None else None
++        if normalized_confidence is not None and not math.isfinite(normalized_confidence):
++            raise ValueError(f"tracked variable at index {index} requires finite confidence")
++        rows.append(
++            DocLineageVariableRow(
++                variable_id=variable_id,
++                ontology_key=ontology_key,
++                entity_ref=entity_ref,
++                ontology_family=_optional_string(item, "ontology_family"),
++                period=_optional_string(item, "period"),
++                status=_optional_string(item, "status"),
++                value_text=_optional_string(item, "value_text"),
++                value_structured=(
++                    copy.deepcopy(value_structured) if value_structured is not None else None
++                ),
++                confidence=normalized_confidence,
++                supersedes_variable_id=_optional_string(item, "supersedes_variable_id"),
++                evidence=copy.deepcopy(evidence),
++                provenance=copy.deepcopy(provenance),
++            )
++        )
++
++    return tuple(rows)
++
++
++def import_tracked_variables(path: str | Path) -> tuple[DocLineageVariableRow, ...]:
++    """Load a UTF-8 Doc-Lineage JSON artifact into validated staging rows."""
++    source = Path(path)
++    try:
++        payload = json.loads(
++            source.read_text(encoding="utf-8"), parse_constant=_reject_json_constant
++        )
++    except (OSError, UnicodeError, ValueError) as exc:
++        raise ValueError(f"unable to load tracked-variable JSON from {source}: {exc}") from exc
++    return stage_tracked_variables(payload)
+diff --git a/src/pension_data/staging/schemas/__init__.py b/src/pension_data/staging/schemas/__init__.py
+new file mode 100644
+index 00000000..199d79e2
+--- /dev/null
++++ b/src/pension_data/staging/schemas/__init__.py
+@@ -0,0 +1 @@
++"""Packaged Research Backplane schemas used by Pension-Data staging."""
+diff --git a/src/pension_data/staging/schemas/evidence-object-v1.schema.json b/src/pension_data/staging/schemas/evidence-object-v1.schema.json
+new file mode 100644
+index 00000000..5bd44de0
+--- /dev/null
++++ b/src/pension_data/staging/schemas/evidence-object-v1.schema.json
+@@ -0,0 +1,101 @@
++{
++  "$schema": "https://json-schema.org/draft/2020-12/schema",
++  "$id": "https://github.com/stranske/Workflows/docs/contracts/schemas/evidence-object-v1.schema.json",
++  "title": "Research Backplane Evidence Object v1",
++  "description": "An attributable evidence object linking an extracted/asserted fact back to its source. Closes the fleet's most common evidence gap: even the best repos (Pension-Data 2/3, Inv-Man-Intake 2/3) omit EXCERPT text and extraction METHOD from their evidence object. Both are required here. Out of role for pure computational engines (PAEM/Trend_Model emit no facts) -- such tools list 'evidence' outside their registry required_sections and emit no evidence objects.",
++  "type": "object",
++  "additionalProperties": true,
++  "required": [
++    "schema_version",
++    "evidence_id",
++    "fact_ref",
++    "source_id",
++    "method",
++    "excerpt"
++  ],
++  "properties": {
++    "schema_version": {
++      "const": "evidence-object/v1"
++    },
++    "evidence_id": {
++      "type": "string",
++      "minLength": 1,
++      "description": "Stable, deterministic id for this evidence object (e.g. a content hash), referenced from run-contract/v1 evidence_refs."
++    },
++    "fact_ref": {
++      "type": "string",
++      "minLength": 1,
++      "description": "Identifier of the fact/metric/field this evidence supports (e.g. 'strategy.asset_class', a metric key, a holdings delta id)."
++    },
++    "source_id": {
++      "type": "string",
++      "minLength": 1,
++      "description": "Stable source document / dataset id the fact was drawn from."
++    },
++    "method": {
++      "type": "string",
++      "enum": [
++        "rule",
++        "parser",
++        "table",
++        "text",
++        "ocr",
++        "llm",
++        "computed",
++        "fallback",
++        "manual"
++      ],
++      "description": "How the fact was extracted/produced. This is the field the fleet's best repos are missing (Pension-Data: no method on the evidence link; Inv-Man-Intake: provider_name lives on the document result, not the field)."
++    },
++    "excerpt": {
++      "type": ["string", "null"],
++      "maxLength": 2000,
++      "description": "The quoted source text supporting the fact (bounded). Required to be PRESENT (string or explicit null) so consumers can see WHAT text supports a fact. The fleet stores positional anchors like 'text:3' instead of quoted excerpts; this field carries the quote. Bounded length keeps it artifact-safe; long source bodies stay in named artifacts."
++    },
++    "locator": {
++      "type": "object",
++      "additionalProperties": true,
++      "description": "Structured location within the source. The richer locators (bbox/table/row) already exist on types like Inv-Man-Intake SourceLocation but are not propagated to the evidence object today.",
++      "properties": {
++        "page": {
++          "type": "integer",
++          "minimum": 0
++        },
++        "section": {
++          "type": "string",
++          "minLength": 1
++        },
++        "table_index": {
++          "type": "integer",
++          "minimum": 0
++        },
++        "row": {
++          "type": "integer",
++          "minimum": 0
++        },
++        "column": {
++          "type": ["string", "integer"]
++        },
++        "bbox": {
++          "type": "array",
++          "items": {
++            "type": "number"
++          },
++          "minItems": 4,
++          "maxItems": 4
++        }
++      }
++    },
++    "confidence": {
++      "type": ["number", "null"],
++      "minimum": 0,
++      "maximum": 1,
++      "description": "Per-evidence-link confidence (so two evidence sources for one fact can carry differing confidences -- a gap noted for Pension-Data, where confidence sits on the fact not the link)."
++    },
++    "entity_ref": {
++      "type": "string",
++      "pattern": "^[a-z0-9_]+:[a-z0-9][a-z0-9_.:-]*$",
++      "description": "Optional canonical entity id (per identity-map-conventions.md) the fact is about."
++    }
++  }
++}
+diff --git a/src/pension_data/staging/schemas/tracked-variable-v1.schema.json b/src/pension_data/staging/schemas/tracked-variable-v1.schema.json
+new file mode 100644
+index 00000000..24b3a363
+--- /dev/null
++++ b/src/pension_data/staging/schemas/tracked-variable-v1.schema.json
+@@ -0,0 +1,178 @@
++{
++  "$schema": "https://json-schema.org/draft/2020-12/schema",
++  "$id": "https://github.com/stranske/Workflows/docs/contracts/schemas/tracked-variable-v1.schema.json",
++  "title": "Research Backplane Tracked Variable v1",
++  "description": "A fleet-owned asserted claim (legal clause, consultant section, or thesis claim) with ontology key, typed value, embedded evidence-object/v1, and dual document/mirror provenance per B3 interop architecture §3.1.",
++  "type": "object",
++  "additionalProperties": true,
++  "required": [
++    "schema_version",
++    "evidence",
++    "provenance"
++  ],
++  "properties": {
++    "schema_version": {
++      "const": "tracked-variable/v1"
++    },
++    "variable_id": {
++      "type": "string",
++      "minLength": 1,
++      "description": "Stable identifier for this tracked variable (e.g. var:<content-hash>)."
++    },
++    "ontology_key": {
++      "type": "string",
++      "minLength": 1,
++      "description": "Cross-manager join key (e.g. legal.withdrawal.notice_days, consultant.trust_level.market_overview)."
++    },
++    "ontology_family": {
++      "type": "string",
++      "enum": [
++        "clause",
++        "report_section",
++        "thesis_claim"
++      ],
++      "description": "Selects the vocabulary file; same wire shape for all families."
++    },
++    "document_id": {
++      "type": "string",
++      "minLength": 1,
++      "description": "Content-hash document identity (document:<sha256>)."
++    },
++    "artifact_id": {
++      "type": "string",
++      "minLength": 1,
++      "description": "Ingest-run artifact identity with supersession chain."
++    },
++    "entity_ref": {
++      "type": "string",
++      "pattern": "^[a-z0-9_]+:[a-z0-9][a-z0-9_.:-]*$",
++      "description": "Canonical entity id (per identity-map-conventions.md) the variable is about."
++    },
++    "period": {
++      "type": "string",
++      "minLength": 1
++    },
++    "status": {
++      "type": "string",
++      "minLength": 1
++    },
++    "value_text": {
++      "type": "string"
++    },
++    "value_structured": {
++      "type": "object",
++      "additionalProperties": true
++    },
++    "change_class": {
++      "type": [
++        "string",
++        "null"
++      ]
++    },
++    "confidence": {
++      "type": [
++        "number",
++        "null"
++      ],
++      "minimum": 0,
++      "maximum": 1
++    },
++    "supersedes_variable_id": {
++      "type": [
++        "string",
++        "null"
++      ]
++    },
++    "provenance": {
++      "type": "object",
++      "additionalProperties": true,
++      "required": [
++        "document",
++        "mirror"
++      ],
++      "properties": {
++        "document": {
++          "type": "object",
++          "additionalProperties": true,
++          "description": "Primary anchor for one-click page navigation.",
++          "properties": {
++            "source_id": {
++              "type": "string",
++              "minLength": 1
++            },
++            "locator": {
++              "type": "object",
++              "additionalProperties": true,
++              "properties": {
++                "page": {
++                  "type": "integer",
++                  "minimum": 0
++                },
++                "section": {
++                  "type": "string",
++                  "minLength": 1
++                },
++                "bbox": {
++                  "type": "array",
++                  "items": {
++                    "type": "number"
++                  },
++                  "minItems": 4,
++                  "maxItems": 4
++                }
++              }
++            }
++          }
++        },
++        "mirror": {
++          "type": "object",
++          "additionalProperties": true,
++          "description": "Local blob path for offline mirror navigation.",
++          "properties": {
++            "mirror_root": {
++              "type": "string",
++              "minLength": 1
++            },
++            "blob_path": {
++              "type": "string",
++              "minLength": 1
++            },
++            "page_anchor": {
++              "type": "string",
++              "minLength": 1
++            }
++          }
++        },
++        "source_system": {
++          "type": "object",
++          "additionalProperties": true,
++          "properties": {
++            "system": {
++              "type": "string",
++              "minLength": 1
++            },
++            "url": {
++              "type": "string",
++              "minLength": 1
++            },
++            "exported_at": {
++              "type": "string",
++              "format": "date-time"
++            }
++          }
++        }
++      }
++    },
++    "evidence": {
++      "$ref": "evidence-object-v1.schema.json"
++    },
++    "extracted_at": {
++      "type": "string",
++      "format": "date-time"
++    },
++    "extractor_run_id": {
++      "type": "string",
++      "minLength": 1
++    }
++  }
++}
+diff --git a/tests/staging/test_doc_lineage_import.py b/tests/staging/test_doc_lineage_import.py
+new file mode 100644
+index 00000000..a1877d25
+--- /dev/null
++++ b/tests/staging/test_doc_lineage_import.py
+@@ -0,0 +1,180 @@
++"""Acceptance coverage for Doc-Lineage tracked-variable staging imports."""
++
++from __future__ import annotations
++
++import json
++import os
++import subprocess
++import sys
++from pathlib import Path
++
++import pytest
++
++from pension_data.staging.doc_lineage_vars import import_tracked_variables, stage_tracked_variables
++
++_REPO_ROOT = Path(__file__).resolve().parents[2]
++
++
++def _synthetic_variable() -> dict[str, object]:
++    return {
++        "schema_version": "tracked-variable/v1",
++        "variable_id": "var:calpers-discount-rate-2025",
++        "ontology_key": "consultant.assumptions.discount_rate",
++        "ontology_family": "report_section",
++        "entity_ref": "pension:calpers",
++        "period": "FY2025",
++        "status": "asserted",
++        "value_text": "6.8%",
++        "confidence": 0.94,
++        "provenance": {
++            "document": {
++                "source_id": "document:calpers-2025",
++                "locator": {"page": 42},
++            },
++            "mirror": {
++                "mirror_root": "/archive/calpers",
++                "blob_path": "blobs/actuarial-2025.pdf",
++                "page_anchor": "#page=42",
++            },
++        },
++        "evidence": {
++            "schema_version": "evidence-object/v1",
++            "evidence_id": "evidence:calpers-discount-rate-2025",
++            "fact_ref": "consultant.assumptions.discount_rate",
++            "source_id": "document:calpers-2025",
++            "entity_ref": "pension:calpers",
++            "method": "parser",
++            "excerpt": "The discount rate remains 6.8%.",
++        },
++    }
++
++
++def _write_payload(tmp_path: Path, payload: object) -> Path:
++    path = tmp_path / "tracked-variables.json"
++    path.write_text(json.dumps(payload), encoding="utf-8")
++    return path
++
++
++def test_variable_staged_with_entity_ref(tmp_path: Path) -> None:
++    rows = import_tracked_variables(_write_payload(tmp_path, [_synthetic_variable()]))
++
++    assert len(rows) == 1
++    assert rows[0].variable_id == "var:calpers-discount-rate-2025"
++    assert rows[0].ontology_key == "consultant.assumptions.discount_rate"
++    assert rows[0].entity_ref == "pension:calpers"
++    assert rows[0].evidence["excerpt"] == "The discount rate remains 6.8%."
++    assert rows[0].provenance["document"]["locator"]["page"] == 42
++
++
++def test_import_rejects_missing_ontology_key(tmp_path: Path) -> None:
++    variable = _synthetic_variable()
++    variable.pop("ontology_key")
++
++    with pytest.raises(ValueError, match="requires non-empty ontology_key"):
++        import_tracked_variables(_write_payload(tmp_path, variable))
++
++
++def test_import_rejects_duplicate_variable_ids(tmp_path: Path) -> None:
++    variable = _synthetic_variable()
++
++    with pytest.raises(ValueError, match="duplicate tracked variable_id"):
++        import_tracked_variables(_write_payload(tmp_path, [variable, variable]))
++
++
++def test_import_rejects_invalid_embedded_evidence(tmp_path: Path) -> None:
++    variable = _synthetic_variable()
++    evidence = variable["evidence"]
++    assert isinstance(evidence, dict)
++    del evidence["excerpt"]
++
++    with pytest.raises(ValueError, match="fails tracked-variable/v1"):
++        import_tracked_variables(_write_payload(tmp_path, variable))
++
++
++def test_non_finite_confidence_is_rejected_by_both_entry_points(tmp_path: Path) -> None:
++    variable = _synthetic_variable()
++    variable["confidence"] = float("nan")
++
++    with pytest.raises(ValueError, match="requires finite confidence"):
++        stage_tracked_variables(variable)
++    with pytest.raises(ValueError, match="non-standard JSON constant NaN"):
++        import_tracked_variables(_write_payload(tmp_path, variable))
++
++
++def test_staged_nested_values_are_independent_snapshots() -> None:
++    variable = _synthetic_variable()
++    variable["value_structured"] = {"bands": [{"name": "base"}]}
++    row = stage_tracked_variables(variable)[0]
++
++    value_structured = variable["value_structured"]
++    provenance = variable["provenance"]
++    evidence = variable["evidence"]
++    assert isinstance(value_structured, dict)
++    assert isinstance(provenance, dict)
++    assert isinstance(evidence, dict)
++    value_structured["bands"] = []
++    provenance["document"] = {}
++    evidence["excerpt"] = "mutated"
++
++    assert row.value_structured == {"bands": [{"name": "base"}]}
++    assert row.provenance["document"]["source_id"] == "document:calpers-2025"
++    assert row.evidence["excerpt"] == "The discount rate remains 6.8%."
++
++
++def test_non_editable_wheel_loads_packaged_schemas(tmp_path: Path) -> None:
++    wheel_dir = tmp_path / "wheel"
++    site_dir = tmp_path / "site"
++    wheel_dir.mkdir()
++    subprocess.run(
++        [
++            sys.executable,
++            "-m",
++            "pip",
++            "wheel",
++            "--no-deps",
++            "--wheel-dir",
++            str(wheel_dir),
++            str(_REPO_ROOT),
++        ],
++        check=True,
++        capture_output=True,
++        text=True,
++    )
++    wheel = next(wheel_dir.glob("pension_data-*.whl"))
++    subprocess.run(
++        [
++            sys.executable,
++            "-m",
++            "pip",
++            "install",
++            "--no-deps",
++            "--target",
++            str(site_dir),
++            str(wheel),
++        ],
++        check=True,
++        capture_output=True,
++        text=True,
++    )
++    payload_path = _write_payload(tmp_path, _synthetic_variable())
++    environment = os.environ.copy()
++    environment["PYTHONPATH"] = str(site_dir)
++    result = subprocess.run(
++        [
++            sys.executable,
++            "-c",
++            (
++                "from pension_data.staging import import_tracked_variables; "
++                "import sys; "
++                "row = import_tracked_variables(sys.argv[1])[0]; "
++                "assert row.ontology_key == 'consultant.assumptions.discount_rate'"
++            ),
++            str(payload_path),
++        ],
++        cwd=tmp_path,
++        env=environment,
++        check=False,
++        capture_output=True,
++        text=True,
++    )
++    assert result.returncode == 0, result.stderr

@@ -1,0 +1,201 @@
+diff --git a/docs/keepalive/GoalsAndPlumbing.md b/docs/keepalive/GoalsAndPlumbing.md
+index 55521f374..18a361173 100644
+--- a/docs/keepalive/GoalsAndPlumbing.md
++++ b/docs/keepalive/GoalsAndPlumbing.md
+@@ -368,7 +368,11 @@ reservation cannot overwrite its pending owner. Readers use the newest GraphQL
+ comment cursor, walk backward, and stop at the latest authoritative reservation,
+ joining only a matching trusted marked receipt. Cursor boundaries avoid the
+ offset-page shift when ordinary comments are deleted during a read. GraphQL
+-reads use `GITHUB_GRAPHQL_URL` when available; on GHES the fallback derives
++reads use full-width `fullDatabaseId` values for comment ordering and REST
++receipt identities, including IDs beyond the legacy `databaseId` Int width.
++If an older GHES schema rejects that field, the reader retries only that
++unknown-field error with the legacy `databaseId` query; other GraphQL errors
++still fail closed. They use `GITHUB_GRAPHQL_URL` when available; on GHES the fallback derives
+ `/api/graphql` from the REST `/api/v3` root. Legacy `runner-dispatch` records remain readable
+ until a new reservation exists; later writes by old clients cannot supersede the
+ new marker family. A completion retry reuses its own receipt (or returns without
+diff --git a/scripts/runner_lib/core.py b/scripts/runner_lib/core.py
+index 0c1ebad36..51dea215c 100644
+--- a/scripts/runner_lib/core.py
++++ b/scripts/runner_lib/core.py
+@@ -20,7 +20,7 @@
+ import uuid
+ from collections.abc import Iterator
+ from pathlib import Path
+-from typing import Any, Protocol, TypeGuard, cast
++from typing import Any, Protocol, TypeGuard
+ 
+ from scripts.state_fingerprint import GitHubApi, _github_context
+ 
+@@ -875,9 +875,10 @@ def _iter_comments(self, pr_number: int, *, direction: str = "asc") -> Iterator[
+         query = (
+             "query($owner:String!,$repo:String!,$pr:Int!,$cursor:String){"
+             "repository(owner:$owner,name:$repo){pullRequest(number:$pr){"
+-            f"comments({window}){{nodes{{databaseId body author{{login}} authorAssociation}}"
++            f"comments({window}){{nodes{{databaseId fullDatabaseId body author{{login}} authorAssociation}}"
+             "pageInfo{hasPreviousPage startCursor hasNextPage endCursor}}}}}"
+         )
++        legacy_query = query.replace("fullDatabaseId ", "")
+         cursor: str | None = None
+         seen: set[str] = set()
+         boundary_id: int | None = None
+@@ -890,6 +891,24 @@ def _iter_comments(self, pr_number: int, *, direction: str = "asc") -> Iterator[
+                     "variables": {"owner": owner, "repo": repo, "pr": pr_number, "cursor": cursor},
+                 },
+             )
++            if isinstance(response, dict) and response.get("errors") and query != legacy_query:
++                errors = response["errors"]
++                unsupported_full_id = (
++                    isinstance(errors, list)
++                    and bool(errors)
++                    and all(
++                        isinstance(error, dict)
++                        and "fullDatabaseId" in str(error.get("message") or "")
++                        and any(
++                            phrase in str(error.get("message") or "").lower()
++                            for phrase in ("doesn't exist", "cannot query field", "unknown field")
++                        )
++                        for error in errors
++                    )
++                )
++                if unsupported_full_id:
++                    query = legacy_query
++                    continue
+             if not isinstance(response, dict) or response.get("errors"):
+                 raise RuntimeError(f"Cannot read runner comments for PR {pr_number}: GraphQL error")
+             try:
+@@ -900,12 +919,23 @@ def _iter_comments(self, pr_number: int, *, direction: str = "asc") -> Iterator[
+                 raise RuntimeError(f"Missing runner comments for PR {pr_number}") from exc
+             if not isinstance(nodes, list) or not isinstance(page_info, dict):
+                 raise RuntimeError(f"Invalid runner comments for PR {pr_number}")
+-            raw_ids = [node.get("databaseId") for node in nodes if isinstance(node, dict)]
+-            if len(raw_ids) != len(nodes) or any(
+-                not isinstance(comment_id, int) for comment_id in raw_ids
+-            ):
+-                raise RuntimeError(f"Unstable runner comment cursor for PR {pr_number}")
+-            ids = cast(list[int], raw_ids)
++            ids: list[int] = []
++            for node in nodes:
++                if not isinstance(node, dict):
++                    raise RuntimeError(f"Unstable runner comment cursor for PR {pr_number}")
++                raw_id = node.get("fullDatabaseId")
++                if raw_id is None:
++                    raw_id = node.get("databaseId")
++                if isinstance(raw_id, bool) or not (
++                    isinstance(raw_id, int)
++                    and raw_id > 0
++                    or isinstance(raw_id, str)
++                    and raw_id.isascii()
++                    and raw_id.isdecimal()
++                    and int(raw_id) > 0
++                ):
++                    raise RuntimeError(f"Unstable runner comment cursor for PR {pr_number}")
++                ids.append(int(raw_id))
+             if (
+                 ids != sorted(set(ids))
+                 or (
+@@ -918,10 +948,15 @@ def _iter_comments(self, pr_number: int, *, direction: str = "asc") -> Iterator[
+                 raise RuntimeError(f"Unstable runner comment cursor for PR {pr_number}")
+             if ids:
+                 boundary_id = ids[0] if descending else ids[-1]
+-            for node in reversed(nodes) if descending else nodes:
++            ordered_nodes = (
++                zip(reversed(nodes), reversed(ids), strict=True)
++                if descending
++                else zip(nodes, ids, strict=True)
++            )
++            for node, comment_id in ordered_nodes:
+                 author = node.get("author")
+                 yield {
+-                    "id": node["databaseId"],
++                    "id": comment_id,
+                     "body": node.get("body"),
+                     "user": {"login": author.get("login")} if isinstance(author, dict) else None,
+                     "author_association": node.get("authorAssociation"),
+diff --git a/tests/scripts/test_runner_lib.py b/tests/scripts/test_runner_lib.py
+index a9da38cec..b72517509 100644
+--- a/tests/scripts/test_runner_lib.py
++++ b/tests/scripts/test_runner_lib.py
+@@ -1253,6 +1253,7 @@ def _graphql_comments(comments: list[dict[str, Any]], request: dict[str, Any]) -
+                         "nodes": [
+                             {
+                                 "databaseId": item["id"],
++                                "fullDatabaseId": str(item["id"]),
+                                 "body": item["body"],
+                                 "author": item.get("user"),
+                                 "authorAssociation": item.get("author_association"),
+@@ -1272,6 +1273,73 @@ def _graphql_comments(comments: list[dict[str, Any]], request: dict[str, Any]) -
+     }
+ 
+ 
++def test_pr_comment_storage_accepts_full_width_graphql_ids() -> None:
++    comment_id = 5_807_299_200
++
++    class FakeApi:
++        repo = "owner/repo"
++
++        def request(self, method: str, path: str, body: dict[str, Any] | None = None) -> Any:
++            assert method == "POST" and path == "/graphql" and body is not None
++            assert "fullDatabaseId" in body["query"]
++            response = _graphql_comments([{"body": "marker", "id": comment_id}], body)
++            node = response["data"]["repository"]["pullRequest"]["comments"]["nodes"][0]
++            node["databaseId"] = None
++            return response
++
++    storage = PrCommentRunnerStorage(FakeApi())  # type: ignore[arg-type]
++    assert [comment["id"] for comment in storage._iter_comments(42)] == [comment_id]
++
++
++def test_pr_comment_storage_retries_legacy_query_only_for_missing_full_id_field() -> None:
++    class FakeApi:
++        repo = "owner/repo"
++
++        def __init__(self) -> None:
++            self.queries: list[str] = []
++
++        def request(self, method: str, path: str, body: dict[str, Any] | None = None) -> Any:
++            assert method == "POST" and path == "/graphql" and body is not None
++            query = body["query"]
++            self.queries.append(query)
++            if "fullDatabaseId" in query:
++                return {
++                    "errors": [
++                        {"message": "Field 'fullDatabaseId' doesn't exist on type 'IssueComment'"}
++                    ]
++                }
++            response = _graphql_comments([{"body": "marker", "id": 41}], body)
++            del response["data"]["repository"]["pullRequest"]["comments"]["nodes"][0][
++                "fullDatabaseId"
++            ]
++            return response
++
++    api = FakeApi()
++    storage = PrCommentRunnerStorage(api)  # type: ignore[arg-type]
++    assert [comment["id"] for comment in storage._iter_comments(42)] == [41]
++    assert len(api.queries) == 2
++    assert "fullDatabaseId" in api.queries[0]
++    assert "fullDatabaseId" not in api.queries[1]
++
++
++def test_pr_comment_storage_does_not_retry_unrelated_graphql_error() -> None:
++    class FakeApi:
++        repo = "owner/repo"
++
++        def __init__(self) -> None:
++            self.calls = 0
++
++        def request(self, method: str, path: str, body: dict[str, Any] | None = None) -> Any:
++            self.calls += 1
++            return {"errors": [{"message": "Resource not accessible by integration"}]}
++
++    api = FakeApi()
++    storage = PrCommentRunnerStorage(api)  # type: ignore[arg-type]
++    with pytest.raises(RuntimeError, match="GraphQL error"):
++        list(storage._iter_comments(42))
++    assert api.calls == 1
++
++
+ def test_pr_comment_storage_stops_when_marker_found() -> None:
+     class FakeApi:
+         repo = "owner/repo"

@@ -1,0 +1,112 @@
+diff --git a/src/fine_art_archive/selection/lenses.py b/src/fine_art_archive/selection/lenses.py
+index 67a4df02..f9a3f665 100644
+--- a/src/fine_art_archive/selection/lenses.py
++++ b/src/fine_art_archive/selection/lenses.py
+@@ -248,11 +248,26 @@ def apply_saturation_cap(
+     bucket with no recorded archive share is uncapped rather than blocked —
+     an unknown share must not silently forbid a subject.
+     """
++    if batch_cap <= 0:
++        return [], SaturationReport(bucket_shares={}, held={}, headroom={})
++
++    finite_tolerance = _finite_float(tolerance)
++    if finite_tolerance is None or finite_tolerance < 0.0:
++        finite_tolerance = 1.0
++
++    valid_shares: dict[str, float] = {}
+     allowed: dict[str, int] = {}
+     for bucket, share in archive_shares.items():
++        finite_share = _finite_float(share)
++        if finite_share is None or not 0.0 <= finite_share <= 1.0:
++            continue
++        valid_shares[bucket] = finite_share
+         # At least one slot for any bucket the archive holds at all: a cap that
+         # rounds a real subject down to zero is a ban wearing a cap's clothes.
+-        allowed[bucket] = max(1, int(round(batch_cap * float(share) * tolerance)))
++        effective_share = finite_share * finite_tolerance
++        allowed[bucket] = (
++            batch_cap if effective_share >= 1.0 else max(1, int(round(batch_cap * effective_share)))
++        )
+ 
+     taken: dict[str, int] = {}
+     held: dict[str, int] = {}
+@@ -270,7 +285,7 @@ def apply_saturation_cap(
+         kept.append(cand)
+ 
+     headroom = {b: max(0, allowed[b] - taken.get(b, 0)) for b in allowed}
+-    return kept, SaturationReport(bucket_shares=dict(archive_shares), held=held, headroom=headroom)
++    return kept, SaturationReport(bucket_shares=valid_shares, held=held, headroom=headroom)
+ 
+ 
+ # --------------------------------------------------------------------------
+diff --git a/tests/test_selection_lenses.py b/tests/test_selection_lenses.py
+index 33217338..bb87f30b 100644
+--- a/tests/test_selection_lenses.py
++++ b/tests/test_selection_lenses.py
+@@ -345,6 +345,66 @@ def test_bucket_with_no_recorded_share_is_uncapped_not_blocked() -> None:
+     assert report.held == {}
+ 
+ 
++@pytest.mark.parametrize("batch_cap", [0, -1])
++def test_saturation_cap_with_no_capacity_returns_an_empty_report(batch_cap: int) -> None:
++    pool = [{"qid": "M1", "bucket": "madonna"}]
++
++    kept, report = lenses.apply_saturation_cap(
++        pool, batch_cap=batch_cap, archive_shares={"madonna": 0.5}, bucket_of=_bucket
++    )
++
++    assert kept == []
++    assert report.held == {}
++    assert report.headroom == {}
++
++
++@pytest.mark.parametrize("share", [math.nan, math.inf, -math.inf, -0.1, 1.1])
++def test_non_finite_or_out_of_range_saturation_share_is_uncapped(share: float) -> None:
++    pool = [{"qid": f"M{i}", "bucket": "madonna"} for i in range(3)]
++
++    kept, report = lenses.apply_saturation_cap(
++        pool, batch_cap=1, archive_shares={"madonna": share}, bucket_of=_bucket
++    )
++
++    assert kept == pool
++    assert report.bucket_shares == {}
++    assert report.held == {}
++    assert report.headroom == {}
++
++
++@pytest.mark.parametrize("tolerance", [math.nan, math.inf, -math.inf, -1.0])
++def test_invalid_saturation_tolerance_uses_neutral_default(tolerance: float) -> None:
++    pool = [{"qid": f"M{i}", "bucket": "madonna"} for i in range(3)]
++
++    kept, report = lenses.apply_saturation_cap(
++        pool,
++        batch_cap=10,
++        archive_shares={"madonna": 0.1},
++        bucket_of=_bucket,
++        tolerance=tolerance,
++    )
++
++    assert len(kept) == 1
++    assert report.held == {"madonna": 2}
++    assert report.headroom == {"madonna": 0}
++
++
++def test_large_finite_saturation_tolerance_is_bounded_by_batch_capacity() -> None:
++    pool = [{"qid": f"M{i}", "bucket": "madonna"} for i in range(12)]
++
++    kept, report = lenses.apply_saturation_cap(
++        pool,
++        batch_cap=10,
++        archive_shares={"madonna": 1.0},
++        bucket_of=_bucket,
++        tolerance=1e308,
++    )
++
++    assert len(kept) == 10
++    assert report.held == {"madonna": 2}
++    assert report.headroom == {"madonna": 0}
++
++
+ # --------------------------------------------------------------------------
+ # Monthly allocation — what makes the shares actually bind
+ # --------------------------------------------------------------------------

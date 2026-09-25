@@ -1,0 +1,525 @@
+diff --git a/frontend/src/api/workspace.ts b/frontend/src/api/workspace.ts
+index b26491bbe..2df682940 100644
+--- a/frontend/src/api/workspace.ts
++++ b/frontend/src/api/workspace.ts
+@@ -573,6 +573,8 @@ export type PlannerSessionResponse = {
+   }>;
+   activity_log: ActivityLogEntry[];
+   messages: PlannerMessage[];
++  /** How the planner answers: "model" (a language model) or "fallback" (offline, rules only). */
++  runtime?: { mode: string; summary?: string | null } | null;
+ };
+ 
+ export type WorkspaceUserSummary = {
+diff --git a/frontend/src/lib/policyCodes.ts b/frontend/src/lib/policyCodes.ts
+index e04f5ae91..205040bfe 100644
+--- a/frontend/src/lib/policyCodes.ts
++++ b/frontend/src/lib/policyCodes.ts
+@@ -6,6 +6,9 @@
+  * file restates TPP rather than inventing a policy. The second says what the traveller can
+  * do about it here. Codes this file does not know are shown as-is: an unexplained code is
+  * better than a guessed explanation.
++ *
++ * The planner chat explains the same codes from trip_planner/app/services/policy_codes.py;
++ * tests/app/test_policy_code_parity.py fails if the two drift.
+  */
+ 
+ export type PolicyCodeExplanation = {
+@@ -18,12 +21,12 @@ const EXPLANATIONS: Record<string, { meaning: string; whatToDo: string }> = {
+   fare_comparison: {
+     meaning: "Fare comparison requires selected and lowest fare data.",
+     whatToDo:
+-      "Your approver needs both the fare you chose and the lowest fare available for the same trip. Include both with the packet.",
++      "Enter the lowest fare you found for the same journey next to your flight price on the Budget tab, then submit again.",
+   },
+   fare_evidence: {
+     meaning: "Screenshot or fare evidence must be attached to the request.",
+     whatToDo:
+-      "This planner cannot attach files yet. Keep a screenshot of the fare and send it to your approver with the packet.",
++      "Tick the fare-evidence box on the Budget tab once you hold a screenshot or quote, and give it to your approver with the packet.",
+   },
+   non_reimbursable: {
+     meaning: "Expense details are required to check non-reimbursable items.",
+diff --git a/frontend/src/routes/WorkspacePage.test.tsx b/frontend/src/routes/WorkspacePage.test.tsx
+index 5fe918057..7962d4ba3 100644
+--- a/frontend/src/routes/WorkspacePage.test.tsx
++++ b/frontend/src/routes/WorkspacePage.test.tsx
+@@ -950,6 +950,23 @@ describe("WorkspacePage", () => {
+     mockedSetNotebookFocus.mockReset();
+   });
+ 
++  it("states the offline limit beside the planner composer (issue 1845)", async () => {
++    mockedFetchPlannerSession.mockResolvedValue({
++      ...plannerSessionPayload,
++      runtime: { mode: "fallback" },
++    });
++    mockedUseLoaderData.mockReturnValue({
++      workspace: Promise.resolve(workspacePayload),
++      trips: Promise.resolve(tripComparisonPayload),
++    });
++    renderWorkspacePage();
++
++    expect(await screen.findByTestId("planner-offline-note")).toHaveTextContent(
++      "The planner is offline"
++    );
++    expect(screen.getByLabelText("Message the planner")).toBeInTheDocument();
++  });
++
+   it("offers to edit the trip setup from the workspace header (issue 1841)", async () => {
+     mockedUseLoaderData.mockReturnValue({ workspace: Promise.resolve(workspacePayload) });
+     renderWorkspacePage();
+diff --git a/frontend/src/routes/WorkspacePage.tsx b/frontend/src/routes/WorkspacePage.tsx
+index 3851a9aa5..6a6320d13 100644
+--- a/frontend/src/routes/WorkspacePage.tsx
++++ b/frontend/src/routes/WorkspacePage.tsx
+@@ -2302,6 +2302,13 @@ function WorkspacePageContent({
+                 </button>
+               ))}
+             </div>
++            {plannerSession?.runtime && plannerSession.runtime.mode !== "model" ? (
++              // Stated beside the composer, before a question is asked (issue 1845).
++              <p className="field-hint" data-testid="planner-offline-note">
++                The planner is offline: it answers from this trip&apos;s own data (costs you entered,
++                routes, the policy result, what to do next) and cannot answer other questions.
++              </p>
++            ) : null}
+             <form className="planner-conversation-form" onSubmit={handlePlannerTurnSubmit}>
+               <label>
+                 Message the planner
+diff --git a/tests/app/test_planner_chat_truth.py b/tests/app/test_planner_chat_truth.py
+new file mode 100644
+index 000000000..1ada5d4e5
+--- /dev/null
++++ b/tests/app/test_planner_chat_truth.py
+@@ -0,0 +1,109 @@
++"""The planner chat hears places, and knows the verdict the trip already has (issue 1845).
++
++Observed 2026-09-22, asking the message below two minutes after TPP had blocked the trip:
++"What I heard - Destinations: My, What, Seattle", then "No policy preview is available in
++the current workspace data yet", and only at the very end that the planner was offline.
++Every assertion reads the served planner turn.
++"""
++
++from typing import Any
++
++import pytest
++from fastapi.testclient import TestClient
++
++from tests.app.tpp_intercept import seed_policy
++from trip_planner.integrations.tpp import client as tpp_client_module
++from trip_planner.integrations.tpp.contracts import TPPResponseEnvelope
++
++MESSAGE = (
++    "My approval was blocked for fare comparison. What is the lowest economy fare Seattle "
++    "to Chicago on Oct 5, and what do I need to attach?"
++)
++
++
++def _refused(self: Any, request: Any) -> TPPResponseEnvelope:
++    return TPPResponseEnvelope.from_dict(
++        {
++            "operation": request.operation,
++            "request_id": request.request_id,
++            "correlation_id": request.correlation_id.to_dict(),
++            "transport_pattern": "sync",
++            "execution_status": {"state": "failed", "terminal": True, "summary": "blocked"},
++            "result_payload": {
++                "execution_id": "exec-blocked",
++                "queue_state": "blocked_by_policy",
++                "blocking_codes": ["fare_evidence", "fare_comparison"],
++            },
++            "error": {
++                "code": "proposal_blocked_by_policy",
++                "message": "The proposal has blocking policy violations and cannot be submitted.",
++                "category": "policy",
++                "retryable": False,
++            },
++        }
++    )
++
++
++@pytest.fixture
++def blocked_trip(tpp_client: TestClient, monkeypatch: pytest.MonkeyPatch) -> tuple[TestClient, str]:
++    monkeypatch.setattr(tpp_client_module.HTTPTPPIntegrationClient, "submit_proposal", _refused)
++    created = tpp_client.post(
++        "/api/trips",
++        json={
++            "title": "Chicago client review",
++            "summary": "Quarterly review.",
++            "mode": "business",
++            "trip_frame": {
++                "origin": "Seattle",
++                "start_date": "2026-10-05",
++                "end_date": "2026-10-07",
++                "duration_days": 3,
++                "primary_regions": ["Chicago, IL"],
++            },
++        },
++    )
++    trip_id = str(created.json()["trip"]["trip_id"])
++    seed_policy(tpp_client, trip_id)
++    tpp_client.put(
++        f"/api/workspace/{trip_id}/prices", json={"component": "transport", "amount": 486.0}
++    )
++    submitted = tpp_client.post(f"/api/workspace/{trip_id}/proposal/submit", json={})
++    assert submitted.status_code == 200, submitted.text
++    summary = tpp_client.get(f"/api/workspace/{trip_id}").json()["proposal_state"]["summary"]
++    assert summary["submission_outcome"] == "blocked_by_policy", summary
++    return tpp_client, trip_id
++
++
++def _reply(client: TestClient, trip_id: str) -> dict[str, Any]:
++    response = client.post(f"/api/planner/{trip_id}/turns", json={"message": MESSAGE})
++    assert response.status_code == 200, response.text
++    return dict(response.json()["messages"][-1])
++
++
++def test_capitalised_words_are_not_heard_as_destinations(
++    blocked_trip: tuple[TestClient, str],
++) -> None:
++    client, trip_id = blocked_trip
++    turns = client.post(f"/api/planner/{trip_id}/turns", json={"message": MESSAGE}).json()
++    user_turn = next(m for m in reversed(turns["messages"]) if m["role"] == "user")
++    heard = next(
++        block
++        for block in user_turn["structured_blocks"]
++        if block["kind"] == "traveler_input_summary"
++    )
++
++    assert heard["metadata"]["destinations"] == ["Seattle", "Chicago"]
++
++
++def test_the_reply_states_the_saved_verdict_with_its_rules(
++    blocked_trip: tuple[TestClient, str],
++) -> None:
++    client, trip_id = blocked_trip
++    content = _reply(client, trip_id)["content"]
++
++    assert "No policy preview is available" not in content
++    assert "The travel policy blocked Chicago client review." in content
++    assert "(rule fare_evidence)" in content and "(rule fare_comparison)" in content
++    assert "lowest fare you found" in content
++    # The limit is stated first, not after the answer.
++    assert content.startswith("The planner is offline:")
+diff --git a/tests/app/test_planner_routes.py b/tests/app/test_planner_routes.py
+index 9fad55e33..ba0d3a098 100644
+--- a/tests/app/test_planner_routes.py
++++ b/tests/app/test_planner_routes.py
+@@ -1343,9 +1343,9 @@ def test_planner_resume_returns_prior_conversation_history(client: TestClient) -
+     payload = resumed.json()
+     assert payload["resumed_at"] is not None
+     assert [message["role"] for message in payload["messages"]] == ["user", "planner"]
+-    assert payload["messages"][1]["content"].startswith(
+-        "Planner API kickoff has a useful starting point"
+-    )
++    # The offline limit leads the reply (issue 1845); the answer follows it.
++    assert payload["messages"][1]["content"].startswith("The planner is offline:")
++    assert "Planner API kickoff has a useful starting point" in payload["messages"][1]["content"]
+     assert payload["messages"][1]["turn_metadata"]["task_class"] == "first_turn_triage"
+     assert payload["planner_memory"]["artifacts"][0]["title"] == "Planner checkpoint 1"
+ 
+diff --git a/tests/app/test_policy_code_parity.py b/tests/app/test_policy_code_parity.py
+new file mode 100644
+index 000000000..8e770efba
+--- /dev/null
++++ b/tests/app/test_policy_code_parity.py
+@@ -0,0 +1,32 @@
++"""The chat and the Policy tab must explain the same rule codes the same way.
++
++`trip_planner/app/services/policy_codes.py` mirrors `frontend/src/lib/policyCodes.ts`; this
++fails if a code is added to one and not the other, or if the advice diverges.
++"""
++
++import re
++from pathlib import Path
++
++from trip_planner.app.services.policy_codes import EXPLANATIONS
++
++_TS = Path(__file__).resolve().parents[2] / "frontend/src/lib/policyCodes.ts"
++
++
++def _typescript_entries() -> dict[str, tuple[str, str]]:
++    text = _TS.read_text(encoding="utf-8")
++    entries: dict[str, tuple[str, str]] = {}
++    pattern = re.compile(
++        r'^\s{2}"?([A-Za-z0-9_-]+)"?: \{\s*meaning:\s*"(.*?)",\s*whatToDo:\s*"(.*?)",?\s*\},',
++        re.S | re.M,
++    )
++    for code, meaning, what_to_do in pattern.findall(text):
++        entries[code] = (" ".join(meaning.split()), " ".join(what_to_do.split()))
++    return entries
++
++
++def test_both_sides_explain_the_same_codes_the_same_way() -> None:
++    typescript = _typescript_entries()
++    assert typescript, "could not read any entries from policyCodes.ts"
++    assert set(typescript) == set(EXPLANATIONS)
++    for code, (meaning, what_to_do) in EXPLANATIONS.items():
++        assert typescript[code] == (meaning, what_to_do), code
+diff --git a/trip_planner/app/services/planner.py b/trip_planner/app/services/planner.py
+index 318e445fd..16f36cc66 100644
+--- a/trip_planner/app/services/planner.py
++++ b/trip_planner/app/services/planner.py
+@@ -14,6 +14,7 @@
+ from sqlalchemy import select
+ from sqlalchemy.orm import Session
+ 
++from trip_planner.app.services import policy_codes
+ from trip_planner.app.services.auth import AuthenticatedUser
+ from trip_planner.app.services.planner_memory import (
+     build_planner_memory_payload,
+@@ -54,6 +55,7 @@
+     build_planner_fleet_records,
+     default_fleet_artifact_path,
+ )
++from trip_planner.geo.resolver import country_code_for_name, resolve_place
+ from trip_planner.persistence.models.activity import (
+     PersistedActivityLogEvent,
+     PersistedPlannerAction,
+@@ -391,6 +393,14 @@ def _split_user_clauses(message: str) -> list[str]:
+ 
+ 
+ def _extract_destination_mentions(message: str) -> list[str]:
++    """Capitalised phrases that name a real place.
++
++    Any capitalised word used to count, so "My approval was blocked ... What is the
++    lowest fare" was heard as "Destinations: My, What" (issue 1845). A mention now has
++    to name a real city or country; single letters never do ("I" matches an alternate
++    city name).
++    """
++
+     mentions: list[str] = []
+     for match in re.finditer(r"\b[A-Z][A-Za-z]*(?:\s+[A-Z][A-Za-z]*){0,3}\b", message):
+         words = match.group(0).split()
+@@ -406,7 +416,12 @@ def _extract_destination_mentions(message: str) -> list[str]:
+             for word in words
+         ):
+             continue
+-        mentions.append(" ".join(words))
++        mention = " ".join(words)
++        if len(mention) < 2 or (
++            resolve_place(mention) is None and country_code_for_name(mention) is None
++        ):
++            continue
++        mentions.append(mention)
+     return _dedupe_preserve_order(mentions)
+ 
+ 
+@@ -936,6 +951,40 @@ def _policy_preview_summary(scenarios: list[dict[str, Any]]) -> str | None:
+     return None
+ 
+ 
++OFFLINE_NOTE = (
++    "The planner is offline: it answers from this trip's own data (costs you entered, "
++    "routes, the policy result, what to do next) and cannot answer other questions."
++)
++
++
++def _saved_verdict_line(trip_title: str, proposal_state: dict[str, Any] | None) -> str | None:
++    saved = policy_codes.saved_verdict(proposal_state)
++    if saved is None:
++        return None
++    if saved["verdict"] == "compliant":
++        return (
++            f"{trip_title} passed the travel policy check. Print the approval packet from the "
++            "Policy tab and give it to your approver."
++        )
++    if saved["outcome"] == "blocked_by_policy" or saved["verdict"] == "non_compliant":
++        reasons = [
++            policy_codes.explain(code, saved["messages"].get(code)) for code in saved["codes"]
++        ]
++        detail = " ".join(reasons) if reasons else "The policy service did not say which rules."
++        return f"The travel policy blocked {trip_title}. {detail}"
++    if saved["outcome"] == "failed":
++        return (
++            f"{trip_title} has not been reviewed: the last submission did not reach the policy "
++            "service. Submit it again from the Policy tab."
++        )
++    if saved["outcome"] not in {"", "not_submitted"}:
++        return (
++            f"{trip_title} has been submitted to the travel policy check. Refresh the Policy tab "
++            "to read the result."
++        )
++    return None
++
++
+ def _fallback_content_from_metadata(
+     *,
+     trip_title: str,
+@@ -943,6 +992,7 @@ def _fallback_content_from_metadata(
+     metadata: dict[str, Any],
+     planning_mode: str | None = None,
+     scenarios: list[dict[str, Any]] | None = None,
++    proposal_state: dict[str, Any] | None = None,
+ ) -> str:
+     lowered = message.lower()
+     scenario_rows = list(scenarios or [])
+@@ -964,6 +1014,11 @@ def _fallback_content_from_metadata(
+         )
+ 
+     if _POLICY_QUESTION_PATTERN.search(lowered):
++        # The saved verdict answers before any preview: the planner used to say "No policy
++        # preview is available" two minutes after TPP had blocked the trip (issue 1845).
++        verdict_line = _saved_verdict_line(trip_title, proposal_state)
++        if verdict_line:
++            return verdict_line
+         policy_line = _policy_preview_summary(scenario_rows)
+         if policy_line:
+             return f"You asked about policy or compliance for {trip_title}. {policy_line}"
+@@ -1459,6 +1514,7 @@ def invoke(self, request: PlannerConversationRequest) -> PlannerConversationRepl
+                 metadata=metadata,
+                 planning_mode=request.session.selected_planning_mode,
+                 scenarios=scenarios,
++                proposal_state=request.runtime_context.get("proposal_state") or None,
+             )
+         ]
+         refs = [request.session.session_state_id]
+@@ -1469,9 +1525,9 @@ def invoke(self, request: PlannerConversationRequest) -> PlannerConversationRepl
+         if ledger_line:
+             lines.append(ledger_line)
+ 
+-        lines.append(
+-            "Note: the planner is offline and cannot answer free-text questions with generative AI."
+-        )
++        # The limit comes first, so a traveller reads it before the answer, not after a
++        # route listing (issue 1845).
++        lines.insert(0, OFFLINE_NOTE)
+ 
+         deduped_refs = list(dict.fromkeys(refs))
+         return PlannerConversationReply(
+diff --git a/trip_planner/app/services/policy_codes.py b/trip_planner/app/services/policy_codes.py
+new file mode 100644
+index 000000000..760daeb27
+--- /dev/null
++++ b/trip_planner/app/services/policy_codes.py
+@@ -0,0 +1,65 @@
++"""What each Travel-Plan-Permission rule code means for the traveller, server side.
++
++Mirrors `frontend/src/lib/policyCodes.ts` (tests/app/test_policy_code_parity.py fails if
++the two lists of codes drift). The meaning is TPP's own failure message; the second
++sentence says what the traveller can do about it in this product. A code not listed is
++shown as-is: an unexplained code is better than a guessed explanation.
++"""
++
++from __future__ import annotations
++
++from typing import Any
++
++EXPLANATIONS: dict[str, tuple[str, str]] = {
++    "fare_comparison": (
++        "Fare comparison requires selected and lowest fare data.",
++        "Enter the lowest fare you found for the same journey next to your flight price on "
++        "the Budget tab, then submit again.",
++    ),
++    "fare_evidence": (
++        "Screenshot or fare evidence must be attached to the request.",
++        "Tick the fare-evidence box on the Budget tab once you hold a screenshot or quote, and "
++        "give it to your approver with the packet.",
++    ),
++    "non_reimbursable": (
++        "Expense details are required to check non-reimbursable items.",
++        "List each expense on the Budget tab so it can be checked line by line.",
++    ),
++    "BUD-001": (
++        "The trip total is over the travel policy's spending limit.",
++        "Reduce the costs on the Budget tab, or ask your approver for an exception.",
++    ),
++}
++
++
++def explain(code: str, tpp_message: str | None = None) -> str:
++    """One sentence per code: TPP's words when it gave them, then what to do here."""
++
++    known = EXPLANATIONS.get(code)
++    meaning = (tpp_message or "").strip() or (known[0] if known else code)
++    return f"{meaning} {known[1]} (rule {code})" if known else f"{meaning} (rule {code})"
++
++
++def saved_verdict(proposal_state: Any) -> dict[str, Any] | None:
++    """The saved submission outcome, from the public or the debug proposal shape."""
++
++    if not isinstance(proposal_state, dict) or not proposal_state:
++        return None
++    summary = proposal_state.get("summary")
++    summary = summary if isinstance(summary, dict) else {}
++    evaluation = proposal_state.get("evaluation")
++    result = evaluation.get("evaluation_result") if isinstance(evaluation, dict) else None
++    result = result if isinstance(result, dict) else {}
++    messages: dict[str, str] = {}
++    follow_up = summary.get("follow_up")
++    reasons = (follow_up.get("failure_reasons") if isinstance(follow_up, dict) else None) or []
++    for reason in [*reasons, *(result.get("failure_reasons") or [])]:
++        if isinstance(reason, dict) and reason.get("code") and reason.get("message"):
++            messages[str(reason["code"])] = str(reason["message"])
++    codes = [str(code) for code in summary.get("submission_blocking_codes") or []] or list(messages)
++    return {
++        "outcome": str(summary.get("submission_outcome") or ""),
++        "verdict": str(result.get("status") or summary.get("evaluation_result_status") or ""),
++        "codes": codes,
++        "messages": messages,
++    }
+diff --git a/trip_planner/geo/resolver.py b/trip_planner/geo/resolver.py
+index d00976fbf..df1f96d84 100644
+--- a/trip_planner/geo/resolver.py
++++ b/trip_planner/geo/resolver.py
+@@ -217,9 +217,7 @@ def _city_matches_name(city: dict[str, object], city_key: str) -> bool:
+     return any(_normalise(name) == city_key for name in names if name)
+ 
+ 
+-def _resolved_place_from_city(
+-    destination: str, city: dict[str, object]
+-) -> ResolvedPlace:
++def _resolved_place_from_city(destination: str, city: dict[str, object]) -> ResolvedPlace:
+     return ResolvedPlace(
+         query=destination,
+         name=str(city.get("name") or destination),
+@@ -248,9 +246,9 @@ def _qualified_city_index() -> dict[tuple[str, str, str], dict[str, object]]:
+             normalised = _normalise(name)
+             for key in ((normalised, country, ""), (normalised, country, admin)):
+                 existing = index.get(key)
+-                if existing is None or _coerce_int(
+-                    city.get("population")
+-                ) > _coerce_int(existing.get("population")):
++                if existing is None or _coerce_int(city.get("population")) > _coerce_int(
++                    existing.get("population")
++                ):
+                     index[key] = city
+     return index
+ 
+@@ -261,9 +259,7 @@ def _resolve_with_qualifier(city: str, qualifier: str) -> ResolvedPlace | None:
+         return None
+ 
+     city_key = _normalise(city)
+-    city_data = _qualified_city_index().get(
+-        (city_key, country_filter, admin_filter or "")
+-    )
++    city_data = _qualified_city_index().get((city_key, country_filter, admin_filter or ""))
+     if city_data is None:
+         return None
+     return _resolved_place_from_city(f"{city}, {qualifier}", city_data)
+@@ -297,9 +293,7 @@ def resolve_place(destination: str) -> ResolvedPlace | None:
+     if not destination or not destination.strip():
+         return None
+ 
+-    parts = [
+-        part.strip() for part in _QUALIFIER_SPLIT.split(destination) if part.strip()
+-    ]
++    parts = [part.strip() for part in _QUALIFIER_SPLIT.split(destination) if part.strip()]
+     if len(parts) >= 2:
+         qualified = _resolve_with_qualifier(parts[0], parts[-1])
+         if qualified is not None:
+@@ -322,6 +316,14 @@ def resolve_place(destination: str) -> ResolvedPlace | None:
+     return None
+ 
+ 
++def country_code_for_name(name: str) -> str | None:
++    """The two-letter code of a country named in full ("Sweden" -> "SE"), else None."""
++
++    if not name or not name.strip():
++        return None
++    return _country_name_index().get(_normalise(name))
++
++
+ def distance_km(origin: ResolvedPlace, destination: ResolvedPlace) -> float:
+     """Great-circle distance between two resolved places, in kilometres."""
+ 

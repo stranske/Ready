@@ -1,0 +1,1079 @@
+diff --git a/.github/workflows/agents-72-codex-belt-worker.yml b/.github/workflows/agents-72-codex-belt-worker.yml
+index 3a5700d25..ea624f425 100644
+--- a/.github/workflows/agents-72-codex-belt-worker.yml
++++ b/.github/workflows/agents-72-codex-belt-worker.yml
+@@ -992,6 +992,19 @@ jobs:
+           task_id=${TASK_ID:-n/a}
+           git commit -m "chore(ledger): start task ${task_id} for issue #${ISSUE}"
+           git push origin "${BRANCH}"
++          start_sha=$(git rev-parse HEAD)
++          export START_SHA="${start_sha}"
++          python3 <<'PY'
++          import json
++          import os
++          from pathlib import Path
++
++          start_path = Path(".agents/.ledger-start.json")
++          if start_path.exists():
++              data = json.loads(start_path.read_text(encoding="utf-8"))
++              data["start_sha"] = os.environ["START_SHA"]
++              start_path.write_text(json.dumps(data), encoding="utf-8")
++          PY
+ 
+       - name: Ensure branch exists remotely
+         if: ${{ steps.parallel.outputs.allowed == 'true' && (inputs.keepalive != true || steps.keepalive_gate.outputs.action != 'skip') && steps.mode.outputs.dry_run != 'true' }}
+@@ -1334,10 +1347,18 @@ jobs:
+           import json
+           import os
+           import subprocess
++          import sys
+           from pathlib import Path
+ 
+           import yaml
+ 
++          sys.path.insert(0, str(Path('.belt-tools/scripts').resolve()))
++          from belt_ledger_completion import (  # noqa: E402
++              duplicate_artifact_errors,
++              format_status_counts,
++              resolve_completion_commit,
++          )
++
+           class LedgerDumper(yaml.SafeDumper):
+               def increase_indent(self, flow: bool = False, indentless: bool = False):  # type: ignore[override]
+                   return super().increase_indent(flow, False)
+@@ -1404,6 +1425,7 @@ jobs:
+           changed = False
+           final_status = ''
+           commit_sha = ''
++          deferred_completion = False
+ 
+           if not task_id:
+               summary_lines.append('No ledger task selected for this run.')
+@@ -1434,16 +1456,45 @@ jobs:
+                       final_status = status_before
+                       after_statuses = collect_statuses(tasks)
+                   else:
+-                      commit_sha = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
+-                      target_task['status'] = 'done'
+-                      target_task['finished_at'] = iso_now()
+-                      if not target_task.get('started_at'):
+-                          target_task['started_at'] = target_task['finished_at']
+-                      target_task['commit'] = commit_sha
+-                      final_status = 'done'
+-                      summary_lines.append(
+-                          f"Task {task_id} advanced {previous_status or status_before} → done @ {commit_sha[:7]}."
++                      end_sha = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
++                      start_sha = str(start_info.get('start_sha') or '').strip() or None
++                      commit_sha, blockers = resolve_completion_commit(
++                          target_task,
++                          start_sha,
++                          end_sha,
++                          repo_root=Path.cwd(),
+                       )
++                      if commit_sha is None and not blockers:
++                          deferred_completion = True
++                          target_task['commit'] = ''
++                          final_status = 'doing'
++                          anchor = (start_sha or end_sha)[:7]
++                          summary_lines.append(
++                              f"Task {task_id} remains doing; awaiting substantive agent commit after {anchor}."
++                          )
++                      elif blockers:
++                          target_task['commit'] = commit_sha or end_sha
++                          target_task['status'] = 'blocked'
++                          target_task['finished_at'] = None
++                          for blocker in blockers:
++                              note = f"{iso_now()} blocked (run {run_id}): {blocker}"
++                              if note not in notes:
++                                  notes.append(note)
++                          final_status = 'blocked'
++                          summary_lines.append(
++                              f"Task {task_id} blocked instead of done @ {(commit_sha or end_sha)[:7]}: "
++                              + '; '.join(blockers)
++                          )
++                      else:
++                          target_task['commit'] = commit_sha
++                          target_task['status'] = 'done'
++                          target_task['finished_at'] = iso_now()
++                          if not target_task.get('started_at'):
++                              target_task['started_at'] = target_task['finished_at']
++                          final_status = 'done'
++                          summary_lines.append(
++                              f"Task {task_id} advanced {previous_status or status_before} → done @ {commit_sha[:7]}."
++                          )
+                       after_statuses = collect_statuses(tasks)
+               else:
+                   if status_before == 'done':
+@@ -1499,12 +1550,12 @@ jobs:
+                   violations.append('Ledger run modified multiple tasks; expected a single task transition.')
+ 
+               if target_task is not None:
+-                  if status_before == 'doing' and job_status == 'success':
++                  if status_before == 'doing' and job_status == 'success' and not deferred_completion:
+                       if not any(c[0] == task_id for c in status_changes):
+                           summary_lines.append(
+-                              f"Task {task_id} did not advance from doing after a successful run; ledger invariant violated."
++                              f"Task {task_id} did not leave doing after a successful run; ledger invariant violated."
+                           )
+-                          violations.append('Successful run failed to advance selected task to done.')
++                          violations.append('Successful run failed to advance selected task to done or blocked.')
+                   if status_before == 'doing' and job_status != 'success':
+                       if not any(c[0] == task_id for c in status_changes):
+                           summary_lines.append(
+@@ -1513,15 +1564,21 @@ jobs:
+                           violations.append('Failed run did not reset selected task to todo.')
+ 
+               remaining_doing = [tid for tid, state in after_statuses.items() if state == 'doing']
+-              if remaining_doing and job_status == 'success':
++              if remaining_doing and job_status == 'success' and not deferred_completion:
+                   summary_lines.append(
+                       f"Tasks still marked doing after success: {', '.join(remaining_doing)}."
+                   )
+                   violations.append('Successful run left tasks in doing status; expected none.')
+ 
++              violations.extend(duplicate_artifact_errors(tasks, repo_root=Path.cwd()))
++
+           if not summary_lines:
+               summary_lines.append('Ledger unchanged during this run.')
+ 
++          counts_line = format_status_counts(tasks)
++          summary_lines.append(counts_line)
++          print(counts_line)
++
+           summary_path.write_text('\n'.join(summary_lines) + '\n', encoding='utf-8')
+ 
+           if start_path.exists():
+@@ -1543,12 +1600,16 @@ jobs:
+           PY
+ 
+       - name: Validate ledger schema (final)
++        id: ledger_final_validation
+         if: ${{ always() && steps.parallel.outputs.allowed == 'true' && (inputs.keepalive != true || steps.keepalive_gate.outputs.action != 'skip') && steps.ledger_finalize.outputs.ledger_path != '' }}
++        env:
++          LEDGER_VALIDATE_COMPLETION_EVIDENCE: '1'
++          LEDGER_VALIDATE_COMPLETION_TASK_ID: ${{ steps.ledger_finalize.outputs.task_id }}
+         run: |
+           python .belt-tools/scripts/ledger_validate.py "${{ steps.ledger_finalize.outputs.ledger_path }}"
+ 
+       - name: Commit ledger completion state
+-        if: ${{ always() && steps.parallel.outputs.allowed == 'true' && (inputs.keepalive != true || steps.keepalive_gate.outputs.action != 'skip') && steps.mode.outputs.dry_run != 'true' && steps.ledger_finalize.outputs.ledger_changed == 'true' }}
++        if: ${{ always() && steps.parallel.outputs.allowed == 'true' && (inputs.keepalive != true || steps.keepalive_gate.outputs.action != 'skip') && steps.mode.outputs.dry_run != 'true' && steps.ledger_finalize.outcome == 'success' && steps.ledger_finalize.outputs.ledger_changed == 'true' && steps.ledger_final_validation.outcome == 'success' }}
+         env:
+           ISSUE: ${{ steps.ctx.outputs.issue }}
+           BRANCH: ${{ steps.ctx.outputs.branch }}
+diff --git a/config/template-drift-allowlist.txt b/config/template-drift-allowlist.txt
+index b8bb1abfa..ba806ceaf 100644
+--- a/config/template-drift-allowlist.txt
++++ b/config/template-drift-allowlist.txt
+@@ -61,11 +61,11 @@ fingerprint_refreshed = 2026-08-29
+ [pair.3]
+ main = .github/workflows/agents-72-codex-belt-worker.yml
+ template = templates/consumer-repo/.github/workflows/agents-72-codex-belt-worker.yml
+-main_sha256 = d38c8fa8c9a0b8d22cc2618073f3df7e66e5933cedbda9adfe696ebe26bfc56a
+-template_sha256 = abea1d00c85b0d2207746e916a3d1e581fc30f21274ea0c5b45479a604e558cb
+-divergence = client-id rename 2026-08-24: every create-github-app-token step moved from the deprecated `app-id` input to `client-id`, applied identically to root and consumer, with the secret VALUE unchanged (the action forwards either input to the same appId slot -- main.js:21, lib/main.js:37). Fingerprints refreshed for that change; the divergence itself is unchanged and was NOT re-reviewed, which is why divergence_reviewed keeps its old date. Prior divergence unchanged: Named-secrets rollout 2026-08-23: both surfaces now pass named setup-api-client secret inputs instead of the whole-secrets-context blob, applied identically to root and consumer, and scoped to each workflow's DECLARED workflow_call secrets where that context is a closed set. Removing that handoff is the demonstrated remedy for GitHub's suspicious-workflow hold (agents-dedup then ran at run_attempt 1 with nothing approved after 22 days held). Prior divergence unchanged: Intentional divergence re-reviewed 2026-06-20: exported Orchestrator skill inputs were added to both root and consumer worker workflow_call surfaces while preserving consumer action pinning and guarded merge wording.
++main_sha256 = 772df4d5d92d55caf0d5c02574ac7651013d82b24af5ee0a9ea0fec3fa6ff395
++template_sha256 = 6b4a77c18835db1c79243a7c4b17d681ffc54f2010738b22435252f2b2d74593
++divergence = Current-transition evidence scope 2026-09-24: root and consumer final validators both pass the selected task id so historical completion debt remains audit-only and cannot block persistence of a new done/blocked result. Applied identically while preserving consumer action pins and consumer-specific guarded-merge wording; the prior divergence remains unchanged and was NOT re-reviewed. Prior divergence: Belt completion deferral 2026-09-24: root and consumer workers record start_sha after the in-progress ledger commit and evaluate substantive agent commits in start_sha..HEAD before marking done/blocked, leaving tasks doing when only ledger commits exist. Applied identically while preserving consumer action pins and consumer-specific guarded-merge wording. Prior divergence: Belt completion-evidence hardening 2026-09-23: substantive cited commit, named-artifact verification, blocked insufficient evidence, duplicate artifact rejection, full task-state counts, and final-validation gating. Prior divergence: client-id rename 2026-08-24: every create-github-app-token step moved from the deprecated `app-id` input to `client-id`, applied identically to root and consumer, with the secret VALUE unchanged (the action forwards either input to the same appId slot -- main.js:21, lib/main.js:37). Prior divergence unchanged: Named-secrets rollout 2026-08-23: both surfaces now pass named setup-api-client secret inputs instead of the whole-secrets-context blob, applied identically to root and consumer, and scoped to each workflow's DECLARED workflow_call secrets where that context is a closed set. Removing that handoff is the demonstrated remedy for GitHub's suspicious-workflow hold (agents-dedup then ran at run_attempt 1 with nothing approved after 22 days held). Prior divergence unchanged: Intentional divergence re-reviewed 2026-06-20: exported Orchestrator skill inputs were added to both root and consumer worker workflow_call surfaces while preserving consumer action pinning and guarded merge wording.
+ divergence_reviewed = 2026-06-20
+-fingerprint_refreshed = 2026-08-24
++fingerprint_refreshed = 2026-09-24
+ 
+ [pair.4]
+ main = .github/workflows/agents-73-codex-belt-conveyor.yml
+diff --git a/docs/ci/LEDGER.md b/docs/ci/LEDGER.md
+index c8ca34800..5b6962b6e 100644
+--- a/docs/ci/LEDGER.md
++++ b/docs/ci/LEDGER.md
+@@ -17,6 +17,32 @@ ledger without consulting GitHub.
+ This guarantees that no automation task depends on historical values that might
+ still point at `main` after a repository rename.
+ 
++## Completion evidence
++
++A successful worker process does not by itself complete a ledger task. Before
++writing `done`, the belt checks the cited commit and requires at least one changed
++path outside `.agents/`. File-like artifact paths named in the task must exist in
++that commit's tree; their presence in a later checkout is not evidence. When a
++successful run lacks either form of evidence, the selected task becomes `blocked`
++with the commit and reason in its notes, and `finished_at` remains empty.
++
++Every worker run reports the same four operator counts, including zeros:
++`todo`, `in_progress` (the stored `doing` state), `done`, and `blocked`. A blocked
++task is intentionally not auto-selected again. Correct the underlying branch or
++task evidence, then return the task to `todo` in a reviewed change before retrying.
++Failed worker execution retains the existing `doing` to `todo` reset behavior.
++
++Use the read-only historical audit to find older false completions. It reports
++findings and exits non-zero without editing ledgers:
++
++```bash
++python scripts/audit_belt_ledger_completion.py --root .
++```
++
++Duplicate tasks may name the same artifact, but a `done` claim is fatal when that
++artifact is absent from its cited commit. This prevents one false completion from
++being hidden by a later `todo` entry for the same file.
++
+ ## Migration script
+ 
+ `scripts/ledger_migrate_base.py` keeps ledgers in sync with the default branch.
+diff --git a/scripts/audit_belt_ledger_completion.py b/scripts/audit_belt_ledger_completion.py
+new file mode 100644
+index 000000000..0a3200ff5
+--- /dev/null
++++ b/scripts/audit_belt_ledger_completion.py
+@@ -0,0 +1,49 @@
++#!/usr/bin/env python3
++"""Read-only audit for historical belt tasks completed without evidence."""
++
++from __future__ import annotations
++
++import argparse
++from pathlib import Path
++
++import yaml
++
++try:
++    from scripts.belt_ledger_completion import completion_errors
++except ModuleNotFoundError:  # direct script execution
++    from belt_ledger_completion import completion_errors
++
++
++def audit_ledgers(root: Path) -> list[str]:
++    findings: list[str] = []
++    for ledger_path in sorted((root / ".agents").glob("issue-*-ledger.yml")):
++        original = ledger_path.read_bytes()
++        data = yaml.safe_load(original) or {}
++        tasks = data.get("tasks") if isinstance(data, dict) else []
++        if not isinstance(tasks, list):
++            continue
++        for task in tasks:
++            if not isinstance(task, dict) or task.get("status") != "done":
++                continue
++            commit = str(task.get("commit") or "")
++            for reason in completion_errors(task, commit, repo_root=root):
++                findings.append(f"{ledger_path.relative_to(root)} {reason}")
++        if ledger_path.read_bytes() != original:  # pragma: no cover - safety invariant
++            raise RuntimeError(f"audit modified {ledger_path}")
++    return findings
++
++
++def main() -> int:
++    parser = argparse.ArgumentParser(description=__doc__)
++    parser.add_argument("--root", type=Path, default=Path.cwd())
++    args = parser.parse_args()
++    findings = audit_ledgers(args.root.resolve())
++    for finding in findings:
++        print(finding)
++    if not findings:
++        print("No invalid belt completion evidence found.")
++    return 1 if findings else 0
++
++
++if __name__ == "__main__":
++    raise SystemExit(main())
+diff --git a/scripts/belt_ledger_completion.py b/scripts/belt_ledger_completion.py
+new file mode 100644
+index 000000000..ff1fb9f8e
+--- /dev/null
++++ b/scripts/belt_ledger_completion.py
+@@ -0,0 +1,237 @@
++#!/usr/bin/env python3
++"""Evidence checks for Codex belt ledger task completion."""
++
++from __future__ import annotations
++
++import re
++import subprocess
++from collections import Counter, defaultdict
++from collections.abc import Iterable
++from pathlib import Path, PurePosixPath
++from typing import Any
++
++_BACKTICK_RE = re.compile(r"`([^`\n]+)`")
++_LINE_SUFFIX_RE = re.compile(r":\d+(?:-\d+)?$")
++_STATUS_KEYS = ("todo", "in_progress", "done", "blocked")
++_FILE_SUFFIXES = {
++    ".cfg",
++    ".css",
++    ".csv",
++    ".env",
++    ".html",
++    ".ini",
++    ".js",
++    ".json",
++    ".md",
++    ".py",
++    ".sh",
++    ".toml",
++    ".ts",
++    ".txt",
++    ".yaml",
++    ".yml",
++}
++
++
++class CompletionEvidenceError(RuntimeError):
++    """Raised when Git evidence cannot be read safely."""
++
++
++def task_artifacts(task: dict[str, Any]) -> list[str]:
++    """Extract conservative repository artifact paths from a task title."""
++    title = str(task.get("title") or "")
++    artifacts: list[str] = []
++    for match in _BACKTICK_RE.finditer(title):
++        token = _LINE_SUFFIX_RE.sub("", match.group(1).strip()).removeprefix("./")
++        if not token or any(char.isspace() for char in token):
++            continue
++        if token.startswith(("--", "http://", "https://", "stranske/")):
++            continue
++        if "::" in token or any(char in token for char in "()"):
++            continue
++        path = PurePosixPath(token)
++        if path.is_absolute() or ".." in path.parts:
++            continue
++        # Schema identifiers such as tracked-variable/v1 are not paths. Require
++        # a file-like final component; extensionless paths remain opt-in rather
++        # than silently blocking a valid task.
++        if path.suffix.lower() not in _FILE_SUFFIXES:
++            continue
++        if token not in artifacts:
++            artifacts.append(token)
++    return artifacts
++
++
++def commit_files(commit: str, *, repo_root: Path | str = ".") -> list[str]:
++    """Return paths changed by *commit*, including root commits."""
++    command = [
++        "git",
++        "-C",
++        str(repo_root),
++        "show",
++        "--pretty=format:",
++        "--name-only",
++        "--diff-merges=first-parent",
++        "-z",
++        commit,
++    ]
++    try:
++        output = subprocess.check_output(command, stderr=subprocess.DEVNULL)
++    except subprocess.CalledProcessError as exc:
++        raise CompletionEvidenceError(f"commit {commit} is unavailable") from exc
++    return [item.decode("utf-8", "surrogateescape") for item in output.split(b"\0") if item]
++
++
++def commit_has_path(commit: str, path: str, *, repo_root: Path | str = ".") -> bool:
++    """Return whether *path* exists in the tree recorded by *commit*."""
++    result = subprocess.run(
++        ["git", "-C", str(repo_root), "cat-file", "-e", f"{commit}:{path}"],
++        stdout=subprocess.DEVNULL,
++        stderr=subprocess.DEVNULL,
++        check=False,
++    )
++    return result.returncode == 0
++
++
++def completion_errors(
++    task: dict[str, Any],
++    commit: str,
++    *,
++    repo_root: Path | str = ".",
++) -> list[str]:
++    """Return reasons why *task* cannot transition to ``done`` at *commit*."""
++    task_id = str(task.get("id") or "<unknown>")
++    if not re.fullmatch(r"[0-9a-fA-F]{7,40}", commit):
++        return [f"task {task_id} cites invalid commit {commit or '<empty>'}"]
++    try:
++        files = commit_files(commit, repo_root=repo_root)
++    except CompletionEvidenceError as exc:
++        return [f"task {task_id} cannot verify commit {commit}: {exc}"]
++    substantive = [path for path in files if not path.startswith(".agents/")]
++    errors: list[str] = []
++    if not substantive:
++        errors.append(f"task {task_id} commit {commit} changes only ledger paths")
++    missing = [
++        path
++        for path in task_artifacts(task)
++        if not commit_has_path(commit, path, repo_root=repo_root)
++    ]
++    if missing:
++        errors.append(
++            f"task {task_id} commit {commit} is missing named artifact(s): {', '.join(missing)}"
++        )
++    return errors
++
++
++def _commits_after(start_sha: str, end_sha: str, *, repo_root: Path | str) -> list[str]:
++    """Return commits reachable from end_sha but not start_sha, oldest first."""
++    if not re.fullmatch(r"[0-9a-fA-F]{7,40}", start_sha) or not re.fullmatch(
++        r"[0-9a-fA-F]{7,40}", end_sha
++    ):
++        return []
++    try:
++        output = subprocess.check_output(
++            [
++                "git",
++                "-C",
++                str(repo_root),
++                "rev-list",
++                "--reverse",
++                f"{start_sha}..{end_sha}",
++            ],
++            stderr=subprocess.DEVNULL,
++            text=True,
++        )
++    except subprocess.CalledProcessError:
++        return []
++    return [line.strip() for line in output.splitlines() if line.strip()]
++
++
++def resolve_completion_commit(
++    task: dict[str, Any],
++    start_sha: str | None,
++    end_sha: str,
++    *,
++    repo_root: Path | str = ".",
++) -> tuple[str | None, list[str]]:
++    """Pick the commit that may complete *task*, or defer if the agent has not landed yet."""
++    if not re.fullmatch(r"[0-9a-fA-F]{7,40}", end_sha):
++        return None, [
++            f"task {task.get('id') or '<unknown>'} cites invalid head {end_sha or '<empty>'}"
++        ]
++
++    if not start_sha:
++        blockers = completion_errors(task, end_sha, repo_root=repo_root)
++        if blockers and all("changes only ledger paths" in item for item in blockers):
++            return None, []
++        return end_sha, blockers
++
++    candidates = _commits_after(start_sha, end_sha, repo_root=repo_root)
++    substantive = [
++        commit
++        for commit in candidates
++        if any(
++            not path.startswith(".agents/") for path in commit_files(commit, repo_root=repo_root)
++        )
++    ]
++    if not substantive:
++        return None, []
++
++    for commit in reversed(substantive):
++        blockers = completion_errors(task, commit, repo_root=repo_root)
++        if not blockers:
++            return commit, []
++        if not all("changes only ledger paths" in item for item in blockers):
++            return commit, blockers
++
++    return None, []
++
++
++def duplicate_artifact_errors(
++    tasks: Iterable[dict[str, Any]],
++    *,
++    repo_root: Path | str = ".",
++    target_task_id: str | None = None,
++) -> list[str]:
++    """Flag duplicate claims whose relevant completed task lacks the artifact."""
++    references: dict[str, list[dict[str, Any]]] = defaultdict(list)
++    for task in tasks:
++        if not isinstance(task, dict):
++            continue
++        for path in task_artifacts(task):
++            references[path].append(task)
++
++    errors: list[str] = []
++    for path, path_tasks in references.items():
++        if len(path_tasks) < 2:
++            continue
++        task_ids = ", ".join(str(task.get("id") or "<unknown>") for task in path_tasks)
++        for task in path_tasks:
++            if task.get("status") != "done":
++                continue
++            if target_task_id is not None and str(task.get("id") or "") != target_task_id:
++                continue
++            commit = str(task.get("commit") or "")
++            if not commit or not commit_has_path(commit, path, repo_root=repo_root):
++                errors.append(
++                    f"duplicate artifact {path} is claimed by {task_ids}, but done task "
++                    f"{task.get('id') or '<unknown>'} lacks it at commit {commit or '<empty>'}"
++                )
++    return errors
++
++
++def status_counts(tasks: Iterable[dict[str, Any]]) -> dict[str, int]:
++    """Return the four operator-facing task counts, including zeros."""
++    raw = Counter(str(task.get("status") or "") for task in tasks if isinstance(task, dict))
++    counts = {
++        "todo": raw["todo"],
++        "in_progress": raw["doing"],
++        "done": raw["done"],
++        "blocked": raw["blocked"],
++    }
++    return {key: counts[key] for key in _STATUS_KEYS}
++
++
++def format_status_counts(tasks: Iterable[dict[str, Any]]) -> str:
++    counts = status_counts(tasks)
++    return "Belt task counts: " + " ".join(f"{key}={counts[key]}" for key in _STATUS_KEYS)
+diff --git a/scripts/ledger_validate.py b/scripts/ledger_validate.py
+index ac8363874..4685a2c0e 100755
+--- a/scripts/ledger_validate.py
++++ b/scripts/ledger_validate.py
+@@ -22,6 +22,11 @@
+ 
+ import yaml
+ 
++try:
++    from scripts.belt_ledger_completion import duplicate_artifact_errors
++except ModuleNotFoundError:  # direct ``python scripts/ledger_validate.py`` execution
++    from belt_ledger_completion import duplicate_artifact_errors
++
+ REPO_ROOT = Path(__file__).resolve().parents[1]
+ SRC_ROOT = REPO_ROOT / "src"
+ if SRC_ROOT.exists():  # ensure local package import works before editable install
+@@ -35,7 +40,7 @@ def proj_path() -> Path:
+         return REPO_ROOT
+ 
+ 
+-VALID_STATUSES = {"todo", "doing", "done", "deferred"}
++VALID_STATUSES = {"todo", "doing", "done", "blocked", "deferred"}
+ HEX_RE = re.compile(r"^[0-9a-f]{7,40}$")
+ ISO8601_RE = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$")
+ _SHALLOW_CACHE: bool | None = None
+@@ -77,6 +82,17 @@ def _allow_missing_commit() -> bool:
+     return event_name in {"pull_request", "pull_request_target"}
+ 
+ 
++def _strict_completion_evidence() -> bool:
++    """Whether historical task completion evidence is a hard validation gate."""
++    return os.environ.get("LEDGER_VALIDATE_COMPLETION_EVIDENCE") == "1"
++
++
++def _strict_completion_task_id() -> str | None:
++    """Return the task whose current transition requires strict evidence."""
++    value = (os.environ.get("LEDGER_VALIDATE_COMPLETION_TASK_ID") or "").strip()
++    return value or None
++
++
+ def _warn_skip_commit(commit: str, reason: str) -> None:
+     print(
+         f"Skipping commit validation for {commit}: {reason}",
+@@ -372,13 +388,23 @@ def _git_show_files(commit: str) -> list[str]:
+     """Raw git operation: get files changed by a commit."""
+     try:
+         output = subprocess.check_output(
+-            ["git", "show", "--pretty=format:", "--name-only", commit],
+-            text=True,
++            [
++                "git",
++                "show",
++                "--pretty=format:",
++                "--name-only",
++                "--diff-merges=first-parent",
++                "-z",
++                commit,
++            ],
+         )
+     except subprocess.CalledProcessError as exc:
+         raise LedgerError(f"unknown commit {commit}") from exc
+-    stripped_lines = (line.strip() for line in output.splitlines())
+-    return [line for line in stripped_lines if line]
++    if isinstance(output, str):
++        # Keep compatibility with text-returning callers and test doubles while
++        # the real command uses NUL-delimited bytes for unusual file names.
++        return [line for line in (line.strip() for line in output.splitlines()) if line]
++    return [path.decode("utf-8", "surrogateescape") for path in output.split(b"\0") if path]
+ 
+ 
+ def _commit_files(commit: str) -> list[str]:
+@@ -515,8 +541,13 @@ def _validate_task(
+                                 )
+                                 subject = ""
+ 
++                            strict_task_id = _strict_completion_task_id()
++                            strict_for_task = _strict_completion_evidence() and (
++                                strict_task_id is None or task_id == strict_task_id
++                            )
+                             if (
+-                                extra_files
++                                strict_for_task
++                                or extra_files
+                                 or ledger_relative not in files
+                                 or not subject.lower().startswith("chore(ledger):")
+                             ):
+@@ -575,6 +606,15 @@ def validate_ledger(path: Path) -> list[str]:
+     if doing_count > 1:
+         problems.append(f"{path}: at most one task may have status=doing (found {doing_count})")
+ 
++    if _strict_completion_evidence():
++        problems.extend(
++            duplicate_artifact_errors(
++                tasks,
++                repo_root=Path.cwd(),
++                target_task_id=_strict_completion_task_id(),
++            )
++        )
++
+     return problems
+ 
+ 
+diff --git a/templates/consumer-repo/.github/workflows/agents-72-codex-belt-worker.yml b/templates/consumer-repo/.github/workflows/agents-72-codex-belt-worker.yml
+index 328089dd4..50a7c1c81 100644
+--- a/templates/consumer-repo/.github/workflows/agents-72-codex-belt-worker.yml
++++ b/templates/consumer-repo/.github/workflows/agents-72-codex-belt-worker.yml
+@@ -992,6 +992,19 @@ jobs:
+           task_id=${TASK_ID:-n/a}
+           git commit -m "chore(ledger): start task ${task_id} for issue #${ISSUE}"
+           git push origin "${BRANCH}"
++          start_sha=$(git rev-parse HEAD)
++          export START_SHA="${start_sha}"
++          python3 <<'PY'
++          import json
++          import os
++          from pathlib import Path
++
++          start_path = Path(".agents/.ledger-start.json")
++          if start_path.exists():
++              data = json.loads(start_path.read_text(encoding="utf-8"))
++              data["start_sha"] = os.environ["START_SHA"]
++              start_path.write_text(json.dumps(data), encoding="utf-8")
++          PY
+ 
+       - name: Ensure branch exists remotely
+         if: ${{ steps.parallel.outputs.allowed == 'true' && (inputs.keepalive != true || steps.keepalive_gate.outputs.action != 'skip') && steps.mode.outputs.dry_run != 'true' }}
+@@ -1335,10 +1348,18 @@ jobs:
+           import json
+           import os
+           import subprocess
++          import sys
+           from pathlib import Path
+ 
+           import yaml
+ 
++          sys.path.insert(0, str(Path('.belt-tools/scripts').resolve()))
++          from belt_ledger_completion import (  # noqa: E402
++              duplicate_artifact_errors,
++              format_status_counts,
++              resolve_completion_commit,
++          )
++
+           class LedgerDumper(yaml.SafeDumper):
+               def increase_indent(self, flow: bool = False, indentless: bool = False):  # type: ignore[override]
+                   return super().increase_indent(flow, False)
+@@ -1405,6 +1426,7 @@ jobs:
+           changed = False
+           final_status = ''
+           commit_sha = ''
++          deferred_completion = False
+ 
+           if not task_id:
+               summary_lines.append('No ledger task selected for this run.')
+@@ -1435,16 +1457,45 @@ jobs:
+                       final_status = status_before
+                       after_statuses = collect_statuses(tasks)
+                   else:
+-                      commit_sha = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
+-                      target_task['status'] = 'done'
+-                      target_task['finished_at'] = iso_now()
+-                      if not target_task.get('started_at'):
+-                          target_task['started_at'] = target_task['finished_at']
+-                      target_task['commit'] = commit_sha
+-                      final_status = 'done'
+-                      summary_lines.append(
+-                          f"Task {task_id} advanced {previous_status or status_before} → done @ {commit_sha[:7]}."
++                      end_sha = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
++                      start_sha = str(start_info.get('start_sha') or '').strip() or None
++                      commit_sha, blockers = resolve_completion_commit(
++                          target_task,
++                          start_sha,
++                          end_sha,
++                          repo_root=Path.cwd(),
+                       )
++                      if commit_sha is None and not blockers:
++                          deferred_completion = True
++                          target_task['commit'] = ''
++                          final_status = 'doing'
++                          anchor = (start_sha or end_sha)[:7]
++                          summary_lines.append(
++                              f"Task {task_id} remains doing; awaiting substantive agent commit after {anchor}."
++                          )
++                      elif blockers:
++                          target_task['commit'] = commit_sha or end_sha
++                          target_task['status'] = 'blocked'
++                          target_task['finished_at'] = None
++                          for blocker in blockers:
++                              note = f"{iso_now()} blocked (run {run_id}): {blocker}"
++                              if note not in notes:
++                                  notes.append(note)
++                          final_status = 'blocked'
++                          summary_lines.append(
++                              f"Task {task_id} blocked instead of done @ {(commit_sha or end_sha)[:7]}: "
++                              + '; '.join(blockers)
++                          )
++                      else:
++                          target_task['commit'] = commit_sha
++                          target_task['status'] = 'done'
++                          target_task['finished_at'] = iso_now()
++                          if not target_task.get('started_at'):
++                              target_task['started_at'] = target_task['finished_at']
++                          final_status = 'done'
++                          summary_lines.append(
++                              f"Task {task_id} advanced {previous_status or status_before} → done @ {commit_sha[:7]}."
++                          )
+                       after_statuses = collect_statuses(tasks)
+               else:
+                   if status_before == 'done':
+@@ -1500,12 +1551,12 @@ jobs:
+                   violations.append('Ledger run modified multiple tasks; expected a single task transition.')
+ 
+               if target_task is not None:
+-                  if status_before == 'doing' and job_status == 'success':
++                  if status_before == 'doing' and job_status == 'success' and not deferred_completion:
+                       if not any(c[0] == task_id for c in status_changes):
+                           summary_lines.append(
+-                              f"Task {task_id} did not advance from doing after a successful run; ledger invariant violated."
++                              f"Task {task_id} did not leave doing after a successful run; ledger invariant violated."
+                           )
+-                          violations.append('Successful run failed to advance selected task to done.')
++                          violations.append('Successful run failed to advance selected task to done or blocked.')
+                   if status_before == 'doing' and job_status != 'success':
+                       if not any(c[0] == task_id for c in status_changes):
+                           summary_lines.append(
+@@ -1514,15 +1565,21 @@ jobs:
+                           violations.append('Failed run did not reset selected task to todo.')
+ 
+               remaining_doing = [tid for tid, state in after_statuses.items() if state == 'doing']
+-              if remaining_doing and job_status == 'success':
++              if remaining_doing and job_status == 'success' and not deferred_completion:
+                   summary_lines.append(
+                       f"Tasks still marked doing after success: {', '.join(remaining_doing)}."
+                   )
+                   violations.append('Successful run left tasks in doing status; expected none.')
+ 
++              violations.extend(duplicate_artifact_errors(tasks, repo_root=Path.cwd()))
++
+           if not summary_lines:
+               summary_lines.append('Ledger unchanged during this run.')
+ 
++          counts_line = format_status_counts(tasks)
++          summary_lines.append(counts_line)
++          print(counts_line)
++
+           summary_path.write_text('\n'.join(summary_lines) + '\n', encoding='utf-8')
+ 
+           if start_path.exists():
+@@ -1544,12 +1601,16 @@ jobs:
+           PY
+ 
+       - name: Validate ledger schema (final)
++        id: ledger_final_validation
+         if: ${{ always() && steps.parallel.outputs.allowed == 'true' && (inputs.keepalive != true || steps.keepalive_gate.outputs.action != 'skip') && steps.ledger_finalize.outputs.ledger_path != '' }}
++        env:
++          LEDGER_VALIDATE_COMPLETION_EVIDENCE: '1'
++          LEDGER_VALIDATE_COMPLETION_TASK_ID: ${{ steps.ledger_finalize.outputs.task_id }}
+         run: |
+           python .belt-tools/scripts/ledger_validate.py "${{ steps.ledger_finalize.outputs.ledger_path }}"
+ 
+       - name: Commit ledger completion state
+-        if: ${{ always() && steps.parallel.outputs.allowed == 'true' && (inputs.keepalive != true || steps.keepalive_gate.outputs.action != 'skip') && steps.mode.outputs.dry_run != 'true' && steps.ledger_finalize.outputs.ledger_changed == 'true' }}
++        if: ${{ always() && steps.parallel.outputs.allowed == 'true' && (inputs.keepalive != true || steps.keepalive_gate.outputs.action != 'skip') && steps.mode.outputs.dry_run != 'true' && steps.ledger_finalize.outcome == 'success' && steps.ledger_finalize.outputs.ledger_changed == 'true' && steps.ledger_final_validation.outcome == 'success' }}
+         env:
+           ISSUE: ${{ steps.ctx.outputs.issue }}
+           BRANCH: ${{ steps.ctx.outputs.branch }}
+diff --git a/tests/scripts/test_ledger_validate.py b/tests/scripts/test_ledger_validate.py
+index 1214847b5..64bb8d2aa 100644
+--- a/tests/scripts/test_ledger_validate.py
++++ b/tests/scripts/test_ledger_validate.py
+@@ -119,6 +119,87 @@ def test_commit_validation_for_done_task(tmp_path: Path, monkeypatch) -> None:
+     assert f"{ledger_path}: tasks[0].commit abcdef1 must include non-ledger changes" in errors
+ 
+ 
++def test_strict_completion_scope_ignores_historical_ledger_only_task(
++    tmp_path: Path, monkeypatch
++) -> None:
++    ledger_validate = _load_module(monkeypatch, tmp_path)
++    ledger_validate.REPO_ROOT = tmp_path
++    monkeypatch.setenv("LEDGER_VALIDATE_COMPLETION_EVIDENCE", "1")
++    monkeypatch.setenv("LEDGER_VALIDATE_COMPLETION_TASK_ID", "task-current")
++    ledger_dir = tmp_path / ".agents"
++    ledger_dir.mkdir()
++    ledger_path = ledger_dir / "issue-1-ledger.yml"
++    ledger_path.write_text(
++        yaml.safe_dump(
++            {
++                "version": 1,
++                "issue": 1,
++                "base": "main",
++                "branch": "codex/issue-1",
++                "tasks": [
++                    {
++                        "id": "task-historical",
++                        "title": "Historical",
++                        "status": "done",
++                        "commit": "abcdef1",
++                    },
++                    {
++                        "id": "task-current",
++                        "title": "Current",
++                        "status": "blocked",
++                        "commit": "",
++                    },
++                ],
++            }
++        ),
++        encoding="utf-8",
++    )
++    monkeypatch.setattr(
++        ledger_validate, "_commit_files", lambda commit: [".agents/issue-1-ledger.yml"]
++    )
++    monkeypatch.setattr(ledger_validate, "_commit_subject", lambda commit: "chore(ledger): finish")
++
++    assert ledger_validate.validate_ledger(ledger_path) == []
++
++
++def test_chore_ledger_subject_cannot_bypass_strict_completion_gate(
++    tmp_path: Path, monkeypatch
++) -> None:
++    ledger_validate = _load_module(monkeypatch, tmp_path)
++    ledger_validate.REPO_ROOT = tmp_path
++    monkeypatch.setenv("LEDGER_VALIDATE_COMPLETION_EVIDENCE", "1")
++    ledger_dir = tmp_path / ".agents"
++    ledger_dir.mkdir()
++    ledger_path = ledger_dir / "issue-1-ledger.yml"
++    ledger_path.write_text(
++        yaml.safe_dump(
++            {
++                "version": 1,
++                "issue": 1,
++                "base": "main",
++                "branch": "codex/issue-1",
++                "tasks": [
++                    {
++                        "id": "task-1",
++                        "title": "Ship it",
++                        "status": "done",
++                        "commit": "abcdef1",
++                    }
++                ],
++            }
++        ),
++        encoding="utf-8",
++    )
++    monkeypatch.setattr(
++        ledger_validate, "_commit_files", lambda commit: [".agents/issue-1-ledger.yml"]
++    )
++    monkeypatch.setattr(ledger_validate, "_commit_subject", lambda commit: "chore(ledger): finish")
++
++    errors = ledger_validate.validate_ledger(ledger_path)
++
++    assert f"{ledger_path}: tasks[0].commit abcdef1 must include non-ledger changes" in errors
++
++
+ def test_find_ledgers_returns_expected_paths(tmp_path: Path, monkeypatch) -> None:
+     ledger_validate = _load_module(monkeypatch, tmp_path)
+     ledger_dir = tmp_path / ".agents"
+diff --git a/tests/workflows/test_belt_ledger_completion.py b/tests/workflows/test_belt_ledger_completion.py
+new file mode 100644
+index 000000000..6b4ab4029
+--- /dev/null
++++ b/tests/workflows/test_belt_ledger_completion.py
+@@ -0,0 +1,198 @@
++"""Regression coverage for belt ledger completion evidence (issue #3391)."""
++
++from __future__ import annotations
++
++import subprocess
++from pathlib import Path
++
++import pytest
++import yaml
++from scripts.audit_belt_ledger_completion import audit_ledgers
++from scripts.belt_ledger_completion import (
++    completion_errors,
++    duplicate_artifact_errors,
++    format_status_counts,
++    resolve_completion_commit,
++    task_artifacts,
++)
++
++
++def _git(repo: Path, *args: str) -> str:
++    return subprocess.check_output(["git", "-C", str(repo), *args], text=True).strip()
++
++
++def _commit(repo: Path, message: str) -> str:
++    _git(repo, "add", ".")
++    _git(repo, "commit", "-m", message)
++    return _git(repo, "rev-parse", "HEAD")
++
++
++def _repo(tmp_path: Path) -> Path:
++    _git(tmp_path, "init")
++    _git(tmp_path, "config", "user.name", "Test")
++    _git(tmp_path, "config", "user.email", "test@example.com")
++    (tmp_path / ".agents").mkdir()
++    return tmp_path
++
++
++def _task(commit: str = "") -> dict[str, object]:
++    return {
++        "id": "task-01",
++        "title": "Create `docs/contracts/schemas/tracked-variable-v1.schema.json`.",
++        "status": "done" if commit else "doing",
++        "started_at": "2026-09-04T20:08:35Z",
++        "finished_at": "2026-09-04T20:08:48Z" if commit else None,
++        "commit": commit,
++        "notes": [],
++    }
++
++
++def test_ledger_only_commit_is_rejected_with_task_and_commit(tmp_path: Path) -> None:
++    repo = _repo(tmp_path)
++    ledger = repo / ".agents" / "issue-3371-ledger.yml"
++    ledger.write_text("version: 1\n", encoding="utf-8")
++    commit = _commit(repo, "chore(ledger): start task task-01 for issue #3371")
++
++    errors = completion_errors(_task(), commit, repo_root=repo)
++
++    assert f"task task-01 commit {commit} changes only ledger paths" in errors
++    assert any("tracked-variable-v1.schema.json" in error for error in errors)
++
++
++def test_real_artifact_commit_can_complete(tmp_path: Path) -> None:
++    repo = _repo(tmp_path)
++    ledger = repo / ".agents" / "issue-1-ledger.yml"
++    ledger.write_text("version: 1\n", encoding="utf-8")
++    _commit(repo, "chore: initialise ledger")
++    artifact = repo / "docs" / "contracts" / "schemas" / "tracked-variable-v1.schema.json"
++    artifact.parent.mkdir(parents=True)
++    artifact.write_text("{}\n", encoding="utf-8")
++    commit = _commit(repo, "feat: add tracked variable schema")
++
++    assert completion_errors(_task(), commit, repo_root=repo) == []
++
++
++def test_artifact_present_now_but_absent_at_commit_is_blocked(tmp_path: Path) -> None:
++    repo = _repo(tmp_path)
++    source = repo / "src" / "placeholder.py"
++    source.parent.mkdir()
++    source.write_text("VALUE = 1\n", encoding="utf-8")
++    commit = _commit(repo, "feat: unrelated implementation")
++    artifact = repo / "docs" / "contracts" / "schemas" / "tracked-variable-v1.schema.json"
++    artifact.parent.mkdir(parents=True)
++    artifact.write_text("{}\n", encoding="utf-8")
++
++    errors = completion_errors(_task(), commit, repo_root=repo)
++
++    assert errors == [
++        f"task task-01 commit {commit} is missing named artifact(s): "
++        "docs/contracts/schemas/tracked-variable-v1.schema.json"
++    ]
++
++
++def test_duplicate_done_artifact_absence_is_fatal(tmp_path: Path) -> None:
++    repo = _repo(tmp_path)
++    source = repo / "src.py"
++    source.write_text("VALUE = 1\n", encoding="utf-8")
++    commit = _commit(repo, "feat: unrelated implementation")
++    first = _task(commit)
++    second = _task()
++    second["id"] = "task-02"
++    second["status"] = "todo"
++
++    errors = duplicate_artifact_errors([first, second], repo_root=repo)
++
++    assert len(errors) == 1
++    assert "task-01, task-02" in errors[0]
++    assert "done task task-01 lacks it" in errors[0]
++
++
++def test_duplicate_artifact_scope_ignores_historical_done_task(tmp_path: Path) -> None:
++    repo = _repo(tmp_path)
++    source = repo / "src.py"
++    source.write_text("VALUE = 1\n", encoding="utf-8")
++    commit = _commit(repo, "feat: unrelated implementation")
++    historical = _task(commit)
++    current = _task()
++    current["id"] = "task-02"
++    current["status"] = "blocked"
++
++    errors = duplicate_artifact_errors(
++        [historical, current], repo_root=repo, target_task_id="task-02"
++    )
++
++    assert errors == []
++
++
++def test_root_level_artifact_paths_are_detected() -> None:
++    task = {"title": "Update `pyproject.toml` for packaging."}
++    assert task_artifacts(task) == ["pyproject.toml"]
++
++
++def test_resolve_completion_commit_defers_until_agent_lands(tmp_path: Path) -> None:
++    repo = _repo(tmp_path)
++    ledger = repo / ".agents" / "issue-1-ledger.yml"
++    ledger.write_text("version: 1\n", encoding="utf-8")
++    start = _commit(repo, "chore(ledger): start task task-01 for issue #1")
++    task = _task()
++    task["status"] = "doing"
++    task["commit"] = ""
++
++    assert resolve_completion_commit(task, start, start, repo_root=repo) == (None, [])
++
++    artifact = repo / "docs" / "contracts" / "schemas" / "tracked-variable-v1.schema.json"
++    artifact.parent.mkdir(parents=True)
++    artifact.write_text("{}\n", encoding="utf-8")
++    end = _commit(repo, "feat: add tracked variable schema")
++
++    commit, blockers = resolve_completion_commit(task, start, end, repo_root=repo)
++    assert blockers == []
++    assert commit == end
++
++
++def test_counts_always_include_all_four_states() -> None:
++    assert format_status_counts([{"status": "done"}]) == (
++        "Belt task counts: todo=0 in_progress=0 done=1 blocked=0"
++    )
++
++
++def test_read_only_audit_reports_issue_3371_task_01(tmp_path: Path) -> None:
++    repo = _repo(tmp_path)
++    ledger = repo / ".agents" / "issue-3371-ledger.yml"
++    ledger.write_text("version: 1\n", encoding="utf-8")
++    commit = _commit(repo, "chore(ledger): start task task-01 for issue #3371")
++    payload = {
++        "version": 1,
++        "issue": 3371,
++        "base": "main",
++        "branch": "codex/issue-3371",
++        "tasks": [_task(commit)],
++    }
++    ledger.write_text(yaml.safe_dump(payload, sort_keys=False), encoding="utf-8")
++    before = ledger.read_bytes()
++
++    findings = audit_ledgers(repo)
++
++    assert any("issue-3371-ledger.yml task task-01" in finding for finding in findings)
++    assert ledger.read_bytes() == before
++
++
++@pytest.mark.parametrize(
++    "workflow_path",
++    [
++        Path(".github/workflows/agents-72-codex-belt-worker.yml"),
++        Path("templates/consumer-repo/.github/workflows/agents-72-codex-belt-worker.yml"),
++    ],
++)
++def test_worker_checks_evidence_before_done_and_gates_persistence(workflow_path: Path) -> None:
++    workflow = workflow_path.read_text(encoding="utf-8")
++    evidence = workflow.index("resolve_completion_commit")
++    done_write = workflow.index("target_task['status'] = 'done'", evidence)
++    assert evidence < done_write
++    assert "target_task['status'] = 'blocked'" in workflow
++    assert (
++        "LEDGER_VALIDATE_COMPLETION_TASK_ID: " "${{ steps.ledger_finalize.outputs.task_id }}"
++    ) in workflow
++    assert "steps.ledger_finalize.outcome == 'success'" in workflow
++    assert "steps.ledger_final_validation.outcome == 'success'" in workflow
++    assert "Belt task counts:" not in workflow  # rendered by the shared helper

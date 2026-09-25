@@ -1,0 +1,167 @@
+diff --git a/.github/scripts/__tests__/keepalive-loop.test.js b/.github/scripts/__tests__/keepalive-loop.test.js
+index 399bf2742..637b7b600 100644
+--- a/.github/scripts/__tests__/keepalive-loop.test.js
++++ b/.github/scripts/__tests__/keepalive-loop.test.js
+@@ -82,6 +82,8 @@ const buildGithubStub = ({
+   const actions = [];
+   const currentLabels = new Set(labels);
+   let stateCommentWriteCount = 0;
++  let remainingConfirmationFailures = failAuthorityConfirmWrite === true
++    ? Number.POSITIVE_INFINITY : Number(failAuthorityConfirmWrite) || 0;
+   const attention = comments.map((comment) => parseStateComment(comment.body)?.data?.attention)
+     .find((candidate) => candidate?.disposition === 'challenge-due' && candidate.generation);
+   let authorityBranch = Boolean(attention);
+@@ -147,8 +149,9 @@ const buildGithubStub = ({
+           } };
+         }
+         if (method === 'PUT') {
+-          if (failAuthorityConfirmWrite &&
++          if (remainingConfirmationFailures > 0 &&
+               JSON.parse(Buffer.from(body.content, 'base64').toString('utf8')).status === 'confirmed') {
++            remainingConfirmationFailures--;
+             throw Object.assign(new Error('simulated confirmation conflict'), { status: 409 });
+           }
+           const priorSha = authorityContent
+@@ -3213,6 +3216,42 @@ test('failed authority confirmation preserves the challenge and hard label', asy
+   assert.equal(attention.generation, 'c'.repeat(64));
+ });
+ 
++test('transient confirmation conflict retries the same consumed receipt without a new grant', async () => {
++  const authSummary = 'Missing token ACTIONS_BOT_PAT for GitHub API repository dispatch.';
++  const boundary = buildAuthorityChallengeEvidence({ agentSummary: authSummary });
++  const existingState = formatStateComment({
++    trace: 'trace-confirm-retry', iteration: 2, failure_threshold: 3,
++    failure: { reason: 'agent-run-failed', count: 1 },
++    attention: {
++      owner: 'automation', disposition: 'challenge-due',
++      challenge_due_at: TEST_DUE_AT, generation: 'c'.repeat(64),
++      expires_at: TEST_EXPIRES_AT,
++      boundary_fingerprint: boundary.fingerprint, boundary_detail: boundary.detail,
++    },
++  });
++  const github = buildGithubStub({
++    comments: [{ id: 91, body: existingState, html_url: 'https://example.com/91' }],
++    authorityReceipt: true, failAuthorityConfirmWrite: 1,
++    labels: ['agent:codex', 'agent:needs-attention'],
++  });
++  await updateKeepaliveLoopSummary({
++    github, context: buildContext(654), core: buildCore(),
++    inputs: {
++      prNumber: 654, action: 'run', runResult: 'failure', gateConclusion: 'success',
++      tasksTotal: 3, tasksUnchecked: 3, keepaliveEnabled: true,
++      autofixEnabled: false, iteration: 2, maxIterations: 5,
++      failureThreshold: 3, trace: 'trace-confirm-retry', forceRetry: true,
++      ...authorityClaimInputs(654, boundary.fingerprint),
++      agent_exit_code: '1', agent_summary: authSummary,
++    },
++  });
++  const final = github.actions.filter((action) => action.type === 'update').at(-1);
++  assert.match(final.body, /Independent Authority Challenge Confirmed/);
++  assert.equal(github.actions.some((action) =>
++    action.type === 'remove-label' && action.name === 'needs-human'), false);
++  assert.equal(github.actions.some((action) => action.type === 'workflow-dispatch'), false);
++});
++
+ test('a two-phase terminal transition reuses a newly created summary comment', async () => {
+   const authSummary = 'Missing token ACTIONS_BOT_PAT for GitHub API repository dispatch.';
+   const boundary = buildAuthorityChallengeEvidence({ agentSummary: authSummary });
+diff --git a/.github/scripts/keepalive_loop.js b/.github/scripts/keepalive_loop.js
+index b7b00e740..9097c52ba 100644
+--- a/.github/scripts/keepalive_loop.js
++++ b/.github/scripts/keepalive_loop.js
+@@ -4683,16 +4683,22 @@ async function updateKeepaliveLoopSummary({ github: rawGithub, context, core, in
+         if (hardHumanLabelApplied) {
+           if (pendingAuthorityClaim) {
+             const repository = `${context.repo.owner}/${context.repo.repo}`;
+-            try {
+-              authorityChallengeConfirmed = await confirmChallenge({
+-                request: requester(github), repository, prNumber, claim: pendingAuthorityClaim,
+-                ownerAttempt: `${repository.toLowerCase()}:${context.runId || process.env.GITHUB_RUN_ID || ''}:${context.runAttempt || process.env.GITHUB_RUN_ATTEMPT || ''}`,
+-                provider: agentType,
+-                headSha: inputs.head_sha ?? inputs.headSha,
+-              });
+-            } catch (error) {
+-              core?.warning?.(`Authority receipt confirmation unavailable: ${error.message}`);
+-              authorityChallengeConfirmed = false;
++            const confirmation = {
++              request: requester(github), repository, prNumber, claim: pendingAuthorityClaim,
++              ownerAttempt: `${repository.toLowerCase()}:${context.runId || process.env.GITHUB_RUN_ID || ''}:${context.runAttempt || process.env.GITHUB_RUN_ATTEMPT || ''}`,
++              provider: agentType,
++              headSha: inputs.head_sha ?? inputs.headSha,
++            };
++            // Confirmation cannot grant another run: it only settles the same
++            // consumed receipt after needs-human was applied. Retry once for
++            // an ambiguous PR read or conditional ledger write before leaving
++            // the hard label and receipt pending for operator reconciliation.
++            for (let attempt = 0; attempt < 2 && !authorityChallengeConfirmed; attempt++) {
++              try {
++                authorityChallengeConfirmed = await confirmChallenge(confirmation);
++              } catch (error) {
++                core?.warning?.(`Authority receipt confirmation unavailable: ${error.message}`);
++              }
+             }
+             if (!authorityChallengeConfirmed) {
+               const repository = `${context.repo.owner}/${context.repo.repo}`;
+diff --git a/docs/keepalive/Agents.md b/docs/keepalive/Agents.md
+index 44a5dcd36..53116bb1b 100644
+--- a/docs/keepalive/Agents.md
++++ b/docs/keepalive/Agents.md
+@@ -69,7 +69,7 @@ Auto-pilot pipeline:
+ 
+    Both paths are **fail-safe**: any error or "no untried eligible agent left" routes to automation retry or an independent challenge with a concrete owner and next action. It does not silently become a human request. Capability gating means the set of rotation targets grows automatically as the registry marks more agents `belt`/`pr_keepalive` capable — no workflow edit needed.
+ 
+-Authority generations and receipts remain bound to one originating PR head in the SHA-checked ledger. The runner first conditionally prepares that generation, writes its attempt-bound primary reservation, and only then consumes the prepared receipt; a failed reservation conditionally releases only that non-authorizing preparation. PR head and labels are separate GitHub state, so changed or unavailable evidence denies the result without refunding a consumed receipt. Confirmation uncertainty preserves the ledger and `needs-human`; automation never infers label ownership from a successful add or deletes a possibly concurrent human blocker. This is a fail-closed, at-most-one-grant protocol, not an atomic transaction across GitHub resources.
++Authority generations and receipts remain bound to one originating PR head in the SHA-checked ledger. The runner first conditionally prepares that generation, writes its attempt-bound primary reservation, and only then consumes the prepared receipt; a failed reservation conditionally releases only that non-authorizing preparation. PR head and labels are separate GitHub state, so changed or unavailable evidence denies the result without refunding a consumed receipt. Confirmation uncertainty preserves the ledger and `needs-human`; automation never infers label ownership from a successful add or deletes a possibly concurrent human blocker. The same worker attempt may retry confirmation once against its spent receipt, without granting a new execution. This is a fail-closed, at-most-one-grant protocol, not an atomic transaction across GitHub resources.
+ 
+ ## Key Principles
+ 
+diff --git a/docs/keepalive/GoalsAndPlumbing.md b/docs/keepalive/GoalsAndPlumbing.md
+index 55521f374..0f8f54a6d 100644
+--- a/docs/keepalive/GoalsAndPlumbing.md
++++ b/docs/keepalive/GoalsAndPlumbing.md
+@@ -121,7 +121,7 @@ The dedicated `keepalive-authority-state` branch stores `.github/keepalive-autho
+ 
+ Each update supplies the previous file SHA to the Contents API. The runner conditionally changes `available` to non-authorizing `prepared`, writes and rereads its attempt-bound primary reservation, then conditionally changes `prepared` to `consumed`. A definite reservation refusal may conditionally release only the same preparation before any grant exists. A conflicting or ambiguous preparation/consumption write grants no run; a consumed receipt is never refunded. Ordinary runner completions never write this ledger. Missing or malformed state fails closed, and summary comments or labels cannot restore authority. The owner attempt must have actually started a worker before receipt-backed confirmation may apply `needs-human`. A crash after consumption may leave zero executions, so the guarantee is at most one grant rather than exactly-once execution.
+ 
+-PR head and labels live outside the authority ledger, so their reads and ledger writes cannot form one transaction. After consumption, the consumer rechecks the PR and its reservation and denies a grant if the head, routing labels, or attempt binding changed. Confirmation checks the PR before and after its ledger write. An unavailable read or stale head preserves the existing receipt and hard label for reconciliation; it never rotates confirmed state into fresh execution authority or removes `needs-human`. A fresh same-head read may rotate only when the hard label is already absent. These checks narrow the cross-resource race without claiming atomicity against later PR metadata changes.
++PR head and labels live outside the authority ledger, so their reads and ledger writes cannot form one transaction. After consumption, the consumer rechecks the PR and its reservation and denies a grant if the head, routing labels, or attempt binding changed. Confirmation checks the PR before and after its ledger write. An unavailable read or stale head preserves the existing receipt and hard label for reconciliation; it never rotates confirmed state into fresh execution authority or removes `needs-human`. A fresh same-head read may rotate only when the hard label is already absent. These checks narrow the cross-resource race without claiming atomicity against later PR metadata changes. The original worker attempt retries confirmation once against the same consumed receipt after an ambiguous read or conditional write. That retry cannot grant another execution or remove the hard label.
+ 
+ ## 5. No-Noise Policy
+ 
+diff --git a/templates/consumer-repo/.github/scripts/keepalive_loop.js b/templates/consumer-repo/.github/scripts/keepalive_loop.js
+index b7b00e740..9097c52ba 100644
+--- a/templates/consumer-repo/.github/scripts/keepalive_loop.js
++++ b/templates/consumer-repo/.github/scripts/keepalive_loop.js
+@@ -4683,16 +4683,22 @@ async function updateKeepaliveLoopSummary({ github: rawGithub, context, core, in
+         if (hardHumanLabelApplied) {
+           if (pendingAuthorityClaim) {
+             const repository = `${context.repo.owner}/${context.repo.repo}`;
+-            try {
+-              authorityChallengeConfirmed = await confirmChallenge({
+-                request: requester(github), repository, prNumber, claim: pendingAuthorityClaim,
+-                ownerAttempt: `${repository.toLowerCase()}:${context.runId || process.env.GITHUB_RUN_ID || ''}:${context.runAttempt || process.env.GITHUB_RUN_ATTEMPT || ''}`,
+-                provider: agentType,
+-                headSha: inputs.head_sha ?? inputs.headSha,
+-              });
+-            } catch (error) {
+-              core?.warning?.(`Authority receipt confirmation unavailable: ${error.message}`);
+-              authorityChallengeConfirmed = false;
++            const confirmation = {
++              request: requester(github), repository, prNumber, claim: pendingAuthorityClaim,
++              ownerAttempt: `${repository.toLowerCase()}:${context.runId || process.env.GITHUB_RUN_ID || ''}:${context.runAttempt || process.env.GITHUB_RUN_ATTEMPT || ''}`,
++              provider: agentType,
++              headSha: inputs.head_sha ?? inputs.headSha,
++            };
++            // Confirmation cannot grant another run: it only settles the same
++            // consumed receipt after needs-human was applied. Retry once for
++            // an ambiguous PR read or conditional ledger write before leaving
++            // the hard label and receipt pending for operator reconciliation.
++            for (let attempt = 0; attempt < 2 && !authorityChallengeConfirmed; attempt++) {
++              try {
++                authorityChallengeConfirmed = await confirmChallenge(confirmation);
++              } catch (error) {
++                core?.warning?.(`Authority receipt confirmation unavailable: ${error.message}`);
++              }
+             }
+             if (!authorityChallengeConfirmed) {
+               const repository = `${context.repo.owner}/${context.repo.repo}`;

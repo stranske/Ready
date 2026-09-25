@@ -1,0 +1,433 @@
+diff --git a/README.md b/README.md
+index ba80d2b5..4029e598 100644
+--- a/README.md
++++ b/README.md
+@@ -32,6 +32,15 @@ The canonical TripPlan contract is the JSON schema in
+ derived from this schema via `canonical_trip_plan_to_model` in
+ `src/travel_plan_permission/canonical.py`.
+ 
++Canonical payloads do not carry a `trip_id`. Conversion derives a deterministic
++identifier with a readable departure-date/traveler prefix plus a hash of the
++trip's identity fields (destination, return date, purpose, airports, and event
++dates). Replaying the same trip identity produces the same ID, and cost-only
++revisions keep it. A persisted portal draft retains its established ID when it is
++replayed across an ID-generation upgrade. A caller that needs one identifier to
++survive an identity-field change must supply an explicit `trip_id` through the
++internal `TripPlan` contract or the legacy conversion override.
++
+ ## CLI: Fill Travel Spreadsheet
+ 
+ Generate a completed travel request spreadsheet from a TripPlan JSON file:
+diff --git a/docs/langgraph_quickstart.md b/docs/langgraph_quickstart.md
+index 7fd9264e..3de9c6f3 100644
+--- a/docs/langgraph_quickstart.md
++++ b/docs/langgraph_quickstart.md
+@@ -45,6 +45,9 @@ This loader:
+ - Builds `destination` from `city_state` + `destination_zip`.
+ - Maps `business_purpose` to `TripPlan.purpose`.
+ - Aggregates estimated costs into `expense_breakdown` and `expected_costs`.
++- Derives a deterministic `trip_id` from trip identity fields. Cost-only revisions
++  keep the ID, but callers that need an ID to survive destination, date, purpose,
++  airport, or event-date changes must provide an explicit internal `TripPlan.trip_id`.
+ 
+ Example:
+ 
+diff --git a/src/travel_plan_permission/canonical.py b/src/travel_plan_permission/canonical.py
+index dee6d5f2..9ffcc723 100644
+--- a/src/travel_plan_permission/canonical.py
++++ b/src/travel_plan_permission/canonical.py
+@@ -2,6 +2,8 @@
+ 
+ from __future__ import annotations
+ 
++import hashlib
++import json
+ import re
+ import warnings
+ from dataclasses import dataclass
+@@ -134,7 +136,22 @@ def _slugify(text: str) -> str:
+ 
+ 
+ def _default_trip_id(plan: CanonicalTripPlan) -> str:
+-    return f"TRIP-{plan.depart_date:%Y%m%d}-{_slugify(plan.traveler_name)}"
++    identity = {
++        "business_purpose": plan.business_purpose,
++        "city_state": plan.city_state,
++        "depart_date": plan.depart_date.isoformat(),
++        "departure_city_airport": plan.departure_city_airport,
++        "destination_zip": plan.destination_zip,
++        "event_dates": plan.event_dates,
++        "return_city_airport": plan.return_city_airport,
++        "return_date": plan.return_date.isoformat(),
++        "traveler_name": plan.traveler_name,
++    }
++    encoded = json.dumps(identity, sort_keys=True, separators=(",", ":")).encode(
++        "utf-8"
++    )
++    suffix = hashlib.sha256(encoded).hexdigest()[:12].upper()
++    return f"TRIP-{plan.depart_date:%Y%m%d}-{_slugify(plan.traveler_name)}-{suffix}"
+ 
+ 
+ def _format_destination(plan: CanonicalTripPlan) -> str:
+diff --git a/src/travel_plan_permission/http_service.py b/src/travel_plan_permission/http_service.py
+index 42e0f926..cf10a0f4 100644
+--- a/src/travel_plan_permission/http_service.py
++++ b/src/travel_plan_permission/http_service.py
+@@ -92,7 +92,7 @@
+ from .portal_review import (
+     PortalArtifact,
+     PortalReviewState,
+-    portal_review_state,
++    portal_review_state_for_persisted_draft,
+     portal_validation_state,
+ )
+ from .receipt_delivery import ReceiptDelivery
+@@ -1855,13 +1855,11 @@ def portal_review_detail(
+                 status_code=status.HTTP_404_NOT_FOUND,
+                 detail=f"No portal draft found for '{draft_id}'.",
+             )
+-        review = portal_review_state(
+-            draft.draft_id,
+-            draft.answers,
++        review = portal_review_state_for_persisted_draft(
++            draft,
++            proposal_store,
+             required_fields=_PORTAL_REQUIRED_FIELDS,
+             canonical_payload_builder=_canonical_payload_from_answers,
+-            submission_response=draft.submission_response,
+-            manager_review=proposal_store.lookup_manager_review_for_draft(draft.draft_id),
+         )
+         if review.artifacts and not draft.cached_artifacts:
+             proposal_store.cache_portal_artifacts(draft.draft_id, review.artifacts)
+@@ -1941,12 +1939,11 @@ async def portal_submit_exception_request(
+ 
+         supporting_doc = parsed.get("supporting_doc", [""])[-1].strip()
+         amount_text = parsed.get("amount", [""])[-1].strip()
+-        review = portal_review_state(
+-            draft.draft_id,
+-            draft.answers,
++        review = portal_review_state_for_persisted_draft(
++            draft,
++            proposal_store,
+             required_fields=_PORTAL_REQUIRED_FIELDS,
+             canonical_payload_builder=_canonical_payload_from_answers,
+-            manager_review=proposal_store.lookup_manager_review_for_draft(draft.draft_id),
+         )
+         if review.artifacts and not draft.cached_artifacts:
+             proposal_store.cache_portal_artifacts(draft.draft_id, review.artifacts)
+@@ -2008,16 +2005,17 @@ def portal_submit_request(
+                 status_code=status.HTTP_404_NOT_FOUND,
+                 detail=f"No portal draft found for '{draft_id}'.",
+             )
+-        review = portal_review_state(
+-            draft.draft_id,
+-            draft.answers,
++        review = portal_review_state_for_persisted_draft(
++            draft,
++            proposal_store,
+             required_fields=_PORTAL_REQUIRED_FIELDS,
+             canonical_payload_builder=_canonical_payload_from_answers,
+         )
+         if review.trip_plan is None or review.missing_fields or review.validation_errors:
+             raise HTTPException(
+                 status_code=status.HTTP_409_CONFLICT,
+-                detail="Complete the request review before submitting the portal draft.",
++                detail="; ".join(review.validation_errors)
++                or "Complete the request review before submitting the portal draft.",
+             )
+         if review.policy_blocking_codes:
+             raise HTTPException(
+@@ -2045,9 +2043,9 @@ def portal_submit_request(
+         )
+         proposal_store.record_portal_submission(draft.draft_id, submission_response)
+         manager_review = proposal_store.create_manager_review(review)
+-        review = portal_review_state(
+-            draft.draft_id,
+-            draft.answers,
++        review = portal_review_state_for_persisted_draft(
++            draft,
++            proposal_store,
+             required_fields=_PORTAL_REQUIRED_FIELDS,
+             canonical_payload_builder=_canonical_payload_from_answers,
+             submission_response=submission_response,
+@@ -2278,13 +2276,15 @@ def portal_artifact(
+                 status_code=status.HTTP_404_NOT_FOUND,
+                 detail=f"No portal draft found for '{draft_id}'.",
+             )
+-        review = portal_review_state(
+-            draft.draft_id,
+-            draft.answers,
++        review = portal_review_state_for_persisted_draft(
++            draft,
++            proposal_store,
+             required_fields=_PORTAL_REQUIRED_FIELDS,
+             canonical_payload_builder=_canonical_payload_from_answers,
+             generate_artifacts=not bool(draft.cached_artifacts),
+         )
++        if review.validation_errors:
++            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=review.validation_errors)
+         if review.policy_blocking_codes:
+             raise HTTPException(
+                 status_code=status.HTTP_403_FORBIDDEN,
+diff --git a/src/travel_plan_permission/portal_review.py b/src/travel_plan_permission/portal_review.py
+index bc33daf5..816e19b9 100644
+--- a/src/travel_plan_permission/portal_review.py
++++ b/src/travel_plan_permission/portal_review.py
+@@ -220,11 +220,27 @@ def portal_review_state(
+     policy_blocking_codes: list[str] = []
+     artifacts: dict[str, PortalArtifact] = {}
+ 
++    linked_trip_ids: set[str] = set()
++    if manager_review is not None:
++        linked_trip_ids.add(manager_review.trip_plan.trip_id)
++    if submission_response is not None:
++        response_trip_id = submission_response.result_payload.get("trip_id")
++        if isinstance(response_trip_id, str):
++            linked_trip_ids.add(response_trip_id)
++    if len(linked_trip_ids) > 1:
++        rendered = ", ".join(sorted(linked_trip_ids))
++        validation_errors.append(
++            f"Portal draft '{draft_id}' has conflicting linked trip IDs: {rendered}"
++        )
++    established_trip_id = next(iter(linked_trip_ids), None)
++
+     if not missing_fields and canonical_plan is not None and not validation_errors:
+         trip_plan = _apply_policy_answers(
+             canonical_trip_plan_to_model(canonical_plan),
+             answers,
+         )
++        if established_trip_id is not None:
++            trip_plan = trip_plan.model_copy(update={"trip_id": established_trip_id})
+         if trip_plan.expenses is None:
+             trip_plan = trip_plan.model_copy(update={"expenses": []})
+         policy_snapshot = get_policy_snapshot(
+@@ -256,3 +272,34 @@ def portal_review_state(
+         submission_response=submission_response,
+         manager_review=manager_review,
+     )
++
++
++def portal_review_state_for_persisted_draft(
++    draft: Any,
++    proposal_store: Any,
++    *,
++    required_fields: tuple[str, ...],
++    canonical_payload_builder: Callable[[dict[str, object]], dict[str, object]],
++    generate_artifacts: bool = True,
++    submission_response: PlannerProposalOperationResponse | None = None,
++    manager_review: ReviewRequest | None = None,
++) -> PortalReviewState:
++    """Portal review for a stored draft, preserving linked trip identity."""
++
++    return portal_review_state(
++        draft.draft_id,
++        draft.answers,
++        required_fields=required_fields,
++        canonical_payload_builder=canonical_payload_builder,
++        generate_artifacts=generate_artifacts,
++        submission_response=(
++            submission_response
++            if submission_response is not None
++            else draft.submission_response
++        ),
++        manager_review=(
++            manager_review
++            if manager_review is not None
++            else proposal_store.lookup_manager_review_for_draft(draft.draft_id)
++        ),
++    )
+diff --git a/tests/python/test_canonical_trip_plan.py b/tests/python/test_canonical_trip_plan.py
+index 4f6b2900..69f5f104 100644
+--- a/tests/python/test_canonical_trip_plan.py
++++ b/tests/python/test_canonical_trip_plan.py
+@@ -56,6 +56,32 @@ def test_canonical_conversion_builds_trip_plan() -> None:
+     assert trip_plan.comparable_hotels == [Decimal("185"), Decimal("199")]
+ 
+ 
++def test_canonical_conversion_generates_distinct_ids_for_distinct_same_day_trips() -> None:
++    chicago_payload = _load_fixture()
++    chicago_payload["city_state"] = "Chicago, IL"
++    denver_payload = _load_fixture()
++    denver_payload["city_state"] = "Denver, CO"
++
++    chicago_id = load_trip_plan_input(chicago_payload).plan.trip_id
++    denver_id = load_trip_plan_input(denver_payload).plan.trip_id
++
++    assert chicago_id != denver_id
++    assert chicago_id.startswith("TRIP-20251001-JANE-DOE-")
++    assert denver_id.startswith("TRIP-20251001-JANE-DOE-")
++
++
++def test_canonical_conversion_keeps_derived_id_stable_for_cost_only_revisions() -> None:
++    original_payload = _load_fixture()
++    revised_payload = _load_fixture()
++    revised_payload["event_registration_cost"] = "425"
++
++    original_id = load_trip_plan_input(original_payload).plan.trip_id
++    revised_id = load_trip_plan_input(revised_payload).plan.trip_id
++
++    assert original_id == "TRIP-20251001-JANE-DOE-09DEA1730763"
++    assert original_id == revised_id
++
++
+ def test_load_trip_plan_payload_handles_canonical() -> None:
+     payload = _load_fixture()
+ 
+diff --git a/tests/python/test_http_service.py b/tests/python/test_http_service.py
+index f6e3d27d..ebf092a6 100644
+--- a/tests/python/test_http_service.py
++++ b/tests/python/test_http_service.py
+@@ -10,6 +10,7 @@
+ import threading
+ from collections.abc import Iterator
+ from contextlib import contextmanager
++from copy import deepcopy
+ from dataclasses import replace
+ from datetime import UTC, date, datetime, timedelta
+ from http.server import BaseHTTPRequestHandler, HTTPServer
+@@ -20,7 +21,7 @@
+ from cryptography.hazmat.primitives.asymmetric import rsa
+ from fastapi.testclient import TestClient
+ 
+-from travel_plan_permission import audit, http_service, planner_auth, portal_review
++from travel_plan_permission import audit, canonical, http_service, planner_auth, portal_review
+ from travel_plan_permission.http_service import (
+     PlannerProposalStore,
+     PortalArtifact,
+@@ -1836,17 +1837,113 @@ def test_portal_generates_review_artifacts_and_submission(monkeypatch) -> None:
+     assert "Submission result" in submit.text
+ 
+ 
++def test_portal_replay_preserves_established_trip_id_after_upgrade(monkeypatch, tmp_path) -> None:
++    _set_runtime_env(monkeypatch)
++    state_path = tmp_path / "legacy-trip-id.sqlite3"
++    monkeypatch.setattr(
++        canonical,
++        "_default_trip_id",
++        lambda plan: f"TRIP-{plan.depart_date:%Y%m%d}-{canonical._slugify(plan.traveler_name)}",
++    )
++    first_store = PlannerProposalStore(state_path=state_path)
++    first_client = TestClient(create_app(first_store))
++    draft_id, _location = _create_portal_draft(first_client)
++
++    first_submit = first_client.post(
++        f"/portal/review/{draft_id}/submit",
++        headers=AUTH_HEADER,
++        follow_redirects=True,
++    )
++
++    assert first_submit.status_code == 200
++    legacy_id = next(iter(first_store.plans_by_trip_id))
++    assert legacy_id == f"TRIP-{date.today() + timedelta(days=45):%Y%m%d}-ALEX-RIVERA"
++
++    monkeypatch.setattr(
++        canonical,
++        "_default_trip_id",
++        lambda plan: (
++            f"TRIP-{plan.depart_date:%Y%m%d}-{canonical._slugify(plan.traveler_name)}-NEW-HASH-ID"
++        ),
++    )
++    replay_store = PlannerProposalStore(state_path=state_path)
++    replay_client = TestClient(create_app(replay_store))
++    replay = replay_client.post(
++        f"/portal/review/{draft_id}/submit",
++        headers=AUTH_HEADER,
++        follow_redirects=True,
++    )
++
++    assert replay.status_code == 200
++    assert set(replay_store.plans_by_trip_id) == {legacy_id}
++    linked_ids = {
++        stored.request.trip_id
++        for stored in replay_store.proposals_by_execution_id.values()
++        if stored.request.payload.get("draft_id") == draft_id
++    }
++    assert linked_ids == {legacy_id}
++    manager_review = replay_store.lookup_manager_review_for_draft(draft_id)
++    assert manager_review is not None
++    assert manager_review.trip_plan.trip_id == legacy_id
++
++
++def test_portal_conflicting_linked_trip_ids_return_conflict(monkeypatch) -> None:
++    _set_runtime_env(monkeypatch)
++    store = PlannerProposalStore()
++    client = TestClient(create_app(store))
++    draft_id, _location = _create_portal_draft(client)
++    assert (
++        client.post(
++            f"/portal/review/{draft_id}/submit",
++            headers=AUTH_HEADER,
++        ).status_code
++        == 200
++    )
++    draft = store.portal_drafts_by_id[draft_id]
++    assert draft.submission_response is not None
++    conflicting_response = draft.submission_response.model_copy(deep=True)
++    conflicting_response.result_payload["trip_id"] = "TRIP-CONFLICTING-ID"
++    store.portal_drafts_by_id[draft_id] = replace(
++        draft,
++        submission_response=conflicting_response,
++    )
++    plans_before = deepcopy(store.plans_by_trip_id)
++    proposals_before = deepcopy(store.proposals_by_execution_id)
++    manager_review_before = deepcopy(store.lookup_manager_review_for_draft(draft_id))
++
++    response = client.post(
++        f"/portal/review/{draft_id}/submit",
++        headers=AUTH_HEADER,
++    )
++
++    assert response.status_code == 409
++    assert "conflicting linked trip IDs" in response.json()["detail"]
++    assert store.plans_by_trip_id == plans_before
++    assert store.proposals_by_execution_id == proposals_before
++    assert store.lookup_manager_review_for_draft(draft_id) == manager_review_before
++    artifact = client.get(
++        f"/portal/review/{draft_id}/artifacts/itinerary",
++        headers=AUTH_HEADER,
++    )
++    assert artifact.status_code == 409
++    assert "conflicting linked trip IDs" in artifact.json()["detail"][0]
++
++
+ def test_portal_submit_rejects_blocking_policy_verdict(monkeypatch) -> None:
+     _set_runtime_env(monkeypatch)
+     store = PlannerProposalStore()
+     client = TestClient(create_app(store))
+-    original_portal_review_state = http_service.portal_review_state
++    original_portal_review_state = http_service.portal_review_state_for_persisted_draft
+ 
+     def blocked_portal_review_state(*args, **kwargs):
+         review = original_portal_review_state(*args, **kwargs)
+         return replace(review, policy_blocking_codes=["fare_evidence"])
+ 
+-    monkeypatch.setattr(http_service, "portal_review_state", blocked_portal_review_state)
++    monkeypatch.setattr(
++        http_service,
++        "portal_review_state_for_persisted_draft",
++        blocked_portal_review_state,
++    )
+     draft_id, _location = _create_portal_draft(client)
+ 
+     submit = client.post(
+@@ -3796,14 +3893,18 @@ def test_manager_review_resubmit_refreshes_trip_plan(monkeypatch, tmp_path) -> N
+         draft, answers={**draft.answers, "traveler_name": "CHANGED-TRAVELER"}
+     )
+     current_states = []
+-    original = http_service.portal_review_state
++    original = http_service.portal_review_state_for_persisted_draft
+ 
+     def capture_review(*args, **kwargs):
+         result = original(*args, **kwargs)
+         current_states.append(result)
+         return result
+ 
+-    monkeypatch.setattr(http_service, "portal_review_state", capture_review)
++    monkeypatch.setattr(
++        http_service,
++        "portal_review_state_for_persisted_draft",
++        capture_review,
++    )
+     assert client.post(submit_url, headers=traveler).status_code == 200
+     refreshed = store.lookup_manager_review_for_draft(draft_id)
+     assert refreshed is not None

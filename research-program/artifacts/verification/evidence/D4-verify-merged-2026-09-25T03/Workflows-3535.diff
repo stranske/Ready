@@ -1,0 +1,468 @@
+diff --git a/.github/scripts/__tests__/maint71_merge_sync_prs.test.js b/.github/scripts/__tests__/maint71_merge_sync_prs.test.js
+index 694cfc4e9..80ee14b51 100644
+--- a/.github/scripts/__tests__/maint71_merge_sync_prs.test.js
++++ b/.github/scripts/__tests__/maint71_merge_sync_prs.test.js
+@@ -46,12 +46,37 @@ test('exact-head reviewer request is durable, trusted, and idempotent', async ()
+   const first = await ensureExactHeadReviewRequest(args);
+   assert.equal(first.reused, false);
+   assert.equal(first.requestedAt, '2026-09-24T01:00:00Z');
++  assert.equal(first.draft, false);
++  assert.equal(first.autoMerge, false);
+   assert.match(comments[0].body, /@codex review/);
+   assert.match(comments[0].body, new RegExp(headSha));
+   const retry = await ensureExactHeadReviewRequest(args);
+   assert.equal(retry.reused, true);
+   assert.equal(retry.id, first.id);
+   assert.equal(posts, 1);
++  let readinessReads = 0;
++  github.rest.pulls.get = async () => ({ data: {
++    state: 'open', draft: ++readinessReads > 1,
++    auto_merge: readinessReads > 1 ? { enabled_at: '2026-09-24T01:00:00Z' } : null,
++    head: { sha: headSha },
++    body: `<!-- sync-pr-delivery-record:v1 ${JSON.stringify(record)} -->`,
++  } });
++  const unready = await ensureExactHeadReviewRequest({ ...args, allowUnready: true });
++  assert.equal(readinessReads, 2, 'readiness must be rechecked after comment pagination');
++  assert.equal(unready.draft, true);
++  assert.equal(unready.autoMerge, true);
++  readinessReads = 0;
++  github.rest.pulls.get = async () => ({ data: {
++    state: 'open', draft: false, auto_merge: null,
++    head: { sha: ++readinessReads > 1 ? 'rotated-head' : headSha },
++    body: `<!-- sync-pr-delivery-record:v1 ${JSON.stringify(record)} -->`,
++  } });
++  await assert.rejects(ensureExactHeadReviewRequest({ ...args, allowUnready: true }),
++    /changed before exact-head/);
++  github.rest.pulls.get = async () => ({ data: {
++    state: 'open', draft: false, auto_merge: null, head: { sha: headSha },
++    body: `<!-- sync-pr-delivery-record:v1 ${JSON.stringify(record)} -->`,
++  } });
+   comments[0].user.login = 'untrusted';
+   await ensureExactHeadReviewRequest(args);
+   assert.equal(posts, 2, 'a forged marker must not authorize review settlement');
+diff --git a/.github/scripts/__tests__/sync_pr_merge_contract.test.js b/.github/scripts/__tests__/sync_pr_merge_contract.test.js
+index 1147d3c29..34cab2bd1 100644
+--- a/.github/scripts/__tests__/sync_pr_merge_contract.test.js
++++ b/.github/scripts/__tests__/sync_pr_merge_contract.test.js
+@@ -2463,6 +2463,7 @@ test('buildMergeReport provides machine-readable summary counts', () => {
+     ready: 0,
+     dry_run_merge: 1,
+     dry_run_review_start: 0,
++    dry_run_unrequested_seal: 0,
+     dry_run_seal: 0,
+     merge_blocked_runtime_ac: 0,
+     merged: 0,
+@@ -3634,6 +3635,88 @@ test('maint71 starts review by clearing stale ready labels while retaining the s
+     const unconfirmed = JSON.parse(fs.readFileSync(reportPath, 'utf8')).results[0];
+     assert.equal(unconfirmed.status, 'reviewer_settlement_pending');
+     assert.equal(unconfirmed.reason, 'review_request_unconfirmed');
++    // A previously sealed canary must not authorize promotion when its
++    // timeout predates any exact-head reviewer request.
++    candidate.body = replaceDeliveryRecord(candidate.body, {
++      delivery_state: 'sealed',
++      review_started_at: '2020-08-14T00:00:00Z',
++      sealed_at: '2020-08-14T00:16:00Z',
++      sealed_head_sha: headSha,
++      review_evidence: { reason: 'review_timeout_degraded', degraded: true },
++    });
++    const updatesBeforeLegacySeal = mutations.length;
++    await run({ github, core, context: { repo: { owner: 'stranske', repo: 'Workflows' }, payload: {},
++      runId: 77, runNumber: 77, workflow: 'Maint 71', ref: 'refs/heads/main', sha: sourceCommit } });
++    const legacySeal = JSON.parse(fs.readFileSync(reportPath, 'utf8')).results[0];
++    assert.equal(legacySeal.status, 'delivery_review_not_started');
++    assert.equal(legacySeal.reason, 'unrequested_seal_restaged');
++    assert.equal(classifyDeliveryContinuation(legacySeal).class, 'transient');
++    process.env.DRY_RUN_INPUT = 'true';
++    const updatesBeforeSealPreview = mutations.length;
++    await run({ github, core, context: { repo: { owner: 'stranske', repo: 'Workflows' }, payload: {},
++      runId: 775, runNumber: 775, workflow: 'Maint 71', ref: 'refs/heads/main', sha: sourceCommit } });
++    const sealPreview = JSON.parse(fs.readFileSync(reportPath, 'utf8'));
++    assert.equal(sealPreview.results[0].status, 'dry_run_unrequested_seal');
++    assert.equal(sealPreview.summary.dry_run_unrequested_seal, 1);
++    assert.match(require('../sync_pr_merge_contract').buildMarkdownSummary(sealPreview),
++      /\| dry_run_unrequested_seal \| 1 \|/);
++    assert.equal(mutations.length, updatesBeforeSealPreview);
++    process.env.DRY_RUN_INPUT = 'false';
++    assert.equal(legacySeal.previous_seal.review_evidence.reason, 'review_timeout_degraded');
++    assert.ok(mutations.length > updatesBeforeLegacySeal);
++    assert.match(mutations.at(-1).body, /"delivery_state":"staging"/);
++    assert.doesNotMatch(mutations.at(-1).body, /"sealed_head_sha":"[^"\s]+"/);
++    let restageReads = 0;
++    const updatesBeforeRotatedHead = mutations.length;
++    let unintendedGraphqlMutations = 0;
++    const priorGraphql = github.graphql;
++    github.graphql = async (...args) => {
++      if (String(args[0]).trim().startsWith('mutation')) unintendedGraphqlMutations++;
++      return priorGraphql(...args);
++    };
++    github.rest.pulls.get = async () => ({ data: ++restageReads >= 3
++      ? { ...candidate, draft: true, auto_merge: { enabled_at: '2026-09-24T04:00:00Z' },
++        head: { ...candidate.head, sha: 'rotated-head' } }
++      : candidate });
++    await run({ github, core, context: { repo: { owner: 'stranske', repo: 'Workflows' }, payload: {},
++      runId: 78, runNumber: 78, workflow: 'Maint 71', ref: 'refs/heads/main', sha: sourceCommit } });
++    assert.equal(JSON.parse(fs.readFileSync(reportPath, 'utf8')).results[0].status, 'error');
++    assert.equal(mutations.length, updatesBeforeRotatedHead,
++      'restage must not rewrite a generation rotated after request inventory');
++    assert.equal(unintendedGraphqlMutations, 0,
++      'restage must validate identity before changing ready or auto-merge state');
++    restageReads = 0;
++    github.rest.pulls.get = async () => ({ data: ++restageReads >= 4
++      ? { ...candidate, head: { ...candidate.head, sha: 'rotated-after-hold' } }
++      : candidate });
++    await run({ github, core, context: { repo: { owner: 'stranske', repo: 'Workflows' }, payload: {},
++      runId: 79, runNumber: 79, workflow: 'Maint 71', ref: 'refs/heads/main', sha: sourceCommit } });
++    assert.equal(JSON.parse(fs.readFileSync(reportPath, 'utf8')).results[0].status, 'error');
++    assert.equal(mutations.length, updatesBeforeRotatedHead,
++      'restage must not rewrite a generation rotated during ready hold');
++    candidate.body = replaceDeliveryRecord(candidate.body, {
++      review_started_at: '2026-09-24T02:43:00Z',
++    });
++    candidate.draft = true;
++    candidate.auto_merge = { enabled_at: '2026-09-24T04:00:00Z' };
++    reviewRequests.push({ id: 199, created_at: '2026-09-24T02:43:00Z',
++      user: { login: 'stranske' },
++      body: `@codex review\n\n${reviewRequestMarker({
++        planId, generation: record.generation, headSha, reviewerId: 'codex',
++      })}` });
++    github.rest.pulls.get = async () => ({ data: candidate });
++    github.graphql = async (query, ...args) => {
++      if (String(query).includes('disablePullRequestAutoMerge')) candidate.auto_merge = null;
++      if (String(query).includes('markPullRequestReadyForReview')) candidate.draft = false;
++      return priorGraphql(query, ...args);
++    };
++    await run({ github, core, context: { repo: { owner: 'stranske', repo: 'Workflows' }, payload: {},
++      runId: 80, runNumber: 80, workflow: 'Maint 71', ref: 'refs/heads/main', sha: sourceCommit } });
++    const heldSeal = JSON.parse(fs.readFileSync(reportPath, 'utf8')).results[0];
++    assert.equal(heldSeal.status, 'delivery_review_not_started');
++    assert.equal(heldSeal.reason, 'sealed_hold_restaged');
++    assert.equal(candidate.draft, false);
++    assert.equal(candidate.auto_merge, null);
+   } finally {
+     process.chdir(originalCwd);
+     for (const [key, value] of Object.entries(originalEnv)) {
+diff --git a/.github/scripts/maint71_merge_sync_prs.js b/.github/scripts/maint71_merge_sync_prs.js
+index 5713252a9..cba31ec35 100644
+--- a/.github/scripts/maint71_merge_sync_prs.js
++++ b/.github/scripts/maint71_merge_sync_prs.js
+@@ -91,6 +91,7 @@ function reviewRequestMarker({ planId, generation, headSha, reviewerId }) {
+ // body update does not create a second request on the next pass.
+ async function ensureExactHeadReviewRequest({
+   owner, repo, pr, record, reviewerProfiles, withRetry, dryRunMode = false,
++  allowUnready = false,
+ }) {
+   const profile = reviewerProfiles.find((item) =>
+     String(item?.request_comment || '').trim());
+@@ -101,20 +102,24 @@ async function ensureExactHeadReviewRequest({
+   if (!writerLogin || writerLogin === 'github-actions[bot]') {
+     throw new Error('Review-request writer identity is unavailable or shared');
+   }
+-  const { data: fresh } = await withRetry((client) => client.rest.pulls.get({
+-    owner, repo, pull_number: pr.number,
+-  }));
+-  const freshRecord = parseDeliveryRecord(fresh?.body || '');
+-  if (
+-    fresh?.state !== 'open' || fresh?.draft || fresh?.auto_merge
+-    || fresh?.head?.sha !== pr.head.sha
+-    || freshRecord?.plan_id !== record.plan_id
+-    || freshRecord?.generation !== record.generation
+-    || freshRecord?.delivery_state !== record.delivery_state
+-    || freshRecord?.head_observed_sha !== pr.head.sha
+-  ) {
+-    throw new Error('Generated delivery changed before exact-head review request');
++  async function readRequestState() {
++    const { data: fresh } = await withRetry((client) => client.rest.pulls.get({
++      owner, repo, pull_number: pr.number,
++    }));
++    const freshRecord = parseDeliveryRecord(fresh?.body || '');
++    if (
++      fresh?.state !== 'open' || (!allowUnready && (fresh?.draft || fresh?.auto_merge))
++      || fresh?.head?.sha !== pr.head.sha
++      || freshRecord?.plan_id !== record.plan_id
++      || freshRecord?.generation !== record.generation
++      || freshRecord?.delivery_state !== record.delivery_state
++      || freshRecord?.head_observed_sha !== pr.head.sha
++    ) {
++      throw new Error('Generated delivery changed before exact-head review request');
++    }
++    return fresh;
+   }
++  await readRequestState();
+   const marker = reviewRequestMarker({
+     planId: record.plan_id,
+     generation: record.generation,
+@@ -135,7 +140,9 @@ async function ensureExactHeadReviewRequest({
+       if (!existing.id || !Number.isFinite(Date.parse(existing.created_at || ''))) {
+         throw new Error('Existing review request lacks durable identity or time');
+       }
+-      return { id: existing.id, requestedAt: existing.created_at, reused: true, body: fresh.body };
++      const current = await readRequestState();
++      return { id: existing.id, requestedAt: existing.created_at, reused: true,
++        body: current.body, draft: Boolean(current.draft), autoMerge: Boolean(current.auto_merge) };
+     }
+     if (comments.length < 100) break;
+     if (page === 20) throw new Error('Review-request comment inventory truncated');
+@@ -154,7 +161,9 @@ async function ensureExactHeadReviewRequest({
+   if (!posted?.id || !Number.isFinite(Date.parse(posted.created_at || ''))) {
+     throw new Error('Review request posted without durable identity or time');
+   }
+-  return { id: posted.id, requestedAt: posted.created_at, reused: false, body: fresh.body };
++  const current = await readRequestState();
++  return { id: posted.id, requestedAt: posted.created_at, reused: false,
++    body: current.body, draft: Boolean(current.draft), autoMerge: Boolean(current.auto_merge) };
+ }
+ 
+ function parseReviewResolutionProofs(raw = '') {
+@@ -1333,12 +1342,26 @@ async function run({ github, context, core }) {
+     return { resolved, filedIssue, errors };
+   }
+ 
+-  async function holdReadyStableDelivery({ owner, repo, pr }) {
++  async function holdReadyStableDelivery({ owner, repo, pr, expectedRecord }) {
++    const assertObservedDelivery = (current) => {
++      if (!expectedRecord) return;
++      const observed = parseDeliveryRecord(current?.body || '');
++      if (
++        current?.state !== 'open' || current?.head?.sha !== pr.head.sha
++        || observed?.plan_id !== expectedRecord.plan_id
++        || observed?.generation !== expectedRecord.generation
++        || observed?.head_observed_sha !== pr.head.sha
++        || observed?.delivery_state !== expectedRecord.delivery_state
++      ) {
++        throw new Error('Generated delivery changed before ready hold');
++      }
++    };
+     let { data: current } = await withRetry((client) => client.rest.pulls.get({
+       owner,
+       repo,
+       pull_number: pr.number,
+     }));
++    assertObservedDelivery(current);
+     if (current.auto_merge) {
+       await withRetry((client) => client.graphql(
+         `mutation($id: ID!) {
+@@ -1364,6 +1387,7 @@ async function run({ github, context, core }) {
+       repo,
+       pull_number: pr.number,
+     })));
++    assertObservedDelivery(current);
+     if (current.auto_merge) {
+       throw new Error(`Auto-merge remains enabled for staged delivery PR #${pr.number}.`);
+     }
+@@ -1377,7 +1401,7 @@ async function run({ github, context, core }) {
+     if (dryRunMode) {
+       return { reviewStartedAt: record.review_started_at || new Date().toISOString(), dryRun: true };
+     }
+-    await holdReadyStableDelivery({ owner, repo, pr });
++    await holdReadyStableDelivery({ owner, repo, pr, expectedRecord: record });
+     const request = await ensureExactHeadReviewRequest({
+       owner, repo, pr, record, reviewerProfiles,
+       withRetry,
+@@ -1421,7 +1445,7 @@ async function run({ github, context, core }) {
+       review_started_at: reviewStartedAt,
+       sealed_at: '',
+       sealed_head_sha: '',
+-      review_evidence: {},
++      review_evidence: { request_comment_id: request.id },
+     });
+     await withRetry((client) => client.rest.pulls.update({
+       owner,
+@@ -1432,7 +1456,7 @@ async function run({ github, context, core }) {
+     return { reviewStartedAt, body: latestBody, dryRun: false };
+   }
+ 
+-  async function restageStableDelivery({ owner, repo, pr, dryRunMode }) {
++  async function restageStableDelivery({ owner, repo, pr, record, dryRunMode }) {
+     if (dryRunMode) {
+       const body = replaceDeliveryRecord(pr.body || '', {
+         delivery_state: 'staging',
+@@ -1443,7 +1467,26 @@ async function run({ github, context, core }) {
+       });
+       return { body, dryRun: true };
+     }
+-    const current = await holdReadyStableDelivery({ owner, repo, pr });
++    const assertRestageIdentity = (current, { requireReady = false } = {}) => {
++      const currentRecord = parseDeliveryRecord(current?.body || '');
++      if (
++        current?.state !== 'open'
++        || (requireReady && (current.draft || current.auto_merge))
++        || current?.head?.sha !== pr.head.sha
++        || currentRecord?.plan_id !== record.plan_id
++        || currentRecord?.generation !== record.generation
++        || currentRecord?.head_observed_sha !== pr.head.sha
++        || currentRecord?.delivery_state !== record.delivery_state
++      ) {
++        throw new Error('Generated delivery changed before exact-head restage');
++      }
++    };
++    const { data: beforeHold } = await withRetry((client) => client.rest.pulls.get({
++      owner, repo, pull_number: pr.number,
++    }));
++    assertRestageIdentity(beforeHold);
++    const current = await holdReadyStableDelivery({ owner, repo, pr, expectedRecord: record });
++    assertRestageIdentity(current, { requireReady: true });
+     const body = replaceDeliveryRecord(current.body || '', {
+       delivery_state: 'staging',
+       review_started_at: '',
+@@ -1480,6 +1523,7 @@ async function run({ github, context, core }) {
+     const sealedAt = new Date().toISOString();
+     const reviewEvidence = {
+       policy_schema: reviewPolicy.schema,
++      request_comment_id: record.review_evidence?.request_comment_id || null,
+       reason: settlement.reason,
+       degraded: Boolean(settlement.degraded),
+       responded_reviewers: settlement.responded || [],
+@@ -2703,6 +2747,7 @@ async function run({ github, context, core }) {
+             owner,
+             repo,
+             pr,
++            record: deliveryRecord,
+             dryRunMode: dryRun,
+           });
+           results.push({
+@@ -2718,6 +2763,59 @@ async function run({ github, context, core }) {
+           });
+           continue;
+         }
++        // A legacy seal can predate the actual reviewer request. A timeout
++        // without a request is not reviewer settlement, even on a green head.
++        let sealedRequest;
++        try {
++          sealedRequest = await ensureExactHeadReviewRequest({
++            owner, repo, pr, record: deliveryRecord, reviewerProfiles,
++            withRetry, dryRunMode: true, allowUnready: true,
++          });
++        } catch (error) {
++          rethrowPrimaryRateLimit(error);
++          results.push({
++            ...deliveryContext,
++            delivery_disposition: 'awaiting-review-settlement',
++            blocker_owner: 'maint-71',
++            next_command: `rerun-after:${new Date(Date.now() + 10 * 60 * 1000).toISOString()}`,
++            status: 'reviewer_settlement_pending',
++            reason: 'sealed_review_request_unconfirmed',
++            error: String(error?.message || error),
++          });
++          continue;
++        }
++        // The request lookup reads the PR again; its readiness is newer than
++        // the initial inventory snapshot used to enter this branch.
++        const needsReadyRecovery = Boolean(sealedRequest?.draft || sealedRequest?.autoMerge);
++        if (
++          !sealedRequest
++          || needsReadyRecovery
++          || !Number.isFinite(Date.parse(deliveryRecord.review_started_at || ''))
++          || Date.parse(deliveryRecord.review_started_at) < Date.parse(sealedRequest.requestedAt)
++          || (deliveryRecord.review_evidence?.request_comment_id
++            && deliveryRecord.review_evidence.request_comment_id !== sealedRequest.id)
++        ) {
++          const previousSeal = {
++            sealed_at: deliveryRecord.sealed_at,
++            sealed_head_sha: deliveryRecord.sealed_head_sha,
++            review_evidence: deliveryRecord.review_evidence,
++          };
++          await restageStableDelivery({
++            owner, repo, pr, record: deliveryRecord, dryRunMode: dryRun,
++          });
++          results.push({
++            ...deliveryContext,
++            delivery_disposition: 'awaiting-review-start',
++            blocker_owner: 'maint-71',
++            next_command: dryRun
++              ? 'rerun-with-auto-merge-to-restage-unrequested-seal'
++              : 'rerun-with-auto-merge-to-start-review',
++            status: dryRun ? 'dry_run_unrequested_seal' : 'delivery_review_not_started',
++            reason: needsReadyRecovery ? 'sealed_hold_restaged' : 'unrequested_seal_restaged',
++            previous_seal: previousSeal,
++          });
++          continue;
++        }
+       }
+ 
+       // A stable PR's own Gate intentionally rejects staging/reviewing
+@@ -2814,6 +2912,7 @@ async function run({ github, context, core }) {
+               owner,
+               repo,
+               pr,
++              record: deliveryRecord,
+               dryRunMode: false,
+             });
+             let promotionEvidence = null;
+diff --git a/.github/scripts/sync_pr_merge_contract.js b/.github/scripts/sync_pr_merge_contract.js
+index f530d4475..360177755 100644
+--- a/.github/scripts/sync_pr_merge_contract.js
++++ b/.github/scripts/sync_pr_merge_contract.js
+@@ -1085,6 +1085,7 @@ function summarizeResults(results) {
+     ready: 0,
+     dry_run_merge: 0,
+     dry_run_review_start: 0,
++    dry_run_unrequested_seal: 0,
+     dry_run_seal: 0,
+     merge_blocked_runtime_ac: 0,
+     merged: 0,
+@@ -1113,6 +1114,7 @@ function deriveHandoffCheckState(result = {}) {
+     || status === 'review_window_started'
+     || status === 'reviewer_settlement_pending'
+     || status === 'delivery_review_not_started'
++    || status === 'dry_run_unrequested_seal'
+     || status === 'delivery_sealed_checks_pending'
+     || status === 'sealed_head_mismatch'
+     || status === 'stable_base_refresh_required'
+diff --git a/docs/ops/CONSUMER_REPO_MAINTENANCE.md b/docs/ops/CONSUMER_REPO_MAINTENANCE.md
+index c29c89269..60c98704c 100644
+--- a/docs/ops/CONSUMER_REPO_MAINTENANCE.md
++++ b/docs/ops/CONSUMER_REPO_MAINTENANCE.md
+@@ -576,9 +576,28 @@ delivery body or fails closed on drift. An old `reviewing` record without a
+ request is repaired and cannot time out into sealing. Dry-run,
+ evidence-only, and resolution-only passes inspect an existing request and
+ reviewer evidence, report missing requests or clock repairs, and preview seal
+-readiness without posting comments or changing PR bodies. The policy requires
+-one response, not
+-all configured reviewers, after a seven-minute quiet period. If every reviewer
++readiness without posting comments or changing PR bodies.
++Already-sealed open deliveries also require a durable exact-head request whose
++timestamp is no later than the settlement clock. A legacy timeout seal without
++that request is preserved in the reconciliation report and restaged by Maint 71;
++it cannot authorize canary promotion or merge. Fresh review then starts through
++the normal source-owned request and seal sequence. Restaging checks the
++current head and plan/generation before any hold mutation and again before
++rewriting a mutable delivery, so a concurrent Maint 68 rotation observed at
++either read fails closed instead of
++being restaged using an older seal.
++An already-sealed delivery found draft or with auto-merge enabled is restaged
++through the same guarded owner path, which restores ready state and disables
++auto-merge before another review attempt. The request lookup re-reads the PR
++after scanning request comments so readiness changes during pagination are
++included in that decision; an identity change fails closed.
++These reads do not make GitHub's PR-body update atomic against a later Maint 68
++rotation; cross-workflow writer serialization remains source-owned follow-up
++#3534. Exact-head plan, seal, and Gate guards still deny authorization when
++such drift is observed.
++Dry-run reports count an unrequested legacy seal explicitly without mutating it.
++The policy requires one response, not all configured reviewers, after a
++seven-minute quiet period. If every reviewer
+ reports capacity unavailability, settlement degrades after the quiet period;
+ if nobody responds, it degrades after fifteen minutes. Active non-outdated
+ review threads are never waived by either fallback. Reviewer statuses and
+diff --git a/tests/workflows/test_sync_manifest_delivery.py b/tests/workflows/test_sync_manifest_delivery.py
+index df76eae55..7272800bc 100644
+--- a/tests/workflows/test_sync_manifest_delivery.py
++++ b/tests/workflows/test_sync_manifest_delivery.py
+@@ -645,9 +645,15 @@ def test_maint71_holds_ready_delivery_before_staging_mutations() -> None:
+     begin = source.index("async function beginStableDeliveryReview", verification)
+     restage = source.index("async function restageStableDelivery", begin)
+     assert helper < disable < ready < verification < begin < restage
+-    assert "await holdReadyStableDelivery({ owner, repo, pr });" in source[begin:restage]
++    assert (
++        "await holdReadyStableDelivery({ owner, repo, pr, expectedRecord: record });"
++        in source[begin:restage]
++    )
+     assert "const latestBody = replaceDeliveryRecord(latest.body || '', {" in source[begin:restage]
+-    assert "const current = await holdReadyStableDelivery({ owner, repo, pr });" in source[restage:]
++    assert (
++        "const current = await holdReadyStableDelivery({ owner, repo, pr, expectedRecord: record });"
++        in source[restage:]
++    )
+ 
+ 
+ def test_gate_and_shared_mergers_hold_mutable_stable_deliveries() -> None:

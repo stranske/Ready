@@ -1,0 +1,48 @@
+diff --git a/src/fine_art_archive/preference/rocchio.py b/src/fine_art_archive/preference/rocchio.py
+index 90e4bdb2..552904b2 100644
+--- a/src/fine_art_archive/preference/rocchio.py
++++ b/src/fine_art_archive/preference/rocchio.py
+@@ -121,7 +121,11 @@ def build(
+     question ("do I want this on the wall") and is the one D6 is about; quality
+     is about the reproduction, not the choice.
+     """
+-    scored = [(features_of(sc), s) for sc, s in rated if s is not None]
++    scored = [
++        (features_of(sc), s)
++        for sc, s in rated
++        if isinstance(s, (int, float)) and not isinstance(s, bool) and math.isfinite(s)
++    ]
+     notes: list[str] = []
+     if not scored:
+         return PreferenceVector({}, 0, 0, math.nan, axis, 0, ["no rated works supplied"])
+diff --git a/tests/test_rocchio_preference.py b/tests/test_rocchio_preference.py
+index 4f46bf92..f82203fe 100644
+--- a/tests/test_rocchio_preference.py
++++ b/tests/test_rocchio_preference.py
+@@ -67,6 +67,26 @@ def test_no_ratings_at_all_is_not_a_silent_empty_vector(self) -> None:
+         assert v.weights == {}
+         assert v.notes and math.isnan(v.split_value)
+ 
++    def test_non_finite_and_non_numeric_ratings_are_ignored(self) -> None:
++        rated = [
++            (_work("Invalid NaN", ["invalid:nan"]), float("nan")),
++            (_work("Invalid positive infinity", ["invalid:positive-infinity"]), float("inf")),
++            (_work("Invalid negative infinity", ["invalid:negative-infinity"]), float("-inf")),
++            (_work("Invalid boolean", ["invalid:boolean"]), True),
++            (_work("Invalid text", ["invalid:text"]), "9"),
++            (_work("Liked", ["valid:liked"]), 9.0),
++            (_work("Disliked", ["valid:disliked"]), 3.0),
++        ]
++
++        v = build(rated)  # type: ignore[arg-type]
++
++        assert v.split_value == 6.0
++        assert v.positive_support == 1
++        assert v.negative_support == 1
++        assert v.weights["tag:valid:liked"] > 0
++        assert v.weights["tag:valid:disliked"] < 0
++        assert not any("invalid:" in feature for feature in v.weights)
++
+ 
+ class TestItSaysWhenItIsUnderpowered:
+     def test_a_thin_negative_class_is_flagged(self) -> None:

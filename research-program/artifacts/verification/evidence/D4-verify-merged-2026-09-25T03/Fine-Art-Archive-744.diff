@@ -1,0 +1,55 @@
+diff --git a/src/fine_art_archive/identity/variants.py b/src/fine_art_archive/identity/variants.py
+index bc73a717..eb8ebabd 100644
+--- a/src/fine_art_archive/identity/variants.py
++++ b/src/fine_art_archive/identity/variants.py
+@@ -40,6 +40,7 @@
+ 
+ from __future__ import annotations
+ 
++import copy
+ from collections.abc import Callable, Iterable, Mapping
+ from dataclasses import dataclass
+ from typing import Any
+@@ -425,7 +426,7 @@ def inherit(
+             continue
+ 
+         if _is_empty(meta.get(field)):
+-            meta[field] = parent_value
++            meta[field] = copy.deepcopy(parent_value)
+             filled.append(field)
+         elif meta[field] != parent_value:
+             conflicts.append(field)
+diff --git a/tests/test_variants.py b/tests/test_variants.py
+index 3ea3e39a..1ff4ea45 100644
+--- a/tests/test_variants.py
++++ b/tests/test_variants.py
+@@ -166,6 +166,29 @@ def test_reports_a_disagreement_instead_of_overwriting_it(self) -> None:
+         assert meta["medium"] == "oil on canvas"
+         assert filled == ["year"]
+ 
++    def test_inherited_mutable_metadata_is_independent_from_the_parent(self) -> None:
++        parent = work(
++            "bbbbbbb-master",
++            artist={"name": "Claude Monet", "aliases": ["Oscar-Claude Monet"]},
++            rights={"credit": {"line": "Example Museum"}},
++        )
++        detail = detail_of("aaaaaaa-detail", "bbbbbbb-master")
++
++        meta, filled, conflicts = inherit(detail, parent)
++
++        assert conflicts == []
++        assert filled == ["artist", "rights"]
++
++        meta["artist"]["name"] = "Changed locally"
++        meta["artist"]["aliases"].append("Local alias")
++        meta["rights"]["credit"]["line"] = "Local credit"
++
++        assert parent["artist"] == {
++            "name": "Claude Monet",
++            "aliases": ["Oscar-Claude Monet"],
++        }
++        assert parent["rights"] == {"credit": {"line": "Example Museum"}}
++
+     def test_per_file_facts_do_not_travel(self) -> None:
+         parent = work(
+             "bbbbbbb-master",

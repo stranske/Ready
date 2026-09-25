@@ -1,0 +1,1776 @@
+diff --git a/frontend/src/api/workspace.ts b/frontend/src/api/workspace.ts
+index b1a012b5d..b26491bbe 100644
+--- a/frontend/src/api/workspace.ts
++++ b/frontend/src/api/workspace.ts
+@@ -283,10 +283,13 @@ export type RuntimeScenarioComparison = {
+     route_summary: string;
+     recommended_for_selection: boolean;
+     feasible: boolean;
++    /** False when no provider was asked whether seats or rooms exist (issue 1839). */
++    availability_checked?: boolean;
+     metrics: {
+       score: number;
+       travel_minutes: number;
+-      transfers: number;
++      /** Null when nothing counted the connections: shown as "Not measured". */
++      transfers: number | null;
+       estimated_total: {
+         currency: string;
+         typical_amount: number | null;
+@@ -296,7 +299,7 @@ export type RuntimeScenarioComparison = {
+     delta: {
+       score_delta: number;
+       travel_minutes_delta: number;
+-      transfers_delta: number;
++      transfers_delta: number | null;
+       estimated_total_delta: number | null;
+     };
+     highlights: string[];
+diff --git a/frontend/src/components/maps/TripMap.tsx b/frontend/src/components/maps/TripMap.tsx
+index 050091711..97d9394d4 100644
+--- a/frontend/src/components/maps/TripMap.tsx
++++ b/frontend/src/components/maps/TripMap.tsx
+@@ -8,6 +8,7 @@ import {
+   type MapProviderLoadState,
+   type MapViewScope,
+ } from "./mapSurface";
++import { NOT_MEASURED, formatTransfers } from "../../lib/metrics";
+ 
+ type InventoryBundle = WorkspaceData["inventory_summary"]["bundles"][number];
+ type TripMapScenario = RuntimeScenarioComparison["scenarios"][number];
+@@ -362,7 +363,7 @@ function ActiveTripMap({
+             </div>
+             <div>
+               <dt>Transfers</dt>
+-              <dd>{activeScenario.metrics.transfers}</dd>
++              <dd>{activeScenario.metrics.transfers ?? NOT_MEASURED}</dd>
+             </div>
+             <div>
+               <dt>Options</dt>
+@@ -465,7 +466,7 @@ function ActiveTripMap({
+                     {scenario.recommended_for_selection ? "recommended" : scenario.status}
+                   </p>
+                   <h4>{scenario.title}</h4>
+-                  <p>{scenario.metrics.travel_minutes} min · {scenario.metrics.transfers} transfers</p>
++                  <p>{scenario.metrics.travel_minutes} min · {formatTransfers(scenario.metrics.transfers)}</p>
+                 </div>
+               ))}
+             </div>
+diff --git a/frontend/src/components/maps/mapSurface.test.ts b/frontend/src/components/maps/mapSurface.test.ts
+index c8e1ec66e..850c9744a 100644
+--- a/frontend/src/components/maps/mapSurface.test.ts
++++ b/frontend/src/components/maps/mapSurface.test.ts
+@@ -122,7 +122,7 @@ describe("mapSurface", () => {
+     expect(model.scenarioFocusAreas).toEqual(["route_coherence", "weather_resilience"]);
+     expect(model.scenarioAffordances).toEqual([
+       "Recommended scenario",
+-      "Feasibility-ready route",
++      "No blocking issue found",
+       "2 mapped option marker(s)",
+       "3 route stop(s)",
+       "4 transfer checkpoint(s)",
+diff --git a/frontend/src/components/maps/mapSurface.ts b/frontend/src/components/maps/mapSurface.ts
+index 55ad5e36e..1c808b4d2 100644
+--- a/frontend/src/components/maps/mapSurface.ts
++++ b/frontend/src/components/maps/mapSurface.ts
+@@ -4,6 +4,7 @@ import type {
+   WorkspaceData,
+ } from "../../api/workspace";
+ import { formatMoney } from "../../lib/money";
++import { describeAvailability } from "../../lib/metrics";
+ 
+ type TripMapScenario = RuntimeScenarioComparison["scenarios"][number];
+ type InventoryBundle = WorkspaceData["inventory_summary"]["bundles"][number];
+@@ -257,7 +258,7 @@ function deriveRouteWarning(activeScenario: TripMapScenario, feasibilitySummary:
+   if (feasibilitySummary.attention_bundle_count > 0) {
+     return `${feasibilitySummary.attention_bundle_count} inventory bundle(s) need route attention.`;
+   }
+-  if (activeScenario.metrics.transfers >= 6) {
++  if ((activeScenario.metrics.transfers ?? 0) >= 6) {
+     return "High transfer count; review travel burden before selecting this scenario.";
+   }
+   return null;
+@@ -460,11 +461,11 @@ function buildScenarioAffordances({
+ }): string[] {
+   const affordances = [
+     activeScenario.recommended_for_selection ? "Recommended scenario" : "Alternative scenario",
+-    activeScenario.feasible ? "Feasibility-ready route" : "Feasibility warning",
++    describeAvailability(activeScenario),
+     `${activeScenario.option_count} mapped option marker(s)`,
+     `${activeScenario.route_sequence.length} route stop(s)`,
+   ];
+-  if (activeScenario.metrics.transfers > 0) {
++  if (activeScenario.metrics.transfers != null && activeScenario.metrics.transfers > 0) {
+     affordances.push(`${activeScenario.metrics.transfers} transfer checkpoint(s)`);
+   }
+   if (routeState === "sparse") {
+diff --git a/frontend/src/components/workspace/RouteOptionWorkbench.tsx b/frontend/src/components/workspace/RouteOptionWorkbench.tsx
+index 44afebfea..db6118020 100644
+--- a/frontend/src/components/workspace/RouteOptionWorkbench.tsx
++++ b/frontend/src/components/workspace/RouteOptionWorkbench.tsx
+@@ -5,6 +5,7 @@ import type {
+   RuntimeScenarioComparison,
+ } from "../../api/workspace";
+ import { formatMoney } from "../../lib/money";
++import { formatTransfers } from "../../lib/metrics";
+ 
+ type RouteOptionScenario = RuntimeScenarioComparison["scenarios"][number];
+ 
+@@ -137,9 +138,9 @@ function formatConfidence(confidence: number | undefined): string {
+ function formatMetric(scenario: RouteOptionScenario): string {
+   const estimatedTotal = scenario.metrics.estimated_total;
+   const cost = formatMoney(estimatedTotal, { fallback: "not priced" });
+-  return `${scenario.metrics.travel_minutes} min, ${scenario.metrics.transfers} transfer${
+-    scenario.metrics.transfers === 1 ? "" : "s"
+-  }, ${cost}`;
++  const transfers =
++    scenario.metrics.transfers == null ? "connections not measured" : formatTransfers(scenario.metrics.transfers);
++  return `${scenario.metrics.travel_minutes} min, ${transfers}, ${cost}`;
+ }
+ 
+ function routeTradeoffSummaries(scenario: RouteOptionScenario): string[] {
+diff --git a/frontend/src/components/workspace/ScenarioComparison.tsx b/frontend/src/components/workspace/ScenarioComparison.tsx
+index 87d1ac4f2..b2794db2e 100644
+--- a/frontend/src/components/workspace/ScenarioComparison.tsx
++++ b/frontend/src/components/workspace/ScenarioComparison.tsx
+@@ -1,5 +1,6 @@
+ import type { RuntimeScenarioComparison, SavedScenarioRecord } from "../../api/workspace";
+ import { formatMoney } from "../../lib/money";
++import { NOT_MEASURED, formatTransferDelta } from "../../lib/metrics";
+ 
+ type ComparisonScenario = RuntimeScenarioComparison["scenarios"][number];
+ 
+@@ -20,7 +21,7 @@ function formatMetricValue(
+   }
+ 
+   if (axisKey === "transfers") {
+-    return `${scenario.metrics.transfers}`;
++    return scenario.metrics.transfers == null ? NOT_MEASURED : `${scenario.metrics.transfers}`;
+   }
+ 
+   return "Unavailable";
+@@ -37,7 +38,7 @@ function formatScenarioDelta(
+     return `${scenario.delta.travel_minutes_delta >= 0 ? "+" : ""}${scenario.delta.travel_minutes_delta} min`;
+   }
+   if (axisKey === "transfers") {
+-    return `${scenario.delta.transfers_delta >= 0 ? "+" : ""}${scenario.delta.transfers_delta}`;
++    return formatTransferDelta(scenario.delta.transfers_delta);
+   }
+   if (axisKey === "estimated_total") {
+     if (scenario.delta.estimated_total_delta == null) {
+diff --git a/frontend/src/lib/metrics.ts b/frontend/src/lib/metrics.ts
+new file mode 100644
+index 000000000..ab47dee24
+--- /dev/null
++++ b/frontend/src/lib/metrics.ts
+@@ -0,0 +1,35 @@
++/**
++ * Route metrics as a traveller reads them.
++ *
++ * A connection count the planner did not measure arrives as null. It used to render as
++ * "0", which told a traveller Seattle to Reykjavik was nonstop (issue 1839).
++ */
++
++export const NOT_MEASURED = "Not measured";
++
++export function formatTransfers(count: number | null | undefined): string {
++  if (count == null) {
++    return NOT_MEASURED;
++  }
++  return `${count} transfer${count === 1 ? "" : "s"}`;
++}
++
++export function formatTransferDelta(delta: number | null | undefined): string {
++  if (delta == null) {
++    return NOT_MEASURED;
++  }
++  return `${delta >= 0 ? "+" : ""}${delta}`;
++}
++
++/** What a card may say about feasibility, given what was actually checked. */
++export function describeAvailability(scenario: {
++  feasible: boolean;
++  availability_checked?: boolean;
++}): string {
++  if (!scenario.feasible) {
++    return "Needs feasibility work";
++  }
++  return scenario.availability_checked === false
++    ? "Availability not checked with a provider"
++    : "No blocking issue found";
++}
+diff --git a/frontend/src/routes/WorkspacePage.test.tsx b/frontend/src/routes/WorkspacePage.test.tsx
+index 367d31d9f..702a49b58 100644
+--- a/frontend/src/routes/WorkspacePage.test.tsx
++++ b/frontend/src/routes/WorkspacePage.test.tsx
+@@ -2693,12 +2693,64 @@ describe("WorkspacePage", () => {
+ 
+     expect(screen.queryByLabelText("Scenario review board")).not.toBeInTheDocument();
+     expect(
+-      screen.getByText(
+-        "No route ideas are available yet, so there is nothing to compare."
+-      )
++      screen.getByText("No route has been measured for this trip, so there is nothing to compare.")
+     ).toBeInTheDocument();
+   });
+ 
++  it("shows an unmeasured connection count and unchecked availability as such (issue 1839)", async () => {
++    const [first] = workspacePayload.route_comparison.scenarios;
++    const unmeasured = {
++      ...first,
++      availability_checked: false,
++      metrics: { ...first.metrics, transfers: null },
++      delta: { ...first.delta, transfers_delta: null },
++    };
++    mockedUseLoaderData.mockReturnValue({
++      workspace: Promise.resolve({
++        ...workspacePayload,
++        route_comparison: { ...workspacePayload.route_comparison, scenarios: [unmeasured] },
++        runtime_scenario_comparison: {
++          ...workspacePayload.runtime_scenario_comparison,
++          scenarios: [unmeasured],
++        },
++      }),
++      trips: Promise.resolve(tripComparisonPayload),
++    });
++
++    renderWorkspacePage();
++    await selectWorkspaceTab("Compare");
++
++    const board = await screen.findByLabelText("Scenario review board");
++    expect(board).toHaveTextContent("Not measured");
++    expect(board).toHaveTextContent("Availability not checked with a provider");
++    expect(board).not.toHaveTextContent("Ready to review");
++    expect(board.textContent ?? "").not.toMatch(/Transfers\s*null/);
++  });
++
++  it("says why Compare is empty when the destination could not be located (issue 1827)", async () => {
++    const summary =
++      "Without a location for Zzqxwv the planner cannot measure a route or travel time, so Compare has nothing to show.";
++    mockedUseLoaderData.mockReturnValue({
++      workspace: Promise.resolve({
++        ...workspacePayload,
++        runtime_state: { status: "empty", title: "The planner could not locate Zzqxwv", summary },
++        route_comparison: { ...workspacePayload.route_comparison, lead_scenario_id: null, scenarios: [] },
++        runtime_scenario_comparison: {
++          ...workspacePayload.runtime_scenario_comparison,
++          lead_scenario_id: null,
++          scenarios: [],
++        },
++      }),
++      trips: Promise.resolve(tripComparisonPayload),
++    });
++
++    renderWorkspacePage();
++    await selectWorkspaceTab("Compare");
++
++    expect(await screen.findByText(summary)).toBeInTheDocument();
++    expect(screen.queryByLabelText("Scenario review board")).not.toBeInTheDocument();
++  });
++
+   it("shows created-trip metadata even when the workspace has no seeded scenario state yet", async () => {
+     mockedUseLoaderData.mockReturnValue({
+       workspace: Promise.resolve({
+diff --git a/frontend/src/routes/WorkspacePage.tsx b/frontend/src/routes/WorkspacePage.tsx
+index a05a0f193..22af0491a 100644
+--- a/frontend/src/routes/WorkspacePage.tsx
++++ b/frontend/src/routes/WorkspacePage.tsx
+@@ -75,6 +75,7 @@ import { NotebookPanel } from "./workspace/NotebookPanel";
+ import { PlanPanel } from "./workspace/PlanPanel";
+ import { PolicyPanel as PolicyTabPanel } from "./workspace/PolicyPanel";
+ import { formatMoney } from "../lib/money";
++import { NOT_MEASURED, describeAvailability } from "../lib/metrics";
+ 
+ type LoaderData = {
+   workspace: Promise<WorkspaceData>;
+@@ -629,11 +630,11 @@ function buildScenarioReviewMetrics(
+     },
+     {
+       label: "Transfers",
+-      value: `${scenario.metrics.transfers}`,
++      value: scenario.metrics.transfers == null ? NOT_MEASURED : `${scenario.metrics.transfers}`,
+     },
+     {
+       label: "Feasibility",
+-      value: scenario.feasible ? "Ready to review" : "Needs feasibility work",
++      value: describeAvailability(scenario),
+     },
+   ];
+ 
+@@ -2522,7 +2523,10 @@ function WorkspacePageContent({
+               emptyMessage={
+                 currentWorkspace.runtime_state.status === "partial"
+                   ? "Add a little more trip detail before route comparison can start."
+-                  : "No route ideas are available yet, so there is nothing to compare."
++                  : // Say what stopped it, e.g. a destination the planner could not locate.
++                    (currentWorkspace.runtime_state.status === "empty" &&
++                      currentWorkspace.runtime_state.summary) ||
++                    "No route has been measured for this trip, so there is nothing to compare."
+               }
+             />
+ 
+diff --git a/tests/app/saved_scenario_search_fixture.py b/tests/app/saved_scenario_search_fixture.py
+new file mode 100644
+index 000000000..928685696
+--- /dev/null
++++ b/tests/app/saved_scenario_search_fixture.py
+@@ -0,0 +1,132 @@
++"""Build a scenario search from saved scenario drafts — test fixture only.
++
++Until issue 1827 the workspace served this to any trip whose inventory could not be
++assembled, with invented timings (duration x 120 minutes, +45 for the "fallback", 1 / 2
++transfers). Production no longer does; the policy-preview tests still need scenario rows
++shaped from the saved-scenario fixtures, so the builder lives here, not in the product.
++"""
++
++from __future__ import annotations
++
++from typing import Any
++
++from trip_planner.app.services.workspace import _ordered_saved_scenarios
++from trip_planner.persistence.models.trip import PersistedTrip
++
++_BOOTSTRAP_SCENARIO_SCORE_BY_LABEL = {
++    "baseline": 0.82,
++    "fallback": 0.68,
++}
++
++
++def _bootstrap_route_sequence(record: PersistedTrip, *, label: str) -> list[str]:
++    primary_regions = [region for region in record.primary_regions if region]
++    if not primary_regions:
++        primary_regions = [record.title]
++    if label == "fallback":
++        return [*primary_regions, "comparison-pass"]
++    return primary_regions
++
++
++def _bootstrap_scenario_metrics(
++    record: PersistedTrip,
++    *,
++    label: str,
++) -> tuple[float, int, int, dict[str, Any]]:
++    duration_days = max(record.duration_days or 1, 1)
++    base_minutes = 90 if record.mode == "leisure" else 120
++    if label == "fallback":
++        travel_minutes = duration_days * (base_minutes + 45)
++        transfers = 2
++    else:
++        travel_minutes = duration_days * base_minutes
++        transfers = 1
++    return (
++        _BOOTSTRAP_SCENARIO_SCORE_BY_LABEL.get(label, 0.6),
++        travel_minutes,
++        transfers,
++        {
++            "currency": "USD",
++            "typical_amount": None,
++            "nightly_typical_amount": None,
++        },
++    )
++
++
++def build_saved_scenario_search(
++    record: PersistedTrip,
++    *,
++    saved_scenarios: list[dict[str, Any]],
++) -> dict[str, Any]:
++    ordered = _ordered_saved_scenarios(saved_scenarios)
++    scenario_rows: list[dict[str, Any]] = []
++    source_refs = [f"session:{record.trip_id}"]
++    for index, saved_scenario in enumerate(ordered, start=1):
++        version = saved_scenario["versions"][0]
++        label = version["label"]
++        score, travel_minutes, transfers, estimated_total = _bootstrap_scenario_metrics(
++            record,
++            label=label,
++        )
++        route_sequence = _bootstrap_route_sequence(record, label=label)
++        source_refs.extend(
++            ref
++            for ref in (
++                version["snapshot_refs"].get("scenario_search_id"),
++                version["snapshot_refs"].get("session_state_id"),
++            )
++            if ref
++        )
++        scenario_rows.append(
++            {
++                "scenario_id": saved_scenario["saved_scenario_id"],
++                "label": label,
++                "title": version["title"],
++                "rank": index,
++                "bundle_id": None,
++                "source_result_id": version["version_id"],
++                "score": score,
++                "scenario_summary": {
++                    "headline": version["summary"],
++                    "scenario_kind": "fallback" if label == "fallback" else "primary",
++                    "feasible": True,
++                    "recommended_for_selection": label != "fallback",
++                    "coherence_passed": True,
++                    "estimated_total": estimated_total,
++                    "total_travel_minutes": travel_minutes,
++                    "total_transfer_count": transfers,
++                    "route_sequence": route_sequence,
++                    "notes": list(version.get("notes") or []),
++                },
++                "supporting_option_ids": list(version["snapshot_refs"].get("option_set_ids") or []),
++                "objective_refs": [
++                    ref for ref in [version["snapshot_refs"].get("objective_id")] if ref is not None
++                ],
++                "unresolved_tradeoffs": (
++                    [
++                        {
++                            "tradeoff_id": f"tradeoff:{record.trip_id}:workspace-bootstrap",
++                            "code": "broader_scope",
++                            "summary": "Fallback stays available until live ranking can compare a broader planning pass.",
++                            "severity": "info",
++                        }
++                    ]
++                    if label == "fallback"
++                    else []
++                ),
++            }
++        )
++
++    return {
++        "search_id": f"scenario-search:{record.trip_id}:workspace-bootstrap",
++        "trip_id": record.trip_id,
++        "purpose": "workspace_bootstrap",
++        "title": "Persisted workspace bootstrap comparison",
++        "source_result_set_id": f"workspace-bootstrap:{record.trip_id}",
++        "scenarios": scenario_rows,
++        "explanation": [
++            "Saved scenarios are bootstrapped from the persisted trip record until deeper planner ranking is available.",
++            "The workspace comparison surface can render immediately without falling back to seeded trip fixtures.",
++        ],
++        "source_refs": list(dict.fromkeys(source_refs)),
++    }
+diff --git a/tests/app/test_inventory_destination_coverage.py b/tests/app/test_inventory_destination_coverage.py
+index 275b54183..05dc14299 100644
+--- a/tests/app/test_inventory_destination_coverage.py
++++ b/tests/app/test_inventory_destination_coverage.py
+@@ -24,9 +24,7 @@ def _summary(*regions: str) -> dict:
+     """Assemble inventory exactly as the workspace does."""
+     assembly = _build_inventory_assembly_input(
+         trip_id="trip-"
+-        + "-".join(
+-            region.lower().replace(" ", "-").replace(",", "") for region in regions
+-        ),
++        + "-".join(region.lower().replace(" ", "-").replace(",", "") for region in regions),
+         trip_mode="business",
+         primary_regions=list(regions),
+         duration_days=4,
+@@ -65,7 +63,9 @@ def test_uncovered_destination_produces_no_bundles_and_says_so() -> None:
+     assert runtime["status"] == "empty"
+     # And the limit is stated, naming the destination and what is covered.
+     assert "Zzqxwv Nonexistent Place" in runtime["title"] + runtime["summary"]
+-    assert "Chicago" in runtime["summary"]
++    # Says what to do next: fix the place name, or carry on with the prices you hold.
++    assert "Check the spelling" in runtime["summary"]
++    assert "enter the prices you hold" in runtime["summary"]
+ 
+ 
+ def test_any_unsupported_primary_region_blocks_bundle_assembly() -> None:
+diff --git a/tests/app/test_proposal_payload_truth.py b/tests/app/test_proposal_payload_truth.py
+index 0a6212cdd..916c147ab 100644
+--- a/tests/app/test_proposal_payload_truth.py
++++ b/tests/app/test_proposal_payload_truth.py
+@@ -109,7 +109,9 @@ def _seed_policy(client: TestClient, trip_id: str) -> None:
+ def _submit(client: TestClient, trip_id: str) -> Any:
+     workspace = client.get(f"/api/workspace/{trip_id}").json()
+     scenario_id = workspace["runtime_scenario_comparison"]["scenarios"][0]["scenario_id"]
+-    return client.post(f"/api/workspace/{trip_id}/proposal/submit", json={"scenario_id": scenario_id})
++    return client.post(
++        f"/api/workspace/{trip_id}/proposal/submit", json={"scenario_id": scenario_id}
++    )
+ 
+ 
+ def test_the_trip_plan_carries_what_tpp_rules_read(client: TestClient) -> None:
+@@ -203,3 +205,36 @@ def test_a_missing_origin_is_sent_as_missing_not_as_a_placeholder(client: TestCl
+     plan = _SENT[-1]
+     assert plan["origin_city"] is None
+     assert "workspace" not in {str(value) for value in plan.values()}
++
++
++def test_a_trip_the_planner_could_not_map_can_still_go_to_the_policy_check(
++    client: TestClient,
++) -> None:
++    """Issue 1827: with no measured route there is no scenario, but the prices are the
++    traveller's and so is the approval request. Nothing about the submission needs a route."""
++
++    response = client.post(
++        "/api/trips",
++        json={
++            "title": "Site visit",
++            "summary": "Supplier audit.",
++            "mode": "business",
++            "trip_frame": {
++                "origin": "Seattle",
++                "start_date": "2026-10-05",
++                "end_date": "2026-10-07",
++                "duration_days": 3,
++                "primary_regions": ["Zzqxwv Nonexistent Place"],
++            },
++        },
++    )
++    trip_id = str(response.json()["trip"]["trip_id"])
++    _seed_policy(client, trip_id)
++    client.put(f"/api/workspace/{trip_id}/prices", json={"component": "lodging", "amount": 400.0})
++    workspace = client.get(f"/api/workspace/{trip_id}").json()
++    assert workspace["runtime_scenario_comparison"]["scenarios"] == []
++
++    submitted = client.post(f"/api/workspace/{trip_id}/proposal/submit", json={})
++
++    assert submitted.status_code == 200, submitted.text
++    assert len(_SENT) == 1
+diff --git a/tests/app/test_scenario_policy_preview.py b/tests/app/test_scenario_policy_preview.py
+index 821bc0699..072cdc762 100644
+--- a/tests/app/test_scenario_policy_preview.py
++++ b/tests/app/test_scenario_policy_preview.py
+@@ -14,6 +14,8 @@
+ from trip_planner.persistence.models.policy import PersistedPolicyState
+ from trip_planner.persistence.models.trip import PersistedTrip
+ 
++from tests.app.saved_scenario_search_fixture import build_saved_scenario_search
++
+ FIXTURE_POLICY = {
+     "constraint_set": {
+         "budget_rules": {"rule_id": "BUD-001", "max_trip_total_usd": 2300},
+@@ -47,9 +49,7 @@ def test_exception_nearest_saved_scenario_surfaces_pol_exc_preview_violation(
+         duration_days=1,
+         primary_regions=["Chicago"],
+     )
+-    search = workspace_service._build_saved_scenario_runtime_search(
+-        record, saved_scenarios=saved_scenarios
+-    )
++    search = build_saved_scenario_search(record, saved_scenarios=saved_scenarios)
+     exception_scenario = next(
+         scenario
+         for scenario in search["scenarios"]
+@@ -74,9 +74,7 @@ def test_exception_nearest_saved_scenario_surfaces_pol_exc_preview_violation(
+         # "we checked and it was fine" and "we could not check" must never read alike.
+         def _breaches(preview: dict[str, Any]) -> list[str]:
+             return [
+-                str(item["rule_id"])
+-                for item in preview["violations"]
+-                if not item.get("incomplete")
++                str(item["rule_id"]) for item in preview["violations"] if not item.get("incomplete")
+             ]
+ 
+         def _uncheckable(preview: dict[str, Any]) -> list[str]:
+diff --git a/tests/app/test_workspace.py b/tests/app/test_workspace.py
+index 12b49c26e..4d555c728 100644
+--- a/tests/app/test_workspace.py
++++ b/tests/app/test_workspace.py
+@@ -1340,12 +1340,11 @@ def test_workspace_endpoint_returns_bounded_empty_runtime_state_when_trip_frame_
+     reloaded_payload = reloaded.json()
+     assert initial_payload["runtime_state"]["status"] == "empty"
+     assert initial_payload["inventory_summary"]["runtime_state"]["status"] == "empty"
+-    assert len(initial_payload["scenario_search"]["scenarios"]) == 2
+-    assert len(initial_payload["runtime_scenario_comparison"]["scenarios"]) == 2
+-    assert (
+-        initial_payload["scenario_search"]["scenarios"][0]["scenario_id"]
+-        == reloaded_payload["scenario_search"]["scenarios"][0]["scenario_id"]
+-    )
++    # No inventory, no scenario (issue 1827): a sparse trip used to be shown two saved
++    # drafts with invented timings. Compare is empty and says why.
++    assert initial_payload["scenario_search"]["scenarios"] == []
++    assert initial_payload["runtime_scenario_comparison"]["scenarios"] == []
++    assert reloaded_payload["scenario_search"]["scenarios"] == []
+     assert (
+         initial_payload["planner_panel_state"]["option_set"]["purpose"]
+         == reloaded_payload["planner_panel_state"]["option_set"]["purpose"]
+@@ -1379,16 +1378,18 @@ def test_workspace_endpoint_surfaces_partial_runtime_state_for_under_scoped_trip
+     payload = response.json()
+     assert payload["runtime_state"]["status"] == "partial"
+     assert payload["inventory_summary"]["runtime_state"]["status"] == "partial"
+-    assert len(payload["scenario_search"]["scenarios"]) == 2
+-    assert len(payload["runtime_scenario_comparison"]["scenarios"]) == 2
++    # No inventory, no scenario (issue 1827): a sparse trip used to be shown two saved
++    # drafts with invented timings. Compare is empty and says why.
++    assert payload["scenario_search"]["scenarios"] == []
++    assert payload["runtime_scenario_comparison"]["scenarios"] == []
+ 
+     comparison_response = client.get(f"/api/workspace/{trip_id}/scenarios/compare")
+ 
+     assert comparison_response.status_code == 200
+     comparison_payload = comparison_response.json()
+-    assert len(comparison_payload["scenarios"]) == 2
+-    assert comparison_payload["lead_scenario_id"].startswith("saved-scenario:")
+-    assert "route option" in comparison_payload["summary"].lower()
++    assert comparison_payload["scenarios"] == []
++    assert comparison_payload["lead_scenario_id"] is None
++    assert "nothing to compare" in comparison_payload["summary"]
+ 
+ 
+ def test_workspace_endpoint_returns_coherent_partial_response_when_trip_dates_are_missing(
+@@ -1421,9 +1422,11 @@ def test_workspace_endpoint_returns_coherent_partial_response_when_trip_dates_ar
+ 
+     assert inventory_summary["bundle_count"] == 0
+     assert inventory_summary["bundles"] == []
+-    assert payload["scenario_search"]["scenarios"]
+-    assert payload["runtime_scenario_comparison"]["scenarios"]
+-    assert payload["runtime_scenario_comparison"]["lead_scenario_id"].startswith("saved-scenario:")
++    # No inventory, no scenario (issue 1827): a sparse trip used to be shown two saved
++    # drafts with invented timings. Compare is empty and says why.
++    assert payload["scenario_search"]["scenarios"] == []
++    assert payload["runtime_scenario_comparison"]["scenarios"] == []
++    assert payload["runtime_scenario_comparison"]["lead_scenario_id"] is None
+     _assert_payload_avoids_fixture_or_default_inventory_data(payload)
+ 
+ 
+@@ -1456,9 +1459,11 @@ def test_workspace_endpoint_returns_coherent_partial_response_when_destination_a
+ 
+     assert inventory_summary["bundle_count"] == 0
+     assert inventory_summary["bundles"] == []
+-    assert payload["scenario_search"]["scenarios"]
+-    assert payload["runtime_scenario_comparison"]["scenarios"]
+-    assert payload["runtime_scenario_comparison"]["lead_scenario_id"].startswith("saved-scenario:")
++    # No inventory, no scenario (issue 1827): a sparse trip used to be shown two saved
++    # drafts with invented timings. Compare is empty and says why.
++    assert payload["scenario_search"]["scenarios"] == []
++    assert payload["runtime_scenario_comparison"]["scenarios"] == []
++    assert payload["runtime_scenario_comparison"]["lead_scenario_id"] is None
+     _assert_payload_avoids_fixture_or_default_inventory_data(payload)
+ 
+ 
+@@ -1526,9 +1531,11 @@ def test_workspace_endpoint_returns_coherent_partial_response_for_missing_trip_i
+ 
+     assert inventory_summary["bundle_count"] == 0
+     assert inventory_summary["bundles"] == []
+-    assert payload["scenario_search"]["scenarios"]
+-    assert payload["runtime_scenario_comparison"]["scenarios"]
+-    assert payload["runtime_scenario_comparison"]["lead_scenario_id"].startswith("saved-scenario:")
++    # No inventory, no scenario (issue 1827): a sparse trip used to be shown two saved
++    # drafts with invented timings. Compare is empty and says why.
++    assert payload["scenario_search"]["scenarios"] == []
++    assert payload["runtime_scenario_comparison"]["scenarios"] == []
++    assert payload["runtime_scenario_comparison"]["lead_scenario_id"] is None
+     _assert_payload_avoids_fixture_or_default_inventory_data(payload)
+ 
+ 
+diff --git a/tests/app/test_workspace_scenario_fallback.py b/tests/app/test_workspace_scenario_fallback.py
+new file mode 100644
+index 000000000..b31cb7ec0
+--- /dev/null
++++ b/tests/app/test_workspace_scenario_fallback.py
+@@ -0,0 +1,101 @@
++"""Compare shows only what the planner measured (issues 1827, 1839).
++
++Every assertion reads the served workspace payload. Before this:
++- a destination the planner could not locate was shown two saved drafts with invented
++  timings (duration x 120 minutes; +45 and 1 / 2 transfers for the "fallback");
++- every trip read "0 transfers" (Seattle to Reykjavik included, which has no nonstop) and
++  every card "Ready to review", though nothing counted connections or asked a provider
++  about availability;
++- a trip that flew to its first destination and drove to its second crashed the workspace
++  with a 500, because its transport was labelled "mixed", which the contract rejects.
++"""
++
++from collections.abc import Iterator
++from pathlib import Path
++from typing import Any
++
++import pytest
++from fastapi.testclient import TestClient
++
++from trip_planner.app.main import create_app
++from trip_planner.persistence.db import ensure_database_ready, reset_database_state
++
++
++@pytest.fixture
++def client(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Iterator[TestClient]:
++    monkeypatch.setenv("TRIP_PLANNER_DATABASE_URL", f"sqlite:///{tmp_path / 'measured.db'}")
++    reset_database_state()
++    ensure_database_ready()
++    with TestClient(create_app()) as test_client:
++        test_client.post(
++            "/api/auth/signup",
++            json={"email": "m@example.com", "password": "password123", "display_name": "Dana"},
++        )
++        yield test_client
++    reset_database_state()
++
++
++def _workspace(client: TestClient, *, origin: str, regions: list[str]) -> dict[str, Any]:
++    created = client.post(
++        "/api/trips",
++        json={
++            "title": " / ".join(regions),
++            "summary": "Client review.",
++            "mode": "business",
++            "trip_frame": {
++                "origin": origin,
++                "start_date": "2026-10-05",
++                "end_date": "2026-10-07",
++                "duration_days": 3,
++                "primary_regions": regions,
++            },
++        },
++    )
++    assert created.status_code == 201, created.text
++    response = client.get(f"/api/workspace/{created.json()['trip']['trip_id']}")
++    assert response.status_code == 200, response.text
++    return dict(response.json())
++
++
++def test_uncovered_destination_yields_no_substituted_scenarios(client: TestClient) -> None:
++    payload = _workspace(client, origin="Seattle", regions=["Zzqxwv Nonexistent Place"])
++
++    assert payload["runtime_scenario_comparison"]["scenarios"] == []
++    assert payload["route_comparison"]["scenarios"] == []
++    assert "nothing to compare" in payload["runtime_scenario_comparison"]["summary"]
++    assert payload["runtime_state"]["title"] == (
++        "The planner could not locate Zzqxwv Nonexistent Place"
++    )
++    # The traveller is not told planning has not started: setup is complete, and the next
++    # step is the same as for any trip.
++    assert payload["view_model"]["next_step"]["title"] == "Enter the prices you have"
++    # No other city's itinerary stands in for this one.
++    route_data = str([payload["scenario_search"], payload["runtime_scenario_comparison"]]).lower()
++    assert "kyoto" not in route_data and "osaka" not in route_data
++
++
++def test_covered_destination_keeps_its_measured_route(client: TestClient) -> None:
++    seattle = _workspace(client, origin="Seattle", regions=["Chicago, IL"])
++    boston = _workspace(client, origin="Boston", regions=["Chicago, IL"])
++
++    (from_seattle,) = seattle["runtime_scenario_comparison"]["scenarios"]
++    (from_boston,) = boston["runtime_scenario_comparison"]["scenarios"]
++    assert from_seattle["metrics"]["travel_minutes"] != from_boston["metrics"]["travel_minutes"]
++
++
++def test_an_unmeasured_connection_count_is_not_reported_as_zero(client: TestClient) -> None:
++    for regions in (["Chicago, IL"], ["Reykjavik"]):
++        payload = _workspace(client, origin="Seattle", regions=regions)
++        (row,) = payload["runtime_scenario_comparison"]["scenarios"]
++        assert row["metrics"]["transfers"] is None, regions
++        assert row["delta"]["transfers_delta"] is None, regions
++        assert row["availability_checked"] is False, regions
++        assert not any("0 transfer" in item for item in row["highlights"]), row["highlights"]
++        assert any("connections not measured" in item for item in row["highlights"])
++
++
++def test_a_trip_that_flies_then_drives_is_served(client: TestClient) -> None:
++    payload = _workspace(client, origin="Seattle", regions=["Austin, TX", "Dallas, TX"])
++
++    (row,) = payload["runtime_scenario_comparison"]["scenarios"]
++    assert row["metrics"]["travel_minutes"] > 0
+diff --git a/tests/pricing/test_prices_require_a_source.py b/tests/pricing/test_prices_require_a_source.py
+index 5f0594345..98367420c 100644
+--- a/tests/pricing/test_prices_require_a_source.py
++++ b/tests/pricing/test_prices_require_a_source.py
+@@ -15,8 +15,6 @@
+ from trip_planner.app.services.inventory import (
+     PersistedTripSourceInventoryAdapter,
+ )
+-from trip_planner.app.services.workspace import _bootstrap_scenario_metrics
+-from trip_planner.persistence.models.trip import PersistedTrip
+ from trip_planner.pricing import (
+     APPROVED_SOURCE_KINDS,
+     PriceSource,
+@@ -106,20 +104,3 @@ def test_no_money_rate_constants_remain_in_the_adapter() -> None:
+         if name.isupper() and ("COST" in name or "RATE" in name or "ALLOWANCE" in name)
+     ]
+     assert banned == [], f"money rates must not live in the planner: {banned}"
+-
+-
+-@pytest.mark.parametrize("mode", ["business", "leisure"])
+-@pytest.mark.parametrize("label", ["baseline", "fallback"])
+-def test_bootstrap_scenario_cannot_invent_a_price(mode: str, label: str) -> None:
+-    # A real PersistedTrip, not a stand-in: a stand-in that drifts from the record the
+-    # product actually passes would let this gate pass while the served payload changed.
+-    record = PersistedTrip(
+-        trip_id=f"trip-{mode}-{label}",
+-        title="Unpriced trip",
+-        mode=mode,
+-        duration_days=4,
+-        primary_regions=["Chicago"],
+-    )
+-    _, _, _, estimated_total = _bootstrap_scenario_metrics(record, label=label)
+-    assert estimated_total["typical_amount"] is None
+-    assert estimated_total["nightly_typical_amount"] is None
+diff --git a/trip_planner/app/services/inventory.py b/trip_planner/app/services/inventory.py
+index 1aefc8878..0f4d57a41 100644
+--- a/trip_planner/app/services/inventory.py
++++ b/trip_planner/app/services/inventory.py
+@@ -117,10 +117,32 @@ def _contract_transport_mode(leg_mode: str) -> str:
+ 
+ 
+ def _option_transport_kind(leg_modes: Sequence[str]) -> str:
+-    contract_modes = {_contract_transport_mode(mode) for mode in leg_modes}
+-    if len(contract_modes) == 1:
+-        return next(iter(contract_modes))
+-    return "mixed"
++    """The option's kind is its main leg's mode.
++
++    A journey that flies to the first destination and drives to the second used to be
++    labelled "mixed", which the transport contract rejects, so every such trip answered
++    GET /workspace with a 500. Air legs are by construction longer than ground legs
++    (`AIR_THRESHOLD_KM`), so when any leg flies the main leg is a flight; each segment
++    still carries its own mode.
++    """
++
++    contract_modes = [_contract_transport_mode(mode) for mode in leg_modes]
++    if "flight" in contract_modes:
++        return "flight"
++    return contract_modes[0] if contract_modes else "rail"
++
++
++#: Marks a bundle this adapter assembled. It measures distance and travel time only: it
++#: does not count connections or check availability with any provider. The adapter writes
++#: it into the bundle id and the workspace reads it back (`is_runtime_measured_bundle`),
++#: so the two cannot drift.
++RUNTIME_BUNDLE_MARKER = "-runtime-"
++
++
++def is_runtime_measured_bundle(bundle_id: object) -> bool:
++    """True when a bundle came from the distance-and-time adapter, not a provider."""
++
++    return isinstance(bundle_id, str) and RUNTIME_BUNDLE_MARKER in bundle_id
+ 
+ 
+ def _unpriced_total(amount: float | None) -> dict[str, Any]:
+@@ -260,9 +282,7 @@ class PersistedTripInventoryContext:
+     origin: str | None = None
+ 
+     @classmethod
+-    def from_persisted_trip(
+-        cls, record: PersistedTrip
+-    ) -> PersistedTripInventoryContext:
++    def from_persisted_trip(cls, record: PersistedTrip) -> PersistedTripInventoryContext:
+         return cls(
+             trip_id=record.trip_id,
+             trip_mode=record.mode,
+@@ -293,9 +313,7 @@ def __init__(
+     ) -> None:
+         self.trip_id = trip_id
+         self.trip_mode = trip_mode
+-        self.primary_regions = tuple(
+-            region.strip() for region in primary_regions if region.strip()
+-        )
++        self.primary_regions = tuple(region.strip() for region in primary_regions if region.strip())
+         self.duration_days = duration_days
+         self.allow_fixture_fallback = allow_fixture_fallback
+         self.adapter_id = "persisted-trip-fixture-inventory"
+@@ -311,9 +329,7 @@ def __init__(
+                 freshness_confidence=0.7,
+                 commerciality=_commerciality_for_category("commercial_inventory"),
+                 operational_reliability=0.65,
+-                notes=[
+-                    "Fixture source freshness is pinned to the bundled fixture capture date."
+-                ],
++                notes=["Fixture source freshness is pinned to the bundled fixture capture date."],
+             ),
+             quality_summary=QualityValueFitSummary(
+                 quality_signal=0.68,
+@@ -439,9 +455,7 @@ def fetch_snapshot(self, query: SourceQuery) -> RawSnapshot:
+                 "trip_id": self.trip_id,
+                 "trip_mode": self.trip_mode,
+                 "region_count": str(len(self.primary_regions)),
+-                "duration_days": ""
+-                if self.duration_days is None
+-                else str(self.duration_days),
++                "duration_days": "" if self.duration_days is None else str(self.duration_days),
+             },
+         )
+ 
+@@ -499,9 +513,7 @@ def __init__(
+     ) -> None:
+         self.trip_id = trip_id
+         self.trip_mode = trip_mode
+-        self.primary_regions = tuple(
+-            region.strip() for region in primary_regions if region.strip()
+-        )
++        self.primary_regions = tuple(region.strip() for region in primary_regions if region.strip())
+         self.origin = (origin or "").strip() or None
+         self.start_date = (start_date or "").strip()
+         self.end_date = (end_date or "").strip()
+@@ -534,18 +546,14 @@ def __init__(
+                 fit_signal=0.8 if primary_regions else 0.55,
+                 confidence=0.76 if primary_regions else 0.5,
+             ),
+-            notes=[
+-                "Derives normalized inventory seeds directly from persisted trip context."
+-            ],
++            notes=["Derives normalized inventory seeds directly from persisted trip context."],
+         )
+         self.supported_entity_scopes = ("mixed",)
+         self.supported_option_kinds = ("mixed", "lodging", "activity", "rail")
+         self.capabilities = ("read_file", "supports_normalization_handoff")
+ 
+     @classmethod
+-    def from_persisted_trip(
+-        cls, record: PersistedTrip
+-    ) -> PersistedTripSourceInventoryAdapter:
++    def from_persisted_trip(cls, record: PersistedTrip) -> PersistedTripSourceInventoryAdapter:
+         return cls(
+             trip_id=record.trip_id,
+             trip_mode=record.mode,
+@@ -592,13 +600,9 @@ def _validate_primary_regions_supported(self) -> None:
+         for region in self.primary_regions:
+             self._geo_payload(region)
+ 
+-    def _trip_timestamp(
+-        self, *, hour: int, minute: int = 0, add_minutes: int = 0
+-    ) -> str:
++    def _trip_timestamp(self, *, hour: int, minute: int = 0, add_minutes: int = 0) -> str:
+         trip_date = self.start_date or self.end_date or "1970-01-01"
+-        base = datetime.fromisoformat(
+-            f"{trip_date}T{hour:02d}:{minute:02d}:00"
+-        ).replace(tzinfo=UTC)
++        base = datetime.fromisoformat(f"{trip_date}T{hour:02d}:{minute:02d}:00").replace(tzinfo=UTC)
+         if add_minutes:
+             base += timedelta(minutes=add_minutes)
+         return base.strftime("%Y-%m-%dT%H:%M:%SZ")
+@@ -766,7 +770,7 @@ def _provenance_ref(
+         ]
+ 
+         return {
+-            "bundle_id": f"bundle-{self.trip_id}-runtime-1-1",
++            "bundle_id": f"bundle-{self.trip_id}{RUNTIME_BUNDLE_MARKER}1-1",
+             "title": f"{destination_name} runtime bundle",
+             "bundle_context": "mixed",
+             "destinations": [
+@@ -837,9 +841,7 @@ def _provenance_ref(
+                     "destination_id": destination_id,
+                     "timing_summary": transport_timing,
+                     "segments": transport_segments,
+-                    "cost_summary": {
+-                        "total": _unpriced_total(transport_total)
+-                    },
++                    "cost_summary": {"total": _unpriced_total(transport_total)},
+                     "fit_summary": {"overall_signal": baseline_signal},
+                     "policy_summary": {
+                         "business_approval_status": (
+@@ -885,9 +887,7 @@ def _provenance_ref(
+                 "status": "evaluated",
+                 "overall_pass": True,
+                 "hard_constraints_satisfied": True,
+-                "policy_constraints_satisfied": True
+-                if self.trip_mode == "business"
+-                else None,
++                "policy_constraints_satisfied": True if self.trip_mode == "business" else None,
+                 "blocking_constraint_ids": [],
+                 "evaluated_constraint_ids": [
+                     "bundle.feasibility.available",
+@@ -960,16 +960,15 @@ def fetch_snapshot(self, query: SourceQuery) -> RawSnapshot:
+                         severity="warning",
+                         code="unsupported_inventory_destination",
+                         message=(
+-                            f"The planner has no coverage for {error.region}, so no route, "
+-                            "timing or cost options can be assembled for it."
++                            f"The planner could not locate {error.region}, so it cannot "
++                            "measure a route or travel time to it. You can still enter the "
++                            "prices you hold and submit the trip for approval."
+                         ),
+                         details={
+                             "trip_id": self.trip_id,
+                             "trip_mode": self.trip_mode,
+                             "region": error.region,
+-                            "supported_destinations": ", ".join(
+-                                supported_destinations()
+-                            ),
++                            "supported_destinations": ", ".join(supported_destinations()),
+                         },
+                     )
+                 )
+@@ -1005,9 +1004,7 @@ def fetch_snapshot(self, query: SourceQuery) -> RawSnapshot:
+                 "trip_id": self.trip_id,
+                 "trip_mode": self.trip_mode,
+                 "region_count": str(len(self.primary_regions)),
+-                "duration_days": ""
+-                if self.duration_days is None
+-                else str(self.duration_days),
++                "duration_days": "" if self.duration_days is None else str(self.duration_days),
+             },
+         )
+ 
+@@ -1048,9 +1045,7 @@ def build_handoff(self, snapshot: RawSnapshot) -> NormalizationHandoff:
+ 
+ def _load_mixed_option_fixture(name: str) -> MixedOption:
+     payload = json.loads(
+-        resources.files(_BUNDLE_RESOURCE_PACKAGE)
+-        .joinpath(name)
+-        .read_text(encoding="utf-8")
++        resources.files(_BUNDLE_RESOURCE_PACKAGE).joinpath(name).read_text(encoding="utf-8")
+     )
+     return MixedOption.from_dict(payload)
+ 
+@@ -1073,9 +1068,7 @@ def _build_inventory_assembly_input(
+     allow_fixture_fallback: bool = True,
+ ) -> InventoryAssemblyInput:
+     if persisted_trip is not None:
+-        persisted_context = PersistedTripInventoryContext.from_persisted_trip(
+-            persisted_trip
+-        )
++        persisted_context = PersistedTripInventoryContext.from_persisted_trip(persisted_trip)
+         trip_id = persisted_context.trip_id
+         trip_mode = persisted_context.trip_mode
+         start_date = persisted_context.start_date
+@@ -1127,9 +1120,7 @@ def _build_inventory_assembly_input(
+         )
+     else:
+         if persisted_trip is not None:
+-            adapter = PersistedTripSourceInventoryAdapter.from_persisted_trip(
+-                persisted_trip
+-            )
++            adapter = PersistedTripSourceInventoryAdapter.from_persisted_trip(persisted_trip)
+         else:
+             adapter = PersistedTripSourceInventoryAdapter(
+                 trip_id=trip_id,
+@@ -1153,9 +1144,7 @@ def _build_inventory_assembly_input(
+         snapshot=snapshot,
+         handoff=handoff,
+         record_payloads=tuple(
+-            record.payload
+-            for record in snapshot.records
+-            if isinstance(record.payload, dict)
++            record.payload for record in snapshot.records if isinstance(record.payload, dict)
+         ),
+         fixture_names=tuple(
+             record.metadata["fixture_name"]
+@@ -1176,9 +1165,7 @@ def assemble_inventory_bundles_for_trip(
+ ) -> list[InventoryBundle]:
+     if assembly_input is None:
+         if trip_id is None or trip_mode is None:
+-            msg = (
+-                "trip_id and trip_mode are required when assembly_input is not provided"
+-            )
++            msg = "trip_id and trip_mode are required when assembly_input is not provided"
+             raise ValueError(msg)
+         assembly_input = _build_inventory_assembly_input(
+             trip_id=trip_id,
+@@ -1294,12 +1281,12 @@ def _issue_reason(issue_code: str) -> str:
+             region = str((issue.details or {}).get("region") or "this destination")
+             runtime_state = {
+                 "status": "empty",
+-                "title": f"The planner does not cover {region} yet",
++                "title": f"The planner could not locate {region}",
+                 "summary": (
+-                    f"No route, timing or cost options can be produced for {region}. "
+-                    "Example curated destinations with extra metadata: "
+-                    + ", ".join(name.title() for name in curated_destination_examples())
+-                    + ". Many additional cities resolve through the bundled GeoNames dataset."
++                    f"Without a location for {region} the planner cannot measure a route or "
++                    "travel time, so Compare has nothing to show. Check the spelling, or add "
++                    'the state or country (for example "Portland, OR"). You can still enter '
++                    "the prices you hold and submit the trip for approval."
+                 ),
+                 "issues": runtime_issues,
+             }
+@@ -1340,15 +1327,11 @@ def _issue_reason(issue_code: str) -> str:
+                 "title": bundle.title,
+                 "bundle_context": bundle.bundle_context,
+                 "summary": bundle.summary or bundle.explanation.headline,
+-                "destination_names": [
+-                    destination.name for destination in bundle.destinations
+-                ],
++                "destination_names": [destination.name for destination in bundle.destinations],
+                 "option_count": len(bundle.option_ids),
+                 "strengths": list(bundle.explanation.strengths[:2]),
+                 "tradeoffs": list(bundle.explanation.tradeoffs[:2]),
+-                "source_records": [
+-                    record.to_dict() for record in bundle.source_records
+-                ],
++                "source_records": [record.to_dict() for record in bundle.source_records],
+             }
+             for bundle in bundles
+         ],
+@@ -1401,7 +1384,5 @@ def get_inventory_payload(
+         "trip_id": trip_id,
+         "bundle_count": len(bundles),
+         "bundles": [bundle.to_dict() for bundle in bundles],
+-        "summary": build_inventory_summary_payload(
+-            bundles, assembly_input=assembly_input
+-        ),
++        "summary": build_inventory_summary_payload(bundles, assembly_input=assembly_input),
+     }
+diff --git a/trip_planner/app/services/proposal.py b/trip_planner/app/services/proposal.py
+index 8f4981fb5..0b16ece0e 100644
+--- a/trip_planner/app/services/proposal.py
++++ b/trip_planner/app/services/proposal.py
+@@ -609,9 +609,7 @@ def _derive_follow_up_state(
+     return follow_up
+ 
+ 
+-def _submission_outcome(
+-    *, state: Any, queue_state: Any, error_category: Any
+-) -> str:
++def _submission_outcome(*, state: Any, queue_state: Any, error_category: Any) -> str:
+     """Tell a policy refusal apart from a transport failure.
+ 
+     Both arrive as `state == "failed"`, and they mean opposite things. A transport
+@@ -965,6 +963,16 @@ def _route_comparison(workspace: dict[str, Any]) -> dict[str, Any]:
+     return comparison if isinstance(comparison, dict) else {}
+ 
+ 
++def _dict_value(value: Any) -> dict[str, Any]:
++    return value if isinstance(value, dict) else {}
++
++
++def _trip_level_scenario_id(trip_id: str) -> str:
++    """The id a proposal carries when the planner measured no route for the trip."""
++
++    return f"scenario:{trip_id}"
++
++
+ def _workspace_scenario_ids(workspace: dict[str, Any]) -> set[str]:
+     ids: set[str] = set()
+     comparison = _route_comparison(workspace)
+@@ -976,6 +984,11 @@ def _workspace_scenario_ids(workspace: dict[str, Any]) -> set[str]:
+         for row in scenarios:
+             if isinstance(row, dict) and row.get("scenario_id"):
+                 ids.add(str(row["scenario_id"]))
++    if not scenarios:
++        # No measured route: the proposal is for the trip itself (issue 1827).
++        trip_id = _dict_value(_dict_value(workspace.get("trip_record")).get("trip")).get("trip_id")
++        if trip_id:
++            ids.add(_trip_level_scenario_id(str(trip_id)))
+ 
+     saved_scenarios = workspace.get("saved_scenarios")
+     if isinstance(saved_scenarios, list):
+@@ -1211,8 +1224,6 @@ def _money_range_from_estimated(estimated: Any, fallback_currency: str) -> Money
+     )
+ 
+ 
+-
+-
+ def _home_airport_from_workspace(workspace: dict[str, Any]) -> str:
+     trip_record = workspace.get("trip_record")
+     if isinstance(trip_record, dict):
+@@ -1224,8 +1235,6 @@ def _home_airport_from_workspace(workspace: dict[str, Any]) -> str:
+     return _NO_ORIGIN_PLACEHOLDER
+ 
+ 
+-
+-
+ def _booking_channel_from_workspace(workspace: dict[str, Any]) -> str:
+     policy_state = workspace.get("policy_state")
+     org_context = policy_state.get("organization_context") if isinstance(policy_state, dict) else {}
+@@ -1238,8 +1247,6 @@ def _booking_channel_from_workspace(workspace: dict[str, Any]) -> str:
+     return "workspace"
+ 
+ 
+-
+-
+ def build_workspace_submission_proposal(
+     db_session: Session,
+     *,
+@@ -1262,10 +1269,13 @@ def build_workspace_submission_proposal(
+ 
+     organization_id, constraint_set_id = _policy_context_from_workspace(workspace)
+     scenario_row = _selected_scenario_row(workspace, scenario_id)
+-    if scenario_row is None:
+-        raise ValueError("No scenario is available for proposal submission.")
+-
+-    resolved_scenario_id = str(scenario_row.get("scenario_id") or f"scenario:{trip_id}")
++    if scenario_row is None and scenario_id is not None:
++        raise ValueError("Selected scenario is not in this trip's workspace.")
++    # The proposal is priced from what the traveller entered, not from a route, so a trip
++    # the planner could not map (no scenario) can still go to the policy check (issue 1827).
++    resolved_scenario_id = str(
++        (scenario_row or {}).get("scenario_id") or _trip_level_scenario_id(trip_id)
++    )
+     booking_channel = _booking_channel_from_workspace(workspace)
+ 
+     # The proposal is priced line by line from what the traveller entered — the only
+diff --git a/trip_planner/app/services/workspace.py b/trip_planner/app/services/workspace.py
+index df9e88651..8b6148691 100644
+--- a/trip_planner/app/services/workspace.py
++++ b/trip_planner/app/services/workspace.py
+@@ -28,6 +28,7 @@
+     _build_inventory_assembly_input,
+     assemble_inventory_bundles_for_trip,
+     build_inventory_summary_payload,
++    is_runtime_measured_bundle,
+ )
+ from trip_planner.app.services.planner_memory import build_planner_memory_payload
+ from trip_planner.app.services.planner_runtime_config import get_planner_runtime_config
+@@ -56,13 +57,9 @@
+     build_planner_policy_proposal_block,
+ )
+ from trip_planner.app.services.workspace_view_model import build_workspace_view_model
+-from trip_planner.contracts import MoneyRange
+ from trip_planner.contracts.trip import Trip
+ from trip_planner.itinerary import (
+-    ItineraryScenario,
+     ScenarioSearchResult,
+-    ScenarioSummary,
+-    ScenarioTradeoff,
+ )
+ from trip_planner.options import InventoryBundle
+ from trip_planner.persistence.models.activity import (
+@@ -78,7 +75,6 @@
+ )
+ from trip_planner.persistence.models.session import PersistedPlanningSessionState
+ from trip_planner.persistence.models.trip import PersistedTrip
+-from trip_planner.ranking import ExplanationRecord
+ from trip_planner.state import (
+     PLANNING_MODES,
+     ActivityLogEvent,
+@@ -159,10 +155,6 @@ class WorkspaceBuildContext:
+     "reopen",
+     "revise",
+ )
+-_BOOTSTRAP_SCENARIO_SCORE_BY_LABEL = {
+-    "baseline": 0.82,
+-    "fallback": 0.68,
+-}
+ 
+ 
+ class WorkspaceTripNotFoundError(ValueError):
+@@ -194,200 +186,6 @@ def normalize(candidate: str | None) -> str | None:
+         decision.related_saved_scenario_id = normalize(decision.related_saved_scenario_id)
+ 
+ 
+-def _leisure_search_result(trip_id: str) -> ScenarioSearchResult:
+-    return ScenarioSearchResult(
+-        search_id="scenario-search:kyoto-spring",
+-        trip_id=trip_id,
+-        purpose="final_selection",
+-        title="Kyoto leisure scenario comparison",
+-        source_result_set_id="ranked-results:kyoto-spring",
+-        scenarios=[
+-            ItineraryScenario(
+-                scenario_id=f"scenario:{trip_id}:1",
+-                title="Kyoto base with Uji day trip",
+-                rank=1,
+-                bundle_id="bundle:urban-culture",
+-                source_result_id=f"ranked-result:{trip_id}:1",
+-                score=0.93,
+-                scenario_summary=ScenarioSummary(
+-                    headline="Balanced Kyoto culture baseline",
+-                    scenario_kind="primary",
+-                    feasible=True,
+-                    recommended_for_selection=True,
+-                    coherence_passed=True,
+-                    estimated_total=MoneyRange(currency="USD", typical_amount=3400.0),
+-                    total_travel_minutes=265,
+-                    total_transfer_count=4,
+-                    route_sequence=["kyoto", "uji", "kyoto"],
+-                    notes=["baseline"],
+-                ),
+-                supporting_option_ids=["option:kyoto-central", "option:uji-daytrip"],
+-                objective_refs=["objective:kyoto-spring"],
+-                explanation_records=[
+-                    ExplanationRecord(
+-                        explanation_id=f"explanation:{trip_id}:1",
+-                        target_kind="route",
+-                        target_id=f"scenario:{trip_id}:1",
+-                        headline="Best overall cultural balance",
+-                        summary="The baseline preserves depth in Kyoto with one lighter excursion day.",
+-                        factor_keys=["cultural_depth", "moderate_pace"],
+-                        machine_context={"planner_mode": "leisure"},
+-                        human_summary=[
+-                            "Moderate travel friction with a clear cultural center of gravity."
+-                        ],
+-                        source_refs=["ranked-results:kyoto-spring"],
+-                    )
+-                ],
+-                unresolved_tradeoffs=[
+-                    ScenarioTradeoff(
+-                        tradeoff_id=f"tradeoff:{trip_id}:1",
+-                        code="limited_nightlife",
+-                        summary="Evening variety is lower than the Osaka-heavy fallback.",
+-                        severity="info",
+-                    )
+-                ],
+-            ),
+-            ItineraryScenario(
+-                scenario_id=f"scenario:{trip_id}:2",
+-                title="Kyoto plus Osaka fallback",
+-                rank=2,
+-                bundle_id="bundle:scenic-wanderer",
+-                source_result_id=f"ranked-result:{trip_id}:2",
+-                score=0.88,
+-                scenario_summary=ScenarioSummary(
+-                    headline="Higher-energy fallback with extra transfers",
+-                    scenario_kind="alternative",
+-                    feasible=True,
+-                    recommended_for_selection=False,
+-                    coherence_passed=True,
+-                    estimated_total=MoneyRange(currency="USD", typical_amount=3250.0),
+-                    total_travel_minutes=360,
+-                    total_transfer_count=7,
+-                    route_sequence=["kyoto", "osaka", "kyoto"],
+-                    notes=["higher movement"],
+-                ),
+-                supporting_option_ids=["option:kyoto-central", "option:osaka-daytrip"],
+-                objective_refs=["objective:kyoto-spring"],
+-                explanation_records=[
+-                    ExplanationRecord(
+-                        explanation_id=f"explanation:{trip_id}:2",
+-                        target_kind="route",
+-                        target_id=f"scenario:{trip_id}:2",
+-                        headline="Fallback with broader city coverage",
+-                        summary="The fallback opens more nightlife at the cost of extra transfers.",
+-                        factor_keys=["breadth", "transfer_cost"],
+-                        machine_context={"planner_mode": "leisure"},
+-                        human_summary=["Broader exploration, slightly more travel fatigue."],
+-                        source_refs=["ranked-results:kyoto-spring"],
+-                    )
+-                ],
+-            ),
+-        ],
+-        explanation=[
+-            "Workspace timeline derives from the ordered scenario route sequence plus persisted trip dates."
+-        ],
+-        source_refs=["ranked-results:kyoto-spring", "objective:kyoto-spring"],
+-    )
+-
+-
+-def _business_search_result(trip_id: str) -> ScenarioSearchResult:
+-    return ScenarioSearchResult(
+-        search_id="scenario-search:client-summit",
+-        trip_id=trip_id,
+-        purpose="final_selection",
+-        title="Client summit scenario comparison",
+-        source_result_set_id="ranked-results:client-summit",
+-        scenarios=[
+-            ItineraryScenario(
+-                scenario_id=f"scenario:{trip_id}:1",
+-                title="Compliant first rail plan",
+-                rank=1,
+-                bundle_id="bundle:approved-business",
+-                source_result_id=f"ranked-result:{trip_id}:1",
+-                score=0.97,
+-                scenario_summary=ScenarioSummary(
+-                    headline="Primary path preserves compliant vendors and arrival buffers",
+-                    scenario_kind="primary",
+-                    feasible=True,
+-                    recommended_for_selection=True,
+-                    coherence_passed=True,
+-                    estimated_total=MoneyRange(currency="USD", typical_amount=2280.0),
+-                    total_travel_minutes=315,
+-                    total_transfer_count=3,
+-                    route_sequence=["home", "client-site", "conference-hotel"],
+-                    notes=["compliant-first"],
+-                ),
+-                supporting_option_ids=[
+-                    "option:approved-rail",
+-                    "option:conference-hotel",
+-                ],
+-                objective_refs=["objective:client-summit"],
+-                explanation_records=[
+-                    ExplanationRecord(
+-                        explanation_id=f"explanation:{trip_id}:1",
+-                        target_kind="route",
+-                        target_id=f"scenario:{trip_id}:1",
+-                        headline="Best approval-ready route",
+-                        summary="Keeps policy-safe vendors and preserves the buffer before the client visit.",
+-                        factor_keys=["policy_alignment", "schedule_protection"],
+-                        machine_context={"planner_mode": "business"},
+-                        human_summary=["Approved route keeps arrival risk low."],
+-                        source_refs=["ranked-results:client-summit"],
+-                    )
+-                ],
+-            ),
+-            ItineraryScenario(
+-                scenario_id=f"scenario:{trip_id}:2",
+-                title="Exception-nearest direct option",
+-                rank=2,
+-                bundle_id="bundle:exception-business",
+-                source_result_id=f"ranked-result:{trip_id}:2",
+-                score=0.89,
+-                scenario_summary=ScenarioSummary(
+-                    headline="Direct path reduces travel time but requires exception handling",
+-                    scenario_kind="fallback",
+-                    feasible=True,
+-                    recommended_for_selection=False,
+-                    coherence_passed=True,
+-                    estimated_total=MoneyRange(currency="USD", typical_amount=2410.0),
+-                    total_travel_minutes=255,
+-                    total_transfer_count=2,
+-                    route_sequence=["home", "client-site", "airport-hotel"],
+-                    notes=["exception-nearest"],
+-                ),
+-                supporting_option_ids=["option:direct-flight", "option:airport-hotel"],
+-                objective_refs=["objective:client-summit"],
+-                explanation_records=[
+-                    ExplanationRecord(
+-                        explanation_id=f"explanation:{trip_id}:2",
+-                        target_kind="route",
+-                        target_id=f"scenario:{trip_id}:2",
+-                        headline="Faster route with approval debt",
+-                        summary="Shorter travel time comes with a policy exception path and higher approval burden.",
+-                        factor_keys=["travel_time", "policy_exception"],
+-                        machine_context={"planner_mode": "business"},
+-                        human_summary=["Faster movement, weaker compliance posture."],
+-                        source_refs=["ranked-results:client-summit"],
+-                    )
+-                ],
+-                unresolved_tradeoffs=[
+-                    ScenarioTradeoff(
+-                        tradeoff_id=f"tradeoff:{trip_id}:2a",
+-                        code="policy_exception_path",
+-                        summary="Requires exception approval before booking.",
+-                        severity="critical",
+-                        blocking=True,
+-                    )
+-                ],
+-            ),
+-        ],
+-        explanation=[
+-            "Business timeline still derives from route order; approval posture is communicated via scenario tradeoffs."
+-        ],
+-        source_refs=["ranked-results:client-summit", "objective:client-summit"],
+-    )
+-
+-
+ def _policy_comparable_requirements(policy_context: dict[str, Any] | None) -> dict[str, int]:
+     """Use normalized imported counts; invalid policy remains on its error path."""
+     if (
+@@ -424,39 +222,6 @@ def _build_scenario_search(
+     )
+ 
+ 
+-def _generated_route_sequence(route_sequence: list[str], *, variant: str) -> list[str]:
+-    clean_sequence = [stop for stop in route_sequence if stop]
+-    if not clean_sequence:
+-        clean_sequence = ["first-base", "comparison-stop"]
+-    if variant == "reverse":
+-        return (
+-            list(reversed(clean_sequence))
+-            if len(clean_sequence) > 1
+-            else [
+-                clean_sequence[0],
+-                "nearby-base",
+-            ]
+-        )
+-    if len(clean_sequence) == 1:
+-        return [clean_sequence[0], "nearby-base", clean_sequence[0]]
+-    return [*clean_sequence, clean_sequence[0]]
+-
+-
+-def _adjust_estimated_total(
+-    estimated_total: dict[str, Any] | None,
+-    *,
+-    delta: float,
+-) -> dict[str, Any] | None:
+-    if not isinstance(estimated_total, dict):
+-        return estimated_total
+-    typical_amount = estimated_total.get("typical_amount")
+-    if typical_amount is None:
+-        return estimated_total
+-    adjusted = dict(estimated_total)
+-    adjusted["typical_amount"] = round(max(0.0, float(typical_amount) + delta), 2)
+-    return adjusted
+-
+-
+ def _build_runtime_scenario_search_for_trip(
+     *,
+     record: PersistedTrip,
+@@ -465,12 +230,11 @@ def _build_runtime_scenario_search_for_trip(
+     inventory_status: str = "ready",
+     organization_comparable_requirements: dict[str, int] | None = None,
+ ) -> dict[str, Any]:
++    # No inventory, no scenario. A trip whose destination could not be located used to be
++    # shown its saved baseline/fallback drafts with invented metrics (duration x 120 min,
++    # +45 min and 1 / 2 transfers for the "fallback"), so an unmeasured trip looked
++    # measured (issue 1827). The saved drafts stay on the trip; Compare says why it is empty.
+     if inventory_status != "ready":
+-        if saved_scenarios:
+-            return _build_saved_scenario_runtime_search(
+-                record,
+-                saved_scenarios=saved_scenarios,
+-            )
+         return _empty_workspace_scenario_search()
+ 
+     if inventory_bundles:
+@@ -489,11 +253,6 @@ def _build_runtime_scenario_search_for_trip(
+             organization_comparable_requirements=organization_comparable_requirements,
+         ).to_dict()
+ 
+-    if saved_scenarios:
+-        return _build_saved_scenario_runtime_search(
+-            record,
+-            saved_scenarios=saved_scenarios,
+-        )
+     return _empty_workspace_scenario_search()
+ 
+ 
+@@ -527,6 +286,31 @@ def _estimated_total_delta(
+     return round(float(scenario_amount) - float(lead_amount), 2)
+ 
+ 
++def _transfers_measured(scenario: dict[str, Any]) -> bool:
++    """Whether anything counted this scenario's connections.
++
++    The distance-and-time adapter models one leg per hop and records zero changes on it,
++    so every trip read "0 transfers", Seattle to Reykjavik included, where no nonstop
++    exists (issue 1839). A count nobody measured is shown as not measured.
++    """
++
++    return not is_runtime_measured_bundle(scenario.get("bundle_id"))
++
++
++def _measured_transfers(scenario: dict[str, Any]) -> int | None:
++    if not _transfers_measured(scenario):
++        return None
++    return int(scenario["scenario_summary"]["total_transfer_count"])
++
++
++def _transfers_delta(scenario: dict[str, Any], lead: dict[str, Any]) -> int | None:
++    scenario_transfers = _measured_transfers(scenario)
++    lead_transfers = _measured_transfers(lead)
++    if scenario_transfers is None or lead_transfers is None:
++        return None
++    return scenario_transfers - lead_transfers
++
++
+ def _comparison_highlights(
+     *,
+     scenario: dict[str, Any],
+@@ -536,7 +320,12 @@ def _comparison_highlights(
+     route_sequence = " -> ".join(summary.get("route_sequence") or []) or "route sequence pending"
+     highlights = [
+         f"Route: {route_sequence}.",
+-        f"Travel {summary['total_travel_minutes']} minutes with {summary['total_transfer_count']} transfer(s).",
++        (
++            f"Travel {summary['total_travel_minutes']} minutes with "
++            f"{summary['total_transfer_count']} transfer(s)."
++            if _transfers_measured(scenario)
++            else f"Travel {summary['total_travel_minutes']} minutes; connections not measured."
++        ),
+     ]
+     if scenario["scenario_id"] == lead["scenario_id"]:
+         highlights.append("Lead scenario for the current workspace comparison set.")
+@@ -545,9 +334,7 @@ def _comparison_highlights(
+         travel_delta = (
+             summary["total_travel_minutes"] - lead["scenario_summary"]["total_travel_minutes"]
+         )
+-        transfers_delta = (
+-            summary["total_transfer_count"] - lead["scenario_summary"]["total_transfer_count"]
+-        )
++        transfers_delta = _transfers_delta(scenario, lead) or 0
+         delta_parts = [f"Score {score_delta:+.2f} versus the lead scenario."]
+         if travel_delta:
+             delta_parts.append(f"Travel time {travel_delta:+d} minutes versus lead.")
+@@ -674,7 +461,7 @@ def _route_option_unresolved_questions(*, scenario: dict[str, Any], state: str)
+     if not summary.get("route_sequence"):
+         questions.append("Which stops should anchor this route?")
+     if summary.get("estimated_total") is None:
+-        questions.append("What rough cost range should this route assume?")
++        questions.append("No price entered yet: enter the amounts you hold on the Budget tab.")
+     for tradeoff in scenario.get("unresolved_tradeoffs", [])[:2]:
+         tradeoff_summary = tradeoff.get("summary")
+         if isinstance(tradeoff_summary, str) and tradeoff_summary:
+@@ -795,8 +582,7 @@ def _build_runtime_scenario_comparison(
+             "trip_id": trip_id,
+             "title": "Workspace scenario comparison",
+             "summary": (
+-                f"{trip_title} does not have runtime scenario comparison data yet. "
+-                "Run ranking and route assembly before rendering comparison views."
++                f"No route has been measured for {trip_title}, so there is nothing to compare."
+             ),
+             "comparison_axes": comparison_axes,
+             "lead_scenario_id": None,
+@@ -876,19 +662,19 @@ def _build_runtime_scenario_comparison(
+             "metrics": {
+                 "score": scenario["score"],
+                 "travel_minutes": summary["total_travel_minutes"],
+-                "transfers": summary["total_transfer_count"],
++                "transfers": _measured_transfers(scenario),
+                 "estimated_total": estimated_total,
+             },
++            # No provider has been asked whether seats or rooms exist. Say so rather than
++            # labelling every option "Ready to review" (issue 1839).
++            "availability_checked": not is_runtime_measured_bundle(scenario.get("bundle_id")),
+             "delta": {
+                 "score_delta": round(float(scenario["score"]) - float(lead["score"]), 2),
+                 "travel_minutes_delta": (
+                     summary["total_travel_minutes"]
+                     - lead["scenario_summary"]["total_travel_minutes"]
+                 ),
+-                "transfers_delta": (
+-                    summary["total_transfer_count"]
+-                    - lead["scenario_summary"]["total_transfer_count"]
+-                ),
++                "transfers_delta": _transfers_delta(scenario, lead),
+                 "estimated_total_delta": _estimated_total_delta(scenario, lead),
+             },
+             "highlights": _comparison_highlights(scenario=scenario, lead=lead),
+@@ -1248,119 +1034,6 @@ def _ordered_saved_scenarios(
+     return sorted(saved_scenarios, key=_saved_scenario_priority)
+ 
+ 
+-def _bootstrap_route_sequence(record: PersistedTrip, *, label: str) -> list[str]:
+-    primary_regions = [region for region in record.primary_regions if region]
+-    if not primary_regions:
+-        primary_regions = [record.title]
+-    if label == "fallback":
+-        return [*primary_regions, "comparison-pass"]
+-    return primary_regions
+-
+-
+-def _bootstrap_scenario_metrics(
+-    record: PersistedTrip,
+-    *,
+-    label: str,
+-) -> tuple[float, int, int, dict[str, Any]]:
+-    duration_days = max(record.duration_days or 1, 1)
+-    base_minutes = 90 if record.mode == "leisure" else 120
+-    if label == "fallback":
+-        travel_minutes = duration_days * (base_minutes + 45)
+-        transfers = 2
+-    else:
+-        travel_minutes = duration_days * base_minutes
+-        transfers = 1
+-    return (
+-        _BOOTSTRAP_SCENARIO_SCORE_BY_LABEL.get(label, 0.6),
+-        travel_minutes,
+-        transfers,
+-        {
+-            "currency": "USD",
+-            "typical_amount": None,
+-            "nightly_typical_amount": None,
+-        },
+-    )
+-
+-
+-def _build_saved_scenario_runtime_search(
+-    record: PersistedTrip,
+-    *,
+-    saved_scenarios: list[dict[str, Any]],
+-) -> dict[str, Any]:
+-    ordered = _ordered_saved_scenarios(saved_scenarios)
+-    scenario_rows: list[dict[str, Any]] = []
+-    source_refs = [f"session:{record.trip_id}"]
+-    for index, saved_scenario in enumerate(ordered, start=1):
+-        version = saved_scenario["versions"][0]
+-        label = version["label"]
+-        score, travel_minutes, transfers, estimated_total = _bootstrap_scenario_metrics(
+-            record,
+-            label=label,
+-        )
+-        route_sequence = _bootstrap_route_sequence(record, label=label)
+-        source_refs.extend(
+-            ref
+-            for ref in (
+-                version["snapshot_refs"].get("scenario_search_id"),
+-                version["snapshot_refs"].get("session_state_id"),
+-            )
+-            if ref
+-        )
+-        scenario_rows.append(
+-            {
+-                "scenario_id": saved_scenario["saved_scenario_id"],
+-                "label": label,
+-                "title": version["title"],
+-                "rank": index,
+-                "bundle_id": None,
+-                "source_result_id": version["version_id"],
+-                "score": score,
+-                "scenario_summary": {
+-                    "headline": version["summary"],
+-                    "scenario_kind": "fallback" if label == "fallback" else "primary",
+-                    "feasible": True,
+-                    "recommended_for_selection": label != "fallback",
+-                    "coherence_passed": True,
+-                    "estimated_total": estimated_total,
+-                    "total_travel_minutes": travel_minutes,
+-                    "total_transfer_count": transfers,
+-                    "route_sequence": route_sequence,
+-                    "notes": list(version.get("notes") or []),
+-                },
+-                "supporting_option_ids": list(version["snapshot_refs"].get("option_set_ids") or []),
+-                "objective_refs": [
+-                    ref for ref in [version["snapshot_refs"].get("objective_id")] if ref is not None
+-                ],
+-                "unresolved_tradeoffs": (
+-                    [
+-                        {
+-                            "tradeoff_id": f"tradeoff:{record.trip_id}:workspace-bootstrap",
+-                            "code": "broader_scope",
+-                            "summary": "Fallback stays available until live ranking can compare a broader planning pass.",
+-                            "severity": "info",
+-                        }
+-                    ]
+-                    if label == "fallback"
+-                    else []
+-                ),
+-            }
+-        )
+-
+-    return {
+-        "search_id": f"scenario-search:{record.trip_id}:workspace-bootstrap",
+-        "trip_id": record.trip_id,
+-        "purpose": "workspace_bootstrap",
+-        "title": "Persisted workspace bootstrap comparison",
+-        "source_result_set_id": f"workspace-bootstrap:{record.trip_id}",
+-        "scenarios": scenario_rows,
+-        "explanation": [
+-            "Saved scenarios are bootstrapped from the persisted trip record until deeper planner ranking is available.",
+-            "The workspace comparison surface can render immediately without falling back to seeded trip fixtures.",
+-        ],
+-        "source_refs": list(dict.fromkeys(source_refs)),
+-    }
+-
+-
+ def _serialize_activity_record(record: PersistedActivityLogEvent) -> dict[str, Any]:
+     return ActivityLogEvent.from_dict(
+         {
+diff --git a/trip_planner/app/services/workspace_view_model.py b/trip_planner/app/services/workspace_view_model.py
+index 2208690b2..fa0584d01 100644
+--- a/trip_planner/app/services/workspace_view_model.py
++++ b/trip_planner/app/services/workspace_view_model.py
+@@ -273,7 +273,6 @@ def _journey_step(*, mode: str, priced: int, proposal_state: Any) -> _Step:
+ 
+ 
+ def _next_step(
+-    status: str,
+     missing: list[str],
+     *,
+     mode: str = "leisure",
+@@ -292,26 +291,12 @@ def _next_step(
+             True,
+             "trip-setup",
+         )
+-    if status == "ready":
+-        return _journey_step(
+-            mode=mode, priced=_priced_count(entered_prices), proposal_state=proposal_state
+-        )
+-    if status == "partial":
+-        return (
+-            "Your trip plan is partially assembled.",
+-            "Continue planning",
+-            "Inventory is in place; resolve the open uncertainties to unlock scenario comparison.",
+-            "Continue planning",
+-            False,
+-            "planner",
+-        )
+-    return (
+-        "Trip planning hasn't started yet.",
+-        "Start planning",
+-        "Add the missing trip context to start assembling scenarios.",
+-        "Open trip setup",
+-        True,
+-        "trip-setup",
++    # Once setup is complete the journey is the same whether or not a route could be
++    # measured: prices come from the traveller, and so does the approval request. A trip
++    # to a place the planner cannot locate used to be told "Trip planning hasn't started
++    # yet" here (issue 1827).
++    return _journey_step(
++        mode=mode, priced=_priced_count(entered_prices), proposal_state=proposal_state
+     )
+ 
+ 
+@@ -371,13 +356,13 @@ def build_workspace_view_model(
+     for item in missing_context:
+         uncertain.append(f"Trip setup is missing {item}.")
+     if status == "empty" and not missing_context:
+-        uncertain.append("Trip context is not complete yet.")
++        # Setup is complete but nothing could be measured; say what stopped it.
++        uncertain.append(str(runtime.get("title") or "No route could be measured for this trip."))
+     elif status == "partial":
+         uncertain.append("Scenario comparison is not yet ready.")
+ 
+     proposal = payload.get("proposal_state")
+     headline, next_title, next_summary, next_action, blocked, next_target = _next_step(
+-        status,
+         missing_context,
+         mode=mode,
+         entered_prices=entered_prices,
