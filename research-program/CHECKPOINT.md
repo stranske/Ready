@@ -1910,3 +1910,5 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-25T01:11:53Z — D-audit-Workflows--2026-09-24T23-11-20Z — claim released (stale)
 ## 2026-09-25T01:11:53Z — D-audit-Workflows--2026-09-24T23-11-20Z — route — router picked cursor from ['codex', 'cursor']
 ## 2026-09-25T01:11:53Z — D-audit-Workflows--2026-09-24T23-11-20Z — claimed by codex (agent cursor)
+## 2026-09-25T01:17:01Z — D-audit-Workflows--2026-09-24T23-11-20Z — done — Scorecard: 4 work / 0 partial / 1 broken / 0 fabricated / 2 not exercised of 7; journey: stops at "Scan belt promotion queue"; surfaces unscored 2; closed-still
+## 2026-09-25T01:17:01Z — D-audit-Workflows--2026-09-24T23-11-20Z — evidence — 1 unscored offload run(s) recorded PASS (executor codex report)

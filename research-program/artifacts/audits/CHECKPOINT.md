@@ -99,3 +99,7 @@ Reconciled the malformed 2026-09-23 scorecard headline and refreshed the audit c
 ## 2026-09-24T11:13:18Z — D-audit-Workflows--2026-09-24T11-10-38Z — complete
 
 Rechecked current remote `main` at `887d590`. Scorecard remains 4 work / 0 partial / 1 broken / 0 fabricated / 2 not exercised of 7; C1 compilation, C2 contract tests (127), C3 capability tests (13), C4 metrics tests (2), and wrapper/API focused tests (43) passed. A fresh actual wrapped-client probe still raises the #3525 `__getTokenSource` Proxy invariant before belt scanning; current Agents 70 runs were eligibility-only with Execute skipped, so they do not refute it. No duplicate issue filed. OUT `artifacts/audits/Workflows-2026-09-24.md`.
+
+## 2026-09-25T01:24:00Z — D-audit-Workflows--2026-09-24T23-11-20Z — attempt 2 complete
+
+Revalidated at `8d1cc914`: eight intervening commits did not change the rate-limit wrapper. C5's real wrapped-client path still raises #3525's non-configurable `__getTokenSource` Proxy-invariant error, while the focused wrapper/API suite passes 43 tests because its wrapped test is a plain object. Run 36080958083 is eligibility-only with Initialize and Execute skipped. Scorecard remains 4 work / 0 partial / 1 broken / 0 fabricated / 2 not exercised of 7; no new issue filed. The bound Cursor reader was stopped after it produced no artifact or checkpoint.

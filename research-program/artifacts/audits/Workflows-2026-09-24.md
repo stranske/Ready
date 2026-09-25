@@ -2,7 +2,7 @@ Scorecard: 4 work / 0 partial / 1 broken / 0 fabricated / 2 not exercised of 7; 
 
 # Workflows Track D audit — 2026-09-24
 
-Audited `stranske/Workflows` at current remote `main` tip `887d5908495907fee45c144085fec5d56fe39e82` (release 1.36.0). The previous 2026-09-24 scorecard was read as continuity, along with the dossier, ledger, and the open issue set supplied by the unit. This was a demand-driven recheck of the remaining broken core function, not a source-code change.
+Resumed Track D attempt 2 against current remote `main` tip `8d1cc9143ca6f4ace0c2da25c783a16cdb7a9a89` (release 1.36.1). The preceding report, dossier, ledger, and open issue set were read as continuity. The eight intervening commits include belt-label and consumer-bootstrap work, but none changes the rate-limit wrapper or its metadata regression coverage.
 
 ## Core-function evidence
 
@@ -10,11 +10,11 @@ Audited `stranske/Workflows` at current remote `main` tip `887d5908495907fee45c1
 - C2 run-contract validation works: `pytest -q tests/contracts/test_validate_run_contract.py tests/scripts/test_validate_run_contract.py` passed 127 tests, including conforming and rejecting fixture paths.
 - C3 capability selection/prompt composition works: `node --test .github/scripts/__tests__/capability-bundle-contract.test.js` passed 13 tests, including matching-bundle application and nonmatching-bundle rejection.
 - C4 metrics-dashboard behavior works: `pytest -q tests/e2e/test_metrics_dashboard.py` passed 2 tests; its fixture assertions continue to distinguish the alpha and beta dashboard values.
-- C5 remains broken. A fresh real-wrapper probe constructed an Octokit-shaped client, called `createRateLimitedGithub`, then called `checkRateLimitStatus`. It failed with `TypeError: 'get' on proxy: property '__getTokenSource' is a read-only and non-configurable data property on the proxy target but the proxy did not return its actual value`. The cause is still visible in `.github/scripts/github-rate-limited-wrapper.js:191-196`, which binds function properties, while `:215-220` defines `__getTokenSource` as non-configurable and non-writable. `checkRateLimitStatus` reads that metadata at `.github/scripts/github-api-with-retry.js:1016-1018`.
+- C5 remains broken. A fresh real-wrapper probe constructed an Octokit-shaped client, called `createRateLimitedGithub`, then called `checkRateLimitStatus` with the workflow's `threshold: 0`, `reserveFraction: 0.15`, and `estimatedCost: 200`. It failed with `TypeError: 'get' on proxy: property '__getTokenSource' is a read-only and non-configurable data property on the proxy target but the proxy did not return its actual value`. The cause remains in `.github/scripts/github-rate-limited-wrapper.js:191-196`, which binds function properties, while `:215-220` defines `__getTokenSource` as non-configurable and non-writable. `checkRateLimitStatus` reads that metadata at `.github/scripts/github-api-with-retry.js:1016-1018`.
 
-The focused wrapper/API suite passed 43 tests, but it does not cover the actual Proxy path: its existing already-wrapped test defines properties directly on a plain object. The open, deduplicated issue [#3525](https://github.com/stranske/Workflows/issues/3525) describes precisely this missing regression and remains open; no duplicate issue was filed.
+The focused wrapper/API suite passed 43 tests, but its existing already-wrapped test defines properties directly on a plain object rather than creating the Proxy. The open, deduplicated issue [#3525](https://github.com/stranske/Workflows/issues/3525) describes precisely this missing regression and remains open; no duplicate issue was filed. The optional bound Cursor read was terminated after it produced neither an artifact nor a checkpoint, so this conclusion rests on the first-person reproduction and source re-open.
 
-The newest `Agents 70 Orchestrator` runs (for example [35991190430](https://github.com/stranske/Workflows/actions/runs/35991190430)) succeeded only through eligibility; both Initialize and Execute were skipped. Those runs are not a live C5 success and do not refute the local current-tip reproduction. C6 consumer delivery and C7 synthetic Gate events remain intentionally unexercised because executing them would mutate production consumers.
+The newest `Agents 70 Orchestrator` run, [36080958083](https://github.com/stranske/Workflows/actions/runs/36080958083), succeeded only through eligibility; both Initialize and Execute were skipped. It is not a live C5 success and does not refute the current-tip reproduction. C6 consumer delivery and C7 synthetic Gate events remain intentionally unexercised because executing them would mutate production consumers.
 
 ## Reconciliation
 
