@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-25T03:17:06Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-25T03:32:33Z)
 
-Units: 201 — done 195, failed 6
+Units: 202 — claimed 1, done 195, failed 6
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 Orchestrator evidence (30d): offload runs 249, bound to a research round 202, scored 202 (PASS 135, FAIL 67, infra 19) — codex 28/30 (P9 F19 I6), cursor 114/147 (P86 F28 I2), gemini 57/68 (P38 F19 I11), vibe 3/4 (P2 F1 I0)
@@ -210,12 +210,10 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D4-verify-merged-2026-09-22T03 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
 | D4-verify-merged-2026-09-23T03 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
 | D4-verify-merged-2026-09-24T03 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
+| D4-verify-merged-2026-09-25T03 | D | D | claimed | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
 
 ## Last checkpoints
 
-- 2026-09-24T21:11:54Z — unblock — enqueued D3-unblock-sweep-2026-09-24T21
-- 2026-09-24T21:11:55Z — D3-unblock-sweep-2026-09-24T21 — route — router picked cursor from ['codex', 'cursor']
-- 2026-09-24T21:11:55Z — D3-unblock-sweep-2026-09-24T21 — claimed by codex (agent cursor)
 - 2026-09-24T21:18:08Z — D3-unblock-sweep-2026-09-24T21 — done — Covered the first eight supported repositories, repaired 37 mechanical format pauses, and retained only the genuine LangSmith owner gate.
 - 2026-09-24T23:11:20Z — refill — Workflows: scorecard 2026-09-24: 1 broken / 0 fabricated → audit queued
 - 2026-09-24T23:11:25Z — D-audit-Workflows--2026-09-24T23-11-20Z — route — router picked cursor from ['codex', 'cursor']
@@ -225,6 +223,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-25T01:11:53Z — D-audit-Workflows--2026-09-24T23-11-20Z — claimed by codex (agent cursor)
 - 2026-09-25T01:17:01Z — D-audit-Workflows--2026-09-24T23-11-20Z — done — Scorecard: 4 work / 0 partial / 1 broken / 0 fabricated / 2 not exercised of 7; journey: stops at "Scan belt promotion queue"; surfaces unscored 2; closed-still
 - 2026-09-25T01:17:01Z — D-audit-Workflows--2026-09-24T23-11-20Z — evidence — 1 unscored offload run(s) recorded PASS (executor codex report)
+- 2026-09-25T03:32:33Z — verify — enqueued D4-verify-merged-2026-09-25T03
+- 2026-09-25T03:32:33Z — D4-verify-merged-2026-09-25T03 — route — router picked cursor from ['codex', 'cursor']
+- 2026-09-25T03:32:33Z — D4-verify-merged-2026-09-25T03 — claimed by driver (agent cursor)
 
 ## Questions
 
