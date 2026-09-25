@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-09-25T03:53:36Z)
+# Research Program 2026-09 — STATUS (generated 2026-09-25T04:09:03Z)
 
 Units: 202 — done 196, failed 6
 Paused: False   Phase stops: []
@@ -214,7 +214,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-09-24T23:11:20Z — refill — Workflows: scorecard 2026-09-24: 1 broken / 0 fabricated → audit queued
 - 2026-09-24T23:11:25Z — D-audit-Workflows--2026-09-24T23-11-20Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-24T23:11:25Z — D-audit-Workflows--2026-09-24T23-11-20Z — claimed by codex (agent cursor)
 - 2026-09-25T01:11:53Z — D-audit-Workflows--2026-09-24T23-11-20Z — claim released (stale)
@@ -226,6 +225,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-09-25T03:32:33Z — D4-verify-merged-2026-09-25T03 — route — router picked cursor from ['codex', 'cursor']
 - 2026-09-25T03:32:33Z — D4-verify-merged-2026-09-25T03 — claimed by driver (agent cursor)
 - 2026-09-25T03:38:09Z — D4-verify-merged-2026-09-25T03 — done — cursor produced 735 words at artifacts/verification/D4-verify-merged-2026-09-25T03.md in 307s
+- 2026-09-25T04:09:03Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 
 ## Questions
 
