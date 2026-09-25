@@ -1918,3 +1918,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-25T03:38:09Z — D4-verify-merged-2026-09-25T03 — done — cursor produced 735 words at artifacts/verification/D4-verify-merged-2026-09-25T03.md in 307s
 ## 2026-09-25T04:09:03Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 ## 2026-09-25T04:11:20Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+## 2026-09-25T05:26:38Z — unblock — enqueued D3-unblock-sweep-2026-09-25T05
+## 2026-09-25T05:26:38Z — D3-unblock-sweep-2026-09-25T05 — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-25T05:26:38Z — D3-unblock-sweep-2026-09-25T05 — claimed by driver (agent cursor)
