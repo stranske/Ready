@@ -233,6 +233,12 @@ jobs:
                       `read-only token. Gate verdict: **${state}** — ${description}`,
                   )
                   .write();
+                if (state !== 'success') {
+                  core.setFailed(
+                    `Gate verdict is '${state}' but the fork token could not ` +
+                      "publish the 'Gate / gate' commit status.",
+                  );
+                }
               } else {
                 throw error;
               }
