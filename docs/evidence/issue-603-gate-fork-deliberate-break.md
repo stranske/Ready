@@ -34,7 +34,7 @@ Command and literal output:
 $ python3 -m pytest --no-cov tests/test_gate_commit_status_fork_tolerance.py -q
 ============================= test session starts ==============================
 platform darwin -- Python 3.12.2, pytest-9.1.1, pluggy-1.6.0
-rootdir: /Users/teacher/.codex/automations/pd-workloop-resume/worktrees/Ready-issue-603
+rootdir: /private/tmp/ready-evidence.REJpHM
 configfile: pyproject.toml
 plugins: langsmith-0.10.9, cov-7.1.0, xdist-3.8.0, rerunfailures-16.3, datadir-1.8.0, typeguard-4.5.1, asyncio-1.3.0, pytest_httpserver-1.1.3, hypothesis-6.155.7, regressions-2.11.0, Faker-40.39.0, anyio-4.13.0
 asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
@@ -128,13 +128,15 @@ FAILED tests/test_gate_commit_status_fork_tolerance.py::test_fork_read_only_403_
 FAILED tests/test_gate_commit_status_fork_tolerance.py::test_fork_read_only_non_success_verdict_fails_the_job[error]
 FAILED tests/test_gate_commit_status_fork_tolerance.py::test_fork_read_only_non_success_verdict_fails_the_job[pending]
 FAILED tests/test_gate_commit_status_fork_tolerance.py::test_deleted_fork_read_only_403_reports_the_verdict
-========================= 6 failed, 4 passed in 0.37s ==========================
+========================= 6 failed, 4 passed in 0.40s ==========================
 ```
 
 ## GREEN — production workflow restored
 
 The workflow catch block was restored exactly to the merged #602 content before
-this run. `git diff -- .github/workflows/pr-00-gate.yml` produced no output.
+this run. This restored GREEN run is also the procedure's unmodified-production
+baseline: steps 1 and 4 exercise the same merged workflow content.
+`git diff -- .github/workflows/pr-00-gate.yml` produced no output.
 
 Command and literal output:
 
@@ -142,7 +144,7 @@ Command and literal output:
 $ python3 -m pytest --no-cov tests/test_gate_commit_status_fork_tolerance.py -q
 ============================= test session starts ==============================
 platform darwin -- Python 3.12.2, pytest-9.1.1, pluggy-1.6.0
-rootdir: /Users/teacher/.codex/automations/pd-workloop-resume/worktrees/Ready-issue-603
+rootdir: /private/tmp/ready-evidence.REJpHM
 configfile: pyproject.toml
 plugins: langsmith-0.10.9, cov-7.1.0, xdist-3.8.0, rerunfailures-16.3, datadir-1.8.0, typeguard-4.5.1, asyncio-1.3.0, pytest_httpserver-1.1.3, hypothesis-6.155.7, regressions-2.11.0, Faker-40.39.0, anyio-4.13.0
 asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
@@ -150,7 +152,7 @@ collected 10 items
 
 tests/test_gate_commit_status_fork_tolerance.py ..........               [100%]
 
-============================== 10 passed in 0.35s ==============================
+============================== 10 passed in 0.28s ==============================
 ```
 
 The named gate therefore fails when fork tolerance is removed and passes when
