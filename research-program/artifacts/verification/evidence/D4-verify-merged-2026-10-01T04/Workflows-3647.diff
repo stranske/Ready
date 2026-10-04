@@ -1,0 +1,422 @@
+diff --git a/.github/scripts/__tests__/keepalive-reporter-applicability.test.js b/.github/scripts/__tests__/keepalive-reporter-applicability.test.js
+index ba3611edc..9b03c521b 100644
+--- a/.github/scripts/__tests__/keepalive-reporter-applicability.test.js
++++ b/.github/scripts/__tests__/keepalive-reporter-applicability.test.js
+@@ -98,33 +98,48 @@ function projectCurrentRecovery(recovery) {
+ }
+ 
+ for (const source of sources) {
+-  test(`${source}: ordinary unassociated dispatch skips only after absent index`, async () => {
+-    const { github, reads } = setup(source, 'keepalive-dispatch/v1 ordinary');
++  test(`${source}: ordinary unassociated dispatch recovers its canonical PR target`, async () => {
++    const { github, reads } = setup(source, 'keepalive-dispatch/v2 ordinary pr=1738');
+     let lookups = 0;
+     const result = await classifyReporterRun({ github, owner: 'stranske', repo: 'repo', run,
+       lookupTarget: async () => { lookups += 1; return null; } });
+-    assert.deepEqual(result, { status: 'skip' });
++    assert.deepEqual(result, {
++      status: 'continue', prNumber: 1738, targetSource: 'ordinary-run-name',
++    });
+     assert.equal(lookups, 1);
+     assert.equal(reads(), 2);
+   });
+ 
+   test(`${source}: authority candidate without index fails closed`, async () => {
+-    const { github } = setup(source, 'keepalive-dispatch/v1 authority-candidate');
++    const { github } = setup(source, 'keepalive-dispatch/v2 authority-candidate pr=1738');
+     await assert.rejects(classifyReporterRun({ github, owner: 'stranske', repo: 'repo', run,
+       lookupTarget: async () => null }), /no immutable attempt index/);
+   });
+ 
+-  test(`${source}: missing or misleading title cannot become ordinary`, async () => {
+-    for (const title of ['', 'ordinary', 'keepalive-dispatch/v2 ordinary']) {
++  test(`${source}: malformed or legacy binding cannot become ordinary`, async () => {
++    for (const title of [
++      '',
++      'ordinary',
++      'keepalive-dispatch/v1 ordinary',
++      'keepalive-dispatch/v2 ordinary',
++      'keepalive-dispatch/v2 ordinary pr=0',
++      'keepalive-dispatch/v2 ordinary pr=01',
++      'keepalive-dispatch/v2 ordinary pr=-1',
++      'keepalive-dispatch/v2 ordinary pr=1.5',
++      'keepalive-dispatch/v2 ordinary pr=1e3',
++      'keepalive-dispatch/v2 ordinary pr= 1738',
++      'keepalive-dispatch/v2 ordinary pr=1738 extra',
++      'keepalive-dispatch/v2 ordinary pr=9007199254740992',
++    ]) {
+       const { github } = setup(source, title);
+       await assert.rejects(classifyReporterRun({ github, owner: 'stranske', repo: 'repo', run,
+-        lookupTarget: async () => null }), /no versioned classification/);
++        lookupTarget: async () => null }), /canonical versioned PR binding|non-canonical PR binding/);
+     }
+   });
+ }
+ 
+ test('verified index wins over an ordinary title and needs no title lookup', async () => {
+-  const { github, reads } = setup(sources[0], 'keepalive-dispatch/v1 ordinary');
++  const { github, reads } = setup(sources[0], 'keepalive-dispatch/v2 ordinary pr=1738');
+   const result = await classifyReporterRun({ github, owner: 'stranske', repo: 'repo', run,
+     lookupTarget: async () => ({ prNumber: 42 }) });
+   assert.deepEqual(result, { status: 'continue', prNumber: 42 });
+@@ -132,7 +147,7 @@ test('verified index wins over an ordinary title and needs no title lookup', asy
+ });
+ 
+ test('unavailable or corrupt index lookup never becomes an ordinary skip', async () => {
+-  const { github } = setup(sources[0], 'keepalive-dispatch/v1 ordinary');
++  const { github } = setup(sources[0], 'keepalive-dispatch/v2 ordinary pr=1738');
+   await assert.rejects(classifyReporterRun({ github, owner: 'stranske', repo: 'repo', run,
+     lookupTarget: async () => { throw new Error('index 503'); } }), /index 503/);
+ });
+@@ -140,14 +155,14 @@ test('unavailable or corrupt index lookup never becomes an ordinary skip', async
+ test('wrong originating workflow or event cannot claim ordinary routing', async () => {
+   for (const override of [{ path: '.github/workflows/other.yml' }, { event: 'push' },
+     { run_attempt: 3 }, { head_sha: 'b'.repeat(40) }]) {
+-    const { github } = setup(sources[0], 'keepalive-dispatch/v1 ordinary', override);
++    const { github } = setup(sources[0], 'keepalive-dispatch/v2 ordinary pr=1738', override);
+     await assert.rejects(classifyReporterRun({ github, owner: 'stranske', repo: 'repo', run,
+       lookupTarget: async () => null }), /no verified dispatch classification/);
+   }
+ });
+ 
+ test('originating revision without the classification contract fails closed', async () => {
+-  const { github } = setup(sources[0], 'keepalive-dispatch/v1 ordinary');
++  const { github } = setup(sources[0], 'keepalive-dispatch/v2 ordinary pr=1738');
+   github.rest.repos.getContent = async () => ({ data: {
+     encoding: 'base64', content: Buffer.from('name: Agents Keepalive Loop\n').toString('base64'),
+   } });
+@@ -155,6 +170,20 @@ test('originating revision without the classification contract fails closed', as
+     lookupTarget: async () => null }), /lacks the dispatch classification contract/);
+ });
+ 
++test('contract-shaped text outside the top-level run-name cannot authorize a target', async () => {
++  const { github } = setup(sources[0], 'keepalive-dispatch/v2 ordinary pr=1738');
++  const producer = [
++    'name: Agents Keepalive Loop',
++    'description: |',
++    "run-name: ${{ github.event_name == 'workflow_dispatch' && format('keepalive-dispatch/v2 {0} pr={1}', (inputs.authority_challenge_claim != '' || inputs.authority_challenge_fingerprint != '') && 'authority-candidate' || 'ordinary', inputs.pr_number) || 'Agents Keepalive Loop' }}",
++  ].join('\n');
++  github.rest.repos.getContent = async () => ({ data: {
++    encoding: 'base64', content: Buffer.from(producer).toString('base64'),
++  } });
++  await assert.rejects(classifyReporterRun({ github, owner: 'stranske', repo: 'repo', run,
++    lookupTarget: async () => null }), /lacks the dispatch classification contract/);
++});
++
+ test('associated runs avoid the unassociated locator altogether', async () => {
+   const result = await classifyReporterRun({ github: {}, owner: 'stranske', repo: 'repo',
+     run: { ...run, pull_requests: [{ number: 42 }] },
+diff --git a/.github/scripts/keepalive_reporter_applicability.js b/.github/scripts/keepalive_reporter_applicability.js
+index f5629d428..c9b4fe365 100644
+--- a/.github/scripts/keepalive_reporter_applicability.js
++++ b/.github/scripts/keepalive_reporter_applicability.js
+@@ -8,8 +8,8 @@ const {
+ const { loadKeepaliveState, projectRecoveredAuthorityState } = require('./keepalive_state.js');
+ const { withRetry } = require('./github-api-with-retry.js');
+ 
+-const DISPATCH_TITLE = 'keepalive-dispatch/v1 ';
+-const CONTRACT = /^run-name: \$\{\{ github\.event_name == 'workflow_dispatch' && format\('keepalive-dispatch\/v1 \{0\}', \(inputs\.authority_challenge_claim != '' \|\| inputs\.authority_challenge_fingerprint != ''\) && 'authority-candidate' \|\| 'ordinary'\) \|\| 'Agents (?:Keepalive Loop|Gate Followups)' \}\}$/m;
++const CONTRACT = /^run-name: \$\{\{ github\.event_name == 'workflow_dispatch' && format\('keepalive-dispatch\/v2 \{0\} pr=\{1\}', \(inputs\.authority_challenge_claim != '' \|\| inputs\.authority_challenge_fingerprint != ''\) && 'authority-candidate' \|\| 'ordinary', inputs\.pr_number\) \|\| 'Agents (?:Keepalive Loop|Gate Followups)' \}\}$/;
++const TITLE_CONTRACT = /^keepalive-dispatch\/v2 (ordinary|authority-candidate) pr=([1-9][0-9]*)$/;
+ const PRODUCERS = new Set([
+   '.github/workflows/agents-keepalive-loop.yml',
+   '.github/workflows/agents-81-gate-followups.yml',
+@@ -34,22 +34,32 @@ async function classifyReporterRun({ github, owner, repo, run, lookupTarget = fi
+       origin.event !== 'workflow_dispatch' || !PRODUCERS.has(origin.path)) {
+     throw new Error('Unassociated run has no verified dispatch classification');
+   }
+-  const title = String(origin.display_title || '');
+-  if (title !== `${DISPATCH_TITLE}ordinary` &&
+-      title !== `${DISPATCH_TITLE}authority-candidate`) {
+-    throw new Error('Unassociated dispatch has no versioned classification');
+-  }
+   const { data: producer } = await withRetry((client) => client.rest.repos.getContent({
+     owner, repo, path: origin.path, ref: origin.head_sha,
+   }), { github, maxRetries: 2, task: 'keepalive-reporter-producer' });
+-  if (producer.encoding !== 'base64' ||
+-      !CONTRACT.test(Buffer.from(String(producer.content).replace(/\s/g, ''), 'base64').toString('utf8'))) {
++  const producerText = producer.encoding === 'base64'
++    ? Buffer.from(String(producer.content).replace(/\s/g, ''), 'base64').toString('utf8')
++    : '';
++  const producerLines = producerText.split(/\r?\n/);
++  if (!producerText || !CONTRACT.test(producerLines[1] || '') ||
++      producerLines.filter((line) => CONTRACT.test(line)).length !== 1) {
+     throw new Error('Originating workflow revision lacks the dispatch classification contract');
+   }
+-  if (title === `${DISPATCH_TITLE}authority-candidate`) {
++  const title = String(origin.display_title || '');
++  const titleMatch = TITLE_CONTRACT.exec(title);
++  if (!titleMatch) {
++    throw new Error('Unassociated dispatch has no canonical versioned PR binding');
++  }
++  const classification = titleMatch[1];
++  const prText = titleMatch[2];
++  const prNumber = Number(prText);
++  if (!Number.isSafeInteger(prNumber) || prNumber <= 0 || String(prNumber) !== prText) {
++    throw new Error('Unassociated dispatch has a non-canonical PR binding');
++  }
++  if (classification === 'authority-candidate') {
+     throw new Error('Authority-candidate dispatch has no immutable attempt index');
+   }
+-  return { status: 'skip' };
++  return { status: 'continue', prNumber, targetSource: 'ordinary-run-name' };
+ }
+ 
+ async function recoverReporterAuthority({
+diff --git a/.github/workflows/agents-keepalive-loop-reporter.yml b/.github/workflows/agents-keepalive-loop-reporter.yml
+index 5484c6e5e..9df2eddca 100644
+--- a/.github/workflows/agents-keepalive-loop-reporter.yml
++++ b/.github/workflows/agents-keepalive-loop-reporter.yml
+@@ -49,6 +49,10 @@ jobs:
+                 run: context.payload.workflow_run,
+               });
+               core.setOutput('skip', result.status === 'skip' ? 'true' : 'false');
++              core.setOutput('pr_number', result.targetSource === 'ordinary-run-name' ?
++                String(result.prNumber) : '');
++              core.setOutput('ordinary_target',
++                result.targetSource === 'ordinary-run-name' ? 'true' : 'false');
+             } catch (error) {
+               core.setFailed(`Reporter applicability unavailable: ${error.message}`);
+             }
+@@ -148,6 +152,8 @@ jobs:
+           github.event.workflow_run.conclusion != 'success'
+         uses: actions/github-script@v9
+         env:
++          CLASSIFIED_PR_NUMBER: ${{ steps.applicability.outputs.pr_number || '' }}
++          CLASSIFIED_ORDINARY_TARGET: ${{ steps.applicability.outputs.ordinary_target || 'false' }}
+           KEEPALIVE_SUMMARY_WRITER: >-
+             ${{
+               steps.reporter_keepalive_app_token.outputs.token != '' &&
+@@ -162,7 +168,9 @@ jobs:
+             }}
+           script: |
+             const run = context.payload?.workflow_run || {};
+-            let prNumber = Number(run.pull_requests?.[0]?.number || 0);
++            let prNumber = Number(
++              run.pull_requests?.[0]?.number || process.env.CLASSIFIED_PR_NUMBER || 0
++            );
+ 
+             const conclusion = String(run.conclusion || run.status || '').toLowerCase();
+             if (!conclusion || conclusion === 'success' || conclusion === 'skipped') {
+@@ -210,6 +218,14 @@ jobs:
+             }
+ 
+             const { state } = await loadKeepaliveState({ github, context, prNumber, trace: '' });
++            if (process.env.CLASSIFIED_ORDINARY_TARGET === 'true' &&
++                state?.running_owner_attempt !== ownerAttempt) {
++              core.info(
++                'Ordinary dispatch target no longer belongs to the originating run attempt; ' +
++                'skipping stale cleanup.'
++              );
++              return;
++            }
+             if (!state || state.running !== true) {
+               core.info('Keepalive state not marked as running; skipping post summary.');
+               return;
+diff --git a/.github/workflows/agents-keepalive-loop.yml b/.github/workflows/agents-keepalive-loop.yml
+index 71b0d2c6b..a2316511c 100644
+--- a/.github/workflows/agents-keepalive-loop.yml
++++ b/.github/workflows/agents-keepalive-loop.yml
+@@ -1,5 +1,5 @@
+ name: Agents Keepalive Loop
+-run-name: ${{ github.event_name == 'workflow_dispatch' && format('keepalive-dispatch/v1 {0}', (inputs.authority_challenge_claim != '' || inputs.authority_challenge_fingerprint != '') && 'authority-candidate' || 'ordinary') || 'Agents Keepalive Loop' }}
++run-name: ${{ github.event_name == 'workflow_dispatch' && format('keepalive-dispatch/v2 {0} pr={1}', (inputs.authority_challenge_claim != '' || inputs.authority_challenge_fingerprint != '') && 'authority-candidate' || 'ordinary', inputs.pr_number) || 'Agents Keepalive Loop' }}
+ 
+ on:
+   workflow_run:
+diff --git a/config/template-drift-allowlist.txt b/config/template-drift-allowlist.txt
+index 472f6cb4b..290d60b65 100644
+--- a/config/template-drift-allowlist.txt
++++ b/config/template-drift-allowlist.txt
+@@ -144,9 +144,9 @@ fingerprint_refreshed = 2026-09-30
+ [pair.12]
+ main = .github/workflows/agents-keepalive-loop-reporter.yml
+ template = templates/consumer-repo/.github/workflows/agents-keepalive-loop-reporter.yml
+-main_sha256 = 3ad50ada69f29a2a3e24ce24e6c5025fe679ea5e0db19fb3b75993ed86e2ea42
+-template_sha256 = 0ee4ce7a54a4df2f757823b11b14d87c7e5fa68eccb9721d06747617cf1d01b4
+-divergence = Superseded recovery stop 2026-09-30: both reporters now return before ordinary summary publication when the shared applicability helper proves a reconciled attempt was superseded. Applied identically while preserving the existing root subscription/setup and consumer state-fingerprint/action-pin deployment differences; the underlying divergence was not re-reviewed. Prior divergence: Delayed authority recovery boundary 2026-09-29: both reporters call the shared, directly tested applicability helper for exact-attempt reconciliation and recovered-summary projection. Prior divergence: Non-consolidated authority recovery re-reviewed 2026-09-28: both reporters remain active for failed or cancelled originating workflows regardless of sweep mode. The Workflows root reporter subscribes to both Agents Gate Followups and Agents Keepalive Loop, while the consumer reporter subscribes only to Agents Gate Followups because both consolidated and non-consolidated consumer sweeps can dispatch that workflow. Root in-repo setup and consumer state fingerprinting with exact run attempt and SHA-pinned actions remain intentional. Do not align wholesale, because it would remove either the root workflow coverage or the consumer deployment contract.
++main_sha256 = 7453fab83dcb7f9e5476c6d202dac2d489cd1977b40d183e3aa8f2f496706ff9
++template_sha256 = d2e23a49923306c73c434ebead294b1299c1706cbe4db412d4d8f86d512f833f
++divergence = Ordinary-target fingerprint persistence 2026-09-30: the consumer-only state-fingerprint store now receives the same recovered PR number as its compare step, preserving the documented consumer fingerprint deployment without adding that machinery to the Workflows-root reporter. The underlying divergence was not re-reviewed. Prior divergence: Superseded recovery stop 2026-09-30: both reporters now return before ordinary summary publication when the shared applicability helper proves a reconciled attempt was superseded. Applied identically while preserving the existing root subscription/setup and consumer state-fingerprint/action-pin deployment differences; the underlying divergence was not re-reviewed. Prior divergence: Delayed authority recovery boundary 2026-09-29: both reporters call the shared, directly tested applicability helper for exact-attempt reconciliation and recovered-summary projection. Prior divergence: Non-consolidated authority recovery re-reviewed 2026-09-28: both reporters remain active for failed or cancelled originating workflows regardless of sweep mode. The Workflows root reporter subscribes to both Agents Gate Followups and Agents Keepalive Loop, while the consumer reporter subscribes only to Agents Gate Followups because both consolidated and non-consolidated consumer sweeps can dispatch that workflow. Root in-repo setup and consumer state fingerprinting with exact run attempt and SHA-pinned actions remain intentional. Do not align wholesale, because it would remove either the root workflow coverage or the consumer deployment contract.
+ divergence_reviewed = 2026-09-28
+ fingerprint_refreshed = 2026-09-30
+ 
+diff --git a/docs/keepalive/Agents.md b/docs/keepalive/Agents.md
+index 76ba73113..98aef7eef 100644
+--- a/docs/keepalive/Agents.md
++++ b/docs/keepalive/Agents.md
+@@ -73,7 +73,7 @@ Authority generations and receipts remain bound to one originating PR head in th
+ 
+ The failed-run reporter reconciles the receipt even when the presentation summary never reached `running`, but only after the originating attempt's worker jobs positively show no worker step started. Worker job and step names come from keepalive-capable registry entries at the originating run's exact head (with naming-convention defaults); a newly registered provider does not require a reporter-side provider list, and a later registry change cannot turn a started old provider into false non-start evidence. Missing original registry evidence is unknown. Started or unknown worker evidence preserves the receipt. Presentation-summary inputs alone cannot prove non-start or refund a consumed receipt. An originating run concluded `skipped` has no failed attempt to reconcile and is ignored. Before preparing a receipt, the runner writes an immutable, exact-owner-attempt index on the authority branch; the PR ledger remains the grant authority. For sweep-triggered dispatches with no webhook PR association, the reporter directly reads that index and verifies its exact receipt against the PR ledger. A missing, conflicting or unreadable index fails explicitly for owner follow-up, never as proof of non-execution; associated runs avoid the index lookup. Consumer reporter deduplication includes the originating run ID and attempt so reruns remain independently recoverable. If the ordinary summary finishes first and rewrites `challenge-due` to `automation-retry`, it retains only the exact recovery owner attempt and prior generation when that attempt owns the current-head authority receipt (`authorityAttemptOwnsRecoveryReceipt`); unrelated non-authority runs that reconcile as `attempt-not-current` must not record `recovery_owner_attempt`. Projection accepts that cleared presentation state only when both markers match the reconciled receipt lineage; a generic blank generation never authorizes recovery. A running summary records its exact run attempt, and delayed projection requires that owner when the summary is running. Projection also re-reads the authoritative ledger immediately before publication and exits as superseded if another attempt has prepared, consumed, confirmed, replaced, or otherwise changed the settled receipt.
+ 
+-For unassociated failed dispatches, the producer run name records a versioned `ordinary` or `authority-candidate` classification without exposing the claim. Both reporters verify the originating workflow path, exact source revision, run attempt, and immutable index before treating an index-free `ordinary` dispatch as inapplicable. A missing index for `authority-candidate`, an unrecognized/legacy title, a corrupt index, or an unavailable lookup fails closed for owner follow-up. This routing metadata never grants authority or substitutes for exact worker evidence. The ordinary skip happens before reporter writer-token setup and worker-job inspection.
++For unassociated failed dispatches, the producer run name records a versioned `ordinary` or `authority-candidate` classification plus the canonical target PR number without exposing the claim. Both reporters verify the originating workflow path, exact source revision, run attempt, and immutable index before accepting that target. A verified index remains authoritative. Only an index-free `ordinary` dispatch with the exact producer contract and canonical positive PR binding may continue, and it may clear presentation state only when the target summary's `running_owner_attempt` still matches the originating repository, run ID, and run attempt. A missing index for `authority-candidate`, an unrecognized/legacy binding, a corrupt index, or an unavailable lookup fails closed for owner follow-up. This routing metadata identifies a target; it never grants challenge authority or substitutes for exact worker evidence.
+ 
+ An expired prepared receipt is non-authorizing and may be released either by the failed-run reporter's exact non-start evidence or by initialization after it verifies the persisted claim, immutable attempt index, same-head automation label, and absence of a hard human blocker. The initialization path is limited to `prepared`: it cannot infer non-start or refund a `consumed` or `confirmed` receipt. Release refreshes the due/expiry window under one conditional ledger write and retains the immutable release receipt and its generation lineage for delayed summary projection. An available released state rotates to a new generation when its boundary fingerprint changes or its window expires, while preserving the settled receipt and every prior generation in its lineage. Replays of the settled owner attempt remain denied. Expiry alone never rotates a consumed or confirmed receipt into available authority, and missing or conflicting preparation evidence preserves the prepared state.
+ 
+diff --git a/templates/consumer-repo/.github/scripts/keepalive_reporter_applicability.js b/templates/consumer-repo/.github/scripts/keepalive_reporter_applicability.js
+index f5629d428..c9b4fe365 100644
+--- a/templates/consumer-repo/.github/scripts/keepalive_reporter_applicability.js
++++ b/templates/consumer-repo/.github/scripts/keepalive_reporter_applicability.js
+@@ -8,8 +8,8 @@ const {
+ const { loadKeepaliveState, projectRecoveredAuthorityState } = require('./keepalive_state.js');
+ const { withRetry } = require('./github-api-with-retry.js');
+ 
+-const DISPATCH_TITLE = 'keepalive-dispatch/v1 ';
+-const CONTRACT = /^run-name: \$\{\{ github\.event_name == 'workflow_dispatch' && format\('keepalive-dispatch\/v1 \{0\}', \(inputs\.authority_challenge_claim != '' \|\| inputs\.authority_challenge_fingerprint != ''\) && 'authority-candidate' \|\| 'ordinary'\) \|\| 'Agents (?:Keepalive Loop|Gate Followups)' \}\}$/m;
++const CONTRACT = /^run-name: \$\{\{ github\.event_name == 'workflow_dispatch' && format\('keepalive-dispatch\/v2 \{0\} pr=\{1\}', \(inputs\.authority_challenge_claim != '' \|\| inputs\.authority_challenge_fingerprint != ''\) && 'authority-candidate' \|\| 'ordinary', inputs\.pr_number\) \|\| 'Agents (?:Keepalive Loop|Gate Followups)' \}\}$/;
++const TITLE_CONTRACT = /^keepalive-dispatch\/v2 (ordinary|authority-candidate) pr=([1-9][0-9]*)$/;
+ const PRODUCERS = new Set([
+   '.github/workflows/agents-keepalive-loop.yml',
+   '.github/workflows/agents-81-gate-followups.yml',
+@@ -34,22 +34,32 @@ async function classifyReporterRun({ github, owner, repo, run, lookupTarget = fi
+       origin.event !== 'workflow_dispatch' || !PRODUCERS.has(origin.path)) {
+     throw new Error('Unassociated run has no verified dispatch classification');
+   }
+-  const title = String(origin.display_title || '');
+-  if (title !== `${DISPATCH_TITLE}ordinary` &&
+-      title !== `${DISPATCH_TITLE}authority-candidate`) {
+-    throw new Error('Unassociated dispatch has no versioned classification');
+-  }
+   const { data: producer } = await withRetry((client) => client.rest.repos.getContent({
+     owner, repo, path: origin.path, ref: origin.head_sha,
+   }), { github, maxRetries: 2, task: 'keepalive-reporter-producer' });
+-  if (producer.encoding !== 'base64' ||
+-      !CONTRACT.test(Buffer.from(String(producer.content).replace(/\s/g, ''), 'base64').toString('utf8'))) {
++  const producerText = producer.encoding === 'base64'
++    ? Buffer.from(String(producer.content).replace(/\s/g, ''), 'base64').toString('utf8')
++    : '';
++  const producerLines = producerText.split(/\r?\n/);
++  if (!producerText || !CONTRACT.test(producerLines[1] || '') ||
++      producerLines.filter((line) => CONTRACT.test(line)).length !== 1) {
+     throw new Error('Originating workflow revision lacks the dispatch classification contract');
+   }
+-  if (title === `${DISPATCH_TITLE}authority-candidate`) {
++  const title = String(origin.display_title || '');
++  const titleMatch = TITLE_CONTRACT.exec(title);
++  if (!titleMatch) {
++    throw new Error('Unassociated dispatch has no canonical versioned PR binding');
++  }
++  const classification = titleMatch[1];
++  const prText = titleMatch[2];
++  const prNumber = Number(prText);
++  if (!Number.isSafeInteger(prNumber) || prNumber <= 0 || String(prNumber) !== prText) {
++    throw new Error('Unassociated dispatch has a non-canonical PR binding');
++  }
++  if (classification === 'authority-candidate') {
+     throw new Error('Authority-candidate dispatch has no immutable attempt index');
+   }
+-  return { status: 'skip' };
++  return { status: 'continue', prNumber, targetSource: 'ordinary-run-name' };
+ }
+ 
+ async function recoverReporterAuthority({
+diff --git a/templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml b/templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml
+index 7791b6711..9e532f5e1 100644
+--- a/templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml
++++ b/templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml
+@@ -1,5 +1,5 @@
+ name: Agents Gate Followups
+-run-name: ${{ github.event_name == 'workflow_dispatch' && format('keepalive-dispatch/v1 {0}', (inputs.authority_challenge_claim != '' || inputs.authority_challenge_fingerprint != '') && 'authority-candidate' || 'ordinary') || 'Agents Gate Followups' }}
++run-name: ${{ github.event_name == 'workflow_dispatch' && format('keepalive-dispatch/v2 {0} pr={1}', (inputs.authority_challenge_claim != '' || inputs.authority_challenge_fingerprint != '') && 'authority-candidate' || 'ordinary', inputs.pr_number) || 'Agents Gate Followups' }}
+ 
+ on:
+   workflow_run:
+diff --git a/templates/consumer-repo/.github/workflows/agents-keepalive-loop-reporter.yml b/templates/consumer-repo/.github/workflows/agents-keepalive-loop-reporter.yml
+index 76c166644..3c2e8817a 100644
+--- a/templates/consumer-repo/.github/workflows/agents-keepalive-loop-reporter.yml
++++ b/templates/consumer-repo/.github/workflows/agents-keepalive-loop-reporter.yml
+@@ -49,6 +49,10 @@ jobs:
+                 run: context.payload.workflow_run,
+               });
+               core.setOutput('skip', result.status === 'skip' ? 'true' : 'false');
++              core.setOutput('pr_number', result.targetSource === 'ordinary-run-name' ?
++                String(result.prNumber) : '');
++              core.setOutput('ordinary_target',
++                result.targetSource === 'ordinary-run-name' ? 'true' : 'false');
+             } catch (error) {
+               core.setFailed(`Reporter applicability unavailable: ${error.message}`);
+             }
+@@ -59,7 +63,9 @@ jobs:
+         env:
+           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+-          PR_NUMBER: ${{ github.event.workflow_run.pull_requests[0].number || '' }}
++          PR_NUMBER: >-
++            ${{ github.event.workflow_run.pull_requests[0].number ||
++                steps.applicability.outputs.pr_number || '' }}
+         run: |
+           if [ -z "${PR_NUMBER:-}" ]; then
+             {
+@@ -170,6 +176,8 @@ jobs:
+           github.event.workflow_run.conclusion != 'success'
+         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
+         env:
++          CLASSIFIED_PR_NUMBER: ${{ steps.applicability.outputs.pr_number || '' }}
++          CLASSIFIED_ORDINARY_TARGET: ${{ steps.applicability.outputs.ordinary_target || 'false' }}
+           KEEPALIVE_SUMMARY_WRITER: >-
+             ${{
+               steps.reporter_keepalive_app_token.outputs.token != '' &&
+@@ -184,7 +192,9 @@ jobs:
+             }}
+           script: |
+             const run = context.payload?.workflow_run || {};
+-            let prNumber = Number(run.pull_requests?.[0]?.number || 0);
++            let prNumber = Number(
++              run.pull_requests?.[0]?.number || process.env.CLASSIFIED_PR_NUMBER || 0
++            );
+ 
+             const conclusion = String(run.conclusion || run.status || '').toLowerCase();
+             if (!conclusion || conclusion === 'success' || conclusion === 'skipped') {
+@@ -232,6 +242,14 @@ jobs:
+             }
+ 
+             const { state } = await loadKeepaliveState({ github, context, prNumber, trace: '' });
++            if (process.env.CLASSIFIED_ORDINARY_TARGET === 'true' &&
++                state?.running_owner_attempt !== ownerAttempt) {
++              core.info(
++                'Ordinary dispatch target no longer belongs to the originating run attempt; ' +
++                'skipping stale cleanup.'
++              );
++              return;
++            }
+             if (!state || state.running !== true) {
+               core.info('Keepalive state not marked as running; skipping post summary.');
+               return;
+@@ -272,6 +290,9 @@ jobs:
+         env:
+           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
++          PR_NUMBER: >-
++            ${{ github.event.workflow_run.pull_requests[0].number ||
++                steps.applicability.outputs.pr_number || '' }}
+         run: |
+           python scripts/state_fingerprint.py store \
+             --workflow "${GITHUB_WORKFLOW}" \
+diff --git a/tests/workflows/test_keepalive_authority_delivery.py b/tests/workflows/test_keepalive_authority_delivery.py
+index 7718266f4..670c98cb7 100644
+--- a/tests/workflows/test_keepalive_authority_delivery.py
++++ b/tests/workflows/test_keepalive_authority_delivery.py
+@@ -71,6 +71,11 @@ def test_gate_paths_deny_invalid_claims_and_reporters_can_persist_generation() -
+             "Mint KEEPALIVE_APP reporter token"
+         )
+         assert "keepalive_reporter_applicability.js" in path.read_text()
++        assert "core.setOutput('pr_number'" in path.read_text()
++        assert "core.setOutput('ordinary_target'" in path.read_text()
++        assert "CLASSIFIED_PR_NUMBER:" in path.read_text()
++        assert "CLASSIFIED_ORDINARY_TARGET:" in path.read_text()
++        assert "state?.running_owner_attempt !== ownerAttempt" in path.read_text()
+         assert workflow["permissions"]["contents"].startswith("read")
+ 
+         assert path.read_text().count("permission-contents: write") == 2
+@@ -99,7 +104,9 @@ def test_gate_paths_deny_invalid_claims_and_reporters_can_persist_generation() -
+         TEMPLATE / ".github/workflows/agents-81-gate-followups.yml",
+     ):
+         run_name = yaml.safe_load(producer.read_text())["run-name"]
+-        assert "keepalive-dispatch/v1" in run_name
++        assert "keepalive-dispatch/v2" in run_name
++        assert "pr={1}" in run_name
++        assert "inputs.pr_number" in run_name
+         assert "authority_challenge_claim" in run_name
+         assert "authority_challenge_fingerprint" in run_name
+ 

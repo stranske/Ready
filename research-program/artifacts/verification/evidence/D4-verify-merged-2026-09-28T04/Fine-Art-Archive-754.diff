@@ -1,0 +1,195 @@
+diff --git a/scripts/build_weekly_review.py b/scripts/build_weekly_review.py
+index 3e66ac78..0449eb96 100644
+--- a/scripts/build_weekly_review.py
++++ b/scripts/build_weekly_review.py
+@@ -22,6 +22,7 @@
+ sys.path.insert(0, str(ROOT / "src"))
+ 
+ from fine_art_archive.api.config import DEFAULT_ART_WORKS_ROOT, env_path  # noqa: E402
++from fine_art_archive.api.gates import assert_workspace_files_unforked  # noqa: E402
+ from fine_art_archive.identity.artist_qid import artist_qid  # noqa: E402
+ from fine_art_archive.identity.work_qid_collision_audit import (  # noqa: E402
+     actionable_offenders,
+@@ -432,8 +433,18 @@ def main(argv: Sequence[str] | None = None) -> int:
+     parser.add_argument("--operations-log", type=Path, default=ROOT / "operations.log")
+     parser.add_argument("--permissions", type=Path, default=ROOT / "permissions.md")
+     parser.add_argument("--reports-dir", type=Path, default=REPORTS)
++    parser.add_argument(
++        "--skip-workspace-conflict-check",
++        action="store_true",
++        help=(
++            "Skip the default preflight that aborts when Dropbox 'conflicted copy' "
++            "siblings exist beside --operations-log or --frontier."
++        ),
++    )
+     args = parser.parse_args(argv)
+     try:
++        if not args.skip_workspace_conflict_check:
++            assert_workspace_files_unforked(args.operations_log, args.frontier)
+         review_day = date.fromisoformat(args.date)
+         review_date = review_day.isoformat()
+         since = (
+diff --git a/src/fine_art_archive/api/gates.py b/src/fine_art_archive/api/gates.py
+index 4f45e3da..05ff592e 100644
+--- a/src/fine_art_archive/api/gates.py
++++ b/src/fine_art_archive/api/gates.py
+@@ -52,6 +52,77 @@
+ # someone else's schedule.
+ ARTIST_ALLOWLIST = env_path("FAA_ARTIST_ALLOWLIST", REPO_ROOT / "data" / "artist_allowlist.jsonl")
+ 
++# Track A automation (weekly review builder, growth tick) must not place POSIX lock
++# files beside Dropbox-synced workspace state — conflict resolution forks both the
++# data file and any co-located lock. Host-local leases use FAA_AUTOMATION_LOCK_DIR.
++_DEFAULT_AUTOMATION_LOCK_DIR = Path.home() / ".cache" / "fine-art-archive" / "automation-locks"
++AUTOMATION_LOCK_DIR = env_path("FAA_AUTOMATION_LOCK_DIR", _DEFAULT_AUTOMATION_LOCK_DIR)
++
++# Dropbox Desktop embeds this substring in forked filenames.
++CONFLICTED_COPY_MARKER = "conflicted copy"
++
++
++def is_cloud_synced_workspace_path(path: Path) -> bool:
++    """True when ``path`` sits under a Dropbox CloudStorage sync tree."""
++    parts = {part.casefold() for part in path.expanduser().resolve().parts}
++    return "cloudstorage" in parts and "dropbox" in parts
++
++
++def automation_lock_path(lock_name: str) -> Path:
++    """Return a host-local lock path for Track A automation (never on Dropbox)."""
++    safe = re.sub(r"[^\w.\-]+", "_", lock_name.strip()) or "automation.lock"
++    directory = AUTOMATION_LOCK_DIR.expanduser()
++    if is_cloud_synced_workspace_path(directory):
++        directory = _DEFAULT_AUTOMATION_LOCK_DIR
++    directory.mkdir(parents=True, exist_ok=True)
++    return directory / safe
++
++
++def resolve_automation_lock_path(candidate: Path, lock_name: str) -> Path:
++    """Honor ``candidate`` when safe; otherwise redirect to :func:`automation_lock_path`."""
++    if is_cloud_synced_workspace_path(candidate):
++        return automation_lock_path(lock_name)
++    return candidate.expanduser()
++
++
++def conflicted_copy_siblings(data_path: Path) -> list[str]:
++    """Basenames of Dropbox conflict forks beside ``data_path`` in the same directory."""
++    directory = data_path.parent
++    if not directory.is_dir():
++        return []
++    base = data_path.name
++    stem = data_path.stem
++    suffix = data_path.suffix
++    marker = CONFLICTED_COPY_MARKER.casefold()
++    found: list[str] = []
++    for entry in directory.iterdir():
++        name = entry.name
++        if name == base:
++            continue
++        lowered = name.casefold()
++        follows_full_name = lowered.startswith(base.casefold())
++        inserted_before_suffix = bool(suffix) and (
++            lowered.startswith(stem.casefold()) and lowered.endswith(suffix.casefold())
++        )
++        if marker in lowered and (follows_full_name or inserted_before_suffix):
++            found.append(name)
++    return sorted(found)
++
++
++def assert_workspace_files_unforked(*data_paths: Path) -> None:
++    """Abort when conflicted-copy siblings exist beside workspace state files."""
++    problems: list[str] = []
++    for path in data_paths:
++        siblings = conflicted_copy_siblings(path)
++        if siblings:
++            problems.append(f"{path}: {', '.join(siblings)}")
++    if problems:
++        raise ValueError(
++            "Dropbox conflict copies detected beside workspace files; reconcile forks "
++            "before running automation. " + "; ".join(problems)
++        )
++
++
+ #: Sentinel for "this gate could not measure itself". Distinct from 0.
+ UNMEASURED = None
+ 
+diff --git a/tests/test_workspace_conflict_guard.py b/tests/test_workspace_conflict_guard.py
+new file mode 100644
+index 00000000..f7ce74b5
+--- /dev/null
++++ b/tests/test_workspace_conflict_guard.py
+@@ -0,0 +1,76 @@
++"""Guards against Dropbox conflict forks beside Track A workspace files."""
++
++from __future__ import annotations
++
++from pathlib import Path
++
++import pytest
++
++import fine_art_archive.api.gates as gates
++from fine_art_archive.api.gates import (
++    assert_workspace_files_unforked,
++    automation_lock_path,
++    conflicted_copy_siblings,
++    is_cloud_synced_workspace_path,
++    resolve_automation_lock_path,
++)
++
++
++def test_conflicted_copy_siblings_detects_dropbox_fork_names(tmp_path: Path) -> None:
++    ops = tmp_path / "operations.log"
++    ops.write_text("ok\n", encoding="utf-8")
++    fork = tmp_path / "operations.log (Teacher's conflicted copy 2026-09-21)"
++    fork.write_text("stale\n", encoding="utf-8")
++    before_extension = tmp_path / "operations (Teacher's conflicted copy 2026-09-21).log"
++    before_extension.write_text("older\n", encoding="utf-8")
++
++    assert conflicted_copy_siblings(ops) == sorted([fork.name, before_extension.name])
++
++
++def test_conflicted_copy_siblings_empty_when_clean(tmp_path: Path) -> None:
++    frontier = tmp_path / "discovery_frontier.json"
++    frontier.write_text("{}", encoding="utf-8")
++    assert conflicted_copy_siblings(frontier) == []
++
++
++def test_assert_workspace_files_unforked_raises_with_fork(tmp_path: Path) -> None:
++    ops = tmp_path / "operations.log"
++    ops.write_text("ok\n", encoding="utf-8")
++    (tmp_path / "operations.log (conflicted copy 1)").write_text("x\n", encoding="utf-8")
++
++    with pytest.raises(ValueError, match="conflict copies detected"):
++        assert_workspace_files_unforked(ops)
++
++
++def test_assert_workspace_files_unforked_passes_clean_fixture(tmp_path: Path) -> None:
++    ops = tmp_path / "operations.log"
++    frontier = tmp_path / "discovery_frontier.json"
++    ops.write_text("[]\n", encoding="utf-8")
++    frontier.write_text("{}\n", encoding="utf-8")
++    assert_workspace_files_unforked(ops, frontier)
++
++
++def test_automation_lock_path_is_not_on_dropbox_tree() -> None:
++    lock = automation_lock_path("growth_tick.lock")
++    assert not is_cloud_synced_workspace_path(lock)
++
++
++def test_automation_lock_path_rejects_configured_dropbox_directory(
++    monkeypatch: pytest.MonkeyPatch,
++) -> None:
++    configured = Path.home() / "Library" / "CloudStorage" / "Dropbox" / "faa-locks"
++    monkeypatch.setattr(gates, "AUTOMATION_LOCK_DIR", configured)
++
++    lock = gates.automation_lock_path("growth_tick.lock")
++
++    assert lock.parent == gates._DEFAULT_AUTOMATION_LOCK_DIR
++    assert not is_cloud_synced_workspace_path(lock)
++
++
++def test_resolve_automation_lock_path_redirects_synced_candidate(tmp_path: Path) -> None:
++    # Simulate a lock file colocated with workspace data on a Dropbox path.
++    dropbox_like = Path.home() / "Library" / "CloudStorage" / "Dropbox" / "tmp-faa-test"
++    candidate = dropbox_like / "growth_tick.lock"
++    resolved = resolve_automation_lock_path(candidate, "growth_tick.lock")
++    assert resolved != candidate
++    assert not is_cloud_synced_workspace_path(resolved)

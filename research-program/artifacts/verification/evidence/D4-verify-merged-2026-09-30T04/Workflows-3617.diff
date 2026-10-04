@@ -1,0 +1,224 @@
+diff --git a/.github/scripts/__tests__/maint71_merge_sync_prs.test.js b/.github/scripts/__tests__/maint71_merge_sync_prs.test.js
+index 3a3a7795d..2f59ba987 100644
+--- a/.github/scripts/__tests__/maint71_merge_sync_prs.test.js
++++ b/.github/scripts/__tests__/maint71_merge_sync_prs.test.js
+@@ -41,7 +41,7 @@ test('review reassessment parser accepts only exact versioned identities', () =>
+     /invalid identity/);
+ });
+ 
+-test('source-owned reviewer reassessment is exact-head, idempotent and never merges or resolves', async () => {
++test('source-owned reviewer reassessment supports stable generated lanes without merge authority', async () => {
+   const request = {
+     schema: 'maint71-review-reassessment/v1', repository: 'stranske/Ready', pr: 592,
+     head_sha: 'a'.repeat(40), thread_id: 'PRRT_test', plan_id: 'plan-1',
+@@ -71,9 +71,14 @@ test('source-owned reviewer reassessment is exact-head, idempotent and never mer
+   };
+   const comments = [];
+   let posts = 0;
++  let merges = 0;
++  let resolutions = 0;
+   const github = {
+     rest: {
+-      pulls: { get: async () => ({ data: pr }) },
++      pulls: {
++        get: async () => ({ data: pr }),
++        merge: async () => { merges++; },
++      },
+       users: { getAuthenticated: async () => ({ data: { login: 'stranske' } }) },
+       issues: {
+         listComments: async () => ({ data: comments }),
+@@ -87,9 +92,12 @@ test('source-owned reviewer reassessment is exact-head, idempotent and never mer
+         },
+       },
+     },
+-    graphql: async () => ({ repository: { pullRequest: {
+-      reviewThreads: { pageInfo: { hasNextPage: false }, nodes: [thread] },
+-    } } }),
++    graphql: async (query) => {
++      if (/\bmutation\b/.test(query)) resolutions++;
++      return { repository: { pullRequest: {
++        reviewThreads: { pageInfo: { hasNextPage: false }, nodes: [thread] },
++      } } };
++    },
+   };
+   const args = { context: { eventName: 'repository_dispatch', ref: 'refs/heads/main',
+     payload: { action: 'maint71-review-reassessment' }, actor: 'stranske' },
+@@ -110,9 +118,37 @@ test('source-owned reviewer reassessment is exact-head, idempotent and never mer
+   });
+   assert.equal(reorderedRetry.status, 'review_blocked_reassessment_reused');
+   assert.equal(posts, 1, 'field ordering must not bypass idempotency');
++  for (const branch of ['sync/workflows-candidate', 'sync/workflows-delivery']) {
++    pr.head.ref = branch;
++    comments.length = 0;
++    const postsBeforeBranch = posts;
++    const workflowSync = await runReviewReassessment(args);
++    assert.equal(workflowSync.status, 'review_blocked_reassessment_requested');
++    assert.equal(posts, postsBeforeBranch + 1);
++    assert.equal(comments.length, 1);
++    assert.match(comments[0].body, /@codex review/);
++    assert.equal(merges, 0);
++    assert.equal(resolutions, 0);
++  }
++  pr.head.ref = 'sync/workflows-untrusted';
++  await assert.rejects(runReviewReassessment(args), /delivery changed or lease is invalid/);
++  pr.head.ref = 'deps/sync-dev-versions-test';
+   pr.head.sha = 'c'.repeat(40);
+   await assert.rejects(runReviewReassessment(args), /delivery changed or lease is invalid/);
+   pr.head.sha = request.head_sha;
++  pr.body = `<!-- sync-pr-delivery-record:v1 ${JSON.stringify({
++    ...record, plan_id: 'other-plan',
++  })} -->`;
++  await assert.rejects(runReviewReassessment(args), /delivery changed or lease is invalid/);
++  pr.body = `<!-- sync-pr-delivery-record:v1 ${JSON.stringify({
++    ...record, lease_expires_at: '2000-01-01T00:00:00Z',
++  })} -->`;
++  await assert.rejects(runReviewReassessment(args), /delivery changed or lease is invalid/);
++  pr.body = `<!-- sync-pr-delivery-record:v1 ${JSON.stringify(record)} -->`;
++  await assert.rejects(runReviewReassessment({
++    ...args,
++    rawRequest: JSON.stringify({ ...request, thread_id: 'PRRT_missing' }),
++  }), /absent or incomplete/);
+   thread.comments.nodes[0].author.login = 'coderabbitai[bot]';
+   await assert.rejects(runReviewReassessment(args), /origin does not match/);
+   thread.comments.nodes[0].author.login = 'chatgpt-codex-connector[bot]';
+@@ -121,9 +157,17 @@ test('source-owned reviewer reassessment is exact-head, idempotent and never mer
+   thread.isResolved = false;
+   comments[0].user.login = 'untrusted';
+   await runReviewReassessment(args);
+-  assert.equal(posts, 2, 'an untrusted marker is not a prior request');
++  assert.equal(posts, 4, 'an untrusted marker is not a prior request');
++  comments.length = 0;
++  github.rest.issues.createComment = async () => {
++    posts++;
++    throw new Error('connection reset after write');
++  };
++  await assert.rejects(runReviewReassessment(args), /POST uncertain; inspect exact marker/);
+   await assert.rejects(runReviewReassessment({ ...args,
+     context: { ...args.context, ref: 'refs/heads/untrusted' } }), /trusted main-branch/);
++  assert.equal(merges, 0, 'request-only reassessment must never merge');
++  assert.equal(resolutions, 0, 'request-only reassessment must never resolve a thread');
+ });
+ 
+ test('exact-head reviewer request is durable, trusted, and idempotent', async () => {
+diff --git a/.github/scripts/maint71_merge_sync_prs.js b/.github/scripts/maint71_merge_sync_prs.js
+index 29feec41b..b1ef13b1f 100644
+--- a/.github/scripts/maint71_merge_sync_prs.js
++++ b/.github/scripts/maint71_merge_sync_prs.js
+@@ -219,7 +219,7 @@ async function runReviewReassessment({
+   context, withRetry, rawRequest, registeredRepos = [], policyPath,
+ }) {
+   const fs = require('fs');
+-  const { generatedDeliveryLane, isTrustedGeneratedDeliveryPr,
++  const { generatedDeliveryLane, isStableSyncBranchName, isTrustedGeneratedDeliveryPr,
+     reviewerProfileForLogin } = require('./sync_pr_merge_contract.js');
+   const { parseDeliveryRecord } = require('./sync_pr_lease_contract.js');
+   const request = parseReviewReassessmentRequest(rawRequest);
+@@ -248,7 +248,8 @@ async function runReviewReassessment({
+     if (pr?.state !== 'open' || pr?.draft || pr?.auto_merge
+       || pr?.head?.sha !== request.head_sha
+       || !isTrustedGeneratedDeliveryPr(pr, [...trustedWriters])
+-      || generatedDeliveryLane(pr?.head?.ref) !== 'dev-tool-sync'
++      || (generatedDeliveryLane(pr?.head?.ref) !== 'dev-tool-sync'
++        && !isStableSyncBranchName(pr?.head?.ref))
+       || record?.repository !== request.repository
+       || record?.plan_id !== request.plan_id
+       || record?.generation !== request.generation
+@@ -256,7 +257,7 @@ async function runReviewReassessment({
+       || (record?.head_observed_sha && record.head_observed_sha !== request.head_sha)
+       || !Number.isFinite(Date.parse(record?.lease_expires_at || ''))
+       || Date.parse(record.lease_expires_at) <= Date.now()) {
+-      throw new Error('Generated dev-tool delivery changed or lease is invalid');
++      throw new Error('Generated delivery changed or lease is invalid');
+     }
+     const data = await withRetry((client) => client.graphql(
+       `query($owner: String!, $repo: String!, $number: Int!) {
+diff --git a/docs/WORKFLOW_GUIDE.md b/docs/WORKFLOW_GUIDE.md
+index b920d0267..d2968bbe1 100644
+--- a/docs/WORKFLOW_GUIDE.md
++++ b/docs/WORKFLOW_GUIDE.md
+@@ -69,7 +69,7 @@ _Inline Gate helper_
+ - **`maint-69-sync-labels.yml`** — Propagates the canonical `.github/labels-core.yml` set to every registered consumer repo (or a provided subset), reusing the registered-repo helper + load-balanced API client without any additional App-token minting.
+ - **`maint-70-fix-integration-formatting.yml`** — Manual formatter for Workflows-Integration-Tests that resolves the repo default branch, applies `black`+`ruff` fixes, and pushes via PAT only when a token is available; runs read-only otherwise.
+ - **`maint-71-auto-fix-integration.yml`** — Auto-triggered integration fixer that watches “Integration CI failed” issues/comments, re-runs the formatting routine, and pushes via PAT when available (otherwise posting a skipped note).
+-- **`maint-71-merge-sync-prs.yml`** — Scans each registered non-admin consumer repo for generated deliveries, closes stale duplicates, deletes leftover branches, and is the only lane allowed to merge a stable consumer delivery. Its cross-repository mutations require `OWNER_PR_PAT`; the workflow fails closed rather than rotating to a partial-scope service or default token. Stable PRs advance `staging` → `reviewing` → `sealed`: one substantive configured-reviewer response is sufficient after seven minutes, all-capacity-unavailable responses may degrade after that quiet period, and zero response degrades after fifteen minutes. It never waits for all configured reviewers. A status that explicitly says the review was skipped, excluded, review-disabled, or not performed is unavailable evidence rather than a response; a completed negative verdict with substantive output is still a response. None of those fallbacks waives an active non-outdated review thread. A specific thread may be resolved only from an authenticated exact-head proof that names the merged Workflows source fix and whose source commit is contained in the delivery. The exact sealed head must be validly GitHub-signed and then pass a freshly triggered Gate before merge; unsigned or non-GitHub-signed heads are returned to Maint 68 for replacement. If repository policy disables one GitHub merge method, Maint 71 tries the remaining methods in order and repeats the exact-head/review-thread gate before each fallback; unrelated merge failures remain terminal. The staging label remains a shared merger hold until Maint 71 completes the merge. Candidate evidence authorizes promotion but leaves the stable candidate PRs open. Promotion prepares the non-canary delivery PRs, and a campaign pass merges both stable lanes only after every registered repo is exact-head prepared or proven unchanged. A promotion-produced `no-change-delivery` row is terminal when its immutable plan/source binding and exact-tree validation are valid and the recorded default-branch head is still current; because no consumer head changed, campaign reconciliation does not create a redundant default-branch Gate. Canary no-change rows retain their live required-check revalidation. A workflow-sync selector ignores sibling dev-tool PRs when deciding whether its expected stable branch exists, so independent lanes do not create false `target_missing` failures. Required checks come from legacy branch protection when visible, otherwise active repository and inherited organization rulesets.
++- **`maint-71-merge-sync-prs.yml`** — Scans each registered non-admin consumer repo for generated deliveries, closes stale duplicates, deletes leftover branches, and is the only lane allowed to merge a stable consumer delivery. Its cross-repository mutations require `OWNER_PR_PAT`; the workflow fails closed rather than rotating to a partial-scope service or default token. Stable PRs advance `staging` → `reviewing` → `sealed`: one substantive configured-reviewer response is sufficient after seven minutes, all-capacity-unavailable responses may degrade after that quiet period, and zero response degrades after fifteen minutes. It never waits for all configured reviewers. A status that explicitly says the review was skipped, excluded, review-disabled, or not performed is unavailable evidence rather than a response; a completed negative verdict with substantive output is still a response. None of those fallbacks waives an active non-outdated review thread. A specific thread may be resolved only from an authenticated exact-head proof that names the merged Workflows source fix and whose source commit is contained in the delivery. Its separate request-only repository dispatch may ask the originating reviewer to reassess one exact active thread on either a dev-tool delivery or a stable workflow-sync candidate/delivery; the request remains plan-, generation-, lease-, source-, head-, thread-, and reviewer-bound and cannot resolve, seal, merge, or close the PR. The exact sealed head must be validly GitHub-signed and then pass a freshly triggered Gate before merge; unsigned or non-GitHub-signed heads are returned to Maint 68 for replacement. If repository policy disables one GitHub merge method, Maint 71 tries the remaining methods in order and repeats the exact-head/review-thread gate before each fallback; unrelated merge failures remain terminal. The staging label remains a shared merger hold until Maint 71 completes the merge. Candidate evidence authorizes promotion but leaves the stable candidate PRs open. Promotion prepares the non-canary delivery PRs, and a campaign pass merges both stable lanes only after every registered repo is exact-head prepared or proven unchanged. A promotion-produced `no-change-delivery` row is terminal when its immutable plan/source binding and exact-tree validation are valid and the recorded default-branch head is still current; because no consumer head changed, campaign reconciliation does not create a redundant default-branch Gate. Canary no-change rows retain their live required-check revalidation. A workflow-sync selector ignores sibling dev-tool PRs when deciding whether its expected stable branch exists, so independent lanes do not create false `target_missing` failures. Required checks come from legacy branch protection when visible, otherwise active repository and inherited organization rulesets.
+ - **`maint-72-fix-pr-body-conflicts.yml`** — Periodically removes stray `pr_body.md` files from consumer repos and ensures `.gitignore` blocks them, reusing the registered-repo helper + PAT discovery so cleanups only run when push access is available.
+ - **`maint-74-ledger-base-sync.yml`** — Keeps `.agents` ledger base entries aligned with the repo’s default branch by running `scripts/ledger_migrate_base.py` and opening a helper PR (no extra App token mint needed).
+ - **`maint-auto-update-pypi-versions.yml`** — Monday 03:00 UTC canonical source lane that batches routine PyPI pin updates into one mutable source PR; an explicit security override may run outside that window.
+diff --git a/docs/ci/WORKFLOWS.md b/docs/ci/WORKFLOWS.md
+index 9174989a1..ce99e88fe 100644
+--- a/docs/ci/WORKFLOWS.md
++++ b/docs/ci/WORKFLOWS.md
+@@ -229,7 +229,7 @@ Scheduled health jobs keep the automation ecosystem aligned:
+ * [`maint-69-sync-labels.yml`](../../.github/workflows/maint-69-sync-labels.yml) syncs core functional labels from labels-core.yml to consumer repos (push to labels-core.yml, manual dispatch with dry-run support).
+ * [`maint-70-fix-integration-formatting.yml`](../../.github/workflows/maint-70-fix-integration-formatting.yml) applies Black and Ruff formatting fixes to Integration-Tests repository files (manual dispatch for CI formatting failures).
+ * [`maint-71-auto-fix-integration.yml`](../../.github/workflows/maint-71-auto-fix-integration.yml) automatically applies formatting fixes to Integration-Tests when triggered by issue comments or workflow failures.
+-* [`maint-71-merge-sync-prs.yml`](../../.github/workflows/maint-71-merge-sync-prs.yml) is the sole sync-PR merge/close reconciler. `OWNER_PR_PAT` is mandatory for its cross-repository reads and mutations; missing, invalid, or exhausted owner credentials fail closed without rotating to a narrower service/default token. Stable deliveries use an exact-head staging/reviewing/sealed lifecycle and a capacity-aware policy: one reviewer response suffices after seven minutes; all-capacity-unavailable and zero-response cases degrade after bounded waits, but active review threads never do. It does not require all configured reviewers. A proof-bound resolution input can clear a named unresolved thread on the named exact head after verifying that its Workflows source fix is contained in the delivery, including an outdated thread that branch protection still counts as unresolved. Ordinary merge eligibility still requires zero active non-outdated threads. Sealing triggers a fresh required Gate, and the shared staging hold blocks every other merger. The final exact-head query also requires a valid GitHub-generated signature; unsigned sync heads are never merged. Candidate mode uploads complete plan-bound evidence and automatically dispatches exact-plan promotion while candidate PRs remain open. The campaign selector prepares both stable lanes and creates an exact-head fleet authorization before any merge pass. Exact-tree `no-change-delivery` evidence is terminal only while its recorded default-branch head is still current; it does not trigger a redundant Gate on an unchanged consumer. Canary no-change evidence is still rechecked against live required contexts. Required contexts come from legacy branch protection or active repository/inherited organization rulesets (scheduled/manual/callable).
++* [`maint-71-merge-sync-prs.yml`](../../.github/workflows/maint-71-merge-sync-prs.yml) is the sole sync-PR merge/close reconciler. `OWNER_PR_PAT` is mandatory for its cross-repository reads and mutations; missing, invalid, or exhausted owner credentials fail closed without rotating to a narrower service/default token. Stable deliveries use an exact-head staging/reviewing/sealed lifecycle and a capacity-aware policy: one reviewer response suffices after seven minutes; all-capacity-unavailable and zero-response cases degrade after bounded waits, but active review threads never do. It does not require all configured reviewers. A proof-bound resolution input can clear a named unresolved thread on the named exact head after verifying that its Workflows source fix is contained in the delivery, including an outdated thread that branch protection still counts as unresolved. Ordinary merge eligibility still requires zero active non-outdated threads. A separate request-only dispatch can ask the originating reviewer to reassess one plan- and exact-head-bound active thread on a dev-tool delivery or stable workflow-sync candidate/delivery without resolving the thread or entering reconciliation. Sealing triggers a fresh required Gate, and the shared staging hold blocks every other merger. The final exact-head query also requires a valid GitHub-generated signature; unsigned sync heads are never merged. Candidate mode uploads complete plan-bound evidence and automatically dispatches exact-plan promotion while candidate PRs remain open. The campaign selector prepares both stable lanes and creates an exact-head fleet authorization before any merge pass. Exact-tree `no-change-delivery` evidence is terminal only while its recorded default-branch head is still current; it does not trigger a redundant Gate on an unchanged consumer. Canary no-change evidence is still rechecked against live required contexts. Required contexts come from legacy branch protection or active repository/inherited organization rulesets (scheduled/manual/callable).
+ * [`maint-72-fix-pr-body-conflicts.yml`](../../.github/workflows/maint-72-fix-pr-body-conflicts.yml) removes pr_body.md from main branch and adds to .gitignore across consumer repos - prevents merge conflicts from PR description files (manual dispatch, weekly schedule).
+ * [`maint-74-ledger-base-sync.yml`](../../.github/workflows/maint-74-ledger-base-sync.yml) aligns `.agents` ledger base entries to the repository default branch on a weekly schedule or manual dispatch.
+ * [`maint-77-model-registry-freshness.yml`](../../.github/workflows/maint-77-model-registry-freshness.yml) checks the canonical LLM registry for overdue or unproved decisions, invalid lifecycle/evidence references, and profile/slot drift. Scheduled and manual runs also perform credential-gated provider catalog discovery; catalog additions become review candidates and never auto-promote (scheduled weekly, manual dispatch, PR gate for registry/slot/policy/checker changes).
+diff --git a/docs/ci/WORKFLOW_SYSTEM.md b/docs/ci/WORKFLOW_SYSTEM.md
+index 26b77ae7a..24c266951 100644
+--- a/docs/ci/WORKFLOW_SYSTEM.md
++++ b/docs/ci/WORKFLOW_SYSTEM.md
+@@ -754,7 +754,7 @@ Keep this table handy when you are triaging automation: it confirms which workfl
+ | **Maint 69 Sync Labels** (`maint-69-sync-labels.yml`, maintenance bucket) | `push` (labels-core.yml), `workflow_dispatch` | Sync core functional labels from labels-core.yml to consumer repositories. Distinguishes functional workflow labels from informational repo-specific labels. Supports dry-run mode. | ⚪ Automatic/manual | [Label sync runs](https://github.com/stranske/Workflows/actions/workflows/maint-69-sync-labels.yml) |
+ | **Fix Integration Tests Formatting** (`maint-70-fix-integration-formatting.yml`, maintenance bucket) | `workflow_dispatch` | Manually triggered workflow to apply Black and Ruff formatting fixes to Python files in the Workflows-Integration-Tests repository when CI formatting checks fail. | ⚪ Manual only | [Formatting fix runs](https://github.com/stranske/Workflows/actions/workflows/maint-70-fix-integration-formatting.yml) |
+ | **Auto-Fix Integration Test Failures** (`maint-71-auto-fix-integration.yml`, maintenance bucket) | `issues` (labeled), `workflow_run` (failed) | Automatically applies Black and Ruff formatting fixes to Python files in the Workflows-Integration-Tests repository when triggered by issue labels or workflow failures. | 🟢 Automated | [Auto-fix runs](https://github.com/stranske/Workflows/actions/workflows/maint-71-auto-fix-integration.yml) |
+-| **Merge Sync PRs** (`maint-71-merge-sync-prs.yml`, maintenance bucket) | `schedule`, `repository_dispatch`, `workflow_dispatch`, `workflow_call` | Sole merge/close reconciler for generated sync delivery. Stable PRs advance through capacity-aware bounded review settlement, exact-head sealing, and a fresh required Gate; active review threads remain hard blockers unless an authenticated proof names that exact head, thread, and a Workflows source fix contained in the delivery. Candidate mode validates and uploads plan-bound evidence before merge, then dispatches exact-plan promotion only when every canary is terminal. | ⚪ Scheduled/manual/callable | [Merge sync runs](https://github.com/stranske/Workflows/actions/workflows/maint-71-merge-sync-prs.yml) |
++| **Merge Sync PRs** (`maint-71-merge-sync-prs.yml`, maintenance bucket) | `schedule`, `repository_dispatch`, `workflow_dispatch`, `workflow_call` | Sole merge/close reconciler for generated sync delivery. Stable PRs advance through capacity-aware bounded review settlement, exact-head sealing, and a fresh required Gate; active review threads remain hard blockers unless an authenticated proof names that exact head, thread, and a Workflows source fix contained in the delivery. A request-only dispatch can ask the originating reviewer to reassess one exact active thread on a dev-tool, `sync/workflows-candidate`, or stable `sync/workflows-delivery` branch without resolving or reconciling it. Candidate mode validates and uploads plan-bound evidence before merge, then dispatches exact-plan promotion only when every canary is terminal. | ⚪ Scheduled/manual/callable | [Merge sync runs](https://github.com/stranske/Workflows/actions/workflows/maint-71-merge-sync-prs.yml) |
+ | **Maint 72 Fix PR Body Conflicts** (`maint-72-fix-pr-body-conflicts.yml`, maintenance bucket) | `workflow_dispatch`, `schedule` (weekly) | Removes `pr_body.md` from main and adds to `.gitignore` in consumer repos to prevent merge conflicts. | ⚪ Manual/scheduled | [PR body fix runs](https://github.com/stranske/Workflows/actions/workflows/maint-72-fix-pr-body-conflicts.yml) |
+ | **Maint 74 Ledger Base Sync** (`maint-74-ledger-base-sync.yml`, maintenance bucket) | `workflow_dispatch`, `schedule` (Mondays 06:00 UTC) | Align `.agents` ledger base entries to the repository default branch. | ⚪ Manual/scheduled | [Ledger base sync runs](https://github.com/stranske/Workflows/actions/workflows/maint-74-ledger-base-sync.yml) |
+ | **Maint 77 Model Registry Freshness** (`maint-77-model-registry-freshness.yml`, maintenance bucket) | `schedule` (Mondays 05:20 UTC), `workflow_dispatch`, `pull_request` (registry/slot/policy/checker paths) | Validates explicit model decisions, evidence, lifecycle, and profile slots offline. Scheduled/manual runs add credential-gated provider-catalog drift and refresh one review issue; catalog changes never auto-select a model. | ⚪ Scheduled/manual + PR gate | [Model registry freshness runs](https://github.com/stranske/Workflows/actions/workflows/maint-77-model-registry-freshness.yml) |
+diff --git a/docs/ops/CONSUMER_REPO_MAINTENANCE.md b/docs/ops/CONSUMER_REPO_MAINTENANCE.md
+index 19eb623e2..6a8c79262 100644
+--- a/docs/ops/CONSUMER_REPO_MAINTENANCE.md
++++ b/docs/ops/CONSUMER_REPO_MAINTENANCE.md
+@@ -812,8 +812,9 @@ waive the zero active non-outdated thread requirement for ordinary merge
+ eligibility. A source fix without this exact proof, a later candidate plan, or a
+ passing Gate never resolves the current PR's review debt.
+ 
+-For a dev-tool delivery whose owner has fixed a review finding but whose
+-originating reviewer has not reassessed it, send the Maint 71
++For a dev-tool delivery or stable workflow-sync candidate and delivery whose
++owner has fixed a review finding but whose originating reviewer has not
++reassessed it, send the Maint 71
+ `maint71-review-reassessment` repository-dispatch event with a
+ `client_payload.review_reassessment_json` string. The versioned JSON object must contain
+ `schema=maint71-review-reassessment/v1`, `repository`, numeric `pr`, exact
+@@ -822,6 +823,9 @@ originating reviewer has not reassessed it, send the Maint 71
+ checks the registered repository, trusted generated branch and author, current
+ delivery lease and immutable bindings, complete review-thread inventory and
+ originating reviewer, then posts the policy-configured review command once.
++Workflow-sync reassessment is restricted to the stable
++`sync/workflows-candidate` and `sync/workflows-delivery` branches; another
++`sync/workflows-*` branch fails closed.
+ The request comment records a plan/generation/head/thread marker and URL; a
+ repeat dispatch reuses that evidence. An ambiguous POST must be inspected by
+ marker before retry. This dispatch runs a separate request-only job: it never
+diff --git a/tests/workflows/test_sync_delivery_liveness.py b/tests/workflows/test_sync_delivery_liveness.py
+index 98f732a61..9c5cd5aaa 100644
+--- a/tests/workflows/test_sync_delivery_liveness.py
++++ b/tests/workflows/test_sync_delivery_liveness.py
+@@ -150,6 +150,7 @@ def test_maint71_has_proof_bound_review_resolution_and_exact_evidence_promotion(
+ def test_maint71_reviewer_reassessment_is_trusted_request_only_dispatch():
+     workflow = Path(".github/workflows/maint-71-merge-sync-prs.yml").read_text()
+     executor = Path(".github/scripts/maint71_merge_sync_prs.js").read_text()
++    executor_tests = Path(".github/scripts/__tests__/maint71_merge_sync_prs.test.js").read_text()
+     policy = Path("config/consumer_sync_review_policy.json").read_text()
+     guide = Path("docs/ops/CONSUMER_REPO_MAINTENANCE.md").read_text()
+ 
+@@ -163,8 +164,12 @@ def test_maint71_reviewer_reassessment_is_trusted_request_only_dispatch():
+     assert "Never rotate a cross-repository read/comment onto GITHUB_TOKEN" in workflow
+     assert "maint71-review-reassessment/v1" in executor
+     assert "client.rest.issues.createComment" in executor
++    assert "isStableSyncBranchName" in executor
++    assert "sync/workflows-candidate" in executor_tests
++    assert "sync/workflows-delivery" in executor_tests
+     assert '"reassessment_comment": "@codex review"' in policy
+     assert '"reassessment_comment": "@coderabbitai full review"' in policy
++    assert "workflow-sync candidate and delivery" in guide
+     assert "A reviewer request is not itself thread acceptance" in guide
+ 
+ 

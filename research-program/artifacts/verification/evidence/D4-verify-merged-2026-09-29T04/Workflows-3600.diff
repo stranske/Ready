@@ -1,0 +1,209 @@
+diff --git a/.github/workflows/maint-68-sync-consumer-repos.yml b/.github/workflows/maint-68-sync-consumer-repos.yml
+index c61a7bf39..c0b55036c 100644
+--- a/.github/workflows/maint-68-sync-consumer-repos.yml
++++ b/.github/workflows/maint-68-sync-consumer-repos.yml
+@@ -84,9 +84,15 @@ env:
+     stranske/Deliverable-Render
+     stranske/Manager-Mosaic
+ 
++# Maint 68 and Maint 71 are both whole-body/head writers for the same stable
++# consumer PRs.  The shared repository-scoped group is the serialization
++# boundary for the final-read-to-PATCH window; do not partition it by workflow,
++# selector, phase, plan, generation, head, or ref. GitHub retains at most one
++# pending holder and may replace it with a newer arrival; durable reconciliation
++# must replay displaced work from its immutable inputs.
+ concurrency:
+-  group: sync-consumer-repos-${{ github.repository }}-${{ github.ref }}
+-  cancel-in-progress: true
++  group: consumer-sync-stable-pr-writers-${{ github.repository }}
++  cancel-in-progress: false
+ 
+ jobs:
+   # ============================================================================
+diff --git a/.github/workflows/maint-71-merge-sync-prs.yml b/.github/workflows/maint-71-merge-sync-prs.yml
+index 820935ef8..995fc9bc8 100644
+--- a/.github/workflows/maint-71-merge-sync-prs.yml
++++ b/.github/workflows/maint-71-merge-sync-prs.yml
+@@ -167,13 +167,14 @@ permissions:
+   pull-requests: write
+   statuses: read
+ 
++# Maint 68 and Maint 71 are both whole-body/head writers for the same stable
++# consumer PRs.  The shared repository-scoped group is the serialization
++# boundary for the final-read-to-PATCH window; do not partition it by workflow,
++# selector, phase, plan, generation, head, or ref. GitHub retains at most one
++# pending holder and may replace it with a newer arrival; durable reconciliation
++# must replay displaced work from its immutable inputs.
+ concurrency:
+-  group: >-
+-    merge-sync-prs-${{ github.repository }}-${{
+-      inputs.active_sync_hash ||
+-      github.event.client_payload.active_sync_hash ||
+-      'unscoped'
+-    }}
++  group: consumer-sync-stable-pr-writers-${{ github.repository }}
+   cancel-in-progress: false
+ 
+ jobs:
+diff --git a/docs/ci/WORKFLOWS.md b/docs/ci/WORKFLOWS.md
+index f60fb88ed..c48647c7f 100644
+--- a/docs/ci/WORKFLOWS.md
++++ b/docs/ci/WORKFLOWS.md
+@@ -222,7 +222,7 @@ Scheduled health jobs keep the automation ecosystem aligned:
+ * [`health-83-dependency-sync-efficiency.yml`](../../.github/workflows/health-83-dependency-sync-efficiency.yml) publishes a weekly, fixture-backed advisory report for dependency-bot, consumer-sync, and dev-tool-sync maintenance and also runs once for each completed immutable sync plan. It completely paginates the trailing reporting window and measures stable-delivery force pushes, draft/ready cycles, reviewer events, and review-to-seal convergence; all-time history remains explicitly incomplete. The dedicated efficiency tracker (`#2897`) changes only when the material-evidence fingerprint changes.
+ * [`health-84-langsmith-observability.yml`](../../.github/workflows/health-84-langsmith-observability.yml) independently monitors LangSmith dashboard/conformance cadence, cloud trace freshness, and intentional pause review dates. It upserts one durable health issue and adds `needs-human` plus `agent:needs-attention` while degraded (daily schedule, manual dispatch).
+ * [`maint-68-sync-consumer-repos.yml`](../../.github/workflows/maint-68-sync-consumer-repos.yml) coalesces workflow-template updates into stable ready-for-review `sync/workflows-candidate` and `sync/workflows-delivery` PRs. Scheduled reconciliation uses the full typed manifest; a bounded source repair may use an exact base/head source-delta plan, whose immutable scope and transitive manifest-declared `requires` targets are carried through Maint 71 canary evidence into promotion. Every promotion reconstructs its exact source commit from that evidence; source-delta promotion also reconstructs the exact base, so a later `main` commit cannot join either plan scope. Manifest edits and status-ignore reconciler/template changes require full scope because managed `.gitignore` blocks are plan-wide. Explicit repo filters cannot broaden the canary phase; non-canaries are written only by a plan-bound `promote` run carrying green, review-clear Maint 71 evidence. A successful candidate write wave dispatches the Maint 71 candidate selector; promotion dispatches the fleet campaign selector. Actual head changes restore the staging label and disable auto-merge without changing PR readiness, while exact base/tree no-ops preserve the current review lifecycle. Mutating jobs use one repository-scoped Workflows App token for stable-head verification, GitHub-verified commit creation, and post-publication verification, so an exhausted owner PAT cannot interrupt signed-delivery proof. They fail before publication if the API result is unsigned or its tree differs from the staged tree.
+-* Health 68 follows the scheduled Maint 71 janitor by 45 minutes and is also triggered only after that workflow completes; its Actions-cache comparison timestamp debounces extra fan-out without querying up to fifteen historical job payloads on every trigger. The two workflows retain distinct concurrency groups because GitHub concurrency keeps only one pending run and is not a lossless cross-workflow queue for immutable campaign handoffs. Maint 71 completely paginates open PRs, bounds merged-history reads to the two known stable heads, and circuit-breaks the remaining repo loop as soon as primary token rotation is exhausted. Both lanes upload append-only, redacted `rate-limit-incident/v1` evidence after their final API call; primary exhaustion fails immediately, while secondary throttling keeps bounded backoff.
++* Health 68 follows the scheduled Maint 71 janitor by 45 minutes and is also triggered only after that workflow completes; its Actions-cache comparison timestamp debounces extra fan-out without querying up to fifteen historical job payloads on every trigger. Health 68 and Maint 71 retain distinct concurrency groups because GitHub concurrency keeps only one pending run and is not a lossless cross-workflow queue for immutable campaign handoffs. By contrast, the mutating Maint 68 and Maint 71 workflows share `consumer-sync-stable-pr-writers-${{ github.repository }}` across their whole runs: that group provides mutual exclusion for stable-PR writers, while persisted handoffs and explicit replay recover work whose pending run was replaced. Maint 71 completely paginates open PRs, bounds merged-history reads to the two known stable heads, and circuit-breaks the remaining repo loop as soon as primary token rotation is exhausted. Both lanes upload append-only, redacted `rate-limit-incident/v1` evidence after their final API call; primary exhaustion fails immediately, while secondary throttling keeps bounded backoff.
+ * [`maint-69-sync-integration-repo.yml`](../../.github/workflows/maint-69-sync-integration-repo.yml) syncs integration-repo templates to Workflows-Integration-Tests repository (template push, manual dispatch with dry-run support). Failed-sync alerts are transient and close after the next successful non-dry run.
+ * [`maint-69-sync-labels.yml`](../../.github/workflows/maint-69-sync-labels.yml) syncs core functional labels from labels-core.yml to consumer repos (push to labels-core.yml, manual dispatch with dry-run support).
+ * [`maint-70-fix-integration-formatting.yml`](../../.github/workflows/maint-70-fix-integration-formatting.yml) applies Black and Ruff formatting fixes to Integration-Tests repository files (manual dispatch for CI formatting failures).
+diff --git a/docs/ops/CONSUMER_REPO_MAINTENANCE.md b/docs/ops/CONSUMER_REPO_MAINTENANCE.md
+index c0f8ee4a4..19eb623e2 100644
+--- a/docs/ops/CONSUMER_REPO_MAINTENANCE.md
++++ b/docs/ops/CONSUMER_REPO_MAINTENANCE.md
+@@ -564,6 +564,24 @@ Scheduled Maint 82 continuations exclude the manual Collab-Admin exception.
+ Its `delivery` selector targets only registered `sync/workflows-delivery`
+ handoffs with the selected immutable plan, scope, base and source; candidate-only
+ repositories are not sent to that lane as false `target_missing` failures.
++Maint 68 and Maint 71 share one repository-scoped GitHub Actions concurrency
++group for every stable-PR writer run. The boundary starts before either workflow
++reads consumer PR state and remains held through branch publication, review
++request reconciliation, lifecycle body replacement, merge, and cleanup. The
++group is intentionally not partitioned by workflow, selector, phase, plan,
++generation, head, or ref: candidate and campaign selectors can target the same
++stable PR, and Maint 68 can refresh that PR while Maint 71 advances its review
++lifecycle. The group admits only one running writer, so a writer paused after
++its final identity read cannot race another writer into a whole-body PATCH.
++GitHub retains at most one pending run in a concurrency group and a newer
++arrival can replace that pending run; this is mutual exclusion, not a lossless
++queue. Maint 82 replays persisted transient handoffs from their immutable
++bindings. If a request was displaced before its handoff was persisted, rerun
++the original normal selector with the same immutable inputs. After any failed
++or cancelled writer, the next holder re-reads the durable
++plan/generation/head record and reconciles any partial comment, body, branch,
++or label state.
++
+ The `campaign` selector retains the non-manual fleet scope needed for exact-head
+ authorization.
+ Promoted delivery commits carry their exact canary evidence in the verified
+@@ -682,10 +700,10 @@ through the same guarded owner path, which restores ready state and disables
+ auto-merge before another review attempt. The request lookup re-reads the PR
+ after scanning request comments so readiness changes during pagination are
+ included in that decision; an identity change fails closed.
+-These reads do not make GitHub's PR-body update atomic against a later Maint 68
+-rotation; cross-workflow writer serialization remains source-owned follow-up
+-#3534. Exact-head plan, seal, and Gate guards still deny authorization when
+-such drift is observed.
++These reads do not make GitHub's PR-body update conditionally atomic, so the
++shared Maint 68/Maint 71 writer group covers the final-read-to-PATCH window.
++Exact-head plan, seal, and Gate guards still deny authorization when drift is
++observed, including work replayed after a pending run was replaced.
+ Dry-run reports count an unrequested legacy seal explicitly without mutating it.
+ The policy requires one response, not all configured reviewers, after a
+ seven-minute quiet period. If every reviewer
+diff --git a/tests/workflows/test_sync_delivery_liveness.py b/tests/workflows/test_sync_delivery_liveness.py
+index 65fc51299..98f732a61 100644
+--- a/tests/workflows/test_sync_delivery_liveness.py
++++ b/tests/workflows/test_sync_delivery_liveness.py
+@@ -1,6 +1,100 @@
++import re
++import threading
+ from pathlib import Path
+ 
+ 
++def _top_level_concurrency(source: str) -> tuple[str, str]:
++    match = re.search(
++        r"^concurrency:\n"
++        r"  group: (?P<group>[^\n]+)\n"
++        r"  cancel-in-progress: (?P<cancel>[^\n]+)$",
++        source,
++        flags=re.MULTILINE,
++    )
++    assert match, "workflow must declare the stable-PR writer concurrency contract"
++    assert "queue:" not in source, "workflow must use supported concurrency syntax"
++    return match.group("group"), match.group("cancel")
++
++
++def test_maint68_and_maint71_serialize_stable_pr_writers_across_final_read_patch_window():
++    maint68 = Path(".github/workflows/maint-68-sync-consumer-repos.yml").read_text()
++    maint71 = Path(".github/workflows/maint-71-merge-sync-prs.yml").read_text()
++    maint68_group, maint68_cancel = _top_level_concurrency(maint68)
++    maint71_group, maint71_cancel = _top_level_concurrency(maint71)
++
++    expected_group = "consumer-sync-stable-pr-writers-${{ github.repository }}"
++    assert maint68_group == maint71_group == expected_group
++    assert maint68_cancel == maint71_cancel == "false"
++    for partition in (
++        "github.workflow",
++        "github.ref",
++        "active_sync_hash",
++        "sync_hash",
++        "phase",
++        "plan",
++        "generation",
++        "head",
++    ):
++        assert partition not in maint68_group
++        assert partition not in maint71_group
++
++    # Model GitHub's repository-scoped concurrency semantics with the group
++    # parsed from production YAML. Maint 68 is queued precisely after Maint 71's
++    # final identity read; it must not reach its read/write section until Maint
++    # 71 releases the shared group after PATCH.
++    locks: dict[str, threading.Lock] = {}
++    final_read = threading.Event()
++    release_maint71 = threading.Event()
++    maint68_attempting = threading.Event()
++    maint68_mutated = threading.Event()
++
++    def group_lock(group: str) -> threading.Lock:
++        return locks.setdefault(group, threading.Lock())
++
++    def maint71_writer() -> None:
++        with group_lock(maint71_group):
++            final_read.set()
++            assert release_maint71.wait(timeout=2)
++
++    def maint68_writer() -> None:
++        assert final_read.wait(timeout=2)
++        maint68_attempting.set()
++        with group_lock(maint68_group):
++            maint68_mutated.set()
++
++    lifecycle = threading.Thread(target=maint71_writer)
++    refresh = threading.Thread(target=maint68_writer)
++    lifecycle.start()
++    refresh.start()
++    assert maint68_attempting.wait(timeout=2)
++    assert not maint68_mutated.wait(timeout=0.05)
++    release_maint71.set()
++    lifecycle.join(timeout=2)
++    refresh.join(timeout=2)
++    assert not lifecycle.is_alive()
++    assert not refresh.is_alive()
++    assert maint68_mutated.is_set()
++
++    actionlint_allowlist = Path(".github/actionlint-allowlist.txt").read_text()
++    assert 'unexpected key "queue" for "concurrency" section' not in actionlint_allowlist
++
++
++def test_stable_writer_concurrency_documents_pending_replacement_and_replay():
++    maintenance_guide = Path("docs/ops/CONSUMER_REPO_MAINTENANCE.md").read_text()
++    topology_guide = Path("docs/ci/WORKFLOWS.md").read_text()
++    maint82 = Path(".github/workflows/maint-82-sync-dependency-campaign.yml").read_text()
++
++    assert "at most one pending run" in maintenance_guide
++    assert "mutual exclusion, not a lossless" in maintenance_guide
++    assert "rerun" in maintenance_guide
++    assert "the original normal selector with the same immutable inputs" in maintenance_guide
++    assert "persisted transient handoffs" in maintenance_guide
++    assert "not a lossless cross-workflow queue" in topology_guide
++    assert "consumer-sync-stable-pr-writers-${{ github.repository }}" in topology_guide
++    assert "planMaint71Continuations" in maint82
++    assert "Dispatch due Maint 71 continuations" in maint82
++
++
+ def test_maint71_has_proof_bound_review_resolution_and_exact_evidence_promotion():
+     workflow = Path(".github/workflows/maint-71-merge-sync-prs.yml").read_text()
+     executor = Path(".github/scripts/maint71_merge_sync_prs.js").read_text()

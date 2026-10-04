@@ -1,0 +1,218 @@
+{
+  "observedAt": "2026-09-30T15:25:30.638584+00:00",
+  "covered": [
+    "Workflows",
+    "Travel-Plan-Permission",
+    "Trend_Model_Project",
+    "Portable-Alpha-Extension-Model",
+    "Counter_Risk",
+    "Manager-Database",
+    "Inv-Man-Intake",
+    "Pension-Data"
+  ],
+  "deferred": [
+    "Ready",
+    "trip-planner",
+    "learning-management-system",
+    "Fine-Art-Archive",
+    "Doc-Lineage",
+    "Deliverable-Render",
+    "Manager-Mosaic"
+  ],
+  "results": [
+    {
+      "repo": "Workflows",
+      "full": "stranske/Workflows",
+      "branch": "main",
+      "head": "e2923c8",
+      "open_issues": 25,
+      "supply": 15,
+      "impl_open": 16,
+      "priority_on_impl": 5,
+      "frozen": [
+        {
+          "n": 3123,
+          "title": "\ud83d\udd2d LangSmith Observability Health",
+          "labels": [
+            "agent:needs-attention",
+            "automated",
+            "metrics",
+            "needs-human",
+            "tracker:durable"
+          ]
+        }
+      ],
+      "stalled": [],
+      "silent": [
+        {
+          "n": 3624,
+          "updatedAt": "2026-09-29T23:09:48Z",
+          "labels": [
+            "agent:retry",
+            "agents:apply-suggestions",
+            "agents:auto-pilot",
+            "agents:formatted",
+            "follow-up",
+            "from:codex",
+            "runner:codex"
+          ]
+        }
+      ],
+      "latest_fail": null,
+      "latest_success": null,
+      "open_prs": 2
+    },
+    {
+      "repo": "Travel-Plan-Permission",
+      "full": "stranske/Travel-Plan-Permission",
+      "branch": "main",
+      "head": "4fc442f",
+      "open_issues": 29,
+      "supply": 25,
+      "impl_open": 25,
+      "priority_on_impl": 0,
+      "frozen": [],
+      "stalled": [],
+      "silent": [],
+      "latest_fail": null,
+      "latest_success": {
+        "conclusion": "success",
+        "createdAt": "2026-09-30T12:52:10Z",
+        "databaseId": 36717597000,
+        "headSha": "4fc442f60f384f478a567ba219d2b77072fce81e",
+        "status": "completed",
+        "url": "https://github.com/stranske/Travel-Plan-Permission/actions/runs/36717597000",
+        "workflowName": "CI"
+      },
+      "open_prs": 1
+    },
+    {
+      "repo": "Trend_Model_Project",
+      "full": "stranske/Trend_Model_Project",
+      "branch": "main",
+      "head": "c51b7fd",
+      "open_issues": 2,
+      "supply": 0,
+      "impl_open": 0,
+      "priority_on_impl": 0,
+      "frozen": [],
+      "stalled": [],
+      "silent": [],
+      "latest_fail": null,
+      "latest_success": {
+        "conclusion": "success",
+        "createdAt": "2026-09-30T13:25:56Z",
+        "databaseId": 36721579580,
+        "headSha": "c51b7fd46319653a4eca3a7512eae964d220909c",
+        "status": "completed",
+        "url": "https://github.com/stranske/Trend_Model_Project/actions/runs/36721579580",
+        "workflowName": "CI"
+      },
+      "open_prs": 1
+    },
+    {
+      "repo": "Portable-Alpha-Extension-Model",
+      "full": "stranske/Portable-Alpha-Extension-Model",
+      "branch": "main",
+      "head": "a97ba41",
+      "open_issues": 2,
+      "supply": 0,
+      "impl_open": 0,
+      "priority_on_impl": 0,
+      "frozen": [],
+      "stalled": [],
+      "silent": [],
+      "latest_fail": null,
+      "latest_success": null,
+      "open_prs": 1
+    },
+    {
+      "repo": "Counter_Risk",
+      "full": "stranske/Counter_Risk",
+      "branch": "main",
+      "head": "16b36db",
+      "open_issues": 2,
+      "supply": 0,
+      "impl_open": 0,
+      "priority_on_impl": 0,
+      "frozen": [],
+      "stalled": [],
+      "silent": [],
+      "latest_fail": {
+        "conclusion": "failure",
+        "createdAt": "2026-05-15T19:27:13Z",
+        "databaseId": 25937141989,
+        "headSha": "f39486efb5b465e198b5c5d3d063f6419ca96e8e",
+        "status": "completed",
+        "url": "https://github.com/stranske/Counter_Risk/actions/runs/25937141989",
+        "workflowName": "CI"
+      },
+      "latest_success": {
+        "conclusion": "success",
+        "createdAt": "2026-05-15T18:34:50Z",
+        "databaseId": 25934827069,
+        "headSha": "00f9cd9418ec1f260c223c9c66c8b3d2d562f5a6",
+        "status": "completed",
+        "url": "https://github.com/stranske/Counter_Risk/actions/runs/25934827069",
+        "workflowName": "Agents Gate Followups"
+      },
+      "open_prs": 1
+    },
+    {
+      "repo": "Manager-Database",
+      "full": "stranske/Manager-Database",
+      "branch": "main",
+      "head": "4b7f8c4",
+      "open_issues": 3,
+      "supply": 1,
+      "impl_open": 1,
+      "priority_on_impl": 0,
+      "frozen": [],
+      "stalled": [],
+      "silent": [],
+      "latest_fail": null,
+      "latest_success": {
+        "conclusion": "success",
+        "createdAt": "2026-09-30T12:53:38Z",
+        "databaseId": 36717763211,
+        "headSha": "4b7f8c462d11b5abf7a32d90b00ebaaf128c49bc",
+        "status": "completed",
+        "url": "https://github.com/stranske/Manager-Database/actions/runs/36717763211",
+        "workflowName": "CI"
+      },
+      "open_prs": 1
+    },
+    {
+      "repo": "Inv-Man-Intake",
+      "full": "stranske/Inv-Man-Intake",
+      "branch": "main",
+      "head": "b5107df",
+      "open_issues": 4,
+      "supply": 2,
+      "impl_open": 2,
+      "priority_on_impl": 1,
+      "frozen": [],
+      "stalled": [],
+      "silent": [],
+      "latest_fail": null,
+      "latest_success": null,
+      "open_prs": 1
+    },
+    {
+      "repo": "Pension-Data",
+      "full": "stranske/Pension-Data",
+      "branch": "main",
+      "head": "7315403",
+      "open_issues": 2,
+      "supply": 0,
+      "impl_open": 0,
+      "priority_on_impl": 0,
+      "frozen": [],
+      "stalled": [],
+      "silent": [],
+      "latest_fail": null,
+      "latest_success": null,
+      "open_prs": 1
+    }
+  ]
+}

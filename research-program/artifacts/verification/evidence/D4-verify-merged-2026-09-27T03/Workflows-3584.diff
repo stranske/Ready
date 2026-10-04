@@ -1,0 +1,455 @@
+diff --git a/.github/workflows/maint-77-model-registry-freshness.yml b/.github/workflows/maint-77-model-registry-freshness.yml
+index f02c470cf..7a9844d51 100644
+--- a/.github/workflows/maint-77-model-registry-freshness.yml
++++ b/.github/workflows/maint-77-model-registry-freshness.yml
+@@ -202,3 +202,119 @@ jobs:
+               --label "automated,tracker:durable"
+             echo "::warning::Opened model-registry freshness issue"
+           fi
++
++  dispatch-evaluation-pilot:
++    if: >-
++      github.event_name != 'pull_request' &&
++      needs.freshness.outputs.discovery_drift == 'true'
++    needs: freshness
++    concurrency:
++      group: maint-77-evaluation-pilot-dispatch
++      cancel-in-progress: true
++    runs-on: ubuntu-latest
++    permissions:
++      contents: read
++      actions: write
++    steps:
++      - name: Checkout
++        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
++        with:
++          persist-credentials: false
++
++      - name: Download catalog discovery
++        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
++        with:
++          name: model-catalog-discovery-${{ github.run_id }}
++          path: .
++
++      - name: Setup API client
++        uses: ./.github/actions/setup-api-client
++        with:
++          github_token: ${{ github.token }}
++          owner_pr_pat: ${{ secrets.OWNER_PR_PAT }}
++          service_bot_pat: ${{ secrets.SERVICE_BOT_PAT }}
++
++      - name: Setup Python
++        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
++        with:
++          python-version: '3.14'
++
++      - name: Refresh pilot candidates from registry
++        run: >-
++          python3 -m tools.refresh_model_eval_candidates --write
++          --catalog-discovery catalog-discovery.json
++
++      - name: Upload pilot candidates for MAINT-78
++        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
++        with:
++          name: maint-77-pilot-candidates
++          path: config/model_eval_candidates.json
++          if-no-files-found: error
++
++      - name: Dispatch evaluation pilot on catalog drift
++        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
++        with:
++          github-token: ${{ secrets.GITHUB_TOKEN }}
++          script: |
++            const { createTokenAwareRetry } = require('./.github/scripts/github-api-with-retry.js');
++            const { withRetry } = await createTokenAwareRetry({
++              github,
++              core,
++              env: process.env,
++              task: 'maint-77-dispatch-model-eval-pilot',
++              capabilities: ['actions:write'],
++            });
++            const activeStatuses = [
++              'requested',
++              'queued',
++              'in_progress',
++              'waiting',
++              'pending',
++            ];
++            const activeRuns = [];
++            for (const status of activeStatuses) {
++              for (let page = 1; ; page += 1) {
++                const { data } = await withRetry((client) =>
++                  client.rest.actions.listWorkflowRuns({
++                    owner: context.repo.owner,
++                    repo: context.repo.repo,
++                    workflow_id: 'maint-78-model-evaluation-pilot.yml',
++                    status,
++                    per_page: 100,
++                    page,
++                  }),
++                );
++                const pageRuns = data.workflow_runs || [];
++                activeRuns.push(...pageRuns);
++                if (pageRuns.length < 100) break;
++              }
++            }
++            const currentSourceRunId = String(context.runId);
++            const expectedPilotTitle = `MAINT-78 source ${currentSourceRunId}`;
++            const pilotUsesCurrentCandidates = (run) =>
++              String(run.display_title || '') === expectedPilotTitle;
++            const matchingPilot = activeRuns.find(pilotUsesCurrentCandidates);
++            if (matchingPilot) {
++              core.notice(
++                `Model evaluation pilot already active in run ${matchingPilot.id} ` +
++                  `for ${expectedPilotTitle}`,
++              );
++              return;
++            }
++            const otherActivePilot = activeRuns[0];
++            if (otherActivePilot) {
++              core.notice(
++                `Active pilot run ${otherActivePilot.id} lacks candidates from MAINT-77 run ` +
++                  `${currentSourceRunId}; dispatching a new pilot`,
++              );
++            }
++            await withRetry((client) => client.rest.actions.createWorkflowDispatch({
++              owner: context.repo.owner,
++              repo: context.repo.repo,
++              workflow_id: 'maint-78-model-evaluation-pilot.yml',
++              ref: context.payload.repository?.default_branch || 'main',
++              inputs: {
++                candidates_source_run_id: String(context.runId),
++              },
++            }));
++            core.notice('Dispatched Maint 78 model evaluation pilot after catalog drift');
+diff --git a/.github/workflows/maint-78-model-evaluation-pilot.yml b/.github/workflows/maint-78-model-evaluation-pilot.yml
+index 9d31a92b2..a6e6e28bd 100644
+--- a/.github/workflows/maint-78-model-evaluation-pilot.yml
++++ b/.github/workflows/maint-78-model-evaluation-pilot.yml
+@@ -1,7 +1,15 @@
+ name: Maint 78 Model Evaluation Pilot
++run-name: MAINT-78 source ${{ inputs.candidates_source_run_id || 'automatic' }}
+ 
+ on:
+-  workflow_dispatch: {}
++  workflow_dispatch:
++    inputs:
++      candidates_source_run_id:
++        description: >-
++          MAINT-77 workflow run id whose maint-77-pilot-candidates artifact
++          should be used instead of refreshing from the checked-out registry.
++        required: false
++        type: string
+   # Auto-run when the catalog changes so a newly-current model is piloted without
+   # anyone editing the candidate list (stranske/Workflows#2819, move 1).
+   push:
+@@ -17,6 +25,7 @@ permissions:
+   contents: read
+   pull-requests: read
+   models: read
++  actions: read
+ 
+ jobs:
+   pilot:
+@@ -26,8 +35,21 @@ jobs:
+       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+         with:
+           persist-credentials: false
++      - name: Download MAINT-77 pilot candidates
++        if: >-
++          github.event_name == 'workflow_dispatch' &&
++          inputs.candidates_source_run_id != ''
++        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
++        with:
++          name: maint-77-pilot-candidates
++          run-id: ${{ inputs.candidates_source_run_id }}
++          github-token: ${{ github.token }}
++          path: config
+       - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+       - name: Refresh candidates from the registry
++        if: >-
++          github.event_name != 'workflow_dispatch' ||
++          inputs.candidates_source_run_id == ''
+         # Derive the candidate set from the current catalog so the pilot always
+         # tests every now-current model, even if the committed file lagged.
+         run: python -m tools.refresh_model_eval_candidates --write
+diff --git a/tests/tools/test_refresh_model_eval_candidates.py b/tests/tools/test_refresh_model_eval_candidates.py
+index 7e4374703..bcd6ef2a8 100644
+--- a/tests/tools/test_refresh_model_eval_candidates.py
++++ b/tests/tools/test_refresh_model_eval_candidates.py
+@@ -93,6 +93,110 @@ def test_derive_only_uses_the_target_profile():
+     assert incumbents == {"gpt-5.4", "claude-opus-4-6"}
+ 
+ 
++def test_merge_catalog_discovery_adds_advisory_rows():
++    derived = rc.derive_candidates(_registry())
++    discovery = {
++        "providers": [
++            {
++                "provider": "openai",
++                "status": "drift",
++                "added_candidates": ["gpt-brand-new"],
++            }
++        ]
++    }
++    merged = rc.merge_catalog_discovery(derived, discovery, _registry())
++    keys = {(c["provider"], c["model_id"], c["role"]) for c in merged["candidates"]}
++    assert ("openai", "gpt-brand-new", "catalog-advisory") in keys
++
++
++def test_merge_catalog_discovery_skips_advisory_without_incumbent():
++    derived = rc.derive_candidates(_registry())
++    discovery = {
++        "providers": [
++            {
++                "provider": "google",
++                "status": "drift",
++                "added_candidates": ["gemini-new"],
++            }
++        ]
++    }
++    merged = rc.merge_catalog_discovery(derived, discovery, _registry())
++    assert not any(c["provider"] == "google" for c in merged["candidates"])
++
++
++def test_merge_catalog_discovery_skips_ineligible_registry_models():
++    derived = rc.derive_candidates(_registry())
++    discovery = {
++        "providers": [
++            {
++                "provider": "openai",
++                "status": "drift",
++                "added_candidates": ["gpt-blocked"],
++            }
++        ]
++    }
++    merged = rc.merge_catalog_discovery(derived, discovery, _registry())
++    assert not any(c["model_id"] == "gpt-blocked" for c in merged["candidates"])
++
++
++def test_main_merges_catalog_discovery_file(tmp_path):
++    reg = tmp_path / "reg.json"
++    disc = tmp_path / "disc.json"
++    out = tmp_path / "out.json"
++    reg.write_text(json.dumps(_registry()))
++    disc.write_text(
++        json.dumps(
++            {
++                "providers": [
++                    {
++                        "provider": "openai",
++                        "status": "drift",
++                        "added_candidates": ["gpt-handoff-test"],
++                    }
++                ]
++            }
++        )
++    )
++    assert (
++        rc.main(
++            [
++                "--registry",
++                str(reg),
++                "--candidates",
++                str(out),
++                "--write",
++                "--catalog-discovery",
++                str(disc),
++            ]
++        )
++        == 0
++    )
++    written = json.loads(out.read_text(encoding="utf-8"))
++    keys = {(c["provider"], c["model_id"], c["role"]) for c in written["candidates"]}
++    assert ("openai", "gpt-handoff-test", "catalog-advisory") in keys
++
++
++def test_main_rejects_invalid_catalog_discovery_shape(tmp_path, capsys):
++    reg = tmp_path / "reg.json"
++    disc = tmp_path / "disc.json"
++    out = tmp_path / "out.json"
++    reg.write_text(json.dumps(_registry()))
++    disc.write_text(json.dumps({"providers": None}))
++    code = rc.main(
++        [
++            "--registry",
++            str(reg),
++            "--candidates",
++            str(out),
++            "--write",
++            "--catalog-discovery",
++            str(disc),
++        ]
++    )
++    assert code == 2
++    assert "invalid catalog discovery" in capsys.readouterr().err
++
++
+ def test_derive_is_deterministic_and_sorted():
+     a = rc.derive_candidates(_registry())
+     b = rc.derive_candidates(_registry())
+diff --git a/tests/workflows/test_model_eval_pilot_workflow.py b/tests/workflows/test_model_eval_pilot_workflow.py
+index 93f45e938..b4df38e16 100644
+--- a/tests/workflows/test_model_eval_pilot_workflow.py
++++ b/tests/workflows/test_model_eval_pilot_workflow.py
+@@ -24,6 +24,61 @@ def test_model_eval_pilot_runs_as_importable_module() -> None:
+     assert upload["with"]["if-no-files-found"] == "warn"
+ 
+ 
++def test_auto_dispatch_maint77_chains_to_maint78_on_catalog_drift() -> None:
++    root = Path(__file__).resolve().parents[2]
++    workflow = yaml.safe_load(
++        (root / ".github/workflows/maint-77-model-registry-freshness.yml").read_text(
++            encoding="utf-8"
++        )
++    )
++    dispatch_job = workflow["jobs"]["dispatch-evaluation-pilot"]
++    assert "discovery_drift == 'true'" in dispatch_job["if"]
++    assert dispatch_job["concurrency"]["group"] == "maint-77-evaluation-pilot-dispatch"
++    assert dispatch_job["permissions"]["actions"] == "write"
++    needs = dispatch_job["needs"]
++    assert needs == ["freshness"] or needs == "freshness"
++    steps = dispatch_job["steps"]
++    api_setup = next(step for step in steps if step.get("name") == "Setup API client")
++    assert api_setup["uses"] == "./.github/actions/setup-api-client"
++    dispatch_idx = next(i for i, step in enumerate(steps) if step.get("name") == "Setup API client")
++    refresh_idx = next(
++        i
++        for i, step in enumerate(steps)
++        if step.get("name") == "Refresh pilot candidates from registry"
++    )
++    assert dispatch_idx < refresh_idx
++    refresh = steps[refresh_idx]
++    assert "tools.refresh_model_eval_candidates --write" in refresh["run"]
++    assert "--catalog-discovery catalog-discovery.json" in refresh["run"]
++    upload = next(
++        step for step in steps if step.get("name") == "Upload pilot candidates for MAINT-78"
++    )
++    assert upload["with"]["name"] == "maint-77-pilot-candidates"
++    dispatch = next(
++        step for step in steps if step.get("name") == "Dispatch evaluation pilot on catalog drift"
++    )
++    script = dispatch["with"]["script"]
++    assert "maint-78-model-evaluation-pilot.yml" in script
++    assert "createWorkflowDispatch" in script
++    assert "candidates_source_run_id" in script
++    assert "'requested'" in script
++    assert dispatch["with"]["github-token"] == "${{ secrets.GITHUB_TOKEN }}"
++
++
++def test_maint78_downloads_maint77_candidate_artifact_on_dispatch() -> None:
++    root = Path(__file__).resolve().parents[2]
++    workflow = yaml.safe_load(
++        (root / ".github/workflows/maint-78-model-evaluation-pilot.yml").read_text(encoding="utf-8")
++    )
++    steps = workflow["jobs"]["pilot"]["steps"]
++    download = next(
++        step for step in steps if step.get("name") == "Download MAINT-77 pilot candidates"
++    )
++    assert "inputs.candidates_source_run_id" in download["if"]
++    assert download["with"]["name"] == "maint-77-pilot-candidates"
++    assert download["with"]["run-id"] == "${{ inputs.candidates_source_run_id }}"
++
++
+ def test_corpus_decision_publisher_uses_evaluated_context_identity():
+     root = Path(__file__).resolve().parents[2]
+     workflow = yaml.safe_load((root / ".github/workflows/reusable-agents-verifier.yml").read_text())
+diff --git a/tools/refresh_model_eval_candidates.py b/tools/refresh_model_eval_candidates.py
+index 3fc2fa62d..c4e9ccd3f 100644
+--- a/tools/refresh_model_eval_candidates.py
++++ b/tools/refresh_model_eval_candidates.py
+@@ -34,6 +34,43 @@
+ EXCLUDED_POSITIONINGS = frozenset({"efficient", "coding-worker-profile"})
+ 
+ 
++def merge_catalog_discovery(
++    derived: dict[str, Any], discovery: dict[str, Any], registry: dict[str, Any]
++) -> dict[str, Any]:
++    """Attach catalog-only advisory rows so MAINT-78 can pilot newly observed models."""
++    known_models = {
++        (str(model.get("provider", "")), str(model.get("model_id", ""))): model
++        for model in registry.get("models", [])
++    }
++    incumbent_providers = {
++        c["provider"] for c in derived.get("candidates", []) if c.get("role") == "incumbent"
++    }
++    existing = {(c["provider"], c["model_id"]) for c in derived.get("candidates", [])}
++    for provider_entry in discovery.get("providers", []):
++        if provider_entry.get("status") != "drift":
++            continue
++        provider = str(provider_entry.get("provider", ""))
++        if not provider or provider not in incumbent_providers:
++            continue
++        for model_id in provider_entry.get("added_candidates", []):
++            model_id = str(model_id)
++            key = (provider, model_id)
++            if key in existing:
++                continue
++            model = known_models.get(key)
++            if model is not None and (
++                model.get("lifecycle") != "current"
++                or model.get("blocked", False)
++                or str(model.get("positioning", "")) in EXCLUDED_POSITIONINGS
++            ):
++                continue
++            derived["candidates"].append(
++                {"provider": provider, "model_id": model_id, "role": "catalog-advisory"}
++            )
++            existing.add(key)
++    return derived
++
++
+ def derive_candidates(
+     registry: dict[str, Any], *, profile: str = DEFAULT_PROFILE
+ ) -> dict[str, Any]:
+@@ -63,6 +100,19 @@ def derive_candidates(
+     return {"candidates": candidates}
+ 
+ 
++def _validate_catalog_discovery(discovery: dict[str, Any]) -> None:
++    providers = discovery.get("providers")
++    if not isinstance(providers, list):
++        raise ValueError("catalog discovery providers must be a list")
++    for idx, entry in enumerate(providers):
++        if not isinstance(entry, dict):
++            raise ValueError(f"catalog discovery providers[{idx}] must be an object")
++        if entry.get("added_candidates") is not None and not isinstance(
++            entry.get("added_candidates"), list
++        ):
++            raise ValueError(f"catalog discovery providers[{idx}].added_candidates must be a list")
++
++
+ def _load(path: Path) -> dict[str, Any]:
+     return json.loads(path.read_text(encoding="utf-8"))
+ 
+@@ -78,6 +128,11 @@ def main(argv: list[str] | None = None) -> int:
+     parser.add_argument("--registry", type=Path, default=DEFAULT_REGISTRY_PATH)
+     parser.add_argument("--candidates", type=Path, default=DEFAULT_CANDIDATES_PATH)
+     parser.add_argument("--profile", default=DEFAULT_PROFILE)
++    parser.add_argument(
++        "--catalog-discovery",
++        type=Path,
++        help="Optional MAINT-77 catalog-discovery.json to merge advisory candidates.",
++    )
+     group = parser.add_mutually_exclusive_group(required=True)
+     group.add_argument("--write", action="store_true", help="Regenerate the candidates file.")
+     group.add_argument(
+@@ -92,6 +147,18 @@ def main(argv: list[str] | None = None) -> int:
+         return 2
+ 
+     derived = derive_candidates(registry, profile=args.profile)
++    if args.catalog_discovery:
++        try:
++            discovery = _load(args.catalog_discovery)
++        except (OSError, json.JSONDecodeError) as exc:
++            print(f"cannot read catalog discovery: {exc}", file=sys.stderr)
++            return 2
++        try:
++            _validate_catalog_discovery(discovery)
++        except ValueError as exc:
++            print(f"invalid catalog discovery: {exc}", file=sys.stderr)
++            return 2
++        derived = merge_catalog_discovery(derived, discovery, registry)
+     if not derived["candidates"]:
+         print(f"no selections for profile {args.profile!r}; nothing to derive", file=sys.stderr)
+         return 2

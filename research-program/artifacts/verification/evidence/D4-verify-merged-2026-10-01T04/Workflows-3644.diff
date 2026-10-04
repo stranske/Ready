@@ -1,0 +1,274 @@
+diff --git a/.github/scripts/__tests__/keepalive-loop.test.js b/.github/scripts/__tests__/keepalive-loop.test.js
+index 6fb8c0269..60e849c53 100644
+--- a/.github/scripts/__tests__/keepalive-loop.test.js
++++ b/.github/scripts/__tests__/keepalive-loop.test.js
+@@ -3125,14 +3125,14 @@ test('updateKeepaliveLoopSummary does not consume authority ledger when agent ex
+   assert.match(updateAction.body, /"disposition":"automation-retry"/);
+ });
+ 
+-test('summary input without exact job evidence cannot reopen a consumed authority receipt', async () => {
++test('summary input without exact job evidence cannot reopen or ordinarily retry a consumed authority receipt', async () => {
+   const authSummary = 'Missing token ACTIONS_BOT_PAT for GitHub API repository dispatch.';
+   const boundary = buildAuthorityChallengeEvidence({ agentSummary: authSummary });
+   const existingState = formatStateComment({
+     trace: 'trace-attention-auth-reporter',
+     iteration: 2,
+     failure_threshold: 3,
+-    failure: { reason: 'agent-run-failed', count: 1 },
++    failure: { reason: 'agent-run-failed', count: 2 },
+     attention: {
+       owner: 'automation', disposition: 'challenge-due',
+       challenge_due_at: TEST_DUE_AT, generation: 'c'.repeat(64),
+@@ -3172,11 +3172,25 @@ test('summary input without exact job evidence cannot reopen a consumed authorit
+ 
+   const updateAction = github.actions.filter((action) => action.type === 'update').at(-1);
+   const attention = parseStateComment(updateAction.body).data.attention;
+-  assert.equal(attention.disposition, 'automation-retry');
++  assert.match(updateAction.body, /Independent Authority Challenge Required/);
++  assert.doesNotMatch(updateAction.body, /Automation Recovery Required/);
++  assert.equal(attention.disposition, 'challenge-due');
+   assert.equal(attention.owner, 'automation');
+-  assert.equal(attention.generation, '');
++  assert.equal(attention.generation, 'c'.repeat(64));
++  assert.equal(attention.challenge_due_at, TEST_DUE_AT);
+   assert.equal(attention.recovery_generation, 'c'.repeat(64));
+   assert.equal(attention.recovery_owner_attempt, 'octo/workflows:9001:1');
++  assert.ok(github.actions.some((action) =>
++    action.type === 'label' && action.labels.includes('agent:needs-attention')
++  ));
++  assert.equal(github.actions.some((action) =>
++    action.type === 'remove-label' && action.name === 'agent:needs-attention'
++  ), false);
++  assert.equal(
++    github.actions.filter((action) => action.type === 'workflow-dispatch').length,
++    0,
++  );
++  assert.equal(parseStateComment(updateAction.body).data.recovery_lease, undefined);
+   assert.equal(
+     github.actions.filter((action) => action.type === 'authority-ledger-write').length,
+     0,
+diff --git a/.github/scripts/keepalive_loop.js b/.github/scripts/keepalive_loop.js
+index 22ce47822..7344a0e3f 100644
+--- a/.github/scripts/keepalive_loop.js
++++ b/.github/scripts/keepalive_loop.js
+@@ -4246,28 +4246,6 @@ async function updateKeepaliveLoopSummary({ github: rawGithub, context, core, in
+         '',
+         '_To resume immediately: Wait for rate limit reset, or add additional API tokens._',
+       );
+-    } else if (stop) {
+-      const challengeDue = escalationDisposition === 'challenge-due';
+-      summaryLines.push(
+-        '',
+-        challengeDue
+-          ? '### 🔎 Paused – Independent Authority Challenge Required'
+-          : '### 🔁 Paused – Automation Recovery Required',
+-        '',
+-        challengeDue
+-          ? 'The keepalive loop found a possible access boundary. Automation must verify it before asking a human.'
+-          : 'The keepalive loop paused this execution strategy after repeated failures; ownership remains with automation.',
+-        '',
+-        '**To resume:**',
+-        challengeDue
+-          ? '1. Reproduce the access failure from current state and verify the exact unavailable permission or secret'
+-          : '1. Route the failure to CI repair, retry/backoff, alternate-agent, review fallback, or issue decomposition',
+-        '2. Record a concrete next action and responsible automation worker',
+-        '3. Use `needs-human` only after an independent review proves a real authority boundary',
+-        '4. Re-run Gate or apply the automation retry path',
+-        '',
+-        '_Or manually edit this comment to reset `failure: {}` in the state below._',
+-      );
+     }
+ 
+     const focusTask = currentFocus || fallbackFocus;
+@@ -4697,7 +4675,6 @@ async function updateKeepaliveLoopSummary({ github: rawGithub, context, core, in
+           /^[a-z0-9_.-]+\/[a-z0-9_.-]+:\d+:\d+$/.test(
+             previousAttention.recovery_owner_attempt || '');
+         const preservePendingChallenge = attemptBoundRecoveryCandidate &&
+-          !Object.keys(attemptBoundRecoveryMarkers).length &&
+           previousAttention.disposition === 'challenge-due' &&
+           /^[a-f0-9]{64}$/.test(previousAttention.generation || '');
+         effectiveDisposition = preservePendingChallenge
+@@ -4735,6 +4712,13 @@ async function updateKeepaliveLoopSummary({ github: rawGithub, context, core, in
+             ? 'Independently rerun the current operation and confirm the same redacted authority-boundary fingerprint.'
+             : 'Route to automation retry/backoff, CI repair, alternate agent, or review fallback.',
+         };
++        if (preservePendingChallenge && shouldIssueTerminalRecoveryLease) {
++          if (Object.keys(previousRecoveryLease).length) {
++            newState.recovery_lease = previousRecoveryLease;
++          } else {
++            delete newState.recovery_lease;
++          }
++        }
+       }
+     }
+ 
+@@ -4899,6 +4883,34 @@ async function updateKeepaliveLoopSummary({ github: rawGithub, context, core, in
+         }
+       }
+ 
++      // Render terminal guidance only after receipt ownership and authority
++      // reconciliation have selected the final disposition. Rendering from the
++      // earlier escalation candidate can falsely advertise an ordinary retry
++      // while a consumed authority receipt is being preserved as challenge-due.
++      if (!isRateLimitExhausted && stop) {
++        const challengeDue = effectiveDisposition === 'challenge-due';
++        summaryLines.push(
++          '',
++          challengeDue
++            ? '### 🔎 Paused – Independent Authority Challenge Required'
++            : '### 🔁 Paused – Automation Recovery Required',
++          '',
++          challengeDue
++            ? 'The keepalive loop found a possible access boundary. Automation must verify it before asking a human.'
++            : 'The keepalive loop paused this execution strategy after repeated failures; ownership remains with automation.',
++          '',
++          '**To resume:**',
++          challengeDue
++            ? '1. Reproduce the access failure from current state and verify the exact unavailable permission or secret'
++            : '1. Route the failure to CI repair, retry/backoff, alternate-agent, review fallback, or issue decomposition',
++          '2. Record a concrete next action and responsible automation worker',
++          '3. Use `needs-human` only after an independent review proves a real authority boundary',
++          '4. Re-run Gate or apply the automation retry path',
++          '',
++          '_Or manually edit this comment to reset `failure: {}` in the state below._',
++        );
++      }
++
+       summaryLines.push('', formatStateComment(newState));
+       const body = summaryLines.join('\n');
+       await persistSummary(body);
+@@ -4986,13 +4998,13 @@ async function updateKeepaliveLoopSummary({ github: rawGithub, context, core, in
+             await clearAutomationAttention();
+           }
+         } catch (error) {
+-          if (core) core.warning(`Failed to add ${escalationDisposition} routing label: ${error.message}`);
++          if (core) core.warning(`Failed to add ${effectiveDisposition} routing label: ${error.message}`);
+         }
+         // Every automation-owned terminal gets one immediate recovery lease.
+         // Persist the issued/consumed lease across events so later ordinary
+         // sweeps cannot mint another lease for the same terminal boundary.
+         if (
+-          escalationDisposition === 'automation-retry' &&
++          effectiveDisposition === 'automation-retry' &&
+           !isForceRetry &&
+           (!stop || shouldIssueTerminalRecoveryLease)
+         ) {
+diff --git a/docs/keepalive/Agents.md b/docs/keepalive/Agents.md
+index 76ba73113..2bec495c3 100644
+--- a/docs/keepalive/Agents.md
++++ b/docs/keepalive/Agents.md
+@@ -71,7 +71,7 @@ Auto-pilot pipeline:
+ 
+ Authority generations and receipts remain bound to one originating PR head in the SHA-checked ledger. The runner first conditionally prepares that generation and writes its attempt-bound primary reservation. Finalization follows successful mark-running setup and remains a prerequisite for every worker job. Failure or cancellation before finalization conditionally releases only that non-authorizing preparation; cleanup is best effort and the workflow reporter must reconcile interrupted attempts. If that release response is lost, the same preflight-failed owner attempt may retry against the persisted released receipt, but a replacement preparation cannot be released by it. PR head and labels are separate GitHub state, so changed or unavailable evidence denies the result without refunding a consumed receipt. Confirmation uncertainty preserves the ledger and `needs-human`; automation never infers label ownership from a successful add or deletes a possibly concurrent human blocker. A confirmed receipt cannot be reopened merely because its hard label disappeared. The same worker attempt may retry confirmation once against its spent receipt, without granting a new execution. This is a fail-closed, at-most-one-grant protocol, not an atomic transaction across GitHub resources.
+ 
+-The failed-run reporter reconciles the receipt even when the presentation summary never reached `running`, but only after the originating attempt's worker jobs positively show no worker step started. Worker job and step names come from keepalive-capable registry entries at the originating run's exact head (with naming-convention defaults); a newly registered provider does not require a reporter-side provider list, and a later registry change cannot turn a started old provider into false non-start evidence. Missing original registry evidence is unknown. Started or unknown worker evidence preserves the receipt. Presentation-summary inputs alone cannot prove non-start or refund a consumed receipt. An originating run concluded `skipped` has no failed attempt to reconcile and is ignored. Before preparing a receipt, the runner writes an immutable, exact-owner-attempt index on the authority branch; the PR ledger remains the grant authority. For sweep-triggered dispatches with no webhook PR association, the reporter directly reads that index and verifies its exact receipt against the PR ledger. A missing, conflicting or unreadable index fails explicitly for owner follow-up, never as proof of non-execution; associated runs avoid the index lookup. Consumer reporter deduplication includes the originating run ID and attempt so reruns remain independently recoverable. If the ordinary summary finishes first and rewrites `challenge-due` to `automation-retry`, it retains only the exact recovery owner attempt and prior generation when that attempt owns the current-head authority receipt (`authorityAttemptOwnsRecoveryReceipt`); unrelated non-authority runs that reconcile as `attempt-not-current` must not record `recovery_owner_attempt`. Projection accepts that cleared presentation state only when both markers match the reconciled receipt lineage; a generic blank generation never authorizes recovery. A running summary records its exact run attempt, and delayed projection requires that owner when the summary is running. Projection also re-reads the authoritative ledger immediately before publication and exits as superseded if another attempt has prepared, consumed, confirmed, replaced, or otherwise changed the settled receipt.
++The failed-run reporter reconciles the receipt even when the presentation summary never reached `running`, but only after the originating attempt's worker jobs positively show no worker step started. Worker job and step names come from keepalive-capable registry entries at the originating run's exact head (with naming-convention defaults); a newly registered provider does not require a reporter-side provider list, and a later registry change cannot turn a started old provider into false non-start evidence. Missing original registry evidence is unknown. Started or unknown worker evidence preserves the receipt. Presentation-summary inputs alone cannot prove non-start or refund a consumed receipt. An originating run concluded `skipped` has no failed attempt to reconcile and is ignored. Before preparing a receipt, the runner writes an immutable, exact-owner-attempt index on the authority branch; the PR ledger remains the grant authority. For sweep-triggered dispatches with no webhook PR association, the reporter directly reads that index and verifies its exact receipt against the PR ledger. A missing, conflicting or unreadable index fails explicitly for owner follow-up, never as proof of non-execution; associated runs avoid the index lookup. Consumer reporter deduplication includes the originating run ID and attempt so reruns remain independently recoverable. If the ordinary summary finishes first, an attempt that owns the current-head authority receipt (`authorityAttemptOwnsRecoveryReceipt`) retains `challenge-due`, the exact recovery owner attempt, and the prior generation; it must not dispatch an ordinary retry before reporter projection settles that receipt lineage. An unrelated non-authority run that reconciles as `attempt-not-current` must not record `recovery_owner_attempt`. Projection accepts recovery markers only when both match the reconciled receipt lineage; a generic blank generation never authorizes recovery. A running summary records its exact run attempt, and delayed projection requires that owner when the summary is running. Projection also re-reads the authoritative ledger immediately before publication and exits as superseded if another attempt has prepared, consumed, confirmed, replaced, or otherwise changed the settled receipt.
+ 
+ For unassociated failed dispatches, the producer run name records a versioned `ordinary` or `authority-candidate` classification without exposing the claim. Both reporters verify the originating workflow path, exact source revision, run attempt, and immutable index before treating an index-free `ordinary` dispatch as inapplicable. A missing index for `authority-candidate`, an unrecognized/legacy title, a corrupt index, or an unavailable lookup fails closed for owner follow-up. This routing metadata never grants authority or substitutes for exact worker evidence. The ordinary skip happens before reporter writer-token setup and worker-job inspection.
+ 
+diff --git a/templates/consumer-repo/.github/scripts/keepalive_loop.js b/templates/consumer-repo/.github/scripts/keepalive_loop.js
+index 22ce47822..7344a0e3f 100644
+--- a/templates/consumer-repo/.github/scripts/keepalive_loop.js
++++ b/templates/consumer-repo/.github/scripts/keepalive_loop.js
+@@ -4246,28 +4246,6 @@ async function updateKeepaliveLoopSummary({ github: rawGithub, context, core, in
+         '',
+         '_To resume immediately: Wait for rate limit reset, or add additional API tokens._',
+       );
+-    } else if (stop) {
+-      const challengeDue = escalationDisposition === 'challenge-due';
+-      summaryLines.push(
+-        '',
+-        challengeDue
+-          ? '### 🔎 Paused – Independent Authority Challenge Required'
+-          : '### 🔁 Paused – Automation Recovery Required',
+-        '',
+-        challengeDue
+-          ? 'The keepalive loop found a possible access boundary. Automation must verify it before asking a human.'
+-          : 'The keepalive loop paused this execution strategy after repeated failures; ownership remains with automation.',
+-        '',
+-        '**To resume:**',
+-        challengeDue
+-          ? '1. Reproduce the access failure from current state and verify the exact unavailable permission or secret'
+-          : '1. Route the failure to CI repair, retry/backoff, alternate-agent, review fallback, or issue decomposition',
+-        '2. Record a concrete next action and responsible automation worker',
+-        '3. Use `needs-human` only after an independent review proves a real authority boundary',
+-        '4. Re-run Gate or apply the automation retry path',
+-        '',
+-        '_Or manually edit this comment to reset `failure: {}` in the state below._',
+-      );
+     }
+ 
+     const focusTask = currentFocus || fallbackFocus;
+@@ -4697,7 +4675,6 @@ async function updateKeepaliveLoopSummary({ github: rawGithub, context, core, in
+           /^[a-z0-9_.-]+\/[a-z0-9_.-]+:\d+:\d+$/.test(
+             previousAttention.recovery_owner_attempt || '');
+         const preservePendingChallenge = attemptBoundRecoveryCandidate &&
+-          !Object.keys(attemptBoundRecoveryMarkers).length &&
+           previousAttention.disposition === 'challenge-due' &&
+           /^[a-f0-9]{64}$/.test(previousAttention.generation || '');
+         effectiveDisposition = preservePendingChallenge
+@@ -4735,6 +4712,13 @@ async function updateKeepaliveLoopSummary({ github: rawGithub, context, core, in
+             ? 'Independently rerun the current operation and confirm the same redacted authority-boundary fingerprint.'
+             : 'Route to automation retry/backoff, CI repair, alternate agent, or review fallback.',
+         };
++        if (preservePendingChallenge && shouldIssueTerminalRecoveryLease) {
++          if (Object.keys(previousRecoveryLease).length) {
++            newState.recovery_lease = previousRecoveryLease;
++          } else {
++            delete newState.recovery_lease;
++          }
++        }
+       }
+     }
+ 
+@@ -4899,6 +4883,34 @@ async function updateKeepaliveLoopSummary({ github: rawGithub, context, core, in
+         }
+       }
+ 
++      // Render terminal guidance only after receipt ownership and authority
++      // reconciliation have selected the final disposition. Rendering from the
++      // earlier escalation candidate can falsely advertise an ordinary retry
++      // while a consumed authority receipt is being preserved as challenge-due.
++      if (!isRateLimitExhausted && stop) {
++        const challengeDue = effectiveDisposition === 'challenge-due';
++        summaryLines.push(
++          '',
++          challengeDue
++            ? '### 🔎 Paused – Independent Authority Challenge Required'
++            : '### 🔁 Paused – Automation Recovery Required',
++          '',
++          challengeDue
++            ? 'The keepalive loop found a possible access boundary. Automation must verify it before asking a human.'
++            : 'The keepalive loop paused this execution strategy after repeated failures; ownership remains with automation.',
++          '',
++          '**To resume:**',
++          challengeDue
++            ? '1. Reproduce the access failure from current state and verify the exact unavailable permission or secret'
++            : '1. Route the failure to CI repair, retry/backoff, alternate-agent, review fallback, or issue decomposition',
++          '2. Record a concrete next action and responsible automation worker',
++          '3. Use `needs-human` only after an independent review proves a real authority boundary',
++          '4. Re-run Gate or apply the automation retry path',
++          '',
++          '_Or manually edit this comment to reset `failure: {}` in the state below._',
++        );
++      }
++
+       summaryLines.push('', formatStateComment(newState));
+       const body = summaryLines.join('\n');
+       await persistSummary(body);
+@@ -4986,13 +4998,13 @@ async function updateKeepaliveLoopSummary({ github: rawGithub, context, core, in
+             await clearAutomationAttention();
+           }
+         } catch (error) {
+-          if (core) core.warning(`Failed to add ${escalationDisposition} routing label: ${error.message}`);
++          if (core) core.warning(`Failed to add ${effectiveDisposition} routing label: ${error.message}`);
+         }
+         // Every automation-owned terminal gets one immediate recovery lease.
+         // Persist the issued/consumed lease across events so later ordinary
+         // sweeps cannot mint another lease for the same terminal boundary.
+         if (
+-          escalationDisposition === 'automation-retry' &&
++          effectiveDisposition === 'automation-retry' &&
+           !isForceRetry &&
+           (!stop || shouldIssueTerminalRecoveryLease)
+         ) {

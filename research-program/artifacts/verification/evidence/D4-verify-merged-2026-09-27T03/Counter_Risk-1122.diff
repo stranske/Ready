@@ -1,0 +1,66 @@
+diff --git a/src/counter_risk/chat/session.py b/src/counter_risk/chat/session.py
+index e8a517858..4bdbf644c 100644
+--- a/src/counter_risk/chat/session.py
++++ b/src/counter_risk/chat/session.py
+@@ -743,17 +743,17 @@ def _format_deltas(deltas: dict[str, list[dict[str, object]]]) -> str:
+         if not records:
+             continue
+ 
+-        first = records[0]
+-        if not isinstance(first, dict):
+-            continue
++        for record in records[:5]:
++            if not isinstance(record, dict):
++                continue
+ 
+-        counterparty = str(first.get("counterparty") or first.get("name") or "unknown")
+-        metric = _find_delta_metric(first)
+-        if metric is None:
+-            continue
++            counterparty = str(record.get("counterparty") or record.get("name") or "unknown")
++            metric = _find_delta_metric(record)
++            if metric is None:
++                continue
+ 
+-        metric_name, metric_value = metric
+-        lines.append(f"{variant}: {counterparty} {metric_name}={metric_value}")
++            metric_name, metric_value = metric
++            lines.append(f"{variant}: {counterparty} {metric_name}={metric_value}")
+ 
+     return "; ".join(lines) if lines else "Top deltas: none."
+ 
+diff --git a/tests/test_chat_session.py b/tests/test_chat_session.py
+index ff9573146..57c88c9f1 100644
+--- a/tests/test_chat_session.py
++++ b/tests/test_chat_session.py
+@@ -913,6 +913,30 @@ def test_warning_formatter_handles_empty_and_truncated_collections() -> None:
+     )
+ 
+ 
++def test_format_deltas_lists_multiple_movers_per_variant() -> None:
++    deltas = cast(
++        dict[str, list[dict[str, object]]],
++        {
++            "all_programs": [
++                {"counterparty": "BigMover", "notional_change": 500},
++                {"counterparty": "Second", "notional_change": 400},
++                {"counterparty": "Third", "notional_change": 300},
++                {"counterparty": "Fourth", "notional_change": 200},
++                {"counterparty": "Fifth", "notional_change": 100},
++                {"counterparty": "Sixth", "notional_change": 0},
++            ],
++        },
++    )
++
++    assert session_module._format_deltas(deltas) == (
++        "all_programs: BigMover notional_change=500; "
++        "all_programs: Second notional_change=400; "
++        "all_programs: Third notional_change=300; "
++        "all_programs: Fourth notional_change=200; "
++        "all_programs: Fifth notional_change=100"
++    )
++
++
+ def test_format_deltas_omits_non_finite_notional_change() -> None:
+     nan_deltas = cast(
+         dict[str, list[dict[str, object]]],

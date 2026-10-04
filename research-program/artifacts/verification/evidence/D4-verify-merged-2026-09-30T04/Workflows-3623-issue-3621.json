@@ -1,0 +1,24 @@
+{
+  "body": "## Why\n\nManifest sync to `stranske/Portable-Alpha-Extension-Model#2318` exposed a source-owned fork-status bug. Consumer Gate workflows report the summary job as `gate-summary`, while `.github/scripts/gate-fork-status-publication.js` currently recognizes only `summary`. A successful trusted fork Gate can therefore be published as `Gate / gate=error` even though the exact run completed successfully.\n\n## Scope\n\nFix the Workflows source and consumer template so the trusted publisher recognizes the exact supported summary-job names without weakening the one-summary, completed-job, exact-run, exact-head, and protected-control-surface checks. Keep the root and template copies byte-identical and preserve the existing manifest entry.\n\n## Tasks\n\n- [x] Update `.github/scripts/gate-fork-status-publication.js` so `publicationState` accepts the exact supported Gate summary job names (`summary` and `gate-summary`) while still requiring exactly one matching completed summary job.\n- [x] Mirror the source fix in `templates/consumer-repo/.github/scripts/gate-fork-status-publication.js` without changing `.github/sync-manifest.yml` path ownership.\n- [x] Extend `tests/workflows/test_gate_fork_status_publication.py` with consumer-style `gate-summary` success coverage and fail-closed coverage for missing or ambiguous summary jobs.\n- [x] Document in the pull request that the source repair is intended to unblock the next manifest refresh of `stranske/Portable-Alpha-Extension-Model#2318`.\n\n## Acceptance Criteria\n\n- [x] `python -m pytest tests/workflows/test_gate_fork_status_publication.py -q --no-cov` exits 0 and reports passing cases for both `summary` and `gate-summary`; removing `gate-summary` support makes the named consumer-style regression test fail.\n- [x] `node --check .github/scripts/gate-fork-status-publication.js` and `node --check templates/consumer-repo/.github/scripts/gate-fork-status-publication.js` both exit 0, and `cmp -s .github/scripts/gate-fork-status-publication.js templates/consumer-repo/.github/scripts/gate-fork-status-publication.js` exits 0.\n- [x] `python scripts/validate_template_completeness.py` exits 0; capture the command results in the pull request validation section.\n- [x] The ready-for-review Workflows pull request references `stranske/Portable-Alpha-Extension-Model#2318` and identifies `.github/scripts/gate-fork-status-publication.js` as the managed consumer path for the follow-on sync.\n\n## Non-Goals\n\n- Do not patch the generated consumer PR directly.\n- Do not broaden matching to arbitrary names or weaken fork-run trust, head binding, attempt freshness, changed-control-surface, or failed-job checks.\n- Do not merge the consumer sync PR from this source-change pull request.\n\n## Implementation Notes\n\nThe current Workflows root and template script blobs are identical, and the consumer PR head carries that same blob. Fleet inspection shows Workflows and Orchestrator use `summary`, while the supported consumer repositories use `gate-summary`. The publisher should therefore use a small exact-name allowlist and continue to require exactly one matching job.\n",
+  "labels": [
+    {
+      "id": "LA_kwDOQprj9M8AAAACSq7nhQ",
+      "name": "automation",
+      "description": "Automation and workflow automation",
+      "color": "205d64"
+    },
+    {
+      "id": "LA_kwDOQprj9M8AAAACUeB6Qw",
+      "name": "agents:formatted",
+      "description": "Issue has been formatted to agent template",
+      "color": "1d76db"
+    },
+    {
+      "id": "LA_kwDOQprj9M8AAAACVO1uJQ",
+      "name": "consumer-sync",
+      "description": "",
+      "color": "ededed"
+    }
+  ],
+  "title": "[sync-review] Fix upstream manifest-synced paths blocking stranske/Portable-Alpha-Extension-Model#2318"
+}

@@ -1,105 +1,29 @@
-## 2026-09-24T04:15:00Z — D-audit-Workflows--2026-09-23T22-11-13Z — attempt 3 complete
+## 2026-10-02T10:11:05Z — D-audit-Inv-Man-Intake--2026-10-02T10-11-05Z — phase 0–1.5
 
-Track D refill attempt 3 on unchanged tip `fccf1c6`: scorecard 4 work / 0 partial / 1 broken / 0 fabricated / 2 not exercised of 7; journey stops at belt scan; surfaces unscored 2. #3525 belt-scan stack still reproduces locally (not refuted). 0 issues filed (`gh` unauthenticated). OUT `artifacts/audits/Workflows-2026-09-23.md` line 1 parseable.
+Cloned/pulled `Inv-Man-Intake` to exact tip `6d3d7063a928b5ddf9216f449968b683e63a5e76`; reviewed prior scorecard, product contract, open and recently closed issues, and CI. Focused core probe: 46 tests passed; subset coverage gate failed as expected. Browser probe: 7 functional scenarios passed under installed Chrome; bundled-Playwright launch self-check failed because its cached Chromium is absent.
 
-## 2026-09-24T03:55:00Z — D-audit-Workflows--2026-09-23T22-11-13Z — attempt 2 complete
+## 2026-10-02T10:11:05Z — D-audit-Inv-Man-Intake--2026-10-02T10-11-05Z — phases 2–5
 
-Track D refill attempt 2 on tip `fccf1c6` (+1 commit #3530 since attempt 1): scorecard 4 work / 0 partial / 1 broken / 0 fabricated / 2 not exercised of 7; journey stops at belt scan; surfaces unscored 2. #3525 belt proxy still reproduces on tip (not refuted). 0 issues filed (`gh` HTTP 401). OUT `artifacts/audits/Workflows-2026-09-23.md` line 1 parseable.
+Verified cited browser-test paths and live exact-tip CI. Existing #948 is owner-blocked pending a real ontology vocabulary; no candidate reproduced as a new, filable defect. Wrote canonical scorecard/audit run and research artifact; 0 issues filed.
 
-## 2026-09-24T02:40:00Z — D-audit-Workflows--2026-09-23T22-11-13Z — complete
+## 2026-10-02T10:18:00-05:00 — D-audit-Travel-Plan-Permission--2026-10-02T10-11-03Z — phases 0–1
 
-Track D refill on tip `37a83f28` (+3 commits since `864b6e30`): scorecard 4 work / 0 partial / 1 broken / 0 fabricated / 2 not exercised of 7; journey stops at belt scan; surfaces unscored 2. Backfilled headline on canonical `2026-09-23-SCORECARD.md`; new `2026-09-24-SCORECARD.md`. #3525 belt proxy still reproduces locally; 0 issues filed (`gh` HTTP 401). OUT `artifacts/audits/Workflows-2026-09-23.md`.
+Scoped first-party product/configuration/contracts and pulled exact tip `1bb993ef38e4350b879581f7903f1840a7a52439`. Synced workflow templates are excluded from defect mining. Elevated local load and unavailable `ps` mean CI remains the intended test authority; `gh` is unauthenticated, preventing live issue/CI inventory and filing until remediated.
 
-## 2026-09-24T02:30:00Z — D-audit-Trend_Model_Project--2026-09-23T22-11-14Z — complete
+## 2026-10-02T10:28:00-05:00 — D-audit-Travel-Plan-Permission--2026-10-02T10-11-03Z — phases 1.5–5
 
-Track D refill on tip `eb7ecfb` (+1 commit, PR #6056): scorecard 3 work / 1 partial / 0 broken / 0 fabricated / 0 not exercised of 4; journey passes; surfaces unscored 0. Backfilled headline on canonical `2026-09-23-SCORECARD.md`; new `2026-09-24-SCORECARD.md`. REFUTED #6053; #6054/#6055 still reproduce. 0 issues filed (`gh` HTTP 401). OUT `artifacts/audits/Trend_Model_Project-2026-09-23.md`.
+Isolated live planner HTTP smoke plus ten focused portal/exception/manager/artifact route tests passed. Scorecard now covers all eight contract functions (7 work, 1 acknowledged partial) while the 12 interior/documented surfaces remain unscored. No fresh candidate survived local verification. GitHub auth remained absent, so no responsible live dedup/refutation or issue filing/guard verification could occur; OUT records the blocker and 0 filed issues.
 
-## 2026-09-24T02:22:00Z — D-audit-Travel-Plan-Permission--2026-09-23T22-11-14Z — complete
+## 2026-10-02T10:46:00-05:00 — D-audit-Travel-Plan-Permission--2026-10-02T10-11-03Z — phase 5 closeout
 
-Track D refill on tip `82ff0e9` (+4 commits since `3aee8e8`): scorecard 6 work / 1 partial / 0 broken / 0 fabricated / 0 not exercised of 7; journey passes; surfaces unscored 12. Backfilled parseable headline on canonical `2026-09-23-SCORECARD.md`; new `2026-09-24-SCORECARD.md`. REFUTED #1592/#1593/#1595/#1596; #1594 still reproduces. 0 issues filed (`gh` unauthenticated). OUT `artifacts/audits/Travel-Plan-Permission-2026-09-23.md`.
+Reconciled the existing report against current clone tip `1bb993ef38e4350b879581f7903f1840a7a52439` and repeated `gh auth status` (no authenticated host). The closed #1594 claim was re-run and refuted; OUT carries its mandatory REFUTED line. No verified new defect exists to file, and authenticated filing, label/dedup discovery, ledger update, intake-log append, and post-file format-guard verification cannot truthfully be performed. An unrelated untracked `uv.lock` was preserved.
 
-## 2026-09-24T02:18:00Z — D-audit-Inv-Man-Intake--2026-09-24T01-13-11Z — complete
+## 2026-10-02T10:11:06Z — D-audit-trip-planner--2026-10-02T10-11-06Z — phases 0–1.5
 
-Track D refill on unchanged tip `5f95244`: scorecard 5 work / 2 partial / 0 broken / 0 fabricated / 0 not exercised of 7; journey passes; surfaces unscored 1. Backfilled parseable headline on canonical `2026-09-23-SCORECARD.md`; new `2026-09-24-SCORECARD.md`. REFUTED #693; 0 issues filed (`gh` unauthenticated). OUT `artifacts/audits/Inv-Man-Intake-2026-09-24.md`.
+Read the required repo-audit method, audit storage, previous scorecard/ledger/dossier, product contract, issue inventory, CI, and current tip `8bca24b5e7dc97e37620011003d9f3e6ba575cc7`. The only post-2026-10-01 commit changes synced workflow templates. Re-exercised the single partial core function TP4 on isolated data: `Nov` is returned as a destination, omitted as a date, and causes a redundant date question. Focused TP4 test gate passes 9/9, proving the missing regression coverage.
 
-## 2026-09-23T14:11:15Z — D-audit-Workflows--2026-09-23T09-11-15Z — claimed
+## 2026-10-02T10:11:06Z — D-audit-trip-planner--2026-10-02T10-11-06Z — phases 2–5
 
-Phase 0 complete: read the mandatory D-audit brief, owner notes, Workflows dossier, repo-audit method and its current references, prior Workflows records, and current GitHub issue inventory. Fresh shallow clone is at `[LOCAL_WORKSPACE]/Workflows`, remote `main` tip `864b6e3053ce5135e8bc56cfac308edd56fa0108`. Proceeding with bash-only orientation and live CLI scorecard probes.
-
-## 2026-09-23T14:17:33Z — D-audit-Workflows--2026-09-23T09-11-15Z — audit complete pending engine close
-
-Completed the scorecard and eight-dimension reconciliation. Live deterministic probes passed for sync compilation, run-contract validation, capability/prompt selection, and metrics output; focused regression gates passed 123 Python and 20 Node tests. Found a reproducible broken belt-promotion preflight: 14 of the last 15 scheduled Agents 70 runs fail on the wrapped-client `__getTokenSource` Proxy invariant before candidate discovery, despite capacity. Dedup found no matching issue; filed Workflows #3525 after the local format guard passed. Updated Code/Audits continuity and intake measurement; OUT is `artifacts/audits/Workflows-2026-09-23.md`.
-
-## 2026-09-24T02:10:00Z — D-audit-Doc-Lineage--2026-09-24T01-13-13Z — complete
-
-Track D refill on unchanged tip `09681ce`: scorecard 4 work / 1 partial / 0 broken / 0 fabricated / 0 not exercised of 5; journey passes; surfaces unscored 0. Backfilled parseable headline on canonical `2026-09-23-SCORECARD.md`; new `2026-09-24-SCORECARD.md`. #47–#51 refuted on tip. 0 issues filed (`gh` unauthenticated). OUT `artifacts/audits/Doc-Lineage-2026-09-24.md`.
-
-## 2026-09-24T01:30:00Z — D-audit-Deliverable-Render--2026-09-24T01-13-07Z — complete
-
-Refill on unchanged tip `a867f3f`: scorecard 7/7 WORKS, journey passes. Root cause of re-queue: missing headline in canonical `2026-09-23-SCORECARD.md` (fixed). #37/#47 still reproduce; 0 new issues filed (`gh` unauthenticated). OUT `artifacts/audits/Deliverable-Render-2026-09-24.md`.
-
-## 2026-09-23T22:40:00Z — D-audit-Deliverable-Render--2026-09-23T22-11-12Z — complete
-
-Refill re-run on tip `a867f3f`: scorecard 7/7 WORKS, journey passes. Re-verified #37/#47 open seams; refuted #40/#41 on tip. 0 new issues filed (#47 already from 09:11Z unit). OUT `artifacts/audits/Deliverable-Render-2026-09-23.md` line 1 scorecard headline confirmed parseable.
-
-## 2026-09-23T22:31:00Z — D-audit-Doc-Lineage--2026-09-23T22-11-18Z — complete
-
-Re-audit on `09681ce`: scorecard 4 WORKS / 1 PARTIAL (OCR executable unavailable), primary journey passes, and no unscored CLI surfaces. Live ingest varied-output, fact-key-map export, fixture harvest, and DOCX redline passed; 113 focused tests passed. Closed #47–#51 were refuted on tip. No fresh filable defect survived; `gh` authentication/CI and format-guard readback are unknown. OUT `artifacts/audits/Doc-Lineage-2026-09-23.md` starts with the required parseable scorecard line.
-
-## 2026-09-24T00:23:00Z — D-audit-Pension-Data--2026-09-23T22-11-16Z — complete
-
-Attempt 2 on tip `388a06a`: scorecard 3 WORKS / 0 partial; REFUTED #914; filed #918 (operator docs omit `PENSION_DATA_QUERY_ARTIFACT_ROOT`); #915 dedup open. OUT `artifacts/audits/Pension-Data-2026-09-23.md` line 1 parseable headline.
-
-## 2026-09-23T23:10:00Z — D-audit-Doc-Lineage--2026-09-23T22-11-18Z — attempt 2 complete
-
-Attempt 2 re-verified scorecard probes and #47–#51 regressions on unchanged tip; OUT headline confirmed parseable; 0 issues filed (`gh` unauthenticated). Product slice 203 passed / 1 env-coupled console-script failure.
-
-## 2026-09-23T23:12:36Z — D-audit-Inv-Man-Intake--2026-09-23T22-11-16Z — claimed
-
-Phase 0/1 complete: read the mandatory brief, owner notes, dossier, prior scorecard and ledger, repo-audit method/reference set, current issue inventory, and fresh remote tip. `[LOCAL_WORKSPACE]/Inv-Man-Intake` was advanced from the prior scored `62811ac` to `5f95244`; the six changed commits are limited to emitted-evidence validation, one-pager/report-spec export composition, and the static SPA module list. No scorecard core-function implementation changed.
-
-## 2026-09-23T23:12:36Z — D-audit-Inv-Man-Intake--2026-09-23T22-11-16Z — complete
-
-Revalidated the changed export/evidence slice: 36 dedicated tests passed; 57 focused pre-existing core regression assertions passed, with the partial-run exit caused only by the repository-wide 80% coverage gate (36% for that narrow slice). Current open issue #948 is unrelated; no reproducible non-duplicate finding was filed. Scorecard remains 5 work / 2 partial / 0 broken / 0 fabricated / 0 not exercised of 7; journey passes; surfaces unscored 1; closed-still-broken 0. OUT is `artifacts/audits/Inv-Man-Intake-2026-09-23.md`.
-
-## 2026-09-23T23:22Z — D-audit-Manager-Mosaic--2026-09-23T22-11-13Z — complete with external-storage blocker
-
-Scorecard: 6 work / 0 partial / 0 broken / 0 fabricated / 0 not exercised of 6; journey: passes; surfaces unscored 2; closed-still-broken 0.
-
-Remote `main` advanced to `52b7f4b`, fixing the former period-alias discrepancy (reproduction now `alias 1` / `same 1`); 0 new issues filed. The triggering canonical `Code/Audits/Manager-Mosaic/2026-09-23-SCORECARD.md` still lacks its required parseable headline. This executor attempted the minimal backfill but the filesystem sandbox rejected writes outside the research-program workspace; `gh` authentication was also unavailable, so remote issue and format-guard state are unknown. OUT: `artifacts/audits/Manager-Mosaic-2026-09-23.md`.
-
-## 2026-09-24T00:45Z — D-audit-Manager-Mosaic--2026-09-23T22-11-13Z — attempt 2 complete
-
-Canonical scorecard headline backfilled; ledger/report updated. Tip `52b7f4b`; 80 tests passed; 0 new issues; #53 refuted on tip (fixed #54). Format guard confirmed on #52/#53 intake. OUT line 1 parseable.
-
-## 2026-09-24T00:13:32Z — D-audit-Pension-Data--2026-09-23T22-11-16Z — closeout complete
-
-Resumed the already-complete attempt 2 on unchanged tip `388a06a`. Revalidated the core staging path and filed documentation gap: 37 focused tests passed; proprietary serving without `PENSION_DATA_QUERY_ARTIFACT_ROOT` returns the #918 503 and the artifact-root-backed F2 regression is green. Corrected a stale `42/42` report/ledger count to `37/37`; scorecard remains 3 work / 0 partial / 0 broken / 0 fabricated / 0 not exercised of 3.
-
-## 2026-09-24T00:21Z — D-audit-Counter_Risk--2026-09-23T22-11-15Z — complete
-
-Attempt 2 on unchanged tip `2f92b17`: backfilled missing `Scorecard:` headline in `Code/Audits/Counter_Risk/2026-09-23-SCORECARD.md` (root cause of refill re-queue). Re-ran CF1/CF3–CF5 probes; REFUTED #1062; filed #1113 (PRODUCT_CONTRACT status stale). Format guard success run 35938041921. OUT `artifacts/audits/Counter_Risk-2026-09-23.md` line 1 parseable via `newest_scorecard`.
-
-## 2026-09-24T00:50Z — D-audit-Counter_Risk--2026-09-23T22-11-15Z — attempt 3 complete
-
-Attempt 3 on unchanged tip `2f92b17`: confirmed `newest_scorecard` parses canonical headline; re-ran CF1 fixture replay and CF3–CF5 pytest gates (19 cases). No new reproducible non-duplicate finding; 0 issues filed (`gh` unauthenticated). OUT `artifacts/audits/Counter_Risk-2026-09-23.md` line 1 parseable.
-
-## 2026-09-23T23:08Z — D-audit-Portable-Alpha-Extension-Model--2026-09-23T22-11-14Z — complete
-
-Evening refill on `43a86ec` (+1 commit, #2306 merged). Scorecard F1–F2 WORKS, F3 PARTIAL (#2307), F4–F6 NOT-EXERCISED. REFUTED #2306; 0 issues filed (`gh` unauthenticated). OUT `artifacts/audits/Portable-Alpha-Extension-Model-2026-09-23.md` line 1 parseable headline.
-
-## 2026-09-24T01:15:00Z — D-audit-Portable-Alpha-Extension-Model--2026-09-23T22-11-14Z — attempt 2 reconciliation complete
-
-The canonical 2026-09-23 scorecard parses on the live engine (`refill_trigger_for`: healthy), so the reissued claim was stale queue state rather than a headline defect. At unchanged tip `43a86ec`, the exact #2307 reproduction still exits 0 with its workbook present and zero PNG artifacts; #2307 remains the open, non-duplicate product gap. #2306 remains refuted on live disclaimer text. No new issue filed; OUT updated in place.
-
-## 2026-09-24T02:27:00Z — D-audit-Trend_Model_Project--2026-09-23T22-11-14Z — complete
-
-Reconciled the malformed 2026-09-23 scorecard headline and refreshed the audit clone to `eb7ecfb`. #6056 merged #6053; the focused multi-period regime-export gate passed 3/3, moving C2/C4 to WORKS. Current scorecard: 3 work / 1 partial / 0 broken / 0 fabricated / 0 not exercised of 4; journey passes; surfaces unscored 0. #6054/#6055 remain open; no new issue filed. OUT `artifacts/audits/Trend_Model_Project-2026-09-23.md`.
-
-## 2026-09-24T11:13:18Z — D-audit-Workflows--2026-09-24T11-10-38Z — complete
-
-Rechecked current remote `main` at `887d590`. Scorecard remains 4 work / 0 partial / 1 broken / 0 fabricated / 2 not exercised of 7; C1 compilation, C2 contract tests (127), C3 capability tests (13), C4 metrics tests (2), and wrapper/API focused tests (43) passed. A fresh actual wrapped-client probe still raises the #3525 `__getTokenSource` Proxy invariant before belt scanning; current Agents 70 runs were eligibility-only with Execute skipped, so they do not refute it. No duplicate issue filed. OUT `artifacts/audits/Workflows-2026-09-24.md`.
-
-## 2026-09-25T01:24:00Z — D-audit-Workflows--2026-09-24T23-11-20Z — attempt 2 complete
-
-Revalidated at `8d1cc914`: eight intervening commits did not change the rate-limit wrapper. C5's real wrapped-client path still raises #3525's non-configurable `__getTokenSource` Proxy-invariant error, while the focused wrapper/API suite passes 43 tests because its wrapped test is a plain object. Run 36080958083 is eligibility-only with Initialize and Execute skipped. Scorecard remains 4 work / 0 partial / 1 broken / 0 fabricated / 2 not exercised of 7; no new issue filed. The bound Cursor reader was stopped after it produced no artifact or checkpoint.
+Adversarially refuted closed #1845's actual `My`/`What` claim as fixed, deduplicated existing portal issue #1842, and filed the distinct verified planner-context defect as trip-planner #1883. Wrote current-tip scorecard, evidence, issue body, verification log, and the Research Program OUT. Await post-file format-guard discovery before close.
+## 2026-10-02T22:13Z — D-audit-Travel-Plan-Permission--2026-10-02T22-12-13Z — phase 0/1 begun; remote-tip orientation and scorecard underway.
+## 2026-10-02T22:17Z — D-audit-Travel-Plan-Permission--2026-10-02T22-12-13Z — phases 1/1.5/3/5 complete: refreshed exact tip `1bb993e`; 1,319 tests collected and 11 focused actual-app route scenarios passed. Scorecard is 7 work / 1 partial / 0 broken / 0 fabricated / 0 not exercised of 8; twelve non-contract surfaces remain unscored. No new verified, non-duplicate finding; no issue or intake row.

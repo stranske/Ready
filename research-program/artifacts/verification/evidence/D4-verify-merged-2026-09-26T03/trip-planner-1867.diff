@@ -1,0 +1,105 @@
+diff --git a/docs/contracts/source-adapters.md b/docs/contracts/source-adapters.md
+index 5794e70..efb4cb9 100644
+--- a/docs/contracts/source-adapters.md
++++ b/docs/contracts/source-adapters.md
+@@ -39,3 +39,15 @@ The planner should not let lodging, transport, destination, or policy code bind
+ - downstream normalization portable across commercial, editorial, and managed-travel sources
+ 
+ The next boundary after adapters lives in [source-ingestion.md](source-ingestion.md), where category-specific pipelines turn snapshots plus resolution records into normalized options.
++
++## Offline ranking eval harness
++
++Fixture-built candidates can be regression-tested without live provider calls by exercising the golden ranking scenarios under `tests/eval/`. The harness reuses the leisure ranking fixtures in `tests/fixtures/ranking/leisure/` and asserts stable rank order and scores.
++
++Run the eval gate from the repository root:
++
++```bash
++python3 -m pytest tests/eval/test_ranking_fixture.py::test_golden_scenario_scores -q
++```
++
++**Deliberate-break gate:** temporarily invert `LeisureRankingEngine.COMPONENT_WEIGHTS` values in `trip_planner/ranking/leisure.py` (for example swap `anchor_alignment` and `movement_friction_fit` weights), rerun the command above, confirm `test_golden_scenario_scores` fails, then revert the weights before committing.
+diff --git a/tests/eval/__init__.py b/tests/eval/__init__.py
+new file mode 100644
+index 0000000..6a76d3c
+--- /dev/null
++++ b/tests/eval/__init__.py
+@@ -0,0 +1 @@
++"""Offline ranking evaluation harness (golden scenarios, no live services)."""
+diff --git a/tests/eval/fixtures/golden_scenario.json b/tests/eval/fixtures/golden_scenario.json
+new file mode 100644
+index 0000000..4185213
+--- /dev/null
++++ b/tests/eval/fixtures/golden_scenario.json
+@@ -0,0 +1,15 @@
++{
++  "id": "depth-oriented-urban-golden",
++  "summary": "Golden leisure trip scenario used by the offline ranking eval harness.",
++  "ranking_fixture": "depth_oriented_urban_trip.json",
++  "expected_rank_order": [
++    "candidate:bundle:urban-culture",
++    "candidate:bundle:quiet-recovery",
++    "candidate:bundle:scenic-wanderer"
++  ],
++  "expected_scores": {
++    "candidate:bundle:urban-culture": 1.0,
++    "candidate:bundle:quiet-recovery": 0.7856,
++    "candidate:bundle:scenic-wanderer": 0.6449
++  }
++}
+diff --git a/tests/eval/test_ranking_fixture.py b/tests/eval/test_ranking_fixture.py
+new file mode 100644
+index 0000000..7fb8556
+--- /dev/null
++++ b/tests/eval/test_ranking_fixture.py
+@@ -0,0 +1,51 @@
++"""Golden ranking scenario eval harness (B2-047).
++
++Runs deterministic leisure ranking against checked-in fixtures without live APIs.
++"""
++
++from __future__ import annotations
++
++import json
++from pathlib import Path
++from typing import Any, cast
++
++from tests.ranking.test_leisure_ranking import (
++    _candidate_set,
++    _objectives_from_fixture,
++    _profile_from_fixture,
++    _result_option_id,
++)
++from trip_planner.ranking import LeisureRankingEngine
++
++_EVAL_FIXTURE = Path(__file__).resolve().parent / "fixtures" / "golden_scenario.json"
++_SCORE_TOLERANCE = 1e-4
++
++
++def _load_golden_scenario() -> dict[str, Any]:
++    return json.loads(_EVAL_FIXTURE.read_text(encoding="utf-8"))
++
++
++def _rank_fixture(fixture_name: str) -> dict[str, float]:
++    engine = LeisureRankingEngine()
++    ranked = engine.rank_candidate_set(
++        _profile_from_fixture(fixture_name),
++        _objectives_from_fixture(fixture_name),
++        _candidate_set(),
++    )
++    return {_result_option_id(result): result.score for result in ranked.results}
++
++
++def test_golden_scenario_scores() -> None:
++    golden = _load_golden_scenario()
++    fixture_name = cast(str, golden["ranking_fixture"])
++    expected_order = cast(list[str], golden["expected_rank_order"])
++    expected_scores = cast(dict[str, float], golden["expected_scores"])
++
++    actual_scores = _rank_fixture(fixture_name)
++    actual_order = sorted(actual_scores, key=lambda key: (-actual_scores[key], key))
++
++    assert actual_order == expected_order
++    assert set(expected_scores) == set(expected_order)
++    for candidate_id, expected_score in expected_scores.items():
++        assert candidate_id in actual_scores
++        assert abs(actual_scores[candidate_id] - expected_score) <= _SCORE_TOLERANCE

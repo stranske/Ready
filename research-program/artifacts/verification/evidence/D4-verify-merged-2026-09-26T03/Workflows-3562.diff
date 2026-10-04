@@ -1,0 +1,377 @@
+diff --git a/.github/scripts/__tests__/agents-verifier-context.test.js b/.github/scripts/__tests__/agents-verifier-context.test.js
+index f34aa91d7..251a6f803 100644
+--- a/.github/scripts/__tests__/agents-verifier-context.test.js
++++ b/.github/scripts/__tests__/agents-verifier-context.test.js
+@@ -64,7 +64,16 @@ const buildGithubStub = ({
+   graphqlError = null,
+   runsByWorkflow = {},
+   listWorkflowRunsHook = null,
+-  diffText = '',
++  diffText = [
++    'diff --git a/src/example.js b/src/example.js',
++    'index 1111111..2222222 100644',
++    '--- a/src/example.js',
++    '+++ b/src/example.js',
++    '@@ -1 +1 @@',
++    '-old',
++    '+new',
++  ].join('\n'),
++  pullGetCalls = null,
+ } = {}) => ({
+   rest: {
+     actions: {
+@@ -80,6 +89,7 @@ const buildGithubStub = ({
+     },
+     pulls: {
+       async get(params = {}) {
++        pullGetCalls?.push(params);
+         if (params?.mediaType?.format === 'diff') {
+           return { data: diffText };
+         }
+@@ -679,6 +689,150 @@ test('buildVerifierContext writes diff summary for LLM context', async () => {
+   fs.rmSync(diffSummaryPath, { force: true });
+ });
+ 
++const prOnlyDiff = [
++  'diff --git a/src/pr-only.js b/src/pr-only.js',
++  'new file mode 100644',
++  '--- /dev/null',
++  '+++ b/src/pr-only.js',
++  '@@ -0,0 +1 @@',
++  '+module.exports = true;',
++].join('\n');
++
++const siblingDiff = [
++  'diff --git a/src/sibling.js b/src/sibling.js',
++  'new file mode 100644',
++  '--- /dev/null',
++  '+++ b/src/sibling.js',
++  '@@ -0,0 +1 @@',
++  '+module.exports = false;',
++].join('\n');
++
++async function buildAdvancedBaseDiffContext() {
++  const core = buildCore();
++  const pullGetCalls = [];
++  const localCalls = [];
++  const prDetails = {
++    merged: true,
++    merged_at: '2026-09-24T00:00:00Z',
++    number: 556,
++    title: 'Use the PR-only verifier diff',
++    body: prBodyFixture,
++    html_url: 'https://example.com/pr/556',
++    merge_commit_sha: 'cccccccccccccccccccccccccccccccccccccccc',
++    base: { ref: 'main', sha: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' },
++    head: { sha: 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb' },
++  };
++  const context = {
++    eventName: 'pull_request',
++    repo: { owner: 'octo', repo: 'workflows' },
++    payload: {
++      repository: { default_branch: 'main' },
++      pull_request: {
++        merged: true,
++        number: 556,
++        base: { ref: 'main' },
++        html_url: 'https://example.com/pr/556',
++      },
++    },
++    sha: prDetails.merge_commit_sha,
++  };
++  const github = buildGithubStub({
++    prDetails,
++    diffText: prOnlyDiff,
++    pullGetCalls,
++  });
++  const result = await buildVerifierContext({
++    github,
++    context,
++    core,
++    fetchLocalDiff(options) {
++      localCalls.push(options);
++      return `${siblingDiff}\n${prOnlyDiff}`;
++    },
++  });
++  return { core, localCalls, pullGetCalls, result };
++}
++
++function removeVerifierDiffArtifacts(result) {
++  fs.rmSync(result.contextPath, { force: true });
++  fs.rmSync(result.diffSummaryPath, { force: true });
++  fs.rmSync(result.diffPath, { force: true });
++}
++
++test('buildVerifierContext uses the authoritative PR diff after the base advances', async () => {
++  const { localCalls, pullGetCalls, result } = await buildAdvancedBaseDiffContext();
++  try {
++    assert.equal(result.shouldRun, true);
++    assert.equal(localCalls.length, 0, 'merged PRs must not use a base...merge local range');
++    assert.ok(
++      pullGetCalls.some(
++        (params) => params.pull_number === 556 && params.mediaType?.format === 'diff'
++      )
++    );
++    assert.match(result.markdown, /## PR Diff \(full\)[\s\S]*src\/pr-only\.js/);
++    assert.doesNotMatch(result.markdown, /src\/sibling\.js/);
++  } finally {
++    removeVerifierDiffArtifacts(result);
++  }
++});
++
++test('buildVerifierContext file summary lists only files from the merged PR', async () => {
++  const { result } = await buildAdvancedBaseDiffContext();
++  try {
++    assert.match(result.diffSummary, /### File changes[\s\S]*src\/pr-only\.js/);
++    assert.doesNotMatch(result.diffSummary, /src\/sibling\.js/);
++    assert.match(fs.readFileSync(result.diffSummaryPath, 'utf8'), /src\/pr-only\.js/);
++    assert.doesNotMatch(fs.readFileSync(result.diffSummaryPath, 'utf8'), /src\/sibling\.js/);
++  } finally {
++    removeVerifierDiffArtifacts(result);
++  }
++});
++
++test('buildVerifierContext skips when the authoritative merged PR diff is unavailable', async () => {
++  const core = buildCore();
++  const prDetails = {
++    merged: true,
++    merged_at: '2026-09-24T00:00:00Z',
++    number: 557,
++    title: 'Fail closed without the PR diff',
++    body: prBodyFixture,
++    html_url: 'https://example.com/pr/557',
++    merge_commit_sha: 'cccccccccccccccccccccccccccccccccccccccc',
++    base: { ref: 'main', sha: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' },
++    head: { sha: 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb' },
++  };
++  const context = {
++    eventName: 'pull_request',
++    repo: { owner: 'octo', repo: 'workflows' },
++    payload: {
++      repository: { default_branch: 'main' },
++      pull_request: {
++        merged: true,
++        number: 557,
++        base: { ref: 'main' },
++        html_url: 'https://example.com/pr/557',
++      },
++    },
++    sha: prDetails.merge_commit_sha,
++  };
++  const result = await buildVerifierContext({
++    github: buildGithubStub({ prDetails, diffText: null }),
++    context,
++    core,
++    fetchLocalDiff() {
++      throw new Error('merged PR verification must not fall back to a contaminated local range');
++    },
++  });
++
++  assert.equal(result.shouldRun, false);
++  assert.equal(core.outputs.should_run, 'false');
++  assert.match(core.outputs.skip_reason, /Authoritative pull request diff unavailable/);
++  assert.equal(core.outputs.pr_number, '557');
++  assert.equal(core.outputs.context_path, '');
++  assert.equal(core.outputs.diff_summary_path, '');
++  assert.equal(core.outputs.diff_path, '');
++});
++
+ test('buildVerifierContext queries CI runs for merge and head SHAs', async () => {
+   const core = buildCore();
+   const prDetails = {
+diff --git a/.github/scripts/agents_verifier_context.js b/.github/scripts/agents_verifier_context.js
+index b14116609..457ea8853 100644
+--- a/.github/scripts/agents_verifier_context.js
++++ b/.github/scripts/agents_verifier_context.js
+@@ -355,7 +355,13 @@ async function fetchClosingIssues({ github, core, owner, repo, prNumber }) {
+   }
+ }
+ 
+-async function buildVerifierContext({ github, context, core, ciWorkflows }) {
++async function buildVerifierContext({
++  github,
++  context,
++  core,
++  ciWorkflows,
++  fetchLocalDiff = fetchLocalGitDiff,
++}) {
+   const { owner, repo } = context.repo;
+   const { pr, reason: resolveReason } = await resolvePullRequest({ github, context, core });
+   if (!pr) {
+@@ -634,13 +640,12 @@ async function buildVerifierContext({ github, context, core, ciWorkflows }) {
+   const diffMaxChars = Number.parseInt(process.env.VERIFIER_DIFF_MAX_CHARS || '', 10);
+   const baseSha = pull.base?.sha;
+   const headSha = pull.merge_commit_sha || pull.head?.sha || targetSha;
+-  let diffText = fetchLocalGitDiff({
+-    baseSha,
+-    headSha,
+-    maxBytes: Number.isFinite(diffMaxBytes) ? diffMaxBytes : DEFAULT_DIFF_MAX_BYTES,
+-    core,
+-  });
+-  if (!diffText) {
++  const isMergedPull = pull.merged === true || Boolean(pull.merged_at);
++  let diffText = '';
++  if (isMergedPull) {
++    // GitHub's PR diff is authoritative for the PR's own scope. A local
++    // base...merge range includes sibling PRs when the base branch advanced,
++    // while a first-parent range can omit commits after a rebase merge.
+     diffText = await fetchPullRequestDiff({
+       github,
+       core,
+@@ -648,6 +653,40 @@ async function buildVerifierContext({ github, context, core, ciWorkflows }) {
+       repo,
+       pullNumber: pull.number,
+     });
++  } else {
++    diffText = fetchLocalDiff({
++      baseSha,
++      headSha,
++      maxBytes: Number.isFinite(diffMaxBytes) ? diffMaxBytes : DEFAULT_DIFF_MAX_BYTES,
++      core,
++    });
++    if (!diffText) {
++      diffText = await fetchPullRequestDiff({
++        github,
++        core,
++        owner,
++        repo,
++        pullNumber: pull.number,
++      });
++    }
++  }
++  if (!diffText) {
++    const skipReason = `Authoritative pull request diff unavailable for PR #${pull.number}; skipping verifier.`;
++    core?.notice?.(skipReason);
++    core?.setOutput?.('should_run', 'false');
++    core?.setOutput?.('skip_reason', skipReason);
++    core?.setOutput?.('pr_number', String(pull.number || ''));
++    core?.setOutput?.('issue_numbers', JSON.stringify(issueNumbers));
++    core?.setOutput?.('pr_html_url', pull.html_url || '');
++    core?.setOutput?.('target_sha', targetSha);
++    core?.setOutput?.('context_path', '');
++    core?.setOutput?.('acceptance_count', String(acceptanceCount));
++    core?.setOutput?.('ci_results', JSON.stringify(ciResults));
++    core?.setOutput?.('ci_failed', ciFailed ? 'true' : 'false');
++    core?.setOutput?.('diff_summary_path', '');
++    core?.setOutput?.('diff_path', '');
++    core?.setOutput?.('chain_depth', String(chainDepth));
++    return { shouldRun: false, reason: skipReason, ciResults, ciFailed };
+   }
+   const diffSummary = summarizeDiff(diffText, DIFF_SUMMARY_LIMITS);
+   content.push('');
+@@ -703,9 +742,15 @@ async function buildVerifierContext({ github, context, core, ciWorkflows }) {
+ }
+ 
+ module.exports = {
+-  buildVerifierContext: async function ({ github: rawGithub, context, core, ciWorkflows }) {
++  buildVerifierContext: async function ({
++    github: rawGithub,
++    context,
++    core,
++    ciWorkflows,
++    fetchLocalDiff,
++  }) {
+     const github = await ensureRateLimitWrapped({ github: rawGithub, core, env: process.env });
+-    return buildVerifierContext({ github, context, core, ciWorkflows });
++    return buildVerifierContext({ github, context, core, ciWorkflows, fetchLocalDiff });
+   },
+   formatDiffForContext,
+   fetchLocalGitDiff,
+diff --git a/templates/consumer-repo/.github/scripts/agents_verifier_context.js b/templates/consumer-repo/.github/scripts/agents_verifier_context.js
+index b14116609..457ea8853 100644
+--- a/templates/consumer-repo/.github/scripts/agents_verifier_context.js
++++ b/templates/consumer-repo/.github/scripts/agents_verifier_context.js
+@@ -355,7 +355,13 @@ async function fetchClosingIssues({ github, core, owner, repo, prNumber }) {
+   }
+ }
+ 
+-async function buildVerifierContext({ github, context, core, ciWorkflows }) {
++async function buildVerifierContext({
++  github,
++  context,
++  core,
++  ciWorkflows,
++  fetchLocalDiff = fetchLocalGitDiff,
++}) {
+   const { owner, repo } = context.repo;
+   const { pr, reason: resolveReason } = await resolvePullRequest({ github, context, core });
+   if (!pr) {
+@@ -634,13 +640,12 @@ async function buildVerifierContext({ github, context, core, ciWorkflows }) {
+   const diffMaxChars = Number.parseInt(process.env.VERIFIER_DIFF_MAX_CHARS || '', 10);
+   const baseSha = pull.base?.sha;
+   const headSha = pull.merge_commit_sha || pull.head?.sha || targetSha;
+-  let diffText = fetchLocalGitDiff({
+-    baseSha,
+-    headSha,
+-    maxBytes: Number.isFinite(diffMaxBytes) ? diffMaxBytes : DEFAULT_DIFF_MAX_BYTES,
+-    core,
+-  });
+-  if (!diffText) {
++  const isMergedPull = pull.merged === true || Boolean(pull.merged_at);
++  let diffText = '';
++  if (isMergedPull) {
++    // GitHub's PR diff is authoritative for the PR's own scope. A local
++    // base...merge range includes sibling PRs when the base branch advanced,
++    // while a first-parent range can omit commits after a rebase merge.
+     diffText = await fetchPullRequestDiff({
+       github,
+       core,
+@@ -648,6 +653,40 @@ async function buildVerifierContext({ github, context, core, ciWorkflows }) {
+       repo,
+       pullNumber: pull.number,
+     });
++  } else {
++    diffText = fetchLocalDiff({
++      baseSha,
++      headSha,
++      maxBytes: Number.isFinite(diffMaxBytes) ? diffMaxBytes : DEFAULT_DIFF_MAX_BYTES,
++      core,
++    });
++    if (!diffText) {
++      diffText = await fetchPullRequestDiff({
++        github,
++        core,
++        owner,
++        repo,
++        pullNumber: pull.number,
++      });
++    }
++  }
++  if (!diffText) {
++    const skipReason = `Authoritative pull request diff unavailable for PR #${pull.number}; skipping verifier.`;
++    core?.notice?.(skipReason);
++    core?.setOutput?.('should_run', 'false');
++    core?.setOutput?.('skip_reason', skipReason);
++    core?.setOutput?.('pr_number', String(pull.number || ''));
++    core?.setOutput?.('issue_numbers', JSON.stringify(issueNumbers));
++    core?.setOutput?.('pr_html_url', pull.html_url || '');
++    core?.setOutput?.('target_sha', targetSha);
++    core?.setOutput?.('context_path', '');
++    core?.setOutput?.('acceptance_count', String(acceptanceCount));
++    core?.setOutput?.('ci_results', JSON.stringify(ciResults));
++    core?.setOutput?.('ci_failed', ciFailed ? 'true' : 'false');
++    core?.setOutput?.('diff_summary_path', '');
++    core?.setOutput?.('diff_path', '');
++    core?.setOutput?.('chain_depth', String(chainDepth));
++    return { shouldRun: false, reason: skipReason, ciResults, ciFailed };
+   }
+   const diffSummary = summarizeDiff(diffText, DIFF_SUMMARY_LIMITS);
+   content.push('');
+@@ -703,9 +742,15 @@ async function buildVerifierContext({ github, context, core, ciWorkflows }) {
+ }
+ 
+ module.exports = {
+-  buildVerifierContext: async function ({ github: rawGithub, context, core, ciWorkflows }) {
++  buildVerifierContext: async function ({
++    github: rawGithub,
++    context,
++    core,
++    ciWorkflows,
++    fetchLocalDiff,
++  }) {
+     const github = await ensureRateLimitWrapped({ github: rawGithub, core, env: process.env });
+-    return buildVerifierContext({ github, context, core, ciWorkflows });
++    return buildVerifierContext({ github, context, core, ciWorkflows, fetchLocalDiff });
+   },
+   formatDiffForContext,
+   fetchLocalGitDiff,

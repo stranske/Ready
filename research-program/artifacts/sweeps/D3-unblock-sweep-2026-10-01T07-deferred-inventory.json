@@ -1,0 +1,512 @@
+{
+  "observedAt": "2026-10-01T07:59:19.185058+00:00",
+  "results": {
+    "Ready": {
+      "repo": "Ready",
+      "full": "stranske/Ready",
+      "head": "2e4e980",
+      "issues_count": 3,
+      "priority_count": 0,
+      "frozen": [],
+      "supply": 0,
+      "stuck_candidates": [],
+      "stalled_prs": [],
+      "runs": [
+        {
+          "conclusion": "success",
+          "createdAt": "2026-09-05T16:56:14Z",
+          "databaseId": 33979390035,
+          "displayTitle": "Keepalive Loop Reporter",
+          "headSha": "b43086ecaa62638f00167fac01f535c4d436140c",
+          "name": "Keepalive Loop Reporter",
+          "status": "completed",
+          "url": "https://github.com/stranske/Ready/actions/runs/33979390035",
+          "workflowName": "Keepalive Loop Reporter"
+        },
+        {
+          "conclusion": "success",
+          "createdAt": "2026-09-05T16:55:28Z",
+          "databaseId": 33979353097,
+          "displayTitle": "Autofix",
+          "headSha": "b43086ecaa62638f00167fac01f535c4d436140c",
+          "name": "Autofix",
+          "status": "completed",
+          "url": "https://github.com/stranske/Ready/actions/runs/33979353097",
+          "workflowName": "Autofix"
+        },
+        {
+          "conclusion": "failure",
+          "createdAt": "2026-09-05T16:55:28Z",
+          "databaseId": 33979353079,
+          "displayTitle": "Agents Gate Followups",
+          "headSha": "b43086ecaa62638f00167fac01f535c4d436140c",
+          "name": "Agents Gate Followups",
+          "status": "completed",
+          "url": "https://github.com/stranske/Ready/actions/runs/33979353079",
+          "workflowName": "Agents Gate Followups"
+        },
+        {
+          "conclusion": "success",
+          "createdAt": "2026-09-05T16:55:28Z",
+          "databaseId": 33979353091,
+          "displayTitle": "Agents PR Event Hub",
+          "headSha": "b43086ecaa62638f00167fac01f535c4d436140c",
+          "name": "Agents PR Event Hub",
+          "status": "completed",
+          "url": "https://github.com/stranske/Ready/actions/runs/33979353091",
+          "workflowName": "Agents PR Event Hub"
+        },
+        {
+          "conclusion": "success",
+          "createdAt": "2026-09-05T16:55:18Z",
+          "databaseId": 33979344066,
+          "displayTitle": "Keepalive Loop Reporter",
+          "headSha": "b43086ecaa62638f00167fac01f535c4d436140c",
+          "name": "Keepalive Loop Reporter",
+          "status": "completed",
+          "url": "https://github.com/stranske/Ready/actions/runs/33979344066",
+          "workflowName": "Keepalive Loop Reporter"
+        }
+      ],
+      "open_prs": 0
+    },
+    "trip-planner": {
+      "repo": "trip-planner",
+      "full": "stranske/trip-planner",
+      "head": "9041478",
+      "issues_count": 4,
+      "priority_count": 1,
+      "frozen": [
+        {
+          "n": 1877,
+          "title": "Post-merge gap: #1876 partial on approval-packet truthfulness #1837",
+          "labels": [
+            "agents:auto-pilot-pause"
+          ]
+        }
+      ],
+      "supply": 2,
+      "stuck_candidates": [],
+      "stalled_prs": [],
+      "runs": [
+        {
+          "conclusion": "skipped",
+          "createdAt": "2026-08-07T14:41:13Z",
+          "databaseId": 31188836639,
+          "displayTitle": "Agents Keepalive Sweep",
+          "headSha": "dd8ab33e5efe3526c01be90563cd38b53d7d22a0",
+          "name": "Agents Keepalive Sweep",
+          "status": "completed",
+          "url": "https://github.com/stranske/trip-planner/actions/runs/31188836639",
+          "workflowName": "Agents Keepalive Sweep"
+        },
+        {
+          "conclusion": "success",
+          "createdAt": "2026-08-07T14:21:13Z",
+          "databaseId": 31187149429,
+          "displayTitle": "Agents PR Health",
+          "headSha": "dd8ab33e5efe3526c01be90563cd38b53d7d22a0",
+          "name": "Agents PR Health",
+          "status": "completed",
+          "url": "https://github.com/stranske/trip-planner/actions/runs/31187149429",
+          "workflowName": "Agents PR Health"
+        },
+        {
+          "conclusion": "skipped",
+          "createdAt": "2026-08-07T13:50:39Z",
+          "databaseId": 31184594110,
+          "displayTitle": "Agents Keepalive Sweep",
+          "headSha": "dd8ab33e5efe3526c01be90563cd38b53d7d22a0",
+          "name": "Agents Keepalive Sweep",
+          "status": "completed",
+          "url": "https://github.com/stranske/trip-planner/actions/runs/31184594110",
+          "workflowName": "Agents Keepalive Sweep"
+        },
+        {
+          "conclusion": "skipped",
+          "createdAt": "2026-08-07T13:31:08Z",
+          "databaseId": 31183007863,
+          "displayTitle": "Keepalive Loop Reporter",
+          "headSha": "dd8ab33e5efe3526c01be90563cd38b53d7d22a0",
+          "name": "Keepalive Loop Reporter",
+          "status": "completed",
+          "url": "https://github.com/stranske/trip-planner/actions/runs/31183007863",
+          "workflowName": "Keepalive Loop Reporter"
+        },
+        {
+          "conclusion": "success",
+          "createdAt": "2026-08-07T13:30:50Z",
+          "databaseId": 31182984138,
+          "displayTitle": "Autofix",
+          "headSha": "dd8ab33e5efe3526c01be90563cd38b53d7d22a0",
+          "name": "Autofix",
+          "status": "completed",
+          "url": "https://github.com/stranske/trip-planner/actions/runs/31182984138",
+          "workflowName": "Autofix"
+        }
+      ],
+      "open_prs": 2
+    },
+    "learning-management-system": {
+      "repo": "learning-management-system",
+      "full": "stranske/learning-management-system",
+      "head": "f591895",
+      "issues_count": 3,
+      "priority_count": 0,
+      "frozen": [],
+      "supply": 0,
+      "stuck_candidates": [],
+      "stalled_prs": [],
+      "runs": [
+        {
+          "conclusion": "success",
+          "createdAt": "2026-10-01T07:42:14Z",
+          "databaseId": 36831861873,
+          "displayTitle": "Agents Keepalive Sweep",
+          "headSha": "f591895af6831f87e1c4e0adf0e356d4d17904e4",
+          "name": "Agents Keepalive Sweep",
+          "status": "completed",
+          "url": "https://github.com/stranske/learning-management-system/actions/runs/36831861873",
+          "workflowName": "Agents Keepalive Sweep"
+        },
+        {
+          "conclusion": "success",
+          "createdAt": "2026-10-01T07:18:53Z",
+          "databaseId": 36829604936,
+          "displayTitle": "Agents PR Health",
+          "headSha": "f591895af6831f87e1c4e0adf0e356d4d17904e4",
+          "name": "Agents PR Health",
+          "status": "completed",
+          "url": "https://github.com/stranske/learning-management-system/actions/runs/36829604936",
+          "workflowName": "Agents PR Health"
+        },
+        {
+          "conclusion": "success",
+          "createdAt": "2026-10-01T07:05:37Z",
+          "databaseId": 36828352125,
+          "displayTitle": "Maint Coverage Guard",
+          "headSha": "f591895af6831f87e1c4e0adf0e356d4d17904e4",
+          "name": "Maint Coverage Guard",
+          "status": "completed",
+          "url": "https://github.com/stranske/learning-management-system/actions/runs/36828352125",
+          "workflowName": "Maint Coverage Guard"
+        },
+        {
+          "conclusion": "success",
+          "createdAt": "2026-10-01T06:51:32Z",
+          "databaseId": 36827042301,
+          "displayTitle": "Agents Keepalive Sweep",
+          "headSha": "f591895af6831f87e1c4e0adf0e356d4d17904e4",
+          "name": "Agents Keepalive Sweep",
+          "status": "completed",
+          "url": "https://github.com/stranske/learning-management-system/actions/runs/36827042301",
+          "workflowName": "Agents Keepalive Sweep"
+        },
+        {
+          "conclusion": "success",
+          "createdAt": "2026-10-01T06:19:13Z",
+          "databaseId": 36824145959,
+          "displayTitle": "Agents PR Health",
+          "headSha": "f591895af6831f87e1c4e0adf0e356d4d17904e4",
+          "name": "Agents PR Health",
+          "status": "completed",
+          "url": "https://github.com/stranske/learning-management-system/actions/runs/36824145959",
+          "workflowName": "Agents PR Health"
+        }
+      ],
+      "open_prs": 0
+    },
+    "Fine-Art-Archive": {
+      "repo": "Fine-Art-Archive",
+      "full": "stranske/Fine-Art-Archive",
+      "head": "9986488",
+      "issues_count": 4,
+      "priority_count": 0,
+      "frozen": [],
+      "supply": 0,
+      "stuck_candidates": [],
+      "stalled_prs": [],
+      "runs": [
+        {
+          "conclusion": "success",
+          "createdAt": "2026-10-01T07:42:00Z",
+          "databaseId": 36831837334,
+          "displayTitle": "Agents Keepalive Sweep",
+          "headSha": "9986488006a76a617e801af38f74db6986e5d530",
+          "name": "Agents Keepalive Sweep",
+          "status": "completed",
+          "url": "https://github.com/stranske/Fine-Art-Archive/actions/runs/36831837334",
+          "workflowName": "Agents Keepalive Sweep"
+        },
+        {
+          "conclusion": "success",
+          "createdAt": "2026-10-01T07:24:20Z",
+          "databaseId": 36830124937,
+          "displayTitle": "Agents PR Health",
+          "headSha": "9986488006a76a617e801af38f74db6986e5d530",
+          "name": "Agents PR Health",
+          "status": "completed",
+          "url": "https://github.com/stranske/Fine-Art-Archive/actions/runs/36830124937",
+          "workflowName": "Agents PR Health"
+        },
+        {
+          "conclusion": "success",
+          "createdAt": "2026-10-01T07:03:13Z",
+          "databaseId": 36828126021,
+          "displayTitle": "Maint Coverage Guard",
+          "headSha": "9986488006a76a617e801af38f74db6986e5d530",
+          "name": "Maint Coverage Guard",
+          "status": "completed",
+          "url": "https://github.com/stranske/Fine-Art-Archive/actions/runs/36828126021",
+          "workflowName": "Maint Coverage Guard"
+        },
+        {
+          "conclusion": "success",
+          "createdAt": "2026-10-01T06:51:07Z",
+          "databaseId": 36827004590,
+          "displayTitle": "Agents Keepalive Sweep",
+          "headSha": "9986488006a76a617e801af38f74db6986e5d530",
+          "name": "Agents Keepalive Sweep",
+          "status": "completed",
+          "url": "https://github.com/stranske/Fine-Art-Archive/actions/runs/36827004590",
+          "workflowName": "Agents Keepalive Sweep"
+        },
+        {
+          "conclusion": "success",
+          "createdAt": "2026-10-01T06:29:51Z",
+          "databaseId": 36825079296,
+          "displayTitle": "Agents PR Health",
+          "headSha": "9986488006a76a617e801af38f74db6986e5d530",
+          "name": "Agents PR Health",
+          "status": "completed",
+          "url": "https://github.com/stranske/Fine-Art-Archive/actions/runs/36825079296",
+          "workflowName": "Agents PR Health"
+        }
+      ],
+      "open_prs": 0
+    },
+    "Doc-Lineage": {
+      "repo": "Doc-Lineage",
+      "full": "stranske/Doc-Lineage",
+      "head": "fa3406c",
+      "issues_count": 2,
+      "priority_count": 0,
+      "frozen": [
+        {
+          "n": 1,
+          "title": "Dependency Dashboard",
+          "labels": [
+            "agents:auto-pilot-pause"
+          ]
+        }
+      ],
+      "supply": 1,
+      "stuck_candidates": [],
+      "stalled_prs": [],
+      "runs": [
+        {
+          "conclusion": "success",
+          "createdAt": "2026-10-01T07:42:16Z",
+          "databaseId": 36831863786,
+          "displayTitle": "Agents Keepalive Sweep",
+          "headSha": "fa3406c177fb959af46b75fa173ef89d9d7bee6c",
+          "name": "Agents Keepalive Sweep",
+          "status": "completed",
+          "url": "https://github.com/stranske/Doc-Lineage/actions/runs/36831863786",
+          "workflowName": "Agents Keepalive Sweep"
+        },
+        {
+          "conclusion": "success",
+          "createdAt": "2026-10-01T07:26:36Z",
+          "databaseId": 36830342684,
+          "displayTitle": "Agents PR Health",
+          "headSha": "fa3406c177fb959af46b75fa173ef89d9d7bee6c",
+          "name": "Agents PR Health",
+          "status": "completed",
+          "url": "https://github.com/stranske/Doc-Lineage/actions/runs/36830342684",
+          "workflowName": "Agents PR Health"
+        },
+        {
+          "conclusion": "success",
+          "createdAt": "2026-10-01T07:05:21Z",
+          "databaseId": 36828327810,
+          "displayTitle": "Maint Coverage Guard",
+          "headSha": "fa3406c177fb959af46b75fa173ef89d9d7bee6c",
+          "name": "Maint Coverage Guard",
+          "status": "completed",
+          "url": "https://github.com/stranske/Doc-Lineage/actions/runs/36828327810",
+          "workflowName": "Maint Coverage Guard"
+        },
+        {
+          "conclusion": "success",
+          "createdAt": "2026-10-01T06:51:29Z",
+          "databaseId": 36827037002,
+          "displayTitle": "Agents Keepalive Sweep",
+          "headSha": "fa3406c177fb959af46b75fa173ef89d9d7bee6c",
+          "name": "Agents Keepalive Sweep",
+          "status": "completed",
+          "url": "https://github.com/stranske/Doc-Lineage/actions/runs/36827037002",
+          "workflowName": "Agents Keepalive Sweep"
+        },
+        {
+          "conclusion": "success",
+          "createdAt": "2026-10-01T06:33:07Z",
+          "databaseId": 36825375980,
+          "displayTitle": "Agents PR Health",
+          "headSha": "fa3406c177fb959af46b75fa173ef89d9d7bee6c",
+          "name": "Agents PR Health",
+          "status": "completed",
+          "url": "https://github.com/stranske/Doc-Lineage/actions/runs/36825375980",
+          "workflowName": "Agents PR Health"
+        }
+      ],
+      "open_prs": 0
+    },
+    "Deliverable-Render": {
+      "repo": "Deliverable-Render",
+      "full": "stranske/Deliverable-Render",
+      "head": "3bf3a87",
+      "issues_count": 2,
+      "priority_count": 0,
+      "frozen": [
+        {
+          "n": 1,
+          "title": "Dependency Dashboard",
+          "labels": [
+            "agents:auto-pilot-pause"
+          ]
+        }
+      ],
+      "supply": 1,
+      "stuck_candidates": [],
+      "stalled_prs": [],
+      "runs": [
+        {
+          "conclusion": "success",
+          "createdAt": "2026-10-01T07:42:08Z",
+          "databaseId": 36831852150,
+          "displayTitle": "Agents Keepalive Sweep",
+          "headSha": "3bf3a874dca4df870a9f85588ab0696a782d5f41",
+          "name": "Agents Keepalive Sweep",
+          "status": "completed",
+          "url": "https://github.com/stranske/Deliverable-Render/actions/runs/36831852150",
+          "workflowName": "Agents Keepalive Sweep"
+        },
+        {
+          "conclusion": "success",
+          "createdAt": "2026-10-01T07:14:57Z",
+          "databaseId": 36829233151,
+          "displayTitle": "Agents PR Health",
+          "headSha": "3bf3a874dca4df870a9f85588ab0696a782d5f41",
+          "name": "Agents PR Health",
+          "status": "completed",
+          "url": "https://github.com/stranske/Deliverable-Render/actions/runs/36829233151",
+          "workflowName": "Agents PR Health"
+        },
+        {
+          "conclusion": "success",
+          "createdAt": "2026-10-01T07:05:24Z",
+          "databaseId": 36828332194,
+          "displayTitle": "Maint Coverage Guard",
+          "headSha": "3bf3a874dca4df870a9f85588ab0696a782d5f41",
+          "name": "Maint Coverage Guard",
+          "status": "completed",
+          "url": "https://github.com/stranske/Deliverable-Render/actions/runs/36828332194",
+          "workflowName": "Maint Coverage Guard"
+        },
+        {
+          "conclusion": "success",
+          "createdAt": "2026-10-01T06:51:05Z",
+          "databaseId": 36827002196,
+          "displayTitle": "Agents Keepalive Sweep",
+          "headSha": "3bf3a874dca4df870a9f85588ab0696a782d5f41",
+          "name": "Agents Keepalive Sweep",
+          "status": "completed",
+          "url": "https://github.com/stranske/Deliverable-Render/actions/runs/36827002196",
+          "workflowName": "Agents Keepalive Sweep"
+        },
+        {
+          "conclusion": "success",
+          "createdAt": "2026-10-01T06:12:17Z",
+          "databaseId": 36823537049,
+          "displayTitle": "Agents PR Health",
+          "headSha": "3bf3a874dca4df870a9f85588ab0696a782d5f41",
+          "name": "Agents PR Health",
+          "status": "completed",
+          "url": "https://github.com/stranske/Deliverable-Render/actions/runs/36823537049",
+          "workflowName": "Agents PR Health"
+        }
+      ],
+      "open_prs": 0
+    },
+    "Manager-Mosaic": {
+      "repo": "Manager-Mosaic",
+      "full": "stranske/Manager-Mosaic",
+      "head": "c9018a2",
+      "issues_count": 12,
+      "priority_count": 8,
+      "frozen": [],
+      "supply": 11,
+      "stuck_candidates": [],
+      "stalled_prs": [],
+      "runs": [
+        {
+          "conclusion": "success",
+          "createdAt": "2026-10-01T07:42:25Z",
+          "databaseId": 36831879201,
+          "displayTitle": "Agents Keepalive Sweep",
+          "headSha": "c9018a23a86c7d8bab9ef7f1aa6f7976b17020e2",
+          "name": "Agents Keepalive Sweep",
+          "status": "completed",
+          "url": "https://github.com/stranske/Manager-Mosaic/actions/runs/36831879201",
+          "workflowName": "Agents Keepalive Sweep"
+        },
+        {
+          "conclusion": "success",
+          "createdAt": "2026-10-01T07:11:28Z",
+          "databaseId": 36828907511,
+          "displayTitle": "Agents PR Health",
+          "headSha": "c9018a23a86c7d8bab9ef7f1aa6f7976b17020e2",
+          "name": "Agents PR Health",
+          "status": "completed",
+          "url": "https://github.com/stranske/Manager-Mosaic/actions/runs/36828907511",
+          "workflowName": "Agents PR Health"
+        },
+        {
+          "conclusion": "success",
+          "createdAt": "2026-10-01T07:04:38Z",
+          "databaseId": 36828257832,
+          "displayTitle": "Maint Coverage Guard",
+          "headSha": "c9018a23a86c7d8bab9ef7f1aa6f7976b17020e2",
+          "name": "Maint Coverage Guard",
+          "status": "completed",
+          "url": "https://github.com/stranske/Manager-Mosaic/actions/runs/36828257832",
+          "workflowName": "Maint Coverage Guard"
+        },
+        {
+          "conclusion": "success",
+          "createdAt": "2026-10-01T06:51:40Z",
+          "databaseId": 36827054366,
+          "displayTitle": "Agents Keepalive Sweep",
+          "headSha": "c9018a23a86c7d8bab9ef7f1aa6f7976b17020e2",
+          "name": "Agents Keepalive Sweep",
+          "status": "completed",
+          "url": "https://github.com/stranske/Manager-Mosaic/actions/runs/36827054366",
+          "workflowName": "Agents Keepalive Sweep"
+        },
+        {
+          "conclusion": "success",
+          "createdAt": "2026-10-01T06:06:22Z",
+          "databaseId": 36823036277,
+          "displayTitle": "Agents PR Health",
+          "headSha": "c9018a23a86c7d8bab9ef7f1aa6f7976b17020e2",
+          "name": "Agents PR Health",
+          "status": "completed",
+          "url": "https://github.com/stranske/Manager-Mosaic/actions/runs/36823036277",
+          "workflowName": "Agents PR Health"
+        }
+      ],
+      "open_prs": 0
+    }
+  }
+}

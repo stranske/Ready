@@ -1,0 +1,24 @@
+{
+  "body": "## Why\n\nManifest sync to `stranske/trip-planner#1869` is blocked on unresolved bot review threads for the keepalive loop reporter workflow copied from Workflows.\n\n## Scope\n\nFix the Workflows source template on `main` so the next sync regeneration outdates consumer threads on `.github/workflows/agents-keepalive-loop-reporter.yml`.\n\n## Tasks\n\n- [ ] Update `templates/consumer-repo/.github/workflows/agents-keepalive-loop-reporter.yml` on `main` to resolve the upstream review debt blocking `stranske/trip-planner#1869`.\n- [ ] Test `pytest tests/workflows/test_keepalive_authority_delivery.py::test_gate_paths_deny_invalid_claims_and_reporters_can_persist_generation -q` on `main` after the template workflow change; capture literal pass output in the PR description.\n- [ ] Open a Workflows PR that merges the template fix and note the expected consumer manifest path `.github/workflows/agents-keepalive-loop-reporter.yml` for the follow-on sync PR.\n\n## Acceptance Criteria\n\n- [ ] `pytest tests/workflows/test_keepalive_authority_delivery.py::test_gate_paths_deny_invalid_claims_and_reporters_can_persist_generation -q` exits 0 on `main` after updating `templates/consumer-repo/.github/workflows/agents-keepalive-loop-reporter.yml`.\n- [ ] A merged Workflows PR updates `templates/consumer-repo/.github/workflows/agents-keepalive-loop-reporter.yml` and links `stranske/trip-planner#1869`.\n- [ ] After consumer sync regeneration, bot review threads on `stranske/trip-planner` path `.github/workflows/agents-keepalive-loop-reporter.yml` are outdated or marked resolved (link the sync PR URL).\n",
+  "labels": [
+    {
+      "id": "LA_kwDOQprj9M8AAAACSq7nhQ",
+      "name": "automation",
+      "description": "Automation and workflow automation",
+      "color": "205d64"
+    },
+    {
+      "id": "LA_kwDOQprj9M8AAAACUeB6Qw",
+      "name": "agents:formatted",
+      "description": "Issue has been formatted to agent template",
+      "color": "1d76db"
+    },
+    {
+      "id": "LA_kwDOQprj9M8AAAACVO1uJQ",
+      "name": "consumer-sync",
+      "description": "",
+      "color": "ededed"
+    }
+  ],
+  "title": "[sync-review] Fix upstream manifest-synced paths blocking stranske/trip-planner#1869"
+}

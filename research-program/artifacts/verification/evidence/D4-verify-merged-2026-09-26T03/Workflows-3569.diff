@@ -1,0 +1,388 @@
+diff --git a/.github/scripts/__tests__/maint71_merge_sync_prs.test.js b/.github/scripts/__tests__/maint71_merge_sync_prs.test.js
+index 80ee14b..abb0e06 100644
+--- a/.github/scripts/__tests__/maint71_merge_sync_prs.test.js
++++ b/.github/scripts/__tests__/maint71_merge_sync_prs.test.js
+@@ -6,9 +6,26 @@ const fs = require('node:fs');
+ const os = require('node:os');
+ const path = require('node:path');
+ const {
+-  ensureExactHeadReviewRequest, hasCompleteReviewThreadEvidence, run,
++  devToolBaseRefreshResult, ensureExactHeadReviewRequest, hasCompleteReviewThreadEvidence, run,
+ } = require('../maint71_merge_sync_prs');
+ 
++test('behind leased dev-tool delivery routes to producer before branch update', () => {
++  const context = {
++    owner: 'stranske', repo: 'Ready', pr: 591,
++    branch: 'deps/sync-dev-versions-1234', delivery_lane: 'dev-tool-sync',
++    head_sha: 'a'.repeat(40), plan_id: 'plan-1',
++    source_commit: 'b'.repeat(40), delivery_generation: 'generation-1',
++  };
++  assert.deepEqual(devToolBaseRefreshResult(context), {
++    ...context, delivery_disposition: 'awaiting-base-refresh',
++    blocker_owner: 'maint-52', next_command: 'dispatch-maint-52-scoped',
++    status: 'dev_tool_base_refresh_required',
++  });
++  assert.equal(devToolBaseRefreshResult({ ...context, delivery_lane: 'sync' }), null);
++  const source = fs.readFileSync(path.join(__dirname, '..', 'maint71_merge_sync_prs.js'), 'utf8');
++  assert.match(source, /if \(devToolRefresh\) \{\s*results\.push\(devToolRefresh\);\s*continue;\s*\}\s*await withRetry\(\(client\) => client\.rest\.pulls\.updateBranch/s);
++});
++
+ test('exact-head reviewer request is durable, trusted, and idempotent', async () => {
+   const headSha = 'd'.repeat(40);
+   const record = {
+diff --git a/.github/scripts/__tests__/sync_pr_merge_contract.test.js b/.github/scripts/__tests__/sync_pr_merge_contract.test.js
+index 34cab2b..2bf7a78 100644
+--- a/.github/scripts/__tests__/sync_pr_merge_contract.test.js
++++ b/.github/scripts/__tests__/sync_pr_merge_contract.test.js
+@@ -5,6 +5,10 @@ const assert = require('node:assert/strict');
+ const fs = require('node:fs');
+ const os = require('node:os');
+ const path = require('node:path');
++const {
++  planMaint71Continuations,
++  selectMaint71ContinuationRepos,
++} = require('../sync_dependency_campaign');
+ 
+ const {
+   buildMarkdownSummary,
+@@ -14,6 +18,7 @@ const {
+   candidateRefreshDecision,
+   candidatePromotionDecision,
+   deliveryRefreshDecision,
++  devToolBaseRefreshDecision,
+   candidateEvidenceAllowsMutation,
+   campaignAuthorizationAllowsMerge,
+   hasCampaignCommitAuthorization,
+@@ -619,6 +624,71 @@ test('delivery base drift replays only signed exact-plan promotion evidence', ()
+   }).eligible, false);
+ });
+ 
++test('dev-tool base drift hands off only leased producer refreshes', () => {
++  const request = {
++    owner: 'stranske', repo: 'Ready', branch: 'deps/sync-dev-versions-1234',
++    delivery_lane: 'dev-tool-sync', status: 'dev_tool_base_refresh_required',
++    blocker_owner: 'maint-52', next_command: 'dispatch-maint-52-scoped',
++  };
++  const report = {
++    inputs: { sync_hash: 'dev-tool', auto_merge: true, dry_run: false },
++    results: [request, { ...request }, {
++      ...request, repo: 'learning-management-system',
++    }],
++  };
++  assert.deepEqual(devToolBaseRefreshDecision({ report }), {
++    eligible: true, errors: [],
++    repositories: ['stranske/Ready', 'stranske/learning-management-system'],
++  });
++  assert.equal(devToolBaseRefreshDecision({
++    report: { ...report, inputs: { ...report.inputs, sync_hash: '' } },
++  }).eligible, true, 'unscoped reconciliation can encounter leased dev-tool PRs');
++  assert.equal(devToolBaseRefreshDecision({
++    report: { ...report, inputs: { ...report.inputs, dry_run: true } },
++  }).eligible, false);
++  assert.equal(devToolBaseRefreshDecision({
++    report: { ...report, inputs: { ...report.inputs, sync_hash: 'delivery' } },
++  }).eligible, false);
++  assert.equal(devToolBaseRefreshDecision({
++    report: { ...report, results: [{ ...request, branch: 'sync/workflows-delivery' }] },
++  }).eligible, false);
++  assert.deepEqual(classifyDeliveryContinuation(request, '2026-09-24T21:00:00Z'), {
++    class: 'transient', lane: 'dev-tool', reason: 'dev_tool_base_refresh_required',
++    resume_after: '2026-09-24T21:10:00.000Z',
++  });
++});
++
++test('busy Maint 52 retains a due exact-head dev-tool handoff for Maint 82', () => {
++  const generatedAt = '2026-09-24T21:00:00Z';
++  const report = buildMergeReport({
++    syncHash: '', generatedAt,
++    results: [{
++      owner: 'stranske', repo: 'Ready', pr: 591,
++      branch: 'deps/sync-dev-versions-1234',
++      head_sha: 'a'.repeat(40), delivery_generation: 'generation-1',
++      status: 'dev_tool_base_refresh_required',
++      delivery_disposition: 'awaiting-base-refresh',
++      blocker_owner: 'maint-52', next_command: 'dispatch-maint-52-scoped',
++      delivery_lane: 'dev-tool-sync',
++    }],
++  });
++  assert.equal(report.handoff_records.length, 1);
++  assert.equal(report.handoff_records[0].continuation.reason,
++    'dev_tool_base_refresh_required');
++  assert.deepEqual(planMaint71Continuations(report.handoff_records, {
++    now: '2026-09-24T21:09:59Z',
++  }), []);
++  const due = planMaint71Continuations(report.handoff_records, {
++    now: '2026-09-24T21:10:00Z',
++  });
++  assert.equal(due.length, 1);
++  assert.equal(due[0].lane, 'dev-tool');
++  assert.equal(due[0].head_sha, 'a'.repeat(40));
++  assert.ok(due[0].continuation_key);
++  assert.deepEqual(selectMaint71ContinuationRepos(due[0], report.handoff_records,
++    ['stranske/Ready', 'stranske/Collab-Admin']), ['stranske/Ready']);
++});
++
+ test('review resolution proof is exact-head, source-linked, and actor-bound', () => {
+   const proof = {
+     schema: 'workflows-sync-review-resolution/v1',
+@@ -2457,6 +2527,7 @@ test('buildMergeReport provides machine-readable summary counts', () => {
+     delivery_promotion_evidence_missing: 0,
+     sealed_head_mismatch: 0,
+     stable_base_refresh_required: 0,
++    dev_tool_base_refresh_required: 0,
+     head_changed: 0,
+     head_commit_unverified: 0,
+     review_blocked: 0,
+diff --git a/.github/scripts/maint71_merge_sync_prs.js b/.github/scripts/maint71_merge_sync_prs.js
+index cba31ec..89a7a41 100644
+--- a/.github/scripts/maint71_merge_sync_prs.js
++++ b/.github/scripts/maint71_merge_sync_prs.js
+@@ -542,6 +542,17 @@ async function collectReviewerEvidence({
+   };
+ }
+ 
++function devToolBaseRefreshResult(deliveryContext) {
++  if (deliveryContext?.delivery_lane !== 'dev-tool-sync') return null;
++  return {
++    ...deliveryContext,
++    delivery_disposition: 'awaiting-base-refresh',
++    blocker_owner: 'maint-52',
++    next_command: 'dispatch-maint-52-scoped',
++    status: 'dev_tool_base_refresh_required',
++  };
++}
++
+ async function run({ github, context, core }) {
+   const defaultOwner = context.repo.owner;
+   const fs = require('fs');
+@@ -2899,8 +2910,9 @@ async function run({ github, context, core }) {
+       const willMerge = mergeIntended && !prepareOnly;
+       // Strict required-status-check rules evaluate the merge result. If the
+       // head is behind main, every merge strategy creates a new result without
+-      // the head's Gate context. Update the generated branch and wait for its
+-      // fresh Gate and mandatory review window instead of attempting a merge.
++      // the head's Gate context. A leased generated delivery must be refreshed
++      // by its producer: updateBranch would change the tree without reminting
++      // the immutable desired-tree lease. Ordinary branches may still update.
+       if (requiresStrictGateBranchUpdate({
+         pr,
+         requiredContexts,
+@@ -2955,6 +2967,11 @@ async function run({ github, context, core }) {
+             });
+             continue;
+           }
++          const devToolRefresh = devToolBaseRefreshResult(deliveryContext);
++          if (devToolRefresh) {
++            results.push(devToolRefresh);
++            continue;
++          }
+           await withRetry((client) => client.rest.pulls.updateBranch({
+             owner,
+             repo,
+@@ -3373,6 +3390,12 @@ async function run({ github, context, core }) {
+         },
+       }));
+     } catch (dispatchError) {
++      if (report.results.some((result) =>
++        result.status === 'dev_tool_base_refresh_required')) {
++        throw new Error(
++          `Maint 82 durable dev-tool base-refresh handoff failed: ${dispatchError.message}`,
++        );
++      }
+       core.notice(
+         `Maint 71 handoff dispatch failed (non-blocking): ${dispatchError.message}`,
+       );
+@@ -3430,6 +3453,7 @@ async function run({ github, context, core }) {
+ }
+ 
+ module.exports = {
++  devToolBaseRefreshResult,
+   campaignNoChangeRequiresLiveGate,
+   collectReviewerEvidence,
+   enforceGeneratedDeliveryRequiredContexts,
+diff --git a/.github/scripts/sync_pr_merge_contract.js b/.github/scripts/sync_pr_merge_contract.js
+index 3601777..78491fa 100644
+--- a/.github/scripts/sync_pr_merge_contract.js
++++ b/.github/scripts/sync_pr_merge_contract.js
+@@ -1079,6 +1079,7 @@ function summarizeResults(results) {
+     delivery_promotion_evidence_missing: 0,
+     sealed_head_mismatch: 0,
+     stable_base_refresh_required: 0,
++    dev_tool_base_refresh_required: 0,
+     head_changed: 0,
+     head_commit_unverified: 0,
+     review_blocked: 0,
+@@ -1118,6 +1119,7 @@ function deriveHandoffCheckState(result = {}) {
+     || status === 'delivery_sealed_checks_pending'
+     || status === 'sealed_head_mismatch'
+     || status === 'stable_base_refresh_required'
++    || status === 'dev_tool_base_refresh_required'
+     || status === 'head_changed'
+   ) {
+     return 'checks_pending';
+@@ -1196,6 +1198,7 @@ function parseResumeAfter(result = {}, observedAt = new Date().toISOString()) {
+     review_window_started: 7,
+     reviewer_settlement_pending: 7,
+     stable_base_refresh_required: 10,
++    dev_tool_base_refresh_required: 10,
+   }[String(result.status || '')] || 10;
+   return new Date(observed.getTime() + delayMinutes * 60 * 1000).toISOString();
+ }
+@@ -1216,6 +1219,7 @@ function classifyDeliveryContinuation(result = {}, observedAt = new Date().toISO
+     'review_window_started',
+     'reviewer_settlement_pending',
+     'stable_base_refresh_required',
++    'dev_tool_base_refresh_required',
+   ]);
+   if (terminal.has(status)) {
+     return { class: 'terminal', lane, reason: status, resume_after: '' };
+@@ -1300,6 +1304,40 @@ function deliveryRefreshDecision({ report = {}, expectedCanaries = [] } = {}) {
+   };
+ }
+ 
++function devToolBaseRefreshDecision({ report = {} } = {}) {
++  const errors = [];
++  if (![DEV_TOOL_SYNC_SELECTOR, ''].includes(normalizeSyncHash(report?.inputs?.sync_hash))) {
++    errors.push('merge report is not a dev-tool or unscoped report');
++  }
++  if (report?.inputs?.auto_merge !== true || report?.inputs?.dry_run !== false) {
++    errors.push('merge report is not an active merge attempt');
++  }
++  const requests = (Array.isArray(report?.results) ? report.results : []).filter(
++    (result) => String(result.status || '') === 'dev_tool_base_refresh_required',
++  );
++  if (requests.length === 0) errors.push('report has no dev-tool base refresh request');
++  const repositories = new Set();
++  for (const request of requests) {
++    const repository = `${request.owner || ''}/${request.repo || ''}`;
++    if (
++      request.delivery_lane !== 'dev-tool-sync'
++      || !branchNameFromRef(request.branch).startsWith(DEV_TOOL_SYNC_BRANCH_PREFIX)
++      || request.blocker_owner !== 'maint-52'
++      || request.next_command !== 'dispatch-maint-52-scoped'
++      || !/^stranske\/[A-Za-z0-9][A-Za-z0-9_.-]*$/.test(repository)
++    ) {
++      errors.push(`${repository}: invalid dev-tool producer handoff`);
++      continue;
++    }
++    repositories.add(repository);
++  }
++  return {
++    eligible: requests.length > 0 && errors.length === 0,
++    errors,
++    repositories: [...repositories].sort(),
++  };
++}
++
+ function candidatePromotionDecision({ report = {}, evidence = {}, expectedCanaries = [] } = {}) {
+   const rows = Array.isArray(evidence) ? evidence : evidence.results;
+   const validation = validateCanaryEvidence(rows, expectedCanaries);
+@@ -1634,6 +1672,7 @@ module.exports = {
+   buildDeliveryHandoff,
+   candidateRefreshDecision,
+   deliveryRefreshDecision,
++  devToolBaseRefreshDecision,
+   candidatePromotionDecision,
+   classifyDeliveryContinuation,
+   continuationLaneForBranch,
+diff --git a/.github/workflows/maint-71-merge-sync-prs.yml b/.github/workflows/maint-71-merge-sync-prs.yml
+index fd22d9b..c84d928 100644
+--- a/.github/workflows/maint-71-merge-sync-prs.yml
++++ b/.github/workflows/maint-71-merge-sync-prs.yml
+@@ -441,6 +441,71 @@ jobs:
+             const { run } = require("./.github/scripts/maint71_merge_sync_prs.js");
+             await run({ github, context, core });
+ 
++      - name: Refresh behind dev-tool delivery bases through Maint 52
++        if: >-
++          ${{
++            always() &&
++            steps.merge.outcome == 'success' &&
++            (steps.candidate_mode.outputs.selector == 'dev-tool' ||
++             steps.candidate_mode.outputs.selector == '')
++          }}
++        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
++        with:
++          github-token: ${{ secrets.OWNER_PR_PAT || secrets.SERVICE_BOT_PAT || github.token }}
++          script: |
++            const fs = require('fs');
++            const { createTokenAwareRetry } = require(
++              './.github/scripts/github-api-with-retry.js'
++            );
++            const { withRetry } = await createTokenAwareRetry({
++              github,
++              core,
++              env: process.env,
++              task: 'maint-71-refresh-dev-tool-bases',
++              capabilities: ['actions:write'],
++            });
++            const { devToolBaseRefreshDecision } = require(
++              './.github/scripts/sync_pr_merge_contract.js'
++            );
++            const report = JSON.parse(
++              fs.readFileSync('artifacts/sync-pr-merge-report.json', 'utf8'),
++            );
++            const decision = devToolBaseRefreshDecision({ report });
++            if (!decision.eligible) {
++              core.notice(`Maint 52 refresh not requested: ${decision.errors.join(', ')}`);
++              return;
++            }
++            const activeStatuses = ['queued', 'in_progress', 'waiting', 'pending'];
++            for (const status of activeStatuses) {
++              const { data: runs } = await withRetry((client) =>
++                client.rest.actions.listWorkflowRuns({
++                  owner: context.repo.owner,
++                  repo: context.repo.repo,
++                  workflow_id: 'maint-52-sync-dev-versions.yml',
++                  status,
++                  per_page: 1,
++                }),
++              );
++              if ((runs.workflow_runs || []).length > 0) {
++                core.notice(
++                  `Maint 52 already ${status}; Maint 82 will retry this exact-head ` +
++                  `handoff from its durable campaign queue after the producer finishes`,
++                );
++                return;
++              }
++            }
++            await withRetry((client) => client.rest.actions.createWorkflowDispatch({
++              owner: context.repo.owner,
++              repo: context.repo.repo,
++              workflow_id: 'maint-52-sync-dev-versions.yml',
++              ref: context.payload.repository?.default_branch || 'main',
++              inputs: {
++                repos: decision.repositories.join(','),
++                dry_run: 'false',
++              },
++            }));
++            core.notice(`Dispatched Maint 52 producer refresh for ${decision.repositories.join(', ')}`);
++
+       - name: Authorize exact-head fleet commit
+         id: campaign_authorization
+         if: >-
+diff --git a/docs/ops/CONSUMER_REPO_MAINTENANCE.md b/docs/ops/CONSUMER_REPO_MAINTENANCE.md
+index 565f868..76248ec 100644
+--- a/docs/ops/CONSUMER_REPO_MAINTENANCE.md
++++ b/docs/ops/CONSUMER_REPO_MAINTENANCE.md
+@@ -839,6 +839,20 @@ workflow-template sync PR cannot update the env file without the matching
+ `pyproject.toml`, managed `.pre-commit-config.yaml` hook revisions, `requirements.lock`, and supported `requirements-dev.lock`
+ changes.
+ 
++If a leased dev-tool PR falls behind its consumer default branch, Maint 71
++reports `dev_tool_base_refresh_required` in either a dev-tool or unscoped pass
++and dispatches one scoped Maint 52 producer run. If another Maint 52 run is
++active, Maint 71 records the exact-head handoff in Maint 82's durable campaign
++queue; its ten-minute scheduled continuation retries the dispatch after the
++producer finishes. Failure to submit that handoff makes this reconciliation
++fail visibly instead of silently losing the request. It must not call GitHub's
++branch-update endpoint on that generated PR: a merge commit changes the whole
++tree without reminting the recorded `desired_tree_hash`. Maint 52 regenerates
++the delivery against the current base and records a fresh lease; then Maint 71
++rechecks the new exact head, required checks, review threads, mergeability, and
++seven-minute review window. An active producer run or missing API evidence is a
++held handoff, not permission to overwrite the lease or merge the stale head.
++
+ For a tool-only `pyproject.toml` with no package declaration (as in Orchestrator),
+ Maint 52 leaves the file's tool configuration alone instead of adding
+ `[project.optional-dependencies]`. It still synchronizes any supported direct

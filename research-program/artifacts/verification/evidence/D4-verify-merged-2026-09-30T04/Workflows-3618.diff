@@ -1,0 +1,80 @@
+diff --git a/config/template-drift-allowlist.txt b/config/template-drift-allowlist.txt
+index e3dbf854e..10b26296f 100644
+--- a/config/template-drift-allowlist.txt
++++ b/config/template-drift-allowlist.txt
+@@ -145,10 +145,10 @@ fingerprint_refreshed = 2026-09-02
+ main = .github/workflows/agents-keepalive-loop-reporter.yml
+ template = templates/consumer-repo/.github/workflows/agents-keepalive-loop-reporter.yml
+ main_sha256 = 3040dc8ebb342c988d674cee9d149c218c48cacf3a01b2f7152b7fc521c8b1c4
+-template_sha256 = faf1d90575c7da8c599965c34daf56ad46b4999109bea0013b2fa08cbe8f96b3
+-divergence = Authority recovery reviewed 2026-09-27: both reporters classify the exact originating worker attempt using the routed agent registry, recover a missing webhook PR association from the direct immutable attempt index and verified ledger receipt, reconcile only positive non-start evidence, and project settled generation state. The Workflows root reporter also subscribes to Agents Keepalive Loop without the consumer consolidated-mode gate because that root workflow runs when USE_CONSOLIDATED_WORKFLOWS is not true; the consumer reporter remains scoped to Agents Gate Followups and its consolidated-mode gate. Root in-repo setup and consumer state fingerprinting with exact run attempt and SHA-pinned actions remain intentional. Do not align wholesale, because it would disable a live root recovery path or remove the consumer deployment contract.
+-divergence_reviewed = 2026-09-27
+-fingerprint_refreshed = 2026-09-27
++template_sha256 = ff5a929fc27f139f35718a7c40c2d1f16b9421b03b5805d62e8e499ceb904649
++divergence = Non-consolidated authority recovery re-reviewed 2026-09-28: both reporters now remain active for failed or cancelled originating workflows regardless of sweep mode. The Workflows root reporter subscribes to both Agents Gate Followups and Agents Keepalive Loop, while the consumer reporter subscribes only to Agents Gate Followups because both consolidated and non-consolidated consumer sweeps can dispatch that workflow. Root in-repo setup and consumer state fingerprinting with exact run attempt and SHA-pinned actions remain intentional. Do not align wholesale, because it would remove either the root workflow coverage or the consumer deployment contract.
++divergence_reviewed = 2026-09-28
++fingerprint_refreshed = 2026-09-28
+ 
+ [pair.13]
+ main = .github/workflows/agents-keepalive-sweep.yml
+diff --git a/docs/WORKFLOW_GUIDE.md b/docs/WORKFLOW_GUIDE.md
+index d2968bbe1..f99fc1b7d 100644
+--- a/docs/WORKFLOW_GUIDE.md
++++ b/docs/WORKFLOW_GUIDE.md
+@@ -135,7 +135,7 @@ _Inline Gate helper_
+ - **`agents-keepalive-branch-sync.yml`** — Dispatch-triggered utility that syncs PR branches with their base branch (merges base into head). It still selects an App token/PAT for git pushes because keepalive needs to merge into automation-owned branches, but all logic stays confined to git + summary updates—no extra API calls beyond pushing the merge.
+ - **`agents-keepalive-dispatch-handler.yml`** — Repository-dispatch handler that receives `codex-pr-comment-command` payloads, selects a write-capable token (App → PAT → installation), and runs `keepalive_post_work.js` to apply sync-required labels, rerun keepalive legs, or emit debugging breadcrumbs. Token selection remains by design because the handler must write to PRs immediately after the dispatch event.
+ - **`agents-keepalive-loop.yml`** — Core keepalive orchestrator that wakes up after non-push Gate completion, re-validates labels/run caps, builds the task appendix, and dispatches the correct registry-backed agent workflow until Acceptance Criteria are satisfied or failure limits are hit. Push-triggered Gate runs are rejected before runner allocation; pull-request and manually dispatched runs with an empty PR association retain the head-SHA recovery path. Both the root and consolidated consumer lanes use a dedicated keepalive or Workflows App token for the early running-state update and final summary, preserving one trusted writer class across the complete state transition. The workflow also uses the shared API client for retries and captures prompts via artifacts.
+-- **`agents-keepalive-loop-reporter.yml`** — Watches keepalive loop `workflow_run` events and updates the summary comment when runs cancel/fail. Because the running-state and final-summary comments are App-owned, the reporter mints the dedicated `KEEPALIVE_APP` token with `WORKFLOWS_APP` fallback and fails closed before a trusted-state write when neither credential pair is configured. Consumer operators must provide either `KEEPALIVE_APP_ID` + `KEEPALIVE_APP_PRIVATE_KEY` or `WORKFLOWS_APP_ID` + `WORKFLOWS_APP_PRIVATE_KEY`; the repository installation token remains limited to non-authoritative setup and fingerprint bookkeeping.
++- **`agents-keepalive-loop-reporter.yml`** — Watches keepalive loop `workflow_run` events and updates the summary comment when runs cancel/fail. The consumer reporter handles failed or cancelled Gate Followups in both consolidated and non-consolidated mode so attempt-bound authority recovery remains reachable whichever sweep path dispatched the run. Because the running-state and final-summary comments are App-owned, the reporter mints the dedicated `KEEPALIVE_APP` token with `WORKFLOWS_APP` fallback and fails closed before a trusted-state write when neither credential pair is configured. Consumer operators must provide either `KEEPALIVE_APP_ID` + `KEEPALIVE_APP_PRIVATE_KEY` or `WORKFLOWS_APP_ID` + `WORKFLOWS_APP_PRIVATE_KEY`; the repository installation token remains limited to non-authoritative setup and fingerprint bookkeeping.
+ - **`agents-debug-issue-event.yml`** — Debug workflow that dumps GitHub context on issue events (labeled, unlabeled, opened, reopened). Useful for troubleshooting label triggers; it never mutates issues and simply echoes payload details for humans.
+ - **`agents-decompose.yml`** — Handles the `agents:decompose` label by running LangChain’s `task_decomposer.py`, posting suggested subtasks, and removing the trigger label. It now relies entirely on the shared API client/token load balancer (no bespoke GitHub App mint) for checkout and label cleanup.
+ - **`agents-dedup.yml`** — Runs when new issues open (non-bot authors). It builds embeddings via `scripts/langchain/issue_dedup.py`, flags near-duplicate open issues, and posts guidance for merging/closing duplicates. The redundant GitHub App mint was removed so the shared API client handles all API traffic.
+diff --git a/docs/ci/WORKFLOWS.md b/docs/ci/WORKFLOWS.md
+index ce99e88fe..5329ad980 100644
+--- a/docs/ci/WORKFLOWS.md
++++ b/docs/ci/WORKFLOWS.md
+@@ -162,7 +162,7 @@ Consumer default note: `agents-pr-meta-v4.yml` is a Workflows-repo service workf
+ * Required permissions: `actions: write`, `contents: write`, and `pull-requests: write` at the workflow root so nested branch-sync and keepalive post-work steps can request their scopes without startup failure.
+ * [`agents-keepalive-loop.yml`](../../.github/workflows/agents-keepalive-loop.yml) listens for non-push Gate completion (and the optional `agent:codex` label event) to continue keepalive work in a GitHub-native loop: push-triggered Gate runs are skipped at the job condition before runner allocation, while pull-request and manually dispatched Gate runs with an empty PR association retain head-SHA recovery. It inspects PR checklists/config, gates on Gate success, dispatches `reusable-codex-run` with the keepalive prompt, updates a single summary comment, and routes non-transient failures to bounded automation retries through the active root or consolidated-consumer workflow. A possible authority boundary is persisted as an automation-owned challenge; keepalive never infers `needs-human` from failure count.
+ * [`agents-keepalive-sweep.yml`](../../.github/workflows/agents-keepalive-sweep.yml) is an hourly level-based resync (#2267): it re-dispatches the active keepalive workflow for every open `agent:*` PR so a silent zero-commit round (which emits no follow-up event) is re-evaluated instead of stalling. Every scheduled sweep wakeup bypasses state debounce, but ordinary PRs retain completed-runner debounce and remain non-forced. Only a due automation-owned authority challenge gets `force_retry` plus its exact boundary-fingerprint provenance. The sweep signs that claim with the dedicated `KEEPALIVE_AUTHORITY_SIGNING_KEY`, binding it to the repository, PR, random nonce, and exact sweep run/attempt without reusing a GitHub App identity key. The receiving workflow verifies the HMAC before allowing the due challenge to bypass runner debounce, and fails closed to an ordinary non-forced recheck when the key is unavailable or the claim is forged, so another workflow sharing the `github-actions[bot]` actor cannot confirm a public fingerprint. A green recheck clears the challenge, while only the signed sweep-selected allowlisted authority projection failing again records its constrained human action and applies `needs-human`; arbitrary runner text never enters durable state. Confirmed `needs-human` blockers remain preserved.
+-* Progress review feedback in `agents-keepalive-loop.yml` should be skipped when `review_result.json` is missing or empty; the posting step should use `if: steps.review.outputs.review_result_exists == 'true' && steps.review.outputs.review_result_valid == 'true'`. Treat the review as empty when `.review` is `null` or `""`, or when `.review.score`, `.review.feedback`, and `.review.suggestions` are all `null`, `""`, or missing; a validity check can be expressed as `jq -e '(.review // empty | type == "object") and (((.score // "" | tostring | length) > 0) or ((.feedback // "" | tostring | length) > 0) or ((.suggestions // "" | tostring | length) > 0))' review_result.json`.* [`agents-keepalive-loop-reporter.yml`](../../.github/workflows/agents-keepalive-loop-reporter.yml) posts the keepalive summary comment when the keepalive run is cancelled or fails before the summary job can execute, preserving the final status for triage.
++* Progress review feedback in `agents-keepalive-loop.yml` should be skipped when `review_result.json` is missing or empty; the posting step should use `if: steps.review.outputs.review_result_exists == 'true' && steps.review.outputs.review_result_valid == 'true'`. Treat the review as empty when `.review` is `null` or `""`, or when `.review.score`, `.review.feedback`, and `.review.suggestions` are all `null`, `""`, or missing; a validity check can be expressed as `jq -e '(.review // empty | type == "object") and (((.score // "" | tostring | length) > 0) or ((.feedback // "" | tostring | length) > 0) or ((.suggestions // "" | tostring | length) > 0))' review_result.json`.* [`agents-keepalive-loop-reporter.yml`](../../.github/workflows/agents-keepalive-loop-reporter.yml) posts the keepalive summary comment when the keepalive run is cancelled or fails before the summary job can execute, preserving the final status for triage. The consumer reporter remains active in both consolidated and non-consolidated mode because both sweep paths can dispatch Gate Followups attempts whose receipts require reconciliation.
+ * [`agents-73-codex-belt-conveyor.yml`](../../.github/workflows/agents-73-codex-belt-conveyor.yml) manages task distribution. The orchestrator summary now logs "keepalive skipped" when the pause label is present and surfaces `keepalive_pause_label`/`keepalive_paused_label` outputs for downstream consumers.
+ * [`agents-autofix-loop.yml`](../../.github/workflows/agents-autofix-loop.yml) triggers on Gate failure (for PRs with `agent:codex` label or `autofix: true` in body) and calls Codex to attempt bounded autofix iterations. Generated `sync/workflows-*` PRs are excluded because their pre-seal Gate failure is an intentional Maint 71 hold and their repairs belong in Workflows source.
+ * [`agents-autofix-dispatcher.yml`](../../.github/workflows/agents-autofix-dispatcher.yml) listens for `autofix_gate_failure` repository dispatches (sent by Gate) and replays them through `agents-autofix-loop.yml`, ensuring PR-only Gate runs still launch autofix with the correct `pr_number`, `gate_run_id`, and `head_sha`.
+diff --git a/templates/consumer-repo/.github/workflows/agents-keepalive-loop-reporter.yml b/templates/consumer-repo/.github/workflows/agents-keepalive-loop-reporter.yml
+index b1bf4e1a4..31602c0a4 100644
+--- a/templates/consumer-repo/.github/workflows/agents-keepalive-loop-reporter.yml
++++ b/templates/consumer-repo/.github/workflows/agents-keepalive-loop-reporter.yml
+@@ -21,7 +21,6 @@ jobs:
+   report:
+     name: Report keepalive completion
+     if: >-
+-      vars.USE_CONSOLIDATED_WORKFLOWS == 'true' &&
+       github.event.workflow_run.conclusion != 'success' &&
+       github.event.workflow_run.conclusion != 'skipped'
+     runs-on: ubuntu-latest
+diff --git a/tests/workflows/test_keepalive_authority_delivery.py b/tests/workflows/test_keepalive_authority_delivery.py
+index 487fadfb9..43261442f 100644
+--- a/tests/workflows/test_keepalive_authority_delivery.py
++++ b/tests/workflows/test_keepalive_authority_delivery.py
+@@ -62,7 +62,9 @@ def test_gate_paths_deny_invalid_claims_and_reporters_can_persist_generation() -
+         TEMPLATE / ".github/workflows/agents-keepalive-loop-reporter.yml",
+     ):
+         workflow = yaml.safe_load(path.read_text())
+-        assert "skipped" in workflow["jobs"]["report"]["if"]
++        report_condition = workflow["jobs"]["report"]["if"]
++        assert "github.event.workflow_run.conclusion != 'success'" in report_condition
++        assert "github.event.workflow_run.conclusion != 'skipped'" in report_condition
+         steps = workflow["jobs"]["report"]["steps"]
+         names = [step["name"] for step in steps]
+         assert names.index("Classify unassociated dispatch") < names.index(
+@@ -110,5 +112,7 @@ def test_gate_paths_deny_invalid_claims_and_reporters_can_persist_generation() -
+     consumer_reporter = (
+         TEMPLATE / ".github/workflows/agents-keepalive-loop-reporter.yml"
+     ).read_text()
++    consumer_reporter_workflow = yaml.safe_load(consumer_reporter)
++    assert "USE_CONSOLIDATED_WORKFLOWS" not in consumer_reporter_workflow["jobs"]["report"]["if"]
+     assert '"run_id": int(run.get("id") or 0)' in consumer_reporter
+     assert '"run_attempt": int(run.get("run_attempt") or 1)' in consumer_reporter

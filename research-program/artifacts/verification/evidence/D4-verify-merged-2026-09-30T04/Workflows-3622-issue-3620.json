@@ -1,0 +1,42 @@
+{
+  "body": "## Why\n\nThe generated Travel-Plan-Permission canary #1638 has three active P1 findings in manifest-managed keepalive authority recovery. A failed release can strand a prepared generation; a failed summary can rewrite attention before the reporter recovers it; and an available released state can be reused after its boundary or expiry changes. Consumer PR #1638 is source-owned and must not be patched directly.\n\n## Scope\n\nRepair the shared Workflows source, its exact consumer template copies where present, the sync manifest if coverage changes, and the defining keepalive and consumer-maintenance documentation. Regenerate the consumer through Maint 68 and let Maint 71 reconcile it.\n\n## Tasks\n\n- [ ] In `.github/scripts/keepalive_authority_state.js` and `.github/scripts/keepalive_loop.js`, keep a retryable exact-attempt reservation or recovery marker until authority-ledger release is confirmed; fail closed on uncertain writes. Address https://github.com/stranske/Travel-Plan-Permission/pull/1638#discussion_r4118823667.\n- [ ] In `.github/scripts/keepalive_reporter_applicability.js` and the reporter workflow, recognize valid attempt-bound recovery when `summary` has already changed `challenge-due` to `automation-retry` and cleared the summary generation. Address https://github.com/stranske/Travel-Plan-Permission/pull/1638#discussion_r4128876117.\n- [ ] In `.github/scripts/keepalive_authority_state.js`, rotate an available released state when its boundary fingerprint changes or its window expires while retaining receipt lineage and single-use safety. Address https://github.com/stranske/Travel-Plan-Permission/pull/1638#discussion_r4128876122.\n- [ ] Extend `.github/scripts/__tests__/keepalive-authority-state.test.js`, `.github/scripts/__tests__/keepalive-loop.test.js`, and `.github/scripts/__tests__/keepalive-reporter-applicability.test.js` with a failing-before-fix case for each path and a restoration proof. Update `docs/keepalive/Agents.md`, `docs/ops/CONSUMER_REPO_MAINTENANCE.md`, and consumer template/`.github/sync-manifest.yml` coverage as needed.\n\n## Acceptance Criteria\n\n- [ ] `node --test .github/scripts/__tests__/keepalive-authority-state.test.js .github/scripts/__tests__/keepalive-loop.test.js .github/scripts/__tests__/keepalive-reporter-applicability.test.js` exits 0 on `main`, with deliberate-break or failing-then-passing evidence retained in the PR.\n- [ ] Relevant workflow and template validation passes; root-to-template parity plus `.github/sync-manifest.yml` declarations are checked for each changed consumer-facing file.\n- [ ] The Workflows source PR is ready for review; merge only after exact-head required checks, direct mergeability, seven-minute push floor, and zero active non-outdated review threads.\n- [ ] A new immutable Maint 68 candidate and Maint 71 reconciliation run refresh Travel-Plan-Permission#1638 from the merged source. Do not directly edit, resolve threads on, or merge the generated PR. Its new exact head must pass authoritative required checks and have zero active non-outdated review threads before promotion or merge.\n\n## Non-Goals\n\nDo not bypass authority single-use protections, turn an uncertain write into success, or treat a clean overview review as disposition of an active finding.\n\n## Implementation Notes\n\nPreserve the existing source-owned Maint 68 and Maint 71 campaign gates. The source repair may supersede prior generated heads, but review findings on the latest head still require originating-reviewer disposition.\n",
+  "labels": [
+    {
+      "id": "LA_kwDOQprj9M8AAAACSq7nhQ",
+      "name": "automation",
+      "description": "Automation and workflow automation",
+      "color": "205d64"
+    },
+    {
+      "id": "LA_kwDOQprj9M8AAAACUb_fPQ",
+      "name": "agents:apply-suggestions",
+      "description": "",
+      "color": "cded24"
+    },
+    {
+      "id": "LA_kwDOQprj9M8AAAACUeB6Qw",
+      "name": "agents:formatted",
+      "description": "Issue has been formatted to agent template",
+      "color": "1d76db"
+    },
+    {
+      "id": "LA_kwDOQprj9M8AAAACUeB7oA",
+      "name": "verify:evaluate",
+      "description": "Request LLM evaluation of merged PR",
+      "color": "5319e7"
+    },
+    {
+      "id": "LA_kwDOQprj9M8AAAACVO1uJQ",
+      "name": "consumer-sync",
+      "description": "",
+      "color": "ededed"
+    },
+    {
+      "id": "LA_kwDOQprj9M8AAAACVj8jnw",
+      "name": "agent:retry",
+      "description": "Add to trigger agent retry after rate limit or pause",
+      "color": "0e8a16"
+    }
+  ],
+  "title": "Fix keepalive authority recovery gaps found in TPP sync canary"
+}

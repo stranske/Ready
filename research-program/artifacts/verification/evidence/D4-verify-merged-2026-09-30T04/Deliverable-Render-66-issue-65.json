@@ -1,0 +1,18 @@
+{
+  "body": "## Why\n\nMerged PR #63 added the fork-token fallback in `.github/workflows/pr-00-gate.yml:1190-1206` and the executable regression harness in `tests/test_gate_commit_status_fork_tolerance.py:250-307`. The implementation is present on current `main`, but the merged diff contains no durable literal transcript proving that the named test fails when only `readOnlyForkToken` is disabled and passes again after exact restoration. This is a verified delivery-evidence gap, not a new Gate behavior defect.\n\n## Scope\n\nReplay the deliberate break against current `main`, restore the workflow exactly, and add a documentation-only evidence record at `docs/evidence/issue-65-pr-63-deliberate-break.md`.\n\n## Non-Goals\n\n- Do not change the fork-tolerance implementation in `.github/workflows/pr-00-gate.yml` or the assertions in `tests/test_gate_commit_status_fork_tolerance.py`.\n- Do not reconstruct historical output from PR #63; label the transcript as a fresh current-`main` replay.\n- Scaffold-only or partial completion does not count: a green run without the deliberate RED output, exact restoration, and clean-path proof fails this issue.\n\n## Tasks\n\n- [ ] In `.github/workflows/pr-00-gate.yml:1194-1195`, temporarily replace only the `readOnlyForkToken` predicate with `false`; run `uv run pytest -q tests/test_gate_commit_status_fork_tolerance.py --no-cov` and capture the literal failing output.\n- [ ] Restore `.github/workflows/pr-00-gate.yml` exactly; rerun `uv run pytest -q tests/test_gate_commit_status_fork_tolerance.py --no-cov` and capture the literal passing output.\n- [ ] Add the exact commands, RED/GREEN output, current-main base SHA, and restoration checks to `docs/evidence/issue-65-pr-63-deliberate-break.md`.\n\n## Acceptance Criteria\n\n- [ ] With only the `readOnlyForkToken` predicate in `.github/workflows/pr-00-gate.yml:1194-1195` replaced by `false`, `uv run pytest -q tests/test_gate_commit_status_fork_tolerance.py --no-cov` exits nonzero and names the fork and deleted-fork expectations; `docs/evidence/issue-65-pr-63-deliberate-break.md` records the literal command and output.\n- [ ] After exact restoration, `uv run pytest -q tests/test_gate_commit_status_fork_tolerance.py --no-cov` exits 0 and `docs/evidence/issue-65-pr-63-deliberate-break.md` records the literal passing output.\n- [ ] After restoration, `git diff --exit-code HEAD -- .github/workflows/pr-00-gate.yml tests/test_gate_commit_status_fork_tolerance.py` exits 0 with no output, and `git diff --check origin/main...HEAD` exits 0 before push.\n\n## Implementation Notes\n\nThis is a fresh replay on current `main`, not a reconstruction of historical command output. Only `docs/evidence/issue-65-pr-63-deliberate-break.md` should remain in the closing PR diff.\n",
+  "labels": [
+    {
+      "id": "LA_kwDOUOpIZ88AAAACz0SAkQ",
+      "name": "agents:formatted",
+      "description": "Issue has been formatted to AGENT_ISSUE_TEMPLATE",
+      "color": "1D76DB"
+    },
+    {
+      "id": "LA_kwDOUOpIZ88AAAAC1gTIPw",
+      "name": "priority:normal",
+      "description": "Standard priority within opener-cap discipline",
+      "color": "fbca04"
+    }
+  ],
+  "title": "[P2] D4 follow-up: deliberate-break transcript for merged PR #63 (#62)"
+}

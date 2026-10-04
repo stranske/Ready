@@ -1,0 +1,123 @@
+diff --git a/src/fine_art_archive/api/gates.py b/src/fine_art_archive/api/gates.py
+index 29b21248..cd8cc5d6 100644
+--- a/src/fine_art_archive/api/gates.py
++++ b/src/fine_art_archive/api/gates.py
+@@ -21,6 +21,7 @@
+ from __future__ import annotations
+ 
+ import glob
++import hashlib
+ import json
+ import math
+ import os
+@@ -73,6 +74,13 @@ def automation_lock_path(lock_name: str) -> Path:
+     return directory / safe
+ 
+ 
++def sidecar_lock_name(path: Path) -> str:
++    """Return a stable host-local lock name unique to the sidecar path."""
++    normalized = str(path.expanduser().resolve())
++    digest = hashlib.sha256(normalized.encode("utf-8")).hexdigest()
++    return f"sidecar-{digest}.lock"
++
++
+ def resolve_automation_lock_path(candidate: Path, lock_name: str) -> Path:
+     """Honor ``candidate`` when safe; otherwise redirect to :func:`automation_lock_path`."""
+     if is_cloud_synced_workspace_path(candidate):
+diff --git a/src/fine_art_archive/api/main.py b/src/fine_art_archive/api/main.py
+index f8bb49ba..753bb58c 100644
+--- a/src/fine_art_archive/api/main.py
++++ b/src/fine_art_archive/api/main.py
+@@ -1381,7 +1381,10 @@ class SubjectActionIn(BaseModel):
+ 
+ @contextmanager
+ def _sidecar_file_lock(path: Path):
+-    lock_path = path.with_suffix(path.suffix + ".lock")
++    lock_path = gates.resolve_automation_lock_path(
++        path.with_suffix(path.suffix + ".lock"),
++        gates.sidecar_lock_name(path),
++    )
+     lock_path.parent.mkdir(parents=True, exist_ok=True)
+     with lock_path.open("a") as lock_file:
+         try:
+diff --git a/src/fine_art_archive/fixity.py b/src/fine_art_archive/fixity.py
+index 459cd491..39f8f685 100644
+--- a/src/fine_art_archive/fixity.py
++++ b/src/fine_art_archive/fixity.py
+@@ -16,6 +16,7 @@
+ from typing import Any, cast
+ 
+ from fine_art_archive import sidecar
++from fine_art_archive.api import gates
+ 
+ CHUNK_SIZE = 1024 * 1024
+ BAGIT_VERSION = "0.97"
+@@ -137,7 +138,10 @@ def _append_fixity_event(
+ 
+ @contextmanager
+ def _sidecar_file_lock(path: Path):
+-    lock_path = path.with_suffix(path.suffix + ".lock")
++    lock_path = gates.resolve_automation_lock_path(
++        path.with_suffix(path.suffix + ".lock"),
++        gates.sidecar_lock_name(path),
++    )
+     lock_path.parent.mkdir(parents=True, exist_ok=True)
+     with lock_path.open("a") as lock_file:
+         try:
+diff --git a/tests/test_workspace_conflict_guard.py b/tests/test_workspace_conflict_guard.py
+index f7ce74b5..d9b5c41d 100644
+--- a/tests/test_workspace_conflict_guard.py
++++ b/tests/test_workspace_conflict_guard.py
+@@ -74,3 +74,52 @@ def test_resolve_automation_lock_path_redirects_synced_candidate(tmp_path: Path)
+     resolved = resolve_automation_lock_path(candidate, "growth_tick.lock")
+     assert resolved != candidate
+     assert not is_cloud_synced_workspace_path(resolved)
++
++
++def test_sidecar_file_lock_redirects_lock_when_sidecar_is_on_dropbox(
++    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
++) -> None:
++    """_sidecar_file_lock must not place the lock file beside a Dropbox-synced sidecar.
++
++    Deliberate-break: comment out the gates.resolve_automation_lock_path call in
++    _sidecar_file_lock (reverting to path.with_suffix) — this assertion fails because
++    the lock file lands in tmp_path instead of the host-local automation lock dir.
++    """
++    import fine_art_archive.api.main as main_mod
++    import fine_art_archive.fixity as fixity_mod
++
++    # Treat tmp_path as a cloud-synced workspace so resolve_automation_lock_path
++    # redirects any lock that would land there to the host-local automation dir.
++    monkeypatch.setattr(gates, "is_cloud_synced_workspace_path", lambda p: str(tmp_path) in str(p))
++
++    sidecar_path = tmp_path / "meta.json"
++    sidecar_path.write_text("{}", encoding="utf-8")
++
++    lock_files_created: list[Path] = []
++    original_open = Path.open
++
++    def _tracking_open(self: Path, *args, **kwargs):  # type: ignore[no-untyped-def]
++        if self.suffix == ".lock":
++            lock_files_created.append(self)
++        return original_open(self, *args, **kwargs)
++
++    monkeypatch.setattr(Path, "open", _tracking_open)
++
++    for module in (main_mod, fixity_mod):
++        with module._sidecar_file_lock(sidecar_path):
++            pass
++
++    assert lock_files_created, "No lock file was created"
++    for lock_file in lock_files_created:
++        assert str(tmp_path) not in str(
++            lock_file
++        ), f"Lock file landed beside Dropbox sidecar: {lock_file}"
++
++
++def test_sidecar_lock_name_distinguishes_equal_basenames(tmp_path: Path) -> None:
++    first = tmp_path / "first" / "meta.json"
++    second = tmp_path / "second" / "meta.json"
++
++    assert gates.sidecar_lock_name(first) != gates.sidecar_lock_name(second)
++    assert gates.sidecar_lock_name(first) == gates.sidecar_lock_name(first)
++    assert gates.sidecar_lock_name(first).endswith(".lock")

@@ -133,3 +133,31 @@
 - Follow-ups filed: 7 (Counter_Risk#1110, #1111; Deliverable-Render#44, #45; learning-management-system#717; Manager-Database#1721, #1722)
 - OUT: [LOCAL_HOME]/.codex/automations/research-program/artifacts/verification/D4-verify-merged-2026-09-23T03.md
 - Checkpoint: [LOCAL_HOME]/.codex/automations/research-program/artifacts/verification/D4-verify-merged-2026-09-23T03.CHECKPOINT.md
+
+## Unit D4-verify-merged-2026-09-28T04 Completed
+- Total PRs verified: 20
+- Verdicts: 12 VERIFIED, 8 PARTIAL, 0 NOT IMPLEMENTED
+- Follow-ups filed: 8 (PAEM #2321/#2322, Deliverable-Render #61, Workflows #3607, Fine-Art-Archive #758/#759, Pension-Data #935, Travel-Plan-Permission #1641)
+- OUT: [LOCAL_HOME]/.codex/automations/research-program/artifacts/verification/D4-verify-merged-2026-09-28T04.md
+- Checkpoint: [LOCAL_HOME]/.codex/automations/research-program/artifacts/verification/D4-verify-merged-2026-09-28T04.CHECKPOINT.md
+
+## Unit D4-verify-merged-2026-09-27T03 Completed
+- Total PRs verified: 20
+- Verdicts: 17 VERIFIED, 3 PARTIAL, 0 NOT IMPLEMENTED
+- Follow-ups filed: 3
+- OUT: [LOCAL_HOME]/.codex/automations/research-program/artifacts/verification/D4-verify-merged-2026-09-27T03.md
+- Checkpoint: [LOCAL_HOME]/.codex/automations/research-program/artifacts/verification/D4-verify-merged-2026-09-27T03.CHECKPOINT.md
+
+## Unit D4-verify-merged-2026-09-26T03 Completed
+- Total PRs verified: 20
+- Verdicts: 17 VERIFIED, 2 PARTIAL, 1 NOT IMPLEMENTED
+- Follow-ups filed: 3 (Workflows#3585, #3586; learning-management-system#727)
+- OUT: [LOCAL_HOME]/.codex/automations/research-program/artifacts/verification/D4-verify-merged-2026-09-26T03.md
+- Checkpoint: [LOCAL_HOME]/.codex/automations/research-program/artifacts/verification/D4-verify-merged-2026-09-26T03.CHECKPOINT.md
+
+## Unit D4-verify-merged-2026-09-29T04 Completed
+- Total PRs verified: 20
+- Verdicts: 8 VERIFIED, 12 PARTIAL, 0 NOT IMPLEMENTED
+- Follow-ups filed: 12; 16 eligible PRs deferred under the 20-PR pacing limit.
+- OUT: [LOCAL_HOME]/.codex/automations/research-program/artifacts/verification/D4-verify-merged-2026-09-29T04.md
+- Checkpoint: [LOCAL_HOME]/.codex/automations/research-program/artifacts/verification/D4-verify-merged-2026-09-29T04.CHECKPOINT.md

@@ -1,0 +1,826 @@
+diff --git a/.github/scripts/__tests__/keepalive-loop.test.js b/.github/scripts/__tests__/keepalive-loop.test.js
+index e70b3f12d..2d48c8c98 100644
+--- a/.github/scripts/__tests__/keepalive-loop.test.js
++++ b/.github/scripts/__tests__/keepalive-loop.test.js
+@@ -5704,7 +5704,7 @@ test('markAgentRunning updates summary comment with running status', async () =>
+ 
+   await markAgentRunning({
+     github,
+-    context: { repo: { owner: 'test', repo: 'repo' } },
++    context: { repo: { owner: 'test', repo: 'repo' }, runId: 12345, runAttempt: 2 },
+     core: buildCore(),
+     inputs,
+   });
+@@ -5723,6 +5723,7 @@ test('markAgentRunning updates summary comment with running status', async () =>
+   assert.ok(body.includes('Task progress'), 'Should show task progress');
+   assert.ok(body.includes('view logs'), 'Should include run URL');
+   assert.ok(body.includes('will be updated when the agent completes'), 'Should include completion message');
++  assert.equal(parseStateComment(body).data.running_owner_attempt, 'test/repo:12345:2');
+ });
+ 
+ test('markAgentRunning migrates legacy state to the selected App writer', async () => {
+@@ -5828,6 +5829,29 @@ test('markAgentRunning creates comment when none exists', async () => {
+   assert.ok(body.includes('Task progress | 0/5'), 'Should show task progress');
+ });
+ 
++test('markAgentRunning omits owner attempt when no run ID is available', async () => {
++  const priorRunId = process.env.GITHUB_RUN_ID;
++  const priorRunAttempt = process.env.GITHUB_RUN_ATTEMPT;
++  delete process.env.GITHUB_RUN_ID;
++  delete process.env.GITHUB_RUN_ATTEMPT;
++  try {
++    const github = buildGithubStub({ comments: [] });
++    await markAgentRunning({
++      github,
++      context: { repo: { owner: 'test', repo: 'repo' } },
++      core: buildCore(),
++      inputs: { pr_number: 99, agent_type: 'codex', iteration: 0, max_iterations: 3 },
++    });
++    const state = parseStateComment(github.actions[0].body).data;
++    assert.equal(Object.hasOwn(state, 'running_owner_attempt'), false);
++  } finally {
++    if (priorRunId === undefined) delete process.env.GITHUB_RUN_ID;
++    else process.env.GITHUB_RUN_ID = priorRunId;
++    if (priorRunAttempt === undefined) delete process.env.GITHUB_RUN_ATTEMPT;
++    else process.env.GITHUB_RUN_ATTEMPT = priorRunAttempt;
++  }
++});
++
+ test('markAgentRunning records suggested focus task in state', async () => {
+   const existingStateBody = formatStateComment({
+     trace: 'trace-focus',
+diff --git a/.github/scripts/__tests__/keepalive-reporter-applicability.test.js b/.github/scripts/__tests__/keepalive-reporter-applicability.test.js
+index 148250325..ba3611edc 100644
+--- a/.github/scripts/__tests__/keepalive-reporter-applicability.test.js
++++ b/.github/scripts/__tests__/keepalive-reporter-applicability.test.js
+@@ -8,7 +8,11 @@ const {
+   classifyReporterRun,
+   recoverReporterAuthority,
+ } = require('../keepalive_reporter_applicability.js');
+-const { formatStateComment, loadKeepaliveState } = require('../keepalive_state.js');
++const {
++  formatStateComment,
++  loadKeepaliveState,
++  projectRecoveredAuthorityState,
++} = require('../keepalive_state.js');
+ 
+ const root = path.resolve(__dirname, '../../..');
+ const head = 'a'.repeat(40);
+@@ -69,6 +73,30 @@ function recoveryGithub(state) {
+   };
+ }
+ 
++function settleRecovery(recovery) {
++  const receiptName = recovery.status === 'released' ? 'released_receipt' : 'recovered_receipt';
++  const ownerAttempt = recovery.state[receiptName].owner_attempt;
++  const headSha = '1'.repeat(40);
++  recovery.state = {
++    ...recovery.state,
++    status: 'available',
++    head_sha: headSha,
++    [receiptName]: {
++      id: 'receipt-1', owner_attempt: ownerAttempt, claim_digest: '2'.repeat(64),
++      head_sha: headSha, provider: 'codex',
++    },
++  };
++  return recovery;
++}
++
++function projectCurrentRecovery(recovery) {
++  return (input) => projectRecoveredAuthorityState({
++    ...input,
++    readAuthority: async () => ({ sha: '3'.repeat(40), state: recovery.state }),
++    makeRequest: () => 'request',
++  });
++}
++
+ for (const source of sources) {
+   test(`${source}: ordinary unassociated dispatch skips only after absent index`, async () => {
+     const { github, reads } = setup(source, 'keepalive-dispatch/v1 ordinary');
+@@ -148,7 +176,7 @@ for (const status of ['released', 'reopened']) {
+       },
+     });
+     const receiptName = status === 'released' ? 'released_receipt' : 'recovered_receipt';
+-    const recovery = {
++    const recovery = settleRecovery({
+       status,
+       previousGeneration,
+       state: {
+@@ -158,7 +186,7 @@ for (const status of ['released', 'reopened']) {
+         due_at: '2026-09-30T01:00:00Z',
+         expires_at: '2026-09-30T13:00:00Z',
+       },
+-    };
++    });
+     const context = { repo: { owner: 'stranske', repo: 'repo' } };
+     const args = {
+       github, context, run, workerEvidence: 'not-started',
+@@ -175,6 +203,7 @@ for (const status of ['released', 'reopened']) {
+         assert.equal(input.prNumber, 42);
+         return recovery;
+       },
++      projectRecovery: projectCurrentRecovery(recovery),
+     };
+     const first = await recoverReporterAuthority(args);
+     assert.equal(first.status, 'projected');
+@@ -213,6 +242,23 @@ test('non-released reconciliation preserves the owner-attempt binding for normal
+   assert.equal(result.ownerAttempt, 'stranske/repo:12345:2');
+ });
+ 
++test('non-released delayed reporter stops when a newer attempt owns the running summary', async () => {
++  const github = recoveryGithub({
++    running: true,
++    running_owner_attempt: 'stranske/repo:67890:1',
++    attention: { generation: 'a'.repeat(64) },
++  });
++  const result = await recoverReporterAuthority({
++    github, context: { repo: { owner: 'stranske', repo: 'repo' } }, run,
++    workerEvidence: 'started', writerLogin: 'agents-workflows-bot[bot]', prNumber: 42,
++    makeRequest: () => 'request',
++    reconcileAttempt: async () => ({ status: 'owned' }),
++  });
++  assert.equal(result.status, 'superseded');
++  assert.equal(result.projection.reason, 'running-attempt-superseded');
++  assert.equal(github.actions.length, 0);
++});
++
+ test('recovery rejects unknown worker evidence before authority mutation', async () => {
+   await assert.rejects(recoverReporterAuthority({
+     github: {}, context: { repo: { owner: 'stranske', repo: 'repo' } }, run,
+@@ -230,6 +276,13 @@ test('recovery rejects a delayed summary marker for a different attempt or gener
+       recovery_owner_attempt: 'stranske/repo:999:1',
+     },
+   });
++  const recovery = settleRecovery({
++    status: 'released', previousGeneration: 'b'.repeat(64), state: {
++      generation: 'c'.repeat(64), boundary_fingerprint: 'd'.repeat(64),
++      released_receipt: { owner_attempt: 'stranske/repo:12345:2' },
++      due_at: '2026-09-30T01:00:00Z', expires_at: '2026-09-30T13:00:00Z',
++    },
++  });
+   await assert.rejects(recoverReporterAuthority({
+     github,
+     context: { repo: { owner: 'stranske', repo: 'repo' } },
+@@ -238,13 +291,22 @@ test('recovery rejects a delayed summary marker for a different attempt or gener
+     writerLogin: 'agents-workflows-bot[bot]',
+     makeRequest: () => 'request',
+     lookupTarget: async () => ({ prNumber: 42 }),
+-    reconcileAttempt: async () => ({
+-      status: 'released', previousGeneration: 'b'.repeat(64), state: {
+-        generation: 'c'.repeat(64), boundary_fingerprint: 'd'.repeat(64),
+-        released_receipt: { owner_attempt: 'stranske/repo:12345:2' },
+-        due_at: '2026-09-30T01:00:00Z', expires_at: '2026-09-30T13:00:00Z',
+-      },
+-    }),
++    reconcileAttempt: async () => recovery,
++    projectRecovery: projectCurrentRecovery(recovery),
+   }), /does not match the recovered generation/);
+   assert.equal(github.actions.length, 0);
+ });
++
++test('superseded recovery stops reporter processing without comment mutation', async () => {
++  const github = recoveryGithub({ running: false, attention: {} });
++  const result = await recoverReporterAuthority({
++    github, context: { repo: { owner: 'stranske', repo: 'repo' } }, run,
++    workerEvidence: 'not-started', writerLogin: 'agents-workflows-bot[bot]', prNumber: 42,
++    makeRequest: () => 'request',
++    reconcileAttempt: async () => ({ status: 'released', state: {} }),
++    projectRecovery: async () => ({ projected: false, reason: 'recovery-superseded' }),
++  });
++  assert.equal(result.status, 'superseded');
++  assert.equal(result.projection.reason, 'recovery-superseded');
++  assert.equal(github.actions.length, 0);
++});
+diff --git a/.github/scripts/__tests__/keepalive-state.test.js b/.github/scripts/__tests__/keepalive-state.test.js
+index 9c5ee4805..f8d815273 100644
+--- a/.github/scripts/__tests__/keepalive-state.test.js
++++ b/.github/scripts/__tests__/keepalive-state.test.js
+@@ -64,6 +64,34 @@ const buildGithubStub = ({ comments = [] } = {}) => {
+   return github;
+ };
+ 
++function settleRecovery(recovery) {
++  const receiptField = recovery.status === 'released' ? 'released_receipt' : 'recovered_receipt';
++  const ownerAttempt = recovery.state[receiptField].owner_attempt;
++  const headSha = '1'.repeat(40);
++  recovery.state = {
++    ...recovery.state,
++    status: 'available',
++    head_sha: headSha,
++    [receiptField]: {
++      id: 'receipt-1',
++      owner_attempt: ownerAttempt,
++      claim_digest: '2'.repeat(64),
++      head_sha: headSha,
++      provider: 'codex',
++    },
++  };
++  return recovery;
++}
++
++function authorityReader(states) {
++  const sequence = Array.isArray(states) ? states : [states, states];
++  let index = 0;
++  return async () => ({
++    sha: '3'.repeat(40),
++    state: sequence[Math.min(index++, sequence.length - 1)],
++  });
++}
++
+ test('parseStateComment extracts JSON payload', () => {
+   const body = formatStateComment({ trace: 'abc', head_sha: '123', version: 'v1' });
+   const parsed = parseStateComment(body);
+@@ -283,28 +311,31 @@ test('loadKeepaliveState returns empty state when comment missing', async () =>
+ test('recovered authority projects generation and clears running state on trusted summary', async () => {
+   const oldGeneration = 'a'.repeat(64);
+   const newGeneration = 'b'.repeat(64);
+-  const initial = { running: true, attention: {
++  const initial = { running: true, running_owner_attempt: 'owner/repo:123:1', attention: {
+     owner: 'automation', disposition: 'challenge-due', generation: oldGeneration,
+   } };
+   const github = buildGithubStub({ comments: [{
+     id: 91, body: '<!-- keepalive-loop-summary -->\n' + formatStateComment(initial),
+   }] });
+   const context = { repo: { owner: 'owner', repo: 'repo' } };
+-  const recovery = { status: 'reopened', previousGeneration: oldGeneration, state: {
++  const recovery = settleRecovery({ status: 'reopened', previousGeneration: oldGeneration, state: {
+     generation: newGeneration, boundary_fingerprint: 'c'.repeat(64),
+     recovered_receipt: { owner_attempt: 'owner/repo:123:1' },
+     due_at: '2026-09-27T17:00:00.000Z', expires_at: '2026-09-28T17:00:00.000Z',
+-  } };
++  } });
+   const first = await projectRecoveredAuthorityState({
+     github, context, prNumber: 42, recovery, writerLogin: 'agents-workflows-bot[bot]',
++    readAuthority: authorityReader(recovery.state), makeRequest: () => 'request',
+   });
+   assert.equal(first.reason, 'recovered-summary-projected');
+   const loaded = await loadKeepaliveState({ github, context, prNumber: 42, trace: '' });
+   assert.equal(loaded.state.running, false);
++  assert.equal(loaded.state.running_owner_attempt, null);
+   assert.equal(loaded.state.attention.generation, newGeneration);
+   assert.equal(loaded.state.attention.challenge_due_at, recovery.state.due_at);
+   const second = await projectRecoveredAuthorityState({
+     github, context, prNumber: 42, recovery, writerLogin: 'agents-workflows-bot[bot]',
++    readAuthority: authorityReader(recovery.state), makeRequest: () => 'request',
+   });
+   assert.equal(second.reason, 'already-projected');
+   assert.equal(github.actions.filter((action) => action.type === 'update').length, 1);
+@@ -323,13 +354,14 @@ test('attempt-bound recovery projects after summary rewrites attention to automa
+     id: 91, body: '<!-- keepalive-loop-summary -->\n' + formatStateComment(initial),
+   }] });
+   const context = { repo: { owner: 'owner', repo: 'repo' } };
+-  const recovery = { status: 'released', previousGeneration: oldGeneration, state: {
++  const recovery = settleRecovery({ status: 'released', previousGeneration: oldGeneration, state: {
+     generation: newGeneration, boundary_fingerprint: 'c'.repeat(64),
+     released_receipt: { owner_attempt: attempt },
+     due_at: '2026-09-27T17:00:00.000Z', expires_at: '2026-09-28T17:00:00.000Z',
+-  } };
++  } });
+   const result = await projectRecoveredAuthorityState({
+     github, context, prNumber: 42, recovery, writerLogin: 'agents-workflows-bot[bot]',
++    readAuthority: authorityReader(recovery.state), makeRequest: () => 'request',
+   });
+   assert.equal(result.reason, 'recovered-summary-projected');
+   const loaded = await loadKeepaliveState({ github, context, prNumber: 42, trace: '' });
+@@ -343,17 +375,18 @@ test('same-generation prepared release projection is idempotent for the exact ow
+   const attempt = 'owner/repo:123:1';
+   const github = buildGithubStub({ comments: [{
+     id: 91, body: '<!-- keepalive-loop-summary -->\n' + formatStateComment({
+-      running: true, attention: { generation },
++      running: true, running_owner_attempt: attempt, attention: { generation },
+     }),
+   }] });
+   const context = { repo: { owner: 'owner', repo: 'repo' } };
+-  const recovery = { status: 'released', state: {
++  const recovery = settleRecovery({ status: 'released', state: {
+     generation, released_receipt: { owner_attempt: attempt },
+     boundary_fingerprint: 'c'.repeat(64),
+     due_at: '2026-09-27T17:00:00.000Z', expires_at: '2026-09-28T17:00:00.000Z',
+-  } };
++  } });
+   const args = { github, context, prNumber: 42, recovery,
+-    writerLogin: 'agents-workflows-bot[bot]' };
++    writerLogin: 'agents-workflows-bot[bot]', readAuthority: authorityReader(recovery.state),
++    makeRequest: () => 'request' };
+   assert.equal((await projectRecoveredAuthorityState(args)).reason, 'recovered-summary-projected');
+   assert.equal((await projectRecoveredAuthorityState(args)).reason, 'already-projected');
+   assert.equal(github.actions.filter((action) => action.type === 'update').length, 1);
+@@ -365,16 +398,18 @@ test('released receipt projection accepts an exact earlier lineage after multipl
+   const current = 'c'.repeat(64);
+   const github = buildGithubStub({ comments: [{ id: 91,
+     body: '<!-- keepalive-loop-summary -->\n' + formatStateComment({
+-      running: true, attention: { owner: 'automation', generation: original },
++      running: true, running_owner_attempt: 'owner/repo:123:1',
++      attention: { owner: 'automation', generation: original },
+     }) }] });
+-  const recovery = { status: 'released', previousGenerations: [original, intermediate], state: {
++  const recovery = settleRecovery({ status: 'released', previousGenerations: [original, intermediate], state: {
+     generation: current, released_receipt: { owner_attempt: 'owner/repo:123:1' },
+     boundary_fingerprint: 'd'.repeat(64),
+     due_at: '2026-09-27T18:00:00.000Z', expires_at: '2026-09-28T18:00:00.000Z',
+-  } };
++  } });
+   const context = { repo: { owner: 'owner', repo: 'repo' } };
+   assert.equal((await projectRecoveredAuthorityState({ github, context, prNumber: 42, recovery,
+-    writerLogin: 'agents-workflows-bot[bot]' })).reason, 'recovered-summary-projected');
++    writerLogin: 'agents-workflows-bot[bot]', readAuthority: authorityReader(recovery.state),
++    makeRequest: () => 'request' })).reason, 'recovered-summary-projected');
+   const loaded = await loadKeepaliveState({ github, context, prNumber: 42, trace: '' });
+   assert.equal(loaded.state.attention.generation, current);
+   assert.equal(loaded.state.attention.expires_at, recovery.state.expires_at);
+@@ -386,6 +421,49 @@ test('released receipt projection accepts an exact earlier lineage after multipl
+   })?.generation, current);
+ });
+ 
++test('same-generation recovery cannot overwrite a newer running owner attempt', async () => {
++  const generation = 'a'.repeat(64);
++  const recovery = settleRecovery({ status: 'released', state: {
++    generation, boundary_fingerprint: 'c'.repeat(64),
++    released_receipt: { owner_attempt: 'owner/repo:123:1' },
++    due_at: '2026-09-27T17:00:00.000Z', expires_at: '2026-09-28T17:00:00.000Z',
++  } });
++  const github = buildGithubStub({ comments: [{ id: 91,
++    body: '<!-- keepalive-loop-summary -->\n' + formatStateComment({
++      running: true, running_owner_attempt: 'owner/repo:456:1', attention: { generation },
++    }) }] });
++
++  await assert.rejects(projectRecoveredAuthorityState({
++    github, context: { repo: { owner: 'owner', repo: 'repo' } }, prNumber: 42, recovery,
++    writerLogin: 'agents-workflows-bot[bot]', readAuthority: authorityReader(recovery.state),
++    makeRequest: () => 'request',
++  }), /does not match the recovered generation/);
++  assert.equal(github.actions.length, 0);
++});
++
++test('recovery projection stops when the live ledger advances before comment mutation', async () => {
++  const generation = 'a'.repeat(64);
++  const attempt = 'owner/repo:123:1';
++  const recovery = settleRecovery({ status: 'released', state: {
++    generation, boundary_fingerprint: 'c'.repeat(64),
++    released_receipt: { owner_attempt: attempt },
++    due_at: '2026-09-27T17:00:00.000Z', expires_at: '2026-09-28T17:00:00.000Z',
++  } });
++  const github = buildGithubStub({ comments: [{ id: 91,
++    body: '<!-- keepalive-loop-summary -->\n' + formatStateComment({
++      running: true, running_owner_attempt: attempt, attention: { generation },
++    }) }] });
++  const superseding = { ...recovery.state, status: 'prepared', generation: 'b'.repeat(64) };
++  const result = await projectRecoveredAuthorityState({
++    github, context: { repo: { owner: 'owner', repo: 'repo' } }, prNumber: 42, recovery,
++    writerLogin: 'agents-workflows-bot[bot]',
++    readAuthority: authorityReader([recovery.state, superseding]), makeRequest: () => 'request',
++  });
++
++  assert.deepEqual(result, { projected: false, reason: 'recovery-superseded' });
++  assert.equal(github.actions.length, 0);
++});
++
+ test('createKeepaliveStateManager returns inert manager with invalid input', async () => {
+   const github = buildGithubStub();
+   const manager = await createKeepaliveStateManager({
+diff --git a/.github/scripts/keepalive_loop.js b/.github/scripts/keepalive_loop.js
+index 9645d9ffb..bd2d4b9bd 100644
+--- a/.github/scripts/keepalive_loop.js
++++ b/.github/scripts/keepalive_loop.js
+@@ -5202,6 +5202,15 @@ async function markAgentRunning({ github: rawGithub, context, core, inputs }) {
+   const preservedState = previousState || {};
+   preservedState.running = true;
+   preservedState.running_since = new Date().toISOString();
++  const runningRunId = context.runId || process.env.GITHUB_RUN_ID || '';
++  if (runningRunId) {
++    preservedState.running_owner_attempt = (
++      `${context.repo.owner}/${context.repo.repo}:${runningRunId}:` +
++      `${context.runAttempt || process.env.GITHUB_RUN_ATTEMPT || '1'}`
++    ).toLowerCase();
++  } else {
++    delete preservedState.running_owner_attempt;
++  }
+   if (suggestedFocus?.text) {
+     preservedState.current_focus = suggestedFocus.text;
+     preservedState.current_focus_set_at = new Date().toISOString();
+diff --git a/.github/scripts/keepalive_reporter_applicability.js b/.github/scripts/keepalive_reporter_applicability.js
+index 6dc2960d5..f5629d428 100644
+--- a/.github/scripts/keepalive_reporter_applicability.js
++++ b/.github/scripts/keepalive_reporter_applicability.js
+@@ -5,7 +5,7 @@ const {
+   reconcileFailedAuthorityAttempt,
+   requester,
+ } = require('./keepalive_authority_state.js');
+-const { projectRecoveredAuthorityState } = require('./keepalive_state.js');
++const { loadKeepaliveState, projectRecoveredAuthorityState } = require('./keepalive_state.js');
+ const { withRetry } = require('./github-api-with-retry.js');
+ 
+ const DISPATCH_TITLE = 'keepalive-dispatch/v1 ';
+@@ -87,6 +87,12 @@ async function recoverReporterAuthority({
+     });
+   } catch (error) {
+     if (error.status === 404) {
++      const loaded = await loadKeepaliveState({ github, context, prNumber, trace: '' });
++      if (loaded.state.running === true && loaded.state.running_owner_attempt &&
++          loaded.state.running_owner_attempt !== ownerAttempt) {
++        return { status: 'superseded', prNumber, ownerAttempt, authorityTarget,
++          projection: { projected: false, reason: 'running-attempt-superseded' } };
++      }
+       return { status: 'continue', prNumber, ownerAttempt, authorityTarget };
+     }
+     throw error;
+@@ -95,10 +101,21 @@ async function recoverReporterAuthority({
+     const projection = await projectRecovery({
+       github, context, prNumber, recovery: reconciliation, writerLogin,
+     });
++    if (projection.projected === false) {
++      return {
++        status: 'superseded', prNumber, ownerAttempt, authorityTarget, reconciliation, projection,
++      };
++    }
+     return {
+       status: 'projected', prNumber, ownerAttempt, authorityTarget, reconciliation, projection,
+     };
+   }
++  const loaded = await loadKeepaliveState({ github, context, prNumber, trace: '' });
++  if (loaded.state.running === true && loaded.state.running_owner_attempt &&
++      loaded.state.running_owner_attempt !== ownerAttempt) {
++    return { status: 'superseded', prNumber, ownerAttempt, authorityTarget, reconciliation,
++      projection: { projected: false, reason: 'running-attempt-superseded' } };
++  }
+   return { status: 'continue', prNumber, ownerAttempt, authorityTarget, reconciliation };
+ }
+ 
+diff --git a/.github/scripts/keepalive_state.js b/.github/scripts/keepalive_state.js
+index 8c1c9580c..82745e567 100644
+--- a/.github/scripts/keepalive_state.js
++++ b/.github/scripts/keepalive_state.js
+@@ -1,6 +1,7 @@
+ 'use strict';
+ 
+ const { ensureRateLimitWrapped } = require('./github-rate-limited-wrapper.js');
++const { readAuthorityState, requester } = require('./keepalive_authority_state.js');
+ 
+ const STATE_MARKER = 'keepalive-state';
+ const STATE_VERSION = 'v1';
+@@ -436,7 +437,12 @@ async function loadKeepaliveState({ github: rawGithub, context, prNumber, trace
+ }
+ 
+ function summaryMatchesRecoveredAuthority(state, priorGenerations, recoveredAttempt) {
+-  if (state?.attention && priorGenerations.has(state.attention.generation)) return true;
++  if (state?.attention && priorGenerations.has(state.attention.generation)) {
++    if (state.running === true) {
++      return Boolean(recoveredAttempt) && state.running_owner_attempt === recoveredAttempt;
++    }
++    return !state.running_owner_attempt || state.running_owner_attempt === recoveredAttempt;
++  }
+   const attention = state?.attention || {};
+   return state?.running === false &&
+     attention.owner === 'automation' &&
+@@ -450,13 +456,43 @@ function summaryMatchesRecoveredAuthority(state, priorGenerations, recoveredAtte
+     priorGenerations.has(attention.recovery_generation);
+ }
+ 
+-async function projectRecoveredAuthorityState({ github, context, prNumber, recovery, writerLogin }) {
++const RECOVERY_RECEIPT_FIELDS = ['id', 'owner_attempt', 'claim_digest', 'head_sha', 'provider'];
++
++function sameRecoveryReceipt(left, right) {
++  return Boolean(left && right) &&
++    RECOVERY_RECEIPT_FIELDS.every((field) => left[field] === right[field]);
++}
++
++function currentSettledRecovery(recovery, current) {
++  const receiptField = recovery.status === 'released' ? 'released_receipt' : 'recovered_receipt';
++  if (current?.status !== 'available' ||
++      current.head_sha !== recovery.state.head_sha ||
++      current.boundary_fingerprint !== recovery.state.boundary_fingerprint ||
++      !sameRecoveryReceipt(current[receiptField], recovery.state[receiptField])) {
++    return null;
++  }
++  return current;
++}
++
++async function projectRecoveredAuthorityState({
++  github, context, prNumber, recovery, writerLogin,
++  readAuthority = readAuthorityState, makeRequest = requester,
++}) {
+   if (!['released', 'reopened'].includes(recovery?.status) || !recovery.state) {
+     throw new Error('No settled authority recovery to project');
+   }
++  const repository = `${context.repo.owner}/${context.repo.repo}`;
++  const firstAuthorityRead = await readAuthority(makeRequest(github), repository, prNumber);
++  let currentRecovery = currentSettledRecovery(recovery, firstAuthorityRead?.state);
++  if (!currentRecovery) {
++    return { projected: false, reason: 'recovery-superseded' };
++  }
+   const priorGenerations = new Set([
+     recovery.previousGeneration || recovery.state.generation,
+     ...(recovery.previousGenerations || []),
++    recovery.state.generation,
++    currentRecovery.generation,
++    ...(currentRecovery.released_generation_lineage || []),
+   ]);
+   const recoveredAttempt = (recovery.status === 'released' ? recovery.state.released_receipt :
+     recovery.state.recovered_receipt)?.owner_attempt || '';
+@@ -464,7 +500,7 @@ async function projectRecoveredAuthorityState({ github, context, prNumber, recov
+   let state = loaded.state;
+   if (state?.running === false && recoveredAttempt &&
+       state?.attention?.recovery_owner_attempt === recoveredAttempt &&
+-      state.attention.generation === recovery.state.generation) {
++      state.attention.generation === currentRecovery.generation) {
+     return { projected: true, reason: 'already-projected' };
+   }
+   if (!summaryMatchesRecoveredAuthority(state, priorGenerations, recoveredAttempt)) {
+@@ -478,7 +514,7 @@ async function projectRecoveredAuthorityState({ github, context, prNumber, recov
+     });
+     const latest = parseStateComment(response?.data?.body)?.data;
+     if (!summaryMatchesRecoveredAuthority(latest, priorGenerations, recoveredAttempt)) {
+-      if (latest?.attention?.generation === recovery.state.generation && latest.running === false &&
++      if (latest?.attention?.generation === currentRecovery.generation && latest.running === false &&
+           latest.attention.recovery_owner_attempt === recoveredAttempt) {
+         return { projected: true, reason: 'already-projected' };
+       }
+@@ -486,19 +522,25 @@ async function projectRecoveredAuthorityState({ github, context, prNumber, recov
+     }
+     state = latest;
+   }
++  const finalAuthorityRead = await readAuthority(makeRequest(github), repository, prNumber);
++  currentRecovery = currentSettledRecovery(recovery, finalAuthorityRead?.state);
++  if (!currentRecovery || (firstAuthorityRead?.sha && finalAuthorityRead?.sha !== firstAuthorityRead.sha)) {
++    return { projected: false, reason: 'recovery-superseded' };
++  }
+   const { recovery_generation: _recoveryGeneration, ...priorAttention } = state.attention;
+   const projected = {
+     ...state,
+     running: false,
+     running_since: null,
++    running_owner_attempt: null,
+     attention: {
+       ...priorAttention,
+       owner: 'automation', disposition: 'challenge-due',
+-      generation: recovery.state.generation,
++      generation: currentRecovery.generation,
+       recovery_owner_attempt: recoveredAttempt,
+-      boundary_fingerprint: recovery.state.boundary_fingerprint,
+-      challenge_due_at: recovery.state.due_at,
+-      expires_at: recovery.state.expires_at,
++      boundary_fingerprint: currentRecovery.boundary_fingerprint,
++      challenge_due_at: currentRecovery.due_at,
++      expires_at: currentRecovery.expires_at,
+       next_action: 'Retry the exact-head authority challenge through the owning sweep.',
+     },
+   };
+diff --git a/.github/workflows/agents-keepalive-loop-reporter.yml b/.github/workflows/agents-keepalive-loop-reporter.yml
+index 503ea4ae2..5484c6e5e 100644
+--- a/.github/workflows/agents-keepalive-loop-reporter.yml
++++ b/.github/workflows/agents-keepalive-loop-reporter.yml
+@@ -205,7 +205,7 @@ jobs:
+               `Attempt-bound authority reconciliation: ` +
+               `${authorityRecovery.reconciliation?.status || authorityRecovery.status}`
+             );
+-            if (authorityRecovery.status === 'projected') {
++            if (['projected', 'superseded'].includes(authorityRecovery.status)) {
+               return;
+             }
+ 
+diff --git a/config/template-drift-allowlist.txt b/config/template-drift-allowlist.txt
+index caeefd92b..cbb03e103 100644
+--- a/config/template-drift-allowlist.txt
++++ b/config/template-drift-allowlist.txt
+@@ -144,11 +144,11 @@ fingerprint_refreshed = 2026-09-02
+ [pair.12]
+ main = .github/workflows/agents-keepalive-loop-reporter.yml
+ template = templates/consumer-repo/.github/workflows/agents-keepalive-loop-reporter.yml
+-main_sha256 = a09cee047220471859049924c2c9c9a0b6d5f66f879619fd5d04c1ef10bcbebd
+-template_sha256 = 7c86a45829aa4cf7524df75acdc04ced58b1507ea6dccc27e6d278e82cdb5cef
+-divergence = Delayed authority recovery boundary 2026-09-29: both reporters now call the shared, directly tested applicability helper for exact-attempt reconciliation and recovered-summary projection. Applied identically while preserving the existing root subscription/setup and consumer state-fingerprint/action-pin deployment differences; the underlying divergence was not re-reviewed. Prior divergence: Non-consolidated authority recovery re-reviewed 2026-09-28: both reporters remain active for failed or cancelled originating workflows regardless of sweep mode. The Workflows root reporter subscribes to both Agents Gate Followups and Agents Keepalive Loop, while the consumer reporter subscribes only to Agents Gate Followups because both consolidated and non-consolidated consumer sweeps can dispatch that workflow. Root in-repo setup and consumer state fingerprinting with exact run attempt and SHA-pinned actions remain intentional. Do not align wholesale, because it would remove either the root workflow coverage or the consumer deployment contract.
++main_sha256 = 3ad50ada69f29a2a3e24ce24e6c5025fe679ea5e0db19fb3b75993ed86e2ea42
++template_sha256 = 0ee4ce7a54a4df2f757823b11b14d87c7e5fa68eccb9721d06747617cf1d01b4
++divergence = Superseded recovery stop 2026-09-30: both reporters now return before ordinary summary publication when the shared applicability helper proves a reconciled attempt was superseded. Applied identically while preserving the existing root subscription/setup and consumer state-fingerprint/action-pin deployment differences; the underlying divergence was not re-reviewed. Prior divergence: Delayed authority recovery boundary 2026-09-29: both reporters call the shared, directly tested applicability helper for exact-attempt reconciliation and recovered-summary projection. Prior divergence: Non-consolidated authority recovery re-reviewed 2026-09-28: both reporters remain active for failed or cancelled originating workflows regardless of sweep mode. The Workflows root reporter subscribes to both Agents Gate Followups and Agents Keepalive Loop, while the consumer reporter subscribes only to Agents Gate Followups because both consolidated and non-consolidated consumer sweeps can dispatch that workflow. Root in-repo setup and consumer state fingerprinting with exact run attempt and SHA-pinned actions remain intentional. Do not align wholesale, because it would remove either the root workflow coverage or the consumer deployment contract.
+ divergence_reviewed = 2026-09-28
+-fingerprint_refreshed = 2026-09-29
++fingerprint_refreshed = 2026-09-30
+ 
+ [pair.13]
+ main = .github/workflows/agents-keepalive-sweep.yml
+diff --git a/docs/keepalive/Agents.md b/docs/keepalive/Agents.md
+index 1b32272c2..540bb908f 100644
+--- a/docs/keepalive/Agents.md
++++ b/docs/keepalive/Agents.md
+@@ -71,7 +71,7 @@ Auto-pilot pipeline:
+ 
+ Authority generations and receipts remain bound to one originating PR head in the SHA-checked ledger. The runner first conditionally prepares that generation and writes its attempt-bound primary reservation. Finalization follows successful mark-running setup and remains a prerequisite for every worker job. Failure or cancellation before finalization conditionally releases only that non-authorizing preparation; cleanup is best effort and the workflow reporter must reconcile interrupted attempts. If that release response is lost, the same preflight-failed owner attempt may retry against the persisted released receipt, but a replacement preparation cannot be released by it. PR head and labels are separate GitHub state, so changed or unavailable evidence denies the result without refunding a consumed receipt. Confirmation uncertainty preserves the ledger and `needs-human`; automation never infers label ownership from a successful add or deletes a possibly concurrent human blocker. A confirmed receipt cannot be reopened merely because its hard label disappeared. The same worker attempt may retry confirmation once against its spent receipt, without granting a new execution. This is a fail-closed, at-most-one-grant protocol, not an atomic transaction across GitHub resources.
+ 
+-The failed-run reporter reconciles the receipt even when the presentation summary never reached `running`, but only after the originating attempt's worker jobs positively show no worker step started. Worker job and step names come from keepalive-capable registry entries at the originating run's exact head (with naming-convention defaults); a newly registered provider does not require a reporter-side provider list, and a later registry change cannot turn a started old provider into false non-start evidence. Missing original registry evidence is unknown. Started or unknown worker evidence preserves the receipt. Presentation-summary inputs alone cannot prove non-start or refund a consumed receipt. An originating run concluded `skipped` has no failed attempt to reconcile and is ignored. Before preparing a receipt, the runner writes an immutable, exact-owner-attempt index on the authority branch; the PR ledger remains the grant authority. For sweep-triggered dispatches with no webhook PR association, the reporter directly reads that index and verifies its exact receipt against the PR ledger. A missing, conflicting or unreadable index fails explicitly for owner follow-up, never as proof of non-execution; associated runs avoid the index lookup. Consumer reporter deduplication includes the originating run ID and attempt so reruns remain independently recoverable. If the ordinary summary finishes first and rewrites `challenge-due` to `automation-retry`, it retains only the exact recovery owner attempt and prior generation. Projection accepts that cleared presentation state only when both markers match the reconciled receipt lineage; a generic blank generation never authorizes recovery.
++The failed-run reporter reconciles the receipt even when the presentation summary never reached `running`, but only after the originating attempt's worker jobs positively show no worker step started. Worker job and step names come from keepalive-capable registry entries at the originating run's exact head (with naming-convention defaults); a newly registered provider does not require a reporter-side provider list, and a later registry change cannot turn a started old provider into false non-start evidence. Missing original registry evidence is unknown. Started or unknown worker evidence preserves the receipt. Presentation-summary inputs alone cannot prove non-start or refund a consumed receipt. An originating run concluded `skipped` has no failed attempt to reconcile and is ignored. Before preparing a receipt, the runner writes an immutable, exact-owner-attempt index on the authority branch; the PR ledger remains the grant authority. For sweep-triggered dispatches with no webhook PR association, the reporter directly reads that index and verifies its exact receipt against the PR ledger. A missing, conflicting or unreadable index fails explicitly for owner follow-up, never as proof of non-execution; associated runs avoid the index lookup. Consumer reporter deduplication includes the originating run ID and attempt so reruns remain independently recoverable. If the ordinary summary finishes first and rewrites `challenge-due` to `automation-retry`, it retains only the exact recovery owner attempt and prior generation. Projection accepts that cleared presentation state only when both markers match the reconciled receipt lineage; a generic blank generation never authorizes recovery. A running summary records its exact run attempt, and delayed projection requires that owner when the summary is running. Projection also re-reads the authoritative ledger immediately before publication and exits as superseded if another attempt has prepared, consumed, confirmed, replaced, or otherwise changed the settled receipt.
+ 
+ For unassociated failed dispatches, the producer run name records a versioned `ordinary` or `authority-candidate` classification without exposing the claim. Both reporters verify the originating workflow path, exact source revision, run attempt, and immutable index before treating an index-free `ordinary` dispatch as inapplicable. A missing index for `authority-candidate`, an unrecognized/legacy title, a corrupt index, or an unavailable lookup fails closed for owner follow-up. This routing metadata never grants authority or substitutes for exact worker evidence. The ordinary skip happens before reporter writer-token setup and worker-job inspection.
+ 
+diff --git a/docs/keepalive/GoalsAndPlumbing.md b/docs/keepalive/GoalsAndPlumbing.md
+index 3ec510efb..45b8c18a1 100644
+--- a/docs/keepalive/GoalsAndPlumbing.md
++++ b/docs/keepalive/GoalsAndPlumbing.md
+@@ -123,7 +123,7 @@ Each update supplies the previous file SHA to the Contents API. The runner condi
+ 
+ PR head and labels live outside the authority ledger, so their reads and ledger writes cannot form one transaction. After consumption, the consumer rechecks the PR and its reservation and denies a grant if the head, routing labels, or attempt binding changed. Confirmation checks the PR before and after its ledger write. An unavailable read or stale head preserves the existing receipt and hard label for reconciliation; it never rotates confirmed state into fresh execution authority or removes `needs-human`. A fresh same-head read may rotate only when the hard label is already absent. These checks narrow the cross-resource race without claiming atomicity against later PR metadata changes. The original worker attempt retries confirmation once against the same consumed receipt after an ambiguous read or conditional write. That retry cannot grant another execution or remove the hard label.
+ 
+-After a failed or cancelled originating run, the workflow-run reporter reads that run's exact job attempt and the agent registry from that run's exact head commit. A worker step that actually entered is treated as started; a fully terminal skipped worker path is positively not-started; incomplete jobs, API errors, missing job evidence, or unavailable originating registry are unknown. Unknown evidence fails the reporter before summary or fingerprint persistence so a retry remains possible. Only the not-started case may reconcile the matching receipt and owner attempt independently of summary `running` state or a fresh authority-failure classification. A prepared receipt can then be released and an unconfirmed consumed receipt can be reopened after a same-head PR read; confirmed receipts remain spent. The reporter's consumed-receipt primitive requires non-start proof, so an ordinary summary or confirmation caller cannot bypass this boundary. Expired initialization is a separate preparation-only recovery: because `prepared` has not granted execution, exact claim/index and PR-state validation plus the conditional SHA are sufficient, while any consumed or conflicting state stays fail-closed. The reporter then projects the settled generation, due/expiry times, and non-running status to a matching trusted summary; retrying a lost projection response is idempotent. A sweep-triggered run may have no webhook PR association; the reporter reads the exact attempt locator directly and verifies the receipt ID and bindings in the authoritative PR ledger without scanning historical PRs. Missing, conflicting or uncertain lookup fails explicitly for owner reconciliation rather than asserting no worker executed. Associated runs use their known PR directly. Consumer fingerprinting includes run ID and attempt so a rerun cannot be skipped as identical to its predecessor. A missing or inconclusive job read never refunds consumed authority.
++After a failed or cancelled originating run, the workflow-run reporter reads that run's exact job attempt and the agent registry from that run's exact head commit. A worker step that actually entered is treated as started; a fully terminal skipped worker path is positively not-started; incomplete jobs, API errors, missing job evidence, or unavailable originating registry are unknown. Unknown evidence fails the reporter before summary or fingerprint persistence so a retry remains possible. Only the not-started case may reconcile the matching receipt and owner attempt independently of summary `running` state or a fresh authority-failure classification. A prepared receipt can then be released and an unconfirmed consumed receipt can be reopened after a same-head PR read; confirmed receipts remain spent. The reporter's consumed-receipt primitive requires non-start proof, so an ordinary summary or confirmation caller cannot bypass this boundary. Expired initialization is a separate preparation-only recovery: because `prepared` has not granted execution, exact claim/index and PR-state validation plus the conditional SHA are sufficient, while any consumed or conflicting state stays fail-closed. The reporter then projects the settled generation, due/expiry times, and non-running status to a matching trusted summary; retrying a lost projection response is idempotent. A running summary is bound to its exact repository, run ID, and run attempt, so a delayed reporter cannot clear a newer run that happens to share the same generation. Immediately before projection, the reporter re-reads the authoritative ledger and treats any changed or non-available settled receipt as superseded without falling through to the ordinary summary writer. A sweep-triggered run may have no webhook PR association; the reporter reads the exact attempt locator directly and verifies the receipt ID and bindings in the authoritative PR ledger without scanning historical PRs. Missing, conflicting or uncertain lookup fails explicitly for owner reconciliation rather than asserting no worker executed. Associated runs use their known PR directly. Consumer fingerprinting includes run ID and attempt so a rerun cannot be skipped as identical to its predecessor. A missing or inconclusive job read never refunds consumed authority.
+ 
+ ## 5. No-Noise Policy
+ 
+diff --git a/templates/consumer-repo/.github/scripts/keepalive_loop.js b/templates/consumer-repo/.github/scripts/keepalive_loop.js
+index 9645d9ffb..bd2d4b9bd 100644
+--- a/templates/consumer-repo/.github/scripts/keepalive_loop.js
++++ b/templates/consumer-repo/.github/scripts/keepalive_loop.js
+@@ -5202,6 +5202,15 @@ async function markAgentRunning({ github: rawGithub, context, core, inputs }) {
+   const preservedState = previousState || {};
+   preservedState.running = true;
+   preservedState.running_since = new Date().toISOString();
++  const runningRunId = context.runId || process.env.GITHUB_RUN_ID || '';
++  if (runningRunId) {
++    preservedState.running_owner_attempt = (
++      `${context.repo.owner}/${context.repo.repo}:${runningRunId}:` +
++      `${context.runAttempt || process.env.GITHUB_RUN_ATTEMPT || '1'}`
++    ).toLowerCase();
++  } else {
++    delete preservedState.running_owner_attempt;
++  }
+   if (suggestedFocus?.text) {
+     preservedState.current_focus = suggestedFocus.text;
+     preservedState.current_focus_set_at = new Date().toISOString();
+diff --git a/templates/consumer-repo/.github/scripts/keepalive_reporter_applicability.js b/templates/consumer-repo/.github/scripts/keepalive_reporter_applicability.js
+index 6dc2960d5..f5629d428 100644
+--- a/templates/consumer-repo/.github/scripts/keepalive_reporter_applicability.js
++++ b/templates/consumer-repo/.github/scripts/keepalive_reporter_applicability.js
+@@ -5,7 +5,7 @@ const {
+   reconcileFailedAuthorityAttempt,
+   requester,
+ } = require('./keepalive_authority_state.js');
+-const { projectRecoveredAuthorityState } = require('./keepalive_state.js');
++const { loadKeepaliveState, projectRecoveredAuthorityState } = require('./keepalive_state.js');
+ const { withRetry } = require('./github-api-with-retry.js');
+ 
+ const DISPATCH_TITLE = 'keepalive-dispatch/v1 ';
+@@ -87,6 +87,12 @@ async function recoverReporterAuthority({
+     });
+   } catch (error) {
+     if (error.status === 404) {
++      const loaded = await loadKeepaliveState({ github, context, prNumber, trace: '' });
++      if (loaded.state.running === true && loaded.state.running_owner_attempt &&
++          loaded.state.running_owner_attempt !== ownerAttempt) {
++        return { status: 'superseded', prNumber, ownerAttempt, authorityTarget,
++          projection: { projected: false, reason: 'running-attempt-superseded' } };
++      }
+       return { status: 'continue', prNumber, ownerAttempt, authorityTarget };
+     }
+     throw error;
+@@ -95,10 +101,21 @@ async function recoverReporterAuthority({
+     const projection = await projectRecovery({
+       github, context, prNumber, recovery: reconciliation, writerLogin,
+     });
++    if (projection.projected === false) {
++      return {
++        status: 'superseded', prNumber, ownerAttempt, authorityTarget, reconciliation, projection,
++      };
++    }
+     return {
+       status: 'projected', prNumber, ownerAttempt, authorityTarget, reconciliation, projection,
+     };
+   }
++  const loaded = await loadKeepaliveState({ github, context, prNumber, trace: '' });
++  if (loaded.state.running === true && loaded.state.running_owner_attempt &&
++      loaded.state.running_owner_attempt !== ownerAttempt) {
++    return { status: 'superseded', prNumber, ownerAttempt, authorityTarget, reconciliation,
++      projection: { projected: false, reason: 'running-attempt-superseded' } };
++  }
+   return { status: 'continue', prNumber, ownerAttempt, authorityTarget, reconciliation };
+ }
+ 
+diff --git a/templates/consumer-repo/.github/scripts/keepalive_state.js b/templates/consumer-repo/.github/scripts/keepalive_state.js
+index 8c1c9580c..82745e567 100644
+--- a/templates/consumer-repo/.github/scripts/keepalive_state.js
++++ b/templates/consumer-repo/.github/scripts/keepalive_state.js
+@@ -1,6 +1,7 @@
+ 'use strict';
+ 
+ const { ensureRateLimitWrapped } = require('./github-rate-limited-wrapper.js');
++const { readAuthorityState, requester } = require('./keepalive_authority_state.js');
+ 
+ const STATE_MARKER = 'keepalive-state';
+ const STATE_VERSION = 'v1';
+@@ -436,7 +437,12 @@ async function loadKeepaliveState({ github: rawGithub, context, prNumber, trace
+ }
+ 
+ function summaryMatchesRecoveredAuthority(state, priorGenerations, recoveredAttempt) {
+-  if (state?.attention && priorGenerations.has(state.attention.generation)) return true;
++  if (state?.attention && priorGenerations.has(state.attention.generation)) {
++    if (state.running === true) {
++      return Boolean(recoveredAttempt) && state.running_owner_attempt === recoveredAttempt;
++    }
++    return !state.running_owner_attempt || state.running_owner_attempt === recoveredAttempt;
++  }
+   const attention = state?.attention || {};
+   return state?.running === false &&
+     attention.owner === 'automation' &&
+@@ -450,13 +456,43 @@ function summaryMatchesRecoveredAuthority(state, priorGenerations, recoveredAtte
+     priorGenerations.has(attention.recovery_generation);
+ }
+ 
+-async function projectRecoveredAuthorityState({ github, context, prNumber, recovery, writerLogin }) {
++const RECOVERY_RECEIPT_FIELDS = ['id', 'owner_attempt', 'claim_digest', 'head_sha', 'provider'];
++
++function sameRecoveryReceipt(left, right) {
++  return Boolean(left && right) &&
++    RECOVERY_RECEIPT_FIELDS.every((field) => left[field] === right[field]);
++}
++
++function currentSettledRecovery(recovery, current) {
++  const receiptField = recovery.status === 'released' ? 'released_receipt' : 'recovered_receipt';
++  if (current?.status !== 'available' ||
++      current.head_sha !== recovery.state.head_sha ||
++      current.boundary_fingerprint !== recovery.state.boundary_fingerprint ||
++      !sameRecoveryReceipt(current[receiptField], recovery.state[receiptField])) {
++    return null;
++  }
++  return current;
++}
++
++async function projectRecoveredAuthorityState({
++  github, context, prNumber, recovery, writerLogin,
++  readAuthority = readAuthorityState, makeRequest = requester,
++}) {
+   if (!['released', 'reopened'].includes(recovery?.status) || !recovery.state) {
+     throw new Error('No settled authority recovery to project');
+   }
++  const repository = `${context.repo.owner}/${context.repo.repo}`;
++  const firstAuthorityRead = await readAuthority(makeRequest(github), repository, prNumber);
++  let currentRecovery = currentSettledRecovery(recovery, firstAuthorityRead?.state);
++  if (!currentRecovery) {
++    return { projected: false, reason: 'recovery-superseded' };
++  }
+   const priorGenerations = new Set([
+     recovery.previousGeneration || recovery.state.generation,
+     ...(recovery.previousGenerations || []),
++    recovery.state.generation,
++    currentRecovery.generation,
++    ...(currentRecovery.released_generation_lineage || []),
+   ]);
+   const recoveredAttempt = (recovery.status === 'released' ? recovery.state.released_receipt :
+     recovery.state.recovered_receipt)?.owner_attempt || '';
+@@ -464,7 +500,7 @@ async function projectRecoveredAuthorityState({ github, context, prNumber, recov
+   let state = loaded.state;
+   if (state?.running === false && recoveredAttempt &&
+       state?.attention?.recovery_owner_attempt === recoveredAttempt &&
+-      state.attention.generation === recovery.state.generation) {
++      state.attention.generation === currentRecovery.generation) {
+     return { projected: true, reason: 'already-projected' };
+   }
+   if (!summaryMatchesRecoveredAuthority(state, priorGenerations, recoveredAttempt)) {
+@@ -478,7 +514,7 @@ async function projectRecoveredAuthorityState({ github, context, prNumber, recov
+     });
+     const latest = parseStateComment(response?.data?.body)?.data;
+     if (!summaryMatchesRecoveredAuthority(latest, priorGenerations, recoveredAttempt)) {
+-      if (latest?.attention?.generation === recovery.state.generation && latest.running === false &&
++      if (latest?.attention?.generation === currentRecovery.generation && latest.running === false &&
+           latest.attention.recovery_owner_attempt === recoveredAttempt) {
+         return { projected: true, reason: 'already-projected' };
+       }
+@@ -486,19 +522,25 @@ async function projectRecoveredAuthorityState({ github, context, prNumber, recov
+     }
+     state = latest;
+   }
++  const finalAuthorityRead = await readAuthority(makeRequest(github), repository, prNumber);
++  currentRecovery = currentSettledRecovery(recovery, finalAuthorityRead?.state);
++  if (!currentRecovery || (firstAuthorityRead?.sha && finalAuthorityRead?.sha !== firstAuthorityRead.sha)) {
++    return { projected: false, reason: 'recovery-superseded' };
++  }
+   const { recovery_generation: _recoveryGeneration, ...priorAttention } = state.attention;
+   const projected = {
+     ...state,
+     running: false,
+     running_since: null,
++    running_owner_attempt: null,
+     attention: {
+       ...priorAttention,
+       owner: 'automation', disposition: 'challenge-due',
+-      generation: recovery.state.generation,
++      generation: currentRecovery.generation,
+       recovery_owner_attempt: recoveredAttempt,
+-      boundary_fingerprint: recovery.state.boundary_fingerprint,
+-      challenge_due_at: recovery.state.due_at,
+-      expires_at: recovery.state.expires_at,
++      boundary_fingerprint: currentRecovery.boundary_fingerprint,
++      challenge_due_at: currentRecovery.due_at,
++      expires_at: currentRecovery.expires_at,
+       next_action: 'Retry the exact-head authority challenge through the owning sweep.',
+     },
+   };
+diff --git a/templates/consumer-repo/.github/workflows/agents-keepalive-loop-reporter.yml b/templates/consumer-repo/.github/workflows/agents-keepalive-loop-reporter.yml
+index f24ddd06a..76c166644 100644
+--- a/templates/consumer-repo/.github/workflows/agents-keepalive-loop-reporter.yml
++++ b/templates/consumer-repo/.github/workflows/agents-keepalive-loop-reporter.yml
+@@ -227,7 +227,7 @@ jobs:
+               `Attempt-bound authority reconciliation: ` +
+               `${authorityRecovery.reconciliation?.status || authorityRecovery.status}`
+             );
+-            if (authorityRecovery.status === 'projected') {
++            if (['projected', 'superseded'].includes(authorityRecovery.status)) {
+               return;
+             }
+ 

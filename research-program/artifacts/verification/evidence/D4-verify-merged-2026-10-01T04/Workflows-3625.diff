@@ -1,0 +1,541 @@
+diff --git a/.github/scripts/__tests__/keepalive-reporter-applicability.test.js b/.github/scripts/__tests__/keepalive-reporter-applicability.test.js
+index 5d9ba9c56..148250325 100644
+--- a/.github/scripts/__tests__/keepalive-reporter-applicability.test.js
++++ b/.github/scripts/__tests__/keepalive-reporter-applicability.test.js
+@@ -4,7 +4,11 @@ const assert = require('node:assert/strict');
+ const fs = require('node:fs');
+ const path = require('node:path');
+ const test = require('node:test');
+-const { classifyReporterRun } = require('../keepalive_reporter_applicability.js');
++const {
++  classifyReporterRun,
++  recoverReporterAuthority,
++} = require('../keepalive_reporter_applicability.js');
++const { formatStateComment, loadKeepaliveState } = require('../keepalive_state.js');
+ 
+ const root = path.resolve(__dirname, '../../..');
+ const head = 'a'.repeat(40);
+@@ -34,6 +38,37 @@ function setup(source, title, overrides = {}) {
+   return { github, reads: () => reads };
+ }
+ 
++function recoveryGithub(state) {
++  const comments = [{
++    id: 91,
++    body: '<!-- keepalive-loop-summary -->\n' + formatStateComment(state),
++    html_url: 'https://example.com/91',
++    user: { login: 'agents-workflows-bot[bot]', type: 'Bot' },
++  }];
++  const actions = [];
++  return {
++    actions,
++    rest: {
++      issues: {
++        listComments: async () => ({ data: comments }),
++        getComment: async ({ comment_id: commentId }) => ({
++          data: comments.find((comment) => comment.id === commentId),
++        }),
++        updateComment: async ({ comment_id: commentId, body }) => {
++          comments.find((comment) => comment.id === commentId).body = body;
++          actions.push({ type: 'update', commentId, body });
++          return { data: { id: commentId } };
++        },
++        createComment: async ({ body }) => {
++          actions.push({ type: 'create', body });
++          return { data: { id: 92, html_url: 'https://example.com/92' } };
++        },
++      },
++    },
++    paginate: async (fn, params) => (await fn(params)).data,
++  };
++}
++
+ for (const source of sources) {
+   test(`${source}: ordinary unassociated dispatch skips only after absent index`, async () => {
+     const { github, reads } = setup(source, 'keepalive-dispatch/v1 ordinary');
+@@ -98,3 +133,118 @@ test('associated runs avoid the unassociated locator altogether', async () => {
+     lookupTarget: async () => { throw new Error('unexpected lookup'); } });
+   assert.deepEqual(result, { status: 'continue' });
+ });
++
++for (const status of ['released', 'reopened']) {
++  test(`delayed ${status} recovery is located, reconciled, and projected after summary retry`, async () => {
++    const previousGeneration = 'b'.repeat(64);
++    const nextGeneration = 'c'.repeat(64);
++    const ownerAttempt = 'stranske/repo:12345:2';
++    const github = recoveryGithub({
++      running: false,
++      attention: {
++        owner: 'automation', disposition: 'automation-retry', generation: '',
++        boundary_fingerprint: '', challenge_due_at: null, expires_at: '',
++        recovery_generation: previousGeneration, recovery_owner_attempt: ownerAttempt,
++      },
++    });
++    const receiptName = status === 'released' ? 'released_receipt' : 'recovered_receipt';
++    const recovery = {
++      status,
++      previousGeneration,
++      state: {
++        generation: nextGeneration,
++        boundary_fingerprint: 'd'.repeat(64),
++        [receiptName]: { owner_attempt: ownerAttempt },
++        due_at: '2026-09-30T01:00:00Z',
++        expires_at: '2026-09-30T13:00:00Z',
++      },
++    };
++    const context = { repo: { owner: 'stranske', repo: 'repo' } };
++    const args = {
++      github, context, run, workerEvidence: 'not-started',
++      writerLogin: 'agents-workflows-bot[bot]',
++      makeRequest: () => 'request',
++      lookupTarget: async ({ repository, ownerAttempt: attempt }) => {
++        assert.equal(repository, 'stranske/repo');
++        assert.equal(attempt, ownerAttempt);
++        return { prNumber: 42 };
++      },
++      reconcileAttempt: async (input) => {
++        assert.equal(input.request, 'request');
++        assert.equal(input.ownerAttempt, ownerAttempt);
++        assert.equal(input.prNumber, 42);
++        return recovery;
++      },
++    };
++    const first = await recoverReporterAuthority(args);
++    assert.equal(first.status, 'projected');
++    assert.equal(first.projection.reason, 'recovered-summary-projected');
++    const second = await recoverReporterAuthority(args);
++    assert.equal(second.projection.reason, 'already-projected');
++    assert.equal(github.actions.filter((action) => action.type === 'update').length, 1);
++    const loaded = await loadKeepaliveState({ github, context, prNumber: 42, trace: '' });
++    assert.equal(loaded.state.attention.disposition, 'challenge-due');
++    assert.equal(loaded.state.attention.generation, nextGeneration);
++    assert.equal(loaded.state.attention.recovery_owner_attempt, ownerAttempt);
++  });
++}
++
++test('404 reconciliation preserves the owner-attempt binding for normal reporting', async () => {
++  const missing = new Error('not found');
++  missing.status = 404;
++  const result = await recoverReporterAuthority({
++    github: {}, context: { repo: { owner: 'stranske', repo: 'repo' } }, run,
++    workerEvidence: 'started', writerLogin: 'agents-workflows-bot[bot]', prNumber: 42,
++    makeRequest: () => 'request',
++    reconcileAttempt: async () => { throw missing; },
++  });
++  assert.equal(result.status, 'continue');
++  assert.equal(result.ownerAttempt, 'stranske/repo:12345:2');
++});
++
++test('non-released reconciliation preserves the owner-attempt binding for normal reporting', async () => {
++  const result = await recoverReporterAuthority({
++    github: {}, context: { repo: { owner: 'stranske', repo: 'repo' } }, run,
++    workerEvidence: 'started', writerLogin: 'agents-workflows-bot[bot]', prNumber: 42,
++    makeRequest: () => 'request',
++    reconcileAttempt: async () => ({ status: 'owned' }),
++  });
++  assert.equal(result.status, 'continue');
++  assert.equal(result.ownerAttempt, 'stranske/repo:12345:2');
++});
++
++test('recovery rejects unknown worker evidence before authority mutation', async () => {
++  await assert.rejects(recoverReporterAuthority({
++    github: {}, context: { repo: { owner: 'stranske', repo: 'repo' } }, run,
++    workerEvidence: 'unknown', writerLogin: 'agents-workflows-bot[bot]',
++    makeRequest: () => { throw new Error('must not request'); },
++  }), /execution evidence is unknown/);
++});
++
++test('recovery rejects a delayed summary marker for a different attempt or generation', async () => {
++  const github = recoveryGithub({
++    running: false,
++    attention: {
++      owner: 'automation', disposition: 'automation-retry', generation: '',
++      recovery_generation: 'e'.repeat(64),
++      recovery_owner_attempt: 'stranske/repo:999:1',
++    },
++  });
++  await assert.rejects(recoverReporterAuthority({
++    github,
++    context: { repo: { owner: 'stranske', repo: 'repo' } },
++    run,
++    workerEvidence: 'not-started',
++    writerLogin: 'agents-workflows-bot[bot]',
++    makeRequest: () => 'request',
++    lookupTarget: async () => ({ prNumber: 42 }),
++    reconcileAttempt: async () => ({
++      status: 'released', previousGeneration: 'b'.repeat(64), state: {
++        generation: 'c'.repeat(64), boundary_fingerprint: 'd'.repeat(64),
++        released_receipt: { owner_attempt: 'stranske/repo:12345:2' },
++        due_at: '2026-09-30T01:00:00Z', expires_at: '2026-09-30T13:00:00Z',
++      },
++    }),
++  }), /does not match the recovered generation/);
++  assert.equal(github.actions.length, 0);
++});
+diff --git a/.github/scripts/keepalive_reporter_applicability.js b/.github/scripts/keepalive_reporter_applicability.js
+index 3a81f3b5c..6dc2960d5 100644
+--- a/.github/scripts/keepalive_reporter_applicability.js
++++ b/.github/scripts/keepalive_reporter_applicability.js
+@@ -1,6 +1,11 @@
+ 'use strict';
+ 
+-const { findAuthorityPrForAttempt, requester } = require('./keepalive_authority_state.js');
++const {
++  findAuthorityPrForAttempt,
++  reconcileFailedAuthorityAttempt,
++  requester,
++} = require('./keepalive_authority_state.js');
++const { projectRecoveredAuthorityState } = require('./keepalive_state.js');
+ const { withRetry } = require('./github-api-with-retry.js');
+ 
+ const DISPATCH_TITLE = 'keepalive-dispatch/v1 ';
+@@ -47,4 +52,54 @@ async function classifyReporterRun({ github, owner, repo, run, lookupTarget = fi
+   return { status: 'skip' };
+ }
+ 
+-module.exports = { classifyReporterRun };
++async function recoverReporterAuthority({
++  github,
++  context,
++  run,
++  workerEvidence,
++  writerLogin,
++  prNumber = Number(run.pull_requests?.[0]?.number || 0),
++  lookupTarget = findAuthorityPrForAttempt,
++  reconcileAttempt = reconcileFailedAuthorityAttempt,
++  projectRecovery = projectRecoveredAuthorityState,
++  makeRequest = requester,
++}) {
++  if (!['started', 'not-started'].includes(workerEvidence)) {
++    throw new Error('Originating worker execution evidence is unknown');
++  }
++  const owner = context.repo.owner;
++  const repo = context.repo.repo;
++  const repository = `${owner}/${repo}`;
++  const ownerAttempt = `${repository}:${run.id}:${run.run_attempt || 1}`.toLowerCase();
++  const request = makeRequest(github);
++  let authorityTarget;
++  if (!prNumber) {
++    authorityTarget = await lookupTarget({ request, repository, ownerAttempt });
++    prNumber = Number(authorityTarget?.prNumber || 0);
++  }
++  if (!prNumber) {
++    throw new Error('No PR association or authoritative attempt target for failed run');
++  }
++  let reconciliation;
++  try {
++    reconciliation = await reconcileAttempt({
++      request, repository, prNumber, ownerAttempt, workerEvidence,
++    });
++  } catch (error) {
++    if (error.status === 404) {
++      return { status: 'continue', prNumber, ownerAttempt, authorityTarget };
++    }
++    throw error;
++  }
++  if (['released', 'reopened'].includes(reconciliation.status)) {
++    const projection = await projectRecovery({
++      github, context, prNumber, recovery: reconciliation, writerLogin,
++    });
++    return {
++      status: 'projected', prNumber, ownerAttempt, authorityTarget, reconciliation, projection,
++    };
++  }
++  return { status: 'continue', prNumber, ownerAttempt, authorityTarget, reconciliation };
++}
++
++module.exports = { classifyReporterRun, recoverReporterAuthority };
+diff --git a/.github/workflows/agents-keepalive-loop-reporter.yml b/.github/workflows/agents-keepalive-loop-reporter.yml
+index 010ce800f..503ea4ae2 100644
+--- a/.github/workflows/agents-keepalive-loop-reporter.yml
++++ b/.github/workflows/agents-keepalive-loop-reporter.yml
+@@ -173,10 +173,11 @@ jobs:
+               return;
+             }
+ 
+-            const { loadKeepaliveState, projectRecoveredAuthorityState } =
+-              require('./.github/scripts/keepalive_state.js');
++            const { loadKeepaliveState } = require('./.github/scripts/keepalive_state.js');
+             const { updateKeepaliveLoopSummary } = require('./.github/scripts/keepalive_loop.js');
+             const { getWorkerExecutionEvidence } = require('./.github/scripts/keepalive_worker_evidence.js');
++            const { recoverReporterAuthority } =
++              require('./.github/scripts/keepalive_reporter_applicability.js');
+ 
+             const workerEvidence = await getWorkerExecutionEvidence(
+               github, context.repo.owner, context.repo.repo, run.id, run.run_attempt || 1,
+@@ -187,48 +188,25 @@ jobs:
+               core.setFailed('Originating worker execution evidence is unknown; retry this reporter');
+               return;
+             }
+-            const ownerAttempt =
+-              `${context.repo.owner}/${context.repo.repo}:${run.id}:${run.run_attempt || 1}`.toLowerCase();
+-            const { findAuthorityPrForAttempt, reconcileFailedAuthorityAttempt, requester } =
+-              require('./.github/scripts/keepalive_authority_state.js');
+-            const authorityRequest = requester(github);
+-            let authorityTarget;
+-            if (!prNumber) {
+-              try {
+-                authorityTarget = await findAuthorityPrForAttempt({
+-                  request: authorityRequest,
+-                  repository: `${context.repo.owner}/${context.repo.repo}`,
+-                  ownerAttempt,
+-                });
+-              } catch (error) {
+-                core.setFailed(`Authority attempt target lookup unavailable: ${error.message}`);
+-                return;
+-              }
+-            }
+-            prNumber ||= authorityTarget?.prNumber || 0;
+-            if (!prNumber) {
+-              core.setFailed('No PR association or authoritative attempt target for failed run');
+-              return;
+-            }
++            let authorityRecovery;
+             try {
+-              const reconciliation = await reconcileFailedAuthorityAttempt({
+-                request: authorityRequest,
+-                repository: `${context.repo.owner}/${context.repo.repo}`,
+-                prNumber, ownerAttempt, workerEvidence,
++              authorityRecovery = await recoverReporterAuthority({
++                github, context, run, workerEvidence,
++                writerLogin: process.env.KEEPALIVE_SUMMARY_WRITER || '', prNumber,
+               });
+-              core.info(`Attempt-bound authority reconciliation: ${reconciliation.status}`);
+-              if (['released', 'reopened'].includes(reconciliation.status)) {
+-                await projectRecoveredAuthorityState({
+-                  github, context, prNumber, recovery: reconciliation,
+-                  writerLogin: process.env.KEEPALIVE_SUMMARY_WRITER || '',
+-                });
+-                return;
+-              }
+             } catch (error) {
+-              if (error.status !== 404) {
+-                core.setFailed(`Authority reconciliation unavailable: ${error.message}`);
+-                return;
+-              }
++              core.setFailed(`Authority reconciliation unavailable: ${error.message}`);
++              return;
++            }
++            prNumber = authorityRecovery.prNumber;
++            const authorityTarget = authorityRecovery.authorityTarget;
++            const ownerAttempt = authorityRecovery.ownerAttempt;
++            core.info(
++              `Attempt-bound authority reconciliation: ` +
++              `${authorityRecovery.reconciliation?.status || authorityRecovery.status}`
++            );
++            if (authorityRecovery.status === 'projected') {
++              return;
+             }
+ 
+             const { state } = await loadKeepaliveState({ github, context, prNumber, trace: '' });
+diff --git a/config/template-drift-allowlist.txt b/config/template-drift-allowlist.txt
+index 10b26296f..caeefd92b 100644
+--- a/config/template-drift-allowlist.txt
++++ b/config/template-drift-allowlist.txt
+@@ -144,11 +144,11 @@ fingerprint_refreshed = 2026-09-02
+ [pair.12]
+ main = .github/workflows/agents-keepalive-loop-reporter.yml
+ template = templates/consumer-repo/.github/workflows/agents-keepalive-loop-reporter.yml
+-main_sha256 = 3040dc8ebb342c988d674cee9d149c218c48cacf3a01b2f7152b7fc521c8b1c4
+-template_sha256 = ff5a929fc27f139f35718a7c40c2d1f16b9421b03b5805d62e8e499ceb904649
+-divergence = Non-consolidated authority recovery re-reviewed 2026-09-28: both reporters now remain active for failed or cancelled originating workflows regardless of sweep mode. The Workflows root reporter subscribes to both Agents Gate Followups and Agents Keepalive Loop, while the consumer reporter subscribes only to Agents Gate Followups because both consolidated and non-consolidated consumer sweeps can dispatch that workflow. Root in-repo setup and consumer state fingerprinting with exact run attempt and SHA-pinned actions remain intentional. Do not align wholesale, because it would remove either the root workflow coverage or the consumer deployment contract.
++main_sha256 = a09cee047220471859049924c2c9c9a0b6d5f66f879619fd5d04c1ef10bcbebd
++template_sha256 = 7c86a45829aa4cf7524df75acdc04ced58b1507ea6dccc27e6d278e82cdb5cef
++divergence = Delayed authority recovery boundary 2026-09-29: both reporters now call the shared, directly tested applicability helper for exact-attempt reconciliation and recovered-summary projection. Applied identically while preserving the existing root subscription/setup and consumer state-fingerprint/action-pin deployment differences; the underlying divergence was not re-reviewed. Prior divergence: Non-consolidated authority recovery re-reviewed 2026-09-28: both reporters remain active for failed or cancelled originating workflows regardless of sweep mode. The Workflows root reporter subscribes to both Agents Gate Followups and Agents Keepalive Loop, while the consumer reporter subscribes only to Agents Gate Followups because both consolidated and non-consolidated consumer sweeps can dispatch that workflow. Root in-repo setup and consumer state fingerprinting with exact run attempt and SHA-pinned actions remain intentional. Do not align wholesale, because it would remove either the root workflow coverage or the consumer deployment contract.
+ divergence_reviewed = 2026-09-28
+-fingerprint_refreshed = 2026-09-28
++fingerprint_refreshed = 2026-09-29
+ 
+ [pair.13]
+ main = .github/workflows/agents-keepalive-sweep.yml
+diff --git a/templates/consumer-repo/.github/scripts/keepalive_reporter_applicability.js b/templates/consumer-repo/.github/scripts/keepalive_reporter_applicability.js
+index 3a81f3b5c..6dc2960d5 100644
+--- a/templates/consumer-repo/.github/scripts/keepalive_reporter_applicability.js
++++ b/templates/consumer-repo/.github/scripts/keepalive_reporter_applicability.js
+@@ -1,6 +1,11 @@
+ 'use strict';
+ 
+-const { findAuthorityPrForAttempt, requester } = require('./keepalive_authority_state.js');
++const {
++  findAuthorityPrForAttempt,
++  reconcileFailedAuthorityAttempt,
++  requester,
++} = require('./keepalive_authority_state.js');
++const { projectRecoveredAuthorityState } = require('./keepalive_state.js');
+ const { withRetry } = require('./github-api-with-retry.js');
+ 
+ const DISPATCH_TITLE = 'keepalive-dispatch/v1 ';
+@@ -47,4 +52,54 @@ async function classifyReporterRun({ github, owner, repo, run, lookupTarget = fi
+   return { status: 'skip' };
+ }
+ 
+-module.exports = { classifyReporterRun };
++async function recoverReporterAuthority({
++  github,
++  context,
++  run,
++  workerEvidence,
++  writerLogin,
++  prNumber = Number(run.pull_requests?.[0]?.number || 0),
++  lookupTarget = findAuthorityPrForAttempt,
++  reconcileAttempt = reconcileFailedAuthorityAttempt,
++  projectRecovery = projectRecoveredAuthorityState,
++  makeRequest = requester,
++}) {
++  if (!['started', 'not-started'].includes(workerEvidence)) {
++    throw new Error('Originating worker execution evidence is unknown');
++  }
++  const owner = context.repo.owner;
++  const repo = context.repo.repo;
++  const repository = `${owner}/${repo}`;
++  const ownerAttempt = `${repository}:${run.id}:${run.run_attempt || 1}`.toLowerCase();
++  const request = makeRequest(github);
++  let authorityTarget;
++  if (!prNumber) {
++    authorityTarget = await lookupTarget({ request, repository, ownerAttempt });
++    prNumber = Number(authorityTarget?.prNumber || 0);
++  }
++  if (!prNumber) {
++    throw new Error('No PR association or authoritative attempt target for failed run');
++  }
++  let reconciliation;
++  try {
++    reconciliation = await reconcileAttempt({
++      request, repository, prNumber, ownerAttempt, workerEvidence,
++    });
++  } catch (error) {
++    if (error.status === 404) {
++      return { status: 'continue', prNumber, ownerAttempt, authorityTarget };
++    }
++    throw error;
++  }
++  if (['released', 'reopened'].includes(reconciliation.status)) {
++    const projection = await projectRecovery({
++      github, context, prNumber, recovery: reconciliation, writerLogin,
++    });
++    return {
++      status: 'projected', prNumber, ownerAttempt, authorityTarget, reconciliation, projection,
++    };
++  }
++  return { status: 'continue', prNumber, ownerAttempt, authorityTarget, reconciliation };
++}
++
++module.exports = { classifyReporterRun, recoverReporterAuthority };
+diff --git a/templates/consumer-repo/.github/workflows/agents-keepalive-loop-reporter.yml b/templates/consumer-repo/.github/workflows/agents-keepalive-loop-reporter.yml
+index 31602c0a4..f24ddd06a 100644
+--- a/templates/consumer-repo/.github/workflows/agents-keepalive-loop-reporter.yml
++++ b/templates/consumer-repo/.github/workflows/agents-keepalive-loop-reporter.yml
+@@ -195,10 +195,11 @@ jobs:
+               return;
+             }
+ 
+-            const { loadKeepaliveState, projectRecoveredAuthorityState } =
+-              require('./.github/scripts/keepalive_state.js');
++            const { loadKeepaliveState } = require('./.github/scripts/keepalive_state.js');
+             const { updateKeepaliveLoopSummary } = require('./.github/scripts/keepalive_loop.js');
+             const { getWorkerExecutionEvidence } = require('./.github/scripts/keepalive_worker_evidence.js');
++            const { recoverReporterAuthority } =
++              require('./.github/scripts/keepalive_reporter_applicability.js');
+ 
+             const workerEvidence = await getWorkerExecutionEvidence(
+               github, context.repo.owner, context.repo.repo, run.id, run.run_attempt || 1,
+@@ -209,48 +210,25 @@ jobs:
+               core.setFailed('Originating worker execution evidence is unknown; retry this reporter');
+               return;
+             }
+-            const ownerAttempt =
+-              `${context.repo.owner}/${context.repo.repo}:${run.id}:${run.run_attempt || 1}`.toLowerCase();
+-            const { findAuthorityPrForAttempt, reconcileFailedAuthorityAttempt, requester } =
+-              require('./.github/scripts/keepalive_authority_state.js');
+-            const authorityRequest = requester(github);
+-            let authorityTarget;
+-            if (!prNumber) {
+-              try {
+-                authorityTarget = await findAuthorityPrForAttempt({
+-                  request: authorityRequest,
+-                  repository: `${context.repo.owner}/${context.repo.repo}`,
+-                  ownerAttempt,
+-                });
+-              } catch (error) {
+-                core.setFailed(`Authority attempt target lookup unavailable: ${error.message}`);
+-                return;
+-              }
+-            }
+-            prNumber ||= authorityTarget?.prNumber || 0;
+-            if (!prNumber) {
+-              core.setFailed('No PR association or authoritative attempt target for failed run');
+-              return;
+-            }
++            let authorityRecovery;
+             try {
+-              const reconciliation = await reconcileFailedAuthorityAttempt({
+-                request: authorityRequest,
+-                repository: `${context.repo.owner}/${context.repo.repo}`,
+-                prNumber, ownerAttempt, workerEvidence,
++              authorityRecovery = await recoverReporterAuthority({
++                github, context, run, workerEvidence,
++                writerLogin: process.env.KEEPALIVE_SUMMARY_WRITER || '', prNumber,
+               });
+-              core.info(`Attempt-bound authority reconciliation: ${reconciliation.status}`);
+-              if (['released', 'reopened'].includes(reconciliation.status)) {
+-                await projectRecoveredAuthorityState({
+-                  github, context, prNumber, recovery: reconciliation,
+-                  writerLogin: process.env.KEEPALIVE_SUMMARY_WRITER || '',
+-                });
+-                return;
+-              }
+             } catch (error) {
+-              if (error.status !== 404) {
+-                core.setFailed(`Authority reconciliation unavailable: ${error.message}`);
+-                return;
+-              }
++              core.setFailed(`Authority reconciliation unavailable: ${error.message}`);
++              return;
++            }
++            prNumber = authorityRecovery.prNumber;
++            const authorityTarget = authorityRecovery.authorityTarget;
++            const ownerAttempt = authorityRecovery.ownerAttempt;
++            core.info(
++              `Attempt-bound authority reconciliation: ` +
++              `${authorityRecovery.reconciliation?.status || authorityRecovery.status}`
++            );
++            if (authorityRecovery.status === 'projected') {
++              return;
+             }
+ 
+             const { state } = await loadKeepaliveState({ github, context, prNumber, trace: '' });
+diff --git a/tests/workflows/test_keepalive_authority_delivery.py b/tests/workflows/test_keepalive_authority_delivery.py
+index 43261442f..7718266f4 100644
+--- a/tests/workflows/test_keepalive_authority_delivery.py
++++ b/tests/workflows/test_keepalive_authority_delivery.py
+@@ -78,22 +78,22 @@ def test_gate_paths_deny_invalid_claims_and_reporters_can_persist_generation() -
+             "head_sha: authorityTarget?.state?.head_sha || run.head_sha || ''" in path.read_text()
+         )
+         assert "authority_owner_attempt:" in path.read_text()
+-        assert "run.id}:${run.run_attempt || 1}" in path.read_text()
++        assert "const ownerAttempt = authorityRecovery.ownerAttempt;" in path.read_text()
+         assert "getWorkerExecutionEvidence(" in path.read_text()
+         assert "run.head_sha || ''" in path.read_text()
+         assert ".github/agents/registry.yml" in path.read_text()
+         assert "if (workerEvidence === 'unknown')" in path.read_text()
+         assert "retry this reporter" in path.read_text()
+-        assert "projectRecoveredAuthorityState(" in path.read_text()
+-        assert "findAuthorityPrForAttempt(" in path.read_text()
+-        assert (
+-            "if (!prNumber) {\n              try {\n                authorityTarget ="
+-            in path.read_text()
+-        )
+-        assert "No PR association or authoritative attempt target" in path.read_text()
+         assert "Require PR association for failed originating run" not in path.read_text()
+         assert "agent_execution_started: false" not in path.read_text()
+ 
++    applicability = (ROOT / ".github/scripts/keepalive_reporter_applicability.js").read_text()
++    assert "run.id}:${run.run_attempt || 1}" in applicability
++    assert "projectRecovery = projectRecoveredAuthorityState" in applicability
++    assert "const projection = await projectRecovery(" in applicability
++    assert "lookupTarget = findAuthorityPrForAttempt" in applicability
++    assert "No PR association or authoritative attempt target" in applicability
++
+     for producer in (
+         ROOT / ".github/workflows/agents-keepalive-loop.yml",
+         TEMPLATE / ".github/workflows/agents-81-gate-followups.yml",

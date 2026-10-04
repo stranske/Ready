@@ -1,0 +1,65 @@
+diff --git a/docs/contracts/run-contract-v1.md b/docs/contracts/run-contract-v1.md
+index 6c94179b..0fbd3508 100644
+--- a/docs/contracts/run-contract-v1.md
++++ b/docs/contracts/run-contract-v1.md
+@@ -13,8 +13,11 @@ rollup.
+ > Sibling observability contract: [`langsmith-fleet-v1.md`](https://github.com/stranske/Workflows/blob/main/docs/contracts/langsmith-fleet-v1.md)
+ > (Workflows-only; not synced to participants).
+ > The contract is **opt-in**: a repo participates only via an entry in
+-> `config/backplane_participants.json`. Active participants use the reusable
+-> conformance workflow; planned and candidate entries retain opt-in semantics.
++> `config/backplane_participants.json`. `stranske/Pension-Data` participates as
++> a producer via `one-pdf-pilot` and `build_backplane_reference_run` (registry
++> entry under `config/backplane_participants.json`). Active participants use the
++> reusable conformance workflow; planned and candidate entries retain opt-in
++> semantics.
+ 
+ ## Design Decision
+ 
+@@ -89,6 +92,21 @@ and full model outputs must be represented by hashes, excerpts of bounded
+ length, or artifact references** — never inlined. Output *data* lives in named
+ artifacts referenced by the manifest, not in the envelope body.
+ 
++## Pension-Data reference run
++
++`stranske/Pension-Data` is the fleet's first conforming **producer** for this
++contract. The registry entry in `config/backplane_participants.json` names
++`one-pdf-pilot` as the headless entry point and `run.json` / `manifest.json` as
++the emitted artifacts.
++
++Implementation lives in `src/pension_data/ops/backplane_emitter.py`
++(`build_backplane_reference_run`, roughly lines 112–235): given a completed
++one-PDF pilot manifest, it writes `run-contract/v1` `run.json` and the companion
++`manifest.json` under the pilot output directory. The `one-pdf-pilot` CLI
++(`src/pension_data/ops/one_pdf_pilot_cli.py`) invokes that helper on every
++successful pilot run so backplane outputs are produced alongside the existing
++pilot artifacts. Conformance is covered by `tests/ops/test_backplane_emitter.py`.
++
+ ## Shared Fields
+ 
+ Required fields:
+diff --git a/tests/docs/test_contract_doc_drift.py b/tests/docs/test_contract_doc_drift.py
+new file mode 100644
+index 00000000..b492c0ee
+--- /dev/null
++++ b/tests/docs/test_contract_doc_drift.py
+@@ -0,0 +1,19 @@
++"""Guardrails to keep run-contract documentation aligned with shipped emitters."""
++
++from __future__ import annotations
++
++from pathlib import Path
++
++ROOT = Path(__file__).resolve().parents[2]
++RUN_CONTRACT_DOC = ROOT / "docs" / "contracts" / "run-contract-v1.md"
++
++STALE_NO_EMITTER_CLAIM = "No participant emits an envelope yet"
++
++
++def test_run_contract_doc_mentions_pension_data_emitter() -> None:
++    text = RUN_CONTRACT_DOC.read_text(encoding="utf-8")
++    assert STALE_NO_EMITTER_CLAIM not in text
++    assert "stranske/Pension-Data" in text
++    assert "build_backplane_reference_run" in text
++    assert "backplane_emitter.py" in text
++    assert "config/backplane_participants.json" in text

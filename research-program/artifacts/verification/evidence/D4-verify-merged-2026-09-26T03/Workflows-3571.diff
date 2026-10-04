@@ -1,0 +1,506 @@
+diff --git a/.github/scripts/__tests__/maint71_merge_sync_prs.test.js b/.github/scripts/__tests__/maint71_merge_sync_prs.test.js
+index abb0e060f..3a3a7795d 100644
+--- a/.github/scripts/__tests__/maint71_merge_sync_prs.test.js
++++ b/.github/scripts/__tests__/maint71_merge_sync_prs.test.js
+@@ -6,7 +6,8 @@ const fs = require('node:fs');
+ const os = require('node:os');
+ const path = require('node:path');
+ const {
+-  devToolBaseRefreshResult, ensureExactHeadReviewRequest, hasCompleteReviewThreadEvidence, run,
++  devToolBaseRefreshResult, ensureExactHeadReviewRequest, hasCompleteReviewThreadEvidence,
++  parseReviewReassessmentRequest, runReviewReassessment, run,
+ } = require('../maint71_merge_sync_prs');
+ 
+ test('behind leased dev-tool delivery routes to producer before branch update', () => {
+@@ -26,6 +27,105 @@ test('behind leased dev-tool delivery routes to producer before branch update',
+   assert.match(source, /if \(devToolRefresh\) \{\s*results\.push\(devToolRefresh\);\s*continue;\s*\}\s*await withRetry\(\(client\) => client\.rest\.pulls\.updateBranch/s);
+ });
+ 
++test('review reassessment parser accepts only exact versioned identities', () => {
++  const request = {
++    schema: 'maint71-review-reassessment/v1', repository: 'stranske/Ready', pr: 592,
++    head_sha: 'a'.repeat(40), thread_id: 'PRRT_test', plan_id: 'plan-1',
++    generation: 'gen-1', source_commit: 'b'.repeat(40),
++    originating_reviewer: 'codex',
++  };
++  assert.deepEqual(parseReviewReassessmentRequest(JSON.stringify(request)), request);
++  assert.throws(() => parseReviewReassessmentRequest(JSON.stringify({ ...request, extra: true })),
++    /missing or extra fields/);
++  assert.throws(() => parseReviewReassessmentRequest(JSON.stringify({ ...request, head_sha: 'bad' })),
++    /invalid identity/);
++});
++
++test('source-owned reviewer reassessment is exact-head, idempotent and never merges or resolves', async () => {
++  const request = {
++    schema: 'maint71-review-reassessment/v1', repository: 'stranske/Ready', pr: 592,
++    head_sha: 'a'.repeat(40), thread_id: 'PRRT_test', plan_id: 'plan-1',
++    generation: 'gen-1', source_commit: 'b'.repeat(40),
++    originating_reviewer: 'codex',
++  };
++  const record = {
++    schema: 'sync-pr-delivery-record/v1', repository: request.repository,
++    durable_issue_url: 'https://github.com/stranske/Workflows/issues/1836',
++    plan_id: request.plan_id, generation: request.generation,
++    desired_tree_hash: 'tree-1',
++    source_commit: request.source_commit, head_observed_sha: request.head_sha,
++    head_observed_at: '2026-09-24T22:00:00Z',
++    lease_expires_at: '2099-01-01T00:00:00Z',
++  };
++  const pr = {
++    state: 'open', draft: false, auto_merge: null,
++    user: { login: 'stranske-automation-bot' },
++    head: { ref: 'deps/sync-dev-versions-test', sha: request.head_sha },
++    body: `<!-- sync-pr-delivery-record:v1 ${JSON.stringify(record)} -->`,
++  };
++  const thread = {
++    id: request.thread_id, isResolved: false, isOutdated: false,
++    comments: { pageInfo: { hasNextPage: false }, nodes: [
++      { author: { login: 'chatgpt-codex-connector[bot]' }, body: 'Please fix' },
++    ] },
++  };
++  const comments = [];
++  let posts = 0;
++  const github = {
++    rest: {
++      pulls: { get: async () => ({ data: pr }) },
++      users: { getAuthenticated: async () => ({ data: { login: 'stranske' } }) },
++      issues: {
++        listComments: async () => ({ data: comments }),
++        createComment: async ({ body }) => {
++          posts++;
++          const comment = { id: posts, body, created_at: '2026-09-24T22:00:00Z',
++            html_url: `https://github.com/stranske/Ready/pull/592#issuecomment-${posts}`,
++            user: { login: 'stranske' } };
++          comments.push(comment);
++          return { data: comment };
++        },
++      },
++    },
++    graphql: async () => ({ repository: { pullRequest: {
++      reviewThreads: { pageInfo: { hasNextPage: false }, nodes: [thread] },
++    } } }),
++  };
++  const args = { context: { eventName: 'repository_dispatch', ref: 'refs/heads/main',
++    payload: { action: 'maint71-review-reassessment' }, actor: 'stranske' },
++    withRetry: (fn) => fn(github), rawRequest: JSON.stringify(request),
++    registeredRepos: [request.repository],
++    policyPath: path.join(__dirname, '..', '..', '..', 'config', 'consumer_sync_review_policy.json') };
++  const first = await runReviewReassessment(args);
++  assert.equal(first.status, 'review_blocked_reassessment_requested');
++  assert.equal(first.request_url, comments[0].html_url);
++  assert.match(comments[0].body, /@codex review/);
++  assert.match(comments[0].body, /PRRT_test/);
++  const second = await runReviewReassessment(args);
++  assert.equal(second.status, 'review_blocked_reassessment_reused');
++  assert.equal(posts, 1);
++  const reordered = Object.fromEntries(Object.entries(request).reverse());
++  const reorderedRetry = await runReviewReassessment({
++    ...args, rawRequest: JSON.stringify(reordered),
++  });
++  assert.equal(reorderedRetry.status, 'review_blocked_reassessment_reused');
++  assert.equal(posts, 1, 'field ordering must not bypass idempotency');
++  pr.head.sha = 'c'.repeat(40);
++  await assert.rejects(runReviewReassessment(args), /delivery changed or lease is invalid/);
++  pr.head.sha = request.head_sha;
++  thread.comments.nodes[0].author.login = 'coderabbitai[bot]';
++  await assert.rejects(runReviewReassessment(args), /origin does not match/);
++  thread.comments.nodes[0].author.login = 'chatgpt-codex-connector[bot]';
++  thread.isResolved = true;
++  await assert.rejects(runReviewReassessment(args), /absent or incomplete/);
++  thread.isResolved = false;
++  comments[0].user.login = 'untrusted';
++  await runReviewReassessment(args);
++  assert.equal(posts, 2, 'an untrusted marker is not a prior request');
++  await assert.rejects(runReviewReassessment({ ...args,
++    context: { ...args.context, ref: 'refs/heads/untrusted' } }), /trusted main-branch/);
++});
++
+ test('exact-head reviewer request is durable, trusted, and idempotent', async () => {
+   const headSha = 'd'.repeat(40);
+   const record = {
+diff --git a/.github/scripts/maint71_merge_sync_prs.js b/.github/scripts/maint71_merge_sync_prs.js
+index 89a7a411d..3996d088e 100644
+--- a/.github/scripts/maint71_merge_sync_prs.js
++++ b/.github/scripts/maint71_merge_sync_prs.js
+@@ -166,6 +166,183 @@ async function ensureExactHeadReviewRequest({
+     body: current.body, draft: Boolean(current.draft), autoMerge: Boolean(current.auto_merge) };
+ }
+ 
++const REASSESSMENT_SCHEMA = 'maint71-review-reassessment/v1';
++const REASSESSMENT_FIELDS = [
++  'schema', 'repository', 'pr', 'head_sha', 'thread_id', 'plan_id',
++  'generation', 'source_commit', 'originating_reviewer',
++];
++
++function parseReviewReassessmentRequest(raw = '') {
++  if (typeof raw !== 'string' || !raw.trim() || raw.length > 4096) {
++    throw new Error('One bounded reviewer reassessment JSON object is required');
++  }
++  let request;
++  try { request = JSON.parse(raw); } catch (_) {
++    throw new Error('Reviewer reassessment input is not valid JSON');
++  }
++  if (!request || typeof request !== 'object' || Array.isArray(request)
++    || Object.keys(request).sort().join(',') !== [...REASSESSMENT_FIELDS].sort().join(',')) {
++    throw new Error('Reviewer reassessment input has missing or extra fields');
++  }
++  if (request.schema !== REASSESSMENT_SCHEMA
++    || !/^stranske\/[A-Za-z0-9][A-Za-z0-9_.-]*$/.test(request.repository)
++    || !Number.isSafeInteger(request.pr) || request.pr <= 0
++    || !/^[0-9a-f]{40}$/.test(request.head_sha)
++    || !/^PRRT_[A-Za-z0-9_-]+$/.test(request.thread_id)
++    || typeof request.plan_id !== 'string' || !request.plan_id.trim()
++    || typeof request.generation !== 'string' || !request.generation.trim()
++    || !/^[0-9a-f]{40}$/.test(request.source_commit)
++    || typeof request.originating_reviewer !== 'string'
++    || !/^[a-z][a-z0-9-]*$/.test(request.originating_reviewer)) {
++    throw new Error('Reviewer reassessment input has invalid identity fields');
++  }
++  return request;
++}
++
++function reviewReassessmentMarker(request) {
++  const canonical = Object.fromEntries(
++    REASSESSMENT_FIELDS.map((field) => [field, request[field]]),
++  );
++  return `<!-- maint71-review-reassessment:v1 ${JSON.stringify(canonical)} -->`;
++}
++
++// A separate workflow job calls this function only for an explicit trusted
++// repository_dispatch. It never enters the ordinary resolution/merge/cleanup run.
++async function runReviewReassessment({
++  context, withRetry, rawRequest, registeredRepos = [], policyPath,
++}) {
++  const fs = require('fs');
++  const { generatedDeliveryLane, isTrustedGeneratedDeliveryPr,
++    reviewerProfileForLogin } = require('./sync_pr_merge_contract.js');
++  const { parseDeliveryRecord } = require('./sync_pr_lease_contract.js');
++  const request = parseReviewReassessmentRequest(rawRequest);
++  if (context.eventName !== 'repository_dispatch'
++    || context.payload?.action !== 'maint71-review-reassessment'
++    || context.ref !== 'refs/heads/main'
++    || !['stranske', 'stranske-automation-bot'].includes(context.actor)
++    || !registeredRepos.includes(request.repository)
++    || ['stranske/Collab-Admin', 'stranske/Collab-Deliverables'].includes(request.repository)) {
++    throw new Error('Reviewer reassessment requires a trusted main-branch dispatch and registered repo');
++  }
++  const policy = JSON.parse(fs.readFileSync(policyPath, 'utf8'));
++  const profiles = normalizeReviewPolicy(policy).reviewers;
++  const profile = profiles.find((item) => item.id === request.originating_reviewer);
++  const command = String(profile?.reassessment_comment || '').trim();
++  if (!profile || !/^@[A-Za-z0-9-]+(?:\s+[A-Za-z0-9-]+)*$/.test(command)) {
++    throw new Error('Originating reviewer has no configured reassessment command');
++  }
++  const [owner, repo] = request.repository.split('/');
++  const trustedWriters = new Set(['stranske', 'stranske-automation-bot']);
++  async function readBoundState() {
++    const { data: pr } = await withRetry((client) => client.rest.pulls.get({
++      owner, repo, pull_number: request.pr,
++    }));
++    const record = parseDeliveryRecord(pr?.body || '');
++    if (pr?.state !== 'open' || pr?.draft || pr?.auto_merge
++      || pr?.head?.sha !== request.head_sha
++      || !isTrustedGeneratedDeliveryPr(pr, [...trustedWriters])
++      || generatedDeliveryLane(pr?.head?.ref) !== 'dev-tool-sync'
++      || record?.repository !== request.repository
++      || record?.plan_id !== request.plan_id
++      || record?.generation !== request.generation
++      || record?.source_commit !== request.source_commit
++      || (record?.head_observed_sha && record.head_observed_sha !== request.head_sha)
++      || !Number.isFinite(Date.parse(record?.lease_expires_at || ''))
++      || Date.parse(record.lease_expires_at) <= Date.now()) {
++      throw new Error('Generated dev-tool delivery changed or lease is invalid');
++    }
++    const data = await withRetry((client) => client.graphql(
++      `query($owner: String!, $repo: String!, $number: Int!) {
++        repository(owner: $owner, name: $repo) {
++          pullRequest(number: $number) {
++            reviewThreads(first: 100) {
++              pageInfo { hasNextPage }
++              nodes {
++                id isResolved isOutdated
++                comments(first: 100) {
++                  pageInfo { hasNextPage }
++                  nodes { author { login } body createdAt url }
++                }
++              }
++            }
++          }
++        }
++      }`, { owner, repo, number: request.pr },
++    ));
++    const connection = data?.repository?.pullRequest?.reviewThreads;
++    if (!hasCompleteReviewThreadEvidence(connection)) {
++      throw new Error('Review-thread inventory is incomplete');
++    }
++    const thread = connection.nodes.find((item) => item.id === request.thread_id);
++    if (!thread || thread.isResolved || thread.isOutdated
++      || thread.comments?.pageInfo?.hasNextPage !== false
++      || !Array.isArray(thread.comments?.nodes)
++      || thread.comments.nodes.length === 0) {
++      throw new Error('Requested active review thread is absent or incomplete');
++    }
++    const origin = thread.comments.nodes[0]?.author?.login;
++    if (reviewerProfileForLogin(origin, profiles) !== request.originating_reviewer) {
++      throw new Error('Review thread origin does not match requested reviewer');
++    }
++    return { pr, thread };
++  }
++  await readBoundState();
++  const { data: writer } = await withRetry((client) => client.rest.users.getAuthenticated());
++  if (!trustedWriters.has(String(writer?.login || ''))) {
++    throw new Error('Reassessment writer identity is not trusted');
++  }
++  const marker = reviewReassessmentMarker(request);
++  let found = null;
++  let exhausted = false;
++  for (let page = 1; page <= 20; page++) {
++    const { data: comments } = await withRetry((client) => client.rest.issues.listComments({
++      owner, repo, issue_number: request.pr, per_page: 100, page,
++    }));
++    if (!Array.isArray(comments)) throw new Error('Reassessment comment inventory is incomplete');
++    for (const comment of comments) {
++      if (trustedWriters.has(comment?.user?.login)
++        && String(comment?.body || '').includes(marker)) {
++        if (found) throw new Error('Duplicate bound reviewer reassessment requests exist');
++        found = comment;
++      }
++    }
++    if (comments.length < 100) { exhausted = true; break; }
++  }
++  if (!exhausted) throw new Error('Reassessment comment inventory is truncated');
++  // The second read closes the ordinary scan-to-POST race as far as GitHub's
++  // non-transactional PR/comment APIs allow; an ambiguous POST is never retried.
++  await readBoundState();
++  let comment = found;
++  if (!comment) {
++    const body = [command,
++      `Maint 71 requests ${request.originating_reviewer} to reassess active thread ` +
++        `${request.thread_id} on exact generated head ${request.head_sha}. ` +
++        `The thread remains merge-blocking until reviewer disposition.`,
++      marker].join('\n\n');
++    try {
++      ({ data: comment } = await withRetry((client) => client.rest.issues.createComment({
++        owner, repo, issue_number: request.pr, body,
++      }), { maxRetries: 0 }));
++    } catch (error) {
++      throw new Error(`Reassessment POST uncertain; inspect exact marker before retry: ${error.message}`);
++    }
++  }
++  if (!comment?.id || !Number.isFinite(Date.parse(comment.created_at || ''))
++    || !String(comment.html_url || '').startsWith(
++      `https://github.com/${request.repository}/pull/${request.pr}#issuecomment-`)) {
++    throw new Error('Reassessment request lacks durable URL, ID or timestamp');
++  }
++  await readBoundState();
++  return {
++    ...request,
++    status: found ? 'review_blocked_reassessment_reused' : 'review_blocked_reassessment_requested',
++    request_id: comment.id,
++    request_url: comment.html_url,
++    requested_at: comment.created_at,
++    writer: comment.user?.login || '',
++  };
++}
++
+ function parseReviewResolutionProofs(raw = '') {
+   if (!String(raw || '').trim()) return [];
+   let parsed;
+@@ -3463,6 +3640,9 @@ module.exports = {
+   listMaint71PullRequests,
+   mergeMethodPolicyAllowsFallback,
+   normalizeReviewPolicy,
++  parseReviewReassessmentRequest,
++  reviewReassessmentMarker,
++  runReviewReassessment,
+   reviewRequestMarker,
+   parseNoChangeEvidenceDocument,
+   parseReviewResolutionProofs,
+diff --git a/.github/workflows/maint-71-merge-sync-prs.yml b/.github/workflows/maint-71-merge-sync-prs.yml
+index c84d9283d..820935ef8 100644
+--- a/.github/workflows/maint-71-merge-sync-prs.yml
++++ b/.github/workflows/maint-71-merge-sync-prs.yml
+@@ -32,7 +32,7 @@ on:
+     # auto_merge=true, dry_run=false, cleanup_branches=true, repos=all.
+     - cron: '30 5 * * *'
+   repository_dispatch:
+-    types: [merge-sync-prs]
++    types: [merge-sync-prs, maint71-review-reassessment]
+   workflow_dispatch:
+     inputs:
+       repos:
+@@ -178,6 +178,7 @@ concurrency:
+ 
+ jobs:
+   merge_sync_prs:
++    if: ${{ github.event.action != 'maint71-review-reassessment' }}
+     runs-on: ubuntu-latest
+     permissions:
+       actions: write
+@@ -907,3 +908,83 @@ jobs:
+           path: artifacts/rate-limit-incidents.ndjson
+           if-no-files-found: ignore
+           retention-days: 14
++
++  review_reassessment:
++    if: ${{ github.event_name == 'repository_dispatch' && github.event.action == 'maint71-review-reassessment' && github.ref == 'refs/heads/main' }}
++    runs-on: ubuntu-latest
++    concurrency:
++      group: maint71-review-reassessment-${{ github.repository }}
++      cancel-in-progress: false
++    permissions:
++      contents: read
++      issues: write
++      pull-requests: read
++    steps:
++      - name: Checkout trusted source
++        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
++        with:
++          ref: main
++          persist-credentials: false
++
++      - name: Setup API client
++        uses: ./.github/actions/setup-api-client
++        with:
++          github_token: ${{ github.token }}
++          owner_pr_pat: ${{ secrets.OWNER_PR_PAT }}
++          service_bot_pat: ${{ secrets.SERVICE_BOT_PAT }}
++
++      - name: Registered consumer repositories
++        id: registered
++        run: |
++          repos=$(python scripts/list_registered_consumer_repos.py --separator ',')
++          echo "repos=${repos}" >> "$GITHUB_OUTPUT"
++
++      - name: Request one exact-head reviewer reassessment
++        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
++        env:
++          REVIEW_REASSESSMENT_JSON: ${{ github.event.client_payload.review_reassessment_json }}
++          REGISTERED_REPOS: ${{ steps.registered.outputs.repos }}
++          OWNER_PR_PAT_PRESENT: ${{ secrets.OWNER_PR_PAT != '' }}
++        with:
++          github-token: ${{ secrets.OWNER_PR_PAT }}
++          script: |
++            const fs = require('fs');
++            const retryHelpers = require(
++              './.github/scripts/github-api-with-retry.js'
++            );
++            const { runReviewReassessment } = require(
++              './.github/scripts/maint71_merge_sync_prs.js'
++            );
++            if (process.env.OWNER_PR_PAT_PRESENT !== 'true') {
++              throw new Error('Maint 71 reviewer reassessment requires OWNER_PR_PAT');
++            }
++            // The github-script client is authenticated with OWNER_PR_PAT.
++            // Never rotate a cross-repository read/comment onto GITHUB_TOKEN.
++            const withRetry = (fn, options = {}) => retryHelpers.withRetry(fn, {
++              github, core, ...options,
++            });
++            const evidence = await runReviewReassessment({
++              context, core, withRetry,
++              rawRequest: process.env.REVIEW_REASSESSMENT_JSON,
++              registeredRepos: process.env.REGISTERED_REPOS.split(',').filter(Boolean),
++              policyPath: 'config/consumer_sync_review_policy.json',
++            });
++            fs.mkdirSync('artifacts', { recursive: true });
++            fs.writeFileSync(
++              'artifacts/review-reassessment.json',
++              `${JSON.stringify(evidence, null, 2)}\n`,
++            );
++            core.summary.addRaw(
++              `Maint 71 reviewer reassessment: ${evidence.status} ` +
++              `${evidence.repository}#${evidence.pr} @ ${evidence.head_sha}; ` +
++              `${evidence.request_url}`,
++            ).write();
++
++      - name: Upload exact-head reassessment evidence
++        if: always()
++        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
++        with:
++          name: maint71-review-reassessment
++          path: artifacts/review-reassessment.json
++          if-no-files-found: ignore
++          retention-days: 30
+diff --git a/config/consumer_sync_review_policy.json b/config/consumer_sync_review_policy.json
+index f4f730c55..d3bbb48f9 100644
+--- a/config/consumer_sync_review_policy.json
++++ b/config/consumer_sync_review_policy.json
+@@ -14,12 +14,14 @@
+       "id": "codex",
+       "logins": ["chatgpt-codex-connector", "chatgpt-codex-connector[bot]"],
+       "check_names": [],
+-      "request_comment": "@codex review"
++      "request_comment": "@codex review",
++      "reassessment_comment": "@codex review"
+     },
+     {
+       "id": "coderabbit",
+       "logins": ["coderabbitai", "coderabbitai[bot]"],
+-      "check_names": ["CodeRabbit"]
++      "check_names": ["CodeRabbit"],
++      "reassessment_comment": "@coderabbitai full review"
+     }
+   ],
+   "capacity_patterns": [
+diff --git a/docs/ops/CONSUMER_REPO_MAINTENANCE.md b/docs/ops/CONSUMER_REPO_MAINTENANCE.md
+index 76248ecbe..037336104 100644
+--- a/docs/ops/CONSUMER_REPO_MAINTENANCE.md
++++ b/docs/ops/CONSUMER_REPO_MAINTENANCE.md
+@@ -763,6 +763,23 @@ waive the zero active non-outdated thread requirement for ordinary merge
+ eligibility. A source fix without this exact proof, a later candidate plan, or a
+ passing Gate never resolves the current PR's review debt.
+ 
++For a dev-tool delivery whose owner has fixed a review finding but whose
++originating reviewer has not reassessed it, send the Maint 71
++`maint71-review-reassessment` repository-dispatch event with a
++`client_payload.review_reassessment_json` string. The versioned JSON object must contain
++`schema=maint71-review-reassessment/v1`, `repository`, numeric `pr`, exact
++`head_sha`, active `thread_id`, `plan_id`, `generation`, `source_commit`, and
++`originating_reviewer` (the configured reviewer ID, such as `codex`). Maint 71
++checks the registered repository, trusted generated branch and author, current
++delivery lease and immutable bindings, complete review-thread inventory and
++originating reviewer, then posts the policy-configured review command once.
++The request comment records a plan/generation/head/thread marker and URL; a
++repeat dispatch reuses that evidence. An ambiguous POST must be inspected by
++marker before retry. This dispatch runs a separate request-only job: it never
++resolves a thread, seals, merges, closes, or otherwise reconciles the PR. The
++ordinary Maint 71 run later rechecks the same head, reviewer disposition,
++checks, and merge gates. A reviewer request is not itself thread acceptance.
++
+ A non-empty workflow-sync selector applies only to the `sync/workflows-*` lane.
+ An open sibling `deps/sync-dev-versions-*` delivery is therefore ignored for
+ the selector's expected-branch check instead of producing a false
+diff --git a/tests/workflows/test_sync_delivery_liveness.py b/tests/workflows/test_sync_delivery_liveness.py
+index 0cac517bf..65fc51299 100644
+--- a/tests/workflows/test_sync_delivery_liveness.py
++++ b/tests/workflows/test_sync_delivery_liveness.py
+@@ -50,7 +50,28 @@ def test_maint71_has_proof_bound_review_resolution_and_exact_evidence_promotion(
+     assert "const withReviewReadRetry" in executor
+     assert "const withRetry = (fn, options = {}) => retryHelpers.withRetry" in executor
+     assert "sha: pr.head.sha" in executor
+-    assert workflow.count("github-token: ${{ secrets.OWNER_PR_PAT }}") == 4
++    assert workflow.count("github-token: ${{ secrets.OWNER_PR_PAT }}") == 5
++
++
++def test_maint71_reviewer_reassessment_is_trusted_request_only_dispatch():
++    workflow = Path(".github/workflows/maint-71-merge-sync-prs.yml").read_text()
++    executor = Path(".github/scripts/maint71_merge_sync_prs.js").read_text()
++    policy = Path("config/consumer_sync_review_policy.json").read_text()
++    guide = Path("docs/ops/CONSUMER_REPO_MAINTENANCE.md").read_text()
++
++    assert "types: [merge-sync-prs, maint71-review-reassessment]" in workflow
++    assert "github.event.action != 'maint71-review-reassessment'" in workflow
++    assert "github.event.client_payload.review_reassessment_json" in workflow
++    assert "github.ref == 'refs/heads/main'" in workflow
++    assert "ref: main" in workflow
++    assert "runReviewReassessment" in workflow
++    assert "maint71-review-reassessment-${{ github.repository }}" in workflow
++    assert "Never rotate a cross-repository read/comment onto GITHUB_TOKEN" in workflow
++    assert "maint71-review-reassessment/v1" in executor
++    assert "client.rest.issues.createComment" in executor
++    assert '"reassessment_comment": "@codex review"' in policy
++    assert '"reassessment_comment": "@coderabbitai full review"' in policy
++    assert "A reviewer request is not itself thread acceptance" in guide
+ 
+ 
+ def test_sync_lifecycle_chains_and_has_event_plus_timer_fallbacks():

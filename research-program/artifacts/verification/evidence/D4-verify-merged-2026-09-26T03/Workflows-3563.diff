@@ -1,0 +1,667 @@
+diff --git a/.github/workflows/agents-auto-pilot.yml b/.github/workflows/agents-auto-pilot.yml
+index ada58fd49..a5d219f5e 100644
+--- a/.github/workflows/agents-auto-pilot.yml
++++ b/.github/workflows/agents-auto-pilot.yml
+@@ -99,6 +99,9 @@ jobs:
+   auto-pilot:
+     needs: [gate]
+     if: needs.gate.outputs.proceed == 'true'
++    outputs:
++      format_pause_wakeup: ${{ steps.format_pause_wakeup_flag.outputs.wakeup }}
++      issue_number: ${{ steps.context.outputs.issue_number }}
+     runs-on: ubuntu-latest
+     timeout-minutes: 240  # 4 hours = MAX_WALL_TIME_HOURS
+     concurrency:
+@@ -735,11 +738,11 @@ jobs:
+         run: |
+ 
+           # Post progress comment
+-          cat > /tmp/auto_pilot_format_start.md <<'EOF'
+-          🤖 **Auto-pilot step $((STEP_COUNT + 1))**: Starting issue formatting...
+-
+-          Running formatter inline (not via label trigger).
+-          EOF
++          STEP_NUMBER=$((STEP_COUNT + 1))
++          printf '%s\n\n%s\n' \
++            "🤖 **Auto-pilot step ${STEP_NUMBER}**: Starting issue formatting..." \
++            'Running formatter inline (not via label trigger).' \
++            > /tmp/auto_pilot_format_start.md
+           node - <<'NODE'
+           (async () => {
+             const fs = require('fs');
+@@ -805,6 +808,24 @@ jobs:
+             --input-file /tmp/issue_body.md \
+             --json > /tmp/format_result.json
+ 
++          # A canonical contract rejection gets one bounded retry against the
++          # unchanged original input. Execution errors and prompt-guard results
++          # remain distinct and are not misreported as contract retries.
++          if python - <<'PY'
++          import json
++
++          with open('/tmp/format_result.json', encoding='utf-8') as result_file:
++              result = json.load(result_file)
++          raise SystemExit(0 if result.get('needs_refinement') else 1)
++          PY
++          then
++            mv /tmp/format_result.json /tmp/format_result_first.json
++            echo 'Formatter output failed the canonical contract; retrying once with unchanged input.'
++            python scripts/langchain/issue_formatter.py \
++              --input-file /tmp/issue_body.md \
++              --json > /tmp/format_result.json
++          fi
++
+           # Check for guard_blocked before proceeding
+           python -c "
+           import json, os, sys
+@@ -823,10 +844,17 @@ jobs:
+                   f.write(reason)
+               sys.exit(0)
+           if result.get('needs_refinement'):
+-              reason = 'Formatter output does not satisfy the canonical issue-format contract.'
++              reason = 'Formatter output does not satisfy the canonical issue-format contract after one retry.'
++              first_audit = None
++              if os.path.exists('/tmp/format_result_first.json'):
++                  with open('/tmp/format_result_first.json', encoding='utf-8') as first_file:
++                      first_result = json.load(first_file)
++                  first_audit = first_result.get('validation_audit')
+               audit = result.get('validation_audit')
++              if first_audit is not None:
++                  reason += '\nfirst_validation_audit=' + json.dumps(first_audit, sort_keys=True)
+               if audit:
+-                  reason += '\nvalidation_audit=' + json.dumps(audit, sort_keys=True)
++                  reason += '\nretry_validation_audit=' + json.dumps(audit, sort_keys=True)
+               print(f'NEEDS_REFINEMENT: {reason}')
+               with open('/tmp/needs_refinement', 'w') as f:
+                   f.write(reason)
+@@ -902,7 +930,7 @@ jobs:
+           # Never publish or mark a body as formatted when the formatter itself
+           # reports that its final output fails the canonical contract.
+           if [ -f /tmp/needs_refinement ]; then
+-            echo "⚠️ Formatter requires human refinement; pausing auto-pilot."
++            echo "⚠️ Formatter could not publish a conforming body; recording an automation-owned pause."
+             FORMAT_REFINEMENT_REASON="$(cat /tmp/needs_refinement)" node - <<'REFINEMENT_NODE'
+             (async () => {
+               const { Octokit } = require('@octokit/rest');
+@@ -915,15 +943,57 @@ jobs:
+               const [owner, repo] = process.env.GITHUB_REPOSITORY.split('/');
+               const issue_number = Number(process.env.ISSUE_NUMBER);
+               await withRetry((client) => client.rest.issues.addLabels({
+-                owner, repo, issue_number, labels: ['needs-human', 'agents:auto-pilot-pause'],
++                owner, repo, issue_number, labels: ['agents:auto-pilot-pause'],
+               }));
++              const { data: liveIssue } = await withRetry((client) =>
++                client.rest.issues.get({ owner, repo, issue_number })
++              );
++              const nonRoutingAgentLabels = new Set([
++                'agent:rate-limited',
++                'agent:needs-attention',
++                'agent:retry',
++              ]);
++              const releasableLabels = (liveIssue.labels || [])
++                .map((label) => typeof label === 'string' ? label : label.name)
++                .filter((label) =>
++                  label === 'status:in-progress' ||
++                  (
++                    /^agent:[^:]+$/.test(label) &&
++                    label !== 'agent:auto' &&
++                    !nonRoutingAgentLabels.has(label)
++                  )
++                );
++              await withRetry((client) => client.rest.issues.addLabels({
++                owner, repo, issue_number, labels: ['agent:retry'],
++              }));
++              for (const name of releasableLabels) {
++                try {
++                  await withRetry((client) => client.rest.issues.removeLabel({
++                    owner, repo, issue_number, name,
++                  }));
++                } catch (error) {
++                  if (error?.status !== 404) throw error;
++                }
++              }
+               await withRetry((client) => client.rest.issues.createComment({
+                 owner, repo, issue_number,
+-                body: `⚠️ **Auto-pilot paused during formatting.**\n\n${process.env.FORMAT_REFINEMENT_REASON}`,
++                body: [
++                  '⚠️ **Auto-pilot paused during formatting.**',
++                  '',
++                  process.env.FORMAT_REFINEMENT_REASON,
++                  '',
++                  'Ownership remains with automation; no human authority boundary was inferred.',
++                  'The issue claim was released. Any existing `codex/issue-<n>` branch is preserved for safe reuse rather than deleted without proof that it has no unique work.',
++                  '',
++                  'Auto-pilot counts: dispatched=0 formatted=0 paused=1 handed-to-human=0.',
++                  '',
++                  'A bounded automation wakeup will clear `agents:auto-pilot-pause` and re-dispatch the format step after a 30-minute backoff unless the issue state changes first.',
++                ].join('\n'),
+               }));
+             })().catch((error) => { console.error(error); process.exit(1); });
+           REFINEMENT_NODE
+             echo "stop_autopilot=true" >> "$GITHUB_OUTPUT"
++            echo "format_pause_wakeup=true" >> "$GITHUB_OUTPUT"
+             exit 0
+           fi
+ 
+@@ -1049,11 +1119,11 @@ jobs:
+         run: |
+ 
+           # Post progress comment
+-          cat > /tmp/auto_pilot_optimize_start.md <<'EOF'
+-          🤖 **Auto-pilot step $((STEP_COUNT + 1))**: Analyzing issue for improvements...
+-
+-          Running optimizer inline (not via label trigger).
+-          EOF
++          STEP_NUMBER=$((STEP_COUNT + 1))
++          printf '%s\n\n%s\n' \
++            "🤖 **Auto-pilot step ${STEP_NUMBER}**: Analyzing issue for improvements..." \
++            'Running optimizer inline (not via label trigger).' \
++            > /tmp/auto_pilot_optimize_start.md
+           node - <<'NODE'
+           (async () => {
+             const fs = require('fs');
+@@ -1433,11 +1503,11 @@ jobs:
+         run: |
+ 
+           # Post progress comment
+-          cat > /tmp/auto_pilot_apply_start.md <<'EOF'
+-          🤖 **Auto-pilot step $((STEP_COUNT + 1))**: Applying optimization suggestions...
+-
+-          Running apply inline (not via label trigger).
+-          EOF
++          STEP_NUMBER=$((STEP_COUNT + 1))
++          printf '%s\n\n%s\n' \
++            "🤖 **Auto-pilot step ${STEP_NUMBER}**: Applying optimization suggestions..." \
++            'Running apply inline (not via label trigger).' \
++            > /tmp/auto_pilot_apply_start.md
+           node - <<'NODE'
+           (async () => {
+             const fs = require('fs');
+@@ -3904,3 +3974,94 @@ jobs:
+             }));
+ 
+             core.info('Auto-pilot complete!');
++
++      - name: Expose format pause wakeup flag
++        id: format_pause_wakeup_flag
++        if: always()
++        run: |
++          if [ "${{ steps.format_step.outputs.format_pause_wakeup }}" = "true" ]; then
++            echo "wakeup=true" >> "$GITHUB_OUTPUT"
++          fi
++
++  format-pause-wakeup:
++    needs: [auto-pilot]
++    if: >-
++      needs.auto-pilot.result == 'success' &&
++      needs.auto-pilot.outputs.format_pause_wakeup == 'true'
++    runs-on: ubuntu-latest
++    timeout-minutes: 45
++    permissions:
++      actions: write
++      issues: write
++      contents: read
++    steps:
++      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
++        with:
++          persist-credentials: false
++
++      - name: Bounded formatter pause backoff
++        run: |
++          echo "Waiting 30 minutes before automation-owned format retry..."
++          sleep 1800
++
++      - name: Clear pause and redispatch format step
++        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
++        env:
++          ISSUE_NUMBER: ${{ needs.auto-pilot.outputs.issue_number }}
++        with:
++          script: |
++            const issueNumber = parseInt(process.env.ISSUE_NUMBER, 10);
++            if (!issueNumber) {
++              core.setFailed('Missing issue number for format pause wakeup');
++              return;
++            }
++            const { createTokenAwareRetry } = require('./.github/scripts/github-api-with-retry.js');
++            const { withRetry } = await createTokenAwareRetry({
++              github,
++              core,
++              env: process.env,
++              task: 'auto-pilot-format-pause-wakeup',
++              capabilities: ['issues:write', 'actions:write', 'contents:read'],
++            });
++            const { data: liveIssue } = await withRetry((client) => client.rest.issues.get({
++              owner: context.repo.owner,
++              repo: context.repo.repo,
++              issue_number: issueNumber,
++            }));
++            const labels = (liveIssue.labels || [])
++              .map((label) => (typeof label === 'string' ? label : label.name))
++              .filter(Boolean);
++            if (!labels.includes('agents:auto-pilot-pause')) {
++              core.info('Pause label already cleared; skipping wakeup dispatch.');
++              return;
++            }
++            await withRetry((client) => client.rest.issues.removeLabel({
++              owner: context.repo.owner,
++              repo: context.repo.repo,
++              issue_number: issueNumber,
++              name: 'agents:auto-pilot-pause',
++            }));
++            const { data: repoInfo } = await withRetry((client) => client.rest.repos.get({
++              owner: context.repo.owner,
++              repo: context.repo.repo,
++            }));
++            await withRetry((client) => client.rest.actions.createWorkflowDispatch({
++              owner: context.repo.owner,
++              repo: context.repo.repo,
++              workflow_id: 'agents-auto-pilot.yml',
++              ref: repoInfo.default_branch || 'main',
++              inputs: {
++                issue_number: String(issueNumber),
++                force_step: 'format',
++              },
++            }));
++            await withRetry((client) => client.rest.issues.createComment({
++              owner: context.repo.owner,
++              repo: context.repo.repo,
++              issue_number: issueNumber,
++              body: [
++                '🤖 **Auto-pilot format retry scheduled.**',
++                '',
++                'Cleared `agents:auto-pilot-pause` after the bounded backoff and re-dispatched the format step.',
++              ].join('\n'),
++            }));
+diff --git a/config/template-drift-allowlist.txt b/config/template-drift-allowlist.txt
+index 5aea64333..eb4102fff 100644
+--- a/config/template-drift-allowlist.txt
++++ b/config/template-drift-allowlist.txt
+@@ -180,9 +180,9 @@ fingerprint_refreshed = 2026-08-30
+ [pair.16]
+ main = .github/workflows/agents-auto-pilot.yml
+ template = templates/consumer-repo/.github/workflows/agents-auto-pilot.yml
+-main_sha256 = 39606228a5f4628b2b39e741373b75bef777a590b8137a08786d377c1ca865f7
+-template_sha256 = a9257f1e557d6a9b9ba67911907ffe00813ebf623c1b0849cadb7c23521577a6
+-divergence = Belt readiness write path 2026-09-24: root and consumer auto-pilot surfaces now apply the shared ready label with the selected agent label while preserving the consumer-only consolidated Agents 80/81 dispatch contract. Existing divergence unchanged and not re-reviewed. Prior divergence: client-id rename 2026-08-24: every create-github-app-token step moved from the deprecated `app-id` input to `client-id`, applied identically to root and consumer, with the secret VALUE unchanged (the action forwards either input to the same appId slot -- main.js:21, lib/main.js:37). Fingerprints refreshed for that change; the divergence itself is unchanged and was NOT re-reviewed, which is why divergence_reviewed keeps its old date. Prior divergence unchanged: Fingerprints refreshed 2026-08-23: both surfaces now pass the named setup-api-client secret inputs instead of the whole-secrets-context blob, applied identically to root and consumer so it introduces no new divergence. Underlying divergence unchanged: Intentional divergence reviewed 2026-08-21: the Workflows-local auto-pilot retains Workflows-only PR-meta and keepalive fallbacks, while the consumer template dispatches only the consolidated Agents 80 and Agents 81 entry points.
++main_sha256 = f498ee89ec92ea1c776a1b0813c3a673193d68962ea5b5ce0ca44ca4ef6abfa4
++template_sha256 = 6db2a1ceeada6249d45cdce1a7537f7941a0136814a61db042e0f51dc4a9f160
++divergence = Formatter pause wakeup 2026-09-24: root and consumer auto-pilot surfaces now both preserve recovery labels, publish the pause issue as a job output, wait one bounded backoff, clear the pause, and redispatch the format step. The recovery behavior and pinned actions are applied identically; established root versus consumer execution-context differences remain unchanged and were not re-reviewed. Prior divergence: Formatter recovery 2026-09-24 added one unchanged-input retry, preserved both audits, released the current claim on repeat failure, and rendered integer progress banners. Prior divergence: Belt readiness write path 2026-09-24: root and consumer auto-pilot surfaces now apply the shared ready label with the selected agent label while preserving the consumer-only consolidated Agents 80/81 dispatch contract. Existing divergence unchanged and not re-reviewed. Prior divergence: client-id rename 2026-08-24: every create-github-app-token step moved from the deprecated `app-id` input to `client-id`, applied identically to root and consumer, with the secret VALUE unchanged (the action forwards either input to the same appId slot -- main.js:21, lib/main.js:37). Fingerprints refreshed for that change; the divergence itself is unchanged and was NOT re-reviewed, which is why divergence_reviewed keeps its old date. Prior divergence unchanged: Fingerprints refreshed 2026-08-23: both surfaces now pass the named setup-api-client secret inputs instead of the whole-secrets-context blob, applied identically to root and consumer so it introduces no new divergence. Underlying divergence unchanged: Intentional divergence reviewed 2026-08-21: the Workflows-local auto-pilot retains Workflows-only PR-meta and keepalive fallbacks, while the consumer template dispatches only the consolidated Agents 80 and Agents 81 entry points.
+ divergence_reviewed = 2026-08-21
+ fingerprint_refreshed = 2026-09-24
+ 
+diff --git a/docs/ci/WORKFLOWS.md b/docs/ci/WORKFLOWS.md
+index ca0d24a2b..b767e50bb 100644
+--- a/docs/ci/WORKFLOWS.md
++++ b/docs/ci/WORKFLOWS.md
+@@ -178,7 +178,7 @@ Consumer default note: `agents-pr-meta-v4.yml` is a Workflows-repo service workf
+ * [`agents-guard.yml`](../../.github/workflows/agents-guard.yml) applies repository-level guardrails before agent workflows run.
+ * [`pr-46-dependency-repair-contract.yml`](../../.github/workflows/pr-46-dependency-repair-contract.yml) keeps clean Renovate/Dependabot branches bot-owned and validates the bot-delta first commit on agent-owned dependency repair promotions. See [`docs/ops/DEPENDENCY_REPAIR_PROMOTION.md`](../ops/DEPENDENCY_REPAIR_PROMOTION.md) for the lane-selection contract and marker.
+ * [`agents-auto-label.yml`](../../.github/workflows/agents-auto-label.yml) automatically applies semantic labels to new issues based on content analysis using label_matcher.py.
+-* [`agents-auto-pilot.yml`](../../.github/workflows/agents-auto-pilot.yml) end-to-end automation orchestrator (~2500 lines) that self-dispatches through format → optimize → apply → capability-check → create-pr → monitor-pr → check-completion → verify → done stages using `workflow_dispatch` with `force_step` input. Triggered by `agents:auto-pilot` label. Uses explicit `nextStepMap` for step sequencing (delays: monitor-pr=120s, create-pr=60s, MAX_CYCLES=10). See [`docs/analysis/autopilot-40pr-evaluation-feb-2026.md`](../analysis/autopilot-40pr-evaluation-feb-2026.md) for evaluation.
++* [`agents-auto-pilot.yml`](../../.github/workflows/agents-auto-pilot.yml) end-to-end automation orchestrator (~2500 lines) that self-dispatches through format → optimize → apply → capability-check → create-pr → monitor-pr → check-completion → verify → done stages using `workflow_dispatch` with `force_step` input. Triggered by `agents:auto-pilot` label. Uses explicit `nextStepMap` for step sequencing (delays: monitor-pr=120s, create-pr=60s, MAX_CYCLES=10). The inline format stage retries one contract-rejected formatter result against the unchanged issue body, preserves both validation audits if the retry is also rejected, then applies an automation-owned pause, releases the active claim, and preserves any branch for safe reuse; formatter failures do not invent a `needs-human` authority boundary. See [`docs/analysis/autopilot-40pr-evaluation-feb-2026.md`](../analysis/autopilot-40pr-evaluation-feb-2026.md) for evaluation.
+ * [`agents-capability-check.yml`](../../.github/workflows/agents-capability-check.yml) performs pre-flight checks before agent assignment to identify blockers like ambiguous scope or missing context.
+ * [`agents-decompose.yml`](../../.github/workflows/agents-decompose.yml) decomposes large issues into actionable sub-tasks using LLM analysis.
+ * [`agents-dedup.yml`](../../.github/workflows/agents-dedup.yml) detects duplicate issues using semantic similarity analysis and posts findings as a comment.
+diff --git a/templates/consumer-repo/.github/workflows/agents-auto-pilot.yml b/templates/consumer-repo/.github/workflows/agents-auto-pilot.yml
+index f4ef2473b..ff742e5b4 100644
+--- a/templates/consumer-repo/.github/workflows/agents-auto-pilot.yml
++++ b/templates/consumer-repo/.github/workflows/agents-auto-pilot.yml
+@@ -99,6 +99,9 @@ jobs:
+   auto-pilot:
+     needs: [gate]
+     if: needs.gate.outputs.proceed == 'true'
++    outputs:
++      format_pause_wakeup: ${{ steps.format_pause_wakeup_flag.outputs.wakeup }}
++      issue_number: ${{ steps.context.outputs.issue_number }}
+     runs-on: ubuntu-latest
+     timeout-minutes: 240  # 4 hours = MAX_WALL_TIME_HOURS
+     concurrency:
+@@ -735,11 +738,11 @@ jobs:
+         run: |
+ 
+           # Post progress comment
+-          cat > /tmp/auto_pilot_format_start.md <<'EOF'
+-          🤖 **Auto-pilot step $((STEP_COUNT + 1))**: Starting issue formatting...
+-
+-          Running formatter inline (not via label trigger).
+-          EOF
++          STEP_NUMBER=$((STEP_COUNT + 1))
++          printf '%s\n\n%s\n' \
++            "🤖 **Auto-pilot step ${STEP_NUMBER}**: Starting issue formatting..." \
++            'Running formatter inline (not via label trigger).' \
++            > /tmp/auto_pilot_format_start.md
+           node - <<'NODE'
+           (async () => {
+             const fs = require('fs');
+@@ -805,6 +808,24 @@ jobs:
+             --input-file /tmp/issue_body.md \
+             --json > /tmp/format_result.json
+ 
++          # A canonical contract rejection gets one bounded retry against the
++          # unchanged original input. Execution errors and prompt-guard results
++          # remain distinct and are not misreported as contract retries.
++          if python - <<'PY'
++          import json
++
++          with open('/tmp/format_result.json', encoding='utf-8') as result_file:
++              result = json.load(result_file)
++          raise SystemExit(0 if result.get('needs_refinement') else 1)
++          PY
++          then
++            mv /tmp/format_result.json /tmp/format_result_first.json
++            echo 'Formatter output failed the canonical contract; retrying once with unchanged input.'
++            python scripts/langchain/issue_formatter.py \
++              --input-file /tmp/issue_body.md \
++              --json > /tmp/format_result.json
++          fi
++
+           # Check for guard_blocked before proceeding
+           python -c "
+           import json, os, sys
+@@ -823,10 +844,17 @@ jobs:
+                   f.write(reason)
+               sys.exit(0)
+           if result.get('needs_refinement'):
+-              reason = 'Formatter output does not satisfy the canonical issue-format contract.'
++              reason = 'Formatter output does not satisfy the canonical issue-format contract after one retry.'
++              first_audit = None
++              if os.path.exists('/tmp/format_result_first.json'):
++                  with open('/tmp/format_result_first.json', encoding='utf-8') as first_file:
++                      first_result = json.load(first_file)
++                  first_audit = first_result.get('validation_audit')
+               audit = result.get('validation_audit')
++              if first_audit is not None:
++                  reason += '\nfirst_validation_audit=' + json.dumps(first_audit, sort_keys=True)
+               if audit:
+-                  reason += '\nvalidation_audit=' + json.dumps(audit, sort_keys=True)
++                  reason += '\nretry_validation_audit=' + json.dumps(audit, sort_keys=True)
+               print(f'NEEDS_REFINEMENT: {reason}')
+               with open('/tmp/needs_refinement', 'w') as f:
+                   f.write(reason)
+@@ -902,7 +930,7 @@ jobs:
+           # Never publish or mark a body as formatted when the formatter itself
+           # reports that its final output fails the canonical contract.
+           if [ -f /tmp/needs_refinement ]; then
+-            echo "⚠️ Formatter requires human refinement; pausing auto-pilot."
++            echo "⚠️ Formatter could not publish a conforming body; recording an automation-owned pause."
+             FORMAT_REFINEMENT_REASON="$(cat /tmp/needs_refinement)" node - <<'REFINEMENT_NODE'
+             (async () => {
+               const { Octokit } = require('@octokit/rest');
+@@ -915,15 +943,57 @@ jobs:
+               const [owner, repo] = process.env.GITHUB_REPOSITORY.split('/');
+               const issue_number = Number(process.env.ISSUE_NUMBER);
+               await withRetry((client) => client.rest.issues.addLabels({
+-                owner, repo, issue_number, labels: ['needs-human', 'agents:auto-pilot-pause'],
++                owner, repo, issue_number, labels: ['agents:auto-pilot-pause'],
+               }));
++              const { data: liveIssue } = await withRetry((client) =>
++                client.rest.issues.get({ owner, repo, issue_number })
++              );
++              const nonRoutingAgentLabels = new Set([
++                'agent:rate-limited',
++                'agent:needs-attention',
++                'agent:retry',
++              ]);
++              const releasableLabels = (liveIssue.labels || [])
++                .map((label) => typeof label === 'string' ? label : label.name)
++                .filter((label) =>
++                  label === 'status:in-progress' ||
++                  (
++                    /^agent:[^:]+$/.test(label) &&
++                    label !== 'agent:auto' &&
++                    !nonRoutingAgentLabels.has(label)
++                  )
++                );
++              await withRetry((client) => client.rest.issues.addLabels({
++                owner, repo, issue_number, labels: ['agent:retry'],
++              }));
++              for (const name of releasableLabels) {
++                try {
++                  await withRetry((client) => client.rest.issues.removeLabel({
++                    owner, repo, issue_number, name,
++                  }));
++                } catch (error) {
++                  if (error?.status !== 404) throw error;
++                }
++              }
+               await withRetry((client) => client.rest.issues.createComment({
+                 owner, repo, issue_number,
+-                body: `⚠️ **Auto-pilot paused during formatting.**\n\n${process.env.FORMAT_REFINEMENT_REASON}`,
++                body: [
++                  '⚠️ **Auto-pilot paused during formatting.**',
++                  '',
++                  process.env.FORMAT_REFINEMENT_REASON,
++                  '',
++                  'Ownership remains with automation; no human authority boundary was inferred.',
++                  'The issue claim was released. Any existing `codex/issue-<n>` branch is preserved for safe reuse rather than deleted without proof that it has no unique work.',
++                  '',
++                  'Auto-pilot counts: dispatched=0 formatted=0 paused=1 handed-to-human=0.',
++                  '',
++                  'A bounded automation wakeup will clear `agents:auto-pilot-pause` and re-dispatch the format step after a 30-minute backoff unless the issue state changes first.',
++                ].join('\n'),
+               }));
+             })().catch((error) => { console.error(error); process.exit(1); });
+           REFINEMENT_NODE
+             echo "stop_autopilot=true" >> "$GITHUB_OUTPUT"
++            echo "format_pause_wakeup=true" >> "$GITHUB_OUTPUT"
+             exit 0
+           fi
+ 
+@@ -1049,11 +1119,11 @@ jobs:
+         run: |
+ 
+           # Post progress comment
+-          cat > /tmp/auto_pilot_optimize_start.md <<'EOF'
+-          🤖 **Auto-pilot step $((STEP_COUNT + 1))**: Analyzing issue for improvements...
+-
+-          Running optimizer inline (not via label trigger).
+-          EOF
++          STEP_NUMBER=$((STEP_COUNT + 1))
++          printf '%s\n\n%s\n' \
++            "🤖 **Auto-pilot step ${STEP_NUMBER}**: Analyzing issue for improvements..." \
++            'Running optimizer inline (not via label trigger).' \
++            > /tmp/auto_pilot_optimize_start.md
+           node - <<'NODE'
+           (async () => {
+             const fs = require('fs');
+@@ -1433,11 +1503,11 @@ jobs:
+         run: |
+ 
+           # Post progress comment
+-          cat > /tmp/auto_pilot_apply_start.md <<'EOF'
+-          🤖 **Auto-pilot step $((STEP_COUNT + 1))**: Applying optimization suggestions...
+-
+-          Running apply inline (not via label trigger).
+-          EOF
++          STEP_NUMBER=$((STEP_COUNT + 1))
++          printf '%s\n\n%s\n' \
++            "🤖 **Auto-pilot step ${STEP_NUMBER}**: Applying optimization suggestions..." \
++            'Running apply inline (not via label trigger).' \
++            > /tmp/auto_pilot_apply_start.md
+           node - <<'NODE'
+           (async () => {
+             const fs = require('fs');
+@@ -3901,3 +3971,94 @@ jobs:
+             }));
+ 
+             core.info('Auto-pilot complete!');
++
++      - name: Expose format pause wakeup flag
++        id: format_pause_wakeup_flag
++        if: always()
++        run: |
++          if [ "${{ steps.format_step.outputs.format_pause_wakeup }}" = "true" ]; then
++            echo "wakeup=true" >> "$GITHUB_OUTPUT"
++          fi
++
++  format-pause-wakeup:
++    needs: [auto-pilot]
++    if: >-
++      needs.auto-pilot.result == 'success' &&
++      needs.auto-pilot.outputs.format_pause_wakeup == 'true'
++    runs-on: ubuntu-latest
++    timeout-minutes: 45
++    permissions:
++      actions: write
++      issues: write
++      contents: read
++    steps:
++      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
++        with:
++          persist-credentials: false
++
++      - name: Bounded formatter pause backoff
++        run: |
++          echo "Waiting 30 minutes before automation-owned format retry..."
++          sleep 1800
++
++      - name: Clear pause and redispatch format step
++        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
++        env:
++          ISSUE_NUMBER: ${{ needs.auto-pilot.outputs.issue_number }}
++        with:
++          script: |
++            const issueNumber = parseInt(process.env.ISSUE_NUMBER, 10);
++            if (!issueNumber) {
++              core.setFailed('Missing issue number for format pause wakeup');
++              return;
++            }
++            const { createTokenAwareRetry } = require('./.github/scripts/github-api-with-retry.js');
++            const { withRetry } = await createTokenAwareRetry({
++              github,
++              core,
++              env: process.env,
++              task: 'auto-pilot-format-pause-wakeup',
++              capabilities: ['issues:write', 'actions:write', 'contents:read'],
++            });
++            const { data: liveIssue } = await withRetry((client) => client.rest.issues.get({
++              owner: context.repo.owner,
++              repo: context.repo.repo,
++              issue_number: issueNumber,
++            }));
++            const labels = (liveIssue.labels || [])
++              .map((label) => (typeof label === 'string' ? label : label.name))
++              .filter(Boolean);
++            if (!labels.includes('agents:auto-pilot-pause')) {
++              core.info('Pause label already cleared; skipping wakeup dispatch.');
++              return;
++            }
++            await withRetry((client) => client.rest.issues.removeLabel({
++              owner: context.repo.owner,
++              repo: context.repo.repo,
++              issue_number: issueNumber,
++              name: 'agents:auto-pilot-pause',
++            }));
++            const { data: repoInfo } = await withRetry((client) => client.rest.repos.get({
++              owner: context.repo.owner,
++              repo: context.repo.repo,
++            }));
++            await withRetry((client) => client.rest.actions.createWorkflowDispatch({
++              owner: context.repo.owner,
++              repo: context.repo.repo,
++              workflow_id: 'agents-auto-pilot.yml',
++              ref: repoInfo.default_branch || 'main',
++              inputs: {
++                issue_number: String(issueNumber),
++                force_step: 'format',
++              },
++            }));
++            await withRetry((client) => client.rest.issues.createComment({
++              owner: context.repo.owner,
++              repo: context.repo.repo,
++              issue_number: issueNumber,
++              body: [
++                '🤖 **Auto-pilot format retry scheduled.**',
++                '',
++                'Cleared `agents:auto-pilot-pause` after the bounded backoff and re-dispatched the format step.',
++              ].join('\n'),
++            }));
+diff --git a/tests/workflows/test_autopilot_format_pause.py b/tests/workflows/test_autopilot_format_pause.py
+new file mode 100644
+index 000000000..def819e5d
+--- /dev/null
++++ b/tests/workflows/test_autopilot_format_pause.py
+@@ -0,0 +1,83 @@
++from pathlib import Path
++
++ROOT = Path(__file__).resolve().parents[2]
++WORKFLOWS = (
++    ROOT / ".github/workflows/agents-auto-pilot.yml",
++    ROOT / "templates/consumer-repo/.github/workflows/agents-auto-pilot.yml",
++)
++
++
++def _format_block(text: str) -> str:
++    return text.split("- name: Execute step - Format (inline)", 1)[1].split(
++        "- name: Metrics - End format timer", 1
++    )[0]
++
++
++def test_contract_rejection_gets_exactly_one_retry_with_unchanged_input() -> None:
++    for workflow in WORKFLOWS:
++        block = _format_block(workflow.read_text(encoding="utf-8"))
++        assert block.count("python scripts/langchain/issue_formatter.py") == 2
++        assert block.count("--input-file /tmp/issue_body.md") == 2
++        assert block.count("--json > /tmp/format_result.json") == 2
++        assert "raise SystemExit(0 if result.get('needs_refinement') else 1)" in block
++        assert "format_result_first.json" in block
++        assert "after one retry" in block
++        assert "first_validation_audit=" in block
++        assert "retry_validation_audit=" in block
++
++
++def test_exhausted_format_retry_pauses_without_inventing_human_authority() -> None:
++    for workflow in WORKFLOWS:
++        block = _format_block(workflow.read_text(encoding="utf-8"))
++        refinement = block.split("if [ -f /tmp/needs_refinement ]; then", 1)[1]
++        refinement = refinement.split("# Update issue body", 1)[0]
++        assert "labels: ['agents:auto-pilot-pause']" in refinement
++        assert "labels: ['needs-human'" not in refinement
++        assert "Ownership remains with automation" in refinement
++        assert "status:in-progress" in refinement
++        assert "nonRoutingAgentLabels" in refinement
++        assert "'agent:retry'" in refinement
++        assert "label !== 'agent:auto'" in refinement
++        assert "format_pause_wakeup=true" in refinement
++        assert "stop_autopilot=true" in refinement
++
++
++def test_pause_reports_outcomes_and_preserves_a_branch_for_safe_reuse() -> None:
++    for workflow in WORKFLOWS:
++        block = _format_block(workflow.read_text(encoding="utf-8"))
++        assert "dispatched=0 formatted=0 paused=1 handed-to-human=0" in block
++        assert "preserved for safe reuse" in block
++        assert "deleteRef" not in block
++
++
++def test_prepare_banners_expand_to_integer_step_numbers() -> None:
++    for workflow in WORKFLOWS:
++        text = workflow.read_text(encoding="utf-8")
++        assert "Auto-pilot step $((STEP_COUNT + 1))" not in text
++        assert text.count("STEP_NUMBER=$((STEP_COUNT + 1))") == 3
++        assert text.count("Auto-pilot step ${STEP_NUMBER}") == 3
++
++
++def test_healthy_format_path_still_publishes_and_dispatches() -> None:
++    for workflow in WORKFLOWS:
++        block = _format_block(workflow.read_text(encoding="utf-8"))
++        assert "f.write(formatted)" in block
++        assert "labels: ['agents:formatted']" in block
++        assert "Formatting complete - continuing to next step" in block
++
++
++def test_root_and_consumer_format_recovery_blocks_stay_aligned() -> None:
++    root_block, consumer_block = (
++        _format_block(workflow.read_text(encoding="utf-8")) for workflow in WORKFLOWS
++    )
++    assert root_block == consumer_block
++
++
++def test_exhausted_format_pause_schedules_bounded_automation_wakeup_job() -> None:
++    for workflow in WORKFLOWS:
++        text = workflow.read_text(encoding="utf-8")
++        assert "format-pause-wakeup:" in text
++        assert "sleep 1800" in text
++        assert "format_pause_wakeup == 'true'" in text
++        assert "workflow_id: 'agents-auto-pilot.yml'" in text
++        assert "force_step: 'format'" in text

@@ -1,0 +1,38 @@
+[
+  {
+    "repo": "trip-planner",
+    "num": 1837,
+    "ok": true,
+    "msg": "Issue body is agent-processable with advisories.\n\n\n_Advisory:_\n- 4 cited path(s) do not exist yet: `ApprovalPacket.tsx`, `Code/Audits/trip-planner/2026-09-22-assets/screens/packet-print-layout.png`, `src/components/workspace/ApprovalPacket.test.tsx`, `tests/integrations/tpp/test_client_compliance_score.py` \u2014 expected when a task creates them; check for typos otherwise.\n\n_Recommended but absent:_ `Implementation Notes`"
+  },
+  {
+    "repo": "trip-planner",
+    "num": 1838,
+    "ok": true,
+    "msg": "Issue body is agent-processable with advisories.\n\n\n_Advisory:_\n- 2 cited path(s) do not exist yet: `PolicyPanel.tsx`, `src/components/workspace/panels/PolicyPanel.test.tsx` \u2014 expected when a task creates them; check for typos otherwise.\n\n_Recommended but absent:_ `Implementation Notes`"
+  },
+  {
+    "repo": "trip-planner",
+    "num": 1842,
+    "ok": true,
+    "msg": "Issue body is agent-processable with advisories.\n\n\n_Advisory:_\n- 3 cited path(s) do not exist yet: `travel_plan_permission/portal_handoff.py`, `http_service.py`, `tests/integration/test_portal_handoff.py` \u2014 expected when a task creates them; check for typos otherwise."
+  },
+  {
+    "repo": "trip-planner",
+    "num": 1844,
+    "ok": true,
+    "msg": "Issue body is agent-processable with advisories.\n\n\n_Advisory:_\n- 2 cited path(s) do not exist yet: `map/route`, `src/routes/WorkspacePage.test.tsx` \u2014 expected when a task creates them; check for typos otherwise.\n\n_Recommended but absent:_ `Implementation Notes`"
+  },
+  {
+    "repo": "learning-management-system",
+    "num": 718,
+    "ok": true,
+    "msg": "Issue body is agent-processable with advisories.\n\n\n_Advisory:_\n- 2 cited path(s) do not exist yet: `docs/verification/pr-711-disposition.md`, `stranske/learning-management-system` \u2014 expected when a task creates them; check for typos otherwise.\n\n_Recommended but absent:_ `Implementation Notes`"
+  },
+  {
+    "repo": "Fine-Art-Archive",
+    "num": 735,
+    "ok": false,
+    "msg": "This issue is **not yet agent-processable**. See `docs/AGENT_ISSUE_FORMAT.md`.\n\n- `Acceptance Criteria` uses subjective wording (clean); replace with a measurable check.\n\n_Advisory:_\n- 2 cited path(s) do not exist yet: `discovery_frontier.json`, `tests/test_workspace_conflict_guard.py` \u2014 expected when a task creates them; check for typos otherwise."
+  }
+]

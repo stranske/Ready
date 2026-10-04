@@ -1,0 +1,504 @@
+diff --git a/.github/scripts/__tests__/keepalive-loop.test.js b/.github/scripts/__tests__/keepalive-loop.test.js
+index 2d48c8c98..6fb8c0269 100644
+--- a/.github/scripts/__tests__/keepalive-loop.test.js
++++ b/.github/scripts/__tests__/keepalive-loop.test.js
+@@ -3183,6 +3183,65 @@ test('summary input without exact job evidence cannot reopen a consumed authorit
+   );
+ });
+ 
++test('non-authority failed summary does not record recovery owner when attempt is not current', async () => {
++  const authSummary = 'Missing token ACTIONS_BOT_PAT for GitHub API repository dispatch.';
++  const boundary = buildAuthorityChallengeEvidence({ agentSummary: authSummary });
++  const existingState = formatStateComment({
++    trace: 'trace-foreign-recovery-owner',
++    iteration: 2,
++    failure_threshold: 3,
++    failure: { reason: 'agent-run-failed', count: 1 },
++    attention: {
++      owner: 'automation', disposition: 'challenge-due',
++      challenge_due_at: TEST_DUE_AT, generation: 'c'.repeat(64),
++      expires_at: TEST_EXPIRES_AT,
++      boundary_fingerprint: boundary.fingerprint, boundary_detail: boundary.detail,
++    },
++  });
++  const github = buildGithubStub({
++    comments: [{ id: 91, body: existingState, html_url: 'https://example.com/91' }],
++    authorityReceipt: true,
++    labels: ['agent:codex', 'agent:needs-attention'],
++  });
++
++  await updateKeepaliveLoopSummary({
++    github,
++    context: buildContext(654, 7777, { eventName: 'workflow_run' }),
++    core: buildCore(),
++    inputs: {
++      prNumber: 654,
++      action: 'run',
++      runResult: 'failure',
++      gateConclusion: 'success',
++      tasksTotal: 3,
++      tasksUnchecked: 3,
++      keepaliveEnabled: true,
++      autofixEnabled: false,
++      iteration: 2,
++      maxIterations: 5,
++      failureThreshold: 3,
++      trace: 'trace-foreign-recovery-owner',
++      head_sha: 'd'.repeat(40),
++      agent_summary: authSummary,
++      agent_execution_started: false,
++    },
++  });
++
++  const updateAction = github.actions.filter((action) => action.type === 'update').at(-1);
++  const attention = parseStateComment(updateAction.body).data.attention;
++  assert.equal(attention.disposition, 'challenge-due');
++  assert.equal(attention.generation, 'c'.repeat(64));
++  assert.equal(attention.challenge_due_at, TEST_DUE_AT);
++  assert.equal(attention.recovery_generation, undefined);
++  assert.equal(attention.recovery_owner_attempt, undefined);
++  assert.ok(github.actions.some((action) =>
++    action.type === 'label' && action.labels.includes('agent:needs-attention')
++  ));
++  assert.equal(github.actions.some((action) =>
++    action.type === 'remove-label' && action.name === 'agent:needs-attention'
++  ), false);
++});
++
+ test('later failed retries retain an earlier attempt recovery pair for its delayed reporter', async () => {
+   const generation = 'c'.repeat(64);
+   const ownerAttempt = 'octo/workflows:9001:1';
+diff --git a/.github/scripts/keepalive_authority_state.js b/.github/scripts/keepalive_authority_state.js
+index 9f9fffa75..d971deb57 100644
+--- a/.github/scripts/keepalive_authority_state.js
++++ b/.github/scripts/keepalive_authority_state.js
+@@ -627,6 +627,23 @@ async function reopenUnconfirmedChallenge({ request, repository, prNumber, claim
+   }
+ }
+ 
++async function authorityAttemptOwnsRecoveryReceipt({
++  request,
++  repository,
++  prNumber,
++  ownerAttempt,
++}) {
++  const normalized = String(ownerAttempt || '').toLowerCase();
++  if (!normalized || !/^[a-z0-9_.-]+\/[a-z0-9_.-]+:\d+:\d+$/.test(normalized)) {
++    return false;
++  }
++  const { state } = await readAuthorityState(request, repository, prNumber);
++  const receipts = [state.receipt, state.released_receipt, state.recovered_receipt].filter(Boolean);
++  return receipts.some((receipt) => receipt.owner_attempt === normalized &&
++    receipt.head_sha === state.head_sha &&
++    Boolean(receipt.provider));
++}
++
+ async function reconcileFailedAuthorityAttempt({ request, repository, prNumber, ownerAttempt, workerEvidence }) {
+   if (workerEvidence !== 'not-started') return { status: 'execution-not-disproved' };
+   const { state } = await readAuthorityState(request, repository, prNumber);
+@@ -683,6 +700,7 @@ async function findAuthorityPrForAttempt({ request, repository, ownerAttempt })
+ }
+ 
+ module.exports = {
++  authorityAttemptOwnsRecoveryReceipt,
+   findAuthorityPrForAttempt,
+   reconcileFailedAuthorityAttempt,
+   BRANCH,
+diff --git a/.github/scripts/keepalive_loop.js b/.github/scripts/keepalive_loop.js
+index bd2d4b9bd..22ce47822 100644
+--- a/.github/scripts/keepalive_loop.js
++++ b/.github/scripts/keepalive_loop.js
+@@ -18,7 +18,13 @@ const { detectConflicts } = require('./conflict_detector');
+ const { parseTimeoutConfig } = require('./timeout_config');
+ const { ensureRateLimitWrapped } = require('./github-rate-limited-wrapper');
+ const { verifyAuthorityChallengeClaim } = require('./keepalive_challenge_due');
+-const { beginChallenge, confirmChallenge, reopenUnconfirmedChallenge, requester } = require('./keepalive_authority_state');
++const {
++  beginChallenge,
++  confirmChallenge,
++  reopenUnconfirmedChallenge,
++  authorityAttemptOwnsRecoveryReceipt,
++  requester,
++} = require('./keepalive_authority_state');
+ 
+ // Token load balancer for rate limit management
+ let tokenLoadBalancer = null;
+@@ -4630,6 +4636,7 @@ async function updateKeepaliveLoopSummary({ github: rawGithub, context, core, in
+       escalationDisposition = 'automation-retry';
+     }
+     const challengeDueAt = challengeState?.due_at || null;
++    let effectiveDisposition = escalationDisposition;
+     if (shouldEscalate) {
+       const firstSeenAt = priorAttentionKey === attentionKey
+         ? previousAttention.first_seen_at || new Date().toISOString()
+@@ -4653,11 +4660,34 @@ async function updateKeepaliveLoopSummary({ github: rawGithub, context, core, in
+           `${context.repo.owner}/${context.repo.repo}:` +
+           `${context.runId || process.env.GITHUB_RUN_ID || ''}:` +
+           `${context.runAttempt || process.env.GITHUB_RUN_ATTEMPT || ''}`).toLowerCase();
+-        const attemptBoundRecovery = escalationDisposition === 'automation-retry' &&
++        const attemptBoundRecoveryCandidate = escalationDisposition === 'automation-retry' &&
+           agentExecutionStarted === false &&
+           previousAttention.disposition === 'challenge-due' &&
+           previousAttention.generation &&
+           /^[a-z0-9_.-]+\/[a-z0-9_.-]+:\d+:\d+$/.test(recoveryOwnerAttempt);
++        let attemptBoundRecoveryMarkers = {};
++        if (attemptBoundRecoveryCandidate) {
++          try {
++            const repository = `${context.repo.owner}/${context.repo.repo}`.toLowerCase();
++            const request = requester(github);
++            const ownsRecoveryReceipt = await authorityAttemptOwnsRecoveryReceipt({
++              request,
++              repository,
++              prNumber,
++              ownerAttempt: recoveryOwnerAttempt,
++            });
++            if (ownsRecoveryReceipt) {
++              attemptBoundRecoveryMarkers = {
++                recovery_generation: previousAttention.generation,
++                recovery_owner_attempt: recoveryOwnerAttempt,
++              };
++            }
++          } catch (error) {
++            core?.warning?.(
++              `Authority recovery marker ownership check failed: ${error.message}`,
++            );
++          }
++        }
+         // A later retry may write this summary before the original attempt's
+         // reporter projects its settled receipt. Keep that attempt's markers.
+         const pendingRecovery = escalationDisposition === 'automation-retry' &&
+@@ -4666,28 +4696,42 @@ async function updateKeepaliveLoopSummary({ github: rawGithub, context, core, in
+           /^[a-f0-9]{64}$/.test(previousAttention.recovery_generation || '') &&
+           /^[a-z0-9_.-]+\/[a-z0-9_.-]+:\d+:\d+$/.test(
+             previousAttention.recovery_owner_attempt || '');
++        const preservePendingChallenge = attemptBoundRecoveryCandidate &&
++          !Object.keys(attemptBoundRecoveryMarkers).length &&
++          previousAttention.disposition === 'challenge-due' &&
++          /^[a-f0-9]{64}$/.test(previousAttention.generation || '');
++        effectiveDisposition = preservePendingChallenge
++          ? 'challenge-due'
++          : escalationDisposition;
+         newState.attention = {
+           key: attentionKey,
+-          disposition: escalationDisposition,
++          disposition: effectiveDisposition,
+           owner: 'automation',
+           first_seen_at: firstSeenAt,
+-          challenge_due_at: challengeDueAt,
+-          generation: challengeState?.generation || '',
+-          expires_at: challengeState?.expires_at || '',
+-          boundary_fingerprint: escalationDisposition === 'challenge-due'
+-            ? authorityEvidence.fingerprint
++          challenge_due_at: preservePendingChallenge
++            ? previousAttention.challenge_due_at
++            : challengeDueAt,
++          generation: preservePendingChallenge
++            ? previousAttention.generation
++            : (challengeState?.generation || ''),
++          expires_at: preservePendingChallenge
++            ? previousAttention.expires_at
++            : (challengeState?.expires_at || ''),
++          boundary_fingerprint: effectiveDisposition === 'challenge-due'
++            ? (preservePendingChallenge
++              ? previousAttention.boundary_fingerprint
++              : authorityEvidence.fingerprint)
+             : '',
+-          boundary_detail: escalationDisposition === 'challenge-due'
+-            ? authorityEvidence.detail
++          boundary_detail: effectiveDisposition === 'challenge-due'
++            ? (preservePendingChallenge
++              ? previousAttention.boundary_detail
++              : authorityEvidence.detail)
+             : '',
+-          ...(attemptBoundRecovery ? {
+-            recovery_generation: previousAttention.generation,
+-            recovery_owner_attempt: recoveryOwnerAttempt,
+-          } : pendingRecovery ? {
++          ...(Object.keys(attemptBoundRecoveryMarkers).length ? attemptBoundRecoveryMarkers : pendingRecovery ? {
+             recovery_generation: previousAttention.recovery_generation,
+             recovery_owner_attempt: previousAttention.recovery_owner_attempt,
+           } : {}),
+-          next_action: escalationDisposition === 'challenge-due'
++          next_action: effectiveDisposition === 'challenge-due'
+             ? 'Independently rerun the current operation and confirm the same redacted authority-boundary fingerprint.'
+             : 'Route to automation retry/backoff, CI repair, alternate agent, or review fallback.',
+         };
+@@ -4784,6 +4828,7 @@ async function updateKeepaliveLoopSummary({ github: rawGithub, context, core, in
+           hardHumanLabelApplied = true;
+         } catch (error) {
+           escalationDisposition = 'challenge-due';
++          effectiveDisposition = escalationDisposition;
+           newState.attention = pendingState.attention;
+           core?.warning?.(`Failed to apply needs-human; retaining durable authority challenge: ${error.message}`);
+         }
+@@ -4826,6 +4871,7 @@ async function updateKeepaliveLoopSummary({ github: rawGithub, context, core, in
+                 authorityChallengeConfirmed = true;
+               } else {
+                 escalationDisposition = 'challenge-due';
++                effectiveDisposition = escalationDisposition;
+                 newState.attention = {
+                   ...pendingAttention,
+                   generation: recovery.state?.generation || pendingAttention.generation,
+@@ -4904,9 +4950,9 @@ async function updateKeepaliveLoopSummary({ github: rawGithub, context, core, in
+       }
+ 
+       if (shouldEscalate) {
+-        const routingLabel = escalationDisposition === 'needs-human'
++        const routingLabel = effectiveDisposition === 'needs-human'
+           ? 'needs-human'
+-          : escalationDisposition === 'challenge-due'
++          : effectiveDisposition === 'challenge-due'
+             ? 'agent:needs-attention'
+             : 'agent:retry';
+         const addRoutingLabel = () => github.rest.issues.addLabels({
+@@ -4924,11 +4970,11 @@ async function updateKeepaliveLoopSummary({ github: rawGithub, context, core, in
+             core,
+             automationOwned: previousAttentionAutomationOwned,
+           });
+-          if (escalationDisposition === 'needs-human') {
++          if (effectiveDisposition === 'needs-human') {
+             // The hard blocker was applied before the human-owned state was
+             // persisted. Only now may the recoverable label be removed.
+             await clearAutomationAttention();
+-          } else if (escalationDisposition === 'challenge-due') {
++          } else if (effectiveDisposition === 'challenge-due') {
+             // Adding an already-present label is idempotent. Never remove the
+             // only sweep-routing signal while renewing or replacing a challenge.
+             await addRoutingLabel();
+diff --git a/docs/keepalive/Agents.md b/docs/keepalive/Agents.md
+index 540bb908f..76ba73113 100644
+--- a/docs/keepalive/Agents.md
++++ b/docs/keepalive/Agents.md
+@@ -71,7 +71,7 @@ Auto-pilot pipeline:
+ 
+ Authority generations and receipts remain bound to one originating PR head in the SHA-checked ledger. The runner first conditionally prepares that generation and writes its attempt-bound primary reservation. Finalization follows successful mark-running setup and remains a prerequisite for every worker job. Failure or cancellation before finalization conditionally releases only that non-authorizing preparation; cleanup is best effort and the workflow reporter must reconcile interrupted attempts. If that release response is lost, the same preflight-failed owner attempt may retry against the persisted released receipt, but a replacement preparation cannot be released by it. PR head and labels are separate GitHub state, so changed or unavailable evidence denies the result without refunding a consumed receipt. Confirmation uncertainty preserves the ledger and `needs-human`; automation never infers label ownership from a successful add or deletes a possibly concurrent human blocker. A confirmed receipt cannot be reopened merely because its hard label disappeared. The same worker attempt may retry confirmation once against its spent receipt, without granting a new execution. This is a fail-closed, at-most-one-grant protocol, not an atomic transaction across GitHub resources.
+ 
+-The failed-run reporter reconciles the receipt even when the presentation summary never reached `running`, but only after the originating attempt's worker jobs positively show no worker step started. Worker job and step names come from keepalive-capable registry entries at the originating run's exact head (with naming-convention defaults); a newly registered provider does not require a reporter-side provider list, and a later registry change cannot turn a started old provider into false non-start evidence. Missing original registry evidence is unknown. Started or unknown worker evidence preserves the receipt. Presentation-summary inputs alone cannot prove non-start or refund a consumed receipt. An originating run concluded `skipped` has no failed attempt to reconcile and is ignored. Before preparing a receipt, the runner writes an immutable, exact-owner-attempt index on the authority branch; the PR ledger remains the grant authority. For sweep-triggered dispatches with no webhook PR association, the reporter directly reads that index and verifies its exact receipt against the PR ledger. A missing, conflicting or unreadable index fails explicitly for owner follow-up, never as proof of non-execution; associated runs avoid the index lookup. Consumer reporter deduplication includes the originating run ID and attempt so reruns remain independently recoverable. If the ordinary summary finishes first and rewrites `challenge-due` to `automation-retry`, it retains only the exact recovery owner attempt and prior generation. Projection accepts that cleared presentation state only when both markers match the reconciled receipt lineage; a generic blank generation never authorizes recovery. A running summary records its exact run attempt, and delayed projection requires that owner when the summary is running. Projection also re-reads the authoritative ledger immediately before publication and exits as superseded if another attempt has prepared, consumed, confirmed, replaced, or otherwise changed the settled receipt.
++The failed-run reporter reconciles the receipt even when the presentation summary never reached `running`, but only after the originating attempt's worker jobs positively show no worker step started. Worker job and step names come from keepalive-capable registry entries at the originating run's exact head (with naming-convention defaults); a newly registered provider does not require a reporter-side provider list, and a later registry change cannot turn a started old provider into false non-start evidence. Missing original registry evidence is unknown. Started or unknown worker evidence preserves the receipt. Presentation-summary inputs alone cannot prove non-start or refund a consumed receipt. An originating run concluded `skipped` has no failed attempt to reconcile and is ignored. Before preparing a receipt, the runner writes an immutable, exact-owner-attempt index on the authority branch; the PR ledger remains the grant authority. For sweep-triggered dispatches with no webhook PR association, the reporter directly reads that index and verifies its exact receipt against the PR ledger. A missing, conflicting or unreadable index fails explicitly for owner follow-up, never as proof of non-execution; associated runs avoid the index lookup. Consumer reporter deduplication includes the originating run ID and attempt so reruns remain independently recoverable. If the ordinary summary finishes first and rewrites `challenge-due` to `automation-retry`, it retains only the exact recovery owner attempt and prior generation when that attempt owns the current-head authority receipt (`authorityAttemptOwnsRecoveryReceipt`); unrelated non-authority runs that reconcile as `attempt-not-current` must not record `recovery_owner_attempt`. Projection accepts that cleared presentation state only when both markers match the reconciled receipt lineage; a generic blank generation never authorizes recovery. A running summary records its exact run attempt, and delayed projection requires that owner when the summary is running. Projection also re-reads the authoritative ledger immediately before publication and exits as superseded if another attempt has prepared, consumed, confirmed, replaced, or otherwise changed the settled receipt.
+ 
+ For unassociated failed dispatches, the producer run name records a versioned `ordinary` or `authority-candidate` classification without exposing the claim. Both reporters verify the originating workflow path, exact source revision, run attempt, and immutable index before treating an index-free `ordinary` dispatch as inapplicable. A missing index for `authority-candidate`, an unrecognized/legacy title, a corrupt index, or an unavailable lookup fails closed for owner follow-up. This routing metadata never grants authority or substitutes for exact worker evidence. The ordinary skip happens before reporter writer-token setup and worker-job inspection.
+ 
+diff --git a/templates/consumer-repo/.github/scripts/keepalive_authority_state.js b/templates/consumer-repo/.github/scripts/keepalive_authority_state.js
+index 9f9fffa75..d971deb57 100644
+--- a/templates/consumer-repo/.github/scripts/keepalive_authority_state.js
++++ b/templates/consumer-repo/.github/scripts/keepalive_authority_state.js
+@@ -627,6 +627,23 @@ async function reopenUnconfirmedChallenge({ request, repository, prNumber, claim
+   }
+ }
+ 
++async function authorityAttemptOwnsRecoveryReceipt({
++  request,
++  repository,
++  prNumber,
++  ownerAttempt,
++}) {
++  const normalized = String(ownerAttempt || '').toLowerCase();
++  if (!normalized || !/^[a-z0-9_.-]+\/[a-z0-9_.-]+:\d+:\d+$/.test(normalized)) {
++    return false;
++  }
++  const { state } = await readAuthorityState(request, repository, prNumber);
++  const receipts = [state.receipt, state.released_receipt, state.recovered_receipt].filter(Boolean);
++  return receipts.some((receipt) => receipt.owner_attempt === normalized &&
++    receipt.head_sha === state.head_sha &&
++    Boolean(receipt.provider));
++}
++
+ async function reconcileFailedAuthorityAttempt({ request, repository, prNumber, ownerAttempt, workerEvidence }) {
+   if (workerEvidence !== 'not-started') return { status: 'execution-not-disproved' };
+   const { state } = await readAuthorityState(request, repository, prNumber);
+@@ -683,6 +700,7 @@ async function findAuthorityPrForAttempt({ request, repository, ownerAttempt })
+ }
+ 
+ module.exports = {
++  authorityAttemptOwnsRecoveryReceipt,
+   findAuthorityPrForAttempt,
+   reconcileFailedAuthorityAttempt,
+   BRANCH,
+diff --git a/templates/consumer-repo/.github/scripts/keepalive_loop.js b/templates/consumer-repo/.github/scripts/keepalive_loop.js
+index bd2d4b9bd..22ce47822 100644
+--- a/templates/consumer-repo/.github/scripts/keepalive_loop.js
++++ b/templates/consumer-repo/.github/scripts/keepalive_loop.js
+@@ -18,7 +18,13 @@ const { detectConflicts } = require('./conflict_detector');
+ const { parseTimeoutConfig } = require('./timeout_config');
+ const { ensureRateLimitWrapped } = require('./github-rate-limited-wrapper');
+ const { verifyAuthorityChallengeClaim } = require('./keepalive_challenge_due');
+-const { beginChallenge, confirmChallenge, reopenUnconfirmedChallenge, requester } = require('./keepalive_authority_state');
++const {
++  beginChallenge,
++  confirmChallenge,
++  reopenUnconfirmedChallenge,
++  authorityAttemptOwnsRecoveryReceipt,
++  requester,
++} = require('./keepalive_authority_state');
+ 
+ // Token load balancer for rate limit management
+ let tokenLoadBalancer = null;
+@@ -4630,6 +4636,7 @@ async function updateKeepaliveLoopSummary({ github: rawGithub, context, core, in
+       escalationDisposition = 'automation-retry';
+     }
+     const challengeDueAt = challengeState?.due_at || null;
++    let effectiveDisposition = escalationDisposition;
+     if (shouldEscalate) {
+       const firstSeenAt = priorAttentionKey === attentionKey
+         ? previousAttention.first_seen_at || new Date().toISOString()
+@@ -4653,11 +4660,34 @@ async function updateKeepaliveLoopSummary({ github: rawGithub, context, core, in
+           `${context.repo.owner}/${context.repo.repo}:` +
+           `${context.runId || process.env.GITHUB_RUN_ID || ''}:` +
+           `${context.runAttempt || process.env.GITHUB_RUN_ATTEMPT || ''}`).toLowerCase();
+-        const attemptBoundRecovery = escalationDisposition === 'automation-retry' &&
++        const attemptBoundRecoveryCandidate = escalationDisposition === 'automation-retry' &&
+           agentExecutionStarted === false &&
+           previousAttention.disposition === 'challenge-due' &&
+           previousAttention.generation &&
+           /^[a-z0-9_.-]+\/[a-z0-9_.-]+:\d+:\d+$/.test(recoveryOwnerAttempt);
++        let attemptBoundRecoveryMarkers = {};
++        if (attemptBoundRecoveryCandidate) {
++          try {
++            const repository = `${context.repo.owner}/${context.repo.repo}`.toLowerCase();
++            const request = requester(github);
++            const ownsRecoveryReceipt = await authorityAttemptOwnsRecoveryReceipt({
++              request,
++              repository,
++              prNumber,
++              ownerAttempt: recoveryOwnerAttempt,
++            });
++            if (ownsRecoveryReceipt) {
++              attemptBoundRecoveryMarkers = {
++                recovery_generation: previousAttention.generation,
++                recovery_owner_attempt: recoveryOwnerAttempt,
++              };
++            }
++          } catch (error) {
++            core?.warning?.(
++              `Authority recovery marker ownership check failed: ${error.message}`,
++            );
++          }
++        }
+         // A later retry may write this summary before the original attempt's
+         // reporter projects its settled receipt. Keep that attempt's markers.
+         const pendingRecovery = escalationDisposition === 'automation-retry' &&
+@@ -4666,28 +4696,42 @@ async function updateKeepaliveLoopSummary({ github: rawGithub, context, core, in
+           /^[a-f0-9]{64}$/.test(previousAttention.recovery_generation || '') &&
+           /^[a-z0-9_.-]+\/[a-z0-9_.-]+:\d+:\d+$/.test(
+             previousAttention.recovery_owner_attempt || '');
++        const preservePendingChallenge = attemptBoundRecoveryCandidate &&
++          !Object.keys(attemptBoundRecoveryMarkers).length &&
++          previousAttention.disposition === 'challenge-due' &&
++          /^[a-f0-9]{64}$/.test(previousAttention.generation || '');
++        effectiveDisposition = preservePendingChallenge
++          ? 'challenge-due'
++          : escalationDisposition;
+         newState.attention = {
+           key: attentionKey,
+-          disposition: escalationDisposition,
++          disposition: effectiveDisposition,
+           owner: 'automation',
+           first_seen_at: firstSeenAt,
+-          challenge_due_at: challengeDueAt,
+-          generation: challengeState?.generation || '',
+-          expires_at: challengeState?.expires_at || '',
+-          boundary_fingerprint: escalationDisposition === 'challenge-due'
+-            ? authorityEvidence.fingerprint
++          challenge_due_at: preservePendingChallenge
++            ? previousAttention.challenge_due_at
++            : challengeDueAt,
++          generation: preservePendingChallenge
++            ? previousAttention.generation
++            : (challengeState?.generation || ''),
++          expires_at: preservePendingChallenge
++            ? previousAttention.expires_at
++            : (challengeState?.expires_at || ''),
++          boundary_fingerprint: effectiveDisposition === 'challenge-due'
++            ? (preservePendingChallenge
++              ? previousAttention.boundary_fingerprint
++              : authorityEvidence.fingerprint)
+             : '',
+-          boundary_detail: escalationDisposition === 'challenge-due'
+-            ? authorityEvidence.detail
++          boundary_detail: effectiveDisposition === 'challenge-due'
++            ? (preservePendingChallenge
++              ? previousAttention.boundary_detail
++              : authorityEvidence.detail)
+             : '',
+-          ...(attemptBoundRecovery ? {
+-            recovery_generation: previousAttention.generation,
+-            recovery_owner_attempt: recoveryOwnerAttempt,
+-          } : pendingRecovery ? {
++          ...(Object.keys(attemptBoundRecoveryMarkers).length ? attemptBoundRecoveryMarkers : pendingRecovery ? {
+             recovery_generation: previousAttention.recovery_generation,
+             recovery_owner_attempt: previousAttention.recovery_owner_attempt,
+           } : {}),
+-          next_action: escalationDisposition === 'challenge-due'
++          next_action: effectiveDisposition === 'challenge-due'
+             ? 'Independently rerun the current operation and confirm the same redacted authority-boundary fingerprint.'
+             : 'Route to automation retry/backoff, CI repair, alternate agent, or review fallback.',
+         };
+@@ -4784,6 +4828,7 @@ async function updateKeepaliveLoopSummary({ github: rawGithub, context, core, in
+           hardHumanLabelApplied = true;
+         } catch (error) {
+           escalationDisposition = 'challenge-due';
++          effectiveDisposition = escalationDisposition;
+           newState.attention = pendingState.attention;
+           core?.warning?.(`Failed to apply needs-human; retaining durable authority challenge: ${error.message}`);
+         }
+@@ -4826,6 +4871,7 @@ async function updateKeepaliveLoopSummary({ github: rawGithub, context, core, in
+                 authorityChallengeConfirmed = true;
+               } else {
+                 escalationDisposition = 'challenge-due';
++                effectiveDisposition = escalationDisposition;
+                 newState.attention = {
+                   ...pendingAttention,
+                   generation: recovery.state?.generation || pendingAttention.generation,
+@@ -4904,9 +4950,9 @@ async function updateKeepaliveLoopSummary({ github: rawGithub, context, core, in
+       }
+ 
+       if (shouldEscalate) {
+-        const routingLabel = escalationDisposition === 'needs-human'
++        const routingLabel = effectiveDisposition === 'needs-human'
+           ? 'needs-human'
+-          : escalationDisposition === 'challenge-due'
++          : effectiveDisposition === 'challenge-due'
+             ? 'agent:needs-attention'
+             : 'agent:retry';
+         const addRoutingLabel = () => github.rest.issues.addLabels({
+@@ -4924,11 +4970,11 @@ async function updateKeepaliveLoopSummary({ github: rawGithub, context, core, in
+             core,
+             automationOwned: previousAttentionAutomationOwned,
+           });
+-          if (escalationDisposition === 'needs-human') {
++          if (effectiveDisposition === 'needs-human') {
+             // The hard blocker was applied before the human-owned state was
+             // persisted. Only now may the recoverable label be removed.
+             await clearAutomationAttention();
+-          } else if (escalationDisposition === 'challenge-due') {
++          } else if (effectiveDisposition === 'challenge-due') {
+             // Adding an already-present label is idempotent. Never remove the
+             // only sweep-routing signal while renewing or replacing a challenge.
+             await addRoutingLabel();
+diff --git a/tests/workflows/test_keepalive_loop_rate_limit.py b/tests/workflows/test_keepalive_loop_rate_limit.py
+index bb4b05581..156e75eb9 100644
+--- a/tests/workflows/test_keepalive_loop_rate_limit.py
++++ b/tests/workflows/test_keepalive_loop_rate_limit.py
+@@ -51,3 +51,22 @@ def test_keepalive_loop_defers_on_success_when_rate_limit_exhausted() -> None:
+     result = _run_scenario("success_rate_limit_exhausted")
+     assert result["action"] == "defer"
+     assert result["reason"] == "rate-limit-exhausted"
++
++
++def test_keepalive_loop_rejects_foreign_recovery_owner_markers() -> None:
++    """Attempt-not-current runs must not poison recovery_owner_attempt markers."""
++    _require_node()
++    repo_root = Path(__file__).resolve().parents[2]
++    test_file = repo_root / ".github/scripts/__tests__/keepalive-loop.test.js"
++    command = [
++        "node",
++        "--test",
++        "--test-name-pattern=non-authority failed summary does not record recovery owner",
++        str(test_file),
++    ]
++    result = subprocess.run(command, capture_output=True, text=True, cwd=repo_root)
++    if result.returncode != 0:
++        pytest.fail(
++            f"Node regression failed with code {result.returncode}:\n"
++            f"STDOUT:\n{result.stdout}\nSTDERR:\n{result.stderr}"
++        )

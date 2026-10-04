@@ -1,0 +1,608 @@
+diff --git a/.github/scripts/__tests__/keepalive-authority-state.test.js b/.github/scripts/__tests__/keepalive-authority-state.test.js
+index 8315edbf2..c8b1c2f2e 100644
+--- a/.github/scripts/__tests__/keepalive-authority-state.test.js
++++ b/.github/scripts/__tests__/keepalive-authority-state.test.js
+@@ -37,6 +37,7 @@ function fakeGitHub() {
+   let afterIndexPut = null;
+   let prHead = headSha;
+   let prLabels = ['agent:needs-attention'];
++  let prState = 'open';
+   let prUnavailable = false;
+   const request = async (method, path, body) => {
+     if (path.includes('/git/ref/heads/main') && method === 'GET') {
+@@ -44,7 +45,7 @@ function fakeGitHub() {
+     }
+     if (path.endsWith('/pulls/42') && method === 'GET') {
+       if (prUnavailable) throw status(503);
+-      return { state: 'open', head: { sha: prHead }, labels: prLabels.map((name) => ({ name })) };
++      return { state: prState, head: { sha: prHead }, labels: prLabels.map((name) => ({ name })) };
+     }
+     if (path.includes('/git/ref/heads/keepalive-authority-state') && method === 'GET') {
+       if (!branch) throw status(404);
+@@ -94,11 +95,21 @@ function fakeGitHub() {
+     setAfterIndexPut(fn) { afterIndexPut = fn; },
+     setPrHead(sha) { prHead = sha; },
+     setPrLabels(labels) { prLabels = labels; },
++    setPrState(value) { prState = value; },
+     setPrUnavailable(value) { prUnavailable = value; },
+     corruptAttemptIndex() {
+       const key = `${crypto.createHash('sha256').update(ownerAttempt).digest('hex')}.json`;
+       attemptFiles.set(key, Buffer.from('{invalid json').toString('base64'));
+     },
++    deleteAttemptIndex(attempt = ownerAttempt) {
++      const key = `${crypto.createHash('sha256').update(attempt).digest('hex')}.json`;
++      attemptFiles.delete(key);
++    },
++    mutateAuthorityState(fn) {
++      const state = JSON.parse(Buffer.from(content, 'base64').toString('utf8'));
++      fn(state);
++      content = Buffer.from(JSON.stringify(state)).toString('base64');
++    },
+     expireChallenge() {
+       const state = JSON.parse(Buffer.from(content, 'base64').toString('utf8'));
+       state.due_at = new Date(Date.now() - 60_000).toISOString();
+@@ -115,6 +126,13 @@ function boundary() {
+   return { dueAt, expiresAt };
+ }
+ 
++function boundaryAt(now, durationMs = 1_000) {
++  return {
++    dueAt: new Date(now.getTime() - 1_000).toISOString(),
++    expiresAt: new Date(now.getTime() + durationMs).toISOString(),
++  };
++}
++
+ function claim(state, nonce = 'b'.repeat(64)) {
+   return {
+     generation: state.generation,
+@@ -278,6 +296,133 @@ test('released availability rotates an expired window while retaining receipt li
+   assert.ok(Date.parse(rotated.expires_at) > Date.now());
+ });
+ 
++test('beginChallenge reaps an expired orphaned preparation with exact index and PR evidence', async () => {
++  const api = fakeGitHub();
++  const started = new Date('2030-01-01T00:00:00.000Z');
++  const first = await beginChallenge({
++    request: api.request, repository, prNumber, defaultBranch: 'main',
++    fingerprint, headSha, ...boundaryAt(started), now: started,
++  });
++  const signed = claim(first);
++  const options = { request: api.request, repository, prNumber, claim: signed,
++    ownerAttempt, provider: 'codex', headSha, now: started };
++  assert.equal((await prepareChallenge(options)).prepared, true);
++
++  const afterExpiry = new Date(started.getTime() + 2_000);
++  const recovered = await beginChallenge({
++    request: api.request, repository, prNumber, defaultBranch: 'main',
++    fingerprint, headSha, expectedGeneration: first.generation,
++    ...boundaryAt(afterExpiry), now: afterExpiry,
++  });
++  assert.equal(recovered.status, 'available');
++  assert.notEqual(recovered.generation, first.generation);
++  assert.equal(recovered.released_generation, first.generation);
++  assert.deepEqual(recovered.released_generation_lineage, [first.generation]);
++  assert.equal(recovered.released_receipt.owner_attempt, ownerAttempt);
++
++  const retry = await beginChallenge({
++    request: api.request, repository, prNumber, defaultBranch: 'main',
++    fingerprint, headSha, expectedGeneration: first.generation,
++    ...boundaryAt(afterExpiry), now: afterExpiry,
++  });
++  assert.equal(retry.generation, recovered.generation);
++  assert.equal(retry.revision, recovered.revision);
++
++  assert.equal((await finalizeChallenge(options)).granted, false);
++  const freshAttempt = 'owner/repo:101:1';
++  const freshClaim = claim(recovered);
++  assert.equal((await consumeChallenge({ request: api.request, repository, prNumber,
++    claim: freshClaim, ownerAttempt: freshAttempt, provider: 'codex', headSha,
++    now: new Date(afterExpiry.getTime() + 1) })).granted, true);
++});
++
++test('lost preparation response remains recoverable after expiry', async () => {
++  const api = fakeGitHub();
++  const started = new Date('2030-01-01T00:00:00.000Z');
++  const first = await beginChallenge({ request: api.request, repository, prNumber,
++    defaultBranch: 'main', fingerprint, headSha, ...boundaryAt(started), now: started });
++  let lost = true;
++  api.setAfterPut(() => {
++    if (lost) { lost = false; throw status(503); }
++  });
++  const uncertain = await prepareChallenge({ request: api.request, repository, prNumber,
++    claim: claim(first), ownerAttempt, provider: 'codex', headSha, now: started });
++  assert.equal(uncertain.reason, 'challenge-write-uncertain');
++  assert.equal((await readAuthorityState(api.request, repository, prNumber)).state.status,
++    'prepared');
++  api.setAfterPut(null);
++
++  const afterExpiry = new Date(started.getTime() + 2_000);
++  const recovered = await beginChallenge({ request: api.request, repository, prNumber,
++    defaultBranch: 'main', fingerprint, headSha, expectedGeneration: first.generation,
++    ...boundaryAt(afterExpiry), now: afterExpiry });
++  assert.equal(recovered.status, 'available');
++  assert.equal(recovered.released_receipt.owner_attempt, ownerAttempt);
++});
++
++test('expired preparation stays fail-closed without exact index or eligible PR evidence', async () => {
++  const started = new Date('2030-01-01T00:00:00.000Z');
++  const afterExpiry = new Date(started.getTime() + 2_000);
++  for (const block of [
++    (api) => api.deleteAttemptIndex(),
++    (api) => api.corruptAttemptIndex(),
++    (api) => api.setPrHead('e'.repeat(40)),
++    (api) => api.setPrLabels(['agent:needs-attention', 'needs-human']),
++    (api) => api.setPrState('closed'),
++    (api) => api.setPrUnavailable(true),
++  ]) {
++    const api = fakeGitHub();
++    const first = await beginChallenge({ request: api.request, repository, prNumber,
++      defaultBranch: 'main', fingerprint, headSha, ...boundaryAt(started), now: started });
++    assert.equal((await prepareChallenge({ request: api.request, repository, prNumber,
++      claim: claim(first), ownerAttempt, provider: 'codex', headSha, now: started })).prepared,
++    true);
++    block(api);
++    const preserved = await beginChallenge({ request: api.request, repository, prNumber,
++      defaultBranch: 'main', fingerprint, headSha, expectedGeneration: first.generation,
++      ...boundaryAt(afterExpiry), now: afterExpiry });
++    assert.equal(preserved.status, 'prepared');
++    assert.equal(preserved.generation, first.generation);
++  }
++});
++
++test('expired preparation stays fail-closed when its persisted claim is inconsistent', async () => {
++  const api = fakeGitHub();
++  const started = new Date('2030-01-01T00:00:00.000Z');
++  const first = await beginChallenge({ request: api.request, repository, prNumber,
++    defaultBranch: 'main', fingerprint, headSha, ...boundaryAt(started), now: started });
++  assert.equal((await prepareChallenge({ request: api.request, repository, prNumber,
++    claim: claim(first), ownerAttempt, provider: 'codex', headSha, now: started })).prepared,
++  true);
++  api.mutateAuthorityState((state) => { state.prepared_claim.due_at = first.expires_at; });
++  const afterExpiry = new Date(started.getTime() + 2_000);
++  const preserved = await beginChallenge({ request: api.request, repository, prNumber,
++    defaultBranch: 'main', fingerprint, headSha, expectedGeneration: first.generation,
++    ...boundaryAt(afterExpiry), now: afterExpiry });
++  assert.equal(preserved.status, 'prepared');
++  assert.equal(preserved.generation, first.generation);
++});
++
++test('finalization winning the expired-preparation race preserves the consumed receipt', async () => {
++  const api = fakeGitHub();
++  const started = new Date('2030-01-01T00:00:00.000Z');
++  const first = await beginChallenge({ request: api.request, repository, prNumber,
++    defaultBranch: 'main', fingerprint, headSha, ...boundaryAt(started), now: started });
++  const options = { request: api.request, repository, prNumber, claim: claim(first),
++    ownerAttempt, provider: 'codex', headSha, now: started };
++  assert.equal((await prepareChallenge(options)).prepared, true);
++  api.setBeforePut(async () => {
++    api.setBeforePut(null);
++    assert.equal((await finalizeChallenge(options)).granted, true);
++  });
++  const afterExpiry = new Date(started.getTime() + 2_000);
++  const settled = await beginChallenge({ request: api.request, repository, prNumber,
++    defaultBranch: 'main', fingerprint, headSha, expectedGeneration: first.generation,
++    ...boundaryAt(afterExpiry), now: afterExpiry });
++  assert.equal(settled.status, 'consumed');
++  assert.equal(settled.generation, first.generation);
++});
++
+ test('expired prepared release creates a fresh due window without refunding its attempt', async () => {
+   const api = fakeGitHub();
+   const first = await beginChallenge({ request: api.request, repository, prNumber,
+diff --git a/.github/scripts/keepalive_authority_state.js b/.github/scripts/keepalive_authority_state.js
+index 146e9c5ae..9f9fffa75 100644
+--- a/.github/scripts/keepalive_authority_state.js
++++ b/.github/scripts/keepalive_authority_state.js
+@@ -187,23 +187,99 @@ async function writeAuthorityState(request, repository, prNumber, state, priorSh
+   return request('PUT', pathFor(repository, prNumber), body);
+ }
+ 
+-async function beginChallenge({ request, repository, prNumber, defaultBranch, fingerprint, dueAt, expiresAt, headSha, expectedGeneration = null }) {
++function expectedGenerationMatches(state, expectedGeneration, headSha) {
++  if (!expectedGeneration) return true;
++  if (state?.generation === expectedGeneration) return true;
++  return state?.status === 'available' && state.receipt === null &&
++    state.head_sha === headSha && state.released_receipt &&
++    (state.released_generation === expectedGeneration ||
++      state.released_generation_lineage?.includes(expectedGeneration));
++}
++
++function preparedAttemptMatchesIndex(state, index, repository, prNumber) {
++  const receipt = state?.receipt;
++  const claim = state?.prepared_claim;
++  return state?.status === 'prepared' && claim && receipt &&
++    claim.generation === state.generation &&
++    claim.boundary_fingerprint === state.boundary_fingerprint &&
++    claim.due_at === state.due_at && claim.expires_at === state.expires_at &&
++    claim.head_sha === state.head_sha &&
++    receiptMatches(receipt, claim, receipt.owner_attempt, receipt.provider, state.head_sha) &&
++    index.repository === String(repository).toLowerCase() &&
++    index.pr_number === Number(prNumber) && index.owner_attempt === receipt.owner_attempt &&
++    index.generation === state.generation && index.receipt.id === receipt.id &&
++    index.receipt.claim_digest === receipt.claim_digest &&
++    index.receipt.provider === receipt.provider && index.receipt.head_sha === state.head_sha;
++}
++
++async function recoverExpiredPreparation({ request, repository, prNumber, prior, now }) {
++  const state = prior.state;
++  if (state.status !== 'prepared' || now.getTime() < Date.parse(state.expires_at)) {
++    return { outcome: 'preserve' };
++  }
++  let index;
++  try {
++    index = await readAttemptIndex(request, repository, state.receipt?.owner_attempt);
++  } catch (_) {
++    return { outcome: 'preserve' };
++  }
++  if (!preparedAttemptMatchesIndex(state, index, repository, prNumber) ||
++      !await prMatches(request, repository, prNumber, state.head_sha,
++        'agent:needs-attention', 'needs-human').catch(() => false)) {
++    return { outcome: 'preserve' };
++  }
++  const released = await releasePreparedChallenge({
++    request, repository, prNumber, claim: state.prepared_claim,
++    ownerAttempt: state.receipt.owner_attempt, provider: state.receipt.provider,
++    headSha: state.head_sha, now,
++  });
++  if (!released.released) {
++    return { outcome: ['challenge-conflict', 'challenge-preparation-not-current']
++      .includes(released.reason) ? 'retry' : 'preserve' };
++  }
++  const settled = await readAuthorityState(request, repository, prNumber).catch(() => null);
++  const exactRelease = settled?.state.status === 'available' && settled.state.receipt === null &&
++    settled.state.head_sha === state.head_sha &&
++    settled.state.released_generation === state.generation &&
++    settled.state.released_receipt?.id === state.receipt.id &&
++    settled.state.released_receipt?.owner_attempt === state.receipt.owner_attempt;
++  if (!exactRelease || !await prMatches(request, repository, prNumber, state.head_sha,
++    'agent:needs-attention', 'needs-human').catch(() => false)) {
++    return { outcome: 'preserve' };
++  }
++  return { outcome: 'recovered' };
++}
++
++async function beginChallenge({ request, repository, prNumber, defaultBranch, fingerprint, dueAt, expiresAt, headSha, expectedGeneration = null, now = new Date() }) {
+   if (!HEX.test(String(fingerprint)) || !HEAD.test(String(headSha)) ||
+       !exactTime(dueAt) || !exactTime(expiresAt) ||
+-      Date.parse(expiresAt) <= Date.parse(dueAt)) throw new Error('Invalid challenge boundary');
++      Date.parse(expiresAt) <= Date.parse(dueAt) ||
++      !(now instanceof Date) || !Number.isFinite(now.getTime())) {
++    throw new Error('Invalid challenge boundary');
++  }
+   await ensureBranch(request, repository, defaultBranch);
+   for (let attempt = 0; attempt < 3; attempt += 1) {
+     const prior = await readAuthorityState(request, repository, prNumber, { allowMissing: true });
+-    if (expectedGeneration && (!prior || prior.state.generation !== expectedGeneration)) {
++    if (expectedGeneration && (!prior ||
++        !expectedGenerationMatches(prior.state, expectedGeneration, headSha))) {
+       throw new Error('Previously initialized challenge generation is missing or superseded');
+     }
+-    // Expiry alone never refunds a prepared, consumed, or confirmed receipt.
++    // Consumed and confirmed receipts remain spent on expiry. A prepared receipt
++    // is non-authorizing and can be reaped only after its exact immutable attempt
++    // index and current PR routing state have both been verified.
+     if (prior && prior.state.head_sha === headSha && prior.state.status !== 'available') {
++      if (prior.state.status === 'prepared' &&
++          now.getTime() >= Date.parse(prior.state.expires_at)) {
++        const recovery = await recoverExpiredPreparation({
++          request, repository, prNumber, prior, now,
++        });
++        if (['recovered', 'retry'].includes(recovery.outcome)) continue;
++      }
+       return prior.state;
+     }
+     if (prior && prior.state.boundary_fingerprint === fingerprint &&
+         prior.state.head_sha === headSha) {
+-      if (Date.parse(prior.state.expires_at) > Date.now()) {
++      if (Date.parse(prior.state.expires_at) > now.getTime()) {
+         return prior.state;
+       }
+     }
+@@ -346,7 +422,11 @@ async function finalizeChallenge({ request, repository, prNumber, claim, ownerAt
+   return { granted: true, reason: 'due-authority-challenge', receipt: prior.state.receipt };
+ }
+ 
+-async function releasePreparedChallenge({ request, repository, prNumber, claim, ownerAttempt, provider, headSha }) {
++async function releasePreparedChallenge({ request, repository, prNumber, claim, ownerAttempt, provider, headSha,
++  now = new Date() }) {
++  if (!(now instanceof Date) || !Number.isFinite(now.getTime())) {
++    return { released: false, reason: 'challenge-time-invalid' };
++  }
+   const prior = await readAuthorityState(request, repository, prNumber);
+   if (prior.state.status === 'available' && prior.state.receipt === null &&
+       prior.state.head_sha === headSha &&
+@@ -354,9 +434,9 @@ async function releasePreparedChallenge({ request, repository, prNumber, claim,
+       receiptMatches(prior.state.released_receipt, claim, ownerAttempt, provider, headSha)) {
+     // The conditional PUT may have committed even when its response was lost.
+     // An exact retry is settled; a newer preparation is never refunded.
+-    if (Date.now() >= Date.parse(prior.state.expires_at)) {
++    if (now.getTime() >= Date.parse(prior.state.expires_at)) {
+       const refreshed = await refreshReleasedChallenge({
+-        request, repository, prNumber, ownerAttempt, prior,
++        request, repository, prNumber, ownerAttempt, prior, now,
+       });
+       return { released: refreshed.status === 'released', reason: refreshed.reason };
+     }
+@@ -367,19 +447,19 @@ async function releasePreparedChallenge({ request, repository, prNumber, claim,
+       !receiptMatches(prior.state.receipt, claim, ownerAttempt, provider, headSha)) {
+     return { released: false, reason: 'challenge-preparation-not-current' };
+   }
+-  const expired = Date.now() >= Date.parse(prior.state.expires_at);
++  const expired = now.getTime() >= Date.parse(prior.state.expires_at);
+   if (expired && !await prMatches(request, repository, prNumber, headSha,
+     'agent:needs-attention', 'needs-human').catch(() => false)) {
+     return { released: false, reason: 'challenge-pr-state-unavailable' };
+   }
+-  const now = Date.now();
++  const nowMs = now.getTime();
+   const next = { ...prior.state, status: 'available', receipt: null,
+     prepared_claim: null, released_receipt: prior.state.receipt,
+     released_generation: claim.generation,
+     released_generation_lineage: [claim.generation],
+     ...(expired ? { generation: crypto.randomBytes(32).toString('hex'),
+-      due_at: new Date(now).toISOString(),
+-      expires_at: new Date(now + 24 * 60 * 60 * 1000).toISOString() } : {}),
++      due_at: new Date(nowMs).toISOString(),
++      expires_at: new Date(nowMs + 24 * 60 * 60 * 1000).toISOString() } : {}),
+     revision: prior.state.revision + 1 };
+   try {
+     await writeAuthorityState(request, repository, prNumber, next, prior.sha);
+@@ -397,7 +477,11 @@ async function releasePreparedChallenge({ request, repository, prNumber, claim,
+   }
+ }
+ 
+-async function refreshReleasedChallenge({ request, repository, prNumber, ownerAttempt, prior = null }) {
++async function refreshReleasedChallenge({ request, repository, prNumber, ownerAttempt, prior = null,
++  now = new Date() }) {
++  if (!(now instanceof Date) || !Number.isFinite(now.getTime())) {
++    return { status: 'uncertain', reason: 'challenge-time-invalid' };
++  }
+   const current = prior || await readAuthorityState(request, repository, prNumber);
+   const state = current.state;
+   if (state.status !== 'available' || state.receipt !== null ||
+@@ -412,17 +496,17 @@ async function refreshReleasedChallenge({ request, repository, prNumber, ownerAt
+     'agent:needs-attention', 'needs-human').catch(() => false)) {
+     return { status: 'uncertain', reason: 'challenge-pr-state-unavailable' };
+   }
+-  if (Date.now() < Date.parse(state.expires_at)) {
++  if (now.getTime() < Date.parse(state.expires_at)) {
+     return { status: 'released', reason: 'already-current', state,
+       previousGenerations: state.released_generation_lineage ||
+         [state.released_generation || state.generation] };
+   }
+-  const now = Date.now();
++  const nowMs = now.getTime();
+   const lineage = [...new Set([...(state.released_generation_lineage || []),
+     state.released_generation || state.generation, state.generation])];
+   const next = { ...state, generation: crypto.randomBytes(32).toString('hex'),
+-    due_at: new Date(now).toISOString(),
+-    expires_at: new Date(now + 24 * 60 * 60 * 1000).toISOString(),
++    due_at: new Date(nowMs).toISOString(),
++    expires_at: new Date(nowMs + 24 * 60 * 60 * 1000).toISOString(),
+     released_generation: state.released_generation || state.generation,
+     released_generation_lineage: lineage, revision: state.revision + 1 };
+   try {
+diff --git a/docs/keepalive/Agents.md b/docs/keepalive/Agents.md
+index 30450048f..1b32272c2 100644
+--- a/docs/keepalive/Agents.md
++++ b/docs/keepalive/Agents.md
+@@ -75,7 +75,7 @@ The failed-run reporter reconciles the receipt even when the presentation summar
+ 
+ For unassociated failed dispatches, the producer run name records a versioned `ordinary` or `authority-candidate` classification without exposing the claim. Both reporters verify the originating workflow path, exact source revision, run attempt, and immutable index before treating an index-free `ordinary` dispatch as inapplicable. A missing index for `authority-candidate`, an unrecognized/legacy title, a corrupt index, or an unavailable lookup fails closed for owner follow-up. This routing metadata never grants authority or substitutes for exact worker evidence. The ordinary skip happens before reporter writer-token setup and worker-job inspection.
+ 
+-An expired prepared receipt may be released only with exact non-start evidence and the same-head automation label intact, without a hard human blocker. Release refreshes the due/expiry window under one conditional ledger write and retains the immutable release receipt and its generation lineage for delayed summary projection. An available released state rotates to a new generation when its boundary fingerprint changes or its window expires, while preserving the settled receipt and every prior generation in its lineage. Replays of the settled owner attempt remain denied. Expiry alone never rotates a prepared, consumed, or confirmed receipt into available authority.
++An expired prepared receipt is non-authorizing and may be released either by the failed-run reporter's exact non-start evidence or by initialization after it verifies the persisted claim, immutable attempt index, same-head automation label, and absence of a hard human blocker. The initialization path is limited to `prepared`: it cannot infer non-start or refund a `consumed` or `confirmed` receipt. Release refreshes the due/expiry window under one conditional ledger write and retains the immutable release receipt and its generation lineage for delayed summary projection. An available released state rotates to a new generation when its boundary fingerprint changes or its window expires, while preserving the settled receipt and every prior generation in its lineage. Replays of the settled owner attempt remain denied. Expiry alone never rotates a consumed or confirmed receipt into available authority, and missing or conflicting preparation evidence preserves the prepared state.
+ 
+ ## Key Principles
+ 
+diff --git a/docs/keepalive/GoalsAndPlumbing.md b/docs/keepalive/GoalsAndPlumbing.md
+index 76df6c41b..3ec510efb 100644
+--- a/docs/keepalive/GoalsAndPlumbing.md
++++ b/docs/keepalive/GoalsAndPlumbing.md
+@@ -119,11 +119,11 @@ Do not edit the state marker manually. Use the supported `agent:retry` or workfl
+ 
+ The dedicated `keepalive-authority-state` branch stores `.github/keepalive-authority/<PR>.json` for each PR and an immutable `.github/keepalive-authority-attempts/<sha256(owner-attempt)>.json` locator for each prepared attempt. The first challenge generation is initialized from the repository default branch by a workflow using a dedicated App token with `contents: write`; the workflow token remains read-only. The locator is created and read back before the conditional PR-ledger preparation; it binds the repository, exact attempt, PR, generation, receipt ID, claim digest, provider and head. A conflicting locator denies preparation, and a released attempt cannot prepare again; a new originating attempt is required. The PR ledger, not the locator, remains grant authority. Each generation records its originating PR head as well as the boundary fingerprint, canonical due/expiry times, monotonic revision, and at most one receipt naming the downstream workflow attempt and provider. Sweep signing, preparation, consumption, and confirmation all require that same head. Legacy records without an originating head are readable only for fail-closed migration and cannot be signed or consumed as current authority.
+ 
+-Each update supplies the previous file SHA to the Contents API. The runner conditionally changes `available` to non-authorizing `prepared`, writes and rereads its attempt-bound primary reservation, then conditionally changes `prepared` to `consumed`. A definite reservation refusal may conditionally release only the same preparation before any grant exists. The runner may retry that release after a lost response only for the same head, claim, provider, owner attempt, and recorded preflight failure; the ledger retains the released receipt as idempotency evidence and rejects a replacement preparation. A conflicting or ambiguous preparation/consumption write grants no run; a consumed receipt is never refunded without positive evidence that its worker did not start. A confirmed receipt cannot be reopened because a hard label disappeared. Ordinary runner completions never write this ledger. Missing or malformed state fails closed, and summary comments or labels cannot restore authority. The owner attempt must have actually started a worker before receipt-backed confirmation may apply `needs-human`. A crash after consumption may leave zero executions, so the guarantee is at most one grant rather than exactly-once execution.
++Each update supplies the previous file SHA to the Contents API. The runner conditionally changes `available` to non-authorizing `prepared`, writes and rereads its attempt-bound primary reservation, then conditionally changes `prepared` to `consumed`. A definite reservation refusal may conditionally release only the same preparation before any grant exists. The runner may retry that release after a lost response only for the same head, claim, provider, owner attempt, and recorded preflight failure; the ledger retains the released receipt as idempotency evidence and rejects a replacement preparation. If preparation persisted but its response or later reservation read was lost, initialization may reap it only after expiry and exact validation of the persisted claim, immutable attempt index, current head, automation label, and absence of a hard human blocker. The conditional ledger SHA decides a race with finalization: a preparation that became consumed cannot be released. A conflicting or ambiguous preparation/consumption write grants no run; a consumed receipt is never refunded without positive evidence that its worker did not start. A confirmed receipt cannot be reopened because a hard label disappeared. Ordinary runner completions never write this ledger. Missing or malformed state fails closed, and summary comments or labels cannot restore authority. The owner attempt must have actually started a worker before receipt-backed confirmation may apply `needs-human`. A crash after consumption may leave zero executions, so the guarantee is at most one grant rather than exactly-once execution.
+ 
+ PR head and labels live outside the authority ledger, so their reads and ledger writes cannot form one transaction. After consumption, the consumer rechecks the PR and its reservation and denies a grant if the head, routing labels, or attempt binding changed. Confirmation checks the PR before and after its ledger write. An unavailable read or stale head preserves the existing receipt and hard label for reconciliation; it never rotates confirmed state into fresh execution authority or removes `needs-human`. A fresh same-head read may rotate only when the hard label is already absent. These checks narrow the cross-resource race without claiming atomicity against later PR metadata changes. The original worker attempt retries confirmation once against the same consumed receipt after an ambiguous read or conditional write. That retry cannot grant another execution or remove the hard label.
+ 
+-After a failed or cancelled originating run, the workflow-run reporter reads that run's exact job attempt and the agent registry from that run's exact head commit. A worker step that actually entered is treated as started; a fully terminal skipped worker path is positively not-started; incomplete jobs, API errors, missing job evidence, or unavailable originating registry are unknown. Unknown evidence fails the reporter before summary or fingerprint persistence so a retry remains possible. Only the not-started case may reconcile the matching receipt and owner attempt independently of summary `running` state or a fresh authority-failure classification. A prepared receipt can then be released and an unconfirmed consumed receipt can be reopened after a same-head PR read; confirmed receipts remain spent. The ledger primitive itself requires non-start proof, so an ordinary summary or confirmation caller cannot bypass this boundary. The reporter then projects the settled generation, due/expiry times, and non-running status to a matching trusted summary; retrying a lost projection response is idempotent. A sweep-triggered run may have no webhook PR association; the reporter reads the exact attempt locator directly and verifies the receipt ID and bindings in the authoritative PR ledger without scanning historical PRs. Missing, conflicting or uncertain lookup fails explicitly for owner reconciliation rather than asserting no worker executed. Associated runs use their known PR directly. Consumer fingerprinting includes run ID and attempt so a rerun cannot be skipped as identical to its predecessor. A missing or inconclusive job read never refunds authority.
++After a failed or cancelled originating run, the workflow-run reporter reads that run's exact job attempt and the agent registry from that run's exact head commit. A worker step that actually entered is treated as started; a fully terminal skipped worker path is positively not-started; incomplete jobs, API errors, missing job evidence, or unavailable originating registry are unknown. Unknown evidence fails the reporter before summary or fingerprint persistence so a retry remains possible. Only the not-started case may reconcile the matching receipt and owner attempt independently of summary `running` state or a fresh authority-failure classification. A prepared receipt can then be released and an unconfirmed consumed receipt can be reopened after a same-head PR read; confirmed receipts remain spent. The reporter's consumed-receipt primitive requires non-start proof, so an ordinary summary or confirmation caller cannot bypass this boundary. Expired initialization is a separate preparation-only recovery: because `prepared` has not granted execution, exact claim/index and PR-state validation plus the conditional SHA are sufficient, while any consumed or conflicting state stays fail-closed. The reporter then projects the settled generation, due/expiry times, and non-running status to a matching trusted summary; retrying a lost projection response is idempotent. A sweep-triggered run may have no webhook PR association; the reporter reads the exact attempt locator directly and verifies the receipt ID and bindings in the authoritative PR ledger without scanning historical PRs. Missing, conflicting or uncertain lookup fails explicitly for owner reconciliation rather than asserting no worker executed. Associated runs use their known PR directly. Consumer fingerprinting includes run ID and attempt so a rerun cannot be skipped as identical to its predecessor. A missing or inconclusive job read never refunds consumed authority.
+ 
+ ## 5. No-Noise Policy
+ 
+diff --git a/templates/consumer-repo/.github/scripts/keepalive_authority_state.js b/templates/consumer-repo/.github/scripts/keepalive_authority_state.js
+index 146e9c5ae..9f9fffa75 100644
+--- a/templates/consumer-repo/.github/scripts/keepalive_authority_state.js
++++ b/templates/consumer-repo/.github/scripts/keepalive_authority_state.js
+@@ -187,23 +187,99 @@ async function writeAuthorityState(request, repository, prNumber, state, priorSh
+   return request('PUT', pathFor(repository, prNumber), body);
+ }
+ 
+-async function beginChallenge({ request, repository, prNumber, defaultBranch, fingerprint, dueAt, expiresAt, headSha, expectedGeneration = null }) {
++function expectedGenerationMatches(state, expectedGeneration, headSha) {
++  if (!expectedGeneration) return true;
++  if (state?.generation === expectedGeneration) return true;
++  return state?.status === 'available' && state.receipt === null &&
++    state.head_sha === headSha && state.released_receipt &&
++    (state.released_generation === expectedGeneration ||
++      state.released_generation_lineage?.includes(expectedGeneration));
++}
++
++function preparedAttemptMatchesIndex(state, index, repository, prNumber) {
++  const receipt = state?.receipt;
++  const claim = state?.prepared_claim;
++  return state?.status === 'prepared' && claim && receipt &&
++    claim.generation === state.generation &&
++    claim.boundary_fingerprint === state.boundary_fingerprint &&
++    claim.due_at === state.due_at && claim.expires_at === state.expires_at &&
++    claim.head_sha === state.head_sha &&
++    receiptMatches(receipt, claim, receipt.owner_attempt, receipt.provider, state.head_sha) &&
++    index.repository === String(repository).toLowerCase() &&
++    index.pr_number === Number(prNumber) && index.owner_attempt === receipt.owner_attempt &&
++    index.generation === state.generation && index.receipt.id === receipt.id &&
++    index.receipt.claim_digest === receipt.claim_digest &&
++    index.receipt.provider === receipt.provider && index.receipt.head_sha === state.head_sha;
++}
++
++async function recoverExpiredPreparation({ request, repository, prNumber, prior, now }) {
++  const state = prior.state;
++  if (state.status !== 'prepared' || now.getTime() < Date.parse(state.expires_at)) {
++    return { outcome: 'preserve' };
++  }
++  let index;
++  try {
++    index = await readAttemptIndex(request, repository, state.receipt?.owner_attempt);
++  } catch (_) {
++    return { outcome: 'preserve' };
++  }
++  if (!preparedAttemptMatchesIndex(state, index, repository, prNumber) ||
++      !await prMatches(request, repository, prNumber, state.head_sha,
++        'agent:needs-attention', 'needs-human').catch(() => false)) {
++    return { outcome: 'preserve' };
++  }
++  const released = await releasePreparedChallenge({
++    request, repository, prNumber, claim: state.prepared_claim,
++    ownerAttempt: state.receipt.owner_attempt, provider: state.receipt.provider,
++    headSha: state.head_sha, now,
++  });
++  if (!released.released) {
++    return { outcome: ['challenge-conflict', 'challenge-preparation-not-current']
++      .includes(released.reason) ? 'retry' : 'preserve' };
++  }
++  const settled = await readAuthorityState(request, repository, prNumber).catch(() => null);
++  const exactRelease = settled?.state.status === 'available' && settled.state.receipt === null &&
++    settled.state.head_sha === state.head_sha &&
++    settled.state.released_generation === state.generation &&
++    settled.state.released_receipt?.id === state.receipt.id &&
++    settled.state.released_receipt?.owner_attempt === state.receipt.owner_attempt;
++  if (!exactRelease || !await prMatches(request, repository, prNumber, state.head_sha,
++    'agent:needs-attention', 'needs-human').catch(() => false)) {
++    return { outcome: 'preserve' };
++  }
++  return { outcome: 'recovered' };
++}
++
++async function beginChallenge({ request, repository, prNumber, defaultBranch, fingerprint, dueAt, expiresAt, headSha, expectedGeneration = null, now = new Date() }) {
+   if (!HEX.test(String(fingerprint)) || !HEAD.test(String(headSha)) ||
+       !exactTime(dueAt) || !exactTime(expiresAt) ||
+-      Date.parse(expiresAt) <= Date.parse(dueAt)) throw new Error('Invalid challenge boundary');
++      Date.parse(expiresAt) <= Date.parse(dueAt) ||
++      !(now instanceof Date) || !Number.isFinite(now.getTime())) {
++    throw new Error('Invalid challenge boundary');
++  }
+   await ensureBranch(request, repository, defaultBranch);
+   for (let attempt = 0; attempt < 3; attempt += 1) {
+     const prior = await readAuthorityState(request, repository, prNumber, { allowMissing: true });
+-    if (expectedGeneration && (!prior || prior.state.generation !== expectedGeneration)) {
++    if (expectedGeneration && (!prior ||
++        !expectedGenerationMatches(prior.state, expectedGeneration, headSha))) {
+       throw new Error('Previously initialized challenge generation is missing or superseded');
+     }
+-    // Expiry alone never refunds a prepared, consumed, or confirmed receipt.
++    // Consumed and confirmed receipts remain spent on expiry. A prepared receipt
++    // is non-authorizing and can be reaped only after its exact immutable attempt
++    // index and current PR routing state have both been verified.
+     if (prior && prior.state.head_sha === headSha && prior.state.status !== 'available') {
++      if (prior.state.status === 'prepared' &&
++          now.getTime() >= Date.parse(prior.state.expires_at)) {
++        const recovery = await recoverExpiredPreparation({
++          request, repository, prNumber, prior, now,
++        });
++        if (['recovered', 'retry'].includes(recovery.outcome)) continue;
++      }
+       return prior.state;
+     }
+     if (prior && prior.state.boundary_fingerprint === fingerprint &&
+         prior.state.head_sha === headSha) {
+-      if (Date.parse(prior.state.expires_at) > Date.now()) {
++      if (Date.parse(prior.state.expires_at) > now.getTime()) {
+         return prior.state;
+       }
+     }
+@@ -346,7 +422,11 @@ async function finalizeChallenge({ request, repository, prNumber, claim, ownerAt
+   return { granted: true, reason: 'due-authority-challenge', receipt: prior.state.receipt };
+ }
+ 
+-async function releasePreparedChallenge({ request, repository, prNumber, claim, ownerAttempt, provider, headSha }) {
++async function releasePreparedChallenge({ request, repository, prNumber, claim, ownerAttempt, provider, headSha,
++  now = new Date() }) {
++  if (!(now instanceof Date) || !Number.isFinite(now.getTime())) {
++    return { released: false, reason: 'challenge-time-invalid' };
++  }
+   const prior = await readAuthorityState(request, repository, prNumber);
+   if (prior.state.status === 'available' && prior.state.receipt === null &&
+       prior.state.head_sha === headSha &&
+@@ -354,9 +434,9 @@ async function releasePreparedChallenge({ request, repository, prNumber, claim,
+       receiptMatches(prior.state.released_receipt, claim, ownerAttempt, provider, headSha)) {
+     // The conditional PUT may have committed even when its response was lost.
+     // An exact retry is settled; a newer preparation is never refunded.
+-    if (Date.now() >= Date.parse(prior.state.expires_at)) {
++    if (now.getTime() >= Date.parse(prior.state.expires_at)) {
+       const refreshed = await refreshReleasedChallenge({
+-        request, repository, prNumber, ownerAttempt, prior,
++        request, repository, prNumber, ownerAttempt, prior, now,
+       });
+       return { released: refreshed.status === 'released', reason: refreshed.reason };
+     }
+@@ -367,19 +447,19 @@ async function releasePreparedChallenge({ request, repository, prNumber, claim,
+       !receiptMatches(prior.state.receipt, claim, ownerAttempt, provider, headSha)) {
+     return { released: false, reason: 'challenge-preparation-not-current' };
+   }
+-  const expired = Date.now() >= Date.parse(prior.state.expires_at);
++  const expired = now.getTime() >= Date.parse(prior.state.expires_at);
+   if (expired && !await prMatches(request, repository, prNumber, headSha,
+     'agent:needs-attention', 'needs-human').catch(() => false)) {
+     return { released: false, reason: 'challenge-pr-state-unavailable' };
+   }
+-  const now = Date.now();
++  const nowMs = now.getTime();
+   const next = { ...prior.state, status: 'available', receipt: null,
+     prepared_claim: null, released_receipt: prior.state.receipt,
+     released_generation: claim.generation,
+     released_generation_lineage: [claim.generation],
+     ...(expired ? { generation: crypto.randomBytes(32).toString('hex'),
+-      due_at: new Date(now).toISOString(),
+-      expires_at: new Date(now + 24 * 60 * 60 * 1000).toISOString() } : {}),
++      due_at: new Date(nowMs).toISOString(),
++      expires_at: new Date(nowMs + 24 * 60 * 60 * 1000).toISOString() } : {}),
+     revision: prior.state.revision + 1 };
+   try {
+     await writeAuthorityState(request, repository, prNumber, next, prior.sha);
+@@ -397,7 +477,11 @@ async function releasePreparedChallenge({ request, repository, prNumber, claim,
+   }
+ }
+ 
+-async function refreshReleasedChallenge({ request, repository, prNumber, ownerAttempt, prior = null }) {
++async function refreshReleasedChallenge({ request, repository, prNumber, ownerAttempt, prior = null,
++  now = new Date() }) {
++  if (!(now instanceof Date) || !Number.isFinite(now.getTime())) {
++    return { status: 'uncertain', reason: 'challenge-time-invalid' };
++  }
+   const current = prior || await readAuthorityState(request, repository, prNumber);
+   const state = current.state;
+   if (state.status !== 'available' || state.receipt !== null ||
+@@ -412,17 +496,17 @@ async function refreshReleasedChallenge({ request, repository, prNumber, ownerAt
+     'agent:needs-attention', 'needs-human').catch(() => false)) {
+     return { status: 'uncertain', reason: 'challenge-pr-state-unavailable' };
+   }
+-  if (Date.now() < Date.parse(state.expires_at)) {
++  if (now.getTime() < Date.parse(state.expires_at)) {
+     return { status: 'released', reason: 'already-current', state,
+       previousGenerations: state.released_generation_lineage ||
+         [state.released_generation || state.generation] };
+   }
+-  const now = Date.now();
++  const nowMs = now.getTime();
+   const lineage = [...new Set([...(state.released_generation_lineage || []),
+     state.released_generation || state.generation, state.generation])];
+   const next = { ...state, generation: crypto.randomBytes(32).toString('hex'),
+-    due_at: new Date(now).toISOString(),
+-    expires_at: new Date(now + 24 * 60 * 60 * 1000).toISOString(),
++    due_at: new Date(nowMs).toISOString(),
++    expires_at: new Date(nowMs + 24 * 60 * 60 * 1000).toISOString(),
+     released_generation: state.released_generation || state.generation,
+     released_generation_lineage: lineage, revision: state.revision + 1 };
+   try {

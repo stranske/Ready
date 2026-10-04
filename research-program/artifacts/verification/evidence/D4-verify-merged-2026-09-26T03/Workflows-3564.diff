@@ -1,0 +1,986 @@
+diff --git a/.github/workflows/maint-83-bootstrap-consumer.yml b/.github/workflows/maint-83-bootstrap-consumer.yml
+index b3dc067..c31ea1f 100644
+--- a/.github/workflows/maint-83-bootstrap-consumer.yml
++++ b/.github/workflows/maint-83-bootstrap-consumer.yml
+@@ -4,8 +4,10 @@
+ #   - default_workflow_permissions=write + can_approve_pull_request_reviews=true
+ #   - repo variables USE_CONSOLIDATED_WORKFLOWS + ALLOWED_KEEPALIVE_LOGINS
+ #   - stranske-automation-bot push collaborator invite
++#   - priority:high / priority:normal / priority:low opener-routing labels
+ # Skipping any of these silently breaks Gate / keepalive / autofix on the new
+-# consumer (see stranske/Fine-Art-Archive #13 bootstrap, 2026-05-29).
++# consumer or makes its backlog unreachable to priority-ordered opener selection
++# (see stranske/Fine-Art-Archive #13 bootstrap, 2026-05-29).
+ name: Maint 83 Bootstrap Consumer
+ 
+ on:
+diff --git a/docs/ci/WORKFLOWS.md b/docs/ci/WORKFLOWS.md
+index b767e50..f60fb88 100644
+--- a/docs/ci/WORKFLOWS.md
++++ b/docs/ci/WORKFLOWS.md
+@@ -237,7 +237,7 @@ Scheduled health jobs keep the automation ecosystem aligned:
+ * [`maint-80-langsmith-metrics-dashboard.yml`](../../.github/workflows/maint-80-langsmith-metrics-dashboard.yml) generates weekly LangSmith trace coverage dashboard - downloads metrics from autopilot artifacts, computes coverage, creates issue report (scheduled Monday 9AM UTC, manual dispatch).
+ * [`maint-81-langsmith-fleet-conformance.yml`](../../.github/workflows/maint-81-langsmith-fleet-conformance.yml) validates fleet artifact coverage against `config/langsmith_fleet_registry.json` and reports missing/stale/invalid records (scheduled Monday 9:30AM UTC, manual dispatch with optional enforcement).
+ * [`maint-82-sync-dependency-campaign.yml`](../../.github/workflows/maint-82-sync-dependency-campaign.yml) refreshes a GitHub-visible sync/dependency campaign issue, persists plan-bound Maint 71 continuation handoffs, and wakes due generated-delivery lanes with idempotency keys. A transient delivery continuation is serialized ahead of candidate work, but an actionable delivery blocker does not suppress a corrective candidate wave.
+-* [`maint-83-bootstrap-consumer.yml`](../../.github/workflows/maint-83-bootstrap-consumer.yml) applies the manual GitHub-settings bootstrap toggles a freshly-registered consumer needs (SETUP_CHECKLIST §3.1/§3.3/§3.3.1: `default_workflow_permissions=write`, `USE_CONSOLIDATED_WORKFLOWS` + `ALLOWED_KEEPALIVE_LOGINS` variables, and the `stranske-automation-bot` push-collaborator invite) via `scripts/bootstrap_consumer_settings.py` (manual dispatch, dry-run by default).
++* [`maint-83-bootstrap-consumer.yml`](../../.github/workflows/maint-83-bootstrap-consumer.yml) applies the manual GitHub-settings bootstrap a freshly-registered consumer needs: `default_workflow_permissions=write`, `USE_CONSOLIDATED_WORKFLOWS` + `ALLOWED_KEEPALIVE_LOGINS` variables, the `stranske-automation-bot` push-collaborator invite, and the load-bearing `priority:high` / `priority:normal` / `priority:low` labels used by opener selection. The workflow calls `scripts/bootstrap_consumer_settings.py` and performs cross-repository settings and label writes only when its manual dispatch leaves dry-run mode.
+ * [`maint-84-prune-agent-stubs.yml`](../../.github/workflows/maint-84-prune-agent-stubs.yml) garbage-collects `agents/<agent>-<N>.md` bootstrap stubs whose issue `#N` is closed, preventing unbounded accumulation; runs weekly (Monday 08:00 UTC) via `scripts/prune_agent_stubs.py`.
+ * [`maint-85-keepalive-durability-export.yml`](../../.github/workflows/maint-85-keepalive-durability-export.yml) exports post-merge `agents:keepalive` PR durability labels into a Workflows-owned `langsmith-fleet.ndjson` artifact after the grace window, so downstream learners can distinguish durable merges from reverted or reopened work (scheduled Monday 09:45 UTC, manual dispatch).
+ 
+diff --git a/docs/ci/WORKFLOW_SYSTEM.md b/docs/ci/WORKFLOW_SYSTEM.md
+index c9d07d6..073ff0a 100644
+--- a/docs/ci/WORKFLOW_SYSTEM.md
++++ b/docs/ci/WORKFLOW_SYSTEM.md
+@@ -764,7 +764,7 @@ Keep this table handy when you are triaging automation: it confirms which workfl
+ | **LangSmith Metrics Dashboard** (`maint-80-langsmith-metrics-dashboard.yml`, maintenance bucket) | `workflow_dispatch`, `schedule` (Mondays 09:00 UTC) | Generates weekly LangSmith trace coverage dashboard by downloading metrics from autopilot artifacts, computing coverage, and creating issue reports. | ⚪ Manual/scheduled | [LangSmith metrics runs](https://github.com/stranske/Workflows/actions/workflows/maint-80-langsmith-metrics-dashboard.yml) |
+ | **LangSmith Fleet Conformance** (`maint-81-langsmith-fleet-conformance.yml`, maintenance bucket) | `workflow_dispatch`, `schedule` (Mondays 09:30 UTC) | Validates LangSmith fleet artifact coverage against `config/langsmith_fleet_registry.json`, emits markdown/JSON reports, and can optionally enforce non-valid rows. | ⚪ Manual/scheduled | [LangSmith fleet conformance runs](https://github.com/stranske/Workflows/actions/workflows/maint-81-langsmith-fleet-conformance.yml) |
+ | **Sync/Dependency Campaign** (`maint-82-sync-dependency-campaign.yml`, maintenance bucket) | `schedule` (10-minute continuation sweep), `workflow_dispatch`, `repository_dispatch` | Refreshes the GitHub-visible campaign issue and persists Maint 71 handoffs as a durable queue. Due transient review/check holds dispatch at most one candidate, delivery, and dev-tool lane; actionable review or source failures remain assigned rather than retried as timers. | ⚪ Scheduled/manual | [Sync/Dependency campaign runs](https://github.com/stranske/Workflows/actions/workflows/maint-82-sync-dependency-campaign.yml) |
+-| **Maint 83 Bootstrap Consumer** (`maint-83-bootstrap-consumer.yml`, maintenance bucket) | `workflow_dispatch` | Applies the manual GitHub-settings bootstrap toggles a freshly-registered consumer needs (SETUP_CHECKLIST §3.1/§3.3/§3.3.1: `default_workflow_permissions=write`, `USE_CONSOLIDATED_WORKFLOWS` + `ALLOWED_KEEPALIVE_LOGINS` variables, `stranske-automation-bot` push-collaborator invite) via `scripts/bootstrap_consumer_settings.py`; dry-run by default. | ⚪ Manual | [Bootstrap consumer runs](https://github.com/stranske/Workflows/actions/workflows/maint-83-bootstrap-consumer.yml) |
++| **Maint 83 Bootstrap Consumer** (`maint-83-bootstrap-consumer.yml`, maintenance bucket) | `workflow_dispatch` | Applies the manual GitHub-settings bootstrap a freshly-registered consumer needs: workflow permissions, required variables, the automation-bot collaborator invite, and the load-bearing `priority:high` / `priority:normal` / `priority:low` opener-routing labels. The dispatch is dry-run by default; execute mode performs cross-repository settings and label writes through `scripts/bootstrap_consumer_settings.py`. | ⚪ Manual | [Bootstrap consumer runs](https://github.com/stranske/Workflows/actions/workflows/maint-83-bootstrap-consumer.yml) |
+ | **Maint 84 Prune Agent Stubs** (`maint-84-prune-agent-stubs.yml`, maintenance bucket) | `schedule` (Mondays 08:00 UTC), `workflow_dispatch` | Garbage-collects `agents/<agent>-<N>.md` bootstrap stubs whose issue `#N` is closed via `scripts/prune_agent_stubs.py`, preventing unbounded accumulation; dry-run by default on manual dispatch. | ⚪ Scheduled/manual | [Prune agent stubs runs](https://github.com/stranske/Workflows/actions/workflows/maint-84-prune-agent-stubs.yml) |
+ | **Maint 85 Keepalive Durability Export** (`maint-85-keepalive-durability-export.yml`, maintenance bucket) | `schedule` (Mondays 09:45 UTC), `workflow_dispatch` | Classifies merged keepalive PRs after a grace period and emits Workflows-owned `langsmith-fleet/v1` durability records for Orchestrator outcome ingest. | ⚪ Scheduled/manual | [Keepalive durability export runs](https://github.com/stranske/Workflows/actions/workflows/maint-85-keepalive-durability-export.yml) |
+ | **Maint 60 Release** (`maint-60-release.yml`, maintenance bucket) | `push` (tags `v*`) | Create GitHub releases automatically when version tags are pushed. | ⚪ Tag-triggered | [Release workflow runs](https://github.com/stranske/Workflows/actions/workflows/maint-60-release.yml) |
+diff --git a/docs/ops/CONSUMER_REPO_MAINTENANCE.md b/docs/ops/CONSUMER_REPO_MAINTENANCE.md
+index 40bc180..565f868 100644
+--- a/docs/ops/CONSUMER_REPO_MAINTENANCE.md
++++ b/docs/ops/CONSUMER_REPO_MAINTENANCE.md
+@@ -81,8 +81,52 @@ actionable failures.
+ ### Adding a New Consumer Repo
+ 
+ 1. Add the repo to `REGISTERED_CONSUMER_REPOS` in `maint-68-sync-consumer-repos.yml`.
+-2. Ensure bot collaborator access (see [Bot Access](#bot-collaborator-access))
+-3. Run the sync workflow manually to verify.
++2. Run the bootstrap plan, including the load-bearing priority labels:
++
++   ```bash
++   python scripts/bootstrap_consumer_settings.py --repo stranske/NEW_REPO --execute
++   ```
++
++3. Ensure bot collaborator access (see [Bot Access](#bot-collaborator-access)).
++4. Run the sync workflow manually to verify.
++
++#### Priority labels are an opener reachability contract
++
++Every registered consumer must define `priority:high`, `priority:normal`, and
++`priority:low` with the colors and descriptions emitted by
++`scripts/bootstrap_consumer_settings.py`. The opener uses those labels for
++ordering. It still discovers unlabelled delivery issues, but losing the family
++makes intended priority unavailable and can indefinitely defer a new
++repository behind established labelled queues.
++
++Do not assume a repository created from `stranske/Template` inherits the
++Template repository's live labels: GitHub template creation copies repository
++content, not repository label metadata. Keep the three labels on Template so it
++remains a safe `gh label clone` donor, and run the bootstrap command for every
++new consumer. `--labels-only --execute` repairs just this contract without
++changing workflow permissions, variables, collaborators, or existing issue
++priorities. Existing label metadata is verified and never overwritten
++silently.
++
++Audit the current registered fleet without mutating it:
++
++```bash
++python scripts/bootstrap_consumer_settings.py --health-check
++```
++
++The health report prints one row per registered consumer, including explicit
++zeroes. `implementation` counts open non-PR delivery issues independently of
++priority, while `priority_labelled` counts those carrying at least one exact
++supported priority label and `unprioritized` is the difference. Explicit
++durable trackers and narrowly recognized generated dependency/sync bookkeeping
++are reported as exclusions; bot authorship alone never hides delivery work.
++Missing labels return exit 1. Authentication, rate-limit, malformed-response,
++or incomplete-read failures return exit 2 and render affected values as
++`UNKNOWN` rather than a false healthy zero.
++
++When cloning labels between repositories, use a donor that has the full
++priority family and verify all three definitions afterward. Never infer a
++priority for existing issues merely to make counts look healthy.
+ 
+ ### Repos with Custom Configurations
+ 
+diff --git a/scripts/bootstrap_consumer_settings.py b/scripts/bootstrap_consumer_settings.py
+index 8297645..798719d 100755
+--- a/scripts/bootstrap_consumer_settings.py
++++ b/scripts/bootstrap_consumer_settings.py
+@@ -1,5 +1,5 @@
+ #!/usr/bin/env python3
+-"""Automate fresh-consumer bootstrap GitHub-settings toggles via gh CLI.
++"""Automate fresh-consumer bootstrap settings, labels, and fleet health via gh CLI.
+ 
+ Registering a new first-party consumer requires several manual GitHub-settings
+ steps (see ``templates/consumer-repo/docs/SETUP_CHECKLIST.md`` sections 3.1,
+@@ -25,23 +25,61 @@ Usage::
+   python scripts/bootstrap_consumer_settings.py --repo stranske/Foo --execute
+   python scripts/bootstrap_consumer_settings.py --repo stranske/Foo --check
+   python scripts/bootstrap_consumer_settings.py --repo stranske/Foo --verify
++  python scripts/bootstrap_consumer_settings.py --repo stranske/Foo --labels-only --execute
++  python scripts/bootstrap_consumer_settings.py --health-check
+ """
+ 
+ from __future__ import annotations
+ 
+ import argparse
+ import json
++import re
+ import shlex
+ import subprocess
++from collections import Counter
++from pathlib import Path
++from typing import Any
++
++try:
++    from scripts.list_registered_consumer_repos import extract_repos
++except ModuleNotFoundError:  # pragma: no cover - supports direct script execution.
++    from list_registered_consumer_repos import extract_repos  # type: ignore[no-redef]
+ 
+ DEFAULT_BOT = "stranske-automation-bot"
+ USE_CONSOLIDATED_WORKFLOWS_VALUE = "true"
++REPO_ROOT = Path(__file__).resolve().parents[1]
++DEFAULT_REGISTRY_MANIFEST = REPO_ROOT / ".github/workflows/maint-68-sync-consumer-repos.yml"
++PRIORITY_LABELS = {
++    "priority:high": {
++        "color": "b60205",
++        "description": "High-priority weekly repo-review work",
++    },
++    "priority:normal": {
++        "color": "fbca04",
++        "description": "Normal-priority weekly repo-review work",
++    },
++    "priority:low": {
++        "color": "0e8a16",
++        "description": "Low-priority weekly repo-review work",
++    },
++}
++SYSTEMIC_API_ERROR_MARKERS = (
++    "bad credentials",
++    "requires authentication",
++    "rate limit",
++    "secondary rate limit",
++)
++REPO_COMPONENT_RE = re.compile(r"^[A-Za-z0-9_.-]+$")
+ 
+ 
+ def _split_repo(repo: str) -> tuple[str, str]:
+     """Split ``owner/name`` into its parts, raising on malformed input."""
+     parts = repo.strip().split("/")
+-    if len(parts) != 2 or not all(parts):
++    if (
++        len(parts) != 2
++        or not all(parts)
++        or not all(REPO_COMPONENT_RE.fullmatch(part) for part in parts)
++    ):
+         raise SystemExit(f"Repo must be in 'owner/name' form, got: {repo!r}")
+     return parts[0], parts[1]
+ 
+@@ -107,6 +145,263 @@ def _variable_list_command(repo: str) -> list[str]:
+     return ["gh", "variable", "list", "--repo", repo, "--json", "name,value"]
+ 
+ 
++def _label_create_command(repo: str, name: str, definition: dict[str, str]) -> list[str]:
++    """Create one required label without overwriting existing metadata."""
++    return [
++        "gh",
++        "label",
++        "create",
++        name,
++        "--repo",
++        repo,
++        "--color",
++        definition["color"],
++        "--description",
++        definition["description"],
++    ]
++
++
++def build_label_plan(repo: str) -> list[dict[str, object]]:
++    """Build the three load-bearing priority-label operations."""
++    _split_repo(repo)
++    return [
++        {
++            "id": f"label_{name.removeprefix('priority:')}",
++            "description": f"ensure {name} exists for opener selection",
++            "command": _label_create_command(repo, name, definition),
++        }
++        for name, definition in PRIORITY_LABELS.items()
++    ]
++
++
++def _read_paginated_collection(endpoint: str) -> list[dict[str, Any]]:
++    """Read every REST page and reject malformed or partial-looking payloads."""
++    proc = subprocess.run(
++        ["gh", "api", "--paginate", "--slurp", endpoint],
++        check=True,
++        capture_output=True,
++        text=True,
++    )
++    payload = json.loads(proc.stdout)
++    if not isinstance(payload, list):
++        raise ValueError(f"Expected a JSON list from {endpoint}")
++    if not payload:
++        return []
++    if all(isinstance(page, list) for page in payload):
++        items = [item for page in payload for item in page]
++    elif all(isinstance(item, dict) for item in payload):
++        items = payload
++    else:
++        raise ValueError(f"Malformed paginated JSON from {endpoint}")
++    if not all(isinstance(item, dict) for item in items):
++        raise ValueError(f"Non-object item returned from {endpoint}")
++    return items
++
++
++def _priority_label_inventory(repo: str) -> dict[str, dict[str, Any]]:
++    labels = _read_paginated_collection(f"/repos/{repo}/labels?per_page=100")
++    inventory: dict[str, dict[str, Any]] = {}
++    for label in labels:
++        name = label.get("name")
++        if not isinstance(name, str) or not name:
++            raise ValueError(f"Malformed label payload for {repo}")
++        inventory[name.lower()] = label
++    return inventory
++
++
++def _priority_label_findings(
++    inventory: dict[str, dict[str, Any]],
++) -> tuple[list[str], list[str]]:
++    missing: list[str] = []
++    mismatched: list[str] = []
++    for name, definition in PRIORITY_LABELS.items():
++        current = inventory.get(name)
++        if current is None:
++            missing.append(name)
++            continue
++        color = str(current.get("color", "")).lower()
++        description = current.get("description") or ""
++        if color != definition["color"] or description != definition["description"]:
++            mismatched.append(name)
++    return missing, mismatched
++
++
++def apply_priority_labels(repo: str) -> None:
++    """Create only absent labels, then verify exact metadata without silent overwrite."""
++    inventory = _priority_label_inventory(repo)
++    missing, mismatched = _priority_label_findings(inventory)
++    if mismatched:
++        raise SystemExit(f"Refusing to overwrite label metadata in {repo}: {', '.join(mismatched)}")
++    for name in missing:
++        try:
++            # nosemgrep: python.lang.security.audit.dangerous-subprocess-use-tainted-env-args.dangerous-subprocess-use-tainted-env-args
++            subprocess.run(
++                _label_create_command(repo, name, PRIORITY_LABELS[name]),
++                check=True,
++            )
++        except subprocess.CalledProcessError:
++            # A concurrent creator is safe only when a fresh read proves exact metadata.
++            current = _priority_label_inventory(repo)
++            still_missing, now_mismatched = _priority_label_findings(current)
++            if name in still_missing or name in now_mismatched:
++                raise
++    final_inventory = _priority_label_inventory(repo)
++    final_missing, final_mismatched = _priority_label_findings(final_inventory)
++    if final_missing or final_mismatched:
++        details = final_missing + [f"{name} (metadata)" for name in final_mismatched]
++        raise SystemExit(f"Priority label verification failed for {repo}: {', '.join(details)}")
++
++
++def _issue_labels(issue: dict[str, Any]) -> set[str]:
++    raw_labels = issue.get("labels")
++    if not isinstance(raw_labels, list):
++        raise ValueError("Issue labels must be a list")
++    names: set[str] = set()
++    for label in raw_labels:
++        name = (
++            label
++            if isinstance(label, str)
++            else label.get("name") if isinstance(label, dict) else None
++        )
++        if not isinstance(name, str):
++            raise ValueError("Issue label entry is malformed")
++        names.add(name.lower())
++    return names
++
++
++def _non_implementation_reason(issue: dict[str, Any]) -> str | None:
++    if "pull_request" in issue:
++        return "pull_request"
++    title = issue.get("title")
++    if not isinstance(title, str):
++        raise ValueError("Issue title is missing")
++    labels = _issue_labels(issue)
++    lowered = title.lower()
++    if "tracker:durable" in labels or "evidence-collection" in labels:
++        return "durable_holder"
++    if lowered.startswith("dependency dashboard"):
++        return "dependency_dashboard"
++    if "agent-metrics" in labels and "weekly" in lowered:
++        return "agent_metrics_holder"
++    user = issue.get("user") or {}
++    login = str(user.get("login", "")).lower() if isinstance(user, dict) else ""
++    if login.startswith("dependabot") and lowered.startswith(("bump ", "build(deps", "chore(deps")):
++        return "dependency_bot"
++    if "sync-generated" in labels:
++        return "sync_bookkeeping"
++    if lowered.startswith("[sync-review]") and {"automation", "consumer-sync"}.issubset(labels):
++        return "sync_bookkeeping"
++    return None
++
++
++def summarize_implementation_issues(issues: list[dict[str, Any]]) -> dict[str, Any]:
++    """Count delivery issues without making priority a condition of existence."""
++    implementation_count = 0
++    priority_labelled_count = 0
++    excluded: Counter[str] = Counter()
++    required_names = set(PRIORITY_LABELS)
++    for issue in issues:
++        reason = _non_implementation_reason(issue)
++        if reason:
++            excluded[reason] += 1
++            continue
++        implementation_count += 1
++        if _issue_labels(issue) & required_names:
++            priority_labelled_count += 1
++    return {
++        "implementation_count": implementation_count,
++        "priority_labelled_count": priority_labelled_count,
++        "unprioritized_count": implementation_count - priority_labelled_count,
++        "excluded": dict(sorted(excluded.items())),
++    }
++
++
++def _systemic_api_failure(error: BaseException) -> bool:
++    stderr = str(getattr(error, "stderr", "") or "").lower()
++    return any(marker in stderr for marker in SYSTEMIC_API_ERROR_MARKERS)
++
++
++def check_consumer_health(repos: list[str]) -> tuple[list[dict[str, Any]], int]:
++    """Audit opener-reachability labels and issue counts for registered consumers."""
++    if not repos:
++        raise SystemExit("Registered consumer list is empty; refusing a healthy result.")
++    for repo in repos:
++        _split_repo(repo)
++
++    rows: list[dict[str, Any]] = []
++    global_error: str | None = None
++    for repo in repos:
++        row: dict[str, Any] = {
++            "repository": repo,
++            "implementation_count": None,
++            "priority_labelled_count": None,
++            "unprioritized_count": None,
++            "missing": None,
++            "metadata_mismatch": None,
++            "excluded": {},
++            "error": global_error,
++        }
++        if global_error is not None:
++            row["status"] = "ERROR"
++            rows.append(row)
++            continue
++        try:
++            inventory = _priority_label_inventory(repo)
++            missing, mismatched = _priority_label_findings(inventory)
++            row["missing"] = missing
++            row["metadata_mismatch"] = mismatched
++        except (subprocess.CalledProcessError, json.JSONDecodeError, ValueError) as error:
++            row["error"] = f"label read failed: {error}"
++            if _systemic_api_failure(error):
++                global_error = row["error"]
++        if global_error is None:
++            try:
++                issues = _read_paginated_collection(f"/repos/{repo}/issues?state=open&per_page=100")
++                summary = summarize_implementation_issues(issues)
++                row.update(summary)
++            except (subprocess.CalledProcessError, json.JSONDecodeError, ValueError) as error:
++                detail = f"issue read failed: {error}"
++                row["error"] = f"{row['error']}; {detail}" if row["error"] else detail
++                if _systemic_api_failure(error):
++                    global_error = row["error"]
++        if row["error"]:
++            row["status"] = "ERROR"
++        elif row["missing"] or row["metadata_mismatch"]:
++            row["status"] = "FAIL"
++        else:
++            row["status"] = "OK"
++        rows.append(row)
++
++    if any(row["status"] == "ERROR" for row in rows):
++        return rows, 2
++    if any(row["status"] == "FAIL" for row in rows):
++        return rows, 1
++    return rows, 0
++
++
++def _render_health_row(row: dict[str, Any]) -> str:
++    def value(name: str) -> object:
++        current = row.get(name)
++        return "UNKNOWN" if current is None else current
++
++    missing = row.get("missing")
++    mismatch = row.get("metadata_mismatch")
++    missing_text = "UNKNOWN" if missing is None else ",".join(missing) or "none"
++    mismatch_text = "UNKNOWN" if mismatch is None else ",".join(mismatch) or "none"
++    line = (
++        f"{row['repository']} implementation={value('implementation_count')} "
++        f"priority_labelled={value('priority_labelled_count')} "
++        f"unprioritized={value('unprioritized_count')} missing={missing_text} "
++        f"metadata_mismatch={mismatch_text} status={row['status']}"
++    )
++    if row.get("excluded"):
++        exclusions = ",".join(f"{key}:{count}" for key, count in row["excluded"].items())
++        line += f" excluded={exclusions}"
++    if row.get("error"):
++        line += f" error={row['error']}"
++    return line
++
++
+ def verify_bootstrap_settings(
+     repo: str,
+     *,
+@@ -185,7 +480,7 @@ def build_bootstrap_plan(
+     """
+     _split_repo(repo)
+     logins = keepalive_logins or _default_keepalive_logins(repo)
+-    return [
++    settings_plan = [
+         {
+             "id": "workflow_permissions",
+             "description": "3.3.1 default_workflow_permissions=write, can_approve_pull_request_reviews=true",
+@@ -209,6 +504,7 @@ def build_bootstrap_plan(
+             "command": _collaborator_command(repo, bot),
+         },
+     ]
++    return settings_plan + build_label_plan(repo)
+ 
+ 
+ def _format_command(cmd: list[str]) -> str:
+@@ -221,9 +517,14 @@ def main() -> int:
+     )
+     parser.add_argument(
+         "--repo",
+-        required=True,
+         help="Consumer repo in 'owner/name' form (e.g. stranske/Foo).",
+     )
++    parser.add_argument(
++        "--manifest",
++        type=Path,
++        default=DEFAULT_REGISTRY_MANIFEST,
++        help="Registered-consumer workflow manifest used by --health-check.",
++    )
+     parser.add_argument(
+         "--keepalive-logins",
+         help="Comma-separated logins for ALLOWED_KEEPALIVE_LOGINS (default: repo owner).",
+@@ -248,11 +549,35 @@ def main() -> int:
+         action="store_true",
+         help="Check all four bootstrap settings and report pass/fail (no mutations).",
+     )
++    parser.add_argument(
++        "--labels-only",
++        action="store_true",
++        help="Limit dry-run or --execute to the three required priority labels.",
++    )
++    parser.add_argument(
++        "--health-check",
++        action="store_true",
++        help="Audit every registered consumer's required labels and open issue counts.",
++    )
+ 
+     args = parser.parse_args()
+ 
+-    if sum([args.execute, args.check, args.verify]) > 1:
+-        raise SystemExit("Choose only one of --execute, --check, or --verify.")
++    if sum([args.execute, args.check, args.verify, args.health_check]) > 1:
++        raise SystemExit("Choose only one of --execute, --check, --verify, or --health-check.")
++    if args.labels_only and (args.check or args.verify or args.health_check):
++        raise SystemExit("--labels-only supports only dry-run or --execute mode.")
++    if args.health_check:
++        if args.repo:
++            raise SystemExit("--health-check reads the registry; do not pass --repo.")
++        if not args.manifest.is_file():
++            raise SystemExit(f"Manifest not found: {args.manifest}")
++        repos = extract_repos(args.manifest)
++        rows, return_code = check_consumer_health(repos)
++        for row in rows:
++            print(_render_health_row(row))
++        return return_code
++    if not args.repo:
++        raise SystemExit("--repo is required unless --health-check is used.")
+ 
+     if args.check:
+         cmd = _workflow_permissions_check_command(args.repo)
+@@ -274,21 +599,34 @@ def main() -> int:
+                 all_ok = False
+         return 0 if all_ok else 1
+ 
+-    plan = build_bootstrap_plan(
+-        args.repo,
+-        keepalive_logins=args.keepalive_logins,
+-        bot=args.bot,
+-    )
++    if args.labels_only:
++        plan = build_label_plan(args.repo)
++    else:
++        plan = build_bootstrap_plan(
++            args.repo,
++            keepalive_logins=args.keepalive_logins,
++            bot=args.bot,
++        )
++
++    if args.execute:
++        for op in plan:
++            if str(op["id"]).startswith("label_"):
++                continue
++            cmd = op["command"]
++            assert isinstance(cmd, list)
++            print(f"# {op['description']}")
++            # The command is an argv list (never a shell string), and every repo
++            # component has already passed _split_repo's strict allowlist.
++            # nosemgrep: python.lang.security.audit.dangerous-subprocess-use-tainted-env-args.dangerous-subprocess-use-tainted-env-args
++            subprocess.run(cmd, check=True)
++        apply_priority_labels(args.repo)
++        return 0
+ 
+     for op in plan:
+         cmd = op["command"]
+         assert isinstance(cmd, list)
+-        if args.execute:
+-            print(f"# {op['description']}")
+-            subprocess.run(cmd, check=True)
+-        else:
+-            print(f"# {op['description']}")
+-            print(_format_command(cmd))
++        print(f"# {op['description']}")
++        print(_format_command(cmd))
+ 
+     return 0
+ 
+diff --git a/tests/scripts/test_bootstrap_consumer_labels.py b/tests/scripts/test_bootstrap_consumer_labels.py
+new file mode 100644
+index 0000000..c5b6102
+--- /dev/null
++++ b/tests/scripts/test_bootstrap_consumer_labels.py
+@@ -0,0 +1,313 @@
++from __future__ import annotations
++
++import json
++import subprocess
++from unittest.mock import MagicMock, patch
++
++import pytest
++from scripts import bootstrap_consumer_settings as bcs
++from scripts.upload_repo_review_issues import LABELS as REVIEW_LABELS
++
++EXPECTED_PRIORITY_LABELS = {
++    "priority:high": {
++        "color": "b60205",
++        "description": "High-priority weekly repo-review work",
++    },
++    "priority:normal": {
++        "color": "fbca04",
++        "description": "Normal-priority weekly repo-review work",
++    },
++    "priority:low": {
++        "color": "0e8a16",
++        "description": "Low-priority weekly repo-review work",
++    },
++}
++
++
++def _label_inventory(*names: str) -> dict[str, dict[str, str]]:
++    return {name: {"name": name, **EXPECTED_PRIORITY_LABELS[name]} for name in names}
++
++
++def _issue(
++    number: int,
++    title: str,
++    *,
++    labels: tuple[str, ...] = (),
++    login: str = "stranske",
++    is_pr: bool = False,
++) -> dict[str, object]:
++    issue: dict[str, object] = {
++        "number": number,
++        "title": title,
++        "labels": [{"name": name} for name in labels],
++        "user": {"login": login, "type": "Bot" if login.endswith("[bot]") else "User"},
++    }
++    if is_pr:
++        issue["pull_request"] = {"url": "https://example.invalid/pr"}
++    return issue
++
++
++def test_priority_labels_are_literal_and_match_review_uploader() -> None:
++    assert bcs.PRIORITY_LABELS == EXPECTED_PRIORITY_LABELS
++    assert {name: REVIEW_LABELS[name] for name in EXPECTED_PRIORITY_LABELS} == (
++        EXPECTED_PRIORITY_LABELS
++    )
++
++
++def test_label_plan_contains_all_three_required_labels() -> None:
++    plan = bcs.build_label_plan("stranske/Foo")
++    assert [operation["id"] for operation in plan] == [
++        "label_high",
++        "label_normal",
++        "label_low",
++    ]
++    commands = [operation["command"] for operation in plan]
++    for name, definition in EXPECTED_PRIORITY_LABELS.items():
++        command = next(command for command in commands if name in command)
++        assert command == [
++            "gh",
++            "label",
++            "create",
++            name,
++            "--repo",
++            "stranske/Foo",
++            "--color",
++            definition["color"],
++            "--description",
++            definition["description"],
++        ]
++        assert "--force" not in command
++
++
++def test_apply_priority_labels_creates_only_missing_and_rechecks() -> None:
++    initial = _label_inventory("priority:high", "priority:low")
++    complete = _label_inventory(*EXPECTED_PRIORITY_LABELS)
++    with (
++        patch(
++            "scripts.bootstrap_consumer_settings._priority_label_inventory",
++            side_effect=[initial, complete],
++        ),
++        patch("subprocess.run") as run,
++    ):
++        bcs.apply_priority_labels("stranske/Foo")
++    run.assert_called_once_with(
++        bcs._label_create_command(
++            "stranske/Foo",
++            "priority:normal",
++            EXPECTED_PRIORITY_LABELS["priority:normal"],
++        ),
++        check=True,
++    )
++
++
++def test_apply_priority_labels_refuses_metadata_overwrite() -> None:
++    inventory = _label_inventory(*EXPECTED_PRIORITY_LABELS)
++    inventory["priority:normal"]["description"] = "Normal priority"
++    with (
++        patch(
++            "scripts.bootstrap_consumer_settings._priority_label_inventory",
++            return_value=inventory,
++        ),
++        patch("subprocess.run") as run,
++        pytest.raises(SystemExit, match="Refusing to overwrite"),
++    ):
++        bcs.apply_priority_labels("stranske/Foo")
++    run.assert_not_called()
++
++
++def test_apply_priority_labels_tolerates_concurrent_exact_create() -> None:
++    initial = _label_inventory("priority:high", "priority:low")
++    complete = _label_inventory(*EXPECTED_PRIORITY_LABELS)
++    error = subprocess.CalledProcessError(1, ["gh"], stderr="already exists")
++    with (
++        patch(
++            "scripts.bootstrap_consumer_settings._priority_label_inventory",
++            side_effect=[initial, complete, complete],
++        ),
++        patch("subprocess.run", side_effect=error),
++    ):
++        bcs.apply_priority_labels("stranske/Foo")
++
++
++def test_apply_priority_labels_reraises_when_create_fails() -> None:
++    initial = _label_inventory("priority:high", "priority:low")
++    error = subprocess.CalledProcessError(1, ["gh"], stderr="forbidden")
++    with (
++        patch(
++            "scripts.bootstrap_consumer_settings._priority_label_inventory",
++            side_effect=[initial, initial],
++        ),
++        patch("subprocess.run", side_effect=error),
++        pytest.raises(subprocess.CalledProcessError),
++    ):
++        bcs.apply_priority_labels("stranske/Foo")
++
++
++def test_apply_priority_labels_fails_final_verification() -> None:
++    initial = _label_inventory("priority:high", "priority:low")
++    with (
++        patch(
++            "scripts.bootstrap_consumer_settings._priority_label_inventory",
++            side_effect=[initial, initial],
++        ),
++        patch("subprocess.run"),
++        pytest.raises(SystemExit, match="Priority label verification failed"),
++    ):
++        bcs.apply_priority_labels("stranske/Foo")
++
++
++def test_read_paginated_collection_flattens_every_page() -> None:
++    result = MagicMock()
++    result.stdout = json.dumps([[{"number": 1}], [{"number": 2}], []])
++    with patch("subprocess.run", return_value=result) as run:
++        items = bcs._read_paginated_collection("/repos/stranske/Foo/issues?state=open")
++    assert items == [{"number": 1}, {"number": 2}]
++    assert "--paginate" in run.call_args.args[0]
++    assert "--slurp" in run.call_args.args[0]
++
++
++def test_issue_summary_counts_unlabelled_and_bot_delivery_without_guessing_priority() -> None:
++    issues = [
++        _issue(1, "ordinary unlabeled defect"),
++        _issue(2, "normal defect", labels=("priority:normal",)),
++        _issue(3, "two labels", labels=("priority:high", "priority:low")),
++        _issue(4, "verifier follow-up", login="github-actions[bot]"),
++        _issue(5, "durable tracker", labels=("tracker:durable",)),
++        _issue(6, "Dependency Dashboard"),
++        _issue(7, "Bump pytest from 8 to 9", login="dependabot[bot]"),
++        _issue(
++            8,
++            "[sync-review] managed path drift",
++            labels=("automation", "consumer-sync"),
++        ),
++        _issue(9, "open pull request", is_pr=True),
++    ]
++    assert bcs.summarize_implementation_issues(issues) == {
++        "implementation_count": 4,
++        "priority_labelled_count": 2,
++        "unprioritized_count": 2,
++        "excluded": {
++            "dependency_bot": 1,
++            "dependency_dashboard": 1,
++            "durable_holder": 1,
++            "pull_request": 1,
++            "sync_bookkeeping": 1,
++        },
++    }
++
++
++def test_health_check_reports_zero_counts_and_missing_labels() -> None:
++    complete = _label_inventory(*EXPECTED_PRIORITY_LABELS)
++    missing_normal = _label_inventory("priority:high", "priority:low")
++    with (
++        patch(
++            "scripts.bootstrap_consumer_settings._priority_label_inventory",
++            side_effect=[complete, missing_normal],
++        ),
++        patch(
++            "scripts.bootstrap_consumer_settings._read_paginated_collection",
++            side_effect=[[], [_issue(1, "unlabelled delivery")]],
++        ),
++    ):
++        rows, exit_code = bcs.check_consumer_health(["stranske/Empty", "stranske/Missing"])
++    assert exit_code == 1
++    assert rows[0] == {
++        "repository": "stranske/Empty",
++        "implementation_count": 0,
++        "priority_labelled_count": 0,
++        "unprioritized_count": 0,
++        "missing": [],
++        "metadata_mismatch": [],
++        "excluded": {},
++        "error": None,
++        "status": "OK",
++    }
++    assert rows[1]["missing"] == ["priority:normal"]
++    assert rows[1]["implementation_count"] == 1
++    assert rows[1]["priority_labelled_count"] == 0
++    assert rows[1]["status"] == "FAIL"
++
++
++def test_health_check_preserves_unknown_on_systemic_api_failure() -> None:
++    error = subprocess.CalledProcessError(
++        1,
++        ["gh", "api"],
++        stderr="API rate limit exceeded for installation",
++    )
++    with patch(
++        "scripts.bootstrap_consumer_settings._priority_label_inventory",
++        side_effect=error,
++    ) as inventory:
++        rows, exit_code = bcs.check_consumer_health(["stranske/First", "stranske/Second"])
++    assert exit_code == 2
++    assert inventory.call_count == 1
++    assert [row["status"] for row in rows] == ["ERROR", "ERROR"]
++    assert rows[1]["missing"] is None
++    assert rows[1]["implementation_count"] is None
++
++
++def test_render_health_row_preserves_explicit_zeroes() -> None:
++    row = {
++        "repository": "stranske/Empty",
++        "implementation_count": 0,
++        "priority_labelled_count": 0,
++        "unprioritized_count": 0,
++        "missing": [],
++        "metadata_mismatch": [],
++        "excluded": {},
++        "error": None,
++        "status": "OK",
++    }
++    assert bcs._render_health_row(row) == (
++        "stranske/Empty implementation=0 priority_labelled=0 unprioritized=0 "
++        "missing=none metadata_mismatch=none status=OK"
++    )
++
++
++def test_labels_only_execute_skips_unrelated_settings() -> None:
++    with (
++        patch(
++            "sys.argv",
++            ["bcs", "--repo", "stranske/Template", "--labels-only", "--execute"],
++        ),
++        patch("subprocess.run") as run,
++        patch("scripts.bootstrap_consumer_settings.apply_priority_labels") as apply,
++    ):
++        assert bcs.main() == 0
++    run.assert_not_called()
++    apply.assert_called_once_with("stranske/Template")
++
++
++def test_health_mode_uses_registry_and_performs_no_direct_writes(tmp_path) -> None:
++    manifest = tmp_path / "maint-68.yml"
++    manifest.write_text(
++        "env:\n  REGISTERED_CONSUMER_REPOS: |\n    stranske/One\n    stranske/Two\n",
++        encoding="utf-8",
++    )
++    rows = [
++        {
++            "repository": "stranske/One",
++            "implementation_count": 0,
++            "priority_labelled_count": 0,
++            "unprioritized_count": 0,
++            "missing": [],
++            "metadata_mismatch": [],
++            "excluded": {},
++            "error": None,
++            "status": "OK",
++        }
++    ]
++    with (
++        patch(
++            "sys.argv",
++            ["bcs", "--health-check", "--manifest", str(manifest)],
++        ),
++        patch(
++            "scripts.bootstrap_consumer_settings.check_consumer_health",
++            return_value=(rows, 0),
++        ) as health,
++        patch("subprocess.run") as run,
++    ):
++        assert bcs.main() == 0
++    run.assert_not_called()
++    health.assert_called_once_with(["stranske/One", "stranske/Two"])
+diff --git a/tests/scripts/test_bootstrap_consumer_settings.py b/tests/scripts/test_bootstrap_consumer_settings.py
+index 1adac61..943d0b9 100644
+--- a/tests/scripts/test_bootstrap_consumer_settings.py
++++ b/tests/scripts/test_bootstrap_consumer_settings.py
+@@ -18,7 +18,19 @@ def test_split_repo_parses_owner_and_name(repo: str, expected: tuple[str, str])
+     assert bcs._split_repo(repo) == expected
+ 
+ 
+-@pytest.mark.parametrize("bad", ["", "foo", "owner/", "/name", "a/b/c"])
++@pytest.mark.parametrize(
++    "bad",
++    [
++        "",
++        "foo",
++        "owner/",
++        "/name",
++        "a/b/c",
++        "owner/repo;touch-pwned",
++        "owner/repo name",
++        "owner/repo\n--help",
++    ],
++)
+ def test_split_repo_rejects_malformed(bad: str) -> None:
+     with pytest.raises(SystemExit, match="owner/name"):
+         bcs._split_repo(bad)
+@@ -67,13 +79,16 @@ def test_collaborator_command_invites_push_collaborator() -> None:
+     ]
+ 
+ 
+-def test_plan_has_all_four_bootstrap_operations_in_order() -> None:
++def test_plan_has_settings_then_priority_labels_in_order() -> None:
+     plan = bcs.build_bootstrap_plan("stranske/Foo")
+     assert [op["id"] for op in plan] == [
+         "workflow_permissions",
+         "var_use_consolidated_workflows",
+         "var_allowed_keepalive_logins",
+         "bot_collaborator",
++        "label_high",
++        "label_normal",
++        "label_low",
+     ]
+ 
+ 
+@@ -176,15 +191,17 @@ def test_main_dry_run_does_not_call_subprocess(capsys: pytest.CaptureFixture[str
+         mock_run.assert_not_called()
+ 
+ 
+-def test_main_execute_runs_all_four_commands() -> None:
+-    """--execute calls subprocess.run for each of the four bootstrap operations."""
++def test_main_execute_runs_settings_then_applies_priority_labels() -> None:
++    """--execute preserves the four settings operations before label reconciliation."""
+     with (
+         patch("sys.argv", ["bcs", "--repo", "stranske/Foo", "--execute"]),
+         patch("subprocess.run") as mock_run,
++        patch("scripts.bootstrap_consumer_settings.apply_priority_labels") as mock_labels,
+     ):
+         rc = bcs.main()
+     assert rc == 0
+     assert mock_run.call_count == 4
++    mock_labels.assert_called_once_with("stranske/Foo")
+ 
+ 
+ def test_main_execute_workflow_permissions_command() -> None:
+@@ -192,6 +209,7 @@ def test_main_execute_workflow_permissions_command() -> None:
+     with (
+         patch("sys.argv", ["bcs", "--repo", "stranske/Foo", "--execute"]),
+         patch("subprocess.run") as mock_run,
++        patch("scripts.bootstrap_consumer_settings.apply_priority_labels"),
+     ):
+         bcs.main()
+     first_cmd = mock_run.call_args_list[0][0][0]
+@@ -205,6 +223,7 @@ def test_main_execute_sets_use_consolidated_workflows() -> None:
+     with (
+         patch("sys.argv", ["bcs", "--repo", "stranske/Foo", "--execute"]),
+         patch("subprocess.run") as mock_run,
++        patch("scripts.bootstrap_consumer_settings.apply_priority_labels"),
+     ):
+         bcs.main()
+     second_cmd = mock_run.call_args_list[1][0][0]
+@@ -217,6 +236,7 @@ def test_main_execute_sets_allowed_keepalive_logins() -> None:
+     with (
+         patch("sys.argv", ["bcs", "--repo", "stranske/Foo", "--execute"]),
+         patch("subprocess.run") as mock_run,
++        patch("scripts.bootstrap_consumer_settings.apply_priority_labels"),
+     ):
+         bcs.main()
+     third_cmd = mock_run.call_args_list[2][0][0]
+@@ -232,6 +252,7 @@ def test_main_execute_keepalive_logins_override() -> None:
+             ["bcs", "--repo", "stranske/Foo", "--execute", "--keepalive-logins", "alice,bob"],
+         ),
+         patch("subprocess.run") as mock_run,
++        patch("scripts.bootstrap_consumer_settings.apply_priority_labels"),
+     ):
+         bcs.main()
+     third_cmd = mock_run.call_args_list[2][0][0]
+@@ -243,6 +264,7 @@ def test_main_execute_sends_bot_collaborator_invite() -> None:
+     with (
+         patch("sys.argv", ["bcs", "--repo", "stranske/Foo", "--execute"]),
+         patch("subprocess.run") as mock_run,
++        patch("scripts.bootstrap_consumer_settings.apply_priority_labels"),
+     ):
+         bcs.main()
+     fourth_cmd = mock_run.call_args_list[3][0][0]
+@@ -255,6 +277,7 @@ def test_main_execute_bot_override() -> None:
+     with (
+         patch("sys.argv", ["bcs", "--repo", "stranske/Foo", "--execute", "--bot", "other-bot"]),
+         patch("subprocess.run") as mock_run,
++        patch("scripts.bootstrap_consumer_settings.apply_priority_labels"),
+     ):
+         bcs.main()
+     fourth_cmd = mock_run.call_args_list[3][0][0]

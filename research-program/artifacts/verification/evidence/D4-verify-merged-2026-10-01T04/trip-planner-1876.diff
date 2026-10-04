@@ -1,0 +1,444 @@
+diff --git a/frontend/src/api/workspace.ts b/frontend/src/api/workspace.ts
+index c2712c530..2f0f23b00 100644
+--- a/frontend/src/api/workspace.ts
++++ b/frontend/src/api/workspace.ts
+@@ -736,7 +736,7 @@ export type WorkspaceData = {
+           related_category: string;
+         }>;
+         notes: string[];
+-        compliance_score: number;
++        compliance_score: number | null;
+       } | null;
+     };
+     follow_up: {
+diff --git a/frontend/src/components/workspace/ApprovalPacket.test.tsx b/frontend/src/components/workspace/ApprovalPacket.test.tsx
+index 64c93ab95..48941b9b2 100644
+--- a/frontend/src/components/workspace/ApprovalPacket.test.tsx
++++ b/frontend/src/components/workspace/ApprovalPacket.test.tsx
+@@ -205,6 +205,21 @@ describe("ApprovalPacket", () => {
+     expect(screen.getByTestId("approval-packet-verdict")).toHaveTextContent("Passed the travel policy check");
+   });
+ 
++  it("describes an exception as needing approval, not as unfinished review", () => {
++    render(
++      <ApprovalPacket
++        workspace={workspace({ summary: { evaluation_result_status: "exception_required" } })}
++        prices={PRICED}
++        onPrint={vi.fn()}
++      />
++    );
++
++    expect(screen.getByTestId("approval-packet-verdict")).toHaveTextContent(
++      "Policy exception requires approval"
++    );
++    expect(documentText()).not.toMatch(/review has not finished|compliance score|\d+%/i);
++  });
++
+   it("says plainly when the trip has no price", () => {
+     render(<ApprovalPacket workspace={workspace({ proposal: false })} prices={null} onPrint={vi.fn()} />);
+ 
+diff --git a/frontend/src/components/workspace/ApprovalPacket.tsx b/frontend/src/components/workspace/ApprovalPacket.tsx
+index 26ef8ad56..f9c8eacfb 100644
+--- a/frontend/src/components/workspace/ApprovalPacket.tsx
++++ b/frontend/src/components/workspace/ApprovalPacket.tsx
+@@ -65,6 +65,9 @@ function describePolicyResult(workspace: WorkspaceData): PolicyResult {
+   if (summary.submission_outcome === "blocked_by_policy" || verdictStatus === "non_compliant") {
+     return { label: "Blocked by travel policy until the items below are resolved", reasons };
+   }
++  if (verdictStatus === "exception_required") {
++    return { label: "Policy exception requires approval", reasons };
++  }
+   if (summary.submission_outcome === "failed") {
+     return { label: "Not reviewed — the policy service could not be reached", reasons: [] };
+   }
+@@ -278,4 +281,3 @@ export function ApprovalPacket({
+     </section>
+   );
+ }
+-
+diff --git a/tests/app/test_proposal.py b/tests/app/test_proposal.py
+index 640347844..1b9553397 100644
+--- a/tests/app/test_proposal.py
++++ b/tests/app/test_proposal.py
+@@ -465,7 +465,10 @@ def test_non_compliant_reoptimize_surfaces_plan_in_workspace_reload(
+     assert reloaded_plan["candidate_categories"]
+ 
+ 
+-def test_workspace_proposal_evaluation_derives_exception_follow_up(client: TestClient) -> None:
++@pytest.mark.parametrize("score", [0.68, None])
++def test_workspace_proposal_evaluation_derives_exception_follow_up(
++    client: TestClient, score: float | None
++) -> None:
+     created = client.post(
+         "/api/trips",
+         json={
+@@ -547,7 +550,9 @@ def test_workspace_proposal_evaluation_derives_exception_follow_up(client: TestC
+     evaluation_fixture["response"]["result_payload"]["evaluation_result"]["notes"] = [
+         "Proposal is exception-eligible if the fatigue-management rationale is approved."
+     ]
+-    evaluation_fixture["response"]["result_payload"]["evaluation_result"]["compliance_score"] = 0.68
++    evaluation_fixture["response"]["result_payload"]["evaluation_result"][
++        "compliance_score"
++    ] = score
+ 
+     evaluated = client.put(
+         f"/api/workspace/{trip_id}/proposal/evaluation",
+@@ -573,6 +578,20 @@ def test_workspace_proposal_evaluation_derives_exception_follow_up(client: TestC
+     assert payload["summary"]["evaluation_result_status"] == "exception_required"
+     assert payload["summary"]["approval_ready"] is False
+     assert payload["summary"]["follow_up_status"] == "exception_required"
++    assert payload["evaluation"]["evaluation_result"]["compliance_score"] == score
++
++    session = get_session_factory()()
++    try:
++        record = session.query(PersistedProposalState).filter_by(trip_id=trip_id).one()
++        assert record.evaluation_record["evaluation_result"]["compliance_score"] == score
++    finally:
++        session.close()
++
++    reloaded = client.get(f"/api/workspace/{trip_id}")
++    assert reloaded.status_code == 200
++    reloaded_state = reloaded.json()["proposal_state"]
++    assert reloaded_state["summary"]["evaluation_result_status"] == "exception_required"
++    assert reloaded_state["follow_up"]["status"] == "exception_required"
+ 
+ 
+ def test_workspace_proposal_submission_clears_stale_evaluation_state(client: TestClient) -> None:
+diff --git a/tests/business/test_approval_ready.py b/tests/business/test_approval_ready.py
+index e3f982ffb..e3e6ace97 100644
+--- a/tests/business/test_approval_ready.py
++++ b/tests/business/test_approval_ready.py
+@@ -1,6 +1,8 @@
+ import json
+ from pathlib import Path
+ 
++import pytest
++
+ from trip_planner.business import (
+     ApprovalReadyPackage,
+     BusinessTravelProfile,
+@@ -95,3 +97,35 @@ def test_empty_booking_channels_require_attention() -> None:
+     booking_channels = readiness_checks["booking_channels"]
+     assert booking_channels.status == "attention"
+     assert booking_channels.notes == ["No booking channels documented"]
++
++
++@pytest.mark.parametrize(
++    ("status", "expected_package_status"),
++    [
++        ("compliant", "approval_ready"),
++        ("exception_required", "exception_ready"),
++        ("non_compliant", "policy_revision_needed"),
++    ],
++)
++def test_unknown_tpp_score_preserves_categorical_readiness(
++    status: str, expected_package_status: str
++) -> None:
++    payload = _load_fixture("approval_ready_clean.json")
++    profile = BusinessTravelProfile.from_dict(payload["profile"])
++    proposal = TripPlanProposal.from_dict(payload["proposal"])
++    evaluation = PolicyEvaluationResult.from_dict(
++        {
++            **payload["evaluation_result"],
++            "status": status,
++            "notes": [],
++            "compliance_score": None,
++        }
++    )
++
++    package = build_approval_ready_package(profile, proposal, evaluation)
++
++    assert package.package_status == expected_package_status
++    assert package.compliance_score is None
++    assert package.to_dict()["compliance_score"] is None
++    posture = next(check for check in package.readiness_checks if check.key == "policy_posture")
++    assert posture.notes == [f"Policy status: {status.replace('_', ' ')}"]
+diff --git a/tests/business/test_policy_contracts.py b/tests/business/test_policy_contracts.py
+index 4c20977ea..31e6be8ea 100644
+--- a/tests/business/test_policy_contracts.py
++++ b/tests/business/test_policy_contracts.py
+@@ -1,6 +1,8 @@
+ import json
+ from pathlib import Path
+ 
++import pytest
++
+ from trip_planner.business import (
+     JustificationRecord,
+     PolicyConstraintSet,
+@@ -124,6 +126,32 @@ def test_policy_evaluation_result_rejects_invalid_status() -> None:
+         raise AssertionError("PolicyEvaluationResult should reject unsupported statuses")
+ 
+ 
++@pytest.mark.parametrize("status", ["compliant", "exception_required", "non_compliant"])
++def test_missing_tpp_score_remains_unknown_after_round_trip(status: str) -> None:
++    payload = {
++        "evaluation_id": "eval-tpp",
++        "proposal_id": "proposal-tpp",
++        "status": status,
++    }
++    for score_payload in (payload, {**payload, "compliance_score": None}):
++        evaluation = PolicyEvaluationResult.from_dict(score_payload)
++        assert evaluation.compliance_score is None
++        assert evaluation.to_dict()["compliance_score"] is None
++
++
++def test_explicit_local_score_stays_numeric_and_is_validated() -> None:
++    payload = {
++        "evaluation_id": "eval-local",
++        "proposal_id": "proposal-local",
++        "status": "compliant",
++        "compliance_score": 0.82,
++    }
++    assert PolicyEvaluationResult.from_dict(payload).to_dict()["compliance_score"] == 0.82
++    for invalid in (-0.1, 1.1, float("nan")):
++        with pytest.raises(ValueError, match="compliance_score"):
++            PolicyEvaluationResult.from_dict({**payload, "compliance_score": invalid})
++
++
+ def test_policy_evaluation_result_rejects_non_list_exception_guidance() -> None:
+     scenario = _load_scenario("policy_round_trip_exception.json")
+     scenario["evaluation_result"]["exception_guidance"] = "submit fatigue rationale"
+diff --git a/tests/integrations/test_tpp_contracts.py b/tests/integrations/test_tpp_contracts.py
+index 4556b822c..d2a40e4d8 100644
+--- a/tests/integrations/test_tpp_contracts.py
++++ b/tests/integrations/test_tpp_contracts.py
+@@ -13,6 +13,7 @@
+ import pytest
+ from pytest_httpserver import HTTPServer
+ 
++from trip_planner.business import PolicyEvaluationResult
+ from trip_planner.integrations.tpp import (
+     BaseTPPIntegrationClient,
+     HTTPTPPIntegrationClient,
+@@ -89,6 +90,39 @@ def test_evaluation_failure_fixture_round_trip() -> None:
+     assert response.retry.attempt == 1
+ 
+ 
++@pytest.mark.parametrize("outcome", ["compliant", "exception_required", "non_compliant"])
++def test_live_tpp_outcome_does_not_invent_compliance_score(
++    monkeypatch: pytest.MonkeyPatch, outcome: str
++) -> None:
++    request_payload = _load_fixture("evaluation_failure.json")["request"]
++    request_payload["payload"]["proposal_version"] = 1
++    request = TPPRequestEnvelope.from_dict(request_payload)
++    client = HTTPTPPIntegrationClient(
++        TPPRuntimeSettings(
++            base_url="https://tpp.example.test",
++            access_token="test-token",
++            oidc_provider="okta",
++        )
++    )
++    monkeypatch.setattr(
++        client,
++        "_request_json",
++        lambda **_kwargs: {
++            "outcome": outcome,
++            "proposal_id": request.proposal_id,
++            "execution_id": "exec-002",
++            "policy_result": {"status": outcome},
++        },
++    )
++
++    response = client._fetch_evaluation_result(request)
++    evaluation_payload = response.to_dict()["result_payload"]["evaluation_result"]
++
++    assert evaluation_payload["status"] == outcome
++    assert evaluation_payload["compliance_score"] is None
++    assert PolicyEvaluationResult.from_dict(evaluation_payload).compliance_score is None
++
++
+ def test_request_rejects_non_mapping_payload() -> None:
+     fixture = _load_fixture("policy_fetch_success.json")
+     fixture["request"]["payload"] = ["not", "a", "mapping"]
+diff --git a/trip_planner/business/approval_ready.py b/trip_planner/business/approval_ready.py
+index 445a2df10..2494e2b62 100644
+--- a/trip_planner/business/approval_ready.py
++++ b/trip_planner/business/approval_ready.py
+@@ -77,7 +77,7 @@ class ApprovalReadyPackage:
+     preferred_alternatives: list[PreferredAlternative] = field(default_factory=list)
+     exception_guidance: list[str] = field(default_factory=list)
+     requested_exception: ExceptionRequest | None = None
+-    compliance_score: float = 1.0
++    compliance_score: float | None = None
+ 
+     def __post_init__(self) -> None:
+         require_non_empty(self.package_id, "package_id")
+@@ -127,7 +127,8 @@ def __post_init__(self) -> None:
+         require_strings(self.approval_notes, "approval_notes")
+         require_strings(self.package_summary, "package_summary")
+         require_strings(self.exception_guidance, "exception_guidance")
+-        require_probability(self.compliance_score, "compliance_score")
++        if self.compliance_score is not None:
++            require_probability(self.compliance_score, "compliance_score")
+ 
+     def to_dict(self) -> dict[str, Any]:
+         return asdict(self)
+@@ -306,7 +307,11 @@ def _build_readiness_checks(
+             notes=(
+                 list(evaluation.notes)
+                 if evaluation.notes
+-                else [f"Compliance score {evaluation.compliance_score:.0%}"]
++                else (
++                    [f"Compliance score {evaluation.compliance_score:.0%}"]
++                    if evaluation.compliance_score is not None
++                    else [f"Policy status: {evaluation.status.replace('_', ' ')}"]
++                )
+             ),
+         ),
+     ]
+diff --git a/trip_planner/business/policy_contracts.py b/trip_planner/business/policy_contracts.py
+index d8bcbe4bf..082f7dd7a 100644
+--- a/trip_planner/business/policy_contracts.py
++++ b/trip_planner/business/policy_contracts.py
+@@ -347,7 +347,7 @@ class PolicyEvaluationResult:
+     preferred_alternatives: list[PreferredAlternative] = field(default_factory=list)
+     exception_guidance: list[str] = field(default_factory=list)
+     notes: list[str] = field(default_factory=list)
+-    compliance_score: float = 1.0
++    compliance_score: float | None = None
+ 
+     def __post_init__(self) -> None:
+         require_non_empty(self.evaluation_id, "evaluation_id")
+@@ -362,7 +362,8 @@ def __post_init__(self) -> None:
+             raise ValueError("preferred_alternatives must contain PreferredAlternative instances")
+         require_strings(self.exception_guidance, "exception_guidance")
+         require_strings(self.notes, "notes")
+-        require_probability(self.compliance_score, "compliance_score")
++        if self.compliance_score is not None:
++            require_probability(self.compliance_score, "compliance_score")
+ 
+     def to_dict(self) -> dict[str, Any]:
+         return asdict(self)
+@@ -386,5 +387,5 @@ def from_dict(cls, payload: dict[str, Any]) -> PolicyEvaluationResult:
+             ],
+             exception_guidance=exception_guidance,
+             notes=notes,
+-            compliance_score=payload.get("compliance_score", 1.0),
++            compliance_score=payload.get("compliance_score"),
+         )
+diff --git a/trip_planner/integrations/tpp/client.py b/trip_planner/integrations/tpp/client.py
+index 090107c5f..9b6e16bbd 100644
+--- a/trip_planner/integrations/tpp/client.py
++++ b/trip_planner/integrations/tpp/client.py
+@@ -1021,57 +1021,16 @@ def _fetch_evaluation_result(self, request: TPPRequestEnvelope) -> TPPResponseEn
+             "evaluation_id": str(payload.get("request_id") or request.request_id),
+             "proposal_id": str(payload.get("proposal_id") or request.proposal_id or ""),
+             "status": outcome,
+-            "approval_requirements": [
+-                {
+-                    "role": str(item.get("required_role") or item.get("role") or "approver"),
+-                    "reason": str(
+-                        item.get("summary") or item.get("reason") or "Approval required."
+-                    ),
+-                    "mandatory": True,
+-                }
+-                for item in payload.get("exception_requirements") or []
+-                if isinstance(item, dict)
+-            ],
+-            "failure_reasons": [
+-                {
+-                    "code": str(item.get("code") or "policy_blocker"),
+-                    "message": str(item.get("summary") or item.get("message") or "Policy blocker."),
+-                    "severity": "blocking",
+-                    "related_category": str(item.get("category") or ""),
+-                }
+-                for item in payload.get("blocking_issues") or []
+-                if isinstance(item, dict)
+-            ],
+-            "preferred_alternatives": [
+-                {
+-                    "category": str(item.get("category") or "policy"),
+-                    "summary": str(item.get("summary") or "Preferred alternative available."),
+-                    "rationale": str(
+-                        item.get("rationale")
+-                        or item.get("summary")
+-                        or "Follow the suggested alternative."
+-                    ),
+-                    "comparable_ref": item.get("comparable_ref"),
+-                }
+-                for item in payload.get("preferred_alternatives") or []
+-                if isinstance(item, dict)
+-            ],
+-            "exception_guidance": [
+-                str(item.get("summary") or item.get("message") or "").strip()
+-                for item in (
+-                    list(payload.get("reoptimization_guidance") or [])
+-                    + list(payload.get("exception_requirements") or [])
+-                )
+-                if isinstance(item, dict)
+-                and str(item.get("summary") or item.get("message") or "").strip()
+-            ],
++            "approval_requirements": _evaluation_approval_requirements(payload),
++            "failure_reasons": _evaluation_failure_reasons(payload),
++            "preferred_alternatives": _evaluation_preferred_alternatives(payload),
++            "exception_guidance": _evaluation_exception_guidance(payload),
+             "notes": [
+                 f"Planner evaluation outcome: {outcome}.",
+                 f"Underlying policy status: {str((payload.get('policy_result') or {}).get('status') or '').strip() or 'unknown'}.",
+             ],
+-            "compliance_score": (
+-                1.0 if outcome == "compliant" else 0.45 if outcome == "exception_required" else 0.15
+-            ),
++            # TPP reports a categorical outcome, not a numeric score.
++            "compliance_score": None,
+         }
+         return TPPResponseEnvelope.from_dict(
+             {
+@@ -1099,3 +1058,56 @@ def _fetch_evaluation_result(self, request: TPPRequestEnvelope) -> TPPResponseEn
+                 "status_endpoint": payload.get("status_endpoint"),
+             }
+         )
++
++
++def _evaluation_approval_requirements(payload: dict[str, Any]) -> list[dict[str, Any]]:
++    return [
++        {
++            "role": str(item.get("required_role") or item.get("role") or "approver"),
++            "reason": str(item.get("summary") or item.get("reason") or "Approval required."),
++            "mandatory": True,
++        }
++        for item in payload.get("exception_requirements") or []
++        if isinstance(item, dict)
++    ]
++
++
++def _evaluation_failure_reasons(payload: dict[str, Any]) -> list[dict[str, Any]]:
++    return [
++        {
++            "code": str(item.get("code") or "policy_blocker"),
++            "message": str(item.get("summary") or item.get("message") or "Policy blocker."),
++            "severity": "blocking",
++            "related_category": str(item.get("category") or ""),
++        }
++        for item in payload.get("blocking_issues") or []
++        if isinstance(item, dict)
++    ]
++
++
++def _evaluation_preferred_alternatives(payload: dict[str, Any]) -> list[dict[str, Any]]:
++    return [
++        {
++            "category": str(item.get("category") or "policy"),
++            "summary": str(item.get("summary") or "Preferred alternative available."),
++            "rationale": str(
++                item.get("rationale")
++                or item.get("summary")
++                or "Follow the suggested alternative."
++            ),
++            "comparable_ref": item.get("comparable_ref"),
++        }
++        for item in payload.get("preferred_alternatives") or []
++        if isinstance(item, dict)
++    ]
++
++
++def _evaluation_exception_guidance(payload: dict[str, Any]) -> list[str]:
++    return [
++        str(item.get("summary") or item.get("message") or "").strip()
++        for item in (
++            list(payload.get("reoptimization_guidance") or [])
++            + list(payload.get("exception_requirements") or [])
++        )
++        if isinstance(item, dict) and str(item.get("summary") or item.get("message") or "").strip()
++    ]

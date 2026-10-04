@@ -1,0 +1,44 @@
+diff --git a/tests/test_main.py b/tests/test_main.py
+index 55e31b34..8802f2db 100644
+--- a/tests/test_main.py
++++ b/tests/test_main.py
+@@ -266,6 +266,6 @@ def test_ci_failure_triage_playbook_urls_resolve_to_existing_docs() -> None:
+         doc_path = pattern.playbook_url.split("#", 1)[0]
+         docs_root = (repo_root / "docs").resolve()
+         resolved_doc = (repo_root / doc_path).resolve()
+-        assert resolved_doc.is_relative_to(docs_root) and resolved_doc.is_file(), (
+-            f"{pattern.error_type} playbook_url {pattern.playbook_url!r} must resolve under docs/"
+-        )
++        assert (
++            resolved_doc.is_relative_to(docs_root) and resolved_doc.is_file()
++        ), f"{pattern.error_type} playbook_url {pattern.playbook_url!r} must resolve under docs/"
+diff --git a/tests/test_prepare_publication.py b/tests/test_prepare_publication.py
+index 25e1b1a3..bccd51fb 100644
+--- a/tests/test_prepare_publication.py
++++ b/tests/test_prepare_publication.py
+@@ -223,9 +223,7 @@ def test_documented_private_key_fixture_can_survive_publication_copy(tmp_path, s
+         content = json.dumps({"fixture": content})
+     path.write_text(content)
+     allowlist = tmp_path / ".publication-allow"
+-    allowlist.write_text(
+-        f"{path.name}:private-key # Reviewed synthetic historical evidence.\n"
+-    )
++    allowlist.write_text(f"{path.name}:private-key # Reviewed synthetic historical evidence.\n")
+ 
+     counts = prepare.prepare_copy(tmp_path, allowlist)
+ 
+diff --git a/tests/test_repo_hygiene.py b/tests/test_repo_hygiene.py
+index c55f7149..12c507d5 100644
+--- a/tests/test_repo_hygiene.py
++++ b/tests/test_repo_hygiene.py
+@@ -151,9 +151,7 @@ def check_black(expected_code: int) -> subprocess.CompletedProcess[str]:
+         return result
+ 
+     check_black(0)
+-    config_path.write_text(
+-        config_text.replace('force-exclude = "research-program/artifacts/"', "")
+-    )
++    config_path.write_text(config_text.replace('force-exclude = "research-program/artifacts/"', ""))
+     rejected = check_black(1)
+     assert "probe.py" in rejected.stderr
+     config_path.write_text(config_text)

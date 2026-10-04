@@ -1,0 +1,12 @@
+{
+  "body": "## Why\n\nD4-verify-merged-2026-09-29T04 found that squash diff `062bd840e69e` for stranske/Pension-Data#934 includes fork read-only Gate handling and `tests/test_gate_commit_status_fork_tolerance.py`, but lacks an executed deliberate-break \u2192 revert transcript with literal pytest output.\n\n## Scope\n\nCapture RED/GREEN evidence for the named pytest gate after a deliberate-break mutation and restoration.\n\n## Non-Goals\n\nDo not remove the fork tolerance behavior landed in #934.\n\n## Tasks\n\n- [ ] Perform the deliberate-break mutation on a branch off `main`, run `pytest tests/test_gate_commit_status_fork_tolerance.py -q`, and capture literal FAIL output.\n- [ ] Restore `.github/workflows/pr-00-gate.yml` exactly, re-run `pytest tests/test_gate_commit_status_fork_tolerance.py -q`, and capture literal PASS output.\n- [ ] Add RED/GREEN transcript blocks under `docs/evidence/` or the issue/PR comment thread, linked from the closing PR.\n\n## Acceptance Criteria\n\n- [ ] `pytest tests/test_gate_commit_status_fork_tolerance.py -q` exits 0 on `main` after restoration.\n- [ ] Literal deliberate-break \u2192 revert command transcripts, including pytest FAIL and PASS output, are attached under `docs/evidence/` or in the issue/PR comment thread.\n\n## Implementation Notes\n\nSurfaced by D4-verify-merged-2026-09-29T04; merge `062bd840e69e`; paths: `.github/workflows/pr-00-gate.yml`, `tests/test_gate_commit_status_fork_tolerance.py`. Related: #933, merged PR #934.\n",
+  "labels": [
+    {
+      "id": "LA_kwDORbgH9M8AAAACZuwwSg",
+      "name": "agents:formatted",
+      "description": "Issue has been formatted to AGENT_ISSUE_TEMPLATE",
+      "color": "1D76DB"
+    }
+  ],
+  "title": "[P2] D4 follow-up: deliberate-break transcript for merged PR #934 (#933)"
+}

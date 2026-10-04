@@ -1,0 +1,231 @@
+{
+  "observedAt": "2026-10-04T08:31:32.763961+00:00",
+  "repos": [
+    {
+      "repo": "Workflows",
+      "branch": "main",
+      "tip": "be2c9a1",
+      "open_count": 21,
+      "priority_count": 4,
+      "supply": 10,
+      "frozen": [
+        {
+          "number": 3123,
+          "title": "\ud83d\udd2d LangSmith Observability Health",
+          "url": "https://github.com/stranske/Workflows/issues/3123",
+          "labels": [
+            "needs-human",
+            "agent:needs-attention",
+            "metrics",
+            "automated",
+            "tracker:durable"
+          ],
+          "last_comment_snip": "Observability health changed from **healthy** to **degraded**. See run https://github.com/stranske/Workflows/actions/runs/35085029071.",
+          "body_snip": "<!-- langsmith-observability-health:v1 status=degraded -->\n\n# LangSmith Observability Health\n\n- Overall status: **degraded**\n- Generated: 2026-10-03T10:25:26.158944+00:00\n\n| Component | Status | Latest evidence | Details |\n|---|---|---|---|\n| dashboard_publication | healthy | 2026-09-28T09:14:12+00:"
+        }
+      ],
+      "stalled": [],
+      "silent": [
+        {
+          "number": 3694,
+          "title": "[sync-review] Fix upstream manifest-synced paths blocking stranske/Travel-Plan-Permission#1646",
+          "url": "https://github.com/stranske/Workflows/issues/3694",
+          "labels": [
+            "agent:codex",
+            "automation",
+            "status:in-progress",
+            "agents:apply-suggestions",
+            "agents:formatted",
+            "verify:evaluate",
+            "agents:auto-pilot",
+            "consumer-sync",
+            "agent:auto"
+          ],
+          "last_comment_snip": "## Upstream sync review debt\n\nConsumer delivery PR: stranske/Orchestrator#399\n\nManifest-synced paths with unresolved bot review threads:\n- consumer `.github/scripts/agents_verifier_context.js` \u2192 source `stranske/Workflows/.github/scripts/agents_verifier_context.js`\n\nFix these paths in Workflows main so the next sync regeneration outdates the consumer threads."
+        },
+        {
+          "number": 3123,
+          "title": "\ud83d\udd2d LangSmith Observability Health",
+          "url": "https://github.com/stranske/Workflows/issues/3123",
+          "labels": [
+            "needs-human",
+            "agent:needs-attention",
+            "metrics",
+            "automated",
+            "tracker:durable"
+          ],
+          "last_comment_snip": "Observability health changed from **healthy** to **degraded**. See run https://github.com/stranske/Workflows/actions/runs/35085029071."
+        }
+      ],
+      "branch_state": "green",
+      "fail_run": null,
+      "recent_workflows": [
+        [
+          "Gate Fork Status Publisher",
+          "success",
+          "completed"
+        ]
+      ]
+    },
+    {
+      "repo": "Travel-Plan-Permission",
+      "branch": "main",
+      "tip": "2dfae15",
+      "open_count": 22,
+      "priority_count": 0,
+      "supply": 18,
+      "frozen": [],
+      "stalled": [],
+      "silent": [],
+      "branch_state": "green",
+      "fail_run": null,
+      "recent_workflows": [
+        [
+          "Gate Fork Status Publisher",
+          "success",
+          "completed"
+        ],
+        [
+          "Gate Fork Status Publisher",
+          "success",
+          "completed"
+        ],
+        [
+          "Gate Fork Status Publisher",
+          "success",
+          "completed"
+        ]
+      ]
+    },
+    {
+      "repo": "Trend_Model_Project",
+      "branch": "main",
+      "tip": "c664b0b",
+      "open_count": 2,
+      "priority_count": 0,
+      "supply": 0,
+      "frozen": [],
+      "stalled": [],
+      "silent": [],
+      "branch_state": "green",
+      "fail_run": null,
+      "recent_workflows": []
+    },
+    {
+      "repo": "Portable-Alpha-Extension-Model",
+      "branch": "main",
+      "tip": "f40f635",
+      "open_count": 3,
+      "priority_count": 0,
+      "supply": 0,
+      "frozen": [],
+      "stalled": [],
+      "silent": [
+        {
+          "number": 2329,
+          "title": "Fix clean-venv packaging race blocking generated sync Gate",
+          "url": "https://github.com/stranske/Portable-Alpha-Extension-Model/issues/2329",
+          "labels": [
+            "agent:codex",
+            "status:in-progress",
+            "agents:apply-suggestions",
+            "agents:formatted",
+            "verify:evaluate",
+            "agents:auto-pilot",
+            "agent:auto"
+          ],
+          "last_comment_snip": "Sequencing correction: PR #2330 merged and received `verify:compare`, but this source issue must remain open until the durable verifier report is dispositioned and the source acceptance/checklist evidence is reconciled. GitHub auto-close was premature; automation will close only after PASS with no remaining debt, or open/update a bounded follow-up for a valid non-PASS."
+        }
+      ],
+      "branch_state": "green",
+      "fail_run": null,
+      "recent_workflows": [
+        [
+          "Gate Fork Status Publisher",
+          "success",
+          "completed"
+        ],
+        [
+          "Gate Fork Status Publisher",
+          "cancelled",
+          "completed"
+        ],
+        [
+          "Gate Fork Status Publisher",
+          "success",
+          "completed"
+        ],
+        [
+          "Gate Fork Status Publisher",
+          "success",
+          "completed"
+        ]
+      ]
+    },
+    {
+      "repo": "Counter_Risk",
+      "branch": "main",
+      "tip": "262a811",
+      "open_count": 2,
+      "priority_count": 0,
+      "supply": 0,
+      "frozen": [],
+      "stalled": [],
+      "silent": [],
+      "branch_state": "green",
+      "fail_run": null,
+      "recent_workflows": []
+    },
+    {
+      "repo": "Manager-Database",
+      "branch": "main",
+      "tip": "e1a2460",
+      "open_count": 2,
+      "priority_count": 0,
+      "supply": 0,
+      "frozen": [],
+      "stalled": [],
+      "silent": [],
+      "branch_state": "green",
+      "fail_run": null,
+      "recent_workflows": []
+    },
+    {
+      "repo": "Inv-Man-Intake",
+      "branch": "main",
+      "tip": "a8f5dd6",
+      "open_count": 3,
+      "priority_count": 1,
+      "supply": 1,
+      "frozen": [],
+      "stalled": [],
+      "silent": [],
+      "branch_state": "green",
+      "fail_run": null,
+      "recent_workflows": []
+    },
+    {
+      "repo": "Pension-Data",
+      "branch": "main",
+      "tip": "9b7c0e7",
+      "open_count": 2,
+      "priority_count": 0,
+      "supply": 0,
+      "frozen": [],
+      "stalled": [],
+      "silent": [],
+      "branch_state": "green",
+      "fail_run": null,
+      "recent_workflows": []
+    }
+  ],
+  "deferred": [
+    "Ready",
+    "trip-planner",
+    "learning-management-system",
+    "Fine-Art-Archive",
+    "Doc-Lineage",
+    "Deliverable-Render",
+    "Manager-Mosaic"
+  ]
+}

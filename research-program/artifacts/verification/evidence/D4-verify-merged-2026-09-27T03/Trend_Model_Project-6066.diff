@@ -1,0 +1,101 @@
+diff --git a/src/trend_analysis/config/model.py b/src/trend_analysis/config/model.py
+index f918c8078..ce41543a5 100644
+--- a/src/trend_analysis/config/model.py
++++ b/src/trend_analysis/config/model.py
+@@ -618,6 +618,8 @@ def _validate_floor(cls, value: Any) -> float:
+             floor = float(value)
+         except (TypeError, ValueError) as exc:  # pragma: no cover - defensive
+             raise ValueError("vol_adjust.floor_vol must be numeric.") from exc
++        if not math.isfinite(floor):
++            raise ValueError("vol_adjust.floor_vol must be finite.")
+         if floor < 0:
+             raise ValueError("vol_adjust.floor_vol cannot be negative.")
+         return floor
+diff --git a/src/trend_analysis/stages/preprocessing.py b/src/trend_analysis/stages/preprocessing.py
+index 5de9a25ed..57bc4a271 100644
+--- a/src/trend_analysis/stages/preprocessing.py
++++ b/src/trend_analysis/stages/preprocessing.py
+@@ -1,5 +1,6 @@
+ from __future__ import annotations
+ 
++import math
+ from dataclasses import dataclass
+ from typing import Any, Mapping
+ 
+@@ -124,6 +125,8 @@ def _prepare_preprocess_stage(
+         min_floor = float(floor_vol) if floor_vol is not None else 0.0
+     except (TypeError, ValueError):  # pragma: no cover - defensive
+         min_floor = 0.0
++    if floor_vol is not None and not math.isfinite(min_floor):
++        raise ValueError("floor_vol must be finite")
+     if min_floor < 0:
+         min_floor = 0.0
+     try:
+diff --git a/tests/test_trend_analysis_config_model.py b/tests/test_trend_analysis_config_model.py
+index 9bc169ac3..28a1b4713 100644
+--- a/tests/test_trend_analysis_config_model.py
++++ b/tests/test_trend_analysis_config_model.py
+@@ -445,6 +445,14 @@ def test_risk_settings_rejects_invalid_values() -> None:
+         )
+ 
+ 
++def test_risk_settings_reject_non_finite_floor_vol() -> None:
++    for bad_floor in (float("nan"), float("inf"), float("-inf")):
++        with pytest.raises(ValueError, match="must be finite"):
++            config_model.RiskSettings.model_validate(
++                {"target_vol": 0.1, "floor_vol": bad_floor, "warmup_periods": 0}
++            )
++
++
+ def test_resolve_config_path_uses_env_override(
+     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+ ) -> None:
+diff --git a/tests/test_vol_floor_and_warmup.py b/tests/test_vol_floor_and_warmup.py
+index c0cb2a851..d8184ac67 100644
+--- a/tests/test_vol_floor_and_warmup.py
++++ b/tests/test_vol_floor_and_warmup.py
+@@ -1,9 +1,13 @@
+ from __future__ import annotations
+ 
++import math
++
+ import numpy as np
+ import pandas as pd
++import pytest
+ 
+ from tests._pipeline_test_utils import run_analysis_payload as run_analysis
++from trend_analysis.config import model as config_model
+ from trend_analysis.core.rank_selection import RiskStatsConfig, canonical_metric_list
+ from trend_analysis.risk import RiskWindow, _scale_factors, realised_volatility
+ 
+@@ -29,6 +33,30 @@ def _constant_df(include_nan: bool = False) -> pd.DataFrame:
+     return df
+ 
+ 
++def test_infinite_floor_vol_is_rejected_before_scaling() -> None:
++    latest_vol = pd.Series({"A": 0.2, "B": 0.1})
++    silent_zero = _scale_factors(latest_vol, 0.10, floor_vol=float("inf"))
++    assert silent_zero["A"] == pytest.approx(0.0)
++    assert silent_zero["B"] == pytest.approx(0.0)
++    with pytest.raises(ValueError, match="must be finite"):
++        config_model.RiskSettings.model_validate(
++            {"target_vol": 0.1, "floor_vol": math.inf, "warmup_periods": 0}
++        )
++    df = _constant_df()
++    with pytest.raises(ValueError, match="floor_vol must be finite"):
++        run_analysis(
++            df,
++            "2020-01",
++            "2020-03",
++            "2020-04",
++            "2020-06",
++            target_vol=0.10,
++            monthly_cost=0.0,
++            floor_vol=float("inf"),
++            **RUN_KWARGS,
++        )
++
++
+ def test_floor_vol_limits_scaling() -> None:
+     dates = pd.date_range("2020-01-31", periods=12, freq="ME")
+     returns = pd.DataFrame(

@@ -1,0 +1,584 @@
+diff --git a/.github/workflows/pr-00-gate.yml b/.github/workflows/pr-00-gate.yml
+index 5fabe62..2b3d4ea 100644
+--- a/.github/workflows/pr-00-gate.yml
++++ b/.github/workflows/pr-00-gate.yml
+@@ -1156,24 +1156,90 @@ jobs:
+             const targetUrl = process.env.TARGET_URL;
+ 
+             try {
+-              await withRetry((client) => client.rest.repos.createCommitStatus({
+-                owner,
+-                repo,
+-                sha,
+-                state,
+-                context: 'Gate / gate',
+-                description,
+-                target_url: targetUrl,
+-              }));
++              await withRetry(
++                (client) => client.rest.repos.createCommitStatus({
++                  owner,
++                  repo,
++                  sha,
++                  state,
++                  context: 'Gate / gate',
++                  description,
++                  target_url: targetUrl,
++                }),
++                // The retry helper's legacy `gate-commit-status` path returns null
++                // for integration permission errors. This step must see the error
++                // so it can preserve the computed verdict for read-only fork tokens.
++                { task: 'gate-commit-status-handler' },
++              );
+             } catch (error) {
++              const responseHeaders = error?.response?.headers || {};
++              const errorStatus = error?.status ?? error?.response?.status;
+               const hitRateLimit =
+-                error?.status === 403 &&
+-                /rate limit/i.test(error?.message || '');
++                errorStatus === 429 ||
++                (errorStatus === 403 &&
++                  (/rate limit|abuse/i.test(error?.message || '') ||
++                  /rate limit|abuse/i.test(error?.response?.data?.message || '') ||
++                  String(responseHeaders['x-ratelimit-remaining']) === '0' ||
++                  responseHeaders['retry-after'] != null));
++              // Pull requests opened from forks receive a read-only token, so the
++              // status write is refused even after Gate has computed its verdict.
++              // Keep same-repository permission failures loud and preserve the
++              // existing rate-limit path.
++              const pullRequest = context.payload.pull_request;
++              const headRepoObject = pullRequest?.head?.repo;
++              const headRepo = headRepoObject?.full_name;
++              const baseRepo = pullRequest?.base?.repo?.full_name;
++              const isForkPullRequest = Boolean(
++                baseRepo &&
++                  (headRepoObject === null || (headRepo && headRepo !== baseRepo)),
++              );
++              const permissionMessage = [
++                error?.message,
++                error?.response?.data?.message,
++              ]
++                .filter(Boolean)
++                .join(' ');
++              const isIntegrationPermissionError =
++                /resource not accessible by integration|insufficient permission|requires higher permissions/i.test(
++                  permissionMessage,
++                );
++              const readOnlyForkToken =
++                errorStatus === 403 &&
++                isForkPullRequest &&
++                !hitRateLimit &&
++                isIntegrationPermissionError;
+               if (hitRateLimit) {
+                 core.warning(
+                   'Rate limit prevented Gate from updating the commit status; ' +
+                     'leaving existing status untouched.',
+                 );
++                if (state !== 'success') {
++                  core.setFailed(
++                    `Gate verdict for ${sha} is '${state}': ${description}`,
++                  );
++                }
++              } else if (readOnlyForkToken) {
++                core.warning(
++                  'Fork pull request from ' +
++                    `${headRepo ?? pullRequest?.head?.label ?? 'deleted source repository'}: ` +
++                    'the workflow token is ' +
++                    "read-only, so the 'Gate / gate' commit status could not be " +
++                    `written (${error.message}). Gate verdict for ${sha} is ` +
++                    `'${state}': ${description}.`,
++                );
++                await core.summary
++                  .addHeading('Gate verdict (fork pull request)', 3)
++                  .addRaw(
++                    'The `Gate / gate` commit status could not be written for ' +
++                      `\`${sha}\` because a pull request from a fork receives a ` +
++                      `read-only token. Gate verdict: **${state}** — ${description}`,
++                  )
++                  .write();
++                if (state !== 'success') {
++                  core.setFailed(
++                    `Gate verdict for ${sha} is '${state}': ${description}`,
++                  );
++                }
+               } else {
+                 throw error;
+               }
+diff --git a/pyproject.toml b/pyproject.toml
+index 730253b..7b02926 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -33,6 +33,7 @@ dev = [
+     "mypy==2.3.1",
+     "black==26.5.1",
+     "types-jsonschema==4.23.0.20241208",
++    "PyYAML",
+ ]
+ 
+ [project.urls]
+diff --git a/requirements-dev.lock b/requirements-dev.lock
+index 60cf06e..63dfc45 100644
+--- a/requirements-dev.lock
++++ b/requirements-dev.lock
+@@ -2,18 +2,26 @@
+ #    uv pip compile pyproject.toml --extra dev --output-file requirements-dev.lock
+ ast-serialize==0.6.0
+     # via mypy
++attrs==26.1.0
++    # via
++    #   jsonschema
++    #   referencing
+ black==26.5.1
+-    # via my-project (pyproject.toml)
++    # via manager-mosaic (pyproject.toml)
+ click==8.3.1
+     # via black
+ coverage==7.16.1
+     # via pytest-cov
+ iniconfig==2.3.0
+     # via pytest
++jsonschema==4.22.0
++    # via manager-mosaic (pyproject.toml)
++jsonschema-specifications==2025.9.1
++    # via jsonschema
+ librt==0.13.0
+     # via mypy
+ mypy==2.3.1
+-    # via my-project (pyproject.toml)
++    # via manager-mosaic (pyproject.toml)
+ mypy-extensions==1.1.0
+     # via
+     #   black
+@@ -36,13 +44,28 @@ pygments==2.19.2
+     # via pytest
+ pytest==9.1.1
+     # via
+-    #   my-project (pyproject.toml)
++    #   manager-mosaic (pyproject.toml)
+     #   pytest-cov
+ pytest-cov==7.1.0
+-    # via my-project (pyproject.toml)
++    # via manager-mosaic (pyproject.toml)
+ pytokens==0.4.1
+     # via black
++pyyaml==6.0.3
++    # via manager-mosaic (pyproject.toml)
++referencing==0.37.0
++    # via
++    #   jsonschema
++    #   jsonschema-specifications
++    #   types-jsonschema
++rpds-py==2026.6.3
++    # via
++    #   jsonschema
++    #   referencing
+ ruff==0.16.9
+-    # via my-project (pyproject.toml)
++    # via manager-mosaic (pyproject.toml)
++types-jsonschema==4.23.0.20241208
++    # via manager-mosaic (pyproject.toml)
+ typing-extensions==4.15.0
+-    # via mypy
++    # via
++    #   mypy
++    #   referencing
+diff --git a/requirements.lock b/requirements.lock
+index 1eb43ac..d803809 100644
+--- a/requirements.lock
++++ b/requirements.lock
+@@ -54,6 +54,8 @@ pytest-cov==7.1.0
+     # via manager-mosaic (pyproject.toml)
+ pytokens==0.4.1
+     # via black
++pyyaml==6.0.3
++    # via manager-mosaic (pyproject.toml)
+ referencing==0.37.0
+     # via
+     #   jsonschema
+diff --git a/tests/test_gate_commit_status_fork_tolerance.py b/tests/test_gate_commit_status_fork_tolerance.py
+new file mode 100644
+index 0000000..b1cfb15
+--- /dev/null
++++ b/tests/test_gate_commit_status_fork_tolerance.py
+@@ -0,0 +1,381 @@
++"""Exercise the Gate commit-status script against fork token failures."""
++
++from __future__ import annotations
++
++import json
++import os
++import shutil
++import subprocess
++import textwrap
++from pathlib import Path
++from typing import Any
++
++import pytest
++import yaml
++
++REPO_ROOT = Path(__file__).resolve().parents[1]
++GATE_WORKFLOW = REPO_ROOT / ".github" / "workflows" / "pr-00-gate.yml"
++STEP_NAME = "Report Gate commit status"
++
++RUNNER_JS = textwrap.dedent("""
++    const fs = require('fs');
++    const vm = require('vm');
++    const src = fs.readFileSync(process.argv[2], 'utf8');
++
++    function makeError(status, message, headers = {}, responseMessage = null) {
++      const error = new Error(message);
++      error.status = status;
++      error.response = { headers, data: { message: responseMessage } };
++      return error;
++    }
++
++    async function runCase({ headRepo, baseRepo, error, state, description = 'all checks passed' }) {
++      const failures = [];
++      const statusRequests = [];
++      const warnings = [];
++      const summaryWrites = [];
++      const summaryRaw = [];
++      const githubStub = {
++        rest: {
++          repos: {
++            createCommitStatus: async (request) => {
++              statusRequests.push(request);
++              if (error) throw error;
++            },
++          },
++        },
++      };
++      const summaryStub = {
++        addHeading() { return summaryStub; },
++        addRaw(text) { summaryRaw.push(String(text)); return summaryStub; },
++        async write() { summaryWrites.push('write'); },
++      };
++      const sandbox = {
++        process: {
++          env: {
++            STATE: state,
++            DESCRIPTION: description,
++            TARGET_URL: 'https://example.invalid/run',
++          },
++        },
++        console: { log() {} },
++        require: () => ({
++          createTokenAwareRetry: async ({ task }) => ({
++            withRetry: async (callback, overrideOptions = {}) => {
++              try {
++                return await callback(githubStub);
++              } catch (caught) {
++                const effectiveTask = Object.prototype.hasOwnProperty.call(
++                  overrideOptions,
++                  'task',
++                ) ? overrideOptions.task : task;
++                if (
++                  effectiveTask === 'gate-commit-status' &&
++                  caught?.status === 403 &&
++                  /Resource not accessible by integration/i.test(caught?.message || '')
++                ) {
++                  return null;
++                }
++                throw caught;
++              }
++            },
++          }),
++        }),
++        core: {
++          setFailed: (message) => failures.push(String(message)),
++          warning: (message) => warnings.push(String(message)),
++          summary: summaryStub,
++        },
++        context: {
++          repo: { owner: 'stranske', repo: 'Manager-Mosaic' },
++          sha: 'basesha',
++          payload: {
++            pull_request: {
++              head: {
++                sha: 'headsha',
++                repo: headRepo === null ? null : { full_name: headRepo },
++              },
++              base: { repo: { full_name: baseRepo } },
++            },
++          },
++        },
++        github: githubStub,
++      };
++      vm.createContext(sandbox);
++      let threw = null;
++      try {
++        await vm.runInContext('(async () => {\\n' + src + '\\n})()', sandbox);
++      } catch (error) {
++        threw = {
++          status: error.status === undefined ? null : error.status,
++          message: String(error.message),
++        };
++      }
++      return {
++        failures,
++        warnings,
++        summaryWrites: summaryWrites.length,
++        summaryRaw,
++        statusRequests,
++        threw,
++      };
++    }
++
++    const FORK = {
++      headRepo: 'outside-contributor/Manager-Mosaic',
++      baseRepo: 'stranske/Manager-Mosaic',
++    };
++    const SAME = {
++      headRepo: 'stranske/Manager-Mosaic',
++      baseRepo: 'stranske/Manager-Mosaic',
++    };
++
++    (async () => {
++      const outcomes = {
++        fork_read_only: await runCase({
++          ...FORK,
++          state: 'success',
++          error: makeError(403, 'Resource not accessible by integration'),
++        }),
++        fork_read_only_failure: await runCase({
++          ...FORK,
++          state: 'failure',
++          description: 'tests failed',
++          error: makeError(403, 'Resource not accessible by integration'),
++        }),
++        fork_read_only_error: await runCase({
++          ...FORK,
++          state: 'error',
++          description: 'runner errored',
++          error: makeError(403, 'Resource not accessible by integration'),
++        }),
++        fork_read_only_pending: await runCase({
++          ...FORK,
++          state: 'pending',
++          description: 'checks still pending',
++          error: makeError(403, 'Resource not accessible by integration'),
++        }),
++        deleted_fork_read_only: await runCase({
++          headRepo: null,
++          baseRepo: 'stranske/Manager-Mosaic',
++          state: 'success',
++          error: makeError(403, 'Resource not accessible by integration'),
++        }),
++        same_repo_read_only: await runCase({
++          ...SAME,
++          state: 'success',
++          error: makeError(403, 'Resource not accessible by integration'),
++        }),
++        fork_rate_limit: await runCase({
++          ...FORK,
++          state: 'success',
++          error: makeError(403, 'API rate limit exceeded'),
++        }),
++        fork_rate_limit_failure: await runCase({
++          ...FORK,
++          state: 'failure',
++          error: makeError(403, 'API rate limit exceeded'),
++        }),
++        fork_rate_limit_error: await runCase({
++          ...FORK,
++          state: 'error',
++          error: makeError(403, 'API rate limit exceeded'),
++        }),
++        fork_rate_limit_pending: await runCase({
++          ...FORK,
++          state: 'pending',
++          error: makeError(403, 'API rate limit exceeded'),
++        }),
++        fork_rate_limit_response_message: await runCase({
++          ...FORK,
++          state: 'success',
++          error: makeError(403, 'Forbidden', {}, 'secondary rate limit exceeded'),
++        }),
++        fork_primary_rate_limit_header: await runCase({
++          ...FORK,
++          state: 'success',
++          error: makeError(403, 'Forbidden', { 'x-ratelimit-remaining': '0' }),
++        }),
++        fork_secondary_rate_limit_header: await runCase({
++          ...FORK,
++          state: 'success',
++          error: makeError(403, 'Forbidden', { 'retry-after': '60' }),
++        }),
++        fork_final_429: await runCase({
++          ...FORK,
++          state: 'success',
++          error: makeError(429, 'Too many requests'),
++        }),
++        fork_unrelated_403: await runCase({
++          ...FORK,
++          state: 'success',
++          error: makeError(403, 'Forbidden'),
++        }),
++        fork_server_error: await runCase({
++          ...FORK,
++          state: 'success',
++          error: makeError(500, 'Internal server error'),
++        }),
++        happy_path: await runCase({ ...FORK, state: 'success', error: null }),
++      };
++      process.stdout.write(JSON.stringify(outcomes));
++    })();
++    """).strip()
++
++
++def _extract_status_script() -> str:
++    document = yaml.safe_load(GATE_WORKFLOW.read_text(encoding="utf-8"))
++    for job in document["jobs"].values():
++        for step in job.get("steps") or []:
++            if step.get("name") == STEP_NAME:
++                return str(step["with"]["script"])
++    raise AssertionError(f"{GATE_WORKFLOW} no longer defines {STEP_NAME!r}")
++
++
++@pytest.fixture(scope="module")
++def outcomes(tmp_path_factory: pytest.TempPathFactory) -> dict[str, Any]:
++    node = shutil.which("node")
++    if node is None:  # pragma: no cover - depends on the host
++        message = "node is required to execute the Gate github-script step"
++        if os.environ.get("CI"):
++            pytest.fail(message)
++        pytest.skip(message)
++
++    workdir = tmp_path_factory.mktemp("gate-status")
++    step_path = workdir / "step.js"
++    step_path.write_text(_extract_status_script(), encoding="utf-8")
++    runner_path = workdir / "runner.js"
++    runner_path.write_text(RUNNER_JS, encoding="utf-8")
++
++    completed = subprocess.run(
++        [node, str(runner_path), str(step_path)],
++        capture_output=True,
++        text=True,
++        check=False,
++    )
++    assert completed.returncode == 0, completed.stderr
++    return dict(json.loads(completed.stdout))
++
++
++def test_fork_read_only_403_does_not_fail_the_gate(outcomes: dict[str, Any]) -> None:
++    assert outcomes["fork_read_only"]["threw"] is None
++    assert outcomes["fork_read_only"]["failures"] == []
++
++
++def test_fork_read_only_403_reports_the_real_verdict(outcomes: dict[str, Any]) -> None:
++    case = outcomes["fork_read_only"]
++    warning = " ".join(case["warnings"])
++    summary = " ".join(case["summaryRaw"])
++    assert "read-only" in warning
++    assert "'success'" in warning
++    assert case["summaryWrites"] == 1
++    assert "headsha" in summary
++    assert "success" in summary
++    assert "all checks passed" in summary
++
++
++def test_fork_read_only_403_preserves_failure_verdict(
++    outcomes: dict[str, Any],
++) -> None:
++    case = outcomes["fork_read_only_failure"]
++    warning = " ".join(case["warnings"])
++    summary = " ".join(case["summaryRaw"])
++    assert case["threw"] is None
++    assert "'failure'" in warning
++    assert "tests failed" in warning
++    assert "failure" in summary
++    assert "tests failed" in summary
++    assert len(case["failures"]) == 1
++    assert "'failure'" in case["failures"][0]
++
++
++@pytest.mark.parametrize(
++    ("state", "description"),
++    [("error", "runner errored"), ("pending", "checks still pending")],
++)
++def test_fork_read_only_403_fails_closed_for_other_non_success_verdicts(
++    outcomes: dict[str, Any], state: str, description: str
++) -> None:
++    case = outcomes[f"fork_read_only_{state}"]
++    warning = " ".join(case["warnings"])
++    summary = " ".join(case["summaryRaw"])
++    assert case["threw"] is None
++    assert description in warning
++    assert description in summary
++    assert len(case["failures"]) == 1
++    assert f"'{state}'" in case["failures"][0]
++
++
++def test_deleted_fork_read_only_403_reports_the_verdict(
++    outcomes: dict[str, Any],
++) -> None:
++    case = outcomes["deleted_fork_read_only"]
++    warning = " ".join(case["warnings"])
++    assert case["threw"] is None
++    assert "deleted source repository" in warning
++    assert case["summaryWrites"] == 1
++
++
++def test_same_repo_403_still_fails_the_gate(outcomes: dict[str, Any]) -> None:
++    case = outcomes["same_repo_read_only"]
++    assert case["threw"]["status"] == 403
++    assert case["summaryWrites"] == 0
++    assert case["failures"] == []
++    assert not any("read-only" in warning for warning in case["warnings"])
++
++
++def test_rate_limit_403_keeps_its_own_path(outcomes: dict[str, Any]) -> None:
++    for key in (
++        "fork_rate_limit",
++        "fork_rate_limit_response_message",
++        "fork_primary_rate_limit_header",
++        "fork_secondary_rate_limit_header",
++        "fork_final_429",
++    ):
++        case = outcomes[key]
++        assert case["threw"] is None
++        assert any("Rate limit" in warning for warning in case["warnings"])
++        assert case["summaryWrites"] == 0
++        assert case["failures"] == []
++
++
++@pytest.mark.parametrize("state", ["failure", "error", "pending"])
++def test_rate_limit_403_fails_closed_for_non_success_verdicts(
++    outcomes: dict[str, Any], state: str
++) -> None:
++    case = outcomes[f"fork_rate_limit_{state}"]
++    assert case["threw"] is None
++    assert len(case["failures"]) == 1
++    assert f"'{state}'" in case["failures"][0]
++
++
++def test_non_403_errors_still_fail_the_gate(outcomes: dict[str, Any]) -> None:
++    assert outcomes["fork_server_error"]["threw"]["status"] == 500
++
++
++def test_unrelated_fork_403_still_fails_the_gate(outcomes: dict[str, Any]) -> None:
++    case = outcomes["fork_unrelated_403"]
++    assert case["threw"]["status"] == 403
++    assert case["summaryWrites"] == 0
++    assert case["failures"] == []
++    assert not any("read-only" in warning for warning in case["warnings"])
++
++
++def test_successful_status_write_is_silent(outcomes: dict[str, Any]) -> None:
++    case = outcomes["happy_path"]
++    assert case["threw"] is None
++    assert case["warnings"] == []
++    assert case["failures"] == []
++    assert case["summaryWrites"] == 0
++    assert case["summaryRaw"] == []
++    assert case["statusRequests"] == [
++        {
++            "owner": "stranske",
++            "repo": "Manager-Mosaic",
++            "sha": "headsha",
++            "state": "success",
++            "context": "Gate / gate",
++            "description": "all checks passed",
++            "target_url": "https://example.invalid/run",
++        }
++    ]

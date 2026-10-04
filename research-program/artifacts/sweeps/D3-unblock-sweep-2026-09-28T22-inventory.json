@@ -1,0 +1,186 @@
+{
+  "Workflows": {
+    "frozen": [
+      [
+        3612,
+        "[sync-review] Fix upstream manifest-synced paths blocking stranske/Portable-Alpha-Extension-Model#2318",
+        [
+          "automation",
+          "agents:auto-pilot-pause",
+          "consumer-sync"
+        ]
+      ],
+      [
+        3611,
+        "[sync-review] Fix upstream manifest-synced paths blocking stranske/trip-planner#1869",
+        [
+          "automation",
+          "agents:auto-pilot-pause",
+          "consumer-sync"
+        ]
+      ],
+      [
+        3123,
+        "\ud83d\udd2d LangSmith Observability Health",
+        [
+          "needs-human",
+          "agent:needs-attention",
+          "metrics",
+          "automated",
+          "tracker:durable"
+        ]
+      ]
+    ],
+    "silent": [
+      3568
+    ],
+    "stalled": [],
+    "supply": 25,
+    "priority": 13,
+    "impl": 25,
+    "ci": {
+      "conclusion": "success",
+      "createdAt": "2026-09-28T22:42:40Z",
+      "databaseId": 36493985263,
+      "displayTitle": "Maint71: reassess active workflow-sync review threads on exact generated heads",
+      "headSha": "f7bb8785ca246a054fe35b3310822be4e86e8e57",
+      "status": "completed",
+      "url": "https://github.com/stranske/Workflows/actions/runs/36493985263",
+      "workflowName": "Agents Issue Format Guard"
+    },
+    "branch": "main"
+  },
+  "Travel-Plan-Permission": {
+    "frozen": [],
+    "silent": [],
+    "stalled": [],
+    "supply": 31,
+    "priority": 6,
+    "impl": 31,
+    "ci": {
+      "conclusion": "success",
+      "createdAt": "2026-09-28T22:31:07Z",
+      "databaseId": 36492865966,
+      "displayTitle": "D4 follow-up: deliberate-break evidence missing for #1594 (merged PR #1639)",
+      "headSha": "42c1e9dcdc00eb2610aed5c9aa73f515c1d82a44",
+      "status": "completed",
+      "url": "https://github.com/stranske/Travel-Plan-Permission/actions/runs/36492865966",
+      "workflowName": "Agents Issue Format Guard"
+    },
+    "branch": "main"
+  },
+  "Trend_Model_Project": {
+    "frozen": [],
+    "silent": [],
+    "stalled": [],
+    "supply": 0,
+    "priority": 0,
+    "impl": 0,
+    "ci": {
+      "conclusion": "success",
+      "createdAt": "2026-09-28T22:29:23Z",
+      "databaseId": 36492686317,
+      "displayTitle": "Agents Keepalive Sweep",
+      "headSha": "069e070e44c2811beda8943c01750e5bd3c91a08",
+      "status": "completed",
+      "url": "https://github.com/stranske/Trend_Model_Project/actions/runs/36492686317",
+      "workflowName": "Agents Keepalive Sweep"
+    },
+    "branch": "main"
+  },
+  "Portable-Alpha-Extension-Model": {
+    "frozen": [],
+    "silent": [],
+    "stalled": [],
+    "supply": 0,
+    "priority": 0,
+    "impl": 0,
+    "ci": {
+      "conclusion": "skipped",
+      "createdAt": "2026-09-28T22:32:38Z",
+      "databaseId": 36493012102,
+      "displayTitle": "docs: preserve PR 2317 deliberate-break proof",
+      "headSha": "c818bd3eccba61a3320487d89bcaf455dd36674b",
+      "status": "completed",
+      "url": "https://github.com/stranske/Portable-Alpha-Extension-Model/actions/runs/36493012102",
+      "workflowName": "Agents PR Event Hub"
+    },
+    "branch": "main"
+  },
+  "Counter_Risk": {
+    "frozen": [],
+    "silent": [],
+    "stalled": [],
+    "supply": 0,
+    "priority": 0,
+    "impl": 0,
+    "ci": {
+      "conclusion": "success",
+      "createdAt": "2026-09-28T22:29:47Z",
+      "databaseId": 36492725080,
+      "displayTitle": "Agents Keepalive Sweep",
+      "headSha": "ff4bc1958dd6c1ce48952e1c63fa60d16402fa2e",
+      "status": "completed",
+      "url": "https://github.com/stranske/Counter_Risk/actions/runs/36492725080",
+      "workflowName": "Agents Keepalive Sweep"
+    },
+    "branch": "main"
+  },
+  "Manager-Database": {
+    "frozen": [],
+    "silent": [],
+    "stalled": [],
+    "supply": 0,
+    "priority": 0,
+    "impl": 0,
+    "ci": {
+      "conclusion": "success",
+      "createdAt": "2026-09-28T19:48:29Z",
+      "databaseId": 36474782119,
+      "displayTitle": "Dependency Dashboard",
+      "headSha": "4e384dbe341f7e1dc855409b785f505e8844ea2c",
+      "status": "completed",
+      "url": "https://github.com/stranske/Manager-Database/actions/runs/36474782119",
+      "workflowName": "Agents Issue Format Guard"
+    },
+    "branch": "main"
+  },
+  "Inv-Man-Intake": {
+    "frozen": [],
+    "silent": [],
+    "stalled": [],
+    "supply": 2,
+    "priority": 2,
+    "impl": 2,
+    "ci": {
+      "conclusion": "success",
+      "createdAt": "2026-09-28T19:47:46Z",
+      "databaseId": 36474701029,
+      "displayTitle": "Dependency Dashboard",
+      "headSha": "209f989b024d2deb420edfaedf596cd1b8e8db0e",
+      "status": "completed",
+      "url": "https://github.com/stranske/Inv-Man-Intake/actions/runs/36474701029",
+      "workflowName": "Agents Issue Format Guard"
+    },
+    "branch": "main"
+  },
+  "Pension-Data": {
+    "frozen": [],
+    "silent": [],
+    "stalled": [],
+    "supply": 2,
+    "priority": 2,
+    "impl": 2,
+    "ci": {
+      "conclusion": "success",
+      "createdAt": "2026-09-28T19:43:58Z",
+      "databaseId": 36474253349,
+      "displayTitle": "D4 follow-up: deliberate-break evidence missing for #915 (merged PR #927)",
+      "headSha": "4b62510a326423292048c90cc1ead079c9d272a8",
+      "status": "completed",
+      "url": "https://github.com/stranske/Pension-Data/actions/runs/36474253349",
+      "workflowName": "Agents Issue Format Guard"
+    },
+    "branch": "main"
+  }
+}

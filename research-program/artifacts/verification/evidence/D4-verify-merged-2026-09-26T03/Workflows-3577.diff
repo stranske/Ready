@@ -1,0 +1,960 @@
+diff --git a/.github/scripts/__tests__/keepalive-loop.test.js b/.github/scripts/__tests__/keepalive-loop.test.js
+index 637b7b600..77e8673d1 100644
+--- a/.github/scripts/__tests__/keepalive-loop.test.js
++++ b/.github/scripts/__tests__/keepalive-loop.test.js
+@@ -16,9 +16,54 @@ const {
+   markAgentRunning,
+   analyzeTaskCompletion,
+   autoReconcileTasks,
++  buildTaskProgressSnapshot,
+   buildAuthorityChallengeEvidence,
+   selectEscalationDisposition,
+ } = require('../keepalive_loop.js');
++
++test('task progress snapshot preserves actionable checklist identity across check changes', () => {
++  const before = buildTaskProgressSnapshot(`
++<!-- auto-status-summary:start -->
++## Automated Status Summary
++#### Tasks
++- [ ] Implement \`src/a.py\`
++- [ ] Implement \`src/a.py\`
++#### Acceptance criteria
++- [ ] \`pytest -q\` passes
++<!-- auto-status-summary:end -->
++
++- [ ] Repos checked: 12/12
++- [ ] No tasks defined.
++\`\`\`markdown
++- [x] hidden example
++\`\`\`
++`);
++  const after = buildTaskProgressSnapshot(`
++<!-- auto-status-summary:start -->
++## Automated Status Summary
++#### Tasks
++- [x] Implement \`src/a.py\`
++- [ ] Implement \`src/a.py\`
++#### Acceptance criteria
++- [ ] \`pytest -q\` passes
++<!-- auto-status-summary:end -->
++`);
++
++  assert.deepEqual(
++    { total: before.total, completed: before.completed },
++    { total: 3, completed: 0 },
++  );
++  assert.equal(after.total, 3);
++  assert.equal(after.completed, 1);
++  assert.equal(after.fingerprint, before.fingerprint);
++});
++
++test('task progress snapshot changes identity when task membership changes', () => {
++  const before = buildTaskProgressSnapshot('## Tasks\n- [ ] A\n## Acceptance Criteria\n- [ ] B');
++  const after = buildTaskProgressSnapshot('## Tasks\n- [x] A\n- [x] C\n## Acceptance Criteria\n- [ ] B');
++
++  assert.notEqual(after.fingerprint, before.fingerprint);
++});
+ const { formatStateComment, parseStateComment } = require('../keepalive_state.js');
+ const { signAuthorityChallengeClaim } = require('../keepalive_challenge_due.js');
+ const { stripPrTemplateContent, upsertBlock } = require('../agents_pr_meta_update_body.js');
+diff --git a/.github/scripts/keepalive_loop.js b/.github/scripts/keepalive_loop.js
+index 9097c52ba..0ee2d5a8a 100644
+--- a/.github/scripts/keepalive_loop.js
++++ b/.github/scripts/keepalive_loop.js
+@@ -1518,6 +1518,30 @@ function toActionableChecklistCounts(markdown) {
+   };
+ }
+ 
++function buildTaskProgressSnapshot(body) {
++  const sections = parseKeepaliveChecklistSections(body);
++  const identities = [];
++  let completed = 0;
++  for (const [section, markdown] of [
++    ['tasks', sections.tasks || ''],
++    ['acceptance', sections.acceptance || ''],
++  ]) {
++    const actionable = extractChecklistItems(markdown)
++      .filter((item) => isActionableChecklistItemText(item.text));
++    for (const item of actionable) {
++      identities.push(`${section}:${normaliseTaskKey(item.text)}`);
++      if (item.checked) completed += 1;
++    }
++  }
++  identities.sort();
++  return {
++    schema: 1,
++    total: identities.length,
++    completed,
++    fingerprint: crypto.createHash('sha256').update(JSON.stringify(identities)).digest('hex'),
++  };
++}
++
+ /**
+  * Extract file-path glob patterns from the scope section text.
+  * Looks for patterns like `runtime/**`, `src/foo.py`, or backtick-quoted paths.
+@@ -2666,6 +2690,7 @@ async function evaluateKeepaliveLoop({ github: rawGithub, context, core, payload
+       .filter(Boolean)
+       .join('\n');
+     const checkboxCounts = toActionableChecklistCounts(combinedChecklist);
++    const taskProgressSnapshot = buildTaskProgressSnapshot(pr.body || '');
+     const tasksPresent = checkboxCounts.total > 0;
+     const tasksRemaining = checkboxCounts.unchecked > 0;
+ 
+@@ -3175,6 +3200,7 @@ async function evaluateKeepaliveLoop({ github: rawGithub, context, core, payload
+       maxIterations,
+       failureThreshold,
+       checkboxCounts,
++      taskProgressSnapshot,
+       hasAgentLabel,
+       hasHighPrivilege,
+       agentType: resolvedAgentType,
+@@ -5622,6 +5648,7 @@ module.exports = {
+   cascadeParentCheckboxes,
+   parseConfig,
+   buildTaskAppendix,
++  buildTaskProgressSnapshot,
+   extractSourceSection,
+   resolvePrNumber,
+   evaluateKeepaliveLoop,
+diff --git a/.github/workflows/agents-keepalive-loop.yml b/.github/workflows/agents-keepalive-loop.yml
+index 03e3a26bd..02102b0bc 100644
+--- a/.github/workflows/agents-keepalive-loop.yml
++++ b/.github/workflows/agents-keepalive-loop.yml
+@@ -95,6 +95,7 @@ jobs:
+       failure_threshold: ${{ steps.evaluate.outputs.failure_threshold }}
+       tasks_total: ${{ steps.evaluate.outputs.tasks_total }}
+       tasks_unchecked: ${{ steps.evaluate.outputs.tasks_unchecked }}
++      task_progress_snapshot: ${{ steps.evaluate.outputs.task_progress_snapshot }}
+       keepalive_enabled: ${{ steps.evaluate.outputs.keepalive_enabled }}
+       autofix_enabled: ${{ steps.evaluate.outputs.autofix_enabled }}
+       has_agent_label: ${{ steps.evaluate.outputs.has_agent_label }}
+@@ -505,6 +506,8 @@ jobs:
+               failure_threshold: String(result.failureThreshold ?? ''),
+               tasks_total: String(result.checkboxCounts?.total ?? ''),
+               tasks_unchecked: String(result.checkboxCounts?.unchecked ?? ''),
++              task_progress_snapshot: result.taskProgressSnapshot
++                ? JSON.stringify(result.taskProgressSnapshot) : '',
+               keepalive_enabled: String(result.keepaliveEnabled ?? ''),
+               autofix_enabled: String(result.config?.autofix_enabled ?? ''),
+               has_agent_label: String(result.hasAgentLabel ?? ''),
+@@ -579,6 +582,7 @@ jobs:
+           PR_NUMBER: ${{ steps.evaluate.outputs.pr_number }}
+           HEAD_SHA: ${{ steps.evaluate.outputs.head_sha }}
+           PROVIDER: ${{ steps.evaluate.outputs.agent_type || 'codex' }}
++          TASK_PROGRESS_BEFORE: ${{ steps.evaluate.outputs.task_progress_snapshot }}
+           AUTHORITY_CHALLENGE_FINGERPRINT: >-
+             ${{ github.event_name == 'workflow_dispatch' &&
+               github.actor == 'github-actions[bot]' &&
+@@ -613,6 +617,7 @@ jobs:
+               --provider "$PROVIDER" \
+               --pr-number "$PR_NUMBER" \
+               --head-sha "$HEAD_SHA" \
++              --task-progress-before "$TASK_PROGRESS_BEFORE" \
+               --storage auto \
+               --authority-challenge
+             exit 0
+@@ -635,6 +640,7 @@ jobs:
+             --provider "$PROVIDER" \
+             --pr-number "$PR_NUMBER" \
+             --head-sha "$HEAD_SHA" \
++            --task-progress-before "$TASK_PROGRESS_BEFORE" \
+             --storage auto
+ 
+       - name: Verify task appendix artifact
+@@ -1044,6 +1050,7 @@ jobs:
+       - run-claude
+       - run-cursor
+       - run-gemini
++      - summary
+     if: >-
+       always() &&
+       needs.evaluate.outputs.dispatch_should_run == 'true' &&
+@@ -1059,6 +1066,7 @@ jobs:
+             scripts/state_fingerprint.py
+             scripts/reference_packs.py
+             scripts/orchestrator_skill.py
++            .github/scripts
+             .github/scripts/github-api-with-retry.js
+             .github/scripts/token_load_balancer.js
+             .github/scripts/error_classifier.js
+@@ -1096,12 +1104,17 @@ jobs:
+               return;
+             }
+             let currentHead = '';
++            let taskProgressAfter = '';
+             try {
+               const { data: pr } = await withRetry((client) => client.rest.pulls.get({
+                 ...context.repo,
+                 pull_number: prNumber,
+               }));
+               currentHead = String((pr.head && pr.head.sha) || '');
++              const { buildTaskProgressSnapshot } = require(
++                './.github/scripts/keepalive_loop.js'
++              );
++              taskProgressAfter = JSON.stringify(buildTaskProgressSnapshot(pr.body || ''));
+             } catch (error) {
+               core.warning(`Could not read PR head: ${error && error.message ? error.message : error}`);
+             }
+@@ -1111,6 +1124,8 @@ jobs:
+               `produced_work=${producedWork || 'unmeasured'}`,
+             );
+             core.setOutput('produced_work', producedWork);
++            core.setOutput('observed_head_sha', currentHead);
++            core.setOutput('task_progress_after', taskProgressAfter);
+ 
+       - name: Record completion
+         env:
+@@ -1120,6 +1135,8 @@ jobs:
+           PR_NUMBER: ${{ needs.evaluate.outputs.pr_number }}
+           HEAD_SHA: ${{ needs.evaluate.outputs.head_sha }}
+           PRODUCED_WORK: ${{ steps.productivity.outputs.produced_work }}
++          OBSERVED_HEAD_SHA: ${{ steps.productivity.outputs.observed_head_sha }}
++          TASK_PROGRESS_AFTER: ${{ steps.productivity.outputs.task_progress_after }}
+           SUMMARY: >-
+             ${{ needs.run-codex.outputs.final-message-summary ||
+                 needs.run-claude.outputs.final-message-summary ||
+@@ -1157,6 +1174,8 @@ jobs:
+             --summary "$SUMMARY" \
+             --exit-code "$EXIT_CODE" \
+             --produced-work "$PRODUCED_WORK" \
++            --observed-head-sha "$OBSERVED_HEAD_SHA" \
++            --task-progress-after "$TASK_PROGRESS_AFTER" \
+             --storage auto
+ 
+   progress-review:
+diff --git a/docs/keepalive/GoalsAndPlumbing.md b/docs/keepalive/GoalsAndPlumbing.md
+index b556f99cb..d46567796 100644
+--- a/docs/keepalive/GoalsAndPlumbing.md
++++ b/docs/keepalive/GoalsAndPlumbing.md
+@@ -345,12 +345,14 @@ sweep ran past them, because a debounced PR is indistinguishable from a healthy
+ | `completed`, zero-output, allowance spent, cooldown running | refuse (`unproductive-cooldown`) |
+ | `completed`, zero-output, cooldown elapsed | dispatch (`retry-after-unproductive-cooldown`) |
+ 
+-Productivity is the caller's verdict, passed as `--produced-work`. The keepalive workflows
+-compute it by comparing the PR head after the run against the SHA the dispatch was reserved
+-for. **Unmeasured is not the same as unproductive**: a caller that does not pass the flag (and
+-a lookup that fails) keeps the original terminal-completion behaviour unless this is already
+-a same-head unproductive retry. That retry carries its false marker and bounded counter across
+-an unmeasured completion; an explicit productive result or a new head clears the streak.
++Keepalive reservations persist a checklist baseline using the same visible Tasks and Acceptance
++Criteria parser that drives dispatch. After summary reconciliation, completion records the live
++PR head and a second checklist snapshot. Python marks the run productive when the head changed or
++the same checklist gained at least one completed item. A changed checklist identity, missing
++baseline, or failed lookup is **unmeasured**, not zero progress; it cannot manufacture task credit
++or reset the bounded zero-output streak. Other callers retain the legacy `--produced-work`
++verdict. A completion replay reuses its first persisted observation rather than crediting an
++unrelated later body edit.
+ 
+ GitHub Actions reservations also bind the repository, run ID and run attempt. Completion must
+ match that binding and head key before writing state; an explicitly productive result from
+diff --git a/scripts/runner_lib/core.py b/scripts/runner_lib/core.py
+index 8944d373f..4717d02e9 100644
+--- a/scripts/runner_lib/core.py
++++ b/scripts/runner_lib/core.py
+@@ -32,6 +32,8 @@
+ # cursor and gemini use the same plain-text (non-JSONL) prompt/parse path as claude.
+ PROMPT_PROVIDERS = {"claude", "codex", "cursor", "gemini"}
+ TERMINAL_STATUSES = {"completed", "error"}
++TASK_PROGRESS_SCHEMA = 1
++TASK_PROGRESS_FINGERPRINT_RE = re.compile(r"^[0-9a-f]{64}$")
+ PENDING_STALE_AFTER_SECONDS = 30 * 60
+ # A runner can exit 0 having produced nothing — the codex sandbox failing to initialize
+ # (`bwrap: loopback: Failed RTM_NEWADDR`) reports itself as a SUCCESSFUL run with no commit.
+@@ -257,6 +259,62 @@ def _runner_key(pr_number: int, head_sha: str, provider: str) -> str:
+     return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+ 
+ 
++def _normalize_task_progress_snapshot(value: object) -> dict[str, Any] | None:
++    """Return a validated checklist snapshot, or None when progress is unmeasurable."""
++    if isinstance(value, str):
++        if not value.strip():
++            return None
++        try:
++            value = json.loads(value)
++        except json.JSONDecodeError:
++            return None
++    if not isinstance(value, dict) or value.get("schema") != TASK_PROGRESS_SCHEMA:
++        return None
++    total = value.get("total")
++    completed = value.get("completed")
++    fingerprint = value.get("fingerprint")
++    if (
++        not isinstance(total, int)
++        or isinstance(total, bool)
++        or not isinstance(completed, int)
++        or isinstance(completed, bool)
++        or total < 0
++        or completed < 0
++        or completed > total
++        or not isinstance(fingerprint, str)
++        or not TASK_PROGRESS_FINGERPRINT_RE.fullmatch(fingerprint)
++    ):
++        return None
++    return {
++        "schema": TASK_PROGRESS_SCHEMA,
++        "total": total,
++        "completed": completed,
++        "fingerprint": fingerprint,
++    }
++
++
++def _task_progress_before_from_record(record: dict[str, Any]) -> dict[str, Any] | None:
++    return _normalize_task_progress_snapshot(
++        {
++            "schema": record.get("task_progress_schema"),
++            "total": record.get("tasks_total_before"),
++            "completed": record.get("tasks_completed_before"),
++            "fingerprint": record.get("task_set_fingerprint_before"),
++        }
++    )
++
++
++def _task_progress_record_fields(snapshot: dict[str, Any] | None, *, suffix: str) -> dict[str, Any]:
++    if snapshot is None:
++        return {}
++    return {
++        "task_progress_schema": TASK_PROGRESS_SCHEMA,
++        f"tasks_total_{suffix}": snapshot["total"],
++        f"tasks_completed_{suffix}": snapshot["completed"],
++        f"task_set_fingerprint_{suffix}": snapshot["fingerprint"],
++    }
++
++
+ def _read_text(path: Path) -> str:
+     try:
+         return path.read_text(encoding="utf-8")
+@@ -1310,6 +1368,7 @@ def _reserve_dispatch(
+     prior: dict[str, Any] | None,
+     *,
+     reason: str,
++    task_progress_before: object = None,
+ ) -> DebounceDecision:
+     """Write the pending reservation for a granted dispatch and describe the decision."""
+     record = {
+@@ -1324,6 +1383,11 @@ def _reserve_dispatch(
+     attempt_id = _workflow_attempt_id()
+     if attempt_id:
+         record["workflow_attempt_id"] = attempt_id
++    record.update(
++        _task_progress_record_fields(
++            _normalize_task_progress_snapshot(task_progress_before), suffix="before"
++        )
++    )
+     # Carry the unproductive tally across the retry so the allowance is bounded: it is the only
+     # thing that makes "retry an unproductive completion" terminate instead of cycling forever.
+     unproductive = _unproductive_completion_count(prior)
+@@ -1365,6 +1429,7 @@ def should_dispatch(
+     storage: RunnerDispatchStorage | None = None,
+     *,
+     authority_challenge: bool = False,
++    task_progress_before: object = None,
+ ) -> DebounceDecision:
+     """Reserve dispatch unless the same PR/head SHA completed or is actively pending.
+ 
+@@ -1460,6 +1525,7 @@ def should_dispatch(
+             key,
+             prior,
+             reason="due-authority-challenge",
++            task_progress_before=task_progress_before,
+         )
+         if not decision.should_dispatch:
+             # A write can time out after the primary store has persisted it.  Never refund the
+@@ -1513,6 +1579,7 @@ def should_dispatch(
+                     key,
+                     prior,
+                     reason="retry-unproductive-completion",
++                    task_progress_before=task_progress_before,
+                 )
+             retry_at = _unproductive_retry_available_at(prior)
+             if retry_at is not None and _utc_now_dt() < retry_at:
+@@ -1535,6 +1602,7 @@ def should_dispatch(
+                 key,
+                 prior,
+                 reason="retry-after-unproductive-cooldown",
++                task_progress_before=task_progress_before,
+             )
+         if status == "completed" or (status == "pending" and not _pending_record_is_stale(prior)):
+             return DebounceDecision(
+@@ -1561,7 +1629,16 @@ def should_dispatch(
+         reason = "stale-pending"
+     else:
+         reason = f"retry-{str(prior.get('status') or 'unknown')}"
+-    return _reserve_dispatch(storage, pr_number, head_sha, provider, key, prior, reason=reason)
++    return _reserve_dispatch(
++        storage,
++        pr_number,
++        head_sha,
++        provider,
++        key,
++        prior,
++        reason=reason,
++        task_progress_before=task_progress_before,
++    )
+ 
+ 
+ def _authority_challenge_command(
+@@ -1634,6 +1711,62 @@ def _unrecorded_completion(prior: dict[str, Any], key: str, reason: str) -> dict
+     }
+ 
+ 
++def _derive_completion_productivity(
++    prior: dict[str, Any],
++    *,
++    reserved_head_sha: str,
++    observed_head_sha: str,
++    task_progress_after: object,
++    fallback: bool | None,
++) -> tuple[bool | None, dict[str, Any]]:
++    """Combine authoritative head and checklist observations without inventing progress."""
++    if prior.get("status") in TERMINAL_STATUSES and prior.get("head_sha") == reserved_head_sha:
++        persisted = {
++            key: prior[key]
++            for key in (
++                "observed_head_sha",
++                "tasks_total_after",
++                "tasks_completed_after",
++                "task_set_fingerprint_after",
++                "tasks_completed_delta",
++                "task_progress_reason",
++            )
++            if key in prior
++        }
++        if "productive" in prior:
++            return bool(prior["productive"]), persisted
++        return None, persisted
++
++    observed_head = str(observed_head_sha or "").strip()
++    after = _normalize_task_progress_snapshot(task_progress_after)
++    fields = _task_progress_record_fields(after, suffix="after")
++    if observed_head:
++        fields["observed_head_sha"] = observed_head
++        if observed_head != reserved_head_sha:
++            fields["task_progress_reason"] = "head-changed"
++            return True, fields
++
++        before = _task_progress_before_from_record(prior)
++        if before is None:
++            fields["task_progress_reason"] = "baseline-missing"
++            return None, fields
++        if after is None:
++            fields["task_progress_reason"] = "after-missing"
++            return None, fields
++        if before["fingerprint"] != after["fingerprint"]:
++            fields["task_progress_reason"] = "task-set-changed"
++            return None, fields
++        delta = after["completed"] - before["completed"]
++        fields["tasks_completed_delta"] = delta
++        fields["task_progress_reason"] = "measured"
++        return delta > 0, fields
++
++    if after is not None:
++        fields["task_progress_reason"] = "head-unmeasured"
++        return None, fields
++    return fallback, fields
++
++
+ def record_completion(
+     pr_number: int,
+     head_sha: str,
+@@ -1641,14 +1774,16 @@ def record_completion(
+     result: RunnerResult | dict[str, Any],
+     storage: RunnerDispatchStorage | None = None,
+     produced_work: bool | None = None,
++    *,
++    observed_head_sha: str = "",
++    task_progress_after: object = None,
+ ) -> dict[str, Any]:
+     """Persist terminal runner state after a dispatch finishes.
+ 
+-    ``produced_work`` is the caller's verdict on whether the run actually moved the branch.
+-    ``None`` means unmeasured and preserves an existing same-head unproductive retry streak;
+-    otherwise it preserves the pre-#3433 behavior. ``False`` marks the
+-    completion unproductive so ``should_dispatch`` will grant a bounded retry on the same head
+-    instead of refusing forever (#3433).
++    When ``observed_head_sha`` is supplied, productivity is derived from the authoritative
++    reservation plus that live head and a comparable task snapshot. A changed head or positive
++    completed-task delta is productive. Unknown/mismatched task progress stays unmeasured.
++    Legacy callers may still supply ``produced_work`` directly.
+     """
+     provider = _validate_provider(provider)
+     storage = storage or _storage_from_name("auto")
+@@ -1683,6 +1818,13 @@ def record_completion(
+         # including when both attempts target the same head. The owning attempt may report
+         # a new head only when it explicitly measured productive work. Return an observation only.
+         return _unrecorded_completion(prior, key, "stale-attempt")
++    produced_work, productivity_fields = _derive_completion_productivity(
++        prior,
++        reserved_head_sha=head_sha,
++        observed_head_sha=observed_head_sha,
++        task_progress_after=task_progress_after,
++        fallback=produced_work,
++    )
+     if produced_work is None and prior.get("key") == key and _completion_was_unproductive(prior):
+         produced_work = False
+     completed_at = (
+@@ -1699,6 +1841,7 @@ def record_completion(
+         "status": status,
+         "completed_at": completed_at,
+         "result": compact_result,
++        **productivity_fields,
+     }
+     if status == "completed" and produced_work is not None:
+         record["productive"] = bool(produced_work)
+@@ -1810,6 +1953,7 @@ def _cmd_should_dispatch(args: argparse.Namespace) -> int:
+         args.provider,
+         storage=_storage_from_name(args.storage),
+         authority_challenge=args.authority_challenge,
++        task_progress_before=args.task_progress_before,
+     )
+     outputs = {
+         "should_dispatch": "true" if decision.should_dispatch else "false",
+@@ -1868,6 +2012,8 @@ def _cmd_record_completion(args: argparse.Namespace) -> int:
+         result,
+         storage=_storage_from_name(args.storage),
+         produced_work=_parse_produced_work(args.produced_work),
++        observed_head_sha=args.observed_head_sha,
++        task_progress_after=args.task_progress_after,
+     )
+     outputs = {
+         "recorded": "false" if record.get("completion_recorded") is False else "true",
+@@ -1934,6 +2080,11 @@ def build_parser() -> argparse.ArgumentParser:
+         action="store_true",
+         help="reserve a signed authority challenge before bypassing ordinary debounce",
+     )
++    dispatch.add_argument(
++        "--task-progress-before",
++        default="",
++        help="validated JSON checklist snapshot captured when reserving the dispatch",
++    )
+ 
+     complete = subparsers.add_parser("record-completion", help="persist runner completion")
+     complete.add_argument("--provider", choices=sorted(PROVIDERS), required=True)
+@@ -1942,6 +2093,16 @@ def build_parser() -> argparse.ArgumentParser:
+     complete.add_argument(
+         "--storage", choices=["auto", "pr-comment", "repo-variable"], default="auto"
+     )
++    complete.add_argument(
++        "--observed-head-sha",
++        default="",
++        help="live PR head observed after the runner and summary reconciliation",
++    )
++    complete.add_argument(
++        "--task-progress-after",
++        default="",
++        help="validated JSON checklist snapshot observed after the runner",
++    )
+     complete.add_argument("--raw-output-file", default="")
+     complete.add_argument("--summary", default="")
+     complete.add_argument("--exit-code", default=None)
+diff --git a/templates/consumer-repo/.github/scripts/keepalive_loop.js b/templates/consumer-repo/.github/scripts/keepalive_loop.js
+index 9097c52ba..0ee2d5a8a 100644
+--- a/templates/consumer-repo/.github/scripts/keepalive_loop.js
++++ b/templates/consumer-repo/.github/scripts/keepalive_loop.js
+@@ -1518,6 +1518,30 @@ function toActionableChecklistCounts(markdown) {
+   };
+ }
+ 
++function buildTaskProgressSnapshot(body) {
++  const sections = parseKeepaliveChecklistSections(body);
++  const identities = [];
++  let completed = 0;
++  for (const [section, markdown] of [
++    ['tasks', sections.tasks || ''],
++    ['acceptance', sections.acceptance || ''],
++  ]) {
++    const actionable = extractChecklistItems(markdown)
++      .filter((item) => isActionableChecklistItemText(item.text));
++    for (const item of actionable) {
++      identities.push(`${section}:${normaliseTaskKey(item.text)}`);
++      if (item.checked) completed += 1;
++    }
++  }
++  identities.sort();
++  return {
++    schema: 1,
++    total: identities.length,
++    completed,
++    fingerprint: crypto.createHash('sha256').update(JSON.stringify(identities)).digest('hex'),
++  };
++}
++
+ /**
+  * Extract file-path glob patterns from the scope section text.
+  * Looks for patterns like `runtime/**`, `src/foo.py`, or backtick-quoted paths.
+@@ -2666,6 +2690,7 @@ async function evaluateKeepaliveLoop({ github: rawGithub, context, core, payload
+       .filter(Boolean)
+       .join('\n');
+     const checkboxCounts = toActionableChecklistCounts(combinedChecklist);
++    const taskProgressSnapshot = buildTaskProgressSnapshot(pr.body || '');
+     const tasksPresent = checkboxCounts.total > 0;
+     const tasksRemaining = checkboxCounts.unchecked > 0;
+ 
+@@ -3175,6 +3200,7 @@ async function evaluateKeepaliveLoop({ github: rawGithub, context, core, payload
+       maxIterations,
+       failureThreshold,
+       checkboxCounts,
++      taskProgressSnapshot,
+       hasAgentLabel,
+       hasHighPrivilege,
+       agentType: resolvedAgentType,
+@@ -5622,6 +5648,7 @@ module.exports = {
+   cascadeParentCheckboxes,
+   parseConfig,
+   buildTaskAppendix,
++  buildTaskProgressSnapshot,
+   extractSourceSection,
+   resolvePrNumber,
+   evaluateKeepaliveLoop,
+diff --git a/templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml b/templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml
+index 4cf7d9929..88e818e01 100644
+--- a/templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml
++++ b/templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml
+@@ -86,6 +86,7 @@ jobs:
+       failure_threshold: ${{ steps.evaluate.outputs.failure_threshold }}
+       tasks_total: ${{ steps.evaluate.outputs.tasks_total }}
+       tasks_unchecked: ${{ steps.evaluate.outputs.tasks_unchecked }}
++      task_progress_snapshot: ${{ steps.evaluate.outputs.task_progress_snapshot }}
+       keepalive_enabled: ${{ steps.evaluate.outputs.keepalive_enabled }}
+       autofix_enabled: ${{ steps.evaluate.outputs.autofix_enabled }}
+       has_agent_label: ${{ steps.evaluate.outputs.has_agent_label }}
+@@ -337,6 +338,8 @@ jobs:
+               failure_threshold: String(result.failureThreshold ?? ''),
+               tasks_total: String(result.checkboxCounts?.total ?? ''),
+               tasks_unchecked: String(result.checkboxCounts?.unchecked ?? ''),
++              task_progress_snapshot: result.taskProgressSnapshot
++                ? JSON.stringify(result.taskProgressSnapshot) : '',
+               keepalive_enabled: String(result.keepaliveEnabled ?? ''),
+               autofix_enabled: String(result.config?.autofix_enabled ?? ''),
+               has_agent_label: String(result.hasAgentLabel ?? ''),
+@@ -374,6 +377,7 @@ jobs:
+           PR_NUMBER: ${{ steps.evaluate.outputs.pr_number }}
+           HEAD_SHA: ${{ steps.evaluate.outputs.head_sha }}
+           PROVIDER: ${{ steps.evaluate.outputs.agent_type || 'codex' }}
++          TASK_PROGRESS_BEFORE: ${{ steps.evaluate.outputs.task_progress_snapshot }}
+           AUTHORITY_CHALLENGE_FINGERPRINT: >-
+             ${{ github.event_name == 'workflow_dispatch' &&
+               github.actor == 'github-actions[bot]' &&
+@@ -408,6 +412,7 @@ jobs:
+               --provider "$PROVIDER" \
+               --pr-number "$PR_NUMBER" \
+               --head-sha "$HEAD_SHA" \
++              --task-progress-before "$TASK_PROGRESS_BEFORE" \
+               --storage auto \
+               --authority-challenge
+             exit 0
+@@ -430,6 +435,7 @@ jobs:
+             --provider "$PROVIDER" \
+             --pr-number "$PR_NUMBER" \
+             --head-sha "$HEAD_SHA" \
++            --task-progress-before "$TASK_PROGRESS_BEFORE" \
+             --storage auto
+ 
+   preflight:
+@@ -845,6 +851,7 @@ jobs:
+       - run-claude
+       - run-cursor
+       - run-gemini
++      - summary
+     if: >-
+       always() &&
+       needs.evaluate.outputs.dispatch_should_run == 'true' &&
+@@ -859,6 +866,7 @@ jobs:
+             scripts/runner_lib
+             scripts/state_fingerprint.py
+             scripts/reference_packs.py
++            .github/scripts
+             .github/scripts/github-api-with-retry.js
+             .github/scripts/token_load_balancer.js
+             .github/scripts/error_classifier.js
+@@ -896,12 +904,17 @@ jobs:
+               return;
+             }
+             let currentHead = '';
++            let taskProgressAfter = '';
+             try {
+               const { data: pr } = await withRetry((client) => client.rest.pulls.get({
+                 ...context.repo,
+                 pull_number: prNumber,
+               }));
+               currentHead = String((pr.head && pr.head.sha) || '');
++              const { buildTaskProgressSnapshot } = require(
++                './.github/scripts/keepalive_loop.js'
++              );
++              taskProgressAfter = JSON.stringify(buildTaskProgressSnapshot(pr.body || ''));
+             } catch (error) {
+               core.warning(`Could not read PR head: ${error && error.message ? error.message : error}`);
+             }
+@@ -911,6 +924,8 @@ jobs:
+               `produced_work=${producedWork || 'unmeasured'}`,
+             );
+             core.setOutput('produced_work', producedWork);
++            core.setOutput('observed_head_sha', currentHead);
++            core.setOutput('task_progress_after', taskProgressAfter);
+ 
+       - name: Record completion
+         env:
+@@ -920,6 +935,8 @@ jobs:
+           PR_NUMBER: ${{ needs.evaluate.outputs.pr_number }}
+           HEAD_SHA: ${{ needs.evaluate.outputs.head_sha }}
+           PRODUCED_WORK: ${{ steps.productivity.outputs.produced_work }}
++          OBSERVED_HEAD_SHA: ${{ steps.productivity.outputs.observed_head_sha }}
++          TASK_PROGRESS_AFTER: ${{ steps.productivity.outputs.task_progress_after }}
+           SUMMARY: >-
+             ${{ needs.run-codex.outputs.final-message-summary ||
+                 needs.run-claude.outputs.final-message-summary ||
+@@ -955,6 +972,8 @@ jobs:
+             --summary "$SUMMARY" \
+             --exit-code "$EXIT_CODE" \
+             --produced-work "$PRODUCED_WORK" \
++            --observed-head-sha "$OBSERVED_HEAD_SHA" \
++            --task-progress-after "$TASK_PROGRESS_AFTER" \
+             --storage auto
+ 
+   summary:
+diff --git a/tests/scripts/test_runner_lib.py b/tests/scripts/test_runner_lib.py
+index b957af5ed..813cc3599 100644
+--- a/tests/scripts/test_runner_lib.py
++++ b/tests/scripts/test_runner_lib.py
+@@ -41,6 +41,205 @@ def write_record(self, pr_number: int, provider: str, record: dict[str, Any]) ->
+         self.writes.append(dict(record))
+ 
+ 
++def _task_snapshot(completed: int, *, total: int = 2, fingerprint: str = "a" * 64):
++    return {
++        "schema": 1,
++        "total": total,
++        "completed": completed,
++        "fingerprint": fingerprint,
++    }
++
++
++def test_completed_task_delta_marks_unchanged_head_productive() -> None:
++    storage = MemoryRunnerStorage()
++    should_dispatch(
++        42,
++        "aaa",
++        "codex",
++        storage=storage,
++        task_progress_before=_task_snapshot(0),
++    )
++
++    completed = record_completion(
++        42,
++        "aaa",
++        "codex",
++        {"success": True},
++        storage=storage,
++        observed_head_sha="aaa",
++        task_progress_after=_task_snapshot(1),
++    )
++
++    assert completed["productive"] is True
++    assert completed["tasks_completed_delta"] == 1
++    assert completed["task_progress_reason"] == "measured"
++    assert should_dispatch(42, "aaa", "codex", storage=storage).reason == "duplicate-completed"
++
++
++def test_unchanged_head_without_task_delta_keeps_bounded_retry() -> None:
++    storage = MemoryRunnerStorage()
++    should_dispatch(
++        42,
++        "aaa",
++        "codex",
++        storage=storage,
++        task_progress_before=_task_snapshot(1),
++    )
++    completed = record_completion(
++        42,
++        "aaa",
++        "codex",
++        {"success": True},
++        storage=storage,
++        observed_head_sha="aaa",
++        task_progress_after=_task_snapshot(1),
++    )
++
++    assert completed["productive"] is False
++    assert completed["tasks_completed_delta"] == 0
++    assert should_dispatch(42, "aaa", "codex", storage=storage).reason == (
++        "retry-unproductive-completion"
++    )
++
++
++@pytest.mark.parametrize(
++    ("before", "after", "reason"),
++    [
++        (None, _task_snapshot(1), "baseline-missing"),
++        (_task_snapshot(0), "not-json", "after-missing"),
++        (_task_snapshot(0), _task_snapshot(1, fingerprint="b" * 64), "task-set-changed"),
++    ],
++)
++def test_unknown_or_changed_task_sets_never_manufacture_progress(before, after, reason) -> None:
++    storage = MemoryRunnerStorage()
++    should_dispatch(42, "aaa", "codex", storage=storage, task_progress_before=before)
++    completed = record_completion(
++        42,
++        "aaa",
++        "codex",
++        {"success": True},
++        storage=storage,
++        observed_head_sha="aaa",
++        task_progress_after=after,
++    )
++
++    assert "productive" not in completed
++    assert completed["task_progress_reason"] == reason
++
++
++def test_changed_head_is_productive_without_task_measurement() -> None:
++    storage = MemoryRunnerStorage()
++    should_dispatch(42, "aaa", "codex", storage=storage)
++    completed = record_completion(
++        42,
++        "aaa",
++        "codex",
++        {"success": True},
++        storage=storage,
++        observed_head_sha="bbb",
++        task_progress_after="not-json",
++    )
++
++    assert completed["productive"] is True
++    assert completed["observed_head_sha"] == "bbb"
++    assert completed["task_progress_reason"] == "head-changed"
++
++
++def test_completion_replay_preserves_first_task_observation() -> None:
++    storage = MemoryRunnerStorage()
++    should_dispatch(
++        42,
++        "aaa",
++        "codex",
++        storage=storage,
++        task_progress_before=_task_snapshot(0),
++    )
++    first = record_completion(
++        42,
++        "aaa",
++        "codex",
++        {"success": True},
++        storage=storage,
++        observed_head_sha="aaa",
++        task_progress_after=_task_snapshot(1),
++    )
++    replay = record_completion(
++        42,
++        "aaa",
++        "codex",
++        {"success": True},
++        storage=storage,
++        observed_head_sha="aaa",
++        task_progress_after=_task_snapshot(2),
++    )
++
++    assert replay["tasks_completed_delta"] == first["tasks_completed_delta"] == 1
++    assert replay["tasks_completed_after"] == first["tasks_completed_after"] == 1
++
++
++def test_completion_replay_preserves_unmeasured_task_observation() -> None:
++    storage = MemoryRunnerStorage()
++    should_dispatch(
++        42,
++        "aaa",
++        "codex",
++        storage=storage,
++        task_progress_before=_task_snapshot(0),
++    )
++    first = record_completion(
++        42,
++        "aaa",
++        "codex",
++        {"success": True},
++        storage=storage,
++        observed_head_sha="aaa",
++        task_progress_after="not-json",
++    )
++    replay = record_completion(
++        42,
++        "aaa",
++        "codex",
++        {"success": True},
++        storage=storage,
++        observed_head_sha="aaa",
++        task_progress_after=_task_snapshot(1),
++    )
++
++    assert "productive" not in first
++    assert "productive" not in replay
++    assert replay["task_progress_reason"] == first["task_progress_reason"] == "after-missing"
++    assert "tasks_completed_after" not in replay
++
++
++def test_each_retry_reservation_replaces_task_baseline() -> None:
++    storage = MemoryRunnerStorage()
++    should_dispatch(
++        42,
++        "aaa",
++        "codex",
++        storage=storage,
++        task_progress_before=_task_snapshot(0),
++    )
++    record_completion(
++        42,
++        "aaa",
++        "codex",
++        {"success": True},
++        storage=storage,
++        observed_head_sha="aaa",
++        task_progress_after=_task_snapshot(0),
++    )
++    should_dispatch(
++        42,
++        "aaa",
++        "codex",
++        storage=storage,
++        task_progress_before=_task_snapshot(1),
++    )
++
++    assert storage.records[(42, "codex")]["tasks_completed_before"] == 1
++
++
+ def _signed_challenge_environment(monkeypatch):
+     fingerprint = "a" * 64
+     nonce = "b" * 64
+diff --git a/tests/workflows/test_keepalive_task_progress.py b/tests/workflows/test_keepalive_task_progress.py
+new file mode 100644
+index 000000000..616f12acc
+--- /dev/null
++++ b/tests/workflows/test_keepalive_task_progress.py
+@@ -0,0 +1,31 @@
++from pathlib import Path
++
++import yaml
++
++WORKFLOWS = (
++    Path(".github/workflows/agents-keepalive-loop.yml"),
++    Path("templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml"),
++)
++
++
++def test_keepalive_workflows_transport_task_progress_through_the_runner_cli() -> None:
++    # Keep this cohort explicit: the root and consumer workflows must evolve together.
++    assert len(WORKFLOWS) == 2
++    for path in WORKFLOWS:
++        text = path.read_text(encoding="utf-8")
++        workflow = yaml.safe_load(text)
++        jobs = workflow["jobs"]
++        evaluate_outputs = jobs["evaluate"]["outputs"]
++        completion = jobs["record-keepalive-completion"]
++
++        assert "task_progress_snapshot" in evaluate_outputs
++        assert "summary" in completion["needs"]
++        assert "buildTaskProgressSnapshot" in text
++        assert '--task-progress-before "$TASK_PROGRESS_BEFORE"' in text
++        assert '--observed-head-sha "$OBSERVED_HEAD_SHA"' in text
++        assert '--task-progress-after "$TASK_PROGRESS_AFTER"' in text
++
++
++def test_keepalive_workflows_remain_valid_yaml() -> None:
++    for path in WORKFLOWS:
++        assert isinstance(yaml.safe_load(path.read_text(encoding="utf-8")), dict)

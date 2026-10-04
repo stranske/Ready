@@ -1,0 +1,965 @@
+diff --git a/alembic/versions/20260924_0036_knowledge_edge_concurrency.py b/alembic/versions/20260924_0036_knowledge_edge_concurrency.py
+new file mode 100644
+index 00000000..c286275f
+--- /dev/null
++++ b/alembic/versions/20260924_0036_knowledge_edge_concurrency.py
+@@ -0,0 +1,82 @@
++"""serialize knowledge-edge invariants across concurrent writers
++
++Revision ID: 20260924_0036
++Revises: 20260806_0035
++Create Date: 2026-09-24
++"""
++
++from __future__ import annotations
++
++import sqlalchemy as sa
++from alembic import op
++
++revision = "20260924_0036"
++down_revision = "20260806_0035"
++branch_labels = None
++depends_on = None
++
++EDGE_IDENTITY_COLUMNS = (
++    "source_node_id",
++    "target_node_id",
++    "edge_type",
++    "source_scope",
++    "target_scope",
++)
++
++
++def _reject_existing_duplicates() -> None:
++    connection = op.get_bind()
++    grouped_columns = ", ".join(EDGE_IDENTITY_COLUMNS)
++    rows = connection.execute(sa.text(f"""
++            SELECT {grouped_columns}, COUNT(*) AS copies
++            FROM knowledge_edges
++            GROUP BY {grouped_columns}
++            HAVING COUNT(*) > 1
++            ORDER BY copies DESC, {grouped_columns}
++            LIMIT 10
++            """)).mappings().all()
++    if rows:
++        examples = "; ".join(
++            ", ".join(f"{column}={row[column]!r}" for column in EDGE_IDENTITY_COLUMNS)
++            + f", copies={row['copies']}"
++            for row in rows
++        )
++        raise RuntimeError(
++            "cannot add uq_knowledge_edges_identity: duplicate knowledge edges exist; "
++            f"first {len(rows)} group(s): {examples}"
++        )
++
++
++def upgrade() -> None:
++    """Add the duplicate floor and transactional per-scope lock rows."""
++    _reject_existing_duplicates()
++    op.create_table(
++        "knowledge_graph_scope_locks",
++        sa.Column("source_scope", sa.String(length=32), primary_key=True),
++        sa.Column("lock_token", sa.Integer(), nullable=False, server_default="0"),
++        sa.CheckConstraint(
++            "source_scope IN ('personal', 'institutional')",
++            name="scope_valid",
++        ),
++    )
++    lock_table = sa.table(
++        "knowledge_graph_scope_locks",
++        sa.column("source_scope", sa.String(length=32)),
++        sa.column("lock_token", sa.Integer()),
++    )
++    op.bulk_insert(
++        lock_table,
++        [
++            {"source_scope": "personal", "lock_token": 0},
++            {"source_scope": "institutional", "lock_token": 0},
++        ],
++    )
++    with op.batch_alter_table("knowledge_edges") as batch:
++        batch.create_unique_constraint("uq_knowledge_edges_identity", EDGE_IDENTITY_COLUMNS)
++
++
++def downgrade() -> None:
++    """Remove edge identity locking infrastructure."""
++    with op.batch_alter_table("knowledge_edges") as batch:
++        batch.drop_constraint("uq_knowledge_edges_identity", type_="unique")
++    op.drop_table("knowledge_graph_scope_locks")
+diff --git a/src/lms/graphs/models.py b/src/lms/graphs/models.py
+index 65bafe70..f14f3cb7 100644
+--- a/src/lms/graphs/models.py
++++ b/src/lms/graphs/models.py
+@@ -7,11 +7,15 @@
+ from sqlalchemy import (
+     Boolean,
+     CheckConstraint,
++    Column,
+     DateTime,
+     Float,
+     ForeignKey,
++    Integer,
+     String,
++    Table,
+     Text,
++    UniqueConstraint,
+     false,
+     func,
+ )
+@@ -132,6 +136,14 @@ class KnowledgeEdge(Base):
+ 
+     __tablename__ = "knowledge_edges"
+     __table_args__ = (
++        UniqueConstraint(
++            "source_node_id",
++            "target_node_id",
++            "edge_type",
++            "source_scope",
++            "target_scope",
++            name="uq_knowledge_edges_identity",
++        ),
+         CheckConstraint(
+             f"edge_type IN ({_sql_values(EDGE_TYPES)})",
+             name="edge_type_valid",
+@@ -201,3 +213,17 @@ class KnowledgeEdge(Base):
+         server_default=func.now(),
+         nullable=False,
+     )
++
++
++knowledge_graph_scope_locks = Table(
++    "knowledge_graph_scope_locks",
++    Base.metadata,
++    Column("source_scope", String(32), primary_key=True),
++    Column("lock_token", Integer, nullable=False, default=0, server_default="0"),
++    # Operational lock rows are Core table metadata rather than an exported
++    # domain model. They coordinate writers and carry no user data.
++    CheckConstraint(
++        f"source_scope IN ({_sql_values(OWNERSHIP_SCOPES)})",
++        name="scope_valid",
++    ),
++)
+diff --git a/src/lms/graphs/repository.py b/src/lms/graphs/repository.py
+index fe13b903..2c561ef2 100644
+--- a/src/lms/graphs/repository.py
++++ b/src/lms/graphs/repository.py
+@@ -12,7 +12,10 @@
+ from collections.abc import Mapping, Sequence
+ from typing import Any
+ 
+-from sqlalchemy import select
++from sqlalchemy import select, update
++from sqlalchemy.dialects.postgresql import insert as postgresql_insert
++from sqlalchemy.dialects.sqlite import insert as sqlite_insert
++from sqlalchemy.exc import IntegrityError
+ from sqlalchemy.orm import Session
+ 
+ from lms.audit.repository import record_audit_event
+@@ -25,6 +28,7 @@
+     OWNERSHIP_SCOPES,
+     KnowledgeEdge,
+     KnowledgeNode,
++    knowledge_graph_scope_locks,
+ )
+ 
+ # Edge types that impose a learning order between nodes. A cycle among these
+@@ -43,6 +47,67 @@
+ MUTABLE_EDGE_FIELDS: frozenset[str] = frozenset({"edge_type", "confidence", "status", "notes"})
+ 
+ 
++def _is_edge_identity_conflict(error: IntegrityError) -> bool:
++    """Recognize only the five-column edge identity constraint."""
++    original = error.orig
++    sqlstate = getattr(original, "sqlstate", None) or getattr(original, "pgcode", None)
++    if sqlstate is not None:
++        return (
++            sqlstate == "23505"
++            and getattr(getattr(original, "diag", None), "constraint_name", None)
++            == "uq_knowledge_edges_identity"
++        )
++    return getattr(original, "sqlite_errorname", None) == "SQLITE_CONSTRAINT_UNIQUE" and str(
++        original
++    ) == (
++        "UNIQUE constraint failed: knowledge_edges.source_node_id, "
++        "knowledge_edges.target_node_id, knowledge_edges.edge_type, "
++        "knowledge_edges.source_scope, knowledge_edges.target_scope"
++    )
++
++
++def _duplicate_edge_error(edge_type: str, scope: str) -> ValueError:
++    return ValueError(
++        "duplicate knowledge edge: an identical "
++        f"{edge_type!r} edge already exists in scope {scope!r}"
++    )
++
++
++def _acquire_edge_scope_lock(session: Session, scope: str) -> None:
++    """Acquire the transaction-scoped graph-writer lock for ``scope``.
++
++    The insert supports metadata-created test databases where migration seeding
++    has not run. The no-op update is deliberate: it locks the scope row on
++    PostgreSQL and starts SQLite's write transaction before graph reads.
++    """
++    table = knowledge_graph_scope_locks
++    dialect = session.get_bind().dialect.name
++    values = {"source_scope": scope, "lock_token": 0}
++    connection = session.connection()
++    if dialect == "postgresql":
++        connection.execute(
++            postgresql_insert(table)
++            .values(**values)
++            .on_conflict_do_nothing(index_elements=[table.c.source_scope])
++        )
++    elif dialect == "sqlite":
++        connection.execute(
++            sqlite_insert(table)
++            .values(**values)
++            .on_conflict_do_nothing(index_elements=[table.c.source_scope])
++        )
++    else:
++        raise RuntimeError(
++            "knowledge-edge concurrency locking supports only SQLite and PostgreSQL; "
++            f"got {dialect!r}"
++        )
++    result = connection.execute(
++        update(table).where(table.c.source_scope == scope).values(lock_token=table.c.lock_token)
++    )
++    if result.rowcount != 1:
++        raise RuntimeError(f"failed to acquire knowledge-graph scope lock for {scope!r}")
++
++
+ def _require_scope(scope: str | None) -> str:
+     """Validate that callers pass an explicit ownership scope."""
+     if scope is None:
+@@ -325,67 +390,71 @@ def create_knowledge_edge(
+         )
+     if confidence is not None and not 0.0 <= confidence <= 1.0:
+         raise ValueError("confidence must be between 0.0 and 1.0 (inclusive)")
++    _acquire_edge_scope_lock(session, scope)
++
++    with session.begin_nested():
++        source_node = session.get(KnowledgeNode, source_node_id)
++        target_node = session.get(KnowledgeNode, target_node_id)
++        if source_node is None or target_node is None:
++            raise ValueError("source and target nodes must exist before creating an edge")
++        if source_node.ownership_scope != scope:
++            raise ValueError(
++                f"source node scope {source_node.ownership_scope!r} does not match "
++                f"requested edge scope {scope!r}"
++            )
++        if target_node.ownership_scope != target_scope:
++            raise ValueError(
++                f"target node scope {target_node.ownership_scope!r} does not match "
++                f"requested target_scope {target_scope!r}"
++            )
+ 
+-    source_node = session.get(KnowledgeNode, source_node_id)
+-    target_node = session.get(KnowledgeNode, target_node_id)
+-    if source_node is None or target_node is None:
+-        raise ValueError("source and target nodes must exist before creating an edge")
+-    if source_node.ownership_scope != scope:
+-        raise ValueError(
+-            f"source node scope {source_node.ownership_scope!r} does not match "
+-            f"requested edge scope {scope!r}"
+-        )
+-    if target_node.ownership_scope != target_scope:
+-        raise ValueError(
+-            f"target node scope {target_node.ownership_scope!r} does not match "
+-            f"requested target_scope {target_scope!r}"
+-        )
+-
+-    duplicate = session.scalars(
+-        select(KnowledgeEdge).where(
+-            KnowledgeEdge.source_node_id == source_node_id,
+-            KnowledgeEdge.target_node_id == target_node_id,
+-            KnowledgeEdge.edge_type == edge_type,
+-            KnowledgeEdge.source_scope == scope,
+-            KnowledgeEdge.target_scope == target_scope,
++        duplicate = session.scalars(
++            select(KnowledgeEdge).where(
++                KnowledgeEdge.source_node_id == source_node_id,
++                KnowledgeEdge.target_node_id == target_node_id,
++                KnowledgeEdge.edge_type == edge_type,
++                KnowledgeEdge.source_scope == scope,
++                KnowledgeEdge.target_scope == target_scope,
++            )
++        ).first()
++        if duplicate is not None:
++            raise _duplicate_edge_error(edge_type, scope)
++
++        if edge_type in ORDERING_EDGE_TYPES and _ordering_edge_closes_cycle(
++            session,
++            source_node_id=source_node_id,
++            target_node_id=target_node_id,
++            scope=scope,
++        ):
++            raise ValueError("edge would create a prerequisite cycle")
++
++        edge = KnowledgeEdge(
++            source_node_id=source_node_id,
++            target_node_id=target_node_id,
++            edge_type=edge_type,
++            source_scope=scope,
++            target_scope=target_scope,
++            is_graph_reference=is_graph_reference,
++            confidence=confidence,
++            status=status,
++            notes=notes,
+         )
+-    ).first()
+-    if duplicate is not None:
+-        raise ValueError(
+-            "duplicate knowledge edge: an identical "
+-            f"{edge_type!r} edge already exists in scope {scope!r}"
++        session.add(edge)
++        try:
++            session.flush()
++        except IntegrityError as error:
++            if _is_edge_identity_conflict(error):
++                raise _duplicate_edge_error(edge_type, scope) from error
++            raise
++        record_audit_event(
++            session,
++            actor_id=actor_id,
++            action="create",
++            entity_type="KnowledgeEdge",
++            entity_id=edge.id,
++            source_subsystem=source_subsystem,
++            after_summary=_edge_summary(edge),
+         )
+-
+-    if edge_type in ORDERING_EDGE_TYPES and _ordering_edge_closes_cycle(
+-        session,
+-        source_node_id=source_node_id,
+-        target_node_id=target_node_id,
+-        scope=scope,
+-    ):
+-        raise ValueError("edge would create a prerequisite cycle")
+-
+-    edge = KnowledgeEdge(
+-        source_node_id=source_node_id,
+-        target_node_id=target_node_id,
+-        edge_type=edge_type,
+-        source_scope=scope,
+-        target_scope=target_scope,
+-        is_graph_reference=is_graph_reference,
+-        confidence=confidence,
+-        status=status,
+-        notes=notes,
+-    )
+-    session.add(edge)
+-    session.flush()
+-    record_audit_event(
+-        session,
+-        actor_id=actor_id,
+-        action="create",
+-        entity_type="KnowledgeEdge",
+-        entity_id=edge.id,
+-        source_subsystem=source_subsystem,
+-        after_summary=_edge_summary(edge),
+-    )
+     return edge
+ 
+ 
+@@ -442,7 +511,6 @@ def update_knowledge_edge(
+     PATCH that reaches a state creation would have refused leaves the same
+     invalid graph behind.
+     """
+-    before = _edge_summary(edge)
+     unknown = set(changes) - MUTABLE_EDGE_FIELDS
+     if unknown:
+         raise ValueError(
+@@ -461,50 +529,61 @@ def update_knowledge_edge(
+         elif field == "confidence" and not 0.0 <= value <= 1.0:
+             raise ValueError("confidence must be between 0.0 and 1.0 (inclusive)")
+ 
+-    new_edge_type = changes.get("edge_type")
+-    if new_edge_type is not None and new_edge_type != edge.edge_type:
+-        # Endpoints and scopes are immutable, so only a type change can collide
+-        # with a sibling edge. Without this, retyping one of two parallel edges
+-        # onto the other's type persists a pair that ``create_knowledge_edge``
+-        # rejects as a duplicate -- and for an ordering type the cycle check
+-        # cannot catch it, because a same-direction sibling closes no cycle.
+-        duplicate = session.scalars(
+-            select(KnowledgeEdge).where(
+-                KnowledgeEdge.id != edge.id,
+-                KnowledgeEdge.source_node_id == edge.source_node_id,
+-                KnowledgeEdge.target_node_id == edge.target_node_id,
+-                KnowledgeEdge.edge_type == new_edge_type,
+-                KnowledgeEdge.source_scope == edge.source_scope,
+-                KnowledgeEdge.target_scope == edge.target_scope,
+-            )
+-        ).first()
+-        if duplicate is not None:
+-            raise ValueError(
+-                "duplicate knowledge edge: an identical "
+-                f"{new_edge_type!r} edge already exists in scope {edge.source_scope!r}"
+-            )
+-
+-    if new_edge_type in ORDERING_EDGE_TYPES and _ordering_edge_closes_cycle(
+-        session,
+-        source_node_id=edge.source_node_id,
+-        target_node_id=edge.target_node_id,
+-        scope=edge.source_scope,
+-        exclude_edge_id=edge.id,
+-    ):
+-        raise ValueError("edge would create a prerequisite cycle")
+-    for field, value in changes.items():
+-        setattr(edge, field, value)
+-    session.flush()
+-    record_audit_event(
+-        session,
+-        actor_id=actor_id,
+-        action="update",
+-        entity_type="KnowledgeEdge",
+-        entity_id=edge.id,
+-        source_subsystem=source_subsystem,
+-        before_summary=before,
+-        after_summary=_edge_summary(edge),
+-    )
++    _acquire_edge_scope_lock(session, edge.source_scope)
++
++    with session.begin_nested():
++        session.refresh(edge)
++        before = _edge_summary(edge)
++        new_edge_type = changes.get("edge_type")
++        if new_edge_type is not None and new_edge_type != edge.edge_type:
++            # Endpoints and scopes are immutable, so only a type change can collide
++            # with a sibling edge. Without this, retyping one of two parallel edges
++            # onto the other's type persists a pair that ``create_knowledge_edge``
++            # rejects as a duplicate -- and for an ordering type the cycle check
++            # cannot catch it, because a same-direction sibling closes no cycle.
++            duplicate = session.scalars(
++                select(KnowledgeEdge).where(
++                    KnowledgeEdge.id != edge.id,
++                    KnowledgeEdge.source_node_id == edge.source_node_id,
++                    KnowledgeEdge.target_node_id == edge.target_node_id,
++                    KnowledgeEdge.edge_type == new_edge_type,
++                    KnowledgeEdge.source_scope == edge.source_scope,
++                    KnowledgeEdge.target_scope == edge.target_scope,
++                )
++            ).first()
++            if duplicate is not None:
++                raise _duplicate_edge_error(new_edge_type, edge.source_scope)
++
++        if new_edge_type in ORDERING_EDGE_TYPES and _ordering_edge_closes_cycle(
++            session,
++            source_node_id=edge.source_node_id,
++            target_node_id=edge.target_node_id,
++            scope=edge.source_scope,
++            exclude_edge_id=edge.id,
++        ):
++            raise ValueError("edge would create a prerequisite cycle")
++        for field, value in changes.items():
++            setattr(edge, field, value)
++        duplicate_edge_type = edge.edge_type
++        duplicate_scope = edge.source_scope
++        try:
++            session.flush()
++        except IntegrityError as error:
++            if _is_edge_identity_conflict(error):
++                # A failed flush expires ORM state before this savepoint exits,
++                # so build the public error from values captured beforehand.
++                raise _duplicate_edge_error(duplicate_edge_type, duplicate_scope) from error
++            raise
++        record_audit_event(
++            session,
++            actor_id=actor_id,
++            action="update",
++            entity_type="KnowledgeEdge",
++            entity_id=edge.id,
++            source_subsystem=source_subsystem,
++            before_summary=before,
++            after_summary=_edge_summary(edge),
++        )
+     return edge
+ 
+ 
+diff --git a/tests/graphs/test_edge_concurrency.py b/tests/graphs/test_edge_concurrency.py
+new file mode 100644
+index 00000000..38cb0fbb
+--- /dev/null
++++ b/tests/graphs/test_edge_concurrency.py
+@@ -0,0 +1,482 @@
++"""Concurrency and migration coverage for knowledge-edge invariants."""
++
++from __future__ import annotations
++
++import threading
++from collections.abc import Callable
++from pathlib import Path
++from queue import Queue
++from typing import Any
++
++import pytest
++from alembic import command
++from alembic.config import Config
++from sqlalchemy import create_engine, func, inspect, select, text
++from sqlalchemy.exc import IntegrityError
++from sqlalchemy.orm import Session, sessionmaker
++
++from lms.audit.models import AuditLog
++from lms.db.base import Base
++from lms.graphs import repository as graph_repository
++from lms.graphs.models import KnowledgeEdge, KnowledgeNode, knowledge_graph_scope_locks
++from lms.graphs.repository import create_knowledge_edge, update_knowledge_edge
++from lms.settings import get_settings
++
++
++def _node(node_id: str, title: str) -> KnowledgeNode:
++    return KnowledgeNode(
++        id=node_id,
++        title=title,
++        knowledge_type="conceptual",
++        ownership_scope="personal",
++        status="published",
++        provenance="manual",
++    )
++
++
++def _file_session_factory(path: Path) -> tuple[Any, sessionmaker[Session]]:
++    engine = create_engine(
++        f"sqlite+pysqlite:///{path}",
++        connect_args={"check_same_thread": False, "timeout": 5},
++        future=True,
++    )
++    Base.metadata.create_all(engine)
++    factory = sessionmaker(bind=engine, autoflush=False, expire_on_commit=False)
++    return engine, factory
++
++
++def _run_competing_writes(
++    first: Callable[[Session], None],
++    second: Callable[[Session], None],
++    factory: sessionmaker[Session],
++    second_traversed: threading.Event,
++) -> list[tuple[str, str]]:
++    first_flushed = threading.Event()
++    second_started = threading.Event()
++    release_first = threading.Event()
++    results: Queue[tuple[str, str]] = Queue()
++
++    def run_first() -> None:
++        with factory() as session:
++            try:
++                first(session)
++                first_flushed.set()
++                if not release_first.wait(timeout=5):
++                    raise TimeoutError("first writer was not released")
++                session.commit()
++                results.put(("first", "committed"))
++            except Exception as exc:  # pragma: no cover - asserted through result payload
++                session.rollback()
++                results.put(("first", f"{type(exc).__name__}: {exc}"))
++                first_flushed.set()
++
++    def run_second() -> None:
++        if not first_flushed.wait(timeout=5):
++            results.put(("second", "TimeoutError: first writer did not flush"))
++            return
++        with factory() as session:
++            try:
++                second_started.set()
++                second(session)
++                session.commit()
++                results.put(("second", "committed"))
++            except Exception as exc:
++                session.rollback()
++                results.put(("second", f"{type(exc).__name__}: {exc}"))
++
++    first_thread = threading.Thread(target=run_first, name="graph-writer-first")
++    second_thread = threading.Thread(target=run_second, name="graph-writer-second")
++    first_thread.start()
++    second_thread.start()
++    assert second_started.wait(timeout=5), "second writer never attempted the locked operation"
++    # With serialization the second writer cannot reach graph traversal yet.
++    # Without it this wait observes the stale traversal before releasing the
++    # first transaction, making the race deterministic rather than scheduler-dependent.
++    traversed_before_release = second_traversed.wait(timeout=1)
++    release_first.set()
++    first_thread.join(timeout=10)
++    second_thread.join(timeout=10)
++    assert not first_thread.is_alive()
++    assert not second_thread.is_alive()
++    assert not traversed_before_release, "second writer traversed the graph before serialization"
++    return sorted([results.get_nowait(), results.get_nowait()])
++
++
++def test_concurrent_cycle_creates_serialize_before_traversal(
++    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
++) -> None:
++    """A competing cycle check must observe the first writer after its commit."""
++    engine, factory = _file_session_factory(tmp_path / "cycle-create.db")
++    try:
++        with factory() as session:
++            session.add_all([_node("a", "A"), _node("b", "B"), _node("c", "C")])
++            session.flush()
++            create_knowledge_edge(
++                session,
++                source_node_id="b",
++                target_node_id="c",
++                edge_type="prerequisite",
++                scope="personal",
++                actor_id="seed",
++            )
++            session.commit()
++
++        second_traversed = threading.Event()
++        original_cycle_check = graph_repository._ordering_edge_closes_cycle
++
++        def observed_cycle_check(*args: Any, **kwargs: Any) -> bool:
++            result = original_cycle_check(*args, **kwargs)
++            if threading.current_thread().name == "graph-writer-second":
++                second_traversed.set()
++            return result
++
++        monkeypatch.setattr(graph_repository, "_ordering_edge_closes_cycle", observed_cycle_check)
++
++        def first(session: Session) -> None:
++            create_knowledge_edge(
++                session,
++                source_node_id="a",
++                target_node_id="b",
++                edge_type="prerequisite",
++                scope="personal",
++                actor_id="writer:first",
++            )
++
++        def second(session: Session) -> None:
++            create_knowledge_edge(
++                session,
++                source_node_id="c",
++                target_node_id="a",
++                edge_type="key-prerequisite",
++                scope="personal",
++                actor_id="writer:second",
++            )
++
++        assert _run_competing_writes(first, second, factory, second_traversed) == [
++            ("first", "committed"),
++            ("second", "ValueError: edge would create a prerequisite cycle"),
++        ]
++        with factory() as session:
++            assert session.scalar(select(func.count()).select_from(KnowledgeEdge)) == 2
++            assert session.scalar(select(func.count()).select_from(AuditLog)) == 2
++    finally:
++        engine.dispose()
++
++
++def test_concurrent_cycle_updates_serialize_before_traversal(
++    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
++) -> None:
++    """Two concurrent retypes cannot both turn an acyclic graph cyclic."""
++    engine, factory = _file_session_factory(tmp_path / "cycle-update.db")
++    try:
++        with factory() as session:
++            session.add_all([_node("a", "A"), _node("b", "B"), _node("c", "C")])
++            session.flush()
++            create_knowledge_edge(
++                session,
++                source_node_id="b",
++                target_node_id="c",
++                edge_type="prerequisite",
++                scope="personal",
++                actor_id="seed",
++            )
++            first_edge = create_knowledge_edge(
++                session,
++                source_node_id="a",
++                target_node_id="b",
++                edge_type="analogy",
++                scope="personal",
++                actor_id="seed",
++            )
++            second_edge = create_knowledge_edge(
++                session,
++                source_node_id="c",
++                target_node_id="a",
++                edge_type="contrast",
++                scope="personal",
++                actor_id="seed",
++            )
++            first_id, second_id = first_edge.id, second_edge.id
++            session.commit()
++
++        second_traversed = threading.Event()
++        original_cycle_check = graph_repository._ordering_edge_closes_cycle
++
++        def observed_cycle_check(*args: Any, **kwargs: Any) -> bool:
++            result = original_cycle_check(*args, **kwargs)
++            if threading.current_thread().name == "graph-writer-second":
++                second_traversed.set()
++            return result
++
++        monkeypatch.setattr(graph_repository, "_ordering_edge_closes_cycle", observed_cycle_check)
++
++        def first(session: Session) -> None:
++            edge = session.get(KnowledgeEdge, first_id)
++            assert edge is not None
++            update_knowledge_edge(session, edge, actor_id="writer:first", edge_type="prerequisite")
++
++        def second(session: Session) -> None:
++            edge = session.get(KnowledgeEdge, second_id)
++            assert edge is not None
++            update_knowledge_edge(session, edge, actor_id="writer:second", edge_type="encompassing")
++
++        assert _run_competing_writes(first, second, factory, second_traversed) == [
++            ("first", "committed"),
++            ("second", "ValueError: edge would create a prerequisite cycle"),
++        ]
++        with factory() as session:
++            assert session.get(KnowledgeEdge, first_id).edge_type == "prerequisite"  # type: ignore[union-attr]
++            assert session.get(KnowledgeEdge, second_id).edge_type == "contrast"  # type: ignore[union-attr]
++            assert (
++                session.scalar(
++                    select(func.count())
++                    .select_from(AuditLog)
++                    .where(AuditLog.entity_id == second_id, AuditLog.action == "update")
++                )
++                == 0
++            )
++    finally:
++        engine.dispose()
++
++
++def test_concurrent_duplicate_creates_leave_one_edge(tmp_path: Path) -> None:
++    """Two concurrent identical creates leave one edge and reject the loser."""
++    engine, factory = _file_session_factory(tmp_path / "duplicate-create.db")
++    try:
++        unique_names = {
++            constraint["name"]
++            for constraint in inspect(engine).get_unique_constraints("knowledge_edges")
++        }
++        assert "uq_knowledge_edges_identity" in unique_names
++        with factory() as session:
++            session.add_all([_node("a", "A"), _node("b", "B")])
++            session.commit()
++
++        def create_duplicate(session: Session) -> None:
++            create_knowledge_edge(
++                session,
++                source_node_id="a",
++                target_node_id="b",
++                edge_type="analogy",
++                scope="personal",
++                actor_id=f"writer:{threading.current_thread().name}",
++            )
++
++        assert _run_competing_writes(
++            create_duplicate,
++            create_duplicate,
++            factory,
++            threading.Event(),
++        ) == [
++            ("first", "committed"),
++            (
++                "second",
++                "ValueError: duplicate knowledge edge: an identical "
++                "'analogy' edge already exists in scope 'personal'",
++            ),
++        ]
++        with factory() as session:
++            assert session.scalar(select(func.count()).select_from(KnowledgeEdge)) == 1
++            assert session.scalar(select(func.count()).select_from(AuditLog)) == 1
++    finally:
++        engine.dispose()
++
++
++def test_database_unique_floor_rejects_direct_duplicate(db_session: Session) -> None:
++    """Direct writers cannot bypass the five-column edge identity invariant."""
++    db_session.add_all([_node("a", "A"), _node("b", "B")])
++    db_session.flush()
++    identity = {
++        "source_node_id": "a",
++        "target_node_id": "b",
++        "edge_type": "analogy",
++        "source_scope": "personal",
++        "target_scope": "personal",
++    }
++    db_session.add(KnowledgeEdge(id="edge-1", **identity))
++    db_session.flush()
++    with (
++        pytest.raises(IntegrityError, match="UNIQUE constraint failed") as excinfo,
++        db_session.begin_nested(),
++    ):
++        db_session.add(KnowledgeEdge(id="edge-2", **identity))
++        db_session.flush()
++    assert graph_repository._is_edge_identity_conflict(excinfo.value)
++
++
++def test_create_translates_database_identity_conflict(
++    db_session: Session, monkeypatch: pytest.MonkeyPatch
++) -> None:
++    """A create-time uniqueness race surfaces as the repository duplicate error."""
++    db_session.add_all([_node("a", "A"), _node("b", "B")])
++    db_session.add(
++        KnowledgeEdge(
++            id="edge-1",
++            source_node_id="a",
++            target_node_id="b",
++            edge_type="analogy",
++            source_scope="personal",
++            target_scope="personal",
++        )
++    )
++    db_session.flush()
++
++    class _NoDuplicate:
++        @staticmethod
++        def first() -> None:
++            return None
++
++    monkeypatch.setattr(db_session, "scalars", lambda *args, **kwargs: _NoDuplicate())
++
++    with pytest.raises(ValueError, match="duplicate knowledge edge"):
++        create_knowledge_edge(
++            db_session,
++            source_node_id="a",
++            target_node_id="b",
++            edge_type="analogy",
++            scope="personal",
++            actor_id="writer",
++        )
++
++
++def test_update_translates_database_identity_conflict(
++    db_session: Session, monkeypatch: pytest.MonkeyPatch
++) -> None:
++    """An update-time uniqueness race surfaces as the repository duplicate error."""
++    db_session.add_all([_node("a", "A"), _node("b", "B")])
++    existing = KnowledgeEdge(
++        id="edge-1",
++        source_node_id="a",
++        target_node_id="b",
++        edge_type="analogy",
++        source_scope="personal",
++        target_scope="personal",
++    )
++    candidate = KnowledgeEdge(
++        id="edge-2",
++        source_node_id="a",
++        target_node_id="b",
++        edge_type="contrast",
++        source_scope="personal",
++        target_scope="personal",
++    )
++    db_session.add_all([existing, candidate])
++    db_session.flush()
++
++    class _NoDuplicate:
++        @staticmethod
++        def first() -> None:
++            return None
++
++    monkeypatch.setattr(db_session, "scalars", lambda *args, **kwargs: _NoDuplicate())
++
++    with pytest.raises(ValueError, match="duplicate knowledge edge"):
++        update_knowledge_edge(
++            db_session,
++            candidate,
++            actor_id="writer",
++            edge_type="analogy",
++        )
++
++
++def test_edge_and_audit_rollback_with_outer_transaction(tmp_path: Path) -> None:
++    """The operation savepoint must not commit edge or audit independently."""
++    engine, factory = _file_session_factory(tmp_path / "rollback.db")
++    try:
++        with factory() as session:
++            session.add_all([_node("a", "A"), _node("b", "B")])
++            session.commit()
++        with factory() as session:
++            create_knowledge_edge(
++                session,
++                source_node_id="a",
++                target_node_id="b",
++                edge_type="analogy",
++                scope="personal",
++                actor_id="writer",
++            )
++            session.rollback()
++        with factory() as session:
++            assert session.scalar(select(func.count()).select_from(KnowledgeEdge)) == 0
++            assert session.scalar(select(func.count()).select_from(AuditLog)) == 0
++            assert (
++                session.scalar(select(func.count()).select_from(knowledge_graph_scope_locks)) == 0
++            )
++    finally:
++        engine.dispose()
++
++
++def _alembic_config(database_url: str, monkeypatch: pytest.MonkeyPatch) -> Config:
++    monkeypatch.setenv("DATABASE_URL", database_url)
++    get_settings.cache_clear()
++    return Config("alembic.ini")
++
++
++def test_migration_rejects_existing_duplicate_edges_without_mutation(
++    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
++) -> None:
++    """Upgrade fails closed and leaves duplicate production data untouched."""
++    database_url = f"sqlite+pysqlite:///{tmp_path / 'migration-duplicates.db'}"
++    config = _alembic_config(database_url, monkeypatch)
++    command.upgrade(config, "20260806_0035")
++    engine = create_engine(database_url, future=True)
++    try:
++        with engine.begin() as connection:
++            connection.execute(text("""
++                    INSERT INTO knowledge_nodes
++                        (id, title, knowledge_type, ownership_scope, status, provenance)
++                    VALUES
++                        ('a', 'A', 'conceptual', 'personal', 'published', 'manual'),
++                        ('b', 'B', 'conceptual', 'personal', 'published', 'manual')
++                    """))
++            for edge_id in ("edge-1", "edge-2"):
++                connection.execute(
++                    text("""
++                        INSERT INTO knowledge_edges
++                            (id, source_node_id, target_node_id, edge_type,
++                             source_scope, target_scope, is_graph_reference, status)
++                        VALUES
++                            (:id, 'a', 'b', 'analogy',
++                             'personal', 'personal', false, 'draft')
++                        """),
++                    {"id": edge_id},
++                )
++        with pytest.raises(RuntimeError, match="duplicate knowledge edges exist"):
++            command.upgrade(config, "head")
++        with engine.connect() as connection:
++            assert connection.scalar(text("SELECT COUNT(*) FROM knowledge_edges")) == 2
++            assert not inspect(connection).has_table("knowledge_graph_scope_locks")
++    finally:
++        engine.dispose()
++        get_settings.cache_clear()
++
++
++def test_migration_seeds_scope_locks_and_preserves_edge_references(
++    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
++) -> None:
++    """The SQLite batch rebuild keeps inbound references and adds both lock rows."""
++    database_url = f"sqlite+pysqlite:///{tmp_path / 'migration-success.db'}"
++    config = _alembic_config(database_url, monkeypatch)
++    command.upgrade(config, "head")
++    engine = create_engine(database_url, future=True)
++    try:
++        with engine.connect() as connection:
++            lock_scopes = (
++                connection.execute(
++                    text(
++                        "SELECT source_scope FROM knowledge_graph_scope_locks ORDER BY source_scope"
++                    )
++                )
++                .scalars()
++                .all()
++            )
++            assert lock_scopes == ["institutional", "personal"]
++            unique_names = {
++                item["name"]
++                for item in inspect(connection).get_unique_constraints("knowledge_edges")
++            }
++            assert "uq_knowledge_edges_identity" in unique_names
++            assert connection.execute(text("PRAGMA foreign_key_check")).all() == []
++    finally:
++        engine.dispose()
++        get_settings.cache_clear()

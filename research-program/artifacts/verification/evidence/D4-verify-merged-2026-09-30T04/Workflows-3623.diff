@@ -1,0 +1,175 @@
+diff --git a/.github/scripts/gate-fork-status-publication.js b/.github/scripts/gate-fork-status-publication.js
+index 2160cf3b4..ee13e3e3f 100644
+--- a/.github/scripts/gate-fork-status-publication.js
++++ b/.github/scripts/gate-fork-status-publication.js
+@@ -2,6 +2,7 @@
+ 
+ const GATE_CONTEXT = 'Gate / gate';
+ const GATE_PATH = '.github/workflows/pr-00-gate.yml';
++const SUMMARY_JOB_NAMES = new Set(['summary', 'gate-summary']);
+ const BLOCKED_PREFIXES = [
+   '.github/actions/',
+   '.github/scripts/',
+@@ -74,7 +75,7 @@ function publicationState({ run, jobs, changedFiles }) {
+   if (run.status !== 'completed') {
+     return { state: 'pending', description: 'Trusted Gate run is in progress' };
+   }
+-  const summaries = jobs.filter(job => String(job.name || '').toLowerCase() === 'summary');
++  const summaries = jobs.filter(job => SUMMARY_JOB_NAMES.has(job.name));
+   if (summaries.length !== 1 || jobs.some(job => job.status !== 'completed')) {
+     return { state: 'error', description: 'Gate job set is missing or incomplete' };
+   }
+diff --git a/docs/keepalive/FORK_GATE_STATUS_PUBLICATION.md b/docs/keepalive/FORK_GATE_STATUS_PUBLICATION.md
+index 817f697ea..5d2083ec6 100644
+--- a/docs/keepalive/FORK_GATE_STATUS_PUBLICATION.md
++++ b/docs/keepalive/FORK_GATE_STATUS_PUBLICATION.md
+@@ -25,10 +25,11 @@ fails closed unless all of these bindings hold:
+   current nor previous path of a rename changes `.github/workflows/`,
+   `.github/actions/`, `.github/scripts/`, `.github/path-classification.yml`, or
+   `tools/post_ci_summary.py`;
+-- completed runs contain exactly one completed `summary` job. Only an explicit
+-  successful run and successful summary can publish `success`; missing,
+-  ambiguous, neutral, skipped, or incomplete evidence publishes a blocking
+-  `error`.
++- completed runs contain exactly one completed trusted summary job whose name is
++  either `summary` or `gate-summary` (case-sensitive allowlist; duplicate or
++  mixed names fail closed). Only an explicit successful run and successful
++  summary job can publish `success`; missing, ambiguous, neutral, skipped, or
++  incomplete evidence publishes a blocking `error`.
+ 
+ The run and PR are fetched again immediately before the status write. Any head,
+ base, changed-file count, run-attempt, status, or conclusion change aborts the
+@@ -52,7 +53,9 @@ The opener queried active rulesets and legacy branch protection before this
+ change. Repositories visibly requiring the status were
+ `Travel-Plan-Permission`, `Pension-Data`, `Inv-Man-Intake`, `Ready`,
+ `trip-planner`, `Portable-Alpha-Extension-Model` (legacy `gate-summary`), and
+-`learning-management-system`. Workflows currently requires `summary` instead;
++`learning-management-system`. Workflows branch protection lists `summary`; the
++publisher also accepts a lone `gate-summary` job when that is the Gate rollup
++name (for example legacy consumer aliases);
+ Trend Model Project and Collab Admin expose disabled rulesets. The remaining
+ registered consumers returned no visible required status contexts. This is a
+ point-in-time API audit, not an assertion that hidden or future protection rules
+diff --git a/templates/consumer-repo/.github/scripts/gate-fork-status-publication.js b/templates/consumer-repo/.github/scripts/gate-fork-status-publication.js
+index 2160cf3b4..ee13e3e3f 100644
+--- a/templates/consumer-repo/.github/scripts/gate-fork-status-publication.js
++++ b/templates/consumer-repo/.github/scripts/gate-fork-status-publication.js
+@@ -2,6 +2,7 @@
+ 
+ const GATE_CONTEXT = 'Gate / gate';
+ const GATE_PATH = '.github/workflows/pr-00-gate.yml';
++const SUMMARY_JOB_NAMES = new Set(['summary', 'gate-summary']);
+ const BLOCKED_PREFIXES = [
+   '.github/actions/',
+   '.github/scripts/',
+@@ -74,7 +75,7 @@ function publicationState({ run, jobs, changedFiles }) {
+   if (run.status !== 'completed') {
+     return { state: 'pending', description: 'Trusted Gate run is in progress' };
+   }
+-  const summaries = jobs.filter(job => String(job.name || '').toLowerCase() === 'summary');
++  const summaries = jobs.filter(job => SUMMARY_JOB_NAMES.has(job.name));
+   if (summaries.length !== 1 || jobs.some(job => job.status !== 'completed')) {
+     return { state: 'error', description: 'Gate job set is missing or incomplete' };
+   }
+diff --git a/tests/workflows/test_gate_fork_status_publication.py b/tests/workflows/test_gate_fork_status_publication.py
+index c94b1e6b6..a96326222 100644
+--- a/tests/workflows/test_gate_fork_status_publication.py
++++ b/tests/workflows/test_gate_fork_status_publication.py
+@@ -7,7 +7,9 @@
+ 
+ ROOT = pathlib.Path(__file__).parents[2]
+ HELPER = ROOT / ".github/scripts/gate-fork-status-publication.js"
++TEMPLATE_HELPER = ROOT / "templates/consumer-repo/.github/scripts/gate-fork-status-publication.js"
+ WORKFLOW = ROOT / ".github/workflows/pr-00-gate-fork-status.yml"
++SUPPORTED_SUMMARY_NAMES = ("summary", "gate-summary")
+ 
+ 
+ def _decide(run, jobs, changed_files):
+@@ -34,7 +36,7 @@ def _collect_changed_paths(pr, files):
+     return json.loads(completed.stdout)
+ 
+ 
+-def _publish_scenario(*, final_run=None, same_repo=False, replay=False):
++def _publish_scenario(*, final_run=None, same_repo=False, replay=False, summary_name="summary"):
+     initial_run = {
+         "id": 9,
+         "workflow_id": 7,
+@@ -85,7 +87,7 @@ def _publish_scenario(*, final_run=None, same_repo=False, replay=False):
+     actions: {{
+       getWorkflowRun: async () => ({{data: runReads++ === 0 ? scenario.initialRun : scenario.finalRun}}),
+       getWorkflow: endpoint({{id: 7, path: '.github/workflows/pr-00-gate.yml'}}),
+-      listJobsForWorkflowRunAttempt: endpoint([{{name: 'summary', status: 'completed', conclusion: 'success'}}]),
++      listJobsForWorkflowRunAttempt: endpoint([{{name: {json.dumps(summary_name)}, status: 'completed', conclusion: 'success'}}]),
+       listWorkflowRuns: endpoint([scenario.initialRun]),
+     }},
+     pulls: {{
+@@ -147,8 +149,9 @@ def test_fork_gate_status_publisher_has_trusted_minimal_permissions():
+     assert "maxRetries: 0" in helper
+ 
+ 
+-def test_fork_gate_status_requires_explicit_success_and_complete_summary():
+-    jobs = [{"name": "summary", "status": "completed", "conclusion": "success"}]
++@pytest.mark.parametrize("summary_name", SUPPORTED_SUMMARY_NAMES)
++def test_fork_gate_status_requires_explicit_success_and_complete_summary(summary_name):
++    jobs = [{"name": summary_name, "status": "completed", "conclusion": "success"}]
+     assert (
+         _decide({"status": "completed", "conclusion": "success"}, jobs, ["src/app.py"])["state"]
+         == "success"
+@@ -164,21 +167,54 @@ def test_fork_gate_status_requires_explicit_success_and_complete_summary():
+     assert (
+         _decide(
+             {"status": "completed", "conclusion": "failure"},
+-            [{"name": "summary", "status": "completed", "conclusion": "failure"}],
++            [{"name": summary_name, "status": "completed", "conclusion": "failure"}],
+             ["src/app.py"],
+         )["state"]
+         == "failure"
+     )
+ 
+ 
+-def test_fork_gate_status_publishes_success_once_for_bound_evidence():
+-    outcome = _publish_scenario()
++@pytest.mark.parametrize("summary_name", SUPPORTED_SUMMARY_NAMES)
++def test_fork_gate_status_publishes_success_once_for_bound_evidence(summary_name):
++    outcome = _publish_scenario(summary_name=summary_name)
+     assert outcome["result"]["state"] == "success"
+     assert len(outcome["writes"]) == 1
+     assert outcome["writes"][0]["sha"] == "abc"
+     assert outcome["writes"][0]["context"] == "Gate / gate"
+ 
+ 
++@pytest.mark.parametrize(
++    "jobs",
++    [
++        [],
++        [
++            {"name": "summary", "status": "completed", "conclusion": "success"},
++            {"name": "summary", "status": "completed", "conclusion": "success"},
++        ],
++        [
++            {"name": "gate-summary", "status": "completed", "conclusion": "success"},
++            {"name": "gate-summary", "status": "completed", "conclusion": "success"},
++        ],
++        [
++            {"name": "summary", "status": "completed", "conclusion": "success"},
++            {"name": "gate-summary", "status": "completed", "conclusion": "success"},
++        ],
++        [{"name": "Summary", "status": "completed", "conclusion": "success"}],
++        [{"name": "Gate-Summary", "status": "completed", "conclusion": "success"}],
++        [{"name": " gate-summary ", "status": "completed", "conclusion": "success"}],
++        [{"name": "gate-summary (3.12)", "status": "completed", "conclusion": "success"}],
++        [{"name": "Gate / gate-summary", "status": "completed", "conclusion": "success"}],
++    ],
++)
++def test_fork_gate_status_rejects_missing_ambiguous_or_lookalike_summary(jobs):
++    result = _decide({"status": "completed", "conclusion": "success"}, jobs, ["src/app.py"])
++    assert result == {"state": "error", "description": "Gate job set is missing or incomplete"}
++
++
++def test_fork_gate_status_source_and_template_helpers_match():
++    assert HELPER.read_bytes() == TEMPLATE_HELPER.read_bytes()
++
++
+ def test_fork_gate_status_does_not_write_after_attempt_drift():
+     final_run = {
+         "id": 9,

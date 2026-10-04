@@ -1,0 +1,167 @@
+diff --git a/.github/scripts/__tests__/agent-registry.test.js b/.github/scripts/__tests__/agent-registry.test.js
+index f3ab60c8e..9ea142e05 100644
+--- a/.github/scripts/__tests__/agent-registry.test.js
++++ b/.github/scripts/__tests__/agent-registry.test.js
+@@ -107,10 +107,20 @@ test('resolveAgentRoutingFromLabels returns mode=explicit for agent:codex', () =
+   assert.equal(routing.agentKey, 'codex');
+   assert.equal(routing.requested, 'codex');
+ });
+-test('resolveAgentRoutingFromLabels rejects mixing agent:auto with explicit agent', () => {
++test('resolveAgentRoutingFromLabels keeps the concrete agent beside agent:auto', () => {
++  const routing = resolveAgentRoutingFromLabels(['agent:auto', 'agent:claude'], {
++    registryPath: REGISTRY_PATH,
++  });
++  assert.equal(routing.mode, 'auto');
++  assert.equal(routing.agentKey, 'claude');
++  assert.equal(routing.requested, 'auto');
++});
++test('resolveAgentRoutingFromLabels still rejects two concrete agents beside agent:auto', () => {
+   assert.throws(
+     () => {
+-      resolveAgentRoutingFromLabels(['agent:auto', 'agent:codex'], { registryPath: REGISTRY_PATH });
++      resolveAgentRoutingFromLabels(['agent:auto', 'agent:codex', 'agent:claude'], {
++        registryPath: REGISTRY_PATH,
++      });
+     },
+     (error) => {
+       assert.ok(error instanceof Error);
+diff --git a/.github/scripts/agent_registry.js b/.github/scripts/agent_registry.js
+index 4ac6ce445..f530eb53f 100644
+--- a/.github/scripts/agent_registry.js
++++ b/.github/scripts/agent_registry.js
+@@ -313,15 +313,15 @@ function resolveAgentRoutingFromLabels(labels, options = {}) {
+   if (explicitRequested.length > 1) {
+     throw new Error(`Multiple agent labels present: ${explicitRequested.join(', ')}`);
+   }
+-  if (hasAuto && explicitRequested.length > 0) {
+-    throw new Error(`Multiple agent labels present: auto, ${explicitRequested[0]}`);
+-  }
+-
+   let mode = 'default';
+   let agentKey = registry.default_agent;
+   let requested = null;
+ 
+-  if (explicitRequested.length === 1) {
++  if (hasAuto && explicitRequested.length === 1) {
++    mode = 'auto';
++    agentKey = explicitRequested[0];
++    requested = 'auto';
++  } else if (explicitRequested.length === 1) {
+     mode = 'explicit';
+     agentKey = explicitRequested[0];
+     requested = agentKey;
+diff --git a/.github/workflows/agents-autofix-loop.yml b/.github/workflows/agents-autofix-loop.yml
+index 2280559c7..279657eec 100644
+--- a/.github/workflows/agents-autofix-loop.yml
++++ b/.github/workflows/agents-autofix-loop.yml
+@@ -421,7 +421,7 @@ jobs:
+             const agentPrefix = 'agent:';
+             let routingLabelCandidates = labelObjects;
+             let routingAgentKeys = [];
+-            const nonRoutingAgentKeys = new Set(['needs-attention', 'rate-limited', 'retry']);
++            const nonRoutingAgentKeys = new Set(['auto', 'needs-attention', 'rate-limited', 'retry']);
+             try {
+               const { loadAgentRegistry } = require('./.github/scripts/agent_registry.js');
+               const registry = loadAgentRegistry();
+diff --git a/docs/LABELS.md b/docs/LABELS.md
+index 3eb6e81a3..841b0e475 100644
+--- a/docs/LABELS.md
++++ b/docs/LABELS.md
+@@ -243,7 +243,6 @@ dispatch a runner. See
+ 
+ **Prerequisites:**
+ - When `agent:auto` is present, a co-present concrete `agent:<name>` label seeds the first round's agent, and the delegation policy decides after that; `agent:auto` always wins
+-- Only keepalive routing honors the pair today: `resolveAgentRoutingFromLabels` in `.github/scripts/agent_registry.js` still rejects `agent:auto` beside a concrete label, so its other callers (the verifier, verify-to-new-pr, the autofix loop and the bot-comment handler) fall back to a default agent; tracked in #3519
+ - Existing delegation state improves switch decisions, but the initial-selection path can choose an agent without a concrete label
+ 
+ **Lifecycle:** Applied at PR creation by the opener lane, alongside the concrete `agent:<name>` label that records which seat opened the PR, or manually or by the closer when a PR is capacity-stuck. The delegation policy reads it on keepalive ticks and either keeps the current runner choice or switches the runner decision for that dispatch.
+diff --git a/templates/consumer-repo/.github/scripts/agent_registry.js b/templates/consumer-repo/.github/scripts/agent_registry.js
+index 4ac6ce445..f530eb53f 100644
+--- a/templates/consumer-repo/.github/scripts/agent_registry.js
++++ b/templates/consumer-repo/.github/scripts/agent_registry.js
+@@ -313,15 +313,15 @@ function resolveAgentRoutingFromLabels(labels, options = {}) {
+   if (explicitRequested.length > 1) {
+     throw new Error(`Multiple agent labels present: ${explicitRequested.join(', ')}`);
+   }
+-  if (hasAuto && explicitRequested.length > 0) {
+-    throw new Error(`Multiple agent labels present: auto, ${explicitRequested[0]}`);
+-  }
+-
+   let mode = 'default';
+   let agentKey = registry.default_agent;
+   let requested = null;
+ 
+-  if (explicitRequested.length === 1) {
++  if (hasAuto && explicitRequested.length === 1) {
++    mode = 'auto';
++    agentKey = explicitRequested[0];
++    requested = 'auto';
++  } else if (explicitRequested.length === 1) {
+     mode = 'explicit';
+     agentKey = explicitRequested[0];
+     requested = agentKey;
+diff --git a/templates/consumer-repo/docs/LABELS.md b/templates/consumer-repo/docs/LABELS.md
+index c55c3b1b8..b0709af76 100644
+--- a/templates/consumer-repo/docs/LABELS.md
++++ b/templates/consumer-repo/docs/LABELS.md
+@@ -194,7 +194,6 @@ runner and registry entry ship, applying this label will not dispatch a runner.
+ 
+ **Prerequisites:**
+ - When `agent:auto` is present, a co-present concrete `agent:<name>` label seeds the first round's agent, and the delegation policy decides after that; `agent:auto` always wins
+-- Only keepalive routing honors the pair today: `resolveAgentRoutingFromLabels` in `.github/scripts/agent_registry.js` still rejects `agent:auto` beside a concrete label, so its other callers (the verifier, verify-to-new-pr, the autofix loop and the bot-comment handler) fall back to a default agent; tracked in #3519
+ - Existing delegation state improves switch decisions, but the initial-selection path can choose an agent without a concrete label
+ 
+ **Lifecycle:** Applied at PR creation by the opener lane, alongside the concrete `agent:<name>` label that records which seat opened the PR, or manually or by the closer when a PR is capacity-stuck. The delegation policy reads it on keepalive ticks and either keeps the current runner choice or switches the runner decision for that dispatch.
+diff --git a/tests/workflows/test_autofix_loop_routing.py b/tests/workflows/test_autofix_loop_routing.py
+new file mode 100644
+index 000000000..9504dff79
+--- /dev/null
++++ b/tests/workflows/test_autofix_loop_routing.py
+@@ -0,0 +1,47 @@
++"""Exercise autofix-loop routing without selecting agent:auto as a runner."""
++
++import json
++import re
++import subprocess
++from pathlib import Path
++
++ROOT = Path(__file__).resolve().parents[2]
++AUTOFIX_LOOP = ROOT / ".github/workflows/agents-autofix-loop.yml"
++
++
++def _route_for(labels: list[str]) -> dict[str, object]:
++    text = AUTOFIX_LOOP.read_text()
++    match = re.search(
++        r"(?P<routing>\s+const labels = Array\.isArray\(prData\.labels\).*?"
++        r"let autofixEnabled = configMatch\s*\? configMatch\[1\].*?"
++        r": hasExplicitAgentLabel;)\s+\n\s+const jobs = await",
++        text,
++        re.DOTALL,
++    )
++    assert match is not None, "routing block not found in agents-autofix-loop.yml"
++    pr_data = {"labels": [{"name": label} for label in labels], "body": ""}
++    script = (
++        f"const prData = {json.dumps(pr_data)};\n"
++        "const outputs = {};\n"
++        f"{match.group('routing')}\n"
++        "process.stdout.write(JSON.stringify({agentType: outputs.agent_type, autofixEnabled}));\n"
++    )
++    result = subprocess.run(
++        ["node", "-e", script],
++        cwd=ROOT,
++        check=True,
++        capture_output=True,
++        text=True,
++    )
++    return json.loads(result.stdout)
++
++
++def test_autofix_fallback_never_selects_auto():
++    assert _route_for(["agent:auto"]) == {
++        "agentType": "codex",
++        "autofixEnabled": False,
++    }
++    assert _route_for(["agent:auto", "agent:claude"]) == {
++        "agentType": "claude",
++        "autofixEnabled": True,
++    }

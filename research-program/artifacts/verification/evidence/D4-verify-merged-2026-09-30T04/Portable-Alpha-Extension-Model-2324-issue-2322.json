@@ -1,0 +1,12 @@
+{
+  "body": "## Why\n\nTrack D4 verification (`D4-verify-merged-2026-09-28T04`) found that PR #2317 (merge `7383f84355a1`) lacks merged evidence for the deliberate-break acceptance criterion from #2307.\n\n## Scope\n\nAdd durable FAIL/PASS evidence for deliberately removing sweep-branch PNG handling and running `test_sweep_mode_honors_png_flag`.\n\n## Non-Goals\n\nImplementation rework is not required unless the named gate fails on `main`.\n\n## Tasks\n\n- [ ] Add a durable doc or issue-comment transcript showing `test_sweep_mode_honors_png_flag` FAIL after removing sweep-branch PNG handling and PASS after reverting.\n\n## Acceptance Criteria\n\n- [ ] The durable transcript shows `test_sweep_mode_honors_png_flag` failing before revert and passing after revert.\n\n## Implementation Notes\n\nEvidence paths: `pa_core/cli.py`, `tests/test_cli_sweep_png_export.py`.\n\nOriginal issue: #2307. Merged PR: #2317 (`7383f84355a1`).\n\n<details>\n<summary>Original Issue</summary>\n\n```text\n## Why\n\nTrack D4 verification (`D4-verify-merged-2026-09-28T04`) read the squash diff for PR #2317 (merge `7383f84355a1`) against #2307. Production/test changes appear present, but acceptance criteria requiring an executed deliberate-break transcript are **not met** in the merged evidence.\n\n## Unmet acceptance criteria\n\n- Missing deliberate-break transcript removing sweep-branch PNG handling and showing `test_sweep_mode_honors_png_flag` FAIL before revert.\n\n## Evidence paths (repo-relative)\n\n- `pa_core/cli.py`\n- `tests/test_cli_sweep_png_export.py`\n\n## Links\n\n- Original issue: #2307\n- Merged PR: #2317 (`7383f84355a1`)\n\nImplementation rework is **not** required unless the named gate fails on `main`; add durable FAIL/PASS transcript (doc or issue comment) per the original issue.\n```\n</details>\n\n<!-- issue-pr-context:formatted-body:v1 {\"sha256\":\"db537224b0fb3d151441568c4b8c3cdbbe734147266c5036b9e86e6f2031dc20\",\"workflows\":[\"agents-auto-pilot\",\"agents-issue-optimizer\",\"agents-63-issue-intake\",\"issue_formatter\",\"issue_optimizer\"]} -->\n",
+  "labels": [
+    {
+      "id": "LA_kwDOO15QxM8AAAACUHugWQ",
+      "name": "agents:formatted",
+      "description": "Issue has been formatted to AGENT_ISSUE_TEMPLATE",
+      "color": "1D76DB"
+    }
+  ],
+  "title": "D4 follow-up: deliberate-break evidence missing for #2307 (merged PR #2317)"
+}

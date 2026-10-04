@@ -1,0 +1,364 @@
+diff --git a/.github/workflows/autofix-versions.env b/.github/workflows/autofix-versions.env
+index fda71dae8..070065b32 100644
+--- a/.github/workflows/autofix-versions.env
++++ b/.github/workflows/autofix-versions.env
+@@ -5,11 +5,11 @@
+ # Runtime dependencies (PyYAML, Pydantic, Hypothesis) should be managed via Dependabot
+ # in each consumer repo's pyproject.toml directly, NOT synced from this file.
+ BLACK_VERSION=26.5.1
+-RUFF_VERSION=0.16.8
++RUFF_VERSION=0.16.9
+ ISORT_VERSION=9.0.1
+ DOCFORMATTER_VERSION=1.7.8
+ MYPY_VERSION=2.3.1
+ PYTEST_VERSION=9.1.1
+ PYTEST_COV_VERSION=7.1.0
+ PYTEST_XDIST_VERSION=3.8.0
+-COVERAGE_VERSION=7.16.0
++COVERAGE_VERSION=7.16.1
+diff --git a/.github/workflows/reusable-10-ci-python.yml b/.github/workflows/reusable-10-ci-python.yml
+index 674183108..a3df4a526 100644
+--- a/.github/workflows/reusable-10-ci-python.yml
++++ b/.github/workflows/reusable-10-ci-python.yml
+@@ -248,6 +248,7 @@ jobs:
+         run: |
+           python <<'PY'
+           import json
++          import math
+           import os
+           import sys
+           from typing import NoReturn
+@@ -286,6 +287,8 @@ jobs:
+                 else ""
+               )
+               fail(f"{name} must be a number{constraint} (received {raw!r}).")
++            if not math.isfinite(value):
++              fail(f"{name} must be a finite number (received {raw!r}).")
+             if min_value is not None and value < min_value:
+               fail(f"{name} must be a number between {min_value}-{max_value} (received {raw!r}).")
+             if max_value is not None and value > max_value:
+diff --git a/docs/USAGE.md b/docs/USAGE.md
+index 877361d05..935cc1c75 100644
+--- a/docs/USAGE.md
++++ b/docs/USAGE.md
+@@ -64,6 +64,11 @@ must exist in `.github/workflows/reusable-10-ci-python.yml`.
+ | `coverage-min` | No | `"70"` | Minimum coverage percentage required to pass |
+ <!-- REUSABLE-10-INPUTS-END -->
+ 
++Numeric inputs must be finite; the workflow rejects `NaN`, positive infinity,
++and negative infinity before running CI. `coverage-min`, `baseline-coverage`,
++and `coverage-alert-drop` accept values from 0 through 100, while
++`slow-test-top` and `slow-test-min-seconds` accept non-negative integers.
++
+ ### reusable-18-autofix.yml
+ 
+ | Input | Required | Default | Description |
+diff --git a/docs/ci-workflow.md b/docs/ci-workflow.md
+index 664630177..b910aeb54 100644
+--- a/docs/ci-workflow.md
++++ b/docs/ci-workflow.md
+@@ -45,6 +45,11 @@ fail-on-coverage-drop        Fail job if drop >= threshold (default false)
+ coverage-drop-label          Placeholder label name for future automation (default coverage-drop)
+ ```
+ 
++All numeric inputs must be finite: `NaN`, positive infinity, and negative
++infinity are rejected during input validation. Coverage percentages
++(`coverage-min` and `baseline-coverage`) and `coverage-alert-drop` accept values
++from 0 through 100. Slow-test thresholds must be non-negative integers.
++
+ ### Helper Scripts
+ 
+ #### `scripts/ci_metrics.py`
+diff --git a/pyproject.toml b/pyproject.toml
+index 5ee36f2fb..7e8c46927 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -38,7 +38,7 @@ dev = [
+     "flake8==7.3.0",
+     "pytest==9.1.1",
+     "pytest-cov==7.1.0",
+-    "coverage==7.16.0",
++    "coverage==7.16.1",
+     "pytest-xdist==3.8.0",
+     "packaging>=26.1",
+ 
+diff --git a/requirements.lock b/requirements.lock
+index 99ce8c304..5307873fb 100644
+--- a/requirements.lock
++++ b/requirements.lock
+@@ -43,7 +43,7 @@ colorama==0.4.6 ; sys_platform == 'win32'
+     #   click
+     #   pytest
+     #   tqdm
+-coverage==7.16.0
++coverage==7.16.1
+     # via
+     #   workflows (pyproject.toml)
+     #   pytest-cov
+diff --git a/scripts/ci_coverage_delta.py b/scripts/ci_coverage_delta.py
+index edcea9f45..c57324280 100755
+--- a/scripts/ci_coverage_delta.py
++++ b/scripts/ci_coverage_delta.py
+@@ -5,6 +5,7 @@
+ 
+ import datetime as _dt
+ import json
++import math
+ import os
+ import sys
+ from pathlib import Path
+@@ -17,13 +18,27 @@
+ _DEFAULT_ALERT_DROP = 1.0
+ 
+ 
+-def _parse_float(value: str | None, env_name: str, default: float) -> float:
++def _parse_float(
++    value: str | None,
++    env_name: str,
++    default: float,
++    *,
++    minimum: float | None = None,
++    maximum: float | None = None,
++) -> float:
+     if value is None or value == "":
+         return default
+     try:
+-        return float(value)
++        parsed = float(value)
+     except ValueError as exc:  # pragma: no cover - defensive
+         raise SystemExit(f"Invalid float for {env_name}: {value!r}") from exc
++    if not math.isfinite(parsed):
++        raise SystemExit(f"Invalid float for {env_name}: {value!r} (must be finite)")
++    if minimum is not None and parsed < minimum:
++        raise SystemExit(f"Invalid float for {env_name}: {value!r} (minimum {minimum})")
++    if maximum is not None and parsed > maximum:
++        raise SystemExit(f"Invalid float for {env_name}: {value!r} (maximum {maximum})")
++    return parsed
+ 
+ 
+ def _truthy(value: str | None) -> bool:
+@@ -43,9 +58,15 @@ def _extract_line_rate(xml_path: Path) -> float:
+     if raw is None:
+         raise SystemExit(f"Coverage XML {xml_path} missing line-rate attribute")
+     try:
+-        return float(raw) * 100.0
++        rate = float(raw)
+     except ValueError as exc:  # pragma: no cover - defensive
+         raise SystemExit(f"Invalid line-rate value in coverage XML: {raw!r}") from exc
++    if not math.isfinite(rate) or not 0.0 <= rate <= 1.0:
++        raise SystemExit(
++            f"Invalid line-rate value in coverage XML: {raw!r} "
++            "(must be finite and between 0 and 1)"
++        )
++    return rate * 100.0
+ 
+ 
+ def _build_payload(
+@@ -88,9 +109,18 @@ def main() -> int:
+     xml_path = Path(os.environ.get("COVERAGE_XML_PATH", _DEFAULT_COVERAGE_XML))
+     output_path = Path(os.environ.get("OUTPUT_PATH", _DEFAULT_OUTPUT))
+     baseline = _parse_float(
+-        os.environ.get("BASELINE_COVERAGE"), "BASELINE_COVERAGE", _DEFAULT_BASELINE
++        os.environ.get("BASELINE_COVERAGE"),
++        "BASELINE_COVERAGE",
++        _DEFAULT_BASELINE,
++        minimum=0.0,
++        maximum=100.0,
++    )
++    alert_drop = _parse_float(
++        os.environ.get("ALERT_DROP"),
++        "ALERT_DROP",
++        _DEFAULT_ALERT_DROP,
++        minimum=0.0,
+     )
+-    alert_drop = _parse_float(os.environ.get("ALERT_DROP"), "ALERT_DROP", _DEFAULT_ALERT_DROP)
+     fail_on_drop = _truthy(os.environ.get("FAIL_ON_DROP"))
+ 
+     try:
+diff --git a/scripts/ci_metrics.py b/scripts/ci_metrics.py
+index bfa3bf9b3..3d2499a9a 100755
+--- a/scripts/ci_metrics.py
++++ b/scripts/ci_metrics.py
+@@ -19,6 +19,7 @@
+ 
+ import datetime as _dt
+ import json
++import math
+ import os
+ import sys
+ from collections.abc import Iterable, Sequence
+@@ -60,6 +61,8 @@ def _parse_float(value: str | None, env_name: str, default: float) -> float:
+         parsed = float(value)
+     except ValueError as exc:  # pragma: no cover - defensive
+         raise SystemExit(f"Invalid float for {env_name}: {value!r}") from exc
++    if not math.isfinite(parsed):
++        raise SystemExit(f"{env_name} must be finite and non-negative (got {parsed})")
+     if parsed < 0:
+         raise SystemExit(f"{env_name} must be non-negative (got {parsed})")
+     return parsed
+@@ -93,6 +96,8 @@ def _extract_testcases(root: ET.Element) -> list[_TestCase]:
+             duration = float(testcase.attrib.get("time", "0") or 0.0)
+         except ValueError:
+             duration = 0.0
++        if not math.isfinite(duration):
++            duration = 0.0
+ 
+         outcome = "passed"
+         message: str | None = None
+diff --git a/tests/scripts/test_ci_coverage_delta.py b/tests/scripts/test_ci_coverage_delta.py
+index c69d9733d..142666512 100644
+--- a/tests/scripts/test_ci_coverage_delta.py
++++ b/tests/scripts/test_ci_coverage_delta.py
+@@ -30,6 +30,29 @@ def test_parse_float_rejects_invalid_values() -> None:
+         ci_coverage_delta._parse_float("not-a-number", "BASELINE_COVERAGE", 0.0)
+ 
+ 
++@pytest.mark.parametrize("raw", ["nan", "inf", "-inf"])
++def test_parse_float_rejects_non_finite_values(raw: str) -> None:
++    with pytest.raises(SystemExit, match="BASELINE_COVERAGE"):
++        ci_coverage_delta._parse_float(raw, "BASELINE_COVERAGE", 0.0)
++
++
++@pytest.mark.parametrize(
++    ("raw", "minimum", "maximum"),
++    [("-0.1", 0.0, None), ("100.1", 0.0, 100.0)],
++)
++def test_parse_float_rejects_out_of_range_values(
++    raw: str, minimum: float, maximum: float | None
++) -> None:
++    with pytest.raises(SystemExit, match="BASELINE_COVERAGE"):
++        ci_coverage_delta._parse_float(
++            raw,
++            "BASELINE_COVERAGE",
++            0.0,
++            minimum=minimum,
++            maximum=maximum,
++        )
++
++
+ @pytest.mark.parametrize("raw", ["1", "true", "TRUE", "yes", "on"])
+ def test_truthy_accepts_enabled_values(raw: str) -> None:
+     assert ci_coverage_delta._truthy(raw) is True
+@@ -64,6 +87,22 @@ def test_extract_line_rate_rejects_malformed_rate(tmp_path: Path) -> None:
+         ci_coverage_delta._extract_line_rate(xml_path)
+ 
+ 
++@pytest.mark.parametrize("line_rate", ["nan", "inf", "-inf"])
++def test_extract_line_rate_rejects_non_finite_rate(tmp_path: Path, line_rate: str) -> None:
++    xml_path = _coverage_xml(tmp_path, line_rate=line_rate)
++
++    with pytest.raises(SystemExit, match="finite and between 0 and 1"):
++        ci_coverage_delta._extract_line_rate(xml_path)
++
++
++@pytest.mark.parametrize("line_rate", ["-0.1", "1.1"])
++def test_extract_line_rate_rejects_out_of_range_rate(tmp_path: Path, line_rate: str) -> None:
++    xml_path = _coverage_xml(tmp_path, line_rate=line_rate)
++
++    with pytest.raises(SystemExit, match="between 0 and 1"):
++        ci_coverage_delta._extract_line_rate(xml_path)
++
++
+ @pytest.mark.parametrize(
+     ("current", "baseline", "alert_drop", "fail_on_drop", "status", "should_fail"),
+     [
+@@ -117,3 +156,20 @@ def test_main_writes_rounded_payload_from_env_overrides(
+     assert payload["drop"] == pytest.approx(1.0124)
+     assert payload["status"] == "ok"
+     assert payload["fail_on_drop"] is True
++
++
++def test_main_rejects_nan_baseline_without_writing_ok_payload(
++    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
++) -> None:
++    xml_path = _coverage_xml(tmp_path, line_rate="0.70")
++    output_path = tmp_path / "delta.json"
++
++    monkeypatch.setenv("COVERAGE_XML_PATH", str(xml_path))
++    monkeypatch.setenv("OUTPUT_PATH", str(output_path))
++    monkeypatch.setenv("BASELINE_COVERAGE", "nan")
++    monkeypatch.setenv("FAIL_ON_DROP", "true")
++
++    with pytest.raises(SystemExit, match="BASELINE_COVERAGE"):
++        ci_coverage_delta.main()
++
++    assert not output_path.exists()
+diff --git a/tests/scripts/test_ci_metrics.py b/tests/scripts/test_ci_metrics.py
+index e676275e2..9ef53ab04 100644
+--- a/tests/scripts/test_ci_metrics.py
++++ b/tests/scripts/test_ci_metrics.py
+@@ -36,6 +36,12 @@ def test_parse_helpers_validate_non_negative() -> None:
+         ci_metrics._parse_float("-0.5", "MIN_SECONDS", 1.25)
+ 
+ 
++@pytest.mark.parametrize("raw", ["nan", "inf", "-inf"])
++def test_parse_float_rejects_non_finite_values(raw: str) -> None:
++    with pytest.raises(SystemExit, match="MIN_SECONDS must be finite and non-negative"):
++        ci_metrics._parse_float(raw, "MIN_SECONDS", 1.25)
++
++
+ def test_tag_name_strips_namespace() -> None:
+     node = ET.Element("{example}testcase")
+     assert ci_metrics._tag_name(node) == "testcase"
+@@ -100,6 +106,17 @@ def test_extract_testcases_handles_invalid_time_and_prioritizes_status() -> None
+     assert cases[1].details is None
+ 
+ 
++@pytest.mark.parametrize("duration", ["nan", "inf", "-inf"])
++def test_extract_testcases_zeroes_non_finite_durations(duration: str) -> None:
++    root = ET.fromstring(
++        f'<testsuite><testcase classname="suite" name="case" time="{duration}" /></testsuite>'
++    )
++
++    cases = ci_metrics._extract_testcases(root)
++
++    assert cases[0].time == 0.0
++
++
+ def test_collect_slow_tests_handles_zero_limit_and_ties() -> None:
+     cases = [
+         ci_metrics._TestCase(
+diff --git a/tests/workflows/test_reusable_ci_workflow.py b/tests/workflows/test_reusable_ci_workflow.py
+index 3b63e9600..cce5c777e 100644
+--- a/tests/workflows/test_reusable_ci_workflow.py
++++ b/tests/workflows/test_reusable_ci_workflow.py
+@@ -132,6 +132,39 @@ def test_workflow_inputs_include_python_version_defaults() -> None:
+     assert "pytest_args" not in dispatch_inputs
+ 
+ 
++def _validate_inputs_script() -> str:
++    workflow = _load_workflow()
++    steps = workflow["jobs"]["validate-inputs"]["steps"]
++    script = next(step for step in steps if step.get("name") == "Validate workflow inputs")["run"]
++    return script.split("python <<'PY'\n", 1)[1].rsplit("\nPY", 1)[0]
++
++
++@pytest.mark.parametrize("value", ["NaN", "inf", "-inf"])
++def test_validate_inputs_rejects_non_finite_numbers(value: str) -> None:
++    result = subprocess.run(
++        [sys.executable, "-c", _validate_inputs_script()],
++        env={"COVERAGE_MIN": value},
++        capture_output=True,
++        text=True,
++        check=False,
++    )
++
++    assert result.returncode == 1
++    assert "coverage-min must be a finite number" in result.stdout
++
++
++def test_validate_inputs_accepts_finite_number() -> None:
++    result = subprocess.run(
++        [sys.executable, "-c", _validate_inputs_script()],
++        env={"COVERAGE_MIN": "75.5"},
++        capture_output=True,
++        text=True,
++        check=False,
++    )
++
++    assert result.returncode == 0, result.stdout + result.stderr
++
++
+ def test_ruff_lint_preserves_consumer_rule_selection() -> None:
+     workflow = _load_workflow()
+     steps = workflow["jobs"]["lint-ruff"]["steps"]

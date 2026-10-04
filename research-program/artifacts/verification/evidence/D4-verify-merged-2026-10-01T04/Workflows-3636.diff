@@ -1,0 +1,53 @@
+diff --git a/.github/workflows/agents-keepalive-loop.yml b/.github/workflows/agents-keepalive-loop.yml
+index 58b6d6ab7..71b0d2c6b 100644
+--- a/.github/workflows/agents-keepalive-loop.yml
++++ b/.github/workflows/agents-keepalive-loop.yml
+@@ -784,6 +784,7 @@ jobs:
+           sparse-checkout: |
+             .github/scripts
+             scripts/runner_lib
++            scripts/state_fingerprint.py
+           sparse-checkout-cone-mode: false
+ 
+       - name: Release prepared authority challenge after preflight failure
+diff --git a/templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml b/templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml
+index 3a9d4c027..7791b6711 100644
+--- a/templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml
++++ b/templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml
+@@ -525,6 +525,7 @@ jobs:
+           sparse-checkout: |
+             .github/scripts
+             scripts/runner_lib
++            scripts/state_fingerprint.py
+           sparse-checkout-cone-mode: false
+ 
+       - name: Release prepared authority challenge after preflight failure
+diff --git a/tests/workflows/test_gate_followups_authority_sparse_checkout.py b/tests/workflows/test_gate_followups_authority_sparse_checkout.py
+new file mode 100644
+index 000000000..c1e52897b
+--- /dev/null
++++ b/tests/workflows/test_gate_followups_authority_sparse_checkout.py
+@@ -0,0 +1,23 @@
++from pathlib import Path
++
++import yaml
++
++
++def test_authority_release_sparse_checkout_includes_state_fingerprint():
++    workflow_paths = [
++        ".github/workflows/agents-keepalive-loop.yml",
++        "templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml",
++    ]
++
++    for workflow_path in workflow_paths:
++        workflow = yaml.safe_load(Path(workflow_path).read_text(encoding="utf-8"))
++        preflight = workflow["jobs"]["preflight"]["steps"]
++        checkout = next(
++            step for step in preflight if step.get("name") == "Checkout authority release helpers"
++        )
++
++        assert checkout["with"]["sparse-checkout"].splitlines() == [
++            ".github/scripts",
++            "scripts/runner_lib",
++            "scripts/state_fingerprint.py",
++        ]

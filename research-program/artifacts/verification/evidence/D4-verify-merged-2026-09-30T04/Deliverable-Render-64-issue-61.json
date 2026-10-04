@@ -1,0 +1,12 @@
+{
+  "body": "## Why\n\nTrack D4 verification (`D4-verify-merged-2026-09-28T04`) found that PR #60 (merge `dbf75a7d5b1b`) against #47 lacks merged evidence for the required deliberate-break transcript.\n\n## Scope\n\nAdd durable FAIL/PASS transcript evidence for the original issue.\n\n## Non-Goals\n\nImplementation rework is not required unless the named gate fails on `main`.\n\n## Tasks\n\n- [ ] Add a durable transcript (doc or issue comment) that temporarily removes the `no-renderable-content` guard in `src/deliverable_render/store/validate.py`, shows the named test failing, restores the guard, and shows it passing.\n\n## Acceptance Criteria\n\n- [ ] The transcript shows `tests/store/test_communication_render_profile.py` failing after removal of the `no-renderable-content` guard.\n- [ ] The transcript shows the test passing after the guard is restored.\n\n## Implementation Notes\n\nEvidence paths: `src/deliverable_render/store/validate.py`; `tests/store/test_communication_render_profile.py`.\n\nOriginal issue: #47. Merged PR: #60 (`dbf75a7d5b1b`).\n\n<details>\n<summary>Original Issue</summary>\n\n```text\n## Why\n\nTrack D4 verification (`D4-verify-merged-2026-09-28T04`) read the squash diff for PR #60 (merge `dbf75a7d5b1b`) against #47. Production/test changes appear present, but acceptance criteria requiring an executed deliberate-break transcript are **not met** in the merged evidence.\n\n## Unmet acceptance criteria\n\n- Acceptance requires deliberate-break transcript: temporarily remove the `no-renderable-content` guard added in validate.py, show named test FAIL, revert, PASS.\n\n## Evidence paths (repo-relative)\n\n- `src/deliverable_render/store/validate.py`\n- `tests/store/test_communication_render_profile.py`\n\n## Links\n\n- Original issue: #47\n- Merged PR: #60 (`dbf75a7d5b1b`)\n\nImplementation rework is **not** required unless the named gate fails on `main`; add durable FAIL/PASS transcript (doc or issue comment) per the original issue.\n```\n</details>\n\n<!-- issue-pr-context:formatted-body:v1 {\"sha256\":\"7c1a526f38417720a29ca086b696c6168c73d6e54c5ed51b44fb897b142f46c3\",\"workflows\":[\"agents-auto-pilot\",\"agents-issue-optimizer\",\"agents-63-issue-intake\",\"issue_formatter\",\"issue_optimizer\"]} -->\n",
+  "labels": [
+    {
+      "id": "LA_kwDOUOpIZ88AAAACz0SAkQ",
+      "name": "agents:formatted",
+      "description": "Issue has been formatted to AGENT_ISSUE_TEMPLATE",
+      "color": "1D76DB"
+    }
+  ],
+  "title": "D4 follow-up: deliberate-break evidence missing for #47 (merged PR #60)"
+}

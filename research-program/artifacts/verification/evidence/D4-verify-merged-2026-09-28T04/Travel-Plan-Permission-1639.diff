@@ -1,0 +1,51 @@
+diff --git a/src/travel_plan_permission/conversion.py b/src/travel_plan_permission/conversion.py
+index ecc21dd7..ea2ffa13 100644
+--- a/src/travel_plan_permission/conversion.py
++++ b/src/travel_plan_permission/conversion.py
+@@ -47,4 +47,6 @@ def trip_plan_from_minimal(
+     if transportation_mode is not None:
+         overrides["transportation_mode"] = transportation_mode
+ 
+-    return plan_input.plan.model_copy(update=overrides)
++    updated_data = plan_input.plan.model_dump()
++    updated_data.update(overrides)
++    return TripPlan.model_validate(updated_data)
+diff --git a/tests/python/test_minimal_conversion.py b/tests/python/test_minimal_conversion.py
+index 629396f9..ee16f740 100644
+--- a/tests/python/test_minimal_conversion.py
++++ b/tests/python/test_minimal_conversion.py
+@@ -4,6 +4,9 @@
+ from decimal import Decimal
+ from pathlib import Path
+ 
++import pytest
++from pydantic import ValidationError
++
+ import travel_plan_permission.conversion as conversion
+ from travel_plan_permission import (
+     ExpenseCategory,
+@@ -67,6 +70,24 @@ def test_trip_plan_from_minimal_applies_overrides() -> None:
+     assert plan.origin_city == "Seattle, WA"
+ 
+ 
++def test_trip_plan_from_minimal_validates_overrides() -> None:
++    payload = json.loads(
++        Path("tests/fixtures/sample_trip_plan_minimal.json").read_text(encoding="utf-8")
++    )
++
++    with warnings.catch_warnings():
++        warnings.simplefilter("ignore", DeprecationWarning)
++        with pytest.raises(ValidationError, match="trip_id"):
++            trip_plan_from_minimal(payload, trip_id=None)  # type: ignore[arg-type]
++
++        with pytest.raises(ValidationError, match="status"):
++            trip_plan_from_minimal(
++                payload,
++                trip_id="TRIP-INVALID-STATUS",
++                status="not-a-status",  # type: ignore[arg-type]
++            )
++
++
+ def test_trip_plan_from_minimal_matches_canonical_loader() -> None:
+     payload = json.loads(
+         Path("tests/fixtures/sample_trip_plan_minimal.json").read_text(encoding="utf-8")

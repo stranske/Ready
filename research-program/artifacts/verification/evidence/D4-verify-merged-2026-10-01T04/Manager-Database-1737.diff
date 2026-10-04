@@ -1,0 +1,47 @@
+diff --git a/.github/workflows/ci.yml b/.github/workflows/ci.yml
+index e619d94c..5067376e 100644
+--- a/.github/workflows/ci.yml
++++ b/.github/workflows/ci.yml
+@@ -128,12 +128,15 @@ jobs:
+       - name: Start MinIO
+         # The minio/minio entrypoint needs the `server` command, which Actions
+         # service containers cannot supply, so start it via docker run instead.
++        # Docker Hub and Quay both deny anonymous pulls as of 2026-09. This is
++        # a third-party mirror of the same release; pin its digest and retain
++        # the health check below as the executable compatibility gate.
+         run: |
+           docker run -d --name minio \
+             -p 9000:9000 -p 9001:9001 \
+             -e MINIO_ROOT_USER="$MINIO_ROOT_USER" \
+             -e MINIO_ROOT_PASSWORD="$MINIO_ROOT_PASSWORD" \
+-            quay.io/minio/minio:RELEASE.2025-05-24T17-08-30Z server /data --console-address ":9001"
++            docker.io/shuomura/minio:RELEASE.2025-05-24T17-08-30Z@sha256:23055090bb9d1c9b75b59fe2a8e27ec2e61204475791ec3b1861d342c8d1fd40 server /data --console-address ":9001"
+           minio_ready=0
+           for _ in $(seq 1 30); do
+             if curl -sf http://[LOCAL_HOST]/minio/health/live >/dev/null; then
+diff --git a/Manager-Intel-Platform.md b/Manager-Intel-Platform.md
+index e452a166..33dca9fe 100644
+--- a/Manager-Intel-Platform.md
++++ b/Manager-Intel-Platform.md
+@@ -275,7 +275,7 @@ services:
+     volumes: ["pgdata:/var/lib/postgresql/data"]
+ 
+   minio:
+-    image: quay.io/minio/minio:RELEASE.2025-05-24T17-08-30Z
++    image: docker.io/shuomura/minio:RELEASE.2025-05-24T17-08-30Z@sha256:23055090bb9d1c9b75b59fe2a8e27ec2e61204475791ec3b1861d342c8d1fd40
+     command: server /data --console-address ":9001"
+     environment:
+       MINIO_ROOT_USER: minio
+diff --git a/docker-compose.yml b/docker-compose.yml
+index b9d820b8..94c92ce5 100644
+--- a/docker-compose.yml
++++ b/docker-compose.yml
+@@ -21,7 +21,7 @@ services:
+       - ./alembic:/alembic:ro
+ 
+   minio:
+-    image: quay.io/minio/minio:RELEASE.2025-05-24T17-08-30Z
++    image: docker.io/shuomura/minio:RELEASE.2025-05-24T17-08-30Z@sha256:23055090bb9d1c9b75b59fe2a8e27ec2e61204475791ec3b1861d342c8d1fd40
+     command: server /data --console-address ":9001"
+     environment:
+       MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minio}

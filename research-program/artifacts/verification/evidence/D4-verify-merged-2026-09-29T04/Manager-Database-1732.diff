@@ -1,0 +1,210 @@
+diff --git a/docs/verification/issue-1731-document-association-deliberate-break.md b/docs/verification/issue-1731-document-association-deliberate-break.md
+new file mode 100644
+index 00000000..eba855a1
+--- /dev/null
++++ b/docs/verification/issue-1731-document-association-deliberate-break.md
+@@ -0,0 +1,80 @@
++# Issue #1731 PostgreSQL document-association deliberate-break evidence
++
++This follow-up preserves the falsification proof requested after merged PR
++#1728. The exercise uses the repository's `CI` workflow because no local
++PostgreSQL service was available. Each workflow dispatch is bound to the exact
++commit SHA named below, so the red and restored runs cannot silently test a
++different branch tip.
++
++## Deliberate break
++
++Commit `92a35c05e66fedfc59e6667a5e316d46e2bbbbf4` temporarily changed the
++`manager_id` guard in `embeddings.py` so `_store_document_on_connection()`
++skipped the `document_managers` association insert. That is the exact behavior
++the issue requires the named migration test to reject.
++
++PostgreSQL CI evidence:
++
++- Workflow run: <https://github.com/stranske/Manager-Database/actions/runs/36352304906>
++- Exact head: `92a35c05e66fedfc59e6667a5e316d46e2bbbbf4`
++- Job/step: `Postgres chain integration` / `Run document manager migration association tests`
++- Command: `pytest tests/test_document_managers_migration.py -k document_association -v`
++
++Literal pytest result from the completed job log:
++
++```console
++tests/test_document_managers_migration.py FF                             [100%]
++
++FAILED tests/test_document_managers_migration.py::test_document_association_migration_and_search[sqlite] - assert set() == {3}
++FAILED tests/test_document_managers_migration.py::test_document_association_migration_and_search[postgres] - assert set() == {3}
++======================== 2 failed, 6 warnings in 0.55s =========================
++```
++
++Both backends reached the intended assertion and rejected the missing
++association. The workflow's broader Python jobs also failed on the intentionally
++broken production commit, as expected.
++
++## Revert and restoration
++
++Commit `dbc0d633a455e473400adbdebce1ffb300f5af05` restores the association
++insert before this evidence document is merged.
++
++PostgreSQL CI evidence:
++
++- Workflow run: <https://github.com/stranske/Manager-Database/actions/runs/36352345325>
++- Exact head: `dbc0d633a455e473400adbdebce1ffb300f5af05`
++- Job/step: `Postgres chain integration` / `Run document manager migration association tests`
++- Command: `pytest tests/test_document_managers_migration.py -k document_association -v`
++
++Literal pytest result from the completed job log:
++
++```console
++tests/test_document_managers_migration.py ..                             [100%]
++======================== 2 passed, 6 warnings in 0.61s =========================
++```
++
++The restored run also completed both full Python matrices successfully (`1746
++passed, 20 skipped` on Python 3.12 and 3.13). The aggregate workflow remained
++red only because its separate Docker stack smoke job failed while starting the
++MinIO container; the PostgreSQL acceptance job and the exact-head PR Gate were
++green.
++
++The same focused command was also run locally after restoration. The SQLite
++leg passed and the PostgreSQL leg skipped because
++`DOCUMENT_TEST_POSTGRES_URL` was not set:
++
++```console
++tests/test_document_managers_migration.py .s                             [100%]
++=================== 1 passed, 1 skipped, 7 warnings in 0.62s ===================
++```
++
++The local result is supporting evidence only. The two exact-head CI runs above
++are the authoritative PostgreSQL falsification and restoration proof.
++
++## Cleanup invariant
++
++The deliberate break and its restoration are both retained in branch history.
++The final branch restores the association insert, keeps the disposable-schema
++PostgreSQL harness repair, and includes the bounded multi-manager vector-search
++fix plus its focused regression coverage. Exact-head Gate run
++<https://github.com/stranske/Manager-Database/actions/runs/36352343891> is green.
+diff --git a/embeddings.py b/embeddings.py
+index 288ef387..c1a20ef0 100644
+--- a/embeddings.py
++++ b/embeddings.py
+@@ -296,6 +296,7 @@ def search_documents(
+         else:
+             qvec = _pgvector_embedding(query)
+         where_clause = ""
++        manager_name_expr = "m.name"
+         params: list[Any] = [qvec]
+         if manager_id is not None:
+             where_clause = (
+@@ -303,10 +304,20 @@ def search_documents(
+                 "WHERE dm.doc_id = d.doc_id AND dm.manager_id = %s)"
+             )
+             params.append(manager_id)
++        elif _postgres_columns(conn, "document_managers"):
++            # Unfiltered document search represents every explicit association,
++            # not only the compatibility owner retained on documents.manager_id.
++            manager_name_expr = (
++                "(SELECT string_agg(am.name, ', ' ORDER BY am.manager_id) "
++                "FROM document_managers dm "
++                "JOIN managers am ON am.manager_id = dm.manager_id "
++                "WHERE dm.doc_id = d.doc_id)"
++            )
+         params.append(k)
+         rows = conn.execute(
+             (
+-                "SELECT d.doc_id, d.text, d.kind, d.filename, m.name, d.embedding <=> %s::vector AS dist "
++                "SELECT d.doc_id, d.text, d.kind, d.filename, "
++                f"{manager_name_expr}, d.embedding <=> %s::vector AS dist "
+                 "FROM documents d LEFT JOIN managers m ON d.manager_id = m.manager_id "
+                 f"{where_clause} "
+                 "ORDER BY dist LIMIT %s"
+diff --git a/tests/test_document_managers_migration.py b/tests/test_document_managers_migration.py
+index 2282daae..e1b24fd3 100644
+--- a/tests/test_document_managers_migration.py
++++ b/tests/test_document_managers_migration.py
+@@ -57,6 +57,10 @@ def connect(_path=None):
+         aliases = ""
+     try:
+         with engine.begin() as conn:
++            if backend == "postgres":
++                # The pgvector extension is installed in public, so keep that schema
++                # visible until the fixture tables have resolved vector(384).
++                conn.exec_driver_sql(f"SET LOCAL search_path TO {schema}, public")
+             conn.exec_driver_sql(
+                 f"CREATE TABLE managers (manager_id INTEGER PRIMARY KEY, name TEXT{aliases})"
+             )
+@@ -78,6 +82,9 @@ def connect(_path=None):
+             )
+             migration = importlib.util.module_from_spec(spec)
+             spec.loader.exec_module(migration)
++            if backend == "postgres":
++                # Migration 022 must inspect and mutate only this disposable schema.
++                conn.exec_driver_sql(f"SET LOCAL search_path TO {schema}")
+             with Operations.context(MigrationContext.configure(conn)):
+                 migration.upgrade()
+             inspector = sa.inspect(conn)
+@@ -109,6 +116,8 @@ def connect(_path=None):
+             assert len(matching) == 1
+             assert matching[0].manager_name == "First, Second"
+         with engine.begin() as conn:
++            if backend == "postgres":
++                conn.exec_driver_sql(f"SET LOCAL search_path TO {schema}")
+             assert conn.exec_driver_sql("SELECT COUNT(*) FROM document_managers").scalar() == 4
+             with Operations.context(MigrationContext.configure(conn)):
+                 # A SQLite runtime/bootstrap may already have created the additive table.
+diff --git a/tests/test_embeddings.py b/tests/test_embeddings.py
+index c6644daa..672ae071 100644
+--- a/tests/test_embeddings.py
++++ b/tests/test_embeddings.py
+@@ -692,6 +692,51 @@ def close(self):
+     assert conn.closed is True
+ 
+ 
++def test_search_documents_postgres_unfiltered_aggregates_manager_names(monkeypatch):
++    class Connection:
++        def __init__(self):
++            self.info = object()
++            self.executed = []
++            self.closed = False
++
++        def execute(self, sql, params=None):
++            _assert_postgres_safe(sql)
++            self.executed.append((sql, params))
++            if "information_schema.columns" in sql:
++                return type(
++                    "Result",
++                    (),
++                    {"fetchall": lambda self: [("doc_id",), ("manager_id",)]},
++                )()
++            if sql.startswith("SELECT d.doc_id"):
++                return type(
++                    "Result",
++                    (),
++                    {
++                        "fetchall": lambda self: [
++                            (7, "alpha", "memo", "note.pdf", "First, Second", 0.25)
++                        ]
++                    },
++                )()
++            return type("Result", (), {"fetchall": lambda self: []})()
++
++        def close(self):
++            self.closed = True
++
++    conn = Connection()
++    monkeypatch.setattr("embeddings.connect_db", lambda _path=None: conn)
++    monkeypatch.setattr("embeddings.register_vector", None)
++    monkeypatch.setattr("embeddings.embed_text", lambda _text: [0.1, 0.9])
++
++    results = search_documents("alpha", "ignored.db", k=1)
++
++    assert results[0]["manager_name"] == "First, Second"
++    search_sql, search_params = conn.executed[1]
++    assert "string_agg(am.name, ', ' ORDER BY am.manager_id)" in search_sql
++    assert search_params[-1] == 1
++    assert conn.closed is True
++
++
+ def test_embeddings_pass_dialect_gate_without_allowlist() -> None:
+     repo_root = Path(__file__).resolve().parents[1]
+ 

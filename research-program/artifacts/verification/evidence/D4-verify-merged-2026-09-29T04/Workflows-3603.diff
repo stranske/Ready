@@ -1,0 +1,157 @@
+diff --git a/docs/contracts/document-mirror-v1.md b/docs/contracts/document-mirror-v1.md
+index 1155403be..18ed39e3c 100644
+--- a/docs/contracts/document-mirror-v1.md
++++ b/docs/contracts/document-mirror-v1.md
+@@ -33,7 +33,10 @@ validators, HTML resolvers, and the future `doc-mirror` CLI can share one schema
+   HTTPS links are not valid upstream web resolvers.
+ - `blob_path` is relative to `mirror_root` using POSIX `/` separators. Absolute
+   paths, `..` traversal, Windows drive prefixes (`C:`), UNC prefixes (`//` or
+-  `\\`), and backslashes are rejected.
++  `\\`), URI-style prefixes, empty path segments, trailing separators, and
++  backslashes are rejected.
++- `mirror_root` names an absolute or repo-local filesystem directory. URI roots
++  such as `https://host/mirror` and `file:///tmp/mirror` are rejected.
+ - Optional `supersedes_content_sha256` records checksum supersession without
+   requiring consumers to import Pension-Data ingest helpers.
+ 
+@@ -42,10 +45,10 @@ validators, HTML resolvers, and the future `doc-mirror` CLI can share one schema
+ | Field | Requirement |
+ | --- | --- |
+ | `schema_version` | Must be the literal `document-mirror/v1`. |
+-| `mirror_root` | Root directory of the mirrored blob store. |
++| `mirror_root` | Absolute or repo-local filesystem root of the mirrored blob store; URI roots are rejected. |
+ | `blobs` | Array of blob records (may be `[]` for an initialized empty catalog). |
+ | `blobs[].content_sha256` | Lowercase 64-hex SHA-256 of the blob bytes. |
+-| `blobs[].blob_path` | Mirror-relative POSIX path (no `..`, absolute paths, drive/UNC prefixes, or backslashes). |
++| `blobs[].blob_path` | Mirror-relative POSIX path (no URI prefix, `..`, absolute path, drive/UNC prefix, backslash, empty segment, or trailing separator). |
+ | `blobs[].doc_type_id` | Fleet vocabulary token for the document type. |
+ | `blobs[].source_refs` | Array of canonical refs and/or source-system objects; may be `[]` for local-only blobs. |
+ 
+diff --git a/docs/contracts/output-substrate-v1.md b/docs/contracts/output-substrate-v1.md
+index 792ea1448..16e1745f0 100644
+--- a/docs/contracts/output-substrate-v1.md
++++ b/docs/contracts/output-substrate-v1.md
+@@ -32,7 +32,7 @@ not change the wire shape of this document.
+ | --- | --- |
+ | `schema_version` | Must be the literal `output-substrate/v1`. |
+ | `renderer_profile` | One of `investment_review`, `blackline_bundle`, `mosaic_book`. |
+-| `workspace_bundle_ref` | Run-dir-relative POSIX pointer to the view bundle JSON (`path` required; `sha256` and `artifact_id` recommended). Rejects absolute paths, `..` traversal, backslashes, drive-letter roots (`C:`), and UNC paths (`//server/share`). |
++| `workspace_bundle_ref` | Run-dir-relative POSIX pointer to the view bundle JSON (`path` required; `sha256` and `artifact_id` recommended). Rejects absolute paths, URI-style prefixes, `..` traversal, backslashes, drive-letter roots (`C:`), empty path segments, and UNC paths (`//server/share`). |
+ | `manifest_ref` | `artifact:manifest.json` or a run-dir-relative POSIX path to the [`artifact-manifest/v1`](schemas/artifact-manifest-v1.schema.json) manifest. Absolute paths, traversal, backslashes, drive roots, leading URI-style prefixes, and empty path segments are rejected. Colons in later path segments are allowed. Named artifacts live there, not inline. |
+ | `manifest_csv_exports` | Array (possibly empty) of manifest-gated CSV export specs for Excel refresh. |
+ 
+@@ -42,8 +42,9 @@ Pension-Data-style `artifactBaseUrl` resolution.
+ 
+ ## Manifest CSV exports
+ 
+-Each `manifest_csv_exports[]` entry names a generated CSV file, its encoding
+-(`utf-8` or `utf-16-le`), and a nonempty `columns[]` list. Every column
++Each `manifest_csv_exports[]` entry names a run-dir-relative generated CSV file,
++rejecting URI-style prefixes, traversal, and empty path segments. It also declares
++the encoding (`utf-8` or `utf-16-le`) and a nonempty `columns[]` list. Every column
+ requires `name`, `type` (`string`, `number`, `boolean`, or `date`), and
+ `source_path` (JSONPath or consumer-defined pointer into the workspace bundle).
+ Producers regenerate CSV files when the workspace bundle changes; Excel workbooks
+diff --git a/docs/contracts/schemas/document-mirror-v1.schema.json b/docs/contracts/schemas/document-mirror-v1.schema.json
+index cdd089425..267ee6a49 100644
+--- a/docs/contracts/schemas/document-mirror-v1.schema.json
++++ b/docs/contracts/schemas/document-mirror-v1.schema.json
+@@ -17,7 +17,8 @@
+     "mirror_root": {
+       "type": "string",
+       "minLength": 1,
+-      "description": "Filesystem root of the mirrored blob store (absolute or repo-local path)."
++      "description": "Filesystem root of the mirrored blob store (absolute or repo-local path); URI schemes are not filesystem roots.",
++      "pattern": "^(?!(?:^|.*[/\\\\])\\.\\.(?:[/\\\\]|$))(?:(?:[A-Za-z]:[\\\\/](?:.+)?)|(?!(?:[A-Za-z][A-Za-z0-9+.-]*:)).+)"
+     },
+     "created_at": {
+       "type": "string",
+@@ -48,8 +49,8 @@
+           "blob_path": {
+             "type": "string",
+             "minLength": 1,
+-            "description": "Path relative to mirror_root. Absolute POSIX paths, Windows drive/UNC prefixes, backslashes, and '..' traversal are rejected by the validator.",
+-            "pattern": "^(?!/)(?!//)(?![A-Za-z]:)(?!.*\\\\)(?!.*(^|/)\\.\\.(/|$)).+$"
++            "description": "Path relative to mirror_root. Absolute paths, URI schemes, Windows drive/UNC prefixes, backslashes, '..' traversal, empty path segments, and trailing separators are rejected by the validator.",
++            "pattern": "^(?!/)(?![A-Za-z]:)(?![A-Za-z][A-Za-z0-9+.-]*:)(?!.*\\\\)(?!.*(^|/)\\.\\.(/|$))(?!.*//)(?!.*\\/$).+$"
+           },
+           "doc_type_id": {
+             "type": "string",
+diff --git a/docs/contracts/schemas/output-substrate-v1.schema.json b/docs/contracts/schemas/output-substrate-v1.schema.json
+index 61216da52..e96e2d3f6 100644
+--- a/docs/contracts/schemas/output-substrate-v1.schema.json
++++ b/docs/contracts/schemas/output-substrate-v1.schema.json
+@@ -41,8 +41,8 @@
+         "path": {
+           "type": "string",
+           "minLength": 1,
+-          "description": "Run-dir-relative POSIX path. Absolute paths, '..' traversal, backslashes, drive-letter roots, and UNC paths are rejected by the validator.",
+-          "pattern": "^(?!/)(?![A-Za-z]:)(?!.*\\\\)(?!.*(^|/)\\.\\.(/|$))(?!.*\\/$).+"
++          "description": "Run-dir-relative POSIX path. Absolute paths, URI schemes, '..' traversal, backslashes, drive-letter roots, empty path segments, and UNC paths are rejected by the validator.",
++          "pattern": "^(?!/)(?![A-Za-z]:)(?![A-Za-z][A-Za-z0-9+.-]*:)(?!.*\\\\)(?!.*(^|/)\\.\\.(/|$))(?!.*//)(?!.*\\/$).+"
+         },
+         "sha256": {
+           "type": "string",
+@@ -70,7 +70,7 @@
+           "filename": {
+             "type": "string",
+             "minLength": 1,
+-            "pattern": "^(?!\\.$)(?!.*(?:^|/)\\.$)(?!/)(?![A-Za-z]:)(?!.*\\\\)(?!.*(^|/)\\.\\.(/|$)).*[^/]$"
++            "pattern": "^(?!\\.$)(?!.*(?:^|/)\\.$)(?!/)(?![A-Za-z]:)(?![A-Za-z][A-Za-z0-9+.-]*:)(?!.*\\\\)(?!.*(^|/)\\.\\.(/|$))(?!.*//).*[^/]$"
+           },
+           "encoding": {
+             "type": "string",
+diff --git a/tests/contracts/test_backplane_schemas.py b/tests/contracts/test_backplane_schemas.py
+index 3f7d5cc42..b21090734 100644
+--- a/tests/contracts/test_backplane_schemas.py
++++ b/tests/contracts/test_backplane_schemas.py
+@@ -156,6 +156,10 @@ def test_document_mirror_fixture_validates() -> None:
+         "../escape.pdf",
+         "/absolute.pdf",
+         "blobs/../../escape.pdf",
++        "https://host/document.pdf",
++        "file:///tmp/document.pdf",
++        "blobs//document.pdf",
++        "blobs/",
+         "C:\\Users\\doc.pdf",
+         "C:[LOCAL_HOME]/",
+         "\\\\server\\share\\doc.pdf",
+@@ -166,6 +170,24 @@ def test_document_mirror_fixture_validates() -> None:
+         broken["blobs"][0]["blob_path"] = path
+         assert list(validator.iter_errors(broken)), path
+ 
++    for root in (
++        "https://host/mirror",
++        "file:///tmp/mirror",
++        "x:relative",
++        "../outside",
++        "repo/../../outside",
++        "..",
++        "C:/../outside",
++    ):
++        broken = json.loads((FIXTURES / "valid_document_mirror.json").read_text())
++        broken["mirror_root"] = root
++        assert list(validator.iter_errors(broken)), root
++
++    for root in ("repo/mirror", r"C:\mirror", "C:\\", "C:/", "/"):
++        valid_root = json.loads((FIXTURES / "valid_document_mirror.json").read_text())
++        valid_root["mirror_root"] = root
++        assert not list(validator.iter_errors(valid_root)), root
++
+ 
+ def test_tracked_variable_fixture_validates() -> None:
+     validator = _validator("tracked-variable-v1.schema.json")
+@@ -399,7 +421,13 @@ def test_output_substrate_rejects_missing_renderer_profile() -> None:
+         ("workspace_bundle_ref", r"\\server\share\workspace.json"),
+         ("workspace_bundle_ref", "//server/share/workspace.json"),
+         ("workspace_bundle_ref", "bundles/workspace/"),
++        ("workspace_bundle_ref", "https://host/workspace.json"),
++        ("workspace_bundle_ref", "file:///tmp/workspace.json"),
++        ("workspace_bundle_ref", "bundles//workspace.json"),
+         ("manifest_csv_exports", r"C:\exports\facts.csv"),
++        ("manifest_csv_exports", "https://host/facts.csv"),
++        ("manifest_csv_exports", "file:///tmp/facts.csv"),
++        ("manifest_csv_exports", "exports//facts.csv"),
+     ],
+ )
+ def test_output_substrate_rejects_non_posix_relative_paths(field: str, path: str) -> None:

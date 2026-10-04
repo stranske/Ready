@@ -1,0 +1,131 @@
+diff --git a/.agents/issue-3637-ledger.yml b/.agents/issue-3637-ledger.yml
+new file mode 100644
+index 000000000..85b835ebd
+--- /dev/null
++++ b/.agents/issue-3637-ledger.yml
+@@ -0,0 +1,71 @@
++version: 1
++issue: 3637
++base: main
++branch: codex/issue-3637
++tasks:
++- id: task-01
++  title: Verify the Pension-Data backplane_emitter.py entry point, then update docs/contracts/run-contract-v1.md
++    to name build_backplane_reference_run and explain config/backplane_participants.json.
++  status: done
++  started_at: '2026-09-30T14:59:21Z'
++  finished_at: '2026-09-30T17:45:00Z'
++  commit: 7bc77259271ca1cef0bdc399f6af6ebe68b2f9a9
++  notes:
++  - Documented Pension-Data reference run section in Workflows source doc.
++- id: task-03
++  title: Add a focused Workflows regression assertion for docs/contracts/run-contract-v1.md
++    and its .github/sync-manifest.yml declaration.
++  status: done
++  started_at: '2026-09-30T17:42:00Z'
++  finished_at: '2026-09-30T17:45:00Z'
++  commit: 7bc77259271ca1cef0bdc399f6af6ebe68b2f9a9
++  notes: []
++- id: task-04
++  title: Validate the proposed synced document with python -m pytest -q tests/docs/test_contract_doc_drift.py::test_run_contract_doc_mentions_pension_data_emitter
++    in Pension-Data.
++  status: todo
++  started_at: null
++  finished_at: null
++  commit: ''
++  notes: []
++- id: task-05
++  title: python -m pytest -q tests/docs/test_contract_doc_drift.py::test_run_contract_doc_mentions_pension_data_emitter
++    passes against the proposed Workflows document.
++  status: done
++  started_at: '2026-09-30T17:44:00Z'
++  finished_at: '2026-09-30T17:45:00Z'
++  commit: 7bc77259271ca1cef0bdc399f6af6ebe68b2f9a9
++  notes:
++  - Covered by tests/docs/test_run_contract_doc_pension_data.py in this PR.
++- id: task-06
++  title: The Workflows focused regression test passes and .github/sync-manifest.yml
++    retains the document mapping.
++  status: done
++  started_at: '2026-09-30T17:44:00Z'
++  finished_at: '2026-09-30T17:45:00Z'
++  commit: 7bc77259271ca1cef0bdc399f6af6ebe68b2f9a9
++  notes: []
++- id: task-07
++  title: The source PR is open ready for review with checks and review disposition
++    before merge.
++  status: todo
++  started_at: null
++  finished_at: null
++  commit: ''
++  notes: []
++- id: task-08
++  title: Maint 68/71 regenerates the delivery without direct generated PR mutation.
++  status: todo
++  started_at: null
++  finished_at: null
++  commit: ''
++  notes: []
++- id: task-17
++  title: Add or update a focused Workflows test that guards the documented emitter
++    references and manifest declaration; retain template/manifest coverage. (Requires
++    workflow changes, which are protected | Request a human to apply workflow updates)
++  status: deferred
++  started_at: null
++  finished_at: null
++  commit: ''
++  notes: []
+diff --git a/docs/contracts/run-contract-v1.md b/docs/contracts/run-contract-v1.md
+index 6c94179b2..090d06de4 100644
+--- a/docs/contracts/run-contract-v1.md
++++ b/docs/contracts/run-contract-v1.md
+@@ -89,6 +89,21 @@ and full model outputs must be represented by hashes, excerpts of bounded
+ length, or artifact references** — never inlined. Output *data* lives in named
+ artifacts referenced by the manifest, not in the envelope body.
+ 
++## Pension-Data reference run
++
++`stranske/Pension-Data` is the fleet's first conforming **producer** for this
++contract. The registry entry in `config/backplane_participants.json` names
++`one-pdf-pilot` as the headless entry point and `run.json` / `manifest.json` as
++the emitted artifacts.
++
++Implementation lives in `src/pension_data/ops/backplane_emitter.py`
++(`build_backplane_reference_run`, roughly lines 112–235): given a completed
++one-PDF pilot manifest, it writes `run-contract/v1` `run.json` and the companion
++`manifest.json` under the pilot output directory. The `one-pdf-pilot` CLI
++(`src/pension_data/ops/one_pdf_pilot_cli.py`) invokes that helper on every
++successful pilot run so backplane outputs are produced alongside the existing
++pilot artifacts. Conformance is covered by `tests/ops/test_backplane_emitter.py`.
++
+ ## Shared Fields
+ 
+ Required fields:
+diff --git a/tests/docs/test_run_contract_doc_pension_data.py b/tests/docs/test_run_contract_doc_pension_data.py
+new file mode 100644
+index 000000000..e22b39aa0
+--- /dev/null
++++ b/tests/docs/test_run_contract_doc_pension_data.py
+@@ -0,0 +1,22 @@
++"""Keep run-contract documentation aligned with Pension-Data emitter references."""
++
++from __future__ import annotations
++
++from pathlib import Path
++
++ROOT = Path(__file__).resolve().parents[2]
++RUN_CONTRACT_DOC = ROOT / "docs" / "contracts" / "run-contract-v1.md"
++SYNC_MANIFEST = ROOT / ".github" / "sync-manifest.yml"
++
++
++def test_run_contract_doc_mentions_pension_data_emitter() -> None:
++    text = RUN_CONTRACT_DOC.read_text(encoding="utf-8")
++    assert text.count("stranske/Pension-Data") >= 1
++    assert text.count("build_backplane_reference_run") >= 1
++    assert text.count("backplane_emitter.py") >= 1
++    assert text.count("config/backplane_participants.json") >= 1
++
++
++def test_run_contract_doc_is_declared_in_sync_manifest() -> None:
++    manifest = SYNC_MANIFEST.read_text(encoding="utf-8")
++    assert manifest.count("docs/contracts/run-contract-v1.md") >= 1

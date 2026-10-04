@@ -1,0 +1,456 @@
+{
+  "observed_at": "2026-09-27T16:20:47.183339+00:00",
+  "repos": [
+    "Ready",
+    "trip-planner",
+    "learning-management-system",
+    "Fine-Art-Archive",
+    "Doc-Lineage",
+    "Deliverable-Render",
+    "Manager-Mosaic"
+  ],
+  "prior_run_repos": [
+    "Workflows",
+    "Travel-Plan-Permission",
+    "Trend_Model_Project",
+    "Portable-Alpha-Extension-Model",
+    "Counter_Risk",
+    "Manager-Database",
+    "Inv-Man-Intake",
+    "Pension-Data"
+  ],
+  "data": {
+    "Ready": {
+      "repo": "Ready",
+      "errors": [],
+      "head_sha": "8356852defba0053543baa6bde06c95462372d49",
+      "branch": "main",
+      "open_issues": 5,
+      "open_impl": 4,
+      "priority_impl": 2,
+      "priority_all": 2,
+      "supply": 2,
+      "frozen": [],
+      "silent_claims": [],
+      "stalled_prs": [],
+      "head_ci": [
+        {
+          "name": "Agents PR Health",
+          "conclusion": "success",
+          "status": "completed",
+          "url": "https://github.com/stranske/Ready/actions/runs/36331891220"
+        },
+        {
+          "name": "Agents Keepalive Sweep",
+          "conclusion": "success",
+          "status": "completed",
+          "url": "https://github.com/stranske/Ready/actions/runs/36329681674"
+        },
+        {
+          "name": "Agents PR Health",
+          "conclusion": "success",
+          "status": "completed",
+          "url": "https://github.com/stranske/Ready/actions/runs/36328183102"
+        },
+        {
+          "name": "Agents Issue Format Guard",
+          "conclusion": "success",
+          "status": "completed",
+          "url": "https://github.com/stranske/Ready/actions/runs/36326759669"
+        },
+        {
+          "name": "Agents Keepalive Sweep",
+          "conclusion": "success",
+          "status": "completed",
+          "url": "https://github.com/stranske/Ready/actions/runs/36326055049"
+        },
+        {
+          "name": "Agents PR Health",
+          "conclusion": "success",
+          "status": "completed",
+          "url": "https://github.com/stranske/Ready/actions/runs/36324570447"
+        },
+        {
+          "name": "Agents Keepalive Sweep",
+          "conclusion": "success",
+          "status": "completed",
+          "url": "https://github.com/stranske/Ready/actions/runs/36322488790"
+        }
+      ]
+    },
+    "trip-planner": {
+      "repo": "trip-planner",
+      "errors": [],
+      "head_sha": "372c873e9596f9e7f993d4a4234ce86860d6cd12",
+      "branch": "main",
+      "open_issues": 9,
+      "open_impl": 8,
+      "priority_impl": 7,
+      "priority_all": 7,
+      "supply": 7,
+      "frozen": [],
+      "silent_claims": [],
+      "stalled_prs": [],
+      "head_ci": [],
+      "latest_gate_ci": [
+        {
+          "name": "Agents Issue Format Guard",
+          "conclusion": "success",
+          "url": "https://github.com/stranske/trip-planner/actions/runs/35361253276",
+          "headSha": "2a479165bbb504788e4c4ba263e61c2f444b9a51"
+        }
+      ]
+    },
+    "learning-management-system": {
+      "repo": "learning-management-system",
+      "errors": [],
+      "head_sha": "2553cbdd585b3984ff5925de1097a660642c0e57",
+      "branch": "main",
+      "open_issues": 6,
+      "open_impl": 5,
+      "priority_impl": 1,
+      "priority_all": 1,
+      "supply": 2,
+      "frozen": [
+        {
+          "number": 723,
+          "title": "Fix Compose smoke SQLAlchemy 2.1.0 install failure on Python 3.14",
+          "labels": [
+            "needs-human",
+            "agents:auto-pilot"
+          ],
+          "url": "https://github.com/stranske/learning-management-system/issues/723",
+          "last_automation": "\u26a0\ufe0f **Auto-pilot paused during formatting.**\n\nFormatter output does not satisfy the canonical issue-format contract.\nvalidation_audit=\"Task validation: 4 input \\u2192 4 output. All clean.\""
+        }
+      ],
+      "silent_claims": [],
+      "stalled_prs": [],
+      "head_ci": [
+        {
+          "name": "Agents PR Health",
+          "conclusion": "success",
+          "status": "completed",
+          "url": "https://github.com/stranske/learning-management-system/actions/runs/36332242900"
+        },
+        {
+          "name": "Agents Keepalive Sweep",
+          "conclusion": "success",
+          "status": "completed",
+          "url": "https://github.com/stranske/learning-management-system/actions/runs/36329726482"
+        },
+        {
+          "name": "Agents PR Health",
+          "conclusion": "success",
+          "status": "completed",
+          "url": "https://github.com/stranske/learning-management-system/actions/runs/36328467641"
+        },
+        {
+          "name": "Agents Keepalive Sweep",
+          "conclusion": "success",
+          "status": "completed",
+          "url": "https://github.com/stranske/learning-management-system/actions/runs/36326101023"
+        },
+        {
+          "name": "Agents PR Health",
+          "conclusion": "success",
+          "status": "completed",
+          "url": "https://github.com/stranske/learning-management-system/actions/runs/36324883969"
+        },
+        {
+          "name": "Agents Keepalive Sweep",
+          "conclusion": "success",
+          "status": "completed",
+          "url": "https://github.com/stranske/learning-management-system/actions/runs/36322546489"
+        },
+        {
+          "name": "Agents PR Health",
+          "conclusion": "success",
+          "status": "completed",
+          "url": "https://github.com/stranske/learning-management-system/actions/runs/36321359375"
+        },
+        {
+          "name": "Agents Issue Format Guard",
+          "conclusion": "success",
+          "status": "completed",
+          "url": "https://github.com/stranske/learning-management-system/actions/runs/36320806953"
+        }
+      ]
+    },
+    "Fine-Art-Archive": {
+      "repo": "Fine-Art-Archive",
+      "errors": [],
+      "head_sha": "6173c00e9f02fc711c20bef3a6960a4de61225aa",
+      "branch": "main",
+      "open_issues": 5,
+      "open_impl": 4,
+      "priority_impl": 1,
+      "priority_all": 1,
+      "supply": 1,
+      "frozen": [],
+      "silent_claims": [],
+      "stalled_prs": [],
+      "head_ci": [
+        {
+          "name": "Agents PR Health",
+          "conclusion": "success",
+          "status": "completed",
+          "url": "https://github.com/stranske/Fine-Art-Archive/actions/runs/36332600548"
+        },
+        {
+          "name": "Agents Keepalive Sweep",
+          "conclusion": "success",
+          "status": "completed",
+          "url": "https://github.com/stranske/Fine-Art-Archive/actions/runs/36329699363"
+        },
+        {
+          "name": "Agents PR Health",
+          "conclusion": "success",
+          "status": "completed",
+          "url": "https://github.com/stranske/Fine-Art-Archive/actions/runs/36328777958"
+        },
+        {
+          "name": "Agents Keepalive Sweep",
+          "conclusion": "success",
+          "status": "completed",
+          "url": "https://github.com/stranske/Fine-Art-Archive/actions/runs/36326055242"
+        },
+        {
+          "name": "Agents PR Health",
+          "conclusion": "success",
+          "status": "completed",
+          "url": "https://github.com/stranske/Fine-Art-Archive/actions/runs/36325145203"
+        },
+        {
+          "name": "Agents Keepalive Sweep",
+          "conclusion": "success",
+          "status": "completed",
+          "url": "https://github.com/stranske/Fine-Art-Archive/actions/runs/36322499798"
+        },
+        {
+          "name": "Agents PR Health",
+          "conclusion": "success",
+          "status": "completed",
+          "url": "https://github.com/stranske/Fine-Art-Archive/actions/runs/36321644344"
+        },
+        {
+          "name": "Agents Keepalive Sweep",
+          "conclusion": "success",
+          "status": "completed",
+          "url": "https://github.com/stranske/Fine-Art-Archive/actions/runs/36319711914"
+        }
+      ]
+    },
+    "Doc-Lineage": {
+      "repo": "Doc-Lineage",
+      "errors": [],
+      "head_sha": "77105c5221e87ab8764d093d8d3401090b810331",
+      "branch": "main",
+      "open_issues": 3,
+      "open_impl": 3,
+      "priority_impl": 1,
+      "priority_all": 1,
+      "supply": 2,
+      "frozen": [
+        {
+          "number": 1,
+          "title": "Dependency Dashboard",
+          "labels": [
+            "agents:auto-pilot-pause"
+          ],
+          "url": "https://github.com/stranske/Doc-Lineage/issues/1",
+          "last_automation": "<!-- format-guard:attempt-cap -->\nAutomated formatting stopped after 3 optimizer attempts. Fix the issue body manually, then remove agents:auto-pilot-pause before retrying.\n"
+        }
+      ],
+      "silent_claims": [],
+      "stalled_prs": [],
+      "head_ci": [
+        {
+          "name": "Agents PR Health",
+          "conclusion": "success",
+          "status": "completed",
+          "url": "https://github.com/stranske/Doc-Lineage/actions/runs/36332734600"
+        },
+        {
+          "name": "Agents Keepalive Sweep",
+          "conclusion": "success",
+          "status": "completed",
+          "url": "https://github.com/stranske/Doc-Lineage/actions/runs/36329719125"
+        },
+        {
+          "name": "Agents PR Health",
+          "conclusion": "success",
+          "status": "completed",
+          "url": "https://github.com/stranske/Doc-Lineage/actions/runs/36328876885"
+        },
+        {
+          "name": "Agents Keepalive Sweep",
+          "conclusion": "success",
+          "status": "completed",
+          "url": "https://github.com/stranske/Doc-Lineage/actions/runs/36326075137"
+        },
+        {
+          "name": "Agents PR Health",
+          "conclusion": "success",
+          "status": "completed",
+          "url": "https://github.com/stranske/Doc-Lineage/actions/runs/36325256561"
+        },
+        {
+          "name": "Agents Keepalive Sweep",
+          "conclusion": "success",
+          "status": "completed",
+          "url": "https://github.com/stranske/Doc-Lineage/actions/runs/36322533572"
+        },
+        {
+          "name": "Agents PR Health",
+          "conclusion": "success",
+          "status": "completed",
+          "url": "https://github.com/stranske/Doc-Lineage/actions/runs/36321746221"
+        },
+        {
+          "name": "Agents Keepalive Sweep",
+          "conclusion": "success",
+          "status": "completed",
+          "url": "https://github.com/stranske/Doc-Lineage/actions/runs/36319733466"
+        }
+      ]
+    },
+    "Deliverable-Render": {
+      "repo": "Deliverable-Render",
+      "errors": [],
+      "head_sha": "dbf75a7d5b1b35b47abda7e9ade5d5a12991f92d",
+      "branch": "main",
+      "open_issues": 2,
+      "open_impl": 2,
+      "priority_impl": 0,
+      "priority_all": 0,
+      "supply": 1,
+      "frozen": [
+        {
+          "number": 1,
+          "title": "Dependency Dashboard",
+          "labels": [
+            "agents:auto-pilot-pause"
+          ],
+          "url": "https://github.com/stranske/Deliverable-Render/issues/1",
+          "last_automation": "<!-- format-guard:attempt-cap -->\nAutomated formatting stopped after 3 optimizer attempts. Fix the issue body manually, then remove agents:auto-pilot-pause before retrying.\n"
+        }
+      ],
+      "silent_claims": [],
+      "stalled_prs": [],
+      "head_ci": [
+        {
+          "name": "Agents PR Health",
+          "conclusion": "success",
+          "status": "completed",
+          "url": "https://github.com/stranske/Deliverable-Render/actions/runs/36332024419"
+        },
+        {
+          "name": "Agents Keepalive Sweep",
+          "conclusion": "success",
+          "status": "completed",
+          "url": "https://github.com/stranske/Deliverable-Render/actions/runs/36329691656"
+        },
+        {
+          "name": "Agents PR Health",
+          "conclusion": "success",
+          "status": "completed",
+          "url": "https://github.com/stranske/Deliverable-Render/actions/runs/36328295790"
+        },
+        {
+          "name": "Agents Keepalive Sweep",
+          "conclusion": "success",
+          "status": "completed",
+          "url": "https://github.com/stranske/Deliverable-Render/actions/runs/36326065258"
+        },
+        {
+          "name": "Agents PR Health",
+          "conclusion": "success",
+          "status": "completed",
+          "url": "https://github.com/stranske/Deliverable-Render/actions/runs/36324676619"
+        },
+        {
+          "name": "Agents Keepalive Sweep",
+          "conclusion": "success",
+          "status": "completed",
+          "url": "https://github.com/stranske/Deliverable-Render/actions/runs/36322503106"
+        },
+        {
+          "name": "Agents PR Health",
+          "conclusion": "success",
+          "status": "completed",
+          "url": "https://github.com/stranske/Deliverable-Render/actions/runs/36321185194"
+        },
+        {
+          "name": "Agents Keepalive Sweep",
+          "conclusion": "success",
+          "status": "completed",
+          "url": "https://github.com/stranske/Deliverable-Render/actions/runs/36319724798"
+        }
+      ]
+    },
+    "Manager-Mosaic": {
+      "repo": "Manager-Mosaic",
+      "errors": [],
+      "head_sha": "042cbc1c882029916061aa70607a57d3b75605ae",
+      "branch": "main",
+      "open_issues": 12,
+      "open_impl": 12,
+      "priority_impl": 8,
+      "priority_all": 8,
+      "supply": 11,
+      "frozen": [],
+      "silent_claims": [],
+      "stalled_prs": [],
+      "head_ci": [
+        {
+          "name": "Agents PR Health",
+          "conclusion": "success",
+          "status": "completed",
+          "url": "https://github.com/stranske/Manager-Mosaic/actions/runs/36331816876"
+        },
+        {
+          "name": "Agents Keepalive Sweep",
+          "conclusion": "success",
+          "status": "completed",
+          "url": "https://github.com/stranske/Manager-Mosaic/actions/runs/36329731367"
+        },
+        {
+          "name": "Agents PR Health",
+          "conclusion": "success",
+          "status": "completed",
+          "url": "https://github.com/stranske/Manager-Mosaic/actions/runs/36328130077"
+        },
+        {
+          "name": "Agents Keepalive Sweep",
+          "conclusion": "success",
+          "status": "completed",
+          "url": "https://github.com/stranske/Manager-Mosaic/actions/runs/36326089179"
+        },
+        {
+          "name": "Agents PR Health",
+          "conclusion": "success",
+          "status": "completed",
+          "url": "https://github.com/stranske/Manager-Mosaic/actions/runs/36324512936"
+        },
+        {
+          "name": "Agents Keepalive Sweep",
+          "conclusion": "success",
+          "status": "completed",
+          "url": "https://github.com/stranske/Manager-Mosaic/actions/runs/36322552650"
+        },
+        {
+          "name": "Agents PR Health",
+          "conclusion": "success",
+          "status": "completed",
+          "url": "https://github.com/stranske/Manager-Mosaic/actions/runs/36321036389"
+        },
+        {
+          "name": "Agents Keepalive Sweep",
+          "conclusion": "success",
+          "status": "completed",
+          "url": "https://github.com/stranske/Manager-Mosaic/actions/runs/36319741210"
+        }
+      ]
+    }
+  }
+}

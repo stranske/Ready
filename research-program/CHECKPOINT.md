@@ -1924,3 +1924,1549 @@ remote: - Required status check "Gate / gate" is
 ## 2026-09-25T05:36:25Z — D3-unblock-sweep-2026-09-25T05 — fail — cursor produced 345 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/sweeps/D3-unblock-sweep-2026-09-25T05.md (min 400); rotating agent
 ## 2026-09-25T05:51:27Z — D3-unblock-sweep-2026-09-25T05 — route — router picked cursor from ['codex', 'cursor']
 ## 2026-09-25T05:51:27Z — D3-unblock-sweep-2026-09-25T05 — claimed by driver (agent cursor)
+## 2026-09-25T05:56:40Z — D3-unblock-sweep-2026-09-25T05 — done — cursor produced 559 words at artifacts/sweeps/D3-unblock-sweep-2026-09-25T05.md in 281s
+## 2026-09-25T05:56:41Z — D3-unblock-sweep-2026-09-25T05 — refutation posted — stranske/Workflows#3449
+## 2026-09-25T05:56:42Z — D3-unblock-sweep-2026-09-25T05 — refutation posted — stranske/trip-planner#1844
+## 2026-09-25T05:57:06Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T06:12:13Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T06:12:36Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T06:28:02Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T06:43:28Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T06:58:53Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T07:12:17Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T07:14:20Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T07:29:45Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T07:44:48Z — mirror — deferred — Ready#593 exact-head sync review; publication resumes by 2026-09-25T09:32:07+00:00; local work continues
+## 2026-09-25T07:59:50Z — mirror — deferred — Ready#593 exact-head sync review; publication resumes by 2026-09-25T09:32:07+00:00; local work continues
+## 2026-09-25T08:14:53Z — mirror — deferred — Ready#593 exact-head sync review; publication resumes by 2026-09-25T09:32:07+00:00; local work continues
+## 2026-09-25T08:30:23Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T08:45:49Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T09:01:14Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T09:16:39Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T09:32:06Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T09:47:34Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T10:03:00Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T10:18:26Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T10:33:52Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T10:49:50Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T11:05:29Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T11:20:32Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-25T11:20:56Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T11:35:59Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-25T11:36:23Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T11:51:26Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-25T11:51:51Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T12:06:54Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-25T12:07:21Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T12:22:24Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-25T12:22:49Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T12:37:52Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-25T12:38:17Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T12:53:20Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-25T12:53:45Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T13:08:48Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-25T13:09:12Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T13:24:15Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-25T13:24:40Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T13:39:42Z — unblock — enqueued D3-unblock-sweep-2026-09-25T13
+## 2026-09-25T13:39:43Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-25T13:39:43Z — D3-unblock-sweep-2026-09-25T13 — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-25T13:39:43Z — D3-unblock-sweep-2026-09-25T13 — claimed by driver (agent cursor)
+## 2026-09-25T13:40:06Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T13:48:09Z — D3-unblock-sweep-2026-09-25T13 — done — cursor produced 418 words at artifacts/sweeps/D3-unblock-sweep-2026-09-25T13.md in 478s
+## 2026-09-25T13:48:35Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T14:03:38Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-25T14:04:03Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T14:19:06Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-25T14:19:29Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T14:34:32Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-25T14:34:57Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T14:50:00Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-25T14:50:24Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T15:05:28Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-25T15:05:52Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T15:20:55Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-25T15:21:19Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T15:36:22Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-25T15:36:45Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T15:51:48Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-25T15:52:13Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T16:07:16Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-25T16:07:40Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T16:22:42Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-25T16:23:06Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T16:38:10Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-25T16:38:34Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T16:53:52Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-25T16:54:16Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T17:09:19Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-25T17:09:44Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T17:24:47Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-25T17:25:12Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T17:40:14Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-25T17:40:39Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T17:55:42Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-25T17:56:07Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T18:11:09Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-25T18:11:34Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T18:26:37Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-25T18:27:02Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T18:42:05Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-25T18:42:29Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T18:57:32Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-25T18:57:56Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T19:12:59Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-25T19:13:25Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T19:28:28Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-25T19:28:51Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T19:43:55Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-25T19:44:19Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T19:59:22Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-25T19:59:48Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T20:14:50Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-25T20:15:14Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T20:30:17Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-25T20:30:41Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T20:45:44Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-25T20:46:11Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T21:01:14Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-25T21:01:40Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T21:16:43Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-25T21:17:09Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T21:32:12Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-25T21:32:36Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T21:47:38Z — unblock — enqueued D3-unblock-sweep-2026-09-25T21
+## 2026-09-25T21:47:39Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-25T21:47:39Z — D3-unblock-sweep-2026-09-25T21 — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-25T21:47:39Z — D3-unblock-sweep-2026-09-25T21 — claimed by driver (agent cursor)
+## 2026-09-25T21:48:07Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T21:51:02Z — D3-unblock-sweep-2026-09-25T21 — done — cursor produced 414 words at artifacts/sweeps/D3-unblock-sweep-2026-09-25T21.md in 170s
+## 2026-09-25T21:51:26Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T22:06:29Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-25T22:06:54Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T22:21:57Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-25T22:22:22Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T22:37:25Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-25T22:37:49Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T22:52:52Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-25T22:53:16Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T23:08:47Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-25T23:09:12Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T23:24:15Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-25T23:24:40Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T23:39:43Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-25T23:40:07Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-25T23:55:10Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-25T23:55:36Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T00:10:39Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T00:11:04Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T00:26:09Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T00:26:33Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T00:41:36Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T00:42:01Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T00:57:04Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T00:57:30Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T01:12:33Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T01:12:59Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T01:28:02Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T01:28:28Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T01:43:30Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T01:43:55Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T01:58:58Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T01:59:23Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T02:14:26Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T02:14:52Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T02:29:55Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T02:30:20Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T02:45:23Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T02:45:46Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T03:00:50Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T03:01:16Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T03:16:20Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T03:16:46Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T03:31:49Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T03:32:15Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T03:47:17Z — verify — enqueued D4-verify-merged-2026-09-26T03
+## 2026-09-26T03:47:18Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T03:47:18Z — D4-verify-merged-2026-09-26T03 — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-26T03:47:18Z — D4-verify-merged-2026-09-26T03 — claimed by driver (agent cursor)
+## 2026-09-26T03:47:43Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T03:59:46Z — D4-verify-merged-2026-09-26T03 — done — cursor produced 634 words at artifacts/verification/D4-verify-merged-2026-09-26T03.md in 719s
+## 2026-09-26T04:00:10Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T04:15:13Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T04:15:37Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T04:30:40Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T04:31:07Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T04:46:10Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T04:46:36Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T05:01:40Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T05:02:07Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T05:17:25Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T05:17:50Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T05:32:53Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T05:33:19Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T05:48:22Z — unblock — enqueued D3-unblock-sweep-2026-09-26T05
+## 2026-09-26T05:48:23Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T05:48:23Z — D3-unblock-sweep-2026-09-26T05 — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-26T05:48:23Z — D3-unblock-sweep-2026-09-26T05 — claimed by driver (agent cursor)
+## 2026-09-26T05:48:47Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T05:51:15Z — D3-unblock-sweep-2026-09-26T05 — done — cursor produced 473 words at artifacts/sweeps/D3-unblock-sweep-2026-09-26T05.md in 121s
+## 2026-09-26T05:51:41Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T06:06:44Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T06:07:10Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T06:22:13Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T06:22:37Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T06:37:40Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T06:38:05Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T06:53:08Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T06:53:33Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T07:08:36Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T07:09:02Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T07:24:05Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T07:24:31Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T07:39:35Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T07:40:02Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T07:55:05Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T07:55:30Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T08:10:33Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T08:11:02Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T08:26:06Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T08:26:32Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T08:41:35Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T08:42:02Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T08:57:05Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T08:57:30Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T09:12:33Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T09:12:58Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T09:28:01Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T09:28:27Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T09:43:31Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T09:43:57Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T09:59:00Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T09:59:26Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T10:14:29Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T10:14:55Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T10:29:59Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T10:30:24Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T10:45:27Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T10:45:52Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T11:00:55Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T11:01:23Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T11:16:26Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T11:16:54Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T11:32:22Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T11:32:47Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T11:47:50Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T11:48:16Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T12:03:20Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T12:03:46Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T12:18:49Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T12:19:15Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T12:34:18Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T12:34:43Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T12:49:46Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T12:50:13Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T13:05:16Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T13:05:42Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T13:20:45Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T13:21:12Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T13:36:16Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T13:36:42Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T13:51:44Z — unblock — enqueued D3-unblock-sweep-2026-09-26T13
+## 2026-09-26T13:51:45Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T13:51:45Z — D3-unblock-sweep-2026-09-26T13 — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-26T13:51:45Z — D3-unblock-sweep-2026-09-26T13 — claimed by driver (agent cursor)
+## 2026-09-26T13:52:11Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T13:54:49Z — D3-unblock-sweep-2026-09-26T13 — done — cursor produced 471 words at artifacts/sweeps/D3-unblock-sweep-2026-09-26T13.md in 153s
+## 2026-09-26T13:55:13Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T14:10:16Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T14:10:42Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T14:25:45Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T14:26:12Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T14:41:15Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T14:41:41Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T14:56:45Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T14:57:13Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T15:12:16Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T15:12:42Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T15:27:45Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T15:28:13Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T15:43:16Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T15:43:43Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T15:58:47Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T15:59:14Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T16:14:17Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T16:14:43Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T16:29:46Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T16:30:14Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T16:45:16Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T16:45:42Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T17:00:45Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-26T17:01:18Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T17:11:07Z — refill — Workflows: scorecard 2026-09-24: 1 broken / 0 fabricated → audit queued
+## 2026-09-26T17:11:12Z — D-audit-Workflows--2026-09-26T17-11-07Z — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-26T17:11:12Z — D-audit-Workflows--2026-09-26T17-11-07Z — claimed by codex (agent cursor)
+## 2026-09-26T17:11:38Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T17:12:04Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T17:16:46Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T17:32:28Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T17:48:27Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T18:03:57Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T18:11:33Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T18:19:39Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T18:35:12Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T18:50:43Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T19:06:14Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T19:11:03Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T19:21:16Z — D-audit-Workflows--2026-09-26T17-11-07Z — claim released (stale)
+## 2026-09-26T19:21:17Z — D-audit-Workflows--2026-09-26T17-11-07Z — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-26T19:21:17Z — D-audit-Workflows--2026-09-26T17-11-07Z — claimed by driver (agent cursor)
+## 2026-09-26T19:21:53Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T19:23:51Z — D-audit-Workflows--2026-09-26T17-11-07Z — done — cursor produced 455 words at artifacts/audits/Workflows-2026-09-26.md in 114s
+## 2026-09-26T19:24:18Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T19:39:50Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T19:55:21Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T20:10:54Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T20:11:20Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T20:26:24Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T20:41:53Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T20:57:23Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T21:11:08Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T21:12:54Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T21:28:23Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T21:43:53Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T21:58:56Z — unblock — enqueued D3-unblock-sweep-2026-09-26T21
+## 2026-09-26T21:58:57Z — D3-unblock-sweep-2026-09-26T21 — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-26T21:58:57Z — D3-unblock-sweep-2026-09-26T21 — claimed by driver (agent cursor)
+## 2026-09-26T21:59:25Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T22:01:31Z — D3-unblock-sweep-2026-09-26T21 — done — cursor produced 494 words at artifacts/sweeps/D3-unblock-sweep-2026-09-26T21.md in 121s
+## 2026-09-26T22:01:58Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T22:12:09Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T22:17:29Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T22:32:58Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T22:48:30Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T23:03:59Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T23:11:38Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T23:12:03Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T23:19:29Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T23:35:00Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-26T23:50:58Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T00:06:27Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T00:12:07Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T00:21:59Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T00:37:29Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T00:52:59Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T01:08:30Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T01:11:42Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T01:24:00Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T01:39:31Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T01:55:00Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T02:10:31Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T02:11:42Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T02:26:01Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T02:41:33Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T02:57:01Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T03:11:11Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T03:12:31Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T03:28:01Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T03:43:32Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T03:58:35Z — verify — enqueued D4-verify-merged-2026-09-27T03
+## 2026-09-27T03:58:35Z — D4-verify-merged-2026-09-27T03 — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-27T03:58:35Z — D4-verify-merged-2026-09-27T03 — claimed by driver (agent cursor)
+## 2026-09-27T03:59:02Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T04:03:34Z — D4-verify-merged-2026-09-27T03 — done — cursor produced 602 words at artifacts/verification/D4-verify-merged-2026-09-27T03.md in 267s
+## 2026-09-27T04:04:15Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T04:11:08Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T04:19:44Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T04:35:14Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T04:50:47Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T05:06:20Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T05:11:48Z — refill — Workflows: scorecard 2026-09-26: 1 broken / 0 fabricated → audit queued
+## 2026-09-27T05:11:53Z — D-audit-Workflows--2026-09-27T05-11-48Z — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-27T05:11:53Z — D-audit-Workflows--2026-09-27T05-11-48Z — claimed by codex (agent cursor)
+## 2026-09-27T05:12:18Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T05:21:53Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T05:37:22Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T05:53:19Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T06:08:21Z — unblock — enqueued D3-unblock-sweep-2026-09-27T06
+## 2026-09-27T06:08:21Z — D3-unblock-sweep-2026-09-27T06 — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-27T06:08:21Z — D3-unblock-sweep-2026-09-27T06 — claimed by driver (agent cursor)
+## 2026-09-27T06:08:48Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T06:11:00Z — D3-unblock-sweep-2026-09-27T06 — done — cursor produced 471 words at artifacts/sweeps/D3-unblock-sweep-2026-09-27T06.md in 126s
+## 2026-09-27T06:11:28Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T06:12:07Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T06:26:57Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T06:42:26Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T06:57:55Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T07:12:08Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T07:12:56Z — D-audit-Workflows--2026-09-27T05-11-48Z — claim released (stale)
+## 2026-09-27T07:12:57Z — D-audit-Workflows--2026-09-27T05-11-48Z — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-27T07:12:57Z — D-audit-Workflows--2026-09-27T05-11-48Z — claimed by driver (agent cursor)
+## 2026-09-27T07:13:24Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T07:15:06Z — D-audit-Workflows--2026-09-27T05-11-48Z — fail — cursor produced 386 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Workflows-2026-09-27.md (min 400); rotating agent
+## 2026-09-27T07:30:09Z — D-audit-Workflows--2026-09-27T05-11-48Z — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-27T07:30:09Z — D-audit-Workflows--2026-09-27T05-11-48Z — claimed by driver (agent cursor)
+## 2026-09-27T07:30:35Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T07:32:52Z — D-audit-Workflows--2026-09-27T05-11-48Z — fail — cursor produced 346 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Workflows-2026-09-27.md (min 400); rotating agent
+## 2026-09-27T07:48:22Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T08:03:52Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T08:12:15Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T08:19:21Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T08:34:50Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T08:50:19Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T09:05:48Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T09:11:44Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T09:21:17Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T09:36:46Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T09:52:15Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T10:07:43Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T10:11:11Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T10:23:13Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T10:38:42Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T10:54:09Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T11:05:33Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T11:09:38Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T11:11:16Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T11:25:08Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T11:40:37Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T11:56:24Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T12:10:42Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T12:11:54Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T12:27:22Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T12:42:52Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T12:58:21Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T13:11:44Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T13:13:52Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T13:29:24Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T13:44:52Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T14:00:21Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T14:12:23Z — unblock — enqueued D3-unblock-sweep-2026-09-27T14
+## 2026-09-27T14:12:23Z — D3-unblock-sweep-2026-09-27T14 — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-27T14:12:23Z — D3-unblock-sweep-2026-09-27T14 — claimed by codex (agent cursor)
+## 2026-09-27T14:12:48Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T14:15:50Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T14:31:19Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T14:46:47Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T15:02:16Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T15:12:52Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T15:17:44Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T15:33:13Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T15:48:42Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T16:04:12Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T16:11:21Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T16:19:14Z — D3-unblock-sweep-2026-09-27T14 — claim released (stale)
+## 2026-09-27T16:19:14Z — D3-unblock-sweep-2026-09-27T14 — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-27T16:19:15Z — D3-unblock-sweep-2026-09-27T14 — claimed by driver (agent cursor)
+## 2026-09-27T16:19:41Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T16:22:29Z — D3-unblock-sweep-2026-09-27T14 — done — cursor produced 473 words at artifacts/sweeps/D3-unblock-sweep-2026-09-27T14.md in 163s
+## 2026-09-27T16:22:31Z — D3-unblock-sweep-2026-09-27T14 — refutation posted — stranske/learning-management-system#723
+## 2026-09-27T16:22:59Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T16:38:30Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T16:53:59Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T17:05:33Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T17:09:29Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T17:11:26Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T17:24:32Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-27T17:24:59Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T17:40:02Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-27T17:40:29Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T17:55:32Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-27T17:55:59Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T18:11:27Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-27T18:11:57Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T18:12:21Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T18:27:25Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T18:42:55Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T18:58:25Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T19:11:48Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T19:13:54Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T19:29:23Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T19:44:53Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T20:00:22Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T20:11:49Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T20:15:51Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T20:31:20Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T20:46:48Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T21:02:19Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T21:10:49Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T21:17:53Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T21:33:22Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T21:48:51Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T22:04:20Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T22:11:54Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T22:19:23Z — unblock — enqueued D3-unblock-sweep-2026-09-27T22
+## 2026-09-27T22:19:23Z — D3-unblock-sweep-2026-09-27T22 — route — router picked codex from ['codex', 'cursor']
+## 2026-09-27T22:19:23Z — D3-unblock-sweep-2026-09-27T22 — claimed by driver (agent codex)
+## 2026-09-27T22:19:49Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T22:21:01Z — D3-unblock-sweep-2026-09-27T22 — fail — offload to codex exited 70; agent reported OFFLOAD_INCOMPLETE
+## 2026-09-27T22:36:04Z — D3-unblock-sweep-2026-09-27T22 — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-27T22:36:04Z — D3-unblock-sweep-2026-09-27T22 — claimed by driver (agent cursor)
+## 2026-09-27T22:36:31Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T22:38:36Z — D3-unblock-sweep-2026-09-27T22 — done — cursor produced 416 words at artifacts/sweeps/D3-unblock-sweep-2026-09-27T22.md in 121s
+## 2026-09-27T22:39:02Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T22:54:30Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T23:05:34Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T23:09:58Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T23:11:21Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T23:25:27Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T23:40:56Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-27T23:56:25Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T00:11:53Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T00:13:10Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T00:27:23Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T00:42:52Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T00:58:21Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T01:11:52Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T01:13:54Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T01:29:23Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T01:44:51Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T02:00:24Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T02:12:54Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T02:15:53Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T02:31:22Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T02:46:51Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T03:02:21Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T03:12:23Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T03:17:50Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T03:33:20Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T03:48:49Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T04:03:51Z — verify — enqueued D4-verify-merged-2026-09-28T04
+## 2026-09-28T04:03:52Z — D4-verify-merged-2026-09-28T04 — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-28T04:03:52Z — D4-verify-merged-2026-09-28T04 — claimed by driver (agent cursor)
+## 2026-09-28T04:04:21Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T04:09:45Z — D4-verify-merged-2026-09-28T04 — done — cursor produced 668 words at artifacts/verification/D4-verify-merged-2026-09-28T04.md in 320s
+## 2026-09-28T04:10:12Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T04:11:56Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T04:25:41Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T04:41:11Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T04:56:41Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T05:11:55Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T05:12:22Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T05:27:52Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T05:43:22Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T05:58:52Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T06:12:33Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T06:14:51Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T06:29:54Z — unblock — enqueued D3-unblock-sweep-2026-09-28T06
+## 2026-09-28T06:29:54Z — D3-unblock-sweep-2026-09-28T06 — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-28T06:29:54Z — D3-unblock-sweep-2026-09-28T06 — claimed by driver (agent cursor)
+## 2026-09-28T06:30:22Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T06:33:49Z — D3-unblock-sweep-2026-09-28T06 — done — cursor produced 468 words at artifacts/sweeps/D3-unblock-sweep-2026-09-28T06.md in 201s
+## 2026-09-28T06:34:15Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T06:49:46Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T07:05:16Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T07:11:27Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T07:20:50Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T07:36:22Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T07:51:53Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T08:07:24Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T08:11:27Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T08:22:55Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T08:38:27Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T08:53:58Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T09:09:28Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T09:12:59Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T09:24:59Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T09:40:30Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T09:56:00Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T10:11:31Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T10:12:27Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T10:27:03Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T10:42:33Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T10:58:03Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T11:05:40Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T11:10:58Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T11:13:34Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T11:29:06Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T11:44:36Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T12:00:07Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T12:12:31Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T12:16:12Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T12:31:44Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T12:47:14Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T13:02:45Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T13:11:01Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T13:18:16Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T13:33:20Z — inbox — applied — recorded as a note: "Last checkpoint: `## 2026-09-25T05:51:27Z — D3-unblock-sweep"; recorded as a note: "Per `research-program/STATUS.md` (generated 2026-09-25T05:51"; recorded as a note: "`git log` on `research-program/` confirms it: the last commi"; recorded as a note: "Also worth flagging: this gap crossed the 8h threshold days "; recorded as a note: "No files were modified by this check (read-only, per policy)"; recorded as a note: "_Generated by [Claude Code](https://claude.ai/code)_"
+## 2026-09-28T13:33:51Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T13:49:22Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T14:04:56Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T14:12:33Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T14:20:30Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T14:35:33Z — unblock — enqueued D3-unblock-sweep-2026-09-28T14
+## 2026-09-28T14:35:33Z — D3-unblock-sweep-2026-09-28T14 — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-28T14:35:33Z — D3-unblock-sweep-2026-09-28T14 — claimed by driver (agent cursor)
+## 2026-09-28T14:36:01Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T14:39:44Z — D3-unblock-sweep-2026-09-28T14 — done — cursor produced 482 words at artifacts/sweeps/D3-unblock-sweep-2026-09-28T14.md in 217s
+## 2026-09-28T14:40:12Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T14:55:43Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T15:11:14Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T15:12:02Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T15:26:45Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T15:42:16Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T15:57:48Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T16:12:34Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T16:13:20Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T16:28:51Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T16:44:23Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T16:59:54Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T17:05:40Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T17:11:36Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T17:15:27Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T17:30:59Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T17:46:31Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T18:02:03Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T18:12:11Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T18:17:30Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-28T18:17:58Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T18:33:02Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-28T18:33:32Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T18:48:35Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-28T18:49:03Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T19:04:07Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-28T19:04:36Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T19:11:18Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T19:20:08Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T19:35:42Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T19:51:13Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T20:06:46Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T20:12:10Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T20:22:19Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T20:37:52Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T20:53:25Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T21:09:00Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T21:11:07Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T21:24:35Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T21:40:09Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T21:55:41Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T22:11:20Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T22:11:47Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T22:26:53Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T22:41:56Z — unblock — enqueued D3-unblock-sweep-2026-09-28T22
+## 2026-09-28T22:41:56Z — D3-unblock-sweep-2026-09-28T22 — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-28T22:41:56Z — D3-unblock-sweep-2026-09-28T22 — claimed by driver (agent cursor)
+## 2026-09-28T22:42:25Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T22:44:53Z — D3-unblock-sweep-2026-09-28T22 — done — cursor produced 502 words at artifacts/sweeps/D3-unblock-sweep-2026-09-28T22.md in 142s
+## 2026-09-28T22:45:24Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T23:00:57Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T23:05:36Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T23:12:47Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T23:16:32Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T23:32:06Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-28T23:47:38Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T00:03:12Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T00:12:11Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T00:18:57Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T00:34:30Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T00:50:03Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T01:05:38Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T01:11:42Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T01:21:11Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T01:36:45Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T01:52:18Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T02:07:51Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T02:12:44Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T02:23:25Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T02:38:59Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T02:54:34Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T03:10:08Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T03:12:15Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T03:25:41Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T03:41:15Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T03:56:48Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T04:10:52Z — verify — enqueued D4-verify-merged-2026-09-29T04
+## 2026-09-29T04:10:52Z — D4-verify-merged-2026-09-29T04 — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-29T04:10:52Z — D4-verify-merged-2026-09-29T04 — claimed by codex (agent cursor)
+## 2026-09-29T04:11:20Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T04:12:21Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T04:17:58Z — D4-verify-merged-2026-09-29T04 — done — Verified 20 oldest eligible merged PRs: 8 fully met issue criteria and 12 had missing deliberate-break evidence, with 12 follow-up issues filed.
+## 2026-09-29T04:18:25Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T04:27:54Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T04:43:27Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T04:59:01Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T05:11:46Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T05:14:36Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T05:30:09Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T05:45:46Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T06:01:21Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T06:11:47Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T06:16:56Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T06:33:00Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T06:48:03Z — unblock — enqueued D3-unblock-sweep-2026-09-29T06
+## 2026-09-29T06:48:03Z — D3-unblock-sweep-2026-09-29T06 — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-29T06:48:03Z — D3-unblock-sweep-2026-09-29T06 — claimed by driver (agent cursor)
+## 2026-09-29T06:48:34Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T06:52:39Z — D3-unblock-sweep-2026-09-29T06 — done — cursor produced 420 words at artifacts/sweeps/D3-unblock-sweep-2026-09-29T06.md in 239s
+## 2026-09-29T06:53:10Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T07:08:44Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T07:11:56Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T07:24:19Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T07:39:56Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T07:55:32Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T08:11:11Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T08:11:40Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T08:26:45Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T08:42:22Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T08:57:56Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T09:11:20Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T09:13:33Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T09:29:08Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T09:44:42Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T10:00:16Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T10:12:19Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T10:15:51Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T10:31:26Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T10:47:02Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T11:02:37Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T11:05:43Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T11:12:51Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T11:18:12Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T11:33:47Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T11:49:22Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T12:04:58Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T12:12:55Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T12:20:33Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T12:36:26Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T12:52:04Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T13:07:42Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T13:11:57Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T13:23:28Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T13:39:07Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T13:54:46Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T14:10:23Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T14:11:52Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T14:25:59Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T14:41:34Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T14:56:38Z — unblock — enqueued D3-unblock-sweep-2026-09-29T14
+## 2026-09-29T14:56:38Z — D3-unblock-sweep-2026-09-29T14 — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-29T14:56:38Z — D3-unblock-sweep-2026-09-29T14 — claimed by driver (agent cursor)
+## 2026-09-29T14:57:14Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T15:01:11Z — D3-unblock-sweep-2026-09-29T14 — done — cursor produced 492 words at artifacts/sweeps/D3-unblock-sweep-2026-09-29T14.md in 230s
+## 2026-09-29T15:01:47Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T15:12:24Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T15:17:24Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T15:33:01Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T15:48:36Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T16:04:13Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T16:12:23Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T16:19:49Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T16:35:26Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T16:51:05Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T17:05:43Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T17:06:42Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T17:11:27Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T17:22:26Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T17:38:03Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T17:53:41Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T18:09:18Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T18:11:04Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T18:24:57Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T18:41:04Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T18:56:41Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T19:11:45Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-29T19:11:59Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T19:12:35Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T19:27:39Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-29T19:28:13Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T19:43:17Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-29T19:43:51Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T19:58:55Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-09-29T19:59:29Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T20:11:06Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T20:15:08Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T20:30:46Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T20:46:25Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T21:02:04Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T21:12:59Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T21:17:41Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T21:33:19Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T21:48:57Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T22:04:35Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T22:11:59Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T22:20:13Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T22:35:51Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T22:51:29Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T23:04:57Z — unblock — enqueued D3-unblock-sweep-2026-09-29T23
+## 2026-09-29T23:04:57Z — D3-unblock-sweep-2026-09-29T23 — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-29T23:04:57Z — D3-unblock-sweep-2026-09-29T23 — claimed by claude (agent cursor)
+## 2026-09-29T23:05:32Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T23:07:07Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T23:11:31Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T23:22:46Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T23:38:24Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T23:42:05Z — D3-unblock-sweep-2026-09-29T23 — done — Positions 1-8 swept: Workflows #3624 format-loop repaired, Counter_Risk red main fixed (#1132 merged, CI green), Manager-Database MinIO registry break filed as 
+## 2026-09-29T23:42:41Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-29T23:54:02Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T00:09:40Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T00:11:30Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T00:25:26Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T00:41:04Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T00:56:55Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T01:11:33Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T01:12:34Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T01:28:13Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T01:43:52Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T01:59:31Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T02:12:03Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T02:15:10Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T02:30:50Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T02:46:30Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T03:02:10Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T03:11:34Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T03:12:10Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T03:17:49Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T03:33:28Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T03:49:08Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T04:04:47Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T04:11:32Z — verify — enqueued D4-verify-merged-2026-09-30T04
+## 2026-09-30T04:11:32Z — D4-verify-merged-2026-09-30T04 — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-30T04:11:32Z — D4-verify-merged-2026-09-30T04 — claimed by codex (agent cursor)
+## 2026-09-30T04:12:06Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T04:20:29Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T04:36:08Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T04:51:47Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T05:07:27Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T05:13:07Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T05:23:07Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T05:38:47Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T05:54:27Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T06:10:06Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T06:11:14Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T06:25:09Z — D4-verify-merged-2026-09-30T04 — claim released (stale)
+## 2026-09-30T06:25:11Z — D4-verify-merged-2026-09-30T04 — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-30T06:25:11Z — D4-verify-merged-2026-09-30T04 — claimed by driver (agent cursor)
+## 2026-09-30T06:25:47Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T06:30:47Z — D4-verify-merged-2026-09-30T04 — done — cursor produced 603 words at artifacts/verification/D4-verify-merged-2026-09-30T04.md in 294s
+## 2026-09-30T06:31:23Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T06:47:08Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T07:03:07Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T07:12:03Z — unblock — enqueued D3-unblock-sweep-2026-09-30T07
+## 2026-09-30T07:12:04Z — D3-unblock-sweep-2026-09-30T07 — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-30T07:12:04Z — D3-unblock-sweep-2026-09-30T07 — claimed by codex (agent cursor)
+## 2026-09-30T07:12:38Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T07:18:47Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T07:34:30Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T07:50:13Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T08:05:54Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T08:11:17Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T08:21:35Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T08:37:15Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T08:52:18Z — mirror — deferred — Ready#605 exact-head sync review; publication resumes by 2026-09-30T10:44:03+00:00; local work continues
+## 2026-09-30T09:07:23Z — mirror — deferred — Ready#605 exact-head sync review; publication resumes by 2026-09-30T10:44:03+00:00; local work continues
+## 2026-09-30T09:10:37Z — mirror — deferred — Ready#605 exact-head sync review; publication resumes by 2026-09-30T10:44:03+00:00; local work continues
+## 2026-09-30T09:22:26Z — D3-unblock-sweep-2026-09-30T07 — claim released (stale)
+## 2026-09-30T09:22:27Z — D3-unblock-sweep-2026-09-30T07 — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-30T09:22:27Z — D3-unblock-sweep-2026-09-30T07 — claimed by driver (agent cursor)
+## 2026-09-30T09:22:28Z — mirror — deferred — Ready#605 exact-head sync review; publication resumes by 2026-09-30T10:44:03+00:00; local work continues
+## 2026-09-30T09:25:26Z — D3-unblock-sweep-2026-09-30T07 — done — cursor produced 417 words at artifacts/sweeps/D3-unblock-sweep-2026-09-30T07.md in 171s
+## 2026-09-30T09:25:27Z — mirror — deferred — Ready#605 exact-head sync review; publication resumes by 2026-09-30T10:44:03+00:00; local work continues
+## 2026-09-30T09:40:32Z — mirror — deferred — Ready#605 exact-head sync review; publication resumes by 2026-09-30T10:44:03+00:00; local work continues
+## 2026-09-30T09:55:36Z — mirror — deferred — Ready#605 exact-head sync review; publication resumes by 2026-09-30T10:44:03+00:00; local work continues
+## 2026-09-30T10:10:41Z — mirror — deferred — Ready#605 exact-head sync review; publication resumes by 2026-09-30T10:44:03+00:00; local work continues
+## 2026-09-30T10:11:07Z — mirror — deferred — Ready#605 exact-head sync review; publication resumes by 2026-09-30T10:44:03+00:00; local work continues
+## 2026-09-30T10:25:45Z — mirror — deferred — Ready#605 exact-head sync review; publication resumes by 2026-09-30T10:44:03+00:00; local work continues
+## 2026-09-30T10:40:50Z — mirror — deferred — Ready#605 exact-head sync review; publication resumes by 2026-09-30T10:44:03+00:00; local work continues
+## 2026-09-30T10:56:31Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T11:05:43Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T11:11:40Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T11:12:20Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T11:12:54Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T11:28:01Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T11:43:41Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T11:59:59Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T12:13:13Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T12:16:22Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T12:31:28Z — mirror — FAILED — RuntimeError; pending commits retained for next tick
+## 2026-09-30T12:46:33Z — mirror — FAILED — RuntimeError; pending commits retained for next tick
+## 2026-09-30T13:02:18Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T13:13:25Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T13:18:05Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T13:33:46Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T13:49:26Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T14:05:13Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T14:12:26Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T14:12:59Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T14:20:53Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T14:36:34Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T14:52:16Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T15:07:56Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T15:11:56Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T15:23:00Z — unblock — enqueued D3-unblock-sweep-2026-09-30T15
+## 2026-09-30T15:23:01Z — D3-unblock-sweep-2026-09-30T15 — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-30T15:23:01Z — D3-unblock-sweep-2026-09-30T15 — claimed by driver (agent cursor)
+## 2026-09-30T15:23:40Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T15:27:00Z — D3-unblock-sweep-2026-09-30T15 — done — cursor produced 415 words at artifacts/sweeps/D3-unblock-sweep-2026-09-30T15.md in 186s
+## 2026-09-30T15:27:38Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T15:43:19Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T15:58:59Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T16:11:30Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T16:12:04Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T16:14:39Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T16:30:19Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T16:46:00Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T17:01:40Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T17:05:37Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T17:11:03Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T17:17:27Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T17:33:08Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T17:48:48Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T18:04:30Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T18:11:06Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T18:20:11Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T18:35:53Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T18:51:38Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T19:07:20Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T19:12:34Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T19:23:39Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T19:39:20Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T19:55:01Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T20:10:43Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T20:12:13Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T20:12:47Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T20:26:28Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T20:42:09Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T20:57:49Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T21:11:34Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T21:13:37Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T21:29:20Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-09-30T21:44:24Z — mirror — deferred — Ready#605 exact-head sync review; publication resumes by 2026-09-30T23:33:41+00:00; local work continues
+## 2026-09-30T21:59:29Z — mirror — deferred — Ready#605 exact-head sync review; publication resumes by 2026-09-30T23:33:41+00:00; local work continues
+## 2026-09-30T22:11:38Z — mirror — deferred — Ready#605 exact-head sync review; publication resumes by 2026-09-30T23:33:41+00:00; local work continues
+## 2026-09-30T22:14:34Z — mirror — deferred — Ready#605 exact-head sync review; publication resumes by 2026-09-30T23:33:41+00:00; local work continues
+## 2026-09-30T22:29:38Z — mirror — deferred — Ready#605 exact-head sync review; publication resumes by 2026-09-30T23:33:41+00:00; local work continues
+## 2026-09-30T22:44:43Z — mirror — deferred — Ready#605 exact-head sync review; publication resumes by 2026-09-30T23:33:41+00:00; local work continues
+## 2026-09-30T22:59:48Z — mirror — deferred — Ready#605 exact-head sync review; publication resumes by 2026-09-30T23:33:41+00:00; local work continues
+## 2026-09-30T23:04:55Z — mirror — deferred — Ready#605 exact-head sync review; publication resumes by 2026-09-30T23:33:41+00:00; local work continues
+## 2026-09-30T23:11:33Z — mirror — deferred — Ready#605 exact-head sync review; publication resumes by 2026-09-30T23:33:41+00:00; local work continues
+## 2026-09-30T23:14:53Z — mirror — deferred — Ready#605 exact-head sync review; publication resumes by 2026-09-30T23:33:41+00:00; local work continues
+## 2026-09-30T23:29:58Z — unblock — enqueued D3-unblock-sweep-2026-09-30T23
+## 2026-09-30T23:29:58Z — D3-unblock-sweep-2026-09-30T23 — route — router picked cursor from ['codex', 'cursor']
+## 2026-09-30T23:29:58Z — D3-unblock-sweep-2026-09-30T23 — claimed by driver (agent cursor)
+## 2026-09-30T23:29:59Z — mirror — deferred — Ready#605 exact-head sync review; publication resumes by 2026-09-30T23:33:41+00:00; local work continues
+## 2026-09-30T23:33:18Z — D3-unblock-sweep-2026-09-30T23 — done — cursor produced 439 words at artifacts/sweeps/D3-unblock-sweep-2026-09-30T23.md in 191s
+## 2026-09-30T23:33:18Z — mirror — deferred — Ready#605 exact-head sync review; publication resumes by 2026-09-30T23:33:41+00:00; local work continues
+## 2026-09-30T23:49:00Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T00:04:42Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T00:11:39Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T00:20:29Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T00:36:13Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T00:52:02Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T01:07:46Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T01:12:08Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T01:23:31Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T01:39:46Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T01:55:30Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T02:11:21Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T02:11:55Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T02:27:04Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T02:42:48Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T02:58:30Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T03:11:08Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T03:13:54Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T03:29:17Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T03:44:20Z — mirror — deferred — Ready#605 exact-head sync review; publication resumes by 2026-10-01T05:37:02+00:00; local work continues
+## 2026-10-01T03:59:23Z — mirror — deferred — Ready#605 exact-head sync review; publication resumes by 2026-10-01T05:37:02+00:00; local work continues
+## 2026-10-01T04:11:07Z — mirror — deferred — Ready#605 exact-head sync review; publication resumes by 2026-10-01T05:37:02+00:00; local work continues
+## 2026-10-01T04:14:25Z — verify — enqueued D4-verify-merged-2026-10-01T04
+## 2026-10-01T04:14:25Z — D4-verify-merged-2026-10-01T04 — route — router picked cursor from ['codex', 'cursor']
+## 2026-10-01T04:14:25Z — D4-verify-merged-2026-10-01T04 — claimed by driver (agent cursor)
+## 2026-10-01T04:14:25Z — mirror — deferred — Ready#605 exact-head sync review; publication resumes by 2026-10-01T05:37:02+00:00; local work continues
+## 2026-10-01T04:18:59Z — D4-verify-merged-2026-10-01T04 — done — cursor produced 617 words at artifacts/verification/D4-verify-merged-2026-10-01T04.md in 271s
+## 2026-10-01T04:19:00Z — mirror — deferred — Ready#605 exact-head sync review; publication resumes by 2026-10-01T05:37:02+00:00; local work continues
+## 2026-10-01T04:34:03Z — mirror — deferred — Ready#605 exact-head sync review; publication resumes by 2026-10-01T05:37:02+00:00; local work continues
+## 2026-10-01T04:49:05Z — mirror — deferred — Ready#605 exact-head sync review; publication resumes by 2026-10-01T05:37:02+00:00; local work continues
+## 2026-10-01T05:04:08Z — mirror — deferred — Ready#605 exact-head sync review; publication resumes by 2026-10-01T05:37:02+00:00; local work continues
+## 2026-10-01T05:11:05Z — mirror — deferred — Ready#605 exact-head sync review; publication resumes by 2026-10-01T05:37:02+00:00; local work continues
+## 2026-10-01T05:19:10Z — mirror — deferred — Ready#605 exact-head sync review; publication resumes by 2026-10-01T05:37:02+00:00; local work continues
+## 2026-10-01T05:34:13Z — mirror — deferred — Ready#605 exact-head sync review; publication resumes by 2026-10-01T05:37:02+00:00; local work continues
+## 2026-10-01T05:49:39Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T06:05:02Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T06:11:56Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T06:20:26Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T06:35:49Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T06:51:14Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T07:06:37Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T07:12:00Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T07:22:00Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T07:37:02Z — unblock — enqueued D3-unblock-sweep-2026-10-01T07
+## 2026-10-01T07:37:02Z — D3-unblock-sweep-2026-10-01T07 — route — router picked codex from ['codex', 'cursor']
+## 2026-10-01T07:37:02Z — D3-unblock-sweep-2026-10-01T07 — claimed by driver (agent codex)
+## 2026-10-01T07:37:24Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T07:42:46Z — D3-unblock-sweep-2026-10-01T07 — fail — offload to codex exited 70; agent reported OFFLOAD_INCOMPLETE
+## 2026-10-01T07:58:00Z — D3-unblock-sweep-2026-10-01T07 — route — router picked cursor from ['codex', 'cursor']
+## 2026-10-01T07:58:00Z — D3-unblock-sweep-2026-10-01T07 — claimed by driver (agent cursor)
+## 2026-10-01T07:58:22Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T08:01:01Z — D3-unblock-sweep-2026-10-01T07 — done — cursor produced 552 words at artifacts/sweeps/D3-unblock-sweep-2026-10-01T07.md in 155s
+## 2026-10-01T08:01:02Z — D3-unblock-sweep-2026-10-01T07 — refutation posted — stranske/Workflows#3660
+## 2026-10-01T08:01:04Z — D3-unblock-sweep-2026-10-01T07 — refutation posted — stranske/Workflows#3655
+## 2026-10-01T08:01:05Z — D3-unblock-sweep-2026-10-01T07 — refutation posted — stranske/Workflows#3654
+## 2026-10-01T08:01:07Z — D3-unblock-sweep-2026-10-01T07 — refutation posted — stranske/Workflows#3653
+## 2026-10-01T08:01:08Z — D3-unblock-sweep-2026-10-01T07 — refutation posted — stranske/Workflows#3652
+## 2026-10-01T08:01:10Z — D3-unblock-sweep-2026-10-01T07 — refutation posted — stranske/trip-planner#1877
+## 2026-10-01T08:01:31Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T08:12:34Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T08:16:53Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T08:32:16Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T08:47:39Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T09:03:02Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T09:10:36Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+## 2026-10-01T09:10:58Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T09:18:04Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+## 2026-10-01T09:18:25Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T09:33:49Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T09:49:13Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T10:04:36Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T10:10:57Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T10:19:59Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T10:35:26Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T10:50:49Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T11:05:16Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T11:06:12Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T11:12:30Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T11:21:35Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T11:37:03Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T11:52:28Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T12:07:53Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T12:11:31Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T12:23:17Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T12:38:48Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T12:54:12Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T13:09:40Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T13:12:03Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T13:24:42Z — inbox — applied — recorded as a note: "Last checkpoint, unchanged since that alert: `## 2026-09-25T"; recorded as a note: "`research-program/STATUS.md` (header: generated 2026-09-25T0"; recorded as a note: "`git log -- research-program/` confirms the mirror itself ha"; recorded as a note: "No files were modified by this check (read-only). This is wo"; recorded as a note: "_Generated by [Claude Code](https://claude.ai/code)_"
+## 2026-10-01T13:25:05Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T13:40:31Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T13:55:57Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T14:12:12Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T14:12:34Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T14:27:37Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T14:43:02Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T14:58:27Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T15:12:36Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T15:14:06Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T15:29:31Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T15:44:33Z — unblock — enqueued D3-unblock-sweep-2026-10-01T15
+## 2026-10-01T15:44:34Z — D3-unblock-sweep-2026-10-01T15 — route — router picked cursor from ['codex', 'cursor']
+## 2026-10-01T15:44:34Z — D3-unblock-sweep-2026-10-01T15 — claimed by driver (agent cursor)
+## 2026-10-01T15:44:58Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T15:53:04Z — D3-unblock-sweep-2026-10-01T15 — fail — cursor produced 308 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/sweeps/D3-unblock-sweep-2026-10-01T15.md (min 400); rotating agent
+## 2026-10-01T16:08:08Z — D3-unblock-sweep-2026-10-01T15 — route — router picked cursor from ['codex', 'cursor']
+## 2026-10-01T16:08:08Z — D3-unblock-sweep-2026-10-01T15 — claimed by driver (agent cursor)
+## 2026-10-01T16:08:31Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T16:11:27Z — D3-unblock-sweep-2026-10-01T15 — done — cursor produced 489 words at artifacts/sweeps/D3-unblock-sweep-2026-10-01T15.md in 172s
+## 2026-10-01T16:11:28Z — D3-unblock-sweep-2026-10-01T15 — refutation posted — stranske/Workflows#3660
+## 2026-10-01T16:11:30Z — D3-unblock-sweep-2026-10-01T15 — refutation posted — stranske/Workflows#3655
+## 2026-10-01T16:11:32Z — D3-unblock-sweep-2026-10-01T15 — refutation posted — stranske/Workflows#3653
+## 2026-10-01T16:11:34Z — D3-unblock-sweep-2026-10-01T15 — refutation posted — stranske/Workflows#3652
+## 2026-10-01T16:11:36Z — D3-unblock-sweep-2026-10-01T15 — refutation posted — stranske/trip-planner#1877
+## 2026-10-01T16:11:36Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T16:11:59Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T16:27:23Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T16:42:47Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T16:58:15Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T17:05:21Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T17:12:36Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T17:13:40Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T17:28:43Z — mirror — deferred — Ready#607 exact-head sync review; publication resumes by 2026-10-01T19:20:47+00:00; local work continues
+## 2026-10-01T17:43:46Z — mirror — deferred — Ready#607 exact-head sync review; publication resumes by 2026-10-01T19:20:47+00:00; local work continues
+## 2026-10-01T17:58:48Z — mirror — deferred — Ready#607 exact-head sync review; publication resumes by 2026-10-01T19:20:47+00:00; local work continues
+## 2026-10-01T18:11:42Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T18:14:17Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T18:29:46Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T18:45:11Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T19:00:37Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T19:10:39Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T19:16:00Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T19:31:24Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T19:46:50Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T20:02:14Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T20:11:07Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T20:17:43Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-10-01T20:18:07Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T20:33:09Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-10-01T20:33:33Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T20:48:37Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-10-01T20:48:59Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T21:04:02Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-10-01T21:04:02Z — mirror — deferred — Ready#608 exact-head sync review; publication resumes by 2026-10-01T23:02:58+00:00; local work continues
+## 2026-10-01T21:10:58Z — mirror — deferred — Ready#608 exact-head sync review; publication resumes by 2026-10-01T23:02:58+00:00; local work continues
+## 2026-10-01T21:19:05Z — mirror — deferred — Ready#608 exact-head sync review; publication resumes by 2026-10-01T23:02:58+00:00; local work continues
+## 2026-10-01T21:34:08Z — mirror — deferred — Ready#608 exact-head sync review; publication resumes by 2026-10-01T23:02:58+00:00; local work continues
+## 2026-10-01T21:49:34Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T22:04:58Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T22:11:38Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T22:20:22Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T22:35:24Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+## 2026-10-01T22:35:45Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T22:51:09Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T23:05:14Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T23:06:32Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T23:11:07Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T23:21:55Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T23:37:19Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T23:52:20Z — unblock — enqueued D3-unblock-sweep-2026-10-01T23
+## 2026-10-01T23:52:21Z — D3-unblock-sweep-2026-10-01T23 — route — router picked cursor from ['codex', 'cursor']
+## 2026-10-01T23:52:21Z — D3-unblock-sweep-2026-10-01T23 — claimed by driver (agent cursor)
+## 2026-10-01T23:52:42Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-01T23:54:23Z — D3-unblock-sweep-2026-10-01T23 — fail — cursor produced 286 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/sweeps/D3-unblock-sweep-2026-10-01T23.md (min 400); rotating agent
+## 2026-10-02T00:09:25Z — D3-unblock-sweep-2026-10-01T23 — route — router picked cursor from ['codex', 'cursor']
+## 2026-10-02T00:09:25Z — D3-unblock-sweep-2026-10-01T23 — claimed by driver (agent cursor)
+## 2026-10-02T00:09:46Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T00:11:21Z — D3-unblock-sweep-2026-10-01T23 — done — cursor produced 465 words at artifacts/sweeps/D3-unblock-sweep-2026-10-01T23.md in 91s
+## 2026-10-02T00:11:23Z — D3-unblock-sweep-2026-10-01T23 — refutation posted — stranske/Workflows#3660
+## 2026-10-02T00:11:24Z — D3-unblock-sweep-2026-10-01T23 — refutation posted — stranske/Workflows#3655
+## 2026-10-02T00:11:26Z — D3-unblock-sweep-2026-10-01T23 — refutation posted — stranske/Workflows#3654
+## 2026-10-02T00:11:28Z — D3-unblock-sweep-2026-10-01T23 — refutation posted — stranske/trip-planner#1877
+## 2026-10-02T00:11:52Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T00:12:38Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T00:27:17Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T00:42:48Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T00:58:13Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T01:12:29Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T01:13:37Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T01:29:09Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T01:44:36Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T02:00:04Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T02:12:21Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T02:15:30Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T02:31:54Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T02:47:19Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T03:02:42Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T03:12:19Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T03:18:06Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T03:33:30Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T03:48:54Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T04:04:17Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T04:12:15Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T04:19:19Z — verify — enqueued D4-verify-merged-2026-10-02T04
+## 2026-10-02T04:19:20Z — D4-verify-merged-2026-10-02T04 — route — router picked codex from ['codex', 'cursor']
+## 2026-10-02T04:19:20Z — D4-verify-merged-2026-10-02T04 — claimed by driver (agent codex)
+## 2026-10-02T04:19:41Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T04:27:36Z — D4-verify-merged-2026-10-02T04 — done — codex produced 515 words at artifacts/verification/D4-verify-merged-2026-10-02T04.md in 472s
+## 2026-10-02T04:27:57Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T04:43:28Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T04:59:02Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T05:11:56Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T05:14:53Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T05:30:22Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T05:45:48Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T06:00:50Z — mirror — deferred — Ready#609 exact-head sync review; publication resumes by 2026-10-02T07:59:30+00:00; local work continues
+## 2026-10-02T06:11:29Z — mirror — deferred — Ready#609 exact-head sync review; publication resumes by 2026-10-02T07:59:30+00:00; local work continues
+## 2026-10-02T06:15:54Z — mirror — deferred — Ready#609 exact-head sync review; publication resumes by 2026-10-02T07:59:30+00:00; local work continues
+## 2026-10-02T06:30:57Z — mirror — deferred — Ready#609 exact-head sync review; publication resumes by 2026-10-02T07:59:30+00:00; local work continues
+## 2026-10-02T06:45:59Z — mirror — deferred — Ready#609 exact-head sync review; publication resumes by 2026-10-02T07:59:30+00:00; local work continues
+## 2026-10-02T07:01:01Z — mirror — deferred — Ready#609 exact-head sync review; publication resumes by 2026-10-02T07:59:30+00:00; local work continues
+## 2026-10-02T07:11:28Z — mirror — deferred — Ready#609 exact-head sync review; publication resumes by 2026-10-02T07:59:30+00:00; local work continues
+## 2026-10-02T07:16:07Z — mirror — deferred — Ready#609 exact-head sync review; publication resumes by 2026-10-02T07:59:30+00:00; local work continues
+## 2026-10-02T07:31:10Z — mirror — deferred — Ready#609 exact-head sync review; publication resumes by 2026-10-02T07:59:30+00:00; local work continues
+## 2026-10-02T07:46:36Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T08:01:38Z — unblock — enqueued D3-unblock-sweep-2026-10-02T08
+## 2026-10-02T08:01:39Z — D3-unblock-sweep-2026-10-02T08 — route — router picked cursor from ['codex', 'cursor']
+## 2026-10-02T08:01:39Z — D3-unblock-sweep-2026-10-02T08 — claimed by driver (agent cursor)
+## 2026-10-02T08:02:02Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T08:03:45Z — D3-unblock-sweep-2026-10-02T08 — fail — cursor produced 268 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/sweeps/D3-unblock-sweep-2026-10-02T08.md (min 400); rotating agent
+## 2026-10-02T08:10:29Z — D3-unblock-sweep-2026-10-02T08 — route — router picked cursor from ['codex', 'cursor']
+## 2026-10-02T08:10:29Z — D3-unblock-sweep-2026-10-02T08 — claimed by codex (agent cursor)
+## 2026-10-02T08:10:51Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T08:11:59Z — D3-unblock-sweep-2026-10-02T08 — done — Completed the full 14-repository unblock sweep: no second-slice repairable freezes, stale claim releases, reroutes, or mechanical default-branch CI fixes.
+## 2026-10-02T08:12:20Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T08:19:09Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T08:34:46Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T08:50:09Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T09:05:32Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T09:10:56Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T09:20:35Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-10-02T09:20:57Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T09:35:59Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-10-02T09:36:23Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T09:51:25Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-10-02T09:51:47Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T10:06:49Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-10-02T10:07:11Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T10:11:02Z — refill — Workflows: scorecard 2026-09-27: coverage debt 4 (not exercised 2 + unscored 2) not reduced since 2026-09-26 (4) → audit queued
+## 2026-10-02T10:11:03Z — refill — Travel-Plan-Permission: scorecard 2026-10-01: coverage debt 18 (not exercised 6 + unscored 12) not reduced since 2026-09-24 (12) → audit queued
+## 2026-10-02T10:11:05Z — refill — Inv-Man-Intake: scorecard 2026-09-24: coverage debt 1 (not exercised 0 + unscored 1) not reduced since 2026-09-23 (1) → audit queued
+## 2026-10-02T10:11:06Z — refill — trip-planner: scorecard 2026-10-01: 1 partial and the artifact names fabricated components (fabrication hidden inside PARTIAL) → audit queued
+## 2026-10-02T10:11:07Z — D-audit-Inv-Man-Intake--2026-10-02T10-11-05Z — route — router picked codex from ['codex', 'cursor']
+## 2026-10-02T10:11:07Z — D-audit-Inv-Man-Intake--2026-10-02T10-11-05Z — claimed by codex (agent codex)
+## 2026-10-02T10:11:29Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T10:13:51Z — D-audit-Inv-Man-Intake--2026-10-02T10-11-05Z — done — Scorecard: 5 work / 2 partial / 0 broken / 0 fabricated / 0 not exercised of 7; journey: passes; surfaces unscored 0; closed-still-broken 0; browser-backed oper
+## 2026-10-02T10:14:12Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T10:22:13Z — D-audit-Travel-Plan-Permission--2026-10-02T10-11-03Z — route — router picked codex from ['codex', 'cursor']
+## 2026-10-02T10:22:13Z — D-audit-Travel-Plan-Permission--2026-10-02T10-11-03Z — claimed by driver (agent codex)
+## 2026-10-02T10:22:34Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T10:27:16Z — D-audit-Travel-Plan-Permission--2026-10-02T10-11-03Z — fail — offload to codex exited 70; agent reported OFFLOAD_INCOMPLETE
+## 2026-10-02T10:42:18Z — D-audit-Travel-Plan-Permission--2026-10-02T10-11-03Z — route — router picked codex from ['codex', 'cursor']
+## 2026-10-02T10:42:18Z — D-audit-Travel-Plan-Permission--2026-10-02T10-11-03Z — claimed by driver (agent codex)
+## 2026-10-02T10:42:40Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T10:44:52Z — D-audit-Travel-Plan-Permission--2026-10-02T10-11-03Z — fail — offload to codex exited 70; agent reported OFFLOAD_INCOMPLETE
+## 2026-10-02T10:59:54Z — D-audit-Travel-Plan-Permission--2026-10-02T10-11-03Z — route — router picked codex from ['codex', 'cursor']
+## 2026-10-02T10:59:54Z — D-audit-Travel-Plan-Permission--2026-10-02T10-11-03Z — claimed by driver (agent codex)
+## 2026-10-02T11:00:15Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T11:01:24Z — D-audit-Travel-Plan-Permission--2026-10-02T10-11-03Z — fail — offload to codex exited 70; agent reported OFFLOAD_INCOMPLETE
+## 2026-10-02T11:04:52Z — D-audit-Workflows--2026-10-02T10-11-02Z — route — router picked codex from ['codex', 'cursor']
+## 2026-10-02T11:04:52Z — D-audit-Workflows--2026-10-02T10-11-02Z — claimed by claude (agent codex)
+## 2026-10-02T11:05:13Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T11:11:00Z — D-audit-trip-planner--2026-10-02T10-11-06Z — route — router picked codex from ['codex', 'cursor']
+## 2026-10-02T11:11:00Z — D-audit-trip-planner--2026-10-02T10-11-06Z — claimed by codex (agent codex)
+## 2026-10-02T11:11:22Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T11:15:39Z — D-audit-trip-planner--2026-10-02T10-11-06Z — done — Scorecard: 7 work / 1 partial / 0 broken / 0 fabricated / 0 not exercised of 8; journey: passes — current-tip TP4 recheck verified and filed #1883 for month-abb
+## 2026-10-02T11:16:01Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T11:16:28Z — D-audit-Workflows--2026-10-02T10-11-02Z — done — Scorecard: 5 work/0 broken/2 not-exercised of 7, surfaces unscored 0 (was 2); reconfirmed C1-C5 WORKS at tip 61345dd and filed stranske/Workflows#3696 (audit_be
+## 2026-10-02T11:16:48Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T11:17:09Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T11:32:12Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T11:47:35Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T12:03:02Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T12:10:57Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T12:18:31Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T12:33:57Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T12:49:24Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T13:04:55Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T13:12:31Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T13:20:21Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T13:36:04Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T13:51:44Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T14:07:12Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T14:12:30Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T14:22:50Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T14:38:29Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T14:54:00Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T15:09:28Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T15:12:59Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T15:25:33Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T15:40:39Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+## 2026-10-02T15:41:23Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T15:56:49Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T16:11:47Z — unblock — enqueued D3-unblock-sweep-2026-10-02T16
+## 2026-10-02T16:11:47Z — D3-unblock-sweep-2026-10-02T16 — route — router picked cursor from ['codex', 'cursor']
+## 2026-10-02T16:11:47Z — D3-unblock-sweep-2026-10-02T16 — claimed by codex (agent cursor)
+## 2026-10-02T16:12:10Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T16:12:35Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T16:14:44Z — D3-unblock-sweep-2026-10-02T16 — done — Covered the first eight supported repositories, repaired Workflows #3706 and #3701, retained #3123 for the owner, and found no stalled PR reroutes or current re
+## 2026-10-02T16:15:06Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T16:28:02Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T16:43:27Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T16:58:53Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T17:11:09Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T17:14:18Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T17:29:43Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T17:45:10Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T18:00:35Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T18:12:03Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T18:16:01Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T18:31:26Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T18:46:57Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T19:02:22Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T19:11:02Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T19:17:51Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T19:33:15Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T19:48:39Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T20:04:05Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T20:11:38Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T20:19:07Z — mirror — deferred — Ready#610 exact-head sync review; publication resumes by 2026-10-02T22:14:29+00:00; local work continues
+## 2026-10-02T20:34:11Z — mirror — deferred — Ready#610 exact-head sync review; publication resumes by 2026-10-02T22:14:29+00:00; local work continues
+## 2026-10-02T20:49:44Z — mirror — deferred — Ready#610 exact-head sync review; publication resumes by 2026-10-02T22:14:29+00:00; local work continues
+## 2026-10-02T21:04:46Z — mirror — deferred — Ready#610 exact-head sync review; publication resumes by 2026-10-02T22:14:29+00:00; local work continues
+## 2026-10-02T21:11:47Z — mirror — deferred — Ready#610 exact-head sync review; publication resumes by 2026-10-02T22:14:29+00:00; local work continues
+## 2026-10-02T21:19:50Z — mirror — deferred — Ready#610 exact-head sync review; publication resumes by 2026-10-02T22:14:29+00:00; local work continues
+## 2026-10-02T21:34:52Z — mirror — deferred — Ready#610 exact-head sync review; publication resumes by 2026-10-02T22:14:29+00:00; local work continues
+## 2026-10-02T21:49:55Z — mirror — deferred — Ready#610 exact-head sync review; publication resumes by 2026-10-02T22:14:29+00:00; local work continues
+## 2026-10-02T22:04:57Z — mirror — deferred — Ready#610 exact-head sync review; publication resumes by 2026-10-02T22:14:29+00:00; local work continues
+## 2026-10-02T22:12:13Z — refill — Travel-Plan-Permission: scorecard 2026-10-01: coverage debt 18 (not exercised 6 + unscored 12) not reduced since 2026-09-24 (12) → audit queued
+## 2026-10-02T22:12:17Z — D-audit-Travel-Plan-Permission--2026-10-02T22-12-13Z — route — router picked codex from ['codex', 'cursor']
+## 2026-10-02T22:12:17Z — D-audit-Travel-Plan-Permission--2026-10-02T22-12-13Z — claimed by codex (agent codex)
+## 2026-10-02T22:12:17Z — mirror — deferred — Ready#610 exact-head sync review; publication resumes by 2026-10-02T22:14:29+00:00; local work continues
+## 2026-10-02T22:14:45Z — D-audit-Travel-Plan-Permission--2026-10-02T22-12-13Z — done — Scorecard: 7 work / 1 partial / 0 broken / 0 fabricated / 0 not exercised of 8; journey: passes; surfaces unscored 12; closed-still-broken 0. Focused current-ti
+## 2026-10-02T22:15:08Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T22:20:21Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T22:35:22Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+## 2026-10-02T22:35:44Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T22:51:08Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T23:06:32Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T23:12:32Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T23:21:57Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T23:37:22Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-02T23:52:46Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T00:08:10Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T00:12:26Z — unblock — enqueued D3-unblock-sweep-2026-10-03T00
+## 2026-10-03T00:12:26Z — D3-unblock-sweep-2026-10-03T00 — route — router picked codex from ['codex', 'cursor']
+## 2026-10-03T00:12:26Z — D3-unblock-sweep-2026-10-03T00 — claimed by codex (agent codex)
+## 2026-10-03T00:12:47Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T00:15:17Z — D3-unblock-sweep-2026-10-03T00 — done — Covered the first eight supported repositories, repaired Workflows #3713's mechanically frozen format state, and recorded supply, claim, PR, and default-branch 
+## 2026-10-03T00:15:39Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T00:23:36Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T00:39:00Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T00:54:24Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T01:09:47Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T01:12:05Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T01:25:11Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T01:40:35Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T01:55:59Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T02:11:05Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T02:11:26Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T02:11:46Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T02:27:16Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T02:42:40Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T02:58:18Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T03:11:06Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T03:13:43Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T03:29:08Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T03:44:31Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T03:59:55Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T04:12:09Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T04:15:19Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T04:30:21Z — verify — enqueued D4-verify-merged-2026-10-03T04
+## 2026-10-03T04:30:21Z — D4-verify-merged-2026-10-03T04 — route — router picked codex from ['codex', 'cursor']
+## 2026-10-03T04:30:21Z — D4-verify-merged-2026-10-03T04 — claimed by driver (agent codex)
+## 2026-10-03T04:30:43Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T04:39:45Z — D4-verify-merged-2026-10-03T04 — done — codex produced 589 words at artifacts/verification/D4-verify-merged-2026-10-03T04.md in 539s
+## 2026-10-03T04:40:07Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T04:55:31Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T05:10:55Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T05:11:36Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T05:11:57Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T05:26:20Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T05:41:43Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T05:57:08Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T06:11:37Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T06:11:58Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T06:12:31Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T06:27:56Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T06:43:19Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T06:58:43Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T07:12:06Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T07:14:07Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T07:29:32Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T07:44:56Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T08:00:21Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T08:10:38Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T08:11:03Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T08:15:23Z — unblock — enqueued D3-unblock-sweep-2026-10-03T08
+## 2026-10-03T08:15:24Z — D3-unblock-sweep-2026-10-03T08 — route — router picked cursor from ['codex', 'cursor']
+## 2026-10-03T08:15:24Z — D3-unblock-sweep-2026-10-03T08 — claimed by driver (agent cursor)
+## 2026-10-03T08:15:45Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T08:18:00Z — D3-unblock-sweep-2026-10-03T08 — fail — cursor produced 358 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/sweeps/D3-unblock-sweep-2026-10-03T08.md (min 400); rotating agent
+## 2026-10-03T08:33:02Z — D3-unblock-sweep-2026-10-03T08 — route — router picked cursor from ['codex', 'cursor']
+## 2026-10-03T08:33:02Z — D3-unblock-sweep-2026-10-03T08 — claimed by driver (agent cursor)
+## 2026-10-03T08:33:24Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T08:35:17Z — D3-unblock-sweep-2026-10-03T08 — done — cursor produced 458 words at artifacts/sweeps/D3-unblock-sweep-2026-10-03T08.md in 109s
+## 2026-10-03T08:35:39Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T08:51:03Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T09:06:55Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T09:12:07Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T09:22:20Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T09:37:45Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T09:53:09Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T10:08:33Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T10:11:37Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T10:23:35Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-10-03T10:23:57Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T10:38:59Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-10-03T10:39:21Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T10:54:24Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-10-03T10:54:46Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T11:09:48Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-10-03T11:10:15Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T11:11:16Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T11:25:40Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T11:41:33Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T11:56:58Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T12:10:41Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T12:12:23Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T12:27:56Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T12:42:58Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+## 2026-10-03T12:43:21Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T12:58:23Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+## 2026-10-03T12:58:47Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T13:12:42Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T13:14:14Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T13:29:41Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T13:45:07Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T14:00:09Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+## 2026-10-03T14:00:32Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T14:11:11Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T14:15:59Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T14:32:05Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T14:47:30Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T15:02:55Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T15:10:57Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T15:18:23Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T15:33:47Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T15:49:18Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T16:04:42Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T16:12:43Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T16:19:44Z — unblock — enqueued D3-unblock-sweep-2026-10-03T16
+## 2026-10-03T16:19:45Z — D3-unblock-sweep-2026-10-03T16 — route — router picked cursor from ['codex', 'cursor']
+## 2026-10-03T16:19:45Z — D3-unblock-sweep-2026-10-03T16 — claimed by driver (agent cursor)
+## 2026-10-03T16:19:45Z — mirror — deferred — Ready#611 exact-head sync review; publication resumes by 2026-10-03T18:15:17+00:00; local work continues
+## 2026-10-03T16:21:39Z — D3-unblock-sweep-2026-10-03T16 — fail — cursor produced 365 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/sweeps/D3-unblock-sweep-2026-10-03T16.md (min 400); rotating agent
+## 2026-10-03T16:36:41Z — D3-unblock-sweep-2026-10-03T16 — route — router picked cursor from ['codex', 'cursor']
+## 2026-10-03T16:36:41Z — D3-unblock-sweep-2026-10-03T16 — claimed by driver (agent cursor)
+## 2026-10-03T16:36:42Z — mirror — deferred — Ready#611 exact-head sync review; publication resumes by 2026-10-03T18:15:17+00:00; local work continues
+## 2026-10-03T16:37:40Z — D3-unblock-sweep-2026-10-03T16 — fail — offload to cursor exited 1; agent exited 1
+## 2026-10-03T16:52:42Z — D3-unblock-sweep-2026-10-03T16 — route — router picked cursor from ['codex', 'cursor']
+## 2026-10-03T16:52:42Z — D3-unblock-sweep-2026-10-03T16 — claimed by driver (agent cursor)
+## 2026-10-03T16:52:43Z — mirror — deferred — Ready#611 exact-head sync review; publication resumes by 2026-10-03T18:15:17+00:00; local work continues
+## 2026-10-03T16:54:19Z — D3-unblock-sweep-2026-10-03T16 — done — cursor produced 601 words at artifacts/sweeps/D3-unblock-sweep-2026-10-03T16.md in 93s
+## 2026-10-03T16:54:20Z — mirror — deferred — Ready#611 exact-head sync review; publication resumes by 2026-10-03T18:15:17+00:00; local work continues
+## 2026-10-03T17:09:47Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T17:11:18Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T17:25:13Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T17:40:38Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T17:56:04Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T18:11:29Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T18:12:12Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T18:26:57Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T18:42:24Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T18:57:49Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T19:11:43Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T19:13:14Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T19:28:39Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T19:44:02Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T19:59:25Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T20:11:11Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T20:14:48Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T20:30:13Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T20:45:37Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T21:01:01Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T21:12:41Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T21:16:25Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T21:31:49Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T21:47:15Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T22:02:40Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T22:11:18Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T22:18:04Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T22:33:28Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T22:48:55Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T23:04:19Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T23:12:50Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T23:19:43Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T23:35:09Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-03T23:50:33Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T00:05:58Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T00:12:52Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T00:21:00Z — unblock — enqueued D3-unblock-sweep-2026-10-04T00
+## 2026-10-04T00:21:00Z — D3-unblock-sweep-2026-10-04T00 — route — router picked cursor from ['codex', 'cursor']
+## 2026-10-04T00:21:00Z — D3-unblock-sweep-2026-10-04T00 — claimed by driver (agent cursor)
+## 2026-10-04T00:21:22Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T00:24:15Z — D3-unblock-sweep-2026-10-04T00 — fail — cursor produced 353 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/sweeps/D3-unblock-sweep-2026-10-04T00.md (min 400); rotating agent
+## 2026-10-04T00:39:17Z — D3-unblock-sweep-2026-10-04T00 — route — router picked cursor from ['codex', 'cursor']
+## 2026-10-04T00:39:17Z — D3-unblock-sweep-2026-10-04T00 — claimed by driver (agent cursor)
+## 2026-10-04T00:39:40Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T00:41:29Z — D3-unblock-sweep-2026-10-04T00 — done — cursor produced 589 words at artifacts/sweeps/D3-unblock-sweep-2026-10-04T00.md in 105s
+## 2026-10-04T00:41:51Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T00:57:15Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T01:10:44Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T01:12:39Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T01:28:15Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T01:43:40Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T01:59:05Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T02:12:18Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T02:14:29Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T02:29:53Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T02:45:18Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T03:00:43Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T03:10:45Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T03:16:34Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T03:31:59Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T03:47:23Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T04:02:46Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T04:12:15Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T04:18:09Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T04:33:11Z — verify — enqueued D4-verify-merged-2026-10-04T04
+## 2026-10-04T04:33:11Z — D4-verify-merged-2026-10-04T04 — route — router picked codex from ['codex', 'cursor']
+## 2026-10-04T04:33:11Z — D4-verify-merged-2026-10-04T04 — claimed by driver (agent codex)
+## 2026-10-04T04:33:33Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T04:38:40Z — D4-verify-merged-2026-10-04T04 — done — codex produced 891 words at artifacts/verification/D4-verify-merged-2026-10-04T04.md in 305s
+## 2026-10-04T04:39:02Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T04:54:27Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T05:09:51Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T05:10:46Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T05:11:07Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T05:25:15Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T05:34:57Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T05:40:43Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T05:56:09Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T06:12:09Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T06:12:32Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T06:27:37Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T06:43:02Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T06:58:26Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T07:12:47Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T07:13:50Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T07:29:14Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T07:44:39Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T08:00:04Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T08:11:47Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T08:15:27Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T08:30:29Z — unblock — enqueued D3-unblock-sweep-2026-10-04T08
+## 2026-10-04T08:30:29Z — D3-unblock-sweep-2026-10-04T08 — route — router picked cursor from ['codex', 'cursor']
+## 2026-10-04T08:30:29Z — D3-unblock-sweep-2026-10-04T08 — claimed by driver (agent cursor)
+## 2026-10-04T08:30:51Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T08:32:33Z — D3-unblock-sweep-2026-10-04T08 — done — cursor produced 411 words at artifacts/sweeps/D3-unblock-sweep-2026-10-04T08.md in 98s
+## 2026-10-04T08:32:55Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T08:48:20Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T09:03:44Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T09:11:46Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T09:19:43Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T09:35:07Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T09:50:32Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T10:05:57Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T10:12:19Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T10:21:22Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T10:36:47Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T10:52:11Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T11:05:20Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T11:07:36Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T11:12:17Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T11:22:39Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-10-04T11:23:02Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T11:38:05Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-10-04T11:38:28Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T11:53:31Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-10-04T11:53:54Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T12:08:56Z — refill — error — PermissionError(1, 'Operation not permitted')
+## 2026-10-04T12:09:19Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T12:11:55Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T12:24:51Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T12:40:23Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T12:55:49Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T13:11:14Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T13:12:53Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T13:26:40Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T13:42:13Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T13:57:40Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T14:13:02Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T14:13:33Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T14:28:58Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T14:44:35Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T15:00:02Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T15:12:58Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T15:15:29Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T15:31:26Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T15:46:51Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T16:01:53Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+## 2026-10-04T16:02:15Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T16:11:55Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T16:17:40Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T16:32:42Z — unblock — enqueued D3-unblock-sweep-2026-10-04T16
+## 2026-10-04T16:32:42Z — D3-unblock-sweep-2026-10-04T16 — route — router picked cursor from ['codex', 'cursor']
+## 2026-10-04T16:32:42Z — D3-unblock-sweep-2026-10-04T16 — claimed by driver (agent cursor)
+## 2026-10-04T16:33:05Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T16:35:04Z — D3-unblock-sweep-2026-10-04T16 — done — cursor produced 462 words at artifacts/sweeps/D3-unblock-sweep-2026-10-04T16.md in 115s
+## 2026-10-04T16:35:30Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T16:50:55Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T17:05:23Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T17:06:21Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T17:11:52Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T17:21:48Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T17:37:16Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T17:52:41Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T18:08:07Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T18:11:56Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T18:23:32Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T18:38:59Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T18:54:24Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T19:10:01Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-10-04T19:12:30Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick

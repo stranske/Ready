@@ -1,0 +1,230 @@
+{
+  "Workflows": {
+    "repo": "Workflows",
+    "errors": [],
+    "head_sha": "a8f1e458014b1a296702ccfe1fd5b7093289e5b8",
+    "branch": "main",
+    "open_impl": 35,
+    "priority_impl": 17,
+    "supply": 37,
+    "frozen": [
+      {
+        "number": 3595,
+        "title": "[sync-review] Fix upstream manifest-synced paths blocking stranske/Portable-Alpha-Extension-Model#2318",
+        "labels": [
+          "agents:auto-pilot-pause",
+          "automation",
+          "consumer-sync"
+        ],
+        "url": "https://github.com/stranske/Workflows/issues/3595",
+        "last_automation": "## Upstream sync review debt\n\nConsumer delivery PR: stranske/trip-planner#1869\n\nManifest-synced paths with unresolved bot review threads:\n- consumer `.github/workflows/agents-81-gate-followups.yml` \u2192 source `stranske/Workflows/templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml`\n- consumer `.github/scripts/keepalive_loop.js` \u2192 source `stranske/Workflows/.github/scripts/keepalive"
+      },
+      {
+        "number": 3586,
+        "title": "Follow-up: PR #3562 missing #3419 deliberate-break and re-verification evidence",
+        "labels": [
+          "agents:auto-pilot-pause"
+        ],
+        "url": "https://github.com/stranske/Workflows/issues/3586",
+        "last_automation": null
+      },
+      {
+        "number": 3123,
+        "skip": "tracker",
+        "title": "\ud83d\udd2d LangSmith Observability Health"
+      }
+    ],
+    "silent_claims": [
+      {
+        "number": 3568,
+        "title": "Maint 71: refresh dev-tool lease through Maint 52 before behind-base merge",
+        "labels": [
+          "agent:retry",
+          "agents:apply-suggestions",
+          "agents:formatted"
+        ],
+        "age_h": 50.7,
+        "url": "https://github.com/stranske/Workflows/issues/3568",
+        "last_auto": "\u26a0\ufe0f **Auto-pilot paused during formatting.**\n\nFormatter output does not satisfy the canonical issue-format contract after one retry.\n\nOwnership remains with automation; no human authority boundary was inferred.\nThe issue claim was released. Any existi"
+      }
+    ],
+    "stalled_prs": [],
+    "head_ci": []
+  },
+  "Travel-Plan-Permission": {
+    "repo": "Travel-Plan-Permission",
+    "errors": [],
+    "head_sha": "35da6660f42b68af203e7d7af3be22c3667ee6c4",
+    "branch": "main",
+    "open_impl": 33,
+    "priority_impl": 8,
+    "supply": 33,
+    "frozen": [],
+    "silent_claims": [],
+    "stalled_prs": [],
+    "head_ci": [
+      {
+        "name": "CI",
+        "conclusion": "success",
+        "status": "completed",
+        "url": "https://github.com/stranske/Travel-Plan-Permission/actions/runs/36298082105"
+      },
+      {
+        "name": "Agents Issue Format Guard",
+        "conclusion": "success",
+        "status": "completed",
+        "url": "https://github.com/stranske/Travel-Plan-Permission/actions/runs/36298624970"
+      }
+    ]
+  },
+  "Trend_Model_Project": {
+    "repo": "Trend_Model_Project",
+    "errors": [],
+    "head_sha": "6c972f3c14539fca314dfe5eb2ba91fc30a948d0",
+    "branch": "main",
+    "open_impl": 0,
+    "priority_impl": 0,
+    "supply": 0,
+    "frozen": [],
+    "silent_claims": [],
+    "stalled_prs": [],
+    "head_ci": [
+      {
+        "name": "CI",
+        "conclusion": "success",
+        "status": "completed",
+        "url": "https://github.com/stranske/Trend_Model_Project/actions/runs/36259314803"
+      },
+      {
+        "name": "Agents Issue Format Guard",
+        "conclusion": "success",
+        "status": "completed",
+        "url": "https://github.com/stranske/Trend_Model_Project/actions/runs/36286028481"
+      }
+    ]
+  },
+  "Portable-Alpha-Extension-Model": {
+    "repo": "Portable-Alpha-Extension-Model",
+    "errors": [],
+    "head_sha": "8b984917b7c893ecbf599b725600a09495e57bc8",
+    "branch": "main",
+    "open_impl": 2,
+    "priority_impl": 2,
+    "supply": 2,
+    "frozen": [],
+    "silent_claims": [],
+    "stalled_prs": [],
+    "head_ci": [
+      {
+        "name": "Agents Issue Format Guard",
+        "conclusion": "success",
+        "status": "completed",
+        "url": "https://github.com/stranske/Portable-Alpha-Extension-Model/actions/runs/36270184194"
+      }
+    ]
+  },
+  "Counter_Risk": {
+    "repo": "Counter_Risk",
+    "errors": [],
+    "head_sha": "41445bb79e41c74db4cbc3fce5b2e9aca0fda75b",
+    "branch": "main",
+    "open_impl": 2,
+    "priority_impl": 2,
+    "supply": 2,
+    "frozen": [],
+    "silent_claims": [],
+    "stalled_prs": [],
+    "head_ci": [
+      {
+        "name": "CI",
+        "conclusion": "failure",
+        "status": "completed",
+        "url": "https://github.com/stranske/Counter_Risk/actions/runs/36259286551"
+      },
+      {
+        "name": "Agents Issue Format Guard",
+        "conclusion": "skipped",
+        "status": "completed",
+        "url": "https://github.com/stranske/Counter_Risk/actions/runs/36293181725"
+      }
+    ]
+  },
+  "Manager-Database": {
+    "repo": "Manager-Database",
+    "errors": [],
+    "head_sha": "051b304cdb46b4f924cbb8f3842b9922bd21f7c6",
+    "branch": "main",
+    "open_impl": 2,
+    "priority_impl": 2,
+    "supply": 2,
+    "frozen": [],
+    "silent_claims": [],
+    "stalled_prs": [],
+    "head_ci": [
+      {
+        "name": "CI",
+        "conclusion": "failure",
+        "status": "completed",
+        "url": "https://github.com/stranske/Manager-Database/actions/runs/36289135380"
+      },
+      {
+        "name": "Agents Issue Format Guard",
+        "conclusion": "success",
+        "status": "completed",
+        "url": "https://github.com/stranske/Manager-Database/actions/runs/36297821517"
+      }
+    ]
+  },
+  "Inv-Man-Intake": {
+    "repo": "Inv-Man-Intake",
+    "errors": [],
+    "head_sha": "d321bc374468f3fbc03bcdf32e0446a5860cb301",
+    "branch": "main",
+    "open_impl": 2,
+    "priority_impl": 2,
+    "supply": 2,
+    "frozen": [],
+    "silent_claims": [],
+    "stalled_prs": [],
+    "head_ci": [
+      {
+        "name": "CI",
+        "conclusion": "success",
+        "status": "completed",
+        "url": "https://github.com/stranske/Inv-Man-Intake/actions/runs/36259293258"
+      },
+      {
+        "name": "Agents Issue Format Guard",
+        "conclusion": "success",
+        "status": "completed",
+        "url": "https://github.com/stranske/Inv-Man-Intake/actions/runs/36274364717"
+      }
+    ]
+  },
+  "Pension-Data": {
+    "repo": "Pension-Data",
+    "errors": [],
+    "head_sha": "dd56e153e2e7890984736e9f99d7ab09be30e8ad",
+    "branch": "main",
+    "open_impl": 5,
+    "priority_impl": 5,
+    "supply": 5,
+    "frozen": [],
+    "silent_claims": [],
+    "stalled_prs": [],
+    "head_ci": [
+      {
+        "name": "CI",
+        "conclusion": "success",
+        "status": "completed",
+        "url": "https://github.com/stranske/Pension-Data/actions/runs/36295165495"
+      },
+      {
+        "name": "Agents Issue Format Guard",
+        "conclusion": "success",
+        "status": "completed",
+        "url": "https://github.com/stranske/Pension-Data/actions/runs/36295200039"
+      }
+    ]
+  }
+}

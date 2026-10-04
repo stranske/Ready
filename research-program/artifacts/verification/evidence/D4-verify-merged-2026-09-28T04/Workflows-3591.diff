@@ -1,0 +1,1086 @@
+diff --git a/.github/scripts/__tests__/github-api-retry.test.js b/.github/scripts/__tests__/github-api-retry.test.js
+index b2e6de90b..9d179f3fd 100644
+--- a/.github/scripts/__tests__/github-api-retry.test.js
++++ b/.github/scripts/__tests__/github-api-retry.test.js
+@@ -6,11 +6,16 @@ const assert = require('node:assert/strict');
+ // github_api_retry.js was consolidated into github-api-with-retry.js
+ // (issue #2278); this suite asserts the same behavior against it.
+ const {
++  createGithubFetchRequester,
+   computeRetryDelayMs,
+   resolveMaxRetries,
+   withGithubApiRetry,
+ } = require('../github-api-with-retry');
+ 
++function response({ ok, status, body }) {
++  return { ok, status, text: async () => body };
++}
++
+ test('resolveMaxRetries uses operation-specific overrides', () => {
+   const limits = { read: 4, unknown: 1 };
+   assert.equal(resolveMaxRetries('read', limits), 4);
+@@ -128,3 +133,63 @@ test('withGithubApiRetry logs retry context', async () => {
+   assert.match(warnings[0], /attempt=1\/2/);
+   assert.match(warnings[0], /delayMs=1234/);
+ });
++
++test('fetch requester retries reads but never retries uncertain writes', async () => {
++  let readAttempts = 0;
++  const read = createGithubFetchRequester({
++    token: 'test-token',
++    apiUrl: 'https://example.invalid',
++    fetchImpl: async () => {
++      readAttempts += 1;
++      return readAttempts === 1
++        ? response({ ok: false, status: 503, body: '{"message":"retry"}' })
++        : response({ ok: true, status: 200, body: '{"ok":true}' });
++    },
++  });
++  assert.deepEqual(await read('GET', '/resource'), { ok: true });
++  assert.equal(readAttempts, 2);
++
++  let writeAttempts = 0;
++  const write = createGithubFetchRequester({
++    token: 'test-token',
++    apiUrl: 'https://example.invalid',
++    fetchImpl: async () => {
++      writeAttempts += 1;
++      return response({ ok: false, status: 503, body: '{"message":"uncertain"}' });
++    },
++  });
++  await assert.rejects(() => write('PUT', '/resource', { value: 1 }), /503/);
++  assert.equal(writeAttempts, 1);
++});
++
++test('fetch requester preserves status for non-JSON errors', async () => {
++  const request = createGithubFetchRequester({
++    token: 'test-token',
++    apiUrl: 'https://example.invalid',
++    fetchImpl: async () => response({ ok: false, status: 502, body: '<html>bad gateway</html>' }),
++  });
++  await assert.rejects(
++    () => request('POST', '/resource'),
++    (error) => error.status === 502 && error.response?.status === 502,
++  );
++});
++
++test('fetch requester deadline remains active through response body reads', async () => {
++  const request = createGithubFetchRequester({
++    token: 'test-token',
++    apiUrl: 'https://example.invalid',
++    timeoutMs: 5,
++    fetchImpl: async (_url, options) => ({
++      ok: true,
++      status: 200,
++      text: () => new Promise((_resolve, reject) => {
++        options.signal.addEventListener('abort', () => {
++          const error = new Error('body read aborted');
++          error.name = 'AbortError';
++          reject(error);
++        }, { once: true });
++      }),
++    }),
++  });
++  await assert.rejects(() => request('POST', '/resource'), /body read aborted/);
++});
+diff --git a/.github/scripts/__tests__/github-api-with-retry.test.js b/.github/scripts/__tests__/github-api-with-retry.test.js
+index 33a9d562b..ffa9e3704 100644
+--- a/.github/scripts/__tests__/github-api-with-retry.test.js
++++ b/.github/scripts/__tests__/github-api-with-retry.test.js
+@@ -11,7 +11,10 @@ const {
+   paginateWithRetry,
+   createTokenAwareRetry,
+   checkRateLimitStatus,
++  createGithubFetchRequester,
++  computeRetryDelayMs,
+ } = require(path.join(__dirname, '../github-api-with-retry'));
++const { classifyError, ERROR_CATEGORIES } = require(path.join(__dirname, '../error_classifier'));
+ 
+ test('exports rate limit classifiers for workflow fail-open guards', () => {
+   const primary = new Error('API rate limit exceeded');
+@@ -740,3 +743,71 @@ test('checkRateLimitStatus probes an already wrapped consuming pool without rese
+   assert.equal(status.safe, true);
+   assert.equal(status.credentialPoolId, 'WORKFLOWS_APP');
+ });
++
++test('computeRetryDelayMs honors Retry-After beyond exponential maxDelay', () => {
++  const delayMs = computeRetryDelayMs({
++    error: { response: { headers: { 'retry-after': '120' } } },
++    attempt: 0,
++    baseDelay: 1000,
++    maxDelay: 30_000,
++    backoffFn: () => 1000,
++  });
++  assert.equal(delayMs, 120_000);
++});
++
++test('createGithubFetchRequester preserves rate-limit headers on HTTP errors', async () => {
++  const requester = createGithubFetchRequester({
++    token: 'test-token',
++    fetchImpl: async () => ({
++      ok: false,
++      status: 403,
++      text: async () => JSON.stringify({ message: 'Resource not accessible by integration' }),
++      headers: {
++        forEach(callback) {
++          callback('90', 'retry-after');
++          callback('0', 'x-ratelimit-remaining');
++        },
++      },
++    }),
++  });
++
++  await assert.rejects(
++    () => requester('GET', '/repos/o/r'),
++    (error) => {
++      assert.equal(error.response?.headers?.['retry-after'], '90');
++      assert.equal(error.response?.headers?.['x-ratelimit-remaining'], '0');
++      return true;
++    },
++  );
++});
++
++test('createGithubFetchRequester retries GET network failures', async () => {
++  let attempts = 0;
++  const requester = createGithubFetchRequester({
++    token: 'test-token',
++    fetchImpl: async () => {
++      attempts += 1;
++      if (attempts === 1) {
++        const error = new TypeError('fetch failed');
++        error.cause = { code: 'ECONNRESET' };
++        throw error;
++      }
++      return {
++        ok: true,
++        status: 200,
++        text: async () => JSON.stringify({ ok: true }),
++        headers: new Map(),
++      };
++    },
++  });
++
++  const data = await requester('GET', '/repos/o/r');
++  assert.equal(data.ok, true);
++  assert.equal(attempts, 2);
++});
++
++test('classifyError treats fetch network failures as transient', () => {
++  const error = new TypeError('fetch failed');
++  error.cause = { code: 'ECONNRESET' };
++  assert.equal(classifyError(error).category, ERROR_CATEGORIES.transient);
++});
+diff --git a/.github/scripts/error_classifier.js b/.github/scripts/error_classifier.js
+index 069bb1827..a23fbbd4d 100644
+--- a/.github/scripts/error_classifier.js
++++ b/.github/scripts/error_classifier.js
+@@ -48,6 +48,9 @@ const TRANSIENT_PATTERNS = [
+   'codex-session',
+   'existing changes',
+   'how would you like me to proceed',
++  'fetch failed',
++  'network error',
++  'aborterror',
+ ];
+ 
+ const AUTH_PATTERNS = [
+@@ -249,6 +252,14 @@ function classifyByMessage(message) {
+   return null;
+ }
+ 
++const TRANSIENT_NETWORK_CODES = new Set([
++  'ECONNRESET',
++  'ECONNREFUSED',
++  'ETIMEDOUT',
++  'EAI_AGAIN',
++  'ENOTFOUND',
++]);
++
+ function classifyError(error) {
+   const message = normaliseMessage(error);
+   const preview = message ? message.slice(0, 50) : 'unknown';
+@@ -260,8 +271,16 @@ function classifyError(error) {
+ 
+   const statusCategory = status ? classifyByStatus(status, message) : null;
+   const messageCategory = classifyByMessage(message);
++  const causeCode = String(error?.cause?.code || '').toUpperCase();
++  const ownCode = !status && Object.prototype.hasOwnProperty.call(error || {}, 'code')
++    ? String(error.code).toUpperCase()
++    : '';
++  const networkTransient = TRANSIENT_NETWORK_CODES.has(causeCode) || TRANSIENT_NETWORK_CODES.has(ownCode)
++    || error?.name === 'AbortError';
+ 
+-  const category = statusCategory || messageCategory || ERROR_CATEGORIES.unknown;
++  const category = networkTransient
++    ? ERROR_CATEGORIES.transient
++    : (statusCategory || messageCategory || ERROR_CATEGORIES.unknown);
+ 
+   return {
+     category,
+diff --git a/.github/scripts/github-api-with-retry.js b/.github/scripts/github-api-with-retry.js
+index 520b1b661..f8793a427 100755
+--- a/.github/scripts/github-api-with-retry.js
++++ b/.github/scripts/github-api-with-retry.js
+@@ -119,6 +119,8 @@ function recordRateLimitIncident(error, options = {}, contextInfo = {}) {
+ 
+ const DEFAULT_BASE_DELAY_MS = 1000;
+ const DEFAULT_MAX_DELAY_MS = 30000;
++/** Honor Retry-After / rate-limit reset without the exponential-backoff cap. */
++const RATE_LIMIT_BACKOFF_CAP_MS = 3_600_000;
+ const DEFAULT_MAX_RETRIES = 3;
+ const RATE_LIMIT_THRESHOLD = 500;
+ 
+@@ -802,27 +804,46 @@ function resolveMaxRetries(operation, maxRetriesByOperation) {
+   return maxRetriesByOperation.unknown ?? DEFAULT_RETRY_LIMITS.unknown;
+ }
+ 
+-function calculateWaitUntilReset(resetTimestamp, nowMs) {
++function calculateWaitUntilReset(resetTimestamp, nowMs, capMs = RATE_LIMIT_BACKOFF_CAP_MS) {
+   if (!Number.isFinite(resetTimestamp)) {
+     return DEFAULT_BASE_DELAY_MS;
+   }
+   const now = Number.isFinite(nowMs) ? nowMs : Date.now();
+   const resetTime = resetTimestamp * 1000;
+   const waitTime = resetTime - now;
+-  return Math.max(1000, Math.min(waitTime + 1000, 60000));
++  return Math.max(1000, Math.min(waitTime + 1000, capMs));
++}
++
++function headersObjectFromFetchResponse(response) {
++  const headers = {};
++  if (response?.headers?.forEach) {
++    response.headers.forEach((value, key) => {
++      headers[key] = value;
++    });
++  }
++  return headers;
++}
++
++function attachFetchResponseToError(error, response) {
++  error.status = response.status;
++  error.response = {
++    status: response.status,
++    headers: headersObjectFromFetchResponse(response),
++  };
++  return error;
+ }
+ 
+ function computeRetryDelayMs({ error, attempt, baseDelay, maxDelay, backoffFn, nowMs }) {
+   const headers = normaliseHeaders(error?.response?.headers || error?.headers);
+   const retryAfter = parseInt(headers['retry-after'], 10);
+   if (Number.isFinite(retryAfter) && retryAfter >= 0) {
+-    return Math.min(retryAfter * 1000, maxDelay);
++    return Math.min(retryAfter * 1000, RATE_LIMIT_BACKOFF_CAP_MS);
+   }
+ 
+   const remaining = parseInt(headers['x-ratelimit-remaining'], 10);
+   const reset = parseInt(headers['x-ratelimit-reset'], 10);
+   if (Number.isFinite(remaining) && remaining <= 0 && Number.isFinite(reset)) {
+-    return Math.min(calculateWaitUntilReset(reset, nowMs), maxDelay);
++    return calculateWaitUntilReset(reset, nowMs, RATE_LIMIT_BACKOFF_CAP_MS);
+   }
+ 
+   return Math.min(backoffFn(attempt, baseDelay, maxDelay), maxDelay);
+@@ -895,6 +916,67 @@ async function withGithubApiRetry(apiCall, options = {}) {
+   throw lastError || new Error('GitHub API call failed after retries');
+ }
+ 
++function createGithubFetchRequester({
++  token,
++  fetchImpl = globalThis.fetch,
++  apiUrl = process.env.GITHUB_API_URL || 'https://api.github.com',
++  timeoutMs = 15_000,
++} = {}) {
++  if (typeof token !== 'string' || !token) {
++    throw new Error('GitHub API token unavailable');
++  }
++  if (typeof fetchImpl !== 'function') {
++    throw new Error('fetch is unavailable for GitHub API requests');
++  }
++  if (!Number.isFinite(timeoutMs) || timeoutMs <= 0) {
++    throw new Error('GitHub API request timeout must be positive');
++  }
++
++  return async (method, path, body) => {
++    const operation = method === 'GET' ? 'read' : 'write';
++    return withGithubApiRetry(async () => {
++      const controller = new AbortController();
++      const timeout = setTimeout(() => controller.abort(), timeoutMs);
++      try {
++        const response = await fetchImpl(`${apiUrl}${path}`, {
++          method,
++          headers: {
++            Accept: 'application/vnd.github+json',
++            Authorization: `Bearer ${token}`,
++            'Content-Type': 'application/json',
++            'X-GitHub-Api-Version': '2022-11-28',
++          },
++          body: body === undefined ? undefined : JSON.stringify(body),
++          signal: controller.signal,
++        });
++        const text = await response.text();
++        let data = {};
++        if (text) {
++          try {
++            data = JSON.parse(text);
++          } catch {
++            const error = new Error(
++              `GitHub API ${method} ${path} returned non-JSON content (${response.status})`,
++            );
++            throw attachFetchResponseToError(error, response);
++          }
++        }
++        if (response.ok) return data;
++        const error = new Error(
++          `GitHub API ${method} ${path} failed (${response.status}): ${data.message || 'unknown error'}`,
++        );
++        throw attachFetchResponseToError(error, response);
++      } finally {
++        clearTimeout(timeout);
++      }
++    }, {
++      operation,
++      label: `GitHub API ${method} ${path}`,
++      maxRetriesByOperation: { read: 2, write: 0, dispatch: 0, admin: 0, unknown: 0 },
++    });
++  };
++}
++
+ // ===========================================================================
+ // Rate-limit-aware pagination/backoff helpers (absorbed from former
+ // api-helpers.js). paginateWithBackoff/checkRateLimitStatus wrap the client
+@@ -1146,6 +1228,7 @@ module.exports = {
+   calculateWaitUntilReset,
+   computeRetryDelayMs,
+   withGithubApiRetry,
++  createGithubFetchRequester,
+   // Rate-limit-aware pagination/backoff (former api-helpers.js)
+   paginateWithBackoff,
+   withBackoff,
+diff --git a/.github/scripts/keepalive_authority_state.js b/.github/scripts/keepalive_authority_state.js
+index bcd232add..166e27b5f 100644
+--- a/.github/scripts/keepalive_authority_state.js
++++ b/.github/scripts/keepalive_authority_state.js
+@@ -3,7 +3,7 @@
+ // This branch is the authority for challenge generations and receipts. PR comments
+ // are presentation only: a comment PATCH cannot provide a conditional write.
+ const crypto = require('node:crypto');
+-const { withRetry } = require('./github-api-with-retry.js');
++const { createGithubFetchRequester, withRetry } = require('./github-api-with-retry.js');
+ const BRANCH = 'keepalive-authority-state';
+ const HEX = /^[0-9a-f]{64}$/;
+ const HEAD = /^[0-9a-f]{40}$/;
+@@ -60,13 +60,18 @@ async function requestWithOctokit(github, method, path, body) {
+ }
+ 
+ function requester(github) {
+-  if (!github) {
+-    const token = process.env.GH_TOKEN || process.env.GITHUB_TOKEN;
+-    if (!token) throw new Error('Authority state token unavailable');
++  if (github) {
++    return (method, path, body) => requestWithOctokit(github, method, path, body);
++  }
++  const token = process.env.GH_TOKEN || process.env.GITHUB_TOKEN;
++  if (!token) throw new Error('Authority state token unavailable');
++  try {
+     const { Octokit } = require('@octokit/rest');
+-    github = new Octokit({ auth: token });
++    const octokit = new Octokit({ auth: token });
++    return (method, path, body) => requestWithOctokit(octokit, method, path, body);
++  } catch {
++    return createGithubFetchRequester({ token });
+   }
+-  return (method, path, body) => requestWithOctokit(github, method, path, body);
+ }
+ 
+ async function ensureBranch(request, repository, defaultBranch) {
+diff --git a/.github/workflows/agents-keepalive-loop.yml b/.github/workflows/agents-keepalive-loop.yml
+index 02102b0bc..2ef14b3ec 100644
+--- a/.github/workflows/agents-keepalive-loop.yml
++++ b/.github/workflows/agents-keepalive-loop.yml
+@@ -773,6 +773,47 @@ jobs:
+           fi
+           echo "secrets_ok=true" >> "$GITHUB_OUTPUT"
+ 
++      - name: Checkout authority release helpers
++        if: >-
++          failure() &&
++          needs.evaluate.outputs.dispatch_reason == 'due-authority-challenge'
++        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
++        with:
++          persist-credentials: false
++          sparse-checkout: |
++            .github/scripts
++            scripts/runner_lib
++          sparse-checkout-cone-mode: false
++
++      - name: Release prepared authority challenge after preflight failure
++        if: >-
++          failure() &&
++          needs.evaluate.outputs.dispatch_reason == 'due-authority-challenge'
++        env:
++          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
++          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
++          PROVIDER: ${{ needs.evaluate.outputs.agent_type || 'codex' }}
++          PR_NUMBER: ${{ needs.evaluate.outputs.pr_number }}
++          HEAD_SHA: ${{ needs.evaluate.outputs.head_sha }}
++          AUTHORITY_CHALLENGE_FINGERPRINT: >-
++            ${{ github.event_name == 'workflow_dispatch' &&
++              github.actor == 'github-actions[bot]' &&
++              github.event.inputs.sweep_recheck == 'true' &&
++              github.event.inputs.authority_challenge_fingerprint || '' }}
++          AUTHORITY_CHALLENGE_CLAIM: >-
++            ${{ github.event_name == 'workflow_dispatch' &&
++              github.actor == 'github-actions[bot]' &&
++              github.event.inputs.sweep_recheck == 'true' &&
++              github.event.inputs.authority_challenge_claim || '' }}
++          AUTHORITY_CHALLENGE_SIGNING_KEY: >-
++            ${{ secrets.KEEPALIVE_AUTHORITY_SIGNING_KEY || '' }}
++        run: |
++          python -m scripts.runner_lib release-authority-challenge \
++            --provider "$PROVIDER" \
++            --pr-number "$PR_NUMBER" \
++            --head-sha "$HEAD_SHA" \
++            --storage auto
++
+   # Mark agent as running before starting the actual work
+   # This provides real-time visibility that the agent is actively engaged
+   mark-running:
+@@ -790,6 +831,33 @@ jobs:
+       - name: Checkout
+         uses: actions/checkout@v7
+ 
++      - name: Finalize authority challenge after preflight
++        if: needs.evaluate.outputs.dispatch_reason == 'due-authority-challenge'
++        env:
++          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
++          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
++          PROVIDER: ${{ needs.evaluate.outputs.agent_type || 'codex' }}
++          PR_NUMBER: ${{ needs.evaluate.outputs.pr_number }}
++          HEAD_SHA: ${{ needs.evaluate.outputs.head_sha }}
++          AUTHORITY_CHALLENGE_FINGERPRINT: >-
++            ${{ github.event_name == 'workflow_dispatch' &&
++              github.actor == 'github-actions[bot]' &&
++              github.event.inputs.sweep_recheck == 'true' &&
++              github.event.inputs.authority_challenge_fingerprint || '' }}
++          AUTHORITY_CHALLENGE_CLAIM: >-
++            ${{ github.event_name == 'workflow_dispatch' &&
++              github.actor == 'github-actions[bot]' &&
++              github.event.inputs.sweep_recheck == 'true' &&
++              github.event.inputs.authority_challenge_claim || '' }}
++          AUTHORITY_CHALLENGE_SIGNING_KEY: >-
++            ${{ secrets.KEEPALIVE_AUTHORITY_SIGNING_KEY || '' }}
++        run: |
++          python -m scripts.runner_lib finalize-authority-challenge \
++            --provider "$PROVIDER" \
++            --pr-number "$PR_NUMBER" \
++            --head-sha "$HEAD_SHA" \
++            --storage auto
++
+       - name: Set up Node.js
+         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+         with:
+diff --git a/scripts/check_api_wrapper_guard.py b/scripts/check_api_wrapper_guard.py
+index 160aeadb9..43e2bfd2b 100755
+--- a/scripts/check_api_wrapper_guard.py
++++ b/scripts/check_api_wrapper_guard.py
+@@ -20,6 +20,7 @@
+ 
+ SKIP_FILES = {
+     ROOT / ".github" / "scripts" / "github-api-with-retry.js",
++    ROOT / "templates" / "consumer-repo" / ".github" / "scripts" / "github-api-with-retry.js",
+     ROOT / ".github" / "scripts" / "token_load_balancer.js",
+     ROOT / ".github" / "actions" / "codex-bootstrap-lite" / "action.yml",
+     ROOT / "scripts" / "check_api_wrapper_guard.py",
+diff --git a/scripts/runner_lib/core.py b/scripts/runner_lib/core.py
+index 8c594505e..87aa9c9b7 100644
+--- a/scripts/runner_lib/core.py
++++ b/scripts/runner_lib/core.py
+@@ -1586,21 +1586,8 @@ def should_dispatch(
+             ):
+                 return decision
+             decision = DebounceDecision(True, "due-authority-challenge", key)
+-        finalized = _authority_challenge_command("finalize", pr_number, head_sha, provider)
+-        if not finalized or finalized.get("granted") is not True:
+-            return DebounceDecision(False, "invalid-or-consumed-authority-challenge", key)
+-        try:
+-            reservation = storage.primary.read_record(pr_number, provider)
+-        except Exception as exc:
+-            _log_storage_failure("read", exc, phase="authority-reservation-readback")
+-            return _unavailable_dispatch(key, prior)
+-        if (
+-            not reservation
+-            or reservation.get("status") != "pending"
+-            or reservation.get("head_sha") != head_sha
+-            or reservation.get("workflow_attempt_id") != _workflow_attempt_id()
+-        ):
+-            return DebounceDecision(False, "authority-reservation-changed", key)
++        # Finalize only after preflight succeeds (mark-running job); consuming here
++        # would strand the ledger when agent credentials are missing.
+         return decision
+ 
+     if prior and prior.get("head_sha") == head_sha:
+@@ -1695,6 +1682,81 @@ def should_dispatch(
+     )
+ 
+ 
++def finalize_authority_challenge(
++    pr_number: int,
++    head_sha: str,
++    provider: str,
++    storage: RunnerDispatchStorage | None = None,
++) -> DebounceDecision:
++    """Consume a prepared authority challenge after preflight passes."""
++    provider = _validate_provider(provider)
++    storage = storage or _storage_from_name("auto")
++    key = _runner_key(pr_number, head_sha, provider)
++    if not isinstance(storage, FallbackRunnerStorage):
++        return DebounceDecision(False, "authority-storage-invalid", key)
++    finalized = _authority_challenge_command("finalize", pr_number, head_sha, provider)
++    if not finalized or finalized.get("granted") is not True:
++        return DebounceDecision(False, "invalid-or-consumed-authority-challenge", key)
++    try:
++        reservation = storage.primary.read_record(pr_number, provider)
++    except Exception as exc:
++        _log_storage_failure("read", exc, phase="authority-reservation-readback")
++        return _unavailable_dispatch(key)
++    if (
++        not reservation
++        or reservation.get("status") != "pending"
++        or reservation.get("head_sha") != head_sha
++        or reservation.get("workflow_attempt_id") != _workflow_attempt_id()
++    ):
++        return DebounceDecision(False, "authority-reservation-changed", key)
++    return DebounceDecision(True, "due-authority-challenge", key)
++
++
++def release_authority_challenge(
++    pr_number: int,
++    head_sha: str,
++    provider: str,
++    storage: RunnerDispatchStorage | None = None,
++) -> bool:
++    """Terminalize this attempt's reservation, then refund its prepared challenge."""
++    provider = _validate_provider(provider)
++    storage = storage or _storage_from_name("auto")
++    if not isinstance(storage, FallbackRunnerStorage):
++        return False
++    try:
++        reservation = storage.primary.read_record(pr_number, provider)
++    except Exception as exc:
++        _log_storage_failure("read", exc, phase="authority-release-reservation")
++        return False
++    if (
++        not reservation
++        or reservation.get("status") != "pending"
++        or reservation.get("head_sha") != head_sha
++        or reservation.get("workflow_attempt_id") != _workflow_attempt_id()
++    ):
++        return False
++    completion = record_completion(
++        pr_number,
++        head_sha,
++        provider,
++        {
++            "provider": provider,
++            "success": False,
++            "summary": "Authority challenge released after runner preflight failure.",
++            "error": "runner-preflight-failed",
++            "truncated": False,
++            "final_message": "",
++        },
++        storage=storage,
++        produced_work=False,
++        observed_head_sha=head_sha,
++    )
++    if completion.get("status") != "error":
++        return False
++    released = _authority_challenge_command("release", pr_number, head_sha, provider)
++    return bool(released and released.get("released") is True)
++
++
+ def _authority_challenge_command(
+     command: str, pr_number: int, head_sha: str, provider: str
+ ) -> dict[str, Any] | None:
+@@ -2034,6 +2096,36 @@ def _cmd_parse(args: argparse.Namespace) -> int:
+     return 0
+ 
+ 
++def _cmd_finalize_authority_challenge(args: argparse.Namespace) -> int:
++    decision = finalize_authority_challenge(
++        int(args.pr_number),
++        args.head_sha,
++        args.provider,
++        storage=_storage_from_name(args.storage),
++    )
++    outputs = {
++        "finalized": "true" if decision.should_dispatch else "false",
++        "reason": decision.reason,
++        "key": decision.key,
++    }
++    _write_github_output(outputs)
++    print(json.dumps(outputs, sort_keys=True))
++    return 0 if decision.should_dispatch else 1
++
++
++def _cmd_release_authority_challenge(args: argparse.Namespace) -> int:
++    released = release_authority_challenge(
++        int(args.pr_number),
++        args.head_sha,
++        args.provider,
++        storage=_storage_from_name(args.storage),
++    )
++    outputs = {"released": "true" if released else "false"}
++    _write_github_output(outputs)
++    print(json.dumps(outputs, sort_keys=True))
++    return 0 if released else 1
++
++
+ def _cmd_should_dispatch(args: argparse.Namespace) -> int:
+     decision = should_dispatch(
+         int(args.pr_number),
+@@ -2174,6 +2266,30 @@ def build_parser() -> argparse.ArgumentParser:
+         help="validated JSON checklist snapshot captured when reserving the dispatch",
+     )
+ 
++    finalize_authority = subparsers.add_parser(
++        "finalize-authority-challenge",
++        help="consume a prepared authority challenge after preflight succeeds",
++    )
++    finalize_authority.add_argument("--provider", choices=sorted(PROVIDERS), required=True)
++    finalize_authority.add_argument("--pr-number", required=True)
++    finalize_authority.add_argument("--head-sha", required=True)
++    finalize_authority.add_argument(
++        "--storage", choices=["auto", "pr-comment", "repo-variable"], default="auto"
++    )
++    finalize_authority.set_defaults(func=_cmd_finalize_authority_challenge)
++
++    release_authority = subparsers.add_parser(
++        "release-authority-challenge",
++        help="refund a prepared authority challenge when dispatch cannot run",
++    )
++    release_authority.add_argument("--provider", choices=sorted(PROVIDERS), required=True)
++    release_authority.add_argument("--pr-number", required=True)
++    release_authority.add_argument("--head-sha", required=True)
++    release_authority.add_argument(
++        "--storage", choices=["auto", "pr-comment", "repo-variable"], default="auto"
++    )
++    release_authority.set_defaults(func=_cmd_release_authority_challenge)
++
+     complete = subparsers.add_parser("record-completion", help="persist runner completion")
+     complete.add_argument("--provider", choices=sorted(PROVIDERS), required=True)
+     complete.add_argument("--pr-number", required=True)
+diff --git a/templates/consumer-repo/.github/scripts/error_classifier.js b/templates/consumer-repo/.github/scripts/error_classifier.js
+index 069bb1827..a23fbbd4d 100644
+--- a/templates/consumer-repo/.github/scripts/error_classifier.js
++++ b/templates/consumer-repo/.github/scripts/error_classifier.js
+@@ -48,6 +48,9 @@ const TRANSIENT_PATTERNS = [
+   'codex-session',
+   'existing changes',
+   'how would you like me to proceed',
++  'fetch failed',
++  'network error',
++  'aborterror',
+ ];
+ 
+ const AUTH_PATTERNS = [
+@@ -249,6 +252,14 @@ function classifyByMessage(message) {
+   return null;
+ }
+ 
++const TRANSIENT_NETWORK_CODES = new Set([
++  'ECONNRESET',
++  'ECONNREFUSED',
++  'ETIMEDOUT',
++  'EAI_AGAIN',
++  'ENOTFOUND',
++]);
++
+ function classifyError(error) {
+   const message = normaliseMessage(error);
+   const preview = message ? message.slice(0, 50) : 'unknown';
+@@ -260,8 +271,16 @@ function classifyError(error) {
+ 
+   const statusCategory = status ? classifyByStatus(status, message) : null;
+   const messageCategory = classifyByMessage(message);
++  const causeCode = String(error?.cause?.code || '').toUpperCase();
++  const ownCode = !status && Object.prototype.hasOwnProperty.call(error || {}, 'code')
++    ? String(error.code).toUpperCase()
++    : '';
++  const networkTransient = TRANSIENT_NETWORK_CODES.has(causeCode) || TRANSIENT_NETWORK_CODES.has(ownCode)
++    || error?.name === 'AbortError';
+ 
+-  const category = statusCategory || messageCategory || ERROR_CATEGORIES.unknown;
++  const category = networkTransient
++    ? ERROR_CATEGORIES.transient
++    : (statusCategory || messageCategory || ERROR_CATEGORIES.unknown);
+ 
+   return {
+     category,
+diff --git a/templates/consumer-repo/.github/scripts/github-api-with-retry.js b/templates/consumer-repo/.github/scripts/github-api-with-retry.js
+index 520b1b661..f8793a427 100755
+--- a/templates/consumer-repo/.github/scripts/github-api-with-retry.js
++++ b/templates/consumer-repo/.github/scripts/github-api-with-retry.js
+@@ -119,6 +119,8 @@ function recordRateLimitIncident(error, options = {}, contextInfo = {}) {
+ 
+ const DEFAULT_BASE_DELAY_MS = 1000;
+ const DEFAULT_MAX_DELAY_MS = 30000;
++/** Honor Retry-After / rate-limit reset without the exponential-backoff cap. */
++const RATE_LIMIT_BACKOFF_CAP_MS = 3_600_000;
+ const DEFAULT_MAX_RETRIES = 3;
+ const RATE_LIMIT_THRESHOLD = 500;
+ 
+@@ -802,27 +804,46 @@ function resolveMaxRetries(operation, maxRetriesByOperation) {
+   return maxRetriesByOperation.unknown ?? DEFAULT_RETRY_LIMITS.unknown;
+ }
+ 
+-function calculateWaitUntilReset(resetTimestamp, nowMs) {
++function calculateWaitUntilReset(resetTimestamp, nowMs, capMs = RATE_LIMIT_BACKOFF_CAP_MS) {
+   if (!Number.isFinite(resetTimestamp)) {
+     return DEFAULT_BASE_DELAY_MS;
+   }
+   const now = Number.isFinite(nowMs) ? nowMs : Date.now();
+   const resetTime = resetTimestamp * 1000;
+   const waitTime = resetTime - now;
+-  return Math.max(1000, Math.min(waitTime + 1000, 60000));
++  return Math.max(1000, Math.min(waitTime + 1000, capMs));
++}
++
++function headersObjectFromFetchResponse(response) {
++  const headers = {};
++  if (response?.headers?.forEach) {
++    response.headers.forEach((value, key) => {
++      headers[key] = value;
++    });
++  }
++  return headers;
++}
++
++function attachFetchResponseToError(error, response) {
++  error.status = response.status;
++  error.response = {
++    status: response.status,
++    headers: headersObjectFromFetchResponse(response),
++  };
++  return error;
+ }
+ 
+ function computeRetryDelayMs({ error, attempt, baseDelay, maxDelay, backoffFn, nowMs }) {
+   const headers = normaliseHeaders(error?.response?.headers || error?.headers);
+   const retryAfter = parseInt(headers['retry-after'], 10);
+   if (Number.isFinite(retryAfter) && retryAfter >= 0) {
+-    return Math.min(retryAfter * 1000, maxDelay);
++    return Math.min(retryAfter * 1000, RATE_LIMIT_BACKOFF_CAP_MS);
+   }
+ 
+   const remaining = parseInt(headers['x-ratelimit-remaining'], 10);
+   const reset = parseInt(headers['x-ratelimit-reset'], 10);
+   if (Number.isFinite(remaining) && remaining <= 0 && Number.isFinite(reset)) {
+-    return Math.min(calculateWaitUntilReset(reset, nowMs), maxDelay);
++    return calculateWaitUntilReset(reset, nowMs, RATE_LIMIT_BACKOFF_CAP_MS);
+   }
+ 
+   return Math.min(backoffFn(attempt, baseDelay, maxDelay), maxDelay);
+@@ -895,6 +916,67 @@ async function withGithubApiRetry(apiCall, options = {}) {
+   throw lastError || new Error('GitHub API call failed after retries');
+ }
+ 
++function createGithubFetchRequester({
++  token,
++  fetchImpl = globalThis.fetch,
++  apiUrl = process.env.GITHUB_API_URL || 'https://api.github.com',
++  timeoutMs = 15_000,
++} = {}) {
++  if (typeof token !== 'string' || !token) {
++    throw new Error('GitHub API token unavailable');
++  }
++  if (typeof fetchImpl !== 'function') {
++    throw new Error('fetch is unavailable for GitHub API requests');
++  }
++  if (!Number.isFinite(timeoutMs) || timeoutMs <= 0) {
++    throw new Error('GitHub API request timeout must be positive');
++  }
++
++  return async (method, path, body) => {
++    const operation = method === 'GET' ? 'read' : 'write';
++    return withGithubApiRetry(async () => {
++      const controller = new AbortController();
++      const timeout = setTimeout(() => controller.abort(), timeoutMs);
++      try {
++        const response = await fetchImpl(`${apiUrl}${path}`, {
++          method,
++          headers: {
++            Accept: 'application/vnd.github+json',
++            Authorization: `Bearer ${token}`,
++            'Content-Type': 'application/json',
++            'X-GitHub-Api-Version': '2022-11-28',
++          },
++          body: body === undefined ? undefined : JSON.stringify(body),
++          signal: controller.signal,
++        });
++        const text = await response.text();
++        let data = {};
++        if (text) {
++          try {
++            data = JSON.parse(text);
++          } catch {
++            const error = new Error(
++              `GitHub API ${method} ${path} returned non-JSON content (${response.status})`,
++            );
++            throw attachFetchResponseToError(error, response);
++          }
++        }
++        if (response.ok) return data;
++        const error = new Error(
++          `GitHub API ${method} ${path} failed (${response.status}): ${data.message || 'unknown error'}`,
++        );
++        throw attachFetchResponseToError(error, response);
++      } finally {
++        clearTimeout(timeout);
++      }
++    }, {
++      operation,
++      label: `GitHub API ${method} ${path}`,
++      maxRetriesByOperation: { read: 2, write: 0, dispatch: 0, admin: 0, unknown: 0 },
++    });
++  };
++}
++
+ // ===========================================================================
+ // Rate-limit-aware pagination/backoff helpers (absorbed from former
+ // api-helpers.js). paginateWithBackoff/checkRateLimitStatus wrap the client
+@@ -1146,6 +1228,7 @@ module.exports = {
+   calculateWaitUntilReset,
+   computeRetryDelayMs,
+   withGithubApiRetry,
++  createGithubFetchRequester,
+   // Rate-limit-aware pagination/backoff (former api-helpers.js)
+   paginateWithBackoff,
+   withBackoff,
+diff --git a/templates/consumer-repo/.github/scripts/keepalive_authority_state.js b/templates/consumer-repo/.github/scripts/keepalive_authority_state.js
+index bcd232add..166e27b5f 100644
+--- a/templates/consumer-repo/.github/scripts/keepalive_authority_state.js
++++ b/templates/consumer-repo/.github/scripts/keepalive_authority_state.js
+@@ -3,7 +3,7 @@
+ // This branch is the authority for challenge generations and receipts. PR comments
+ // are presentation only: a comment PATCH cannot provide a conditional write.
+ const crypto = require('node:crypto');
+-const { withRetry } = require('./github-api-with-retry.js');
++const { createGithubFetchRequester, withRetry } = require('./github-api-with-retry.js');
+ const BRANCH = 'keepalive-authority-state';
+ const HEX = /^[0-9a-f]{64}$/;
+ const HEAD = /^[0-9a-f]{40}$/;
+@@ -60,13 +60,18 @@ async function requestWithOctokit(github, method, path, body) {
+ }
+ 
+ function requester(github) {
+-  if (!github) {
+-    const token = process.env.GH_TOKEN || process.env.GITHUB_TOKEN;
+-    if (!token) throw new Error('Authority state token unavailable');
++  if (github) {
++    return (method, path, body) => requestWithOctokit(github, method, path, body);
++  }
++  const token = process.env.GH_TOKEN || process.env.GITHUB_TOKEN;
++  if (!token) throw new Error('Authority state token unavailable');
++  try {
+     const { Octokit } = require('@octokit/rest');
+-    github = new Octokit({ auth: token });
++    const octokit = new Octokit({ auth: token });
++    return (method, path, body) => requestWithOctokit(octokit, method, path, body);
++  } catch {
++    return createGithubFetchRequester({ token });
+   }
+-  return (method, path, body) => requestWithOctokit(github, method, path, body);
+ }
+ 
+ async function ensureBranch(request, repository, defaultBranch) {
+diff --git a/templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml b/templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml
+index 88e818e01..4d37bef74 100644
+--- a/templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml
++++ b/templates/consumer-repo/.github/workflows/agents-81-gate-followups.yml
+@@ -514,6 +514,47 @@ jobs:
+             exit 1
+           fi
+ 
++      - name: Checkout authority release helpers
++        if: >-
++          failure() &&
++          needs.evaluate.outputs.dispatch_reason == 'due-authority-challenge'
++        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
++        with:
++          persist-credentials: false
++          sparse-checkout: |
++            .github/scripts
++            scripts/runner_lib
++          sparse-checkout-cone-mode: false
++
++      - name: Release prepared authority challenge after preflight failure
++        if: >-
++          failure() &&
++          needs.evaluate.outputs.dispatch_reason == 'due-authority-challenge'
++        env:
++          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
++          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
++          PROVIDER: ${{ needs.evaluate.outputs.agent_type || 'codex' }}
++          PR_NUMBER: ${{ needs.evaluate.outputs.pr_number }}
++          HEAD_SHA: ${{ needs.evaluate.outputs.head_sha }}
++          AUTHORITY_CHALLENGE_FINGERPRINT: >-
++            ${{ github.event_name == 'workflow_dispatch' &&
++              github.actor == 'github-actions[bot]' &&
++              github.event.inputs.sweep_recheck == 'true' &&
++              github.event.inputs.authority_challenge_fingerprint || '' }}
++          AUTHORITY_CHALLENGE_CLAIM: >-
++            ${{ github.event_name == 'workflow_dispatch' &&
++              github.actor == 'github-actions[bot]' &&
++              github.event.inputs.sweep_recheck == 'true' &&
++              github.event.inputs.authority_challenge_claim || '' }}
++          AUTHORITY_CHALLENGE_SIGNING_KEY: >-
++            ${{ secrets.KEEPALIVE_AUTHORITY_SIGNING_KEY || '' }}
++        run: |
++          python -m scripts.runner_lib release-authority-challenge \
++            --provider "$PROVIDER" \
++            --pr-number "$PR_NUMBER" \
++            --head-sha "$HEAD_SHA" \
++            --storage auto
++
+   test-job:
+     name: Test job creation
+     needs: evaluate
+@@ -542,6 +583,33 @@ jobs:
+       - name: Checkout
+         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+ 
++      - name: Finalize authority challenge after preflight
++        if: needs.evaluate.outputs.dispatch_reason == 'due-authority-challenge'
++        env:
++          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
++          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
++          PROVIDER: ${{ needs.evaluate.outputs.agent_type || 'codex' }}
++          PR_NUMBER: ${{ needs.evaluate.outputs.pr_number }}
++          HEAD_SHA: ${{ needs.evaluate.outputs.head_sha }}
++          AUTHORITY_CHALLENGE_FINGERPRINT: >-
++            ${{ github.event_name == 'workflow_dispatch' &&
++              github.actor == 'github-actions[bot]' &&
++              github.event.inputs.sweep_recheck == 'true' &&
++              github.event.inputs.authority_challenge_fingerprint || '' }}
++          AUTHORITY_CHALLENGE_CLAIM: >-
++            ${{ github.event_name == 'workflow_dispatch' &&
++              github.actor == 'github-actions[bot]' &&
++              github.event.inputs.sweep_recheck == 'true' &&
++              github.event.inputs.authority_challenge_claim || '' }}
++          AUTHORITY_CHALLENGE_SIGNING_KEY: >-
++            ${{ secrets.KEEPALIVE_AUTHORITY_SIGNING_KEY || '' }}
++        run: |
++          python -m scripts.runner_lib finalize-authority-challenge \
++            --provider "$PROVIDER" \
++            --pr-number "$PR_NUMBER" \
++            --head-sha "$HEAD_SHA" \
++            --storage auto
++
+       - name: Setup API client
+         uses: ./.github/actions/setup-api-client
+         with:
+diff --git a/tests/scripts/test_runner_lib.py b/tests/scripts/test_runner_lib.py
+index 424d21fd4..121c42a28 100644
+--- a/tests/scripts/test_runner_lib.py
++++ b/tests/scripts/test_runner_lib.py
+@@ -629,7 +629,57 @@ def authority(command, *_):
+         authority_challenge=True,
+     )
+     assert decision.should_dispatch
+-    assert events == ["prepare", "reserve", "finalize"]
++    assert events == ["prepare", "reserve"]
++
++
++def test_preflight_release_terminalizes_reservation_before_refunding_challenge(monkeypatch):
++    _signed_challenge_environment(monkeypatch)
++    commands = []
++
++    def authority(command, *_):
++        commands.append(command)
++        return {"prepared": True} if command == "prepare" else {"released": True}
++
++    monkeypatch.setattr(runner_core, "_authority_challenge_command", authority)
++    primary = MemoryRunnerStorage()
++    storage = runner_core.FallbackRunnerStorage(primary, MemoryRunnerStorage())
++    reserved = should_dispatch(42, "aaa", "codex", storage=storage, authority_challenge=True)
++    assert reserved.should_dispatch
++
++    assert runner_core.release_authority_challenge(42, "aaa", "codex", storage=storage)
++    terminal = primary.read_record(42, "codex")
++    assert terminal["status"] == "error"
++    assert terminal["result"]["error"] == "runner-preflight-failed"
++    assert commands == ["prepare", "release"]
++
++
++def test_preflight_release_keeps_challenge_prepared_when_terminal_write_fails(monkeypatch):
++    _signed_challenge_environment(monkeypatch)
++    commands = []
++
++    def authority(command, *_):
++        commands.append(command)
++        return {"prepared": True} if command == "prepare" else {"released": True}
++
++    class FailsCompletionWrite(MemoryRunnerStorage):
++        writes_seen = 0
++
++        def write_record(self, pr_number, provider, record):
++            self.writes_seen += 1
++            if self.writes_seen > 1:
++                raise RuntimeError("completion unavailable")
++            super().write_record(pr_number, provider, record)
++
++    monkeypatch.setattr(runner_core, "_authority_challenge_command", authority)
++    primary = FailsCompletionWrite()
++    storage = runner_core.FallbackRunnerStorage(primary, MemoryRunnerStorage())
++    assert should_dispatch(
++        42, "aaa", "codex", storage=storage, authority_challenge=True
++    ).should_dispatch
++
++    assert not runner_core.release_authority_challenge(42, "aaa", "codex", storage=storage)
++    assert primary.read_record(42, "codex")["status"] == "pending"
++    assert commands == ["prepare"]
+ 
+ 
+ def test_signed_challenge_denies_when_reservation_changes_during_finalize(monkeypatch):
+@@ -642,6 +692,7 @@ def write_record(self, pr_number, provider, record):
+             super().write_record(pr_number, provider, record)
+ 
+     primary = OrderedStorage()
++    storage = runner_core.FallbackRunnerStorage(primary, MemoryRunnerStorage())
+ 
+     def authority(command, *_):
+         events.append(command)
+@@ -651,13 +702,10 @@ def authority(command, *_):
+         return {"prepared": True}
+ 
+     monkeypatch.setattr(runner_core, "_authority_challenge_command", authority)
+-    decision = should_dispatch(
+-        42,
+-        "aaa",
+-        "codex",
+-        storage=runner_core.FallbackRunnerStorage(primary, MemoryRunnerStorage()),
+-        authority_challenge=True,
+-    )
++    reserved = should_dispatch(42, "aaa", "codex", storage=storage, authority_challenge=True)
++    assert reserved.should_dispatch
++    assert events == ["prepare", "reserve"]
++    decision = runner_core.finalize_authority_challenge(42, "aaa", "codex", storage=storage)
+     assert not decision.should_dispatch
+     assert decision.reason == "authority-reservation-changed"
+     assert events == ["prepare", "reserve", "finalize"]
+@@ -840,6 +888,14 @@ def write_record(self, pr_number, provider, record):
+     )
+     assert decision.should_dispatch
+     assert decision.reason == "due-authority-challenge"
++    assert commands == ["prepare"]
++    finalized = runner_core.finalize_authority_challenge(
++        42,
++        "aaa",
++        "codex",
++        storage=runner_core.FallbackRunnerStorage(primary, MemoryRunnerStorage()),
++    )
++    assert finalized.should_dispatch
+     assert commands == ["prepare", "finalize"]
+ 
+ 

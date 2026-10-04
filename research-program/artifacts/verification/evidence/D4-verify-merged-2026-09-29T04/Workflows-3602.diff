@@ -1,0 +1,39 @@
+diff --git a/scripts/validate_run_contract.py b/scripts/validate_run_contract.py
+index d6fef06cc..505a9eb4d 100644
+--- a/scripts/validate_run_contract.py
++++ b/scripts/validate_run_contract.py
+@@ -173,6 +173,11 @@ def _check_document_page(document: Any, report: Report, prefix: str = "") -> Non
+     locator = document.get("locator")
+     if not isinstance(doc_ref, dict):
+         return
++    if doc_ref.get("supersedes") == doc_ref.get("sha256"):
++        report.fail(
++            "document_ref.supersedes must name an earlier byte version",
++            f"{prefix}document_ref/supersedes",
++        )
+     if (
+         isinstance(locator, dict)
+         and "page" in doc_ref
+diff --git a/tests/contracts/test_document_identity.py b/tests/contracts/test_document_identity.py
+index 947dff2e6..b9a1fe078 100644
+--- a/tests/contracts/test_document_identity.py
++++ b/tests/contracts/test_document_identity.py
+@@ -96,6 +96,18 @@ def test_supersession_requires_mechanism_evidence() -> None:
+     assert any("supersession_evidence" in error for error in _errors(document))
+ 
+ 
++def test_document_cannot_supersede_its_own_bytes(tmp_path: Path) -> None:
++    document = _fixture("valid_ocr_document_evidence.json")
++    document["document_ref"]["supersedes"] = document["document_ref"]["sha256"]
++    path = tmp_path / "self-superseding.json"
++    path.write_text(json.dumps(document))
++
++    report = validate_evidence_objects(paths=[path], schema_dir=SCHEMAS)
++
++    assert not report.conformant
++    assert any("earlier byte version" in violation.message for violation in report.violations)
++
++
+ def test_duplicate_page_conflict_rejected_by_validator(tmp_path: Path) -> None:
+     document = _fixture("valid_native_document_evidence.json")
+     document["locator"]["page"] = 1

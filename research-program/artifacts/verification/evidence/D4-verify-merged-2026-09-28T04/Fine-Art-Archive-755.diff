@@ -1,0 +1,39 @@
+diff --git a/src/fine_art_archive/known_works/fetchers.py b/src/fine_art_archive/known_works/fetchers.py
+index 2039d922..8a8e0837 100644
+--- a/src/fine_art_archive/known_works/fetchers.py
++++ b/src/fine_art_archive/known_works/fetchers.py
+@@ -335,7 +335,10 @@ def merge_works(*sources: list[KnownWork]) -> list[KnownWork]:
+                 existing.sitelinks = max(existing.sitelinks, w.sitelinks)
+             else:
+                 merged[key] = w
+-    return sorted(merged.values(), key=lambda w: (w.year or 9999, w.title or ""))
++    return sorted(
++        merged.values(),
++        key=lambda w: (w.year if w.year is not None else 9999, w.title or ""),
++    )
+ 
+ 
+ # --------------------------------------------------------------------------
+diff --git a/tests/test_known_works_fetchers.py b/tests/test_known_works_fetchers.py
+index 5c517793..deacb2cb 100644
+--- a/tests/test_known_works_fetchers.py
++++ b/tests/test_known_works_fetchers.py
+@@ -537,6 +537,18 @@ def test_merge_works():
+     assert merged[3].year == 1510
+ 
+ 
++def test_merge_works_sorts_astronomical_year_zero_before_year_one():
++    merged = merge_works(
++        [
++            KnownWork(title="Unknown year", year=None),
++            KnownWork(title="Year one", year=1),
++            KnownWork(title="Year zero", year=0),
++        ]
++    )
++
++    assert [work.title for work in merged] == ["Year zero", "Year one", "Unknown year"]
++
++
+ def test_merge_metadata():
+     w1 = KnownWork(title="Mona Lisa", year=1503, sources=["wikidata"])
+     w2 = KnownWork(
