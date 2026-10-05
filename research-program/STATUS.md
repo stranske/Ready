@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-05T04:30:27Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-05T04:46:02Z)
 
-Units: 248 — done 239, failed 8, queued 1
+Units: 249 — done 239, failed 8, queued 2
 Paused: True   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 Orchestrator evidence (30d): offload runs 241, bound to a research round 232, scored 232 (PASS 152, FAIL 80, infra 18) — codex 35/37 (P11 F24 I6), cursor 142/149 (P104 F38 I2), gemini 53/53 (P36 F17 I10), vibe 2/2 (P1 F1 I0)
@@ -257,10 +257,10 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D4-verify-merged-2026-10-02T04 | D | D | done | codex | driver | Verify merged PRs against their issues' acceptance criteria |  |
 | D4-verify-merged-2026-10-03T04 | D | D | done | codex | driver | Verify merged PRs against their issues' acceptance criteria |  |
 | D4-verify-merged-2026-10-04T04 | D | D | done | codex | driver | Verify merged PRs against their issues' acceptance criteria |  |
+| D4-verify-merged-2026-10-05T04 | D | D | queued | codex |  | Verify merged PRs against their issues' acceptance criteria |  |
 
 ## Last checkpoints
 
-- 2026-10-04T18:11:56Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
 - 2026-10-04T18:23:32Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
 - 2026-10-04T18:38:59Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
 - 2026-10-04T18:54:24Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
@@ -272,6 +272,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-10-05T00:47:18Z — unblock — enqueued D3-unblock-sweep-2026-10-05T00
 - 2026-10-05T00:47:19Z — refill — error — PermissionError(1, 'Operation not permitted')
 - 2026-10-05T01:02:50Z — refill — error — PermissionError(1, 'Operation not permitted')
+- 2026-10-05T04:46:02Z — verify — enqueued D4-verify-merged-2026-10-05T04
 
 ## Questions
 
