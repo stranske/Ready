@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-05T00:47:19Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-05T01:02:50Z)
 
 Units: 248 — done 239, failed 8, queued 1
 Paused: True   Phase stops: []
@@ -260,7 +260,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-10-04T18:08:07Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
 - 2026-10-04T18:11:56Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
 - 2026-10-04T18:23:32Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
 - 2026-10-04T18:38:59Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
@@ -272,6 +271,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-10-05T00:30:56Z — refill — error — PermissionError(1, 'Operation not permitted')
 - 2026-10-05T00:47:18Z — unblock — enqueued D3-unblock-sweep-2026-10-05T00
 - 2026-10-05T00:47:19Z — refill — error — PermissionError(1, 'Operation not permitted')
+- 2026-10-05T01:02:50Z — refill — error — PermissionError(1, 'Operation not permitted')
 
 ## Questions
 
