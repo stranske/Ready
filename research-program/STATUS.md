@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-06T13:49:11Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-06T14:04:43Z)
 
 Units: 249 — done 239, failed 8, queued 2
 Paused: True   Phase stops: []
@@ -261,7 +261,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-10-05T00:15:16Z — refill — error — PermissionError(1, 'Operation not permitted')
 - 2026-10-05T00:30:56Z — refill — error — PermissionError(1, 'Operation not permitted')
 - 2026-10-05T00:47:18Z — unblock — enqueued D3-unblock-sweep-2026-10-05T00
 - 2026-10-05T00:47:19Z — refill — error — PermissionError(1, 'Operation not permitted')
@@ -273,6 +272,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-10-06T13:18:09Z — refill — error — PermissionError(1, 'Operation not permitted')
 - 2026-10-06T13:33:39Z — refill — error — PermissionError(1, 'Operation not permitted')
 - 2026-10-06T13:49:11Z — refill — error — PermissionError(1, 'Operation not permitted')
+- 2026-10-06T14:04:43Z — refill — error — PermissionError(1, 'Operation not permitted')
 
 ## Questions
 
