@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-06T00:52:16Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-06T01:12:30Z)
 
 Units: 249 — done 239, failed 8, queued 2
 Paused: True   Phase stops: []
@@ -261,8 +261,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-10-04T18:23:32Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
-- 2026-10-04T18:38:59Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
 - 2026-10-04T18:54:24Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
 - 2026-10-04T19:10:01Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
 - 2026-10-04T19:12:30Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
@@ -273,6 +271,8 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-10-05T00:47:19Z — refill — error — PermissionError(1, 'Operation not permitted')
 - 2026-10-05T01:02:50Z — refill — error — PermissionError(1, 'Operation not permitted')
 - 2026-10-05T04:46:02Z — verify — enqueued D4-verify-merged-2026-10-05T04
+- 2026-10-06T01:08:12Z — inbox — read FAILED — Get "https://api.github.com/repos/stranske/Ready/issues/553/comments?per_page=100": net/http: TLS ha
+- 2026-10-06T01:08:51Z — mirror — FAILED — RuntimeError; pending commits retained for next tick
 
 ## Questions
 
