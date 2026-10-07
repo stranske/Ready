@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-07T02:31:37Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-07T02:47:06Z)
 
 Units: 249 — done 239, failed 8, queued 2
 Paused: True   Phase stops: []
@@ -261,7 +261,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-10-05T00:47:19Z — refill — error — PermissionError(1, 'Operation not permitted')
 - 2026-10-05T01:02:50Z — refill — error — PermissionError(1, 'Operation not permitted')
 - 2026-10-05T04:46:02Z — verify — enqueued D4-verify-merged-2026-10-05T04
 - 2026-10-06T01:08:12Z — inbox — read FAILED — Get "https://api.github.com/repos/stranske/Ready/issues/553/comments?per_page=100": net/http: TLS ha
@@ -273,6 +272,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-10-06T14:04:43Z — refill — error — PermissionError(1, 'Operation not permitted')
 - 2026-10-07T02:16:07Z — refill — error — PermissionError(1, 'Operation not permitted')
 - 2026-10-07T02:31:37Z — refill — error — PermissionError(1, 'Operation not permitted')
+- 2026-10-07T02:47:06Z — refill — error — PermissionError(1, 'Operation not permitted')
 
 ## Questions
 
