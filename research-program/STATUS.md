@@ -1,9 +1,9 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-07T16:59:04Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-07T17:11:30Z)
 
 Units: 249 — done 239, failed 8, queued 2
 Paused: True   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
-Orchestrator evidence (30d): offload runs 213, bound to a research round 206, scored 206 (PASS 133, FAIL 73, infra 18) — codex 33/35 (P9 F24 I6), cursor 133/138 (P99 F34 I2), gemini 39/39 (P25 F14 I10), vibe 1/1 (P0 F1 I0)
+Orchestrator evidence (30d): offload runs 211, bound to a research round 204, scored 204 (PASS 131, FAIL 73, infra 18) — codex 32/34 (P8 F24 I6), cursor 133/138 (P99 F34 I2), gemini 38/38 (P24 F14 I10), vibe 1/1 (P0 F1 I0)
 Claude conservation: off (weekly window available)
 Owner inbox: https://github.com/stranske/Ready/issues/553
 
@@ -261,7 +261,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-10-06T14:04:43Z — refill — error — PermissionError(1, 'Operation not permitted')
 - 2026-10-07T02:16:07Z — refill — error — PermissionError(1, 'Operation not permitted')
 - 2026-10-07T02:31:37Z — refill — error — PermissionError(1, 'Operation not permitted')
 - 2026-10-07T02:47:06Z — refill — error — PermissionError(1, 'Operation not permitted')
@@ -273,6 +272,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-10-07T15:41:36Z — refill — error — PermissionError(1, 'Operation not permitted')
 - 2026-10-07T15:57:07Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 - 2026-10-07T15:57:07Z — refill — error — PermissionError(1, 'Operation not permitted')
+- 2026-10-07T16:59:29Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
 
 ## Questions
 
