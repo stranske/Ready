@@ -1,4 +1,4 @@
-# Audit refill check 2026-10-07T03:11:22Z
+# Audit refill check 2026-10-07T16:11:29Z
 
 | repo | open agent-ready | last set | threshold | scorecard | broken/fab | unscored | ux | action |
 |---|---|---|---|---|---|---|---|---|
@@ -11,8 +11,8 @@
 | stranske/Counter_Risk | 0 | 1 | 2 | 2026-09-23 | 0/0 | 2+2 | — | idle |
 | stranske/Manager-Database | 1 | 0 (round filed nothing) | 2 | 2026-09-23 | 0/0 | 0+0 | — | idle |
 | stranske/Inv-Man-Intake | 1 | 0 (round filed nothing) | 2 | 2026-10-02 | 0/0 | 0+0 (prev 1) | — | idle |
-| stranske/Pension-Data | 1 | 1 | 2 | 2026-09-23 | 0/0 | 0+0 | — | idle |
+| stranske/Pension-Data | 0 | 1 | 2 | 2026-09-23 | 0/0 | 0+0 | — | idle |
 | stranske/trip-planner | 1 | 1 | 2 | 2026-10-02 | 0/0 | 0+0 (prev 0) | — | idle |
 | stranske/learning-management-system | 0 | 2 | 2 | 2026-09-22 | 0/0 | 0+1 | — | idle |
-| stranske/Fine-Art-Archive | 1 | 1 | 2 | 2026-09-23 | 0/0 | 0+9 (prev 42) | — | idle |
+| stranske/Fine-Art-Archive | 0 | 1 | 2 | 2026-09-23 | 0/0 | 0+9 (prev 42) | — | idle |
 | stranske/Doc-Lineage | 0 | 0 (round filed nothing) | 2 | 2026-09-24 | 0/0 | 0+0 (prev 0) | — | idle |
