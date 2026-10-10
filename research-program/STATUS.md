@@ -1,9 +1,9 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-07T22:12:01Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-10T14:09:23Z)
 
 Units: 249 — done 239, failed 8, queued 2
 Paused: True   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
-Orchestrator evidence (30d): offload runs 211, bound to a research round 204, scored 204 (PASS 131, FAIL 73, infra 18) — codex 32/34 (P8 F24 I6), cursor 133/138 (P99 F34 I2), gemini 38/38 (P24 F14 I10), vibe 1/1 (P0 F1 I0)
+Orchestrator evidence (30d): offload runs 194, bound to a research round 188, scored 188 (PASS 117, FAIL 71, infra 18) — codex 31/33 (P7 F24 I6), cursor 133/137 (P99 F34 I2), gemini 23/23 (P11 F12 I10), vibe 1/1 (P0 F1 I0)
 Claude conservation: off (weekly window available)
 Owner inbox: https://github.com/stranske/Ready/issues/553
 
@@ -261,18 +261,18 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-10-07T02:16:07Z — refill — error — PermissionError(1, 'Operation not permitted')
-- 2026-10-07T02:31:37Z — refill — error — PermissionError(1, 'Operation not permitted')
-- 2026-10-07T02:47:06Z — refill — error — PermissionError(1, 'Operation not permitted')
-- 2026-10-07T03:02:35Z — refill — error — PermissionError(1, 'Operation not permitted')
-- 2026-10-07T06:08:14Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
-- 2026-10-07T15:10:40Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
-- 2026-10-07T15:11:03Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
-- 2026-10-07T15:26:06Z — refill — error — PermissionError(1, 'Operation not permitted')
-- 2026-10-07T15:41:36Z — refill — error — PermissionError(1, 'Operation not permitted')
-- 2026-10-07T15:57:07Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 - 2026-10-07T15:57:07Z — refill — error — PermissionError(1, 'Operation not permitted')
 - 2026-10-07T16:59:29Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+- 2026-10-07T23:45:36Z — mirror — FAILED — RuntimeError; pending commits retained for next tick
+- 2026-10-08T02:07:02Z — mirror — FAILED — RuntimeError; pending commits retained for next tick
+- 2026-10-08T02:24:20Z — mirror — FAILED — RuntimeError; pending commits retained for next tick
+- 2026-10-08T02:42:47Z — mirror — FAILED — RuntimeError; pending commits retained for next tick
+- 2026-10-08T03:01:37Z — mirror — FAILED — RuntimeError; pending commits retained for next tick
+- 2026-10-08T03:19:32Z — mirror — FAILED — RuntimeError; pending commits retained for next tick
+- 2026-10-08T03:39:09Z — mirror — FAILED — RuntimeError; pending commits retained for next tick
+- 2026-10-08T04:03:14Z — mirror — FAILED — RuntimeError; pending commits retained for next tick
+- 2026-10-08T04:27:07Z — refill — error — InterruptedError(4, 'Interrupted system call')
+- 2026-10-08T04:28:13Z — mirror — FAILED — RuntimeError; pending commits retained for next tick
 
 ## Questions
 
