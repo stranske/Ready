@@ -1,9 +1,9 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-10T18:34:51Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-10T18:50:22Z)
 
 Units: 249 — done 239, failed 8, queued 2
 Paused: True   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
-Orchestrator evidence (30d): offload runs 191, bound to a research round 185, scored 185 (PASS 115, FAIL 70, infra 18) — codex 31/33 (P7 F24 I6), cursor 133/137 (P99 F34 I2), gemini 20/20 (P9 F11 I10), vibe 1/1 (P0 F1 I0)
+Orchestrator evidence (30d): offload runs 190, bound to a research round 184, scored 184 (PASS 115, FAIL 69, infra 18) — codex 31/33 (P7 F24 I6), cursor 133/137 (P99 F34 I2), gemini 19/19 (P9 F10 I10), vibe 1/1 (P0 F1 I0)
 Claude conservation: off (weekly window available)
 Owner inbox: https://github.com/stranske/Ready/issues/553
 
@@ -261,7 +261,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-10-07T15:57:07Z — refill — error — PermissionError(1, 'Operation not permitted')
 - 2026-10-07T16:59:29Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
 - 2026-10-07T23:45:36Z — mirror — FAILED — RuntimeError; pending commits retained for next tick
 - 2026-10-08T02:07:02Z — mirror — FAILED — RuntimeError; pending commits retained for next tick
@@ -273,6 +272,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-10-08T04:03:14Z — mirror — FAILED — RuntimeError; pending commits retained for next tick
 - 2026-10-08T04:27:07Z — refill — error — InterruptedError(4, 'Interrupted system call')
 - 2026-10-08T04:28:13Z — mirror — FAILED — RuntimeError; pending commits retained for next tick
+- 2026-10-10T18:50:22Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 
 ## Questions
 
