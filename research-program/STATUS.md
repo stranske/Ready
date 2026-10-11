@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-11T03:55:14Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-11T04:10:42Z)
 
 Units: 249 — done 239, failed 8, queued 2
 Paused: True   Phase stops: []
@@ -261,7 +261,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-10-08T04:28:13Z — mirror — FAILED — RuntimeError; pending commits retained for next tick
 - 2026-10-10T18:50:22Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 - 2026-10-10T19:05:53Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 - 2026-10-10T20:07:59Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
@@ -273,6 +272,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-10-11T03:23:35Z — refill — error — PermissionError(1, 'Operation not permitted')
 - 2026-10-11T03:39:13Z — refill — error — PermissionError(1, 'Operation not permitted')
 - 2026-10-11T03:55:14Z — refill — error — PermissionError(1, 'Operation not permitted')
+- 2026-10-11T04:10:42Z — refill — error — PermissionError(1, 'Operation not permitted')
 
 ## Questions
 
