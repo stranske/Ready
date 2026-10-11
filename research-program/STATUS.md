@@ -1,10 +1,10 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-11T22:15:29Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-11T22:30:56Z)
 
-Units: 249 — done 244, queued 1, superseded 4
+Units: 250 — done 244, queued 2, superseded 4
 Paused: True   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 Orchestrator evidence (30d): offload runs 183, bound to a research round 177, scored 177 (PASS 110, FAIL 67, infra 17) — codex 31/33 (P7 F24 I6), cursor 132/136 (P99 F33 I1), gemini 14/14 (P4 F10 I10)
-Worker write boundary: BLOCKING 1 queued unit(s), drainable by one action — sync the Orchestrator mirror (its dispatcher.offload has no write_boundary yet); RP_WORKER_BOUNDARY=0 runs workers unbounded
+Worker write boundary: BLOCKING 2 queued unit(s), drainable by one action — sync the Orchestrator mirror (its dispatcher.offload has no write_boundary yet); RP_WORKER_BOUNDARY=0 runs workers unbounded
 Claude conservation: off (weekly window available)
 Owner inbox: https://github.com/stranske/Ready/issues/553
 
@@ -146,6 +146,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D3-unblock-sweep-2026-10-04T08 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-2026-10-04T16 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-2026-10-05T00 | D | D | done | codex |  | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
+| D3-unblock-sweep-2026-10-11T22 | D | D | queued | codex |  | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-pass2-20260913T2023 | D | D | done | cursor | driver | Unblock sweep pass 2: the seven repos the budgeted first pass deferred |  |
 | D-audit-Counter_Risk--2026-09-07T04-47-32Z | D | D | done | codex | driver | Audit stranske/Counter_Risk and file issues (supply 2 <= 2) |  |
 | D-audit-Counter_Risk--2026-09-08T17-11-36Z | D | D | done | codex | codex | Audit stranske/Counter_Risk and file issues (supply 1 <= 2) |  |
@@ -262,7 +263,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-10-11T08:54:42Z — refill — error — PermissionError(1, 'Operation not permitted')
 - 2026-10-11T09:11:03Z — refill — error — PermissionError(1, 'Operation not permitted')
 - 2026-10-11T09:26:32Z — refill — error — PermissionError(1, 'Operation not permitted')
 - 2026-10-11T09:42:00Z — refill — error — PermissionError(1, 'Operation not permitted')
@@ -274,6 +274,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-10-11T12:19:03Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 - 2026-10-11T14:25:13Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 - 2026-10-11T21:27:39Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+- 2026-10-11T22:30:56Z — unblock — enqueued D3-unblock-sweep-2026-10-11T22
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
