@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-11T10:29:24Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-11T10:44:51Z)
 
 Units: 249 — done 239, failed 8, queued 2
 Paused: True   Phase stops: []
@@ -261,7 +261,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-10-11T07:35:30Z — refill — error — PermissionError(1, 'Operation not permitted')
 - 2026-10-11T07:50:58Z — refill — error — PermissionError(1, 'Operation not permitted')
 - 2026-10-11T08:07:46Z — refill — error — PermissionError(1, 'Operation not permitted')
 - 2026-10-11T08:23:16Z — refill — error — PermissionError(1, 'Operation not permitted')
@@ -273,6 +272,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-10-11T09:57:32Z — refill — error — PermissionError(1, 'Operation not permitted')
 - 2026-10-11T10:13:56Z — refill — error — PermissionError(1, 'Operation not permitted')
 - 2026-10-11T10:29:24Z — refill — error — PermissionError(1, 'Operation not permitted')
+- 2026-10-11T10:44:51Z — refill — error — PermissionError(1, 'Operation not permitted')
 
 ## Questions
 
