@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-11T14:08:41Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-11T14:25:13Z)
 
 Units: 249 — done 239, failed 8, queued 2
 Paused: True   Phase stops: []
@@ -261,7 +261,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-10-11T08:23:16Z — refill — error — PermissionError(1, 'Operation not permitted')
 - 2026-10-11T08:39:06Z — refill — error — PermissionError(1, 'Operation not permitted')
 - 2026-10-11T08:54:42Z — refill — error — PermissionError(1, 'Operation not permitted')
 - 2026-10-11T09:11:03Z — refill — error — PermissionError(1, 'Operation not permitted')
@@ -273,6 +272,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-10-11T10:44:51Z — refill — error — PermissionError(1, 'Operation not permitted')
 - 2026-10-11T11:00:19Z — refill — error — PermissionError(1, 'Operation not permitted')
 - 2026-10-11T12:19:03Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+- 2026-10-11T14:25:13Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 
 ## Questions
 
