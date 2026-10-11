@@ -38,3 +38,22 @@ aggregate-spend cap in this engine. Routing still uses Orchestrator capacity con
 Audit completion now records each round’s newly filed issue URLs. Subsequent refill thresholds use that completed round, not cumulative intake history.
 
 State replacement is atomic; maintenance/digest writers merge their own fields under a separate lock, and inbox consumers are serialized. Concurrent ticks retain owner pause/phase-stop commands.
+
+## 2026-10-11 worker write boundary
+
+Workers no longer run with this directory as their cwd. Each unit runs in `unitdirs/<unit>/` (links to
+`artifacts/`, `[LOCAL_WORKSPACE]/`, `briefs/` and `OWNER_NOTES.md` inside it) and may write only there, in its
+output directory under `artifacts/`, in `artifacts/proposals/`, in its own clone's working tree (not
+`.git`) and in temp. Everything else here — `driver.py`, `program.py`, `tools/`, briefs, wrappers,
+the queue, state, notes, the mirror — is read-only to workers. codex is held by its own sandbox,
+cursor/gemini/vibe by a seatbelt profile (`dispatcher.offload(write_boundary=…)` in the Orchestrator).
+The driver refreshes a unit's clone first with git hooks switched off.
+
+A worker that wants to change the program writes a unified diff to `artifacts/proposals/<unit>.patch`.
+Nothing applies it: STATUS lists live proposals (FYI) and they expire after 14 days. Apply one from an
+interactive session. Proposals are never published to the mirror.
+
+STATUS prints `Worker write boundary: on | BLOCKING n | OFF`. BLOCKING means the Orchestrator mirror
+predates `write_boundary`; syncing the mirror clears it, and units wait as `not-ready` without burning
+attempts. Kill switch: `RP_WORKER_BOUNDARY=0` restores the old cwd and wrapper exactly. Snapshot of the
+pre-change directory: `~/.codex/backups/research-program-2026-10-11/`.

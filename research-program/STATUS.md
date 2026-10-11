@@ -1,9 +1,10 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-11T20:40:18Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-11T20:56:20Z)
 
 Units: 249 — done 239, failed 8, queued 2
 Paused: True   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok aider=ok
 Orchestrator evidence (30d): offload runs 183, bound to a research round 177, scored 177 (PASS 110, FAIL 67, infra 17) — codex 31/33 (P7 F24 I6), cursor 132/136 (P99 F33 I1), gemini 14/14 (P4 F10 I10)
+Worker write boundary: BLOCKING 2 queued unit(s), drainable by one action — sync the Orchestrator mirror (its dispatcher.offload has no write_boundary yet); RP_WORKER_BOUNDARY=0 runs workers unbounded
 Claude conservation: off (weekly window available)
 Owner inbox: https://github.com/stranske/Ready/issues/553
 
@@ -273,6 +274,10 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-10-11T11:00:19Z — refill — error — PermissionError(1, 'Operation not permitted')
 - 2026-10-11T12:19:03Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 - 2026-10-11T14:25:13Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+
+## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
+
+- none
 
 ## Questions
 
