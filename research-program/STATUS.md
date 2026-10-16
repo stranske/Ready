@@ -1,9 +1,9 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-16T18:24:48Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-16T18:40:23Z)
 
-Units: 250 — done 245, queued 1, superseded 4
+Units: 250 — claimed 1, done 245, superseded 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=warn vibe=ok muse=ok aider=ok
-Orchestrator evidence (30d): offload runs 149, bound to a research round 147, scored 147 (PASS 95, FAIL 52, infra 3) — codex 25/27 (P5 F20 I3), cursor 121/121 (P89 F32 I0), gemini 1/1 (P1 F0 I0)
+Orchestrator evidence (30d): offload runs 148, bound to a research round 146, scored 146 (PASS 94, FAIL 52, infra 3) — codex 25/27 (P5 F20 I3), cursor 120/120 (P88 F32 I0), gemini 1/1 (P1 F0 I0)
 Worker write boundary: on — each unit writes only unitdirs/<unit>/, its output directory, artifacts/proposals/, its own clone's working tree (not .git) and temp
 Claude conservation: off (weekly window available)
 Owner inbox: https://github.com/stranske/Ready/issues/553
@@ -259,13 +259,10 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D4-verify-merged-2026-10-02T04 | D | D | done | codex | driver | Verify merged PRs against their issues' acceptance criteria |  |
 | D4-verify-merged-2026-10-03T04 | D | D | done | codex | driver | Verify merged PRs against their issues' acceptance criteria |  |
 | D4-verify-merged-2026-10-04T04 | D | D | done | codex | driver | Verify merged PRs against their issues' acceptance criteria |  |
-| D4-verify-merged-2026-10-05T04 | D | D | queued | codex |  | Verify merged PRs against their issues' acceptance criteria |  |
+| D4-verify-merged-2026-10-05T04 | D | D | claimed | codex | driver | Verify merged PRs against their issues' acceptance criteria |  |
 
 ## Last checkpoints
 
-- 2026-10-12T15:27:13Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
-- 2026-10-12T16:12:20Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
-- 2026-10-12T16:27:24Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 - 2026-10-13T03:35:00Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 - 2026-10-13T08:30:32Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 - 2026-10-16T18:16:02Z — owner scheduling correction — removed program-wide pause for two existing queued units; existing unit gates and allocations retained; no unit claimed or offloaded
@@ -275,6 +272,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-10-16T18:24:44Z — D3-unblock-sweep-2026-10-11T22 — done — codex produced 723 words at artifacts/sweeps/D3-unblock-sweep-2026-10-11T22.md in 281s
 - 2026-10-16T18:24:46Z — D3-unblock-sweep-2026-10-11T22 — refutation posted — stranske/Trend_Model_Project#6080
 - 2026-10-16T18:24:48Z — D3-unblock-sweep-2026-10-11T22 — refutation posted — stranske/Trend_Model_Project#6081
+- 2026-10-16T18:40:23Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+- 2026-10-16T18:40:23Z — D4-verify-merged-2026-10-05T04 — route — router picked codex from ['codex', 'cursor']
+- 2026-10-16T18:40:23Z — D4-verify-merged-2026-10-05T04 — claimed by driver (agent codex)
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
