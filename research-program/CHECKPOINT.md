@@ -3549,3 +3549,15 @@ remote: - Required status check "Gate / gate" is
 ## 2026-10-11T14:25:13Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 ## 2026-10-11T21:27:39Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 ## 2026-10-11T22:30:56Z — unblock — enqueued D3-unblock-sweep-2026-10-11T22
+## 2026-10-11T23:16:53Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+## 2026-10-12T05:19:35Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+## 2026-10-12T15:12:11Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+## 2026-10-12T15:27:13Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+## 2026-10-12T16:12:20Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+## 2026-10-12T16:27:24Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+## 2026-10-13T03:35:00Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+## 2026-10-13T08:30:32Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+## 2026-10-16T18:16:02Z — owner scheduling correction — removed program-wide pause for two existing queued units; existing unit gates and allocations retained; no unit claimed or offloaded
+## 2026-10-16T18:19:12Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+## 2026-10-16T18:19:12Z — D3-unblock-sweep-2026-10-11T22 — route — router picked codex from ['codex', 'cursor']
+## 2026-10-16T18:19:12Z — D3-unblock-sweep-2026-10-11T22 — claimed by driver (agent codex)
