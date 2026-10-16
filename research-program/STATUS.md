@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-16T18:40:23Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-16T18:47:36Z)
 
-Units: 250 — claimed 1, done 245, superseded 4
+Units: 250 — done 246, superseded 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=warn vibe=ok muse=ok aider=ok
 Orchestrator evidence (30d): offload runs 148, bound to a research round 146, scored 146 (PASS 94, FAIL 52, infra 3) — codex 25/27 (P5 F20 I3), cursor 120/120 (P88 F32 I0), gemini 1/1 (P1 F0 I0)
@@ -259,11 +259,10 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D4-verify-merged-2026-10-02T04 | D | D | done | codex | driver | Verify merged PRs against their issues' acceptance criteria |  |
 | D4-verify-merged-2026-10-03T04 | D | D | done | codex | driver | Verify merged PRs against their issues' acceptance criteria |  |
 | D4-verify-merged-2026-10-04T04 | D | D | done | codex | driver | Verify merged PRs against their issues' acceptance criteria |  |
-| D4-verify-merged-2026-10-05T04 | D | D | claimed | codex | driver | Verify merged PRs against their issues' acceptance criteria |  |
+| D4-verify-merged-2026-10-05T04 | D | D | done | codex | driver | Verify merged PRs against their issues' acceptance criteria |  |
 
 ## Last checkpoints
 
-- 2026-10-13T03:35:00Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 - 2026-10-13T08:30:32Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 - 2026-10-16T18:16:02Z — owner scheduling correction — removed program-wide pause for two existing queued units; existing unit gates and allocations retained; no unit claimed or offloaded
 - 2026-10-16T18:19:12Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
@@ -275,6 +274,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-10-16T18:40:23Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
 - 2026-10-16T18:40:23Z — D4-verify-merged-2026-10-05T04 — route — router picked codex from ['codex', 'cursor']
 - 2026-10-16T18:40:23Z — D4-verify-merged-2026-10-05T04 — claimed by driver (agent codex)
+- 2026-10-16T18:47:36Z — D4-verify-merged-2026-10-05T04 — done — codex produced 942 words at artifacts/verification/D4-verify-merged-2026-10-05T04.md in 379s
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
