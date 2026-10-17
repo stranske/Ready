@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-17T22:16:25Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-17T22:32:35Z)
 
 Units: 254 — done 250, superseded 4
 Paused: False   Phase stops: []
@@ -267,7 +267,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-10-17T16:28:57Z — mirror — FAILED — RuntimeError; pending commits retained for next tick
 - 2026-10-17T18:27:05Z — verify — enqueued D4-verify-merged-2026-10-17T18
 - 2026-10-17T18:27:05Z — D4-verify-merged-2026-10-17T18 — route — router picked cursor from ['codex', 'cursor']
 - 2026-10-17T18:27:05Z — D4-verify-merged-2026-10-17T18 — claimed by driver (agent cursor)
@@ -279,6 +278,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-10-17T18:49:24Z — D3-unblock-sweep-2026-10-17T18 — refutation posted — stranske/Trend_Model_Project#6081
 - 2026-10-17T18:49:25Z — D3-unblock-sweep-2026-10-17T18 — refutation posted — stranske/Trend_Model_Project#6080
 - 2026-10-17T21:29:51Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+- 2026-10-17T22:32:35Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
