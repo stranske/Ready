@@ -1,9 +1,9 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-17T23:18:57Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-17T23:34:26Z)
 
 Units: 254 — done 250, superseded 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=shed claude=ok cursor=ok gemini=warn vibe=ok muse=ok aider=ok
-Orchestrator evidence (30d): offload runs 144, bound to a research round 142, scored 142 (PASS 90, FAIL 52, infra 3) — codex 25/27 (P5 F20 I3), cursor 116/116 (P84 F32 I0), gemini 1/1 (P1 F0 I0)
+Orchestrator evidence (30d): offload runs 143, bound to a research round 141, scored 141 (PASS 89, FAIL 52, infra 3) — codex 25/27 (P5 F20 I3), cursor 115/115 (P83 F32 I0), gemini 1/1 (P1 F0 I0)
 Worker write boundary: on — each unit writes only unitdirs/<unit>/, its output directory, artifacts/proposals/, its own clone's working tree (not .git) and temp
 Claude conservation: off (weekly window available)
 Owner inbox: https://github.com/stranske/Ready/issues/553
@@ -267,7 +267,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-10-17T18:27:05Z — verify — enqueued D4-verify-merged-2026-10-17T18
 - 2026-10-17T18:27:05Z — D4-verify-merged-2026-10-17T18 — route — router picked cursor from ['codex', 'cursor']
 - 2026-10-17T18:27:05Z — D4-verify-merged-2026-10-17T18 — claimed by driver (agent cursor)
 - 2026-10-17T18:30:51Z — D4-verify-merged-2026-10-17T18 — done — cursor produced 797 words at artifacts/verification/D4-verify-merged-2026-10-17T18.md in 194s
@@ -279,6 +278,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-10-17T18:49:25Z — D3-unblock-sweep-2026-10-17T18 — refutation posted — stranske/Trend_Model_Project#6080
 - 2026-10-17T21:29:51Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 - 2026-10-17T22:32:35Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+- 2026-10-17T23:34:26Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
