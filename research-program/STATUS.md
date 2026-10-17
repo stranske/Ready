@@ -1,9 +1,9 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-17T10:35:32Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-17T10:51:00Z)
 
 Units: 252 — done 248, superseded 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok muse=ok aider=ok
-Orchestrator evidence (30d): offload runs 146, bound to a research round 144, scored 144 (PASS 92, FAIL 52, infra 3) — codex 25/27 (P5 F20 I3), cursor 118/118 (P86 F32 I0), gemini 1/1 (P1 F0 I0)
+Orchestrator evidence (30d): offload runs 145, bound to a research round 143, scored 143 (PASS 91, FAIL 52, infra 3) — codex 25/27 (P5 F20 I3), cursor 117/117 (P85 F32 I0), gemini 1/1 (P1 F0 I0)
 Worker write boundary: on — each unit writes only unitdirs/<unit>/, its output directory, artifacts/proposals/, its own clone's working tree (not .git) and temp
 Claude conservation: off (weekly window available)
 Owner inbox: https://github.com/stranske/Ready/issues/553
@@ -265,7 +265,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-10-17T09:14:44Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
 - 2026-10-17T09:30:17Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
 - 2026-10-17T09:46:33Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
 - 2026-10-17T10:02:05Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
@@ -277,6 +276,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-10-17T10:35:28Z — D3-unblock-sweep-2026-10-17T10 — done — cursor produced 591 words at artifacts/sweeps/D3-unblock-sweep-2026-10-17T10.md in 112s
 - 2026-10-17T10:35:30Z — D3-unblock-sweep-2026-10-17T10 — refutation posted — stranske/Trend_Model_Project#6081
 - 2026-10-17T10:35:31Z — D3-unblock-sweep-2026-10-17T10 — refutation posted — stranske/Trend_Model_Project#6080
+- 2026-10-17T10:51:00Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
