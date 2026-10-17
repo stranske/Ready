@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-17T18:27:05Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-17T18:30:51Z)
 
-Units: 253 — claimed 1, done 248, superseded 4
+Units: 253 — done 249, superseded 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=warn claude=ok cursor=ok gemini=ok vibe=ok muse=ok aider=ok
 Orchestrator evidence (30d): offload runs 145, bound to a research round 143, scored 143 (PASS 91, FAIL 52, infra 3) — codex 25/27 (P5 F20 I3), cursor 117/117 (P85 F32 I0), gemini 1/1 (P1 F0 I0)
@@ -262,11 +262,10 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D4-verify-merged-2026-10-03T04 | D | D | done | codex | driver | Verify merged PRs against their issues' acceptance criteria |  |
 | D4-verify-merged-2026-10-04T04 | D | D | done | codex | driver | Verify merged PRs against their issues' acceptance criteria |  |
 | D4-verify-merged-2026-10-05T04 | D | D | done | codex | driver | Verify merged PRs against their issues' acceptance criteria |  |
-| D4-verify-merged-2026-10-17T18 | D | D | claimed | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
+| D4-verify-merged-2026-10-17T18 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
 
 ## Last checkpoints
 
-- 2026-10-17T14:16:37Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
 - 2026-10-17T14:32:06Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
 - 2026-10-17T14:47:47Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
 - 2026-10-17T15:04:10Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
@@ -278,6 +277,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-10-17T18:27:05Z — verify — enqueued D4-verify-merged-2026-10-17T18
 - 2026-10-17T18:27:05Z — D4-verify-merged-2026-10-17T18 — route — router picked cursor from ['codex', 'cursor']
 - 2026-10-17T18:27:05Z — D4-verify-merged-2026-10-17T18 — claimed by driver (agent cursor)
+- 2026-10-17T18:30:51Z — D4-verify-merged-2026-10-17T18 — done — cursor produced 797 words at artifacts/verification/D4-verify-merged-2026-10-17T18.md in 194s
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
