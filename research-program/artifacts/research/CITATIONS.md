@@ -11,8 +11,8 @@
 | R3-manager-mosaic-synthesis.md | 12 | 12 | 0 |
 | R4-document-access-substrate.md | 15 | 10 | 5 |
 | R5-output-substrate.md | 10 | 8 | 2 |
-| R6-public-corpora-and-synthetic-data.md | 26 | 19 | 7 |
-| R7-trip-planning-core.md | 28 | 22 | 6 |
+| R6-public-corpora-and-synthetic-data.md | 26 | 17 | 9 |
+| R7-trip-planning-core.md | 28 | 23 | 5 |
 
 ## Unreachable in B3-interop-architecture.md
 
@@ -33,6 +33,8 @@
 
 ## Unreachable in R6-public-corpora-and-synthetic-data.md
 
+- https://www.oaktreecapital.com/docs/default-source/memos/the-complete-collection.pdf?sfvrsn=
+- https://www.oaktreecapital.com/insights/memos
 - https://www.sec.gov/Archives/edgar/data/1314152/000131415226000084/exhibit101-sixtharlpaofjll.htm
 - https://www.sec.gov/Archives/edgar/data/1711929/000119312526346339/ck0001711929-ex10_2.htm
 - https://www.sec.gov/data-research/sec-markets-data/information-about-registered-investment-advisers-exempt-reporting-advisers
@@ -44,7 +46,6 @@
 ## Unreachable in R7-trip-planning-core.md
 
 - https://doi.org/10.5281/zenodo.18316076
-- https://traveltrade.today/gds-systems/amadeus-sa/amadeus-closes-self-service-apis-portal-for-developers/
 - https://www.sciencedirect.com/science/article/abs/pii/S030505480900080X
 - https://www.techrxiv.org/doi/pdf/10.36227/techrxiv.177219979.94060974
 - https://www.whitecase.com/insight-our-thinking/web-scraping-website-terms-and-cfaa-hiqs-preliminary-injunction-affirmed-again
