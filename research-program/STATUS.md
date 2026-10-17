@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-17T08:59:16Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-17T09:14:44Z)
 
 Units: 251 — done 247, superseded 4
 Paused: False   Phase stops: []
@@ -264,7 +264,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-10-17T02:25:53Z — D3-unblock-sweep-2026-10-17T02 — route — router picked codex from ['codex', 'cursor']
 - 2026-10-17T02:25:53Z — D3-unblock-sweep-2026-10-17T02 — claimed by driver (agent codex)
 - 2026-10-17T02:28:32Z — D3-unblock-sweep-2026-10-17T02 — done — codex produced 509 words at artifacts/sweeps/D3-unblock-sweep-2026-10-17T02.md in 111s
 - 2026-10-17T02:28:34Z — D3-unblock-sweep-2026-10-17T02 — refutation posted — stranske/Trend_Model_Project#6081
@@ -276,6 +275,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-10-17T08:28:20Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
 - 2026-10-17T08:43:47Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
 - 2026-10-17T08:59:16Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+- 2026-10-17T09:14:44Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
