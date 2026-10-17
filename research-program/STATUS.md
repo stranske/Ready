@@ -1,8 +1,8 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-17T21:13:19Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-17T21:29:51Z)
 
 Units: 254 — done 250, superseded 4
 Paused: False   Phase stops: []
-Capacity (Orchestrator): codex=shed claude=ok cursor=ok gemini=ok vibe=ok muse=ok aider=ok
+Capacity (Orchestrator): codex=shed claude=shed cursor=ok gemini=ok vibe=ok muse=ok aider=ok
 Orchestrator evidence (30d): offload runs 144, bound to a research round 142, scored 142 (PASS 90, FAIL 52, infra 3) — codex 25/27 (P5 F20 I3), cursor 116/116 (P84 F32 I0), gemini 1/1 (P1 F0 I0)
 Worker write boundary: on — each unit writes only unitdirs/<unit>/, its output directory, artifacts/proposals/, its own clone's working tree (not .git) and temp
 Claude conservation: off (weekly window available)
@@ -267,7 +267,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-10-17T16:08:19Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
 - 2026-10-17T16:28:57Z — mirror — FAILED — RuntimeError; pending commits retained for next tick
 - 2026-10-17T18:27:05Z — verify — enqueued D4-verify-merged-2026-10-17T18
 - 2026-10-17T18:27:05Z — D4-verify-merged-2026-10-17T18 — route — router picked cursor from ['codex', 'cursor']
@@ -279,6 +278,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-10-17T18:49:22Z — D3-unblock-sweep-2026-10-17T18 — done — cursor produced 602 words at artifacts/sweeps/D3-unblock-sweep-2026-10-17T18.md in 123s
 - 2026-10-17T18:49:24Z — D3-unblock-sweep-2026-10-17T18 — refutation posted — stranske/Trend_Model_Project#6081
 - 2026-10-17T18:49:25Z — D3-unblock-sweep-2026-10-17T18 — refutation posted — stranske/Trend_Model_Project#6080
+- 2026-10-17T21:29:51Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
