@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-17T02:25:53Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-17T02:28:36Z)
 
-Units: 251 — claimed 1, done 246, superseded 4
+Units: 251 — done 247, superseded 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok muse=ok aider=ok
 Orchestrator evidence (30d): offload runs 148, bound to a research round 146, scored 146 (PASS 94, FAIL 52, infra 3) — codex 25/27 (P5 F20 I3), cursor 120/120 (P88 F32 I0), gemini 1/1 (P1 F0 I0)
@@ -147,7 +147,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D3-unblock-sweep-2026-10-04T16 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-2026-10-05T00 | D | D | done | codex |  | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-2026-10-11T22 | D | D | done | codex | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
-| D3-unblock-sweep-2026-10-17T02 | D | D | claimed | codex | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
+| D3-unblock-sweep-2026-10-17T02 | D | D | done | codex | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-pass2-20260913T2023 | D | D | done | cursor | driver | Unblock sweep pass 2: the seven repos the budgeted first pass deferred |  |
 | D-audit-Counter_Risk--2026-09-07T04-47-32Z | D | D | done | codex | driver | Audit stranske/Counter_Risk and file issues (supply 2 <= 2) |  |
 | D-audit-Counter_Risk--2026-09-08T17-11-36Z | D | D | done | codex | codex | Audit stranske/Counter_Risk and file issues (supply 1 <= 2) |  |
@@ -264,9 +264,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-10-16T18:19:12Z — D3-unblock-sweep-2026-10-11T22 — claimed by driver (agent codex)
-- 2026-10-16T18:24:44Z — D3-unblock-sweep-2026-10-11T22 — done — codex produced 723 words at artifacts/sweeps/D3-unblock-sweep-2026-10-11T22.md in 281s
-- 2026-10-16T18:24:46Z — D3-unblock-sweep-2026-10-11T22 — refutation posted — stranske/Trend_Model_Project#6080
 - 2026-10-16T18:24:48Z — D3-unblock-sweep-2026-10-11T22 — refutation posted — stranske/Trend_Model_Project#6081
 - 2026-10-16T18:40:23Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
 - 2026-10-16T18:40:23Z — D4-verify-merged-2026-10-05T04 — route — router picked codex from ['codex', 'cursor']
@@ -276,6 +273,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-10-17T02:25:52Z — unblock — enqueued D3-unblock-sweep-2026-10-17T02
 - 2026-10-17T02:25:53Z — D3-unblock-sweep-2026-10-17T02 — route — router picked codex from ['codex', 'cursor']
 - 2026-10-17T02:25:53Z — D3-unblock-sweep-2026-10-17T02 — claimed by driver (agent codex)
+- 2026-10-17T02:28:32Z — D3-unblock-sweep-2026-10-17T02 — done — codex produced 509 words at artifacts/sweeps/D3-unblock-sweep-2026-10-17T02.md in 111s
+- 2026-10-17T02:28:34Z — D3-unblock-sweep-2026-10-17T02 — refutation posted — stranske/Trend_Model_Project#6081
+- 2026-10-17T02:28:36Z — D3-unblock-sweep-2026-10-17T02 — refutation posted — stranske/Trend_Model_Project#6080
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
