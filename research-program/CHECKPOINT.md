@@ -3569,3 +3569,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-10-16T18:40:23Z — D4-verify-merged-2026-10-05T04 — claimed by driver (agent codex)
 ## 2026-10-16T18:47:36Z — D4-verify-merged-2026-10-05T04 — done — codex produced 942 words at artifacts/verification/D4-verify-merged-2026-10-05T04.md in 379s
 ## 2026-10-16T19:03:11Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+## 2026-10-17T02:25:52Z — unblock — enqueued D3-unblock-sweep-2026-10-17T02
+## 2026-10-17T02:25:53Z — D3-unblock-sweep-2026-10-17T02 — route — router picked codex from ['codex', 'cursor']
+## 2026-10-17T02:25:53Z — D3-unblock-sweep-2026-10-17T02 — claimed by driver (agent codex)
