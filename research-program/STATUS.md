@@ -1,8 +1,8 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-17T17:55:11Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-17T18:11:06Z)
 
 Units: 252 — done 248, superseded 4
 Paused: False   Phase stops: []
-Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok muse=ok aider=ok
+Capacity (Orchestrator): codex=warn claude=ok cursor=ok gemini=ok vibe=ok muse=ok aider=ok
 Orchestrator evidence (30d): offload runs 145, bound to a research round 143, scored 143 (PASS 91, FAIL 52, infra 3) — codex 25/27 (P5 F20 I3), cursor 117/117 (P85 F32 I0), gemini 1/1 (P1 F0 I0)
 Worker write boundary: on — each unit writes only unitdirs/<unit>/, its output directory, artifacts/proposals/, its own clone's working tree (not .git) and temp
 Claude conservation: off (weekly window available)
