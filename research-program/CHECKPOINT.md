@@ -3616,3 +3616,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-10-17T15:50:46Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
 ## 2026-10-17T16:08:19Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
 ## 2026-10-17T16:28:57Z — mirror — FAILED — RuntimeError; pending commits retained for next tick
+## 2026-10-17T18:27:05Z — verify — enqueued D4-verify-merged-2026-10-17T18
+## 2026-10-17T18:27:05Z — D4-verify-merged-2026-10-17T18 — route — router picked cursor from ['codex', 'cursor']
+## 2026-10-17T18:27:05Z — D4-verify-merged-2026-10-17T18 — claimed by driver (agent cursor)
