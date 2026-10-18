@@ -3696,3 +3696,23 @@ remote: - Required status check "Gate / gate" is
 ## 2026-10-18T16:22:54Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
 ## 2026-10-18T16:38:25Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
 ## 2026-10-18T16:54:39Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+## 2026-10-18T17:10:09Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+## 2026-10-18T17:10:10Z — mirror — deferred — Ready#635 exact-head sync review; publication resumes by 2026-10-18T18:55:23+00:00; local work continues
+## 2026-10-18T17:25:13Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+## 2026-10-18T17:25:14Z — mirror — deferred — Ready#635 exact-head sync review; publication resumes by 2026-10-18T18:55:23+00:00; local work continues
+## 2026-10-18T17:40:16Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+## 2026-10-18T17:40:17Z — mirror — deferred — Ready#635 exact-head sync review; publication resumes by 2026-10-18T18:55:23+00:00; local work continues
+## 2026-10-18T17:56:46Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+## 2026-10-18T17:57:11Z — mirror — deferred — Ready#635 exact-head sync review; publication resumes by 2026-10-18T18:55:23+00:00; local work continues
+## 2026-10-18T18:12:13Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+## 2026-10-18T18:12:14Z — mirror — deferred — Ready#635 exact-head sync review; publication resumes by 2026-10-18T18:55:23+00:00; local work continues
+## 2026-10-18T18:27:16Z — verify — enqueued D4-verify-merged-2026-10-18T18
+## 2026-10-18T18:27:17Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+## 2026-10-18T18:27:17Z — D4-verify-merged-2026-10-18T18 — route — router picked cursor from ['codex', 'cursor']
+## 2026-10-18T18:27:17Z — D4-verify-merged-2026-10-18T18 — claimed by driver (agent cursor)
+## 2026-10-18T18:27:18Z — mirror — deferred — Ready#635 exact-head sync review; publication resumes by 2026-10-18T18:55:23+00:00; local work continues
+## 2026-10-18T18:31:28Z — D4-verify-merged-2026-10-18T18 — done — cursor produced 807 words at artifacts/verification/D4-verify-merged-2026-10-18T18.md in 246s
+## 2026-10-18T18:31:28Z — mirror — deferred — Ready#635 exact-head sync review; publication resumes by 2026-10-18T18:55:23+00:00; local work continues
+## 2026-10-18T18:46:30Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+## 2026-10-18T18:46:31Z — mirror — deferred — Ready#635 exact-head sync review; publication resumes by 2026-10-18T18:55:23+00:00; local work continues
+## 2026-10-18T19:01:48Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
