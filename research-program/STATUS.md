@@ -1,9 +1,9 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-18T03:03:37Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-18T03:19:06Z)
 
 Units: 255 — done 251, superseded 4
 Paused: False   Phase stops: []
-Capacity (Orchestrator): codex=warn claude=warn cursor=ok gemini=warn vibe=ok muse=ok aider=ok
-Orchestrator evidence (30d): offload runs 137, bound to a research round 135, scored 135 (PASS 86, FAIL 49, infra 0) — codex 22/24 (P5 F17 I0), cursor 112/112 (P80 F32 I0), gemini 1/1 (P1 F0 I0)
+Capacity (Orchestrator): codex=warn claude=shed cursor=ok gemini=warn vibe=ok muse=ok aider=ok
+Orchestrator evidence (30d): offload runs 136, bound to a research round 134, scored 134 (PASS 85, FAIL 49, infra 0) — codex 22/24 (P5 F17 I0), cursor 111/111 (P79 F32 I0), gemini 1/1 (P1 F0 I0)
 Worker write boundary: on — each unit writes only unitdirs/<unit>/, its output directory, artifacts/proposals/, its own clone's working tree (not .git) and temp
 Claude conservation: off (weekly window available)
 Owner inbox: https://github.com/stranske/Ready/issues/553
@@ -268,7 +268,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-10-17T18:49:22Z — D3-unblock-sweep-2026-10-17T18 — done — cursor produced 602 words at artifacts/sweeps/D3-unblock-sweep-2026-10-17T18.md in 123s
 - 2026-10-17T18:49:24Z — D3-unblock-sweep-2026-10-17T18 — refutation posted — stranske/Trend_Model_Project#6081
 - 2026-10-17T18:49:25Z — D3-unblock-sweep-2026-10-17T18 — refutation posted — stranske/Trend_Model_Project#6080
 - 2026-10-17T21:29:51Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
@@ -280,6 +279,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-10-18T03:03:34Z — D3-unblock-sweep-2026-10-18T03 — done — cursor produced 680 words at artifacts/sweeps/D3-unblock-sweep-2026-10-18T03.md in 120s
 - 2026-10-18T03:03:36Z — D3-unblock-sweep-2026-10-18T03 — refutation posted — stranske/Trend_Model_Project#6081
 - 2026-10-18T03:03:37Z — D3-unblock-sweep-2026-10-18T03 — refutation posted — stranske/Trend_Model_Project#6080
+- 2026-10-18T03:19:06Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
