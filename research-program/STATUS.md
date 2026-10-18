@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-18T03:19:06Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-18T03:34:38Z)
 
 Units: 255 — done 251, superseded 4
 Paused: False   Phase stops: []
@@ -268,7 +268,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-10-17T18:49:24Z — D3-unblock-sweep-2026-10-17T18 — refutation posted — stranske/Trend_Model_Project#6081
 - 2026-10-17T18:49:25Z — D3-unblock-sweep-2026-10-17T18 — refutation posted — stranske/Trend_Model_Project#6080
 - 2026-10-17T21:29:51Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 - 2026-10-17T22:32:35Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
@@ -280,6 +279,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-10-18T03:03:36Z — D3-unblock-sweep-2026-10-18T03 — refutation posted — stranske/Trend_Model_Project#6081
 - 2026-10-18T03:03:37Z — D3-unblock-sweep-2026-10-18T03 — refutation posted — stranske/Trend_Model_Project#6080
 - 2026-10-18T03:19:06Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+- 2026-10-18T03:34:38Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
