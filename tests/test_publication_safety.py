@@ -1273,3 +1273,34 @@ def test_unreadable_docx_structure_fails_closed_through_cli(tmp_path, kind):
     assert member not in result.stdout + result.stderr
     assert not result.stderr
     assert path.read_bytes() == original
+
+
+def test_corrupt_zip_lzma_docx_continues_scanning_through_cli(tmp_path):
+    import struct
+    import zipfile
+
+    path = tmp_path / "a-report.docx"
+    with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_LZMA) as archive:
+        archive.writestr("word/document.xml", "<document>SYNTHETIC</document>")
+        member = archive.getinfo("word/document.xml")
+    content = bytearray(path.read_bytes())
+    name_size, extra_size = struct.unpack_from("<HH", content, member.header_offset + 26)
+    offset = member.header_offset + 30 + name_size + extra_size
+    # ZIP-LZMA stores a four-byte prefix before its LZMA filter properties.
+    # An invalid properties byte raises LZMAError before ZIP CRC validation.
+    content[offset + 4] = 0xFF
+    path.write_bytes(content)
+    original = path.read_bytes()
+    (tmp_path / "z-report.md").write_text("Public report.\n")
+
+    result = run_guard(tmp_path)
+
+    assert result.returncode == 1
+    assert result.stdout.splitlines() == [
+        "ERROR: a-report.docx: invalid or oversized DOCX",
+        "files_scanned=2 home-path=0 credential=0 private-key=0 "
+        "scratch-path=0 internal-host=0 allowed_hits=0 errors=1",
+    ]
+    assert not result.stderr
+    assert "SYNTHETIC" not in result.stdout + result.stderr
+    assert path.read_bytes() == original

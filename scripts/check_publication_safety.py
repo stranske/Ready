@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import io
 import json
+import lzma
 import re
 import xml.etree.ElementTree as ET
 import zipfile
@@ -256,6 +257,7 @@ def scan(root: Path, allowlist: Path | None = None) -> int:
                         NotImplementedError,
                         ET.ParseError,
                         zlib.error,
+                        lzma.LZMAError,
                         LookupError,
                     ):
                         # Fail closed without disclosing corrupt package contents.
