@@ -475,6 +475,23 @@ def test_publication_guard_actual_workflow_shell_rejects_local_policy_symlinks(t
     assert results[2].returncode == 1
 
 
+def test_publication_guard_actual_workflow_shell_rejects_invalid_local_policy(tmp_path):
+    """Malformed local policy must fail closed; a permissive root policy is not used."""
+    (tmp_path / "evidence.txt").write_text("clones/SYNTHETIC_ONLY\n")
+    (tmp_path.parent / ".publication-allow").write_text(
+        "evidence.txt:scratch-path # Reviewed root fallback that must not apply.\n"
+    )
+    (tmp_path / ".publication-allow").write_text("evidence.txt:scratch-path\n")
+
+    results = _run_publication_workflow_shell(tmp_path)
+
+    assert results[0].returncode == 0
+    assert results[1].returncode == 1
+    assert "ERROR: .publication-allow:" in results[1].stdout
+    assert "allowed_hits=0" in results[1].stdout
+    assert results[2].returncode == 1
+
+
 def test_publication_staging_reuses_selected_local_or_root_policy(tmp_path, monkeypatch):
     scanner = load_scanner()
     prepare = importlib.import_module("scripts.prepare_publication")
