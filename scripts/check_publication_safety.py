@@ -51,10 +51,10 @@ def load_allowlist(root: Path, allowlist: Path) -> tuple[set[tuple[str, str]], l
     allowed: set[tuple[str, str]] = set()
     errors: list[str] = []
     path = allowlist
-    if not path.exists():
-        return allowed, errors
     if path.is_symlink():
         return allowed, [".publication-allow: symlinks are not allowed"]
+    if not path.exists():
+        return allowed, errors
     # A FIFO can block read_text indefinitely; reject special files before reading.
     if not path.is_file():
         return allowed, [".publication-allow: not a regular file"]

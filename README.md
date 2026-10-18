@@ -62,9 +62,12 @@ findings but does not count as publication content; a policy-only tree fails the
 zero-files check.
 
 Preparation is an explicit operator step; CI also exercises it on a disposable
-staging copy after the direct scanner pass. On a separate staging copy, run
-`python scripts/prepare_publication.py --staging-root <staging-copy>` followed by
-`python scripts/check_publication_safety.py --root <staging-copy> --allowlist <reviewed-allowlist>`.
+staging copy after the direct scanner pass. The preparation and staged scan use
+the same selected policy as the direct scan: the local policy copied with the
+research tree when present, otherwise the repo-root fallback. On a separate
+staging copy, run `python scripts/prepare_publication.py --staging-root <staging-copy>
+--allowlist <selected-policy>` followed by `python scripts/check_publication_safety.py
+--root <staging-copy> --allowlist <selected-policy>`.
 Publish only after both commands succeed. Preparation replaces private path,
 credential and host references with explicit redaction markers. Local evidence
 is preserved. Affected JSON and JSONL must remain parseable; ambiguous keys, invalid structured
