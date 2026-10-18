@@ -1,0 +1,53 @@
+UTF-16 visible paragraph text regression
+
+RED: temporarily replaced the DOCX decoder call with an empty visible_lines list.
+Exact source bytes restored in finally before GREEN.
+
+============================= test session starts ==============================
+platform linux -- Python 3.14.8, pytest-9.1.1, pluggy-1.7.0
+rootdir: /home/runner/work/Ready/Ready
+configfile: pyproject.toml
+plugins: langsmith-0.14.11, platformdirs-4.13.4, cov-7.1.0, anyio-4.15.1
+collected 194 items / 178 deselected / 16 selected
+
+tests/test_publication_safety.py ........FFFFFFFF                        [100%]
+
+=========================== short test summary info ============================
+FAILED tests/test_publication_safety.py::test_utf16_docx_visible_text_is_decoded[True-word/document.xml-utf-16-le] - AssertionError: assert 0 == 1
+ +  where 0 = CompletedProcess(args=['/opt/hostedtoolcache/Python/3.14.8/x64/bin/python', '/home/runner/work/Ready/Ready/scripts/che..._scanned=1 home-path=0 credential=0 private-key=0 scratch-path=0 internal-host=0 allowed_hits=0 errors=0\n', stderr='').returncode
+ +  and   1 = int(True)
+FAILED tests/test_publication_safety.py::test_utf16_docx_visible_text_is_decoded[True-word/document.xml-utf-16-be] - AssertionError: assert 0 == 1
+ +  where 0 = CompletedProcess(args=['/opt/hostedtoolcache/Python/3.14.8/x64/bin/python', '/home/runner/work/Ready/Ready/scripts/che..._scanned=1 home-path=0 credential=0 private-key=0 scratch-path=0 internal-host=0 allowed_hits=0 errors=0\n', stderr='').returncode
+ +  and   1 = int(True)
+FAILED tests/test_publication_safety.py::test_utf16_docx_visible_text_is_decoded[True-word/header1.xml-utf-16-le] - AssertionError: assert 0 == 1
+ +  where 0 = CompletedProcess(args=['/opt/hostedtoolcache/Python/3.14.8/x64/bin/python', '/home/runner/work/Ready/Ready/scripts/che..._scanned=1 home-path=0 credential=0 private-key=0 scratch-path=0 internal-host=0 allowed_hits=0 errors=0\n', stderr='').returncode
+ +  and   1 = int(True)
+FAILED tests/test_publication_safety.py::test_utf16_docx_visible_text_is_decoded[True-word/header1.xml-utf-16-be] - AssertionError: assert 0 == 1
+ +  where 0 = CompletedProcess(args=['/opt/hostedtoolcache/Python/3.14.8/x64/bin/python', '/home/runner/work/Ready/Ready/scripts/che..._scanned=1 home-path=0 credential=0 private-key=0 scratch-path=0 internal-host=0 allowed_hits=0 errors=0\n', stderr='').returncode
+ +  and   1 = int(True)
+FAILED tests/test_publication_safety.py::test_utf16_docx_visible_text_is_decoded[True-word/footer1.xml-utf-16-le] - AssertionError: assert 0 == 1
+ +  where 0 = CompletedProcess(args=['/opt/hostedtoolcache/Python/3.14.8/x64/bin/python', '/home/runner/work/Ready/Ready/scripts/che..._scanned=1 home-path=0 credential=0 private-key=0 scratch-path=0 internal-host=0 allowed_hits=0 errors=0\n', stderr='').returncode
+ +  and   1 = int(True)
+FAILED tests/test_publication_safety.py::test_utf16_docx_visible_text_is_decoded[True-word/footer1.xml-utf-16-be] - AssertionError: assert 0 == 1
+ +  where 0 = CompletedProcess(args=['/opt/hostedtoolcache/Python/3.14.8/x64/bin/python', '/home/runner/work/Ready/Ready/scripts/che..._scanned=1 home-path=0 credential=0 private-key=0 scratch-path=0 internal-host=0 allowed_hits=0 errors=0\n', stderr='').returncode
+ +  and   1 = int(True)
+FAILED tests/test_publication_safety.py::test_utf16_docx_visible_text_is_decoded[True-word/footnotes.xml-utf-16-le] - AssertionError: assert 0 == 1
+ +  where 0 = CompletedProcess(args=['/opt/hostedtoolcache/Python/3.14.8/x64/bin/python', '/home/runner/work/Ready/Ready/scripts/che..._scanned=1 home-path=0 credential=0 private-key=0 scratch-path=0 internal-host=0 allowed_hits=0 errors=0\n', stderr='').returncode
+ +  and   1 = int(True)
+FAILED tests/test_publication_safety.py::test_utf16_docx_visible_text_is_decoded[True-word/footnotes.xml-utf-16-be] - AssertionError: assert 0 == 1
+ +  where 0 = CompletedProcess(args=['/opt/hostedtoolcache/Python/3.14.8/x64/bin/python', '/home/runner/work/Ready/Ready/scripts/che..._scanned=1 home-path=0 credential=0 private-key=0 scratch-path=0 internal-host=0 allowed_hits=0 errors=0\n', stderr='').returncode
+ +  and   1 = int(True)
+================= 8 failed, 8 passed, 178 deselected in 1.43s ==================
+
+GREEN: restored decoder
+
+============================= test session starts ==============================
+platform linux -- Python 3.14.8, pytest-9.1.1, pluggy-1.7.0
+rootdir: /home/runner/work/Ready/Ready
+configfile: pyproject.toml
+plugins: langsmith-0.14.11, platformdirs-4.13.4, cov-7.1.0, anyio-4.15.1
+collected 194 items / 178 deselected / 16 selected
+
+tests/test_publication_safety.py ................                        [100%]
+
+====================== 16 passed, 178 deselected in 2.21s ======================

@@ -102,3 +102,54 @@ files_scanned=3294 home-path=0 credential=0 private-key=0 scratch-path=0 interna
 
 The allowlist SHA-256 is still
 `fb097006f598e678d946107f0a2a9a2a81dfa32562114fd971caefc28efed5bc`.
+
+## Follow-up: valid UTF-16 Word XML
+
+Reviewed recent commits through `6ed7ec8b82c6549bc5f438fa35b60bac098cc893`.
+The six implementation tasks remain implemented. The first acceptance checkbox
+still needs reopening: the literal two-file pytest command with `-m "not slow"`
+ran all 279 pre-change cases successfully but exited 1 because its inherited
+coverage configuration measured the unrelated scaffold at 0%, below the unchanged
+80% threshold. No coverage configuration or threshold was changed.
+
+Added 16 CLI regression cases for valid UTF-16 XML in both byte orders, covering
+the main document, headers, footers and footnotes. Unsafe cases split a marker
+across runs; neither the compressed package nor the decompressed UTF-16 bytes
+match a rule. Clean cases verify valid UTF-16 is accepted. Diagnostics disclose
+neither package text nor member names, and package bytes remain unchanged.
+
+The decoder was temporarily disconnected by replacing its call with an empty
+visible-text list. All eight unsafe cases failed with return code 0 instead of 1;
+all eight clean cases passed. Exact source bytes were restored in a `finally`
+block, and all 16 cases then passed. Captured outcomes are in
+[`utf16-visible-text-red-green.txt`](utf16-visible-text-red-green.txt).
+
+`pytest -m "not slow" -q` passes all 346 tests with 100% existing scaffold
+coverage and the unchanged 80% threshold. The focused two-file suite passes all
+295 cases with `-m "not slow" --no-cov`; this does not satisfy the literal
+coverage-enabled acceptance command. Ruff and `git diff --check` pass. Black
+formatted the edited Python file at line length 100. The requested whole-tree
+check could not launch its default workers because the sandbox denies the
+forkserver socket; worker alternatives hung until timeout. A temporary serial
+scheduler outside the repository then ran Black's own `reformat_one` through its
+normal CLI source selection, with caching disabled and the original check flags:
+exit 0, all 89 files unchanged. Formatter rules and source selection are unchanged.
+
+`python scripts/check_publication_safety.py` exits 0:
+
+```text
+files_scanned=3294 home-path=0 credential=0 private-key=0 scratch-path=0 internal-host=0 allowed_hits=11 errors=0
+```
+
+The allowlist SHA-256 remains
+`fb097006f598e678d946107f0a2a9a2a81dfa32562114fd971caefc28efed5bc`.
+GitHub confirms [Gate](https://github.com/stranske/Ready/actions/runs/39122921939)
+and [Publication guard](https://github.com/stranske/Ready/actions/runs/39122921619)
+passed at the reviewed head; these hosted results predate the new test cases.
+PR #634 is open and ready for review at that head.
+
+The PR-body correction was again rejected with "MCP tool call requires approval,
+but approval policy is never". The acceptance checkbox therefore remains
+overstated remotely. Git also rejected staging because `.git` is read-only and it
+could not create `.git/index.lock`; source-test and evidence changes remain in the
+workspace for the automation runner to collect. No protected files were changed.

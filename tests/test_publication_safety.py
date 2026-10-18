@@ -999,6 +999,52 @@ def test_utf16_dtd_is_rejected_without_entity_expansion(tmp_path, capsys):
     assert "SYNTHETIC" not in output
 
 
+@pytest.mark.parametrize("encoding", ["utf-16-le", "utf-16-be"])
+@pytest.mark.parametrize(
+    "member", ["word/document.xml", "word/header1.xml", "word/footer1.xml", "word/footnotes.xml"]
+)
+@pytest.mark.parametrize("unsafe", [False, True])
+def test_utf16_docx_visible_text_is_decoded(tmp_path, encoding, member, unsafe):
+    import codecs
+    import zipfile
+
+    scanner = load_scanner()
+    path = tmp_path / "report.docx"
+    write_docx(path, [["Public report"]])
+    runs = ("scratch", "pad/SYNTHETIC") if unsafe else ("Public", " report")
+    xml = (
+        '<?xml version="1.0" encoding="UTF-16"?>'
+        f'<w:document xmlns:w="{scanner.WORD_NS[1:-1]}"><w:body><w:p>'
+        + "".join(f"<w:r><w:t>{run}</w:t></w:r>" for run in runs)
+        + "</w:p></w:body></w:document>"
+    )
+    bom = codecs.BOM_UTF16_LE if encoding == "utf-16-le" else codecs.BOM_UTF16_BE
+    # UTF-16 hides markers even in decompressed bytes; only parsed, joined text
+    # exposes the unsafe marker. Clean UTF-16 must not be rejected wholesale.
+    payload = bom + xml.encode(encoding)
+    assert not any(pattern.search(payload) for pattern in scanner.RULES.values())
+    with zipfile.ZipFile(path) as archive:
+        parts = {part.filename: archive.read(part) for part in archive.infolist()}
+    parts[member] = payload
+    with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+        for name, content in parts.items():
+            archive.writestr(name, content)
+    original = path.read_bytes()
+    assert not any(pattern.search(original) for pattern in scanner.RULES.values())
+
+    result = run_guard(tmp_path)
+
+    assert result.returncode == int(unsafe)
+    assert f"scratch-path={int(unsafe)}" in result.stdout
+    assert "errors=0" in result.stdout
+    if unsafe:
+        assert "report.docx:1: scratch-path (1 hit(s))" in result.stdout
+    assert "SYNTHETIC" not in result.stdout + result.stderr
+    assert member not in result.stdout + result.stderr
+    assert not result.stderr
+    assert path.read_bytes() == original
+
+
 @pytest.mark.parametrize("location", ["zip-comment", "xml-attribute", "auxiliary"])
 def test_docx_preserves_raw_byte_and_member_scans(tmp_path, location):
     import zipfile
