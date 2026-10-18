@@ -875,3 +875,69 @@ def test_utf16_dtd_is_rejected_without_entity_expansion(tmp_path, capsys):
     output = capsys.readouterr().out
     assert "ERROR: report.docx: invalid or oversized DOCX" in output
     assert "SYNTHETIC" not in output
+
+
+@pytest.mark.parametrize("location", ["zip-comment", "xml-attribute", "auxiliary"])
+def test_docx_preserves_raw_byte_and_member_scans(tmp_path, location):
+    import zipfile
+
+    path = tmp_path / "report.docx"
+    write_docx(path, [["Public report"]])
+    with zipfile.ZipFile(path, "a", compression=zipfile.ZIP_DEFLATED) as archive:
+        if location == "zip-comment":
+            archive.comment = b"ghp_SYNTHETIC"
+        elif location == "xml-attribute":
+            archive.writestr("word/header1.xml", '<x hidden="ghp_SYNTHETIC"/>')
+        else:
+            archive.writestr("custom/data.bin", b"ghp_SYNTHETIC")
+    original = path.read_bytes()
+    result = run_guard(tmp_path)
+    assert result.returncode == 1
+    assert "credential=1" in result.stdout
+    assert "SYNTHETIC" not in result.stdout + result.stderr
+    assert path.read_bytes() == original
+
+
+@pytest.mark.parametrize("member", ["word/charts/chart1.xml", "word/diagrams/data1.xml"])
+@pytest.mark.parametrize(
+    "namespace",
+    [
+        "http://schemas.openxmlformats.org/drawingml/2006/main",
+        "http://purl.oclc.org/ooxml/drawingml/main",
+    ],
+)
+def test_docx_drawingml_split_text_is_scanned(tmp_path, member, namespace):
+    import zipfile
+
+    path = tmp_path / "report.docx"
+    write_docx(path, [["Public report"]])
+    with zipfile.ZipFile(path, "a", compression=zipfile.ZIP_DEFLATED) as archive:
+        archive.writestr(
+            member,
+            f'<a:root xmlns:a="{namespace}"><a:p><a:r><a:t>gh</a:t></a:r>'
+            "<a:r><a:t>p_SYNTHETIC</a:t></a:r></a:p></a:root>",
+        )
+    result = run_guard(tmp_path)
+    assert result.returncode == 1
+    assert "credential=1" in result.stdout and "errors=0" in result.stdout
+    assert "SYNTHETIC" not in result.stdout + result.stderr
+
+
+def test_docx_corrupt_auxiliary_member_fails_closed(tmp_path):
+    import struct
+    import zipfile
+
+    path = tmp_path / "report.docx"
+    write_docx(path, [["Public report"]])
+    with zipfile.ZipFile(path, "a", compression=zipfile.ZIP_STORED) as archive:
+        archive.writestr("media/image.bin", b"SYNTHETIC image bytes")
+        member = archive.getinfo("media/image.bin")
+    content = bytearray(path.read_bytes())
+    name_size, extra_size = struct.unpack_from("<HH", content, member.header_offset + 26)
+    offset = member.header_offset + 30 + name_size + extra_size
+    content[offset] ^= 1
+    path.write_bytes(content)
+    result = run_guard(tmp_path)
+    assert result.returncode == 1
+    assert "ERROR: report.docx: invalid or oversized DOCX" in result.stdout
+    assert "SYNTHETIC" not in result.stdout + result.stderr

@@ -1,0 +1,231 @@
+
+MUTANT: raw/member scan disconnected
+exit=1
+============================= test session starts ==============================
+platform darwin -- Python 3.12.2, pytest-9.1.1, pluggy-1.6.0
+rootdir: <WORKTREE>
+configfile: pyproject.toml
+plugins: langsmith-0.10.9, cov-7.1.0, xdist-3.8.0, rerunfailures-16.3, datadir-1.8.0, typeguard-4.5.1, asyncio-1.3.0, pytest_httpserver-1.1.3, hypothesis-6.155.7, regressions-2.11.0, Faker-40.39.0, anyio-4.13.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 3 items
+
+tests/test_publication_safety.py FFF                                     [100%]
+
+=================================== FAILURES ===================================
+__________ test_docx_preserves_raw_byte_and_member_scans[zip-comment] __________
+
+tmp_path = PosixPath('<TEMP>/qm/w0dtc0j132gd6ymf1hxtd2p00000gp/T/pytest-of-teacher/pytest-6559/test_docx_preserves_raw_byte_a0/research')
+location = 'zip-comment'
+
+    @pytest.mark.parametrize("location", ["zip-comment", "xml-attribute", "auxiliary"])
+    def test_docx_preserves_raw_byte_and_member_scans(tmp_path, location):
+        import zipfile
+    
+        path = tmp_path / "report.docx"
+        write_docx(path, [["Public report"]])
+        with zipfile.ZipFile(path, "a", compression=zipfile.ZIP_DEFLATED) as archive:
+            if location == "zip-comment":
+                archive.comment = b"ghp_SYNTHETIC"
+            elif location == "xml-attribute":
+                archive.writestr("word/header1.xml", '<x hidden="ghp_SYNTHETIC"/>')
+            else:
+                archive.writestr("custom/data.bin", b"ghp_SYNTHETIC")
+        original = path.read_bytes()
+        result = run_guard(tmp_path)
+>       assert result.returncode == 1
+E       AssertionError: assert 0 == 1
+E        +  where 0 = CompletedProcess(args=['/opt/anaconda3/bin/python3', '<HOME>/.codex/automations/pd-workloop-resume/worktrees/R..._scanned=1 home-path=0 credential=0 private-key=0 scratch-path=0 internal-host=0 allowed_hits=0 errors=0\n', stderr='').returncode
+
+tests/test_publication_safety.py:895: AssertionError
+_________ test_docx_preserves_raw_byte_and_member_scans[xml-attribute] _________
+
+tmp_path = PosixPath('<TEMP>/qm/w0dtc0j132gd6ymf1hxtd2p00000gp/T/pytest-of-teacher/pytest-6559/test_docx_preserves_raw_byte_a1/research')
+location = 'xml-attribute'
+
+    @pytest.mark.parametrize("location", ["zip-comment", "xml-attribute", "auxiliary"])
+    def test_docx_preserves_raw_byte_and_member_scans(tmp_path, location):
+        import zipfile
+    
+        path = tmp_path / "report.docx"
+        write_docx(path, [["Public report"]])
+        with zipfile.ZipFile(path, "a", compression=zipfile.ZIP_DEFLATED) as archive:
+            if location == "zip-comment":
+                archive.comment = b"ghp_SYNTHETIC"
+            elif location == "xml-attribute":
+                archive.writestr("word/header1.xml", '<x hidden="ghp_SYNTHETIC"/>')
+            else:
+                archive.writestr("custom/data.bin", b"ghp_SYNTHETIC")
+        original = path.read_bytes()
+        result = run_guard(tmp_path)
+>       assert result.returncode == 1
+E       AssertionError: assert 0 == 1
+E        +  where 0 = CompletedProcess(args=['/opt/anaconda3/bin/python3', '<HOME>/.codex/automations/pd-workloop-resume/worktrees/R..._scanned=1 home-path=0 credential=0 private-key=0 scratch-path=0 internal-host=0 allowed_hits=0 errors=0\n', stderr='').returncode
+
+tests/test_publication_safety.py:895: AssertionError
+___________ test_docx_preserves_raw_byte_and_member_scans[auxiliary] ___________
+
+tmp_path = PosixPath('<TEMP>/qm/w0dtc0j132gd6ymf1hxtd2p00000gp/T/pytest-of-teacher/pytest-6559/test_docx_preserves_raw_byte_a2/research')
+location = 'auxiliary'
+
+    @pytest.mark.parametrize("location", ["zip-comment", "xml-attribute", "auxiliary"])
+    def test_docx_preserves_raw_byte_and_member_scans(tmp_path, location):
+        import zipfile
+    
+        path = tmp_path / "report.docx"
+        write_docx(path, [["Public report"]])
+        with zipfile.ZipFile(path, "a", compression=zipfile.ZIP_DEFLATED) as archive:
+            if location == "zip-comment":
+                archive.comment = b"ghp_SYNTHETIC"
+            elif location == "xml-attribute":
+                archive.writestr("word/header1.xml", '<x hidden="ghp_SYNTHETIC"/>')
+            else:
+                archive.writestr("custom/data.bin", b"ghp_SYNTHETIC")
+        original = path.read_bytes()
+        result = run_guard(tmp_path)
+>       assert result.returncode == 1
+E       AssertionError: assert 0 == 1
+E        +  where 0 = CompletedProcess(args=['/opt/anaconda3/bin/python3', '<HOME>/.codex/automations/pd-workloop-resume/worktrees/R..._scanned=1 home-path=0 credential=0 private-key=0 scratch-path=0 internal-host=0 allowed_hits=0 errors=0\n', stderr='').returncode
+
+tests/test_publication_safety.py:895: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_publication_safety.py::test_docx_preserves_raw_byte_and_member_scans[zip-comment]
+FAILED tests/test_publication_safety.py::test_docx_preserves_raw_byte_and_member_scans[xml-attribute]
+FAILED tests/test_publication_safety.py::test_docx_preserves_raw_byte_and_member_scans[auxiliary]
+============================== 3 failed in 0.38s ===============================
+
+MUTANT: DrawingML extraction disconnected
+exit=1
+============================= test session starts ==============================
+platform darwin -- Python 3.12.2, pytest-9.1.1, pluggy-1.6.0
+rootdir: <WORKTREE>
+configfile: pyproject.toml
+plugins: langsmith-0.10.9, cov-7.1.0, xdist-3.8.0, rerunfailures-16.3, datadir-1.8.0, typeguard-4.5.1, asyncio-1.3.0, pytest_httpserver-1.1.3, hypothesis-6.155.7, regressions-2.11.0, Faker-40.39.0, anyio-4.13.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 4 items
+
+tests/test_publication_safety.py FF..                                    [100%]
+
+=================================== FAILURES ===================================
+_ test_docx_drawingml_split_text_is_scanned[http://schemas.openxmlformats.org/drawingml/2006/main-word/charts/chart1.xml] _
+
+tmp_path = PosixPath('<TEMP>/qm/w0dtc0j132gd6ymf1hxtd2p00000gp/T/pytest-of-teacher/pytest-6560/test_docx_drawingml_split_text0/research')
+member = 'word/charts/chart1.xml'
+namespace = 'http://schemas.openxmlformats.org/drawingml/2006/main'
+
+    @pytest.mark.parametrize("member", ["word/charts/chart1.xml", "word/diagrams/data1.xml"])
+    @pytest.mark.parametrize(
+        "namespace",
+        [
+            "http://schemas.openxmlformats.org/drawingml/2006/main",
+            "http://purl.oclc.org/ooxml/drawingml/main",
+        ],
+    )
+    def test_docx_drawingml_split_text_is_scanned(tmp_path, member, namespace):
+        import zipfile
+    
+        path = tmp_path / "report.docx"
+        write_docx(path, [["Public report"]])
+        with zipfile.ZipFile(path, "a", compression=zipfile.ZIP_DEFLATED) as archive:
+            archive.writestr(
+                member,
+                f'<a:root xmlns:a="{namespace}"><a:p><a:r><a:t>gh</a:t></a:r>'
+                "<a:r><a:t>p_SYNTHETIC</a:t></a:r></a:p></a:root>",
+            )
+        result = run_guard(tmp_path)
+>       assert result.returncode == 1
+E       AssertionError: assert 0 == 1
+E        +  where 0 = CompletedProcess(args=['/opt/anaconda3/bin/python3', '<HOME>/.codex/automations/pd-workloop-resume/worktrees/R..._scanned=1 home-path=0 credential=0 private-key=0 scratch-path=0 internal-host=0 allowed_hits=0 errors=0\n', stderr='').returncode
+
+tests/test_publication_safety.py:921: AssertionError
+_ test_docx_drawingml_split_text_is_scanned[http://schemas.openxmlformats.org/drawingml/2006/main-word/diagrams/data1.xml] _
+
+tmp_path = PosixPath('<TEMP>/qm/w0dtc0j132gd6ymf1hxtd2p00000gp/T/pytest-of-teacher/pytest-6560/test_docx_drawingml_split_text1/research')
+member = 'word/diagrams/data1.xml'
+namespace = 'http://schemas.openxmlformats.org/drawingml/2006/main'
+
+    @pytest.mark.parametrize("member", ["word/charts/chart1.xml", "word/diagrams/data1.xml"])
+    @pytest.mark.parametrize(
+        "namespace",
+        [
+            "http://schemas.openxmlformats.org/drawingml/2006/main",
+            "http://purl.oclc.org/ooxml/drawingml/main",
+        ],
+    )
+    def test_docx_drawingml_split_text_is_scanned(tmp_path, member, namespace):
+        import zipfile
+    
+        path = tmp_path / "report.docx"
+        write_docx(path, [["Public report"]])
+        with zipfile.ZipFile(path, "a", compression=zipfile.ZIP_DEFLATED) as archive:
+            archive.writestr(
+                member,
+                f'<a:root xmlns:a="{namespace}"><a:p><a:r><a:t>gh</a:t></a:r>'
+                "<a:r><a:t>p_SYNTHETIC</a:t></a:r></a:p></a:root>",
+            )
+        result = run_guard(tmp_path)
+>       assert result.returncode == 1
+E       AssertionError: assert 0 == 1
+E        +  where 0 = CompletedProcess(args=['/opt/anaconda3/bin/python3', '<HOME>/.codex/automations/pd-workloop-resume/worktrees/R..._scanned=1 home-path=0 credential=0 private-key=0 scratch-path=0 internal-host=0 allowed_hits=0 errors=0\n', stderr='').returncode
+
+tests/test_publication_safety.py:921: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_publication_safety.py::test_docx_drawingml_split_text_is_scanned[http://schemas.openxmlformats.org/drawingml/2006/main-word/charts/chart1.xml]
+FAILED tests/test_publication_safety.py::test_docx_drawingml_split_text_is_scanned[http://schemas.openxmlformats.org/drawingml/2006/main-word/diagrams/data1.xml]
+========================= 2 failed, 2 passed in 0.44s ==========================
+
+MUTANT: auxiliary member validation disconnected
+exit=1
+============================= test session starts ==============================
+platform darwin -- Python 3.12.2, pytest-9.1.1, pluggy-1.6.0
+rootdir: <WORKTREE>
+configfile: pyproject.toml
+plugins: langsmith-0.10.9, cov-7.1.0, xdist-3.8.0, rerunfailures-16.3, datadir-1.8.0, typeguard-4.5.1, asyncio-1.3.0, pytest_httpserver-1.1.3, hypothesis-6.155.7, regressions-2.11.0, Faker-40.39.0, anyio-4.13.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 1 item
+
+tests/test_publication_safety.py F                                       [100%]
+
+=================================== FAILURES ===================================
+_______________ test_docx_corrupt_auxiliary_member_fails_closed ________________
+
+tmp_path = PosixPath('<TEMP>/qm/w0dtc0j132gd6ymf1hxtd2p00000gp/T/pytest-of-teacher/pytest-6562/test_docx_corrupt_auxiliary_me0/research')
+
+    def test_docx_corrupt_auxiliary_member_fails_closed(tmp_path):
+        import struct
+        import zipfile
+    
+        path = tmp_path / "report.docx"
+        write_docx(path, [["Public report"]])
+        with zipfile.ZipFile(path, "a", compression=zipfile.ZIP_STORED) as archive:
+            archive.writestr("media/image.bin", b"SYNTHETIC image bytes")
+            member = archive.getinfo("media/image.bin")
+        content = bytearray(path.read_bytes())
+        name_size, extra_size = struct.unpack_from("<HH", content, member.header_offset + 26)
+        offset = member.header_offset + 30 + name_size + extra_size
+        content[offset] ^= 1
+        path.write_bytes(content)
+        result = run_guard(tmp_path)
+>       assert result.returncode == 1
+E       AssertionError: assert 0 == 1
+E        +  where 0 = CompletedProcess(args=['/opt/anaconda3/bin/python3', '<HOME>/.codex/automations/pd-workloop-resume/worktrees/R..._scanned=1 home-path=0 credential=0 private-key=0 scratch-path=0 internal-host=0 allowed_hits=0 errors=0\n', stderr='').returncode
+
+tests/test_publication_safety.py:941: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_publication_safety.py::test_docx_corrupt_auxiliary_member_fails_closed
+============================== 1 failed in 0.24s ===============================
+
+EXACT RESTORE GREEN
+exit=0
+============================= test session starts ==============================
+platform darwin -- Python 3.12.2, pytest-9.1.1, pluggy-1.6.0
+rootdir: <WORKTREE>
+configfile: pyproject.toml
+plugins: langsmith-0.10.9, cov-7.1.0, xdist-3.8.0, rerunfailures-16.3, datadir-1.8.0, typeguard-4.5.1, asyncio-1.3.0, pytest_httpserver-1.1.3, hypothesis-6.155.7, regressions-2.11.0, Faker-40.39.0, anyio-4.13.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 158 items
+
+tests/test_publication_safety.py ....................................... [ 24%]
+........................................................................ [ 70%]
+...............................................                          [100%]
+
+============================= 158 passed in 7.66s ==============================

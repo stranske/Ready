@@ -134,7 +134,7 @@ class _DocxTreeBuilder(ET.TreeBuilder):
         raise ValueError("DOCX XML declaration")
 
 
-def docx_text_lines(content: bytes) -> list[bytes]:
+def docx_text_lines(content: bytes, *, raw_lines: list[bytes] | None = None) -> list[bytes]:
     """Decode bounded Word XML without extracting files or disclosing package text."""
     if len(content) > DOCX_MAX_TOTAL_BYTES:
         raise ValueError("DOCX limit")
@@ -152,10 +152,14 @@ def docx_text_lines(content: bytes) -> list[bytes]:
         for member in members:
             if member.file_size > DOCX_MAX_MEMBER_BYTES or member.flag_bits & 1:
                 raise ValueError("DOCX limit or encryption")
-            if not (member.filename.startswith("word/") and member.filename.endswith(".xml")):
-                continue
             with archive.open(member) as stream:
                 xml = stream.read(DOCX_MAX_MEMBER_BYTES + 1)
+            if len(xml) > DOCX_MAX_MEMBER_BYTES:
+                raise ValueError("DOCX member limit")
+            if raw_lines is not None:
+                raw_lines.extend(xml.splitlines())
+            if not (member.filename.startswith("word/") and member.filename.endswith(".xml")):
+                continue
             if (
                 len(xml) > DOCX_MAX_MEMBER_BYTES
                 or b"<!DOCTYPE" in xml.upper()
@@ -163,8 +167,13 @@ def docx_text_lines(content: bytes) -> list[bytes]:
             ):
                 raise ValueError("DOCX XML limit or declaration")
             document = ET.fromstring(xml, parser=ET.XMLParser(target=_DocxTreeBuilder()))
-            # Visible text only: join w:t runs per paragraph so split markers still match once.
-            for namespace in (WORD_NS, "{http://purl.oclc.org/ooxml/wordprocessingml/main}"):
+            # Join visible runs in both WordprocessingML and DrawingML dialects.
+            for namespace in (
+                WORD_NS,
+                "{http://purl.oclc.org/ooxml/wordprocessingml/main}",
+                "{http://schemas.openxmlformats.org/drawingml/2006/main}",
+                "{http://purl.oclc.org/ooxml/drawingml/main}",
+            ):
                 for paragraph in document.iter(namespace + "p"):
                     text = "".join(node.text or "" for node in paragraph.iter(namespace + "t"))
                     if text:
@@ -217,7 +226,8 @@ def scan(root: Path, allowlist: Path | None = None) -> int:
                 files_scanned += 1
                 if path.suffix.lower() == ".docx":
                     try:
-                        scan_lines = docx_text_lines(content)
+                        member_lines: list[bytes] = []
+                        visible_lines = docx_text_lines(content, raw_lines=member_lines)
                     except (
                         OSError,
                         ValueError,
@@ -228,9 +238,31 @@ def scan(root: Path, allowlist: Path | None = None) -> int:
                         zlib.error,
                         LookupError,
                     ):
-                        # Fail closed on the package; do not mine ZIP/XML bytes for hits.
+                        # Fail closed without disclosing corrupt package contents.
                         errors.append(f"{name}: invalid or oversized DOCX")
                         continue
+                    # Preserve byte/member/visible coverage without counting one
+                    # exposed marker repeatedly across representations. Counts are
+                    # conservative maxima, rather than an inventory of unique secrets.
+                    layer_counts = [
+                        Counter(
+                            {
+                                rule: sum(len(pattern.findall(line)) for line in layer)
+                                for rule, pattern in RULES.items()
+                            }
+                        )
+                        for layer in (content.splitlines(), member_lines, visible_lines)
+                    ]
+                    for rule in RULES:
+                        hits = max(layer[rule] for layer in layer_counts)
+                        if not hits:
+                            continue
+                        if (name, rule) in allowed:
+                            exceptions += hits
+                        else:
+                            counts[rule] += hits
+                            print(f"{name}:1: {rule} ({hits} hit(s))")
+                    continue
                 else:
                     scan_lines = content.splitlines()
                 for number, line in enumerate(scan_lines, 1):
