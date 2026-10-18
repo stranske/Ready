@@ -1,0 +1,97 @@
+Decoder disconnected: exit 1
+============================= test session starts ==============================
+platform linux -- Python 3.14.8, pytest-9.1.1, pluggy-1.7.0
+rootdir: /home/runner/work/Ready/Ready
+configfile: pyproject.toml
+plugins: langsmith-0.14.11, platformdirs-4.13.4, cov-7.1.0, anyio-4.15.1
+collected 218 items / 202 deselected / 16 selected
+
+tests/test_publication_safety.py ..FF..FF..FF..FF                        [100%]
+
+=================================== FAILURES ===================================
+_ test_docx_numeric_character_references_are_decoded[word/document.xml-True-False] _
+tests/test_publication_safety.py:828: in test_docx_numeric_character_references_are_decoded
+    assert result.returncode == int(unsafe)
+E   AssertionError: assert 0 == 1
+E    +  where 0 = CompletedProcess(args=['/opt/hostedtoolcache/Python/3.14.8/x64/bin/python', '/home/runner/work/Ready/Ready/scripts/che..._scanned=1 home-path=0 credential=0 private-key=0 scratch-path=0 internal-host=0 allowed_hits=0 errors=0\n', stderr='').returncode
+E    +  and   1 = int(True)
+_ test_docx_numeric_character_references_are_decoded[word/document.xml-True-True] _
+tests/test_publication_safety.py:828: in test_docx_numeric_character_references_are_decoded
+    assert result.returncode == int(unsafe)
+E   AssertionError: assert 0 == 1
+E    +  where 0 = CompletedProcess(args=['/opt/hostedtoolcache/Python/3.14.8/x64/bin/python', '/home/runner/work/Ready/Ready/scripts/che..._scanned=1 home-path=0 credential=0 private-key=0 scratch-path=0 internal-host=0 allowed_hits=0 errors=0\n', stderr='').returncode
+E    +  and   1 = int(True)
+_ test_docx_numeric_character_references_are_decoded[word/header1.xml-True-False] _
+tests/test_publication_safety.py:828: in test_docx_numeric_character_references_are_decoded
+    assert result.returncode == int(unsafe)
+E   AssertionError: assert 0 == 1
+E    +  where 0 = CompletedProcess(args=['/opt/hostedtoolcache/Python/3.14.8/x64/bin/python', '/home/runner/work/Ready/Ready/scripts/che..._scanned=1 home-path=0 credential=0 private-key=0 scratch-path=0 internal-host=0 allowed_hits=0 errors=0\n', stderr='').returncode
+E    +  and   1 = int(True)
+_ test_docx_numeric_character_references_are_decoded[word/header1.xml-True-True] _
+tests/test_publication_safety.py:828: in test_docx_numeric_character_references_are_decoded
+    assert result.returncode == int(unsafe)
+E   AssertionError: assert 0 == 1
+E    +  where 0 = CompletedProcess(args=['/opt/hostedtoolcache/Python/3.14.8/x64/bin/python', '/home/runner/work/Ready/Ready/scripts/che..._scanned=1 home-path=0 credential=0 private-key=0 scratch-path=0 internal-host=0 allowed_hits=0 errors=0\n', stderr='').returncode
+E    +  and   1 = int(True)
+_ test_docx_numeric_character_references_are_decoded[word/footer1.xml-True-False] _
+tests/test_publication_safety.py:828: in test_docx_numeric_character_references_are_decoded
+    assert result.returncode == int(unsafe)
+E   AssertionError: assert 0 == 1
+E    +  where 0 = CompletedProcess(args=['/opt/hostedtoolcache/Python/3.14.8/x64/bin/python', '/home/runner/work/Ready/Ready/scripts/che..._scanned=1 home-path=0 credential=0 private-key=0 scratch-path=0 internal-host=0 allowed_hits=0 errors=0\n', stderr='').returncode
+E    +  and   1 = int(True)
+_ test_docx_numeric_character_references_are_decoded[word/footer1.xml-True-True] _
+tests/test_publication_safety.py:828: in test_docx_numeric_character_references_are_decoded
+    assert result.returncode == int(unsafe)
+E   AssertionError: assert 0 == 1
+E    +  where 0 = CompletedProcess(args=['/opt/hostedtoolcache/Python/3.14.8/x64/bin/python', '/home/runner/work/Ready/Ready/scripts/che..._scanned=1 home-path=0 credential=0 private-key=0 scratch-path=0 internal-host=0 allowed_hits=0 errors=0\n', stderr='').returncode
+E    +  and   1 = int(True)
+_ test_docx_numeric_character_references_are_decoded[word/footnotes.xml-True-False] _
+tests/test_publication_safety.py:828: in test_docx_numeric_character_references_are_decoded
+    assert result.returncode == int(unsafe)
+E   AssertionError: assert 0 == 1
+E    +  where 0 = CompletedProcess(args=['/opt/hostedtoolcache/Python/3.14.8/x64/bin/python', '/home/runner/work/Ready/Ready/scripts/che..._scanned=1 home-path=0 credential=0 private-key=0 scratch-path=0 internal-host=0 allowed_hits=0 errors=0\n', stderr='').returncode
+E    +  and   1 = int(True)
+_ test_docx_numeric_character_references_are_decoded[word/footnotes.xml-True-True] _
+tests/test_publication_safety.py:828: in test_docx_numeric_character_references_are_decoded
+    assert result.returncode == int(unsafe)
+E   AssertionError: assert 0 == 1
+E    +  where 0 = CompletedProcess(args=['/opt/hostedtoolcache/Python/3.14.8/x64/bin/python', '/home/runner/work/Ready/Ready/scripts/che..._scanned=1 home-path=0 credential=0 private-key=0 scratch-path=0 internal-host=0 allowed_hits=0 errors=0\n', stderr='').returncode
+E    +  and   1 = int(True)
+=========================== short test summary info ============================
+FAILED tests/test_publication_safety.py::test_docx_numeric_character_references_are_decoded[word/document.xml-True-False] - AssertionError: assert 0 == 1
+ +  where 0 = CompletedProcess(args=['/opt/hostedtoolcache/Python/3.14.8/x64/bin/python', '/home/runner/work/Ready/Ready/scripts/che..._scanned=1 home-path=0 credential=0 private-key=0 scratch-path=0 internal-host=0 allowed_hits=0 errors=0\n', stderr='').returncode
+ +  and   1 = int(True)
+FAILED tests/test_publication_safety.py::test_docx_numeric_character_references_are_decoded[word/document.xml-True-True] - AssertionError: assert 0 == 1
+ +  where 0 = CompletedProcess(args=['/opt/hostedtoolcache/Python/3.14.8/x64/bin/python', '/home/runner/work/Ready/Ready/scripts/che..._scanned=1 home-path=0 credential=0 private-key=0 scratch-path=0 internal-host=0 allowed_hits=0 errors=0\n', stderr='').returncode
+ +  and   1 = int(True)
+FAILED tests/test_publication_safety.py::test_docx_numeric_character_references_are_decoded[word/header1.xml-True-False] - AssertionError: assert 0 == 1
+ +  where 0 = CompletedProcess(args=['/opt/hostedtoolcache/Python/3.14.8/x64/bin/python', '/home/runner/work/Ready/Ready/scripts/che..._scanned=1 home-path=0 credential=0 private-key=0 scratch-path=0 internal-host=0 allowed_hits=0 errors=0\n', stderr='').returncode
+ +  and   1 = int(True)
+FAILED tests/test_publication_safety.py::test_docx_numeric_character_references_are_decoded[word/header1.xml-True-True] - AssertionError: assert 0 == 1
+ +  where 0 = CompletedProcess(args=['/opt/hostedtoolcache/Python/3.14.8/x64/bin/python', '/home/runner/work/Ready/Ready/scripts/che..._scanned=1 home-path=0 credential=0 private-key=0 scratch-path=0 internal-host=0 allowed_hits=0 errors=0\n', stderr='').returncode
+ +  and   1 = int(True)
+FAILED tests/test_publication_safety.py::test_docx_numeric_character_references_are_decoded[word/footer1.xml-True-False] - AssertionError: assert 0 == 1
+ +  where 0 = CompletedProcess(args=['/opt/hostedtoolcache/Python/3.14.8/x64/bin/python', '/home/runner/work/Ready/Ready/scripts/che..._scanned=1 home-path=0 credential=0 private-key=0 scratch-path=0 internal-host=0 allowed_hits=0 errors=0\n', stderr='').returncode
+ +  and   1 = int(True)
+FAILED tests/test_publication_safety.py::test_docx_numeric_character_references_are_decoded[word/footer1.xml-True-True] - AssertionError: assert 0 == 1
+ +  where 0 = CompletedProcess(args=['/opt/hostedtoolcache/Python/3.14.8/x64/bin/python', '/home/runner/work/Ready/Ready/scripts/che..._scanned=1 home-path=0 credential=0 private-key=0 scratch-path=0 internal-host=0 allowed_hits=0 errors=0\n', stderr='').returncode
+ +  and   1 = int(True)
+FAILED tests/test_publication_safety.py::test_docx_numeric_character_references_are_decoded[word/footnotes.xml-True-False] - AssertionError: assert 0 == 1
+ +  where 0 = CompletedProcess(args=['/opt/hostedtoolcache/Python/3.14.8/x64/bin/python', '/home/runner/work/Ready/Ready/scripts/che..._scanned=1 home-path=0 credential=0 private-key=0 scratch-path=0 internal-host=0 allowed_hits=0 errors=0\n', stderr='').returncode
+ +  and   1 = int(True)
+FAILED tests/test_publication_safety.py::test_docx_numeric_character_references_are_decoded[word/footnotes.xml-True-True] - AssertionError: assert 0 == 1
+ +  where 0 = CompletedProcess(args=['/opt/hostedtoolcache/Python/3.14.8/x64/bin/python', '/home/runner/work/Ready/Ready/scripts/che..._scanned=1 home-path=0 credential=0 private-key=0 scratch-path=0 internal-host=0 allowed_hits=0 errors=0\n', stderr='').returncode
+ +  and   1 = int(True)
+================= 8 failed, 8 passed, 202 deselected in 1.14s ==================
+
+Exact source bytes restored: exit 0
+============================= test session starts ==============================
+platform linux -- Python 3.14.8, pytest-9.1.1, pluggy-1.7.0
+rootdir: /home/runner/work/Ready/Ready
+configfile: pyproject.toml
+plugins: langsmith-0.14.11, platformdirs-4.13.4, cov-7.1.0, anyio-4.15.1
+collected 218 items / 202 deselected / 16 selected
+
+tests/test_publication_safety.py ................                        [100%]
+
+====================== 16 passed, 202 deselected in 0.93s ======================

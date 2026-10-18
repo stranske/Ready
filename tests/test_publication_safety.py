@@ -796,6 +796,46 @@ def test_clean_compressed_docx_passes(tmp_path):
     assert result.returncode == 0 and "errors=0" in result.stdout
 
 
+@pytest.mark.parametrize("hexadecimal", [False, True])
+@pytest.mark.parametrize("unsafe", [False, True])
+@pytest.mark.parametrize(
+    "member", ["word/document.xml", "word/header1.xml", "word/footer1.xml", "word/footnotes.xml"]
+)
+def test_docx_numeric_character_references_are_decoded(tmp_path, member, unsafe, hexadecimal):
+    import zipfile
+
+    scanner = load_scanner()
+    path = tmp_path / "report.docx"
+    text = "ghp_SYNTHETIC" if unsafe else "Public report"
+    references = "".join(
+        f"&#x{ord(char):x};" if hexadecimal else f"&#{ord(char)};" for char in text
+    )
+    xml = (
+        f'<w:document xmlns:w="{scanner.WORD_NS[1:-1]}"><w:p><w:r><w:t>'
+        + references
+        + "</w:t></w:r></w:p></w:document>"
+    ).encode()
+    assert not any(pattern.search(xml) for pattern in scanner.RULES.values())
+    with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+        if member != "word/document.xml":
+            archive.writestr("word/document.xml", "<document/>")
+        archive.writestr(member, xml)
+    original = path.read_bytes()
+    assert not any(pattern.search(original) for pattern in scanner.RULES.values())
+
+    result = run_guard(tmp_path)
+
+    assert result.returncode == int(unsafe)
+    assert f"credential={int(unsafe)}" in result.stdout
+    assert "errors=0" in result.stdout
+    if unsafe:
+        assert "report.docx:1: credential (1 hit(s))" in result.stdout
+    assert "SYNTHETIC" not in result.stdout + result.stderr
+    assert member not in result.stdout + result.stderr
+    assert not result.stderr
+    assert path.read_bytes() == original
+
+
 def test_docx_does_not_join_text_across_paragraphs(tmp_path):
     write_docx(tmp_path / "report.docx", [["gh"], ["p_SYNTHETIC"]])
 

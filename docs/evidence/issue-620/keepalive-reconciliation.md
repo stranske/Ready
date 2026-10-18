@@ -1,5 +1,41 @@
 # Keepalive reconciliation — 2026-10-18
 
+## Follow-up: numeric XML character references
+
+Reviewed recent commits through `103bcd28de912968f282fed3d077f603a37f43e0`.
+The six implementation tasks remain supported. One acceptance item still needs
+reopening:
+
+- [ ] `pytest tests/test_publication_safety.py tests/test_prepare_publication.py` passes.
+
+The pre-change command with `-m "not slow"` passed all 303 cases but exited 1:
+inherited coverage measures the unrelated scaffold at 0%, below its unchanged
+80% threshold. The PR-body correction was rejected with "MCP tool call requires
+approval, but approval policy is never"; the remote checkbox remains overstated.
+
+Added 16 CLI regressions for decimal and hexadecimal XML character references in
+the document, headers, footers and footnotes. Neither compressed package bytes
+nor decompressed XML bytes match a rule. Unsafe decoded text must fail, clean
+text must pass, diagnostics must omit member names and source text, and package
+bytes must remain unchanged. Disconnecting visible-text decoding makes all eight
+unsafe cases fail while the eight clean cases pass. Restoring exact source bytes
+makes all 16 pass; see [captured outcomes](character-reference-red-green.txt).
+
+`pytest -m "not slow" -q` passes all 370 tests, with 100% existing scaffold
+coverage and the unchanged threshold. Ruff, `git diff --check`, and Black's
+line-length-100 check on the edited file pass. The required whole-tree Black
+command exits 1 because the sandbox denies its forkserver socket. No commit or
+push was attempted after that failed gate; `.git` is also read-only in this run.
+The test and evidence changes remain available for the automation runner.
+
+The repo publication guard exits 0: 3294 files, zero unallowed hits, 11 allowed
+hits, zero errors. The unchanged allowlist SHA-256 is
+`fb097006f598e678d946107f0a2a9a2a81dfa32562114fd971caefc28efed5bc`.
+GitHub reports [Gate](https://github.com/stranske/Ready/actions/runs/39124804199)
+and [Publication guard](https://github.com/stranske/Ready/actions/runs/39124803997)
+passed at the reviewed head, before these new tests. PR #634 is open and ready
+for review. No protected files were changed.
+
 ## Follow-up: nested text-box paragraphs
 
 Reviewed the recent commits through `b00f62f46e18b24441c22a172a2b18f74a095ed8`.
