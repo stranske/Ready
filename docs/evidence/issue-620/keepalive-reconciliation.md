@@ -1,5 +1,57 @@
 # Keepalive reconciliation — 2026-10-18
 
+## Follow-up: nested text-box paragraphs
+
+Reviewed the recent commits through `b00f62f46e18b24441c22a172a2b18f74a095ed8`.
+The six implementation tasks have supporting code, tests and regeneration
+evidence. The first acceptance checkbox still needs reopening: the literal
+two-file command with `-m "not slow"` passed all 297 pre-change tests but exited 1
+because inherited coverage measured the unrelated scaffold at 0%, below the
+unchanged 80% threshold. Broader coverage configuration remains outside this task.
+The attempted PR-body correction was rejected with "MCP tool call requires
+approval, but approval policy is never"; the remote checkbox remains overstated.
+
+Found and fixed a paragraph-boundary defect within the bounded-reader task.
+Paragraphs nested in text boxes contributed text to their containing paragraphs.
+That could hide a split-run marker in the containing paragraph, fabricate a
+marker across independent paragraphs, or count a nested marker twice. The
+iterative traversal now assigns each run to its nearest paragraph, visiting each
+node once per supported namespace rather than repeatedly scanning descendants.
+
+Six compressed-DOCX CLI cases cover these three behaviors in both supported Word
+namespaces. They check outer-file-only diagnostics, no disclosed package text,
+and unchanged package bytes. Temporarily restoring the old traversal makes all
+six fail; restoring the exact source bytes makes all six pass. Captured outcomes
+are in [`nested-paragraph-red-green.txt`](nested-paragraph-red-green.txt).
+
+`pytest -m "not slow" -q` passes all 354 tests with 100% existing scaffold
+coverage and the unchanged 80% threshold. Ruff and `git diff --check` pass.
+Black formatted each changed Python file at line length 100. The normal whole-tree
+check cannot launch multiprocessing workers in this sandbox, and its single-worker
+fallback timed out. A temporary serial scheduler outside the repository ran
+Black's own `reformat_one` using the normal CLI source selection and the required
+check flags, with caching disabled: exit 0, all 89 files unchanged. No formatting
+rules, source selection or repository configuration were changed.
+
+`python scripts/check_publication_safety.py` exits 0:
+
+```text
+files_scanned=3294 home-path=0 credential=0 private-key=0 scratch-path=0 internal-host=0 allowed_hits=11 errors=0
+```
+
+The allowlist SHA-256 remains
+`fb097006f598e678d946107f0a2a9a2a81dfa32562114fd971caefc28efed5bc`.
+GitHub confirms [Gate](https://github.com/stranske/Ready/actions/runs/39124114554)
+and [Publication guard](https://github.com/stranske/Ready/actions/runs/39124114342)
+passed at the reviewed head; these results predate this local fix. PR #634 was
+open and ready for review at that head.
+
+The source/test commit attempt failed because `.git` is read-only and Git could
+not create `.git/index.lock`. Changes remain in the workspace for the automation
+runner to collect. No protected files or publication exceptions were changed.
+
+---
+
 Reviewed the recent commits through `3ee1596441813156725aff225c9b0fa844252754`.
 The six implementation tasks are supported by the decoder, CLI/preparation
 regressions, README and regeneration receipts. The latest earlier commits added

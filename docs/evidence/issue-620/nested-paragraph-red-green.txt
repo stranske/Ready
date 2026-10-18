@@ -1,0 +1,46 @@
+Command: pytest tests/test_publication_safety.py -k text_box_paragraphs -m not slow --no-cov -q --tb=no
+
+RED: restored descendant-joining implementation; exit=1
+============================= test session starts ==============================
+platform linux -- Python 3.14.8, pytest-9.1.1, pluggy-1.7.0
+rootdir: /home/runner/work/Ready/Ready
+configfile: pyproject.toml
+plugins: langsmith-0.14.11, platformdirs-4.13.4, cov-7.1.0, anyio-4.15.1
+collected 202 items / 196 deselected / 6 selected
+
+tests/test_publication_safety.py FFFFFF                                  [100%]
+
+=========================== short test summary info ============================
+FAILED tests/test_publication_safety.py::test_docx_text_box_paragraphs_are_scanned_independently[before0-inside0-after0-0-http://schemas.openxmlformats.org/wordprocessingml/2006/main] - AssertionError: assert 1 == 0
+ +  where 1 = CompletedProcess(args=['/opt/hostedtoolcache/Python/3.14.8/x64/bin/python', '/home/runner/work/Ready/Ready/scripts/che..._scanned=1 home-path=0 credential=1 private-key=0 scratch-path=0 internal-host=0 allowed_hits=0 errors=0\n', stderr='').returncode
+ +  and   0 = int(False)
+ +    where False = bool(0)
+FAILED tests/test_publication_safety.py::test_docx_text_box_paragraphs_are_scanned_independently[before0-inside0-after0-0-http://purl.oclc.org/ooxml/wordprocessingml/main] - AssertionError: assert 1 == 0
+ +  where 1 = CompletedProcess(args=['/opt/hostedtoolcache/Python/3.14.8/x64/bin/python', '/home/runner/work/Ready/Ready/scripts/che..._scanned=1 home-path=0 credential=1 private-key=0 scratch-path=0 internal-host=0 allowed_hits=0 errors=0\n', stderr='').returncode
+ +  and   0 = int(False)
+ +    where False = bool(0)
+FAILED tests/test_publication_safety.py::test_docx_text_box_paragraphs_are_scanned_independently[before1-inside1-after1-1-http://schemas.openxmlformats.org/wordprocessingml/2006/main] - AssertionError: assert 0 == 1
+ +  where 0 = CompletedProcess(args=['/opt/hostedtoolcache/Python/3.14.8/x64/bin/python', '/home/runner/work/Ready/Ready/scripts/che..._scanned=1 home-path=0 credential=0 private-key=0 scratch-path=0 internal-host=0 allowed_hits=0 errors=0\n', stderr='').returncode
+ +  and   1 = int(True)
+ +    where True = bool(1)
+FAILED tests/test_publication_safety.py::test_docx_text_box_paragraphs_are_scanned_independently[before1-inside1-after1-1-http://purl.oclc.org/ooxml/wordprocessingml/main] - AssertionError: assert 0 == 1
+ +  where 0 = CompletedProcess(args=['/opt/hostedtoolcache/Python/3.14.8/x64/bin/python', '/home/runner/work/Ready/Ready/scripts/che..._scanned=1 home-path=0 credential=0 private-key=0 scratch-path=0 internal-host=0 allowed_hits=0 errors=0\n', stderr='').returncode
+ +  and   1 = int(True)
+ +    where True = bool(1)
+FAILED tests/test_publication_safety.py::test_docx_text_box_paragraphs_are_scanned_independently[before2-inside2-after2-1-http://schemas.openxmlformats.org/wordprocessingml/2006/main] - AssertionError: assert 'credential=1' in 'report.docx:1: credential (2 hit(s))\nfiles_scanned=1 home-path=0 credential=2 private-key=0 scratch-path=0 internal-host=0 allowed_hits=0 errors=0\n'
+ +  where 'report.docx:1: credential (2 hit(s))\nfiles_scanned=1 home-path=0 credential=2 private-key=0 scratch-path=0 internal-host=0 allowed_hits=0 errors=0\n' = CompletedProcess(args=['/opt/hostedtoolcache/Python/3.14.8/x64/bin/python', '/home/runner/work/Ready/Ready/scripts/che..._scanned=1 home-path=0 credential=2 private-key=0 scratch-path=0 internal-host=0 allowed_hits=0 errors=0\n', stderr='').stdout
+FAILED tests/test_publication_safety.py::test_docx_text_box_paragraphs_are_scanned_independently[before2-inside2-after2-1-http://purl.oclc.org/ooxml/wordprocessingml/main] - AssertionError: assert 'credential=1' in 'report.docx:1: credential (2 hit(s))\nfiles_scanned=1 home-path=0 credential=2 private-key=0 scratch-path=0 internal-host=0 allowed_hits=0 errors=0\n'
+ +  where 'report.docx:1: credential (2 hit(s))\nfiles_scanned=1 home-path=0 credential=2 private-key=0 scratch-path=0 internal-host=0 allowed_hits=0 errors=0\n' = CompletedProcess(args=['/opt/hostedtoolcache/Python/3.14.8/x64/bin/python', '/home/runner/work/Ready/Ready/scripts/che..._scanned=1 home-path=0 credential=2 private-key=0 scratch-path=0 internal-host=0 allowed_hits=0 errors=0\n', stderr='').stdout
+====================== 6 failed, 196 deselected in 0.48s =======================
+
+GREEN: restored exact source bytes; exit=0
+============================= test session starts ==============================
+platform linux -- Python 3.14.8, pytest-9.1.1, pluggy-1.7.0
+rootdir: /home/runner/work/Ready/Ready
+configfile: pyproject.toml
+plugins: langsmith-0.14.11, platformdirs-4.13.4, cov-7.1.0, anyio-4.15.1
+collected 202 items / 196 deselected / 6 selected
+
+tests/test_publication_safety.py ......                                  [100%]
+
+====================== 6 passed, 196 deselected in 0.49s =======================

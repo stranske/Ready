@@ -806,6 +806,56 @@ def test_docx_does_not_join_text_across_paragraphs(tmp_path):
     assert "SYNTHETIC" not in result.stdout + result.stderr
 
 
+@pytest.mark.parametrize(
+    "namespace",
+    [
+        "http://schemas.openxmlformats.org/wordprocessingml/2006/main",
+        "http://purl.oclc.org/ooxml/wordprocessingml/main",
+    ],
+)
+@pytest.mark.parametrize(
+    ("before", "inside", "after", "hits"),
+    [
+        (["gh"], ["p_SYNTHETIC"], [], 0),
+        (["gh"], ["Public text box"], ["p_SYNTHETIC"], 1),
+        (["Public paragraph"], ["gh", "p_SYNTHETIC"], [], 1),
+    ],
+)
+def test_docx_text_box_paragraphs_are_scanned_independently(
+    tmp_path, namespace, before, inside, after, hits
+):
+    import zipfile
+
+    def runs(parts):
+        return "".join(f"<w:r><w:t>{part}</w:t></w:r>" for part in parts)
+
+    path = tmp_path / "report.docx"
+    xml = (
+        f'<w:document xmlns:w="{namespace}" '
+        'xmlns:v="urn:schemas-microsoft-com:vml"><w:body><w:p>'
+        + runs(before)
+        + "<w:r><w:pict><v:shape><v:textbox><w:txbxContent><w:p>"
+        + runs(inside)
+        + "</w:p></w:txbxContent></v:textbox></v:shape></w:pict></w:r>"
+        + runs(after)
+        + "</w:p></w:body></w:document>"
+    )
+    with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+        archive.writestr("word/document.xml", xml)
+    original = path.read_bytes()
+    assert not any(pattern.search(original) for pattern in load_scanner().RULES.values())
+
+    result = run_guard(tmp_path)
+
+    assert result.returncode == int(bool(hits))
+    assert f"credential={hits}" in result.stdout
+    assert "errors=0" in result.stdout
+    assert "SYNTHETIC" not in result.stdout + result.stderr
+    assert "word/document.xml" not in result.stdout + result.stderr
+    assert not result.stderr
+    assert path.read_bytes() == original
+
+
 def test_compressed_docx_contiguous_marker_counts_once(tmp_path):
     """Joined w:t text must not also re-count the same marker from raw XML lines."""
     path = tmp_path / "report.docx"

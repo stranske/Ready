@@ -174,10 +174,24 @@ def docx_text_lines(content: bytes, *, raw_lines: list[bytes] | None = None) -> 
                 "{http://schemas.openxmlformats.org/drawingml/2006/main}",
                 "{http://purl.oclc.org/ooxml/drawingml/main}",
             ):
-                for paragraph in document.iter(namespace + "p"):
-                    text = "".join(node.text or "" for node in paragraph.iter(namespace + "t"))
-                    if text:
-                        lines.append(text.encode("utf-8"))
+                # A text box can contain paragraphs inside another paragraph.
+                # Visit each run once and assign it to its nearest paragraph,
+                # avoiding cross-paragraph joins and repeated descendant scans.
+                paragraphs: list[list[str]] = []
+                pending = [(document, False)]
+                while pending:
+                    node, closing = pending.pop()
+                    if closing:
+                        text = "".join(paragraphs.pop())
+                        if text:
+                            lines.append(text.encode("utf-8"))
+                        continue
+                    if node.tag == namespace + "p":
+                        paragraphs.append([])
+                        pending.append((node, True))
+                    elif node.tag == namespace + "t" and paragraphs:
+                        paragraphs[-1].append(node.text or "")
+                    pending.extend((child, False) for child in reversed(node))
     return lines
 
 
