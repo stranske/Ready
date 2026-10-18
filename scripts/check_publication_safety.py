@@ -163,12 +163,12 @@ def docx_text_lines(content: bytes) -> list[bytes]:
             ):
                 raise ValueError("DOCX XML limit or declaration")
             document = ET.fromstring(xml, parser=ET.XMLParser(target=_DocxTreeBuilder()))
-            # Retain the raw XML checks as well as visible text assembled across runs.
-            lines.extend(xml.splitlines())
+            # Visible text only: join w:t runs per paragraph so split markers still match once.
             for namespace in (WORD_NS, "{http://purl.oclc.org/ooxml/wordprocessingml/main}"):
                 for paragraph in document.iter(namespace + "p"):
                     text = "".join(node.text or "" for node in paragraph.iter(namespace + "t"))
-                    lines.append(text.encode("utf-8"))
+                    if text:
+                        lines.append(text.encode("utf-8"))
     return lines
 
 
@@ -215,10 +215,9 @@ def scan(root: Path, allowlist: Path | None = None) -> int:
                     errors.append(f"{name}: cannot read file")
                     continue
                 files_scanned += 1
-                decoded_lines: list[bytes] = []
                 if path.suffix.lower() == ".docx":
                     try:
-                        decoded_lines = docx_text_lines(content)
+                        scan_lines = docx_text_lines(content)
                     except (
                         OSError,
                         ValueError,
@@ -229,8 +228,12 @@ def scan(root: Path, allowlist: Path | None = None) -> int:
                         zlib.error,
                         LookupError,
                     ):
+                        # Fail closed on the package; do not mine ZIP/XML bytes for hits.
                         errors.append(f"{name}: invalid or oversized DOCX")
-                for number, line in enumerate([*content.splitlines(), *decoded_lines], 1):
+                        continue
+                else:
+                    scan_lines = content.splitlines()
+                for number, line in enumerate(scan_lines, 1):
                     hits_by_rule, invalid_string = line_hits(
                         line, path.suffix.lower() in {".json", ".jsonl"}
                     )
@@ -243,6 +246,7 @@ def scan(root: Path, allowlist: Path | None = None) -> int:
                             exceptions += hits
                         else:
                             counts[rule] += hits
+                            # Outer path + rule only; never echo matched publication text.
                             print(f"{name}:{number}: {rule} ({hits} hit(s))")
     if allowlist_path.is_symlink():
         errors.append(".publication-allow: symlinks are not allowed")

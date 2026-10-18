@@ -795,6 +795,19 @@ def test_clean_compressed_docx_passes(tmp_path):
     assert result.returncode == 0 and "errors=0" in result.stdout
 
 
+def test_compressed_docx_contiguous_marker_counts_once(tmp_path):
+    """Joined w:t text must not also re-count the same marker from raw XML lines."""
+    path = tmp_path / "report.docx"
+    write_docx(path, [["ghp_SYNTHETIC"]])
+    scanner = load_scanner()
+    assert not any(pattern.search(path.read_bytes()) for pattern in scanner.RULES.values())
+    result = run_guard(tmp_path)
+    assert result.returncode == 1
+    assert result.stdout.count("report.docx:") == 1
+    assert "credential=1" in result.stdout
+    assert "SYNTHETIC" not in result.stdout + result.stderr
+
+
 @pytest.mark.parametrize(
     "kind", ["not-zip", "bad-xml", "entity", "size", "members", "total", "duplicate"]
 )
