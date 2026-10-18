@@ -2,11 +2,13 @@
 
 import importlib
 import os
+import shutil
 import subprocess
 import sys
 from pathlib import Path
 
 import pytest
+import yaml
 
 REPO = Path(__file__).resolve().parents[1]
 SCRIPT = REPO / "scripts/check_publication_safety.py"
@@ -360,9 +362,160 @@ def test_publication_guard_workflow_runs_prepare_then_scan():
     workflow = (REPO / ".github/workflows/publication-guard.yml").read_text()
     assert "prepare_publication.py" in workflow
     assert "check_publication_safety.py --root" in workflow
+    assert "resolve_allowlist" in workflow
+    assert "policy_scope" in workflow
+    assert workflow.count('--allowlist "$selected_allowlist"') == 2
     assert workflow.index("prepare_publication.py") < workflow.index(
         "check_publication_safety.py --root"
     )
+
+
+def _run_publication_workflow_shell(root: Path) -> list[subprocess.CompletedProcess[str]]:
+    """Execute the workflow's actual shell blocks with safe local substitutions."""
+
+    repo = root.parent
+    workflow_root = repo / "research-program"
+    root.rename(workflow_root)
+    shutil.copytree(REPO / "scripts", repo / "scripts")
+    workflow = yaml.safe_load((REPO / ".github/workflows/publication-guard.yml").read_text())
+    steps = workflow["jobs"]["publication-safety"]["steps"]
+    runs = {step["name"]: step["run"] for step in steps if "run" in step}
+    output = repo / "github-output"
+    env = {**os.environ, "GITHUB_OUTPUT": str(output)}
+    results = [
+        subprocess.run(
+            ["bash", "-c", runs["Resolve publication policy"]],
+            cwd=repo,
+            env=env,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+    ]
+    outputs = dict(line.split("=", 1) for line in output.read_text().splitlines())
+    env.update(
+        {
+            "SOURCE_ALLOWLIST": outputs["source_allowlist"],
+            "POLICY_SCOPE": outputs["policy_scope"],
+        }
+    )
+    for name in ("Check published research", "Prepare publication staging copy"):
+        run = (
+            runs[name]
+            .replace(
+                "${{ steps.publication-policy.outputs.source_allowlist }}", "$SOURCE_ALLOWLIST"
+            )
+            .replace("${{ steps.publication-policy.outputs.policy_scope }}", "$POLICY_SCOPE")
+        )
+        results.append(
+            subprocess.run(
+                ["bash", "-c", run],
+                cwd=repo,
+                env=env,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+        )
+    return results
+
+
+def test_publication_guard_actual_workflow_shell_preserves_policy_parity(tmp_path):
+    fixture = tmp_path / "evidence.txt"
+    fixture.write_text("-----BEGIN PRIVATE KEY-----\nSYNTHETIC_TEST_MARKER")
+    (tmp_path.parent / ".publication-allow").write_text("# Root policy denies the fixture.\n")
+    (tmp_path / ".publication-allow").write_text(
+        "evidence.txt:private-key # Reviewed synthetic incomplete-key fixture.\n"
+    )
+
+    results = _run_publication_workflow_shell(tmp_path)
+
+    assert [result.returncode for result in results] == [0, 0, 0]
+
+
+def test_publication_guard_actual_workflow_shell_uses_root_fallback(tmp_path):
+    fixture = tmp_path / "evidence.txt"
+    fixture.write_text("-----BEGIN PRIVATE KEY-----\nSYNTHETIC_TEST_MARKER")
+    (tmp_path.parent / ".publication-allow").write_text(
+        "evidence.txt:private-key # Reviewed synthetic root fallback fixture.\n"
+    )
+
+    results = _run_publication_workflow_shell(tmp_path)
+
+    assert [result.returncode for result in results] == [0, 0, 0]
+
+
+@pytest.mark.parametrize("target", ["root-policy", "missing-policy"])
+def test_publication_guard_actual_workflow_shell_rejects_local_policy_symlinks(tmp_path, target):
+    (tmp_path / "evidence.txt").write_text("Public content\n")
+    (tmp_path.parent / ".publication-allow").write_text("# Root fallback policy.\n")
+    if target == "root-policy":
+        (tmp_path / ".publication-allow").symlink_to(tmp_path.parent / ".publication-allow")
+    else:
+        (tmp_path / ".publication-allow").symlink_to(target)
+
+    results = _run_publication_workflow_shell(tmp_path)
+
+    assert results[0].returncode == 0
+    assert results[1].returncode == 1
+    assert results[2].returncode == 1
+
+
+def test_publication_staging_reuses_selected_local_or_root_policy(tmp_path, monkeypatch):
+    scanner = load_scanner()
+    prepare = importlib.import_module("scripts.prepare_publication")
+    repo = tmp_path.parent
+    monkeypatch.setattr(scanner, "REPO_ROOT", repo)
+    monkeypatch.setattr(scanner, "DEFAULT_ROOT", tmp_path)
+    root_policy = repo / ".publication-allow"
+    fixture = "evidence.txt"
+    content = "-----BEGIN PRIVATE KEY-----\nSYNTHETIC_TEST_MARKER"
+
+    def stage_and_check() -> tuple[Path, Path]:
+        selected = scanner.resolve_allowlist(tmp_path, None)
+        staging = repo / "staging"
+        shutil.copytree(tmp_path, staging)
+        staged_policy = (
+            staging / ".publication-allow"
+            if selected == tmp_path / ".publication-allow"
+            else selected
+        )
+        prepare.prepare_copy(staging, staged_policy)
+        assert scanner.scan(staging, staged_policy) == 0
+        return selected, staged_policy
+
+    (tmp_path / fixture).write_text(content)
+    root_policy.write_text("# Root policy intentionally does not approve the fixture.\n")
+    (tmp_path / ".publication-allow").write_text(
+        f"{fixture}:private-key # Reviewed synthetic incomplete-key fixture.\n"
+    )
+    selected, staged_policy = stage_and_check()
+    assert selected == tmp_path / ".publication-allow"
+    assert staged_policy == repo / "staging" / ".publication-allow"
+
+    shutil.rmtree(repo / "staging")
+    (tmp_path / ".publication-allow").unlink()
+    root_policy.write_text(f"{fixture}:private-key # Reviewed synthetic fallback fixture.\n")
+    selected, staged_policy = stage_and_check()
+    assert selected == root_policy
+    assert staged_policy == root_policy
+
+
+def test_dangling_local_policy_never_falls_back_to_root_policy(tmp_path, monkeypatch):
+    scanner = load_scanner()
+    prepare = importlib.import_module("scripts.prepare_publication")
+    repo = tmp_path.parent
+    monkeypatch.setattr(scanner, "REPO_ROOT", repo)
+    monkeypatch.setattr(scanner, "DEFAULT_ROOT", tmp_path)
+    (tmp_path / "evidence.txt").write_text("Public content\n")
+    (repo / ".publication-allow").write_text("# Root fallback policy.\n")
+    (tmp_path / ".publication-allow").symlink_to("missing-policy")
+
+    selected = scanner.resolve_allowlist(tmp_path, None)
+    assert selected == tmp_path / ".publication-allow"
+    assert scanner.scan(tmp_path) == 1
+    with pytest.raises(ValueError, match="allowlist"):
+        prepare.prepare_copy(tmp_path, selected)
 
 
 @pytest.mark.parametrize(

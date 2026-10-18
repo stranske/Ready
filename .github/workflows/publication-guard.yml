@@ -16,15 +16,32 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
+      - name: Resolve publication policy
+        id: publication-policy
+        run: |
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          from pathlib import Path
+          from scripts.check_publication_safety import resolve_allowlist
+
+          root = Path("research-program").resolve()
+          policy = resolve_allowlist(root, None)
+          print(f"source_allowlist={policy}")
+          print(f"policy_scope={'local' if policy == root / '.publication-allow' else 'root'}")
+          PY
       - name: Check published research
-        run: python scripts/check_publication_safety.py
+        run: python scripts/check_publication_safety.py --allowlist "${{ steps.publication-policy.outputs.source_allowlist }}"
       - name: Prepare publication staging copy
         run: |
           set -euo pipefail
           staging="$(mktemp -d)"
           trap 'rm -rf "$staging"' EXIT
           cp -a research-program "$staging/research-program"
+          if [ "${{ steps.publication-policy.outputs.policy_scope }}" = "local" ]; then
+            selected_allowlist="$staging/research-program/.publication-allow"
+          else
+            selected_allowlist="${{ steps.publication-policy.outputs.source_allowlist }}"
+          fi
           python scripts/prepare_publication.py \
             --staging-root "$staging/research-program" \
-            --allowlist .publication-allow
-          python scripts/check_publication_safety.py --root "$staging/research-program" --allowlist .publication-allow
+            --allowlist "$selected_allowlist"
+          python scripts/check_publication_safety.py --root "$staging/research-program" --allowlist "$selected_allowlist"
