@@ -852,6 +852,41 @@ def test_docx_fail_closed_without_xml_disclosure(tmp_path, capsys, monkeypatch, 
     assert "SYNTHETIC" not in output
 
 
+@pytest.mark.parametrize("limit", ["members", "member-bytes", "expanded-bytes"])
+@pytest.mark.parametrize("overflow", [False, True])
+def test_docx_resource_limit_boundaries(tmp_path, capsys, monkeypatch, limit, overflow):
+    import zipfile
+
+    scanner = load_scanner()
+    path = tmp_path / "report.docx"
+    write_docx(path, [["Public report"]])
+    with zipfile.ZipFile(path, "a", compression=zipfile.ZIP_DEFLATED) as archive:
+        # An auxiliary member must count toward both size budgets, even though
+        # it contains no Word XML. Compression keeps the ZIP below either cap.
+        archive.writestr("custom/data.bin", b"SYNTHETIC" * 1024)
+        members = archive.infolist()
+    setting, boundary = {
+        "members": ("DOCX_MAX_MEMBERS", len(members)),
+        "member-bytes": ("DOCX_MAX_MEMBER_BYTES", max(m.file_size for m in members)),
+        "expanded-bytes": ("DOCX_MAX_TOTAL_BYTES", sum(m.file_size for m in members)),
+    }[limit]
+    if limit != "members":
+        assert path.stat().st_size < boundary - 1
+    monkeypatch.setattr(scanner, setting, boundary - int(overflow))
+    original = path.read_bytes()
+
+    assert scanner.scan(tmp_path) == int(overflow)
+
+    output = capsys.readouterr().out
+    if overflow:
+        assert "ERROR: report.docx: invalid or oversized DOCX" in output
+    assert f"errors={int(overflow)}" in output
+    assert "files_scanned=1" in output
+    assert "SYNTHETIC" not in output
+    assert "custom/data.bin" not in output
+    assert path.read_bytes() == original
+
+
 def test_strict_word_namespace_split_runs_are_guarded(tmp_path):
     import zipfile
 
