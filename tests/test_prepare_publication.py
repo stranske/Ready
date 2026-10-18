@@ -344,3 +344,18 @@ def test_preparation_rejects_a_named_pipe_instead_of_hanging(tmp_path):
 
     with pytest.raises(ValueError, match="not a regular file"):
         prepare.prepare_copy(stage)
+
+
+def test_compressed_docx_preserved_then_guarded(tmp_path, capsys):
+    import zipfile
+
+    path = tmp_path / "report.docx"
+    xml = '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:p><w:r><w:t>gh</w:t></w:r><w:r><w:t>p_SYNTHETIC</w:t></w:r></w:p></w:document>'
+    with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+        archive.writestr("word/document.xml", xml)
+    original = path.read_bytes()
+    assert not any(pattern.search(original) for pattern in guard.RULES.values())
+    prepare.prepare_copy(tmp_path)
+    assert path.read_bytes() == original
+    assert guard.scan(tmp_path) == 1
+    assert "SYNTHETIC" not in capsys.readouterr().out

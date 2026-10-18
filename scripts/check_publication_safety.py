@@ -3,8 +3,12 @@
 from __future__ import annotations
 
 import argparse
+import io
 import json
 import re
+import xml.etree.ElementTree as ET
+import zipfile
+import zlib
 from collections import Counter
 from pathlib import Path, PurePosixPath
 
@@ -119,6 +123,55 @@ def line_hits(line: bytes, structured: bool) -> tuple[Counter[str], bool]:
     return counts, invalid_string
 
 
+DOCX_MAX_MEMBERS = 4096
+DOCX_MAX_MEMBER_BYTES = 8 * 1024 * 1024
+DOCX_MAX_TOTAL_BYTES = 64 * 1024 * 1024
+WORD_NS = "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}"
+
+
+class _DocxTreeBuilder(ET.TreeBuilder):
+    def doctype(self, name, pubid, system):
+        raise ValueError("DOCX XML declaration")
+
+
+def docx_text_lines(content: bytes) -> list[bytes]:
+    """Decode bounded Word XML without extracting files or disclosing package text."""
+    if len(content) > DOCX_MAX_TOTAL_BYTES:
+        raise ValueError("DOCX limit")
+    lines: list[bytes] = []
+    with zipfile.ZipFile(io.BytesIO(content)) as archive:
+        members = archive.infolist()
+        names = [member.filename for member in members]
+        if (
+            len(members) > DOCX_MAX_MEMBERS
+            or len(names) != len(set(names))
+            or "word/document.xml" not in names
+            or sum(member.file_size for member in members) > DOCX_MAX_TOTAL_BYTES
+        ):
+            raise ValueError("DOCX limit or structure")
+        for member in members:
+            if member.file_size > DOCX_MAX_MEMBER_BYTES or member.flag_bits & 1:
+                raise ValueError("DOCX limit or encryption")
+            if not (member.filename.startswith("word/") and member.filename.endswith(".xml")):
+                continue
+            with archive.open(member) as stream:
+                xml = stream.read(DOCX_MAX_MEMBER_BYTES + 1)
+            if (
+                len(xml) > DOCX_MAX_MEMBER_BYTES
+                or b"<!DOCTYPE" in xml.upper()
+                or b"<!ENTITY" in xml.upper()
+            ):
+                raise ValueError("DOCX XML limit or declaration")
+            document = ET.fromstring(xml, parser=ET.XMLParser(target=_DocxTreeBuilder()))
+            # Retain the raw XML checks as well as visible text assembled across runs.
+            lines.extend(xml.splitlines())
+            for namespace in (WORD_NS, "{http://purl.oclc.org/ooxml/wordprocessingml/main}"):
+                for paragraph in document.iter(namespace + "p"):
+                    text = "".join(node.text or "" for node in paragraph.iter(namespace + "t"))
+                    lines.append(text.encode("utf-8"))
+    return lines
+
+
 def scan(root: Path, allowlist: Path | None = None) -> int:
     """Scan bytes in every file; fail closed for missing, unreadable, or linked files."""
     allowlist_path = resolve_allowlist(root, allowlist)
@@ -162,7 +215,22 @@ def scan(root: Path, allowlist: Path | None = None) -> int:
                     errors.append(f"{name}: cannot read file")
                     continue
                 files_scanned += 1
-                for number, line in enumerate(content.splitlines(), 1):
+                decoded_lines: list[bytes] = []
+                if path.suffix.lower() == ".docx":
+                    try:
+                        decoded_lines = docx_text_lines(content)
+                    except (
+                        OSError,
+                        ValueError,
+                        RuntimeError,
+                        zipfile.BadZipFile,
+                        NotImplementedError,
+                        ET.ParseError,
+                        zlib.error,
+                        LookupError,
+                    ):
+                        errors.append(f"{name}: invalid or oversized DOCX")
+                for number, line in enumerate([*content.splitlines(), *decoded_lines], 1):
                     hits_by_rule, invalid_string = line_hits(
                         line, path.suffix.lower() in {".json", ".jsonl"}
                     )

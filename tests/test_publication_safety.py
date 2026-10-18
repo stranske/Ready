@@ -735,3 +735,130 @@ def test_canonical_root_retains_legacy_policy_validation(tmp_path, monkeypatch, 
     if kind != "valid":
         assert "report.md:1: scratch-path (1 hit(s))" in output
         assert "ERROR: .publication-allow:" in output
+
+
+def write_docx(path, paragraphs, *, member="word/document.xml"):
+    import zipfile
+    from xml.sax.saxutils import escape
+
+    body = "".join(
+        "<w:p>" + "".join("<w:r><w:t>" + escape(run) + "</w:t></w:r>" for run in runs) + "</w:p>"
+        for runs in paragraphs
+    )
+    xml = (
+        '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>'
+        + body
+        + "</w:body></w:document>"
+    )
+    with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+        archive.writestr(
+            "word/document.xml",
+            (
+                xml
+                if member == "word/document.xml"
+                else '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"/>'
+            ),
+        )
+        if member != "word/document.xml":
+            archive.writestr(member, xml)
+
+
+@pytest.mark.parametrize(
+    ("runs", "rule"),
+    [
+        (["/Us", "ers/SYNTHETIC/report"], "home-path"),
+        (["gh", "p_SYNTHETIC"], "credential"),
+        (["worker.lo", "cal:8080/SYNTHETIC"], "internal-host"),
+        (["scratch", "pad/SYNTHETIC"], "scratch-path"),
+    ],
+)
+@pytest.mark.parametrize(
+    "member", ["word/document.xml", "word/header1.xml", "word/footer1.xml", "word/footnotes.xml"]
+)
+def test_compressed_docx_visible_text_and_split_runs_fail(tmp_path, runs, rule, member):
+    path = tmp_path / "report.docx"
+    write_docx(path, [runs], member=member)
+    scanner = load_scanner()
+    assert not any(pattern.search(path.read_bytes()) for pattern in scanner.RULES.values())
+    result = run_guard(tmp_path)
+    assert result.returncode == 1
+    assert "report.docx:" in result.stdout and rule in result.stdout
+    assert "SYNTHETIC" not in result.stdout + result.stderr
+    assert "errors=0" in result.stdout
+    allowlist_for(tmp_path).write_text(f"report.docx:{rule} # Reviewed synthetic fixture.\n")
+    assert run_guard(tmp_path).returncode == 0
+
+
+def test_clean_compressed_docx_passes(tmp_path):
+    write_docx(tmp_path / "report.docx", [["Public", " report"]])
+    result = run_guard(tmp_path)
+    assert result.returncode == 0 and "errors=0" in result.stdout
+
+
+@pytest.mark.parametrize(
+    "kind", ["not-zip", "bad-xml", "entity", "size", "members", "total", "duplicate"]
+)
+def test_docx_fail_closed_without_xml_disclosure(tmp_path, capsys, monkeypatch, kind):
+    import zipfile
+
+    scanner = load_scanner()
+    path = tmp_path / "report.docx"
+    if kind == "not-zip":
+        path.write_bytes(b"SYNTHETIC invalid zip")
+    else:
+        write_docx(path, [["Public report"]])
+        if kind in {"bad-xml", "entity"}:
+            with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+                archive.writestr(
+                    "word/document.xml",
+                    (
+                        "<SYNTHETIC"
+                        if kind == "bad-xml"
+                        else '<!DOCTYPE x [<!ENTITY e "SYNTHETIC">]><x>&e;</x>'
+                    ),
+                )
+        elif kind == "duplicate":
+            with (
+                pytest.warns(UserWarning, match="Duplicate"),
+                zipfile.ZipFile(path, "a") as archive,
+            ):
+                archive.writestr("word/document.xml", "SYNTHETIC")
+        else:
+            monkeypatch.setattr(
+                scanner,
+                {
+                    "size": "DOCX_MAX_MEMBER_BYTES",
+                    "members": "DOCX_MAX_MEMBERS",
+                    "total": "DOCX_MAX_TOTAL_BYTES",
+                }[kind],
+                0 if kind == "members" else 1,
+            )
+    assert scanner.scan(tmp_path) == 1
+    output = capsys.readouterr().out
+    assert "ERROR: report.docx: invalid or oversized DOCX" in output
+    assert "SYNTHETIC" not in output
+
+
+def test_strict_word_namespace_split_runs_are_guarded(tmp_path):
+    import zipfile
+
+    path = tmp_path / "report.docx"
+    xml = '<w:document xmlns:w="http://purl.oclc.org/ooxml/wordprocessingml/main"><w:p><w:r><w:t>gh</w:t></w:r><w:r><w:t>p_SYNTHETIC</w:t></w:r></w:p></w:document>'
+    with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+        archive.writestr("word/document.xml", xml)
+    result = run_guard(tmp_path)
+    assert result.returncode == 1
+    assert "SYNTHETIC" not in result.stdout + result.stderr
+
+
+def test_utf16_dtd_is_rejected_without_entity_expansion(tmp_path, capsys):
+    import zipfile
+
+    path = tmp_path / "report.docx"
+    xml = '<!DOCTYPE x [<!ENTITY e "SYNTHETIC">]><x>&e;</x>'
+    with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+        archive.writestr("word/document.xml", xml.encode("utf-16"))
+    assert load_scanner().scan(tmp_path) == 1
+    output = capsys.readouterr().out
+    assert "ERROR: report.docx: invalid or oversized DOCX" in output
+    assert "SYNTHETIC" not in output
