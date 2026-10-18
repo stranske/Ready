@@ -928,6 +928,52 @@ def test_docx_resource_limit_boundaries(tmp_path, capsys, monkeypatch, limit, ov
     assert path.read_bytes() == original
 
 
+@pytest.mark.parametrize("overflow", [False, True])
+def test_outer_docx_read_is_bounded(tmp_path, capsys, monkeypatch, overflow):
+    import io
+
+    scanner = load_scanner()
+    path = tmp_path / "report.DOCX"
+    write_docx(path, [["Public report"]])
+    limit = path.stat().st_size
+    if overflow:
+        with path.open("ab") as stream:
+            stream.write(b"\x00" * 64)
+    original = path.read_bytes()
+    monkeypatch.setattr(scanner, "DOCX_MAX_TOTAL_BYTES", limit)
+    (tmp_path / "z-report.md").write_text("Public report.\n")
+    real_open = Path.open
+    bytes_read = 0
+
+    class BudgetedInput(io.BytesIO):
+        def read(self, size=-1):
+            nonlocal bytes_read
+            assert 0 <= size <= limit + 1 - bytes_read, "DOCX input read exceeded its budget"
+            chunk = super().read(size)
+            bytes_read += len(chunk)
+            return chunk
+
+    def budgeted_open(self, *args, **kwargs):
+        if self == path:
+            return BudgetedInput(original)
+        return real_open(self, *args, **kwargs)
+
+    with monkeypatch.context() as patch:
+        patch.setattr(Path, "open", budgeted_open)
+        assert scanner.scan(tmp_path) == int(overflow)
+
+    output = capsys.readouterr()
+    assert bytes_read <= limit + 1
+    if not overflow:
+        assert bytes_read == len(original)
+    assert f"errors={int(overflow)}" in output.out
+    assert "files_scanned=2" in output.out
+    if overflow:
+        assert "ERROR: report.DOCX: invalid or oversized DOCX" in output.out
+    assert not output.err
+    assert path.read_bytes() == original
+
+
 def test_strict_word_namespace_split_runs_are_guarded(tmp_path):
     import zipfile
 

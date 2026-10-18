@@ -219,7 +219,13 @@ def scan(root: Path, allowlist: Path | None = None) -> int:
                         and path.samefile(allowlist_path)
                     ):
                         continue
-                    content = path.read_bytes()
+                    if path.suffix.lower() == ".docx":
+                        # Bound the outer package before decoding its ZIP members.
+                        # One extra byte lets the decoder reject oversized input.
+                        with path.open("rb") as stream:
+                            content = stream.read(DOCX_MAX_TOTAL_BYTES + 1)
+                    else:
+                        content = path.read_bytes()
                 except OSError:
                     errors.append(f"{name}: cannot read file")
                     continue
