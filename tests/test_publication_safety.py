@@ -371,7 +371,7 @@ def test_publication_guard_workflow_runs_prepare_then_scan():
 
 
 def _run_publication_workflow_shell(root: Path) -> list[subprocess.CompletedProcess[str]]:
-    """Execute the workflow's actual shell blocks with safe local substitutions."""
+    """Execute actual blocks with the runner's output-expression substitution."""
 
     repo = root.parent
     workflow_root = repo / "research-program"
@@ -379,12 +379,12 @@ def _run_publication_workflow_shell(root: Path) -> list[subprocess.CompletedProc
     shutil.copytree(REPO / "scripts", repo / "scripts")
     workflow = yaml.safe_load((REPO / ".github/workflows/publication-guard.yml").read_text())
     steps = workflow["jobs"]["publication-safety"]["steps"]
-    runs = {step["name"]: step["run"] for step in steps if "run" in step}
+    runnable = {step["name"]: step for step in steps if "run" in step}
     output = repo / "github-output"
     env = {**os.environ, "GITHUB_OUTPUT": str(output)}
     results = [
         subprocess.run(
-            ["bash", "-c", runs["Resolve publication policy"]],
+            ["bash", "-c", runnable["Resolve publication policy"]["run"]],
             cwd=repo,
             env=env,
             capture_output=True,
@@ -393,31 +393,45 @@ def _run_publication_workflow_shell(root: Path) -> list[subprocess.CompletedProc
         )
     ]
     outputs = dict(line.split("=", 1) for line in output.read_text().splitlines())
-    env.update(
-        {
-            "SOURCE_ALLOWLIST": outputs["source_allowlist"],
-            "POLICY_SCOPE": outputs["policy_scope"],
-        }
-    )
-    for name in ("Check published research", "Prepare publication staging copy"):
-        run = (
-            runs[name]
-            .replace(
-                "${{ steps.publication-policy.outputs.source_allowlist }}", "$SOURCE_ALLOWLIST"
+
+    def render(value: str) -> str:
+        for key, output_value in outputs.items():
+            value = value.replace(
+                "${{ steps.publication-policy.outputs." + key + " }}", output_value
             )
-            .replace("${{ steps.publication-policy.outputs.policy_scope }}", "$POLICY_SCOPE")
-        )
+        return value
+
+    for name in ("Check published research", "Prepare publication staging copy"):
+        step = runnable[name]
+        step_env = {**env, **{key: render(value) for key, value in step.get("env", {}).items()}}
         results.append(
             subprocess.run(
-                ["bash", "-c", run],
+                ["bash", "-c", render(step["run"])],
                 cwd=repo,
-                env=env,
+                env=step_env,
                 capture_output=True,
                 text=True,
                 check=False,
             )
         )
     return results
+
+
+@pytest.mark.parametrize("scope", ["local", "root"])
+def test_publication_workflow_treats_output_paths_as_data(tmp_path, scope):
+    repo = tmp_path / "literal$(touch injected)"
+    root = repo / "content"
+    root.mkdir(parents=True)
+    (root / "evidence.txt").write_text("Public content\n")
+    policy = root / ".publication-allow" if scope == "local" else repo / ".publication-allow"
+    policy.write_text("# Reviewed empty policy.\n")
+
+    results = _run_publication_workflow_shell(root)
+
+    assert not (repo / "injected").exists(), "workflow output became shell code"
+    assert [result.returncode for result in results] == [0, 0, 0], [
+        result.stderr for result in results
+    ]
 
 
 def test_publication_guard_actual_workflow_shell_preserves_policy_parity(tmp_path):

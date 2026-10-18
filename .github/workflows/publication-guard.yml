@@ -29,17 +29,22 @@ jobs:
           print(f"policy_scope={'local' if policy == root / '.publication-allow' else 'root'}")
           PY
       - name: Check published research
-        run: python scripts/check_publication_safety.py --allowlist "${{ steps.publication-policy.outputs.source_allowlist }}"
+        env:
+          SOURCE_ALLOWLIST: ${{ steps.publication-policy.outputs.source_allowlist }}
+        run: python scripts/check_publication_safety.py --allowlist "$SOURCE_ALLOWLIST"
       - name: Prepare publication staging copy
+        env:
+          SOURCE_ALLOWLIST: ${{ steps.publication-policy.outputs.source_allowlist }}
+          POLICY_SCOPE: ${{ steps.publication-policy.outputs.policy_scope }}
         run: |
           set -euo pipefail
           staging="$(mktemp -d)"
           trap 'rm -rf "$staging"' EXIT
           cp -a research-program "$staging/research-program"
-          if [ "${{ steps.publication-policy.outputs.policy_scope }}" = "local" ]; then
+          if [ "$POLICY_SCOPE" = "local" ]; then
             selected_allowlist="$staging/research-program/.publication-allow"
           else
-            selected_allowlist="${{ steps.publication-policy.outputs.source_allowlist }}"
+            selected_allowlist="$SOURCE_ALLOWLIST"
           fi
           python scripts/prepare_publication.py \
             --staging-root "$staging/research-program" \
