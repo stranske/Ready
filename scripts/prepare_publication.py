@@ -158,6 +158,10 @@ def prepare_copy(root: Path, allowlist: Path | None = None) -> Counter[str]:
                 raise ValueError(f"{path.relative_to(root).as_posix()}: not a regular file")
             original = path.read_bytes()
             files += 1
+            if path.suffix.lower() == ".docx":
+                # Never rewrite a package, even if its bytes happen to decode as UTF-8.
+                # The follow-on guard inspects its bounded XML and fails closed.
+                continue
             try:
                 text = original.decode("utf-8")
             except UnicodeError:

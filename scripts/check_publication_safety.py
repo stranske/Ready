@@ -3,8 +3,13 @@
 from __future__ import annotations
 
 import argparse
+import io
 import json
+import lzma
 import re
+import xml.etree.ElementTree as ET
+import zipfile
+import zlib
 from collections import Counter
 from pathlib import Path, PurePosixPath
 
@@ -119,6 +124,78 @@ def line_hits(line: bytes, structured: bool) -> tuple[Counter[str], bool]:
     return counts, invalid_string
 
 
+DOCX_MAX_MEMBERS = 4096
+DOCX_MAX_MEMBER_BYTES = 8 * 1024 * 1024
+DOCX_MAX_TOTAL_BYTES = 64 * 1024 * 1024
+WORD_NS = "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}"
+
+
+class _DocxTreeBuilder(ET.TreeBuilder):
+    def doctype(self, name, pubid, system):
+        raise ValueError("DOCX XML declaration")
+
+
+def docx_text_lines(content: bytes, *, raw_lines: list[bytes] | None = None) -> list[bytes]:
+    """Decode bounded Word XML without extracting files or disclosing package text."""
+    if len(content) > DOCX_MAX_TOTAL_BYTES:
+        raise ValueError("DOCX limit")
+    lines: list[bytes] = []
+    with zipfile.ZipFile(io.BytesIO(content)) as archive:
+        members = archive.infolist()
+        names = [member.filename for member in members]
+        if (
+            len(members) > DOCX_MAX_MEMBERS
+            or len(names) != len(set(names))
+            or "word/document.xml" not in names
+            or sum(member.file_size for member in members) > DOCX_MAX_TOTAL_BYTES
+        ):
+            raise ValueError("DOCX limit or structure")
+        for member in members:
+            if member.file_size > DOCX_MAX_MEMBER_BYTES or member.flag_bits & 1:
+                raise ValueError("DOCX limit or encryption")
+            with archive.open(member) as stream:
+                xml = stream.read(DOCX_MAX_MEMBER_BYTES + 1)
+            if len(xml) > DOCX_MAX_MEMBER_BYTES:
+                raise ValueError("DOCX member limit")
+            if raw_lines is not None:
+                raw_lines.extend(xml.splitlines())
+            if not (member.filename.startswith("word/") and member.filename.endswith(".xml")):
+                continue
+            if (
+                len(xml) > DOCX_MAX_MEMBER_BYTES
+                or b"<!DOCTYPE" in xml.upper()
+                or b"<!ENTITY" in xml.upper()
+            ):
+                raise ValueError("DOCX XML limit or declaration")
+            document = ET.fromstring(xml, parser=ET.XMLParser(target=_DocxTreeBuilder()))
+            # Join visible runs in both WordprocessingML and DrawingML dialects.
+            for namespace in (
+                WORD_NS,
+                "{http://purl.oclc.org/ooxml/wordprocessingml/main}",
+                "{http://schemas.openxmlformats.org/drawingml/2006/main}",
+                "{http://purl.oclc.org/ooxml/drawingml/main}",
+            ):
+                # A text box can contain paragraphs inside another paragraph.
+                # Visit each run once and assign it to its nearest paragraph,
+                # avoiding cross-paragraph joins and repeated descendant scans.
+                paragraphs: list[list[str]] = []
+                pending = [(document, False)]
+                while pending:
+                    node, closing = pending.pop()
+                    if closing:
+                        text = "".join(paragraphs.pop())
+                        if text:
+                            lines.append(text.encode("utf-8"))
+                        continue
+                    if node.tag == namespace + "p":
+                        paragraphs.append([])
+                        pending.append((node, True))
+                    elif node.tag == namespace + "t" and paragraphs:
+                        paragraphs[-1].append(node.text or "")
+                    pending.extend((child, False) for child in reversed(node))
+    return lines
+
+
 def scan(root: Path, allowlist: Path | None = None) -> int:
     """Scan bytes in every file; fail closed for missing, unreadable, or linked files."""
     allowlist_path = resolve_allowlist(root, allowlist)
@@ -157,12 +234,58 @@ def scan(root: Path, allowlist: Path | None = None) -> int:
                         and path.samefile(allowlist_path)
                     ):
                         continue
-                    content = path.read_bytes()
+                    if path.suffix.lower() == ".docx":
+                        # Bound the outer package before decoding its ZIP members.
+                        # One extra byte lets the decoder reject oversized input.
+                        with path.open("rb") as stream:
+                            content = stream.read(DOCX_MAX_TOTAL_BYTES + 1)
+                    else:
+                        content = path.read_bytes()
                 except OSError:
                     errors.append(f"{name}: cannot read file")
                     continue
                 files_scanned += 1
-                for number, line in enumerate(content.splitlines(), 1):
+                if path.suffix.lower() == ".docx":
+                    try:
+                        member_lines: list[bytes] = []
+                        visible_lines = docx_text_lines(content, raw_lines=member_lines)
+                    except (
+                        OSError,
+                        ValueError,
+                        RuntimeError,
+                        zipfile.BadZipFile,
+                        NotImplementedError,
+                        ET.ParseError,
+                        zlib.error,
+                        lzma.LZMAError,
+                        LookupError,
+                    ):
+                        # Fail closed without disclosing corrupt package contents.
+                        errors.append(f"{name}: invalid or oversized DOCX")
+                        continue
+                    # Preserve byte/member/visible coverage without counting one
+                    # exposed marker repeatedly across representations. Counts are
+                    # conservative maxima, rather than an inventory of unique secrets.
+                    layer_counts = []
+                    for layer in (content.splitlines(), member_lines, visible_lines):
+                        hits_for_layer: Counter[str] = Counter()
+                        for line in layer:
+                            hits_by_rule, _ = line_hits(line, structured=False)
+                            hits_for_layer.update(hits_by_rule)
+                        layer_counts.append(hits_for_layer)
+                    for rule in RULES:
+                        hits = max(layer[rule] for layer in layer_counts)
+                        if not hits:
+                            continue
+                        if (name, rule) in allowed:
+                            exceptions += hits
+                        else:
+                            counts[rule] += hits
+                            print(f"{name}:1: {rule} ({hits} hit(s))")
+                    continue
+                else:
+                    scan_lines = content.splitlines()
+                for number, line in enumerate(scan_lines, 1):
                     hits_by_rule, invalid_string = line_hits(
                         line, path.suffix.lower() in {".json", ".jsonl"}
                     )
@@ -175,6 +298,7 @@ def scan(root: Path, allowlist: Path | None = None) -> int:
                             exceptions += hits
                         else:
                             counts[rule] += hits
+                            # Outer path + rule only; never echo matched publication text.
                             print(f"{name}:{number}: {rule} ({hits} hit(s))")
     if allowlist_path.is_symlink():
         errors.append(".publication-allow: symlinks are not allowed")

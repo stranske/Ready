@@ -735,3 +735,572 @@ def test_canonical_root_retains_legacy_policy_validation(tmp_path, monkeypatch, 
     if kind != "valid":
         assert "report.md:1: scratch-path (1 hit(s))" in output
         assert "ERROR: .publication-allow:" in output
+
+
+def write_docx(path, paragraphs, *, member="word/document.xml"):
+    import zipfile
+    from xml.sax.saxutils import escape
+
+    body = "".join(
+        "<w:p>" + "".join("<w:r><w:t>" + escape(run) + "</w:t></w:r>" for run in runs) + "</w:p>"
+        for runs in paragraphs
+    )
+    xml = (
+        '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>'
+        + body
+        + "</w:body></w:document>"
+    )
+    with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+        archive.writestr(
+            "word/document.xml",
+            (
+                xml
+                if member == "word/document.xml"
+                else '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"/>'
+            ),
+        )
+        if member != "word/document.xml":
+            archive.writestr(member, xml)
+
+
+@pytest.mark.parametrize(
+    ("runs", "rule"),
+    [
+        (["/Us", "ers/SYNTHETIC/report"], "home-path"),
+        (["gh", "p_SYNTHETIC"], "credential"),
+        (["-----BEGIN RSA PRI", "VATE KEY-----SYNTHETIC"], "private-key"),
+        (["worker.lo", "cal:8080/SYNTHETIC"], "internal-host"),
+        (["scratch", "pad/SYNTHETIC"], "scratch-path"),
+    ],
+)
+@pytest.mark.parametrize(
+    "member", ["word/document.xml", "word/header1.xml", "word/footer1.xml", "word/footnotes.xml"]
+)
+def test_compressed_docx_visible_text_and_split_runs_fail(tmp_path, runs, rule, member):
+    path = tmp_path / "report.docx"
+    write_docx(path, [runs], member=member)
+    scanner = load_scanner()
+    assert not any(pattern.search(path.read_bytes()) for pattern in scanner.RULES.values())
+    result = run_guard(tmp_path)
+    assert result.returncode == 1
+    assert "report.docx:" in result.stdout and rule in result.stdout
+    assert "SYNTHETIC" not in result.stdout + result.stderr
+    assert "errors=0" in result.stdout
+    allowlist_for(tmp_path).write_text(f"report.docx:{rule} # Reviewed synthetic fixture.\n")
+    assert run_guard(tmp_path).returncode == 0
+
+
+def test_clean_compressed_docx_passes(tmp_path):
+    write_docx(tmp_path / "report.docx", [["Public", " report"]])
+    result = run_guard(tmp_path)
+    assert result.returncode == 0 and "errors=0" in result.stdout
+
+
+@pytest.mark.parametrize("hexadecimal", [False, True])
+@pytest.mark.parametrize("unsafe", [False, True])
+@pytest.mark.parametrize(
+    "member", ["word/document.xml", "word/header1.xml", "word/footer1.xml", "word/footnotes.xml"]
+)
+def test_docx_numeric_character_references_are_decoded(tmp_path, member, unsafe, hexadecimal):
+    import zipfile
+
+    scanner = load_scanner()
+    path = tmp_path / "report.docx"
+    text = "ghp_SYNTHETIC" if unsafe else "Public report"
+    references = "".join(
+        f"&#x{ord(char):x};" if hexadecimal else f"&#{ord(char)};" for char in text
+    )
+    xml = (
+        f'<w:document xmlns:w="{scanner.WORD_NS[1:-1]}"><w:p><w:r><w:t>'
+        + references
+        + "</w:t></w:r></w:p></w:document>"
+    ).encode()
+    assert not any(pattern.search(xml) for pattern in scanner.RULES.values())
+    with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+        if member != "word/document.xml":
+            archive.writestr("word/document.xml", "<document/>")
+        archive.writestr(member, xml)
+    original = path.read_bytes()
+    assert not any(pattern.search(original) for pattern in scanner.RULES.values())
+
+    result = run_guard(tmp_path)
+
+    assert result.returncode == int(unsafe)
+    assert f"credential={int(unsafe)}" in result.stdout
+    assert "errors=0" in result.stdout
+    if unsafe:
+        assert "report.docx:1: credential (1 hit(s))" in result.stdout
+    assert "SYNTHETIC" not in result.stdout + result.stderr
+    assert member not in result.stdout + result.stderr
+    assert not result.stderr
+    assert path.read_bytes() == original
+
+
+def test_docx_does_not_join_text_across_paragraphs(tmp_path):
+    write_docx(tmp_path / "report.docx", [["gh"], ["p_SYNTHETIC"]])
+
+    result = run_guard(tmp_path)
+
+    assert result.returncode == 0
+    assert "credential=0" in result.stdout and "errors=0" in result.stdout
+    assert "SYNTHETIC" not in result.stdout + result.stderr
+
+
+@pytest.mark.parametrize(
+    "namespace",
+    [
+        "http://schemas.openxmlformats.org/wordprocessingml/2006/main",
+        "http://purl.oclc.org/ooxml/wordprocessingml/main",
+    ],
+)
+@pytest.mark.parametrize(
+    ("before", "inside", "after", "hits"),
+    [
+        (["gh"], ["p_SYNTHETIC"], [], 0),
+        (["gh"], ["Public text box"], ["p_SYNTHETIC"], 1),
+        (["Public paragraph"], ["gh", "p_SYNTHETIC"], [], 1),
+    ],
+)
+def test_docx_text_box_paragraphs_are_scanned_independently(
+    tmp_path, namespace, before, inside, after, hits
+):
+    import zipfile
+
+    def runs(parts):
+        return "".join(f"<w:r><w:t>{part}</w:t></w:r>" for part in parts)
+
+    path = tmp_path / "report.docx"
+    xml = (
+        f'<w:document xmlns:w="{namespace}" '
+        'xmlns:v="urn:schemas-microsoft-com:vml"><w:body><w:p>'
+        + runs(before)
+        + "<w:r><w:pict><v:shape><v:textbox><w:txbxContent><w:p>"
+        + runs(inside)
+        + "</w:p></w:txbxContent></v:textbox></v:shape></w:pict></w:r>"
+        + runs(after)
+        + "</w:p></w:body></w:document>"
+    )
+    with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+        archive.writestr("word/document.xml", xml)
+    original = path.read_bytes()
+    assert not any(pattern.search(original) for pattern in load_scanner().RULES.values())
+
+    result = run_guard(tmp_path)
+
+    assert result.returncode == int(bool(hits))
+    assert f"credential={hits}" in result.stdout
+    assert "errors=0" in result.stdout
+    assert "SYNTHETIC" not in result.stdout + result.stderr
+    assert "word/document.xml" not in result.stdout + result.stderr
+    assert not result.stderr
+    assert path.read_bytes() == original
+
+
+def test_compressed_docx_contiguous_marker_counts_once(tmp_path):
+    """Joined w:t text must not also re-count the same marker from raw XML lines."""
+    path = tmp_path / "report.docx"
+    write_docx(path, [["ghp_SYNTHETIC"]])
+    scanner = load_scanner()
+    assert not any(pattern.search(path.read_bytes()) for pattern in scanner.RULES.values())
+    result = run_guard(tmp_path)
+    assert result.returncode == 1
+    assert result.stdout.count("report.docx:") == 1
+    assert "credential=1" in result.stdout
+    assert "SYNTHETIC" not in result.stdout + result.stderr
+
+
+@pytest.mark.parametrize(
+    "kind", ["not-zip", "bad-xml", "entity", "size", "members", "total", "duplicate"]
+)
+def test_docx_fail_closed_without_xml_disclosure(tmp_path, capsys, monkeypatch, kind):
+    import zipfile
+
+    scanner = load_scanner()
+    path = tmp_path / "report.docx"
+    if kind == "not-zip":
+        path.write_bytes(b"SYNTHETIC invalid zip")
+    else:
+        write_docx(path, [["Public report"]])
+        if kind in {"bad-xml", "entity"}:
+            with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+                archive.writestr(
+                    "word/document.xml",
+                    (
+                        "<SYNTHETIC"
+                        if kind == "bad-xml"
+                        else '<!DOCTYPE x [<!ENTITY e "SYNTHETIC">]><x>&e;</x>'
+                    ),
+                )
+        elif kind == "duplicate":
+            with (
+                pytest.warns(UserWarning, match="Duplicate"),
+                zipfile.ZipFile(path, "a") as archive,
+            ):
+                archive.writestr("word/document.xml", "SYNTHETIC")
+        else:
+            monkeypatch.setattr(
+                scanner,
+                {
+                    "size": "DOCX_MAX_MEMBER_BYTES",
+                    "members": "DOCX_MAX_MEMBERS",
+                    "total": "DOCX_MAX_TOTAL_BYTES",
+                }[kind],
+                0 if kind == "members" else 1,
+            )
+    assert scanner.scan(tmp_path) == 1
+    output = capsys.readouterr().out
+    assert "ERROR: report.docx: invalid or oversized DOCX" in output
+    assert "SYNTHETIC" not in output
+
+
+@pytest.mark.parametrize(
+    "member", ["word/document.xml", "word/header1.xml", "word/footer1.xml", "word/footnotes.xml"]
+)
+def test_malformed_word_part_is_not_allowlisted_and_scan_continues(tmp_path, member):
+    import zipfile
+
+    path = tmp_path / "a-report.docx"
+    with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+        if member != "word/document.xml":
+            archive.writestr("word/document.xml", "<document/>")
+        archive.writestr(member, '<broken hidden="ghp_SYNTHETIC"')
+    allowlist_for(tmp_path).write_text("a-report.docx:credential # Reviewed synthetic fixture.\n")
+    (tmp_path / "z-report.md").write_text("Public introduction\nclones/SYNTHETIC\n")
+    original = path.read_bytes()
+
+    result = run_guard(tmp_path)
+
+    assert result.returncode == 1
+    assert set(result.stdout.splitlines()) == {
+        "ERROR: a-report.docx: invalid or oversized DOCX",
+        "z-report.md:2: scratch-path (1 hit(s))",
+        "files_scanned=2 home-path=0 credential=0 private-key=0 "
+        "scratch-path=1 internal-host=0 allowed_hits=0 errors=1",
+    }
+    assert "SYNTHETIC" not in result.stdout + result.stderr
+    assert member not in result.stdout + result.stderr
+    assert not result.stderr
+    assert path.read_bytes() == original
+
+
+@pytest.mark.parametrize("limit", ["members", "member-bytes", "expanded-bytes"])
+@pytest.mark.parametrize("overflow", [False, True])
+def test_docx_resource_limit_boundaries(tmp_path, capsys, monkeypatch, limit, overflow):
+    import zipfile
+
+    scanner = load_scanner()
+    path = tmp_path / "report.docx"
+    write_docx(path, [["Public report"]])
+    with zipfile.ZipFile(path, "a", compression=zipfile.ZIP_DEFLATED) as archive:
+        # An auxiliary member must count toward both size budgets, even though
+        # it contains no Word XML. Compression keeps the ZIP below either cap.
+        archive.writestr("custom/data.bin", b"SYNTHETIC" * 1024)
+        members = archive.infolist()
+    setting, boundary = {
+        "members": ("DOCX_MAX_MEMBERS", len(members)),
+        "member-bytes": ("DOCX_MAX_MEMBER_BYTES", max(m.file_size for m in members)),
+        "expanded-bytes": ("DOCX_MAX_TOTAL_BYTES", sum(m.file_size for m in members)),
+    }[limit]
+    if limit != "members":
+        assert path.stat().st_size < boundary - 1
+    monkeypatch.setattr(scanner, setting, boundary - int(overflow))
+    original = path.read_bytes()
+
+    assert scanner.scan(tmp_path) == int(overflow)
+
+    output = capsys.readouterr().out
+    if overflow:
+        assert "ERROR: report.docx: invalid or oversized DOCX" in output
+    assert f"errors={int(overflow)}" in output
+    assert "files_scanned=1" in output
+    assert "SYNTHETIC" not in output
+    assert "custom/data.bin" not in output
+    assert path.read_bytes() == original
+
+
+@pytest.mark.parametrize("overflow", [False, True])
+def test_expanded_docx_member_reads_are_bounded(tmp_path, capsys, monkeypatch, overflow):
+    import zipfile
+
+    scanner = load_scanner()
+    path = tmp_path / "report.docx"
+    write_docx(path, [["Public report"]])
+    with zipfile.ZipFile(path, "a", compression=zipfile.ZIP_DEFLATED) as archive:
+        xml = archive.read("word/document.xml")
+        for member in ("word/header1.xml", "word/footer1.xml", "word/footnotes.xml"):
+            archive.writestr(member, xml)
+        # The largest expanded member is not XML; it must obey the same cap.
+        archive.writestr("custom/data.bin", b"Public data. " * 1024)
+        members = archive.infolist()
+    limit = max(member.file_size for member in members) - int(overflow)
+    monkeypatch.setattr(scanner, "DOCX_MAX_MEMBER_BYTES", limit)
+    original = path.read_bytes()
+    real_read = zipfile.ZipExtFile.read
+    reads = []
+
+    def bounded_read(stream, size=-1):
+        assert 0 <= size <= limit + 1, "Expanded DOCX member read exceeded its budget"
+        reads.append(stream.name)
+        return real_read(stream, size)
+
+    monkeypatch.setattr(zipfile.ZipExtFile, "read", bounded_read)
+
+    assert scanner.scan(tmp_path) == int(overflow)
+
+    output = capsys.readouterr()
+    assert reads == [member.filename for member in members if member.file_size <= limit]
+    assert f"errors={int(overflow)}" in output.out
+    assert "files_scanned=1" in output.out
+    if overflow:
+        assert "ERROR: report.docx: invalid or oversized DOCX" in output.out
+    assert not output.err
+    assert path.read_bytes() == original
+
+
+@pytest.mark.parametrize("overflow", [False, True])
+def test_outer_docx_read_is_bounded(tmp_path, capsys, monkeypatch, overflow):
+    import io
+
+    scanner = load_scanner()
+    path = tmp_path / "report.DOCX"
+    write_docx(path, [["Public report"]])
+    limit = path.stat().st_size
+    if overflow:
+        with path.open("ab") as stream:
+            stream.write(b"\x00" * 64)
+    original = path.read_bytes()
+    monkeypatch.setattr(scanner, "DOCX_MAX_TOTAL_BYTES", limit)
+    (tmp_path / "z-report.md").write_text("Public report.\n")
+    real_open = Path.open
+    bytes_read = 0
+
+    class BudgetedInput(io.BytesIO):
+        def read(self, size=-1):
+            nonlocal bytes_read
+            assert 0 <= size <= limit + 1 - bytes_read, "DOCX input read exceeded its budget"
+            chunk = super().read(size)
+            bytes_read += len(chunk)
+            return chunk
+
+    def budgeted_open(self, *args, **kwargs):
+        if self == path:
+            return BudgetedInput(original)
+        return real_open(self, *args, **kwargs)
+
+    with monkeypatch.context() as patch:
+        patch.setattr(Path, "open", budgeted_open)
+        assert scanner.scan(tmp_path) == int(overflow)
+
+    output = capsys.readouterr()
+    assert bytes_read <= limit + 1
+    if not overflow:
+        assert bytes_read == len(original)
+    assert f"errors={int(overflow)}" in output.out
+    assert "files_scanned=2" in output.out
+    if overflow:
+        assert "ERROR: report.DOCX: invalid or oversized DOCX" in output.out
+    assert not output.err
+    assert path.read_bytes() == original
+
+
+def test_strict_word_namespace_split_runs_are_guarded(tmp_path):
+    import zipfile
+
+    path = tmp_path / "report.docx"
+    xml = '<w:document xmlns:w="http://purl.oclc.org/ooxml/wordprocessingml/main"><w:p><w:r><w:t>gh</w:t></w:r><w:r><w:t>p_SYNTHETIC</w:t></w:r></w:p></w:document>'
+    with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+        archive.writestr("word/document.xml", xml)
+    result = run_guard(tmp_path)
+    assert result.returncode == 1
+    assert "SYNTHETIC" not in result.stdout + result.stderr
+
+
+def test_utf16_dtd_is_rejected_without_entity_expansion(tmp_path, capsys):
+    import zipfile
+
+    path = tmp_path / "report.docx"
+    xml = '<!DOCTYPE x [<!ENTITY e "SYNTHETIC">]><x>&e;</x>'
+    with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+        archive.writestr("word/document.xml", xml.encode("utf-16"))
+    assert load_scanner().scan(tmp_path) == 1
+    output = capsys.readouterr().out
+    assert "ERROR: report.docx: invalid or oversized DOCX" in output
+    assert "SYNTHETIC" not in output
+
+
+@pytest.mark.parametrize("encoding", ["utf-16-le", "utf-16-be"])
+@pytest.mark.parametrize(
+    "member", ["word/document.xml", "word/header1.xml", "word/footer1.xml", "word/footnotes.xml"]
+)
+@pytest.mark.parametrize("unsafe", [False, True])
+def test_utf16_docx_visible_text_is_decoded(tmp_path, encoding, member, unsafe):
+    import codecs
+    import zipfile
+
+    scanner = load_scanner()
+    path = tmp_path / "report.docx"
+    write_docx(path, [["Public report"]])
+    runs = ("scratch", "pad/SYNTHETIC") if unsafe else ("Public", " report")
+    xml = (
+        '<?xml version="1.0" encoding="UTF-16"?>'
+        f'<w:document xmlns:w="{scanner.WORD_NS[1:-1]}"><w:body><w:p>'
+        + "".join(f"<w:r><w:t>{run}</w:t></w:r>" for run in runs)
+        + "</w:p></w:body></w:document>"
+    )
+    bom = codecs.BOM_UTF16_LE if encoding == "utf-16-le" else codecs.BOM_UTF16_BE
+    # UTF-16 hides markers even in decompressed bytes; only parsed, joined text
+    # exposes the unsafe marker. Clean UTF-16 must not be rejected wholesale.
+    payload = bom + xml.encode(encoding)
+    assert not any(pattern.search(payload) for pattern in scanner.RULES.values())
+    with zipfile.ZipFile(path) as archive:
+        parts = {part.filename: archive.read(part) for part in archive.infolist()}
+    parts[member] = payload
+    with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+        for name, content in parts.items():
+            archive.writestr(name, content)
+    original = path.read_bytes()
+    assert not any(pattern.search(original) for pattern in scanner.RULES.values())
+
+    result = run_guard(tmp_path)
+
+    assert result.returncode == int(unsafe)
+    assert f"scratch-path={int(unsafe)}" in result.stdout
+    assert "errors=0" in result.stdout
+    if unsafe:
+        assert "report.docx:1: scratch-path (1 hit(s))" in result.stdout
+    assert "SYNTHETIC" not in result.stdout + result.stderr
+    assert member not in result.stdout + result.stderr
+    assert not result.stderr
+    assert path.read_bytes() == original
+
+
+@pytest.mark.parametrize("location", ["zip-comment", "xml-attribute", "auxiliary"])
+def test_docx_preserves_raw_byte_and_member_scans(tmp_path, location):
+    import zipfile
+
+    path = tmp_path / "report.docx"
+    write_docx(path, [["Public report"]])
+    with zipfile.ZipFile(path, "a", compression=zipfile.ZIP_DEFLATED) as archive:
+        if location == "zip-comment":
+            archive.comment = b"ghp_SYNTHETIC"
+        elif location == "xml-attribute":
+            archive.writestr("word/header1.xml", '<x hidden="ghp_SYNTHETIC"/>')
+        else:
+            archive.writestr("custom/data.bin", b"ghp_SYNTHETIC")
+    original = path.read_bytes()
+    result = run_guard(tmp_path)
+    assert result.returncode == 1
+    assert "credential=1" in result.stdout
+    assert "SYNTHETIC" not in result.stdout + result.stderr
+    assert path.read_bytes() == original
+
+
+@pytest.mark.parametrize("member", ["word/charts/chart1.xml", "word/diagrams/data1.xml"])
+@pytest.mark.parametrize(
+    "namespace",
+    [
+        "http://schemas.openxmlformats.org/drawingml/2006/main",
+        "http://purl.oclc.org/ooxml/drawingml/main",
+    ],
+)
+def test_docx_drawingml_split_text_is_scanned(tmp_path, member, namespace):
+    import zipfile
+
+    path = tmp_path / "report.docx"
+    write_docx(path, [["Public report"]])
+    with zipfile.ZipFile(path, "a", compression=zipfile.ZIP_DEFLATED) as archive:
+        archive.writestr(
+            member,
+            f'<a:root xmlns:a="{namespace}"><a:p><a:r><a:t>gh</a:t></a:r>'
+            "<a:r><a:t>p_SYNTHETIC</a:t></a:r></a:p></a:root>",
+        )
+    result = run_guard(tmp_path)
+    assert result.returncode == 1
+    assert "credential=1" in result.stdout and "errors=0" in result.stdout
+    assert "SYNTHETIC" not in result.stdout + result.stderr
+
+
+def test_docx_corrupt_auxiliary_member_fails_closed(tmp_path):
+    import struct
+    import zipfile
+
+    path = tmp_path / "report.docx"
+    write_docx(path, [["Public report"]])
+    with zipfile.ZipFile(path, "a", compression=zipfile.ZIP_STORED) as archive:
+        archive.writestr("media/image.bin", b"SYNTHETIC image bytes")
+        member = archive.getinfo("media/image.bin")
+    content = bytearray(path.read_bytes())
+    name_size, extra_size = struct.unpack_from("<HH", content, member.header_offset + 26)
+    offset = member.header_offset + 30 + name_size + extra_size
+    content[offset] ^= 1
+    path.write_bytes(content)
+    result = run_guard(tmp_path)
+    assert result.returncode == 1
+    assert "ERROR: report.docx: invalid or oversized DOCX" in result.stdout
+    assert "SYNTHETIC" not in result.stdout + result.stderr
+
+
+@pytest.mark.parametrize("kind", ["missing-document", "encrypted", "unsupported-compression"])
+def test_unreadable_docx_structure_fails_closed_through_cli(tmp_path, kind):
+    import struct
+    import zipfile
+
+    path = tmp_path / "a-report.docx"
+    member = "word/header1.xml" if kind == "missing-document" else "word/document.xml"
+    with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+        archive.writestr(member, "<document>SYNTHETIC</document>")
+    if kind != "missing-document":
+        content = bytearray(path.read_bytes())
+        central = content.index(b"PK\x01\x02")
+        # Keep the local and central ZIP headers consistent. Bit 0 declares
+        # encryption; compression method 99 is unsupported by zipfile.
+        local_field, central_field, value = (6, 8, 1) if kind == "encrypted" else (8, 10, 99)
+        for offset in (local_field, central + central_field):
+            struct.pack_into("<H", content, offset, value)
+        path.write_bytes(content)
+    original = path.read_bytes()
+    (tmp_path / "z-report.md").write_text("Public report.\n")
+
+    result = run_guard(tmp_path)
+
+    assert result.returncode == 1
+    assert result.stdout.splitlines() == [
+        "ERROR: a-report.docx: invalid or oversized DOCX",
+        "files_scanned=2 home-path=0 credential=0 private-key=0 "
+        "scratch-path=0 internal-host=0 allowed_hits=0 errors=1",
+    ]
+    assert "SYNTHETIC" not in result.stdout + result.stderr
+    assert member not in result.stdout + result.stderr
+    assert not result.stderr
+    assert path.read_bytes() == original
+
+
+def test_corrupt_zip_lzma_docx_continues_scanning_through_cli(tmp_path):
+    import struct
+    import zipfile
+
+    path = tmp_path / "a-report.docx"
+    with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_LZMA) as archive:
+        archive.writestr("word/document.xml", "<document>SYNTHETIC</document>")
+        member = archive.getinfo("word/document.xml")
+    content = bytearray(path.read_bytes())
+    name_size, extra_size = struct.unpack_from("<HH", content, member.header_offset + 26)
+    offset = member.header_offset + 30 + name_size + extra_size
+    # ZIP-LZMA stores a four-byte prefix before its LZMA filter properties.
+    # An invalid properties byte raises LZMAError before ZIP CRC validation.
+    content[offset + 4] = 0xFF
+    path.write_bytes(content)
+    original = path.read_bytes()
+    (tmp_path / "z-report.md").write_text("Public report.\n")
+
+    result = run_guard(tmp_path)
+
+    assert result.returncode == 1
+    assert result.stdout.splitlines() == [
+        "ERROR: a-report.docx: invalid or oversized DOCX",
+        "files_scanned=2 home-path=0 credential=0 private-key=0 "
+        "scratch-path=0 internal-host=0 allowed_hits=0 errors=1",
+    ]
+    assert not result.stderr
+    assert "SYNTHETIC" not in result.stdout + result.stderr
+    assert path.read_bytes() == original

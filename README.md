@@ -70,7 +70,11 @@ credential and host references with explicit redaction markers. Local evidence
 is preserved. Affected JSON and JSONL must remain parseable; ambiguous keys, invalid structured
 data requiring redaction, unreadable files and links stop preparation. Clean
 historical process captures retain their original bytes. Binary files remain intact
-and must pass the byte scanner. This export step is not a confidentiality review
+and must pass the guard. DOCX packages also receive bounded Word XML inspection,
+including headers, footers, footnotes and visible paragraph text joined across runs.
+Malformed XML, invalid packages, encryption and package resource-limit violations
+fail closed without printing package text. Unsafe Word exports must be regenerated
+upstream; preparation never edits their bytes. This export step is not a confidentiality review
 and never substitutes for the guard. Correct the source or export policy when
 a finding remains; subsequent publication must not restore it.
 

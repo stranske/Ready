@@ -1,0 +1,70 @@
+Actual corrupt ZIP-LZMA properties through production CLI. Remove only LZMAError catch; exact-byte restore.
+Restored source SHA256 229edf8bb4d6373a19010b13ddb722273338bed951219463acce9f11f58f9558
+Command: python -m pytest tests/test_publication_safety.py -q --no-cov -k corrupt_zip_lzma
+
+RED exit1
+============================= test session starts ==============================
+platform darwin -- Python 3.12.2, pytest-9.1.1, pluggy-1.6.0
+rootdir: /Users/teacher/.codex/automations/pd-workloop-resume/worktrees/Ready-issue-620-docx-guard
+configfile: pyproject.toml
+plugins: langsmith-0.10.9, cov-7.1.0, xdist-3.8.0, rerunfailures-16.3, datadir-1.8.0, typeguard-4.5.1, asyncio-1.3.0, pytest_httpserver-1.1.3, hypothesis-6.155.7, regressions-2.11.0, Faker-40.39.0, anyio-4.13.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 219 items / 218 deselected / 1 selected
+
+tests/test_publication_safety.py F                                       [100%]
+
+=================================== FAILURES ===================================
+__________ test_corrupt_zip_lzma_docx_continues_scanning_through_cli ___________
+
+tmp_path = PosixPath('/private/var/folders/qm/w0dtc0j132gd6ymf1hxtd2p00000gp/T/pytest-of-teacher/pytest-6598/test_corrupt_zip_lzma_docx_con0/research')
+
+    def test_corrupt_zip_lzma_docx_continues_scanning_through_cli(tmp_path):
+        import struct
+        import zipfile
+    
+        path = tmp_path / "a-report.docx"
+        with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_LZMA) as archive:
+            archive.writestr("word/document.xml", "<document>SYNTHETIC</document>")
+            member = archive.getinfo("word/document.xml")
+        content = bytearray(path.read_bytes())
+        name_size, extra_size = struct.unpack_from("<HH", content, member.header_offset + 26)
+        offset = member.header_offset + 30 + name_size + extra_size
+        # ZIP-LZMA stores a four-byte prefix before its LZMA filter properties.
+        # An invalid properties byte raises LZMAError before ZIP CRC validation.
+        content[offset + 4] = 0xFF
+        path.write_bytes(content)
+        original = path.read_bytes()
+        (tmp_path / "z-report.md").write_text("Public report.\n")
+    
+        result = run_guard(tmp_path)
+    
+        assert result.returncode == 1
+>       assert result.stdout.splitlines() == [
+            "ERROR: a-report.docx: invalid or oversized DOCX",
+            "files_scanned=2 home-path=0 credential=0 private-key=0 "
+            "scratch-path=0 internal-host=0 allowed_hits=0 errors=1",
+        ]
+E       AssertionError: assert [] == ['ERROR: a-re...s=0 errors=1']
+E         
+E         Right contains 2 more items, first extra item: 'ERROR: a-report.docx: invalid or oversized DOCX'
+E         Use -v to get more diff
+
+tests/test_publication_safety.py:1299: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_publication_safety.py::test_corrupt_zip_lzma_docx_continues_scanning_through_cli
+====================== 1 failed, 218 deselected in 0.28s =======================
+
+RESTORED GREEN exit0
+============================= test session starts ==============================
+platform darwin -- Python 3.12.2, pytest-9.1.1, pluggy-1.6.0
+rootdir: /Users/teacher/.codex/automations/pd-workloop-resume/worktrees/Ready-issue-620-docx-guard
+configfile: pyproject.toml
+plugins: langsmith-0.10.9, cov-7.1.0, xdist-3.8.0, rerunfailures-16.3, datadir-1.8.0, typeguard-4.5.1, asyncio-1.3.0, pytest_httpserver-1.1.3, hypothesis-6.155.7, regressions-2.11.0, Faker-40.39.0, anyio-4.13.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 219 items / 218 deselected / 1 selected
+
+tests/test_publication_safety.py .                                       [100%]
+
+====================== 1 passed, 218 deselected in 0.28s =======================
+
+Full repository suite, unchanged coverage gate: 371 passed, package coverage100%, required80%.

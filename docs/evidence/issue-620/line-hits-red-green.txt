@@ -1,0 +1,62 @@
+Task reconciliation: DOCX representations previously evaluated RULES directly despite
+the checked task requiring the shared line_hits path. All three representations now
+use line_hits with structured=False, retaining the maximum count across layers.
+
+Validation after restoration:
+- pytest -m 'not slow' -q: 321 passed; existing src scaffold coverage 100%.
+- pytest tests/test_publication_safety.py tests/test_prepare_publication.py -m 'not slow' --no-cov -q: 270 passed.
+- Black formatted both changed Python files; repository check: 89 files unchanged.
+  The multi-file check called Black with its standard CLI arguments and a standard
+  asyncio event loop with periodic wakeups because sandbox socket restrictions
+  stalled cross-thread completion notification. No formatting checks were disabled.
+- Ruff on both changed Python files: passed.
+- Repository guard: files_scanned=3294 home-path=0 credential=0 private-key=0 scratch-path=0 internal-host=0 allowed_hits=11 errors=0; exit=0.
+- .publication-allow unchanged; SHA-256 fb097006f598e678d946107f0a2a9a2a81dfa32562114fd971caefc28efed5bc.
+
+Command: /opt/hostedtoolcache/Python/3.14.8/x64/bin/python -m pytest tests/test_publication_safety.py -m not slow --no-cov -q --tb=line -k compressed_docx_visible_text_and_split_runs_fail and private-key
+
+RED: DOCX decoder temporarily disconnected; exit=1
+============================= test session starts ==============================
+platform linux -- Python 3.14.8, pytest-9.1.1, pluggy-1.7.0
+rootdir: /home/runner/work/Ready/Ready
+configfile: pyproject.toml
+plugins: langsmith-0.14.11, platformdirs-4.13.4, cov-7.1.0, anyio-4.15.1
+collected 169 items / 165 deselected / 4 selected
+
+tests/test_publication_safety.py FFFF                                    [100%]
+
+=================================== FAILURES ===================================
+E   AssertionError: assert 0 == 1
+     +  where 0 = CompletedProcess(args=['/opt/hostedtoolcache/Python/3.14.8/x64/bin/python', '/home/runner/work/Ready/Ready/scripts/che..._scanned=1 home-path=0 credential=0 private-key=0 scratch-path=0 internal-host=0 allowed_hits=0 errors=0\n', stderr='').returncode
+/home/runner/work/Ready/Ready/tests/test_publication_safety.py:785: AssertionError: assert 0 == 1
+E   AssertionError: assert 0 == 1
+     +  where 0 = CompletedProcess(args=['/opt/hostedtoolcache/Python/3.14.8/x64/bin/python', '/home/runner/work/Ready/Ready/scripts/che..._scanned=1 home-path=0 credential=0 private-key=0 scratch-path=0 internal-host=0 allowed_hits=0 errors=0\n', stderr='').returncode
+/home/runner/work/Ready/Ready/tests/test_publication_safety.py:785: AssertionError: assert 0 == 1
+E   AssertionError: assert 0 == 1
+     +  where 0 = CompletedProcess(args=['/opt/hostedtoolcache/Python/3.14.8/x64/bin/python', '/home/runner/work/Ready/Ready/scripts/che..._scanned=1 home-path=0 credential=0 private-key=0 scratch-path=0 internal-host=0 allowed_hits=0 errors=0\n', stderr='').returncode
+/home/runner/work/Ready/Ready/tests/test_publication_safety.py:785: AssertionError: assert 0 == 1
+E   AssertionError: assert 0 == 1
+     +  where 0 = CompletedProcess(args=['/opt/hostedtoolcache/Python/3.14.8/x64/bin/python', '/home/runner/work/Ready/Ready/scripts/che..._scanned=1 home-path=0 credential=0 private-key=0 scratch-path=0 internal-host=0 allowed_hits=0 errors=0\n', stderr='').returncode
+/home/runner/work/Ready/Ready/tests/test_publication_safety.py:785: AssertionError: assert 0 == 1
+=========================== short test summary info ============================
+FAILED tests/test_publication_safety.py::test_compressed_docx_visible_text_and_split_runs_fail[word/document.xml-runs2-private-key] - AssertionError: assert 0 == 1
+ +  where 0 = CompletedProcess(args=['/opt/hostedtoolcache/Python/3.14.8/x64/bin/python', '/home/runner/work/Ready/Ready/scripts/che..._scanned=1 home-path=0 credential=0 private-key=0 scratch-path=0 internal-host=0 allowed_hits=0 errors=0\n', stderr='').returncode
+FAILED tests/test_publication_safety.py::test_compressed_docx_visible_text_and_split_runs_fail[word/header1.xml-runs2-private-key] - AssertionError: assert 0 == 1
+ +  where 0 = CompletedProcess(args=['/opt/hostedtoolcache/Python/3.14.8/x64/bin/python', '/home/runner/work/Ready/Ready/scripts/che..._scanned=1 home-path=0 credential=0 private-key=0 scratch-path=0 internal-host=0 allowed_hits=0 errors=0\n', stderr='').returncode
+FAILED tests/test_publication_safety.py::test_compressed_docx_visible_text_and_split_runs_fail[word/footer1.xml-runs2-private-key] - AssertionError: assert 0 == 1
+ +  where 0 = CompletedProcess(args=['/opt/hostedtoolcache/Python/3.14.8/x64/bin/python', '/home/runner/work/Ready/Ready/scripts/che..._scanned=1 home-path=0 credential=0 private-key=0 scratch-path=0 internal-host=0 allowed_hits=0 errors=0\n', stderr='').returncode
+FAILED tests/test_publication_safety.py::test_compressed_docx_visible_text_and_split_runs_fail[word/footnotes.xml-runs2-private-key] - AssertionError: assert 0 == 1
+ +  where 0 = CompletedProcess(args=['/opt/hostedtoolcache/Python/3.14.8/x64/bin/python', '/home/runner/work/Ready/Ready/scripts/che..._scanned=1 home-path=0 credential=0 private-key=0 scratch-path=0 internal-host=0 allowed_hits=0 errors=0\n', stderr='').returncode
+====================== 4 failed, 165 deselected in 0.39s =======================
+
+GREEN: exact source bytes restored; exit=0
+============================= test session starts ==============================
+platform linux -- Python 3.14.8, pytest-9.1.1, pluggy-1.7.0
+rootdir: /home/runner/work/Ready/Ready
+configfile: pyproject.toml
+plugins: langsmith-0.14.11, platformdirs-4.13.4, cov-7.1.0, anyio-4.15.1
+collected 169 items / 165 deselected / 4 selected
+
+tests/test_publication_safety.py ....                                    [100%]
+
+====================== 4 passed, 165 deselected in 0.76s =======================
