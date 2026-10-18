@@ -153,3 +153,45 @@ but approval policy is never". The acceptance checkbox therefore remains
 overstated remotely. Git also rejected staging because `.git` is read-only and it
 could not create `.git/index.lock`; source-test and evidence changes remain in the
 workspace for the automation runner to collect. No protected files were changed.
+
+## Follow-up: bounded expanded-member reads
+
+Reviewed recent commits through `2b5ce239882a0cbd37982738d474eab508ab35bf`.
+All six implementation tasks remain supported. The first acceptance checkbox
+still needs reopening: the literal two-file pytest command with `-m "not slow"`
+ran all 295 pre-change cases successfully but exited 1 because the inherited
+coverage configuration measured the unrelated scaffold at 0%, below its unchanged
+80% threshold. The PR-body correction was rejected with "MCP tool call requires
+approval, but approval policy is never"; no remote checkbox was changed.
+
+Added two regression cases that enforce a bounded read request for every expanded
+ZIP member, covering the main document, headers, footers, footnotes and an auxiliary
+binary member. At the exact expanded-size boundary the package passes; one byte
+over the limit is rejected before reading that member. Both cases preserve the
+original package bytes. Removing the member-read bound makes both cases fail;
+restoring the exact source bytes makes both pass. Captured outcomes are in
+[`member-read-red-green.txt`](member-read-red-green.txt).
+
+`pytest -m "not slow" -q` passes all 348 tests with 100% existing scaffold coverage
+and the unchanged 80% threshold. Ruff and `git diff --check` pass. Black formatted
+the edited Python file at line length 100. The requested whole-tree check could
+not bind its default worker socket in the sandbox; a temporary serial scheduler
+outside the repository ran Black's own `reformat_one` with its normal CLI file
+selection and check flags: exit 0, all 89 files unchanged. Formatting rules and
+repository configuration were unchanged.
+
+GitHub confirms [Gate](https://github.com/stranske/Ready/actions/runs/39123505732)
+and [Publication guard](https://github.com/stranske/Ready/actions/runs/39123505401)
+passed at the reviewed head; these results predate the new test cases. PR #634
+was open and ready for review.
+
+Staging the test and evidence changes failed because `.git` is mounted read-only:
+Git could not create `.git/index.lock`. The changes remain in the workspace for
+the automation runner to collect. No protected files were changed. The allowlist
+SHA-256 remains `fb097006f598e678d946107f0a2a9a2a81dfa32562114fd971caefc28efed5bc`.
+
+`python scripts/check_publication_safety.py` exits 0:
+
+```text
+files_scanned=3294 home-path=0 credential=0 private-key=0 scratch-path=0 internal-host=0 allowed_hits=11 errors=0
+```

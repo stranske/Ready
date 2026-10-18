@@ -1,0 +1,139 @@
+Disconnected expanded-member read bound: exit 1
+============================= test session starts ==============================
+platform linux -- Python 3.14.8, pytest-9.1.1, pluggy-1.7.0
+rootdir: /home/runner/work/Ready/Ready
+configfile: pyproject.toml
+plugins: langsmith-0.14.11, platformdirs-4.13.4, cov-7.1.0, anyio-4.15.1
+collected 196 items / 194 deselected / 2 selected
+
+tests/test_publication_safety.py FF                                      [100%]
+
+=================================== FAILURES ===================================
+______________ test_expanded_docx_member_reads_are_bounded[False] ______________
+
+tmp_path = PosixPath('/tmp/pytest-of-runner/pytest-3/test_expanded_docx_member_read0/research')
+capsys = <_pytest.capture.CaptureFixture object at 0x7f1ace08e660>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f1acdda1810>
+overflow = False
+
+    @pytest.mark.parametrize("overflow", [False, True])
+    def test_expanded_docx_member_reads_are_bounded(tmp_path, capsys, monkeypatch, overflow):
+        import zipfile
+    
+        scanner = load_scanner()
+        path = tmp_path / "report.docx"
+        write_docx(path, [["Public report"]])
+        with zipfile.ZipFile(path, "a", compression=zipfile.ZIP_DEFLATED) as archive:
+            xml = archive.read("word/document.xml")
+            for member in ("word/header1.xml", "word/footer1.xml", "word/footnotes.xml"):
+                archive.writestr(member, xml)
+            # The largest expanded member is not XML; it must obey the same cap.
+            archive.writestr("custom/data.bin", b"Public data. " * 1024)
+            members = archive.infolist()
+        limit = max(member.file_size for member in members) - int(overflow)
+        monkeypatch.setattr(scanner, "DOCX_MAX_MEMBER_BYTES", limit)
+        original = path.read_bytes()
+        real_read = zipfile.ZipExtFile.read
+        reads = []
+    
+        def bounded_read(stream, size=-1):
+            assert 0 <= size <= limit + 1, "Expanded DOCX member read exceeded its budget"
+            reads.append(stream.name)
+            return real_read(stream, size)
+    
+        monkeypatch.setattr(zipfile.ZipExtFile, "read", bounded_read)
+    
+>       assert scanner.scan(tmp_path) == int(overflow)
+               ^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_publication_safety.py:958: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+scripts/check_publication_safety.py:236: in scan
+    visible_lines = docx_text_lines(content, raw_lines=member_lines)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+scripts/check_publication_safety.py:156: in docx_text_lines
+    xml = stream.read()
+          ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+stream = <zipfile.ZipExtFile [closed]>, size = -1
+
+    def bounded_read(stream, size=-1):
+>       assert 0 <= size <= limit + 1, "Expanded DOCX member read exceeded its budget"
+E       AssertionError: Expanded DOCX member read exceeded its budget
+E       assert 0 <= -1
+
+tests/test_publication_safety.py:952: AssertionError
+______________ test_expanded_docx_member_reads_are_bounded[True] _______________
+
+tmp_path = PosixPath('/tmp/pytest-of-runner/pytest-3/test_expanded_docx_member_read1/research')
+capsys = <_pytest.capture.CaptureFixture object at 0x7f1acdfeb4d0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f1acdda16e0>
+overflow = True
+
+    @pytest.mark.parametrize("overflow", [False, True])
+    def test_expanded_docx_member_reads_are_bounded(tmp_path, capsys, monkeypatch, overflow):
+        import zipfile
+    
+        scanner = load_scanner()
+        path = tmp_path / "report.docx"
+        write_docx(path, [["Public report"]])
+        with zipfile.ZipFile(path, "a", compression=zipfile.ZIP_DEFLATED) as archive:
+            xml = archive.read("word/document.xml")
+            for member in ("word/header1.xml", "word/footer1.xml", "word/footnotes.xml"):
+                archive.writestr(member, xml)
+            # The largest expanded member is not XML; it must obey the same cap.
+            archive.writestr("custom/data.bin", b"Public data. " * 1024)
+            members = archive.infolist()
+        limit = max(member.file_size for member in members) - int(overflow)
+        monkeypatch.setattr(scanner, "DOCX_MAX_MEMBER_BYTES", limit)
+        original = path.read_bytes()
+        real_read = zipfile.ZipExtFile.read
+        reads = []
+    
+        def bounded_read(stream, size=-1):
+            assert 0 <= size <= limit + 1, "Expanded DOCX member read exceeded its budget"
+            reads.append(stream.name)
+            return real_read(stream, size)
+    
+        monkeypatch.setattr(zipfile.ZipExtFile, "read", bounded_read)
+    
+>       assert scanner.scan(tmp_path) == int(overflow)
+               ^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_publication_safety.py:958: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+scripts/check_publication_safety.py:236: in scan
+    visible_lines = docx_text_lines(content, raw_lines=member_lines)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+scripts/check_publication_safety.py:156: in docx_text_lines
+    xml = stream.read()
+          ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+stream = <zipfile.ZipExtFile [closed]>, size = -1
+
+    def bounded_read(stream, size=-1):
+>       assert 0 <= size <= limit + 1, "Expanded DOCX member read exceeded its budget"
+E       AssertionError: Expanded DOCX member read exceeded its budget
+E       assert 0 <= -1
+
+tests/test_publication_safety.py:952: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_publication_safety.py::test_expanded_docx_member_reads_are_bounded[False] - AssertionError: Expanded DOCX member read exceeded its budget
+assert 0 <= -1
+FAILED tests/test_publication_safety.py::test_expanded_docx_member_reads_are_bounded[True] - AssertionError: Expanded DOCX member read exceeded its budget
+assert 0 <= -1
+====================== 2 failed, 194 deselected in 0.27s =======================
+
+Exact source bytes restored: exit 0
+============================= test session starts ==============================
+platform linux -- Python 3.14.8, pytest-9.1.1, pluggy-1.7.0
+rootdir: /home/runner/work/Ready/Ready
+configfile: pyproject.toml
+plugins: langsmith-0.14.11, platformdirs-4.13.4, cov-7.1.0, anyio-4.15.1
+collected 196 items / 194 deselected / 2 selected
+
+tests/test_publication_safety.py ..                                      [100%]
+
+====================== 2 passed, 194 deselected in 0.14s =======================

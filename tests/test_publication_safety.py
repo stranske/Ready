@@ -929,6 +929,45 @@ def test_docx_resource_limit_boundaries(tmp_path, capsys, monkeypatch, limit, ov
 
 
 @pytest.mark.parametrize("overflow", [False, True])
+def test_expanded_docx_member_reads_are_bounded(tmp_path, capsys, monkeypatch, overflow):
+    import zipfile
+
+    scanner = load_scanner()
+    path = tmp_path / "report.docx"
+    write_docx(path, [["Public report"]])
+    with zipfile.ZipFile(path, "a", compression=zipfile.ZIP_DEFLATED) as archive:
+        xml = archive.read("word/document.xml")
+        for member in ("word/header1.xml", "word/footer1.xml", "word/footnotes.xml"):
+            archive.writestr(member, xml)
+        # The largest expanded member is not XML; it must obey the same cap.
+        archive.writestr("custom/data.bin", b"Public data. " * 1024)
+        members = archive.infolist()
+    limit = max(member.file_size for member in members) - int(overflow)
+    monkeypatch.setattr(scanner, "DOCX_MAX_MEMBER_BYTES", limit)
+    original = path.read_bytes()
+    real_read = zipfile.ZipExtFile.read
+    reads = []
+
+    def bounded_read(stream, size=-1):
+        assert 0 <= size <= limit + 1, "Expanded DOCX member read exceeded its budget"
+        reads.append(stream.name)
+        return real_read(stream, size)
+
+    monkeypatch.setattr(zipfile.ZipExtFile, "read", bounded_read)
+
+    assert scanner.scan(tmp_path) == int(overflow)
+
+    output = capsys.readouterr()
+    assert reads == [member.filename for member in members if member.file_size <= limit]
+    assert f"errors={int(overflow)}" in output.out
+    assert "files_scanned=1" in output.out
+    if overflow:
+        assert "ERROR: report.docx: invalid or oversized DOCX" in output.out
+    assert not output.err
+    assert path.read_bytes() == original
+
+
+@pytest.mark.parametrize("overflow", [False, True])
 def test_outer_docx_read_is_bounded(tmp_path, capsys, monkeypatch, overflow):
     import io
 
