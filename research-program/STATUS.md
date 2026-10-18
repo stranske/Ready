@@ -1,8 +1,8 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-18T03:50:05Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-18T05:39:10Z)
 
 Units: 255 — done 251, superseded 4
 Paused: False   Phase stops: []
-Capacity (Orchestrator): codex=warn claude=warn cursor=ok gemini=warn vibe=ok muse=ok aider=ok
+Capacity (Orchestrator): codex=warn claude=ok cursor=ok gemini=warn vibe=ok muse=ok aider=ok
 Orchestrator evidence (30d): offload runs 136, bound to a research round 134, scored 134 (PASS 85, FAIL 49, infra 0) — codex 22/24 (P5 F17 I0), cursor 111/111 (P79 F32 I0), gemini 1/1 (P1 F0 I0)
 Worker write boundary: on — each unit writes only unitdirs/<unit>/, its output directory, artifacts/proposals/, its own clone's working tree (not .git) and temp
 Claude conservation: off (weekly window available)
@@ -268,18 +268,18 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-10-17T18:49:25Z — D3-unblock-sweep-2026-10-17T18 — refutation posted — stranske/Trend_Model_Project#6080
-- 2026-10-17T21:29:51Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
-- 2026-10-17T22:32:35Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
-- 2026-10-17T23:34:26Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
-- 2026-10-18T03:00:41Z — unblock — enqueued D3-unblock-sweep-2026-10-18T03
-- 2026-10-18T03:00:45Z — D3-unblock-sweep-2026-10-18T03 — route — router picked cursor from ['codex', 'cursor']
-- 2026-10-18T03:00:45Z — D3-unblock-sweep-2026-10-18T03 — claimed by driver (agent cursor)
-- 2026-10-18T03:03:34Z — D3-unblock-sweep-2026-10-18T03 — done — cursor produced 680 words at artifacts/sweeps/D3-unblock-sweep-2026-10-18T03.md in 120s
-- 2026-10-18T03:03:36Z — D3-unblock-sweep-2026-10-18T03 — refutation posted — stranske/Trend_Model_Project#6081
-- 2026-10-18T03:03:37Z — D3-unblock-sweep-2026-10-18T03 — refutation posted — stranske/Trend_Model_Project#6080
-- 2026-10-18T03:19:06Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 - 2026-10-18T03:34:38Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+- 2026-10-18T04:05:37Z — mirror — deferred — Ready#632 exact-head sync review; publication resumes by 2026-10-18T05:59:06+00:00; local work continues
+- 2026-10-18T04:20:39Z — mirror — deferred — Ready#632 exact-head sync review; publication resumes by 2026-10-18T05:59:06+00:00; local work continues
+- 2026-10-18T04:35:42Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+- 2026-10-18T04:35:43Z — mirror — deferred — Ready#632 exact-head sync review; publication resumes by 2026-10-18T05:59:06+00:00; local work continues
+- 2026-10-18T04:50:45Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+- 2026-10-18T04:50:46Z — mirror — deferred — Ready#632 exact-head sync review; publication resumes by 2026-10-18T05:59:06+00:00; local work continues
+- 2026-10-18T05:08:52Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+- 2026-10-18T05:09:05Z — mirror — deferred — Ready#632 exact-head sync review; publication resumes by 2026-10-18T07:03:47+00:00; local work continues
+- 2026-10-18T05:24:07Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+- 2026-10-18T05:24:07Z — mirror — deferred — Ready#632 exact-head sync review; publication resumes by 2026-10-18T07:03:47+00:00; local work continues
+- 2026-10-18T05:39:10Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
