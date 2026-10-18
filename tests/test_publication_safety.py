@@ -768,6 +768,7 @@ def write_docx(path, paragraphs, *, member="word/document.xml"):
     [
         (["/Us", "ers/SYNTHETIC/report"], "home-path"),
         (["gh", "p_SYNTHETIC"], "credential"),
+        (["-----BEGIN RSA PRI", "VATE KEY-----SYNTHETIC"], "private-key"),
         (["worker.lo", "cal:8080/SYNTHETIC"], "internal-host"),
         (["scratch", "pad/SYNTHETIC"], "scratch-path"),
     ],
@@ -793,6 +794,16 @@ def test_clean_compressed_docx_passes(tmp_path):
     write_docx(tmp_path / "report.docx", [["Public", " report"]])
     result = run_guard(tmp_path)
     assert result.returncode == 0 and "errors=0" in result.stdout
+
+
+def test_docx_does_not_join_text_across_paragraphs(tmp_path):
+    write_docx(tmp_path / "report.docx", [["gh"], ["p_SYNTHETIC"]])
+
+    result = run_guard(tmp_path)
+
+    assert result.returncode == 0
+    assert "credential=0" in result.stdout and "errors=0" in result.stdout
+    assert "SYNTHETIC" not in result.stdout + result.stderr
 
 
 def test_compressed_docx_contiguous_marker_counts_once(tmp_path):

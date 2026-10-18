@@ -244,15 +244,13 @@ def scan(root: Path, allowlist: Path | None = None) -> int:
                     # Preserve byte/member/visible coverage without counting one
                     # exposed marker repeatedly across representations. Counts are
                     # conservative maxima, rather than an inventory of unique secrets.
-                    layer_counts = [
-                        Counter(
-                            {
-                                rule: sum(len(pattern.findall(line)) for line in layer)
-                                for rule, pattern in RULES.items()
-                            }
-                        )
-                        for layer in (content.splitlines(), member_lines, visible_lines)
-                    ]
+                    layer_counts = []
+                    for layer in (content.splitlines(), member_lines, visible_lines):
+                        hits_for_layer: Counter[str] = Counter()
+                        for line in layer:
+                            hits_by_rule, _ = line_hits(line, structured=False)
+                            hits_for_layer.update(hits_by_rule)
+                        layer_counts.append(hits_for_layer)
                     for rule in RULES:
                         hits = max(layer[rule] for layer in layer_counts)
                         if not hits:
