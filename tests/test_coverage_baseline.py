@@ -325,6 +325,40 @@ def test_each_publication_file_and_metric_is_enforced():
     assert any("unrelated" in e for e in check_report(report, baseline))
 
 
+@pytest.mark.parametrize("name", sorted(PUBLICATION_FILES))
+@pytest.mark.parametrize(
+    "metric,covered,total",
+    [
+        ("line", "covered_lines", "num_statements"),
+        ("branch", "covered_branches", "num_branches"),
+    ],
+)
+def test_recorded_publication_baseline_rejects_one_lost_hit(name, metric, covered, total):
+    """Recorded floors must accept the evidence and detect the smallest coverage loss."""
+    from scripts.publication_coverage_gate import check_report
+
+    evidence = json.loads(
+        (REPO_ROOT / "docs/evidence/issue-623-publication-coverage.json").read_text()
+    )
+    report = {"files": {path: {"summary": evidence["files"][path]} for path in PUBLICATION_FILES}}
+    baseline = _load_baseline()
+    assert check_report(report, baseline) == []
+
+    summary = report["files"][name]["summary"]
+    measured = 100 * summary[covered] / summary[total]
+    floor = baseline["publication_scripts"][name][metric]
+    assert 0 <= measured - floor < 0.0001, "Floor must round down the recorded measurement"
+
+    baseline["publication_scripts"][name][metric] = measured
+    assert check_report(report, baseline) == [], "An exact floor match must pass"
+    baseline["publication_scripts"][name][metric] = floor
+    summary[covered] -= 1
+    errors = check_report(report, baseline)
+    assert len(errors) == 1
+    assert errors[0].startswith(f"{name}: {metric} coverage ")
+    assert "below floor" in errors[0]
+
+
 def test_publication_measurements_fail_closed():
     import copy
 
