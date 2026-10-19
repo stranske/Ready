@@ -300,6 +300,53 @@ def test_publication_coverage_tracks_subprocess_branches(
             assert summary["covered_branches"] == summary["num_branches"]
 
 
+@pytest.mark.parametrize("missing_branch", [None, *sorted(PUBLICATION_FILES)])
+def test_publication_coverage_merges_parallel_cli_measurements(
+    coverage_project: Path, missing_branch: str | None
+) -> None:
+    """Merge concurrent CLI hits without hiding either script's missing branch."""
+    for name in PUBLICATION_FILES:
+        (coverage_project / name).write_text(
+            "import sys\n\n"
+            "def choose(flag):\n"
+            "    if flag:\n"
+            "        return 1\n\n"
+            "choose(sys.argv[1] == 'true')\n"
+        )
+    (coverage_project / "tests/test_exercise.py").write_text(
+        "import subprocess\nimport sys\n\n"
+        "def test_exercise():\n"
+        "    children = []\n"
+        f"    for path in {sorted(PUBLICATION_FILES)!r}:\n"
+        "        for flag in ('true', 'false'):\n"
+        f"            if path == {missing_branch!r} and flag == 'false':\n"
+        "                continue\n"
+        "            children.append(subprocess.Popen([sys.executable, path, flag]))\n"
+        "    results = [child.wait(timeout=30) for child in children]\n"
+        "    assert all(code == 0 for code in results)\n"
+    )
+
+    result = _run_coverage_project(coverage_project)
+    output = result.stdout + result.stderr
+    assert result.returncode == int(missing_branch is not None), output
+    assert "1 passed" in output
+    assert "INTERNALERROR" not in output
+    report = json.loads((coverage_project / "coverage.json").read_text())
+    assert set(report["files"]) == PUBLICATION_FILES | {"src/my_project/unexecuted.py"}
+    assert report["totals"]["percent_covered"] >= _load_baseline()["line"]
+    for name in PUBLICATION_FILES:
+        summary = report["files"][name]["summary"]
+        assert summary["covered_lines"] == summary["num_statements"]
+        assert summary["missing_branches"] == int(name == missing_branch)
+    errors = [line for line in output.splitlines() if line.startswith("PUBLICATION COVERAGE:")]
+    if missing_branch is None:
+        assert not errors
+    else:
+        assert len(errors) == 1
+        assert f"{missing_branch}: branch coverage" in errors[0]
+        assert "below floor" in errors[0]
+
+
 @pytest.mark.parametrize("name", sorted(PUBLICATION_FILES))
 def test_pytest_gate_rejects_missing_publication_measurement(
     coverage_project: Path, name: str
