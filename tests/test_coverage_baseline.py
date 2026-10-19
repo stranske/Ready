@@ -17,6 +17,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+import pytest
+
 REPO_ROOT = Path(__file__).resolve().parent.parent
 BASELINE_PATH = REPO_ROOT / "config" / "coverage-baseline.json"
 CI_WORKFLOW_PATH = REPO_ROOT / ".github" / "workflows" / "ci.yml"
@@ -132,8 +134,9 @@ def test_publication_source_and_baseline_notes_agree():
     assert "synced fleet tooling remains excluded" in baseline["notes"]
 
 
-def test_measured_file_set_includes_unexecuted_source_and_excludes_tooling(tmp_path: Path) -> None:
-    """Exercise the real pytest hooks and config, including source discovery."""
+@pytest.fixture
+def coverage_project(tmp_path: Path) -> Path:
+    """Isolate the real coverage config and hooks with small, fully exercised scripts."""
     for relative in (
         "pyproject.toml",
         "config/coverage-baseline.json",
@@ -165,25 +168,80 @@ def test_measured_file_set_includes_unexecuted_source_and_excludes_tooling(tmp_p
         "        assert choose(True) == 1\n"
         "        assert choose(False) == 0\n"
     )
+    return tmp_path
+
+
+def _run_coverage_project(project: Path) -> subprocess.CompletedProcess[str]:
     env = {
         key: value
         for key, value in os.environ.items()
         if not key.startswith(("COVERAGE_", "COV_CORE_")) and key != "PYTEST_ADDOPTS"
     }
-    result = subprocess.run(
+    return subprocess.run(
         [sys.executable, "-m", "pytest", "-q", "-m", "not slow"],
-        cwd=tmp_path,
+        cwd=project,
         capture_output=True,
         text=True,
         check=False,
         env=env,
     )
+
+
+def test_measured_file_set_includes_unexecuted_source_and_excludes_tooling(
+    coverage_project: Path,
+) -> None:
+    """Exercise the real pytest hooks and config, including source discovery."""
+    result = _run_coverage_project(coverage_project)
     assert result.returncode == 0, result.stdout + result.stderr
-    report = json.loads((tmp_path / "coverage.json").read_text())
+    report = json.loads((coverage_project / "coverage.json").read_text())
     assert set(report["files"]) == PUBLICATION_FILES | {"src/my_project/unexecuted.py"}
     summary = report["files"]["src/my_project/unexecuted.py"]["summary"]
     assert summary["num_statements"] == 1
     assert summary["covered_lines"] == 0
+
+
+@pytest.mark.parametrize("name", sorted(PUBLICATION_FILES))
+@pytest.mark.parametrize("metric", ["line", "branch"])
+def test_pytest_gate_rejects_independent_publication_regressions(
+    coverage_project: Path, name: str, metric: str
+) -> None:
+    """Passing tests and aggregate coverage cannot mask either script's regression."""
+    script = coverage_project / name
+    if metric == "line":
+        # Leave every existing branch exercised, but add an unexecuted function body.
+        script.write_text(script.read_text() + "\ndef untested():\n    return 0\n")
+    else:
+        # Exercise every line while leaving the implicit false branch uncovered.
+        script.write_text(script.read_text().replace("    return 0\n", ""))
+        exercise = coverage_project / "tests/test_exercise.py"
+        exercise.write_text(
+            exercise.read_text().replace(
+                "        assert choose(False) == 0\n",
+                f"        if path != {name!r}:\n            assert choose(False) == 0\n",
+            )
+        )
+
+    result = _run_coverage_project(coverage_project)
+    output = result.stdout + result.stderr
+    assert result.returncode == 1, output
+    assert "1 passed" in output
+    assert f"PUBLICATION COVERAGE: {name}: {metric} coverage" in output
+    assert "below floor" in output
+    assert "INTERNALERROR" not in output
+
+    report = json.loads((coverage_project / "coverage.json").read_text())
+    assert report["totals"]["percent_covered"] >= _load_baseline()["line"]
+    for measured_name in PUBLICATION_FILES:
+        summary = report["files"][measured_name]["summary"]
+        for measured_metric, covered, total in (
+            ("line", "covered_lines", "num_statements"),
+            ("branch", "covered_branches", "num_branches"),
+        ):
+            percent = 100 * summary[covered] / summary[total]
+            if (measured_name, measured_metric) == (name, metric):
+                assert percent < _load_baseline()["publication_scripts"][name][metric]
+            else:
+                assert percent == 100
 
 
 def _measured_report():
