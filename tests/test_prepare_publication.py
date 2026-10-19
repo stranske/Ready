@@ -5,6 +5,7 @@ from __future__ import annotations
 import importlib
 import json
 import os
+import re
 import shutil
 from pathlib import Path
 
@@ -400,6 +401,16 @@ def test_scanner_vocabulary_has_explicit_preparation_dispositions():
             assert alternatives == (patterns.PRIVATE_KEY_HEADER_TEXT,)
             continue
         assert set(alternatives) == set(PUBLICATION_ALTERNATIVES[rule])
+        # Do not require scanner/redactor regex equality, but every declared
+        # lexical alternative must still appear in the full-value redactor.
+        redactor_sources = [
+            pattern.pattern for name, pattern, _ in patterns.TEXT_REPLACEMENTS if name == rule
+        ]
+        for alternative in alternatives:
+            escaped = re.escape(alternative)
+            assert any(
+                alternative in source or escaped in source for source in redactor_sources
+            ), f"{rule} alternative {alternative!r} missing from redactor"
 
 
 @pytest.mark.parametrize(
@@ -422,7 +433,17 @@ def test_shared_vocabulary_through_real_preparation_and_scan(tmp_path, rule, ori
     assert guard.RULES[rule].search(before)
     assert guard.scan(stage) == 1
     prepare.prepare_copy(stage)
-    assert (stage / path.name).read_text() == "Public before | " + expected + " | Public after"
+    exported = (stage / path.name).read_text()
+    assert exported == "Public before | " + expected + " | Public after"
+    # Full-value checks: suffixes, usernames, and host names must be gone, not
+    # merely that a marker stops matching after a partial rewrite.
+    for fragment in (
+        "SYNTHETIC_SUFFIX",
+        "SYNTHETIC_USER",
+        "SYNTHETIC_HOST",
+        "SYNTHETIC_ONLY",
+    ):
+        assert fragment not in exported
     assert path.read_bytes() == before
     assert guard.scan(stage) == 0
 
@@ -433,6 +454,11 @@ def test_shared_vocabulary_through_real_preparation_and_scan(tmp_path, rule, ori
         cases[0][0]
         for alternatives in PUBLICATION_ALTERNATIVES.values()
         for cases in alternatives.values()
+    ]
+    + [
+        # PEM binary findings keep the documented preserve-and-scan disposition.
+        "-----BEGIN PRIVATE KEY-----\nSYNTHETIC_MATERIAL\n-----END PRIVATE KEY-----",
+        "-----BEGIN RSA PRIVATE KEY-----\nSYNTHETIC_MATERIAL\n-----END RSA PRIVATE KEY-----",
     ],
 )
 def test_shared_vocabulary_binary_outcome_is_preserve_and_scan(tmp_path, marker):
