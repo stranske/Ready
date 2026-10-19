@@ -1,9 +1,9 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-19T11:41:01Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-19T11:56:29Z)
 
 Units: 260 — done 256, superseded 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=warn claude=ok cursor=ok gemini=shed vibe=ok muse=ok aider=ok
-Orchestrator evidence (30d): offload runs 130, bound to a research round 128, scored 128 (PASS 81, FAIL 47, infra 0) — codex 20/22 (P5 F15 I0), cursor 107/107 (P75 F32 I0), gemini 1/1 (P1 F0 I0)
+Orchestrator evidence (30d): offload runs 129, bound to a research round 127, scored 127 (PASS 80, FAIL 47, infra 0) — codex 20/22 (P5 F15 I0), cursor 106/106 (P74 F32 I0), gemini 1/1 (P1 F0 I0)
 Worker write boundary: on — each unit writes only unitdirs/<unit>/, its output directory, artifacts/proposals/, its own clone's working tree (not .git) and temp
 Claude conservation: off (weekly window available)
 Owner inbox: https://github.com/stranske/Ready/issues/553
@@ -273,7 +273,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-10-19T10:16:35Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
 - 2026-10-19T10:32:03Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
 - 2026-10-19T10:47:33Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
 - 2026-10-19T11:04:49Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
@@ -285,6 +284,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-10-19T11:25:26Z — D3-unblock-sweep-2026-10-19T11 — refutation posted — stranske/Trend_Model_Project#6081
 - 2026-10-19T11:25:28Z — D3-unblock-sweep-2026-10-19T11 — refutation posted — stranske/Trend_Model_Project#6080
 - 2026-10-19T11:41:01Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+- 2026-10-19T11:56:29Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
