@@ -372,6 +372,53 @@ def test_pytest_gate_rejects_missing_publication_measurement(
     assert report["totals"]["percent_covered"] >= _load_baseline()["line"]
 
 
+@pytest.mark.parametrize("name", sorted(PUBLICATION_FILES))
+def test_previous_passing_run_cannot_mask_removed_branch_test(
+    coverage_project: Path, name: str
+) -> None:
+    """Reusing a workspace must replace passing evidence when branch tests disappear."""
+    script = coverage_project / name
+    script.write_text(script.read_text().replace("    return 0\n", ""))
+    exercise = coverage_project / "tests/test_exercise.py"
+    exercise.write_text(
+        exercise.read_text().replace(
+            "        assert choose(False) == 0\n", "        choose(False)\n"
+        )
+    )
+    result = _run_coverage_project(coverage_project)
+    assert result.returncode == 0, result.stdout + result.stderr
+    report_path = coverage_project / "coverage.json"
+    previous = json.loads(report_path.read_text())
+    assert (coverage_project / ".coverage").is_file()
+
+    # Remove one branch exercise without changing production code or deleting
+    # the passing report and coverage database left by the previous invocation.
+    exercise.write_text(
+        exercise.read_text().replace(
+            "        choose(False)\n",
+            f"        if path != {name!r}:\n            choose(False)\n",
+        )
+    )
+
+    result = _run_coverage_project(coverage_project)
+    output = result.stdout + result.stderr
+    assert result.returncode == 1, output
+    assert "1 passed" in output
+    assert f"PUBLICATION COVERAGE: {name}: branch coverage" in output
+    assert "below floor" in output
+    assert "INTERNALERROR" not in output
+
+    current = json.loads(report_path.read_text())
+    assert set(current["files"]) == set(previous["files"])
+    assert current["totals"]["percent_covered"] >= _load_baseline()["line"]
+    for path in PUBLICATION_FILES:
+        before = previous["files"][path]["summary"]
+        after = current["files"][path]["summary"]
+        assert after["covered_lines"] == before["covered_lines"]
+        assert after["num_branches"] == before["num_branches"]
+        assert after["covered_branches"] == before["covered_branches"] - int(path == name)
+
+
 @pytest.mark.parametrize("stale_report", [False, True], ids=["absent", "stale"])
 def test_pytest_gate_requires_current_json_report(
     coverage_project: Path, stale_report: bool
