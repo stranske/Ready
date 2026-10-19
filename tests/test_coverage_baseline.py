@@ -10,7 +10,9 @@ from __future__ import annotations
 
 import json
 import math
+import os
 import re
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -130,6 +132,60 @@ def test_publication_source_and_baseline_notes_agree():
     assert "synced fleet tooling remains excluded" in baseline["notes"]
 
 
+def test_measured_file_set_includes_unexecuted_source_and_excludes_tooling(tmp_path: Path) -> None:
+    """Exercise the real pytest hooks and config, including source discovery."""
+    for relative in (
+        "pyproject.toml",
+        "config/coverage-baseline.json",
+        "scripts/publication_coverage_gate.py",
+        "tests/conftest.py",
+    ):
+        destination = tmp_path / relative
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(REPO_ROOT / relative, destination)
+
+    unexecuted = tmp_path / "src/my_project/unexecuted.py"
+    unexecuted.parent.mkdir(parents=True)
+    unexecuted.write_text('raise RuntimeError("source discovery must not execute this file")\n')
+
+    exercised_files = sorted(PUBLICATION_FILES) + [
+        "scripts/ci_coverage_delta.py",
+        "tests/fixtures/scripts/check_publication_safety.py",
+        "tests/fixtures/scripts/prepare_publication.py",
+    ]
+    for relative in exercised_files:
+        destination = tmp_path / relative
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        destination.write_text("def choose(flag):\n    if flag:\n        return 1\n    return 0\n")
+    (tmp_path / "tests/test_exercise.py").write_text(
+        "import runpy\n\n"
+        "def test_exercise():\n"
+        f"    for path in {exercised_files!r}:\n"
+        "        choose = runpy.run_path(path)['choose']\n"
+        "        assert choose(True) == 1\n"
+        "        assert choose(False) == 0\n"
+    )
+    env = {
+        key: value
+        for key, value in os.environ.items()
+        if not key.startswith(("COVERAGE_", "COV_CORE_")) and key != "PYTEST_ADDOPTS"
+    }
+    result = subprocess.run(
+        [sys.executable, "-m", "pytest", "-q", "-m", "not slow"],
+        cwd=tmp_path,
+        capture_output=True,
+        text=True,
+        check=False,
+        env=env,
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+    report = json.loads((tmp_path / "coverage.json").read_text())
+    assert set(report["files"]) == PUBLICATION_FILES | {"src/my_project/unexecuted.py"}
+    summary = report["files"]["src/my_project/unexecuted.py"]["summary"]
+    assert summary["num_statements"] == 1
+    assert summary["covered_lines"] == 0
+
+
 def _measured_report():
     return {
         "files": {
@@ -183,8 +239,6 @@ def test_publication_measurements_fail_closed():
 
 def test_cov_reset_skips_publication_hooks_without_crash() -> None:
     """`--cov-reset` clears sources without registering `_cov`; hooks must no-op."""
-    import os
-
     env = os.environ.copy()
     env.pop("PYTEST_ADDOPTS", None)
     result = subprocess.run(
