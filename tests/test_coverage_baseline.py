@@ -11,6 +11,8 @@ from __future__ import annotations
 import json
 import math
 import re
+import subprocess
+import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -177,3 +179,33 @@ def test_publication_measurements_fail_closed():
     report = _measured_report()
     report["files"]["scripts/prepare_publication.py"]["summary"]["num_branches"] = 0
     assert check_report(report, baseline)
+
+
+def test_cov_reset_skips_publication_hooks_without_crash() -> None:
+    """`--cov-reset` clears sources without registering `_cov`; hooks must no-op."""
+    import os
+
+    env = os.environ.copy()
+    env.pop("PYTEST_ADDOPTS", None)
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "pytest",
+            "tests/test_coverage_baseline.py::test_baseline_file_exists",
+            "-q",
+            "--cov-reset",
+            "-p",
+            "no:cacheprovider",
+        ],
+        cwd=REPO_ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+        env=env,
+    )
+    combined = result.stdout + result.stderr
+    assert result.returncode == 0, combined
+    assert "INTERNALERROR" not in combined
+    assert "AttributeError" not in combined
+    assert "PUBLICATION COVERAGE:" not in combined

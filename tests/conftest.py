@@ -12,12 +12,19 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def _coverage_controller(config: pytest.Config) -> bool:
-    return (
-        not hasattr(config, "workerinput")
-        and config.getoption("cov_source", default=None) is not None
-        and not config.getoption("no_cov", default=False)
-        and not config.option.collectonly
-    )
+    """True only when pytest-cov actually registered an active controller.
+
+    `--cov-reset` leaves `cov_source` as ``[]`` without registering ``_cov``, so
+    checking ``cov_source is not None`` alone would crash the runtestloop hook.
+    """
+    if (
+        hasattr(config, "workerinput")
+        or config.getoption("no_cov", default=False)
+        or config.option.collectonly
+    ):
+        return False
+    plugin = config.pluginmanager.getplugin("_cov")
+    return plugin is not None and getattr(plugin, "cov_controller", None) is not None
 
 
 def pytest_sessionstart(session: pytest.Session) -> None:
@@ -49,7 +56,8 @@ def pytest_runtestloop(session):
     if _coverage_controller(session.config):
         # Preserve source=src's discovery of unexecuted product files while
         # exact include paths keep synced scripts and fixture copies out.
-        cov = session.config.pluginmanager.getplugin("_cov").cov_controller.cov
+        plugin = session.config.pluginmanager.getplugin("_cov")
+        cov = plugin.cov_controller.cov
         data = cov.get_data()
         data.add_arcs({})
         data.touch_files([str(path) for path in (ROOT / "src").rglob("*.py")])
