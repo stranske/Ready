@@ -95,3 +95,85 @@ def test_baseline_has_warn_drop_and_recovery_days() -> None:
         "issue auto-closes."
     )
     assert baseline["recovery_days"] > 0
+
+
+PUBLICATION_FILES = {
+    "scripts/check_publication_safety.py",
+    "scripts/prepare_publication.py",
+}
+
+
+def test_publication_source_and_baseline_notes_agree():
+    import shlex
+    import tomllib
+
+    config = tomllib.loads(PYPROJECT_PATH.read_text())
+    assert set(config["tool"]["coverage"]["run"]["include"]) == {
+        "src/**",
+        "scripts/check_publication_safety.py",
+        "scripts/prepare_publication.py",
+    }
+    args = shlex.split(config["tool"]["pytest"]["ini_options"]["addopts"])
+    assert "--cov" in args and not any(a.startswith("--cov=") for a in args)
+    assert "source" not in config["tool"]["coverage"]["run"]
+    assert (
+        config["tool"]["coverage"]["report"]["include"]
+        == config["tool"]["coverage"]["run"]["include"]
+    )
+    assert "--cov-report=json" in args
+    assert config["tool"]["coverage"]["run"]["patch"] == ["subprocess"]
+    baseline = _load_baseline()
+    assert set(baseline["publication_scripts"]) == PUBLICATION_FILES
+    assert "Ready-owned publication scripts" in baseline["notes"]
+    assert "synced fleet tooling remains excluded" in baseline["notes"]
+
+
+def _measured_report():
+    return {
+        "files": {
+            name: {
+                "summary": {
+                    "covered_lines": 100,
+                    "num_statements": 100,
+                    "covered_branches": 100,
+                    "num_branches": 100,
+                }
+            }
+            for name in PUBLICATION_FILES
+        }
+    }
+
+
+def test_each_publication_file_and_metric_is_enforced():
+    import copy
+
+    from scripts.publication_coverage_gate import check_report
+
+    baseline = _load_baseline()
+    report = _measured_report()
+    assert check_report(report, baseline) == []
+    for name in PUBLICATION_FILES:
+        for metric in ("covered_lines", "covered_branches"):
+            changed = copy.deepcopy(report)
+            changed["files"][name]["summary"][metric] = 0
+            assert any(name in e and "below floor" in e for e in check_report(changed, baseline))
+        changed = copy.deepcopy(report)
+        del changed["files"][name]
+        assert any(name in e and "missing" in e for e in check_report(changed, baseline))
+    report["files"]["scripts/ci_coverage_delta.py"] = {}
+    assert any("unrelated" in e for e in check_report(report, baseline))
+
+
+def test_publication_measurements_fail_closed():
+    import copy
+
+    from scripts.publication_coverage_gate import check_report
+
+    baseline = _load_baseline()
+    for invalid in (None, True, float("nan"), -1):
+        changed = copy.deepcopy(baseline)
+        changed["publication_scripts"]["scripts/prepare_publication.py"]["line"] = invalid
+        assert check_report(_measured_report(), changed)
+    report = _measured_report()
+    report["files"]["scripts/prepare_publication.py"]["summary"]["num_branches"] = 0
+    assert check_report(report, baseline)
