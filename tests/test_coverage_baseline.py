@@ -340,6 +340,52 @@ def test_publication_measurements_fail_closed():
     assert check_report(report, baseline)
 
 
+@pytest.mark.parametrize("invalid", [None, [], "invalid"])
+@pytest.mark.parametrize(
+    "document,path",
+    [
+        ("report", ()),
+        ("report", ("files",)),
+        ("report", ("files", "scripts/check_publication_safety.py")),
+        ("report", ("files", "scripts/check_publication_safety.py", "summary")),
+        ("baseline", ()),
+        ("baseline", ("publication_scripts",)),
+        ("baseline", ("publication_scripts", "scripts/check_publication_safety.py")),
+    ],
+)
+def test_publication_gate_rejects_malformed_json_objects(document, path, invalid):
+    """Valid JSON with the wrong structure must yield diagnostics, not exceptions."""
+    from scripts.publication_coverage_gate import check_report
+
+    documents = {"report": _measured_report(), "baseline": _load_baseline()}
+    parent = documents
+    for key in (document, *path)[:-1]:
+        parent = parent[key]
+    parent[(document, *path)[-1]] = invalid
+
+    errors = check_report(documents["report"], documents["baseline"])
+    assert errors
+    assert all(isinstance(error, str) and error for error in errors)
+
+
+def test_pytest_gate_rejects_malformed_baseline_without_internal_error(
+    coverage_project: Path,
+) -> None:
+    """Malformed per-script floors must fail the Gate cleanly after passing tests."""
+    baseline = _load_baseline()
+    name = "scripts/check_publication_safety.py"
+    baseline["publication_scripts"][name] = None
+    (coverage_project / "config/coverage-baseline.json").write_text(json.dumps(baseline))
+
+    result = _run_coverage_project(coverage_project)
+    output = result.stdout + result.stderr
+    assert result.returncode == 1, output
+    assert "1 passed" in output
+    assert f"PUBLICATION COVERAGE: {name}: coverage summary and floors" in output
+    assert "INTERNALERROR" not in output
+    assert "Traceback" not in output
+
+
 def test_cov_reset_skips_publication_hooks_without_crash() -> None:
     """`--cov-reset` clears sources without registering `_cov`; hooks must no-op."""
     env = os.environ.copy()

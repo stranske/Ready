@@ -20,11 +20,15 @@ PUBLICATION_FILES = (
 
 def check_report(report: dict[str, Any], baseline: dict[str, Any]) -> list[str]:
     """Reject absent measurements and independent line or branch regressions."""
+    if not isinstance(report, dict) or not isinstance(baseline, dict):
+        return ["Coverage report and baseline must be JSON objects"]
     errors = []
     floors = baseline.get("publication_scripts", {})
-    if set(floors) != set(PUBLICATION_FILES):
+    if not isinstance(floors, dict) or set(floors) != set(PUBLICATION_FILES):
         return ["publication_scripts must name exactly the two Ready-owned scripts"]
     files = report.get("files", {})
+    if not isinstance(files, dict):
+        return ["Coverage report files must be a JSON object"]
     unexpected = set(files) - set(PUBLICATION_FILES)
     unexpected = {name for name in unexpected if not name.startswith("src/")}
     if unexpected:
@@ -33,19 +37,25 @@ def check_report(report: dict[str, Any], baseline: dict[str, Any]) -> list[str]:
         if name not in files:
             errors.append(f"{name}: missing coverage measurement")
             continue
-        summary = files[name].get("summary", {})
+        measurement = files[name]
+        if not isinstance(measurement, dict):
+            errors.append(f"{name}: coverage measurement must be a JSON object")
+            continue
+        summary = measurement.get("summary", {})
+        if not isinstance(summary, dict) or not isinstance(floors[name], dict):
+            errors.append(f"{name}: coverage summary and floors must be JSON objects")
+            continue
         for metric, covered, total in (
             ("line", "covered_lines", "num_statements"),
             ("branch", "covered_branches", "num_branches"),
         ):
             floor = floors[name].get(metric)
             hit, count = summary.get(covered), summary.get(total)
-            values = (floor, hit, count)
             if (
-                any(
-                    isinstance(v, bool) or not isinstance(v, (int, float)) or not math.isfinite(v)
-                    for v in values
-                )
+                not isinstance(floor, (int, float))
+                or not isinstance(hit, (int, float))
+                or not isinstance(count, (int, float))
+                or any(isinstance(v, bool) or not math.isfinite(v) for v in (floor, hit, count))
                 or not 0 <= floor <= 100
                 or count <= 0
                 or not 0 <= hit <= count
