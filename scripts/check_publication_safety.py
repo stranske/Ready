@@ -14,17 +14,11 @@ from collections import Counter
 from pathlib import Path, PurePosixPath
 
 if __package__:
-    from .publication_patterns import PRIVATE_KEY_HEADER_BYTES
+    from .publication_patterns import SCANNER_RULES
 else:
-    from publication_patterns import PRIVATE_KEY_HEADER_BYTES
+    from publication_patterns import SCANNER_RULES
 
-RULES = {
-    "home-path": re.compile(rb"/Users/"),
-    "credential": re.compile(rb"sk-ant-|sk-proj-|ghp_|github_pat_|lsv2_|crsr_|AIza"),
-    "private-key": PRIVATE_KEY_HEADER_BYTES,
-    "scratch-path": re.compile(rb"clones/|/private/tmp/|scratchpad/"),
-    "internal-host": re.compile(rb"\.local:|\blocalhost:[0-9]+"),
-}
+RULES = SCANNER_RULES
 # Decode individual JSON strings so diagnostics retain physical source line numbers.
 # Include unfinished strings (and a trailing escape) so malformed input fails closed.
 JSON_STRING = re.compile(rb'"(?:[^"\\]|\\.)*(?:"|\\?$)')

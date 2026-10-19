@@ -359,3 +359,87 @@ def test_compressed_docx_preserved_then_guarded(tmp_path, capsys):
     assert path.read_bytes() == original
     assert guard.scan(tmp_path) == 1
     assert "SYNTHETIC" not in capsys.readouterr().out
+
+
+# Independent synthetic witnesses, including bare marker fallbacks. Expected
+# output checks the entire value so a scanner-clean suffix is not mistaken for
+# complete redaction. This table must grow if the shared vocabulary changes.
+PUBLICATION_ALTERNATIVES = {
+    "home-path": {
+        "/Users/": [
+            ("/Users/SYNTHETIC_USER/notes", "[LOCAL_HOME]/notes"),
+            ("/Users/", "[LOCAL_HOME]/"),
+        ],
+    },
+    "credential": {
+        prefix: [(prefix + "SYNTHETIC_SUFFIX-123_abc", "[REDACTED_CREDENTIAL]")]
+        for prefix in ("sk-ant-", "sk-proj-", "ghp_", "github_pat_", "lsv2_", "crsr_", "AIza")
+    },
+    "scratch-path": {
+        marker: [(marker + "public-note", "[LOCAL_WORKSPACE]/public-note")]
+        for marker in ("clones/", "/private/tmp/", "scratchpad/")
+    },
+    "internal-host": {
+        ".local:": [("SYNTHETIC_HOST.local:8080", "[LOCAL_HOST]"), (".local:", "[LOCAL_HOST]")],
+        "localhost:": [("localhost:8080", "[LOCAL_HOST]")],
+    },
+}
+
+
+def test_scanner_vocabulary_has_explicit_preparation_dispositions():
+    patterns = module("publication_patterns")
+    assert guard.RULES is patterns.SCANNER_RULES
+    assert prepare.REPLACEMENTS is patterns.TEXT_REPLACEMENTS
+    assert set(guard.RULES) == set(patterns.VOCABULARY) == set(patterns.PREPARATION_DISPOSITIONS)
+    assert {rule for rule, _, _ in prepare.REPLACEMENTS} == set(guard.RULES)
+    for rule, alternatives in patterns.VOCABULARY.items():
+        assert patterns.PREPARATION_DISPOSITIONS[rule]
+        if rule == "private-key":
+            # The grammar is open to qualified labels; complete/incomplete,
+            # exact-file exception and binary controls are exercised separately.
+            assert alternatives == (patterns.PRIVATE_KEY_HEADER_TEXT,)
+            continue
+        assert set(alternatives) == set(PUBLICATION_ALTERNATIVES[rule])
+
+
+@pytest.mark.parametrize(
+    ("rule", "original", "expected"),
+    [
+        (rule, original, expected)
+        for rule, alternatives in PUBLICATION_ALTERNATIVES.items()
+        for cases in alternatives.values()
+        for original, expected in cases
+    ],
+)
+def test_shared_vocabulary_through_real_preparation_and_scan(tmp_path, rule, original, expected):
+    source = tmp_path / "source"
+    source.mkdir()
+    path = source / "evidence.txt"
+    path.write_text("Public before | " + original + " | Public after")
+    before = path.read_bytes()
+    stage = tmp_path / "stage"
+    shutil.copytree(source, stage)
+    assert guard.RULES[rule].search(before)
+    assert guard.scan(stage) == 1
+    prepare.prepare_copy(stage)
+    assert (stage / path.name).read_text() == "Public before | " + expected + " | Public after"
+    assert path.read_bytes() == before
+    assert guard.scan(stage) == 0
+
+
+@pytest.mark.parametrize(
+    "marker",
+    [
+        cases[0][0]
+        for alternatives in PUBLICATION_ALTERNATIVES.values()
+        for cases in alternatives.values()
+    ],
+)
+def test_shared_vocabulary_binary_outcome_is_preserve_and_scan(tmp_path, marker):
+    path = tmp_path / "evidence.bin"
+    original = b"\xff" + marker.encode("ascii")
+    path.write_bytes(original)
+    counts = prepare.prepare_copy(tmp_path)
+    assert counts["files_redacted"] == 0
+    assert path.read_bytes() == original
+    assert guard.scan(tmp_path) == 1
