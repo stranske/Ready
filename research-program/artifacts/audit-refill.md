@@ -1,18 +1,18 @@
-# Audit refill check 2026-10-17T16:28:44Z
+# Audit refill check 2026-10-19T14:45:30Z
 
 | repo | open agent-ready | last set | threshold | scorecard | broken/fab | unscored | ux | action |
 |---|---|---|---|---|---|---|---|---|
-| stranske/Deliverable-Render | ? | | | | | | | gh error |
-| stranske/Manager-Mosaic | ? | | | | | | | gh error |
-| stranske/Workflows | ? | | | | | | | gh error |
-| stranske/Travel-Plan-Permission | ? | | | | | | | gh error |
-| stranske/Trend_Model_Project | ? | | | | | | | gh error |
-| stranske/Portable-Alpha-Extension-Model | ? | | | | | | | gh error |
-| stranske/Counter_Risk | ? | | | | | | | gh error |
-| stranske/Manager-Database | ? | | | | | | | gh error |
-| stranske/Inv-Man-Intake | ? | | | | | | | gh error |
-| stranske/Pension-Data | ? | | | | | | | gh error |
-| stranske/trip-planner | ? | | | | | | | gh error |
-| stranske/learning-management-system | ? | | | | | | | gh error |
-| stranske/Fine-Art-Archive | ? | | | | | | | gh error |
-| stranske/Doc-Lineage | ? | | | | | | | gh error |
+| stranske/Deliverable-Render | 1 | 0 (round filed nothing) | 2 | 2026-09-24 | 0/0 | 0+0 (prev 0) | — | idle |
+| stranske/Manager-Mosaic | 4 | 0 (round filed nothing) | 2 | 2026-09-23 | 0/0 | 0+2 | — | idle |
+| stranske/Workflows | 30 | 1 | 2 | 2026-10-02 | 0/0 | 2+0 (prev 4) | — | idle |
+| stranske/Travel-Plan-Permission | 4 | 0 (round filed nothing) | 2 | 2026-10-02 | 0/0 | 0+12 (prev 18) | — | idle |
+| stranske/Trend_Model_Project | 5 | 0 (round filed nothing) | 2 | 2026-09-24 | 0/0 | 0+0 (prev 0) | — | idle |
+| stranske/Portable-Alpha-Extension-Model | 15 | 0 (round filed nothing) | 2 | 2026-09-23 | 0/0 | 3+3 | — | idle |
+| stranske/Counter_Risk | 0 | 1 | 2 | 2026-09-23 | 0/0 | 2+2 | — | idle |
+| stranske/Manager-Database | 11 | 0 (round filed nothing) | 2 | 2026-09-23 | 0/0 | 0+0 | — | idle |
+| stranske/Inv-Man-Intake | 2 | 0 (round filed nothing) | 2 | 2026-10-02 | 0/0 | 0+0 (prev 1) | — | idle |
+| stranske/Pension-Data | 6 | 1 | 2 | 2026-09-23 | 0/0 | 0+0 | — | idle |
+| stranske/trip-planner | 5 | 1 | 2 | 2026-10-02 | 0/0 | 0+0 (prev 0) | — | idle |
+| stranske/learning-management-system | 5 | 2 | 2 | 2026-09-22 | 0/0 | 0+1 | — | idle |
+| stranske/Fine-Art-Archive | 5 | 1 | 2 | 2026-09-23 | 0/0 | 0+9 (prev 42) | — | idle |
+| stranske/Doc-Lineage | 2 | 0 (round filed nothing) | 2 | 2026-09-24 | 0/0 | 0+0 (prev 0) | — | idle |
