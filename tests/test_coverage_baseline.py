@@ -260,6 +260,46 @@ def _measured_report():
     }
 
 
+@pytest.mark.parametrize("remove_branch_call", [False, True], ids=["complete", "branch-loss"])
+def test_publication_coverage_tracks_subprocess_branches(
+    coverage_project: Path, remove_branch_call: bool
+) -> None:
+    """CLI-only execution must be measured and enforce the independent branch floor."""
+    name = "scripts/check_publication_safety.py"
+    script = coverage_project / name
+    # Both paths execute every line; omitting choose(False) loses only a branch.
+    script.write_text(script.read_text().replace("    return 0\n", ""))
+    exercise = coverage_project / "tests/test_exercise.py"
+    exercise.write_text(
+        "import subprocess\nimport sys\n\n"
+        "def test_exercise():\n"
+        f"    for path in {sorted(PUBLICATION_FILES)!r}:\n"
+        "        code = f\"import runpy; choose = runpy.run_path({path!r})['choose']; "
+        'assert choose(True) == 1"\n'
+        f"        if not ({remove_branch_call!r} and path == {name!r}):\n"
+        "            code += '; choose(False)'\n"
+        "        subprocess.run([sys.executable, '-c', code], check=True)\n"
+    )
+
+    result = _run_coverage_project(coverage_project)
+    output = result.stdout + result.stderr
+    assert result.returncode == int(remove_branch_call), output
+    assert "1 passed" in output
+    assert "INTERNALERROR" not in output
+    report = json.loads((coverage_project / "coverage.json").read_text())
+    assert set(report["files"]) == PUBLICATION_FILES | {"src/my_project/unexecuted.py"}
+    assert report["totals"]["percent_covered"] >= _load_baseline()["line"]
+    for path in PUBLICATION_FILES:
+        summary = report["files"][path]["summary"]
+        assert summary["covered_lines"] == summary["num_statements"]
+        if remove_branch_call and path == name:
+            assert summary["covered_branches"] == summary["num_branches"] - 1
+            assert f"PUBLICATION COVERAGE: {name}: branch coverage" in output
+            assert "below floor" in output
+        else:
+            assert summary["covered_branches"] == summary["num_branches"]
+
+
 @pytest.mark.parametrize("name", sorted(PUBLICATION_FILES))
 def test_pytest_gate_rejects_missing_publication_measurement(
     coverage_project: Path, name: str
