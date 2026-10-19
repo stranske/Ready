@@ -382,6 +382,8 @@ PUBLICATION_ALTERNATIVES = {
     },
     "internal-host": {
         ".local:": [("SYNTHETIC_HOST.local:8080", "[LOCAL_HOST]"), (".local:", "[LOCAL_HOST]")],
+        # Scanner and replacement both require port digits after localhost:; bare
+        # `localhost:` is intentionally asymmetric with the bare `.local:` marker.
         "localhost:": [("localhost:8080", "[LOCAL_HOST]")],
     },
 }
