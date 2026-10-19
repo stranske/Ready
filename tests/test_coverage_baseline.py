@@ -260,6 +260,51 @@ def _measured_report():
     }
 
 
+@pytest.mark.parametrize("name", sorted(PUBLICATION_FILES))
+def test_pytest_gate_rejects_missing_publication_measurement(
+    coverage_project: Path, name: str
+) -> None:
+    """An unexecuted publication script must fail even when aggregate coverage passes."""
+    exercise = coverage_project / "tests/test_exercise.py"
+    exercise.write_text(
+        exercise.read_text().replace(
+            "        choose = runpy.run_path(path)['choose']\n",
+            f"        if path == {name!r}:\n            continue\n"
+            "        choose = runpy.run_path(path)['choose']\n",
+        )
+    )
+
+    result = _run_coverage_project(coverage_project)
+    output = result.stdout + result.stderr
+    assert result.returncode == 1, output
+    assert "1 passed" in output
+    assert f"PUBLICATION COVERAGE: {name}: missing coverage measurement" in output
+    assert "INTERNALERROR" not in output
+    report = json.loads((coverage_project / "coverage.json").read_text())
+    assert name not in report["files"]
+    assert report["totals"]["percent_covered"] >= _load_baseline()["line"]
+
+
+@pytest.mark.parametrize("stale_report", [False, True], ids=["absent", "stale"])
+def test_pytest_gate_requires_current_json_report(
+    coverage_project: Path, stale_report: bool
+) -> None:
+    """A passing terminal report cannot substitute for fresh per-file evidence."""
+    config = coverage_project / "pyproject.toml"
+    config.write_text(config.read_text().replace(" --cov-report=json", ""))
+    report_path = coverage_project / "coverage.json"
+    if stale_report:
+        report_path.write_text(json.dumps(_measured_report()))
+
+    result = _run_coverage_project(coverage_project)
+    output = result.stdout + result.stderr
+    assert result.returncode == 1, output
+    assert "1 passed" in output
+    assert "PUBLICATION COVERAGE: Current publication coverage evidence unavailable:" in output
+    assert "INTERNALERROR" not in output
+    assert not report_path.exists()
+
+
 def test_each_publication_file_and_metric_is_enforced():
     import copy
 
