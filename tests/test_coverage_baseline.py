@@ -308,6 +308,44 @@ def test_publication_gate_cli_enforces_each_floor(tmp_path: Path, regression) ->
         )
 
 
+@pytest.mark.parametrize("document", ["report", "baseline"])
+@pytest.mark.parametrize("invalid", ["missing", "directory", "malformed-json", "invalid-utf8"])
+def test_publication_gate_cli_rejects_unreadable_evidence(tmp_path: Path, document, invalid):
+    """Unavailable evidence must fail with an actionable diagnostic, without a traceback."""
+    paths = {name: tmp_path / f"{name}.json" for name in ("report", "baseline")}
+    paths["report"].write_text(json.dumps(_measured_report()))
+    paths["baseline"].write_text(json.dumps(_load_baseline()))
+    path = paths[document]
+    if invalid in ("missing", "directory"):
+        path.unlink()
+        if invalid == "directory":
+            path.mkdir()
+    elif invalid == "malformed-json":
+        path.write_text('{"incomplete":')
+    else:
+        path.write_bytes(b"\xff")
+
+    result = subprocess.run(
+        [
+            sys.executable,
+            str(REPO_ROOT / "scripts/publication_coverage_gate.py"),
+            "--report",
+            str(paths["report"]),
+            "--baseline",
+            str(paths["baseline"]),
+        ],
+        cwd=tmp_path,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 1
+    assert result.stdout.startswith(f"Cannot load publication coverage {document} {path}:")
+    assert result.stderr == ""
+    assert "PASS" not in result.stdout
+
+
 @pytest.mark.parametrize("remove_branch_call", [False, True], ids=["complete", "branch-loss"])
 def test_publication_coverage_tracks_subprocess_branches(
     coverage_project: Path, remove_branch_call: bool

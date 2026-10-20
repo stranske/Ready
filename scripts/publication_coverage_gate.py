@@ -79,9 +79,14 @@ def main() -> int:
     parser.add_argument("--report", type=Path, default=Path("coverage.json"))
     parser.add_argument("--baseline", type=Path, default=Path("config/coverage-baseline.json"))
     args = parser.parse_args()
-    errors = check_report(
-        json.loads(args.report.read_text()), json.loads(args.baseline.read_text())
-    )
+    documents = {}
+    for name, path in (("report", args.report), ("baseline", args.baseline)):
+        try:
+            documents[name] = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, ValueError) as exc:
+            print(f"Cannot load publication coverage {name} {path}: {exc}")
+            return 1
+    errors = check_report(documents["report"], documents["baseline"])
     print("\n".join(errors) if errors else "Ready publication coverage floors PASS")
     return bool(errors)
 
