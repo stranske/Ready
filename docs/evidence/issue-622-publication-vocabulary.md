@@ -28,3 +28,19 @@ Temporarily removing only `AIza` from the preparation replacement in memory made
 Targeted coverage command: `python -m pytest tests/test_publication_safety.py tests/test_prepare_publication.py -q -o addopts='' -m 'not slow' --cov=scripts.prepare_publication --cov=scripts.check_publication_safety --cov=scripts.publication_patterns --cov-report=term-missing`. Result: **420 passed**; preparation **91%**, scanner **88%**, shared patterns **100%** (combined **89.58%**, exceeding the configured 80% gate).
 
 The default publication scan again passed: **3301 files**, zero unallowed findings, **11 allowed hits**, zero errors. Ruff and `git diff --check` passed. Black checked all **89** tracked Python files individually with a writable temporary cache, then the required repository-wide Black command passed using that cache and one worker; this avoids a sandbox hang in Black's worker completion handling. The allowlist, publication implementation and research source files were unchanged.
+
+## Follow-up: overlapping markers and replacement order
+
+Reconciled the implementation and follow-up commits through `4b68994a` against PR #637. The live PR already had all four tasks and five acceptance criteria checked, and was open with `draft=false`. The baseline suite passed **420 tests**. Updating the PR validation paragraph was rejected by the connector because approval policy is `never`; no checkbox changes were necessary.
+
+Added six cases in `test_overlapping_vocabulary_preserves_replacement_order`, spanning plain text, JSON and JSONL. A complete PEM block contains credential, home, scratch and host markers; the expected output and counts require PEM removal before replacements inside its body. A home path containing a scratch marker requires full username removal before the bare home-prefix fallback. Each case also verifies public surrounding text, source-byte preservation, a clean subsequent scan, and byte-preserving repeated preparation.
+
+Deliberate mutations used the real preparation replacement tuple in memory and restored it in `finally`, without writing implementation files:
+
+- Swapping replacement entries 0 and 1 (PEM and credential), then running the new test with `-k 'overlapping_vocabulary and pem'`, produced **3 failed, 195 deselected**. Counts included an unexpected credential replacement inside the PEM block.
+- Swapping entries 2 and 3 (full home and bare marker), then running with `-k 'overlapping_vocabulary and full-home'`, produced **3 failed, 195 deselected**. Prepared values retained the synthetic username.
+- The restored implementation passed all **6** new cases. The targeted coverage command from the preceding section then passed **426 tests** with preparation **91%**, scanner **88%**, shared patterns **100%**, and combined coverage **89.58%**, above the configured 80% gate. All runs used `-m 'not slow'`.
+
+The default publication scan passed again: **3301 files**, zero unallowed findings, **11 allowed hits**, zero errors. Ruff and `git diff --check` passed. The required repository-wide Black check passed for **89 files** after populating its temporary cache with individual file checks; the initial uncached worker run timed out during completion. Publication code, policy and research source files remain unchanged.
+
+Handoff limitation: staging and committing these two files failed because this run mounts `.git` read-only (`Unable to create .git/index.lock: Read-only file system`). The validated changes remain uncommitted in the working tree.

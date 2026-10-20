@@ -480,6 +480,58 @@ def test_shared_vocabulary_through_real_preparation_and_scan(
     assert guard.scan(stage) == 0
 
 
+@pytest.mark.parametrize("suffix", [".txt", ".json", ".jsonl"])
+@pytest.mark.parametrize(
+    ("original", "expected", "expected_counts"),
+    [
+        pytest.param(
+            "-----BEGIN PRIVATE KEY-----\n"
+            "ghp_SYNTHETIC_SUFFIX /Users/SYNTHETIC_USER/clones/report "
+            "SYNTHETIC_HOST.local:8080\n-----END PRIVATE KEY-----",
+            "[REDACTED_PRIVATE_KEY]",
+            {"private-key": 1},
+            id="pem-before-contained-markers",
+        ),
+        pytest.param(
+            "/Users/SYNTHETIC_USER/clones/report",
+            "[LOCAL_HOME]/[LOCAL_WORKSPACE]/report",
+            {"home-path": 1, "scratch-path": 1},
+            id="full-home-before-bare-marker",
+        ),
+    ],
+)
+def test_overlapping_vocabulary_preserves_replacement_order(
+    tmp_path, suffix, original, expected, expected_counts
+):
+    source = tmp_path / "source"
+    source.mkdir()
+    path = source / ("evidence" + suffix)
+    text = "Public before | " + original + " | Public after"
+    expected_text = "Public before | " + expected + " | Public after"
+    path.write_text(text if suffix == ".txt" else json.dumps({"note": text}) + "\n")
+    before = path.read_bytes()
+    stage = tmp_path / "stage"
+    shutil.copytree(source, stage)
+    assert guard.scan(stage) == 1
+
+    counts = prepare.prepare_copy(stage)
+
+    exported = (stage / path.name).read_text()
+    assert (exported if suffix == ".txt" else json.loads(exported)["note"]) == expected_text
+    # PEM must consume its contents before other rules count them. The full
+    # home rule must remove the username before the bare-prefix fallback runs.
+    assert {rule: count for rule, count in counts.items() if count} == {
+        **expected_counts,
+        "files_scanned": 1,
+        "files_redacted": 1,
+    }
+    assert guard.scan(stage) == 0
+    prepared_bytes = (stage / path.name).read_bytes()
+    assert prepare.prepare_copy(stage)["files_redacted"] == 0
+    assert (stage / path.name).read_bytes() == prepared_bytes
+    assert path.read_bytes() == before
+
+
 @pytest.mark.parametrize(
     "marker",
     [
