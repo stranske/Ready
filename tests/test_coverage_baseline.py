@@ -127,6 +127,7 @@ def test_publication_source_and_baseline_notes_agree():
         == config["tool"]["coverage"]["run"]["include"]
     )
     assert "--cov-report=json" in args
+    assert config["tool"]["coverage"]["run"]["branch"] is True
     assert config["tool"]["coverage"]["run"]["patch"] == ["subprocess"]
     baseline = _load_baseline()
     assert set(baseline["publication_scripts"]) == PUBLICATION_FILES
@@ -554,6 +555,29 @@ def test_pytest_gate_rejects_missing_publication_measurement(
     report = json.loads((coverage_project / "coverage.json").read_text())
     assert name not in report["files"]
     assert report["totals"]["percent_covered"] >= _load_baseline()["line"]
+
+
+def test_pytest_gate_rejects_disabled_branch_collection(coverage_project: Path) -> None:
+    """Missing branch evidence must fail cleanly even when every line is covered."""
+    config = coverage_project / "pyproject.toml"
+    config.write_text(config.read_text().replace("branch = true", "branch = false"))
+
+    result = _run_coverage_project(coverage_project)
+    output = result.stdout + result.stderr
+    assert result.returncode == 1, output
+    assert "1 passed" in output
+    assert "INTERNALERROR" not in output
+    assert "Traceback" not in output
+    for name in PUBLICATION_FILES:
+        assert f"PUBLICATION COVERAGE: {name}: invalid branch measurement or floor" in output
+
+    report = json.loads((coverage_project / "coverage.json").read_text())
+    assert set(report["files"]) == PUBLICATION_FILES | {"src/my_project/unexecuted.py"}
+    assert report["meta"]["branch_coverage"] is False
+    assert report["totals"]["percent_covered"] >= _load_baseline()["line"]
+    for name in PUBLICATION_FILES:
+        summary = report["files"][name]["summary"]
+        assert summary["covered_lines"] == summary["num_statements"]
 
 
 @pytest.mark.parametrize("name", sorted(PUBLICATION_FILES))

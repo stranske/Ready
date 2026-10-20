@@ -59,7 +59,12 @@ def pytest_runtestloop(session):
         plugin = session.config.pluginmanager.getplugin("_cov")
         cov = plugin.cov_controller.cov
         data = cov.get_data()
-        data.add_arcs({})
+        # Seed the configured data mode so missing branch collection reaches
+        # the per-script gate instead of mixing line data with branch data.
+        if cov.config.branch:
+            data.add_arcs({})
+        else:
+            data.add_lines({})
         data.touch_files([str(path) for path in (ROOT / "src").rglob("*.py")])
         cov.save()
     return result
