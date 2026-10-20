@@ -171,14 +171,14 @@ def coverage_project(tmp_path: Path) -> Path:
     return tmp_path
 
 
-def _run_coverage_project(project: Path) -> subprocess.CompletedProcess[str]:
+def _run_coverage_project(project: Path, *pytest_args: str) -> subprocess.CompletedProcess[str]:
     env = {
         key: value
         for key, value in os.environ.items()
         if not key.startswith(("COVERAGE_", "COV_CORE_")) and key != "PYTEST_ADDOPTS"
     }
     return subprocess.run(
-        [sys.executable, "-m", "pytest", "-q", "-m", "not slow"],
+        [sys.executable, "-m", "pytest", "-q", "-m", "not slow", *pytest_args],
         cwd=project,
         capture_output=True,
         text=True,
@@ -828,29 +828,24 @@ def test_pytest_gate_rejects_malformed_baseline_without_internal_error(
     assert "Traceback" not in output
 
 
-def test_cov_reset_skips_publication_hooks_without_crash() -> None:
-    """`--cov-reset` clears sources without registering `_cov`; hooks must no-op."""
-    env = os.environ.copy()
-    env.pop("PYTEST_ADDOPTS", None)
-    result = subprocess.run(
-        [
-            sys.executable,
-            "-m",
-            "pytest",
-            "tests/test_coverage_baseline.py::test_baseline_file_exists",
-            "-q",
-            "--cov-reset",
-            "-p",
-            "no:cacheprovider",
-        ],
-        cwd=REPO_ROOT,
-        capture_output=True,
-        text=True,
-        check=False,
-        env=env,
-    )
+@pytest.mark.parametrize("mode", ["--cov-reset", "--no-cov", "--collect-only"])
+def test_inactive_coverage_skips_publication_hooks_without_changing_evidence(
+    coverage_project: Path, mode: str
+) -> None:
+    """Focused and collection-only runs must neither gate nor replace prior evidence."""
+    # An invalid baseline would fail an active gate, so a successful run also
+    # demonstrates that the per-script gate was skipped, not merely satisfied.
+    (coverage_project / "config/coverage-baseline.json").write_text("{}\n")
+    report_path = coverage_project / "coverage.json"
+    previous_report = json.dumps(_measured_report(), indent=2).encode() + b"\n"
+    report_path.write_bytes(previous_report)
+
+    result = _run_coverage_project(coverage_project, mode)
     combined = result.stdout + result.stderr
     assert result.returncode == 0, combined
+    expected = "1 test collected" if mode == "--collect-only" else "1 passed"
+    assert expected in combined
     assert "INTERNALERROR" not in combined
     assert "AttributeError" not in combined
     assert "PUBLICATION COVERAGE:" not in combined
+    assert report_path.read_bytes() == previous_report
