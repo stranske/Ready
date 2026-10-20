@@ -1,9 +1,9 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-20T03:04:56Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-20T03:20:28Z)
 
 Units: 262 — done 258, superseded 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=shed claude=ok cursor=ok gemini=shed vibe=ok muse=ok aider=ok
-Orchestrator evidence (30d): offload runs 125, bound to a research round 123, scored 123 (PASS 79, FAIL 44, infra 0) — codex 17/19 (P5 F12 I0), cursor 105/105 (P73 F32 I0), gemini 1/1 (P1 F0 I0)
+Orchestrator evidence (30d): offload runs 124, bound to a research round 122, scored 122 (PASS 78, FAIL 44, infra 0) — codex 17/19 (P5 F12 I0), cursor 104/104 (P72 F32 I0), gemini 1/1 (P1 F0 I0)
 Worker write boundary: on — each unit writes only unitdirs/<unit>/, its output directory, artifacts/proposals/, its own clone's working tree (not .git) and temp
 Claude conservation: off (weekly window available)
 Owner inbox: https://github.com/stranske/Ready/issues/553
@@ -275,7 +275,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-10-19T18:33:19Z — verify — enqueued D4-verify-merged-2026-10-19T18
 - 2026-10-19T18:33:20Z — D4-verify-merged-2026-10-19T18 — route — router picked cursor from ['codex', 'cursor']
 - 2026-10-19T18:33:20Z — D4-verify-merged-2026-10-19T18 — claimed by driver (agent cursor)
 - 2026-10-19T18:38:01Z — D4-verify-merged-2026-10-19T18 — done — cursor produced 759 words at artifacts/verification/D4-verify-merged-2026-10-19T18.md in 251s
@@ -287,6 +286,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-10-19T19:28:24Z — D3-unblock-sweep-2026-10-19T19 — refutation posted — stranske/Trend_Model_Project#6080
 - 2026-10-20T02:49:04Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
 - 2026-10-20T03:04:56Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+- 2026-10-20T03:20:28Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
