@@ -7,6 +7,8 @@ import json
 import os
 import re
 import shutil
+import zipfile
+from html import escape
 from pathlib import Path
 
 import pytest
@@ -624,6 +626,57 @@ def test_shared_vocabulary_binary_outcome_is_preserve_and_scan(tmp_path, marker)
     assert counts["files_redacted"] == 0
     assert path.read_bytes() == original
     assert guard.scan(tmp_path) == 1
+
+
+@pytest.mark.parametrize(
+    ("rule", "marker"),
+    [
+        (rule, original)
+        for rule, alternatives in PUBLICATION_ALTERNATIVES.items()
+        for cases in alternatives.values()
+        for original, _ in cases
+    ]
+    + [
+        ("private-key", "-----BEGIN PRIVATE KEY-----\nSYNTHETIC_MATERIAL"),
+        (
+            "private-key",
+            "-----BEGIN RSA PRIVATE KEY-----\nSYNTHETIC_MATERIAL\n-----END RSA PRIVATE KEY-----",
+        ),
+    ],
+)
+def test_packaged_vocabulary_is_preserved_then_scan_rejected(tmp_path, capsys, rule, marker):
+    source = tmp_path / "source"
+    source.mkdir()
+    path = source / "report.docx"
+    # No lexical marker exists in raw XML: Word may split it across text runs.
+    runs = "".join(f"<w:r><w:t>{escape(char)}</w:t></w:r>" for char in marker)
+    xml = (
+        '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'
+        f"<w:body><w:p>{runs}</w:p></w:body></w:document>"
+    )
+    assert not guard.RULES[rule].search(xml.encode())
+    with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+        archive.writestr("word/document.xml", xml)
+    originals = {path.name: path.read_bytes(), "note.txt": b"clones/public-note\n"}
+    (source / "note.txt").write_bytes(originals["note.txt"])
+    assert not guard.RULES[rule].search(originals[path.name])
+    stage = tmp_path / "stage"
+    shutil.copytree(source, stage)
+
+    counts = prepare.prepare_copy(stage)
+
+    assert counts["files_scanned"] == 2
+    assert counts["files_redacted"] == 1
+    assert (stage / path.name).read_bytes() == originals[path.name]
+    assert (stage / "note.txt").read_bytes() == b"[LOCAL_WORKSPACE]/public-note\n"
+    assert guard.scan(stage) == 1
+    output = capsys.readouterr()
+    assert f"report.docx:1: {rule} (1 hit(s))" in output.out
+    assert "errors=0" in output.out
+    assert marker not in output.out + output.err
+    assert "SYNTHETIC" not in output.out + output.err
+    assert not output.err
+    assert {p.name: p.read_bytes() for p in source.iterdir()} == originals
 
 
 @pytest.mark.parametrize(

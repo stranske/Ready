@@ -74,3 +74,15 @@ The restored targeted coverage command documented above passed **456 tests** wit
 The default publication scan passed: **3301 files**, all five unallowed rule totals zero, **11 allowed hits**, and zero errors. SHA-256 manifests confirmed all **3302** policy and research files remained unchanged.
 
 `git add tests/test_prepare_publication.py` failed because `.git` is mounted read-only and cannot create `index.lock`. The test/evidence changes therefore require the automation runner to commit them. The connector rejected the PR validation-body update, blocker comment and `needs-human` label with `MCP tool call requires approval, but approval policy is never`; no PR metadata was changed.
+
+## Follow-up: packaged vocabulary and split Word text runs
+
+Reconciled the recent commits through `f0ded502` against live PR #637: all nine task and acceptance checkboxes were already checked, and the PR was open with `draft=false`. The baseline named suite passed **456 tests**, so no checkbox changes were needed.
+
+Added 17 cases in `test_packaged_vocabulary_is_preserved_then_scan_rejected`: every existing non-PEM witness and complete/incomplete PEM examples inside compressed DOCX packages. Every character occupies a separate Word text run, so neither package bytes nor raw XML contains the lexical marker. Preparation must preserve the package bytes, prepare neighboring supported text, and leave the finding for the subsequent scanner to reject without exposing contents. Each case verifies source preservation.
+
+Temporarily replacing only the scanner consumer's credential expression with a never-matching expression in memory produced **7 failed, 10 passed, 228 deselected**: scanning incorrectly returned success for each credential prefix. The original `RULES` mapping was restored in `finally`; no implementation file was written. The original scanner passed all **17** new cases, and the full targeted coverage command documented above passed **473 tests**, with preparation **91%**, scanner **88%**, shared patterns **100%**, and combined coverage **89.58%**, above the configured 80% gate. All pytest runs used `-m 'not slow'`.
+
+Black formatted the changed Python file. Individual checks of the 89 tracked Python files within the root formatting policy populated a temporary cache, and the required repository-wide Black check passed using that cache and one worker. Ruff and `git diff --check` passed. The default publication scan passed: **3301 files**, zero unallowed findings, **11 allowed hits**, zero errors. SHA-256 manifests confirmed unchanged bytes and paths for all **3302** policy/research files. Publication implementation and policy remain unchanged.
+
+The commit is blocked: `git add` cannot create `.git/index.lock` because `.git` is mounted read-only. The validated test/evidence changes remain in the working tree for the automation runner to commit. The GitHub connector rejected the PR validation-body update, blocker comment and `needs-human` label with `MCP tool call requires approval, but approval policy is never`. No PR metadata was changed; all nine checkboxes remain checked and the PR is open and ready for review.
