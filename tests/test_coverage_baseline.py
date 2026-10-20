@@ -296,6 +296,42 @@ def test_pytest_gate_rejects_independent_publication_regressions(
                 assert percent == 100
 
 
+@pytest.mark.parametrize("name", sorted(PUBLICATION_FILES))
+def test_pytest_gate_rejects_unexecuted_script_despite_previous_passing_report(
+    coverage_project: Path, name: str
+) -> None:
+    """Removing all execution of either script must invalidate its prior measurement."""
+    previous = _run_coverage_project(coverage_project)
+    assert previous.returncode == 0, previous.stdout + previous.stderr
+    report_path = coverage_project / "coverage.json"
+    assert set(json.loads(report_path.read_text())["files"]) == PUBLICATION_FILES | {
+        "src/my_project/unexecuted.py"
+    }
+
+    remaining = next(path for path in PUBLICATION_FILES if path != name)
+    (coverage_project / "tests/test_exercise.py").write_text(
+        "import runpy\n\n"
+        "def test_exercise():\n"
+        f"    choose = runpy.run_path({remaining!r})['choose']\n"
+        "    assert choose(True) == 1\n"
+        "    assert choose(False) == 0\n"
+    )
+
+    result = _run_coverage_project(coverage_project)
+    output = result.stdout + result.stderr
+    assert result.returncode == 1, output
+    assert "1 passed" in output
+    assert f"PUBLICATION COVERAGE: {name}: missing coverage measurement" in output
+    assert "INTERNALERROR" not in output
+
+    current = json.loads(report_path.read_text())
+    assert set(current["files"]) == {remaining, "src/my_project/unexecuted.py"}
+    assert current["totals"]["percent_covered"] >= _load_baseline()["line"]
+    summary = current["files"][remaining]["summary"]
+    assert summary["covered_lines"] == summary["num_statements"]
+    assert summary["covered_branches"] == summary["num_branches"]
+
+
 def _measured_report():
     return {
         "files": {
