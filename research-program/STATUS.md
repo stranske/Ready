@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-20T04:41:48Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-20T04:57:21Z)
 
 Units: 263 — done 259, superseded 4
 Paused: False   Phase stops: []
@@ -276,7 +276,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-10-20T03:20:28Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
 - 2026-10-20T03:35:54Z — unblock — enqueued D3-unblock-sweep-2026-10-20T03
 - 2026-10-20T03:35:55Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
 - 2026-10-20T03:35:55Z — D3-unblock-sweep-2026-10-20T03 — route — router unavailable (ImportError); using capacity_ok; capacity_ok -> cursor
@@ -288,6 +287,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-10-20T04:10:20Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
 - 2026-10-20T04:26:16Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
 - 2026-10-20T04:41:48Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+- 2026-10-20T04:57:21Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
