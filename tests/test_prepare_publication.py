@@ -502,6 +502,37 @@ def test_scanner_vocabulary_has_explicit_preparation_dispositions():
             ), f"{rule} alternative {alternative!r} missing from redactor"
 
 
+@pytest.mark.parametrize("suffix", [".txt", ".json", ".jsonl"])
+@pytest.mark.parametrize(
+    "host",
+    ["localhost:", "publiclocalhost:8080", "public.local/path"],
+)
+def test_host_boundaries_preserve_public_text_without_expanding_policy(tmp_path, suffix, host):
+    source = tmp_path / "source"
+    source.mkdir()
+    path = source / ("evidence" + suffix)
+    text = f"Public before | http://{host} | Public after"
+    # Keep deliberate whitespace to require byte preservation for clean JSON,
+    # rather than accepting a parse/serialize round trip as an unchanged file.
+    content = text if suffix == ".txt" else '{ "note": ' + json.dumps(text) + " }\n"
+    path.write_text(content)
+    original = path.read_bytes()
+    stage = tmp_path / "stage"
+    shutil.copytree(source, stage)
+
+    assert guard.scan(stage) == 0
+    counts = prepare.prepare_copy(stage)
+
+    # Unlike the bare .local: marker, localhost: requires a word boundary and
+    # port digits. A .local hostname also requires its trailing colon.
+    assert counts["files_scanned"] == 1
+    assert counts["files_redacted"] == 0
+    assert counts["internal-host"] == 0
+    assert (stage / path.name).read_bytes() == original
+    assert path.read_bytes() == original
+    assert guard.scan(stage) == 0
+
+
 @pytest.mark.parametrize(
     ("suffix", "escaped"),
     [(".txt", False), (".json", False), (".json", True), (".jsonl", False), (".jsonl", True)],

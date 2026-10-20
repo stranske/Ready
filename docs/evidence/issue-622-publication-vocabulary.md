@@ -114,3 +114,17 @@ The targeted coverage command documented above passed **529 tests**: preparation
 The default publication scan passed: **3301 files**, zero unallowed findings, **11 allowed hits**, zero errors. Ruff and `git diff --check` passed. Black formatted the changed test file, and the required repository-wide Black command exited successfully with **89 files unchanged**, using a populated temporary cache and one worker. Earlier uncached worker runs hung during completion and were interrupted.
 
 The commit attempt failed at `git add`: `.git` is mounted read-only and cannot create `index.lock`. The GitHub connector also rejected the blocker comment and `needs-human` label because approval policy is `never`. The validated test/evidence changes remain in the working tree for the automation runner to commit; no PR metadata was changed.
+
+## Follow-up: preserve intentional host matching boundaries
+
+Readback at `c9b52dd0` and live PR #637 confirmed all nine checkboxes were already checked, with the PR open and ready for review. The baseline named suite passed **529 tests**. No checklist changes were needed.
+
+Added nine cases in `test_host_boundaries_preserve_public_text_without_expanding_policy`, across text, JSON and JSONL. These assert that bare `localhost:`, an embedded `publiclocalhost:8080`, and a `.local` hostname without a colon remain outside the existing host policy. Preparation preserves every byte, including deliberate structured-text whitespace, and the scanner accepts the unchanged files. Existing positive witnesses continue to cover qualified and bare `.local:` markers and localhost ports.
+
+Both deliberate mutations ran in memory through `pytest.main`, using `tests/test_prepare_publication.py -q -o addopts='' -m 'not slow' -k host_boundaries --tb=short`. Allowing zero port digits in only the scanner consumer's localhost expression produced **3 failed, 6 passed, 301 deselected**, because bare localhost markers became findings. Applying the same change only to the redactor produced **3 failed, 6 passed, 301 deselected**, because previously clean files were rewritten. Both originals were restored in `finally`; production files were never edited. The restored focused selection passed **9 tests**.
+
+The targeted coverage command documented above passed **538 tests**: preparation **91%**, scanner **88%**, shared patterns **100%**, combined **89.58%**, exceeding the configured 80% gate. All pytest runs used `-m 'not slow'`. Ruff and `git diff --check` passed.
+
+Black formatted the changed test file, then checked all **89** tracked Python files individually using a temporary cache. The required repository-wide Black command passed with **89 files unchanged** using that cache and one worker; the initial uncached run hung and was interrupted. The default publication scan passed: **3301 files**, zero unallowed findings, **11 allowed hits**, zero errors. SHA-256 manifests verified unchanged paths and bytes for all **3302** publication/policy files.
+
+Committing is blocked: `git add` cannot create `.git/index.lock` because `.git` is mounted read-only. The validated test/evidence changes remain in the working tree for the automation runner to commit. Attempts to post the blocker comment and add `needs-human` to PR #637 were both rejected by the connector with `MCP tool call requires approval, but approval policy is never`. No PR metadata was changed; the live readback confirmed it was open and ready for review, with all nine checkboxes checked.
