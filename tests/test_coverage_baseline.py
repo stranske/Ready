@@ -212,6 +212,46 @@ def test_measured_file_set_includes_unexecuted_source_and_excludes_tooling(
     assert summary["covered_lines"] == 0
 
 
+@pytest.mark.parametrize(
+    "unrelated",
+    [
+        "scripts/ci_coverage_delta.py",
+        "tests/fixtures/scripts/check_publication_safety.py",
+        "tests/fixtures/scripts/prepare_publication.py",
+    ],
+)
+def test_pytest_gate_rejects_unrelated_files_even_with_passing_coverage(
+    coverage_project: Path, unrelated: str
+) -> None:
+    """Widening coverage to tooling or fixture copies must fail the measured-file gate."""
+    config = coverage_project / "pyproject.toml"
+    # Widen both run and report selection so real coverage data reaches the gate.
+    config.write_text(
+        config.read_text().replace(
+            '"scripts/prepare_publication.py"]',
+            f'"scripts/prepare_publication.py", "{unrelated}"]',
+        )
+    )
+
+    result = _run_coverage_project(coverage_project)
+    output = result.stdout + result.stderr
+    assert result.returncode == 1, output
+    assert "1 passed" in output
+    assert f"PUBLICATION COVERAGE: Synced or unrelated files measured: {[unrelated]!r}" in output
+    assert "INTERNALERROR" not in output
+
+    report = json.loads((coverage_project / "coverage.json").read_text())
+    assert set(report["files"]) == PUBLICATION_FILES | {
+        "src/my_project/unexecuted.py",
+        unrelated,
+    }
+    assert report["totals"]["percent_covered"] >= _load_baseline()["line"]
+    for name in PUBLICATION_FILES | {unrelated}:
+        summary = report["files"][name]["summary"]
+        assert summary["covered_lines"] == summary["num_statements"]
+        assert summary["covered_branches"] == summary["num_branches"]
+
+
 @pytest.mark.parametrize("name", sorted(PUBLICATION_FILES))
 @pytest.mark.parametrize("metric", ["line", "branch"])
 def test_pytest_gate_rejects_independent_publication_regressions(
