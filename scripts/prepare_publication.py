@@ -15,31 +15,12 @@ from pathlib import Path
 
 if __package__:
     from .check_publication_safety import load_allowlist
-    from .publication_patterns import PRIVATE_KEY_BLOCK, PRIVATE_KEY_HEADER
+    from .publication_patterns import PRIVATE_KEY_HEADER, TEXT_REPLACEMENTS
 else:
     from check_publication_safety import load_allowlist
-    from publication_patterns import PRIVATE_KEY_BLOCK, PRIVATE_KEY_HEADER
+    from publication_patterns import PRIVATE_KEY_HEADER, TEXT_REPLACEMENTS
 
-REPLACEMENTS = (
-    (
-        "private-key",
-        PRIVATE_KEY_BLOCK,
-        "[REDACTED_PRIVATE_KEY]",
-    ),
-    (
-        "credential",
-        re.compile(r"(?:sk-ant-|sk-proj-|ghp_|github_pat_|lsv2_|crsr_|AIza)[A-Za-z0-9_-]*"),
-        "[REDACTED_CREDENTIAL]",
-    ),
-    ("home-path", re.compile(r"/Users/[^/\s\"'`<>]+/?"), "[LOCAL_HOME]/"),
-    ("home-path", re.compile(r"/Users/"), "[LOCAL_HOME]/"),
-    ("scratch-path", re.compile(r"clones/|/private/tmp/|scratchpad/"), "[LOCAL_WORKSPACE]/"),
-    (
-        "internal-host",
-        re.compile(r"\b[A-Za-z0-9_.-]+\.local:(?:[0-9]+)?|\blocalhost:[0-9]+|\.local:"),
-        "[LOCAL_HOST]",
-    ),
-)
+REPLACEMENTS = TEXT_REPLACEMENTS
 
 
 # These archived dispatch captures contain raw process output, despite their suffix.
