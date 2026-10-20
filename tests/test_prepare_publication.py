@@ -450,7 +450,11 @@ PUBLICATION_ALTERNATIVES = {
         ],
     },
     "credential": {
-        prefix: [(prefix + "SYNTHETIC_SUFFIX-123_abc", "[REDACTED_CREDENTIAL]")]
+        prefix: [
+            (prefix + "SYNTHETIC_SUFFIX-123_abc", "[REDACTED_CREDENTIAL]"),
+            # The existing full-value span permits an empty suffix too.
+            (prefix, "[REDACTED_CREDENTIAL]"),
+        ]
         for prefix in ("sk-ant-", "sk-proj-", "ghp_", "github_pat_", "lsv2_", "crsr_", "AIza")
     },
     "scratch-path": {

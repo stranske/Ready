@@ -86,3 +86,17 @@ Temporarily replacing only the scanner consumer's credential expression with a n
 Black formatted the changed Python file. Individual checks of the 89 tracked Python files within the root formatting policy populated a temporary cache, and the required repository-wide Black check passed using that cache and one worker. Ruff and `git diff --check` passed. The default publication scan passed: **3301 files**, zero unallowed findings, **11 allowed hits**, zero errors. SHA-256 manifests confirmed unchanged bytes and paths for all **3302** policy/research files. Publication implementation and policy remain unchanged.
 
 The commit is blocked: `git add` cannot create `.git/index.lock` because `.git` is mounted read-only. The validated test/evidence changes remain in the working tree for the automation runner to commit. The GitHub connector rejected the PR validation-body update, blocker comment and `needs-human` label with `MCP tool call requires approval, but approval policy is never`. No PR metadata was changed; all nine checkboxes remain checked and the PR is open and ready for review.
+
+## Follow-up: bare credential prefixes
+
+Reconciled recent commits through `d76a72fb` with live PR #637: all nine checkboxes were already checked, and the PR was open with `draft=false`. The baseline named suite passed **473 tests**. No checkbox changes were needed.
+
+Added bare-prefix witnesses for all seven existing credential alternatives to the independent matrix. The existing expressions permit an empty suffix; preserving that behavior adds **49 cases** across plain text, JSON/JSONL (including escaped strings, keys and nested values), binary preservation and compressed DOCX scanning. The existing populated-suffix witnesses remain in place. Production expressions and policy are unchanged.
+
+Deliberate mutations ran through `pytest.main` with `-k 'shared_vocabulary_through_real_preparation_and_scan and credential'`, `-m 'not slow'`, and default addopts disabled. Replacing the redactor's trailing `*` with `+` in memory produced **35 failed, 35 passed, 224 deselected**, exposing retained bare prefixes. Replacing only the scanner consumer's credential expression with a never-matching expression produced **70 failed, 224 deselected**. Both originals were restored in `finally`; the restored selection passed **70 tests**. No implementation file was mutated.
+
+The targeted coverage command documented above passed **522 tests**: preparation **91%**, scanner **88%**, shared patterns **100%**, combined **89.58%** (configured gate: 80%). Black formatted the changed test file and the required repository-wide check passed for **89 files**, using individually populated temporary cache entries and one worker. Ruff and `git diff --check` passed.
+
+The default publication scan passed: **3301 files**, zero unallowed findings, **11 allowed hits**, zero errors. SHA-256 manifests verified unchanged paths and bytes for all **3302** publication/policy files. Final live PR readback confirmed `state=open`, `draft=false`, nine checked boxes and no unchecked boxes.
+
+Committing is blocked: `git add tests/test_prepare_publication.py` cannot create `.git/index.lock` because `.git` is read-only. The connector also rejected the validation-body update, blocker comment and `needs-human` label because approval policy is `never`. The changes require the automation runner to commit; no PR metadata was changed.
