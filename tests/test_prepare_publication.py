@@ -535,14 +535,10 @@ def test_overlapping_vocabulary_preserves_replacement_order(
 @pytest.mark.parametrize(
     "marker",
     [
-        cases[0][0]
+        original
         for alternatives in PUBLICATION_ALTERNATIVES.values()
         for cases in alternatives.values()
-    ]
-    + [
-        # PEM binary findings keep the documented preserve-and-scan disposition.
-        "-----BEGIN PRIVATE KEY-----\nSYNTHETIC_MATERIAL\n-----END PRIVATE KEY-----",
-        "-----BEGIN RSA PRIVATE KEY-----\nSYNTHETIC_MATERIAL\n-----END RSA PRIVATE KEY-----",
+        for original, _ in cases
     ],
 )
 def test_shared_vocabulary_binary_outcome_is_preserve_and_scan(tmp_path, marker):
@@ -553,3 +549,50 @@ def test_shared_vocabulary_binary_outcome_is_preserve_and_scan(tmp_path, marker)
     assert counts["files_redacted"] == 0
     assert path.read_bytes() == original
     assert guard.scan(tmp_path) == 1
+
+
+@pytest.mark.parametrize(
+    "label",
+    [
+        "PRIVATE KEY",
+        "ENCRYPTED PRIVATE KEY",
+        "RSA PRIVATE KEY",
+        "OPENSSH PRIVATE KEY",
+        "EC PRIVATE KEY",
+        "DSA PRIVATE KEY",
+        "FUTURE PRIVATE KEY",
+    ],
+)
+@pytest.mark.parametrize("footer", ["matching", "missing", "mismatched"])
+def test_binary_pem_is_preserved_and_scan_rejected(tmp_path, capsys, label, footer):
+    source = tmp_path / "source"
+    source.mkdir()
+    content = f"-----BEGIN {label}-----\nSYNTHETIC_MATERIAL\n"
+    if footer != "missing":
+        end_label = label if footer == "matching" else "OTHER PRIVATE KEY"
+        content += f"-----END {end_label}-----\n"
+    originals = {
+        "evidence.bin": b"\xff" + content.encode("ascii"),
+        "report.txt": b"clones/public-note\n",
+    }
+    for name, original in originals.items():
+        (source / name).write_bytes(original)
+    stage = tmp_path / "stage"
+    shutil.copytree(source, stage)
+
+    counts = prepare.prepare_copy(stage)
+
+    # Binary PEM remains a scanner finding even when its text equivalent would
+    # be redacted or rejected. Other supported text in the copy still prepares.
+    assert counts["files_scanned"] == 2
+    assert counts["files_redacted"] == 1
+    assert counts["private-key"] == 0
+    assert (stage / "evidence.bin").read_bytes() == originals["evidence.bin"]
+    assert (stage / "report.txt").read_bytes() == b"[LOCAL_WORKSPACE]/public-note\n"
+    assert guard.scan(stage) == 1
+    output = capsys.readouterr()
+    assert "evidence.bin:1: private-key (1 hit(s))" in output.out
+    assert "private-key=1" in output.out
+    assert "SYNTHETIC_MATERIAL" not in output.out + output.err
+    assert not output.err
+    assert {path.name: path.read_bytes() for path in source.iterdir()} == originals

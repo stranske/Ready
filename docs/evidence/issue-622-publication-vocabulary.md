@@ -44,3 +44,19 @@ Deliberate mutations used the real preparation replacement tuple in memory and r
 The default publication scan passed again: **3301 files**, zero unallowed findings, **11 allowed hits**, zero errors. Ruff and `git diff --check` passed. The required repository-wide Black check passed for **89 files** after populating its temporary cache with individual file checks; the initial uncached worker run timed out during completion. Publication code, policy and research source files remain unchanged.
 
 Handoff limitation: staging and committing these two files failed because this run mounts `.git` read-only (`Unable to create .git/index.lock: Read-only file system`). The validated changes remain uncommitted in the working tree.
+
+## Follow-up: complete and incomplete PEM binary dispositions
+
+Reconciled the recent commits through `e7733d47` with PR #637 before making changes. All four tasks and five acceptance criteria were already checked; the PR was open and ready for review. The baseline named suite passed **426 tests**.
+
+Expanded the binary lexical matrix to include every witness, including bare home and host markers. A separate 21-case matrix covers the seven PEM labels already used by the text tests, each with matching, absent and mismatched footers. It verifies byte-preserving binary preparation, subsequent scanner refusal without printing synthetic material, successful preparation of neighboring supported text, and preservation of the entire source tree.
+
+Temporarily disconnecting `private-key` from the scanner's actual `RULES` consumer in memory made all **21** new PEM cases fail because scanning returned success. The original rules were restored in `finally`; no implementation file was written. The restored binary matrix passed **36 tests**, and the full targeted coverage command from the structured-text section passed **447 tests**. Preparation coverage remains **91%**, scanner **88%**, shared patterns **100%**, and combined coverage **89.58%**, above the configured 80% gate. All pytest runs used `-m 'not slow'`.
+
+Ruff and `git diff --check` passed. Black individually verified all **89** tracked Python files, then the required repository-wide command passed using the populated temporary cache and one worker. The initial uncached command reported unchanged formatting but timed out while exiting.
+
+The default publication scan passed: **3301 files**, zero unallowed findings, **11 allowed hits**, zero errors. SHA-256 manifests verified identical bytes for all **3302** policy and research files before and after validation. PR #637 remained open with `draft=false` and all nine checkboxes checked.
+
+The commit attempt was blocked at `git add` because `.git` is mounted read-only (`Unable to create .git/index.lock: Read-only file system`). The test and evidence changes remain in the working tree for the automation runner to commit.
+
+Attempts to post the required blocker comment and add `needs-human` to PR #637 were both rejected by the GitHub connector: `MCP tool call requires approval, but approval policy is never`. No PR metadata was changed by this run.
