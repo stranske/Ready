@@ -187,10 +187,22 @@ def _run_coverage_project(project: Path) -> subprocess.CompletedProcess[str]:
     )
 
 
+@pytest.mark.parametrize("execution", ["in-process", "subprocess"])
 def test_measured_file_set_includes_unexecuted_source_and_excludes_tooling(
-    coverage_project: Path,
+    coverage_project: Path, execution: str
 ) -> None:
-    """Exercise the real pytest hooks and config, including source discovery."""
+    """Keep tooling and fixture copies excluded in both parent and child processes."""
+    if execution == "subprocess":
+        exercise = coverage_project / "tests/test_exercise.py"
+        (coverage_project / "exercise_cli.py").write_text(
+            exercise.read_text() + "\ntest_exercise()\n"
+        )
+        exercise.write_text(
+            "import subprocess\nimport sys\n\n"
+            "def test_exercise():\n"
+            "    subprocess.run([sys.executable, 'exercise_cli.py'], check=True)\n"
+        )
+
     result = _run_coverage_project(coverage_project)
     assert result.returncode == 0, result.stdout + result.stderr
     report = json.loads((coverage_project / "coverage.json").read_text())
