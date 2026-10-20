@@ -260,6 +260,54 @@ def _measured_report():
     }
 
 
+@pytest.mark.parametrize(
+    "regression",
+    [None]
+    + [
+        (name, metric, covered)
+        for name in sorted(PUBLICATION_FILES)
+        for metric, covered in (("line", "covered_lines"), ("branch", "covered_branches"))
+    ],
+)
+def test_publication_gate_cli_enforces_each_floor(tmp_path: Path, regression) -> None:
+    """The standalone gate must return failure even when aggregate coverage passes."""
+    report = _measured_report()
+    # The command must inspect each script rather than trust the aggregate summary.
+    report["totals"] = {"percent_covered": 100.0}
+    if regression is not None:
+        name, metric, covered = regression
+        report["files"][name]["summary"][covered] = 0
+
+    report_path = tmp_path / "publication coverage.json"
+    baseline_path = tmp_path / "publication baseline.json"
+    report_path.write_text(json.dumps(report))
+    baseline_path.write_text(json.dumps(_load_baseline()))
+
+    result = subprocess.run(
+        [
+            sys.executable,
+            str(REPO_ROOT / "scripts/publication_coverage_gate.py"),
+            "--report",
+            str(report_path),
+            "--baseline",
+            str(baseline_path),
+        ],
+        cwd=tmp_path,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert result.returncode == int(regression is not None), result.stdout + result.stderr
+    assert result.stderr == ""
+    if regression is None:
+        assert result.stdout == "Ready publication coverage floors PASS\n"
+    else:
+        assert result.stdout == (
+            f"{name}: {metric} coverage 0.000000% below floor "
+            f"{_load_baseline()['publication_scripts'][name][metric]:.6f}%\n"
+        )
+
+
 @pytest.mark.parametrize("remove_branch_call", [False, True], ids=["complete", "branch-loss"])
 def test_publication_coverage_tracks_subprocess_branches(
     coverage_project: Path, remove_branch_call: bool
