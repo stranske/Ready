@@ -60,3 +60,17 @@ The default publication scan passed: **3301 files**, zero unallowed findings, **
 The commit attempt was blocked at `git add` because `.git` is mounted read-only (`Unable to create .git/index.lock: Read-only file system`). The test and evidence changes remain in the working tree for the automation runner to commit.
 
 Attempts to post the required blocker comment and add `needs-human` to PR #637 were both rejected by the GitHub connector: `MCP tool call requires approval, but approval policy is never`. No PR metadata was changed by this run.
+
+## Follow-up: exact-file and rule boundaries for reviewed incomplete PEM
+
+Reconciled the recent commits through `0ef8dacc` against the live PR before editing. All nine task and acceptance checkboxes were already checked; PR #637 was open with `draft=false`. The baseline named suite passed **447 tests**, so no checkbox changes were needed.
+
+Added nine preparation cases across text, JSON and JSONL. Three show that a reviewed incomplete PEM fixture survives while complete PEM blocks, credentials and home usernames in that same file are fully redacted. They also verify source/policy preservation, idempotence and the subsequent clean scan. Six enforce exact-path and rule boundaries: an incomplete PEM in a subdirectory with the same basename receives no exception, and an exception for a different rule cannot approve an incomplete PEM. Rejection must leave every staged file unchanged, including an earlier queued rewrite.
+
+A deliberate in-memory mutation broadened the preparation allowlist to approve private-key findings in every staged file. Running `python -m pytest tests/test_prepare_publication.py -q -o addopts='' -m 'not slow' -k incomplete_pem_exception --tb=short` through `pytest.main` with that mutation produced **6 failed, 222 deselected**, each because preparation incorrectly stopped raising. The original loader was restored in `finally`; implementation files were never modified.
+
+The restored targeted coverage command documented above passed **456 tests** with preparation **91%**, scanner **88%**, shared patterns **100%**, and combined coverage **89.58%**, above the configured 80% gate. All runs used `-m 'not slow'`. Black formatted the changed test file and the required repository-wide check passed for **89 files**, using a temporary populated cache and one worker. An initial auxiliary check included archived Python files with their own configuration and reported an excluded artifact; rerunning within the root formatting policy and the required repository-wide command passed. Ruff and `git diff --check` passed.
+
+The default publication scan passed: **3301 files**, all five unallowed rule totals zero, **11 allowed hits**, and zero errors. SHA-256 manifests confirmed all **3302** policy and research files remained unchanged.
+
+`git add tests/test_prepare_publication.py` failed because `.git` is mounted read-only and cannot create `index.lock`. The test/evidence changes therefore require the automation runner to commit them. The connector rejected the PR validation-body update, blocker comment and `needs-human` label with `MCP tool call requires approval, but approval policy is never`; no PR metadata was changed.

@@ -233,6 +233,81 @@ def test_documented_private_key_fixture_can_survive_publication_copy(tmp_path, s
     assert guard.scan(tmp_path, allowlist) == 0
 
 
+@pytest.mark.parametrize("suffix", [".txt", ".json", ".jsonl"])
+def test_reviewed_incomplete_pem_still_redacts_complete_blocks_and_other_rules(tmp_path, suffix):
+    source = tmp_path / "source"
+    source.mkdir()
+    incomplete = "-----BEGIN PRIVATE KEY-----\nSYNTHETIC_REVIEWED_FIXTURE"
+    text = (
+        "-----BEGIN RSA PRIVATE KEY-----\nSYNTHETIC_COMPLETE_BLOCK\n"
+        "-----END RSA PRIVATE KEY-----\n"
+        "ghp_SYNTHETIC_SUFFIX /Users/SYNTHETIC_USER/notes\n" + incomplete
+    )
+    expected = "[REDACTED_PRIVATE_KEY]\n[REDACTED_CREDENTIAL] [LOCAL_HOME]/notes\n" + incomplete
+    path = source / ("reviewed" + suffix)
+    path.write_text(text if suffix == ".txt" else json.dumps({"note": text}) + "\n")
+    policy = source / ".publication-allow"
+    policy.write_text(f"{path.name}:private-key # Reviewed synthetic incomplete fixture.\n")
+    originals = {p.name: p.read_bytes() for p in source.iterdir()}
+    stage = tmp_path / "stage"
+    shutil.copytree(source, stage)
+    allowlist = stage / policy.name
+    assert guard.scan(stage, allowlist) == 1
+
+    counts = prepare.prepare_copy(stage, allowlist)
+
+    exported = (stage / path.name).read_text()
+    assert (exported if suffix == ".txt" else json.loads(exported)["note"]) == expected
+    assert counts["private-key"] == counts["credential"] == counts["home-path"] == 1
+    assert counts["files_redacted"] == 1
+    assert (stage / policy.name).read_bytes() == originals[policy.name]
+    assert guard.scan(stage, allowlist) == 0
+    prepared = (stage / path.name).read_bytes()
+    assert prepare.prepare_copy(stage, allowlist)["files_redacted"] == 0
+    assert (stage / path.name).read_bytes() == prepared
+    assert {p.name: p.read_bytes() for p in source.iterdir()} == originals
+
+
+@pytest.mark.parametrize("suffix", [".txt", ".json", ".jsonl"])
+@pytest.mark.parametrize("exception_rule", ["private-key", "scratch-path"])
+def test_incomplete_pem_exception_requires_exact_path_and_rule(
+    tmp_path, monkeypatch, suffix, exception_rule
+):
+    first = tmp_path / "a.txt"
+    first.write_text("clones/public-note")
+    reviewed = tmp_path / ("reviewed" + suffix)
+    text = "-----BEGIN PRIVATE KEY-----\nSYNTHETIC_REVIEWED_FIXTURE"
+    reviewed.write_text(text if suffix == ".txt" else json.dumps({"note": text}) + "\n")
+    sibling_dir = tmp_path / "unreviewed"
+    sibling_dir.mkdir()
+    sibling = sibling_dir / reviewed.name
+    sibling.write_bytes(
+        reviewed.read_bytes() if exception_rule == "private-key" else b"Public sibling\n"
+    )
+    allowlist = tmp_path / ".publication-allow"
+    allowlist.write_text(f"{reviewed.name}:{exception_rule} # Reviewed exact-file fixture.\n")
+    originals = {p: p.read_bytes() for p in (first, reviewed, sibling, allowlist)}
+    # Queue a supported rewrite before encountering the unapproved incomplete
+    # block. A same-basename file in a subdirectory must not inherit approval.
+    monkeypatch.setattr(
+        Path,
+        "walk",
+        lambda self, **kwargs: iter(
+            [
+                (self, [sibling_dir.name], [first.name, reviewed.name, allowlist.name]),
+                (sibling_dir, [], [sibling.name]),
+            ]
+        ),
+    )
+
+    with pytest.raises(ValueError) as error:
+        prepare.prepare_copy(tmp_path, allowlist)
+
+    assert "incomplete private-key block" in str(error.value.__cause__)
+    assert {p: p.read_bytes() for p in originals} == originals
+    assert guard.scan(tmp_path, allowlist) == 1
+
+
 def test_invalid_publication_allowlist_fails_before_any_write(tmp_path):
     path = tmp_path / "evidence.txt"
     path.write_text("clones/example")
