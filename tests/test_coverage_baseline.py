@@ -333,6 +333,29 @@ def test_pytest_gate_rejects_unexecuted_script_despite_previous_passing_report(
     assert summary["covered_branches"] == summary["num_branches"]
 
 
+def test_pytest_gate_rejects_src_only_coverage_override(coverage_project: Path) -> None:
+    """A CLI source override cannot silently restore the original src-only blind spot."""
+    source = coverage_project / "src/my_project/unexecuted.py"
+    source.write_text("ANSWER = 42\n")
+    exercise = coverage_project / "tests/test_exercise.py"
+    exercise.write_text(
+        exercise.read_text()
+        + "    assert runpy.run_path('src/my_project/unexecuted.py')['ANSWER'] == 42\n"
+    )
+
+    result = _run_coverage_project(coverage_project, "--cov-reset", "--cov=src")
+    output = result.stdout + result.stderr
+    assert result.returncode == 1, output
+    assert "1 passed" in output
+    assert "INTERNALERROR" not in output
+
+    report = json.loads((coverage_project / "coverage.json").read_text())
+    assert set(report["files"]) == {"src/my_project/unexecuted.py"}
+    assert report["totals"]["percent_covered"] == 100
+    for name in PUBLICATION_FILES:
+        assert f"PUBLICATION COVERAGE: {name}: missing coverage measurement" in output
+
+
 def _measured_report():
     return {
         "files": {
