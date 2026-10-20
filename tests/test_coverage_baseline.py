@@ -508,6 +508,31 @@ def test_publication_measurements_fail_closed():
     assert check_report(report, baseline)
 
 
+@pytest.mark.parametrize("field", ["floor", "covered", "total"])
+@pytest.mark.parametrize(
+    "metric,covered,total",
+    [
+        ("line", "covered_lines", "num_statements"),
+        ("branch", "covered_branches", "num_branches"),
+    ],
+)
+def test_publication_gate_rejects_oversized_json_integers(field, metric, covered, total):
+    """Unbounded JSON numbers must produce a diagnostic instead of overflowing."""
+    from scripts.publication_coverage_gate import check_report
+
+    baseline = _load_baseline()
+    report = _measured_report()
+    name = "scripts/check_publication_safety.py"
+    if field == "floor":
+        baseline["publication_scripts"][name][metric] = 10**400
+    else:
+        report["files"][name]["summary"][covered if field == "covered" else total] = 10**400
+
+    # Exercise the same JSON decoding boundary as the command-line gate.
+    errors = check_report(json.loads(json.dumps(report)), json.loads(json.dumps(baseline)))
+    assert errors == [f"{name}: invalid {metric} measurement or floor"]
+
+
 @pytest.mark.parametrize("invalid", [None, [], "invalid"])
 @pytest.mark.parametrize(
     "document,path",
@@ -536,20 +561,28 @@ def test_publication_gate_rejects_malformed_json_objects(document, path, invalid
     assert all(isinstance(error, str) and error for error in errors)
 
 
+@pytest.mark.parametrize(
+    "invalid,diagnostic",
+    [
+        (None, "coverage summary and floors"),
+        ({"line": 10**400, "branch": 90}, "invalid line measurement or floor"),
+    ],
+    ids=["wrong-type", "oversized-integer"],
+)
 def test_pytest_gate_rejects_malformed_baseline_without_internal_error(
-    coverage_project: Path,
+    coverage_project: Path, invalid, diagnostic: str
 ) -> None:
     """Malformed per-script floors must fail the Gate cleanly after passing tests."""
     baseline = _load_baseline()
     name = "scripts/check_publication_safety.py"
-    baseline["publication_scripts"][name] = None
+    baseline["publication_scripts"][name] = invalid
     (coverage_project / "config/coverage-baseline.json").write_text(json.dumps(baseline))
 
     result = _run_coverage_project(coverage_project)
     output = result.stdout + result.stderr
     assert result.returncode == 1, output
     assert "1 passed" in output
-    assert f"PUBLICATION COVERAGE: {name}: coverage summary and floors" in output
+    assert f"PUBLICATION COVERAGE: {name}: {diagnostic}" in output
     assert "INTERNALERROR" not in output
     assert "Traceback" not in output
 

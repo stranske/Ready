@@ -55,11 +55,17 @@ def check_report(report: dict[str, Any], baseline: dict[str, Any]) -> list[str]:
                 not isinstance(floor, (int, float))
                 or not isinstance(hit, (int, float))
                 or not isinstance(count, (int, float))
-                or any(isinstance(v, bool) or not math.isfinite(v) for v in (floor, hit, count))
-                or not 0 <= floor <= 100
-                or count <= 0
-                or not 0 <= hit <= count
             ):
+                errors.append(f"{name}: invalid {metric} measurement or floor")
+                continue
+            try:
+                finite_numbers = all(
+                    not isinstance(v, bool) and math.isfinite(v) for v in (floor, hit, count)
+                )
+            except OverflowError:
+                # JSON integers are unbounded; math.isfinite converts them to float.
+                finite_numbers = False
+            if not finite_numbers or not 0 <= floor <= 100 or count <= 0 or not 0 <= hit <= count:
                 errors.append(f"{name}: invalid {metric} measurement or floor")
             elif 100 * hit / count + 1e-9 < floor:
                 errors.append(
