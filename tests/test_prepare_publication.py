@@ -416,6 +416,10 @@ def test_scanner_vocabulary_has_explicit_preparation_dispositions():
 
 
 @pytest.mark.parametrize(
+    ("suffix", "escaped"),
+    [(".txt", False), (".json", False), (".json", True), (".jsonl", False), (".jsonl", True)],
+)
+@pytest.mark.parametrize(
     ("rule", "original", "expected"),
     [
         (rule, original, expected)
@@ -424,19 +428,45 @@ def test_scanner_vocabulary_has_explicit_preparation_dispositions():
         for original, expected in cases
     ],
 )
-def test_shared_vocabulary_through_real_preparation_and_scan(tmp_path, rule, original, expected):
+def test_shared_vocabulary_through_real_preparation_and_scan(
+    tmp_path, rule, original, expected, suffix, escaped
+):
     source = tmp_path / "source"
     source.mkdir()
-    path = source / "evidence.txt"
-    path.write_text("Public before | " + original + " | Public after")
+    path = source / ("evidence" + suffix)
+    text = "Public before | " + original + " | Public after"
+    expected_text = "Public before | " + expected + " | Public after"
+    content = text
+    if suffix != ".txt":
+        # Exercise both object keys and nested values for every alternative.
+        content = json.dumps({text: [{"note": text}], "public": 42})
+        if escaped:
+            # Hide every marker from the raw-byte scan to require JSON decoding.
+            encoded_text = '"' + "".join(rf"\u{ord(char):04x}" for char in text) + '"'
+            content = content.replace(json.dumps(text), encoded_text)
+            assert not any(pattern.search(content.encode()) for pattern in guard.RULES.values())
+        if suffix == ".jsonl":
+            content += '\n\n{"public": true}\n'
+    path.write_text(content)
     before = path.read_bytes()
     stage = tmp_path / "stage"
     shutil.copytree(source, stage)
-    assert guard.RULES[rule].search(before)
+    assert guard.RULES[rule].search(original.encode())
     assert guard.scan(stage) == 1
     prepare.prepare_copy(stage)
     exported = (stage / path.name).read_text()
-    assert exported == "Public before | " + expected + " | Public after"
+    if suffix == ".txt":
+        assert exported == expected_text
+    else:
+        expected_record = {expected_text: [{"note": expected_text}], "public": 42}
+        if suffix == ".json":
+            assert json.loads(exported) == expected_record
+        else:
+            assert [json.loads(line) for line in exported.splitlines() if line.strip()] == [
+                expected_record,
+                {"public": True},
+            ]
+            assert exported.splitlines()[1] == ""
     # Full-value checks: suffixes, usernames, and host names must be gone, not
     # merely that a marker stops matching after a partial rewrite.
     for fragment in (
