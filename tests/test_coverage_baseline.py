@@ -579,6 +579,42 @@ def test_recorded_publication_baseline_rejects_one_lost_hit(name, metric, covere
     assert "below floor" in errors[0]
 
 
+def test_recorded_branch_removal_breaches_guard_floors_above_aggregate_floor():
+    """Keep the deliberate-break evidence tied to the gate's actual decisions."""
+    from scripts.publication_coverage_gate import check_report
+
+    evidence = json.loads(
+        (REPO_ROOT / "docs/evidence/issue-623-publication-coverage.json").read_text()
+    )
+    control = evidence["branch_removal_control"]
+    name = "scripts/check_publication_safety.py"
+    report = {"files": {path: {"summary": summary} for path, summary in evidence["files"].items()}}
+    baseline = _load_baseline()
+    assert control["before"] == report["files"][name]["summary"]
+    assert check_report(report, baseline) == []
+
+    before, after = control["before"], control["after"]
+    for covered, total in (
+        ("covered_lines", "num_statements"),
+        ("covered_branches", "num_branches"),
+    ):
+        assert after[total] == before[total]
+        assert after[covered] == before[covered] - 1
+    assert control["branch_decreased"] is True
+    assert control["exit"] == 1
+
+    report["files"][name]["summary"] = after
+    summaries = [file["summary"] for file in report["files"].values()]
+    hits = sum(summary["covered_lines"] + summary["covered_branches"] for summary in summaries)
+    total = sum(summary["num_statements"] + summary["num_branches"] for summary in summaries)
+    assert 100 * hits / total >= baseline["line"]
+    errors = check_report(report, baseline)
+    assert len(errors) == 2
+    for metric, error in zip(("line", "branch"), errors, strict=True):
+        assert error.startswith(f"{name}: {metric} coverage ")
+        assert "below floor" in error
+
+
 def test_publication_measurements_fail_closed():
     import copy
 
