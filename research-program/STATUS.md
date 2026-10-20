@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-20T18:45:06Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-20T19:59:29Z)
 
-Units: 265 — claimed 1, done 260, superseded 4
+Units: 266 — done 262, superseded 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=warn claude=ok cursor=ok gemini=shed vibe=ok muse=ok aider=ok
 Orchestrator evidence (30d): offload runs 116, bound to a research round 114, scored 114 (PASS 75, FAIL 39, infra 0) — codex 10/12 (P3 F7 I0), cursor 103/103 (P71 F32 I0), gemini 1/1 (P1 F0 I0)
@@ -158,6 +158,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D3-unblock-sweep-2026-10-19T19 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-2026-10-20T03 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-2026-10-20T11 | D | D | done | codex | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
+| D3-unblock-sweep-2026-10-20T19 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-pass2-20260913T2023 | D | D | done | cursor | driver | Unblock sweep pass 2: the seven repos the budgeted first pass deferred |  |
 | D-audit-Counter_Risk--2026-09-07T04-47-32Z | D | D | done | codex | driver | Audit stranske/Counter_Risk and file issues (supply 2 <= 2) |  |
 | D-audit-Counter_Risk--2026-09-08T17-11-36Z | D | D | done | codex | codex | Audit stranske/Counter_Risk and file issues (supply 1 <= 2) |  |
@@ -274,22 +275,22 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D4-verify-merged-2026-10-17T18 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
 | D4-verify-merged-2026-10-18T18 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
 | D4-verify-merged-2026-10-19T18 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
-| D4-verify-merged-2026-10-20T18 | D | D | claimed | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
+| D4-verify-merged-2026-10-20T18 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
 
 ## Last checkpoints
 
-- 2026-10-20T16:36:33Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
-- 2026-10-20T16:52:01Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
-- 2026-10-20T17:09:29Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
-- 2026-10-20T17:24:58Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
-- 2026-10-20T17:40:26Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
-- 2026-10-20T17:55:55Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
-- 2026-10-20T18:12:33Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
-- 2026-10-20T18:29:14Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
-- 2026-10-20T18:45:05Z — verify — enqueued D4-verify-merged-2026-10-20T18
-- 2026-10-20T18:45:06Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
 - 2026-10-20T18:45:06Z — D4-verify-merged-2026-10-20T18 — route — router unavailable (ImportError); using capacity_ok; capacity_ok -> cursor
 - 2026-10-20T18:45:06Z — D4-verify-merged-2026-10-20T18 — claimed by driver (agent cursor)
+- 2026-10-20T19:10:02Z — D4-verify-merged-2026-10-20T18 — done — cursor produced 818 words at artifacts/verification/D4-verify-merged-2026-10-20T18.md in 1461s
+- 2026-10-20T19:25:31Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+- 2026-10-20T19:40:59Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+- 2026-10-20T19:56:27Z — unblock — enqueued D3-unblock-sweep-2026-10-20T19
+- 2026-10-20T19:56:28Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+- 2026-10-20T19:56:28Z — D3-unblock-sweep-2026-10-20T19 — route — router unavailable (ImportError); using capacity_ok; capacity_ok -> cursor
+- 2026-10-20T19:56:28Z — D3-unblock-sweep-2026-10-20T19 — claimed by driver (agent cursor)
+- 2026-10-20T19:59:25Z — D3-unblock-sweep-2026-10-20T19 — done — cursor produced 507 words at artifacts/sweeps/D3-unblock-sweep-2026-10-20T19.md in 138s
+- 2026-10-20T19:59:27Z — D3-unblock-sweep-2026-10-20T19 — refutation posted — stranske/Trend_Model_Project#6080
+- 2026-10-20T19:59:29Z — D3-unblock-sweep-2026-10-20T19 — refutation posted — stranske/Trend_Model_Project#6081
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
