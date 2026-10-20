@@ -462,7 +462,13 @@ PUBLICATION_ALTERNATIVES = {
         for marker in ("clones/", "/private/tmp/", "scratchpad/")
     },
     "internal-host": {
-        ".local:": [("SYNTHETIC_HOST.local:8080", "[LOCAL_HOST]"), (".local:", "[LOCAL_HOST]")],
+        ".local:": [
+            ("SYNTHETIC_HOST.local:8080", "[LOCAL_HOST]"),
+            # A missing port must not leave the hostname behind via the bare
+            # marker fallback, even though the resulting text scans cleanly.
+            ("SYNTHETIC_HOST.local:", "[LOCAL_HOST]"),
+            (".local:", "[LOCAL_HOST]"),
+        ],
         # Scanner and replacement both require port digits after localhost:; bare
         # `localhost:` is intentionally asymmetric with the bare `.local:` marker.
         "localhost:": [("localhost:8080", "[LOCAL_HOST]")],

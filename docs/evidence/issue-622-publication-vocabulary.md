@@ -100,3 +100,17 @@ The targeted coverage command documented above passed **522 tests**: preparation
 The default publication scan passed: **3301 files**, zero unallowed findings, **11 allowed hits**, zero errors. SHA-256 manifests verified unchanged paths and bytes for all **3302** publication/policy files. Final live PR readback confirmed `state=open`, `draft=false`, nine checked boxes and no unchecked boxes.
 
 Committing is blocked: `git add tests/test_prepare_publication.py` cannot create `.git/index.lock` because `.git` is read-only. The connector also rejected the validation-body update, blocker comment and `needs-human` label because approval policy is `never`. The changes require the automation runner to commit; no PR metadata was changed.
+
+## Follow-up: qualified local host without port digits
+
+Reconciled commits through `372c3c01` with live PR #637: all nine checkboxes were already checked, and the PR was open with `draft=false`. The baseline named suite passed **522 tests**, so no checkbox changes were necessary.
+
+Added one independent host witness, `SYNTHETIC_HOST.local:`, to the existing matrix. The seven resulting cases exercise full hostname removal in text, JSON and JSONL (including escaped keys and nested values), binary preservation, and compressed DOCX scanning. This covers the existing optional-port behavior without changing production expressions or publication policy.
+
+Both deliberate mutations ran in memory through `pytest.main`, selecting `shared_vocabulary_through_real_preparation_and_scan and SYNTHETIC_HOST.local:` with `-m 'not slow'`, default addopts disabled and `--tb=short`. Making the qualified-host redactor require port digits produced **5 failed, 5 passed, 291 deselected**: the new cases retained the hostname through the bare-marker fallback. Disconnecting the scanner consumer's host expression produced **10 failed, 291 deselected**. Each original was restored in `finally`; implementation files were never written. The unmodified focused matrix passed **14 tests** before mutation; the full suite passed after restoration.
+
+The targeted coverage command documented above passed **529 tests**: preparation **91%**, scanner **88%**, shared patterns **100%**, combined **89.58%**, exceeding the configured 80% gate. SHA-256 manifests verified identical paths and bytes for all **3302** publication/policy files.
+
+The default publication scan passed: **3301 files**, zero unallowed findings, **11 allowed hits**, zero errors. Ruff and `git diff --check` passed. Black formatted the changed test file, and the required repository-wide Black command exited successfully with **89 files unchanged**, using a populated temporary cache and one worker. Earlier uncached worker runs hung during completion and were interrupted.
+
+The commit attempt failed at `git add`: `.git` is mounted read-only and cannot create `index.lock`. The GitHub connector also rejected the blocker comment and `needs-human` label because approval policy is `never`. The validated test/evidence changes remain in the working tree for the automation runner to commit; no PR metadata was changed.
