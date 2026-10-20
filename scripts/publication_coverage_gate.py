@@ -53,8 +53,8 @@ def check_report(report: dict[str, Any], baseline: dict[str, Any]) -> list[str]:
             hit, count = summary.get(covered), summary.get(total)
             if (
                 not isinstance(floor, (int, float))
-                or not isinstance(hit, (int, float))
-                or not isinstance(count, (int, float))
+                or type(hit) is not int
+                or type(count) is not int
             ):
                 errors.append(f"{name}: invalid {metric} measurement or floor")
                 continue

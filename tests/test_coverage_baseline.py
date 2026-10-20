@@ -508,6 +508,27 @@ def test_publication_measurements_fail_closed():
     assert check_report(report, baseline)
 
 
+@pytest.mark.parametrize("name", sorted(PUBLICATION_FILES))
+@pytest.mark.parametrize(
+    "metric,covered,total",
+    [
+        ("line", "covered_lines", "num_statements"),
+        ("branch", "covered_branches", "num_branches"),
+    ],
+)
+@pytest.mark.parametrize("field", ["covered", "total"])
+def test_publication_gate_rejects_fractional_counts(name, field, metric, covered, total):
+    """Above-floor percentages cannot make fractional line or branch counts valid."""
+    from scripts.publication_coverage_gate import check_report
+
+    report = _measured_report()
+    summary = report["files"][name]["summary"]
+    summary[covered if field == "covered" else total] = 99.5 if field == "covered" else 100.5
+
+    errors = check_report(json.loads(json.dumps(report)), _load_baseline())
+    assert errors == [f"{name}: invalid {metric} measurement or floor"]
+
+
 @pytest.mark.parametrize("field", ["floor", "covered", "total"])
 @pytest.mark.parametrize(
     "metric,covered,total",
