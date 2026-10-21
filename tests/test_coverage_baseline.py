@@ -200,28 +200,38 @@ def _exercise_in_subprocess(project: Path) -> None:
 
 
 @pytest.mark.parametrize("execution", ["in-process", "subprocess"])
+@pytest.mark.parametrize("source_directory", ["src/my_project", "src/my_project/nested/package"])
 def test_measured_file_set_includes_unexecuted_source_and_excludes_tooling(
-    coverage_project: Path, execution: str
+    coverage_project: Path, execution: str, source_directory: str
 ) -> None:
     """Keep tooling and fixture copies excluded in both parent and child processes."""
+    original = coverage_project / "src/my_project/unexecuted.py"
+    source = coverage_project / source_directory / "unexecuted.py"
+    source.parent.mkdir(parents=True, exist_ok=True)
+    original.rename(source)
     if execution == "subprocess":
         _exercise_in_subprocess(coverage_project)
 
     result = _run_coverage_project(coverage_project)
     assert result.returncode == 0, result.stdout + result.stderr
     report = json.loads((coverage_project / "coverage.json").read_text())
-    assert set(report["files"]) == PUBLICATION_FILES | {"src/my_project/unexecuted.py"}
-    summary = report["files"]["src/my_project/unexecuted.py"]["summary"]
+    source_name = source.relative_to(coverage_project).as_posix()
+    assert set(report["files"]) == PUBLICATION_FILES | {source_name}
+    summary = report["files"][source_name]["summary"]
     assert summary["num_statements"] == 1
     assert summary["covered_lines"] == 0
 
 
 @pytest.mark.parametrize("execution", ["in-process", "subprocess"])
+@pytest.mark.parametrize("source_directory", ["src/my_project", "src/my_project/nested/package"])
 def test_unexecuted_product_branches_still_fail_aggregate_gate(
-    coverage_project: Path, execution: str
+    coverage_project: Path, execution: str, source_directory: str
 ) -> None:
     """Exact script selection must preserve the aggregate gate for unexecuted product code."""
-    source = coverage_project / "src/my_project/unexecuted.py"
+    original = coverage_project / "src/my_project/unexecuted.py"
+    source = coverage_project / source_directory / "unexecuted.py"
+    source.parent.mkdir(parents=True, exist_ok=True)
+    original.rename(source)
     source.write_text("def choose(flag):\n    if flag:\n        return 1\n    return 0\n")
     if execution == "subprocess":
         _exercise_in_subprocess(coverage_project)
@@ -235,8 +245,9 @@ def test_unexecuted_product_branches_still_fail_aggregate_gate(
     assert "INTERNALERROR" not in output
 
     report = json.loads((coverage_project / "coverage.json").read_text())
-    assert set(report["files"]) == PUBLICATION_FILES | {"src/my_project/unexecuted.py"}
-    summary = report["files"]["src/my_project/unexecuted.py"]["summary"]
+    source_name = source.relative_to(coverage_project).as_posix()
+    assert set(report["files"]) == PUBLICATION_FILES | {source_name}
+    summary = report["files"][source_name]["summary"]
     assert summary["num_statements"] == 4
     assert summary["num_branches"] == 2
     assert summary["covered_lines"] == summary["covered_branches"] == 0
