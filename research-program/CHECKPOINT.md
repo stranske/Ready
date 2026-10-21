@@ -4004,3 +4004,7 @@ remote: - Required status check "Gate / gate" is
 ## 2026-10-21T18:04:31Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
 ## 2026-10-21T18:20:02Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
 ## 2026-10-21T18:35:37Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+## 2026-10-21T18:53:00Z — verify — enqueued D4-verify-merged-2026-10-21T18
+## 2026-10-21T18:53:01Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+## 2026-10-21T18:53:01Z — D4-verify-merged-2026-10-21T18 — route — router unavailable (ImportError); using capacity_ok; capacity_ok -> cursor
+## 2026-10-21T18:53:01Z — D4-verify-merged-2026-10-21T18 — claimed by driver (agent cursor)
