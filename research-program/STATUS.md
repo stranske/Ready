@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-21T04:08:14Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-21T04:13:58Z)
 
-Units: 267 — claimed 1, done 262, superseded 4
+Units: 267 — done 263, superseded 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=warn claude=ok cursor=ok gemini=shed vibe=ok muse=ok aider=ok
 Orchestrator evidence (30d): offload runs 111, bound to a research round 109, scored 109 (PASS 70, FAIL 39, infra 0) — codex 10/12 (P3 F7 I0), cursor 98/98 (P66 F32 I0), gemini 1/1 (P1 F0 I0)
@@ -159,7 +159,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D3-unblock-sweep-2026-10-20T03 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-2026-10-20T11 | D | D | done | codex | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-2026-10-20T19 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
-| D3-unblock-sweep-2026-10-21T04 | D | D | claimed | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
+| D3-unblock-sweep-2026-10-21T04 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-pass2-20260913T2023 | D | D | done | cursor | driver | Unblock sweep pass 2: the seven repos the budgeted first pass deferred |  |
 | D-audit-Counter_Risk--2026-09-07T04-47-32Z | D | D | done | codex | driver | Audit stranske/Counter_Risk and file issues (supply 2 <= 2) |  |
 | D-audit-Counter_Risk--2026-09-08T17-11-36Z | D | D | done | codex | codex | Audit stranske/Counter_Risk and file issues (supply 1 <= 2) |  |
@@ -280,9 +280,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-10-21T02:01:13Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
-- 2026-10-21T02:16:46Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
-- 2026-10-21T02:32:52Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
 - 2026-10-21T02:48:27Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
 - 2026-10-21T03:04:29Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
 - 2026-10-21T03:19:58Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
@@ -292,6 +289,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-10-21T04:08:14Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
 - 2026-10-21T04:08:14Z — D3-unblock-sweep-2026-10-21T04 — route — router unavailable (ImportError); using capacity_ok; capacity_ok -> cursor
 - 2026-10-21T04:08:14Z — D3-unblock-sweep-2026-10-21T04 — claimed by driver (agent cursor)
+- 2026-10-21T04:13:48Z — D3-unblock-sweep-2026-10-21T04 — done — cursor produced 620 words at artifacts/sweeps/D3-unblock-sweep-2026-10-21T04.md in 218s
+- 2026-10-21T04:13:55Z — D3-unblock-sweep-2026-10-21T04 — refutation posted — stranske/Trend_Model_Project#6080
+- 2026-10-21T04:13:56Z — D3-unblock-sweep-2026-10-21T04 — refutation posted — stranske/Trend_Model_Project#6081
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
