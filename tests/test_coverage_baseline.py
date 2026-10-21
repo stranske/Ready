@@ -611,10 +611,13 @@ def test_pytest_gate_rejects_disabled_branch_collection(coverage_project: Path) 
 
 
 @pytest.mark.parametrize("name", sorted(PUBLICATION_FILES))
+@pytest.mark.parametrize(
+    "aggregate_floor", [80, 0], ids=["aggregate-enforced", "aggregate-disabled"]
+)
 def test_previous_passing_run_cannot_mask_removed_branch_test(
-    coverage_project: Path, name: str
+    coverage_project: Path, name: str, aggregate_floor: int
 ) -> None:
-    """Reusing a workspace must replace passing evidence when branch tests disappear."""
+    """Fresh branch evidence controls the gate independently of the aggregate threshold."""
     script = coverage_project / name
     script.write_text(script.read_text().replace("    return 0\n", ""))
     exercise = coverage_project / "tests/test_exercise.py"
@@ -623,7 +626,9 @@ def test_previous_passing_run_cannot_mask_removed_branch_test(
             "        assert choose(False) == 0\n", "        choose(False)\n"
         )
     )
-    result = _run_coverage_project(coverage_project)
+    complete_exercise = exercise.read_bytes()
+    coverage_args = (f"--cov-fail-under={aggregate_floor}",)
+    result = _run_coverage_project(coverage_project, *coverage_args)
     assert result.returncode == 0, result.stdout + result.stderr
     report_path = coverage_project / "coverage.json"
     previous = json.loads(report_path.read_text())
@@ -638,13 +643,14 @@ def test_previous_passing_run_cannot_mask_removed_branch_test(
         )
     )
 
-    result = _run_coverage_project(coverage_project)
+    result = _run_coverage_project(coverage_project, *coverage_args)
     output = result.stdout + result.stderr
     assert result.returncode == 1, output
     assert "1 passed" in output
     assert f"PUBLICATION COVERAGE: {name}: branch coverage" in output
     assert "below floor" in output
     assert "INTERNALERROR" not in output
+    assert "FAIL Required test coverage" not in output
 
     current = json.loads(report_path.read_text())
     assert set(current["files"]) == set(previous["files"])
@@ -655,6 +661,17 @@ def test_previous_passing_run_cannot_mask_removed_branch_test(
         assert after["covered_lines"] == before["covered_lines"]
         assert after["num_branches"] == before["num_branches"]
         assert after["covered_branches"] == before["covered_branches"] - int(path == name)
+
+    # Restoring the branch exercise must replace the failing evidence and pass
+    # without deleting the report or coverage database in between runs.
+    exercise.write_bytes(complete_exercise)
+    restored = _run_coverage_project(coverage_project, *coverage_args)
+    assert restored.returncode == 0, restored.stdout + restored.stderr
+    assert "PUBLICATION COVERAGE:" not in restored.stdout + restored.stderr
+    restored_report = json.loads(report_path.read_text())
+    assert set(restored_report["files"]) == set(previous["files"])
+    for path in PUBLICATION_FILES:
+        assert restored_report["files"][path]["summary"] == previous["files"][path]["summary"]
 
 
 @pytest.mark.parametrize("stale_report", [False, True], ids=["absent", "stale"])
