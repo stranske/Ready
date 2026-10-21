@@ -6,12 +6,12 @@
 | B3-interop-architecture.md | 1 | 0 | 1 |
 | B7-PROGRAM-PLAN-v3.md | 2 | 2 | 0 |
 | C-skill-curriculum.md | 0 | 0 | 0 |
-| R1-legal-decomposition.md | 17 | 15 | 2 |
-| R2-consultant-report-diffing.md | 16 | 10 | 6 |
-| R3-manager-mosaic-synthesis.md | 12 | 11 | 1 |
+| R1-legal-decomposition.md | 17 | 16 | 1 |
+| R2-consultant-report-diffing.md | 16 | 16 | 0 |
+| R3-manager-mosaic-synthesis.md | 12 | 12 | 0 |
 | R4-document-access-substrate.md | 15 | 10 | 5 |
 | R5-output-substrate.md | 10 | 8 | 2 |
-| R6-public-corpora-and-synthetic-data.md | 26 | 18 | 8 |
+| R6-public-corpora-and-synthetic-data.md | 26 | 19 | 7 |
 | R7-trip-planning-core.md | 28 | 23 | 5 |
 
 ## Unreachable in B3-interop-architecture.md
@@ -20,21 +20,7 @@
 
 ## Unreachable in R1-legal-decomposition.md
 
-- https://pypi.org/project/contractex/
 - https://repository.tudelft.nl/file/File_e0c6743a-a0db-46b6-8227-557db173ea98
-
-## Unreachable in R2-consultant-report-diffing.md
-
-- https://pypi.org/project/diffpdf/1.2.2/
-- https://pypi.org/project/docx-redline/1.0.2/
-- https://pypi.org/project/jubarte-redlines/
-- https://pypi.org/project/kogo/1.0.1/
-- https://pypi.org/project/py-pdf-compare/2026.2.3/
-- https://pypi.org/project/sentweave/0.3.3/
-
-## Unreachable in R3-manager-mosaic-synthesis.md
-
-- https://ojs.aaai.org/index.php/AAAI/article/view/42361/46322
 
 ## Unreachable in R4-document-access-substrate.md
 
@@ -51,7 +37,6 @@
 
 ## Unreachable in R6-public-corpora-and-synthetic-data.md
 
-- https://www.bridgewater.com/research
 - https://www.sec.gov/Archives/edgar/data/1314152/000131415226000084/exhibit101-sixtharlpaofjll.htm
 - https://www.sec.gov/Archives/edgar/data/1711929/000119312526346339/ck0001711929-ex10_2.htm
 - https://www.sec.gov/data-research/sec-markets-data/information-about-registered-investment-advisers-exempt-reporting-advisers
