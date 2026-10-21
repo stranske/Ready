@@ -3973,3 +3973,7 @@ remote: - Required status check "Gate / gate" is
 ## 2026-10-21T11:22:04Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
 ## 2026-10-21T11:37:35Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
 ## 2026-10-21T11:53:30Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+## 2026-10-21T12:09:01Z — unblock — enqueued D3-unblock-sweep-2026-10-21T12
+## 2026-10-21T12:09:02Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+## 2026-10-21T12:09:02Z — D3-unblock-sweep-2026-10-21T12 — route — router unavailable (ImportError); using capacity_ok; capacity_ok -> cursor
+## 2026-10-21T12:09:02Z — D3-unblock-sweep-2026-10-21T12 — claimed by driver (agent cursor)
