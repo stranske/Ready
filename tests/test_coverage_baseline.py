@@ -347,6 +347,56 @@ def test_pytest_gate_rejects_independent_publication_regressions(
 
 
 @pytest.mark.parametrize("name", sorted(PUBLICATION_FILES))
+@pytest.mark.parametrize("metric", ["line", "branch"])
+def test_pytest_gate_uses_configured_publication_floor(
+    coverage_project: Path, name: str, metric: str
+) -> None:
+    """Changing only a configured floor must change the Gate decision at that boundary."""
+    script = coverage_project / name
+    if metric == "line":
+        script.write_text(script.read_text() + "\ndef untested():\n    return 0\n")
+        measured = 100 * 5 / 6
+    else:
+        script.write_text(script.read_text().replace("    return 0\n", ""))
+        exercise = coverage_project / "tests/test_exercise.py"
+        exercise.write_text(
+            exercise.read_text().replace(
+                "        assert choose(False) == 0\n",
+                f"        if path != {name!r}:\n            assert choose(False) == 0\n",
+            )
+        )
+        measured = 50.0
+
+    baseline_path = coverage_project / "config/coverage-baseline.json"
+    baseline = _load_baseline()
+    baseline["publication_scripts"][name][metric] = measured
+    baseline_path.write_text(json.dumps(baseline))
+    passing = _run_coverage_project(coverage_project)
+    assert passing.returncode == 0, passing.stdout + passing.stderr
+    report_path = coverage_project / "coverage.json"
+    previous = json.loads(report_path.read_text())
+
+    # Leave code, tests and previous coverage artifacts intact; tighten only
+    # this script's configured metric by less than the terminal display precision.
+    baseline["publication_scripts"][name][metric] = measured + 0.0001
+    baseline_path.write_text(json.dumps(baseline))
+    failing = _run_coverage_project(coverage_project)
+    output = failing.stdout + failing.stderr
+    assert failing.returncode == 1, output
+    assert "1 passed" in output
+    assert "INTERNALERROR" not in output
+    assert "FAIL Required test coverage" not in output
+    errors = [line for line in output.splitlines() if line.startswith("PUBLICATION COVERAGE:")]
+    assert errors == [
+        f"PUBLICATION COVERAGE: {name}: {metric} coverage {measured:.6f}% "
+        f"below floor {measured + 0.0001:.6f}%"
+    ]
+    current = json.loads(report_path.read_text())
+    assert current["files"] == previous["files"]
+    assert current["totals"]["percent_covered"] >= baseline["line"]
+
+
+@pytest.mark.parametrize("name", sorted(PUBLICATION_FILES))
 def test_pytest_gate_rejects_unexecuted_script_despite_previous_passing_report(
     coverage_project: Path, name: str
 ) -> None:
