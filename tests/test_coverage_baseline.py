@@ -216,6 +216,37 @@ def test_measured_file_set_includes_unexecuted_source_and_excludes_tooling(
     assert summary["covered_lines"] == 0
 
 
+@pytest.mark.parametrize("execution", ["in-process", "subprocess"])
+def test_unexecuted_product_branches_still_fail_aggregate_gate(
+    coverage_project: Path, execution: str
+) -> None:
+    """Exact script selection must preserve the aggregate gate for unexecuted product code."""
+    source = coverage_project / "src/my_project/unexecuted.py"
+    source.write_text("def choose(flag):\n    if flag:\n        return 1\n    return 0\n")
+    if execution == "subprocess":
+        _exercise_in_subprocess(coverage_project)
+
+    result = _run_coverage_project(coverage_project)
+    output = result.stdout + result.stderr
+    assert result.returncode == 1, output
+    assert "1 passed" in output
+    assert "FAIL Required test coverage of 80" in output
+    assert "PUBLICATION COVERAGE:" not in output
+    assert "INTERNALERROR" not in output
+
+    report = json.loads((coverage_project / "coverage.json").read_text())
+    assert set(report["files"]) == PUBLICATION_FILES | {"src/my_project/unexecuted.py"}
+    summary = report["files"]["src/my_project/unexecuted.py"]["summary"]
+    assert summary["num_statements"] == 4
+    assert summary["num_branches"] == 2
+    assert summary["covered_lines"] == summary["covered_branches"] == 0
+    assert report["totals"]["percent_covered"] < _load_baseline()["line"]
+    for name in PUBLICATION_FILES:
+        summary = report["files"][name]["summary"]
+        assert summary["covered_lines"] == summary["num_statements"]
+        assert summary["covered_branches"] == summary["num_branches"]
+
+
 @pytest.mark.parametrize(
     "unrelated",
     [
