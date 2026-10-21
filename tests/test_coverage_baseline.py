@@ -921,6 +921,61 @@ def test_recorded_branch_removal_breaches_guard_floors_above_aggregate_floor():
         assert "below floor" in error
 
 
+def test_real_guard_branch_test_removal_fails_publication_gate(coverage_project: Path) -> None:
+    """Reproduce the recorded branch loss with the current guard and its real tests."""
+    (coverage_project / "tests/test_exercise.py").unlink()
+    for relative in (
+        "scripts/check_publication_safety.py",
+        "scripts/prepare_publication.py",
+        "scripts/publication_patterns.py",
+        "tests/test_publication_safety.py",
+        "tests/test_prepare_publication.py",
+    ):
+        shutil.copyfile(REPO_ROOT / relative, coverage_project / relative)
+
+    # Workflow-shell tests need the full repository; this isolated reproduction
+    # exercises the real publication scripts without copying workflow files.
+    args = ("-k", "not workflow and not gate_summary")
+    complete = _run_coverage_project(coverage_project, *args)
+    assert complete.returncode == 0, complete.stdout + complete.stderr
+    report_path = coverage_project / "coverage.json"
+    before = json.loads(report_path.read_text())
+
+    removed = _run_coverage_project(
+        coverage_project,
+        *args,
+        "--deselect",
+        "tests/test_publication_safety.py::test_empty_or_missing_tree_fails",
+    )
+    output = removed.stdout + removed.stderr
+    assert removed.returncode == 1, output
+    assert re.search(r"\d+ passed, \d+ deselected", output), output
+    assert "FAILED " not in output
+    assert "INTERNALERROR" not in output
+    assert "FAIL Required test coverage" not in output
+
+    after = json.loads(report_path.read_text())
+    assert (
+        set(before["files"])
+        == set(after["files"])
+        == PUBLICATION_FILES | {"src/my_project/unexecuted.py"}
+    )
+    assert after["totals"]["percent_covered"] >= _load_baseline()["line"]
+    name = "scripts/check_publication_safety.py"
+    original, reduced = (report["files"][name]["summary"] for report in (before, after))
+    for covered, total in (
+        ("covered_lines", "num_statements"),
+        ("covered_branches", "num_branches"),
+    ):
+        assert reduced[total] == original[total]
+        assert reduced[covered] == original[covered] - 1
+    errors = [line for line in output.splitlines() if line.startswith("PUBLICATION COVERAGE:")]
+    assert len(errors) == 2, output
+    for metric, error in zip(("line", "branch"), errors, strict=True):
+        assert error.startswith(f"PUBLICATION COVERAGE: {name}: {metric} coverage ")
+        assert "below floor" in error
+
+
 def test_publication_measurements_fail_closed():
     import copy
 
