@@ -188,21 +188,24 @@ def _run_coverage_project(project: Path, *pytest_args: str) -> subprocess.Comple
     )
 
 
+def _exercise_in_subprocess(project: Path) -> None:
+    """Run the fixture's current assertions through a real Python child process."""
+    exercise = project / "tests/test_exercise.py"
+    (project / "exercise_cli.py").write_text(exercise.read_text() + "\ntest_exercise()\n")
+    exercise.write_text(
+        "import subprocess\nimport sys\n\n"
+        "def test_exercise():\n"
+        "    subprocess.run([sys.executable, 'exercise_cli.py'], check=True)\n"
+    )
+
+
 @pytest.mark.parametrize("execution", ["in-process", "subprocess"])
 def test_measured_file_set_includes_unexecuted_source_and_excludes_tooling(
     coverage_project: Path, execution: str
 ) -> None:
     """Keep tooling and fixture copies excluded in both parent and child processes."""
     if execution == "subprocess":
-        exercise = coverage_project / "tests/test_exercise.py"
-        (coverage_project / "exercise_cli.py").write_text(
-            exercise.read_text() + "\ntest_exercise()\n"
-        )
-        exercise.write_text(
-            "import subprocess\nimport sys\n\n"
-            "def test_exercise():\n"
-            "    subprocess.run([sys.executable, 'exercise_cli.py'], check=True)\n"
-        )
+        _exercise_in_subprocess(coverage_project)
 
     result = _run_coverage_project(coverage_project)
     assert result.returncode == 0, result.stdout + result.stderr
@@ -255,8 +258,9 @@ def test_pytest_gate_rejects_unrelated_files_even_with_passing_coverage(
 
 @pytest.mark.parametrize("name", sorted(PUBLICATION_FILES))
 @pytest.mark.parametrize("metric", ["line", "branch"])
+@pytest.mark.parametrize("execution", ["in-process", "subprocess"])
 def test_pytest_gate_rejects_independent_publication_regressions(
-    coverage_project: Path, name: str, metric: str
+    coverage_project: Path, name: str, metric: str, execution: str
 ) -> None:
     """Passing tests and aggregate coverage cannot mask either script's regression."""
     script = coverage_project / name
@@ -273,6 +277,9 @@ def test_pytest_gate_rejects_independent_publication_regressions(
                 f"        if path != {name!r}:\n            assert choose(False) == 0\n",
             )
         )
+
+    if execution == "subprocess":
+        _exercise_in_subprocess(coverage_project)
 
     result = _run_coverage_project(coverage_project)
     output = result.stdout + result.stderr
