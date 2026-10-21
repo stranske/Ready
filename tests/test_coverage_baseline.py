@@ -677,6 +677,51 @@ def test_pytest_gate_requires_current_json_report(
     assert not report_path.exists()
 
 
+@pytest.mark.parametrize("name", sorted(PUBLICATION_FILES))
+def test_pytest_gate_rejects_appended_coverage_that_masks_removed_branch_test(
+    coverage_project: Path, name: str
+) -> None:
+    """A newly written report can still contain branch hits from a previous run."""
+    previous = _run_coverage_project(coverage_project)
+    assert previous.returncode == 0, previous.stdout + previous.stderr
+
+    exercise = coverage_project / "tests/test_exercise.py"
+    exercise.write_text(
+        exercise.read_text().replace(
+            "        assert choose(False) == 0\n",
+            f"        if path != {name!r}:\n            assert choose(False) == 0\n",
+        )
+    )
+
+    result = _run_coverage_project(coverage_project, "--cov-append")
+    output = result.stdout + result.stderr
+    assert result.returncode == 1, output
+    assert "1 passed" in output
+    assert (
+        "PUBLICATION COVERAGE: --cov-append cannot establish current publication coverage" in output
+    )
+    assert "INTERNALERROR" not in output
+
+    # Accumulated hits conceal the removed assertion, even in the fresh JSON.
+    report = json.loads((coverage_project / "coverage.json").read_text())
+    for path in PUBLICATION_FILES:
+        summary = report["files"][path]["summary"]
+        assert summary["covered_lines"] == summary["num_statements"]
+        assert summary["covered_branches"] == summary["num_branches"]
+
+    current = _run_coverage_project(coverage_project)
+    output = current.stdout + current.stderr
+    assert current.returncode == 1, output
+    assert "1 passed" in output
+    assert f"PUBLICATION COVERAGE: {name}: branch coverage" in output
+    assert "below floor" in output
+    assert "--cov-append cannot" not in output
+    report = json.loads((coverage_project / "coverage.json").read_text())
+    for path in PUBLICATION_FILES:
+        summary = report["files"][path]["summary"]
+        assert summary["covered_branches"] == summary["num_branches"] - int(path == name)
+
+
 def test_each_publication_file_and_metric_is_enforced():
     import copy
 
