@@ -635,10 +635,11 @@ def test_publication_gate_cli_rejects_unreadable_evidence(tmp_path: Path, docume
 
 @pytest.mark.parametrize("name", sorted(PUBLICATION_FILES))
 @pytest.mark.parametrize("regression", [None, "line", "branch"], ids=["complete", "line", "branch"])
+@pytest.mark.parametrize("invocation", ["relative", "absolute"])
 def test_publication_coverage_tracks_subprocess_regressions(
-    coverage_project: Path, name: str, regression: str | None
+    coverage_project: Path, name: str, regression: str | None, invocation: str
 ) -> None:
-    """CLI-only execution must enforce both floors independently for either script."""
+    """Relative and absolute CLI paths must enforce either script's independent floors."""
     script = coverage_project / name
     if regression == "line":
         # Keep both branches exercised while adding one unexecuted line.
@@ -648,10 +649,11 @@ def test_publication_coverage_tracks_subprocess_regressions(
         script.write_text(script.read_text().replace("    return 0\n", ""))
     exercise = coverage_project / "tests/test_exercise.py"
     exercise.write_text(
-        "import subprocess\nimport sys\n\n"
+        "import subprocess\nimport sys\nfrom pathlib import Path\n\n"
         "def test_exercise():\n"
         f"    for path in {sorted(PUBLICATION_FILES)!r}:\n"
-        "        code = f\"import runpy; choose = runpy.run_path({path!r})['choose']; "
+        f"        script_path = str(Path(path).resolve()) if {invocation == 'absolute'!r} else path\n"
+        "        code = f\"import runpy; choose = runpy.run_path({script_path!r})['choose']; "
         'assert choose(True) == 1"\n'
         f"        if not ({regression == 'branch'!r} and path == {name!r}):\n"
         "            code += '; choose(False)'\n"
