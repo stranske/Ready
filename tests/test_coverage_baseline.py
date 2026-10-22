@@ -654,7 +654,7 @@ def test_publication_coverage_tracks_subprocess_regressions(
 def test_publication_coverage_merges_parallel_cli_measurements(
     coverage_project: Path, missing_branch: str | None
 ) -> None:
-    """Merge concurrent CLI hits without hiding either script's missing branch."""
+    """Concurrent CLI hits must reflect branch removal and restoration on each run."""
     for name in PUBLICATION_FILES:
         (coverage_project / name).write_text(
             "import sys\n\n"
@@ -663,29 +663,44 @@ def test_publication_coverage_merges_parallel_cli_measurements(
             "        return 1\n\n"
             "choose(sys.argv[1] == 'true')\n"
         )
-    (coverage_project / "tests/test_exercise.py").write_text(
+    exercise = coverage_project / "tests/test_exercise.py"
+    complete_test = (
         "import subprocess\nimport sys\n\n"
+        "OMIT_BRANCH = None\n\n"
         "def test_exercise():\n"
         "    children = []\n"
         f"    for path in {sorted(PUBLICATION_FILES)!r}:\n"
         "        for flag in ('true', 'false'):\n"
-        f"            if path == {missing_branch!r} and flag == 'false':\n"
+        "            if path == OMIT_BRANCH and flag == 'false':\n"
         "                continue\n"
         "            children.append(subprocess.Popen([sys.executable, path, flag]))\n"
         "    results = [child.wait(timeout=30) for child in children]\n"
         "    assert all(code == 0 for code in results)\n"
     )
+    exercise.write_text(complete_test)
+    complete = _run_coverage_project(coverage_project)
+    assert complete.returncode == 0, complete.stdout + complete.stderr
+    report_path = coverage_project / "coverage.json"
+    before = json.loads(report_path.read_text())
+    if missing_branch is not None:
+        exercise.write_text(
+            complete_test.replace("OMIT_BRANCH = None", f"OMIT_BRANCH = {missing_branch!r}")
+        )
 
-    result = _run_coverage_project(coverage_project)
+    result = _run_coverage_project(coverage_project) if missing_branch is not None else complete
     output = result.stdout + result.stderr
     assert result.returncode == int(missing_branch is not None), output
     assert "1 passed" in output
     assert "INTERNALERROR" not in output
-    report = json.loads((coverage_project / "coverage.json").read_text())
+    report = json.loads(report_path.read_text())
     assert set(report["files"]) == PUBLICATION_FILES | {"src/my_project/unexecuted.py"}
+    assert set(report["files"]) == set(before["files"])
     assert report["totals"]["percent_covered"] >= _load_baseline()["line"]
     for name in PUBLICATION_FILES:
         summary = report["files"][name]["summary"]
+        original = before["files"][name]["summary"]
+        assert original["covered_branches"] == original["num_branches"]
+        assert summary["num_branches"] == original["num_branches"]
         assert summary["covered_lines"] == summary["num_statements"]
         assert summary["missing_branches"] == int(name == missing_branch)
     errors = [line for line in output.splitlines() if line.startswith("PUBLICATION COVERAGE:")]
@@ -695,6 +710,15 @@ def test_publication_coverage_merges_parallel_cli_measurements(
         assert len(errors) == 1
         assert f"{missing_branch}: branch coverage" in errors[0]
         assert "below floor" in errors[0]
+
+        # Leave the failed database and report intact so recovery proves that
+        # each concurrent run replaces, rather than accumulates, prior hits.
+        exercise.write_text(complete_test)
+        restored = _run_coverage_project(coverage_project)
+        output = restored.stdout + restored.stderr
+        assert restored.returncode == 0, output
+        assert "PUBLICATION COVERAGE:" not in output
+        assert json.loads(report_path.read_text())["files"] == before["files"]
 
 
 @pytest.mark.parametrize("name", sorted(PUBLICATION_FILES))
