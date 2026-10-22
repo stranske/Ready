@@ -650,6 +650,53 @@ def test_publication_coverage_tracks_subprocess_regressions(
         assert "below floor" in errors[0]
 
 
+def test_pytest_gate_rejects_disabled_subprocess_measurement_and_recovers(
+    coverage_project: Path,
+) -> None:
+    """Parent coverage cannot stand in for missing CLI measurements or stale hits."""
+    _exercise_in_subprocess(coverage_project)
+    source = coverage_project / "src/my_project/unexecuted.py"
+    source.unlink()
+    source.with_name("exercised.py").write_text("value = 1\n")
+    exercise = coverage_project / "tests/test_exercise.py"
+    exercise.write_text(
+        exercise.read_text()
+        + "    import runpy\n"
+        + "    assert runpy.run_path('src/my_project/exercised.py')['value'] == 1\n"
+    )
+
+    complete = _run_coverage_project(coverage_project)
+    assert complete.returncode == 0, complete.stdout + complete.stderr
+    report_path = coverage_project / "coverage.json"
+    before = json.loads(report_path.read_text())
+    assert set(before["files"]) == PUBLICATION_FILES | {"src/my_project/exercised.py"}
+
+    config = coverage_project / "pyproject.toml"
+    original_config = config.read_bytes()
+    config.write_text(config.read_text().replace('patch = ["subprocess"]', "patch = []"))
+    failing = _run_coverage_project(coverage_project)
+    output = failing.stdout + failing.stderr
+    assert failing.returncode == 1, output
+    assert "1 passed" in output
+    assert "INTERNALERROR" not in output
+    assert "FAIL Required test coverage" not in output
+    current = json.loads(report_path.read_text())
+    assert set(current["files"]) == {"src/my_project/exercised.py"}
+    assert current["totals"]["percent_covered"] == 100
+    errors = [line for line in output.splitlines() if line.startswith("PUBLICATION COVERAGE:")]
+    assert errors == [
+        f"PUBLICATION COVERAGE: {name}: missing coverage measurement"
+        for name in sorted(PUBLICATION_FILES)
+    ]
+
+    config.write_bytes(original_config)
+    restored = _run_coverage_project(coverage_project)
+    output = restored.stdout + restored.stderr
+    assert restored.returncode == 0, output
+    assert "PUBLICATION COVERAGE:" not in output
+    assert json.loads(report_path.read_text())["files"] == before["files"]
+
+
 @pytest.mark.parametrize("missing_branch", [None, *sorted(PUBLICATION_FILES)])
 def test_publication_coverage_merges_parallel_cli_measurements(
     coverage_project: Path, missing_branch: str | None
