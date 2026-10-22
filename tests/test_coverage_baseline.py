@@ -209,11 +209,18 @@ def _exercise_in_subprocess(project: Path, depth: int = 1) -> None:
 def test_measured_file_set_includes_unexecuted_source_and_excludes_tooling(
     coverage_project: Path, execution: str, source_directory: str
 ) -> None:
-    """Keep tooling and fixture copies excluded in both parent and child processes."""
+    """Preserve product hits and misses while excluding tooling in parent and child runs."""
     original = coverage_project / "src/my_project/unexecuted.py"
     source = coverage_project / source_directory / "unexecuted.py"
     source.parent.mkdir(parents=True, exist_ok=True)
     original.rename(source)
+    partial = source.with_name("partially_exercised.py")
+    partial.write_text("def choose(flag):\n    if flag:\n        return 1\n    return 0\n")
+    partial_name = partial.relative_to(coverage_project).as_posix()
+    exercise = coverage_project / "tests/test_exercise.py"
+    exercise.write_text(
+        exercise.read_text() + f"    assert runpy.run_path({partial_name!r})['choose'](True) == 1\n"
+    )
     if execution == "subprocess":
         _exercise_in_subprocess(coverage_project)
 
@@ -221,10 +228,17 @@ def test_measured_file_set_includes_unexecuted_source_and_excludes_tooling(
     assert result.returncode == 0, result.stdout + result.stderr
     report = json.loads((coverage_project / "coverage.json").read_text())
     source_name = source.relative_to(coverage_project).as_posix()
-    assert set(report["files"]) == PUBLICATION_FILES | {source_name}
+    assert set(report["files"]) == PUBLICATION_FILES | {source_name, partial_name}
     summary = report["files"][source_name]["summary"]
     assert summary["num_statements"] == 1
     assert summary["covered_lines"] == 0
+    # Touching source files must preserve collected hits without inventing hits
+    # for the unexecuted line or branch in that same product module.
+    summary = report["files"][partial_name]["summary"]
+    assert summary["num_statements"] == 4
+    assert summary["covered_lines"] == 3
+    assert summary["num_branches"] == 2
+    assert summary["covered_branches"] == 1
 
 
 @pytest.mark.parametrize("execution", ["in-process", "subprocess"])
