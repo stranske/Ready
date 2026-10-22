@@ -188,15 +188,17 @@ def _run_coverage_project(project: Path, *pytest_args: str) -> subprocess.Comple
     )
 
 
-def _exercise_in_subprocess(project: Path) -> None:
-    """Run the fixture's current assertions through a real Python child process."""
+def _exercise_in_subprocess(project: Path, depth: int = 1) -> None:
+    """Run the fixture's assertions through one or more real Python descendants."""
     exercise = project / "tests/test_exercise.py"
-    (project / "exercise_cli.py").write_text(exercise.read_text() + "\ntest_exercise()\n")
-    exercise.write_text(
-        "import subprocess\nimport sys\n\n"
-        "def test_exercise():\n"
-        "    subprocess.run([sys.executable, 'exercise_cli.py'], check=True)\n"
-    )
+    for level in range(depth):
+        runner = f"exercise_cli_{level}.py"
+        (project / runner).write_text(exercise.read_text() + "\ntest_exercise()\n")
+        exercise.write_text(
+            "import subprocess\nimport sys\n\n"
+            "def test_exercise():\n"
+            f"    subprocess.run([sys.executable, {runner!r}], check=True)\n"
+        )
 
 
 @pytest.mark.parametrize("execution", ["in-process", "subprocess"])
@@ -339,7 +341,7 @@ def test_pytest_gate_preserves_test_failure_with_passing_coverage(
 
 @pytest.mark.parametrize("name", sorted(PUBLICATION_FILES))
 @pytest.mark.parametrize("metric", ["line", "branch"])
-@pytest.mark.parametrize("execution", ["in-process", "subprocess"])
+@pytest.mark.parametrize("execution", ["in-process", "subprocess", "nested-subprocess"])
 def test_pytest_gate_rejects_independent_publication_regressions(
     coverage_project: Path, name: str, metric: str, execution: str
 ) -> None:
@@ -359,8 +361,10 @@ def test_pytest_gate_rejects_independent_publication_regressions(
             )
         )
 
-    if execution == "subprocess":
-        _exercise_in_subprocess(coverage_project)
+    if execution != "in-process":
+        _exercise_in_subprocess(
+            coverage_project, depth=2 if execution == "nested-subprocess" else 1
+        )
 
     result = _run_coverage_project(coverage_project)
     output = result.stdout + result.stderr
@@ -371,6 +375,7 @@ def test_pytest_gate_rejects_independent_publication_regressions(
     assert "INTERNALERROR" not in output
 
     report = json.loads((coverage_project / "coverage.json").read_text())
+    assert set(report["files"]) == PUBLICATION_FILES | {"src/my_project/unexecuted.py"}
     assert report["totals"]["percent_covered"] >= _load_baseline()["line"]
     for measured_name in PUBLICATION_FILES:
         summary = report["files"][measured_name]["summary"]
