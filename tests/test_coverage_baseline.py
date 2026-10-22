@@ -1120,6 +1120,47 @@ def test_pytest_gate_rejects_malformed_baseline_without_internal_error(
     assert "Traceback" not in output
 
 
+@pytest.mark.parametrize("invalid", ["missing", "directory", "malformed-json", "invalid-utf8"])
+def test_pytest_gate_rejects_unreadable_baseline_and_recovers(
+    coverage_project: Path, invalid: str
+) -> None:
+    """Passing coverage cannot replace unreadable floors, even after a successful run."""
+    passing = _run_coverage_project(coverage_project)
+    assert passing.returncode == 0, passing.stdout + passing.stderr
+    report_path = coverage_project / "coverage.json"
+    previous = json.loads(report_path.read_text())
+    baseline_path = coverage_project / "config/coverage-baseline.json"
+    original = baseline_path.read_bytes()
+    if invalid in ("missing", "directory"):
+        baseline_path.unlink()
+        if invalid == "directory":
+            baseline_path.mkdir()
+    elif invalid == "malformed-json":
+        baseline_path.write_text('{"publication_scripts":')
+    else:
+        baseline_path.write_bytes(b"\xff")
+
+    failing = _run_coverage_project(coverage_project)
+    output = failing.stdout + failing.stderr
+    assert failing.returncode == 1, output
+    assert "1 passed" in output
+    assert "PUBLICATION COVERAGE: Current publication coverage evidence unavailable:" in output
+    assert "INTERNALERROR" not in output
+    assert "Traceback" not in output
+    current = json.loads(report_path.read_text())
+    assert current["files"] == previous["files"]
+    assert current["totals"]["percent_covered"] >= _load_baseline()["line"]
+
+    if baseline_path.is_dir():
+        baseline_path.rmdir()
+    baseline_path.write_bytes(original)
+    restored = _run_coverage_project(coverage_project)
+    output = restored.stdout + restored.stderr
+    assert restored.returncode == 0, output
+    assert "PUBLICATION COVERAGE:" not in output
+    assert json.loads(report_path.read_text())["files"] == previous["files"]
+
+
 @pytest.mark.parametrize("mode", ["--cov-reset", "--no-cov", "--collect-only"])
 def test_inactive_coverage_skips_publication_hooks_without_changing_evidence(
     coverage_project: Path, mode: str
