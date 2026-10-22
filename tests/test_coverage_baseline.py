@@ -1152,19 +1152,59 @@ def test_real_branch_test_removal_fails_publication_gate(
         assert restored_report["files"][path]["summary"] == before["files"][path]["summary"]
 
 
-def test_publication_measurements_fail_closed():
-    import copy
-
+@pytest.mark.parametrize("name", sorted(PUBLICATION_FILES))
+@pytest.mark.parametrize(
+    "metric,covered,total",
+    [
+        ("line", "covered_lines", "num_statements"),
+        ("branch", "covered_branches", "num_branches"),
+    ],
+)
+@pytest.mark.parametrize("field", ["floor", "covered", "total"])
+@pytest.mark.parametrize(
+    "invalid",
+    [None, True, False, "100", float("nan"), float("inf"), float("-inf"), -1],
+    ids=["null", "true", "false", "string", "nan", "inf", "negative-inf", "negative"],
+)
+def test_publication_measurements_fail_closed(name, metric, covered, total, field, invalid):
+    """Neither Python's numeric booleans nor JSON decoder extensions are valid evidence."""
     from scripts.publication_coverage_gate import check_report
 
     baseline = _load_baseline()
-    for invalid in (None, True, float("nan"), -1):
-        changed = copy.deepcopy(baseline)
-        changed["publication_scripts"]["scripts/prepare_publication.py"]["line"] = invalid
-        assert check_report(_measured_report(), changed)
     report = _measured_report()
-    report["files"]["scripts/prepare_publication.py"]["summary"]["num_branches"] = 0
-    assert check_report(report, baseline)
+    if field == "floor":
+        baseline["publication_scripts"][name][metric] = invalid
+    else:
+        report["files"][name]["summary"][covered if field == "covered" else total] = invalid
+
+    errors = check_report(json.loads(json.dumps(report)), json.loads(json.dumps(baseline)))
+    assert errors == [f"{name}: invalid {metric} measurement or floor"]
+
+
+@pytest.mark.parametrize("name", sorted(PUBLICATION_FILES))
+@pytest.mark.parametrize(
+    "metric,covered,total",
+    [
+        ("line", "covered_lines", "num_statements"),
+        ("branch", "covered_branches", "num_branches"),
+    ],
+)
+@pytest.mark.parametrize("field,invalid", [("floor", 101), ("covered", 101), ("total", 0)])
+def test_publication_gate_rejects_impossible_measurements(
+    name, metric, covered, total, field, invalid
+):
+    """Invalid bounds must not appear as above-floor or empty passing measurements."""
+    from scripts.publication_coverage_gate import check_report
+
+    baseline = _load_baseline()
+    report = _measured_report()
+    if field == "floor":
+        baseline["publication_scripts"][name][metric] = invalid
+    else:
+        report["files"][name]["summary"][covered if field == "covered" else total] = invalid
+
+    errors = check_report(report, baseline)
+    assert errors == [f"{name}: invalid {metric} measurement or floor"]
 
 
 @pytest.mark.parametrize("name", sorted(PUBLICATION_FILES))
