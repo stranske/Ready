@@ -200,7 +200,10 @@ def _exercise_in_subprocess(project: Path) -> None:
 
 
 @pytest.mark.parametrize("execution", ["in-process", "subprocess"])
-@pytest.mark.parametrize("source_directory", ["src/my_project", "src/my_project/nested/package"])
+@pytest.mark.parametrize(
+    "source_directory",
+    ["src", "src/another_product", "src/my_project", "src/my_project/nested/package"],
+)
 def test_measured_file_set_includes_unexecuted_source_and_excludes_tooling(
     coverage_project: Path, execution: str, source_directory: str
 ) -> None:
@@ -223,7 +226,10 @@ def test_measured_file_set_includes_unexecuted_source_and_excludes_tooling(
 
 
 @pytest.mark.parametrize("execution", ["in-process", "subprocess"])
-@pytest.mark.parametrize("source_directory", ["src/my_project", "src/my_project/nested/package"])
+@pytest.mark.parametrize(
+    "source_directory",
+    ["src", "src/another_product", "src/my_project", "src/my_project/nested/package"],
+)
 def test_unexecuted_product_branches_still_fail_aggregate_gate(
     coverage_project: Path, execution: str, source_directory: str
 ) -> None:
