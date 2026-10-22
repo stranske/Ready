@@ -921,8 +921,25 @@ def test_recorded_branch_removal_breaches_guard_floors_above_aggregate_floor():
         assert "below floor" in error
 
 
-def test_real_guard_branch_test_removal_fails_publication_gate(coverage_project: Path) -> None:
-    """Reproduce the recorded branch loss with the current guard and its real tests."""
+@pytest.mark.parametrize(
+    "name,removed_test",
+    [
+        (
+            "scripts/check_publication_safety.py",
+            "tests/test_publication_safety.py::test_empty_or_missing_tree_fails",
+        ),
+        (
+            "scripts/prepare_publication.py",
+            "tests/test_prepare_publication.py::"
+            "test_named_legacy_process_capture_is_wrapped_without_losing_output",
+        ),
+    ],
+    ids=["guard", "preparer"],
+)
+def test_real_branch_test_removal_fails_publication_gate(
+    coverage_project: Path, name: str, removed_test: str
+) -> None:
+    """Either real script's lost branch must fail until its test is restored."""
     (coverage_project / "tests/test_exercise.py").unlink()
     for relative in (
         "scripts/check_publication_safety.py",
@@ -945,7 +962,7 @@ def test_real_guard_branch_test_removal_fails_publication_gate(coverage_project:
         coverage_project,
         *args,
         "--deselect",
-        "tests/test_publication_safety.py::test_empty_or_missing_tree_fails",
+        removed_test,
     )
     output = removed.stdout + removed.stderr
     assert removed.returncode == 1, output
@@ -961,19 +978,31 @@ def test_real_guard_branch_test_removal_fails_publication_gate(coverage_project:
         == PUBLICATION_FILES | {"src/my_project/unexecuted.py"}
     )
     assert after["totals"]["percent_covered"] >= _load_baseline()["line"]
-    name = "scripts/check_publication_safety.py"
     original, reduced = (report["files"][name]["summary"] for report in (before, after))
     for covered, total in (
         ("covered_lines", "num_statements"),
         ("covered_branches", "num_branches"),
     ):
         assert reduced[total] == original[total]
-        assert reduced[covered] == original[covered] - 1
+        assert reduced[covered] < original[covered]
+        if name == "scripts/check_publication_safety.py":
+            assert reduced[covered] == original[covered] - 1
     errors = [line for line in output.splitlines() if line.startswith("PUBLICATION COVERAGE:")]
     assert len(errors) == 2, output
     for metric, error in zip(("line", "branch"), errors, strict=True):
         assert error.startswith(f"PUBLICATION COVERAGE: {name}: {metric} coverage ")
         assert "below floor" in error
+
+    # Keep the failed report and coverage database in place: restoring test
+    # collection must replace that evidence with the original measurements.
+    restored = _run_coverage_project(coverage_project, *args)
+    output = restored.stdout + restored.stderr
+    assert restored.returncode == 0, output
+    assert "PUBLICATION COVERAGE:" not in output
+    restored_report = json.loads(report_path.read_text())
+    assert set(restored_report["files"]) == set(before["files"])
+    for path in before["files"]:
+        assert restored_report["files"][path]["summary"] == before["files"][path]["summary"]
 
 
 def test_publication_measurements_fail_closed():
