@@ -1515,6 +1515,39 @@ def test_pytest_gate_rejects_empty_selection_despite_previous_passing_report(
     assert json.loads(report_path.read_text())["files"] == previous["files"]
 
 
+def test_pytest_gate_rejects_collection_error_despite_previous_passing_report(
+    coverage_project: Path,
+) -> None:
+    """Aborted collection must not reuse earlier hits, and repairing it must recover."""
+    passing = _run_coverage_project(coverage_project)
+    assert passing.returncode == 0, passing.stdout + passing.stderr
+    report_path = coverage_project / "coverage.json"
+    previous = json.loads(report_path.read_text())
+
+    broken = coverage_project / "tests/test_broken_collection.py"
+    broken.write_text('raise RuntimeError("collection regression control")\n')
+    failing = _run_coverage_project(coverage_project)
+    output = failing.stdout + failing.stderr
+    assert failing.returncode != 0, output
+    assert "ERROR collecting tests/test_broken_collection.py" in output
+    assert "collection regression control" in output
+    assert "PUBLICATION COVERAGE:" in output
+    assert "INTERNALERROR" not in output
+    assert "1 passed" not in output
+    if report_path.exists():
+        current = json.loads(report_path.read_text())
+        assert current["totals"]["covered_lines"] == 0
+        assert current["totals"]["covered_branches"] == 0
+
+    broken.unlink()
+    restored = _run_coverage_project(coverage_project)
+    output = restored.stdout + restored.stderr
+    assert restored.returncode == 0, output
+    assert "1 passed" in output
+    assert "PUBLICATION COVERAGE:" not in output
+    assert json.loads(report_path.read_text())["files"] == previous["files"]
+
+
 @pytest.mark.parametrize("mode", ["--cov-reset", "--no-cov", "--collect-only"])
 def test_inactive_coverage_skips_publication_hooks_without_changing_evidence(
     coverage_project: Path, mode: str
