@@ -939,8 +939,9 @@ def test_pytest_gate_rejects_disabled_branch_collection(coverage_project: Path) 
 @pytest.mark.parametrize(
     "aggregate_floor", [80, 0], ids=["aggregate-enforced", "aggregate-disabled"]
 )
+@pytest.mark.parametrize("stale_shards", [False, True], ids=["combined-data", "parallel-shards"])
 def test_previous_passing_run_cannot_mask_removed_branch_test(
-    coverage_project: Path, name: str, aggregate_floor: int
+    coverage_project: Path, name: str, aggregate_floor: int, stale_shards: bool
 ) -> None:
     """Fresh branch evidence controls the gate independently of the aggregate threshold."""
     script = coverage_project / name
@@ -958,9 +959,18 @@ def test_previous_passing_run_cannot_mask_removed_branch_test(
     report_path = coverage_project / "coverage.json"
     previous = json.loads(report_path.read_text())
     assert (coverage_project / ".coverage").is_file()
+    if stale_shards:
+        # An interrupted subprocess run can leave uncombined parallel data.
+        # Give those files passing hits so combining stale shards would hide
+        # the removed branch even after the combined database is erased.
+        for suffix in ("interrupted-cli.12345.abc", "interrupted-cli.12346.def"):
+            shutil.copyfile(
+                coverage_project / ".coverage", coverage_project / f".coverage.{suffix}"
+            )
+        (coverage_project / ".coverage").unlink()
 
-    # Remove one branch exercise without changing production code or deleting
-    # the passing report and coverage database left by the previous invocation.
+    # Remove one branch exercise without changing production code or clearing
+    # the passing report and coverage data left by the previous invocation.
     exercise.write_text(
         exercise.read_text().replace(
             "        choose(False)\n",
@@ -1508,6 +1518,59 @@ def test_pytest_gate_rejects_empty_selection_despite_previous_passing_report(
     assert current["totals"]["percent_covered"] == 0
 
     restored = _run_coverage_project(coverage_project)
+    output = restored.stdout + restored.stderr
+    assert restored.returncode == 0, output
+    assert "1 passed" in output
+    assert "PUBLICATION COVERAGE:" not in output
+    assert json.loads(report_path.read_text())["files"] == previous["files"]
+
+
+def test_fail_fast_cannot_reuse_previous_publication_report(
+    coverage_project: Path,
+) -> None:
+    """An interrupted loop cannot reuse passing evidence and must recover on the next run."""
+    passing = _run_coverage_project(coverage_project)
+    assert passing.returncode == 0, passing.stdout + passing.stderr
+    report_path = coverage_project / "coverage.json"
+    previous = json.loads(report_path.read_text())
+    exercise = coverage_project / "tests/test_exercise.py"
+    original = exercise.read_bytes()
+    measured, untouched = sorted(PUBLICATION_FILES)
+    exercise.write_text(
+        "import runpy\n\n"
+        "def test_failure():\n"
+        f"    choose = runpy.run_path({measured!r})['choose']\n"
+        "    assert choose(True) == 1\n"
+        '    raise AssertionError("fail-fast regression control")\n\n'
+        "def test_never_reached():\n"
+        f"    choose = runpy.run_path({untouched!r})['choose']\n"
+        "    assert choose(True) == 1\n"
+        "    assert choose(False) == 0\n"
+    )
+
+    failing = _run_coverage_project(coverage_project, "-x")
+    output = failing.stdout + failing.stderr
+    assert failing.returncode == 1, output
+    assert "1 failed" in output
+    assert "stopping after 1 failures" in output
+    assert "INTERNALERROR" not in output
+    assert "PUBLICATION COVERAGE:" in output
+    assert "Ready publication coverage floors PASS" not in output
+    if report_path.exists():
+        # If pytest-cov finalizes an interrupted loop, it must contain only
+        # current hits and the per-script gate must diagnose the partial run.
+        current = json.loads(report_path.read_text())
+        assert untouched not in current["files"]
+        assert f"PUBLICATION COVERAGE: {untouched}: missing coverage measurement" in output
+        assert current["files"][measured]["summary"]["covered_branches"] < (
+            previous["files"][measured]["summary"]["covered_branches"]
+        )
+    else:
+        # pytest-cov 7.1.0 does not report when fail-fast raises out of the loop.
+        assert "Current publication coverage evidence unavailable:" in output
+
+    exercise.write_bytes(original)
+    restored = _run_coverage_project(coverage_project, "-x")
     output = restored.stdout + restored.stderr
     assert restored.returncode == 0, output
     assert "1 passed" in output
