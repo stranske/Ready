@@ -4013,3 +4013,46 @@ remote: - Required status check "Gate / gate" is
 ## 2026-10-21T19:29:22Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
 ## 2026-10-21T19:44:56Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
 ## 2026-10-21T20:00:27Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+## 2026-10-21T20:16:00Z — unblock — enqueued D3-unblock-sweep-2026-10-21T20
+## 2026-10-21T20:16:01Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+## 2026-10-21T20:16:01Z — D3-unblock-sweep-2026-10-21T20 — route — router unavailable (ImportError); using capacity_ok; capacity_ok -> cursor
+## 2026-10-21T20:16:01Z — D3-unblock-sweep-2026-10-21T20 — claimed by driver (agent cursor)
+## 2026-10-21T20:18:54Z — D3-unblock-sweep-2026-10-21T20 — done — cursor produced 681 words at artifacts/sweeps/D3-unblock-sweep-2026-10-21T20.md in 142s
+## 2026-10-21T20:18:55Z — D3-unblock-sweep-2026-10-21T20 — refutation posted — stranske/Trend_Model_Project#6081
+## 2026-10-21T20:18:57Z — D3-unblock-sweep-2026-10-21T20 — refutation posted — stranske/Trend_Model_Project#6080
+## 2026-10-21T20:35:14Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+## 2026-10-21T20:54:28Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+## 2026-10-21T21:10:36Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+## 2026-10-21T21:26:23Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+## 2026-10-21T21:41:59Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+## 2026-10-21T21:57:32Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+## 2026-10-21T22:13:04Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+## 2026-10-21T22:28:33Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+## 2026-10-21T22:45:41Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+## 2026-10-21T23:01:29Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+## 2026-10-21T23:16:56Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+## 2026-10-21T23:32:25Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+## 2026-10-21T23:49:28Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+## 2026-10-22T00:05:23Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+## 2026-10-22T00:20:51Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+## 2026-10-22T00:36:34Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+## 2026-10-22T00:53:07Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+## 2026-10-22T01:08:39Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+## 2026-10-22T01:24:10Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+## 2026-10-22T01:39:38Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+## 2026-10-22T01:55:51Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+## 2026-10-22T02:12:30Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+## 2026-10-22T02:28:00Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+## 2026-10-22T02:43:32Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+## 2026-10-22T03:01:12Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+## 2026-10-22T03:16:44Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+## 2026-10-22T03:32:13Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+## 2026-10-22T03:47:43Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+## 2026-10-22T04:04:47Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+## 2026-10-22T04:20:19Z — unblock — enqueued D3-unblock-sweep-2026-10-22T04
+## 2026-10-22T04:20:19Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+## 2026-10-22T04:20:19Z — D3-unblock-sweep-2026-10-22T04 — route — router unavailable (ImportError); using capacity_ok; capacity_ok -> cursor
+## 2026-10-22T04:20:19Z — D3-unblock-sweep-2026-10-22T04 — claimed by driver (agent cursor)
+## 2026-10-22T04:23:13Z — D3-unblock-sweep-2026-10-22T04 — done — cursor produced 944 words at artifacts/sweeps/D3-unblock-sweep-2026-10-22T04.md in 139s
+## 2026-10-22T04:38:44Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+## 2026-10-22T04:54:14Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
