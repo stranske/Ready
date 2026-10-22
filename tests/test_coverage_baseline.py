@@ -1350,6 +1350,57 @@ def test_pytest_gate_rejects_malformed_baseline_without_internal_error(
     assert "Traceback" not in output
 
 
+@pytest.mark.parametrize(
+    "path",
+    [("publication_scripts",)]
+    + [("publication_scripts", name) for name in sorted(PUBLICATION_FILES)]
+    + [
+        ("publication_scripts", name, metric)
+        for name in sorted(PUBLICATION_FILES)
+        for metric in ("line", "branch")
+    ],
+)
+def test_pytest_gate_rejects_missing_publication_floors_and_recovers(
+    coverage_project: Path, path: tuple[str, ...]
+) -> None:
+    """Deleting any required floor must fail despite a previous passing report."""
+    passing = _run_coverage_project(coverage_project)
+    assert passing.returncode == 0, passing.stdout + passing.stderr
+    report_path = coverage_project / "coverage.json"
+    previous = json.loads(report_path.read_text())
+    baseline_path = coverage_project / "config/coverage-baseline.json"
+    original = baseline_path.read_bytes()
+    baseline = json.loads(original)
+    parent = baseline
+    for key in path[:-1]:
+        parent = parent[key]
+    del parent[path[-1]]
+    baseline_path.write_text(json.dumps(baseline))
+
+    failing = _run_coverage_project(coverage_project)
+    output = failing.stdout + failing.stderr
+    assert failing.returncode == 1, output
+    assert "1 passed" in output
+    diagnostic = (
+        f"{path[1]}: invalid {path[2]} measurement or floor"
+        if len(path) == 3
+        else "publication_scripts must name exactly the two Ready-owned scripts"
+    )
+    assert f"PUBLICATION COVERAGE: {diagnostic}" in output
+    assert "INTERNALERROR" not in output
+    assert "Traceback" not in output
+    current = json.loads(report_path.read_text())
+    assert current["files"] == previous["files"]
+    assert current["totals"]["percent_covered"] >= _load_baseline()["line"]
+
+    baseline_path.write_bytes(original)
+    restored = _run_coverage_project(coverage_project)
+    output = restored.stdout + restored.stderr
+    assert restored.returncode == 0, output
+    assert "PUBLICATION COVERAGE:" not in output
+    assert json.loads(report_path.read_text())["files"] == previous["files"]
+
+
 @pytest.mark.parametrize("invalid", ["missing", "directory", "malformed-json", "invalid-utf8"])
 def test_pytest_gate_rejects_unreadable_baseline_and_recovers(
     coverage_project: Path, invalid: str
