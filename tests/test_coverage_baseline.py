@@ -429,6 +429,49 @@ def test_pytest_gate_uses_configured_publication_floor(
     assert current["totals"]["percent_covered"] >= baseline["line"]
 
 
+def test_pytest_gate_tracks_simultaneous_branch_losses_until_both_are_restored(
+    coverage_project: Path,
+) -> None:
+    """Repairing one script must not hide the other script's remaining regression."""
+    names = sorted(PUBLICATION_FILES)
+    for name in names:
+        script = coverage_project / name
+        script.write_text(script.read_text().replace("    return 0\n", ""))
+    (coverage_project / "src/my_project/unexecuted.py").write_text("ANSWER = 42\n")
+    exercise = coverage_project / "tests/test_exercise.py"
+    complete = exercise.read_text().replace(
+        "        assert choose(False) == 0\n", "        choose(False)\n"
+    )
+    complete += "    assert runpy.run_path('src/my_project/unexecuted.py')['ANSWER'] == 42\n"
+
+    for remaining in (names, names[1:], []):
+        exercise.write_text(
+            complete.replace(
+                "        choose(False)\n",
+                f"        if path not in {remaining!r}:\n            choose(False)\n",
+            )
+        )
+        # Keep previous reports and databases to verify each run's current loss.
+        result = _run_coverage_project(coverage_project)
+        output = result.stdout + result.stderr
+        assert result.returncode == int(bool(remaining)), output
+        assert "1 passed" in output
+        assert "INTERNALERROR" not in output
+        assert "FAIL Required test coverage" not in output
+        errors = [line for line in output.splitlines() if line.startswith("PUBLICATION COVERAGE:")]
+        assert len(errors) == len(remaining), output
+        for name, error in zip(remaining, errors, strict=True):
+            assert error.startswith(f"PUBLICATION COVERAGE: {name}: branch coverage ")
+            assert "below floor" in error
+
+        report = json.loads((coverage_project / "coverage.json").read_text())
+        assert report["totals"]["percent_covered"] >= _load_baseline()["line"]
+        for name in names:
+            summary = report["files"][name]["summary"]
+            assert summary["covered_lines"] == summary["num_statements"]
+            assert summary["missing_branches"] == int(name in remaining)
+
+
 @pytest.mark.parametrize("name", sorted(PUBLICATION_FILES))
 def test_pytest_gate_rejects_unexecuted_script_despite_previous_passing_report(
     coverage_project: Path, name: str
