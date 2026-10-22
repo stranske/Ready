@@ -298,6 +298,39 @@ def test_pytest_gate_rejects_unrelated_files_even_with_passing_coverage(
         assert summary["covered_branches"] == summary["num_branches"]
 
 
+@pytest.mark.parametrize("execution", ["in-process", "subprocess"])
+def test_pytest_gate_preserves_test_failure_with_passing_coverage(
+    coverage_project: Path, execution: str
+) -> None:
+    """Meeting every coverage floor must never turn a functional failure green."""
+    from scripts.publication_coverage_gate import check_report
+
+    if execution == "subprocess":
+        _exercise_in_subprocess(coverage_project)
+    exercise = coverage_project / "tests/test_exercise.py"
+    original = exercise.read_text()
+    exercise.write_text(original + '\n    raise AssertionError("intentional functional failure")\n')
+
+    failing = _run_coverage_project(coverage_project)
+    output = failing.stdout + failing.stderr
+    assert failing.returncode == 1, output
+    assert "1 failed" in output
+    assert "intentional functional failure" in output
+    assert "PUBLICATION COVERAGE:" not in output
+    assert "INTERNALERROR" not in output
+    report_path = coverage_project / "coverage.json"
+    report = json.loads(report_path.read_text())
+    assert check_report(report, _load_baseline()) == []
+    assert report["totals"]["percent_covered"] >= _load_baseline()["line"]
+
+    exercise.write_text(original)
+    restored = _run_coverage_project(coverage_project)
+    output = restored.stdout + restored.stderr
+    assert restored.returncode == 0, output
+    assert "1 passed" in output
+    assert json.loads(report_path.read_text())["files"] == report["files"]
+
+
 @pytest.mark.parametrize("name", sorted(PUBLICATION_FILES))
 @pytest.mark.parametrize("metric", ["line", "branch"])
 @pytest.mark.parametrize("execution", ["in-process", "subprocess"])
