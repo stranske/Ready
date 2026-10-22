@@ -1442,6 +1442,36 @@ def test_pytest_gate_rejects_unreadable_baseline_and_recovers(
     assert json.loads(report_path.read_text())["files"] == previous["files"]
 
 
+def test_pytest_gate_rejects_empty_selection_despite_previous_passing_report(
+    coverage_project: Path,
+) -> None:
+    """An active run that executes no tests cannot reuse earlier publication hits."""
+    passing = _run_coverage_project(coverage_project)
+    assert passing.returncode == 0, passing.stdout + passing.stderr
+    report_path = coverage_project / "coverage.json"
+    previous = json.loads(report_path.read_text())
+
+    failing = _run_coverage_project(coverage_project, "-k", "not test_exercise")
+    output = failing.stdout + failing.stderr
+    assert failing.returncode == 1, output
+    assert "1 deselected" in output
+    assert "INTERNALERROR" not in output
+    assert "Traceback" not in output
+    for name in PUBLICATION_FILES:
+        assert f"PUBLICATION COVERAGE: {name}: missing coverage measurement" in output
+    current = json.loads(report_path.read_text())
+    assert set(current["files"]) == {"src/my_project/unexecuted.py"}
+    assert current["totals"]["covered_lines"] == 0
+    assert current["totals"]["percent_covered"] == 0
+
+    restored = _run_coverage_project(coverage_project)
+    output = restored.stdout + restored.stderr
+    assert restored.returncode == 0, output
+    assert "1 passed" in output
+    assert "PUBLICATION COVERAGE:" not in output
+    assert json.loads(report_path.read_text())["files"] == previous["files"]
+
+
 @pytest.mark.parametrize("mode", ["--cov-reset", "--no-cov", "--collect-only"])
 def test_inactive_coverage_skips_publication_hooks_without_changing_evidence(
     coverage_project: Path, mode: str
