@@ -42,6 +42,11 @@ def pytest_sessionfinish(session: pytest.Session, exitstatus: int) -> None:
         errors = check_report(report, baseline)
     except (OSError, ValueError, TypeError, KeyError) as exc:
         errors = [f"Current publication coverage evidence unavailable: {exc}"]
+    if session.config.getoption("cov_append", default=False):
+        # A fresh JSON report can still contain hits from an earlier test run.
+        errors.append(
+            "--cov-append cannot establish current publication coverage; rerun without it"
+        )
     if errors:
         reporter = session.config.pluginmanager.getplugin("terminalreporter")
         if reporter:
@@ -59,7 +64,12 @@ def pytest_runtestloop(session):
         plugin = session.config.pluginmanager.getplugin("_cov")
         cov = plugin.cov_controller.cov
         data = cov.get_data()
-        data.add_arcs({})
+        # Seed the configured data mode so missing branch collection reaches
+        # the per-script gate instead of mixing line data with branch data.
+        if cov.config.branch:
+            data.add_arcs({})
+        else:
+            data.add_lines({})
         data.touch_files([str(path) for path in (ROOT / "src").rglob("*.py")])
         cov.save()
     return result
