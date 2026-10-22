@@ -939,8 +939,9 @@ def test_pytest_gate_rejects_disabled_branch_collection(coverage_project: Path) 
 @pytest.mark.parametrize(
     "aggregate_floor", [80, 0], ids=["aggregate-enforced", "aggregate-disabled"]
 )
+@pytest.mark.parametrize("stale_shards", [False, True], ids=["combined-data", "parallel-shards"])
 def test_previous_passing_run_cannot_mask_removed_branch_test(
-    coverage_project: Path, name: str, aggregate_floor: int
+    coverage_project: Path, name: str, aggregate_floor: int, stale_shards: bool
 ) -> None:
     """Fresh branch evidence controls the gate independently of the aggregate threshold."""
     script = coverage_project / name
@@ -958,9 +959,18 @@ def test_previous_passing_run_cannot_mask_removed_branch_test(
     report_path = coverage_project / "coverage.json"
     previous = json.loads(report_path.read_text())
     assert (coverage_project / ".coverage").is_file()
+    if stale_shards:
+        # An interrupted subprocess run can leave uncombined parallel data.
+        # Give those files passing hits so combining stale shards would hide
+        # the removed branch even after the combined database is erased.
+        for suffix in ("interrupted-cli.12345.abc", "interrupted-cli.12346.def"):
+            shutil.copyfile(
+                coverage_project / ".coverage", coverage_project / f".coverage.{suffix}"
+            )
+        (coverage_project / ".coverage").unlink()
 
-    # Remove one branch exercise without changing production code or deleting
-    # the passing report and coverage database left by the previous invocation.
+    # Remove one branch exercise without changing production code or clearing
+    # the passing report and coverage data left by the previous invocation.
     exercise.write_text(
         exercise.read_text().replace(
             "        choose(False)\n",
