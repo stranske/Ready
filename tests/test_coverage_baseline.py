@@ -488,6 +488,47 @@ def test_pytest_gate_rejects_src_only_coverage_override(coverage_project: Path) 
         assert f"PUBLICATION COVERAGE: {name}: missing coverage measurement" in output
 
 
+@pytest.mark.parametrize("name", sorted(PUBLICATION_FILES))
+def test_pytest_gate_rejects_report_filter_hiding_publication_script(
+    coverage_project: Path, name: str
+) -> None:
+    """Collected hits cannot replace a script's missing entry in the final report."""
+    from coverage import CoverageData
+
+    config = coverage_project / "pyproject.toml"
+    original = config.read_bytes()
+    # Retain collection of both scripts; omit one only when generating reports.
+    config.write_text(
+        config.read_text().replace(
+            "[tool.coverage.report]\n", f'[tool.coverage.report]\nomit = ["{name}"]\n'
+        )
+    )
+
+    failing = _run_coverage_project(coverage_project)
+    output = failing.stdout + failing.stderr
+    assert failing.returncode == 1, output
+    assert "1 passed" in output
+    assert "INTERNALERROR" not in output
+    assert "FAIL Required test coverage" not in output
+    errors = [line for line in output.splitlines() if line.startswith("PUBLICATION COVERAGE:")]
+    assert errors == [f"PUBLICATION COVERAGE: {name}: missing coverage measurement"]
+
+    data = CoverageData(basename=str(coverage_project / ".coverage"))
+    data.read()
+    assert data.lines(str(coverage_project / name))
+    report_path = coverage_project / "coverage.json"
+    report = json.loads(report_path.read_text())
+    assert set(report["files"]) == (PUBLICATION_FILES - {name}) | {"src/my_project/unexecuted.py"}
+    assert report["totals"]["percent_covered"] >= _load_baseline()["line"]
+
+    config.write_bytes(original)
+    restored = _run_coverage_project(coverage_project)
+    assert restored.returncode == 0, restored.stdout + restored.stderr
+    assert set(json.loads(report_path.read_text())["files"]) == PUBLICATION_FILES | {
+        "src/my_project/unexecuted.py"
+    }
+
+
 def _measured_report():
     return {
         "files": {
