@@ -519,6 +519,49 @@ def test_publication_gate_cli_enforces_each_floor(tmp_path: Path, regression) ->
         )
 
 
+@pytest.mark.parametrize("name", sorted(PUBLICATION_FILES))
+def test_publication_gate_cli_defaults_use_current_pytest_report(
+    coverage_project: Path, name: str
+) -> None:
+    """The documented standalone command must agree with pytest after a branch loss."""
+    script = coverage_project / name
+    script.write_text(script.read_text().replace("    return 0\n", ""))
+    exercise = coverage_project / "tests/test_exercise.py"
+    exercise.write_text(
+        exercise.read_text().replace(
+            "        assert choose(False) == 0\n", "        choose(False)\n"
+        )
+    )
+    for missing_branch in (False, True):
+        if missing_branch:
+            exercise.write_text(
+                exercise.read_text().replace(
+                    "        choose(False)\n",
+                    f"        if path != {name!r}:\n            choose(False)\n",
+                )
+            )
+        measured = _run_coverage_project(coverage_project)
+        assert measured.returncode == int(missing_branch), measured.stdout + measured.stderr
+
+        result = subprocess.run(
+            [sys.executable, "scripts/publication_coverage_gate.py"],
+            cwd=coverage_project,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        assert result.returncode == int(missing_branch), result.stdout + result.stderr
+        assert result.stderr == ""
+        if missing_branch:
+            report = json.loads((coverage_project / "coverage.json").read_text())
+            assert report["totals"]["percent_covered"] >= _load_baseline()["line"]
+            assert f"{name}: branch coverage" in result.stdout
+            assert "below floor" in result.stdout
+            assert "PASS" not in result.stdout
+        else:
+            assert result.stdout == "Ready publication coverage floors PASS\n"
+
+
 @pytest.mark.parametrize("document", ["report", "baseline"])
 @pytest.mark.parametrize("invalid", ["missing", "directory", "malformed-json", "invalid-utf8"])
 def test_publication_gate_cli_rejects_unreadable_evidence(tmp_path: Path, document, invalid):
