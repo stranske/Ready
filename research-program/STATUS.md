@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-23T18:56:49Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-23T19:12:18Z)
 
-Units: 276 — done 272, superseded 4
+Units: 277 — claimed 1, done 272, superseded 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=shed vibe=ok muse=ok aider=ok
 Orchestrator evidence (30d): offload runs 72, bound to a research round 71, scored 71 (PASS 46, FAIL 25, infra 0) — codex 10/11 (P3 F7 I0), cursor 61/61 (P43 F18 I0)
@@ -286,13 +286,10 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D4-verify-merged-2026-10-20T18 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
 | D4-verify-merged-2026-10-21T18 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
 | D4-verify-merged-2026-10-22T19 | D | D | done | codex | driver | Verify merged PRs against their issues' acceptance criteria |  |
+| D4-verify-merged-2026-10-23T19 | D | D | claimed | codex | driver | Verify merged PRs against their issues' acceptance criteria |  |
 
 ## Last checkpoints
 
-- 2026-10-23T16:01:15Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
-- 2026-10-23T16:16:43Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
-- 2026-10-23T16:32:10Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
-- 2026-10-23T16:48:47Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
 - 2026-10-23T17:04:15Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
 - 2026-10-23T17:19:43Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
 - 2026-10-23T17:35:14Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
@@ -301,6 +298,10 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-10-23T18:24:05Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
 - 2026-10-23T18:39:34Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
 - 2026-10-23T18:56:49Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+- 2026-10-23T19:12:18Z — verify — enqueued D4-verify-merged-2026-10-23T19
+- 2026-10-23T19:12:18Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+- 2026-10-23T19:12:18Z — D4-verify-merged-2026-10-23T19 — route — router unavailable (ImportError); using capacity_ok; capacity_ok -> codex
+- 2026-10-23T19:12:18Z — D4-verify-merged-2026-10-23T19 — claimed by driver (agent codex)
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
