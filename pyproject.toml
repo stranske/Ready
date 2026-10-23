@@ -23,6 +23,10 @@ classifiers = [
 dependencies = []
 
 [project.optional-dependencies]
+# The shared CI installer requests both the optional application and development
+# extras. This project has no application-specific dependencies, but declaring
+# the empty extra keeps that standard install target valid.
+app = []
 dev = [
     "jsonschema>=4.17.3,<4.23.0",
     "pytest==9.1.1",
