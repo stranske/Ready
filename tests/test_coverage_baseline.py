@@ -825,6 +825,70 @@ def test_publication_coverage_tracks_subprocess_regressions(
         assert "below floor" in errors[0]
 
 
+@pytest.mark.parametrize("execution", ["in-process", "subprocess"])
+def test_publication_gate_includes_fixture_teardown_and_detects_its_removal(
+    coverage_project: Path, execution: str
+) -> None:
+    """Report only after fixture cleanup, including CLI hits produced during teardown."""
+    (coverage_project / "src/my_project/unexecuted.py").write_text("ANSWER = 42\n")
+    for name in PUBLICATION_FILES:
+        script = coverage_project / name
+        script.write_text(script.read_text().replace("    return 0\n", ""))
+    exercise = coverage_project / "tests/test_exercise.py"
+    complete_test = (
+        "import runpy\nimport subprocess\nimport sys\nimport pytest\n\n"
+        "def exercise(flag):\n"
+        f"    for path in {sorted(PUBLICATION_FILES)!r}:\n"
+        + (
+            "        subprocess.run([sys.executable, '-c',\n"
+            "            f\"import runpy; runpy.run_path({path!r})['choose']({flag!r})\"],\n"
+            "            check=True)\n"
+            if execution == "subprocess"
+            else "        runpy.run_path(path)['choose'](flag)\n"
+        )
+        + "\n@pytest.fixture\ndef publication():\n"
+        "    assert runpy.run_path('src/my_project/unexecuted.py')['ANSWER'] == 42\n"
+        "    exercise(True)\n"
+        "    yield\n"
+        "    exercise(False)\n\n"
+        "def test_publication(publication):\n"
+        "    pass\n"
+    )
+    exercise.write_text(complete_test)
+    passing = _run_coverage_project(coverage_project)
+    assert passing.returncode == 0, passing.stdout + passing.stderr
+    report_path = coverage_project / "coverage.json"
+    before = json.loads(report_path.read_text())
+    _assert_xml_matches_json(coverage_project, before)
+
+    # Leave successful artifacts in place. Only teardown exercises the false
+    # branch, so dropping cleanup must fail despite passing test assertions.
+    exercise.write_text(complete_test.replace("    exercise(False)\n", ""))
+    failing = _run_coverage_project(coverage_project)
+    output = failing.stdout + failing.stderr
+    assert failing.returncode == 1, output
+    assert "1 passed" in output
+    assert "INTERNALERROR" not in output
+    after = json.loads(report_path.read_text())
+    _assert_xml_matches_json(coverage_project, after)
+    assert set(after["files"]) == set(before["files"])
+    assert after["totals"]["percent_covered"] >= _load_baseline()["line"]
+    for name in PUBLICATION_FILES:
+        original = before["files"][name]["summary"]
+        reduced = after["files"][name]["summary"]
+        assert original["covered_branches"] == original["num_branches"]
+        assert reduced["covered_lines"] == original["covered_lines"]
+        assert reduced["covered_branches"] == original["covered_branches"] - 1
+        assert f"PUBLICATION COVERAGE: {name}: branch coverage" in output
+
+    exercise.write_text(complete_test)
+    restored = _run_coverage_project(coverage_project)
+    assert restored.returncode == 0, restored.stdout + restored.stderr
+    current = json.loads(report_path.read_text())
+    _assert_xml_matches_json(coverage_project, current)
+    assert current["files"] == before["files"]
+
+
 def test_pytest_gate_rejects_unmeasured_child_working_directory_and_recovers(
     coverage_project: Path,
 ) -> None:
