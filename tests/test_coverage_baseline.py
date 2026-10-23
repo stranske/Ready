@@ -1269,39 +1269,57 @@ def test_recorded_branch_removal_breaches_guard_floors_above_aggregate_floor():
 
 
 @pytest.mark.parametrize(
-    "regressions",
+    "regressions, lost_metrics",
     [
         (
             (
-                "scripts/check_publication_safety.py",
-                "tests/test_publication_safety.py::test_empty_or_missing_tree_fails",
+                (
+                    "scripts/check_publication_safety.py",
+                    "tests/test_publication_safety.py::test_unreadable_directory_fails_closed",
+                ),
             ),
+            ("line",),
         ),
         (
             (
-                "scripts/prepare_publication.py",
-                "tests/test_prepare_publication.py::"
-                "test_named_legacy_process_capture_is_wrapped_without_losing_output",
+                (
+                    "scripts/check_publication_safety.py",
+                    "tests/test_publication_safety.py::test_empty_or_missing_tree_fails",
+                ),
             ),
+            ("line", "branch"),
         ),
         (
             (
-                "scripts/check_publication_safety.py",
-                "tests/test_publication_safety.py::test_empty_or_missing_tree_fails",
+                (
+                    "scripts/prepare_publication.py",
+                    "tests/test_prepare_publication.py::"
+                    "test_named_legacy_process_capture_is_wrapped_without_losing_output",
+                ),
             ),
+            ("line", "branch"),
+        ),
+        (
             (
-                "scripts/prepare_publication.py",
-                "tests/test_prepare_publication.py::"
-                "test_named_legacy_process_capture_is_wrapped_without_losing_output",
+                (
+                    "scripts/check_publication_safety.py",
+                    "tests/test_publication_safety.py::test_empty_or_missing_tree_fails",
+                ),
+                (
+                    "scripts/prepare_publication.py",
+                    "tests/test_prepare_publication.py::"
+                    "test_named_legacy_process_capture_is_wrapped_without_losing_output",
+                ),
             ),
+            ("line", "branch"),
         ),
     ],
-    ids=["guard", "preparer", "both"],
+    ids=["guard-line-only", "guard", "preparer", "both"],
 )
-def test_real_branch_test_removal_fails_publication_gate(
-    coverage_project: Path, regressions: tuple[tuple[str, str], ...]
+def test_real_test_removal_fails_publication_gate(
+    coverage_project: Path, regressions: tuple[tuple[str, str], ...], lost_metrics: tuple[str, ...]
 ) -> None:
-    """Report every real script's lost branch until the removed tests are restored."""
+    """Reject real line-only and branch losses until the removed tests are restored."""
     (coverage_project / "tests/test_exercise.py").unlink()
     for relative in (
         "scripts/check_publication_safety.py",
@@ -1344,19 +1362,23 @@ def test_real_branch_test_removal_fails_publication_gate(
     for name in PUBLICATION_FILES - {name for name, _ in regressions}:
         assert after["files"][name]["summary"] == before["files"][name]["summary"]
     errors = [line for line in output.splitlines() if line.startswith("PUBLICATION COVERAGE:")]
-    assert len(errors) == 2 * len(regressions), output
+    assert len(errors) == len(lost_metrics) * len(regressions), output
     for index, (name, _) in enumerate(regressions):
         original, reduced = (report["files"][name]["summary"] for report in (before, after))
-        for covered, total in (
-            ("covered_lines", "num_statements"),
-            ("covered_branches", "num_branches"),
+        for metric, covered, total in (
+            ("line", "covered_lines", "num_statements"),
+            ("branch", "covered_branches", "num_branches"),
         ):
             assert reduced[total] == original[total]
-            assert reduced[covered] < original[covered]
-            if name == "scripts/check_publication_safety.py":
+            if metric not in lost_metrics:
+                assert reduced[covered] == original[covered]
+            elif name == "scripts/check_publication_safety.py":
                 assert reduced[covered] == original[covered] - 1
+            else:
+                assert reduced[covered] < original[covered]
+        start = index * len(lost_metrics)
         for metric, error in zip(
-            ("line", "branch"), errors[index * 2 : index * 2 + 2], strict=True
+            lost_metrics, errors[start : start + len(lost_metrics)], strict=True
         ):
             assert error.startswith(f"PUBLICATION COVERAGE: {name}: {metric} coverage ")
             assert "below floor" in error
