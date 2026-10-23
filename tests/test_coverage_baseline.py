@@ -818,6 +818,61 @@ def test_publication_coverage_tracks_subprocess_regressions(
         assert "below floor" in errors[0]
 
 
+def test_pytest_gate_rejects_unmeasured_child_working_directory_and_recovers(
+    coverage_project: Path,
+) -> None:
+    """Child cwd changes must not let a prior report replace missing CLI measurements."""
+    _exercise_in_subprocess(coverage_project)
+    runner = coverage_project / "exercise_cli_0.py"
+    runner.write_text(
+        "import runpy\n\n"
+        f"for path in {[str(coverage_project / name) for name in sorted(PUBLICATION_FILES)]!r}:\n"
+        "    choose = runpy.run_path(path)['choose']\n"
+        "    assert choose(True) == 1\n"
+        "    assert choose(False) == 0\n"
+    )
+    (coverage_project / "src/my_project/unexecuted.py").write_text("ANSWER = 42\n")
+    exercise = coverage_project / "tests/test_exercise.py"
+    exercise.write_text(
+        "import runpy\n"
+        + exercise.read_text()
+        + "    assert runpy.run_path('src/my_project/unexecuted.py')['ANSWER'] == 42\n"
+    )
+    passing = _run_coverage_project(coverage_project)
+    assert passing.returncode == 0, passing.stdout + passing.stderr
+    report_path = coverage_project / "coverage.json"
+    previous = json.loads(report_path.read_text())
+
+    # Coverage's relative run includes resolve against the child's cwd. A
+    # child launched elsewhere still passes its assertions but is unmeasured.
+    original = exercise.read_bytes()
+    child_cwd = coverage_project / "export-stage"
+    child_cwd.mkdir()
+    exercise.write_text(
+        "import runpy\nimport subprocess\nimport sys\n\n"
+        "def test_exercise():\n"
+        "    assert runpy.run_path('src/my_project/unexecuted.py')['ANSWER'] == 42\n"
+        f"    subprocess.run([sys.executable, {str(runner)!r}], cwd={str(child_cwd)!r}, check=True)\n"
+    )
+    failing = _run_coverage_project(coverage_project)
+    output = failing.stdout + failing.stderr
+    assert failing.returncode == 1, output
+    assert "1 passed" in output
+    assert "INTERNALERROR" not in output
+    for name in PUBLICATION_FILES:
+        assert f"PUBLICATION COVERAGE: {name}: missing coverage measurement" in output
+    current = json.loads(report_path.read_text())
+    assert set(current["files"]) == {"src/my_project/unexecuted.py"}
+    assert current["totals"]["percent_covered"] == 100
+
+    exercise.write_bytes(original)
+    restored = _run_coverage_project(coverage_project)
+    output = restored.stdout + restored.stderr
+    assert restored.returncode == 0, output
+    assert "PUBLICATION COVERAGE:" not in output
+    assert json.loads(report_path.read_text())["files"] == previous["files"]
+
+
 def test_pytest_gate_rejects_disabled_subprocess_measurement_and_recovers(
     coverage_project: Path,
 ) -> None:
