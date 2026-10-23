@@ -1678,6 +1678,49 @@ def test_pytest_gate_rejects_missing_publication_floors_and_recovers(
     assert json.loads(report_path.read_text())["files"] == previous["files"]
 
 
+def test_pytest_gate_rejects_unrelated_publication_floor_and_recovers(
+    coverage_project: Path,
+) -> None:
+    """Baseline scope drift must fail even when the measured files and coverage pass."""
+    passing = _run_coverage_project(coverage_project)
+    assert passing.returncode == 0, passing.stdout + passing.stderr
+    report_path = coverage_project / "coverage.json"
+    previous = json.loads(report_path.read_text())
+    baseline_path = coverage_project / "config/coverage-baseline.json"
+    original = baseline_path.read_bytes()
+    baseline = json.loads(original)
+    baseline["publication_scripts"]["scripts/ci_coverage_delta.py"] = {
+        "line": 0,
+        "branch": 0,
+    }
+    baseline_path.write_text(json.dumps(baseline))
+
+    failing = _run_coverage_project(coverage_project)
+    output = failing.stdout + failing.stderr
+    assert failing.returncode == 1, output
+    assert "1 passed" in output
+    assert (
+        "PUBLICATION COVERAGE: publication_scripts must name exactly the two Ready-owned scripts"
+        in output
+    )
+    assert "INTERNALERROR" not in output
+    assert "Traceback" not in output
+    current = json.loads(report_path.read_text())
+    assert set(current["files"]) == PUBLICATION_FILES | {"src/my_project/unexecuted.py"}
+    assert current["files"] == previous["files"]
+    assert current["totals"]["percent_covered"] >= baseline["line"]
+
+    baseline_path.write_bytes(original)
+    restored = _run_coverage_project(coverage_project)
+    output = restored.stdout + restored.stderr
+    assert restored.returncode == 0, output
+    assert "1 passed" in output
+    assert "PUBLICATION COVERAGE:" not in output
+    report = json.loads(report_path.read_text())
+    assert report["files"] == previous["files"]
+    _assert_xml_matches_json(coverage_project, report)
+
+
 @pytest.mark.parametrize("invalid", ["missing", "directory", "malformed-json", "invalid-utf8"])
 def test_pytest_gate_rejects_unreadable_baseline_and_recovers(
     coverage_project: Path, invalid: str
