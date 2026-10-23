@@ -16,6 +16,7 @@ import shutil
 import subprocess
 import sys
 from pathlib import Path
+from xml.etree import ElementTree
 
 import pytest
 
@@ -127,6 +128,7 @@ def test_publication_source_and_baseline_notes_agree():
         == config["tool"]["coverage"]["run"]["include"]
     )
     assert "--cov-report=json" in args
+    assert "--cov-report=xml" in args
     assert config["tool"]["coverage"]["run"]["branch"] is True
     assert config["tool"]["coverage"]["run"]["patch"] == ["subprocess"]
     baseline = _load_baseline()
@@ -201,6 +203,27 @@ def _exercise_in_subprocess(project: Path, depth: int = 1) -> None:
         )
 
 
+def _assert_xml_matches_json(project: Path, report: dict) -> None:
+    """The CI XML artifact must retain the JSON gate's exact files and hit counts."""
+    classes = ElementTree.parse(project / "coverage.xml").findall(".//class")
+    assert len(classes) == len(report["files"])
+    assert {entry.attrib["filename"] for entry in classes} == set(report["files"])
+    for entry in classes:
+        summary = report["files"][entry.attrib["filename"]]["summary"]
+        lines = entry.findall("./lines/line")
+        assert len(lines) == summary["num_statements"]
+        assert sum(int(line.attrib["hits"]) > 0 for line in lines) == summary["covered_lines"]
+        covered_branches = total_branches = 0
+        for line in lines:
+            if line.get("branch") == "true":
+                counts = re.fullmatch(r"\d+% \((\d+)/(\d+)\)", line.attrib["condition-coverage"])
+                assert counts is not None
+                covered_branches += int(counts[1])
+                total_branches += int(counts[2])
+        assert covered_branches == summary["covered_branches"]
+        assert total_branches == summary["num_branches"]
+
+
 @pytest.mark.parametrize("execution", ["in-process", "subprocess"])
 @pytest.mark.parametrize(
     "source_directory",
@@ -227,6 +250,7 @@ def test_measured_file_set_includes_unexecuted_source_and_excludes_tooling(
     result = _run_coverage_project(coverage_project)
     assert result.returncode == 0, result.stdout + result.stderr
     report = json.loads((coverage_project / "coverage.json").read_text())
+    _assert_xml_matches_json(coverage_project, report)
     source_name = source.relative_to(coverage_project).as_posix()
     assert set(report["files"]) == PUBLICATION_FILES | {source_name, partial_name}
     summary = report["files"][source_name]["summary"]
@@ -1240,6 +1264,7 @@ def test_real_branch_test_removal_fails_publication_gate(
     assert complete.returncode == 0, complete.stdout + complete.stderr
     report_path = coverage_project / "coverage.json"
     before = json.loads(report_path.read_text())
+    _assert_xml_matches_json(coverage_project, before)
 
     removed = _run_coverage_project(
         coverage_project,
@@ -1254,6 +1279,7 @@ def test_real_branch_test_removal_fails_publication_gate(
     assert "FAIL Required test coverage" not in output
 
     after = json.loads(report_path.read_text())
+    _assert_xml_matches_json(coverage_project, after)
     assert (
         set(before["files"])
         == set(after["files"])
@@ -1287,6 +1313,7 @@ def test_real_branch_test_removal_fails_publication_gate(
     assert restored.returncode == 0, output
     assert "PUBLICATION COVERAGE:" not in output
     restored_report = json.loads(report_path.read_text())
+    _assert_xml_matches_json(coverage_project, restored_report)
     assert set(restored_report["files"]) == set(before["files"])
     for path in before["files"]:
         assert restored_report["files"][path]["summary"] == before["files"][path]["summary"]
