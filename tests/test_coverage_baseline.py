@@ -1888,32 +1888,41 @@ def test_fail_fast_cannot_reuse_previous_publication_report(
     assert json.loads(report_path.read_text())["files"] == previous["files"]
 
 
+@pytest.mark.parametrize("continue_collection", [False, True], ids=["abort", "continue"])
 def test_pytest_gate_rejects_collection_error_despite_previous_passing_report(
-    coverage_project: Path,
+    coverage_project: Path, continue_collection: bool
 ) -> None:
-    """Aborted collection must not reuse earlier hits, and repairing it must recover."""
-    passing = _run_coverage_project(coverage_project)
+    """Collection errors must fail even if continuing tests satisfies every coverage floor."""
+    args = ("--continue-on-collection-errors",) if continue_collection else ()
+    passing = _run_coverage_project(coverage_project, *args)
     assert passing.returncode == 0, passing.stdout + passing.stderr
     report_path = coverage_project / "coverage.json"
     previous = json.loads(report_path.read_text())
 
     broken = coverage_project / "tests/test_broken_collection.py"
     broken.write_text('raise RuntimeError("collection regression control")\n')
-    failing = _run_coverage_project(coverage_project)
+    failing = _run_coverage_project(coverage_project, *args)
     output = failing.stdout + failing.stderr
     assert failing.returncode != 0, output
     assert "ERROR collecting tests/test_broken_collection.py" in output
     assert "collection regression control" in output
-    assert "PUBLICATION COVERAGE:" in output
     assert "INTERNALERROR" not in output
-    assert "1 passed" not in output
-    if report_path.exists():
+    if continue_collection:
+        assert "1 passed, 1 error" in output
+        assert "PUBLICATION COVERAGE:" not in output
+        current = json.loads(report_path.read_text())
+        assert current["files"] == previous["files"]
+        _assert_xml_matches_json(coverage_project, current)
+    else:
+        assert "PUBLICATION COVERAGE:" in output
+        assert "1 passed" not in output
+    if not continue_collection and report_path.exists():
         current = json.loads(report_path.read_text())
         assert current["totals"]["covered_lines"] == 0
         assert current["totals"]["covered_branches"] == 0
 
     broken.unlink()
-    restored = _run_coverage_project(coverage_project)
+    restored = _run_coverage_project(coverage_project, *args)
     output = restored.stdout + restored.stderr
     assert restored.returncode == 0, output
     assert "1 passed" in output
