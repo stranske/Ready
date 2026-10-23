@@ -1,9 +1,9 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-23T20:54:25Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-23T21:09:54Z)
 
-Units: 277 — done 273, superseded 4
+Units: 278 — claimed 1, done 273, superseded 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=shed vibe=ok muse=ok aider=ok
-Orchestrator evidence (30d): offload runs 72, bound to a research round 71, scored 71 (PASS 46, FAIL 25, infra 0) — codex 10/11 (P3 F7 I0), cursor 61/61 (P43 F18 I0)
+Orchestrator evidence (30d): offload runs 71, bound to a research round 70, scored 70 (PASS 45, FAIL 25, infra 0) — codex 10/11 (P3 F7 I0), cursor 60/60 (P42 F18 I0)
 Worker write boundary: on — each unit writes only unitdirs/<unit>/, its output directory, artifacts/proposals/, its own clone's working tree (not .git) and temp
 Claude conservation: off (weekly window available)
 Owner inbox: https://github.com/stranske/Ready/issues/553
@@ -167,6 +167,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D3-unblock-sweep-2026-10-22T20 | D | D | done | codex | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-2026-10-23T04 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-2026-10-23T12 | D | D | done | codex | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
+| D3-unblock-sweep-2026-10-23T21 | D | D | claimed | codex | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-pass2-20260913T2023 | D | D | done | cursor | driver | Unblock sweep pass 2: the seven repos the budgeted first pass deferred |  |
 | D-audit-Counter_Risk--2026-09-07T04-47-32Z | D | D | done | codex | driver | Audit stranske/Counter_Risk and file issues (supply 2 <= 2) |  |
 | D-audit-Counter_Risk--2026-09-08T17-11-36Z | D | D | done | codex | codex | Audit stranske/Counter_Risk and file issues (supply 1 <= 2) |  |
@@ -290,10 +291,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-10-23T18:56:49Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
-- 2026-10-23T19:12:18Z — verify — enqueued D4-verify-merged-2026-10-23T19
-- 2026-10-23T19:12:18Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
-- 2026-10-23T19:12:18Z — D4-verify-merged-2026-10-23T19 — route — router unavailable (ImportError); using capacity_ok; capacity_ok -> codex
 - 2026-10-23T19:12:18Z — D4-verify-merged-2026-10-23T19 — claimed by driver (agent codex)
 - 2026-10-23T19:21:39Z — D4-verify-merged-2026-10-23T19 — done — codex produced 810 words at artifacts/verification/D4-verify-merged-2026-10-23T19.md in 531s
 - 2026-10-23T19:37:07Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
@@ -302,6 +299,10 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-10-23T20:23:28Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
 - 2026-10-23T20:38:57Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
 - 2026-10-23T20:54:25Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+- 2026-10-23T21:09:53Z — unblock — enqueued D3-unblock-sweep-2026-10-23T21
+- 2026-10-23T21:09:53Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+- 2026-10-23T21:09:54Z — D3-unblock-sweep-2026-10-23T21 — route — router unavailable (ImportError); using capacity_ok; capacity_ok -> codex
+- 2026-10-23T21:09:54Z — D3-unblock-sweep-2026-10-23T21 — claimed by driver (agent codex)
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
