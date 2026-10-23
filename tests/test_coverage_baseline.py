@@ -1134,6 +1134,82 @@ def test_pytest_gate_requires_current_json_report(
 
 
 @pytest.mark.parametrize("name", sorted(PUBLICATION_FILES))
+def test_publication_gate_combines_test_contexts_without_masking_removed_branch(
+    coverage_project: Path, name: str
+) -> None:
+    """Hits split across test contexts must combine, but only for tests still selected."""
+    names = sorted(PUBLICATION_FILES)
+    for script in names:
+        path = coverage_project / script
+        # The false path has no separate line, so removing its test loses only a branch.
+        path.write_text(path.read_text().replace("    return 0\n", ""))
+    config = coverage_project / "pyproject.toml"
+    config.write_text(config.read_text() + "\n[tool.coverage.json]\nshow_contexts = true\n")
+    exercise = coverage_project / "tests/test_exercise.py"
+    exercise.write_text(
+        "import runpy\n\n"
+        "def test_true():\n"
+        f"    for path in {names!r}:\n"
+        "        assert runpy.run_path(path)['choose'](True) == 1\n\n"
+        + "\n".join(
+            f"def test_false_{index}():\n"
+            f"    assert runpy.run_path({script!r})['choose'](False) is None\n"
+            for index, script in enumerate(names)
+        )
+    )
+    args = ("--cov-context=test",)
+    complete = _run_coverage_project(coverage_project, *args)
+    assert complete.returncode == 0, complete.stdout + complete.stderr
+    report_path = coverage_project / "coverage.json"
+    before = json.loads(report_path.read_text())
+    _assert_xml_matches_json(coverage_project, before)
+    for index, script in enumerate(names):
+        contexts = {
+            context for values in before["files"][script]["contexts"].values() for context in values
+        }
+        assert contexts == {
+            "tests/test_exercise.py::test_true|run",
+            f"tests/test_exercise.py::test_false_{index}|run",
+        }
+
+    removed = _run_coverage_project(
+        coverage_project, *args, "-k", f"not test_false_{names.index(name)}"
+    )
+    output = removed.stdout + removed.stderr
+    assert removed.returncode == 1, output
+    assert "2 passed, 1 deselected" in output
+    errors = [line for line in output.splitlines() if line.startswith("PUBLICATION COVERAGE:")]
+    assert len(errors) == 1, output
+    assert errors[0].startswith(f"PUBLICATION COVERAGE: {name}: branch coverage ")
+    after = json.loads(report_path.read_text())
+    _assert_xml_matches_json(coverage_project, after)
+    assert (
+        set(after["files"])
+        == set(before["files"])
+        == PUBLICATION_FILES | {"src/my_project/unexecuted.py"}
+    )
+    assert after["totals"]["percent_covered"] >= _load_baseline()["line"]
+    for script in names:
+        original, reduced = (report["files"][script]["summary"] for report in (before, after))
+        assert reduced["covered_lines"] == original["covered_lines"]
+        assert reduced["num_branches"] == original["num_branches"]
+        assert reduced["covered_branches"] == original["covered_branches"] - int(script == name)
+
+    restored = _run_coverage_project(coverage_project, *args)
+    assert restored.returncode == 0, restored.stdout + restored.stderr
+    restored_report = json.loads(report_path.read_text())
+    _assert_xml_matches_json(coverage_project, restored_report)
+    assert set(restored_report["files"]) == set(before["files"])
+    for script, original in before["files"].items():
+        restored_file = restored_report["files"][script]
+        assert restored_file["summary"] == original["summary"]
+        # Coverage does not guarantee the ordering of context names in a report.
+        assert {line: set(contexts) for line, contexts in restored_file["contexts"].items()} == {
+            line: set(contexts) for line, contexts in original["contexts"].items()
+        }
+
+
+@pytest.mark.parametrize("name", sorted(PUBLICATION_FILES))
 def test_pytest_gate_rejects_appended_coverage_that_masks_removed_branch_test(
     coverage_project: Path, name: str
 ) -> None:
