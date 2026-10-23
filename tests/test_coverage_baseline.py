@@ -769,10 +769,11 @@ def test_publication_gate_cli_rejects_unreadable_evidence(tmp_path: Path, docume
 @pytest.mark.parametrize("name", sorted(PUBLICATION_FILES))
 @pytest.mark.parametrize("regression", [None, "line", "branch"], ids=["complete", "line", "branch"])
 @pytest.mark.parametrize("invocation", ["relative", "absolute"])
+@pytest.mark.parametrize("exit_status", [0, 1], ids=["accepted", "rejected"])
 def test_publication_coverage_tracks_subprocess_regressions(
-    coverage_project: Path, name: str, regression: str | None, invocation: str
+    coverage_project: Path, name: str, regression: str | None, invocation: str, exit_status: int
 ) -> None:
-    """Relative and absolute CLI paths must enforce either script's independent floors."""
+    """Accepted and rejected CLI runs must enforce either script's independent floors."""
     script = coverage_project / name
     if regression == "line":
         # Keep both branches exercised while adding one unexecuted line.
@@ -790,7 +791,12 @@ def test_publication_coverage_tracks_subprocess_regressions(
         'assert choose(True) == 1"\n'
         f"        if not ({regression == 'branch'!r} and path == {name!r}):\n"
         "            code += '; choose(False)'\n"
-        "        subprocess.run([sys.executable, '-c', code], check=True)\n"
+        f"        code += '; raise SystemExit({exit_status})'\n"
+        "        result = subprocess.run(\n"
+        "            [sys.executable, '-c', code], check=False, capture_output=True, text=True\n"
+        "        )\n"
+        f"        assert result.returncode == {exit_status}\n"
+        "        assert result.stderr == '', result.stderr\n"
     )
 
     result = _run_coverage_project(coverage_project)
@@ -799,6 +805,7 @@ def test_publication_coverage_tracks_subprocess_regressions(
     assert "1 passed" in output
     assert "INTERNALERROR" not in output
     report = json.loads((coverage_project / "coverage.json").read_text())
+    _assert_xml_matches_json(coverage_project, report)
     assert set(report["files"]) == PUBLICATION_FILES | {"src/my_project/unexecuted.py"}
     assert report["totals"]["percent_covered"] >= _load_baseline()["line"]
     for path in PUBLICATION_FILES:
