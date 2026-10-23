@@ -1749,6 +1749,42 @@ def test_pytest_gate_rejects_empty_selection_despite_previous_passing_report(
     assert json.loads(report_path.read_text())["files"] == previous["files"]
 
 
+def test_suppressed_failure_report_cannot_reuse_previous_publication_evidence(
+    coverage_project: Path,
+) -> None:
+    """--no-cov-on-fail must discard stale evidence and recover after repairing the test."""
+    args = ("--no-cov-on-fail",)
+    passing = _run_coverage_project(coverage_project, *args)
+    assert passing.returncode == 0, passing.stdout + passing.stderr
+    report_path = coverage_project / "coverage.json"
+    previous = json.loads(report_path.read_text())
+    exercise = coverage_project / "tests/test_exercise.py"
+    original = exercise.read_bytes()
+    exercise.write_text(
+        exercise.read_text()
+        + '\n    raise AssertionError("suppressed-report regression control")\n'
+    )
+
+    failing = _run_coverage_project(coverage_project, *args)
+    output = failing.stdout + failing.stderr
+    assert failing.returncode == 1, output
+    assert "1 failed" in output
+    assert "suppressed-report regression control" in output
+    assert "PUBLICATION COVERAGE: Current publication coverage evidence unavailable:" in output
+    assert "INTERNALERROR" not in output
+    assert not report_path.exists(), "A suppressed report must not leave earlier passing evidence"
+
+    exercise.write_bytes(original)
+    restored = _run_coverage_project(coverage_project, *args)
+    output = restored.stdout + restored.stderr
+    assert restored.returncode == 0, output
+    assert "1 passed" in output
+    assert "PUBLICATION COVERAGE:" not in output
+    report = json.loads(report_path.read_text())
+    assert report["files"] == previous["files"]
+    _assert_xml_matches_json(coverage_project, report)
+
+
 def test_fail_fast_cannot_reuse_previous_publication_report(
     coverage_project: Path,
 ) -> None:
