@@ -4309,3 +4309,12 @@ remote: - Required status check "Gate / gate" is
 ## 2026-10-24T07:52:24Z — D-audit-learning-management-system--2026-10-24T04-03-30Z — done — cursor produced 261 words at artifacts/audits/learning-management-system-2026-10-24.md in 712s
 ## 2026-10-24T07:52:25Z — D-audit-learning-management-system--2026-10-24T04-03-30Z — refutation posted — stranske/learning-management-system#712
 ## 2026-10-24T07:52:26Z — D-audit-learning-management-system--2026-10-24T04-03-30Z — refutation posted — stranske/learning-management-system#713
+## 2026-10-24T20:01:13Z — unblock — enqueued D3-unblock-sweep-2026-10-24T20
+## 2026-10-24T20:01:13Z — verify — enqueued D4-verify-merged-2026-10-24T20
+## 2026-10-24T20:01:15Z — refill — Manager-Mosaic: scorecard 2026-10-24: coverage debt 2 (not exercised 0 + unscored 2) not reduced since 2026-09-23 (2) → audit queued
+## 2026-10-24T20:01:19Z — refill — Counter_Risk: scorecard 2026-10-24: coverage debt 4 (not exercised 2 + unscored 2) not reduced since 2026-09-23 (4) → audit queued
+## 2026-10-24T20:01:20Z — refill — Manager-Database: scorecard 2026-10-24: coverage debt 19 (not exercised 0 + unscored 19) not reduced since 2026-09-23 (0) → audit queued
+## 2026-10-24T20:01:21Z — refill — learning-management-system: scorecard 2026-10-24: coverage debt 1 (not exercised 0 + unscored 1) not reduced since 2026-09-22 (1) → audit queued
+## 2026-10-24T20:01:22Z — refill — Fine-Art-Archive: scorecard 2026-10-24: coverage debt 9 (not exercised 0 + unscored 9) not reduced since 2026-09-23 (9) → audit queued
+## 2026-10-24T20:01:52Z — D3-unblock-sweep-2026-10-24T20 — route — router picked cursor from ['codex', 'cursor']
+## 2026-10-24T20:01:52Z — D3-unblock-sweep-2026-10-24T20 — claimed by driver (agent cursor)
