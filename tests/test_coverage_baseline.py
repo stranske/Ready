@@ -766,31 +766,40 @@ def test_publication_gate_cli_defaults_use_current_pytest_report(
 
 
 @pytest.mark.parametrize("document", ["report", "baseline"])
-@pytest.mark.parametrize("invalid", ["missing", "directory", "malformed-json", "invalid-utf8"])
-def test_publication_gate_cli_rejects_unreadable_evidence(tmp_path: Path, document, invalid):
-    """Unavailable evidence must fail with an actionable diagnostic, without a traceback."""
+@pytest.mark.parametrize(
+    "invalid",
+    ["missing", "directory", "malformed-json", "invalid-utf8", "non-object", "empty-object"],
+)
+def test_publication_gate_cli_rejects_invalid_evidence_and_recovers(
+    tmp_path: Path, document, invalid
+):
+    """Invalid evidence must fail cleanly and pass only after the document is repaired."""
     paths = {name: tmp_path / f"{name}.json" for name in ("report", "baseline")}
     paths["report"].write_text(json.dumps(_measured_report()))
     paths["baseline"].write_text(json.dumps(_load_baseline()))
     path = paths[document]
+    original = path.read_bytes()
     if invalid in ("missing", "directory"):
         path.unlink()
         if invalid == "directory":
             path.mkdir()
     elif invalid == "malformed-json":
         path.write_text('{"incomplete":')
-    else:
+    elif invalid == "invalid-utf8":
         path.write_bytes(b"\xff")
+    else:
+        path.write_text("null" if invalid == "non-object" else "{}")
 
+    command = [
+        sys.executable,
+        str(REPO_ROOT / "scripts/publication_coverage_gate.py"),
+        "--report",
+        str(paths["report"]),
+        "--baseline",
+        str(paths["baseline"]),
+    ]
     result = subprocess.run(
-        [
-            sys.executable,
-            str(REPO_ROOT / "scripts/publication_coverage_gate.py"),
-            "--report",
-            str(paths["report"]),
-            "--baseline",
-            str(paths["baseline"]),
-        ],
+        command,
         cwd=tmp_path,
         capture_output=True,
         text=True,
@@ -798,9 +807,29 @@ def test_publication_gate_cli_rejects_unreadable_evidence(tmp_path: Path, docume
     )
 
     assert result.returncode == 1
-    assert result.stdout.startswith(f"Cannot load publication coverage {document} {path}:")
+    if invalid == "non-object":
+        assert result.stdout == "Coverage report and baseline must be JSON objects\n"
+    elif invalid == "empty-object":
+        if document == "report":
+            assert result.stdout == "".join(
+                f"{name}: missing coverage measurement\n" for name in sorted(PUBLICATION_FILES)
+            )
+        else:
+            assert result.stdout == (
+                "publication_scripts must name exactly the two Ready-owned scripts\n"
+            )
+    else:
+        assert result.stdout.startswith(f"Cannot load publication coverage {document} {path}:")
     assert result.stderr == ""
     assert "PASS" not in result.stdout
+
+    if path.is_dir():
+        path.rmdir()
+    path.write_bytes(original)
+    restored = subprocess.run(command, cwd=tmp_path, capture_output=True, text=True, check=False)
+    assert restored.returncode == 0, restored.stdout + restored.stderr
+    assert restored.stdout == "Ready publication coverage floors PASS\n"
+    assert restored.stderr == ""
 
 
 @pytest.mark.parametrize("name", sorted(PUBLICATION_FILES))
