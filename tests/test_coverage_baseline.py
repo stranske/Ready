@@ -2025,3 +2025,40 @@ def test_inactive_coverage_skips_publication_hooks_without_changing_evidence(
     assert "AttributeError" not in combined
     assert "PUBLICATION COVERAGE:" not in combined
     assert report_path.read_bytes() == previous_report
+
+
+@pytest.mark.parametrize("workerinput", [{}, {"workerid": "gw0"}], ids=["empty", "identified"])
+@pytest.mark.parametrize("exitstatus", [pytest.ExitCode.OK, pytest.ExitCode.TESTS_FAILED])
+def test_pytest_workers_preserve_controller_evidence_and_exit_status(
+    tmp_path: Path, monkeypatch, workerinput: dict, exitstatus: pytest.ExitCode
+) -> None:
+    """Workers must leave reporting and combined coverage decisions to the controller."""
+    from types import SimpleNamespace
+
+    from tests import conftest
+
+    monkeypatch.setattr(conftest, "ROOT", tmp_path)
+    report_path = tmp_path / "coverage.json"
+    previous = json.dumps(_measured_report()).encode() + b"\n"
+    report_path.write_bytes(previous)
+    # Represent an active pytest-cov worker. Its partial data must never be
+    # accessed by Ready's controller hooks, even before worker metadata arrives.
+    plugin = SimpleNamespace(cov_controller=object())
+    config = SimpleNamespace(
+        workerinput=workerinput,
+        option=SimpleNamespace(collectonly=False),
+        getoption=lambda *args, **kwargs: False,
+        pluginmanager=SimpleNamespace(getplugin=lambda name: plugin),
+    )
+    session = SimpleNamespace(config=config, exitstatus=exitstatus)
+
+    conftest.pytest_sessionstart(session)
+    assert report_path.read_bytes() == previous
+    loop = conftest.pytest_runtestloop(session)
+    next(loop)
+    with pytest.raises(StopIteration):
+        loop.send(None)
+    conftest.pytest_sessionfinish(session, exitstatus)
+
+    assert report_path.read_bytes() == previous
+    assert session.exitstatus == exitstatus
