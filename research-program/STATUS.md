@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-24T22:16:11Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-24T22:22:07Z)
 
-Units: 293 — claimed 1, done 287, failed 1, superseded 4
+Units: 293 — done 288, failed 1, superseded 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok muse=ok aider=ok
 Orchestrator evidence (30d): offload runs 52, bound to a research round 52, scored 52 (PASS 37, FAIL 15, infra 0) — codex 8/8 (P3 F5 I0), cursor 44/44 (P34 F10 I0)
@@ -302,11 +302,10 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D4-verify-merged-2026-10-21T18 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
 | D4-verify-merged-2026-10-22T19 | D | D | done | codex | driver | Verify merged PRs against their issues' acceptance criteria |  |
 | D4-verify-merged-2026-10-23T19 | D | D | done | codex | driver | Verify merged PRs against their issues' acceptance criteria |  |
-| D4-verify-merged-2026-10-24T20 | D | D | claimed | codex | driver | Verify merged PRs against their issues' acceptance criteria |  |
+| D4-verify-merged-2026-10-24T20 | D | D | done | codex | driver | Verify merged PRs against their issues' acceptance criteria |  |
 
 ## Last checkpoints
 
-- 2026-10-24T21:16:36Z — D-audit-Manager-Database--2026-10-24T20-01-20Z — route — router picked codex from ['codex', 'cursor']
 - 2026-10-24T21:16:36Z — D-audit-Manager-Database--2026-10-24T20-01-20Z — claimed by driver (agent codex)
 - 2026-10-24T21:24:01Z — D-audit-Manager-Database--2026-10-24T20-01-20Z — done — codex produced 515 words at artifacts/audits/Manager-Database-2026-10-24.md in 384s
 - 2026-10-24T21:24:03Z — D-audit-Manager-Database--2026-10-24T20-01-20Z — refutation posted — stranske/Manager-Database#1790
@@ -318,6 +317,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-10-24T22:00:44Z — D-audit-learning-management-system--2026-10-24T20-01-21Z — done — codex produced 348 words at artifacts/audits/learning-management-system-2026-10-24.md in 144s
 - 2026-10-24T22:16:11Z — D4-verify-merged-2026-10-24T20 — route — router picked codex from ['codex', 'cursor']
 - 2026-10-24T22:16:11Z — D4-verify-merged-2026-10-24T20 — claimed by driver (agent codex)
+- 2026-10-24T22:22:07Z — D4-verify-merged-2026-10-24T20 — done — codex produced 784 words at artifacts/verification/D4-verify-merged-2026-10-24T20.md in 322s
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
