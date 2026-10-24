@@ -4331,3 +4331,5 @@ remote: - Required status check "Gate / gate" is
 ## 2026-10-24T21:16:36Z — D-audit-Manager-Database--2026-10-24T20-01-20Z — claimed by driver (agent codex)
 ## 2026-10-24T21:24:01Z — D-audit-Manager-Database--2026-10-24T20-01-20Z — done — codex produced 515 words at artifacts/audits/Manager-Database-2026-10-24.md in 384s
 ## 2026-10-24T21:24:03Z — D-audit-Manager-Database--2026-10-24T20-01-20Z — refutation posted — stranske/Manager-Database#1790
+## 2026-10-24T21:39:38Z — D-audit-Manager-Mosaic--2026-10-24T20-01-15Z — route — router picked cursor from ['codex', 'cursor']
+## 2026-10-24T21:39:38Z — D-audit-Manager-Mosaic--2026-10-24T20-01-15Z — claimed by driver (agent cursor)
