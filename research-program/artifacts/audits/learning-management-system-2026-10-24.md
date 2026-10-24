@@ -1,40 +1,29 @@
 Scorecard: 2 work / 5 partial / 0 broken / 0 fabricated / 0 not exercised of 7; journey: passes; surfaces unscored 1; closed-still-broken 0.
 
-Issues filed: 2 ([#784](https://github.com/stranske/learning-management-system/issues/784), [#785](https://github.com/stranske/learning-management-system/issues/785)).
+# Audit run report — stranske/learning-management-system — 2026-10-24
 
-REFUTED: https://github.com/stranske/learning-management-system/issues/712 — `pytest tests/scheduling/test_attempt_to_next_review_e2e.py::test_remediation_queue_item_can_be_cleared_after_failure` passes on tip `2427791`.
+Tip audited: `2427791c48fdab52c0bdd585adfcdaf2fa61f609` (`main`).
 
-REFUTED: https://github.com/stranske/learning-management-system/issues/713 — `pytest tests/feedback/test_revision_requests.py::test_revision_acceptance_enqueues_review_queue_item` passes on tip `2427791`.
+## Outcome
 
-## Run report
+Filed 0 new issues. The two verified current findings are already open, actionable issues, so refiling them would be duplicate noise rather than useful supply:
 
-**Repo:** stranske/learning-management-system @ `2427791c48fdab52c0bdd585adfcdaf2fa61f609`  
-**Trigger:** Track D refill (agent-ready supply 4 ≤ 25% of last set 2; scorecard age 32d).  
-**Method:** repo-audit skill; Phase 1 bash orient; Phase 1.5 live scorecard reprobes; targeted dimension-3 wiring review; adversarial verify before filing.
+| Issue | Verified live evidence | Disposition |
+| --- | --- | --- |
+| [#784](https://github.com/stranske/learning-management-system/issues/784) | `src/lms/llm/config.py:64-97` reads the global cap but never assigns `per_mode_daily_cap_micro_usd`; a direct `load_llm_config_from_env` probe with `LLM_MODE_DAILY_CAPS_MICRO_USD={"study-coach": 1}` returned `mode_caps {}`. `src/lms/llm/api.py:203-209` consequently supplies an empty map to `DailyBudgetTracker`. | Keep open; latent runtime mis-wiring. |
+| [#785](https://github.com/stranske/learning-management-system/issues/785) | `src/lms/maintenance/drafts.py:146-169` performs a non-atomic count-then-decide admission check. `src/lms/__main__.py:642-658` checks once before adding a batch, with no reservation or database constraint. | Keep open; concurrent CLI sessions can overshoot the documented cap. |
 
-### Scorecard summary
+## Product coverage
 
-Seven contract core functions exercised. CF4 (review loop) and CF7 (capability plan) **work** with varying-input checks. CF1–CF3, CF5, CF6 remain **partial** (author friction, learn-route scoring copy, mastery confidence record-count-only, no learner calibration page). Primary journey **passes** end-to-end on tip. No broken or fabricated core functions. One interior CLI surface remains unscored (`scripts/export_offline_review_packet.py`).
+The current durable scorecard is at `Code/Audits/learning-management-system/2026-10-24-SCORECARD.md`. It scores all seven contract functions: CF4 review completion and CF7 capability planning work; CF1 authoring, CF2 lesson work, CF3 feedback, CF5 mastery/progress, and CF6 calibration remain partial. The primary journey passes. The one unscored surface is the interior offline-review export CLI, not an untested core product journey.
 
-### Tests
+## Verification and risks
 
-`uv run pytest -m 'not slow' --no-cov`: **2809 passed**, 6 skipped. Targeted scorecard tests for remediation drain and revision scheduling: green.
+- The latest Issue Format Guard succeeded for this same tip: https://github.com/stranske/learning-management-system/actions/runs/40134310557.
+- The repository virtual environment currently has no `pytest`, so this run did not claim a local suite result. Previous durable evidence records 2,809 passing non-slow tests; that is historical CI/audit evidence, not a fresh local test verdict.
+- No candidate was discarded solely because a related issue was closed. Closed #571 addressed global budget-secret parsing; it does not address #784’s per-mode-cap wiring.
+- No closed issue’s asserted current defect was refuted, so there is no `REFUTED:` line.
 
-### Issues filed (verified, deduped)
+## Reconciliation
 
-| Issue | Severity | Finding |
-|---|---|---|
-| [#784](https://github.com/stranske/learning-management-system/issues/784) | P2 / D3 | `per_mode_daily_cap_micro_usd` never loaded from environment; per-mode budget kill-switch inert despite `DailyBudgetTracker` support |
-| [#785](https://github.com/stranske/learning-management-system/issues/785) | P2 / D1 | `PENDING_DRAFT_CAP` bypassable under concurrent `lms maintenance load` (check-then-insert race) |
-
-Dedup: open [#757](https://github.com/stranske/learning-management-system/issues/757)–[#763](https://github.com/stranske/learning-management-system/issues/763) retained; no duplicate filing. Closed #712/#713 reproduction **refuted** on tip (fixes merged).
-
-### Format guard
-
-Agents Issue Format Guard: #784 run `40075762153` **success**; #785 run `40075763613` **success**.
-
-### Artifacts
-
-- Scorecard: `Code/Audits/learning-management-system/2026-10-24-SCORECARD.md`
-- Issue bodies: `Code/Audits/learning-management-system/2026-10-24-issue-bodies/`
-- Checkpoint: `artifacts/audits/D-audit-learning-management-system--2026-10-24T04-03-30Z.CHECKPOINT.md`
+The surface inventory and prior scorecard were re-read, both viable candidates were opened and reproduced against the live tip, and each maps to an already-open issue with repository-relative evidence and a named test gate. No additional verified, non-duplicate issue remains to file.

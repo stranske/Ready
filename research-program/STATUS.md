@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-24T21:57:51Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-24T22:00:44Z)
 
-Units: 293 — claimed 1, done 286, failed 1, queued 1, superseded 4
+Units: 293 — done 287, failed 1, queued 1, superseded 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok muse=ok aider=ok
 Orchestrator evidence (30d): offload runs 52, bound to a research round 52, scored 52 (PASS 37, FAIL 15, infra 0) — codex 8/8 (P3 F5 I0), cursor 44/44 (P34 F10 I0)
@@ -260,7 +260,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-learning-management-system--2026-09-20T08-24-44Z | D | D | done | codex | claude | Audit stranske/learning-management-system and file issues (supply 2 <= |  |
 | D-audit-learning-management-system--2026-09-22T20-42-45Z | D | D | done | cursor | driver | Audit stranske/learning-management-system and file issues (supply 2 <= |  |
 | D-audit-learning-management-system--2026-10-24T04-03-30Z | D | D | done | cursor | driver | Audit stranske/learning-management-system and file issues (scorecard 2 | 2W/5P/0B/0F of 7 |
-| D-audit-learning-management-system--2026-10-24T20-01-21Z | D | D | claimed | codex | driver | Audit stranske/learning-management-system and file issues (scorecard 2 |  |
+| D-audit-learning-management-system--2026-10-24T20-01-21Z | D | D | done | codex | driver | Audit stranske/learning-management-system and file issues (scorecard 2 | 2W/5P/0B/0F of 7 |
 | D-audit-trip-planner--2026-09-07T04-47-34Z | D | D | done | codex | codex | Audit stranske/trip-planner and file issues (supply 2 <= 2) |  |
 | D-audit-trip-planner--2026-10-02T10-11-06Z | D | D | done | codex | codex | Audit stranske/trip-planner and file issues (scorecard 2026-10-01: 1 p | 7W/1P/0B/0F of 8 |
 | D4-verify-merged-2026-09-05T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
@@ -306,7 +306,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-10-24T20:54:08Z — D-audit-Fine-Art-Archive--2026-10-24T20-01-22Z — route — router picked codex from ['codex', 'cursor']
 - 2026-10-24T20:54:08Z — D-audit-Fine-Art-Archive--2026-10-24T20-01-22Z — claimed by driver (agent codex)
 - 2026-10-24T21:00:59Z — D-audit-Fine-Art-Archive--2026-10-24T20-01-22Z — done — codex produced 456 words at artifacts/audits/Fine-Art-Archive-2026-10-24.md in 365s
 - 2026-10-24T21:16:36Z — D-audit-Manager-Database--2026-10-24T20-01-20Z — route — router picked codex from ['codex', 'cursor']
@@ -318,6 +317,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-10-24T21:41:43Z — D-audit-Manager-Mosaic--2026-10-24T20-01-15Z — done — cursor produced 528 words at artifacts/audits/Manager-Mosaic-2026-10-24.md in 93s
 - 2026-10-24T21:57:51Z — D-audit-learning-management-system--2026-10-24T20-01-21Z — route — router picked codex from ['codex', 'cursor']
 - 2026-10-24T21:57:51Z — D-audit-learning-management-system--2026-10-24T20-01-21Z — claimed by driver (agent codex)
+- 2026-10-24T22:00:44Z — D-audit-learning-management-system--2026-10-24T20-01-21Z — done — codex produced 348 words at artifacts/audits/learning-management-system-2026-10-24.md in 144s
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
