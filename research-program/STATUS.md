@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-24T04:26:40Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-24T04:42:09Z)
 
-Units: 285 — done 275, queued 6, superseded 4
+Units: 285 — claimed 1, done 275, queued 5, superseded 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=warn claude=ok cursor=ok gemini=ok vibe=ok muse=ok aider=ok
 Orchestrator evidence (30d): offload runs 53, bound to a research round 52, scored 52 (PASS 37, FAIL 15, infra 0) — codex 8/9 (P3 F5 I0), cursor 44/44 (P34 F10 I0)
@@ -197,7 +197,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Fine-Art-Archive--2026-09-06T04-25-53Z | D | D | done | codex | driver | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 3) |  |
 | D-audit-Fine-Art-Archive--2026-09-23T09-11-19Z | D | D | done | cursor |  | Audit stranske/Fine-Art-Archive and file issues (scorecard 2026-09-20  |  |
 | D-audit-Fine-Art-Archive--2026-09-23T22-11-18Z | D | D | done | cursor | claude | Audit stranske/Fine-Art-Archive and file issues (scorecard 2026-09-23  | 4W/1P/0B/0F of 5 |
-| D-audit-Fine-Art-Archive--2026-10-24T04-03-31Z | D | D | queued | claude |  | Audit stranske/Fine-Art-Archive and file issues (scorecard 2026-09-23  |  |
+| D-audit-Fine-Art-Archive--2026-10-24T04-03-31Z | D | D | claimed | cursor | driver | Audit stranske/Fine-Art-Archive and file issues (scorecard 2026-09-23  |  |
 | D-audit-Inv-Man-Intake--2026-09-23T09-11-17Z | D | D | done | cursor | claude | Audit stranske/Inv-Man-Intake and file issues (scorecard 2026-09-20 ha | 5W/2P/0B/0F of 7 |
 | D-audit-Inv-Man-Intake--2026-09-23T22-11-16Z | D | D | done | cursor | codex | Audit stranske/Inv-Man-Intake and file issues (scorecard 2026-09-23 ha | 5W/2P/0B/0F of 7 |
 | D-audit-Inv-Man-Intake--2026-09-24T01-13-11Z | D | D | done | cursor | driver | Audit stranske/Inv-Man-Intake and file issues (scorecard 2026-09-23 ha | 5W/2P/0B/0F of 7 |
@@ -298,8 +298,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-10-24T03:31:05Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
-- 2026-10-24T03:47:10Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
 - 2026-10-24T04:03:25Z — refill — Manager-Mosaic: scorecard 2026-09-23 is 31d old (> 30) → audit queued
 - 2026-10-24T04:03:27Z — refill — Portable-Alpha-Extension-Model: scorecard 2026-09-23 is 31d old (> 30) → audit queued
 - 2026-10-24T04:03:28Z — refill — Counter_Risk: scorecard 2026-09-23 is 31d old (> 30) → audit queued
@@ -310,6 +308,8 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-10-24T04:03:32Z — D-audit-Counter_Risk--2026-10-24T04-03-28Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-10-24T04:03:32Z — D-audit-Counter_Risk--2026-10-24T04-03-28Z — claimed by driver (agent cursor)
 - 2026-10-24T04:26:40Z — D-audit-Counter_Risk--2026-10-24T04-03-28Z — done — cursor produced 426 words at artifacts/audits/Counter_Risk-2026-10-24.md in 1346s
+- 2026-10-24T04:42:09Z — D-audit-Fine-Art-Archive--2026-10-24T04-03-31Z — route — router picked cursor from ['codex', 'cursor']
+- 2026-10-24T04:42:09Z — D-audit-Fine-Art-Archive--2026-10-24T04-03-31Z — claimed by driver (agent cursor)
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
