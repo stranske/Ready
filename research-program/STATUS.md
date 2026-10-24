@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-24T04:03:32Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-24T04:26:40Z)
 
-Units: 285 — claimed 1, done 274, queued 6, superseded 4
+Units: 285 — done 275, queued 6, superseded 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=warn claude=ok cursor=ok gemini=ok vibe=ok muse=ok aider=ok
 Orchestrator evidence (30d): offload runs 53, bound to a research round 52, scored 52 (PASS 37, FAIL 15, infra 0) — codex 8/9 (P3 F5 I0), cursor 44/44 (P34 F10 I0)
@@ -180,7 +180,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Counter_Risk--2026-09-21T20-41-04Z | D | D | done | cursor | driver | Audit stranske/Counter_Risk and file issues (supply 2 <= 3) |  |
 | D-audit-Counter_Risk--2026-09-23T09-11-16Z | D | D | done | cursor | codex | Audit stranske/Counter_Risk and file issues (scorecard 2026-09-21 has  | 4W/1P/0B/0F of 7 |
 | D-audit-Counter_Risk--2026-09-23T22-11-15Z | D | D | done | cursor |  | Audit stranske/Counter_Risk and file issues (scorecard 2026-09-23 has  |  |
-| D-audit-Counter_Risk--2026-10-24T04-03-28Z | D | D | claimed | cursor | driver | Audit stranske/Counter_Risk and file issues (scorecard 2026-09-23 is 3 |  |
+| D-audit-Counter_Risk--2026-10-24T04-03-28Z | D | D | done | cursor | driver | Audit stranske/Counter_Risk and file issues (scorecard 2026-09-23 is 3 | 4W/1P/0B/0F of 7 |
 | D-audit-Deliverable-Render--2026-09-20T08-24-39Z | D | D | superseded | codex |  | Audit stranske/Deliverable-Render and file issues (supply 1 <= 2) |  |
 | D-audit-Deliverable-Render--2026-09-20T20-25-18Z | D | D | done | cursor | driver | Audit stranske/Deliverable-Render and file issues (supply 1 <= 2) |  |
 | D-audit-Deliverable-Render--2026-09-21T08-38-08Z | D | D | done | cursor | driver | Audit stranske/Deliverable-Render and file issues (supply 2 <= 2) |  |
@@ -298,7 +298,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-10-24T03:13:23Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
 - 2026-10-24T03:31:05Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
 - 2026-10-24T03:47:10Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
 - 2026-10-24T04:03:25Z — refill — Manager-Mosaic: scorecard 2026-09-23 is 31d old (> 30) → audit queued
@@ -310,6 +309,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-10-24T04:03:31Z — refill — Fine-Art-Archive: scorecard 2026-09-23 is 31d old (> 30) → audit queued
 - 2026-10-24T04:03:32Z — D-audit-Counter_Risk--2026-10-24T04-03-28Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-10-24T04:03:32Z — D-audit-Counter_Risk--2026-10-24T04-03-28Z — claimed by driver (agent cursor)
+- 2026-10-24T04:26:40Z — D-audit-Counter_Risk--2026-10-24T04-03-28Z — done — cursor produced 426 words at artifacts/audits/Counter_Risk-2026-10-24.md in 1346s
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
