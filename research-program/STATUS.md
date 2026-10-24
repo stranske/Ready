@@ -1,9 +1,9 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-24T02:26:47Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-24T02:57:52Z)
 
 Units: 278 — done 274, superseded 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=warn claude=ok cursor=ok gemini=shed vibe=ok muse=ok aider=ok
-Orchestrator evidence (30d): offload runs 57, bound to a research round 56, scored 56 (PASS 38, FAIL 18, infra 0) — codex 8/9 (P3 F5 I0), cursor 48/48 (P35 F13 I0)
+Orchestrator evidence (30d): offload runs 55, bound to a research round 54, scored 54 (PASS 38, FAIL 16, infra 0) — codex 8/9 (P3 F5 I0), cursor 46/46 (P35 F11 I0)
 Worker write boundary: on — each unit writes only unitdirs/<unit>/, its output directory, artifacts/proposals/, its own clone's working tree (not .git) and temp
 Claude conservation: off (weekly window available)
 Owner inbox: https://github.com/stranske/Ready/issues/553
@@ -291,8 +291,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-10-23T23:34:29Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
-- 2026-10-23T23:50:02Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
 - 2026-10-24T00:05:33Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
 - 2026-10-24T00:21:07Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
 - 2026-10-24T00:36:35Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
@@ -303,6 +301,8 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-10-24T01:53:59Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
 - 2026-10-24T02:09:30Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
 - 2026-10-24T02:26:47Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+- 2026-10-24T02:42:18Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
+- 2026-10-24T02:57:52Z — refill — error — PermissionError(1, 'Operation not permitted') at [LOCAL_HOME]/Library/CloudStorage/Dropbox/Learning/Code/Audits/Deliverable-Render
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
