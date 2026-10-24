@@ -315,8 +315,9 @@ def test_unexecuted_product_branches_still_fail_aggregate_gate(
 def test_pytest_gate_rejects_unrelated_files_even_with_passing_coverage(
     coverage_project: Path, unrelated: str
 ) -> None:
-    """Widening coverage to tooling or fixture copies must fail the measured-file gate."""
+    """Reject tooling or fixture copies until the configured measurement scope is restored."""
     config = coverage_project / "pyproject.toml"
+    original = config.read_bytes()
     # Widen both run and report selection so real coverage data reaches the gate.
     config.write_text(
         config.read_text().replace(
@@ -342,6 +343,20 @@ def test_pytest_gate_rejects_unrelated_files_even_with_passing_coverage(
         summary = report["files"][name]["summary"]
         assert summary["covered_lines"] == summary["num_statements"]
         assert summary["covered_branches"] == summary["num_branches"]
+
+    # Repair only the selection, retaining the failing report and database.
+    # A recovered Gate must replace both artifacts and discard unrelated hits.
+    config.write_bytes(original)
+    restored = _run_coverage_project(coverage_project)
+    output = restored.stdout + restored.stderr
+    assert restored.returncode == 0, output
+    assert "1 passed" in output
+    assert "PUBLICATION COVERAGE:" not in output
+    current = json.loads((coverage_project / "coverage.json").read_text())
+    assert set(current["files"]) == PUBLICATION_FILES | {"src/my_project/unexecuted.py"}
+    for name in current["files"]:
+        assert current["files"][name] == report["files"][name]
+    _assert_xml_matches_json(coverage_project, current)
 
 
 @pytest.mark.parametrize("execution", ["in-process", "subprocess"])
