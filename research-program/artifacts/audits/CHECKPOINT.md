@@ -27,3 +27,7 @@ Read the required repo-audit method, audit storage, previous scorecard/ledger/do
 Adversarially refuted closed #1845's actual `My`/`What` claim as fixed, deduplicated existing portal issue #1842, and filed the distinct verified planner-context defect as trip-planner #1883. Wrote current-tip scorecard, evidence, issue body, verification log, and the Research Program OUT. Await post-file format-guard discovery before close.
 ## 2026-10-02T22:13Z — D-audit-Travel-Plan-Permission--2026-10-02T22-12-13Z — phase 0/1 begun; remote-tip orientation and scorecard underway.
 ## 2026-10-02T22:17Z — D-audit-Travel-Plan-Permission--2026-10-02T22-12-13Z — phases 1/1.5/3/5 complete: refreshed exact tip `1bb993e`; 1,319 tests collected and 11 focused actual-app route scenarios passed. Scorecard is 7 work / 1 partial / 0 broken / 0 fabricated / 0 not exercised of 8; twelve non-contract surfaces remain unscored. No new verified, non-duplicate finding; no issue or intake row.
+
+## 2026-10-24T12:05Z — D-audit-Fine-Art-Archive--2026-10-24T04-03-31Z — attempt 2 closeout
+
+Attempt 1 completed phases 0–5 on tip `b6dc715`. Attempt 2 re-verified three filed findings on live tip; scorecard 5W/0P/0B/0F/0N; issues #836–#838 open with format guard success; OUT `Fine-Art-Archive-2026-10-24.md`.
