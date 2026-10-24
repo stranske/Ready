@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-24T05:40:31Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-24T05:57:29Z)
 
-Units: 286 — claimed 1, done 276, queued 5, superseded 4
+Units: 286 — claimed 1, done 276, failed 1, queued 4, superseded 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=warn claude=ok cursor=ok gemini=ok vibe=ok muse=ok aider=ok
 Orchestrator evidence (30d): offload runs 53, bound to a research round 52, scored 52 (PASS 37, FAIL 15, infra 0) — codex 8/9 (P3 F5 I0), cursor 44/44 (P34 F10 I0)
@@ -198,7 +198,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Fine-Art-Archive--2026-09-06T04-25-53Z | D | D | done | codex | driver | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 3) |  |
 | D-audit-Fine-Art-Archive--2026-09-23T09-11-19Z | D | D | done | cursor |  | Audit stranske/Fine-Art-Archive and file issues (scorecard 2026-09-20  |  |
 | D-audit-Fine-Art-Archive--2026-09-23T22-11-18Z | D | D | done | cursor | claude | Audit stranske/Fine-Art-Archive and file issues (scorecard 2026-09-23  | 4W/1P/0B/0F of 5 |
-| D-audit-Fine-Art-Archive--2026-10-24T04-03-31Z | D | D | claimed | cursor | driver | Audit stranske/Fine-Art-Archive and file issues (scorecard 2026-09-23  |  |
+| D-audit-Fine-Art-Archive--2026-10-24T04-03-31Z | D | D | failed | cursor |  | Audit stranske/Fine-Art-Archive and file issues (scorecard 2026-09-23  |  |
 | D-audit-Inv-Man-Intake--2026-09-23T09-11-17Z | D | D | done | cursor | claude | Audit stranske/Inv-Man-Intake and file issues (scorecard 2026-09-20 ha | 5W/2P/0B/0F of 7 |
 | D-audit-Inv-Man-Intake--2026-09-23T22-11-16Z | D | D | done | cursor | codex | Audit stranske/Inv-Man-Intake and file issues (scorecard 2026-09-23 ha | 5W/2P/0B/0F of 7 |
 | D-audit-Inv-Man-Intake--2026-09-24T01-13-11Z | D | D | done | cursor | driver | Audit stranske/Inv-Man-Intake and file issues (scorecard 2026-09-23 ha | 5W/2P/0B/0F of 7 |
@@ -211,7 +211,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Manager-Database--2026-09-22T08-41-14Z | D | D | done | cursor | codex | Audit stranske/Manager-Database and file issues (supply 1 <= 2) |  |
 | D-audit-Manager-Database--2026-09-22T20-42-44Z | D | D | done | cursor | codex | Audit stranske/Manager-Database and file issues (supply 1 <= 2) |  |
 | D-audit-Manager-Database--2026-09-23T09-11-17Z | D | D | done | cursor | codex | Audit stranske/Manager-Database and file issues (scorecard 2026-09-22  | 8W/0P/0B/0F of 8 |
-| D-audit-Manager-Database--2026-10-24T04-03-28Z | D | D | queued | claude |  | Audit stranske/Manager-Database and file issues (scorecard 2026-09-23  |  |
+| D-audit-Manager-Database--2026-10-24T04-03-28Z | D | D | claimed | cursor | driver | Audit stranske/Manager-Database and file issues (scorecard 2026-09-23  |  |
 | D-audit-Manager-Mosaic--2026-09-05T04-00-25Z | D | D | done | codex | driver | Audit stranske/Manager-Mosaic and file issues (supply 2 <= 2) |  |
 | D-audit-Manager-Mosaic--2026-09-19T20-12-04Z | D | D | done | codex | codex | Audit stranske/Manager-Mosaic and file issues (supply 3 <= 3) |  |
 | D-audit-Manager-Mosaic--2026-09-23T09-11-14Z | D | D | done | cursor | driver | Audit stranske/Manager-Mosaic and file issues (scorecard 2026-09-20 ha | 5W/1P/0B/0F of 6 |
@@ -299,9 +299,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-10-24T04:48:25Z — D-audit-Fine-Art-Archive--2026-10-24T04-03-31Z — fail — cursor produced 75 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Fine-Art-Archive-2026-10-24.md (floor 120); rotating agent
-- 2026-10-24T05:03:29Z — D-audit-Fine-Art-Archive--2026-10-24T04-03-31Z — route — router picked cursor from ['codex', 'cursor']
-- 2026-10-24T05:03:29Z — D-audit-Fine-Art-Archive--2026-10-24T04-03-31Z — claimed by driver (agent cursor)
 - 2026-10-24T05:04:57Z — D-audit-Fine-Art-Archive--2026-10-24T04-03-31Z — fail — cursor did not write a fresh output artifact
 - 2026-10-24T05:19:59Z — unblock — enqueued D3-unblock-sweep-2026-10-24T05
 - 2026-10-24T05:20:00Z — D3-unblock-sweep-2026-10-24T05 — route — router picked cursor from ['codex', 'cursor']
@@ -311,6 +308,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-10-24T05:22:19Z — D3-unblock-sweep-2026-10-24T05 — refutation posted — stranske/Manager-Database#1773
 - 2026-10-24T05:40:31Z — D-audit-Fine-Art-Archive--2026-10-24T04-03-31Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-10-24T05:40:31Z — D-audit-Fine-Art-Archive--2026-10-24T04-03-31Z — claimed by driver (agent cursor)
+- 2026-10-24T05:42:25Z — D-audit-Fine-Art-Archive--2026-10-24T04-03-31Z — fail — cursor produced 90 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Fine-Art-Archive-2026-10-24.md (floor 120); rotating agent
+- 2026-10-24T05:57:29Z — D-audit-Manager-Database--2026-10-24T04-03-28Z — route — router picked cursor from ['codex', 'cursor']
+- 2026-10-24T05:57:29Z — D-audit-Manager-Database--2026-10-24T04-03-28Z — claimed by driver (agent cursor)
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 

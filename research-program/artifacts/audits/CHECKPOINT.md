@@ -31,3 +31,7 @@ Adversarially refuted closed #1845's actual `My`/`What` claim as fixed, deduplic
 ## 2026-10-24T12:05Z — D-audit-Fine-Art-Archive--2026-10-24T04-03-31Z — attempt 2 closeout
 
 Attempt 1 completed phases 0–5 on tip `b6dc715`. Attempt 2 re-verified three filed findings on live tip; scorecard 5W/0P/0B/0F/0N; issues #836–#838 open with format guard success; OUT `Fine-Art-Archive-2026-10-24.md`.
+
+## 2026-10-24T17:42Z — D-audit-Fine-Art-Archive--2026-10-24T04-03-31Z — attempt 3 closeout
+
+Tip unchanged (`b6dc715`). Re-verified #836–#838 reproductions; 96-test scorecard subset green; 0 new issues filed; intake log already 3/3.
