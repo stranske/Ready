@@ -1430,6 +1430,16 @@ def test_recorded_branch_removal_breaches_guard_floors_above_aggregate_floor():
         (
             (
                 (
+                    "scripts/prepare_publication.py",
+                    "tests/test_prepare_publication.py::"
+                    "test_unreadable_traversal_stops_export_before_writes",
+                ),
+            ),
+            ("line",),
+        ),
+        (
+            (
+                (
                     "scripts/check_publication_safety.py",
                     "tests/test_publication_safety.py::test_empty_or_missing_tree_fails",
                 ),
@@ -1461,7 +1471,7 @@ def test_recorded_branch_removal_breaches_guard_floors_above_aggregate_floor():
             ("line", "branch"),
         ),
     ],
-    ids=["guard-line-only", "guard", "preparer", "both"],
+    ids=["guard-line-only", "preparer-line-only", "guard", "preparer", "both"],
 )
 def test_real_test_removal_fails_publication_gate(
     coverage_project: Path, regressions: tuple[tuple[str, str], ...], lost_metrics: tuple[str, ...]
