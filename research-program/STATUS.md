@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-24T20:01:52Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-24T20:07:40Z)
 
-Units: 293 — claimed 1, done 281, failed 1, queued 6, superseded 4
+Units: 293 — done 282, failed 1, queued 6, superseded 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok muse=ok aider=ok
 Orchestrator evidence (30d): offload runs 52, bound to a research round 52, scored 52 (PASS 37, FAIL 15, infra 0) — codex 8/8 (P3 F5 I0), cursor 44/44 (P34 F10 I0)
@@ -169,7 +169,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D3-unblock-sweep-2026-10-23T12 | D | D | done | codex | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-2026-10-23T21 | D | D | done | codex | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-2026-10-24T05 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
-| D3-unblock-sweep-2026-10-24T20 | D | D | claimed | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
+| D3-unblock-sweep-2026-10-24T20 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-pass2-20260913T2023 | D | D | done | cursor | driver | Unblock sweep pass 2: the seven repos the budgeted first pass deferred |  |
 | D-audit-Counter_Risk--2026-09-07T04-47-32Z | D | D | done | codex | driver | Audit stranske/Counter_Risk and file issues (supply 2 <= 2) |  |
 | D-audit-Counter_Risk--2026-09-08T17-11-36Z | D | D | done | codex | codex | Audit stranske/Counter_Risk and file issues (supply 1 <= 2) |  |
@@ -306,9 +306,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-10-24T07:52:24Z — D-audit-learning-management-system--2026-10-24T04-03-30Z — done — cursor produced 261 words at artifacts/audits/learning-management-system-2026-10-24.md in 712s
-- 2026-10-24T07:52:25Z — D-audit-learning-management-system--2026-10-24T04-03-30Z — refutation posted — stranske/learning-management-system#712
-- 2026-10-24T07:52:26Z — D-audit-learning-management-system--2026-10-24T04-03-30Z — refutation posted — stranske/learning-management-system#713
 - 2026-10-24T20:01:13Z — unblock — enqueued D3-unblock-sweep-2026-10-24T20
 - 2026-10-24T20:01:13Z — verify — enqueued D4-verify-merged-2026-10-24T20
 - 2026-10-24T20:01:15Z — refill — Manager-Mosaic: scorecard 2026-10-24: coverage debt 2 (not exercised 0 + unscored 2) not reduced since 2026-09-23 (2) → audit queued
@@ -318,6 +315,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-10-24T20:01:22Z — refill — Fine-Art-Archive: scorecard 2026-10-24: coverage debt 9 (not exercised 0 + unscored 9) not reduced since 2026-09-23 (9) → audit queued
 - 2026-10-24T20:01:52Z — D3-unblock-sweep-2026-10-24T20 — route — router picked cursor from ['codex', 'cursor']
 - 2026-10-24T20:01:52Z — D3-unblock-sweep-2026-10-24T20 — claimed by driver (agent cursor)
+- 2026-10-24T20:07:36Z — D3-unblock-sweep-2026-10-24T20 — done — cursor produced 813 words at artifacts/sweeps/D3-unblock-sweep-2026-10-24T20.md in 211s
+- 2026-10-24T20:07:38Z — D3-unblock-sweep-2026-10-24T20 — refutation posted — stranske/Manager-Database#1773
+- 2026-10-24T20:07:39Z — D3-unblock-sweep-2026-10-24T20 — refutation posted — stranske/Workflows#3999
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
