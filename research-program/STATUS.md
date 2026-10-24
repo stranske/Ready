@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-24T20:27:06Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-24T20:38:38Z)
 
-Units: 293 — claimed 1, done 282, failed 1, queued 5, superseded 4
+Units: 293 — done 283, failed 1, queued 5, superseded 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok muse=ok aider=ok
 Orchestrator evidence (30d): offload runs 52, bound to a research round 52, scored 52 (PASS 37, FAIL 15, infra 0) — codex 8/8 (P3 F5 I0), cursor 44/44 (P34 F10 I0)
@@ -183,7 +183,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Counter_Risk--2026-09-23T09-11-16Z | D | D | done | cursor | codex | Audit stranske/Counter_Risk and file issues (scorecard 2026-09-21 has  | 4W/1P/0B/0F of 7 |
 | D-audit-Counter_Risk--2026-09-23T22-11-15Z | D | D | done | cursor |  | Audit stranske/Counter_Risk and file issues (scorecard 2026-09-23 has  |  |
 | D-audit-Counter_Risk--2026-10-24T04-03-28Z | D | D | done | cursor | driver | Audit stranske/Counter_Risk and file issues (scorecard 2026-09-23 is 3 | 4W/1P/0B/0F of 7 |
-| D-audit-Counter_Risk--2026-10-24T20-01-19Z | D | D | claimed | codex | driver | Audit stranske/Counter_Risk and file issues (scorecard 2026-10-24: cov |  |
+| D-audit-Counter_Risk--2026-10-24T20-01-19Z | D | D | done | codex | driver | Audit stranske/Counter_Risk and file issues (scorecard 2026-10-24: cov | 2W/2P/0B/0F of 5 |
 | D-audit-Deliverable-Render--2026-09-20T08-24-39Z | D | D | superseded | codex |  | Audit stranske/Deliverable-Render and file issues (supply 1 <= 2) |  |
 | D-audit-Deliverable-Render--2026-09-20T20-25-18Z | D | D | done | cursor | driver | Audit stranske/Deliverable-Render and file issues (supply 1 <= 2) |  |
 | D-audit-Deliverable-Render--2026-09-21T08-38-08Z | D | D | done | cursor | driver | Audit stranske/Deliverable-Render and file issues (supply 2 <= 2) |  |
@@ -306,7 +306,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-10-24T20:01:15Z — refill — Manager-Mosaic: scorecard 2026-10-24: coverage debt 2 (not exercised 0 + unscored 2) not reduced since 2026-09-23 (2) → audit queued
 - 2026-10-24T20:01:19Z — refill — Counter_Risk: scorecard 2026-10-24: coverage debt 4 (not exercised 2 + unscored 2) not reduced since 2026-09-23 (4) → audit queued
 - 2026-10-24T20:01:20Z — refill — Manager-Database: scorecard 2026-10-24: coverage debt 19 (not exercised 0 + unscored 19) not reduced since 2026-09-23 (0) → audit queued
 - 2026-10-24T20:01:21Z — refill — learning-management-system: scorecard 2026-10-24: coverage debt 1 (not exercised 0 + unscored 1) not reduced since 2026-09-22 (1) → audit queued
@@ -318,6 +317,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-10-24T20:07:39Z — D3-unblock-sweep-2026-10-24T20 — refutation posted — stranske/Workflows#3999
 - 2026-10-24T20:27:06Z — D-audit-Counter_Risk--2026-10-24T20-01-19Z — route — router picked codex from ['codex', 'cursor']
 - 2026-10-24T20:27:06Z — D-audit-Counter_Risk--2026-10-24T20-01-19Z — claimed by driver (agent codex)
+- 2026-10-24T20:38:38Z — D-audit-Counter_Risk--2026-10-24T20-01-19Z — done — codex produced 725 words at artifacts/audits/Counter_Risk-2026-10-24.md in 657s
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
