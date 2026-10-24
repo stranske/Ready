@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-24T06:18:06Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-24T06:21:24Z)
 
-Units: 286 — claimed 1, done 277, failed 1, queued 3, superseded 4
+Units: 286 — done 278, failed 1, queued 3, superseded 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=warn claude=ok cursor=ok gemini=ok vibe=ok muse=ok aider=ok
 Orchestrator evidence (30d): offload runs 53, bound to a research round 52, scored 52 (PASS 37, FAIL 15, infra 0) — codex 8/9 (P3 F5 I0), cursor 44/44 (P34 F10 I0)
@@ -216,7 +216,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Manager-Mosaic--2026-09-19T20-12-04Z | D | D | done | codex | codex | Audit stranske/Manager-Mosaic and file issues (supply 3 <= 3) |  |
 | D-audit-Manager-Mosaic--2026-09-23T09-11-14Z | D | D | done | cursor | driver | Audit stranske/Manager-Mosaic and file issues (scorecard 2026-09-20 ha | 5W/1P/0B/0F of 6 |
 | D-audit-Manager-Mosaic--2026-09-23T22-11-13Z | D | D | done | cursor | driver | Audit stranske/Manager-Mosaic and file issues (scorecard 2026-09-23 ha | 6W/0P/0B/0F of 6 |
-| D-audit-Manager-Mosaic--2026-10-24T04-03-25Z | D | D | claimed | cursor | driver | Audit stranske/Manager-Mosaic and file issues (scorecard 2026-09-23 is |  |
+| D-audit-Manager-Mosaic--2026-10-24T04-03-25Z | D | D | done | cursor | driver | Audit stranske/Manager-Mosaic and file issues (scorecard 2026-09-23 is | 7W/0P/0B/0F of 7 |
 | D-audit-Pension-Data--2026-09-23T09-11-18Z | D | D | done | cursor | codex | Audit stranske/Pension-Data and file issues (scorecard 2026-09-20 has  | 2W/1P/0B/0F of 3 |
 | D-audit-Pension-Data--2026-09-23T22-11-16Z | D | D | done | cursor | codex | Audit stranske/Pension-Data and file issues (scorecard 2026-09-23 has  | 3W/0P/0B/0F of 3 |
 | D-audit-Pension-Data--2026-10-24T04-03-29Z | D | D | queued | claude |  | Audit stranske/Pension-Data and file issues (scorecard 2026-09-23 is 3 |  |
@@ -299,7 +299,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-10-24T05:22:16Z — D3-unblock-sweep-2026-10-24T05 — done — cursor produced 680 words at artifacts/sweeps/D3-unblock-sweep-2026-10-24T05.md in 105s
 - 2026-10-24T05:22:17Z — D3-unblock-sweep-2026-10-24T05 — refutation posted — stranske/Workflows#3999
 - 2026-10-24T05:22:19Z — D3-unblock-sweep-2026-10-24T05 — refutation posted — stranske/Manager-Database#1773
 - 2026-10-24T05:40:31Z — D-audit-Fine-Art-Archive--2026-10-24T04-03-31Z — route — router picked cursor from ['codex', 'cursor']
@@ -311,6 +310,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-10-24T06:02:33Z — D-audit-Manager-Database--2026-10-24T04-03-28Z — refutation posted — stranske/Manager-Database#1790
 - 2026-10-24T06:18:06Z — D-audit-Manager-Mosaic--2026-10-24T04-03-25Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-10-24T06:18:06Z — D-audit-Manager-Mosaic--2026-10-24T04-03-25Z — claimed by driver (agent cursor)
+- 2026-10-24T06:21:24Z — D-audit-Manager-Mosaic--2026-10-24T04-03-25Z — done — cursor produced 361 words at artifacts/audits/Manager-Mosaic-2026-10-24.md in 168s
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
