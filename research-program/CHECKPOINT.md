@@ -4291,3 +4291,12 @@ remote: - Required status check "Gate / gate" is
 ## 2026-10-24T05:57:29Z — D-audit-Manager-Database--2026-10-24T04-03-28Z — claimed by driver (agent cursor)
 ## 2026-10-24T06:02:31Z — D-audit-Manager-Database--2026-10-24T04-03-28Z — done — cursor produced 253 words at artifacts/audits/Manager-Database-2026-10-24.md in 268s
 ## 2026-10-24T06:02:33Z — D-audit-Manager-Database--2026-10-24T04-03-28Z — refutation posted — stranske/Manager-Database#1790
+## 2026-10-24T06:18:06Z — D-audit-Manager-Mosaic--2026-10-24T04-03-25Z — route — router picked cursor from ['codex', 'cursor']
+## 2026-10-24T06:18:06Z — D-audit-Manager-Mosaic--2026-10-24T04-03-25Z — claimed by driver (agent cursor)
+## 2026-10-24T06:21:24Z — D-audit-Manager-Mosaic--2026-10-24T04-03-25Z — done — cursor produced 361 words at artifacts/audits/Manager-Mosaic-2026-10-24.md in 168s
+## 2026-10-24T06:36:53Z — D-audit-Pension-Data--2026-10-24T04-03-29Z — route — router picked cursor from ['codex', 'cursor']
+## 2026-10-24T06:36:53Z — D-audit-Pension-Data--2026-10-24T04-03-29Z — claimed by driver (agent cursor)
+## 2026-10-24T06:42:20Z — D-audit-Pension-Data--2026-10-24T04-03-29Z — fail — offload to cursor exited 70; offload profile completion persistence is pending
+## 2026-10-24T06:58:26Z — D-audit-Pension-Data--2026-10-24T04-03-29Z — route — router picked codex from ['codex', 'cursor']
+## 2026-10-24T06:58:26Z — D-audit-Pension-Data--2026-10-24T04-03-29Z — claimed by driver (agent codex)
+## 2026-10-24T07:01:27Z — D-audit-Pension-Data--2026-10-24T04-03-29Z — done — codex produced 388 words at artifacts/audits/Pension-Data-2026-10-24.md in 149s
