@@ -315,7 +315,7 @@ def test_unexecuted_product_branches_still_fail_aggregate_gate(
 def test_pytest_gate_rejects_unrelated_files_even_with_passing_coverage(
     coverage_project: Path, unrelated: str
 ) -> None:
-    """Reject tooling or fixture copies until the configured measurement scope is restored."""
+    """Both gate entry points must reject scope drift and recover from current reports."""
     config = coverage_project / "pyproject.toml"
     original = config.read_bytes()
     # Widen both run and report selection so real coverage data reaches the gate.
@@ -344,6 +344,17 @@ def test_pytest_gate_rejects_unrelated_files_even_with_passing_coverage(
         assert summary["covered_lines"] == summary["num_statements"]
         assert summary["covered_branches"] == summary["num_branches"]
 
+    standalone = subprocess.run(
+        [sys.executable, "scripts/publication_coverage_gate.py"],
+        cwd=coverage_project,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert standalone.returncode == 1, standalone.stdout + standalone.stderr
+    assert standalone.stderr == ""
+    assert standalone.stdout == f"Synced or unrelated files measured: {[unrelated]!r}\n"
+
     # Repair only the selection, retaining the failing report and database.
     # A recovered Gate must replace both artifacts and discard unrelated hits.
     config.write_bytes(original)
@@ -357,6 +368,17 @@ def test_pytest_gate_rejects_unrelated_files_even_with_passing_coverage(
     for name in current["files"]:
         assert current["files"][name] == report["files"][name]
     _assert_xml_matches_json(coverage_project, current)
+
+    standalone = subprocess.run(
+        [sys.executable, "scripts/publication_coverage_gate.py"],
+        cwd=coverage_project,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert standalone.returncode == 0, standalone.stdout + standalone.stderr
+    assert standalone.stderr == ""
+    assert standalone.stdout == "Ready publication coverage floors PASS\n"
 
 
 @pytest.mark.parametrize("execution", ["in-process", "subprocess"])
