@@ -1415,6 +1415,70 @@ def test_recorded_branch_removal_breaches_guard_floors_above_aggregate_floor():
         assert "below floor" in error
 
 
+def _use_real_publication_tests(project: Path) -> None:
+    """Replace the synthetic exercise with the repository's publication tests."""
+    (project / "tests/test_exercise.py").unlink()
+    for relative in (
+        "scripts/check_publication_safety.py",
+        "scripts/prepare_publication.py",
+        "scripts/publication_patterns.py",
+        "tests/test_publication_safety.py",
+        "tests/test_prepare_publication.py",
+    ):
+        shutil.copyfile(REPO_ROOT / relative, project / relative)
+
+
+def test_real_publication_source_addition_fails_gate(coverage_project: Path) -> None:
+    """New untested production paths must breach the floor without removing any tests."""
+    _use_real_publication_tests(coverage_project)
+    args = ("-k", "not workflow and not gate_summary")
+    complete = _run_coverage_project(coverage_project, *args)
+    assert complete.returncode == 0, complete.stdout + complete.stderr
+    report_path = coverage_project / "coverage.json"
+    before = json.loads(report_path.read_text())
+
+    originals = {name: (coverage_project / name).read_bytes() for name in PUBLICATION_FILES}
+    added = (
+        b"\n\ndef untested_publication_path(flag):\n    if flag:\n        return 1\n    return 0\n"
+    )
+    for name, original in originals.items():
+        (coverage_project / name).write_bytes(original + added)
+
+    failing = _run_coverage_project(coverage_project, *args)
+    output = failing.stdout + failing.stderr
+    assert failing.returncode == 1, output
+    assert re.search(r"\d+ passed", output), output
+    assert "FAILED " not in output
+    assert "INTERNALERROR" not in output
+    assert "FAIL Required test coverage" not in output
+    after = json.loads(report_path.read_text())
+    _assert_xml_matches_json(coverage_project, after)
+    assert set(after["files"]) == set(before["files"])
+    assert after["totals"]["percent_covered"] >= _load_baseline()["line"]
+    errors = [line for line in output.splitlines() if line.startswith("PUBLICATION COVERAGE:")]
+    assert len(errors) == 4, output
+    for index, name in enumerate(sorted(PUBLICATION_FILES)):
+        original_summary = before["files"][name]["summary"]
+        summary = after["files"][name]["summary"]
+        assert summary["num_statements"] > original_summary["num_statements"]
+        assert summary["num_branches"] == original_summary["num_branches"] + 2
+        assert summary["covered_branches"] == original_summary["covered_branches"]
+        for metric, error in zip(
+            ("line", "branch"), errors[2 * index : 2 * index + 2], strict=True
+        ):
+            assert error.startswith(f"PUBLICATION COVERAGE: {name}: {metric} coverage ")
+            assert "below floor" in error
+
+    for name, original in originals.items():
+        (coverage_project / name).write_bytes(original)
+    restored = _run_coverage_project(coverage_project, *args)
+    assert restored.returncode == 0, restored.stdout + restored.stderr
+    restored_report = json.loads(report_path.read_text())
+    _assert_xml_matches_json(coverage_project, restored_report)
+    for path in before["files"]:
+        assert restored_report["files"][path]["summary"] == before["files"][path]["summary"]
+
+
 @pytest.mark.parametrize(
     "regressions, lost_metrics",
     [
@@ -1477,15 +1541,7 @@ def test_real_test_removal_fails_publication_gate(
     coverage_project: Path, regressions: tuple[tuple[str, str], ...], lost_metrics: tuple[str, ...]
 ) -> None:
     """Reject real line-only and branch losses until the removed tests are restored."""
-    (coverage_project / "tests/test_exercise.py").unlink()
-    for relative in (
-        "scripts/check_publication_safety.py",
-        "scripts/prepare_publication.py",
-        "scripts/publication_patterns.py",
-        "tests/test_publication_safety.py",
-        "tests/test_prepare_publication.py",
-    ):
-        shutil.copyfile(REPO_ROOT / relative, coverage_project / relative)
+    _use_real_publication_tests(coverage_project)
 
     # Workflow-shell tests need the full repository; this isolated reproduction
     # exercises the real publication scripts without copying workflow files.
