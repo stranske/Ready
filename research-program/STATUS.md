@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-24T04:42:09Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-24T05:03:29Z)
 
 Units: 285 — claimed 1, done 275, queued 5, superseded 4
 Paused: False   Phase stops: []
@@ -298,9 +298,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-10-24T04:03:25Z — refill — Manager-Mosaic: scorecard 2026-09-23 is 31d old (> 30) → audit queued
-- 2026-10-24T04:03:27Z — refill — Portable-Alpha-Extension-Model: scorecard 2026-09-23 is 31d old (> 30) → audit queued
-- 2026-10-24T04:03:28Z — refill — Counter_Risk: scorecard 2026-09-23 is 31d old (> 30) → audit queued
 - 2026-10-24T04:03:28Z — refill — Manager-Database: scorecard 2026-09-23 is 31d old (> 30) → audit queued
 - 2026-10-24T04:03:29Z — refill — Pension-Data: scorecard 2026-09-23 is 31d old (> 30) → audit queued
 - 2026-10-24T04:03:30Z — refill — learning-management-system: scorecard 2026-09-22 is 32d old (> 30) → audit queued
@@ -310,6 +307,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-10-24T04:26:40Z — D-audit-Counter_Risk--2026-10-24T04-03-28Z — done — cursor produced 426 words at artifacts/audits/Counter_Risk-2026-10-24.md in 1346s
 - 2026-10-24T04:42:09Z — D-audit-Fine-Art-Archive--2026-10-24T04-03-31Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-10-24T04:42:09Z — D-audit-Fine-Art-Archive--2026-10-24T04-03-31Z — claimed by driver (agent cursor)
+- 2026-10-24T04:48:25Z — D-audit-Fine-Art-Archive--2026-10-24T04-03-31Z — fail — cursor produced 75 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Fine-Art-Archive-2026-10-24.md (floor 120); rotating agent
+- 2026-10-24T05:03:29Z — D-audit-Fine-Art-Archive--2026-10-24T04-03-31Z — route — router picked cursor from ['codex', 'cursor']
+- 2026-10-24T05:03:29Z — D-audit-Fine-Art-Archive--2026-10-24T04-03-31Z — claimed by driver (agent cursor)
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
