@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-24T06:21:24Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-24T06:36:53Z)
 
-Units: 286 — done 278, failed 1, queued 3, superseded 4
+Units: 286 — claimed 1, done 278, failed 1, queued 2, superseded 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=warn claude=ok cursor=ok gemini=ok vibe=ok muse=ok aider=ok
 Orchestrator evidence (30d): offload runs 53, bound to a research round 52, scored 52 (PASS 37, FAIL 15, infra 0) — codex 8/9 (P3 F5 I0), cursor 44/44 (P34 F10 I0)
@@ -219,7 +219,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Manager-Mosaic--2026-10-24T04-03-25Z | D | D | done | cursor | driver | Audit stranske/Manager-Mosaic and file issues (scorecard 2026-09-23 is | 7W/0P/0B/0F of 7 |
 | D-audit-Pension-Data--2026-09-23T09-11-18Z | D | D | done | cursor | codex | Audit stranske/Pension-Data and file issues (scorecard 2026-09-20 has  | 2W/1P/0B/0F of 3 |
 | D-audit-Pension-Data--2026-09-23T22-11-16Z | D | D | done | cursor | codex | Audit stranske/Pension-Data and file issues (scorecard 2026-09-23 has  | 3W/0P/0B/0F of 3 |
-| D-audit-Pension-Data--2026-10-24T04-03-29Z | D | D | queued | claude |  | Audit stranske/Pension-Data and file issues (scorecard 2026-09-23 is 3 |  |
+| D-audit-Pension-Data--2026-10-24T04-03-29Z | D | D | claimed | cursor | driver | Audit stranske/Pension-Data and file issues (scorecard 2026-09-23 is 3 |  |
 | D-audit-Portable-Alpha-Extension-Model--2026-09-07T04-47-31Z | D | D | done | codex | codex | Audit stranske/Portable-Alpha-Extension-Model and file issues (supply  |  |
 | D-audit-Portable-Alpha-Extension-Model--2026-09-07T17-01-44Z | D | D | done | codex | driver | Audit stranske/Portable-Alpha-Extension-Model and file issues (supply  |  |
 | D-audit-Portable-Alpha-Extension-Model--2026-09-23T09-11-16Z | D | D | done | cursor | driver | Audit stranske/Portable-Alpha-Extension-Model and file issues (scoreca | 2W/1P/0B/0F of 6 |
@@ -299,8 +299,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-10-24T05:22:17Z — D3-unblock-sweep-2026-10-24T05 — refutation posted — stranske/Workflows#3999
-- 2026-10-24T05:22:19Z — D3-unblock-sweep-2026-10-24T05 — refutation posted — stranske/Manager-Database#1773
 - 2026-10-24T05:40:31Z — D-audit-Fine-Art-Archive--2026-10-24T04-03-31Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-10-24T05:40:31Z — D-audit-Fine-Art-Archive--2026-10-24T04-03-31Z — claimed by driver (agent cursor)
 - 2026-10-24T05:42:25Z — D-audit-Fine-Art-Archive--2026-10-24T04-03-31Z — fail — cursor produced 90 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/audits/Fine-Art-Archive-2026-10-24.md (floor 120); rotating agent
@@ -311,6 +309,8 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-10-24T06:18:06Z — D-audit-Manager-Mosaic--2026-10-24T04-03-25Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-10-24T06:18:06Z — D-audit-Manager-Mosaic--2026-10-24T04-03-25Z — claimed by driver (agent cursor)
 - 2026-10-24T06:21:24Z — D-audit-Manager-Mosaic--2026-10-24T04-03-25Z — done — cursor produced 361 words at artifacts/audits/Manager-Mosaic-2026-10-24.md in 168s
+- 2026-10-24T06:36:53Z — D-audit-Pension-Data--2026-10-24T04-03-29Z — route — router picked cursor from ['codex', 'cursor']
+- 2026-10-24T06:36:53Z — D-audit-Pension-Data--2026-10-24T04-03-29Z — claimed by driver (agent cursor)
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
