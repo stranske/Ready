@@ -1,8 +1,8 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-25T06:06:47Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-25T09:42:54Z)
 
-Units: 294 — done 289, failed 1, superseded 4
+Units: 301 — done 294, failed 1, queued 2, superseded 4
 Paused: False   Phase stops: []
-Capacity (Orchestrator): codex=warn claude=ok cursor=ok gemini=ok vibe=ok muse=ok aider=ok
+Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok muse=ok aider=ok
 Orchestrator evidence (30d): offload runs 48, bound to a research round 48, scored 48 (PASS 34, FAIL 14, infra 0) — codex 8/8 (P3 F5 I0), cursor 40/40 (P31 F9 I0)
 Worker write boundary: on — each unit writes only unitdirs/<unit>/, its output directory, artifacts/proposals/, its own clone's working tree (not .git) and temp
 Claude conservation: off (weekly window available)
@@ -185,6 +185,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Counter_Risk--2026-09-23T22-11-15Z | D | D | done | cursor |  | Audit stranske/Counter_Risk and file issues (scorecard 2026-09-23 has  |  |
 | D-audit-Counter_Risk--2026-10-24T04-03-28Z | D | D | done | cursor | driver | Audit stranske/Counter_Risk and file issues (scorecard 2026-09-23 is 3 | 4W/1P/0B/0F of 7 |
 | D-audit-Counter_Risk--2026-10-24T20-01-19Z | D | D | done | codex | driver | Audit stranske/Counter_Risk and file issues (scorecard 2026-10-24: cov | 2W/2P/0B/0F of 5 |
+| D-audit-Counter_Risk--2026-10-25T08-11-10Z | D | D | done | cursor | driver | Audit stranske/Counter_Risk and file issues (scorecard 2026-10-24: cov | 4W/2P/0B/0F of 7 |
 | D-audit-Deliverable-Render--2026-09-20T08-24-39Z | D | D | superseded | codex |  | Audit stranske/Deliverable-Render and file issues (supply 1 <= 2) |  |
 | D-audit-Deliverable-Render--2026-09-20T20-25-18Z | D | D | done | cursor | driver | Audit stranske/Deliverable-Render and file issues (supply 1 <= 2) |  |
 | D-audit-Deliverable-Render--2026-09-21T08-38-08Z | D | D | done | cursor | driver | Audit stranske/Deliverable-Render and file issues (supply 2 <= 2) |  |
@@ -193,16 +194,19 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Deliverable-Render--2026-09-23T09-11-14Z | D | D | done | cursor | driver | Audit stranske/Deliverable-Render and file issues (scorecard 2026-09-2 | 7W/0P/0B/0F of 7 |
 | D-audit-Deliverable-Render--2026-09-23T22-11-12Z | D | D | done | cursor | driver | Audit stranske/Deliverable-Render and file issues (scorecard 2026-09-2 | 7W/0P/0B/0F of 7 |
 | D-audit-Deliverable-Render--2026-09-24T01-13-07Z | D | D | done | cursor | driver | Audit stranske/Deliverable-Render and file issues (scorecard 2026-09-2 | 7W/0P/0B/0F of 7 |
+| D-audit-Deliverable-Render--2026-10-25T08-11-07Z | D | D | done | codex | driver | Audit stranske/Deliverable-Render and file issues (scorecard 2026-09-2 | 7W/0P/0B/0F of 7 |
 | D-audit-Doc-Lineage--2026-09-19T20-12-10Z | D | D | done | codex | codex | Audit stranske/Doc-Lineage and file issues (supply 2 <= 2) |  |
 | D-audit-Doc-Lineage--2026-09-23T09-11-20Z | D | D | done | cursor | driver | Audit stranske/Doc-Lineage and file issues (scorecard 2026-09-20 has n | 4W/1P/0B/0F of 5 |
 | D-audit-Doc-Lineage--2026-09-23T22-11-18Z | D | D | done | cursor | driver | Audit stranske/Doc-Lineage and file issues (scorecard 2026-09-23 has n | 4W/1P/0B/0F of 5 |
 | D-audit-Doc-Lineage--2026-09-24T01-13-13Z | D | D | done | cursor | driver | Audit stranske/Doc-Lineage and file issues (scorecard 2026-09-23 has n | 4W/1P/0B/0F of 5 |
+| D-audit-Doc-Lineage--2026-10-25T08-11-13Z | D | D | done | codex | driver | Audit stranske/Doc-Lineage and file issues (scorecard 2026-09-24 is 31 | 6W/2P/0B/0F of 8 |
 | D-audit-Fine-Art-Archive--2026-09-05T04-00-31Z | D | D | done | codex | codex | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 2) |  |
 | D-audit-Fine-Art-Archive--2026-09-06T04-25-53Z | D | D | done | codex | driver | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 3) |  |
 | D-audit-Fine-Art-Archive--2026-09-23T09-11-19Z | D | D | done | cursor |  | Audit stranske/Fine-Art-Archive and file issues (scorecard 2026-09-20  |  |
 | D-audit-Fine-Art-Archive--2026-09-23T22-11-18Z | D | D | done | cursor | claude | Audit stranske/Fine-Art-Archive and file issues (scorecard 2026-09-23  | 4W/1P/0B/0F of 5 |
 | D-audit-Fine-Art-Archive--2026-10-24T04-03-31Z | D | D | failed | cursor |  | Audit stranske/Fine-Art-Archive and file issues (scorecard 2026-09-23  |  |
 | D-audit-Fine-Art-Archive--2026-10-24T20-01-22Z | D | D | done | codex | driver | Audit stranske/Fine-Art-Archive and file issues (scorecard 2026-10-24: | 5W/0P/0B/0F of 5 |
+| D-audit-Fine-Art-Archive--2026-10-25T08-11-13Z | D | D | done | codex | driver | Audit stranske/Fine-Art-Archive and file issues (scorecard 2026-10-24: | 5W/0P/0B/0F of 5 |
 | D-audit-Inv-Man-Intake--2026-09-23T09-11-17Z | D | D | done | cursor | claude | Audit stranske/Inv-Man-Intake and file issues (scorecard 2026-09-20 ha | 5W/2P/0B/0F of 7 |
 | D-audit-Inv-Man-Intake--2026-09-23T22-11-16Z | D | D | done | cursor | codex | Audit stranske/Inv-Man-Intake and file issues (scorecard 2026-09-23 ha | 5W/2P/0B/0F of 7 |
 | D-audit-Inv-Man-Intake--2026-09-24T01-13-11Z | D | D | done | cursor | driver | Audit stranske/Inv-Man-Intake and file issues (scorecard 2026-09-23 ha | 5W/2P/0B/0F of 7 |
@@ -217,6 +221,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Manager-Database--2026-09-23T09-11-17Z | D | D | done | cursor | codex | Audit stranske/Manager-Database and file issues (scorecard 2026-09-22  | 8W/0P/0B/0F of 8 |
 | D-audit-Manager-Database--2026-10-24T04-03-28Z | D | D | done | cursor | driver | Audit stranske/Manager-Database and file issues (scorecard 2026-09-23  | 8W/0P/0B/0F of 8 |
 | D-audit-Manager-Database--2026-10-24T20-01-20Z | D | D | done | codex | driver | Audit stranske/Manager-Database and file issues (scorecard 2026-10-24: | 8W/0P/0B/0F of 8 |
+| D-audit-Manager-Database--2026-10-25T08-11-11Z | D | D | done | cursor | driver | Audit stranske/Manager-Database and file issues (scorecard 2026-10-24: | 8W/0P/0B/0F of 8 |
 | D-audit-Manager-Mosaic--2026-09-05T04-00-25Z | D | D | done | codex | driver | Audit stranske/Manager-Mosaic and file issues (supply 2 <= 2) |  |
 | D-audit-Manager-Mosaic--2026-09-19T20-12-04Z | D | D | done | codex | codex | Audit stranske/Manager-Mosaic and file issues (supply 3 <= 3) |  |
 | D-audit-Manager-Mosaic--2026-09-23T09-11-14Z | D | D | done | cursor | driver | Audit stranske/Manager-Mosaic and file issues (scorecard 2026-09-20 ha | 5W/1P/0B/0F of 6 |
@@ -245,6 +250,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Trend_Model_Project--2026-09-19T20-12-05Z | D | D | superseded | codex |  | Audit stranske/Trend_Model_Project and file issues (supply 0 <= 2) |  |
 | D-audit-Trend_Model_Project--2026-09-23T09-11-16Z | D | D | done | cursor | driver | Audit stranske/Trend_Model_Project and file issues (scorecard 2026-09- | 1W/2P/1B/0F of 4 |
 | D-audit-Trend_Model_Project--2026-09-23T22-11-14Z | D | D | done | cursor | codex | Audit stranske/Trend_Model_Project and file issues (scorecard 2026-09- | 3W/1P/0B/0F of 4 |
+| D-audit-Trend_Model_Project--2026-10-25T08-11-09Z | D | D | queued | claude |  | Audit stranske/Trend_Model_Project and file issues (scorecard 2026-09- |  |
 | D-audit-Workflows--2026-09-23T09-11-15Z | D | D | done | codex | codex | Audit stranske/Workflows and file issues (scorecard 2026-09-20 has no  | 4W/0P/1B/0F of 7 |
 | D-audit-Workflows--2026-09-23T22-11-13Z | D | D | done | cursor |  | Audit stranske/Workflows and file issues (scorecard 2026-09-23 has no  |  |
 | D-audit-Workflows--2026-09-24T11-10-38Z | D | D | done | cursor | codex | Audit stranske/Workflows and file issues (scorecard 2026-09-24: 1 brok | 4W/0P/1B/0F of 7 |
@@ -262,6 +268,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-learning-management-system--2026-09-22T20-42-45Z | D | D | done | cursor | driver | Audit stranske/learning-management-system and file issues (supply 2 <= |  |
 | D-audit-learning-management-system--2026-10-24T04-03-30Z | D | D | done | cursor | driver | Audit stranske/learning-management-system and file issues (scorecard 2 | 2W/5P/0B/0F of 7 |
 | D-audit-learning-management-system--2026-10-24T20-01-21Z | D | D | done | codex | driver | Audit stranske/learning-management-system and file issues (scorecard 2 | 2W/5P/0B/0F of 7 |
+| D-audit-learning-management-system--2026-10-25T08-11-12Z | D | D | queued | claude |  | Audit stranske/learning-management-system and file issues (scorecard 2 |  |
 | D-audit-trip-planner--2026-09-07T04-47-34Z | D | D | done | codex | codex | Audit stranske/trip-planner and file issues (supply 2 <= 2) |  |
 | D-audit-trip-planner--2026-10-02T10-11-06Z | D | D | done | codex | codex | Audit stranske/trip-planner and file issues (scorecard 2026-10-01: 1 p | 7W/1P/0B/0F of 8 |
 | D4-verify-merged-2026-09-05T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
@@ -307,18 +314,18 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-10-24T21:57:51Z — D-audit-learning-management-system--2026-10-24T20-01-21Z — route — router picked codex from ['codex', 'cursor']
-- 2026-10-24T21:57:51Z — D-audit-learning-management-system--2026-10-24T20-01-21Z — claimed by driver (agent codex)
-- 2026-10-24T22:00:44Z — D-audit-learning-management-system--2026-10-24T20-01-21Z — done — codex produced 348 words at artifacts/audits/learning-management-system-2026-10-24.md in 144s
-- 2026-10-24T22:16:11Z — D4-verify-merged-2026-10-24T20 — route — router picked codex from ['codex', 'cursor']
-- 2026-10-24T22:16:11Z — D4-verify-merged-2026-10-24T20 — claimed by driver (agent codex)
-- 2026-10-24T22:22:07Z — D4-verify-merged-2026-10-24T20 — done — codex produced 784 words at artifacts/verification/D4-verify-merged-2026-10-24T20.md in 322s
-- 2026-10-25T04:15:44Z — unblock — enqueued D3-unblock-sweep-2026-10-25T04
-- 2026-10-25T04:15:44Z — D3-unblock-sweep-2026-10-25T04 — route — router picked cursor from ['codex', 'cursor']
-- 2026-10-25T04:15:44Z — D3-unblock-sweep-2026-10-25T04 — claimed by driver (agent cursor)
-- 2026-10-25T04:17:52Z — D3-unblock-sweep-2026-10-25T04 — done — cursor produced 963 words at artifacts/sweeps/D3-unblock-sweep-2026-10-25T04.md in 93s
-- 2026-10-25T04:17:53Z — D3-unblock-sweep-2026-10-25T04 — refutation posted — stranske/Manager-Database#1773
-- 2026-10-25T04:17:57Z — D3-unblock-sweep-2026-10-25T04 — refutation posted — stranske/Workflows#3999
+- 2026-10-25T09:00:52Z — D-audit-Doc-Lineage--2026-10-25T08-11-13Z — refutation posted — stranske/Doc-Lineage#48
+- 2026-10-25T09:00:53Z — D-audit-Doc-Lineage--2026-10-25T08-11-13Z — refutation posted — stranske/Doc-Lineage#49
+- 2026-10-25T09:00:54Z — D-audit-Doc-Lineage--2026-10-25T08-11-13Z — refutation posted — stranske/Doc-Lineage#50
+- 2026-10-25T09:00:56Z — D-audit-Doc-Lineage--2026-10-25T08-11-13Z — refutation posted — stranske/Doc-Lineage#51
+- 2026-10-25T09:16:26Z — D-audit-Fine-Art-Archive--2026-10-25T08-11-13Z — route — router picked codex from ['codex', 'cursor']
+- 2026-10-25T09:16:26Z — D-audit-Fine-Art-Archive--2026-10-25T08-11-13Z — claimed by driver (agent codex)
+- 2026-10-25T09:21:26Z — D-audit-Fine-Art-Archive--2026-10-25T08-11-13Z — done — codex produced 514 words at artifacts/audits/Fine-Art-Archive-2026-10-25.md in 271s
+- 2026-10-25T09:36:53Z — D-audit-Manager-Database--2026-10-25T08-11-11Z — route — router picked cursor from ['codex', 'cursor']
+- 2026-10-25T09:36:53Z — D-audit-Manager-Database--2026-10-25T08-11-11Z — claimed by driver (agent cursor)
+- 2026-10-25T09:42:52Z — D-audit-Manager-Database--2026-10-25T08-11-11Z — done — cursor produced 259 words at artifacts/audits/Manager-Database-2026-10-25.md in 316s
+- 2026-10-25T09:42:53Z — D-audit-Manager-Database--2026-10-25T08-11-11Z — refutation posted — stranske/Manager-Database#1790
+- 2026-10-25T09:42:54Z — D-audit-Manager-Database--2026-10-25T08-11-11Z — refutation posted — stranske/Manager-Database#1784
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
