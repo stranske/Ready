@@ -25,7 +25,7 @@ def _runtime_pins(node: Any, location: str) -> Iterator[tuple[str, Any]]:
     if isinstance(node, dict):
         for key, value in node.items():
             path = f"{location}.{key}"
-            if key in RUNTIME_KEYS:
+            if key in RUNTIME_KEYS or (key == "python" and ".strategy.matrix" in location):
                 yield path, value
             yield from _runtime_pins(value, path)
     elif isinstance(node, list):
@@ -37,6 +37,10 @@ def _contains_old_runtime(value: Any) -> bool:
     if isinstance(value, list):
         return any(_contains_old_runtime(item) for item in value)
     if isinstance(value, str):
+        entries = value.splitlines()
+        if len(entries) > 1:
+            return any(_contains_old_runtime(entry.strip()) for entry in entries)
+        value = value.strip()
         try:
             decoded = json.loads(value)
         except (TypeError, ValueError):
@@ -190,3 +194,25 @@ def test_duplicate_key_validation_rejects_duplicate_keys_in_merge_operand() -> N
     document = "job: {<<: &base {python-version: '3.12', python-version: '3.14'}}"
     with pytest.raises(yaml.constructor.ConstructorError, match="duplicate key 'python-version'"):
         yaml.load(document, Loader=_UniqueKeyLoader)
+
+
+def test_runtime_scan_rejects_python_matrix_reference() -> None:
+    document = """jobs:
+  test:
+    strategy:
+      matrix:
+        python: ['3.14', '3.12']
+    steps:
+      - uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python }}
+"""
+    pins = list(_runtime_pins(yaml.safe_load(document), "matrix.yml"))
+    assert any(_contains_old_runtime(value) for _, value in pins)
+    assert ("matrix.yml.jobs.test.strategy.matrix.python", ["3.14", "3.12"]) in pins
+
+
+@pytest.mark.parametrize("versions", ["3.14\n3.12\n", "3.14\n3.12.11\n", "3.14\r\n 3.12 \r\n"])
+def test_runtime_scan_rejects_multiline_python_input(versions: str) -> None:
+    assert _contains_old_runtime(versions)
+    assert not _contains_old_runtime("3.13\n3.14\n")
