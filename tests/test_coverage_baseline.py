@@ -423,22 +423,39 @@ def test_pytest_gate_rejects_unrelated_files_even_with_passing_coverage(
 
 
 @pytest.mark.parametrize("execution", ["in-process", "subprocess"])
+@pytest.mark.parametrize("failure_phase", ["test", "setup", "teardown"])
 def test_pytest_gate_preserves_test_failure_with_passing_coverage(
-    coverage_project: Path, execution: str
+    coverage_project: Path, execution: str, failure_phase: str
 ) -> None:
-    """Meeting every coverage floor must never turn a functional failure green."""
+    """Meeting every coverage floor must preserve test and fixture failures."""
     from scripts.publication_coverage_gate import check_report
 
     if execution == "subprocess":
         _exercise_in_subprocess(coverage_project)
     exercise = coverage_project / "tests/test_exercise.py"
     original = exercise.read_text()
-    exercise.write_text(original + '\n    raise AssertionError("intentional functional failure")\n')
+    failure = '    raise AssertionError("intentional functional failure")\n'
+    if failure_phase == "test":
+        failing_test = original + "\n" + failure
+    else:
+        # Exercise both publication scripts before failing setup or teardown,
+        # so the coverage gate passes and pytest alone owns the error result.
+        failing_test = (
+            "import pytest\n"
+            + original.replace("def test_exercise():", "def exercise():")
+            + "\n@pytest.fixture\ndef publication():\n"
+            "    exercise()\n"
+            + (failure + "    yield\n" if failure_phase == "setup" else "    yield\n" + failure)
+            + "\ndef test_exercise(publication):\n    pass\n"
+        )
+    exercise.write_text(failing_test)
 
     failing = _run_coverage_project(coverage_project)
     output = failing.stdout + failing.stderr
     assert failing.returncode == 1, output
-    assert "1 failed" in output
+    assert ("1 failed" if failure_phase == "test" else "1 error") in output
+    if failure_phase != "test":
+        assert f"ERROR at {failure_phase} of test_exercise" in output
     assert "intentional functional failure" in output
     assert "PUBLICATION COVERAGE:" not in output
     assert "INTERNALERROR" not in output
