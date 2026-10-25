@@ -679,18 +679,24 @@ def test_pytest_gate_rejects_src_only_coverage_override(coverage_project: Path) 
 
 
 @pytest.mark.parametrize("name", sorted(PUBLICATION_FILES))
-def test_pytest_gate_rejects_report_filter_hiding_publication_script(
-    coverage_project: Path, name: str
+@pytest.mark.parametrize("phase", ["run", "report"])
+def test_pytest_gate_rejects_filter_hiding_publication_script(
+    coverage_project: Path, name: str, phase: str
 ) -> None:
-    """Collected hits cannot replace a script's missing entry in the final report."""
+    """Collection and report filters cannot hide either script behind stale evidence."""
     from coverage import CoverageData
+
+    passing = _run_coverage_project(coverage_project)
+    assert passing.returncode == 0, passing.stdout + passing.stderr
+    report_path = coverage_project / "coverage.json"
+    previous = json.loads(report_path.read_text())
 
     config = coverage_project / "pyproject.toml"
     original = config.read_bytes()
-    # Retain collection of both scripts; omit one only when generating reports.
+    # Omit one script either before tracing or only when generating reports.
     config.write_text(
         config.read_text().replace(
-            "[tool.coverage.report]\n", f'[tool.coverage.report]\nomit = ["{name}"]\n'
+            f"[tool.coverage.{phase}]\n", f'[tool.coverage.{phase}]\nomit = ["{name}"]\n'
         )
     )
 
@@ -705,18 +711,19 @@ def test_pytest_gate_rejects_report_filter_hiding_publication_script(
 
     data = CoverageData(basename=str(coverage_project / ".coverage"))
     data.read()
-    assert data.lines(str(coverage_project / name))
-    report_path = coverage_project / "coverage.json"
+    assert bool(data.lines(str(coverage_project / name))) == (phase == "report")
     report = json.loads(report_path.read_text())
     assert set(report["files"]) == (PUBLICATION_FILES - {name}) | {"src/my_project/unexecuted.py"}
     assert report["totals"]["percent_covered"] >= _load_baseline()["line"]
 
     config.write_bytes(original)
     restored = _run_coverage_project(coverage_project)
-    assert restored.returncode == 0, restored.stdout + restored.stderr
-    assert set(json.loads(report_path.read_text())["files"]) == PUBLICATION_FILES | {
-        "src/my_project/unexecuted.py"
-    }
+    output = restored.stdout + restored.stderr
+    assert restored.returncode == 0, output
+    assert "PUBLICATION COVERAGE:" not in output
+    current = json.loads(report_path.read_text())
+    assert current["files"] == previous["files"]
+    _assert_xml_matches_json(coverage_project, current)
 
 
 def _measured_report():
