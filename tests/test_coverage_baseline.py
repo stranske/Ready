@@ -180,6 +180,9 @@ def _run_coverage_project(project: Path, *pytest_args: str) -> subprocess.Comple
         for key, value in os.environ.items()
         if not key.startswith(("COVERAGE_", "COV_CORE_")) and key != "PYTEST_ADDOPTS"
     }
+    # These probes rewrite same-size tests within one filesystem timestamp tick.
+    # Execute their current source bytes while retaining coverage and --lf data.
+    env["PYTHONDONTWRITEBYTECODE"] = "1"
     return subprocess.run(
         [sys.executable, "-m", "pytest", "-q", "-m", "not slow", *pytest_args],
         cwd=project,
