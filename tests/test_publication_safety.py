@@ -592,6 +592,9 @@ def test_gate_summary_enforces_publication_even_when_python_skips(
     assert summary["steps"][1]["env"]["PUBLICATION_RESULT"] == (
         "${{ needs.publication-safety.result || 'skipped' }}"
     )
+    assert summary["steps"][1]["env"]["DELIVERY_SEAL_RESULT"] == (
+        "${{ needs.generated-delivery-seal.result || 'skipped' }}"
+    )
 
 
 def test_unreadable_directory_fails_closed(tmp_path, monkeypatch, capsys):
