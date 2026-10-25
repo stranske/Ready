@@ -153,8 +153,17 @@ class _UniqueKeyLoader(yaml.SafeLoader):
             return
         self._checked_mappings.add(id(node))
         seen: set[Any] = set()
+        merge_seen = False
         for key_node, value_node in node.value:
             if key_node.tag == "tag:yaml.org,2002:merge":
+                if merge_seen:
+                    raise yaml.constructor.ConstructorError(
+                        "while constructing a mapping",
+                        node.start_mark,
+                        "duplicate key '<<'",
+                        key_node.start_mark,
+                    )
+                merge_seen = True
                 if isinstance(value_node, yaml.nodes.MappingNode):
                     self._check_mapping_for_duplicate_keys(value_node)
                 elif isinstance(value_node, yaml.nodes.SequenceNode):
@@ -239,3 +248,15 @@ def test_duplicate_key_validation_allows_reused_flattened_anchor(reuse: str) -> 
 def test_runtime_scan_rejects_multiline_json_runtime_array(versions: str) -> None:
     assert _contains_old_runtime(versions)
     assert not _contains_old_runtime('[\n  "3.13",\n  "3.14"\n]')
+
+
+def test_duplicate_key_validation_rejects_repeated_merge_key() -> None:
+    document = "job: {<<: {python-version: '3.12'}, <<: {python-version: '3.14'}}"
+    with pytest.raises(yaml.constructor.ConstructorError, match="duplicate key '<<'"):
+        yaml.load(document, Loader=_UniqueKeyLoader)
+
+
+def test_duplicate_key_validation_allows_single_merge_key_sequence() -> None:
+    document = "job: {<<: [{python-version: '3.14'}, {python-version: '3.13'}]}"
+    loaded = yaml.load(document, Loader=_UniqueKeyLoader)
+    assert loaded["job"]["python-version"] == "3.14"
