@@ -1,8 +1,8 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-25T21:48:50Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-25T22:04:21Z)
 
-Units: 308 — done 302, failed 1, queued 1, superseded 4
+Units: 308 — claimed 1, done 302, failed 1, superseded 4
 Paused: False   Phase stops: []
-Capacity (Orchestrator): codex=warn claude=shed cursor=ok gemini=ok vibe=ok muse=ok aider=ok
+Capacity (Orchestrator): codex=warn claude=shed cursor=ok gemini=warn vibe=ok muse=ok aider=ok
 Orchestrator evidence (30d): offload runs 46, bound to a research round 46, scored 46 (PASS 32, FAIL 14, infra 0) — codex 8/8 (P3 F5 I0), cursor 38/38 (P29 F9 I0)
 Worker write boundary: on — each unit writes only unitdirs/<unit>/, its output directory, artifacts/proposals/, its own clone's working tree (not .git) and temp
 Claude conservation: off (weekly window available)
@@ -32,7 +32,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | A-work-side-bundle-refresh | A | A3 | done | cursor | driver | Refresh the work-side bundle with the three late dossiers and re-run t |  |
 | A-dossier-docx | A | A3 | done | cursor | codex | Word versions of all verified dossiers (venv + python-docx) |  |
 | B1-citefix-B3-interop-architecture | B | B1 | done | cursor | driver | Fix unreachable citations in B3-interop-architecture.md |  |
-| B1-citefix-B7-PROGRAM-PLAN-v3 | B | B1 | queued | codex |  | Fix unreachable citations in B7-PROGRAM-PLAN-v3.md |  |
+| B1-citefix-B7-PROGRAM-PLAN-v3 | B | B1 | claimed | cursor | driver | Fix unreachable citations in B7-PROGRAM-PLAN-v3.md |  |
 | B1-citefix-R1-legal-decomposition | B | B1 | done | cursor | driver | Fix unreachable citations in R1-legal-decomposition.md |  |
 | B1-citefix-R2-consultant-report-diffing | B | B1 | done | gemini | driver | Fix unreachable citations in R2-consultant-report-diffing.md |  |
 | B1-citefix-R3-manager-mosaic-synthesis | B | B1 | done | gemini | driver | Fix unreachable citations in R3-manager-mosaic-synthesis.md |  |
@@ -321,8 +321,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-10-25T21:02:05Z — D-audit-Deliverable-Render--2026-10-25T20-34-21Z — refutation posted — stranske/Deliverable-Render#89
-- 2026-10-25T21:17:37Z — D-audit-Doc-Lineage--2026-10-25T20-34-28Z — route — router picked codex from ['codex', 'cursor']
 - 2026-10-25T21:17:37Z — D-audit-Doc-Lineage--2026-10-25T20-34-28Z — claimed by driver (agent codex)
 - 2026-10-25T21:27:22Z — D-audit-Doc-Lineage--2026-10-25T20-34-28Z — done — gemini produced 812 words at artifacts/audits/Doc-Lineage-2026-10-25.md in 551s
 - 2026-10-25T21:27:24Z — D-audit-Doc-Lineage--2026-10-25T20-34-28Z — refutation posted — stranske/Doc-Lineage#47
@@ -333,6 +331,8 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-10-25T21:42:58Z — D-audit-Fine-Art-Archive--2026-10-25T20-34-28Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-10-25T21:42:58Z — D-audit-Fine-Art-Archive--2026-10-25T20-34-28Z — claimed by driver (agent cursor)
 - 2026-10-25T21:48:50Z — D-audit-Fine-Art-Archive--2026-10-25T20-34-28Z — done — cursor produced 291 words at artifacts/audits/Fine-Art-Archive-2026-10-25.md in 318s
+- 2026-10-25T22:04:21Z — B1-citefix-B7-PROGRAM-PLAN-v3 — route — router picked cursor from ['codex', 'cursor', 'gemini']
+- 2026-10-25T22:04:21Z — B1-citefix-B7-PROGRAM-PLAN-v3 — claimed by driver (agent cursor)
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
