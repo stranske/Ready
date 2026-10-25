@@ -10,7 +10,7 @@
 
 Research is complete enough to build. The fleet’s failure mode is not missing ideas — it is missing **three horizontal substrates** every vertical brief assumes: conformant evidence/variable contracts (Workflows), a document mirror plus static output renderer (R4/R5), and a public/synthetic corpus manifest (R6). Work-environment answers overturned the “browser-only, no Python” model and confirmed mirror-first delivery; they did **not** remove the hosting gap for LMS and TPP, which still need local-first paths **and** explicit IT accommodation briefs (`03-ENVIRONMENT-ANSWERS-IMPACT.md` §1).
 
-**Evaluator dissent (resolved):** B2/B6 recommended mosaic join storage in Manager-Database or a new repo; an interim default placed it in Inv-Man-Intake. **Owner decision 2026-09-04 supersedes that default:** `stranske/Manager-Mosaic` is provisioned, registered as a first-party consumer, added to lane-fleet arrays, and has founding issue [#3](https://github.com/stranske/Manager-Mosaic/issues/3) filed. Inv-Man-Intake remains a **producer** of diligence variables, not a join store (`B6-FILING-REPORT.md` §Awaiting owner). **Judgment:** B2-016 disposition is now correct; treat Manager-Mosaic as the cross-source join hub per R3. **Confidence:** High on substrate ordering and mosaic placement; medium on join rates before `identity-map/v1` publish from Manager-Database (B2 Tier 4).
+**Evaluator dissent (resolved):** B2/B6 recommended mosaic join storage in Manager-Database or a new repo; an interim default placed it in Inv-Man-Intake. **Owner decision 2026-09-04 supersedes that default:** `stranske/Manager-Mosaic` is provisioned, registered as a first-party consumer, added to lane-fleet arrays, and has founding issue [#3](https://github.com/stranske/Manager-Mosaic/issues/3) [access-restricted] filed. Inv-Man-Intake remains a **producer** of diligence variables, not a join store (`B6-FILING-REPORT.md` §Awaiting owner). **Judgment:** B2-016 disposition is now correct; treat Manager-Mosaic as the cross-source join hub per R3. **Confidence:** High on substrate ordering and mosaic placement; medium on join rates before `identity-map/v1` publish from Manager-Database (B2 Tier 4).
 
 ---
 
@@ -260,9 +260,16 @@ Owner request: interactive progress view from phone (`00-PROPOSAL.md` §5 Track 
 1. **No new decisions required** — mosaic repo (D11), mirror location, LFS, vocabulary scope covered by settled defaults (`B2-gap-analysis.md` §6).
 2. **Unblock build:** merge Workflows #3371–#3374 first; fleet consumer sync before Doc-Lineage M1 (#8) agents start.
 3. **RFI authoritative** — treat `INFORMATION-REQUEST-RESPONSE.md` as binding for all work-side design.
-4. **Phone channel:** inbox [Ready#553](https://github.com/stranske/Ready/issues/553); `STATUS.md` / `PROGRESS.md` on return.
+4. **Phone channel:** inbox [Ready#553](https://github.com/stranske/Ready/issues/553) [access-restricted]; `STATUS.md` / `PROGRESS.md` on return.
 5. **Pick up Manager-Mosaic #3** after WF #3372 and producer emitters (#881, #949) land — this is Gate 3’s hinge.
 
 ---
 
 *Word count: ~3,400. Grounded in cited artifacts. Checkpoint trail: `B7-program-plan-v3.CHECKPOINT.md`.*
+
+## Citation corrections 2026-10-25
+
+| URL | Action |
+|-----|--------|
+| `https://github.com/stranske/Manager-Mosaic/issues/3` | **(d)** Kept URL; marked `[access-restricted]` (GitHub blocks unauthenticated automated HEAD/GET; issue verified via `gh`: CLOSED — “Core model and validator: facts with evidence, and the invariant that silence is not a status change”). |
+| `https://github.com/stranske/Ready/issues/553` | **(d)** Kept URL; marked `[access-restricted]` (GitHub blocks unauthenticated automated HEAD/GET; issue verified via `gh`: OPEN — “Research Program 2026-09 — owner inbox”). |
