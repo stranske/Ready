@@ -620,22 +620,36 @@ def test_pytest_gate_tracks_simultaneous_branch_losses_until_both_are_restored(
 
 
 @pytest.mark.parametrize("name", sorted(PUBLICATION_FILES))
+@pytest.mark.parametrize("collection_only", [False, True], ids=["absent", "collection-only"])
 def test_pytest_gate_rejects_unexecuted_script_despite_previous_passing_report(
-    coverage_project: Path, name: str
+    coverage_project: Path, name: str, collection_only: bool
 ) -> None:
-    """Removing all execution of either script must invalidate its prior measurement."""
+    """Collection-time imports cannot replace the removed execution tests for either script."""
+    exercise = coverage_project / "tests/test_exercise.py"
+    source_exercise = ""
+    if collection_only:
+        # Keep the aggregate above its floor even when importing the script
+        # records only its function definition, with no exercised body or branches.
+        (coverage_project / "src/my_project/unexecuted.py").write_text(
+            "".join(f"value_{index} = {index}\n" for index in range(30))
+        )
+        source_exercise = "    runpy.run_path('src/my_project/unexecuted.py')\n"
+        exercise.write_text(exercise.read_text() + source_exercise)
+    original = exercise.read_bytes()
     previous = _run_coverage_project(coverage_project)
     assert previous.returncode == 0, previous.stdout + previous.stderr
     report_path = coverage_project / "coverage.json"
-    assert set(json.loads(report_path.read_text())["files"]) == PUBLICATION_FILES | {
-        "src/my_project/unexecuted.py"
-    }
+    before = json.loads(report_path.read_text())
+    assert set(before["files"]) == PUBLICATION_FILES | {"src/my_project/unexecuted.py"}
 
     remaining = next(path for path in PUBLICATION_FILES if path != name)
-    (coverage_project / "tests/test_exercise.py").write_text(
+    collection = f"runpy.run_path({name!r})\n\n" if collection_only else ""
+    exercise.write_text(
         "import runpy\n\n"
-        "def test_exercise():\n"
-        f"    choose = runpy.run_path({remaining!r})['choose']\n"
+        + collection
+        + "def test_exercise():\n"
+        + source_exercise
+        + f"    choose = runpy.run_path({remaining!r})['choose']\n"
         "    assert choose(True) == 1\n"
         "    assert choose(False) == 0\n"
     )
@@ -644,15 +658,38 @@ def test_pytest_gate_rejects_unexecuted_script_despite_previous_passing_report(
     output = result.stdout + result.stderr
     assert result.returncode == 1, output
     assert "1 passed" in output
-    assert f"PUBLICATION COVERAGE: {name}: missing coverage measurement" in output
     assert "INTERNALERROR" not in output
+    assert "FAIL Required test coverage" not in output
+    errors = [line for line in output.splitlines() if line.startswith("PUBLICATION COVERAGE:")]
 
     current = json.loads(report_path.read_text())
-    assert set(current["files"]) == {remaining, "src/my_project/unexecuted.py"}
+    _assert_xml_matches_json(coverage_project, current)
+    if collection_only:
+        assert set(current["files"]) == set(before["files"])
+        summary = current["files"][name]["summary"]
+        assert summary["covered_lines"] == 1
+        assert summary["num_statements"] == 4
+        assert summary["covered_branches"] == 0
+        assert summary["num_branches"] == 2
+        assert len(errors) == 2
+        for metric, error in zip(("line", "branch"), errors, strict=True):
+            assert error.startswith(f"PUBLICATION COVERAGE: {name}: {metric} coverage ")
+            assert "below floor" in error
+    else:
+        assert set(current["files"]) == {remaining, "src/my_project/unexecuted.py"}
+        assert errors == [f"PUBLICATION COVERAGE: {name}: missing coverage measurement"]
     assert current["totals"]["percent_covered"] >= _load_baseline()["line"]
     summary = current["files"][remaining]["summary"]
     assert summary["covered_lines"] == summary["num_statements"]
     assert summary["covered_branches"] == summary["num_branches"]
+
+    exercise.write_bytes(original)
+    restored = _run_coverage_project(coverage_project)
+    assert restored.returncode == 0, restored.stdout + restored.stderr
+    assert "PUBLICATION COVERAGE:" not in restored.stdout + restored.stderr
+    report = json.loads(report_path.read_text())
+    assert report["files"] == before["files"]
+    _assert_xml_matches_json(coverage_project, report)
 
 
 def test_pytest_gate_rejects_src_only_coverage_override(coverage_project: Path) -> None:
