@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-25T21:17:37Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-25T21:27:31Z)
 
-Units: 308 — claimed 1, done 300, failed 1, queued 2, superseded 4
+Units: 308 — done 301, failed 1, queued 2, superseded 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=warn claude=shed cursor=ok gemini=ok vibe=ok muse=ok aider=ok
 Orchestrator evidence (30d): offload runs 47, bound to a research round 47, scored 47 (PASS 33, FAIL 14, infra 0) — codex 8/8 (P3 F5 I0), cursor 39/39 (P30 F9 I0)
@@ -204,7 +204,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Doc-Lineage--2026-09-23T22-11-18Z | D | D | done | cursor | driver | Audit stranske/Doc-Lineage and file issues (scorecard 2026-09-23 has n | 4W/1P/0B/0F of 5 |
 | D-audit-Doc-Lineage--2026-09-24T01-13-13Z | D | D | done | cursor | driver | Audit stranske/Doc-Lineage and file issues (scorecard 2026-09-23 has n | 4W/1P/0B/0F of 5 |
 | D-audit-Doc-Lineage--2026-10-25T08-11-13Z | D | D | done | codex | driver | Audit stranske/Doc-Lineage and file issues (scorecard 2026-09-24 is 31 | 6W/2P/0B/0F of 8 |
-| D-audit-Doc-Lineage--2026-10-25T20-34-28Z | D | D | claimed | codex | driver | Audit stranske/Doc-Lineage and file issues (scorecard 2026-09-24 is 31 |  |
+| D-audit-Doc-Lineage--2026-10-25T20-34-28Z | D | D | done | codex | driver | Audit stranske/Doc-Lineage and file issues (scorecard 2026-09-24 is 31 | 6W/2P/0B/0F of 8 |
 | D-audit-Fine-Art-Archive--2026-09-05T04-00-31Z | D | D | done | codex | codex | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 2) |  |
 | D-audit-Fine-Art-Archive--2026-09-06T04-25-53Z | D | D | done | codex | driver | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 3) |  |
 | D-audit-Fine-Art-Archive--2026-09-23T09-11-19Z | D | D | done | cursor |  | Audit stranske/Fine-Art-Archive and file issues (scorecard 2026-09-20  |  |
@@ -321,18 +321,18 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-10-25T20:34:28Z — refill — Doc-Lineage: scorecard 2026-09-24 is 31d old (> 30) → audit queued
-- 2026-10-25T20:34:28Z — D3-unblock-sweep-2026-10-25T20 — route — router picked cursor from ['codex', 'cursor']
-- 2026-10-25T20:34:28Z — D3-unblock-sweep-2026-10-25T20 — claimed by driver (agent cursor)
-- 2026-10-25T20:36:59Z — D3-unblock-sweep-2026-10-25T20 — done — cursor produced 583 words at artifacts/sweeps/D3-unblock-sweep-2026-10-25T20.md in 95s
-- 2026-10-25T20:37:01Z — D3-unblock-sweep-2026-10-25T20 — refutation posted — stranske/Manager-Database#1773
-- 2026-10-25T20:37:03Z — D3-unblock-sweep-2026-10-25T20 — refutation posted — stranske/Workflows#3999
 - 2026-10-25T20:52:32Z — D-audit-Deliverable-Render--2026-10-25T20-34-21Z — route — router picked codex from ['codex', 'cursor']
 - 2026-10-25T20:52:32Z — D-audit-Deliverable-Render--2026-10-25T20-34-21Z — claimed by driver (agent codex)
 - 2026-10-25T21:02:03Z — D-audit-Deliverable-Render--2026-10-25T20-34-21Z — done — gemini produced 1068 words at artifacts/audits/Deliverable-Render-2026-10-25.md in 541s
 - 2026-10-25T21:02:05Z — D-audit-Deliverable-Render--2026-10-25T20-34-21Z — refutation posted — stranske/Deliverable-Render#89
 - 2026-10-25T21:17:37Z — D-audit-Doc-Lineage--2026-10-25T20-34-28Z — route — router picked codex from ['codex', 'cursor']
 - 2026-10-25T21:17:37Z — D-audit-Doc-Lineage--2026-10-25T20-34-28Z — claimed by driver (agent codex)
+- 2026-10-25T21:27:22Z — D-audit-Doc-Lineage--2026-10-25T20-34-28Z — done — gemini produced 812 words at artifacts/audits/Doc-Lineage-2026-10-25.md in 551s
+- 2026-10-25T21:27:24Z — D-audit-Doc-Lineage--2026-10-25T20-34-28Z — refutation posted — stranske/Doc-Lineage#47
+- 2026-10-25T21:27:26Z — D-audit-Doc-Lineage--2026-10-25T20-34-28Z — refutation posted — stranske/Doc-Lineage#48
+- 2026-10-25T21:27:28Z — D-audit-Doc-Lineage--2026-10-25T20-34-28Z — refutation posted — stranske/Doc-Lineage#49
+- 2026-10-25T21:27:29Z — D-audit-Doc-Lineage--2026-10-25T20-34-28Z — refutation posted — stranske/Doc-Lineage#50
+- 2026-10-25T21:27:31Z — D-audit-Doc-Lineage--2026-10-25T20-34-28Z — refutation posted — stranske/Doc-Lineage#51
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 

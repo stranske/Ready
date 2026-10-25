@@ -4425,3 +4425,9 @@ remote: - Required status check "Gate / gate" is
 ## 2026-10-25T21:02:05Z — D-audit-Deliverable-Render--2026-10-25T20-34-21Z — refutation posted — stranske/Deliverable-Render#89
 ## 2026-10-25T21:17:37Z — D-audit-Doc-Lineage--2026-10-25T20-34-28Z — route — router picked codex from ['codex', 'cursor']
 ## 2026-10-25T21:17:37Z — D-audit-Doc-Lineage--2026-10-25T20-34-28Z — claimed by driver (agent codex)
+## 2026-10-25T21:27:22Z — D-audit-Doc-Lineage--2026-10-25T20-34-28Z — done — gemini produced 812 words at artifacts/audits/Doc-Lineage-2026-10-25.md in 551s
+## 2026-10-25T21:27:24Z — D-audit-Doc-Lineage--2026-10-25T20-34-28Z — refutation posted — stranske/Doc-Lineage#47
+## 2026-10-25T21:27:26Z — D-audit-Doc-Lineage--2026-10-25T20-34-28Z — refutation posted — stranske/Doc-Lineage#48
+## 2026-10-25T21:27:28Z — D-audit-Doc-Lineage--2026-10-25T20-34-28Z — refutation posted — stranske/Doc-Lineage#49
+## 2026-10-25T21:27:29Z — D-audit-Doc-Lineage--2026-10-25T20-34-28Z — refutation posted — stranske/Doc-Lineage#50
+## 2026-10-25T21:27:31Z — D-audit-Doc-Lineage--2026-10-25T20-34-28Z — refutation posted — stranske/Doc-Lineage#51

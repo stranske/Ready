@@ -17,3 +17,7 @@ Phase 0–3 complete; scorecard written; filing pa run help issue.
 
 ## 2026-10-24 — learning-management-system Track D
 Phases 0–5 complete. Scorecard @ 2427791. Filed #784–#785. REFUTED #712/#713.
+
+
+## 2026-10-25 — Doc-Lineage Track D (D-audit-Doc-Lineage--2026-10-25T20-34-28Z)
+Phases 0–5 complete @ b05b49e. Scorecard: 6W/2P/0B/0F/0NE of 8; surfaces unscored 0; C=0. Filed 0. REFUTED #47, #48, #49, #50, #51. OUT: Doc-Lineage-2026-10-25.md. Canonical scorecard: Code/Audits/Doc-Lineage/2026-10-25-SCORECARD.md.
