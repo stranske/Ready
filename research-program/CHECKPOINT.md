@@ -4346,3 +4346,12 @@ remote: - Required status check "Gate / gate" is
 ## 2026-10-25T04:17:52Z — D3-unblock-sweep-2026-10-25T04 — done — cursor produced 963 words at artifacts/sweeps/D3-unblock-sweep-2026-10-25T04.md in 93s
 ## 2026-10-25T04:17:53Z — D3-unblock-sweep-2026-10-25T04 — refutation posted — stranske/Manager-Database#1773
 ## 2026-10-25T04:17:57Z — D3-unblock-sweep-2026-10-25T04 — refutation posted — stranske/Workflows#3999
+## 2026-10-25T08:11:07Z — refill — Deliverable-Render: scorecard 2026-09-24 is 31d old (> 30) → audit queued
+## 2026-10-25T08:11:09Z — refill — Trend_Model_Project: scorecard 2026-09-24 is 31d old (> 30) → audit queued
+## 2026-10-25T08:11:10Z — refill — Counter_Risk: scorecard 2026-10-24: coverage debt 4 (not exercised 2 + unscored 2) not reduced since 2026-09-23 (4) → audit queued
+## 2026-10-25T08:11:11Z — refill — Manager-Database: scorecard 2026-10-24: coverage debt 19 (not exercised 0 + unscored 19) not reduced since 2026-09-23 (0) → audit queued
+## 2026-10-25T08:11:12Z — refill — learning-management-system: scorecard 2026-10-24: coverage debt 1 (not exercised 0 + unscored 1) not reduced since 2026-09-22 (1) → audit queued
+## 2026-10-25T08:11:13Z — refill — Fine-Art-Archive: scorecard 2026-10-24: coverage debt 9 (not exercised 0 + unscored 9) not reduced since 2026-09-23 (9) → audit queued
+## 2026-10-25T08:11:13Z — refill — Doc-Lineage: scorecard 2026-09-24 is 31d old (> 30) → audit queued
+## 2026-10-25T08:11:14Z — D-audit-Counter_Risk--2026-10-25T08-11-10Z — route — router picked cursor from ['codex', 'cursor']
+## 2026-10-25T08:11:14Z — D-audit-Counter_Risk--2026-10-25T08-11-10Z — claimed by driver (agent cursor)
