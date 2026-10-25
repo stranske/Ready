@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-25T22:52:11Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-25T23:53:31Z)
 
 Units: 308 — done 303, failed 1, superseded 4
 Paused: False   Phase stops: []
@@ -321,8 +321,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-10-25T21:27:22Z — D-audit-Doc-Lineage--2026-10-25T20-34-28Z — done — gemini produced 812 words at artifacts/audits/Doc-Lineage-2026-10-25.md in 551s
-- 2026-10-25T21:27:24Z — D-audit-Doc-Lineage--2026-10-25T20-34-28Z — refutation posted — stranske/Doc-Lineage#47
 - 2026-10-25T21:27:26Z — D-audit-Doc-Lineage--2026-10-25T20-34-28Z — refutation posted — stranske/Doc-Lineage#48
 - 2026-10-25T21:27:28Z — D-audit-Doc-Lineage--2026-10-25T20-34-28Z — refutation posted — stranske/Doc-Lineage#49
 - 2026-10-25T21:27:29Z — D-audit-Doc-Lineage--2026-10-25T20-34-28Z — refutation posted — stranske/Doc-Lineage#50
@@ -333,6 +331,8 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-10-25T22:04:21Z — B1-citefix-B7-PROGRAM-PLAN-v3 — route — router picked cursor from ['codex', 'cursor', 'gemini']
 - 2026-10-25T22:04:21Z — B1-citefix-B7-PROGRAM-PLAN-v3 — claimed by driver (agent cursor)
 - 2026-10-25T22:05:32Z — B1-citefix-B7-PROGRAM-PLAN-v3 — done — cursor produced 3346 words at artifacts/research/B7-PROGRAM-PLAN-v3.md in 33s
+- 2026-10-25T23:23:25Z — mirror — deferred — Ready#642 exact-head sync review; publication resumes by 2026-10-26T01:19:45+00:00; local work continues
+- 2026-10-25T23:38:28Z — mirror — deferred — Ready#642 exact-head sync review; publication resumes by 2026-10-26T01:19:45+00:00; local work continues
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
