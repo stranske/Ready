@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-25T20:17:22Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-25T20:34:28Z)
 
-Units: 303 — done 298, failed 1, superseded 4
+Units: 308 — claimed 1, done 298, failed 1, queued 4, superseded 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=warn claude=shed cursor=ok gemini=ok vibe=ok muse=ok aider=ok
 Orchestrator evidence (30d): offload runs 47, bound to a research round 47, scored 47 (PASS 33, FAIL 14, infra 0) — codex 8/8 (P3 F5 I0), cursor 39/39 (P30 F9 I0)
@@ -32,6 +32,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | A-work-side-bundle-refresh | A | A3 | done | cursor | driver | Refresh the work-side bundle with the three late dossiers and re-run t |  |
 | A-dossier-docx | A | A3 | done | cursor | codex | Word versions of all verified dossiers (venv + python-docx) |  |
 | B1-citefix-B3-interop-architecture | B | B1 | done | cursor | driver | Fix unreachable citations in B3-interop-architecture.md |  |
+| B1-citefix-B7-PROGRAM-PLAN-v3 | B | B1 | queued | codex |  | Fix unreachable citations in B7-PROGRAM-PLAN-v3.md |  |
 | B1-citefix-R1-legal-decomposition | B | B1 | done | cursor | driver | Fix unreachable citations in R1-legal-decomposition.md |  |
 | B1-citefix-R2-consultant-report-diffing | B | B1 | done | gemini | driver | Fix unreachable citations in R2-consultant-report-diffing.md |  |
 | B1-citefix-R3-manager-mosaic-synthesis | B | B1 | done | gemini | driver | Fix unreachable citations in R3-manager-mosaic-synthesis.md |  |
@@ -172,6 +173,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D3-unblock-sweep-2026-10-24T20 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-2026-10-25T04 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-2026-10-25T12 | D | D | done | codex | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
+| D3-unblock-sweep-2026-10-25T20 | D | D | claimed | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-pass2-20260913T2023 | D | D | done | cursor | driver | Unblock sweep pass 2: the seven repos the budgeted first pass deferred |  |
 | D-audit-Counter_Risk--2026-09-07T04-47-32Z | D | D | done | codex | driver | Audit stranske/Counter_Risk and file issues (supply 2 <= 2) |  |
 | D-audit-Counter_Risk--2026-09-08T17-11-36Z | D | D | done | codex | codex | Audit stranske/Counter_Risk and file issues (supply 1 <= 2) |  |
@@ -196,11 +198,13 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Deliverable-Render--2026-09-23T22-11-12Z | D | D | done | cursor | driver | Audit stranske/Deliverable-Render and file issues (scorecard 2026-09-2 | 7W/0P/0B/0F of 7 |
 | D-audit-Deliverable-Render--2026-09-24T01-13-07Z | D | D | done | cursor | driver | Audit stranske/Deliverable-Render and file issues (scorecard 2026-09-2 | 7W/0P/0B/0F of 7 |
 | D-audit-Deliverable-Render--2026-10-25T08-11-07Z | D | D | done | codex | driver | Audit stranske/Deliverable-Render and file issues (scorecard 2026-09-2 | 7W/0P/0B/0F of 7 |
+| D-audit-Deliverable-Render--2026-10-25T20-34-21Z | D | D | queued | claude |  | Audit stranske/Deliverable-Render and file issues (scorecard 2026-09-2 |  |
 | D-audit-Doc-Lineage--2026-09-19T20-12-10Z | D | D | done | codex | codex | Audit stranske/Doc-Lineage and file issues (supply 2 <= 2) |  |
 | D-audit-Doc-Lineage--2026-09-23T09-11-20Z | D | D | done | cursor | driver | Audit stranske/Doc-Lineage and file issues (scorecard 2026-09-20 has n | 4W/1P/0B/0F of 5 |
 | D-audit-Doc-Lineage--2026-09-23T22-11-18Z | D | D | done | cursor | driver | Audit stranske/Doc-Lineage and file issues (scorecard 2026-09-23 has n | 4W/1P/0B/0F of 5 |
 | D-audit-Doc-Lineage--2026-09-24T01-13-13Z | D | D | done | cursor | driver | Audit stranske/Doc-Lineage and file issues (scorecard 2026-09-23 has n | 4W/1P/0B/0F of 5 |
 | D-audit-Doc-Lineage--2026-10-25T08-11-13Z | D | D | done | codex | driver | Audit stranske/Doc-Lineage and file issues (scorecard 2026-09-24 is 31 | 6W/2P/0B/0F of 8 |
+| D-audit-Doc-Lineage--2026-10-25T20-34-28Z | D | D | queued | claude |  | Audit stranske/Doc-Lineage and file issues (scorecard 2026-09-24 is 31 |  |
 | D-audit-Fine-Art-Archive--2026-09-05T04-00-31Z | D | D | done | codex | codex | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 2) |  |
 | D-audit-Fine-Art-Archive--2026-09-06T04-25-53Z | D | D | done | codex | driver | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 3) |  |
 | D-audit-Fine-Art-Archive--2026-09-23T09-11-19Z | D | D | done | cursor |  | Audit stranske/Fine-Art-Archive and file issues (scorecard 2026-09-20  |  |
@@ -208,6 +212,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Fine-Art-Archive--2026-10-24T04-03-31Z | D | D | failed | cursor |  | Audit stranske/Fine-Art-Archive and file issues (scorecard 2026-09-23  |  |
 | D-audit-Fine-Art-Archive--2026-10-24T20-01-22Z | D | D | done | codex | driver | Audit stranske/Fine-Art-Archive and file issues (scorecard 2026-10-24: | 5W/0P/0B/0F of 5 |
 | D-audit-Fine-Art-Archive--2026-10-25T08-11-13Z | D | D | done | codex | driver | Audit stranske/Fine-Art-Archive and file issues (scorecard 2026-10-24: | 5W/0P/0B/0F of 5 |
+| D-audit-Fine-Art-Archive--2026-10-25T20-34-28Z | D | D | queued | claude |  | Audit stranske/Fine-Art-Archive and file issues (scorecard 2026-10-24: |  |
 | D-audit-Inv-Man-Intake--2026-09-23T09-11-17Z | D | D | done | cursor | claude | Audit stranske/Inv-Man-Intake and file issues (scorecard 2026-09-20 ha | 5W/2P/0B/0F of 7 |
 | D-audit-Inv-Man-Intake--2026-09-23T22-11-16Z | D | D | done | cursor | codex | Audit stranske/Inv-Man-Intake and file issues (scorecard 2026-09-23 ha | 5W/2P/0B/0F of 7 |
 | D-audit-Inv-Man-Intake--2026-09-24T01-13-11Z | D | D | done | cursor | driver | Audit stranske/Inv-Man-Intake and file issues (scorecard 2026-09-23 ha | 5W/2P/0B/0F of 7 |
@@ -316,18 +321,18 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-10-25T16:48:20Z — mirror — deferred — Ready#642 exact-head sync review; publication resumes by 2026-10-25T18:45:10+00:00; local work continues
-- 2026-10-25T17:03:24Z — mirror — deferred — Ready#642 exact-head sync review; publication resumes by 2026-10-25T18:45:10+00:00; local work continues
-- 2026-10-25T17:18:27Z — mirror — deferred — Ready#642 exact-head sync review; publication resumes by 2026-10-25T18:45:10+00:00; local work continues
-- 2026-10-25T17:33:30Z — mirror — deferred — Ready#642 exact-head sync review; publication resumes by 2026-10-25T18:45:10+00:00; local work continues
-- 2026-10-25T17:48:33Z — mirror — deferred — Ready#642 exact-head sync review; publication resumes by 2026-10-25T18:45:10+00:00; local work continues
-- 2026-10-25T18:03:35Z — mirror — deferred — Ready#642 exact-head sync review; publication resumes by 2026-10-25T18:45:10+00:00; local work continues
-- 2026-10-25T18:18:38Z — mirror — deferred — Ready#642 exact-head sync review; publication resumes by 2026-10-25T18:45:10+00:00; local work continues
-- 2026-10-25T18:33:42Z — mirror — deferred — Ready#642 exact-head sync review; publication resumes by 2026-10-25T18:45:10+00:00; local work continues
 - 2026-10-25T20:07:10Z — verify — enqueued D4-verify-merged-2026-10-25T20
 - 2026-10-25T20:07:11Z — D4-verify-merged-2026-10-25T20 — route — router picked codex from ['codex', 'cursor']
 - 2026-10-25T20:07:11Z — D4-verify-merged-2026-10-25T20 — claimed by driver (agent codex)
 - 2026-10-25T20:17:22Z — D4-verify-merged-2026-10-25T20 — done — vibe produced 984 words at artifacts/verification/D4-verify-merged-2026-10-25T20.md in 582s
+- 2026-10-25T20:33:30Z — inbox — read FAILED — Get "https://api.github.com/repos/stranske/Ready/issues/553/comments?per_page=100": dial tcp 140.82.
+- 2026-10-25T20:34:21Z — citations — enqueued B1-citefix-B7-PROGRAM-PLAN-v3
+- 2026-10-25T20:34:21Z — unblock — enqueued D3-unblock-sweep-2026-10-25T20
+- 2026-10-25T20:34:21Z — refill — Deliverable-Render: scorecard 2026-09-24 is 31d old (> 30) → audit queued
+- 2026-10-25T20:34:28Z — refill — Fine-Art-Archive: scorecard 2026-10-24: coverage debt 9 (not exercised 0 + unscored 9) not reduced since 2026-09-23 (9) → audit queued
+- 2026-10-25T20:34:28Z — refill — Doc-Lineage: scorecard 2026-09-24 is 31d old (> 30) → audit queued
+- 2026-10-25T20:34:28Z — D3-unblock-sweep-2026-10-25T20 — route — router picked cursor from ['codex', 'cursor']
+- 2026-10-25T20:34:28Z — D3-unblock-sweep-2026-10-25T20 — claimed by driver (agent cursor)
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
