@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-25T09:58:22Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-25T10:05:36Z)
 
-Units: 301 — claimed 1, done 294, failed 1, queued 1, superseded 4
+Units: 301 — done 295, failed 1, queued 1, superseded 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok muse=ok aider=ok
 Orchestrator evidence (30d): offload runs 48, bound to a research round 48, scored 48 (PASS 34, FAIL 14, infra 0) — codex 8/8 (P3 F5 I0), cursor 40/40 (P31 F9 I0)
@@ -250,7 +250,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Trend_Model_Project--2026-09-19T20-12-05Z | D | D | superseded | codex |  | Audit stranske/Trend_Model_Project and file issues (supply 0 <= 2) |  |
 | D-audit-Trend_Model_Project--2026-09-23T09-11-16Z | D | D | done | cursor | driver | Audit stranske/Trend_Model_Project and file issues (scorecard 2026-09- | 1W/2P/1B/0F of 4 |
 | D-audit-Trend_Model_Project--2026-09-23T22-11-14Z | D | D | done | cursor | codex | Audit stranske/Trend_Model_Project and file issues (scorecard 2026-09- | 3W/1P/0B/0F of 4 |
-| D-audit-Trend_Model_Project--2026-10-25T08-11-09Z | D | D | claimed | cursor | driver | Audit stranske/Trend_Model_Project and file issues (scorecard 2026-09- |  |
+| D-audit-Trend_Model_Project--2026-10-25T08-11-09Z | D | D | done | cursor | driver | Audit stranske/Trend_Model_Project and file issues (scorecard 2026-09- | 3W/1P/0B/0F of 4 |
 | D-audit-Workflows--2026-09-23T09-11-15Z | D | D | done | codex | codex | Audit stranske/Workflows and file issues (scorecard 2026-09-20 has no  | 4W/0P/1B/0F of 7 |
 | D-audit-Workflows--2026-09-23T22-11-13Z | D | D | done | cursor |  | Audit stranske/Workflows and file issues (scorecard 2026-09-23 has no  |  |
 | D-audit-Workflows--2026-09-24T11-10-38Z | D | D | done | cursor | codex | Audit stranske/Workflows and file issues (scorecard 2026-09-24: 1 brok | 4W/0P/1B/0F of 7 |
@@ -314,7 +314,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-10-25T09:00:54Z — D-audit-Doc-Lineage--2026-10-25T08-11-13Z — refutation posted — stranske/Doc-Lineage#50
 - 2026-10-25T09:00:56Z — D-audit-Doc-Lineage--2026-10-25T08-11-13Z — refutation posted — stranske/Doc-Lineage#51
 - 2026-10-25T09:16:26Z — D-audit-Fine-Art-Archive--2026-10-25T08-11-13Z — route — router picked codex from ['codex', 'cursor']
 - 2026-10-25T09:16:26Z — D-audit-Fine-Art-Archive--2026-10-25T08-11-13Z — claimed by driver (agent codex)
@@ -326,6 +325,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-10-25T09:42:54Z — D-audit-Manager-Database--2026-10-25T08-11-11Z — refutation posted — stranske/Manager-Database#1784
 - 2026-10-25T09:58:22Z — D-audit-Trend_Model_Project--2026-10-25T08-11-09Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-10-25T09:58:22Z — D-audit-Trend_Model_Project--2026-10-25T08-11-09Z — claimed by driver (agent cursor)
+- 2026-10-25T10:05:36Z — D-audit-Trend_Model_Project--2026-10-25T08-11-09Z — done — cursor produced 215 words at artifacts/audits/Trend_Model_Project-2026-10-25.md in 403s
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
