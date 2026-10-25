@@ -1,9 +1,9 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-25T21:42:58Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-25T21:48:50Z)
 
-Units: 308 — claimed 1, done 301, failed 1, queued 1, superseded 4
+Units: 308 — done 302, failed 1, queued 1, superseded 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=warn claude=shed cursor=ok gemini=ok vibe=ok muse=ok aider=ok
-Orchestrator evidence (30d): offload runs 47, bound to a research round 47, scored 47 (PASS 33, FAIL 14, infra 0) — codex 8/8 (P3 F5 I0), cursor 39/39 (P30 F9 I0)
+Orchestrator evidence (30d): offload runs 46, bound to a research round 46, scored 46 (PASS 32, FAIL 14, infra 0) — codex 8/8 (P3 F5 I0), cursor 38/38 (P29 F9 I0)
 Worker write boundary: on — each unit writes only unitdirs/<unit>/, its output directory, artifacts/proposals/, its own clone's working tree (not .git) and temp
 Claude conservation: off (weekly window available)
 Owner inbox: https://github.com/stranske/Ready/issues/553
@@ -212,7 +212,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Fine-Art-Archive--2026-10-24T04-03-31Z | D | D | failed | cursor |  | Audit stranske/Fine-Art-Archive and file issues (scorecard 2026-09-23  |  |
 | D-audit-Fine-Art-Archive--2026-10-24T20-01-22Z | D | D | done | codex | driver | Audit stranske/Fine-Art-Archive and file issues (scorecard 2026-10-24: | 5W/0P/0B/0F of 5 |
 | D-audit-Fine-Art-Archive--2026-10-25T08-11-13Z | D | D | done | codex | driver | Audit stranske/Fine-Art-Archive and file issues (scorecard 2026-10-24: | 5W/0P/0B/0F of 5 |
-| D-audit-Fine-Art-Archive--2026-10-25T20-34-28Z | D | D | claimed | cursor | driver | Audit stranske/Fine-Art-Archive and file issues (scorecard 2026-10-24: |  |
+| D-audit-Fine-Art-Archive--2026-10-25T20-34-28Z | D | D | done | cursor | driver | Audit stranske/Fine-Art-Archive and file issues (scorecard 2026-10-24: | 5W/0P/0B/0F of 5 |
 | D-audit-Inv-Man-Intake--2026-09-23T09-11-17Z | D | D | done | cursor | claude | Audit stranske/Inv-Man-Intake and file issues (scorecard 2026-09-20 ha | 5W/2P/0B/0F of 7 |
 | D-audit-Inv-Man-Intake--2026-09-23T22-11-16Z | D | D | done | cursor | codex | Audit stranske/Inv-Man-Intake and file issues (scorecard 2026-09-23 ha | 5W/2P/0B/0F of 7 |
 | D-audit-Inv-Man-Intake--2026-09-24T01-13-11Z | D | D | done | cursor | driver | Audit stranske/Inv-Man-Intake and file issues (scorecard 2026-09-23 ha | 5W/2P/0B/0F of 7 |
@@ -321,7 +321,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-10-25T21:02:03Z — D-audit-Deliverable-Render--2026-10-25T20-34-21Z — done — gemini produced 1068 words at artifacts/audits/Deliverable-Render-2026-10-25.md in 541s
 - 2026-10-25T21:02:05Z — D-audit-Deliverable-Render--2026-10-25T20-34-21Z — refutation posted — stranske/Deliverable-Render#89
 - 2026-10-25T21:17:37Z — D-audit-Doc-Lineage--2026-10-25T20-34-28Z — route — router picked codex from ['codex', 'cursor']
 - 2026-10-25T21:17:37Z — D-audit-Doc-Lineage--2026-10-25T20-34-28Z — claimed by driver (agent codex)
@@ -333,6 +332,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-10-25T21:27:31Z — D-audit-Doc-Lineage--2026-10-25T20-34-28Z — refutation posted — stranske/Doc-Lineage#51
 - 2026-10-25T21:42:58Z — D-audit-Fine-Art-Archive--2026-10-25T20-34-28Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-10-25T21:42:58Z — D-audit-Fine-Art-Archive--2026-10-25T20-34-28Z — claimed by driver (agent cursor)
+- 2026-10-25T21:48:50Z — D-audit-Fine-Art-Archive--2026-10-25T20-34-28Z — done — cursor produced 291 words at artifacts/audits/Fine-Art-Archive-2026-10-25.md in 318s
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 

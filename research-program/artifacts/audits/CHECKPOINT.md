@@ -1,5 +1,8 @@
 # Audits CHECKPOINT (append-only)
 
+## 2026-10-25 — Fine-Art-Archive Track D (D-audit-Fine-Art-Archive--2026-10-25T20-34-28Z)
+Phases 0–5 complete @ 9872823. Scorecard: 5W/0P/0B/0F/0NE of 5; surfaces unscored 9→0; C=0. Filed #847. OUT: Fine-Art-Archive-2026-10-25.md. Canonical scorecard: Code/Audits/Fine-Art-Archive/2026-10-25-SCORECARD.md.
+
 ## 2026-10-25 — Deliverable-Render Track D (D-audit-Deliverable-Render--2026-10-25T20-34-21Z)
 Phases 0–5 complete @ 57d443c. Scorecard: 7W/0P/0B/0F/0NE of 7; surfaces unscored 0; C=0. Filed 0. REFUTED #89. OUT: Deliverable-Render-2026-10-25.md. Canonical scorecard: Code/Audits/Deliverable-Render/2026-10-25-SCORECARD.md.
 
