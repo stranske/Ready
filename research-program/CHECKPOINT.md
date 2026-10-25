@@ -4391,3 +4391,16 @@ remote: - Required status check "Gate / gate" is
 ## 2026-10-25T12:25:02Z — D3-unblock-sweep-2026-10-25T12 — done — codex produced 644 words at artifacts/sweeps/D3-unblock-sweep-2026-10-25T12.md in 309s
 ## 2026-10-25T12:25:04Z — D3-unblock-sweep-2026-10-25T12 — refutation posted — stranske/Manager-Database#1773
 ## 2026-10-25T12:25:06Z — D3-unblock-sweep-2026-10-25T12 — refutation posted — stranske/Workflows#3999
+## 2026-10-25T15:33:00Z — mirror — deferred — Ready#642 exact-head sync review; publication resumes by 2026-10-25T17:28:23+00:00; local work continues
+## 2026-10-25T15:48:05Z — mirror — deferred — Ready#642 exact-head sync review; publication resumes by 2026-10-25T17:28:23+00:00; local work continues
+## 2026-10-25T16:03:10Z — mirror — deferred — Ready#642 exact-head sync review; publication resumes by 2026-10-25T17:28:23+00:00; local work continues
+## 2026-10-25T16:18:13Z — mirror — deferred — Ready#642 exact-head sync review; publication resumes by 2026-10-25T17:28:23+00:00; local work continues
+## 2026-10-25T16:33:16Z — mirror — deferred — Ready#642 exact-head sync review; publication resumes by 2026-10-25T17:28:23+00:00; local work continues
+## 2026-10-25T16:48:20Z — mirror — deferred — Ready#642 exact-head sync review; publication resumes by 2026-10-25T18:45:10+00:00; local work continues
+## 2026-10-25T17:03:24Z — mirror — deferred — Ready#642 exact-head sync review; publication resumes by 2026-10-25T18:45:10+00:00; local work continues
+## 2026-10-25T17:18:27Z — mirror — deferred — Ready#642 exact-head sync review; publication resumes by 2026-10-25T18:45:10+00:00; local work continues
+## 2026-10-25T17:33:30Z — mirror — deferred — Ready#642 exact-head sync review; publication resumes by 2026-10-25T18:45:10+00:00; local work continues
+## 2026-10-25T17:48:33Z — mirror — deferred — Ready#642 exact-head sync review; publication resumes by 2026-10-25T18:45:10+00:00; local work continues
+## 2026-10-25T18:03:35Z — mirror — deferred — Ready#642 exact-head sync review; publication resumes by 2026-10-25T18:45:10+00:00; local work continues
+## 2026-10-25T18:18:38Z — mirror — deferred — Ready#642 exact-head sync review; publication resumes by 2026-10-25T18:45:10+00:00; local work continues
+## 2026-10-25T18:33:42Z — mirror — deferred — Ready#642 exact-head sync review; publication resumes by 2026-10-25T18:45:10+00:00; local work continues

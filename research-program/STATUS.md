@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-25T15:16:06Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-25T18:48:45Z)
 
 Units: 302 — done 297, failed 1, superseded 4
 Paused: False   Phase stops: []
@@ -315,18 +315,18 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-10-25T10:05:36Z — D-audit-Trend_Model_Project--2026-10-25T08-11-09Z — done — cursor produced 215 words at artifacts/audits/Trend_Model_Project-2026-10-25.md in 403s
-- 2026-10-25T10:21:04Z — D-audit-learning-management-system--2026-10-25T08-11-12Z — route — router picked cursor from ['codex', 'cursor']
-- 2026-10-25T10:21:04Z — D-audit-learning-management-system--2026-10-25T08-11-12Z — claimed by driver (agent cursor)
-- 2026-10-25T10:29:06Z — D-audit-learning-management-system--2026-10-25T08-11-12Z — done — cursor produced 213 words at artifacts/audits/learning-management-system-2026-10-25.md in 449s
-- 2026-10-25T10:29:08Z — D-audit-learning-management-system--2026-10-25T08-11-12Z — refutation posted — stranske/learning-management-system#784
-- 2026-10-25T10:29:09Z — D-audit-learning-management-system--2026-10-25T08-11-12Z — refutation posted — stranske/learning-management-system#785
-- 2026-10-25T12:18:49Z — unblock — enqueued D3-unblock-sweep-2026-10-25T12
-- 2026-10-25T12:18:50Z — D3-unblock-sweep-2026-10-25T12 — route — router picked codex from ['codex', 'cursor']
-- 2026-10-25T12:18:50Z — D3-unblock-sweep-2026-10-25T12 — claimed by driver (agent codex)
-- 2026-10-25T12:25:02Z — D3-unblock-sweep-2026-10-25T12 — done — codex produced 644 words at artifacts/sweeps/D3-unblock-sweep-2026-10-25T12.md in 309s
-- 2026-10-25T12:25:04Z — D3-unblock-sweep-2026-10-25T12 — refutation posted — stranske/Manager-Database#1773
-- 2026-10-25T12:25:06Z — D3-unblock-sweep-2026-10-25T12 — refutation posted — stranske/Workflows#3999
+- 2026-10-25T15:48:05Z — mirror — deferred — Ready#642 exact-head sync review; publication resumes by 2026-10-25T17:28:23+00:00; local work continues
+- 2026-10-25T16:03:10Z — mirror — deferred — Ready#642 exact-head sync review; publication resumes by 2026-10-25T17:28:23+00:00; local work continues
+- 2026-10-25T16:18:13Z — mirror — deferred — Ready#642 exact-head sync review; publication resumes by 2026-10-25T17:28:23+00:00; local work continues
+- 2026-10-25T16:33:16Z — mirror — deferred — Ready#642 exact-head sync review; publication resumes by 2026-10-25T17:28:23+00:00; local work continues
+- 2026-10-25T16:48:20Z — mirror — deferred — Ready#642 exact-head sync review; publication resumes by 2026-10-25T18:45:10+00:00; local work continues
+- 2026-10-25T17:03:24Z — mirror — deferred — Ready#642 exact-head sync review; publication resumes by 2026-10-25T18:45:10+00:00; local work continues
+- 2026-10-25T17:18:27Z — mirror — deferred — Ready#642 exact-head sync review; publication resumes by 2026-10-25T18:45:10+00:00; local work continues
+- 2026-10-25T17:33:30Z — mirror — deferred — Ready#642 exact-head sync review; publication resumes by 2026-10-25T18:45:10+00:00; local work continues
+- 2026-10-25T17:48:33Z — mirror — deferred — Ready#642 exact-head sync review; publication resumes by 2026-10-25T18:45:10+00:00; local work continues
+- 2026-10-25T18:03:35Z — mirror — deferred — Ready#642 exact-head sync review; publication resumes by 2026-10-25T18:45:10+00:00; local work continues
+- 2026-10-25T18:18:38Z — mirror — deferred — Ready#642 exact-head sync review; publication resumes by 2026-10-25T18:45:10+00:00; local work continues
+- 2026-10-25T18:33:42Z — mirror — deferred — Ready#642 exact-head sync review; publication resumes by 2026-10-25T18:45:10+00:00; local work continues
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
