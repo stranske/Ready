@@ -2141,6 +2141,53 @@ def test_fail_fast_cannot_reuse_previous_publication_report(
     assert json.loads(report_path.read_text())["files"] == previous["files"]
 
 
+def test_interrupted_run_cannot_reuse_previous_publication_report(
+    coverage_project: Path,
+) -> None:
+    """An interrupted run must fail and leave no earlier passing coverage evidence."""
+    passing = _run_coverage_project(coverage_project)
+    assert passing.returncode == 0, passing.stdout + passing.stderr
+    report_path = coverage_project / "coverage.json"
+    previous = json.loads(report_path.read_text())
+    exercise = coverage_project / "tests/test_exercise.py"
+    original = exercise.read_bytes()
+    measured, untouched = sorted(PUBLICATION_FILES)
+    exercise.write_text(
+        "import runpy\n\n"
+        "def test_interrupted():\n"
+        f"    choose = runpy.run_path({measured!r})['choose']\n"
+        "    assert choose(True) == 1\n"
+        '    raise KeyboardInterrupt("interruption regression control")\n'
+    )
+
+    interrupted = _run_coverage_project(coverage_project)
+    output = interrupted.stdout + interrupted.stderr
+    assert interrupted.returncode != 0, output
+    assert "KeyboardInterrupt: interruption regression control" in output
+    assert "INTERNALERROR" not in output
+    assert "PUBLICATION COVERAGE:" in output
+    assert "Ready publication coverage floors PASS" not in output
+    if report_path.exists():
+        current = json.loads(report_path.read_text())
+        assert untouched not in current["files"]
+        assert f"PUBLICATION COVERAGE: {untouched}: missing coverage measurement" in output
+        assert current["files"][measured]["summary"]["covered_branches"] < (
+            previous["files"][measured]["summary"]["covered_branches"]
+        )
+    else:
+        assert "Current publication coverage evidence unavailable:" in output
+
+    exercise.write_bytes(original)
+    restored = _run_coverage_project(coverage_project)
+    output = restored.stdout + restored.stderr
+    assert restored.returncode == 0, output
+    assert "1 passed" in output
+    assert "PUBLICATION COVERAGE:" not in output
+    report = json.loads(report_path.read_text())
+    assert report["files"] == previous["files"]
+    _assert_xml_matches_json(coverage_project, report)
+
+
 @pytest.mark.parametrize("continue_collection", [False, True], ids=["abort", "continue"])
 def test_pytest_gate_rejects_collection_error_despite_previous_passing_report(
     coverage_project: Path, continue_collection: bool
