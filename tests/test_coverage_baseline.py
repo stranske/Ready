@@ -1239,18 +1239,29 @@ def test_pytest_gate_rejects_disabled_branch_collection(coverage_project: Path) 
     "aggregate_floor", [80, 0], ids=["aggregate-enforced", "aggregate-disabled"]
 )
 @pytest.mark.parametrize("stale_shards", [False, True], ids=["combined-data", "parallel-shards"])
-def test_previous_passing_run_cannot_mask_removed_branch_test(
-    coverage_project: Path, name: str, aggregate_floor: int, stale_shards: bool
+@pytest.mark.parametrize("metric", ["line", "branch"])
+def test_previous_passing_run_cannot_mask_removed_coverage_test(
+    coverage_project: Path, name: str, aggregate_floor: int, stale_shards: bool, metric: str
 ) -> None:
-    """Fresh branch evidence controls the gate independently of the aggregate threshold."""
+    """Fresh evidence controls each script's floors independently of the aggregate threshold."""
     script = coverage_project / name
-    script.write_text(script.read_text().replace("    return 0\n", ""))
     exercise = coverage_project / "tests/test_exercise.py"
-    exercise.write_text(
-        exercise.read_text().replace(
-            "        assert choose(False) == 0\n", "        choose(False)\n"
+    if metric == "line":
+        # Removing this call loses a line while preserving every branch hit.
+        script.write_text(script.read_text() + "\ndef extra():\n    return 2\n")
+        removed_exercise = f"    assert runpy.run_path({name!r})['extra']() == 2\n"
+        exercise.write_text(exercise.read_text() + removed_exercise)
+        replacement = ""
+    else:
+        # The implicit false branch has no exclusive executable line.
+        script.write_text(script.read_text().replace("    return 0\n", ""))
+        exercise.write_text(
+            exercise.read_text().replace(
+                "        assert choose(False) == 0\n", "        choose(False)\n"
+            )
         )
-    )
+        removed_exercise = "        choose(False)\n"
+        replacement = f"        if path != {name!r}:\n            choose(False)\n"
     complete_exercise = exercise.read_bytes()
     coverage_args = (f"--cov-fail-under={aggregate_floor}",)
     result = _run_coverage_project(coverage_project, *coverage_args)
@@ -1261,27 +1272,22 @@ def test_previous_passing_run_cannot_mask_removed_branch_test(
     if stale_shards:
         # An interrupted subprocess run can leave uncombined parallel data.
         # Give those files passing hits so combining stale shards would hide
-        # the removed branch even after the combined database is erased.
+        # the removed exercise even after the combined database is erased.
         for suffix in ("interrupted-cli.12345.abc", "interrupted-cli.12346.def"):
             shutil.copyfile(
                 coverage_project / ".coverage", coverage_project / f".coverage.{suffix}"
             )
         (coverage_project / ".coverage").unlink()
 
-    # Remove one branch exercise without changing production code or clearing
+    # Remove one exercise without changing production code or clearing
     # the passing report and coverage data left by the previous invocation.
-    exercise.write_text(
-        exercise.read_text().replace(
-            "        choose(False)\n",
-            f"        if path != {name!r}:\n            choose(False)\n",
-        )
-    )
+    exercise.write_text(exercise.read_text().replace(removed_exercise, replacement))
 
     result = _run_coverage_project(coverage_project, *coverage_args)
     output = result.stdout + result.stderr
     assert result.returncode == 1, output
     assert "1 passed" in output
-    assert f"PUBLICATION COVERAGE: {name}: branch coverage" in output
+    assert f"PUBLICATION COVERAGE: {name}: {metric} coverage" in output
     assert "below floor" in output
     assert "INTERNALERROR" not in output
     assert "FAIL Required test coverage" not in output
@@ -1292,11 +1298,17 @@ def test_previous_passing_run_cannot_mask_removed_branch_test(
     for path in PUBLICATION_FILES:
         before = previous["files"][path]["summary"]
         after = current["files"][path]["summary"]
-        assert after["covered_lines"] == before["covered_lines"]
+        assert after["num_statements"] == before["num_statements"]
+        assert after["covered_lines"] == before["covered_lines"] - int(
+            path == name and metric == "line"
+        )
         assert after["num_branches"] == before["num_branches"]
-        assert after["covered_branches"] == before["covered_branches"] - int(path == name)
+        assert after["covered_branches"] == before["covered_branches"] - int(
+            path == name and metric == "branch"
+        )
+    _assert_xml_matches_json(coverage_project, current)
 
-    # Restoring the branch exercise must replace the failing evidence and pass
+    # Restoring the exercise must replace the failing evidence and pass
     # without deleting the report or coverage database in between runs.
     exercise.write_bytes(complete_exercise)
     restored = _run_coverage_project(coverage_project, *coverage_args)
@@ -1306,6 +1318,7 @@ def test_previous_passing_run_cannot_mask_removed_branch_test(
     assert set(restored_report["files"]) == set(previous["files"])
     for path in PUBLICATION_FILES:
         assert restored_report["files"][path]["summary"] == previous["files"][path]["summary"]
+    _assert_xml_matches_json(coverage_project, restored_report)
 
 
 @pytest.mark.parametrize("stale_report", [False, True], ids=["absent", "stale"])
