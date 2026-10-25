@@ -4416,3 +4416,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-10-25T20:34:28Z — refill — Doc-Lineage: scorecard 2026-09-24 is 31d old (> 30) → audit queued
 ## 2026-10-25T20:34:28Z — D3-unblock-sweep-2026-10-25T20 — route — router picked cursor from ['codex', 'cursor']
 ## 2026-10-25T20:34:28Z — D3-unblock-sweep-2026-10-25T20 — claimed by driver (agent cursor)
+## 2026-10-25T20:36:59Z — D3-unblock-sweep-2026-10-25T20 — done — cursor produced 583 words at artifacts/sweeps/D3-unblock-sweep-2026-10-25T20.md in 95s
+## 2026-10-25T20:37:01Z — D3-unblock-sweep-2026-10-25T20 — refutation posted — stranske/Manager-Database#1773
+## 2026-10-25T20:37:03Z — D3-unblock-sweep-2026-10-25T20 — refutation posted — stranske/Workflows#3999
