@@ -265,6 +265,47 @@ def test_measured_file_set_includes_unexecuted_source_and_excludes_tooling(
     assert summary["covered_branches"] == 1
 
 
+def test_measured_file_set_tracks_renamed_and_deleted_product_source(
+    coverage_project: Path,
+) -> None:
+    """Current source discovery must replace stale product paths in both CI artifacts."""
+    source = coverage_project / "src/my_project/unexecuted.py"
+    renamed = source.with_name("renamed.py")
+    original = source.read_bytes()
+    report_path = coverage_project / "coverage.json"
+    before = None
+
+    for current in (source, renamed, None, source):
+        if current == renamed:
+            source.rename(renamed)
+        elif current is None:
+            renamed.unlink()
+        elif not source.exists():
+            source.write_bytes(original)
+
+        # Retain the previous database and artifacts so stale paths cannot
+        # silently change the next run's denominator or measured file set.
+        result = _run_coverage_project(coverage_project)
+        output = result.stdout + result.stderr
+        assert result.returncode == 0, output
+        assert "1 passed" in output
+        assert "PUBLICATION COVERAGE:" not in output
+        report = json.loads(report_path.read_text())
+        _assert_xml_matches_json(coverage_project, report)
+        expected = set() if current is None else {current.relative_to(coverage_project).as_posix()}
+        assert set(report["files"]) == PUBLICATION_FILES | expected
+        if current is not None:
+            summary = report["files"][next(iter(expected))]["summary"]
+            assert summary["covered_lines"] == 0
+            assert summary["num_statements"] == 1
+        if before is None:
+            before = report
+        else:
+            for name in PUBLICATION_FILES:
+                assert report["files"][name] == before["files"][name]
+    assert report["files"] == before["files"]
+
+
 @pytest.mark.parametrize("execution", ["in-process", "subprocess"])
 @pytest.mark.parametrize(
     "source_directory",
