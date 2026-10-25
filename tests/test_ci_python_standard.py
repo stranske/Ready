@@ -37,14 +37,13 @@ def _contains_old_runtime(value: Any) -> bool:
     if isinstance(value, list):
         return any(_contains_old_runtime(item) for item in value)
     if isinstance(value, str):
-        entries = value.splitlines()
-        if len(entries) > 1:
-            return any(_contains_old_runtime(entry.strip()) for entry in entries)
         value = value.strip()
         try:
             decoded = json.loads(value)
         except (TypeError, ValueError):
-            pass
+            entries = value.splitlines()
+            if len(entries) > 1:
+                return any(_contains_old_runtime(entry.strip()) for entry in entries)
         else:
             if decoded != value:
                 return _contains_old_runtime(decoded)
@@ -234,3 +233,9 @@ def test_duplicate_key_validation_allows_reused_flattened_anchor(reuse: str) -> 
     )
     loaded = yaml.load(document, Loader=_UniqueKeyLoader)
     assert loaded["job"]["python-version"] == "3.14"
+
+
+@pytest.mark.parametrize("versions", ['[\n  "3.12",\n  "3.14"\n]', '[\n  "3.14",\n  "3.12"\n]'])
+def test_runtime_scan_rejects_multiline_json_runtime_array(versions: str) -> None:
+    assert _contains_old_runtime(versions)
+    assert not _contains_old_runtime('[\n  "3.13",\n  "3.14"\n]')
