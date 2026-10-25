@@ -4357,3 +4357,5 @@ remote: - Required status check "Gate / gate" is
 ## 2026-10-25T08:11:14Z — D-audit-Counter_Risk--2026-10-25T08-11-10Z — claimed by driver (agent cursor)
 ## 2026-10-25T08:14:09Z — D-audit-Counter_Risk--2026-10-25T08-11-10Z — done — cursor produced 324 words at artifacts/audits/Counter_Risk-2026-10-25.md in 147s
 ## 2026-10-25T08:14:11Z — D-audit-Counter_Risk--2026-10-25T08-11-10Z — refutation posted — stranske/Counter_Risk#1182
+## 2026-10-25T08:29:37Z — D-audit-Deliverable-Render--2026-10-25T08-11-07Z — route — router picked codex from ['codex', 'cursor']
+## 2026-10-25T08:29:37Z — D-audit-Deliverable-Render--2026-10-25T08-11-07Z — claimed by driver (agent codex)
