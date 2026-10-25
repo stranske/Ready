@@ -1348,6 +1348,76 @@ def test_previous_passing_run_cannot_mask_removed_coverage_test(
     _assert_xml_matches_json(coverage_project, restored_report)
 
 
+@pytest.mark.parametrize("name", sorted(PUBLICATION_FILES))
+def test_last_failed_selection_cannot_reuse_unselected_branch_hits(
+    coverage_project: Path, name: str
+) -> None:
+    """A repaired --lf rerun must fail coverage until the branch test runs again."""
+    script = coverage_project / name
+    # The implicit false branch has no exclusive line, keeping the aggregate
+    # above 80% when only that branch's test is omitted by the failure cache.
+    script.write_text(script.read_text().replace("    return 0\n", ""))
+    exercise = coverage_project / "tests/test_exercise.py"
+    complete_test = (
+        "import runpy\n\n"
+        "def test_exercise():\n"
+        f"    for path in {sorted(PUBLICATION_FILES)!r}:\n"
+        "        choose = runpy.run_path(path)['choose']\n"
+        "        assert choose(True) == 1\n"
+        f"        if path != {name!r}:\n"
+        "            assert choose(False) == 0\n"
+        "    assert 1 == 1\n\n"
+        "def test_false_branch():\n"
+        f"    assert runpy.run_path({name!r})['choose'](False) is None\n"
+    )
+    exercise.write_text(complete_test)
+    passing = _run_coverage_project(coverage_project)
+    assert passing.returncode == 0, passing.stdout + passing.stderr
+    report_path = coverage_project / "coverage.json"
+    previous = json.loads(report_path.read_text())
+
+    # Populate pytest's real lastfailed cache without losing any coverage.
+    exercise.write_text(complete_test.replace("    assert 1 == 1\n", "    assert 1 == 2\n"))
+    failed = _run_coverage_project(coverage_project)
+    output = failed.stdout + failed.stderr
+    assert failed.returncode == 1, output
+    assert "1 failed, 1 passed" in output
+    assert "PUBLICATION COVERAGE:" not in output
+
+    exercise.write_text(complete_test)
+    selected = _run_coverage_project(coverage_project, "--lf")
+    output = selected.stdout + selected.stderr
+    assert selected.returncode == 1, output
+    assert "1 passed" in output
+    assert "INTERNALERROR" not in output
+    assert "FAIL Required test coverage" not in output
+    errors = [line for line in output.splitlines() if line.startswith("PUBLICATION COVERAGE:")]
+    assert len(errors) == 1, output
+    assert errors[0].startswith(f"PUBLICATION COVERAGE: {name}: branch coverage ")
+    assert "below floor" in errors[0]
+
+    current = json.loads(report_path.read_text())
+    assert set(current["files"]) == set(previous["files"])
+    assert current["totals"]["percent_covered"] >= _load_baseline()["line"]
+    for path in PUBLICATION_FILES:
+        before = previous["files"][path]["summary"]
+        after = current["files"][path]["summary"]
+        assert after["num_statements"] == before["num_statements"]
+        assert after["covered_lines"] == before["covered_lines"]
+        assert after["num_branches"] == before["num_branches"]
+        assert after["covered_branches"] == before["covered_branches"] - int(path == name)
+    _assert_xml_matches_json(coverage_project, current)
+
+    restored = _run_coverage_project(coverage_project)
+    output = restored.stdout + restored.stderr
+    assert restored.returncode == 0, output
+    assert "2 passed" in output
+    assert "PUBLICATION COVERAGE:" not in output
+    report = json.loads(report_path.read_text())
+    assert report["files"] == previous["files"]
+    _assert_xml_matches_json(coverage_project, report)
+
+
 @pytest.mark.parametrize("stale_report", [False, True], ids=["absent", "stale"])
 def test_pytest_gate_requires_current_json_report(
     coverage_project: Path, stale_report: bool
