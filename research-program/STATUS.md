@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-25T09:21:26Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-25T09:36:53Z)
 
-Units: 301 — done 293, failed 1, queued 3, superseded 4
+Units: 301 — claimed 1, done 293, failed 1, queued 2, superseded 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok muse=ok aider=ok
 Orchestrator evidence (30d): offload runs 48, bound to a research round 48, scored 48 (PASS 34, FAIL 14, infra 0) — codex 8/8 (P3 F5 I0), cursor 40/40 (P31 F9 I0)
@@ -221,7 +221,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Manager-Database--2026-09-23T09-11-17Z | D | D | done | cursor | codex | Audit stranske/Manager-Database and file issues (scorecard 2026-09-22  | 8W/0P/0B/0F of 8 |
 | D-audit-Manager-Database--2026-10-24T04-03-28Z | D | D | done | cursor | driver | Audit stranske/Manager-Database and file issues (scorecard 2026-09-23  | 8W/0P/0B/0F of 8 |
 | D-audit-Manager-Database--2026-10-24T20-01-20Z | D | D | done | codex | driver | Audit stranske/Manager-Database and file issues (scorecard 2026-10-24: | 8W/0P/0B/0F of 8 |
-| D-audit-Manager-Database--2026-10-25T08-11-11Z | D | D | queued | claude |  | Audit stranske/Manager-Database and file issues (scorecard 2026-10-24: |  |
+| D-audit-Manager-Database--2026-10-25T08-11-11Z | D | D | claimed | cursor | driver | Audit stranske/Manager-Database and file issues (scorecard 2026-10-24: |  |
 | D-audit-Manager-Mosaic--2026-09-05T04-00-25Z | D | D | done | codex | driver | Audit stranske/Manager-Mosaic and file issues (supply 2 <= 2) |  |
 | D-audit-Manager-Mosaic--2026-09-19T20-12-04Z | D | D | done | codex | codex | Audit stranske/Manager-Mosaic and file issues (supply 3 <= 3) |  |
 | D-audit-Manager-Mosaic--2026-09-23T09-11-14Z | D | D | done | cursor | driver | Audit stranske/Manager-Mosaic and file issues (scorecard 2026-09-20 ha | 5W/1P/0B/0F of 6 |
@@ -314,8 +314,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-10-25T08:35:56Z — D-audit-Deliverable-Render--2026-10-25T08-11-07Z — refutation posted — stranske/Deliverable-Render#89
-- 2026-10-25T08:51:23Z — D-audit-Doc-Lineage--2026-10-25T08-11-13Z — route — router picked codex from ['codex', 'cursor']
 - 2026-10-25T08:51:23Z — D-audit-Doc-Lineage--2026-10-25T08-11-13Z — claimed by driver (agent codex)
 - 2026-10-25T09:00:49Z — D-audit-Doc-Lineage--2026-10-25T08-11-13Z — done — codex produced 664 words at artifacts/audits/Doc-Lineage-2026-10-25.md in 536s
 - 2026-10-25T09:00:50Z — D-audit-Doc-Lineage--2026-10-25T08-11-13Z — refutation posted — stranske/Doc-Lineage#47
@@ -326,6 +324,8 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-10-25T09:16:26Z — D-audit-Fine-Art-Archive--2026-10-25T08-11-13Z — route — router picked codex from ['codex', 'cursor']
 - 2026-10-25T09:16:26Z — D-audit-Fine-Art-Archive--2026-10-25T08-11-13Z — claimed by driver (agent codex)
 - 2026-10-25T09:21:26Z — D-audit-Fine-Art-Archive--2026-10-25T08-11-13Z — done — codex produced 514 words at artifacts/audits/Fine-Art-Archive-2026-10-25.md in 271s
+- 2026-10-25T09:36:53Z — D-audit-Manager-Database--2026-10-25T08-11-11Z — route — router picked cursor from ['codex', 'cursor']
+- 2026-10-25T09:36:53Z — D-audit-Manager-Database--2026-10-25T08-11-11Z — claimed by driver (agent cursor)
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
