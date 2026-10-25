@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 from collections.abc import Iterator
 from pathlib import Path
 from typing import Any
@@ -19,6 +20,7 @@ RUNTIME_KEYS = {
     "PYTHON_VERSION",
     "COVERAGE_REFERENCE_RUNTIME",
 }
+_OLD_RUNTIME = re.compile(r"(?<![\d.])3\.12(?!\d)")
 
 
 def _runtime_pins(node: Any, location: str) -> Iterator[tuple[str, Any]]:
@@ -45,9 +47,9 @@ def _contains_old_runtime(value: Any) -> bool:
             if len(entries) > 1:
                 return any(_contains_old_runtime(entry.strip()) for entry in entries)
         else:
-            if decoded != value:
+            if isinstance(decoded, (list, str)) and decoded != value:
                 return _contains_old_runtime(decoded)
-    return str(value) == "3.12" or str(value).startswith("3.12.")
+    return _OLD_RUNTIME.search(str(value)) is not None
 
 
 def test_workflow_python_pins_follow_standard() -> None:
@@ -90,13 +92,31 @@ def workflow_directory(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
 
 
 @pytest.mark.parametrize("key", sorted(RUNTIME_KEYS))
-@pytest.mark.parametrize("value", ["3.12", 3.12, ["3.13", "3.12"], '["3.12", "3.14"]', "3.12.8"])
+@pytest.mark.parametrize(
+    "value",
+    [
+        "3.12",
+        3.12,
+        ["3.13", "3.12"],
+        '["3.12", "3.14"]',
+        "3.12.8",
+        "3.12-dev",
+        "pypy3.12",
+        "pypy-3.12",
+        "~3.12",
+    ],
+)
 def test_runtime_standard_rejects_old_pins(workflow_directory: Path, key: str, value: Any) -> None:
     document = {"jobs": {"probe": {"steps": [{"env": {key: value}}]}}}
     (workflow_directory / "probe.yml").write_text(yaml.safe_dump(document), encoding="utf-8")
 
     with pytest.raises(AssertionError, match=rf"probe.yml.jobs.probe.steps\[0\].env.{key}"):
         test_workflow_python_pins_follow_standard()
+
+
+@pytest.mark.parametrize("value", ["3.120", '"3.120"', "13.12", "3.13", "3.14", "1.3.12"])
+def test_runtime_scan_preserves_other_version_tokens(value: str) -> None:
+    assert not _contains_old_runtime(value)
 
 
 def test_runtime_standard_rejects_pins_in_yaml_extension(workflow_directory: Path) -> None:
