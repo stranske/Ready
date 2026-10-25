@@ -4346,3 +4346,34 @@ remote: - Required status check "Gate / gate" is
 ## 2026-10-25T04:17:52Z — D3-unblock-sweep-2026-10-25T04 — done — cursor produced 963 words at artifacts/sweeps/D3-unblock-sweep-2026-10-25T04.md in 93s
 ## 2026-10-25T04:17:53Z — D3-unblock-sweep-2026-10-25T04 — refutation posted — stranske/Manager-Database#1773
 ## 2026-10-25T04:17:57Z — D3-unblock-sweep-2026-10-25T04 — refutation posted — stranske/Workflows#3999
+## 2026-10-25T08:11:07Z — refill — Deliverable-Render: scorecard 2026-09-24 is 31d old (> 30) → audit queued
+## 2026-10-25T08:11:09Z — refill — Trend_Model_Project: scorecard 2026-09-24 is 31d old (> 30) → audit queued
+## 2026-10-25T08:11:10Z — refill — Counter_Risk: scorecard 2026-10-24: coverage debt 4 (not exercised 2 + unscored 2) not reduced since 2026-09-23 (4) → audit queued
+## 2026-10-25T08:11:11Z — refill — Manager-Database: scorecard 2026-10-24: coverage debt 19 (not exercised 0 + unscored 19) not reduced since 2026-09-23 (0) → audit queued
+## 2026-10-25T08:11:12Z — refill — learning-management-system: scorecard 2026-10-24: coverage debt 1 (not exercised 0 + unscored 1) not reduced since 2026-09-22 (1) → audit queued
+## 2026-10-25T08:11:13Z — refill — Fine-Art-Archive: scorecard 2026-10-24: coverage debt 9 (not exercised 0 + unscored 9) not reduced since 2026-09-23 (9) → audit queued
+## 2026-10-25T08:11:13Z — refill — Doc-Lineage: scorecard 2026-09-24 is 31d old (> 30) → audit queued
+## 2026-10-25T08:11:14Z — D-audit-Counter_Risk--2026-10-25T08-11-10Z — route — router picked cursor from ['codex', 'cursor']
+## 2026-10-25T08:11:14Z — D-audit-Counter_Risk--2026-10-25T08-11-10Z — claimed by driver (agent cursor)
+## 2026-10-25T08:14:09Z — D-audit-Counter_Risk--2026-10-25T08-11-10Z — done — cursor produced 324 words at artifacts/audits/Counter_Risk-2026-10-25.md in 147s
+## 2026-10-25T08:14:11Z — D-audit-Counter_Risk--2026-10-25T08-11-10Z — refutation posted — stranske/Counter_Risk#1182
+## 2026-10-25T08:29:37Z — D-audit-Deliverable-Render--2026-10-25T08-11-07Z — route — router picked codex from ['codex', 'cursor']
+## 2026-10-25T08:29:37Z — D-audit-Deliverable-Render--2026-10-25T08-11-07Z — claimed by driver (agent codex)
+## 2026-10-25T08:35:54Z — D-audit-Deliverable-Render--2026-10-25T08-11-07Z — done — codex produced 938 words at artifacts/audits/Deliverable-Render-2026-10-25.md in 348s
+## 2026-10-25T08:35:56Z — D-audit-Deliverable-Render--2026-10-25T08-11-07Z — refutation posted — stranske/Deliverable-Render#89
+## 2026-10-25T08:51:23Z — D-audit-Doc-Lineage--2026-10-25T08-11-13Z — route — router picked codex from ['codex', 'cursor']
+## 2026-10-25T08:51:23Z — D-audit-Doc-Lineage--2026-10-25T08-11-13Z — claimed by driver (agent codex)
+## 2026-10-25T09:00:49Z — D-audit-Doc-Lineage--2026-10-25T08-11-13Z — done — codex produced 664 words at artifacts/audits/Doc-Lineage-2026-10-25.md in 536s
+## 2026-10-25T09:00:50Z — D-audit-Doc-Lineage--2026-10-25T08-11-13Z — refutation posted — stranske/Doc-Lineage#47
+## 2026-10-25T09:00:52Z — D-audit-Doc-Lineage--2026-10-25T08-11-13Z — refutation posted — stranske/Doc-Lineage#48
+## 2026-10-25T09:00:53Z — D-audit-Doc-Lineage--2026-10-25T08-11-13Z — refutation posted — stranske/Doc-Lineage#49
+## 2026-10-25T09:00:54Z — D-audit-Doc-Lineage--2026-10-25T08-11-13Z — refutation posted — stranske/Doc-Lineage#50
+## 2026-10-25T09:00:56Z — D-audit-Doc-Lineage--2026-10-25T08-11-13Z — refutation posted — stranske/Doc-Lineage#51
+## 2026-10-25T09:16:26Z — D-audit-Fine-Art-Archive--2026-10-25T08-11-13Z — route — router picked codex from ['codex', 'cursor']
+## 2026-10-25T09:16:26Z — D-audit-Fine-Art-Archive--2026-10-25T08-11-13Z — claimed by driver (agent codex)
+## 2026-10-25T09:21:26Z — D-audit-Fine-Art-Archive--2026-10-25T08-11-13Z — done — codex produced 514 words at artifacts/audits/Fine-Art-Archive-2026-10-25.md in 271s
+## 2026-10-25T09:36:53Z — D-audit-Manager-Database--2026-10-25T08-11-11Z — route — router picked cursor from ['codex', 'cursor']
+## 2026-10-25T09:36:53Z — D-audit-Manager-Database--2026-10-25T08-11-11Z — claimed by driver (agent cursor)
+## 2026-10-25T09:42:52Z — D-audit-Manager-Database--2026-10-25T08-11-11Z — done — cursor produced 259 words at artifacts/audits/Manager-Database-2026-10-25.md in 316s
+## 2026-10-25T09:42:53Z — D-audit-Manager-Database--2026-10-25T08-11-11Z — refutation posted — stranske/Manager-Database#1790
+## 2026-10-25T09:42:54Z — D-audit-Manager-Database--2026-10-25T08-11-11Z — refutation posted — stranske/Manager-Database#1784
