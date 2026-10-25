@@ -49,7 +49,7 @@ def _contains_old_runtime(value: Any) -> bool:
 
 def test_workflow_python_pins_follow_standard() -> None:
     workflows = {
-        path.name: yaml.safe_load(path.read_text(encoding="utf-8"))
+        path.name: yaml.load(path.read_text(encoding="utf-8"), Loader=_UniqueKeyLoader)
         for path in sorted(WORKFLOWS.iterdir())
         if path.is_file() and path.suffix in {".yml", ".yaml"}
     }
@@ -74,6 +74,68 @@ def test_workflow_python_pins_follow_standard() -> None:
         if "python-version" in step.get("with", {})
     ]
     assert runtimes == ["3.14"]
+
+
+@pytest.fixture
+def workflow_directory(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
+    """Exercise runtime validation without modifying protected workflow files."""
+    for filename in ("ci.yml", "pr-00-gate.yml", "publication-guard.yml"):
+        source = WORKFLOWS / filename
+        (tmp_path / filename).write_text(source.read_text(encoding="utf-8"), encoding="utf-8")
+    monkeypatch.setattr(f"{__name__}.WORKFLOWS", tmp_path)
+    return tmp_path
+
+
+@pytest.mark.parametrize("key", sorted(RUNTIME_KEYS))
+@pytest.mark.parametrize("value", ["3.12", 3.12, ["3.13", "3.12"], '["3.12", "3.14"]', "3.12.8"])
+def test_runtime_standard_rejects_old_pins(workflow_directory: Path, key: str, value: Any) -> None:
+    document = {"jobs": {"probe": {"steps": [{"env": {key: value}}]}}}
+    (workflow_directory / "probe.yml").write_text(yaml.safe_dump(document), encoding="utf-8")
+
+    with pytest.raises(AssertionError, match=rf"probe.yml.jobs.probe.steps\[0\].env.{key}"):
+        test_workflow_python_pins_follow_standard()
+
+
+def test_runtime_standard_rejects_pins_in_yaml_extension(workflow_directory: Path) -> None:
+    (workflow_directory / "probe.yaml").write_text("PYTHON_VERSION: '3.12'\n", encoding="utf-8")
+
+    with pytest.raises(AssertionError, match="probe.yaml.PYTHON_VERSION"):
+        test_workflow_python_pins_follow_standard()
+
+
+def test_runtime_standard_preserves_support_floors(workflow_directory: Path) -> None:
+    document = (
+        "# Supports Python 3.12\nenv: {PACKAGE_PYTHON_FLOOR: '3.12', PYTHON_VERSION: '3.14'}\n"
+    )
+    (workflow_directory / "probe.yml").write_text(document, encoding="utf-8")
+
+    test_workflow_python_pins_follow_standard()
+
+
+def test_runtime_standard_rejects_duplicate_pins(workflow_directory: Path) -> None:
+    document = "env: {PYTHON_VERSION: '3.12', PYTHON_VERSION: '3.14'}\n"
+    (workflow_directory / "probe.yml").write_text(document, encoding="utf-8")
+
+    with pytest.raises(yaml.constructor.ConstructorError, match="duplicate key 'PYTHON_VERSION'"):
+        test_workflow_python_pins_follow_standard()
+
+
+@pytest.mark.parametrize("filename", ["ci.yml", "pr-00-gate.yml"])
+def test_runtime_standard_detects_matrix_break_and_revert(
+    workflow_directory: Path, filename: str
+) -> None:
+    path = workflow_directory / filename
+    original = path.read_text(encoding="utf-8")
+    test_workflow_python_pins_follow_standard()
+    broken = original.replace('["3.13", "3.14"]', '["3.12", "3.14"]', 1)
+    assert broken != original, "The probe must change a matrix pin"
+    try:
+        path.write_text(broken, encoding="utf-8")
+        with pytest.raises(AssertionError, match="Python 3.12 runtime pins remain"):
+            test_workflow_python_pins_follow_standard()
+    finally:
+        path.write_text(original, encoding="utf-8")
+    test_workflow_python_pins_follow_standard()
 
 
 class _UniqueKeyLoader(yaml.SafeLoader):
