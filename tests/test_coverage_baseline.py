@@ -1212,7 +1212,7 @@ def test_pytest_gate_rejects_missing_publication_measurement(
 
 
 def test_pytest_gate_rejects_disabled_branch_collection(coverage_project: Path) -> None:
-    """Missing branch evidence must fail cleanly even when every line is covered."""
+    """Only collecting branch evidence may recover a line-only run, including CLI overrides."""
     config = coverage_project / "pyproject.toml"
     config.write_text(config.read_text().replace("branch = true", "branch = false"))
 
@@ -1232,6 +1232,33 @@ def test_pytest_gate_rejects_disabled_branch_collection(coverage_project: Path) 
     for name in PUBLICATION_FILES:
         summary = report["files"][name]["summary"]
         assert summary["covered_lines"] == summary["num_statements"]
+
+    # The CLI override must take precedence over branch=false in the config.
+    # Retain the line-only database and report to exercise the data-mode switch.
+    restored = _run_coverage_project(coverage_project, "--cov-branch")
+    output = restored.stdout + restored.stderr
+    assert restored.returncode == 0, output
+    assert "1 passed" in output
+    assert "PUBLICATION COVERAGE:" not in output
+    current = json.loads((coverage_project / "coverage.json").read_text())
+    assert current["meta"]["branch_coverage"] is True
+    assert set(current["files"]) == set(report["files"])
+    _assert_xml_matches_json(coverage_project, current)
+    for name in PUBLICATION_FILES:
+        summary = current["files"][name]["summary"]
+        assert summary["covered_lines"] == summary["num_statements"]
+        assert summary["covered_branches"] == summary["num_branches"] > 0
+
+    # Removing the override must fail again, despite the previous branch hits.
+    line_only = _run_coverage_project(coverage_project)
+    output = line_only.stdout + line_only.stderr
+    assert line_only.returncode == 1, output
+    assert "1 passed" in output
+    assert "INTERNALERROR" not in output
+    assert "Traceback" not in output
+    for name in PUBLICATION_FILES:
+        assert f"PUBLICATION COVERAGE: {name}: invalid branch measurement or floor" in output
+    assert json.loads((coverage_project / "coverage.json").read_text())["files"] == report["files"]
 
 
 @pytest.mark.parametrize("name", sorted(PUBLICATION_FILES))
