@@ -1620,6 +1620,15 @@ def test_real_publication_source_addition_fails_gate(coverage_project: Path) -> 
         (
             (
                 (
+                    "scripts/check_publication_safety.py",
+                    "tests/test_publication_safety.py::test_empty_or_missing_tree_fails[True]",
+                ),
+            ),
+            ("line", "branch"),
+        ),
+        (
+            (
+                (
                     "scripts/prepare_publication.py",
                     "tests/test_prepare_publication.py::"
                     "test_named_legacy_process_capture_is_wrapped_without_losing_output",
@@ -1642,7 +1651,14 @@ def test_real_publication_source_addition_fails_gate(coverage_project: Path) -> 
             ("line", "branch"),
         ),
     ],
-    ids=["guard-line-only", "preparer-line-only", "guard", "preparer", "both"],
+    ids=[
+        "guard-line-only",
+        "preparer-line-only",
+        "guard",
+        "guard-single-case",
+        "preparer",
+        "both",
+    ],
 )
 def test_real_test_removal_fails_publication_gate(
     coverage_project: Path, regressions: tuple[tuple[str, str], ...], lost_metrics: tuple[str, ...]
