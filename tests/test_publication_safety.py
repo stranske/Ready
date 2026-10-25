@@ -558,7 +558,10 @@ def test_dangling_local_policy_never_falls_back_to_root_policy(tmp_path, monkeyp
         ("skipped", "failure"),
     ],
 )
-def test_gate_summary_enforces_publication_even_when_python_skips(tmp_path, result, expected):
+@pytest.mark.parametrize("seal_result", ["success", "failure", "cancelled", "skipped"])
+def test_gate_summary_enforces_publication_even_when_python_skips(
+    tmp_path, result, expected, seal_result
+):
     # Execute the actual Gate aggregation script; no duplication of its logic.
     workflow = (REPO / ".github/workflows/pr-00-gate.yml").read_text()
     block = workflow.split("      - name: Summarize results\n", 1)[1]
@@ -571,10 +574,24 @@ def test_gate_summary_enforces_publication_even_when_python_skips(tmp_path, resu
         "DETECT_RESULT": "success",
         "PYTHON_RESULT": "skipped",
         "PUBLICATION_RESULT": result,
+        "DELIVERY_SEAL_RESULT": seal_result,
     }
     subprocess.run(["bash", "-c", script], env=env, check=True, capture_output=True)
-    assert f"state={expected}\n" in output.read_text()
-    assert "needs: [detect, python-ci, publication-safety]" in workflow
+    # Failed publication remains a failure even when the seal is unavailable.
+    # A passed publication cannot waive an unsuccessful generated-delivery seal.
+    verdict = (
+        expected
+        if expected == "failure" or seal_result == "success"
+        else {"failure": "failure", "cancelled": "error", "skipped": "pending"}[seal_result]
+    )
+    assert f"state={verdict}\n" in output.read_text()
+    summary = yaml.safe_load(workflow)["jobs"]["summary"]
+    assert {"detect", "python-ci", "publication-safety", "generated-delivery-seal"} <= set(
+        summary["needs"]
+    )
+    assert summary["steps"][1]["env"]["PUBLICATION_RESULT"] == (
+        "${{ needs.publication-safety.result || 'skipped' }}"
+    )
 
 
 def test_unreadable_directory_fails_closed(tmp_path, monkeypatch, capsys):
