@@ -4431,3 +4431,5 @@ remote: - Required status check "Gate / gate" is
 ## 2026-10-25T21:27:28Z — D-audit-Doc-Lineage--2026-10-25T20-34-28Z — refutation posted — stranske/Doc-Lineage#49
 ## 2026-10-25T21:27:29Z — D-audit-Doc-Lineage--2026-10-25T20-34-28Z — refutation posted — stranske/Doc-Lineage#50
 ## 2026-10-25T21:27:31Z — D-audit-Doc-Lineage--2026-10-25T20-34-28Z — refutation posted — stranske/Doc-Lineage#51
+## 2026-10-25T21:42:58Z — D-audit-Fine-Art-Archive--2026-10-25T20-34-28Z — route — router picked cursor from ['codex', 'cursor']
+## 2026-10-25T21:42:58Z — D-audit-Fine-Art-Archive--2026-10-25T20-34-28Z — claimed by driver (agent cursor)
