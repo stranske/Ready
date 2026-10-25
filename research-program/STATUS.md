@@ -1,9 +1,9 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-25T09:42:54Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-25T15:00:31Z)
 
-Units: 301 — done 294, failed 1, queued 2, superseded 4
+Units: 302 — done 297, failed 1, superseded 4
 Paused: False   Phase stops: []
-Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok muse=ok aider=ok
-Orchestrator evidence (30d): offload runs 48, bound to a research round 48, scored 48 (PASS 34, FAIL 14, infra 0) — codex 8/8 (P3 F5 I0), cursor 40/40 (P31 F9 I0)
+Capacity (Orchestrator): codex=warn claude=shed cursor=ok gemini=warn vibe=ok muse=ok aider=ok
+Orchestrator evidence (30d): offload runs 47, bound to a research round 47, scored 47 (PASS 33, FAIL 14, infra 0) — codex 8/8 (P3 F5 I0), cursor 39/39 (P30 F9 I0)
 Worker write boundary: on — each unit writes only unitdirs/<unit>/, its output directory, artifacts/proposals/, its own clone's working tree (not .git) and temp
 Claude conservation: off (weekly window available)
 Owner inbox: https://github.com/stranske/Ready/issues/553
@@ -171,6 +171,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D3-unblock-sweep-2026-10-24T05 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-2026-10-24T20 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-2026-10-25T04 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
+| D3-unblock-sweep-2026-10-25T12 | D | D | done | codex | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-pass2-20260913T2023 | D | D | done | cursor | driver | Unblock sweep pass 2: the seven repos the budgeted first pass deferred |  |
 | D-audit-Counter_Risk--2026-09-07T04-47-32Z | D | D | done | codex | driver | Audit stranske/Counter_Risk and file issues (supply 2 <= 2) |  |
 | D-audit-Counter_Risk--2026-09-08T17-11-36Z | D | D | done | codex | codex | Audit stranske/Counter_Risk and file issues (supply 1 <= 2) |  |
@@ -250,7 +251,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Trend_Model_Project--2026-09-19T20-12-05Z | D | D | superseded | codex |  | Audit stranske/Trend_Model_Project and file issues (supply 0 <= 2) |  |
 | D-audit-Trend_Model_Project--2026-09-23T09-11-16Z | D | D | done | cursor | driver | Audit stranske/Trend_Model_Project and file issues (scorecard 2026-09- | 1W/2P/1B/0F of 4 |
 | D-audit-Trend_Model_Project--2026-09-23T22-11-14Z | D | D | done | cursor | codex | Audit stranske/Trend_Model_Project and file issues (scorecard 2026-09- | 3W/1P/0B/0F of 4 |
-| D-audit-Trend_Model_Project--2026-10-25T08-11-09Z | D | D | queued | claude |  | Audit stranske/Trend_Model_Project and file issues (scorecard 2026-09- |  |
+| D-audit-Trend_Model_Project--2026-10-25T08-11-09Z | D | D | done | cursor | driver | Audit stranske/Trend_Model_Project and file issues (scorecard 2026-09- | 3W/1P/0B/0F of 4 |
 | D-audit-Workflows--2026-09-23T09-11-15Z | D | D | done | codex | codex | Audit stranske/Workflows and file issues (scorecard 2026-09-20 has no  | 4W/0P/1B/0F of 7 |
 | D-audit-Workflows--2026-09-23T22-11-13Z | D | D | done | cursor |  | Audit stranske/Workflows and file issues (scorecard 2026-09-23 has no  |  |
 | D-audit-Workflows--2026-09-24T11-10-38Z | D | D | done | cursor | codex | Audit stranske/Workflows and file issues (scorecard 2026-09-24: 1 brok | 4W/0P/1B/0F of 7 |
@@ -268,7 +269,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-learning-management-system--2026-09-22T20-42-45Z | D | D | done | cursor | driver | Audit stranske/learning-management-system and file issues (supply 2 <= |  |
 | D-audit-learning-management-system--2026-10-24T04-03-30Z | D | D | done | cursor | driver | Audit stranske/learning-management-system and file issues (scorecard 2 | 2W/5P/0B/0F of 7 |
 | D-audit-learning-management-system--2026-10-24T20-01-21Z | D | D | done | codex | driver | Audit stranske/learning-management-system and file issues (scorecard 2 | 2W/5P/0B/0F of 7 |
-| D-audit-learning-management-system--2026-10-25T08-11-12Z | D | D | queued | claude |  | Audit stranske/learning-management-system and file issues (scorecard 2 |  |
+| D-audit-learning-management-system--2026-10-25T08-11-12Z | D | D | done | cursor | driver | Audit stranske/learning-management-system and file issues (scorecard 2 | 2W/5P/0B/0F of 7 |
 | D-audit-trip-planner--2026-09-07T04-47-34Z | D | D | done | codex | codex | Audit stranske/trip-planner and file issues (supply 2 <= 2) |  |
 | D-audit-trip-planner--2026-10-02T10-11-06Z | D | D | done | codex | codex | Audit stranske/trip-planner and file issues (scorecard 2026-10-01: 1 p | 7W/1P/0B/0F of 8 |
 | D4-verify-merged-2026-09-05T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
@@ -314,18 +315,18 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-10-25T09:00:52Z — D-audit-Doc-Lineage--2026-10-25T08-11-13Z — refutation posted — stranske/Doc-Lineage#48
-- 2026-10-25T09:00:53Z — D-audit-Doc-Lineage--2026-10-25T08-11-13Z — refutation posted — stranske/Doc-Lineage#49
-- 2026-10-25T09:00:54Z — D-audit-Doc-Lineage--2026-10-25T08-11-13Z — refutation posted — stranske/Doc-Lineage#50
-- 2026-10-25T09:00:56Z — D-audit-Doc-Lineage--2026-10-25T08-11-13Z — refutation posted — stranske/Doc-Lineage#51
-- 2026-10-25T09:16:26Z — D-audit-Fine-Art-Archive--2026-10-25T08-11-13Z — route — router picked codex from ['codex', 'cursor']
-- 2026-10-25T09:16:26Z — D-audit-Fine-Art-Archive--2026-10-25T08-11-13Z — claimed by driver (agent codex)
-- 2026-10-25T09:21:26Z — D-audit-Fine-Art-Archive--2026-10-25T08-11-13Z — done — codex produced 514 words at artifacts/audits/Fine-Art-Archive-2026-10-25.md in 271s
-- 2026-10-25T09:36:53Z — D-audit-Manager-Database--2026-10-25T08-11-11Z — route — router picked cursor from ['codex', 'cursor']
-- 2026-10-25T09:36:53Z — D-audit-Manager-Database--2026-10-25T08-11-11Z — claimed by driver (agent cursor)
-- 2026-10-25T09:42:52Z — D-audit-Manager-Database--2026-10-25T08-11-11Z — done — cursor produced 259 words at artifacts/audits/Manager-Database-2026-10-25.md in 316s
-- 2026-10-25T09:42:53Z — D-audit-Manager-Database--2026-10-25T08-11-11Z — refutation posted — stranske/Manager-Database#1790
-- 2026-10-25T09:42:54Z — D-audit-Manager-Database--2026-10-25T08-11-11Z — refutation posted — stranske/Manager-Database#1784
+- 2026-10-25T10:05:36Z — D-audit-Trend_Model_Project--2026-10-25T08-11-09Z — done — cursor produced 215 words at artifacts/audits/Trend_Model_Project-2026-10-25.md in 403s
+- 2026-10-25T10:21:04Z — D-audit-learning-management-system--2026-10-25T08-11-12Z — route — router picked cursor from ['codex', 'cursor']
+- 2026-10-25T10:21:04Z — D-audit-learning-management-system--2026-10-25T08-11-12Z — claimed by driver (agent cursor)
+- 2026-10-25T10:29:06Z — D-audit-learning-management-system--2026-10-25T08-11-12Z — done — cursor produced 213 words at artifacts/audits/learning-management-system-2026-10-25.md in 449s
+- 2026-10-25T10:29:08Z — D-audit-learning-management-system--2026-10-25T08-11-12Z — refutation posted — stranske/learning-management-system#784
+- 2026-10-25T10:29:09Z — D-audit-learning-management-system--2026-10-25T08-11-12Z — refutation posted — stranske/learning-management-system#785
+- 2026-10-25T12:18:49Z — unblock — enqueued D3-unblock-sweep-2026-10-25T12
+- 2026-10-25T12:18:50Z — D3-unblock-sweep-2026-10-25T12 — route — router picked codex from ['codex', 'cursor']
+- 2026-10-25T12:18:50Z — D3-unblock-sweep-2026-10-25T12 — claimed by driver (agent codex)
+- 2026-10-25T12:25:02Z — D3-unblock-sweep-2026-10-25T12 — done — codex produced 644 words at artifacts/sweeps/D3-unblock-sweep-2026-10-25T12.md in 309s
+- 2026-10-25T12:25:04Z — D3-unblock-sweep-2026-10-25T12 — refutation posted — stranske/Manager-Database#1773
+- 2026-10-25T12:25:06Z — D3-unblock-sweep-2026-10-25T12 — refutation posted — stranske/Workflows#3999
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
