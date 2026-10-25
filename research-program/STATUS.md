@@ -1,8 +1,8 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-25T20:07:11Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-25T20:17:22Z)
 
-Units: 303 — claimed 1, done 297, failed 1, superseded 4
+Units: 303 — done 298, failed 1, superseded 4
 Paused: False   Phase stops: []
-Capacity (Orchestrator): codex=warn claude=shed cursor=ok gemini=warn vibe=ok muse=ok aider=ok
+Capacity (Orchestrator): codex=warn claude=shed cursor=ok gemini=ok vibe=ok muse=ok aider=ok
 Orchestrator evidence (30d): offload runs 47, bound to a research round 47, scored 47 (PASS 33, FAIL 14, infra 0) — codex 8/8 (P3 F5 I0), cursor 39/39 (P30 F9 I0)
 Worker write boundary: on — each unit writes only unitdirs/<unit>/, its output directory, artifacts/proposals/, its own clone's working tree (not .git) and temp
 Claude conservation: off (weekly window available)
@@ -312,11 +312,10 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D4-verify-merged-2026-10-22T19 | D | D | done | codex | driver | Verify merged PRs against their issues' acceptance criteria |  |
 | D4-verify-merged-2026-10-23T19 | D | D | done | codex | driver | Verify merged PRs against their issues' acceptance criteria |  |
 | D4-verify-merged-2026-10-24T20 | D | D | done | codex | driver | Verify merged PRs against their issues' acceptance criteria |  |
-| D4-verify-merged-2026-10-25T20 | D | D | claimed | codex | driver | Verify merged PRs against their issues' acceptance criteria |  |
+| D4-verify-merged-2026-10-25T20 | D | D | done | codex | driver | Verify merged PRs against their issues' acceptance criteria |  |
 
 ## Last checkpoints
 
-- 2026-10-25T16:33:16Z — mirror — deferred — Ready#642 exact-head sync review; publication resumes by 2026-10-25T17:28:23+00:00; local work continues
 - 2026-10-25T16:48:20Z — mirror — deferred — Ready#642 exact-head sync review; publication resumes by 2026-10-25T18:45:10+00:00; local work continues
 - 2026-10-25T17:03:24Z — mirror — deferred — Ready#642 exact-head sync review; publication resumes by 2026-10-25T18:45:10+00:00; local work continues
 - 2026-10-25T17:18:27Z — mirror — deferred — Ready#642 exact-head sync review; publication resumes by 2026-10-25T18:45:10+00:00; local work continues
@@ -328,6 +327,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-10-25T20:07:10Z — verify — enqueued D4-verify-merged-2026-10-25T20
 - 2026-10-25T20:07:11Z — D4-verify-merged-2026-10-25T20 — route — router picked codex from ['codex', 'cursor']
 - 2026-10-25T20:07:11Z — D4-verify-merged-2026-10-25T20 — claimed by driver (agent codex)
+- 2026-10-25T20:17:22Z — D4-verify-merged-2026-10-25T20 — done — vibe produced 984 words at artifacts/verification/D4-verify-merged-2026-10-25T20.md in 582s
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
