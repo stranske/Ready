@@ -382,6 +382,64 @@ def test_unexecuted_product_branches_still_fail_aggregate_gate(
         assert summary["covered_branches"] == summary["num_branches"]
 
 
+@pytest.mark.parametrize("name", sorted(PUBLICATION_FILES))
+def test_aggregate_failure_survives_publication_regression_and_repair(
+    coverage_project: Path, name: str
+) -> None:
+    """Repairing a publication floor must not clear an independent aggregate failure."""
+    source = coverage_project / "src/my_project/unexecuted.py"
+    original_source = source.read_bytes()
+    source.write_text("def choose(flag):\n    if flag:\n        return 1\n    return 0\n")
+    exercise = coverage_project / "tests/test_exercise.py"
+    original_exercise = exercise.read_bytes()
+    report_path = coverage_project / "coverage.json"
+    before = None
+
+    for phase in ("aggregate", "both", "publication-repaired", "all-repaired"):
+        if phase == "both":
+            exercise.write_text(
+                exercise.read_text().replace(
+                    "        assert choose(False) == 0",
+                    f"        if path != {name!r}:\n            assert choose(False) == 0",
+                )
+            )
+        elif phase == "publication-repaired":
+            exercise.write_bytes(original_exercise)
+        elif phase == "all-repaired":
+            source.write_bytes(original_source)
+
+        result = _run_coverage_project(coverage_project)
+        output = result.stdout + result.stderr
+        assert result.returncode == int(phase != "all-repaired"), output
+        assert "1 passed" in output
+        assert "INTERNALERROR" not in output
+        assert ("FAIL Required test coverage of 80" in output) == (phase != "all-repaired")
+
+        report = json.loads(report_path.read_text())
+        _assert_xml_matches_json(coverage_project, report)
+        assert set(report["files"]) == PUBLICATION_FILES | {"src/my_project/unexecuted.py"}
+        assert (report["totals"]["percent_covered"] >= _load_baseline()["line"]) == (
+            phase == "all-repaired"
+        )
+        errors = [line for line in output.splitlines() if line.startswith("PUBLICATION COVERAGE:")]
+        if phase == "both":
+            assert len(errors) == 2, output
+            for metric, error in zip(("line", "branch"), errors, strict=True):
+                assert error.startswith(f"PUBLICATION COVERAGE: {name}: {metric} coverage ")
+                assert "below floor" in error
+            summary = report["files"][name]["summary"]
+            for metric in ("covered_lines", "covered_branches"):
+                assert summary[metric] == before["files"][name]["summary"][metric] - 1
+        else:
+            assert not errors, output
+            if before is None:
+                before = report
+            else:
+                for path in PUBLICATION_FILES:
+                    assert report["files"][path] == before["files"][path]
+        assert report["files"]["src/my_project/unexecuted.py"]["summary"]["covered_lines"] == 0
+
+
 @pytest.mark.parametrize(
     "unrelated",
     [
