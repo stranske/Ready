@@ -1745,7 +1745,14 @@ def _use_real_publication_tests(project: Path) -> None:
         shutil.copyfile(REPO_ROOT / relative, project / relative)
 
 
-def test_real_publication_source_addition_fails_gate(coverage_project: Path) -> None:
+@pytest.mark.parametrize(
+    "changed_files",
+    [(name,) for name in sorted(PUBLICATION_FILES)] + [tuple(sorted(PUBLICATION_FILES))],
+    ids=["scanner", "preparer", "both"],
+)
+def test_real_publication_source_addition_fails_gate(
+    coverage_project: Path, changed_files: tuple[str, ...]
+) -> None:
     """New untested production paths must breach the floor without removing any tests."""
     _use_real_publication_tests(coverage_project)
     args = ("-k", "not workflow and not gate_summary")
@@ -1754,7 +1761,7 @@ def test_real_publication_source_addition_fails_gate(coverage_project: Path) -> 
     report_path = coverage_project / "coverage.json"
     before = json.loads(report_path.read_text())
 
-    originals = {name: (coverage_project / name).read_bytes() for name in PUBLICATION_FILES}
+    originals = {name: (coverage_project / name).read_bytes() for name in changed_files}
     added = (
         b"\n\ndef untested_publication_path(flag):\n    if flag:\n        return 1\n    return 0\n"
     )
@@ -1773,8 +1780,10 @@ def test_real_publication_source_addition_fails_gate(coverage_project: Path) -> 
     assert set(after["files"]) == set(before["files"])
     assert after["totals"]["percent_covered"] >= _load_baseline()["line"]
     errors = [line for line in output.splitlines() if line.startswith("PUBLICATION COVERAGE:")]
-    assert len(errors) == 4, output
-    for index, name in enumerate(sorted(PUBLICATION_FILES)):
+    assert len(errors) == 2 * len(changed_files), output
+    for name in PUBLICATION_FILES - set(changed_files):
+        assert after["files"][name] == before["files"][name]
+    for index, name in enumerate(changed_files):
         original_summary = before["files"][name]["summary"]
         summary = after["files"][name]["summary"]
         assert summary["num_statements"] > original_summary["num_statements"]
