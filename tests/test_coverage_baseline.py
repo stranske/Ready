@@ -1207,6 +1207,21 @@ def test_publication_coverage_merges_parallel_cli_measurements(
     coverage_project: Path, missing_branch: str | None
 ) -> None:
     """Concurrent CLI hits must reflect branch removal and restoration on each run."""
+
+    def assert_artifacts_and_standalone_gate(report: dict, errors: list[str]) -> None:
+        _assert_xml_matches_json(coverage_project, report)
+        standalone = subprocess.run(
+            [sys.executable, "scripts/publication_coverage_gate.py"],
+            cwd=coverage_project,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        assert standalone.returncode == int(bool(errors)), standalone.stdout + standalone.stderr
+        assert standalone.stderr == ""
+        expected = "\n".join(errors) if errors else "Ready publication coverage floors PASS"
+        assert standalone.stdout == expected + "\n"
+
     for name in PUBLICATION_FILES:
         (coverage_project / name).write_text(
             "import sys\n\n"
@@ -1234,6 +1249,7 @@ def test_publication_coverage_merges_parallel_cli_measurements(
     assert complete.returncode == 0, complete.stdout + complete.stderr
     report_path = coverage_project / "coverage.json"
     before = json.loads(report_path.read_text())
+    assert_artifacts_and_standalone_gate(before, [])
     if missing_branch is not None:
         exercise.write_text(
             complete_test.replace("OMIT_BRANCH = None", f"OMIT_BRANCH = {missing_branch!r}")
@@ -1256,6 +1272,9 @@ def test_publication_coverage_merges_parallel_cli_measurements(
         assert summary["covered_lines"] == summary["num_statements"]
         assert summary["missing_branches"] == int(name == missing_branch)
     errors = [line for line in output.splitlines() if line.startswith("PUBLICATION COVERAGE:")]
+    assert_artifacts_and_standalone_gate(
+        report, [line.removeprefix("PUBLICATION COVERAGE: ") for line in errors]
+    )
     if missing_branch is None:
         assert not errors
     else:
@@ -1270,7 +1289,9 @@ def test_publication_coverage_merges_parallel_cli_measurements(
         output = restored.stdout + restored.stderr
         assert restored.returncode == 0, output
         assert "PUBLICATION COVERAGE:" not in output
-        assert json.loads(report_path.read_text())["files"] == before["files"]
+        restored_report = json.loads(report_path.read_text())
+        assert restored_report["files"] == before["files"]
+        assert_artifacts_and_standalone_gate(restored_report, [])
 
 
 @pytest.mark.parametrize("name", sorted(PUBLICATION_FILES))
