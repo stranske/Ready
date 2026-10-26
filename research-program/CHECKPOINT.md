@@ -4445,3 +4445,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-10-26T04:38:30Z — unblock — enqueued D3-unblock-sweep-2026-10-26T04
 ## 2026-10-26T04:38:30Z — D3-unblock-sweep-2026-10-26T04 — route — router picked codex from ['codex', 'cursor']
 ## 2026-10-26T04:38:30Z — D3-unblock-sweep-2026-10-26T04 — claimed by driver (agent codex)
+## 2026-10-26T04:45:15Z — D3-unblock-sweep-2026-10-26T04 — fail — offload to vibe exited 70; offload profile completion persistence is pending
+## 2026-10-26T05:00:20Z — D3-unblock-sweep-2026-10-26T04 — route — router picked cursor from ['codex', 'cursor']
+## 2026-10-26T05:00:20Z — D3-unblock-sweep-2026-10-26T04 — claimed by driver (agent cursor)

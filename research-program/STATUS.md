@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-26T04:38:30Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-26T05:00:20Z)
 
 Units: 309 — claimed 1, done 303, failed 1, superseded 4
 Paused: False   Phase stops: []
@@ -174,7 +174,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D3-unblock-sweep-2026-10-25T04 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-2026-10-25T12 | D | D | done | codex | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-2026-10-25T20 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
-| D3-unblock-sweep-2026-10-26T04 | D | D | claimed | codex | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
+| D3-unblock-sweep-2026-10-26T04 | D | D | claimed | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-pass2-20260913T2023 | D | D | done | cursor | driver | Unblock sweep pass 2: the seven repos the budgeted first pass deferred |  |
 | D-audit-Counter_Risk--2026-09-07T04-47-32Z | D | D | done | codex | driver | Audit stranske/Counter_Risk and file issues (supply 2 <= 2) |  |
 | D-audit-Counter_Risk--2026-09-08T17-11-36Z | D | D | done | codex | codex | Audit stranske/Counter_Risk and file issues (supply 1 <= 2) |  |
@@ -322,9 +322,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-10-25T21:48:50Z — D-audit-Fine-Art-Archive--2026-10-25T20-34-28Z — done — cursor produced 291 words at artifacts/audits/Fine-Art-Archive-2026-10-25.md in 318s
-- 2026-10-25T22:04:21Z — B1-citefix-B7-PROGRAM-PLAN-v3 — route — router picked cursor from ['codex', 'cursor', 'gemini']
-- 2026-10-25T22:04:21Z — B1-citefix-B7-PROGRAM-PLAN-v3 — claimed by driver (agent cursor)
 - 2026-10-25T22:05:32Z — B1-citefix-B7-PROGRAM-PLAN-v3 — done — cursor produced 3346 words at artifacts/research/B7-PROGRAM-PLAN-v3.md in 33s
 - 2026-10-25T23:23:25Z — mirror — deferred — Ready#642 exact-head sync review; publication resumes by 2026-10-26T01:19:45+00:00; local work continues
 - 2026-10-25T23:38:28Z — mirror — deferred — Ready#642 exact-head sync review; publication resumes by 2026-10-26T01:19:45+00:00; local work continues
@@ -334,6 +331,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-10-26T04:38:30Z — unblock — enqueued D3-unblock-sweep-2026-10-26T04
 - 2026-10-26T04:38:30Z — D3-unblock-sweep-2026-10-26T04 — route — router picked codex from ['codex', 'cursor']
 - 2026-10-26T04:38:30Z — D3-unblock-sweep-2026-10-26T04 — claimed by driver (agent codex)
+- 2026-10-26T04:45:15Z — D3-unblock-sweep-2026-10-26T04 — fail — offload to vibe exited 70; offload profile completion persistence is pending
+- 2026-10-26T05:00:20Z — D3-unblock-sweep-2026-10-26T04 — route — router picked cursor from ['codex', 'cursor']
+- 2026-10-26T05:00:20Z — D3-unblock-sweep-2026-10-26T04 — claimed by driver (agent cursor)
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
