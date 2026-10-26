@@ -562,8 +562,9 @@ def test_pytest_gate_rejects_independent_publication_regressions(
 
 @pytest.mark.parametrize("name", sorted(PUBLICATION_FILES))
 @pytest.mark.parametrize("metric", ["line", "branch"])
+@pytest.mark.parametrize("floor_increase", [0.0001, 0.0000001], ids=["displayed", "sub-display"])
 def test_pytest_gate_uses_configured_publication_floor(
-    coverage_project: Path, name: str, metric: str
+    coverage_project: Path, name: str, metric: str, floor_increase: float
 ) -> None:
     """Changing only a configured floor must change the Gate decision at that boundary."""
     script = coverage_project / name
@@ -591,8 +592,9 @@ def test_pytest_gate_uses_configured_publication_floor(
     previous = json.loads(report_path.read_text())
 
     # Leave code, tests and previous coverage artifacts intact; tighten only
-    # this script's configured metric by less than the terminal display precision.
-    baseline["publication_scripts"][name][metric] = measured + 0.0001
+    # this script's configured metric. Even a change hidden by the diagnostic's
+    # six decimal places must fail; formatting must never round a loss away.
+    baseline["publication_scripts"][name][metric] = measured + floor_increase
     baseline_path.write_text(json.dumps(baseline))
     failing = _run_coverage_project(coverage_project)
     output = failing.stdout + failing.stderr
@@ -603,7 +605,7 @@ def test_pytest_gate_uses_configured_publication_floor(
     errors = [line for line in output.splitlines() if line.startswith("PUBLICATION COVERAGE:")]
     assert errors == [
         f"PUBLICATION COVERAGE: {name}: {metric} coverage {measured:.6f}% "
-        f"below floor {measured + 0.0001:.6f}%"
+        f"below floor {measured + floor_increase:.6f}%"
     ]
     current = json.loads(report_path.read_text())
     assert current["files"] == previous["files"]
