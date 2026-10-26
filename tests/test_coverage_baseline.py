@@ -183,8 +183,22 @@ def _run_coverage_project(project: Path, *pytest_args: str) -> subprocess.Comple
     # These probes rewrite same-size tests within one filesystem timestamp tick.
     # Execute their current source bytes while retaining coverage and --lf data.
     env["PYTHONDONTWRITEBYTECODE"] = "1"
+    # Exercise only pytest-cov and the copied repository hooks. Unrelated
+    # runner plugins can add hooks or startup costs to every isolated probe.
+    env["PYTEST_DISABLE_PLUGIN_AUTOLOAD"] = "1"
+    env.pop("PYTEST_PLUGINS", None)
     return subprocess.run(
-        [sys.executable, "-m", "pytest", "-q", "-m", "not slow", *pytest_args],
+        [
+            sys.executable,
+            "-m",
+            "pytest",
+            "-p",
+            "pytest_cov.plugin",
+            "-q",
+            "-m",
+            "not slow",
+            *pytest_args,
+        ],
         cwd=project,
         capture_output=True,
         text=True,
@@ -225,6 +239,22 @@ def _assert_xml_matches_json(project: Path, report: dict) -> None:
                 total_branches += int(counts[2])
         assert covered_branches == summary["covered_branches"]
         assert total_branches == summary["num_branches"]
+
+
+def test_coverage_probe_ignores_unrelated_runner_plugins(
+    coverage_project: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Runner plugin requests must not change the isolated coverage experiment."""
+    monkeypatch.setenv("PYTEST_PLUGINS", "runner_plugin_that_is_not_installed")
+    monkeypatch.setenv("PYTEST_DISABLE_PLUGIN_AUTOLOAD", "0")
+
+    result = _run_coverage_project(coverage_project)
+
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert "1 passed" in result.stdout
+    report = json.loads((coverage_project / "coverage.json").read_text())
+    assert set(report["files"]) == PUBLICATION_FILES | {"src/my_project/unexecuted.py"}
+    _assert_xml_matches_json(coverage_project, report)
 
 
 @pytest.mark.parametrize("execution", ["in-process", "subprocess"])
