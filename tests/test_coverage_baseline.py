@@ -156,6 +156,10 @@ def coverage_project(tmp_path: Path) -> Path:
 
     exercised_files = sorted(PUBLICATION_FILES) + [
         "scripts/ci_coverage_delta.py",
+        "scripts/check_publication_safety_copy.py",
+        "scripts/prepare_publication_copy.py",
+        "src_backup/my_project/unrelated.py",
+        "tests/fixtures/src/my_project/unrelated.py",
         "tests/fixtures/scripts/check_publication_safety.py",
         "tests/fixtures/scripts/prepare_publication.py",
     ]
