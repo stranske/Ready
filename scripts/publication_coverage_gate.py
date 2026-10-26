@@ -67,7 +67,7 @@ def check_report(report: dict[str, Any], baseline: dict[str, Any]) -> list[str]:
                 finite_numbers = False
             if not finite_numbers or not 0 <= floor <= 100 or count <= 0 or not 0 <= hit <= count:
                 errors.append(f"{name}: invalid {metric} measurement or floor")
-            elif 100 * hit / count + 1e-9 < floor:
+            elif 100 * hit / count < floor:
                 errors.append(
                     f"{name}: {metric} coverage {100 * hit / count:.6f}% below floor {floor:.6f}%"
                 )

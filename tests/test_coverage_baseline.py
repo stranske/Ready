@@ -562,7 +562,11 @@ def test_pytest_gate_rejects_independent_publication_regressions(
 
 @pytest.mark.parametrize("name", sorted(PUBLICATION_FILES))
 @pytest.mark.parametrize("metric", ["line", "branch"])
-@pytest.mark.parametrize("floor_increase", [0.0001, 0.0000001], ids=["displayed", "sub-display"])
+@pytest.mark.parametrize(
+    "floor_increase",
+    [0.0001, 0.0000001, 0.0000000001],
+    ids=["displayed", "sub-display", "sub-tolerance"],
+)
 def test_pytest_gate_uses_configured_publication_floor(
     coverage_project: Path, name: str, metric: str, floor_increase: float
 ) -> None:
