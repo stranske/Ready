@@ -757,8 +757,9 @@ def test_pytest_gate_rejects_src_only_coverage_override(coverage_project: Path) 
 
 @pytest.mark.parametrize("name", sorted(PUBLICATION_FILES))
 @pytest.mark.parametrize("phase", ["run", "report"])
+@pytest.mark.parametrize("filter_kind", ["omit", "include"])
 def test_pytest_gate_rejects_filter_hiding_publication_script(
-    coverage_project: Path, name: str, phase: str
+    coverage_project: Path, name: str, phase: str, filter_kind: str
 ) -> None:
     """Collection and report filters cannot hide either script behind stale evidence."""
     from coverage import CoverageData
@@ -770,12 +771,16 @@ def test_pytest_gate_rejects_filter_hiding_publication_script(
 
     config = coverage_project / "pyproject.toml"
     original = config.read_bytes()
-    # Omit one script either before tracing or only when generating reports.
-    config.write_text(
-        config.read_text().replace(
-            f"[tool.coverage.{phase}]\n", f'[tool.coverage.{phase}]\nomit = ["{name}"]\n'
-        )
-    )
+    # Hide one script either before tracing or only when generating reports.
+    # Dropping an include entry models accidental narrowing of the measured
+    # source set; omit models an exclusion overriding that set.
+    section = f"[tool.coverage.{phase}]\n"
+    if filter_kind == "omit":
+        config.write_text(config.read_text().replace(section, f'{section}omit = ["{name}"]\n'))
+    else:
+        before, settings = config.read_text().split(section, 1)
+        settings = settings.replace(f', "{name}"', "", 1)
+        config.write_text(before + section + settings)
 
     failing = _run_coverage_project(coverage_project)
     output = failing.stdout + failing.stderr
