@@ -561,6 +561,67 @@ def test_pytest_gate_rejects_independent_publication_regressions(
 
 
 @pytest.mark.parametrize("name", sorted(PUBLICATION_FILES))
+@pytest.mark.parametrize("outcome", ["skip", "xfail"])
+def test_suppressed_branch_test_still_fails_publication_floor(
+    coverage_project: Path, name: str, outcome: str
+) -> None:
+    """Skipped and unexecuted xfails cannot hide a loss behind successful pytest outcomes."""
+    script = coverage_project / name
+    # An implicit false branch has no exclusive line: suppressing its test
+    # leaves line coverage intact and the aggregate above its configured floor.
+    script.write_text(script.read_text().replace("    return 0\n", ""))
+    exercise = coverage_project / "tests/test_exercise.py"
+    exercise.write_text(
+        "import pytest\n"
+        + exercise.read_text().replace(
+            "        assert choose(False) == 0\n",
+            f"        if path != {name!r}:\n            assert choose(False) == 0\n",
+        )
+        + "\ndef test_publication_false_branch():\n"
+        f"    assert runpy.run_path({name!r})['choose'](False) is None\n"
+    )
+    original = exercise.read_bytes()
+    passing = _run_coverage_project(coverage_project)
+    assert passing.returncode == 0, passing.stdout + passing.stderr
+    report_path = coverage_project / "coverage.json"
+    before = json.loads(report_path.read_text())
+
+    marker = (
+        "@pytest.mark.skip(reason='suppressed branch regression control')\n"
+        if outcome == "skip"
+        else "@pytest.mark.xfail(run=False, reason='suppressed branch regression control')\n"
+    )
+    exercise.write_text(
+        exercise.read_text().replace(
+            "def test_publication_false_branch():", marker + "def test_publication_false_branch():"
+        )
+    )
+    failing = _run_coverage_project(coverage_project)
+    output = failing.stdout + failing.stderr
+    assert failing.returncode == 1, output
+    assert f"1 passed, 1 {'skipped' if outcome == 'skip' else 'xfailed'}" in output
+    errors = [line for line in output.splitlines() if line.startswith("PUBLICATION COVERAGE:")]
+    assert len(errors) == 1, output
+    assert errors[0].startswith(f"PUBLICATION COVERAGE: {name}: branch coverage ")
+    assert "below floor" in errors[0]
+    assert "INTERNALERROR" not in output
+    after = json.loads(report_path.read_text())
+    _assert_xml_matches_json(coverage_project, after)
+    assert after["totals"]["percent_covered"] >= _load_baseline()["line"]
+    for path in before["files"]:
+        previous, current = (report["files"][path]["summary"] for report in (before, after))
+        assert current["covered_lines"] == previous["covered_lines"]
+        assert current["num_statements"] == previous["num_statements"]
+        assert current["num_branches"] == previous["num_branches"]
+        assert current["covered_branches"] == previous["covered_branches"] - int(path == name)
+
+    exercise.write_bytes(original)
+    restored = _run_coverage_project(coverage_project)
+    assert restored.returncode == 0, restored.stdout + restored.stderr
+    assert json.loads(report_path.read_text())["files"] == before["files"]
+
+
+@pytest.mark.parametrize("name", sorted(PUBLICATION_FILES))
 @pytest.mark.parametrize("metric", ["line", "branch"])
 @pytest.mark.parametrize(
     "floor_increase",
