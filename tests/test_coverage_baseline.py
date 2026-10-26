@@ -677,14 +677,18 @@ def test_pytest_gate_uses_configured_publication_floor(
     assert current["totals"]["percent_covered"] >= baseline["line"]
 
 
-def test_pytest_gate_tracks_simultaneous_branch_losses_until_both_are_restored(
-    coverage_project: Path,
+@pytest.mark.parametrize("line_regression", [None, *sorted(PUBLICATION_FILES)])
+@pytest.mark.parametrize("repair_first", sorted(PUBLICATION_FILES))
+def test_pytest_gate_tracks_simultaneous_losses_until_both_are_restored(
+    coverage_project: Path, line_regression: str | None, repair_first: str
 ) -> None:
     """Repairing one script must not hide the other script's remaining regression."""
     names = sorted(PUBLICATION_FILES)
     for name in names:
         script = coverage_project / name
         script.write_text(script.read_text().replace("    return 0\n", ""))
+        if name == line_regression:
+            script.write_text(script.read_text() + "\ndef extra():\n    return 2\n")
     (coverage_project / "src/my_project/unexecuted.py").write_text("ANSWER = 42\n")
     exercise = coverage_project / "tests/test_exercise.py"
     complete = exercise.read_text().replace(
@@ -692,11 +696,14 @@ def test_pytest_gate_tracks_simultaneous_branch_losses_until_both_are_restored(
     )
     complete += "    assert runpy.run_path('src/my_project/unexecuted.py')['ANSWER'] == 42\n"
 
-    for remaining in (names, names[1:], []):
+    for remaining in (names, [name for name in names if name != repair_first], []):
         exercise.write_text(
             complete.replace(
                 "        choose(False)\n",
-                f"        if path not in {remaining!r}:\n            choose(False)\n",
+                f"        if path not in {remaining!r} or path == {line_regression!r}:\n"
+                "            choose(False)\n"
+                f"        if path == {line_regression!r} and path not in {remaining!r}:\n"
+                "            assert runpy.run_path(path)['extra']() == 2\n",
             )
         )
         # Keep previous reports and databases to verify each run's current loss.
@@ -709,15 +716,17 @@ def test_pytest_gate_tracks_simultaneous_branch_losses_until_both_are_restored(
         errors = [line for line in output.splitlines() if line.startswith("PUBLICATION COVERAGE:")]
         assert len(errors) == len(remaining), output
         for name, error in zip(remaining, errors, strict=True):
-            assert error.startswith(f"PUBLICATION COVERAGE: {name}: branch coverage ")
+            metric = "line" if name == line_regression else "branch"
+            assert error.startswith(f"PUBLICATION COVERAGE: {name}: {metric} coverage ")
             assert "below floor" in error
 
         report = json.loads((coverage_project / "coverage.json").read_text())
+        _assert_xml_matches_json(coverage_project, report)
         assert report["totals"]["percent_covered"] >= _load_baseline()["line"]
         for name in names:
             summary = report["files"][name]["summary"]
-            assert summary["covered_lines"] == summary["num_statements"]
-            assert summary["missing_branches"] == int(name in remaining)
+            assert summary["missing_lines"] == int(name == line_regression and name in remaining)
+            assert summary["missing_branches"] == int(name != line_regression and name in remaining)
 
 
 @pytest.mark.parametrize("name", sorted(PUBLICATION_FILES))
