@@ -2311,8 +2311,10 @@ def test_suppressed_failure_report_cannot_reuse_previous_publication_evidence(
     _assert_xml_matches_json(coverage_project, report)
 
 
+@pytest.mark.parametrize("failure_phase", ["test", "setup", "teardown"])
 def test_fail_fast_cannot_reuse_previous_publication_report(
     coverage_project: Path,
+    failure_phase: str,
 ) -> None:
     """An interrupted loop cannot reuse passing evidence and must recover on the next run."""
     passing = _run_coverage_project(coverage_project)
@@ -2322,12 +2324,21 @@ def test_fail_fast_cannot_reuse_previous_publication_report(
     exercise = coverage_project / "tests/test_exercise.py"
     original = exercise.read_bytes()
     measured, untouched = sorted(PUBLICATION_FILES)
+    failure = '    raise AssertionError("fail-fast regression control")\n'
+    partial_exercise = (
+        f"    choose = runpy.run_path({measured!r})['choose']\n" "    assert choose(True) == 1\n"
+    )
+    if failure_phase == "test":
+        failing_test = "def test_failure():\n" + partial_exercise + failure
+    else:
+        failing_test = (
+            "@pytest.fixture\ndef publication():\n"
+            + partial_exercise
+            + (failure + "    yield\n" if failure_phase == "setup" else "    yield\n" + failure)
+            + "\ndef test_failure(publication):\n    pass\n"
+        )
     exercise.write_text(
-        "import runpy\n\n"
-        "def test_failure():\n"
-        f"    choose = runpy.run_path({measured!r})['choose']\n"
-        "    assert choose(True) == 1\n"
-        '    raise AssertionError("fail-fast regression control")\n\n'
+        "import runpy\nimport pytest\n\n" + failing_test + "\n"
         "def test_never_reached():\n"
         f"    choose = runpy.run_path({untouched!r})['choose']\n"
         "    assert choose(True) == 1\n"
@@ -2337,7 +2348,9 @@ def test_fail_fast_cannot_reuse_previous_publication_report(
     failing = _run_coverage_project(coverage_project, "-x")
     output = failing.stdout + failing.stderr
     assert failing.returncode == 1, output
-    assert "1 failed" in output
+    assert ("1 failed" if failure_phase == "test" else "1 error") in output
+    if failure_phase != "test":
+        assert f"ERROR at {failure_phase} of test_failure" in output
     assert "stopping after 1 failures" in output
     assert "INTERNALERROR" not in output
     assert "PUBLICATION COVERAGE:" in output
