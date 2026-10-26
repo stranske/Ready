@@ -4,7 +4,7 @@
 |---|---|---|---|
 | B2-gap-analysis.md | 0 | 0 | 0 |
 | B3-interop-architecture.md | 1 | 0 | 1 |
-| B7-PROGRAM-PLAN-v3.md | 2 | 0 | 2 |
+| B7-PROGRAM-PLAN-v3.md | 2 | 2 | 0 |
 | C-skill-curriculum.md | 0 | 0 | 0 |
 | R1-legal-decomposition.md | 17 | 16 | 1 |
 | R2-consultant-report-diffing.md | 16 | 16 | 0 |
@@ -17,11 +17,6 @@
 ## Unreachable in B3-interop-architecture.md
 
 - https://…
-
-## Unreachable in B7-PROGRAM-PLAN-v3.md
-
-- https://github.com/stranske/Manager-Mosaic/issues/3
-- https://github.com/stranske/Ready/issues/553
 
 ## Unreachable in R1-legal-decomposition.md
 
