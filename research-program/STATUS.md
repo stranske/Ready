@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-26T19:52:00Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-26T20:07:31Z)
 
-Units: 310 — done 305, failed 1, superseded 4
+Units: 311 — claimed 1, done 305, failed 1, superseded 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=warn claude=ok cursor=ok gemini=ok vibe=ok muse=ok aider=ok
 Orchestrator evidence (30d): offload runs 42, bound to a research round 42, scored 42 (PASS 28, FAIL 14, infra 0) — codex 8/8 (P3 F5 I0), cursor 34/34 (P25 F9 I0)
@@ -320,12 +320,10 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D4-verify-merged-2026-10-23T19 | D | D | done | codex | driver | Verify merged PRs against their issues' acceptance criteria |  |
 | D4-verify-merged-2026-10-24T20 | D | D | done | codex | driver | Verify merged PRs against their issues' acceptance criteria |  |
 | D4-verify-merged-2026-10-25T20 | D | D | done | codex | driver | Verify merged PRs against their issues' acceptance criteria |  |
+| D4-verify-merged-2026-10-26T20 | D | D | claimed | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
 
 ## Last checkpoints
 
-- 2026-10-26T05:00:20Z — D3-unblock-sweep-2026-10-26T04 — claimed by driver (agent cursor)
-- 2026-10-26T05:02:10Z — D3-unblock-sweep-2026-10-26T04 — done — cursor produced 691 words at artifacts/sweeps/D3-unblock-sweep-2026-10-26T04.md in 78s
-- 2026-10-26T05:02:12Z — D3-unblock-sweep-2026-10-26T04 — refutation posted — stranske/Manager-Database#1773
 - 2026-10-26T05:33:07Z — mirror — deferred — Ready#646 exact-head sync review; publication resumes by 2026-10-26T07:25:44+00:00; local work continues
 - 2026-10-26T12:49:31Z — unblock — enqueued D3-unblock-sweep-2026-10-26T12
 - 2026-10-26T12:49:32Z — D3-unblock-sweep-2026-10-26T12 — route — router picked codex from ['codex', 'cursor']
@@ -335,6 +333,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-10-26T14:41:55Z — mirror — deferred — Ready#647 exact-head sync review; publication resumes by 2026-10-26T16:30:24+00:00; local work continues
 - 2026-10-26T18:03:53Z — mirror — deferred — Ready#648 exact-head sync review; publication resumes by 2026-10-26T19:51:00+00:00; local work continues
 - 2026-10-26T18:18:56Z — mirror — deferred — Ready#648 exact-head sync review; publication resumes by 2026-10-26T19:51:00+00:00; local work continues
+- 2026-10-26T20:07:31Z — verify — enqueued D4-verify-merged-2026-10-26T20
+- 2026-10-26T20:07:31Z — D4-verify-merged-2026-10-26T20 — route — router picked cursor from ['codex', 'cursor']
+- 2026-10-26T20:07:31Z — D4-verify-merged-2026-10-26T20 — claimed by driver (agent cursor)
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 

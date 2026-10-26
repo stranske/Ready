@@ -4459,3 +4459,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-10-26T14:41:55Z — mirror — deferred — Ready#647 exact-head sync review; publication resumes by 2026-10-26T16:30:24+00:00; local work continues
 ## 2026-10-26T18:03:53Z — mirror — deferred — Ready#648 exact-head sync review; publication resumes by 2026-10-26T19:51:00+00:00; local work continues
 ## 2026-10-26T18:18:56Z — mirror — deferred — Ready#648 exact-head sync review; publication resumes by 2026-10-26T19:51:00+00:00; local work continues
+## 2026-10-26T20:07:31Z — verify — enqueued D4-verify-merged-2026-10-26T20
+## 2026-10-26T20:07:31Z — D4-verify-merged-2026-10-26T20 — route — router picked cursor from ['codex', 'cursor']
+## 2026-10-26T20:07:31Z — D4-verify-merged-2026-10-26T20 — claimed by driver (agent cursor)
