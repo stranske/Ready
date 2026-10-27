@@ -4487,3 +4487,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-10-27T21:12:07Z — unblock — enqueued D3-unblock-sweep-2026-10-27T21
 ## 2026-10-27T21:12:08Z — D3-unblock-sweep-2026-10-27T21 — route — router picked cursor from ['codex', 'cursor']
 ## 2026-10-27T21:12:08Z — D3-unblock-sweep-2026-10-27T21 — claimed by driver (agent cursor)
+## 2026-10-27T21:14:51Z — D3-unblock-sweep-2026-10-27T21 — fail — offload to cursor exited 70; offload profile completion persistence is pending
+## 2026-10-27T21:30:30Z — D3-unblock-sweep-2026-10-27T21 — route — router picked cursor from ['codex', 'cursor']
+## 2026-10-27T21:30:30Z — D3-unblock-sweep-2026-10-27T21 — claimed by driver (agent cursor)
