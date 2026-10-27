@@ -319,6 +319,21 @@ def test_measured_file_set_includes_unexecuted_source_and_excludes_tooling(
     assert summary["covered_branches"] == 1
 
 
+@pytest.mark.parametrize("filename", [".editor.py", "module~.py"])
+def test_source_discovery_ignores_unexecuted_editor_files(
+    coverage_project: Path, filename: str
+) -> None:
+    """Editor side files must not enter the denominator or break coverage parsing."""
+    (coverage_project / "src/my_project" / filename).write_text("unfinished editor buffer (\n")
+
+    result = _run_coverage_project(coverage_project)
+    assert result.returncode == 0, result.stdout + result.stderr
+    report = json.loads((coverage_project / "coverage.json").read_text())
+    assert set(report["files"]) == PUBLICATION_FILES | {"src/my_project/unexecuted.py"}
+    assert report["files"]["src/my_project/unexecuted.py"]["summary"]["covered_lines"] == 0
+    _assert_xml_matches_json(coverage_project, report)
+
+
 def test_measured_file_set_tracks_renamed_and_deleted_product_source(
     coverage_project: Path,
 ) -> None:
