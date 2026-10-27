@@ -4468,3 +4468,4 @@ remote: - Required status check "Gate / gate" is
 ## 2026-10-26T20:50:03Z — D3-unblock-sweep-2026-10-26T20 — claimed by driver (agent codex)
 ## 2026-10-26T20:52:14Z — D3-unblock-sweep-2026-10-26T20 — done — cursor produced 627 words at artifacts/sweeps/D3-unblock-sweep-2026-10-26T20.md in 101s
 ## 2026-10-26T20:52:16Z — D3-unblock-sweep-2026-10-26T20 — refutation posted — stranske/Workflows#3999
+## 2026-10-27T00:17:18Z — mirror — deferred — Ready#649 exact-head sync review; publication resumes by 2026-10-27T02:16:06+00:00; local work continues
