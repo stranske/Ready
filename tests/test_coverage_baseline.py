@@ -584,6 +584,64 @@ def test_pytest_gate_preserves_test_failure_with_passing_coverage(
 
 
 @pytest.mark.parametrize("name", sorted(PUBLICATION_FILES))
+def test_repairing_functional_failure_does_not_clear_publication_regression(
+    coverage_project: Path, name: str
+) -> None:
+    """Gate must keep rejecting a coverage loss after a concurrent test failure is fixed."""
+    source = coverage_project / "src/my_project/unexecuted.py"
+    source.write_text("ANSWER = 42\n")
+    exercise = coverage_project / "tests/test_exercise.py"
+    complete = (
+        exercise.read_text()
+        + "    assert runpy.run_path('src/my_project/unexecuted.py')['ANSWER'] == 42\n"
+    )
+    exercise.write_text(complete)
+    passing = _run_coverage_project(coverage_project)
+    assert passing.returncode == 0, passing.stdout + passing.stderr
+    report_path = coverage_project / "coverage.json"
+    before = json.loads(report_path.read_text())
+
+    regression = complete.replace(
+        "        assert choose(False) == 0\n",
+        f"        if path != {name!r}:\n            assert choose(False) == 0\n",
+    )
+    for functional_failure in (True, False):
+        exercise.write_text(
+            regression
+            + (
+                '    raise AssertionError("concurrent functional failure")\n'
+                if functional_failure
+                else ""
+            )
+        )
+        result = _run_coverage_project(coverage_project)
+        output = result.stdout + result.stderr
+        assert result.returncode == 1, output
+        assert ("1 failed" if functional_failure else "1 passed") in output
+        assert "INTERNALERROR" not in output
+        assert "FAIL Required test coverage" not in output
+        errors = [line for line in output.splitlines() if line.startswith("PUBLICATION COVERAGE:")]
+        assert len(errors) == 2, output
+        for metric, error in zip(("line", "branch"), errors, strict=True):
+            assert error.startswith(f"PUBLICATION COVERAGE: {name}: {metric} coverage ")
+            assert "below floor" in error
+        report = json.loads(report_path.read_text())
+        _assert_xml_matches_json(coverage_project, report)
+        assert report["totals"]["percent_covered"] >= _load_baseline()["line"]
+        assert set(report["files"]) == set(before["files"])
+        for path in before["files"]:
+            previous, current = (data["files"][path]["summary"] for data in (before, report))
+            for covered in ("covered_lines", "covered_branches"):
+                assert current[covered] == previous[covered] - int(path == name)
+
+    exercise.write_text(complete)
+    restored = _run_coverage_project(coverage_project)
+    assert restored.returncode == 0, restored.stdout + restored.stderr
+    assert "PUBLICATION COVERAGE:" not in restored.stdout + restored.stderr
+    assert json.loads(report_path.read_text())["files"] == before["files"]
+
+
+@pytest.mark.parametrize("name", sorted(PUBLICATION_FILES))
 @pytest.mark.parametrize("metric", ["line", "branch"])
 @pytest.mark.parametrize("execution", ["in-process", "subprocess", "nested-subprocess"])
 def test_pytest_gate_rejects_independent_publication_regressions(
