@@ -226,7 +226,23 @@ def _exercise_in_subprocess(project: Path, depth: int = 1) -> None:
 
 def _assert_xml_matches_json(project: Path, report: dict) -> None:
     """The CI XML artifact must retain the JSON gate's exact files and hit counts."""
-    classes = ElementTree.parse(project / "coverage.xml").findall(".//class")
+    root = ElementTree.parse(project / "coverage.xml").getroot()
+    # Aggregate consumers read the XML root rather than its individual classes.
+    # Keep both artifacts tied to the same denominator, including missed src
+    # lines and publication branches, instead of accepting matching classes alone.
+    for metric, covered, total in (
+        ("lines", "covered_lines", "num_statements"),
+        ("branches", "covered_branches", "num_branches"),
+    ):
+        hits = sum(file["summary"][covered] for file in report["files"].values())
+        count = sum(file["summary"][total] for file in report["files"].values())
+        assert report["totals"][covered] == int(root.attrib[f"{metric}-covered"]) == hits
+        assert report["totals"][total] == int(root.attrib[f"{metric}-valid"]) == count
+        rate = hits / count if count else 1.0
+        # Cobertura rates have four significant digits; hit counts remain exact.
+        rate_key = "line-rate" if metric == "lines" else "branch-rate"
+        assert float(root.attrib[rate_key]) == pytest.approx(rate, abs=0.0001)
+    classes = root.findall(".//class")
     assert len(classes) == len(report["files"])
     assert {entry.attrib["filename"] for entry in classes} == set(report["files"])
     for entry in classes:
