@@ -4477,3 +4477,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-10-27T13:04:21Z — D3-unblock-sweep-2026-10-27T13 — route — router picked cursor from ['codex', 'cursor']
 ## 2026-10-27T13:04:21Z — D3-unblock-sweep-2026-10-27T13 — claimed by driver (agent cursor)
 ## 2026-10-27T13:07:14Z — D3-unblock-sweep-2026-10-27T13 — done — cursor produced 566 words at artifacts/sweeps/D3-unblock-sweep-2026-10-27T13.md in 139s
+## 2026-10-27T17:47:20Z — mirror — deferred — Ready#651 exact-head sync review; publication resumes by 2026-10-27T19:35:38+00:00; local work continues
+## 2026-10-27T18:02:23Z — mirror — deferred — Ready#651 exact-head sync review; publication resumes by 2026-10-27T19:35:38+00:00; local work continues
+## 2026-10-27T18:17:27Z — mirror — deferred — Ready#651 exact-head sync review; publication resumes by 2026-10-27T19:35:38+00:00; local work continues
