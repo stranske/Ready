@@ -2474,19 +2474,27 @@ def test_pytest_gate_rejects_unreadable_baseline_and_recovers(
     assert json.loads(report_path.read_text())["files"] == previous["files"]
 
 
+@pytest.mark.parametrize(
+    "selection_args, selection_message",
+    [
+        (("-k", "not test_exercise"), "1 deselected"),
+        (("--ignore=tests/test_exercise.py",), "no tests ran"),
+    ],
+    ids=["deselected", "ignored-module"],
+)
 def test_pytest_gate_rejects_empty_selection_despite_previous_passing_report(
-    coverage_project: Path,
+    coverage_project: Path, selection_args: tuple[str, ...], selection_message: str
 ) -> None:
-    """An active run that executes no tests cannot reuse earlier publication hits."""
+    """Empty collection and deselection must both discard earlier publication hits."""
     passing = _run_coverage_project(coverage_project)
     assert passing.returncode == 0, passing.stdout + passing.stderr
     report_path = coverage_project / "coverage.json"
     previous = json.loads(report_path.read_text())
 
-    failing = _run_coverage_project(coverage_project, "-k", "not test_exercise")
+    failing = _run_coverage_project(coverage_project, *selection_args)
     output = failing.stdout + failing.stderr
     assert failing.returncode == 1, output
-    assert "1 deselected" in output
+    assert selection_message in output
     assert "INTERNALERROR" not in output
     assert "Traceback" not in output
     for name in PUBLICATION_FILES:
