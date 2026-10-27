@@ -278,19 +278,20 @@ def test_coverage_probe_ignores_unrelated_runner_plugins(
 
 
 @pytest.mark.parametrize("execution", ["in-process", "subprocess"])
+@pytest.mark.parametrize("extension", [".py", ".pyw"])
 @pytest.mark.parametrize(
     "source_directory",
     ["src", "src/another_product", "src/my_project", "src/my_project/nested/package"],
 )
 def test_measured_file_set_includes_unexecuted_source_and_excludes_tooling(
-    coverage_project: Path, execution: str, source_directory: str
+    coverage_project: Path, execution: str, extension: str, source_directory: str
 ) -> None:
     """Preserve product hits and misses while excluding tooling in parent and child runs."""
     original = coverage_project / "src/my_project/unexecuted.py"
-    source = coverage_project / source_directory / "unexecuted.py"
+    source = coverage_project / source_directory / f"unexecuted{extension}"
     source.parent.mkdir(parents=True, exist_ok=True)
     original.rename(source)
-    partial = source.with_name("partially_exercised.py")
+    partial = source.with_name(f"partially_exercised{extension}")
     partial.write_text("def choose(flag):\n    if flag:\n        return 1\n    return 0\n")
     partial_name = partial.relative_to(coverage_project).as_posix()
     exercise = coverage_project / "tests/test_exercise.py"

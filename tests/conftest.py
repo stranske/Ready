@@ -70,6 +70,10 @@ def pytest_runtestloop(session):
             data.add_arcs({})
         else:
             data.add_lines({})
-        data.touch_files([str(path) for path in (ROOT / "src").rglob("*.py")])
+        # Coverage's source discovery also includes Windows windowed scripts.
+        # Seed both extensions so unexecuted .pyw files stay in the denominator.
+        data.touch_files(
+            [str(path) for pattern in ("*.py", "*.pyw") for path in (ROOT / "src").rglob(pattern)]
+        )
         cov.save()
     return result
