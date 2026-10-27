@@ -1,12 +1,12 @@
-# Audit refill check 2026-10-26T20:49:55Z
+# Audit refill check 2026-10-27T08:52:36Z
 
 | repo | open agent-ready | last set | threshold | scorecard | broken/fab | unscored | ux | action |
 |---|---|---|---|---|---|---|---|---|
 | stranske/Deliverable-Render | 1 | 0 (round filed nothing) | 2 | 2026-10-25 | 0/0 | 0+0 (prev 0) | — | idle |
 | stranske/Manager-Mosaic | 5 | 0 (round filed nothing) | 2 | 2026-10-24 | 0/0 | 0+0 (prev 2) | — | idle |
-| stranske/Workflows | 36 | 1 | 2 | 2026-10-02 | 0/0 | 2+0 (prev 4) | — | idle |
+| stranske/Workflows | 35 | 1 | 2 | 2026-10-02 | 0/0 | 2+0 (prev 4) | — | idle |
 | stranske/Travel-Plan-Permission | 4 | 0 (round filed nothing) | 2 | 2026-10-02 | 0/0 | 0+12 (prev 18) | — | idle |
-| stranske/Trend_Model_Project | 9 | 3 | 2 | 2026-10-25 | 0/0 | 0+0 (prev 0) | — | idle |
+| stranske/Trend_Model_Project | 6 | 3 | 2 | 2026-10-25 | 0/0 | 0+0 (prev 0) | — | idle |
 | stranske/Portable-Alpha-Extension-Model | 21 | 1 | 2 | 2026-10-24 | 0/0 | 0+0 (prev 6) | — | idle |
 | stranske/Counter_Risk | 4 | 1 | 2 | 2026-10-25 | 0/0 | 1+1 (prev 4) | — | idle |
 | stranske/Manager-Database | 13 | 0 (round filed nothing) | 2 | 2026-10-25 | 0/0 | 0+0 (prev 19) | — | idle |
