@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-27T00:00:55Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-27T00:47:46Z)
 
 Units: 312 — done 307, failed 1, superseded 4
 Paused: False   Phase stops: []
@@ -325,7 +325,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-10-26T14:41:55Z — mirror — deferred — Ready#647 exact-head sync review; publication resumes by 2026-10-26T16:30:24+00:00; local work continues
 - 2026-10-26T18:03:53Z — mirror — deferred — Ready#648 exact-head sync review; publication resumes by 2026-10-26T19:51:00+00:00; local work continues
 - 2026-10-26T18:18:56Z — mirror — deferred — Ready#648 exact-head sync review; publication resumes by 2026-10-26T19:51:00+00:00; local work continues
 - 2026-10-26T20:07:31Z — verify — enqueued D4-verify-merged-2026-10-26T20
@@ -337,6 +336,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-10-26T20:50:03Z — D3-unblock-sweep-2026-10-26T20 — claimed by driver (agent codex)
 - 2026-10-26T20:52:14Z — D3-unblock-sweep-2026-10-26T20 — done — cursor produced 627 words at artifacts/sweeps/D3-unblock-sweep-2026-10-26T20.md in 101s
 - 2026-10-26T20:52:16Z — D3-unblock-sweep-2026-10-26T20 — refutation posted — stranske/Workflows#3999
+- 2026-10-27T00:17:18Z — mirror — deferred — Ready#649 exact-head sync review; publication resumes by 2026-10-27T02:16:06+00:00; local work continues
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
