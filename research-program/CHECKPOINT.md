@@ -4484,3 +4484,12 @@ remote: - Required status check "Gate / gate" is
 ## 2026-10-27T20:21:08Z — D4-verify-merged-2026-10-27T20 — route — router picked cursor from ['codex', 'cursor']
 ## 2026-10-27T20:21:08Z — D4-verify-merged-2026-10-27T20 — claimed by driver (agent cursor)
 ## 2026-10-27T20:25:33Z — D4-verify-merged-2026-10-27T20 — done — cursor produced 570 words at artifacts/verification/D4-verify-merged-2026-10-27T20.md in 234s
+## 2026-10-27T21:12:07Z — unblock — enqueued D3-unblock-sweep-2026-10-27T21
+## 2026-10-27T21:12:08Z — D3-unblock-sweep-2026-10-27T21 — route — router picked cursor from ['codex', 'cursor']
+## 2026-10-27T21:12:08Z — D3-unblock-sweep-2026-10-27T21 — claimed by driver (agent cursor)
+## 2026-10-27T21:14:51Z — D3-unblock-sweep-2026-10-27T21 — fail — offload to cursor exited 70; offload profile completion persistence is pending
+## 2026-10-27T21:30:30Z — D3-unblock-sweep-2026-10-27T21 — route — router picked cursor from ['codex', 'cursor']
+## 2026-10-27T21:30:30Z — D3-unblock-sweep-2026-10-27T21 — claimed by driver (agent cursor)
+## 2026-10-27T21:32:56Z — D3-unblock-sweep-2026-10-27T21 — done — cursor produced 1031 words at artifacts/sweeps/D3-unblock-sweep-2026-10-27T21.md in 115s
+## 2026-10-27T21:32:58Z — D3-unblock-sweep-2026-10-27T21 — refutation posted — stranske/Workflows#3999
+## 2026-10-27T21:33:00Z — D3-unblock-sweep-2026-10-27T21 — refutation posted — stranske/Fine-Art-Archive#802
