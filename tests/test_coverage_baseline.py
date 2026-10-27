@@ -2527,10 +2527,12 @@ def test_pytest_gate_rejects_empty_selection_despite_previous_passing_report(
     assert json.loads(report_path.read_text())["files"] == previous["files"]
 
 
+@pytest.mark.parametrize("failure_phase", ["test", "setup", "teardown"])
 def test_suppressed_failure_report_cannot_reuse_previous_publication_evidence(
     coverage_project: Path,
+    failure_phase: str,
 ) -> None:
-    """--no-cov-on-fail must discard stale evidence and recover after repairing the test."""
+    """Suppressed reports must discard stale evidence for test and fixture failures."""
     args = ("--no-cov-on-fail",)
     passing = _run_coverage_project(coverage_project, *args)
     assert passing.returncode == 0, passing.stdout + passing.stderr
@@ -2538,15 +2540,28 @@ def test_suppressed_failure_report_cannot_reuse_previous_publication_evidence(
     previous = json.loads(report_path.read_text())
     exercise = coverage_project / "tests/test_exercise.py"
     original = exercise.read_bytes()
-    exercise.write_text(
-        exercise.read_text()
-        + '\n    raise AssertionError("suppressed-report regression control")\n'
-    )
+    failure = '    raise AssertionError("suppressed-report regression control")\n'
+    if failure_phase == "test":
+        exercise.write_text(exercise.read_text() + "\n" + failure)
+    else:
+        # A fixture error follows a different pytest reporting path from a
+        # failed call. In teardown, every publication assertion has already
+        # passed, so earlier evidence would look especially plausible.
+        exercise.write_text(
+            "import pytest\n\n"
+            "@pytest.fixture(autouse=True)\n"
+            "def broken_fixture():\n"
+            + (failure + "    yield\n" if failure_phase == "setup" else "    yield\n" + failure)
+            + "\n"
+            + exercise.read_text()
+        )
 
     failing = _run_coverage_project(coverage_project, *args)
     output = failing.stdout + failing.stderr
     assert failing.returncode == 1, output
-    assert "1 failed" in output
+    assert ("1 failed" if failure_phase == "test" else "1 error") in output
+    if failure_phase != "test":
+        assert f"ERROR at {failure_phase} of test_exercise" in output
     assert "suppressed-report regression control" in output
     assert "PUBLICATION COVERAGE: Current publication coverage evidence unavailable:" in output
     assert "INTERNALERROR" not in output
