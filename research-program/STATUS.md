@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-28T01:14:52Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-28T02:47:20Z)
 
 Units: 316 — done 311, failed 1, superseded 4
 Paused: False   Phase stops: []
@@ -329,8 +329,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-10-27T20:21:08Z — D4-verify-merged-2026-10-27T20 — route — router picked cursor from ['codex', 'cursor']
-- 2026-10-27T20:21:08Z — D4-verify-merged-2026-10-27T20 — claimed by driver (agent cursor)
 - 2026-10-27T20:25:33Z — D4-verify-merged-2026-10-27T20 — done — cursor produced 570 words at artifacts/verification/D4-verify-merged-2026-10-27T20.md in 234s
 - 2026-10-27T21:12:07Z — unblock — enqueued D3-unblock-sweep-2026-10-27T21
 - 2026-10-27T21:12:08Z — D3-unblock-sweep-2026-10-27T21 — route — router picked cursor from ['codex', 'cursor']
@@ -341,6 +339,8 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-10-27T21:32:56Z — D3-unblock-sweep-2026-10-27T21 — done — cursor produced 1031 words at artifacts/sweeps/D3-unblock-sweep-2026-10-27T21.md in 115s
 - 2026-10-27T21:32:58Z — D3-unblock-sweep-2026-10-27T21 — refutation posted — stranske/Workflows#3999
 - 2026-10-27T21:33:00Z — D3-unblock-sweep-2026-10-27T21 — refutation posted — stranske/Fine-Art-Archive#802
+- 2026-10-28T01:30:54Z — mirror — deferred — Ready#653 exact-head sync review; publication resumes by 2026-10-28T03:20:55+00:00; local work continues
+- 2026-10-28T01:45:56Z — mirror — deferred — Ready#653 exact-head sync review; publication resumes by 2026-10-28T03:20:55+00:00; local work continues
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
