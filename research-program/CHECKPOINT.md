@@ -4493,3 +4493,11 @@ remote: - Required status check "Gate / gate" is
 ## 2026-10-27T21:32:56Z — D3-unblock-sweep-2026-10-27T21 — done — cursor produced 1031 words at artifacts/sweeps/D3-unblock-sweep-2026-10-27T21.md in 115s
 ## 2026-10-27T21:32:58Z — D3-unblock-sweep-2026-10-27T21 — refutation posted — stranske/Workflows#3999
 ## 2026-10-27T21:33:00Z — D3-unblock-sweep-2026-10-27T21 — refutation posted — stranske/Fine-Art-Archive#802
+## 2026-10-28T01:30:54Z — mirror — deferred — Ready#653 exact-head sync review; publication resumes by 2026-10-28T03:20:55+00:00; local work continues
+## 2026-10-28T01:45:56Z — mirror — deferred — Ready#653 exact-head sync review; publication resumes by 2026-10-28T03:20:55+00:00; local work continues
+## 2026-10-28T03:02:48Z — mirror — deferred — Ready#654 exact-head sync review; publication resumes by 2026-10-28T04:50:23+00:00; local work continues
+## 2026-10-28T05:22:53Z — unblock — enqueued D3-unblock-sweep-2026-10-28T05
+## 2026-10-28T05:22:53Z — D3-unblock-sweep-2026-10-28T05 — route — router picked cursor from ['codex', 'cursor']
+## 2026-10-28T05:22:53Z — D3-unblock-sweep-2026-10-28T05 — claimed by driver (agent cursor)
+## 2026-10-28T05:24:52Z — D3-unblock-sweep-2026-10-28T05 — done — cursor produced 721 words at artifacts/sweeps/D3-unblock-sweep-2026-10-28T05.md in 86s
+## 2026-10-28T07:14:14Z — mirror — deferred — Ready#655 exact-head sync review; publication resumes by 2026-10-28T09:03:39+00:00; local work continues
