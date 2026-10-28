@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-28T06:58:25Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-28T07:44:43Z)
 
 Units: 317 — done 312, failed 1, superseded 4
 Paused: False   Phase stops: []
@@ -330,7 +330,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-10-27T21:30:30Z — D3-unblock-sweep-2026-10-27T21 — route — router picked cursor from ['codex', 'cursor']
 - 2026-10-27T21:30:30Z — D3-unblock-sweep-2026-10-27T21 — claimed by driver (agent cursor)
 - 2026-10-27T21:32:56Z — D3-unblock-sweep-2026-10-27T21 — done — cursor produced 1031 words at artifacts/sweeps/D3-unblock-sweep-2026-10-27T21.md in 115s
 - 2026-10-27T21:32:58Z — D3-unblock-sweep-2026-10-27T21 — refutation posted — stranske/Workflows#3999
@@ -342,6 +341,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-10-28T05:22:53Z — D3-unblock-sweep-2026-10-28T05 — route — router picked cursor from ['codex', 'cursor']
 - 2026-10-28T05:22:53Z — D3-unblock-sweep-2026-10-28T05 — claimed by driver (agent cursor)
 - 2026-10-28T05:24:52Z — D3-unblock-sweep-2026-10-28T05 — done — cursor produced 721 words at artifacts/sweeps/D3-unblock-sweep-2026-10-28T05.md in 86s
+- 2026-10-28T07:14:14Z — mirror — deferred — Ready#655 exact-head sync review; publication resumes by 2026-10-28T09:03:39+00:00; local work continues
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
