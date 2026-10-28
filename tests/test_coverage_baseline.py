@@ -1052,13 +1052,21 @@ def _measured_report():
     ],
 )
 def test_publication_gate_cli_enforces_each_floor(tmp_path: Path, regression) -> None:
-    """The standalone gate must return failure even when aggregate coverage passes."""
-    report = _measured_report()
-    # The command must inspect each script rather than trust the aggregate summary.
+    """Reject one lost hit at the recorded floors despite passing display percentages."""
+    evidence = json.loads(
+        (REPO_ROOT / "docs/evidence/issue-623-publication-coverage.json").read_text()
+    )
+    report = {"files": {name: {"summary": evidence["files"][name]} for name in PUBLICATION_FILES}}
+    # Rounded or stale display fields cannot replace independent hit counts.
+    for measurement in report["files"].values():
+        measurement["summary"].update(percent_covered=100.0, percent_covered_display="100")
     report["totals"] = {"percent_covered": 100.0}
     if regression is not None:
         name, metric, covered = regression
-        report["files"][name]["summary"][covered] = 0
+        summary = report["files"][name]["summary"]
+        summary[covered] -= 1
+        total = "num_statements" if metric == "line" else "num_branches"
+        measured = 100 * summary[covered] / summary[total]
 
     report_path = tmp_path / "publication coverage.json"
     baseline_path = tmp_path / "publication baseline.json"
@@ -1085,7 +1093,7 @@ def test_publication_gate_cli_enforces_each_floor(tmp_path: Path, regression) ->
         assert result.stdout == "Ready publication coverage floors PASS\n"
     else:
         assert result.stdout == (
-            f"{name}: {metric} coverage 0.000000% below floor "
+            f"{name}: {metric} coverage {measured:.6f}% below floor "
             f"{_load_baseline()['publication_scripts'][name][metric]:.6f}%\n"
         )
 
