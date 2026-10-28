@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-28T19:58:43Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-28T20:50:35Z)
 
-Units: 318 — done 313, failed 1, superseded 4
+Units: 319 — done 314, failed 1, superseded 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=warn claude=ok cursor=ok gemini=shed vibe=ok muse=ok aider=ok
 Orchestrator evidence (30d): offload runs 31, bound to a research round 31, scored 31 (PASS 20, FAIL 11, infra 0) — codex 7/7 (P3 F4 I0), cursor 24/24 (P17 F7 I0)
@@ -328,13 +328,10 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D4-verify-merged-2026-10-25T20 | D | D | done | codex | driver | Verify merged PRs against their issues' acceptance criteria |  |
 | D4-verify-merged-2026-10-26T20 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
 | D4-verify-merged-2026-10-27T20 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
+| D4-verify-merged-2026-10-28T20 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
 
 ## Last checkpoints
 
-- 2026-10-28T01:45:56Z — mirror — deferred — Ready#653 exact-head sync review; publication resumes by 2026-10-28T03:20:55+00:00; local work continues
-- 2026-10-28T03:02:48Z — mirror — deferred — Ready#654 exact-head sync review; publication resumes by 2026-10-28T04:50:23+00:00; local work continues
-- 2026-10-28T05:22:53Z — unblock — enqueued D3-unblock-sweep-2026-10-28T05
-- 2026-10-28T05:22:53Z — D3-unblock-sweep-2026-10-28T05 — route — router picked cursor from ['codex', 'cursor']
 - 2026-10-28T05:22:53Z — D3-unblock-sweep-2026-10-28T05 — claimed by driver (agent cursor)
 - 2026-10-28T05:24:52Z — D3-unblock-sweep-2026-10-28T05 — done — cursor produced 721 words at artifacts/sweeps/D3-unblock-sweep-2026-10-28T05.md in 86s
 - 2026-10-28T07:14:14Z — mirror — deferred — Ready#655 exact-head sync review; publication resumes by 2026-10-28T09:03:39+00:00; local work continues
@@ -343,6 +340,10 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-10-28T13:26:17Z — D3-unblock-sweep-2026-10-28T13 — claimed by driver (agent cursor)
 - 2026-10-28T13:28:06Z — D3-unblock-sweep-2026-10-28T13 — done — cursor produced 638 words at artifacts/sweeps/D3-unblock-sweep-2026-10-28T13.md in 75s
 - 2026-10-28T13:28:08Z — D3-unblock-sweep-2026-10-28T13 — refutation posted — stranske/Workflows#3999
+- 2026-10-28T20:29:50Z — verify — enqueued D4-verify-merged-2026-10-28T20
+- 2026-10-28T20:29:50Z — D4-verify-merged-2026-10-28T20 — route — router picked cursor from ['codex', 'cursor']
+- 2026-10-28T20:29:50Z — D4-verify-merged-2026-10-28T20 — claimed by driver (agent cursor)
+- 2026-10-28T20:35:00Z — D4-verify-merged-2026-10-28T20 — done — cursor produced 444 words at artifacts/verification/D4-verify-merged-2026-10-28T20.md in 281s
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
