@@ -4523,3 +4523,7 @@ remote: - Required status check "Gate / gate" is
 ## 2026-10-29T14:01:12Z — unblock — enqueued D3-unblock-sweep-2026-10-29T14
 ## 2026-10-29T14:01:21Z — D3-unblock-sweep-2026-10-29T14 — route — router picked cursor from ['codex', 'cursor']
 ## 2026-10-29T14:01:21Z — D3-unblock-sweep-2026-10-29T14 — claimed by driver (agent cursor)
+## 2026-10-29T16:18:28Z — D3-unblock-sweep-2026-10-29T14 — claim released (stale)
+## 2026-10-29T16:18:31Z — D3-unblock-sweep-2026-10-29T14 — route — router picked cursor from ['codex', 'cursor']
+## 2026-10-29T16:18:31Z — D3-unblock-sweep-2026-10-29T14 — claimed by driver (agent cursor)
+## 2026-10-29T16:27:11Z — D3-unblock-sweep-2026-10-29T14 — done — cursor produced 638 words at artifacts/sweeps/D3-unblock-sweep-2026-10-29T14.md in 266s
