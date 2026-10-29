@@ -26,7 +26,7 @@ Everything outside `research-program/` is ordinary repository code and is yours 
 
 Two defect classes have already reached this tree and both are invisible on a casual read: a scan once printed token prefixes into a working file, and a batch of issue bodies carried a drafting agent's private working-directory paths, which made the issues unactionable. The work bundle in particular is prepared to be handed to colleagues, so a leaked path or credential fragment here is a real disclosure rather than an untidiness. That is what the publication guard exists to prevent.
 
-Run `python scripts/check_publication_safety.py` with Python 3.12 or later before
+Run `python scripts/check_publication_safety.py` with Python 3.13 or later (3.14 preferred) before
 publishing. It scans bytes in every file under `research-program/`, including
 binary files, and separately scans the selected allowlist exactly once. JSON and JSONL string
 values and keys are also scanned after decoding escapes once, with findings
