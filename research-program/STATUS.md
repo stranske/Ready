@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-29T20:25:01Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-29T20:52:31Z)
 
-Units: 322 — done 317, failed 1, superseded 4
+Units: 323 — done 318, failed 1, superseded 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=warn claude=shed cursor=ok gemini=shed vibe=ok muse=ok aider=ok
 Orchestrator evidence (30d): offload runs 27, bound to a research round 27, scored 27 (PASS 16, FAIL 11, infra 0) — codex 7/7 (P3 F4 I0), cursor 20/20 (P13 F7 I0)
@@ -332,13 +332,10 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D4-verify-merged-2026-10-26T20 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
 | D4-verify-merged-2026-10-27T20 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
 | D4-verify-merged-2026-10-28T20 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
+| D4-verify-merged-2026-10-29T20 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
 
 ## Last checkpoints
 
-- 2026-10-29T05:44:57Z — unblock — enqueued D3-unblock-sweep-2026-10-29T05
-- 2026-10-29T05:44:57Z — D3-unblock-sweep-2026-10-29T05 — route — router picked cursor from ['codex', 'cursor']
-- 2026-10-29T05:44:57Z — D3-unblock-sweep-2026-10-29T05 — claimed by driver (agent cursor)
-- 2026-10-29T05:46:38Z — D3-unblock-sweep-2026-10-29T05 — done — cursor produced 712 words at artifacts/sweeps/D3-unblock-sweep-2026-10-29T05.md in 72s
 - 2026-10-29T05:46:40Z — D3-unblock-sweep-2026-10-29T05 — refutation posted — stranske/Workflows#3999
 - 2026-10-29T14:01:12Z — unblock — enqueued D3-unblock-sweep-2026-10-29T14
 - 2026-10-29T14:01:21Z — D3-unblock-sweep-2026-10-29T14 — route — router picked cursor from ['codex', 'cursor']
@@ -347,6 +344,10 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-10-29T16:18:31Z — D3-unblock-sweep-2026-10-29T14 — route — router picked cursor from ['codex', 'cursor']
 - 2026-10-29T16:18:31Z — D3-unblock-sweep-2026-10-29T14 — claimed by driver (agent cursor)
 - 2026-10-29T16:27:11Z — D3-unblock-sweep-2026-10-29T14 — done — cursor produced 638 words at artifacts/sweeps/D3-unblock-sweep-2026-10-29T14.md in 266s
+- 2026-10-29T20:43:10Z — verify — enqueued D4-verify-merged-2026-10-29T20
+- 2026-10-29T20:43:11Z — D4-verify-merged-2026-10-29T20 — route — router picked cursor from ['codex', 'cursor']
+- 2026-10-29T20:43:11Z — D4-verify-merged-2026-10-29T20 — claimed by driver (agent cursor)
+- 2026-10-29T20:52:30Z — D4-verify-merged-2026-10-29T20 — done — cursor produced 622 words at artifacts/verification/D4-verify-merged-2026-10-29T20.md in 325s
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
