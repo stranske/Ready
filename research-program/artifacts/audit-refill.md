@@ -1,4 +1,4 @@
-# Audit refill check 2026-10-30T09:18:18Z
+# Audit refill check 2026-10-30T21:30:36Z
 
 | repo | open agent-ready | last set | threshold | scorecard | broken/fab | unscored | ux | action |
 |---|---|---|---|---|---|---|---|---|
@@ -9,7 +9,7 @@
 | stranske/Trend_Model_Project | 6 | 3 | 2 | 2026-10-25 | 0/0 | 0+0 (prev 0) | — | idle |
 | stranske/Portable-Alpha-Extension-Model | 20 | 1 | 2 | 2026-10-24 | 0/0 | 0+0 (prev 6) | — | idle |
 | stranske/Counter_Risk | 6 | 1 | 2 | 2026-10-25 | 0/0 | 1+1 (prev 4) | — | idle |
-| stranske/Manager-Database | 13 | 0 (round filed nothing) | 2 | 2026-10-25 | 0/0 | 0+0 (prev 19) | — | idle |
+| stranske/Manager-Database | 12 | 0 (round filed nothing) | 2 | 2026-10-25 | 0/0 | 0+0 (prev 19) | — | idle |
 | stranske/Inv-Man-Intake | 1 | 0 (round filed nothing) | 2 | 2026-10-02 | 0/0 | 0+0 (prev 1) | — | idle |
 | stranske/Pension-Data | 6 | 0 (round filed nothing) | 2 | 2026-10-24 | 0/0 | 0+0 (prev 0) | — | idle |
 | stranske/trip-planner | 4 | 1 | 2 | 2026-10-02 | 0/0 | 0+0 (prev 0) | — | idle |

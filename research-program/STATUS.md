@@ -1,8 +1,8 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-30T20:58:41Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-30T21:45:51Z)
 
 Units: 327 — done 322, failed 1, superseded 4
 Paused: False   Phase stops: []
-Capacity (Orchestrator): codex=shed claude=shed cursor=ok gemini=shed vibe=ok muse=ok aider=ok
+Capacity (Orchestrator): codex=ok claude=warn cursor=ok gemini=shed vibe=ok muse=ok aider=ok
 Orchestrator evidence (30d): offload runs 24, bound to a research round 24, scored 24 (PASS 13, FAIL 11, infra 0) — codex 7/7 (P3 F4 I0), cursor 17/17 (P10 F7 I0)
 Worker write boundary: on — each unit writes only unitdirs/<unit>/, its output directory, artifacts/proposals/, its own clone's working tree (not .git) and temp
 Claude conservation: off (weekly window available)
@@ -340,8 +340,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-10-30T16:52:07Z — mirror — deferred — Ready#661 exact-head sync review; publication resumes by 2026-10-30T18:41:27+00:00; local work continues
-- 2026-10-30T17:07:10Z — mirror — deferred — Ready#661 exact-head sync review; publication resumes by 2026-10-30T18:41:27+00:00; local work continues
 - 2026-10-30T17:22:46Z — mirror — deferred — Ready#661 exact-head sync review; publication resumes by 2026-10-30T18:41:27+00:00; local work continues
 - 2026-10-30T17:37:49Z — mirror — deferred — Ready#661 exact-head sync review; publication resumes by 2026-10-30T18:41:27+00:00; local work continues
 - 2026-10-30T17:52:52Z — mirror — deferred — Ready#661 exact-head sync review; publication resumes by 2026-10-30T18:41:27+00:00; local work continues
@@ -352,6 +350,8 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-10-30T20:53:07Z — D4-verify-merged-2026-10-30T20 — route — router picked cursor from ['codex', 'cursor']
 - 2026-10-30T20:53:07Z — D4-verify-merged-2026-10-30T20 — claimed by driver (agent cursor)
 - 2026-10-30T20:58:41Z — D4-verify-merged-2026-10-30T20 — done — cursor produced 690 words at artifacts/verification/D4-verify-merged-2026-10-30T20.md in 304s
+- 2026-10-30T21:14:19Z — mirror — deferred — Ready#661 exact-head sync review; publication resumes by 2026-10-30T23:08:50+00:00; local work continues
+- 2026-10-30T21:30:45Z — mirror — deferred — Ready#661 exact-head sync review; publication resumes by 2026-10-30T23:08:50+00:00; local work continues
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
