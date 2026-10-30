@@ -1,0 +1,134 @@
+{
+  "observed_at": "2026-10-30T22:35:00Z",
+  "attempt": 1,
+  "repos_covered": [
+    "Workflows",
+    "Travel-Plan-Permission",
+    "Trend_Model_Project",
+    "Portable-Alpha-Extension-Model",
+    "Counter_Risk",
+    "Manager-Database",
+    "Inv-Man-Intake",
+    "Pension-Data"
+  ],
+  "repos_deferred": [
+    "Ready",
+    "trip-planner",
+    "learning-management-system",
+    "Fine-Art-Archive",
+    "Doc-Lineage",
+    "Deliverable-Render",
+    "Manager-Mosaic"
+  ],
+  "inventory": {
+    "Workflows": {
+      "open": 56,
+      "frozen": [4338, 4284, 4223, 4082, 4051, 3978, 3901, 3898],
+      "supply": 41,
+      "priority_labeled": 35,
+      "impl_count": 41,
+      "main_head": "77e239f",
+      "gate": {
+        "conclusion": "failure",
+        "headSha": "12cea89",
+        "url": "https://github.com/stranske/Workflows/actions/runs/38938420079",
+        "note": "Only Gate run in last queries; predates current main tip"
+      }
+    },
+    "Travel-Plan-Permission": {
+      "open": 8,
+      "frozen": [],
+      "supply": 4,
+      "priority_labeled": 4,
+      "impl_count": 4,
+      "main_head": "eac51b6",
+      "ci": {
+        "conclusion": "success",
+        "url": "https://github.com/stranske/Travel-Plan-Permission/actions/runs/41132392107"
+      }
+    },
+    "Trend_Model_Project": {
+      "open": 8,
+      "frozen": [],
+      "supply": 6,
+      "priority_labeled": 6,
+      "impl_count": 6,
+      "main_head": "35f186c",
+      "ci": {
+        "conclusion": "success",
+        "url": "https://github.com/stranske/Trend_Model_Project/actions/runs/41132623188"
+      }
+    },
+    "Portable-Alpha-Extension-Model": {
+      "open": 22,
+      "frozen": [],
+      "supply": 20,
+      "priority_labeled": 20,
+      "impl_count": 20,
+      "main_head": "d09d8ff",
+      "ci": {
+        "conclusion": "success",
+        "url": "https://github.com/stranske/Portable-Alpha-Extension-Model/actions/runs/41132594810"
+      }
+    },
+    "Counter_Risk": {
+      "open": 8,
+      "frozen": [],
+      "supply": 6,
+      "priority_labeled": 6,
+      "impl_count": 6,
+      "main_head": "ec2c262",
+      "ci": {
+        "conclusion": "success",
+        "url": "https://github.com/stranske/Counter_Risk/actions/runs/41132438267"
+      }
+    },
+    "Manager-Database": {
+      "open": 15,
+      "frozen": [],
+      "supply": 12,
+      "priority_labeled": 12,
+      "impl_count": 12,
+      "main_head": "e1bb8d1",
+      "ci": {
+        "conclusion": "success",
+        "url": "https://github.com/stranske/Manager-Database/actions/runs/41132565118"
+      }
+    },
+    "Inv-Man-Intake": {
+      "open": 3,
+      "frozen": [],
+      "supply": 1,
+      "priority_labeled": 1,
+      "impl_count": 1,
+      "main_head": "ed58d54",
+      "ci": {
+        "conclusion": "success",
+        "url": "https://github.com/stranske/Inv-Man-Intake/actions/runs/41132488464"
+      }
+    },
+    "Pension-Data": {
+      "open": 8,
+      "frozen": [],
+      "supply": 6,
+      "priority_labeled": 6,
+      "impl_count": 6,
+      "main_head": "a5bc0a3",
+      "ci": {
+        "conclusion": "success",
+        "url": "https://github.com/stranske/Pension-Data/actions/runs/41132463922"
+      }
+    }
+  },
+  "silent_claim_release_candidates": [
+    "https://github.com/stranske/Workflows/issues/4036",
+    "https://github.com/stranske/Workflows/issues/3988",
+    "https://github.com/stranske/Workflows/issues/3978",
+    "https://github.com/stranske/Workflows/issues/3713",
+    "https://github.com/stranske/Workflows/issues/3691",
+    "https://github.com/stranske/Manager-Database/issues/1786"
+  ],
+  "silent_claim_held": [
+    "https://github.com/stranske/Pension-Data/issues/964"
+  ]
+}
