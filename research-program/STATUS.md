@@ -1,8 +1,8 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-30T03:25:51Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-30T05:45:24Z)
 
 Units: 324 — done 319, failed 1, superseded 4
 Paused: False   Phase stops: []
-Capacity (Orchestrator): codex=warn claude=shed cursor=ok gemini=shed vibe=ok muse=ok aider=ok
+Capacity (Orchestrator): codex=warn claude=warn cursor=ok gemini=shed vibe=ok muse=ok aider=ok
 Orchestrator evidence (30d): offload runs 27, bound to a research round 27, scored 27 (PASS 16, FAIL 11, infra 0) — codex 7/7 (P3 F4 I0), cursor 20/20 (P13 F7 I0)
 Worker write boundary: on — each unit writes only unitdirs/<unit>/, its output directory, artifacts/proposals/, its own clone's working tree (not .git) and temp
 Claude conservation: off (weekly window available)
@@ -337,18 +337,18 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-10-29T16:18:28Z — D3-unblock-sweep-2026-10-29T14 — claim released (stale)
-- 2026-10-29T16:18:31Z — D3-unblock-sweep-2026-10-29T14 — route — router picked cursor from ['codex', 'cursor']
-- 2026-10-29T16:18:31Z — D3-unblock-sweep-2026-10-29T14 — claimed by driver (agent cursor)
-- 2026-10-29T16:27:11Z — D3-unblock-sweep-2026-10-29T14 — done — cursor produced 638 words at artifacts/sweeps/D3-unblock-sweep-2026-10-29T14.md in 266s
-- 2026-10-29T20:43:10Z — verify — enqueued D4-verify-merged-2026-10-29T20
-- 2026-10-29T20:43:11Z — D4-verify-merged-2026-10-29T20 — route — router picked cursor from ['codex', 'cursor']
-- 2026-10-29T20:43:11Z — D4-verify-merged-2026-10-29T20 — claimed by driver (agent cursor)
-- 2026-10-29T20:52:30Z — D4-verify-merged-2026-10-29T20 — done — cursor produced 622 words at artifacts/verification/D4-verify-merged-2026-10-29T20.md in 325s
 - 2026-10-29T22:06:30Z — unblock — enqueued D3-unblock-sweep-2026-10-29T22
 - 2026-10-29T22:06:31Z — D3-unblock-sweep-2026-10-29T22 — route — router picked cursor from ['codex', 'cursor']
 - 2026-10-29T22:06:31Z — D3-unblock-sweep-2026-10-29T22 — claimed by driver (agent cursor)
 - 2026-10-29T22:09:25Z — D3-unblock-sweep-2026-10-29T22 — done — cursor produced 764 words at artifacts/sweeps/D3-unblock-sweep-2026-10-29T22.md in 126s
+- 2026-10-30T03:41:22Z — mirror — deferred — Ready#660 exact-head sync review; publication resumes by 2026-10-30T05:31:17+00:00; local work continues
+- 2026-10-30T03:56:26Z — mirror — deferred — Ready#660 exact-head sync review; publication resumes by 2026-10-30T05:31:17+00:00; local work continues
+- 2026-10-30T04:11:30Z — mirror — deferred — Ready#660 exact-head sync review; publication resumes by 2026-10-30T05:31:17+00:00; local work continues
+- 2026-10-30T04:26:34Z — mirror — deferred — Ready#660 exact-head sync review; publication resumes by 2026-10-30T05:31:17+00:00; local work continues
+- 2026-10-30T04:41:48Z — mirror — deferred — Ready#660 exact-head sync review; publication resumes by 2026-10-30T05:31:17+00:00; local work continues
+- 2026-10-30T04:57:25Z — mirror — deferred — Ready#660 exact-head sync review; publication resumes by 2026-10-30T05:31:17+00:00; local work continues
+- 2026-10-30T05:15:07Z — mirror — deferred — Ready#660 exact-head sync review; publication resumes by 2026-10-30T05:31:17+00:00; local work continues
+- 2026-10-30T05:30:16Z — mirror — deferred — Ready#660 exact-head sync review; publication resumes by 2026-10-30T05:31:17+00:00; local work continues
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
