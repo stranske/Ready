@@ -4535,3 +4535,16 @@ remote: - Required status check "Gate / gate" is
 ## 2026-10-29T22:06:31Z — D3-unblock-sweep-2026-10-29T22 — route — router picked cursor from ['codex', 'cursor']
 ## 2026-10-29T22:06:31Z — D3-unblock-sweep-2026-10-29T22 — claimed by driver (agent cursor)
 ## 2026-10-29T22:09:25Z — D3-unblock-sweep-2026-10-29T22 — done — cursor produced 764 words at artifacts/sweeps/D3-unblock-sweep-2026-10-29T22.md in 126s
+## 2026-10-30T03:41:22Z — mirror — deferred — Ready#660 exact-head sync review; publication resumes by 2026-10-30T05:31:17+00:00; local work continues
+## 2026-10-30T03:56:26Z — mirror — deferred — Ready#660 exact-head sync review; publication resumes by 2026-10-30T05:31:17+00:00; local work continues
+## 2026-10-30T04:11:30Z — mirror — deferred — Ready#660 exact-head sync review; publication resumes by 2026-10-30T05:31:17+00:00; local work continues
+## 2026-10-30T04:26:34Z — mirror — deferred — Ready#660 exact-head sync review; publication resumes by 2026-10-30T05:31:17+00:00; local work continues
+## 2026-10-30T04:41:48Z — mirror — deferred — Ready#660 exact-head sync review; publication resumes by 2026-10-30T05:31:17+00:00; local work continues
+## 2026-10-30T04:57:25Z — mirror — deferred — Ready#660 exact-head sync review; publication resumes by 2026-10-30T05:31:17+00:00; local work continues
+## 2026-10-30T05:15:07Z — mirror — deferred — Ready#660 exact-head sync review; publication resumes by 2026-10-30T05:31:17+00:00; local work continues
+## 2026-10-30T05:30:16Z — mirror — deferred — Ready#660 exact-head sync review; publication resumes by 2026-10-30T05:31:17+00:00; local work continues
+## 2026-10-30T06:24:23Z — unblock — enqueued D3-unblock-sweep-2026-10-30T06
+## 2026-10-30T06:24:24Z — D3-unblock-sweep-2026-10-30T06 — route — router picked cursor from ['codex', 'cursor']
+## 2026-10-30T06:24:24Z — D3-unblock-sweep-2026-10-30T06 — claimed by driver (agent cursor)
+## 2026-10-30T06:30:18Z — D3-unblock-sweep-2026-10-30T06 — done — cursor produced 853 words at artifacts/sweeps/D3-unblock-sweep-2026-10-30T06.md in 179s
+## 2026-10-30T06:30:20Z — D3-unblock-sweep-2026-10-30T06 — refutation posted — stranske/Workflows#4026
