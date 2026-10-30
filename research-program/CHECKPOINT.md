@@ -4553,3 +4553,11 @@ remote: - Required status check "Gate / gate" is
 ## 2026-10-30T14:29:39Z — D3-unblock-sweep-2026-10-30T14 — claimed by driver (agent cursor)
 ## 2026-10-30T14:32:06Z — D3-unblock-sweep-2026-10-30T14 — done — cursor produced 843 words at artifacts/sweeps/D3-unblock-sweep-2026-10-30T14.md in 108s
 ## 2026-10-30T14:32:08Z — D3-unblock-sweep-2026-10-30T14 — refutation posted — stranske/Workflows#4026
+## 2026-10-30T16:52:07Z — mirror — deferred — Ready#661 exact-head sync review; publication resumes by 2026-10-30T18:41:27+00:00; local work continues
+## 2026-10-30T17:07:10Z — mirror — deferred — Ready#661 exact-head sync review; publication resumes by 2026-10-30T18:41:27+00:00; local work continues
+## 2026-10-30T17:22:46Z — mirror — deferred — Ready#661 exact-head sync review; publication resumes by 2026-10-30T18:41:27+00:00; local work continues
+## 2026-10-30T17:37:49Z — mirror — deferred — Ready#661 exact-head sync review; publication resumes by 2026-10-30T18:41:27+00:00; local work continues
+## 2026-10-30T17:52:52Z — mirror — deferred — Ready#661 exact-head sync review; publication resumes by 2026-10-30T18:41:27+00:00; local work continues
+## 2026-10-30T18:07:56Z — mirror — deferred — Ready#661 exact-head sync review; publication resumes by 2026-10-30T18:41:27+00:00; local work continues
+## 2026-10-30T18:23:11Z — mirror — deferred — Ready#661 exact-head sync review; publication resumes by 2026-10-30T18:41:27+00:00; local work continues
+## 2026-10-30T18:38:19Z — mirror — deferred — Ready#661 exact-head sync review; publication resumes by 2026-10-30T18:41:27+00:00; local work continues

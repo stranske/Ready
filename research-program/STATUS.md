@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-30T16:36:33Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-30T18:53:28Z)
 
 Units: 326 — done 321, failed 1, superseded 4
 Paused: False   Phase stops: []
@@ -339,18 +339,18 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-10-30T05:15:07Z — mirror — deferred — Ready#660 exact-head sync review; publication resumes by 2026-10-30T05:31:17+00:00; local work continues
-- 2026-10-30T05:30:16Z — mirror — deferred — Ready#660 exact-head sync review; publication resumes by 2026-10-30T05:31:17+00:00; local work continues
-- 2026-10-30T06:24:23Z — unblock — enqueued D3-unblock-sweep-2026-10-30T06
-- 2026-10-30T06:24:24Z — D3-unblock-sweep-2026-10-30T06 — route — router picked cursor from ['codex', 'cursor']
-- 2026-10-30T06:24:24Z — D3-unblock-sweep-2026-10-30T06 — claimed by driver (agent cursor)
-- 2026-10-30T06:30:18Z — D3-unblock-sweep-2026-10-30T06 — done — cursor produced 853 words at artifacts/sweeps/D3-unblock-sweep-2026-10-30T06.md in 179s
-- 2026-10-30T06:30:20Z — D3-unblock-sweep-2026-10-30T06 — refutation posted — stranske/Workflows#4026
-- 2026-10-30T14:29:38Z — unblock — enqueued D3-unblock-sweep-2026-10-30T14
 - 2026-10-30T14:29:39Z — D3-unblock-sweep-2026-10-30T14 — route — router picked cursor from ['codex', 'cursor']
 - 2026-10-30T14:29:39Z — D3-unblock-sweep-2026-10-30T14 — claimed by driver (agent cursor)
 - 2026-10-30T14:32:06Z — D3-unblock-sweep-2026-10-30T14 — done — cursor produced 843 words at artifacts/sweeps/D3-unblock-sweep-2026-10-30T14.md in 108s
 - 2026-10-30T14:32:08Z — D3-unblock-sweep-2026-10-30T14 — refutation posted — stranske/Workflows#4026
+- 2026-10-30T16:52:07Z — mirror — deferred — Ready#661 exact-head sync review; publication resumes by 2026-10-30T18:41:27+00:00; local work continues
+- 2026-10-30T17:07:10Z — mirror — deferred — Ready#661 exact-head sync review; publication resumes by 2026-10-30T18:41:27+00:00; local work continues
+- 2026-10-30T17:22:46Z — mirror — deferred — Ready#661 exact-head sync review; publication resumes by 2026-10-30T18:41:27+00:00; local work continues
+- 2026-10-30T17:37:49Z — mirror — deferred — Ready#661 exact-head sync review; publication resumes by 2026-10-30T18:41:27+00:00; local work continues
+- 2026-10-30T17:52:52Z — mirror — deferred — Ready#661 exact-head sync review; publication resumes by 2026-10-30T18:41:27+00:00; local work continues
+- 2026-10-30T18:07:56Z — mirror — deferred — Ready#661 exact-head sync review; publication resumes by 2026-10-30T18:41:27+00:00; local work continues
+- 2026-10-30T18:23:11Z — mirror — deferred — Ready#661 exact-head sync review; publication resumes by 2026-10-30T18:41:27+00:00; local work continues
+- 2026-10-30T18:38:19Z — mirror — deferred — Ready#661 exact-head sync review; publication resumes by 2026-10-30T18:41:27+00:00; local work continues
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 

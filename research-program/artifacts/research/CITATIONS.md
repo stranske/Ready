@@ -8,11 +8,11 @@
 | C-skill-curriculum.md | 0 | 0 | 0 |
 | R1-legal-decomposition.md | 17 | 16 | 1 |
 | R2-consultant-report-diffing.md | 16 | 16 | 0 |
-| R3-manager-mosaic-synthesis.md | 12 | 12 | 0 |
+| R3-manager-mosaic-synthesis.md | 12 | 11 | 1 |
 | R4-document-access-substrate.md | 15 | 10 | 5 |
 | R5-output-substrate.md | 10 | 8 | 2 |
 | R6-public-corpora-and-synthetic-data.md | 26 | 19 | 7 |
-| R7-trip-planning-core.md | 28 | 22 | 6 |
+| R7-trip-planning-core.md | 28 | 23 | 5 |
 
 ## Unreachable in B3-interop-architecture.md
 
@@ -21,6 +21,10 @@
 ## Unreachable in R1-legal-decomposition.md
 
 - https://repository.tudelft.nl/file/File_e0c6743a-a0db-46b6-8227-557db173ea98
+
+## Unreachable in R3-manager-mosaic-synthesis.md
+
+- https://ojs.aaai.org/index.php/AAAI/article/view/42361/46322
 
 ## Unreachable in R4-document-access-substrate.md
 
@@ -48,7 +52,6 @@
 ## Unreachable in R7-trip-planning-core.md
 
 - https://doi.org/10.5281/zenodo.18316076
-- https://traveltrade.today/gds-systems/amadeus-sa/amadeus-closes-self-service-apis-portal-for-developers/
 - https://www.sciencedirect.com/science/article/abs/pii/S030505480900080X
 - https://www.techrxiv.org/doi/pdf/10.36227/techrxiv.177219979.94060974
 - https://www.whitecase.com/insight-our-thinking/web-scraping-website-terms-and-cfaa-hiqs-preliminary-injunction-affirmed-again
