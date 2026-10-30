@@ -8,7 +8,7 @@
 | C-skill-curriculum.md | 0 | 0 | 0 |
 | R1-legal-decomposition.md | 17 | 16 | 1 |
 | R2-consultant-report-diffing.md | 16 | 16 | 0 |
-| R3-manager-mosaic-synthesis.md | 12 | 11 | 1 |
+| R3-manager-mosaic-synthesis.md | 12 | 12 | 0 |
 | R4-document-access-substrate.md | 15 | 10 | 5 |
 | R5-output-substrate.md | 10 | 8 | 2 |
 | R6-public-corpora-and-synthetic-data.md | 26 | 19 | 7 |
@@ -21,10 +21,6 @@
 ## Unreachable in R1-legal-decomposition.md
 
 - https://repository.tudelft.nl/file/File_e0c6743a-a0db-46b6-8227-557db173ea98
-
-## Unreachable in R3-manager-mosaic-synthesis.md
-
-- https://ojs.aaai.org/index.php/AAAI/article/view/42361/46322
 
 ## Unreachable in R4-document-access-substrate.md
 
