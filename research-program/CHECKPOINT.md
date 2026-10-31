@@ -4586,3 +4586,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-10-31T22:45:29Z — D3-unblock-sweep-2026-10-31T22 — route — router picked cursor from ['codex', 'cursor']
 ## 2026-10-31T22:45:29Z — D3-unblock-sweep-2026-10-31T22 — claimed by driver (agent cursor)
 ## 2026-10-31T22:47:06Z — D3-unblock-sweep-2026-10-31T22 — done — cursor produced 551 words at artifacts/sweeps/D3-unblock-sweep-2026-10-31T22.md in 66s
+## 2026-10-31T23:02:34Z — D4-verify-merged-2026-10-31T21 — claim released (stale)
+## 2026-10-31T23:02:35Z — D4-verify-merged-2026-10-31T21 — route — router picked cursor from ['codex', 'cursor']
+## 2026-10-31T23:02:35Z — D4-verify-merged-2026-10-31T21 — claimed by driver (agent cursor)
