@@ -4548,3 +4548,30 @@ remote: - Required status check "Gate / gate" is
 ## 2026-10-30T06:24:24Z — D3-unblock-sweep-2026-10-30T06 — claimed by driver (agent cursor)
 ## 2026-10-30T06:30:18Z — D3-unblock-sweep-2026-10-30T06 — done — cursor produced 853 words at artifacts/sweeps/D3-unblock-sweep-2026-10-30T06.md in 179s
 ## 2026-10-30T06:30:20Z — D3-unblock-sweep-2026-10-30T06 — refutation posted — stranske/Workflows#4026
+## 2026-10-30T14:29:38Z — unblock — enqueued D3-unblock-sweep-2026-10-30T14
+## 2026-10-30T14:29:39Z — D3-unblock-sweep-2026-10-30T14 — route — router picked cursor from ['codex', 'cursor']
+## 2026-10-30T14:29:39Z — D3-unblock-sweep-2026-10-30T14 — claimed by driver (agent cursor)
+## 2026-10-30T14:32:06Z — D3-unblock-sweep-2026-10-30T14 — done — cursor produced 843 words at artifacts/sweeps/D3-unblock-sweep-2026-10-30T14.md in 108s
+## 2026-10-30T14:32:08Z — D3-unblock-sweep-2026-10-30T14 — refutation posted — stranske/Workflows#4026
+## 2026-10-30T16:52:07Z — mirror — deferred — Ready#661 exact-head sync review; publication resumes by 2026-10-30T18:41:27+00:00; local work continues
+## 2026-10-30T17:07:10Z — mirror — deferred — Ready#661 exact-head sync review; publication resumes by 2026-10-30T18:41:27+00:00; local work continues
+## 2026-10-30T17:22:46Z — mirror — deferred — Ready#661 exact-head sync review; publication resumes by 2026-10-30T18:41:27+00:00; local work continues
+## 2026-10-30T17:37:49Z — mirror — deferred — Ready#661 exact-head sync review; publication resumes by 2026-10-30T18:41:27+00:00; local work continues
+## 2026-10-30T17:52:52Z — mirror — deferred — Ready#661 exact-head sync review; publication resumes by 2026-10-30T18:41:27+00:00; local work continues
+## 2026-10-30T18:07:56Z — mirror — deferred — Ready#661 exact-head sync review; publication resumes by 2026-10-30T18:41:27+00:00; local work continues
+## 2026-10-30T18:23:11Z — mirror — deferred — Ready#661 exact-head sync review; publication resumes by 2026-10-30T18:41:27+00:00; local work continues
+## 2026-10-30T18:38:19Z — mirror — deferred — Ready#661 exact-head sync review; publication resumes by 2026-10-30T18:41:27+00:00; local work continues
+## 2026-10-30T20:52:54Z — verify — enqueued D4-verify-merged-2026-10-30T20
+## 2026-10-30T20:53:07Z — D4-verify-merged-2026-10-30T20 — route — router picked cursor from ['codex', 'cursor']
+## 2026-10-30T20:53:07Z — D4-verify-merged-2026-10-30T20 — claimed by driver (agent cursor)
+## 2026-10-30T20:58:41Z — D4-verify-merged-2026-10-30T20 — done — cursor produced 690 words at artifacts/verification/D4-verify-merged-2026-10-30T20.md in 304s
+## 2026-10-30T21:14:19Z — mirror — deferred — Ready#661 exact-head sync review; publication resumes by 2026-10-30T23:08:50+00:00; local work continues
+## 2026-10-30T21:30:45Z — mirror — deferred — Ready#661 exact-head sync review; publication resumes by 2026-10-30T23:08:50+00:00; local work continues
+## 2026-10-30T22:32:53Z — unblock — enqueued D3-unblock-sweep-2026-10-30T22
+## 2026-10-30T22:32:53Z — D3-unblock-sweep-2026-10-30T22 — route — router picked cursor from ['codex', 'cursor']
+## 2026-10-30T22:32:53Z — D3-unblock-sweep-2026-10-30T22 — claimed by driver (agent cursor)
+## 2026-10-30T22:35:11Z — D3-unblock-sweep-2026-10-30T22 — done — cursor produced 486 words at artifacts/sweeps/D3-unblock-sweep-2026-10-30T22.md in 109s
+## 2026-10-31T06:39:17Z — unblock — enqueued D3-unblock-sweep-2026-10-31T06
+## 2026-10-31T06:39:18Z — D3-unblock-sweep-2026-10-31T06 — route — router picked cursor from ['codex', 'cursor']
+## 2026-10-31T06:39:18Z — D3-unblock-sweep-2026-10-31T06 — claimed by driver (agent cursor)
+## 2026-10-31T06:41:27Z — D3-unblock-sweep-2026-10-31T06 — done — cursor produced 496 words at artifacts/sweeps/D3-unblock-sweep-2026-10-31T06.md in 98s

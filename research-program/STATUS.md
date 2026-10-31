@@ -1,9 +1,9 @@
-# Research Program 2026-09 — STATUS (generated 2026-10-30T10:04:52Z)
+# Research Program 2026-09 — STATUS (generated 2026-10-31T11:50:38Z)
 
-Units: 325 — done 320, failed 1, superseded 4
+Units: 329 — done 324, failed 1, superseded 4
 Paused: False   Phase stops: []
-Capacity (Orchestrator): codex=warn claude=ok cursor=ok gemini=shed vibe=ok muse=ok aider=ok
-Orchestrator evidence (30d): offload runs 25, bound to a research round 25, scored 25 (PASS 14, FAIL 11, infra 0) — codex 7/7 (P3 F4 I0), cursor 18/18 (P11 F7 I0)
+Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=ok vibe=ok muse=ok aider=ok
+Orchestrator evidence (30d): offload runs 20, bound to a research round 20, scored 20 (PASS 10, FAIL 10, infra 0) — codex 6/6 (P3 F3 I0), cursor 14/14 (P7 F7 I0)
 Worker write boundary: on — each unit writes only unitdirs/<unit>/, its output directory, artifacts/proposals/, its own clone's working tree (not .git) and temp
 Claude conservation: off (weekly window available)
 Owner inbox: https://github.com/stranske/Ready/issues/553
@@ -187,6 +187,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D3-unblock-sweep-2026-10-29T14 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-2026-10-29T22 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-2026-10-30T06 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
+| D3-unblock-sweep-2026-10-30T14 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
+| D3-unblock-sweep-2026-10-30T22 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
+| D3-unblock-sweep-2026-10-31T06 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-pass2-20260913T2023 | D | D | done | cursor | driver | Unblock sweep pass 2: the seven repos the budgeted first pass deferred |  |
 | D-audit-Counter_Risk--2026-09-07T04-47-32Z | D | D | done | codex | driver | Audit stranske/Counter_Risk and file issues (supply 2 <= 2) |  |
 | D-audit-Counter_Risk--2026-09-08T17-11-36Z | D | D | done | codex | codex | Audit stranske/Counter_Risk and file issues (supply 1 <= 2) |  |
@@ -335,21 +338,22 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D4-verify-merged-2026-10-27T20 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
 | D4-verify-merged-2026-10-28T20 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
 | D4-verify-merged-2026-10-29T20 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
+| D4-verify-merged-2026-10-30T20 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
 
 ## Last checkpoints
 
-- 2026-10-30T03:56:26Z — mirror — deferred — Ready#660 exact-head sync review; publication resumes by 2026-10-30T05:31:17+00:00; local work continues
-- 2026-10-30T04:11:30Z — mirror — deferred — Ready#660 exact-head sync review; publication resumes by 2026-10-30T05:31:17+00:00; local work continues
-- 2026-10-30T04:26:34Z — mirror — deferred — Ready#660 exact-head sync review; publication resumes by 2026-10-30T05:31:17+00:00; local work continues
-- 2026-10-30T04:41:48Z — mirror — deferred — Ready#660 exact-head sync review; publication resumes by 2026-10-30T05:31:17+00:00; local work continues
-- 2026-10-30T04:57:25Z — mirror — deferred — Ready#660 exact-head sync review; publication resumes by 2026-10-30T05:31:17+00:00; local work continues
-- 2026-10-30T05:15:07Z — mirror — deferred — Ready#660 exact-head sync review; publication resumes by 2026-10-30T05:31:17+00:00; local work continues
-- 2026-10-30T05:30:16Z — mirror — deferred — Ready#660 exact-head sync review; publication resumes by 2026-10-30T05:31:17+00:00; local work continues
-- 2026-10-30T06:24:23Z — unblock — enqueued D3-unblock-sweep-2026-10-30T06
-- 2026-10-30T06:24:24Z — D3-unblock-sweep-2026-10-30T06 — route — router picked cursor from ['codex', 'cursor']
-- 2026-10-30T06:24:24Z — D3-unblock-sweep-2026-10-30T06 — claimed by driver (agent cursor)
-- 2026-10-30T06:30:18Z — D3-unblock-sweep-2026-10-30T06 — done — cursor produced 853 words at artifacts/sweeps/D3-unblock-sweep-2026-10-30T06.md in 179s
-- 2026-10-30T06:30:20Z — D3-unblock-sweep-2026-10-30T06 — refutation posted — stranske/Workflows#4026
+- 2026-10-30T20:53:07Z — D4-verify-merged-2026-10-30T20 — claimed by driver (agent cursor)
+- 2026-10-30T20:58:41Z — D4-verify-merged-2026-10-30T20 — done — cursor produced 690 words at artifacts/verification/D4-verify-merged-2026-10-30T20.md in 304s
+- 2026-10-30T21:14:19Z — mirror — deferred — Ready#661 exact-head sync review; publication resumes by 2026-10-30T23:08:50+00:00; local work continues
+- 2026-10-30T21:30:45Z — mirror — deferred — Ready#661 exact-head sync review; publication resumes by 2026-10-30T23:08:50+00:00; local work continues
+- 2026-10-30T22:32:53Z — unblock — enqueued D3-unblock-sweep-2026-10-30T22
+- 2026-10-30T22:32:53Z — D3-unblock-sweep-2026-10-30T22 — route — router picked cursor from ['codex', 'cursor']
+- 2026-10-30T22:32:53Z — D3-unblock-sweep-2026-10-30T22 — claimed by driver (agent cursor)
+- 2026-10-30T22:35:11Z — D3-unblock-sweep-2026-10-30T22 — done — cursor produced 486 words at artifacts/sweeps/D3-unblock-sweep-2026-10-30T22.md in 109s
+- 2026-10-31T06:39:17Z — unblock — enqueued D3-unblock-sweep-2026-10-31T06
+- 2026-10-31T06:39:18Z — D3-unblock-sweep-2026-10-31T06 — route — router picked cursor from ['codex', 'cursor']
+- 2026-10-31T06:39:18Z — D3-unblock-sweep-2026-10-31T06 — claimed by driver (agent cursor)
+- 2026-10-31T06:41:27Z — D3-unblock-sweep-2026-10-31T06 — done — cursor produced 496 words at artifacts/sweeps/D3-unblock-sweep-2026-10-31T06.md in 98s
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
