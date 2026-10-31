@@ -375,6 +375,51 @@ def test_measured_file_set_tracks_renamed_and_deleted_product_source(
     assert report["files"] == before["files"]
 
 
+@pytest.mark.parametrize("name", sorted(PUBLICATION_FILES))
+def test_unparseable_publication_source_cannot_reuse_previous_coverage_report(
+    coverage_project: Path, name: str
+) -> None:
+    """Omitting an unparseable publication script must fail despite prior passing hits."""
+    passing = _run_coverage_project(coverage_project)
+    assert passing.returncode == 0, passing.stdout + passing.stderr
+    report_path = coverage_project / "coverage.json"
+    previous = json.loads(report_path.read_text())
+    source = coverage_project / name
+    original = source.read_bytes()
+    exercise = coverage_project / "tests/test_exercise.py"
+    original_test = exercise.read_bytes()
+    # All assertions pass before the on-disk source becomes unreportable.
+    exercise.write_text(
+        exercise.read_text()
+        + "    from pathlib import Path\n"
+        + f"    Path({name!r}).write_text('def unfinished(\\n')\n"
+    )
+
+    failing = _run_coverage_project(coverage_project)
+    output = failing.stdout + failing.stderr
+    assert failing.returncode == 1, output
+    assert "1 passed" in output
+    assert "Couldn't parse" in output
+    assert f"PUBLICATION COVERAGE: {name}: missing coverage measurement" in output
+    assert "INTERNALERROR" not in output
+    assert "Ready publication coverage floors PASS" not in output
+    current = json.loads(report_path.read_text())
+    assert name not in current["files"]
+    assert set(current["files"]) == set(previous["files"]) - {name}
+    _assert_xml_matches_json(coverage_project, current)
+
+    source.write_bytes(original)
+    exercise.write_bytes(original_test)
+    restored = _run_coverage_project(coverage_project)
+    output = restored.stdout + restored.stderr
+    assert restored.returncode == 0, output
+    assert "1 passed" in output
+    assert "PUBLICATION COVERAGE:" not in output
+    report = json.loads(report_path.read_text())
+    assert report["files"] == previous["files"]
+    _assert_xml_matches_json(coverage_project, report)
+
+
 @pytest.mark.parametrize("execution", ["in-process", "subprocess"])
 @pytest.mark.parametrize(
     "source_directory",
