@@ -1,0 +1,98 @@
+{
+  "source_issue": 623,
+  "base": "276a25c1",
+  "runtime": "Anaconda CPython3.12.2 / pytest9.1.1 / pytest-cov7.1.0 / coverage7.16.0",
+  "files": {
+    "scripts/check_publication_safety.py": {
+      "covered_lines": 213,
+      "num_statements": 215,
+      "percent_covered": 98.17629179331307,
+      "percent_covered_display": "98",
+      "missing_lines": 2,
+      "excluded_lines": 2,
+      "percent_statements_covered": 99.06976744186046,
+      "percent_statements_covered_display": "99",
+      "num_branches": 114,
+      "num_partial_branches": 4,
+      "covered_branches": 110,
+      "missing_branches": 4,
+      "percent_branches_covered": 96.49122807017544,
+      "percent_branches_covered_display": "96"
+    },
+    "scripts/prepare_publication.py": {
+      "covered_lines": 107,
+      "num_statements": 121,
+      "percent_covered": 91.2568306010929,
+      "percent_covered_display": "91",
+      "missing_lines": 14,
+      "excluded_lines": 2,
+      "percent_statements_covered": 88.4297520661157,
+      "percent_statements_covered_display": "88",
+      "num_branches": 62,
+      "num_partial_branches": 2,
+      "covered_branches": 60,
+      "missing_branches": 2,
+      "percent_branches_covered": 96.7741935483871,
+      "percent_branches_covered_display": "97"
+    },
+    "src/my_project/__init__.py": {
+      "covered_lines": 6,
+      "num_statements": 6,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    }
+  },
+  "branch_removal_control": {
+    "exit": 1,
+    "before": {
+      "covered_lines": 213,
+      "num_statements": 215,
+      "percent_covered": 98.17629179331307,
+      "percent_covered_display": "98",
+      "missing_lines": 2,
+      "excluded_lines": 2,
+      "percent_statements_covered": 99.06976744186046,
+      "percent_statements_covered_display": "99",
+      "num_branches": 114,
+      "num_partial_branches": 4,
+      "covered_branches": 110,
+      "missing_branches": 4,
+      "percent_branches_covered": 96.49122807017544,
+      "percent_branches_covered_display": "96"
+    },
+    "after": {
+      "covered_lines": 212,
+      "num_statements": 215,
+      "percent_covered": 97.56838905775076,
+      "percent_covered_display": "98",
+      "missing_lines": 3,
+      "excluded_lines": 2,
+      "percent_statements_covered": 98.6046511627907,
+      "percent_statements_covered_display": "99",
+      "num_branches": 114,
+      "num_partial_branches": 5,
+      "covered_branches": 109,
+      "missing_branches": 5,
+      "percent_branches_covered": 95.6140350877193,
+      "percent_branches_covered_display": "96"
+    },
+    "branch_decreased": true
+  },
+  "source_discovery_probe": {
+    "path": "src/my_project/_coverage_unexecuted_probe.py",
+    "covered_lines": 0,
+    "num_statements": 1,
+    "executed": false,
+    "removed_after_proof": true
+  }
+}
