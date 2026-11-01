@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=82.0.1", "wheel"]
+requires = ["setuptools>=69.0.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -23,10 +23,15 @@ classifiers = [
 dependencies = []
 
 [project.optional-dependencies]
+# The shared CI installer requests both the optional application and development
+# extras. This project has no application-specific dependencies, but declaring
+# the empty extra keeps that standard install target valid.
+app = []
 dev = [
     "jsonschema>=4.17.3,<4.23.0",
     "pytest==9.2.0",
     "pytest-cov==7.1.0",
+    "coverage==7.17.0",
     "PyYAML>=6.0.3",
     "ruff==0.17.3",
     "mypy==2.4.1",
@@ -42,14 +47,16 @@ where = ["src"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "-v --cov=src --cov-report=term-missing --cov-report=xml"
-pythonpath = ["src"]
+addopts = "-v --cov --cov-report=term-missing --cov-report=xml --cov-report=json"
+pythonpath = ["src", "."]
 
 [tool.coverage.run]
-source = ["src"]
+include = ["src/**", "scripts/check_publication_safety.py", "scripts/prepare_publication.py"]
 branch = true
+patch = ["subprocess"]
 
 [tool.coverage.report]
+include = ["src/**", "scripts/check_publication_safety.py", "scripts/prepare_publication.py"]
 exclude_lines = [
     "pragma: no cover",
     "def __repr__",
