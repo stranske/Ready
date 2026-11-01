@@ -4575,3 +4575,18 @@ remote: - Required status check "Gate / gate" is
 ## 2026-10-31T06:39:18Z — D3-unblock-sweep-2026-10-31T06 — route — router picked cursor from ['codex', 'cursor']
 ## 2026-10-31T06:39:18Z — D3-unblock-sweep-2026-10-31T06 — claimed by driver (agent cursor)
 ## 2026-10-31T06:41:27Z — D3-unblock-sweep-2026-10-31T06 — done — cursor produced 496 words at artifacts/sweeps/D3-unblock-sweep-2026-10-31T06.md in 98s
+## 2026-10-31T14:43:12Z — unblock — enqueued D3-unblock-sweep-2026-10-31T14
+## 2026-10-31T14:43:12Z — D3-unblock-sweep-2026-10-31T14 — route — router picked cursor from ['codex', 'cursor']
+## 2026-10-31T14:43:12Z — D3-unblock-sweep-2026-10-31T14 — claimed by driver (agent cursor)
+## 2026-10-31T14:45:10Z — D3-unblock-sweep-2026-10-31T14 — done — cursor produced 542 words at artifacts/sweeps/D3-unblock-sweep-2026-10-31T14.md in 89s
+## 2026-10-31T21:01:36Z — verify — enqueued D4-verify-merged-2026-10-31T21
+## 2026-10-31T21:01:38Z — D4-verify-merged-2026-10-31T21 — route — router picked codex from ['codex', 'cursor']
+## 2026-10-31T21:01:38Z — D4-verify-merged-2026-10-31T21 — claimed by driver (agent codex)
+## 2026-10-31T22:45:27Z — unblock — enqueued D3-unblock-sweep-2026-10-31T22
+## 2026-10-31T22:45:29Z — D3-unblock-sweep-2026-10-31T22 — route — router picked cursor from ['codex', 'cursor']
+## 2026-10-31T22:45:29Z — D3-unblock-sweep-2026-10-31T22 — claimed by driver (agent cursor)
+## 2026-10-31T22:47:06Z — D3-unblock-sweep-2026-10-31T22 — done — cursor produced 551 words at artifacts/sweeps/D3-unblock-sweep-2026-10-31T22.md in 66s
+## 2026-10-31T23:02:34Z — D4-verify-merged-2026-10-31T21 — claim released (stale)
+## 2026-10-31T23:02:35Z — D4-verify-merged-2026-10-31T21 — route — router picked cursor from ['codex', 'cursor']
+## 2026-10-31T23:02:35Z — D4-verify-merged-2026-10-31T21 — claimed by driver (agent cursor)
+## 2026-10-31T23:05:30Z — D4-verify-merged-2026-10-31T21 — done — cursor produced 459 words at artifacts/verification/D4-verify-merged-2026-10-31T21.md in 128s
