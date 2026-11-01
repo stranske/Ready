@@ -7,6 +7,8 @@ import json
 import os
 import re
 import shutil
+import subprocess
+import sys
 import zipfile
 from html import escape
 from pathlib import Path
@@ -424,19 +426,45 @@ def test_preparation_rejects_a_named_pipe_instead_of_hanging(tmp_path):
         prepare.prepare_copy(stage)
 
 
-def test_compressed_docx_preserved_then_guarded(tmp_path, capsys):
-    import zipfile
-
+@pytest.mark.parametrize(
+    "runs",
+    [["scratchpad/SYNTHETIC"], ["scratch", "pad/SYNTHETIC"]],
+    ids=["contiguous-text", "split-run-marker"],
+)
+def test_compressed_docx_preserved_then_guarded(tmp_path, runs):
     path = tmp_path / "report.docx"
-    xml = '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:p><w:r><w:t>gh</w:t></w:r><w:r><w:t>p_SYNTHETIC</w:t></w:r></w:p></w:document>'
+    body = "".join(f"<w:r><w:t>{escape(run)}</w:t></w:r>" for run in runs)
+    xml = (
+        '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'
+        f"<w:body><w:p>{body}</w:p></w:body></w:document>"
+    )
     with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
         archive.writestr("word/document.xml", xml)
     original = path.read_bytes()
     assert not any(pattern.search(original) for pattern in guard.RULES.values())
-    prepare.prepare_copy(tmp_path)
+    # Prove the finding comes from decoded text, including a marker split by XML.
+    assert guard.docx_text_lines(original) == [b"scratchpad/SYNTHETIC"]
+    prepared = subprocess.run(
+        [sys.executable, str(SCRIPTS / "prepare_publication.py"), "--staging-root", str(tmp_path)],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert prepared.returncode == 0
+    assert "files_redacted=0 files_scanned=1" in prepared.stdout
     assert path.read_bytes() == original
-    assert guard.scan(tmp_path) == 1
-    assert "SYNTHETIC" not in capsys.readouterr().out
+    scanned = subprocess.run(
+        [sys.executable, str(SCRIPTS / "check_publication_safety.py"), "--root", str(tmp_path)],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert scanned.returncode == 1
+    assert "report.docx:1: scratch-path (1 hit(s))" in scanned.stdout
+    assert "files_scanned=1" in scanned.stdout
+    assert "errors=0" in scanned.stdout
+    assert "SYNTHETIC" not in prepared.stdout + prepared.stderr + scanned.stdout + scanned.stderr
+    assert not prepared.stderr + scanned.stderr
 
 
 # Independent synthetic witnesses, including bare marker fallbacks. Expected
