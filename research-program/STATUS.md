@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-02T20:51:11Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-02T21:07:29Z)
 
-Units: 342 — done 337, failed 1, superseded 4
+Units: 343 — claimed 1, done 337, failed 1, superseded 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=warn cursor=ok gemini=shed vibe=ok muse=ok aider=ok
 Orchestrator evidence (30d): offload runs 5, bound to a research round 5, scored 5 (PASS 4, FAIL 1, infra 0) — codex 1/1 (P1 F0 I0), cursor 4/4 (P3 F1 I0)
@@ -352,12 +352,10 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D4-verify-merged-2026-10-30T20 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
 | D4-verify-merged-2026-10-31T21 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
 | D4-verify-merged-2026-11-01T21 | D | D | done | codex | driver | Verify merged PRs against their issues' acceptance criteria |  |
+| D4-verify-merged-2026-11-02T21 | D | D | claimed | codex | driver | Verify merged PRs against their issues' acceptance criteria |  |
 
 ## Last checkpoints
 
-- 2026-11-02T10:44:48Z — D-audit-Workflows--2026-11-02T10-02-41Z — claimed by driver (agent cursor)
-- 2026-11-02T10:50:18Z — D-audit-Workflows--2026-11-02T10-02-41Z — done — cursor produced 415 words at artifacts/audits/Workflows-2026-11-02.md in 301s
-- 2026-11-02T11:05:46Z — D-audit-trip-planner--2026-11-02T10-02-45Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-11-02T11:05:46Z — D-audit-trip-planner--2026-11-02T10-02-45Z — claimed by driver (agent cursor)
 - 2026-11-02T11:09:53Z — D-audit-trip-planner--2026-11-02T10-02-45Z — done — cursor produced 298 words at artifacts/audits/trip-planner-2026-11-02.md in 219s
 - 2026-11-02T11:09:55Z — D-audit-trip-planner--2026-11-02T10-02-45Z — refutation posted — stranske/trip-planner#1883
@@ -367,6 +365,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-02T15:24:27Z — D3-unblock-sweep-2026-11-02T15 — done — cursor produced 903 words at artifacts/sweeps/D3-unblock-sweep-2026-11-02T15.md in 144s
 - 2026-11-02T15:24:29Z — D3-unblock-sweep-2026-11-02T15 — refutation posted — stranske/Workflows#4026
 - 2026-11-02T15:24:30Z — D3-unblock-sweep-2026-11-02T15 — refutation posted — stranske/Workflows#3978
+- 2026-11-02T21:07:18Z — verify — enqueued D4-verify-merged-2026-11-02T21
+- 2026-11-02T21:07:29Z — D4-verify-merged-2026-11-02T21 — route — router picked codex from ['codex', 'cursor']
+- 2026-11-02T21:07:29Z — D4-verify-merged-2026-11-02T21 — claimed by driver (agent codex)
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
