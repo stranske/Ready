@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-02T11:05:46Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-02T11:09:55Z)
 
-Units: 341 — claimed 1, done 335, failed 1, superseded 4
+Units: 341 — done 336, failed 1, superseded 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=shed vibe=ok muse=ok aider=ok
 Orchestrator evidence (30d): offload runs 8, bound to a research round 8, scored 8 (PASS 5, FAIL 3, infra 0) — codex 1/1 (P1 F0 I0), cursor 7/7 (P4 F3 I0)
@@ -302,7 +302,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-learning-management-system--2026-10-25T08-11-12Z | D | D | done | cursor | driver | Audit stranske/learning-management-system and file issues (scorecard 2 | 2W/5P/0B/0F of 7 |
 | D-audit-trip-planner--2026-09-07T04-47-34Z | D | D | done | codex | codex | Audit stranske/trip-planner and file issues (supply 2 <= 2) |  |
 | D-audit-trip-planner--2026-10-02T10-11-06Z | D | D | done | codex | codex | Audit stranske/trip-planner and file issues (scorecard 2026-10-01: 1 p | 7W/1P/0B/0F of 8 |
-| D-audit-trip-planner--2026-11-02T10-02-45Z | D | D | claimed | cursor | driver | Audit stranske/trip-planner and file issues (scorecard 2026-10-02 is 3 |  |
+| D-audit-trip-planner--2026-11-02T10-02-45Z | D | D | done | cursor | driver | Audit stranske/trip-planner and file issues (scorecard 2026-10-02 is 3 | 6W/1P/0B/0F of 8 |
 | D4-verify-merged-2026-09-05T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
 | D4-verify-merged-2026-09-06T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
 | D4-verify-merged-2026-09-07T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
@@ -354,8 +354,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-02T10:02:45Z — refill — trip-planner: scorecard 2026-10-02 is 31d old (> 30) → audit queued
-- 2026-11-02T10:02:47Z — D-audit-Inv-Man-Intake--2026-11-02T10-02-44Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-11-02T10:02:47Z — D-audit-Inv-Man-Intake--2026-11-02T10-02-44Z — claimed by driver (agent cursor)
 - 2026-11-02T10:07:24Z — D-audit-Inv-Man-Intake--2026-11-02T10-02-44Z — done — cursor produced 492 words at artifacts/audits/Inv-Man-Intake-2026-11-02.md in 247s
 - 2026-11-02T10:22:54Z — D-audit-Travel-Plan-Permission--2026-11-02T10-02-42Z — route — router picked cursor from ['codex', 'cursor']
@@ -366,6 +364,8 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-02T10:50:18Z — D-audit-Workflows--2026-11-02T10-02-41Z — done — cursor produced 415 words at artifacts/audits/Workflows-2026-11-02.md in 301s
 - 2026-11-02T11:05:46Z — D-audit-trip-planner--2026-11-02T10-02-45Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-11-02T11:05:46Z — D-audit-trip-planner--2026-11-02T10-02-45Z — claimed by driver (agent cursor)
+- 2026-11-02T11:09:53Z — D-audit-trip-planner--2026-11-02T10-02-45Z — done — cursor produced 298 words at artifacts/audits/trip-planner-2026-11-02.md in 219s
+- 2026-11-02T11:09:55Z — D-audit-trip-planner--2026-11-02T10-02-45Z — refutation posted — stranske/trip-planner#1883
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
