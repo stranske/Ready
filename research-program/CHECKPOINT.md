@@ -4615,3 +4615,9 @@ remote: - Required status check "Gate / gate" is
 ## 2026-11-02T07:21:32Z — D3-unblock-sweep-2026-11-02T07 — route — router picked codex from ['codex', 'cursor']
 ## 2026-11-02T07:21:32Z — D3-unblock-sweep-2026-11-02T07 — claimed by driver (agent codex)
 ## 2026-11-02T07:27:27Z — D3-unblock-sweep-2026-11-02T07 — done — codex produced 756 words at artifacts/sweeps/D3-unblock-sweep-2026-11-02T07.md in 325s
+## 2026-11-02T10:02:41Z — refill — Workflows: scorecard 2026-10-02 is 31d old (> 30) → audit queued
+## 2026-11-02T10:02:42Z — refill — Travel-Plan-Permission: scorecard 2026-10-02 is 31d old (> 30) → audit queued
+## 2026-11-02T10:02:44Z — refill — Inv-Man-Intake: scorecard 2026-10-02 is 31d old (> 30) → audit queued
+## 2026-11-02T10:02:45Z — refill — trip-planner: scorecard 2026-10-02 is 31d old (> 30) → audit queued
+## 2026-11-02T10:02:47Z — D-audit-Inv-Man-Intake--2026-11-02T10-02-44Z — route — router picked cursor from ['codex', 'cursor']
+## 2026-11-02T10:02:47Z — D-audit-Inv-Man-Intake--2026-11-02T10-02-44Z — claimed by driver (agent cursor)

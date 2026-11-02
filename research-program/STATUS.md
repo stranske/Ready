@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-02T09:47:11Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-02T10:02:47Z)
 
-Units: 337 — done 332, failed 1, superseded 4
+Units: 341 — claimed 1, done 332, failed 1, queued 3, superseded 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=warn cursor=ok gemini=shed vibe=ok muse=ok aider=ok
 Orchestrator evidence (30d): offload runs 8, bound to a research round 8, scored 8 (PASS 5, FAIL 3, infra 0) — codex 1/1 (P1 F0 I0), cursor 7/7 (P4 F3 I0)
@@ -239,6 +239,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Inv-Man-Intake--2026-09-23T22-11-16Z | D | D | done | cursor | codex | Audit stranske/Inv-Man-Intake and file issues (scorecard 2026-09-23 ha | 5W/2P/0B/0F of 7 |
 | D-audit-Inv-Man-Intake--2026-09-24T01-13-11Z | D | D | done | cursor | driver | Audit stranske/Inv-Man-Intake and file issues (scorecard 2026-09-23 ha | 5W/2P/0B/0F of 7 |
 | D-audit-Inv-Man-Intake--2026-10-02T10-11-05Z | D | D | done | codex | codex | Audit stranske/Inv-Man-Intake and file issues (scorecard 2026-09-24: c | 5W/2P/0B/0F of 7 |
+| D-audit-Inv-Man-Intake--2026-11-02T10-02-44Z | D | D | claimed | cursor | driver | Audit stranske/Inv-Man-Intake and file issues (scorecard 2026-10-02 is |  |
 | D-audit-Manager-Database--2026-09-10T17-45-13Z | D | D | done | codex | driver | Audit stranske/Manager-Database and file issues (supply 0 <= 2) |  |
 | D-audit-Manager-Database--2026-09-14T06-49-50Z | D | D | done | codex | codex | Audit stranske/Manager-Database and file issues (supply 2 <= 2) |  |
 | D-audit-Manager-Database--2026-09-14T19-00-22Z | D | D | done | codex | codex | Audit stranske/Manager-Database and file issues (supply 2 <= 2) |  |
@@ -274,6 +275,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Travel-Plan-Permission--2026-09-23T22-11-14Z | D | D | done | cursor | driver | Audit stranske/Travel-Plan-Permission and file issues (scorecard 2026- | 6W/1P/0B/0F of 7 |
 | D-audit-Travel-Plan-Permission--2026-10-02T10-11-03Z | D | D | superseded | codex |  | Audit stranske/Travel-Plan-Permission and file issues (scorecard 2026- |  |
 | D-audit-Travel-Plan-Permission--2026-10-02T22-12-13Z | D | D | done | codex | codex | Audit stranske/Travel-Plan-Permission and file issues (scorecard 2026- | 7W/1P/0B/0F of 8 |
+| D-audit-Travel-Plan-Permission--2026-11-02T10-02-42Z | D | D | queued | claude |  | Audit stranske/Travel-Plan-Permission and file issues (scorecard 2026- |  |
 | D-audit-Trend_Model_Project--2026-09-19T08-08-54Z | D | D | done | codex | codex | Audit stranske/Trend_Model_Project and file issues (supply 2 <= 3) |  |
 | D-audit-Trend_Model_Project--2026-09-19T20-12-05Z | D | D | superseded | codex |  | Audit stranske/Trend_Model_Project and file issues (supply 0 <= 2) |  |
 | D-audit-Trend_Model_Project--2026-09-23T09-11-16Z | D | D | done | cursor | driver | Audit stranske/Trend_Model_Project and file issues (scorecard 2026-09- | 1W/2P/1B/0F of 4 |
@@ -286,6 +288,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Workflows--2026-09-26T17-11-07Z | D | D | done | cursor | driver | Audit stranske/Workflows and file issues (scorecard 2026-09-24: 1 brok | 4W/0P/1B/0F of 7 |
 | D-audit-Workflows--2026-09-27T05-11-48Z | D | D | done | cursor |  | Audit stranske/Workflows and file issues (scorecard 2026-09-26: 1 brok |  |
 | D-audit-Workflows--2026-10-02T10-11-02Z | D | D | done | codex | claude | Audit stranske/Workflows and file issues (scorecard 2026-09-27: covera | 5W/0P/0B/0F of 7 |
+| D-audit-Workflows--2026-11-02T10-02-41Z | D | D | queued | claude |  | Audit stranske/Workflows and file issues (scorecard 2026-10-02 is 31d  |  |
 | D-audit-learning-management-system--2026-09-05T04-00-30Z | D | D | done | codex | driver | Audit stranske/learning-management-system and file issues (supply 2 <= |  |
 | D-audit-learning-management-system--2026-09-06T16-33-31Z | D | D | done | codex | driver | Audit stranske/learning-management-system and file issues (supply 1 <= |  |
 | D-audit-learning-management-system--2026-09-08T05-06-08Z | D | D | done | codex | codex | Audit stranske/learning-management-system and file issues (supply 1 <= |  |
@@ -299,6 +302,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-learning-management-system--2026-10-25T08-11-12Z | D | D | done | cursor | driver | Audit stranske/learning-management-system and file issues (scorecard 2 | 2W/5P/0B/0F of 7 |
 | D-audit-trip-planner--2026-09-07T04-47-34Z | D | D | done | codex | codex | Audit stranske/trip-planner and file issues (supply 2 <= 2) |  |
 | D-audit-trip-planner--2026-10-02T10-11-06Z | D | D | done | codex | codex | Audit stranske/trip-planner and file issues (scorecard 2026-10-01: 1 p | 7W/1P/0B/0F of 8 |
+| D-audit-trip-planner--2026-11-02T10-02-45Z | D | D | queued | claude |  | Audit stranske/trip-planner and file issues (scorecard 2026-10-02 is 3 |  |
 | D4-verify-merged-2026-09-05T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
 | D4-verify-merged-2026-09-06T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
 | D4-verify-merged-2026-09-07T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
@@ -350,18 +354,18 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-01T21:06:13Z — D4-verify-merged-2026-11-01T21 — claimed by driver (agent codex)
-- 2026-11-01T21:23:01Z — D4-verify-merged-2026-11-01T21 — done — cursor produced 458 words at artifacts/verification/D4-verify-merged-2026-11-01T21.md in 976s
-- 2026-11-01T23:12:25Z — unblock — enqueued D3-unblock-sweep-2026-11-01T23
-- 2026-11-01T23:12:26Z — D3-unblock-sweep-2026-11-01T23 — route — router picked codex from ['codex', 'cursor']
-- 2026-11-01T23:12:26Z — D3-unblock-sweep-2026-11-01T23 — claimed by driver (agent codex)
-- 2026-11-01T23:15:46Z — D3-unblock-sweep-2026-11-01T23 — done — codex produced 528 words at artifacts/sweeps/D3-unblock-sweep-2026-11-01T23.md in 162s
 - 2026-11-01T23:15:48Z — D3-unblock-sweep-2026-11-01T23 — refutation posted — stranske/Workflows#4082
 - 2026-11-01T23:15:50Z — D3-unblock-sweep-2026-11-01T23 — refutation posted — stranske/Workflows#3978
 - 2026-11-02T07:21:31Z — unblock — enqueued D3-unblock-sweep-2026-11-02T07
 - 2026-11-02T07:21:32Z — D3-unblock-sweep-2026-11-02T07 — route — router picked codex from ['codex', 'cursor']
 - 2026-11-02T07:21:32Z — D3-unblock-sweep-2026-11-02T07 — claimed by driver (agent codex)
 - 2026-11-02T07:27:27Z — D3-unblock-sweep-2026-11-02T07 — done — codex produced 756 words at artifacts/sweeps/D3-unblock-sweep-2026-11-02T07.md in 325s
+- 2026-11-02T10:02:41Z — refill — Workflows: scorecard 2026-10-02 is 31d old (> 30) → audit queued
+- 2026-11-02T10:02:42Z — refill — Travel-Plan-Permission: scorecard 2026-10-02 is 31d old (> 30) → audit queued
+- 2026-11-02T10:02:44Z — refill — Inv-Man-Intake: scorecard 2026-10-02 is 31d old (> 30) → audit queued
+- 2026-11-02T10:02:45Z — refill — trip-planner: scorecard 2026-10-02 is 31d old (> 30) → audit queued
+- 2026-11-02T10:02:47Z — D-audit-Inv-Man-Intake--2026-11-02T10-02-44Z — route — router picked cursor from ['codex', 'cursor']
+- 2026-11-02T10:02:47Z — D-audit-Inv-Man-Intake--2026-11-02T10-02-44Z — claimed by driver (agent cursor)
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
