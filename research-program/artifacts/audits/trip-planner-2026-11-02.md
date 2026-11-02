@@ -1,32 +1,41 @@
-Scorecard: 6 work / 1 partial / 0 broken / 0 fabricated / 1 not exercised of 8; journey: passes — full-product verification business journey PASS on isolated DB; surfaces unscored 4; closed-still-broken 0.
+Scorecard: 5 work / 3 partial / 0 broken / 0 fabricated / 0 not exercised of 8; journey: passes — full-product verification business journey PASS on isolated DB; surfaces unscored 0; closed-still-broken 0.
 
-# stranske/trip-planner audit — 2026-11-02
+# stranske/trip-planner audit — 2026-11-02 (resume @ e9a53fa)
 
-Tip audited: `67b839e1f7cd0c2605ee40cadcc2d3b59527c7b0` on `main` (+1 doc commit since 2026-10-02 scorecard tip `8bca24b5`).
+Tip audited: `e9a53fadb56fb988ddb9df30711a76b3171db669` on `main` (#1963 merges contract-probe origin fix from closed #1962).
 
 ## Run summary
 
-Track D refill (`audit-refill.md`: 2 open agent-ready vs threshold 2; scorecard age 31d). Phases: orientation, live product scorecard (`check_full_product_verification` + contract report + TP3/TP4 adversarial checks), dedup against open/closed issues, one verified filing.
+Track D refill (`audit-refill.md`: coverage debt 5 — not exercised 1 + unscored 4 — unchanged on the 2026-11-02 morning scorecard at `67b839e`). This pass re-ran the scorecard on the **current** tip after #1963, scored the four API surfaces added since 2026-10-01, and filed one verified documentation drift issue.
 
-**Issues filed (1):** [#1962](https://github.com/stranske/trip-planner/issues/1962) — `[P1] Contract probe omits trip origin so TP3 is falsely FABRICATED on every product-probe run`. Evidence: `scripts/check_full_product_verification.py:238-243`, `inventory.py:655-689`, compare figures in `Code/Audits/trip-planner/2026-11-02-assets/evidence/tp3-with-origin.txt`.
+**Issues filed (1):** [#1964](https://github.com/stranske/trip-planner/issues/1964) — `[P2] PRODUCT_CONTRACT status column contradicts live product-probe on main`. Evidence: `docs/PRODUCT_CONTRACT.md:24-35` still marks TP3 `FABRICATED` and TP5–TP7 `BROKEN` while `python scripts/check_full_product_verification.py --live-tpp off --contract-report product-probe.json` on this tip prints `WORKS 4, PARTIAL 3, BROKEN 0, FABRICATED 0 of 7`.
 
-REFUTED: https://github.com/stranske/trip-planner/issues/1883 — on tip `67b839e`, `_extract_destination_mentions` no longer returns `Nov` and metadata blocks no longer re-ask for dates for the Oct audit reproduction string.
+**Prior filing this calendar day:** [#1962](https://github.com/stranske/trip-planner/issues/1962) closed fixed via #1963 on tip; not re-filed.
 
-**Dedup (not re-filed):** Open #1910 owns publishing contract verdicts to CI (this issue fixes probe inputs only). Closed #1839 compare-truthfulness tests still pass (`tests/app/test_compare_truthfulness.py`). Sync-only open #1961 (Cross-Repo Smoke / dev-tool pin) is Workflows template debt, not a trip-planner product defect.
+**Dedup (not re-filed):** Open #1910 owns publishing per-function probe verdicts to CI. Open #1961 is Workflows sync/dev-tool debt. TP3 `PARTIAL` is the contract probe’s party-size pair (travel_minutes identical for party 1 vs 8); destination pair moves (410 vs 643 min) — product behavior, not missing origin.
 
 ## Scorecard notes
 
-- **TP3 WORKS** for UI-shaped trips (origin + destination vary lead `travel_minutes`). The shipped `run_contract_report()` path still reads **FABRICATED** until #1962 lands.
-- **TP4 PARTIAL** — deterministic fallback without LLM credentials; not a regression.
-- **TP7 NOT-EXERCISED** — print/export not re-run in browser this round; 2026-10-01 evidence retained.
-- **surfaces unscored 4** — new handoff and flight-search API routes since 2026-10-01 inventory (listed in canonical `2026-11-02-SCORECARD.md`).
+| id | verdict | note |
+|---|---|---|
+| TP1–TP2, TP5–TP6 | WORKS | contract probe |
+| TP3, TP4, TP7 | PARTIAL | TP3 party determinant flat; TP4 deterministic fallback; TP7 backend-only packet inputs per `_probe_packet` |
+| TP8 enter sourced prices | WORKS | business journey PUT `/api/workspace/{id}/prices` in full-product verification |
 
-## Artifacts
+**surfaces unscored 0** — exercised this round: `POST /api/workspace/{trip_id}/flights/search` (`tests/app/test_flight_search_sandbox.py`, 21 passed); `POST .../proposal/handoff`, `.../handoff/status`, `.../handoff/submit` (`tests/app/test_proposal.py -k handoff`, 60 passed).
 
-- Canonical scorecard: `Code/Audits/trip-planner/2026-11-02-SCORECARD.md`
-- Audit run: `2026-11-02-audit-run.md`, issue body `2026-11-02-issue-bodies/01-contract-probe-missing-origin.md`
-- Probe output copy: unit scratch `product-probe.json` / `product-probe.log`
+**UX panel:** not re-run; no new UX-gate line.
+
+## Commands / evidence
+
+```text
+TRIP_PLANNER_DATABASE_URL=sqlite:///<unit-scratch>/trip_planner_audit2.db \
+  python scripts/check_full_product_verification.py --live-tpp off --contract-report product-probe2.json
+# → product-probe: WORKS 4, PARTIAL 3, BROKEN 0, FABRICATED 0 of 7
+```
+
+Canonical scorecard mirror: update `Code/Audits/trip-planner/2026-11-02-SCORECARD.md` with tip `e9a53fa` and unscored 0 (Dropbox ledger).
 
 ## Format guard
 
-Run `41434489592` (Agents Issue Format Guard for #1962) completed **skipped** on 2026-11-02; re-check on next issue edit if `agents:formatted` is required for lanes.
+Format guard run `41541563223` for #1964 completed **skipped** on 2026-11-02.

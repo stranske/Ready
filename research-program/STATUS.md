@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-02T22:55:31Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-02T22:58:38Z)
 
-Units: 346 — claimed 1, done 340, failed 1, superseded 4
+Units: 346 — done 341, failed 1, superseded 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=shed vibe=ok muse=ok aider=ok
 Orchestrator evidence (30d): offload runs 5, bound to a research round 5, scored 5 (PASS 4, FAIL 1, infra 0) — codex 1/1 (P1 F0 I0), cursor 4/4 (P3 F1 I0)
@@ -306,7 +306,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-trip-planner--2026-09-07T04-47-34Z | D | D | done | codex | codex | Audit stranske/trip-planner and file issues (supply 2 <= 2) |  |
 | D-audit-trip-planner--2026-10-02T10-11-06Z | D | D | done | codex | codex | Audit stranske/trip-planner and file issues (scorecard 2026-10-01: 1 p | 7W/1P/0B/0F of 8 |
 | D-audit-trip-planner--2026-11-02T10-02-45Z | D | D | done | cursor | driver | Audit stranske/trip-planner and file issues (scorecard 2026-10-02 is 3 | 6W/1P/0B/0F of 8 |
-| D-audit-trip-planner--2026-11-02T22-17-38Z | D | D | claimed | cursor | driver | Audit stranske/trip-planner and file issues (scorecard 2026-11-02: cov |  |
+| D-audit-trip-planner--2026-11-02T22-17-38Z | D | D | done | cursor | driver | Audit stranske/trip-planner and file issues (scorecard 2026-11-02: cov | 5W/3P/0B/0F of 8 |
 | D4-verify-merged-2026-09-05T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
 | D4-verify-merged-2026-09-06T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
 | D4-verify-merged-2026-09-07T01 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
@@ -359,7 +359,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-02T22:17:34Z — refill — Workflows: scorecard 2026-11-02: coverage debt 2 (not exercised 2 + unscored 0) not reduced since 2026-10-02 (2) → audit queued
 - 2026-11-02T22:17:34Z — refill — Travel-Plan-Permission: scorecard 2026-11-02: coverage debt 12 (not exercised 0 + unscored 12) not reduced since 2026-10-02 (12) → audit queued
 - 2026-11-02T22:17:38Z — refill — trip-planner: scorecard 2026-11-02: coverage debt 5 (not exercised 1 + unscored 4) not reduced since 2026-10-02 (0) → audit queued
 - 2026-11-02T22:17:40Z — D-audit-Travel-Plan-Permission--2026-11-02T22-17-34Z — route — router picked codex from ['codex', 'cursor']
@@ -371,6 +370,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-02T22:39:59Z — D-audit-Workflows--2026-11-02T22-17-34Z — done — codex produced 588 words at artifacts/audits/Workflows-2026-11-02.md in 189s
 - 2026-11-02T22:55:31Z — D-audit-trip-planner--2026-11-02T22-17-38Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-11-02T22:55:31Z — D-audit-trip-planner--2026-11-02T22-17-38Z — claimed by driver (agent cursor)
+- 2026-11-02T22:58:38Z — D-audit-trip-planner--2026-11-02T22-17-38Z — done — cursor produced 350 words at artifacts/audits/trip-planner-2026-11-02.md in 156s
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
