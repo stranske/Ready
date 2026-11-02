@@ -1,5 +1,8 @@
 # Audits CHECKPOINT (append-only)
 
+## 2026-11-02 — Travel-Plan-Permission Track D (D-audit-Travel-Plan-Permission--2026-11-02T10-02-42Z)
+Phases 0–5 complete @ 503eae9. Scorecard: 7W/1P/0B/0F/0NE of 8; journey passes; surfaces unscored 12; C=0. Filed #1720, #1721. OUT: Travel-Plan-Permission-2026-11-02.md. Canonical: Code/Audits/Travel-Plan-Permission/2026-11-02-SCORECARD.md.
+
 ## 2026-10-25 — Fine-Art-Archive Track D (D-audit-Fine-Art-Archive--2026-10-25T20-34-28Z)
 Phases 0–5 complete @ 9872823. Scorecard: 5W/0P/0B/0F/0NE of 5; surfaces unscored 9→0; C=0. Filed #847. OUT: Fine-Art-Archive-2026-10-25.md. Canonical scorecard: Code/Audits/Fine-Art-Archive/2026-10-25-SCORECARD.md.
 
