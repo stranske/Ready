@@ -161,3 +161,10 @@
 - Follow-ups filed: 12; 16 eligible PRs deferred under the 20-PR pacing limit.
 - OUT: [LOCAL_HOME]/.codex/automations/research-program/artifacts/verification/D4-verify-merged-2026-09-29T04.md
 - Checkpoint: [LOCAL_HOME]/.codex/automations/research-program/artifacts/verification/D4-verify-merged-2026-09-29T04.CHECKPOINT.md
+
+## Unit D4-verify-merged-2026-11-02T21 Completed
+- Total PRs inspected: 11 (3 VERIFIED, 5 PARTIAL, 2 NOT IMPLEMENTED, 1 evidence-incomplete).
+- Decisive reproduction: Inv-Man-Intake #1062 / #1061 still exits 1 and creates no run.json at merged tip.
+- GitHub writes: 0; this synchronous offload prohibits issue comments, reopens, and follow-up filing.
+- OUT: [LOCAL_HOME]/.codex/automations/research-program/artifacts/verification/D4-verify-merged-2026-11-02T21.md
+- Checkpoint: [LOCAL_HOME]/.codex/automations/research-program/artifacts/verification/D4-verify-merged-2026-11-02T21.CHECKPOINT.md

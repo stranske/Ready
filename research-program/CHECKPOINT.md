@@ -4638,3 +4638,20 @@ remote: - Required status check "Gate / gate" is
 ## 2026-11-02T15:24:27Z — D3-unblock-sweep-2026-11-02T15 — done — cursor produced 903 words at artifacts/sweeps/D3-unblock-sweep-2026-11-02T15.md in 144s
 ## 2026-11-02T15:24:29Z — D3-unblock-sweep-2026-11-02T15 — refutation posted — stranske/Workflows#4026
 ## 2026-11-02T15:24:30Z — D3-unblock-sweep-2026-11-02T15 — refutation posted — stranske/Workflows#3978
+## 2026-11-02T21:07:18Z — verify — enqueued D4-verify-merged-2026-11-02T21
+## 2026-11-02T21:07:29Z — D4-verify-merged-2026-11-02T21 — route — router picked codex from ['codex', 'cursor']
+## 2026-11-02T21:07:29Z — D4-verify-merged-2026-11-02T21 — claimed by driver (agent codex)
+## 2026-11-02T21:15:41Z — D4-verify-merged-2026-11-02T21 — done — codex produced 776 words at artifacts/verification/D4-verify-merged-2026-11-02T21.md in 418s
+## 2026-11-02T22:17:34Z — refill — Workflows: scorecard 2026-11-02: coverage debt 2 (not exercised 2 + unscored 0) not reduced since 2026-10-02 (2) → audit queued
+## 2026-11-02T22:17:34Z — refill — Travel-Plan-Permission: scorecard 2026-11-02: coverage debt 12 (not exercised 0 + unscored 12) not reduced since 2026-10-02 (12) → audit queued
+## 2026-11-02T22:17:38Z — refill — trip-planner: scorecard 2026-11-02: coverage debt 5 (not exercised 1 + unscored 4) not reduced since 2026-10-02 (0) → audit queued
+## 2026-11-02T22:17:40Z — D-audit-Travel-Plan-Permission--2026-11-02T22-17-34Z — route — router picked codex from ['codex', 'cursor']
+## 2026-11-02T22:17:40Z — D-audit-Travel-Plan-Permission--2026-11-02T22-17-34Z — claimed by driver (agent codex)
+## 2026-11-02T22:20:53Z — D-audit-Travel-Plan-Permission--2026-11-02T22-17-34Z — done — codex produced 674 words at artifacts/audits/Travel-Plan-Permission-2026-11-02.md in 165s
+## 2026-11-02T22:20:55Z — D-audit-Travel-Plan-Permission--2026-11-02T22-17-34Z — refutation posted — stranske/Travel-Plan-Permission#1559
+## 2026-11-02T22:36:21Z — D-audit-Workflows--2026-11-02T22-17-34Z — route — router picked codex from ['codex', 'cursor']
+## 2026-11-02T22:36:21Z — D-audit-Workflows--2026-11-02T22-17-34Z — claimed by driver (agent codex)
+## 2026-11-02T22:39:59Z — D-audit-Workflows--2026-11-02T22-17-34Z — done — codex produced 588 words at artifacts/audits/Workflows-2026-11-02.md in 189s
+## 2026-11-02T22:55:31Z — D-audit-trip-planner--2026-11-02T22-17-38Z — route — router picked cursor from ['codex', 'cursor']
+## 2026-11-02T22:55:31Z — D-audit-trip-planner--2026-11-02T22-17-38Z — claimed by driver (agent cursor)
+## 2026-11-02T22:58:38Z — D-audit-trip-planner--2026-11-02T22-17-38Z — done — cursor produced 350 words at artifacts/audits/trip-planner-2026-11-02.md in 156s
