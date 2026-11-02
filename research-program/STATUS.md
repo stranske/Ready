@@ -1,8 +1,8 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-02T10:02:47Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-02T10:07:24Z)
 
-Units: 341 — claimed 1, done 332, failed 1, queued 3, superseded 4
+Units: 341 — done 333, failed 1, queued 3, superseded 4
 Paused: False   Phase stops: []
-Capacity (Orchestrator): codex=ok claude=warn cursor=ok gemini=shed vibe=ok muse=ok aider=ok
+Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=shed vibe=ok muse=ok aider=ok
 Orchestrator evidence (30d): offload runs 8, bound to a research round 8, scored 8 (PASS 5, FAIL 3, infra 0) — codex 1/1 (P1 F0 I0), cursor 7/7 (P4 F3 I0)
 Worker write boundary: on — each unit writes only unitdirs/<unit>/, its output directory, artifacts/proposals/, its own clone's working tree (not .git) and temp
 Claude conservation: off (weekly window available)
@@ -239,7 +239,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Inv-Man-Intake--2026-09-23T22-11-16Z | D | D | done | cursor | codex | Audit stranske/Inv-Man-Intake and file issues (scorecard 2026-09-23 ha | 5W/2P/0B/0F of 7 |
 | D-audit-Inv-Man-Intake--2026-09-24T01-13-11Z | D | D | done | cursor | driver | Audit stranske/Inv-Man-Intake and file issues (scorecard 2026-09-23 ha | 5W/2P/0B/0F of 7 |
 | D-audit-Inv-Man-Intake--2026-10-02T10-11-05Z | D | D | done | codex | codex | Audit stranske/Inv-Man-Intake and file issues (scorecard 2026-09-24: c | 5W/2P/0B/0F of 7 |
-| D-audit-Inv-Man-Intake--2026-11-02T10-02-44Z | D | D | claimed | cursor | driver | Audit stranske/Inv-Man-Intake and file issues (scorecard 2026-10-02 is |  |
+| D-audit-Inv-Man-Intake--2026-11-02T10-02-44Z | D | D | done | cursor | driver | Audit stranske/Inv-Man-Intake and file issues (scorecard 2026-10-02 is | 5W/2P/0B/0F of 7 |
 | D-audit-Manager-Database--2026-09-10T17-45-13Z | D | D | done | codex | driver | Audit stranske/Manager-Database and file issues (supply 0 <= 2) |  |
 | D-audit-Manager-Database--2026-09-14T06-49-50Z | D | D | done | codex | codex | Audit stranske/Manager-Database and file issues (supply 2 <= 2) |  |
 | D-audit-Manager-Database--2026-09-14T19-00-22Z | D | D | done | codex | codex | Audit stranske/Manager-Database and file issues (supply 2 <= 2) |  |
@@ -354,7 +354,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-01T23:15:48Z — D3-unblock-sweep-2026-11-01T23 — refutation posted — stranske/Workflows#4082
 - 2026-11-01T23:15:50Z — D3-unblock-sweep-2026-11-01T23 — refutation posted — stranske/Workflows#3978
 - 2026-11-02T07:21:31Z — unblock — enqueued D3-unblock-sweep-2026-11-02T07
 - 2026-11-02T07:21:32Z — D3-unblock-sweep-2026-11-02T07 — route — router picked codex from ['codex', 'cursor']
@@ -366,6 +365,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-02T10:02:45Z — refill — trip-planner: scorecard 2026-10-02 is 31d old (> 30) → audit queued
 - 2026-11-02T10:02:47Z — D-audit-Inv-Man-Intake--2026-11-02T10-02-44Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-11-02T10:02:47Z — D-audit-Inv-Man-Intake--2026-11-02T10-02-44Z — claimed by driver (agent cursor)
+- 2026-11-02T10:07:24Z — D-audit-Inv-Man-Intake--2026-11-02T10-02-44Z — done — cursor produced 492 words at artifacts/audits/Inv-Man-Intake-2026-11-02.md in 247s
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
