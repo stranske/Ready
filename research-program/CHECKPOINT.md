@@ -4642,3 +4642,8 @@ remote: - Required status check "Gate / gate" is
 ## 2026-11-02T21:07:29Z — D4-verify-merged-2026-11-02T21 — route — router picked codex from ['codex', 'cursor']
 ## 2026-11-02T21:07:29Z — D4-verify-merged-2026-11-02T21 — claimed by driver (agent codex)
 ## 2026-11-02T21:15:41Z — D4-verify-merged-2026-11-02T21 — done — codex produced 776 words at artifacts/verification/D4-verify-merged-2026-11-02T21.md in 418s
+## 2026-11-02T22:17:34Z — refill — Workflows: scorecard 2026-11-02: coverage debt 2 (not exercised 2 + unscored 0) not reduced since 2026-10-02 (2) → audit queued
+## 2026-11-02T22:17:34Z — refill — Travel-Plan-Permission: scorecard 2026-11-02: coverage debt 12 (not exercised 0 + unscored 12) not reduced since 2026-10-02 (12) → audit queued
+## 2026-11-02T22:17:38Z — refill — trip-planner: scorecard 2026-11-02: coverage debt 5 (not exercised 1 + unscored 4) not reduced since 2026-10-02 (0) → audit queued
+## 2026-11-02T22:17:40Z — D-audit-Travel-Plan-Permission--2026-11-02T22-17-34Z — route — router picked codex from ['codex', 'cursor']
+## 2026-11-02T22:17:40Z — D-audit-Travel-Plan-Permission--2026-11-02T22-17-34Z — claimed by driver (agent codex)
