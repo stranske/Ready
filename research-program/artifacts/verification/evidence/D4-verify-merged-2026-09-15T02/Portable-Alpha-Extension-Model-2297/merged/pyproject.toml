@@ -132,12 +132,12 @@ app = []
 parquet = ["pyarrow"]
 llm = [
     "langchain==1.3.14",
-    "langchain-core==1.5.3",
+    "langchain-core==1.7.3",
     "langchain-community==0.4.2",
-    "langchain-openai==1.4.1",
-    "langchain-anthropic==1.5.3",
-    "langsmith==0.10.15",
-    "pydantic==2.13.4",
+    "langchain-openai==1.7.3",
+    "langchain-anthropic==1.7.7",
+    "langsmith==0.14.16",
+    "pydantic==2.14.2",
     "requests==2.34.2",
 ]
 
