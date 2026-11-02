@@ -1,40 +1,40 @@
-Scorecard: 7 work / 1 partial / 0 broken / 0 fabricated / 0 not exercised of 8; journey: passes; surfaces unscored 12; closed-still-broken 0.
+Scorecard: 5 work / 1 partial / 0 broken / 0 fabricated / 2 not exercised of 8; journey: stops at "exception request and escalation"; surfaces unscored 12; closed-still-broken 0.
 
-**Issues filed:** #1720 (stale `/portal/requests/*` operator docs), #1721 (`docs/PRODUCT_CONTRACT.md` PP8 + PP4 status drift). Agents Issue Format Guard: runs `41428823591`, `41428824589` success.
+# Audit — stranske/Travel-Plan-Permission — 2026-11-02
 
-## Run summary (Track D refill 2026-11-02)
+Audited tip: `04c1098ce0b2b30ce022d90d351dfd8d17f88105` (`main`). Scope was first-party application/CLI/HTTP/portal behavior; synced automation implementation is excluded under `AGENTS.md`. No issues filed.
 
-Audited `stranske/Travel-Plan-Permission` at `503eae9504ce071c17513da6aa184ef22266fc1d` (31 days after prior scorecard). Phase 1.5 re-exercised PP1–PP8 via the same FastAPI/TestClient gate as 2026-10-02 (13 focused tests passed in ~4s) plus CLI `fill-spreadsheet` success test. Primary portal journey still reaches submission, exception/admin escalation, manager decision, resubmit refresh, and artifact download without fabricated constants on probed branches.
+## Product scorecard
 
-**Product verdict:** Core travel-policy and portal workflow remains healthy on the contract rows; PP6 stays partial by design (new draft after `changes_requested`, not silent in-place edit). No new core-function regression found; two operator/contract documentation drifts verified and filed.
+| Core function | Result | Live evidence |
+| --- | --- | --- |
+| PP1 — planner policy evaluation | WORK | A live compliant plan ($1,190.50) returned `policy_status=pass`; an otherwise identical $9,999.00 plan returned `policy_status=fail` with `BUD-001`, through `GET /api/planner/policy-snapshot` and `POST /api/planner/proposals`. The repo-native smoke then completed snapshot → submission → status → evaluation. |
+| PP2 — traveller draft/review/submit | WORK | `POST /portal/draft` returned 303, the authenticated review returned 200, and submit returned 200 with a queued manager-review page. |
+| PP3 — exception request and decision | NOT-EXERCISED | No live failing portal draft was carried through exception creation and attributed decision in this bounded pass. |
+| PP4 — overdue exception escalation | NOT-EXERCISED | No user-visible route can age a pending request by 48 hours; the prior status was not reused as live proof. |
+| PP5 — manager decision | WORK | The authenticated manager queue and review detail returned 200; `request_changes` returned 303 and the detail retained `changes_requested`. |
+| PP6 — correction after changes requested | PARTIAL | A corrected `POST /portal/draft` produced a distinct ID while the original review stayed `changes_requested`. This matches the explicitly documented limitation: no existing-draft edit/resubmit route. |
+| PP7 — policy-gated artifacts | WORK | The compliant review returned summary PDF (200, 1,742 bytes) and itinerary XLSX (200, 1,288,801 bytes). A minimal incomplete draft returned 403 for its artifact, showing the gate responds to state. |
+| PP8 — policy snapshot | WORK | The PP1 input variation changed the snapshot from pass to fail and added `BUD-001`. |
 
-## Dimension notes (abbreviated)
+The live service was started with isolated SQLite state and bootstrap credentials. `/readyz` reported ready. The local selected `.venv` has the runtime dependencies but no `pytest`; no local test-suite outcome is claimed. GitHub CI run `41524763565` on this exact tip succeeded.
 
-| Dim | outcome |
-|---|---|
-| 1 Quality | No new adversarial code defect beyond open #1669 (owner-bound execution overwrite). |
-| 2 Duplication | Not expanded this round (prior rounds mined). |
-| 3 Wiring/output | Policy snapshot + portal routes match config on probed paths. |
-| 4 UX | Unmeasured (TestClient only); not claimed as UX pass. |
-| 5–7 Field/opportunities/tools | No filable delta on tip. |
-| 8 Automations | Format guard green on filed bodies. |
+## Surface and journey coverage
 
-## Dedup / refutation
+The live OpenAPI inventory exposes 29 routes. The product contract defines eight core functions in `docs/PRODUCT_CONTRACT.md:10-19`; the 12 ancillary/unmapped surfaces reported by the refill trigger remain unscored, so this audit does not claim the coverage debt fell. The primary journey completed draft, submission, manager request-for-changes, correction-as-new-draft, and artifact delivery; it stopped before the exception branch.
 
-- **#1669** remains open and valid on tip (`planner_http_routes.py:146` records generic submissions without owner guard) — not re-filed.
-- **#1559** closed; resubmit refresh reproduction passes (`test_manager_review_resubmit_refreshes_trip_plan`).
-- No `REFUTED:` lines (no closed-issue reproduction contradicted this run).
+## Findings and disposition
 
-## Artifacts
+No independently reproducible, agent-ready defect survived review of the current tip, the six open issues, and applicable recently closed issues. The highest-risk historical classes (policy validation, snapshot caps, artifact authorization, manager decision state, and cross-repo receipt state) have current code/contract coverage and were not re-filed without a new reproduction.
 
-- Scorecard: `Code/Audits/Travel-Plan-Permission/2026-11-02-SCORECARD.md`
-- Surface inventory: `Code/Audits/Travel-Plan-Permission/2026-11-02-surface-inventory.txt`
-- Issue bodies (local): unitdir `issue-bodies/01-*.md`, `02-*.md`
-- CI reference: `41277412044` (main green)
+REFUTED: https://github.com/stranske/Travel-Plan-Permission/issues/1559 — its old same-draft edit/resubmit reproduction cannot reproduce because the current product explicitly creates a new draft and preserves the original review state.
 
-## Intake log
+The legacy module-size concern is already guarded, not a new filing: `tests/python/test_policy_api.py:47-52` sets current ceilings for `http_service.py` and `policy_api.py`; CI invokes that exact test in `.github/workflows/ci.yml:40-47`. Its existence does not prove the modules are ideal, but it defeats a claim that their growth is unguarded.
 
-```
-stranske/Travel-Plan-Permission|issue-bodies/01-stale-portal-requests-doc-paths.md|https://github.com/stranske/Travel-Plan-Permission/issues/1720
-stranske/Travel-Plan-Permission|issue-bodies/02-product-contract-pp8-and-status-drift.md|https://github.com/stranske/Travel-Plan-Permission/issues/1721
-```
+## Dedup and delivery
+
+Open issues were checked before disposition, including #1658 and #1669; neither describes a newly reproduced result from this audit. Closed #1559 was re-evaluated as above. No issue bodies were created, no labels were changed, and there is no format-guard run to report.
+
+## Confidence and limits
+
+Confidence is high for PP1, PP2, PP5, PP6, PP7, and PP8 because each was driven through the real HTTP service on the audited tip with isolated state; medium for the no-new-issue conclusion because PP3 and PP4 were deliberately left unscored rather than simulated by mutating private state. A fresh issue would be warranted if a live exception can be created from a failing portal draft and either its decision attribution or 48-hour escalation fails.
