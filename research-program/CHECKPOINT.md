@@ -4649,3 +4649,5 @@ remote: - Required status check "Gate / gate" is
 ## 2026-11-02T22:17:40Z — D-audit-Travel-Plan-Permission--2026-11-02T22-17-34Z — claimed by driver (agent codex)
 ## 2026-11-02T22:20:53Z — D-audit-Travel-Plan-Permission--2026-11-02T22-17-34Z — done — codex produced 674 words at artifacts/audits/Travel-Plan-Permission-2026-11-02.md in 165s
 ## 2026-11-02T22:20:55Z — D-audit-Travel-Plan-Permission--2026-11-02T22-17-34Z — refutation posted — stranske/Travel-Plan-Permission#1559
+## 2026-11-02T22:36:21Z — D-audit-Workflows--2026-11-02T22-17-34Z — route — router picked codex from ['codex', 'cursor']
+## 2026-11-02T22:36:21Z — D-audit-Workflows--2026-11-02T22-17-34Z — claimed by driver (agent codex)
