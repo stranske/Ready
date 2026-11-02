@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-02T10:44:48Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-02T10:50:18Z)
 
-Units: 341 — claimed 1, done 334, failed 1, queued 1, superseded 4
+Units: 341 — done 335, failed 1, queued 1, superseded 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=ok gemini=shed vibe=ok muse=ok aider=ok
 Orchestrator evidence (30d): offload runs 8, bound to a research round 8, scored 8 (PASS 5, FAIL 3, infra 0) — codex 1/1 (P1 F0 I0), cursor 7/7 (P4 F3 I0)
@@ -288,7 +288,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Workflows--2026-09-26T17-11-07Z | D | D | done | cursor | driver | Audit stranske/Workflows and file issues (scorecard 2026-09-24: 1 brok | 4W/0P/1B/0F of 7 |
 | D-audit-Workflows--2026-09-27T05-11-48Z | D | D | done | cursor |  | Audit stranske/Workflows and file issues (scorecard 2026-09-26: 1 brok |  |
 | D-audit-Workflows--2026-10-02T10-11-02Z | D | D | done | codex | claude | Audit stranske/Workflows and file issues (scorecard 2026-09-27: covera | 5W/0P/0B/0F of 7 |
-| D-audit-Workflows--2026-11-02T10-02-41Z | D | D | claimed | cursor | driver | Audit stranske/Workflows and file issues (scorecard 2026-10-02 is 31d  |  |
+| D-audit-Workflows--2026-11-02T10-02-41Z | D | D | done | cursor | driver | Audit stranske/Workflows and file issues (scorecard 2026-10-02 is 31d  | 5W/0P/0B/0F of 7 |
 | D-audit-learning-management-system--2026-09-05T04-00-30Z | D | D | done | codex | driver | Audit stranske/learning-management-system and file issues (supply 2 <= |  |
 | D-audit-learning-management-system--2026-09-06T16-33-31Z | D | D | done | codex | driver | Audit stranske/learning-management-system and file issues (supply 1 <= |  |
 | D-audit-learning-management-system--2026-09-08T05-06-08Z | D | D | done | codex | codex | Audit stranske/learning-management-system and file issues (supply 1 <= |  |
@@ -354,7 +354,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-02T10:02:41Z — refill — Workflows: scorecard 2026-10-02 is 31d old (> 30) → audit queued
 - 2026-11-02T10:02:42Z — refill — Travel-Plan-Permission: scorecard 2026-10-02 is 31d old (> 30) → audit queued
 - 2026-11-02T10:02:44Z — refill — Inv-Man-Intake: scorecard 2026-10-02 is 31d old (> 30) → audit queued
 - 2026-11-02T10:02:45Z — refill — trip-planner: scorecard 2026-10-02 is 31d old (> 30) → audit queued
@@ -366,6 +365,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-02T10:29:20Z — D-audit-Travel-Plan-Permission--2026-11-02T10-02-42Z — done — cursor produced 300 words at artifacts/audits/Travel-Plan-Permission-2026-11-02.md in 358s
 - 2026-11-02T10:44:48Z — D-audit-Workflows--2026-11-02T10-02-41Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-11-02T10:44:48Z — D-audit-Workflows--2026-11-02T10-02-41Z — claimed by driver (agent cursor)
+- 2026-11-02T10:50:18Z — D-audit-Workflows--2026-11-02T10-02-41Z — done — cursor produced 415 words at artifacts/audits/Workflows-2026-11-02.md in 301s
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
