@@ -7,15 +7,12 @@ import json
 import os
 import re
 import shutil
-import subprocess
 import sys
 import zipfile
 from html import escape
 from pathlib import Path
 
 import pytest
-
-SCRIPTS = Path(__file__).resolve().parents[1] / "scripts"
 
 
 def module(name):
@@ -431,7 +428,7 @@ def test_preparation_rejects_a_named_pipe_instead_of_hanging(tmp_path):
     [["scratchpad/SYNTHETIC"], ["scratch", "pad/SYNTHETIC"]],
     ids=["contiguous-text", "split-run-marker"],
 )
-def test_compressed_docx_preserved_then_guarded(tmp_path, runs):
+def test_compressed_docx_preserved_then_guarded(tmp_path, runs, monkeypatch, capsys):
     path = tmp_path / "report.docx"
     body = "".join(f"<w:r><w:t>{escape(run)}</w:t></w:r>" for run in runs)
     xml = (
@@ -444,27 +441,19 @@ def test_compressed_docx_preserved_then_guarded(tmp_path, runs):
     assert not any(pattern.search(original) for pattern in guard.RULES.values())
     # Prove the finding comes from decoded text, including a marker split by XML.
     assert guard.docx_text_lines(original) == [b"scratchpad/SYNTHETIC"]
-    prepared = subprocess.run(
-        [sys.executable, str(SCRIPTS / "prepare_publication.py"), "--staging-root", str(tmp_path)],
-        capture_output=True,
-        text=True,
-        check=False,
-    )
-    assert prepared.returncode == 0
-    assert "files_redacted=0 files_scanned=1" in prepared.stdout
+    monkeypatch.setattr(sys, "argv", ["prepare_publication.py", "--staging-root", str(tmp_path)])
+    assert prepare.main() == 0
+    prepared = capsys.readouterr()
+    assert "files_redacted=0 files_scanned=1" in prepared.out
     assert path.read_bytes() == original
-    scanned = subprocess.run(
-        [sys.executable, str(SCRIPTS / "check_publication_safety.py"), "--root", str(tmp_path)],
-        capture_output=True,
-        text=True,
-        check=False,
-    )
-    assert scanned.returncode == 1
-    assert "report.docx:1: scratch-path (1 hit(s))" in scanned.stdout
-    assert "files_scanned=1" in scanned.stdout
-    assert "errors=0" in scanned.stdout
-    assert "SYNTHETIC" not in prepared.stdout + prepared.stderr + scanned.stdout + scanned.stderr
-    assert not prepared.stderr + scanned.stderr
+    monkeypatch.setattr(sys, "argv", ["check_publication_safety.py", "--root", str(tmp_path)])
+    assert guard.main() == 1
+    scanned = capsys.readouterr()
+    assert "report.docx:1: scratch-path (1 hit(s))" in scanned.out
+    assert "files_scanned=1" in scanned.out
+    assert "errors=0" in scanned.out
+    assert "SYNTHETIC" not in prepared.out + prepared.err + scanned.out + scanned.err
+    assert not prepared.err + scanned.err
 
 
 # Independent synthetic witnesses, including bare marker fallbacks. Expected
