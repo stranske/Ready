@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-02T21:07:29Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-02T21:15:41Z)
 
-Units: 343 — claimed 1, done 337, failed 1, superseded 4
+Units: 343 — done 338, failed 1, superseded 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=warn cursor=ok gemini=shed vibe=ok muse=ok aider=ok
 Orchestrator evidence (30d): offload runs 5, bound to a research round 5, scored 5 (PASS 4, FAIL 1, infra 0) — codex 1/1 (P1 F0 I0), cursor 4/4 (P3 F1 I0)
@@ -352,11 +352,10 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D4-verify-merged-2026-10-30T20 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
 | D4-verify-merged-2026-10-31T21 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
 | D4-verify-merged-2026-11-01T21 | D | D | done | codex | driver | Verify merged PRs against their issues' acceptance criteria |  |
-| D4-verify-merged-2026-11-02T21 | D | D | claimed | codex | driver | Verify merged PRs against their issues' acceptance criteria |  |
+| D4-verify-merged-2026-11-02T21 | D | D | done | codex | driver | Verify merged PRs against their issues' acceptance criteria |  |
 
 ## Last checkpoints
 
-- 2026-11-02T11:05:46Z — D-audit-trip-planner--2026-11-02T10-02-45Z — claimed by driver (agent cursor)
 - 2026-11-02T11:09:53Z — D-audit-trip-planner--2026-11-02T10-02-45Z — done — cursor produced 298 words at artifacts/audits/trip-planner-2026-11-02.md in 219s
 - 2026-11-02T11:09:55Z — D-audit-trip-planner--2026-11-02T10-02-45Z — refutation posted — stranske/trip-planner#1883
 - 2026-11-02T15:21:31Z — unblock — enqueued D3-unblock-sweep-2026-11-02T15
@@ -368,6 +367,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-02T21:07:18Z — verify — enqueued D4-verify-merged-2026-11-02T21
 - 2026-11-02T21:07:29Z — D4-verify-merged-2026-11-02T21 — route — router picked codex from ['codex', 'cursor']
 - 2026-11-02T21:07:29Z — D4-verify-merged-2026-11-02T21 — claimed by driver (agent codex)
+- 2026-11-02T21:15:41Z — D4-verify-merged-2026-11-02T21 — done — codex produced 776 words at artifacts/verification/D4-verify-merged-2026-11-02T21.md in 418s
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
