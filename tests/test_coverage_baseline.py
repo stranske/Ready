@@ -2046,6 +2046,18 @@ def _use_real_publication_tests(project: Path) -> None:
         shutil.copyfile(REPO_ROOT / relative, project / relative)
 
 
+def _set_current_publication_floors(project: Path, report: dict) -> None:
+    baseline_path = project / "config/coverage-baseline.json"
+    baseline = json.loads(baseline_path.read_text())
+    for name in PUBLICATION_FILES:
+        summary = report["files"][name]["summary"]
+        baseline["publication_scripts"][name] = {
+            "line": 100 * summary["covered_lines"] / summary["num_statements"],
+            "branch": 100 * summary["covered_branches"] / summary["num_branches"],
+        }
+    baseline_path.write_text(json.dumps(baseline))
+
+
 @pytest.mark.parametrize(
     "changed_files",
     [(name,) for name in sorted(PUBLICATION_FILES)] + [tuple(sorted(PUBLICATION_FILES))],
@@ -2061,6 +2073,7 @@ def test_real_publication_source_addition_fails_gate(
     assert complete.returncode == 0, complete.stdout + complete.stderr
     report_path = coverage_project / "coverage.json"
     before = json.loads(report_path.read_text())
+    _set_current_publication_floors(coverage_project, before)
 
     originals = {name: (coverage_project / name).read_bytes() for name in changed_files}
     added = (
@@ -2194,6 +2207,7 @@ def test_real_test_removal_fails_publication_gate(
     report_path = coverage_project / "coverage.json"
     before = json.loads(report_path.read_text())
     _assert_xml_matches_json(coverage_project, before)
+    _set_current_publication_floors(coverage_project, before)
 
     removed = _run_coverage_project(
         coverage_project,
