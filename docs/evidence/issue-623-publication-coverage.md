@@ -2,7 +2,9 @@
 
 Base `276a25c1`; merged measurement work in #638 (`4d9a07cf`). Declared
 pinned tools: pytest 9.2.0, pytest-cov 7.1.0, coverage **7.17.0**
-(`pyproject.toml` / `autofix-versions.env` / `ci-python-versions.env`).
+(`pyproject.toml` / repo-owned `autofix-versions.env`). The reusable installer
+loads the shared `ci-python-versions.env` defaults first, then the repo-owned
+overrides; the shared fallback stays aligned with Workflows.
 
 Hosted Gate uses the existing reusable Python CI job on Python 3.13 and
 3.14 with two workers. The real removal control already runs in this job;
