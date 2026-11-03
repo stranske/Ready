@@ -1,9 +1,9 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-03T04:31:27Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-03T04:47:23Z)
 
 Units: 347 — done 342, failed 1, superseded 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=warn claude=shed cursor=ok gemini=shed vibe=ok muse=ok aider=ok
-Orchestrator evidence (30d): offload runs 3, bound to a research round 3, scored 3 (PASS 3, FAIL 0, infra 0) — codex 1/1 (P1 F0 I0), cursor 2/2 (P2 F0 I0)
+Orchestrator evidence (30d): offload runs 2, bound to a research round 2, scored 2 (PASS 2, FAIL 0, infra 0) — cursor 2/2 (P2 F0 I0)
 Worker write boundary: on — each unit writes only unitdirs/<unit>/, its output directory, artifacts/proposals/, its own clone's working tree (not .git) and temp
 Claude conservation: off (weekly window available)
 Owner inbox: https://github.com/stranske/Ready/issues/553
