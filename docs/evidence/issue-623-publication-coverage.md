@@ -1,8 +1,13 @@
 # Ready publication coverage: issue 623
 
-Base `276a25c1`; local Anaconda CPython 3.12.2, pytest 9.1.1,
-pytest-cov 7.1.0 and coverage 7.16.0. Hosted pinned coverage 7.16.2
-and full current-head CI remain separate verification boundaries.
+Base `276a25c1`; merged measurement work in #638 (`4d9a07cf`). Declared
+pinned tools: pytest 9.2.0, pytest-cov 7.1.0, coverage **7.17.0**
+(`pyproject.toml` / `autofix-versions.env` / `ci-python-versions.env`).
+
+Local reproduction used CPython 3.13 with the declared coverage pin. Hosted
+Gate runs the reusable Python CI job plus the Ready-specific
+`publication-coverage-demonstration` job (`python -m pytest -q -n 2`, then
+`python scripts/publication_coverage_gate.py`) on ubuntu-latest Python 3.14.
 
 `python -m pytest -q -n 2` reports exactly the two Ready-owned publication
 scripts plus product `src/` files. Both run and report include paths are
@@ -30,7 +35,7 @@ created report, so both CI and PR Gate use this control through their
 existing reusable pytest invocation. `--no-cov` remains available for
 focused functional checks; it is not a coverage PASS.
 
-## Deliberate loss and restoration
+## Deliberate loss and restoration (local break/restore packet)
 
 Temporarily removing the real `test_unreadable_directory_fails_closed`
 from collection left all 382 tests passing but lowered scanner lines from
@@ -48,6 +53,24 @@ Initial module-based measurement counted test fixture copies and produced
 an invalid aggregate; that result was rejected. The final exact report
 selection fixes that issue. Neither coverage nor passing tests certify
 confidentiality, allowlist policy, live publication, or future safety.
+
+## Hosted CI demonstration
+
+Gate job `issue 623 hosted coverage proof` (workflow
+`.github/workflows/publication-coverage-demonstration.yml`, called from
+`pr-00-gate.yml`) runs on pull requests:
+
+1. `python -m pytest -q -n 2` — includes
+   `tests/test_coverage_baseline.py::test_real_test_removal_fails_publication_gate[guard]`,
+   which deselects `test_empty_or_missing_tree_fails`, observes branch and
+   line floor failure via `PUBLICATION COVERAGE:` lines, then restores
+   collection and passes.
+2. `python scripts/publication_coverage_gate.py` — confirms the restored
+   `coverage.json` meets configured floors.
+
+Committed hosted measurements, exit statuses, elapsed seconds, installed
+versions, tested commit, and workflow run URL live in
+`docs/evidence/issue-623-publication-coverage.json` under `hosted_ci`.
 
 ## Commands
 

@@ -1,0 +1,113 @@
+name: Publication coverage demonstration
+
+on:
+  workflow_call:
+
+jobs:
+  issue-623-hosted-proof:
+    name: issue 623 hosted coverage proof
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
+
+      - name: Install pinned Python test dependencies
+        run: |
+          set -euo pipefail
+          set -a
+          # shellcheck disable=SC1091
+          source .github/workflows/ci-python-versions.env
+          # shellcheck disable=SC1091
+          source .github/workflows/autofix-versions.env
+          set +a
+          python -m pip install -U pip
+          python -m pip install -e ".[dev]"
+          python -m pip install "pytest-xdist==${PYTEST_XDIST_VERSION}" "coverage==${COVERAGE_VERSION}"
+          {
+            echo "commit=${GITHUB_SHA}"
+            echo "python=$(python -V 2>&1)"
+            echo "pytest=$(python -m pytest --version 2>&1)"
+            echo "coverage=$(python -m coverage --version 2>&1)"
+          } >> "$GITHUB_ENV"
+
+      - name: Hosted pytest (-n 2) and publication gate CLI
+        id: proof
+        run: |
+          set -euo pipefail
+          proof_start=$SECONDS
+
+          pytest_start=$SECONDS
+          python -m pytest -q -n 2
+          pytest_exit=$?
+          pytest_elapsed=$((SECONDS - pytest_start))
+
+          gate_start=$SECONDS
+          python scripts/publication_coverage_gate.py | tee gate.out
+          gate_exit=${PIPESTATUS[0]}
+          gate_elapsed=$((SECONDS - gate_start))
+
+          total_elapsed=$((SECONDS - proof_start))
+
+          {
+            echo "PYTEST_EXIT=${pytest_exit}"
+            echo "PYTEST_ELAPSED=${pytest_elapsed}"
+            echo "GATE_EXIT=${gate_exit}"
+            echo "GATE_ELAPSED=${gate_elapsed}"
+            echo "TOTAL_ELAPSED=${total_elapsed}"
+          } >> "$GITHUB_ENV"
+
+          python <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import json
+          import os
+          from pathlib import Path
+
+          report = json.loads(Path("coverage.json").read_text())
+          files = report["files"]
+          publication = {
+              path: files[path]["summary"]
+              for path in (
+                  "scripts/check_publication_safety.py",
+                  "scripts/prepare_publication.py",
+              )
+          }
+          payload = {
+              "commit": os.environ["GITHUB_SHA"],
+              "workflow_run_url": (
+                  f"{os.environ['GITHUB_SERVER_URL']}/{os.environ['GITHUB_REPOSITORY']}"
+                  f"/actions/runs/{os.environ['GITHUB_RUN_ID']}"
+              ),
+              "versions": {
+                  "python": os.environ.get("python", ""),
+                  "pytest": os.environ.get("pytest", ""),
+                  "coverage": os.environ.get("coverage", ""),
+              },
+              "pytest_n2_includes_removal_control": (
+                  "tests/test_coverage_baseline.py::"
+                  "test_real_test_removal_fails_publication_gate[guard]"
+              ),
+              "pytest_n2": {
+                  "exit": int(os.environ["PYTEST_EXIT"]),
+                  "elapsed_seconds": int(os.environ["PYTEST_ELAPSED"]),
+              },
+              "publication_coverage_gate": {
+                  "exit": int(os.environ["GATE_EXIT"]),
+                  "elapsed_seconds": int(os.environ["GATE_ELAPSED"]),
+                  "stdout": Path("gate.out").read_text().strip(),
+              },
+              "publication_scripts": publication,
+              "total_elapsed_seconds": int(os.environ["TOTAL_ELAPSED"]),
+          }
+          print("## Issue 623 hosted coverage proof")
+          print("```json")
+          print(json.dumps(payload, indent=2, sort_keys=True))
+          print("```")
+          PY
+
+          if [ "${pytest_exit}" -ne 0 ] || [ "${gate_exit}" -ne 0 ]; then
+            exit 1
+          fi
