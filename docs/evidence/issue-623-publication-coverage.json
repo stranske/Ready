@@ -94,5 +94,34 @@
     "num_statements": 1,
     "executed": false,
     "removed_after_proof": true
+  },
+  "hosted_ci": {
+    "commit": "114b48e80eca534c3c15fec338611f25700150ba",
+    "workflow_run_url": "https://github.com/stranske/Ready/actions/runs/41591960131",
+    "job_url": "https://github.com/stranske/Ready/actions/runs/41591960131/job/125770979926",
+    "versions": {
+      "python": "Python 3.14.8",
+      "pytest": "pytest 9.2.0",
+      "coverage": "Coverage.py, version 7.17.0 with C extension"
+    },
+    "pytest_n2": {
+      "exit": 0,
+      "elapsed_seconds": 632,
+      "tests_passed": 1057,
+      "includes_removal_control": "tests/test_coverage_baseline.py::test_real_test_removal_fails_publication_gate[guard]"
+    },
+    "publication_coverage_gate": {
+      "exit": 0,
+      "stdout": "Ready publication coverage floors PASS"
+    },
+    "branch_removal_control": {
+      "nodeid": "tests/test_coverage_baseline.py::test_real_test_removal_fails_publication_gate[guard]",
+      "deselect_exit": 1,
+      "restore_exit": 0,
+      "before_branch_hits": 110,
+      "after_branch_hits": 109,
+      "branch_decreased": true
+    },
+    "notes": "Hosted ubuntu job recorded pytest -n 2 and gate CLI on the PR merge tree; step summary env bug fixed in 114b48e8."
   }
 }
