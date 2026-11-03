@@ -20,7 +20,7 @@ A temporary unimported source file with an unconditional exception appeared
 as 0/1 lines without executing it; it was then removed. This was exercised
 with xdist, matching the reusable Gate's controller/worker arrangement.
 
-Measured counts (the JSON packet retains complete summaries):
+Historical #638 local counts (retained for the recorded-floor regression tests):
 
 | File | Lines | Branches | Independent floors |
 |---|---:|---:|---|
@@ -57,17 +57,49 @@ confidentiality, allowlist policy, live publication, or future safety.
 
 ## Hosted CI demonstration
 
-Fresh hosted acceptance is pending. The previous cited run 41591960131
-completed pytest and the gate CLI but its proof job failed with
-`KeyError: PYTEST_EXIT`; it is not a completed hosted demonstration.
+Gate [run 41605396922](https://github.com/stranske/Ready/actions/runs/41605396922)
+completed successfully on 2026-11-03. Tested merge commit
+`ebc8046a7a56396596562e123b20d43696d0f07b` combines PR head
+`5d2f1192c02387647b85056dd941e337ff6cd23a` with main
+`fdf097082d8271a06d4b8083062a0962ed06a318`.
 
-The existing Gate runs
+| Hosted job | Installed Python | Full suite | Real control duration |
+|---|---|---|---|
+| [3.13](https://github.com/stranske/Ready/actions/runs/41605396922/job/125814113396) | 3.13.17 | 1057 passed, exit 0, 586.40 s | 102.897 s |
+| [3.14](https://github.com/stranske/Ready/actions/runs/41605396922/job/125814113319) | 3.14.9 | 1057 passed, exit 0, 609.24 s | 107.110 s |
+
+Both installed coverage **7.17.0**, pytest 9.2.0 and pytest-cov 7.1.0.
+Full-suite artifacts measure scanner lines **213/215**, branches **111/114**;
+preparer lines **115/121**, branches **60/62**. Both pass the unchanged
+configured line and branch floors.
+
+The existing Gate executes
 `tests/test_coverage_baseline.py::test_real_test_removal_fails_publication_gate[guard]`.
-It exercises the real scripts, asserts baseline success, deselects
-`test_empty_or_missing_tree_fails`, asserts line/branch loss and gate failure,
-then restores collection, asserts identical counts and gate success, and
-runs the restored gate CLI. `ISSUE623_PROOF=` in the hosted log records the
-observed counts, installed versions, statuses and elapsed seconds.
+Its `ISSUE623_PROOF=` log records real-script observations in both runtimes:
+
+| Phase | Scanner lines | Scanner branches | Pytest exit |
+|---|---:|---:|---:|
+| Baseline | 213/215 | 111/114 | 0 |
+| Deselect `test_empty_or_missing_tree_fails` | 212/215 | 110/114 | 1 |
+| Restore collection | 213/215 | 111/114 | 0 |
+
+Preparer counts remain 115/121 lines and 60/62 branches throughout.
+`python scripts/publication_coverage_gate.py` against each restored isolated
+report exits 0 and prints `Ready publication coverage floors PASS`.
+
+The existing control first passes repository floors, then calibrates its
+isolated probe floors to observed baseline counts. Removal breaches both
+calibrated floors. The observed line loss also breaches the repository
+scanner line floor; the branch loss alone still meets its repository branch
+floor. No committed floor is changed. Thus the proof demonstrates branch
+loss and gate failure without claiming a branch-only failure at current
+repository floors.
+
+The JSON `hosted_ci` packet records installed versions, full-suite and
+before/removal/restored counts, exit statuses, elapsed seconds and artifact
+IDs, extracted from the hosted logs and coverage artifacts. Top-level counts
+remain the historical #638 packet. Run 41591960131 is superseded because its
+proof job failed with `KeyError: PYTEST_EXIT` after pytest/CLI completion.
 
 ## Commands
 

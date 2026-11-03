@@ -2292,10 +2292,7 @@ def test_real_test_removal_fails_publication_gate(
                 {
                     "versions": {
                         "python": sys.version,
-                        **{
-                            name: version(name)
-                            for name in ("coverage", "pytest", "pytest-cov", "pytest-xdist")
-                        },
+                        **{name: version(name) for name in ("coverage", "pytest", "pytest-cov")},
                     },
                     "elapsed_seconds": time.monotonic() - started,
                     "exit_statuses": {
