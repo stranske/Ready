@@ -4668,3 +4668,7 @@ remote: - Required status check "Gate / gate" is
 ## 2026-11-03T07:41:54Z — D3-unblock-sweep-2026-11-03T07 — done — cursor produced 875 words at artifacts/sweeps/D3-unblock-sweep-2026-11-03T07.md in 123s
 ## 2026-11-03T07:41:55Z — D3-unblock-sweep-2026-11-03T07 — refutation posted — stranske/Workflows#4026
 ## 2026-11-03T07:41:56Z — D3-unblock-sweep-2026-11-03T07 — refutation posted — stranske/Workflows#3978
+## 2026-11-03T10:30:09Z — refill — Workflows: scorecard 2026-11-02: coverage debt 2 (not exercised 2 + unscored 0) not reduced since 2026-10-02 (2) → audit queued
+## 2026-11-03T10:30:10Z — refill — Travel-Plan-Permission: scorecard 2026-11-02: coverage debt 12 (not exercised 0 + unscored 12) not reduced since 2026-10-02 (12) → audit queued
+## 2026-11-03T10:30:19Z — D-audit-Travel-Plan-Permission--2026-11-03T10-30-10Z — route — router picked codex from ['codex', 'cursor']
+## 2026-11-03T10:30:19Z — D-audit-Travel-Plan-Permission--2026-11-03T10-30-10Z — claimed by driver (agent codex)
