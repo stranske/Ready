@@ -53,13 +53,11 @@ jobs:
 
           total_elapsed=$((SECONDS - proof_start))
 
-          {
-            echo "PYTEST_EXIT=${pytest_exit}"
-            echo "PYTEST_ELAPSED=${pytest_elapsed}"
-            echo "GATE_EXIT=${gate_exit}"
-            echo "GATE_ELAPSED=${gate_elapsed}"
-            echo "TOTAL_ELAPSED=${total_elapsed}"
-          } >> "$GITHUB_ENV"
+          export PYTEST_EXIT="${pytest_exit}"
+          export PYTEST_ELAPSED="${pytest_elapsed}"
+          export GATE_EXIT="${gate_exit}"
+          export GATE_ELAPSED="${gate_elapsed}"
+          export TOTAL_ELAPSED="${total_elapsed}"
 
           python <<'PY' >> "$GITHUB_STEP_SUMMARY"
           import json
