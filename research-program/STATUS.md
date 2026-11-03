@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-03T15:47:14Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-03T15:50:25Z)
 
-Units: 351 — claimed 1, done 345, failed 1, superseded 4
+Units: 351 — done 346, failed 1, superseded 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=warn claude=shed cursor=ok gemini=shed vibe=ok muse=ok aider=ok
 Orchestrator evidence (30d): offload runs 1, bound to a research round 1, scored 1 (PASS 1, FAIL 0, infra 0) — cursor 1/1 (P1 F0 I0)
@@ -199,7 +199,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D3-unblock-sweep-2026-11-02T15 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-2026-11-02T23 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-2026-11-03T07 | D | D | done | codex | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
-| D3-unblock-sweep-2026-11-03T15 | D | D | claimed | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
+| D3-unblock-sweep-2026-11-03T15 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-pass2-20260913T2023 | D | D | done | cursor | driver | Unblock sweep pass 2: the seven repos the budgeted first pass deferred |  |
 | D-audit-Counter_Risk--2026-09-07T04-47-32Z | D | D | done | codex | driver | Audit stranske/Counter_Risk and file issues (supply 2 <= 2) |  |
 | D-audit-Counter_Risk--2026-09-08T17-11-36Z | D | D | done | codex | codex | Audit stranske/Counter_Risk and file issues (supply 1 <= 2) |  |
@@ -364,9 +364,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-03T10:30:19Z — D-audit-Travel-Plan-Permission--2026-11-03T10-30-10Z — claimed by driver (agent codex)
-- 2026-11-03T10:38:25Z — D-audit-Travel-Plan-Permission--2026-11-03T10-30-10Z — done — codex produced 759 words at artifacts/audits/Travel-Plan-Permission-2026-11-03.md in 420s
-- 2026-11-03T10:38:27Z — D-audit-Travel-Plan-Permission--2026-11-03T10-30-10Z — refutation posted — stranske/Travel-Plan-Permission#1658
 - 2026-11-03T10:38:29Z — D-audit-Travel-Plan-Permission--2026-11-03T10-30-10Z — refutation posted — stranske/Travel-Plan-Permission#1668
 - 2026-11-03T10:38:31Z — D-audit-Travel-Plan-Permission--2026-11-03T10-30-10Z — refutation posted — stranske/Travel-Plan-Permission#1669
 - 2026-11-03T10:38:33Z — D-audit-Travel-Plan-Permission--2026-11-03T10-30-10Z — refutation posted — stranske/Travel-Plan-Permission#1721
@@ -376,6 +373,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-03T15:47:14Z — unblock — enqueued D3-unblock-sweep-2026-11-03T15
 - 2026-11-03T15:47:14Z — D3-unblock-sweep-2026-11-03T15 — route — router picked cursor from ['codex', 'cursor']
 - 2026-11-03T15:47:14Z — D3-unblock-sweep-2026-11-03T15 — claimed by driver (agent cursor)
+- 2026-11-03T15:50:21Z — D3-unblock-sweep-2026-11-03T15 — done — cursor produced 739 words at artifacts/sweeps/D3-unblock-sweep-2026-11-03T15.md in 151s
+- 2026-11-03T15:50:23Z — D3-unblock-sweep-2026-11-03T15 — refutation posted — stranske/Workflows#3988
+- 2026-11-03T15:50:25Z — D3-unblock-sweep-2026-11-03T15 — refutation posted — stranske/Workflows#3978
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
