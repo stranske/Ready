@@ -4699,3 +4699,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-11-03T22:50:17Z — D-audit-Travel-Plan-Permission--2026-11-03T22-44-46Z — refutation posted — stranske/Travel-Plan-Permission#1669
 ## 2026-11-03T22:50:19Z — D-audit-Travel-Plan-Permission--2026-11-03T22-44-46Z — refutation posted — stranske/Travel-Plan-Permission#1721
 ## 2026-11-03T22:50:21Z — D-audit-Travel-Plan-Permission--2026-11-03T22-44-46Z — refutation posted — stranske/Travel-Plan-Permission#1724
+## 2026-11-03T23:52:26Z — unblock — enqueued D3-unblock-sweep-2026-11-03T23
+## 2026-11-03T23:52:27Z — D3-unblock-sweep-2026-11-03T23 — route — router picked codex from ['codex', 'cursor']
+## 2026-11-03T23:52:27Z — D3-unblock-sweep-2026-11-03T23 — claimed by driver (agent codex)
