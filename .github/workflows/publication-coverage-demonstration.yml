@@ -30,9 +30,9 @@ jobs:
           python -m pip install "pytest-xdist==${PYTEST_XDIST_VERSION}" "coverage==${COVERAGE_VERSION}"
           {
             echo "commit=${GITHUB_SHA}"
-            echo "python=$(python -V 2>&1)"
-            echo "pytest=$(python -m pytest --version 2>&1)"
-            echo "coverage=$(python -m coverage --version 2>&1)"
+            echo "python=$(python -V 2>&1 | tr -d '\n')"
+            echo "pytest=$(python -m pytest --version 2>&1 | head -1 | tr -d '\n')"
+            echo "coverage=$(python -m coverage --version 2>&1 | head -1 | tr -d '\n')"
           } >> "$GITHUB_ENV"
 
       - name: Hosted pytest (-n 2) and publication gate CLI
