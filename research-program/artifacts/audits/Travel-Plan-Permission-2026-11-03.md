@@ -51,3 +51,13 @@ The only open issues at audit start were durable trackers (#1494, #1238, #1203, 
 - Current GitHub workflows at this SHA were successful when checked; local tests are evidence for the exercised paths, not a substitute for hosted CI.
 
 Confidence is high for the scorecard rows and #1724 because the cited current files were opened and the behavior was exercised through the ASGI entry points. Confidence is medium that no additional issue exists outside this surface because this was a bounded, evidence-led audit; a future route added without a PP10+ contract row should be treated as unscored until exercised.
+
+## Current-tip reconciliation — 2026-11-03 22:44 CST
+
+The prior report was audited at `04c1098ce0b2b30ce022d90d351dfd8d17f88105`; the assigned clone is one commit newer, `0ccee0fab0840de107c8f761f1e7c5e8d45c5f82`. That delta is the merged #1724 documentation/contract fix. It adds PP9 to `docs/PRODUCT_CONTRACT.md:21`, updates `tests/python/test_product_contract.py` to enforce PP1 through PP9 and PP9's exact expense routes/outcomes, and does not change the product runtime route implementation.
+
+Current-tip evidence: `/opt/anaconda3/bin/python3 -m pytest -q tests/python/test_product_contract.py` plus the PP1/PP3/PP4/PP6/PP9 ASGI tests passed **90** cases in 4.46s; the PP2/PP5/PP7 portal/readback selection passed **6** cases in 3.58s. The repository-selected `.venv/bin/python` lacks `pytest`, so the permitted shared Anaconda interpreter supplied these results. They are isolated-ASGI product-path evidence, not a hosted-deployment claim.
+
+REFUTED: https://github.com/stranske/Travel-Plan-Permission/issues/1724 — its claim that PP9 was absent is false on the live tip: PP9 is now present and guarded by the contract regression.
+
+No new issue was filed. The only open items are durable trackers, and no current-tip defect candidate matched them. The issue-format guard for #1724 is now confirmed: run `41669183476` (`Agents Issue Format Guard`) completed successfully; the current-tip CI run `41668859367` also completed successfully. The scorecard headline above remains unchanged: `8 work / 1 partial / 0 broken / 0 fabricated / 0 not exercised of 9; journey passes; surfaces unscored 0; closed-still-broken 0`.
