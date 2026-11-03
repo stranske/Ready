@@ -4680,3 +4680,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-11-03T10:54:05Z — D-audit-Workflows--2026-11-03T10-30-09Z — route — router picked cursor from ['codex', 'cursor']
 ## 2026-11-03T10:54:05Z — D-audit-Workflows--2026-11-03T10-30-09Z — claimed by driver (agent cursor)
 ## 2026-11-03T10:58:44Z — D-audit-Workflows--2026-11-03T10-30-09Z — done — cursor produced 300 words at artifacts/audits/Workflows-2026-11-03.md in 248s
+## 2026-11-03T15:47:14Z — unblock — enqueued D3-unblock-sweep-2026-11-03T15
+## 2026-11-03T15:47:14Z — D3-unblock-sweep-2026-11-03T15 — route — router picked cursor from ['codex', 'cursor']
+## 2026-11-03T15:47:14Z — D3-unblock-sweep-2026-11-03T15 — claimed by driver (agent cursor)
