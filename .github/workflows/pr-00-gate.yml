@@ -128,6 +128,9 @@ jobs:
     with:
       python-versions: '["3.13", "3.14"]'
       primary-python-version: '3.14'
+      # Ready #623: retain measured removal/restore proof in the hosted log.
+      pytest-workers: '2'
+      pytest_args: '-q -rP'
       coverage-min: "80"
       format_check: false  # Using ruff for formatting
       working-directory: "."
@@ -143,29 +146,9 @@ jobs:
     permissions:
       contents: read
 
-  # Ready #623: hosted proof for publication-script coverage floors and guard
-  # test-removal control (pytest -n 2, gate CLI, branch-removal parametrization).
-  publication-coverage-demonstration:
-    needs: detect
-    if: >-
-      ${{
-        needs.detect.outputs.is_docs_only != 'true' &&
-        needs.detect.outputs.is_python_code == 'true'
-      }}
-    uses: ./.github/workflows/publication-coverage-demonstration.yml
-    permissions:
-      contents: read
-
   summary:
     name: gate-summary
-    needs:
-      [
-        "detect",
-        "python-ci",
-        "publication-safety",
-        "publication-coverage-demonstration",
-        "generated-delivery-seal",
-      ]
+    needs: ["detect", "python-ci", "publication-safety", "generated-delivery-seal"]
     if: ${{ always() }}
     runs-on: ubuntu-latest
     permissions:
@@ -190,7 +173,6 @@ jobs:
           DETECT_RESULT: ${{ needs.detect.result || 'skipped' }}
           PYTHON_RESULT: ${{ needs.python-ci.result || 'skipped' }}
           PUBLICATION_RESULT: ${{ needs.publication-safety.result || 'skipped' }}
-          COVERAGE_DEMO_RESULT: ${{ needs.publication-coverage-demonstration.result || 'skipped' }}
         run: |
           set -euo pipefail
 
@@ -238,12 +220,6 @@ jobs:
           if [[ "${PUBLICATION_RESULT:-skipped}" != "success" ]]; then
             state="failure"
             description="Publication guard did not pass"
-          fi
-
-          coverage_demo_result="${COVERAGE_DEMO_RESULT:-skipped}"
-          if [[ "${coverage_demo_result}" != "success" && "${coverage_demo_result}" != "skipped" ]]; then
-            state="failure"
-            description="Publication coverage demonstration did not pass"
           fi
 
           # Expose the same seal precondition already enforced by the classifier.
