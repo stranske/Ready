@@ -4672,3 +4672,8 @@ remote: - Required status check "Gate / gate" is
 ## 2026-11-03T10:30:10Z — refill — Travel-Plan-Permission: scorecard 2026-11-02: coverage debt 12 (not exercised 0 + unscored 12) not reduced since 2026-10-02 (12) → audit queued
 ## 2026-11-03T10:30:19Z — D-audit-Travel-Plan-Permission--2026-11-03T10-30-10Z — route — router picked codex from ['codex', 'cursor']
 ## 2026-11-03T10:30:19Z — D-audit-Travel-Plan-Permission--2026-11-03T10-30-10Z — claimed by driver (agent codex)
+## 2026-11-03T10:38:25Z — D-audit-Travel-Plan-Permission--2026-11-03T10-30-10Z — done — codex produced 759 words at artifacts/audits/Travel-Plan-Permission-2026-11-03.md in 420s
+## 2026-11-03T10:38:27Z — D-audit-Travel-Plan-Permission--2026-11-03T10-30-10Z — refutation posted — stranske/Travel-Plan-Permission#1658
+## 2026-11-03T10:38:29Z — D-audit-Travel-Plan-Permission--2026-11-03T10-30-10Z — refutation posted — stranske/Travel-Plan-Permission#1668
+## 2026-11-03T10:38:31Z — D-audit-Travel-Plan-Permission--2026-11-03T10-30-10Z — refutation posted — stranske/Travel-Plan-Permission#1669
+## 2026-11-03T10:38:33Z — D-audit-Travel-Plan-Permission--2026-11-03T10-30-10Z — refutation posted — stranske/Travel-Plan-Permission#1721
