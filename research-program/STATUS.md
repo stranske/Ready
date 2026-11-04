@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-04T10:56:03Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-04T11:00:56Z)
 
-Units: 356 — claimed 1, done 350, failed 1, superseded 4
+Units: 356 — done 351, failed 1, superseded 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=warn claude=shed cursor=ok gemini=shed vibe=ok muse=ok aider=ok
 Orchestrator evidence (30d): offload runs 0, bound to a research round 0, scored 0 (PASS 0, FAIL 0, infra 0) — no offload runs
@@ -285,7 +285,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Travel-Plan-Permission--2026-11-02T22-17-34Z | D | D | done | codex | driver | Audit stranske/Travel-Plan-Permission and file issues (scorecard 2026- | 5W/1P/0B/0F of 8 |
 | D-audit-Travel-Plan-Permission--2026-11-03T10-30-10Z | D | D | done | codex | driver | Audit stranske/Travel-Plan-Permission and file issues (scorecard 2026- | 8W/1P/0B/0F of 9 |
 | D-audit-Travel-Plan-Permission--2026-11-03T22-44-46Z | D | D | done | codex | driver | Audit stranske/Travel-Plan-Permission and file issues (scorecard 2026- | 8W/1P/0B/0F of 9 |
-| D-audit-Travel-Plan-Permission--2026-11-04T10-55-57Z | D | D | claimed | cursor | driver | Audit stranske/Travel-Plan-Permission and file issues (scorecard 2026- |  |
+| D-audit-Travel-Plan-Permission--2026-11-04T10-55-57Z | D | D | done | cursor | driver | Audit stranske/Travel-Plan-Permission and file issues (scorecard 2026- | 8W/1P/0B/0F of 9 |
 | D-audit-Trend_Model_Project--2026-09-19T08-08-54Z | D | D | done | codex | codex | Audit stranske/Trend_Model_Project and file issues (supply 2 <= 3) |  |
 | D-audit-Trend_Model_Project--2026-09-19T20-12-05Z | D | D | superseded | codex |  | Audit stranske/Trend_Model_Project and file issues (supply 0 <= 2) |  |
 | D-audit-Trend_Model_Project--2026-09-23T09-11-16Z | D | D | done | cursor | driver | Audit stranske/Trend_Model_Project and file issues (scorecard 2026-09- | 1W/2P/1B/0F of 4 |
@@ -369,7 +369,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-03T23:58:02Z — D3-unblock-sweep-2026-11-03T23 — done — codex produced 767 words at artifacts/sweeps/D3-unblock-sweep-2026-11-03T23.md in 304s
 - 2026-11-03T23:58:04Z — D3-unblock-sweep-2026-11-03T23 — refutation posted — stranske/Workflows#4026
 - 2026-11-04T08:00:16Z — unblock — enqueued D3-unblock-sweep-2026-11-04T08
 - 2026-11-04T08:00:17Z — D3-unblock-sweep-2026-11-04T08 — route — router picked cursor from ['codex', 'cursor']
@@ -381,6 +380,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-04T10:55:57Z — refill — Travel-Plan-Permission: scorecard 2026-11-02: coverage debt 12 (not exercised 0 + unscored 12) not reduced since 2026-10-02 (12) → audit queued
 - 2026-11-04T10:56:03Z — D-audit-Travel-Plan-Permission--2026-11-04T10-55-57Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-11-04T10:56:03Z — D-audit-Travel-Plan-Permission--2026-11-04T10-55-57Z — claimed by driver (agent cursor)
+- 2026-11-04T11:00:56Z — D-audit-Travel-Plan-Permission--2026-11-04T10-55-57Z — done — cursor produced 304 words at artifacts/audits/Travel-Plan-Permission-2026-11-04.md in 251s
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
