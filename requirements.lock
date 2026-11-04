@@ -14,8 +14,10 @@ colorama==0.4.6 ; sys_platform == 'win32'
     # via
     #   click
     #   pytest
-coverage==7.17.0
-    # via pytest-cov
+coverage==7.17.1
+    # via
+    #   my-project (pyproject.toml)
+    #   pytest-cov
 iniconfig==2.3.0
     # via pytest
 jsonschema==4.22.0

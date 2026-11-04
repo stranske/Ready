@@ -10,8 +10,10 @@ black==26.10.1
     # via my-project (pyproject.toml)
 click==8.3.1
     # via black
-coverage==7.17.0
-    # via pytest-cov
+coverage==7.17.1
+    # via
+    #   my-project (pyproject.toml)
+    #   pytest-cov
 iniconfig==2.3.0
     # via pytest
 jsonschema==4.22.0
