@@ -4716,3 +4716,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-11-04T10:56:03Z — D-audit-Travel-Plan-Permission--2026-11-04T10-55-57Z — claimed by driver (agent cursor)
 ## 2026-11-04T11:00:56Z — D-audit-Travel-Plan-Permission--2026-11-04T10-55-57Z — done — cursor produced 304 words at artifacts/audits/Travel-Plan-Permission-2026-11-04.md in 251s
 ## 2026-11-04T11:17:11Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-11-04T16:12:51Z — unblock — enqueued D3-unblock-sweep-2026-11-04T16
+## 2026-11-04T16:12:51Z — D3-unblock-sweep-2026-11-04T16 — route — router picked codex from ['codex', 'cursor']
+## 2026-11-04T16:12:51Z — D3-unblock-sweep-2026-11-04T16 — claimed by driver (agent codex)
