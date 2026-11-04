@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-04T09:52:47Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-04T10:08:15Z)
 
 Units: 355 — done 350, failed 1, superseded 4
 Paused: False   Phase stops: []
@@ -368,7 +368,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-03T22:50:19Z — D-audit-Travel-Plan-Permission--2026-11-03T22-44-46Z — refutation posted — stranske/Travel-Plan-Permission#1721
 - 2026-11-03T22:50:21Z — D-audit-Travel-Plan-Permission--2026-11-03T22-44-46Z — refutation posted — stranske/Travel-Plan-Permission#1724
 - 2026-11-03T23:52:26Z — unblock — enqueued D3-unblock-sweep-2026-11-03T23
 - 2026-11-03T23:52:27Z — D3-unblock-sweep-2026-11-03T23 — route — router picked codex from ['codex', 'cursor']
@@ -380,6 +379,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-04T08:00:17Z — D3-unblock-sweep-2026-11-04T08 — claimed by driver (agent cursor)
 - 2026-11-04T08:03:24Z — D3-unblock-sweep-2026-11-04T08 — done — cursor produced 605 words at artifacts/sweeps/D3-unblock-sweep-2026-11-04T08.md in 155s
 - 2026-11-04T09:37:45Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+- 2026-11-04T09:53:13Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
