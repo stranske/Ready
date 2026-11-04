@@ -4708,3 +4708,4 @@ remote: - Required status check "Gate / gate" is
 ## 2026-11-04T08:00:17Z — D3-unblock-sweep-2026-11-04T08 — route — router picked cursor from ['codex', 'cursor']
 ## 2026-11-04T08:00:17Z — D3-unblock-sweep-2026-11-04T08 — claimed by driver (agent cursor)
 ## 2026-11-04T08:03:24Z — D3-unblock-sweep-2026-11-04T08 — done — cursor produced 605 words at artifacts/sweeps/D3-unblock-sweep-2026-11-04T08.md in 155s
+## 2026-11-04T09:37:45Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
