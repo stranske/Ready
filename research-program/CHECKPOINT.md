@@ -4710,3 +4710,7 @@ remote: - Required status check "Gate / gate" is
 ## 2026-11-04T08:03:24Z — D3-unblock-sweep-2026-11-04T08 — done — cursor produced 605 words at artifacts/sweeps/D3-unblock-sweep-2026-11-04T08.md in 155s
 ## 2026-11-04T09:37:45Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
 ## 2026-11-04T09:53:13Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-11-04T10:40:52Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
+## 2026-11-04T10:55:57Z — refill — Travel-Plan-Permission: scorecard 2026-11-02: coverage debt 12 (not exercised 0 + unscored 12) not reduced since 2026-10-02 (12) → audit queued
+## 2026-11-04T10:56:03Z — D-audit-Travel-Plan-Permission--2026-11-04T10-55-57Z — route — router picked cursor from ['codex', 'cursor']
+## 2026-11-04T10:56:03Z — D-audit-Travel-Plan-Permission--2026-11-04T10-55-57Z — claimed by driver (agent cursor)
