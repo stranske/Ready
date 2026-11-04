@@ -4723,3 +4723,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-11-04T16:18:07Z — D3-unblock-sweep-2026-11-04T16 — refutation posted — stranske/Workflows#3988
 ## 2026-11-04T16:18:09Z — D3-unblock-sweep-2026-11-04T16 — refutation posted — stranske/Workflows#4026
 ## 2026-11-04T16:18:12Z — D3-unblock-sweep-2026-11-04T16 — refutation posted — stranske/Workflows#4082
+## 2026-11-04T21:30:15Z — verify — enqueued D4-verify-merged-2026-11-04T21
+## 2026-11-04T21:30:15Z — D4-verify-merged-2026-11-04T21 — route — router picked codex from ['codex', 'cursor']
+## 2026-11-04T21:30:15Z — D4-verify-merged-2026-11-04T21 — claimed by driver (agent codex)
