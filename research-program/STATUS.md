@@ -1,8 +1,8 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-05T11:37:26Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-05T11:52:59Z)
 
 Units: 360 — done 355, failed 1, superseded 4
 Paused: False   Phase stops: []
-Capacity (Orchestrator): codex=warn claude=warn cursor=ok gemini=shed vibe=ok muse=ok aider=ok
+Capacity (Orchestrator): codex=warn claude=ok cursor=ok gemini=shed vibe=ok muse=ok aider=ok
 Orchestrator evidence (30d): offload runs 0, bound to a research round 0, scored 0 (PASS 0, FAIL 0, infra 0) — no offload runs
 Worker write boundary: on — each unit writes only unitdirs/<unit>/, its output directory, artifacts/proposals/, its own clone's working tree (not .git) and temp
 Claude conservation: off (weekly window available)
@@ -373,7 +373,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-05T00:15:52Z — D3-unblock-sweep-2026-11-05T00 — claimed by driver (agent codex)
 - 2026-11-05T00:18:57Z — D3-unblock-sweep-2026-11-05T00 — done — cursor produced 671 words at artifacts/sweeps/D3-unblock-sweep-2026-11-05T00.md in 151s
 - 2026-11-05T00:18:59Z — D3-unblock-sweep-2026-11-05T00 — refutation posted — stranske/Workflows#3988
 - 2026-11-05T00:19:00Z — D3-unblock-sweep-2026-11-05T00 — refutation posted — stranske/Workflows#4026
@@ -385,6 +384,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-05T09:02:11Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 - 2026-11-05T10:04:13Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 - 2026-11-05T10:50:44Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+- 2026-11-05T11:52:59Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
