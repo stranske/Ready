@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-05T23:21:06Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-05T23:36:55Z)
 
 Units: 362 — done 357, failed 1, superseded 4
 Paused: False   Phase stops: []
@@ -375,7 +375,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-05T16:40:33Z — D3-unblock-sweep-2026-11-05T16 — route — router picked cursor from ['codex', 'cursor']
 - 2026-11-05T16:40:33Z — D3-unblock-sweep-2026-11-05T16 — claimed by driver (agent cursor)
 - 2026-11-05T16:42:48Z — D3-unblock-sweep-2026-11-05T16 — done — cursor produced 828 words at artifacts/sweeps/D3-unblock-sweep-2026-11-05T16.md in 101s
 - 2026-11-05T16:58:19Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
@@ -387,6 +386,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-05T21:44:32Z — D4-verify-merged-2026-11-05T21 — done — cursor produced 940 words at artifacts/verification/D4-verify-merged-2026-11-05T21.md in 194s
 - 2026-11-05T22:02:13Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 - 2026-11-05T23:05:25Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+- 2026-11-05T23:21:52Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
