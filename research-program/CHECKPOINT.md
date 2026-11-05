@@ -4738,3 +4738,4 @@ remote: - Required status check "Gate / gate" is
 ## 2026-11-05T08:27:28Z — D3-unblock-sweep-2026-11-05T08 — route — router picked cursor from ['codex', 'cursor']
 ## 2026-11-05T08:27:28Z — D3-unblock-sweep-2026-11-05T08 — claimed by driver (agent cursor)
 ## 2026-11-05T08:30:24Z — D3-unblock-sweep-2026-11-05T08 — done — cursor produced 863 words at artifacts/sweeps/D3-unblock-sweep-2026-11-05T08.md in 139s
+## 2026-11-05T09:02:11Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
