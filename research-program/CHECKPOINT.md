@@ -4752,3 +4752,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-11-05T16:58:19Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 ## 2026-11-05T19:02:47Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 ## 2026-11-05T20:06:15Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+## 2026-11-05T21:40:31Z — verify — enqueued D4-verify-merged-2026-11-05T21
+## 2026-11-05T21:40:32Z — D4-verify-merged-2026-11-05T21 — route — router picked cursor from ['codex', 'cursor']
+## 2026-11-05T21:40:32Z — D4-verify-merged-2026-11-05T21 — claimed by driver (agent cursor)
