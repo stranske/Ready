@@ -1,8 +1,8 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-06T14:22:04Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-06T15:07:28Z)
 
 Units: 364 — done 359, failed 1, superseded 4
 Paused: False   Phase stops: []
-Capacity (Orchestrator): codex=shed claude=shed cursor=ok gemini=shed vibe=ok muse=ok aider=ok
+Capacity (Orchestrator): codex=shed claude=warn cursor=ok gemini=shed vibe=ok muse=ok aider=ok
 Orchestrator evidence (30d): offload runs 0, bound to a research round 0, scored 0 (PASS 0, FAIL 0, infra 0) — no offload runs
 Worker write boundary: on — each unit writes only unitdirs/<unit>/, its output directory, artifacts/proposals/, its own clone's working tree (not .git) and temp
 Claude conservation: off (weekly window available)
@@ -377,7 +377,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-06T00:55:14Z — D3-unblock-sweep-2026-11-06T00 — route — router picked cursor from ['codex', 'cursor']
 - 2026-11-06T00:55:14Z — D3-unblock-sweep-2026-11-06T00 — claimed by driver (agent cursor)
 - 2026-11-06T00:57:56Z — D3-unblock-sweep-2026-11-06T00 — done — cursor produced 760 words at artifacts/sweeps/D3-unblock-sweep-2026-11-06T00.md in 123s
 - 2026-11-06T00:57:59Z — D3-unblock-sweep-2026-11-06T00 — refutation posted — stranske/Workflows#4082
@@ -389,6 +388,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-06T09:06:23Z — D3-unblock-sweep-2026-11-06T09 — claimed by driver (agent cursor)
 - 2026-11-06T09:09:50Z — D3-unblock-sweep-2026-11-06T09 — done — cursor produced 919 words at artifacts/sweeps/D3-unblock-sweep-2026-11-06T09.md in 167s
 - 2026-11-06T12:02:13Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+- 2026-11-06T15:07:28Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
