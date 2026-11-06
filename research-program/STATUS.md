@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-06T09:06:23Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-06T09:09:50Z)
 
-Units: 364 — claimed 1, done 358, failed 1, superseded 4
+Units: 364 — done 359, failed 1, superseded 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=shed claude=shed cursor=ok gemini=shed vibe=ok muse=ok aider=ok
 Orchestrator evidence (30d): offload runs 0, bound to a research round 0, scored 0 (PASS 0, FAIL 0, infra 0) — no offload runs
@@ -207,7 +207,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D3-unblock-sweep-2026-11-05T08 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-2026-11-05T16 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-2026-11-06T00 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
-| D3-unblock-sweep-2026-11-06T09 | D | D | claimed | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
+| D3-unblock-sweep-2026-11-06T09 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-pass2-20260913T2023 | D | D | done | cursor | driver | Unblock sweep pass 2: the seven repos the budgeted first pass deferred |  |
 | D-audit-Counter_Risk--2026-09-07T04-47-32Z | D | D | done | codex | driver | Audit stranske/Counter_Risk and file issues (supply 2 <= 2) |  |
 | D-audit-Counter_Risk--2026-09-08T17-11-36Z | D | D | done | codex | codex | Audit stranske/Counter_Risk and file issues (supply 1 <= 2) |  |
@@ -377,7 +377,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-05T23:21:52Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
 - 2026-11-06T00:55:13Z — unblock — enqueued D3-unblock-sweep-2026-11-06T00
 - 2026-11-06T00:55:14Z — D3-unblock-sweep-2026-11-06T00 — route — router picked cursor from ['codex', 'cursor']
 - 2026-11-06T00:55:14Z — D3-unblock-sweep-2026-11-06T00 — claimed by driver (agent cursor)
@@ -389,6 +388,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-06T09:06:22Z — unblock — enqueued D3-unblock-sweep-2026-11-06T09
 - 2026-11-06T09:06:23Z — D3-unblock-sweep-2026-11-06T09 — route — router picked cursor from ['codex', 'cursor']
 - 2026-11-06T09:06:23Z — D3-unblock-sweep-2026-11-06T09 — claimed by driver (agent cursor)
+- 2026-11-06T09:09:50Z — D3-unblock-sweep-2026-11-06T09 — done — cursor produced 919 words at artifacts/sweeps/D3-unblock-sweep-2026-11-06T09.md in 167s
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
