@@ -4779,3 +4779,4 @@ remote: - Required status check "Gate / gate" is
 ## 2026-11-06T17:12:14Z — D3-unblock-sweep-2026-11-06T17 — claimed by driver (agent cursor)
 ## 2026-11-06T17:15:59Z — D3-unblock-sweep-2026-11-06T17 — done — cursor produced 931 words at artifacts/sweeps/D3-unblock-sweep-2026-11-06T17.md in 190s
 ## 2026-11-06T17:16:03Z — D3-unblock-sweep-2026-11-06T17 — refutation posted — stranske/Workflows#4082
+## 2026-11-06T18:06:13Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
