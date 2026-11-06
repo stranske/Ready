@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-06T01:48:00Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-06T02:03:39Z)
 
 Units: 363 — done 358, failed 1, superseded 4
 Paused: False   Phase stops: []
@@ -376,7 +376,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-05T21:40:32Z — D4-verify-merged-2026-11-05T21 — claimed by driver (agent cursor)
 - 2026-11-05T21:44:32Z — D4-verify-merged-2026-11-05T21 — done — cursor produced 940 words at artifacts/verification/D4-verify-merged-2026-11-05T21.md in 194s
 - 2026-11-05T22:02:13Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 - 2026-11-05T23:05:25Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
@@ -388,6 +387,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-06T00:57:59Z — D3-unblock-sweep-2026-11-06T00 — refutation posted — stranske/Workflows#4082
 - 2026-11-06T00:58:00Z — D3-unblock-sweep-2026-11-06T00 — refutation posted — stranske/Workflows#4026
 - 2026-11-06T00:58:02Z — D3-unblock-sweep-2026-11-06T00 — refutation posted — stranske/Workflows#3988
+- 2026-11-06T02:03:39Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
