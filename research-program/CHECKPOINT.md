@@ -4837,3 +4837,8 @@ remote: - Required status check "Gate / gate" is
 ## 2026-11-07T17:31:56Z — unblock — enqueued D3-unblock-sweep-2026-11-07T17
 ## 2026-11-07T17:32:01Z — D3-unblock-sweep-2026-11-07T17 — route — router picked codex from ['codex', 'cursor']
 ## 2026-11-07T17:32:01Z — D3-unblock-sweep-2026-11-07T17 — claimed by driver (agent codex)
+## 2026-11-07T17:42:19Z — D3-unblock-sweep-2026-11-07T17 — fail — offload to vibe exited 70; offload profile completion persistence is pending
+## 2026-11-07T17:42:39Z — D3-unblock-sweep-2026-11-07T17 — evidence — 1 unscored offload run(s) recorded FAIL (executor driver report)
+## 2026-11-07T17:57:49Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+## 2026-11-07T17:57:49Z — D3-unblock-sweep-2026-11-07T17 — route — router picked codex from ['codex', 'cursor']
+## 2026-11-07T17:57:49Z — D3-unblock-sweep-2026-11-07T17 — claimed by driver (agent codex)

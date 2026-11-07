@@ -1,8 +1,8 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-07T17:32:01Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-07T17:57:49Z)
 
 Units: 369 — claimed 1, done 363, failed 1, superseded 4
 Paused: False   Phase stops: []
-Capacity (Orchestrator): codex=shed claude=shed cursor=shed gemini=warn vibe=ok muse=ok aider=ok
+Capacity (Orchestrator): codex=warn claude=shed cursor=shed gemini=warn vibe=ok muse=ok aider=ok
 Orchestrator evidence (30d): offload runs 0, bound to a research round 0, scored 0 (PASS 0, FAIL 0, infra 0) — no offload runs
 Worker write boundary: on — each unit writes only unitdirs/<unit>/, its output directory, artifacts/proposals/, its own clone's working tree (not .git) and temp
 Claude conservation: off (weekly window available)
@@ -382,11 +382,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-07T15:23:28Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T16:44:46+00:00; local work continues
-- 2026-11-07T15:38:45Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T16:44:46+00:00; local work continues
-- 2026-11-07T15:54:03Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
-- 2026-11-07T15:54:07Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T16:44:46+00:00; local work continues
-- 2026-11-07T16:09:40Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 - 2026-11-07T16:09:42Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T16:44:46+00:00; local work continues
 - 2026-11-07T16:24:54Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T16:44:46+00:00; local work continues
 - 2026-11-07T16:40:09Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T16:44:46+00:00; local work continues
@@ -394,6 +389,11 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-07T17:31:56Z — unblock — enqueued D3-unblock-sweep-2026-11-07T17
 - 2026-11-07T17:32:01Z — D3-unblock-sweep-2026-11-07T17 — route — router picked codex from ['codex', 'cursor']
 - 2026-11-07T17:32:01Z — D3-unblock-sweep-2026-11-07T17 — claimed by driver (agent codex)
+- 2026-11-07T17:42:19Z — D3-unblock-sweep-2026-11-07T17 — fail — offload to vibe exited 70; offload profile completion persistence is pending
+- 2026-11-07T17:42:39Z — D3-unblock-sweep-2026-11-07T17 — evidence — 1 unscored offload run(s) recorded FAIL (executor driver report)
+- 2026-11-07T17:57:49Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+- 2026-11-07T17:57:49Z — D3-unblock-sweep-2026-11-07T17 — route — router picked codex from ['codex', 'cursor']
+- 2026-11-07T17:57:49Z — D3-unblock-sweep-2026-11-07T17 — claimed by driver (agent codex)
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
