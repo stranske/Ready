@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-07T07:53:13Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-07T08:10:32Z)
 
 Units: 367 — done 362, failed 1, superseded 4
 Paused: False   Phase stops: []
@@ -380,7 +380,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-07T02:38:36Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T04:21:22+00:00; local work continues
 - 2026-11-07T02:54:44Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T04:21:22+00:00; local work continues
 - 2026-11-07T03:09:56Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 - 2026-11-07T03:09:59Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T04:21:22+00:00; local work continues
@@ -392,6 +391,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-07T05:09:40Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 - 2026-11-07T06:04:47Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 - 2026-11-07T06:59:41Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+- 2026-11-07T08:10:32Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
