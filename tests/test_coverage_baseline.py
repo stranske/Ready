@@ -15,6 +15,7 @@ import re
 import shutil
 import subprocess
 import sys
+import time
 from pathlib import Path
 from xml.etree import ElementTree
 
@@ -2197,6 +2198,7 @@ def test_real_test_removal_fails_publication_gate(
     coverage_project: Path, regressions: tuple[tuple[str, str], ...], lost_metrics: tuple[str, ...]
 ) -> None:
     """Reject real line-only and branch losses until the removed tests are restored."""
+    started = time.monotonic()
     _use_real_publication_tests(coverage_project)
 
     # Workflow-shell tests need the full repository; this isolated reproduction
@@ -2264,6 +2266,58 @@ def test_real_test_removal_fails_publication_gate(
     assert set(restored_report["files"]) == set(before["files"])
     for path in before["files"]:
         assert restored_report["files"][path]["summary"] == before["files"][path]["summary"]
+
+    # Print actual observations for hosted -rP logs, rather than inferring
+    # counts from a passing test or copying an older local measurement.
+    if regressions == (
+        (
+            "scripts/check_publication_safety.py",
+            "tests/test_publication_safety.py::test_empty_or_missing_tree_fails",
+        ),
+    ):
+        from importlib.metadata import version
+
+        gate = subprocess.run(
+            [sys.executable, "scripts/publication_coverage_gate.py"],
+            cwd=coverage_project,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        assert gate.returncode == 0, gate.stdout + gate.stderr
+        assert "Ready publication coverage floors PASS" in gate.stdout
+        print(
+            "ISSUE623_PROOF="
+            + json.dumps(
+                {
+                    "versions": {
+                        "python": sys.version,
+                        **{name: version(name) for name in ("coverage", "pytest", "pytest-cov")},
+                    },
+                    "elapsed_seconds": time.monotonic() - started,
+                    "exit_statuses": {
+                        "baseline": complete.returncode,
+                        "removed": removed.returncode,
+                        "restored": restored.returncode,
+                        "restored_gate_cli": gate.returncode,
+                    },
+                    "gate_stdout": gate.stdout.strip(),
+                    "removal_errors": errors,
+                    "measurements": {
+                        phase: {
+                            name: report["files"][name]["summary"]
+                            for name in sorted(PUBLICATION_FILES)
+                        }
+                        for phase, report in (
+                            ("baseline", before),
+                            ("removed", after),
+                            ("restored", restored_report),
+                        )
+                    },
+                },
+                sort_keys=True,
+            )
+        )
 
 
 @pytest.mark.parametrize("name", sorted(PUBLICATION_FILES))

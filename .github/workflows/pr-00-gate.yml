@@ -128,6 +128,9 @@ jobs:
     with:
       python-versions: '["3.13", "3.14"]'
       primary-python-version: '3.14'
+      # Ready #623: retain measured removal/restore proof in the hosted log.
+      pytest-workers: '2'
+      pytest_args: '-q -rP'
       coverage-min: "80"
       format_check: false  # Using ruff for formatting
       working-directory: "."

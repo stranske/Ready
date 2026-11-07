@@ -1,7 +1,7 @@
 {
   "source_issue": 623,
   "base": "276a25c1",
-  "runtime": "Anaconda CPython3.12.2 / pytest9.1.1 / pytest-cov7.1.0 / coverage7.16.0",
+  "runtime": "declared pytest9.2.0 / pytest-cov7.1.0 / coverage7.17.0",
   "files": {
     "scripts/check_publication_safety.py": {
       "covered_lines": 213,
@@ -94,5 +94,206 @@
     "num_statements": 1,
     "executed": false,
     "removed_after_proof": true
+  },
+  "hosted_ci": {
+    "check_date": "2026-11-03",
+    "commit": "ebc8046a7a56396596562e123b20d43696d0f07b",
+    "pr_head_commit": "5d2f1192c02387647b85056dd941e337ff6cd23a",
+    "base_commit": "fdf097082d8271a06d4b8083062a0962ed06a318",
+    "workflow_run_url": "https://github.com/stranske/Ready/actions/runs/41605396922",
+    "conclusion": "success",
+    "runtimes": {
+      "3.13": {
+        "job_url": "https://github.com/stranske/Ready/actions/runs/41605396922/job/125814113396",
+        "conclusion": "success",
+        "versions": {
+          "coverage": "7.17.0",
+          "pytest": "9.2.0",
+          "pytest-cov": "7.1.0",
+          "pytest-xdist": "3.8.0",
+          "python": "3.13.17 (main, Oct 22 2026, 02:41:26) [GCC 15.2.0]"
+        },
+        "pytest_n2": {
+          "exit": 0,
+          "tests_passed": 1057,
+          "elapsed_seconds": 586.4
+        },
+        "full_suite_measurements": {
+          "scripts/check_publication_safety.py": {
+            "covered_lines": 213,
+            "num_statements": 215,
+            "covered_branches": 111,
+            "num_branches": 114
+          },
+          "scripts/prepare_publication.py": {
+            "covered_lines": 115,
+            "num_statements": 121,
+            "covered_branches": 60,
+            "num_branches": 62
+          }
+        },
+        "coverage_artifact_id": 13216782724,
+        "removal_control": {
+          "elapsed_seconds": 102.89714968600003,
+          "exit_statuses": {
+            "baseline": 0,
+            "removed": 1,
+            "restored": 0,
+            "restored_gate_cli": 0
+          },
+          "gate_stdout": "Ready publication coverage floors PASS",
+          "measurements": {
+            "baseline": {
+              "scripts/check_publication_safety.py": {
+                "covered_lines": 213,
+                "num_statements": 215,
+                "covered_branches": 111,
+                "num_branches": 114
+              },
+              "scripts/prepare_publication.py": {
+                "covered_lines": 115,
+                "num_statements": 121,
+                "covered_branches": 60,
+                "num_branches": 62
+              }
+            },
+            "removed": {
+              "scripts/check_publication_safety.py": {
+                "covered_lines": 212,
+                "num_statements": 215,
+                "covered_branches": 110,
+                "num_branches": 114
+              },
+              "scripts/prepare_publication.py": {
+                "covered_lines": 115,
+                "num_statements": 121,
+                "covered_branches": 60,
+                "num_branches": 62
+              }
+            },
+            "restored": {
+              "scripts/check_publication_safety.py": {
+                "covered_lines": 213,
+                "num_statements": 215,
+                "covered_branches": 111,
+                "num_branches": 114
+              },
+              "scripts/prepare_publication.py": {
+                "covered_lines": 115,
+                "num_statements": 121,
+                "covered_branches": 60,
+                "num_branches": 62
+              }
+            }
+          },
+          "removal_errors": [
+            "PUBLICATION COVERAGE: scripts/check_publication_safety.py: line coverage 98.604651% below floor 99.069767%",
+            "PUBLICATION COVERAGE: scripts/check_publication_safety.py: branch coverage 96.491228% below floor 97.368421%"
+          ]
+        }
+      },
+      "3.14": {
+        "job_url": "https://github.com/stranske/Ready/actions/runs/41605396922/job/125814113319",
+        "conclusion": "success",
+        "versions": {
+          "coverage": "7.17.0",
+          "pytest": "9.2.0",
+          "pytest-cov": "7.1.0",
+          "pytest-xdist": "3.8.0",
+          "python": "3.14.9 (main, Oct 21 2026, 14:48:41) [GCC 15.2.0]"
+        },
+        "pytest_n2": {
+          "exit": 0,
+          "tests_passed": 1057,
+          "elapsed_seconds": 609.24
+        },
+        "full_suite_measurements": {
+          "scripts/check_publication_safety.py": {
+            "covered_lines": 213,
+            "num_statements": 215,
+            "covered_branches": 111,
+            "num_branches": 114
+          },
+          "scripts/prepare_publication.py": {
+            "covered_lines": 115,
+            "num_statements": 121,
+            "covered_branches": 60,
+            "num_branches": 62
+          }
+        },
+        "coverage_artifact_id": 13216093720,
+        "removal_control": {
+          "elapsed_seconds": 107.10971838899997,
+          "exit_statuses": {
+            "baseline": 0,
+            "removed": 1,
+            "restored": 0,
+            "restored_gate_cli": 0
+          },
+          "gate_stdout": "Ready publication coverage floors PASS",
+          "measurements": {
+            "baseline": {
+              "scripts/check_publication_safety.py": {
+                "covered_lines": 213,
+                "num_statements": 215,
+                "covered_branches": 111,
+                "num_branches": 114
+              },
+              "scripts/prepare_publication.py": {
+                "covered_lines": 115,
+                "num_statements": 121,
+                "covered_branches": 60,
+                "num_branches": 62
+              }
+            },
+            "removed": {
+              "scripts/check_publication_safety.py": {
+                "covered_lines": 212,
+                "num_statements": 215,
+                "covered_branches": 110,
+                "num_branches": 114
+              },
+              "scripts/prepare_publication.py": {
+                "covered_lines": 115,
+                "num_statements": 121,
+                "covered_branches": 60,
+                "num_branches": 62
+              }
+            },
+            "restored": {
+              "scripts/check_publication_safety.py": {
+                "covered_lines": 213,
+                "num_statements": 215,
+                "covered_branches": 111,
+                "num_branches": 114
+              },
+              "scripts/prepare_publication.py": {
+                "covered_lines": 115,
+                "num_statements": 121,
+                "covered_branches": 60,
+                "num_branches": 62
+              }
+            }
+          },
+          "removal_errors": [
+            "PUBLICATION COVERAGE: scripts/check_publication_safety.py: line coverage 98.604651% below floor 99.069767%",
+            "PUBLICATION COVERAGE: scripts/check_publication_safety.py: branch coverage 96.491228% below floor 97.368421%"
+          ]
+        }
+      }
+    },
+    "configured_floors": {
+      "scripts/check_publication_safety.py": {
+        "line": 99.0697,
+        "branch": 96.4912
+      },
+      "scripts/prepare_publication.py": {
+        "line": 88.4297,
+        "branch": 96.7741
+      }
+    },
+    "control_floor_policy": "Existing real removal control first passes the repository floors, then calibrates isolated probe floors to its observed baseline. Removal fails both calibrated floors; restoration exactly recovers baseline counts. Repository floors remain unchanged. The observed branch loss alone still meets the repository scanner branch floor; the line loss breaches the repository scanner line floor.",
+    "superseded_run": "41591960131: proof job failed after pytest/CLI with KeyError: PYTEST_EXIT; not accepted as completed proof.",
+    "scope": "No production script or floor changes. Top-level files and branch_removal_control retain the historical #638 local packet; fresh hosted measurements are under hosted_ci."
   }
 }
