@@ -4845,3 +4845,20 @@ remote: - Required status check "Gate / gate" is
 ## 2026-11-07T18:03:09Z — D3-unblock-sweep-2026-11-07T17 — done — codex produced 581 words at artifacts/sweeps/D3-unblock-sweep-2026-11-07T17.md in 212s
 ## 2026-11-07T19:02:57Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 ## 2026-11-07T20:01:06Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+## 2026-11-07T21:11:52Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+## 2026-11-07T21:11:55Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T22:53:21+00:00; local work continues
+## 2026-11-07T21:27:21Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T22:53:21+00:00; local work continues
+## 2026-11-07T21:42:28Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T22:53:21+00:00; local work continues
+## 2026-11-07T21:58:15Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+## 2026-11-07T21:58:16Z — verify — enqueued D4-verify-merged-2026-11-07T21
+## 2026-11-07T21:58:44Z — D4-verify-merged-2026-11-07T21 — route — router picked codex from ['codex', 'cursor']
+## 2026-11-07T21:58:44Z — D4-verify-merged-2026-11-07T21 — claimed by driver (agent codex)
+## 2026-11-07T21:58:49Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T22:53:21+00:00; local work continues
+## 2026-11-07T22:05:11Z — D4-verify-merged-2026-11-07T21 — fail — codex produced 257 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/verification/D4-verify-merged-2026-11-07T21.md (min 400); rotating agen
+## 2026-11-07T22:24:12Z — D4-verify-merged-2026-11-07T21 — route — router picked codex from ['codex', 'cursor']
+## 2026-11-07T22:24:12Z — D4-verify-merged-2026-11-07T21 — claimed by driver (agent codex)
+## 2026-11-07T22:24:14Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T22:53:21+00:00; local work continues
+## 2026-11-07T22:36:40Z — D4-verify-merged-2026-11-07T21 — done — vibe produced 1435 words at artifacts/verification/D4-verify-merged-2026-11-07T21.md in 731s
+## 2026-11-07T22:36:44Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T22:53:21+00:00; local work continues
+## 2026-11-07T22:52:48Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T22:53:21+00:00; local work continues
+## 2026-11-07T23:09:31Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas

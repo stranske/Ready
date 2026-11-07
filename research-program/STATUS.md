@@ -1,8 +1,8 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-07T20:53:04Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-07T23:10:09Z)
 
-Units: 369 — done 364, failed 1, superseded 4
+Units: 370 — done 365, failed 1, superseded 4
 Paused: False   Phase stops: []
-Capacity (Orchestrator): codex=warn claude=shed cursor=shed gemini=warn vibe=ok muse=ok aider=ok
+Capacity (Orchestrator): codex=ok claude=shed cursor=ok gemini=shed vibe=ok muse=ok aider=ok
 Orchestrator evidence (30d): offload runs 0, bound to a research round 0, scored 0 (PASS 0, FAIL 0, infra 0) — no offload runs
 Worker write boundary: on — each unit writes only unitdirs/<unit>/, its output directory, artifacts/proposals/, its own clone's working tree (not .git) and temp
 Claude conservation: off (weekly window available)
@@ -379,21 +379,22 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D4-verify-merged-2026-11-04T21 | D | D | done | codex | driver | Verify merged PRs against their issues' acceptance criteria |  |
 | D4-verify-merged-2026-11-05T21 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
 | D4-verify-merged-2026-11-06T21 | D | D | done | codex | driver | Verify merged PRs against their issues' acceptance criteria |  |
+| D4-verify-merged-2026-11-07T21 | D | D | done | codex | driver | Verify merged PRs against their issues' acceptance criteria |  |
 
 ## Last checkpoints
 
-- 2026-11-07T16:55:22Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
-- 2026-11-07T17:31:56Z — unblock — enqueued D3-unblock-sweep-2026-11-07T17
-- 2026-11-07T17:32:01Z — D3-unblock-sweep-2026-11-07T17 — route — router picked codex from ['codex', 'cursor']
-- 2026-11-07T17:32:01Z — D3-unblock-sweep-2026-11-07T17 — claimed by driver (agent codex)
-- 2026-11-07T17:42:19Z — D3-unblock-sweep-2026-11-07T17 — fail — offload to vibe exited 70; offload profile completion persistence is pending
-- 2026-11-07T17:42:39Z — D3-unblock-sweep-2026-11-07T17 — evidence — 1 unscored offload run(s) recorded FAIL (executor driver report)
-- 2026-11-07T17:57:49Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
-- 2026-11-07T17:57:49Z — D3-unblock-sweep-2026-11-07T17 — route — router picked codex from ['codex', 'cursor']
-- 2026-11-07T17:57:49Z — D3-unblock-sweep-2026-11-07T17 — claimed by driver (agent codex)
-- 2026-11-07T18:03:09Z — D3-unblock-sweep-2026-11-07T17 — done — codex produced 581 words at artifacts/sweeps/D3-unblock-sweep-2026-11-07T17.md in 212s
-- 2026-11-07T19:02:57Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
-- 2026-11-07T20:01:06Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+- 2026-11-07T21:58:16Z — verify — enqueued D4-verify-merged-2026-11-07T21
+- 2026-11-07T21:58:44Z — D4-verify-merged-2026-11-07T21 — route — router picked codex from ['codex', 'cursor']
+- 2026-11-07T21:58:44Z — D4-verify-merged-2026-11-07T21 — claimed by driver (agent codex)
+- 2026-11-07T21:58:49Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T22:53:21+00:00; local work continues
+- 2026-11-07T22:05:11Z — D4-verify-merged-2026-11-07T21 — fail — codex produced 257 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/verification/D4-verify-merged-2026-11-07T21.md (min 400); rotating agen
+- 2026-11-07T22:24:12Z — D4-verify-merged-2026-11-07T21 — route — router picked codex from ['codex', 'cursor']
+- 2026-11-07T22:24:12Z — D4-verify-merged-2026-11-07T21 — claimed by driver (agent codex)
+- 2026-11-07T22:24:14Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T22:53:21+00:00; local work continues
+- 2026-11-07T22:36:40Z — D4-verify-merged-2026-11-07T21 — done — vibe produced 1435 words at artifacts/verification/D4-verify-merged-2026-11-07T21.md in 731s
+- 2026-11-07T22:36:44Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T22:53:21+00:00; local work continues
+- 2026-11-07T22:52:48Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T22:53:21+00:00; local work continues
+- 2026-11-07T23:09:31Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
