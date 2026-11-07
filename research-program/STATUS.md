@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-07T04:50:42Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-07T05:09:40Z)
 
 Units: 367 — done 362, failed 1, superseded 4
 Paused: False   Phase stops: []
@@ -380,7 +380,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-07T01:15:26Z — D3-unblock-sweep-2026-11-07T01 — claimed by driver (agent codex)
 - 2026-11-07T01:25:34Z — D3-unblock-sweep-2026-11-07T01 — done — codex produced 616 words at artifacts/sweeps/D3-unblock-sweep-2026-11-07T01.md in 498s
 - 2026-11-07T02:00:50Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 - 2026-11-07T02:38:36Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T04:21:22+00:00; local work continues
@@ -392,6 +391,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-07T03:55:42Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 - 2026-11-07T03:55:44Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T04:21:22+00:00; local work continues
 - 2026-11-07T04:11:05Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T04:21:22+00:00; local work continues
+- 2026-11-07T05:09:40Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
