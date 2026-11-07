@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-07T10:44:27Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-07T11:03:52Z)
 
 Units: 368 — done 363, failed 1, superseded 4
 Paused: False   Phase stops: []
@@ -381,7 +381,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-07T09:01:31Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T10:39:34+00:00; local work continues
 - 2026-11-07T09:16:49Z — unblock — enqueued D3-unblock-sweep-2026-11-07T09
 - 2026-11-07T09:18:33Z — D3-unblock-sweep-2026-11-07T09 — route — router picked codex from ['codex', 'cursor']
 - 2026-11-07T09:18:33Z — D3-unblock-sweep-2026-11-07T09 — claimed by driver (agent codex)
@@ -393,6 +392,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-07T09:56:47Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T10:39:34+00:00; local work continues
 - 2026-11-07T10:12:22Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T10:39:34+00:00; local work continues
 - 2026-11-07T10:27:34Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T10:39:34+00:00; local work continues
+- 2026-11-07T11:03:52Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
