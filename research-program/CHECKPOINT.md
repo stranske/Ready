@@ -4785,3 +4785,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-11-06T21:44:41Z — D4-verify-merged-2026-11-06T21 — claimed by driver (agent codex)
 ## 2026-11-06T21:55:34Z — D4-verify-merged-2026-11-06T21 — done — codex produced 882 words at artifacts/verification/D4-verify-merged-2026-11-06T21.md in 569s
 ## 2026-11-07T00:08:23Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+## 2026-11-07T01:15:24Z — unblock — enqueued D3-unblock-sweep-2026-11-07T01
+## 2026-11-07T01:15:26Z — D3-unblock-sweep-2026-11-07T01 — route — router picked codex from ['codex', 'cursor']
+## 2026-11-07T01:15:26Z — D3-unblock-sweep-2026-11-07T01 — claimed by driver (agent codex)
