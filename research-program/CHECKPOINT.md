@@ -4843,3 +4843,4 @@ remote: - Required status check "Gate / gate" is
 ## 2026-11-07T17:57:49Z — D3-unblock-sweep-2026-11-07T17 — route — router picked codex from ['codex', 'cursor']
 ## 2026-11-07T17:57:49Z — D3-unblock-sweep-2026-11-07T17 — claimed by driver (agent codex)
 ## 2026-11-07T18:03:09Z — D3-unblock-sweep-2026-11-07T17 — done — codex produced 581 words at artifacts/sweeps/D3-unblock-sweep-2026-11-07T17.md in 212s
+## 2026-11-07T19:02:57Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
