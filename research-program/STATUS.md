@@ -1,8 +1,8 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-07T08:27:46Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-07T10:44:27Z)
 
-Units: 367 — done 362, failed 1, superseded 4
+Units: 368 — done 363, failed 1, superseded 4
 Paused: False   Phase stops: []
-Capacity (Orchestrator): codex=ok claude=shed cursor=ok gemini=warn vibe=ok muse=ok aider=ok
+Capacity (Orchestrator): codex=ok claude=shed cursor=shed gemini=warn vibe=ok muse=ok aider=ok
 Orchestrator evidence (30d): offload runs 0, bound to a research round 0, scored 0 (PASS 0, FAIL 0, infra 0) — no offload runs
 Worker write boundary: on — each unit writes only unitdirs/<unit>/, its output directory, artifacts/proposals/, its own clone's working tree (not .git) and temp
 Claude conservation: off (weekly window available)
@@ -210,6 +210,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D3-unblock-sweep-2026-11-06T09 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-2026-11-06T17 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-2026-11-07T01 | D | D | done | codex | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
+| D3-unblock-sweep-2026-11-07T09 | D | D | done | codex | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-pass2-20260913T2023 | D | D | done | cursor | driver | Unblock sweep pass 2: the seven repos the budgeted first pass deferred |  |
 | D-audit-Counter_Risk--2026-09-07T04-47-32Z | D | D | done | codex | driver | Audit stranske/Counter_Risk and file issues (supply 2 <= 2) |  |
 | D-audit-Counter_Risk--2026-09-08T17-11-36Z | D | D | done | codex | codex | Audit stranske/Counter_Risk and file issues (supply 1 <= 2) |  |
@@ -380,18 +381,18 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-07T02:54:44Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T04:21:22+00:00; local work continues
-- 2026-11-07T03:09:56Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
-- 2026-11-07T03:09:59Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T04:21:22+00:00; local work continues
-- 2026-11-07T03:25:09Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T04:21:22+00:00; local work continues
-- 2026-11-07T03:40:36Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T04:21:22+00:00; local work continues
-- 2026-11-07T03:55:42Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
-- 2026-11-07T03:55:44Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T04:21:22+00:00; local work continues
-- 2026-11-07T04:11:05Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T04:21:22+00:00; local work continues
-- 2026-11-07T05:09:40Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
-- 2026-11-07T06:04:47Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
-- 2026-11-07T06:59:41Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
-- 2026-11-07T08:10:32Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+- 2026-11-07T09:01:31Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T10:39:34+00:00; local work continues
+- 2026-11-07T09:16:49Z — unblock — enqueued D3-unblock-sweep-2026-11-07T09
+- 2026-11-07T09:18:33Z — D3-unblock-sweep-2026-11-07T09 — route — router picked codex from ['codex', 'cursor']
+- 2026-11-07T09:18:33Z — D3-unblock-sweep-2026-11-07T09 — claimed by driver (agent codex)
+- 2026-11-07T09:18:35Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T10:39:34+00:00; local work continues
+- 2026-11-07T09:25:42Z — D3-unblock-sweep-2026-11-07T09 — done — codex produced 502 words at artifacts/sweeps/D3-unblock-sweep-2026-11-07T09.md in 400s
+- 2026-11-07T09:25:51Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T10:39:34+00:00; local work continues
+- 2026-11-07T09:41:29Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T10:39:34+00:00; local work continues
+- 2026-11-07T09:56:42Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+- 2026-11-07T09:56:47Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T10:39:34+00:00; local work continues
+- 2026-11-07T10:12:22Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T10:39:34+00:00; local work continues
+- 2026-11-07T10:27:34Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T10:39:34+00:00; local work continues
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 

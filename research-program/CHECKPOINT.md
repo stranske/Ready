@@ -4803,3 +4803,17 @@ remote: - Required status check "Gate / gate" is
 ## 2026-11-07T06:04:47Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 ## 2026-11-07T06:59:41Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 ## 2026-11-07T08:10:32Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+## 2026-11-07T08:45:23Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T10:39:34+00:00; local work continues
+## 2026-11-07T09:00:43Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+## 2026-11-07T09:01:31Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T10:39:34+00:00; local work continues
+## 2026-11-07T09:16:49Z — unblock — enqueued D3-unblock-sweep-2026-11-07T09
+## 2026-11-07T09:18:33Z — D3-unblock-sweep-2026-11-07T09 — route — router picked codex from ['codex', 'cursor']
+## 2026-11-07T09:18:33Z — D3-unblock-sweep-2026-11-07T09 — claimed by driver (agent codex)
+## 2026-11-07T09:18:35Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T10:39:34+00:00; local work continues
+## 2026-11-07T09:25:42Z — D3-unblock-sweep-2026-11-07T09 — done — codex produced 502 words at artifacts/sweeps/D3-unblock-sweep-2026-11-07T09.md in 400s
+## 2026-11-07T09:25:51Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T10:39:34+00:00; local work continues
+## 2026-11-07T09:41:29Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T10:39:34+00:00; local work continues
+## 2026-11-07T09:56:42Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+## 2026-11-07T09:56:47Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T10:39:34+00:00; local work continues
+## 2026-11-07T10:12:22Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T10:39:34+00:00; local work continues
+## 2026-11-07T10:27:34Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T10:39:34+00:00; local work continues
