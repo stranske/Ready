@@ -1,8 +1,8 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-07T02:00:51Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-07T04:31:47Z)
 
 Units: 367 — done 362, failed 1, superseded 4
 Paused: False   Phase stops: []
-Capacity (Orchestrator): codex=ok claude=shed cursor=shed gemini=shed vibe=ok muse=ok aider=ok
+Capacity (Orchestrator): codex=warn claude=shed cursor=shed gemini=ok vibe=ok muse=ok aider=ok
 Orchestrator evidence (30d): offload runs 0, bound to a research round 0, scored 0 (PASS 0, FAIL 0, infra 0) — no offload runs
 Worker write boundary: on — each unit writes only unitdirs/<unit>/, its output directory, artifacts/proposals/, its own clone's working tree (not .git) and temp
 Claude conservation: off (weekly window available)
@@ -380,18 +380,18 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-06T17:16:03Z — D3-unblock-sweep-2026-11-06T17 — refutation posted — stranske/Workflows#4082
-- 2026-11-06T18:06:13Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
-- 2026-11-06T21:44:38Z — verify — enqueued D4-verify-merged-2026-11-06T21
-- 2026-11-06T21:44:41Z — D4-verify-merged-2026-11-06T21 — route — router picked codex from ['codex', 'cursor']
-- 2026-11-06T21:44:41Z — D4-verify-merged-2026-11-06T21 — claimed by driver (agent codex)
-- 2026-11-06T21:55:34Z — D4-verify-merged-2026-11-06T21 — done — codex produced 882 words at artifacts/verification/D4-verify-merged-2026-11-06T21.md in 569s
-- 2026-11-07T00:08:23Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
-- 2026-11-07T01:15:24Z — unblock — enqueued D3-unblock-sweep-2026-11-07T01
-- 2026-11-07T01:15:26Z — D3-unblock-sweep-2026-11-07T01 — route — router picked codex from ['codex', 'cursor']
 - 2026-11-07T01:15:26Z — D3-unblock-sweep-2026-11-07T01 — claimed by driver (agent codex)
 - 2026-11-07T01:25:34Z — D3-unblock-sweep-2026-11-07T01 — done — codex produced 616 words at artifacts/sweeps/D3-unblock-sweep-2026-11-07T01.md in 498s
 - 2026-11-07T02:00:50Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+- 2026-11-07T02:38:36Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T04:21:22+00:00; local work continues
+- 2026-11-07T02:54:44Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T04:21:22+00:00; local work continues
+- 2026-11-07T03:09:56Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+- 2026-11-07T03:09:59Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T04:21:22+00:00; local work continues
+- 2026-11-07T03:25:09Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T04:21:22+00:00; local work continues
+- 2026-11-07T03:40:36Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T04:21:22+00:00; local work continues
+- 2026-11-07T03:55:42Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+- 2026-11-07T03:55:44Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T04:21:22+00:00; local work continues
+- 2026-11-07T04:11:05Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T04:21:22+00:00; local work continues
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 

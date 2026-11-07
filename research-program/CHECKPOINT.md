@@ -4790,3 +4790,12 @@ remote: - Required status check "Gate / gate" is
 ## 2026-11-07T01:15:26Z — D3-unblock-sweep-2026-11-07T01 — claimed by driver (agent codex)
 ## 2026-11-07T01:25:34Z — D3-unblock-sweep-2026-11-07T01 — done — codex produced 616 words at artifacts/sweeps/D3-unblock-sweep-2026-11-07T01.md in 498s
 ## 2026-11-07T02:00:50Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+## 2026-11-07T02:38:36Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T04:21:22+00:00; local work continues
+## 2026-11-07T02:54:44Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T04:21:22+00:00; local work continues
+## 2026-11-07T03:09:56Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+## 2026-11-07T03:09:59Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T04:21:22+00:00; local work continues
+## 2026-11-07T03:25:09Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T04:21:22+00:00; local work continues
+## 2026-11-07T03:40:36Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T04:21:22+00:00; local work continues
+## 2026-11-07T03:55:42Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+## 2026-11-07T03:55:44Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T04:21:22+00:00; local work continues
+## 2026-11-07T04:11:05Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T04:21:22+00:00; local work continues
