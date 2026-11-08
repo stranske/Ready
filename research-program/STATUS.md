@@ -1,8 +1,8 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-08T19:15:53Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-08T21:31:05Z)
 
 Units: 373 — done 368, failed 1, superseded 4
 Paused: False   Phase stops: []
-Capacity (Orchestrator): codex=ok claude=shed cursor=shed gemini=shed vibe=ok muse=ok aider=ok
+Capacity (Orchestrator): codex=warn claude=shed cursor=shed gemini=shed vibe=ok muse=ok aider=ok
 Orchestrator evidence (30d): offload runs 0, bound to a research round 0, scored 0 (PASS 0, FAIL 0, infra 0) — no offload runs
 Worker write boundary: on — each unit writes only unitdirs/<unit>/, its output directory, artifacts/proposals/, its own clone's working tree (not .git) and temp
 Claude conservation: off (weekly window available)
@@ -386,8 +386,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-08T16:41:49Z — mirror — deferred — Ready#669 exact-head sync review; publication resumes by 2026-11-08T18:37:48+00:00; local work continues
-- 2026-11-08T16:57:22Z — mirror — deferred — Ready#669 exact-head sync review; publication resumes by 2026-11-08T18:37:48+00:00; local work continues
 - 2026-11-08T17:12:35Z — mirror — FAILED — RuntimeError; pending commits retained for next tick
 - 2026-11-08T17:29:27Z — mirror — deferred — Ready#669 exact-head sync review; publication resumes by 2026-11-08T18:37:48+00:00; local work continues
 - 2026-11-08T17:44:45Z — mirror — deferred — Ready#669 exact-head sync review; publication resumes by 2026-11-08T18:37:48+00:00; local work continues
@@ -398,6 +396,8 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-08T18:18:06Z — mirror — deferred — Ready#669 exact-head sync review; publication resumes by 2026-11-08T18:37:48+00:00; local work continues
 - 2026-11-08T18:25:02Z — D3-unblock-sweep-2026-11-08T18 — done — codex produced 419 words at artifacts/sweeps/D3-unblock-sweep-2026-11-08T18.md in 403s
 - 2026-11-08T18:25:23Z — mirror — deferred — Ready#669 exact-head sync review; publication resumes by 2026-11-08T18:37:48+00:00; local work continues
+- 2026-11-08T20:19:14Z — mirror — deferred — Ready#669 exact-head sync review; publication resumes by 2026-11-08T22:03:59+00:00; local work continues
+- 2026-11-08T20:34:21Z — mirror — deferred — Ready#669 exact-head sync review; publication resumes by 2026-11-08T22:03:59+00:00; local work continues
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
