@@ -4881,3 +4881,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-11-08T10:02:23Z — unblock — enqueued D3-unblock-sweep-2026-11-08T10
 ## 2026-11-08T10:02:27Z — D3-unblock-sweep-2026-11-08T10 — route — router picked cursor from ['codex', 'cursor']
 ## 2026-11-08T10:02:27Z — D3-unblock-sweep-2026-11-08T10 — claimed by driver (agent cursor)
+## 2026-11-08T10:06:18Z — D3-unblock-sweep-2026-11-08T10 — fail — offload to cursor exited 1; agent exited 1
+## 2026-11-08T10:21:39Z — D3-unblock-sweep-2026-11-08T10 — route — router picked codex from ['codex', 'cursor']
+## 2026-11-08T10:21:39Z — D3-unblock-sweep-2026-11-08T10 — claimed by driver (agent codex)
