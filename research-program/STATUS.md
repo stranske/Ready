@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-08T01:30:01Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-08T03:46:07Z)
 
-Units: 370 — done 365, failed 1, superseded 4
+Units: 371 — done 366, failed 1, superseded 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=warn claude=shed cursor=shed gemini=shed vibe=ok muse=ok aider=ok
 Orchestrator evidence (30d): offload runs 0, bound to a research round 0, scored 0 (PASS 0, FAIL 0, infra 0) — no offload runs
@@ -212,6 +212,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D3-unblock-sweep-2026-11-07T01 | D | D | done | codex | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-2026-11-07T09 | D | D | done | codex | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-2026-11-07T17 | D | D | done | codex | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
+| D3-unblock-sweep-2026-11-08T01 | D | D | done | codex | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-pass2-20260913T2023 | D | D | done | cursor | driver | Unblock sweep pass 2: the seven repos the budgeted first pass deferred |  |
 | D-audit-Counter_Risk--2026-09-07T04-47-32Z | D | D | done | codex | driver | Audit stranske/Counter_Risk and file issues (supply 2 <= 2) |  |
 | D-audit-Counter_Risk--2026-09-08T17-11-36Z | D | D | done | codex | codex | Audit stranske/Counter_Risk and file issues (supply 1 <= 2) |  |
@@ -383,18 +384,18 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-07T21:58:44Z — D4-verify-merged-2026-11-07T21 — claimed by driver (agent codex)
-- 2026-11-07T21:58:49Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T22:53:21+00:00; local work continues
-- 2026-11-07T22:05:11Z — D4-verify-merged-2026-11-07T21 — fail — codex produced 257 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/verification/D4-verify-merged-2026-11-07T21.md (min 400); rotating agen
-- 2026-11-07T22:24:12Z — D4-verify-merged-2026-11-07T21 — route — router picked codex from ['codex', 'cursor']
-- 2026-11-07T22:24:12Z — D4-verify-merged-2026-11-07T21 — claimed by driver (agent codex)
-- 2026-11-07T22:24:14Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T22:53:21+00:00; local work continues
-- 2026-11-07T22:36:40Z — D4-verify-merged-2026-11-07T21 — done — vibe produced 1435 words at artifacts/verification/D4-verify-merged-2026-11-07T21.md in 731s
-- 2026-11-07T22:36:44Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T22:53:21+00:00; local work continues
-- 2026-11-07T22:52:48Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T22:53:21+00:00; local work continues
-- 2026-11-07T23:09:31Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
-- 2026-11-08T00:04:49Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
-- 2026-11-08T01:11:23Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+- 2026-11-08T01:48:24Z — unblock — enqueued D3-unblock-sweep-2026-11-08T01
+- 2026-11-08T01:48:24Z — D3-unblock-sweep-2026-11-08T01 — route — router picked codex from ['codex', 'cursor']
+- 2026-11-08T01:48:24Z — D3-unblock-sweep-2026-11-08T01 — claimed by driver (agent codex)
+- 2026-11-08T01:48:25Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-08T03:40:34+00:00; local work continues
+- 2026-11-08T01:54:30Z — D3-unblock-sweep-2026-11-08T01 — done — codex produced 481 words at artifacts/sweeps/D3-unblock-sweep-2026-11-08T01.md in 359s
+- 2026-11-08T01:54:31Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-08T03:40:34+00:00; local work continues
+- 2026-11-08T02:10:27Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-08T03:40:34+00:00; local work continues
+- 2026-11-08T02:25:35Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-08T03:40:34+00:00; local work continues
+- 2026-11-08T02:41:48Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-08T03:40:34+00:00; local work continues
+- 2026-11-08T02:57:08Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-08T03:40:34+00:00; local work continues
+- 2026-11-08T03:13:08Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-08T03:40:34+00:00; local work continues
+- 2026-11-08T03:29:47Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-08T03:40:34+00:00; local work continues
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
