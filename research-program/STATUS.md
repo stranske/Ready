@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-08T00:54:35Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-08T01:11:23Z)
 
 Units: 370 — done 365, failed 1, superseded 4
 Paused: False   Phase stops: []
@@ -383,7 +383,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-07T21:58:44Z — D4-verify-merged-2026-11-07T21 — route — router picked codex from ['codex', 'cursor']
 - 2026-11-07T21:58:44Z — D4-verify-merged-2026-11-07T21 — claimed by driver (agent codex)
 - 2026-11-07T21:58:49Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T22:53:21+00:00; local work continues
 - 2026-11-07T22:05:11Z — D4-verify-merged-2026-11-07T21 — fail — codex produced 257 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/verification/D4-verify-merged-2026-11-07T21.md (min 400); rotating agen
@@ -395,6 +394,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-07T22:52:48Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-07T22:53:21+00:00; local work continues
 - 2026-11-07T23:09:31Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 - 2026-11-08T00:04:49Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+- 2026-11-08T01:11:23Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
