@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-08T07:07:38Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-08T07:27:53Z)
 
 Units: 371 — done 366, failed 1, superseded 4
 Paused: False   Phase stops: []
@@ -384,7 +384,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-08T01:48:24Z — D3-unblock-sweep-2026-11-08T01 — route — router picked codex from ['codex', 'cursor']
 - 2026-11-08T01:48:24Z — D3-unblock-sweep-2026-11-08T01 — claimed by driver (agent codex)
 - 2026-11-08T01:48:25Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-08T03:40:34+00:00; local work continues
 - 2026-11-08T01:54:30Z — D3-unblock-sweep-2026-11-08T01 — done — codex produced 481 words at artifacts/sweeps/D3-unblock-sweep-2026-11-08T01.md in 359s
@@ -396,6 +395,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-08T03:13:08Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-08T03:40:34+00:00; local work continues
 - 2026-11-08T03:29:47Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-08T03:40:34+00:00; local work continues
 - 2026-11-08T04:22:54Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-08T06:13:07+00:00; local work continues
+- 2026-11-08T07:11:25Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 

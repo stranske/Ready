@@ -4877,3 +4877,4 @@ remote: - Required status check "Gate / gate" is
 ## 2026-11-08T03:13:08Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-08T03:40:34+00:00; local work continues
 ## 2026-11-08T03:29:47Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-08T03:40:34+00:00; local work continues
 ## 2026-11-08T04:22:54Z — mirror — deferred — Ready#668 exact-head sync review; publication resumes by 2026-11-08T06:13:07+00:00; local work continues
+## 2026-11-08T07:11:25Z — mirror — FAILED — CalledProcessError; pending commits retained for next tick
