@@ -4885,3 +4885,15 @@ remote: - Required status check "Gate / gate" is
 ## 2026-11-08T10:21:39Z — D3-unblock-sweep-2026-11-08T10 — route — router picked codex from ['codex', 'cursor']
 ## 2026-11-08T10:21:39Z — D3-unblock-sweep-2026-11-08T10 — claimed by driver (agent codex)
 ## 2026-11-08T10:31:52Z — D3-unblock-sweep-2026-11-08T10 — done — vibe produced 755 words at artifacts/sweeps/D3-unblock-sweep-2026-11-08T10.md in 493s
+## 2026-11-08T16:41:49Z — mirror — deferred — Ready#669 exact-head sync review; publication resumes by 2026-11-08T18:37:48+00:00; local work continues
+## 2026-11-08T16:57:22Z — mirror — deferred — Ready#669 exact-head sync review; publication resumes by 2026-11-08T18:37:48+00:00; local work continues
+## 2026-11-08T17:12:35Z — mirror — FAILED — RuntimeError; pending commits retained for next tick
+## 2026-11-08T17:29:27Z — mirror — deferred — Ready#669 exact-head sync review; publication resumes by 2026-11-08T18:37:48+00:00; local work continues
+## 2026-11-08T17:44:45Z — mirror — deferred — Ready#669 exact-head sync review; publication resumes by 2026-11-08T18:37:48+00:00; local work continues
+## 2026-11-08T18:01:04Z — mirror — deferred — Ready#669 exact-head sync review; publication resumes by 2026-11-08T18:37:48+00:00; local work continues
+## 2026-11-08T18:16:09Z — unblock — enqueued D3-unblock-sweep-2026-11-08T18
+## 2026-11-08T18:18:03Z — D3-unblock-sweep-2026-11-08T18 — route — router picked codex from ['codex', 'cursor']
+## 2026-11-08T18:18:03Z — D3-unblock-sweep-2026-11-08T18 — claimed by driver (agent codex)
+## 2026-11-08T18:18:06Z — mirror — deferred — Ready#669 exact-head sync review; publication resumes by 2026-11-08T18:37:48+00:00; local work continues
+## 2026-11-08T18:25:02Z — D3-unblock-sweep-2026-11-08T18 — done — codex produced 419 words at artifacts/sweeps/D3-unblock-sweep-2026-11-08T18.md in 403s
+## 2026-11-08T18:25:23Z — mirror — deferred — Ready#669 exact-head sync review; publication resumes by 2026-11-08T18:37:48+00:00; local work continues
