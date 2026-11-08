@@ -1,8 +1,8 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-08T23:26:24Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-08T23:57:28Z)
 
 Units: 374 — done 369, failed 1, superseded 4
 Paused: False   Phase stops: []
-Capacity (Orchestrator): codex=warn claude=ok cursor=shed gemini=shed vibe=ok muse=ok aider=ok
+Capacity (Orchestrator): codex=warn claude=shed cursor=shed gemini=shed vibe=ok muse=ok aider=ok
 Orchestrator evidence (30d): offload runs 0, bound to a research round 0, scored 0 (PASS 0, FAIL 0, infra 0) — no offload runs
 Worker write boundary: on — each unit writes only unitdirs/<unit>/, its output directory, artifacts/proposals/, its own clone's working tree (not .git) and temp
 Claude conservation: off (weekly window available)
@@ -387,7 +387,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-08T18:16:09Z — unblock — enqueued D3-unblock-sweep-2026-11-08T18
 - 2026-11-08T18:18:03Z — D3-unblock-sweep-2026-11-08T18 — route — router picked codex from ['codex', 'cursor']
 - 2026-11-08T18:18:03Z — D3-unblock-sweep-2026-11-08T18 — claimed by driver (agent codex)
 - 2026-11-08T18:18:06Z — mirror — deferred — Ready#669 exact-head sync review; publication resumes by 2026-11-08T18:37:48+00:00; local work continues
@@ -399,6 +398,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-08T22:44:41Z — D4-verify-merged-2026-11-08T22 — route — router picked codex from ['codex', 'cursor']
 - 2026-11-08T22:44:41Z — D4-verify-merged-2026-11-08T22 — claimed by driver (agent codex)
 - 2026-11-08T22:55:28Z — D4-verify-merged-2026-11-08T22 — done — vibe produced 2313 words at artifacts/verification/D4-verify-merged-2026-11-08T22.md in 574s
+- 2026-11-08T23:42:26Z — mirror — FAILED — RuntimeError; pending commits retained for next tick
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
