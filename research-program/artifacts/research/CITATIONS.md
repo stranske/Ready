@@ -6,12 +6,12 @@
 | B3-interop-architecture.md | 1 | 0 | 1 |
 | B7-PROGRAM-PLAN-v3.md | 2 | 2 | 0 |
 | C-skill-curriculum.md | 0 | 0 | 0 |
-| R1-legal-decomposition.md | 17 | 13 | 4 |
-| R2-consultant-report-diffing.md | 16 | 12 | 4 |
-| R3-manager-mosaic-synthesis.md | 12 | 11 | 1 |
+| R1-legal-decomposition.md | 17 | 16 | 1 |
+| R2-consultant-report-diffing.md | 16 | 16 | 0 |
+| R3-manager-mosaic-synthesis.md | 12 | 12 | 0 |
 | R4-document-access-substrate.md | 15 | 10 | 5 |
-| R5-output-substrate.md | 10 | 8 | 2 |
-| R6-public-corpora-and-synthetic-data.md | 26 | 15 | 11 |
+| R5-output-substrate.md | 10 | 9 | 1 |
+| R6-public-corpora-and-synthetic-data.md | 26 | 19 | 7 |
 | R7-trip-planning-core.md | 28 | 23 | 5 |
 
 ## Unreachable in B3-interop-architecture.md
@@ -20,21 +20,7 @@
 
 ## Unreachable in R1-legal-decomposition.md
 
-- https://github.com/Aliipou/legalens
-- https://github.com/LexPredict/lexpredict-lexnlp
-- https://github.com/docling-project/docling
 - https://repository.tudelft.nl/file/File_e0c6743a-a0db-46b6-8227-557db173ea98
-
-## Unreachable in R2-consultant-report-diffing.md
-
-- https://github.com/JSv4/python-redlines
-- https://github.com/docling-project/docling
-- https://github.com/mli55/pdfdelta
-- https://github.com/stephenlzc/docx-trackdiff
-
-## Unreachable in R3-manager-mosaic-synthesis.md
-
-- https://github.com/aayambansal/ExecutableClaims
 
 ## Unreachable in R4-document-access-substrate.md
 
@@ -47,14 +33,9 @@
 ## Unreachable in R5-output-substrate.md
 
 - http://127.0.0.1
-- https://github.com/whitphx/stlite
 
 ## Unreachable in R6-public-corpora-and-synthetic-data.md
 
-- https://github.com/l33tquant/investing_memos
-- https://github.com/mrabino1/edgartools
-- https://web.archive.org/web/20250101000000/https://www.sec.gov/about/webmaster-frequently-asked-questions#developers
-- https://web.archive.org/web/20250101000000/https://www.sec.gov/data-research/sec-markets-data/information-about-registered-investment-advisers-exempt-reporting-advisers
 - https://www.sec.gov/Archives/edgar/data/1314152/000131415226000084/exhibit101-sixtharlpaofjll.htm
 - https://www.sec.gov/Archives/edgar/data/1711929/000119312526346339/ck0001711929-ex10_2.htm
 - https://www.sec.gov/data-research/sec-markets-data/information-about-registered-investment-advisers-exempt-reporting-advisers
