@@ -4923,3 +4923,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-11-09T10:23:52Z — D3-unblock-sweep-2026-11-09T10 — done — codex produced 552 words at artifacts/sweeps/D3-unblock-sweep-2026-11-09T10.md in 270s
 ## 2026-11-09T12:43:31Z — mirror — FAILED — RuntimeError; pending commits retained for next tick
 ## 2026-11-09T13:14:14Z — inbox — read FAILED — Get "https://api.github.com/repos/stranske/Ready/issues/553/comments?per_page=100": unexpected EOF
+## 2026-11-09T18:25:25Z — unblock — enqueued D3-unblock-sweep-2026-11-09T18
+## 2026-11-09T18:25:25Z — D3-unblock-sweep-2026-11-09T18 — route — router picked codex from ['codex', 'cursor']
+## 2026-11-09T18:25:25Z — D3-unblock-sweep-2026-11-09T18 — claimed by driver (agent codex)
