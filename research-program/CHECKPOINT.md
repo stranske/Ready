@@ -4913,3 +4913,11 @@ remote: - Required status check "Gate / gate" is
 ## 2026-11-09T05:55:38Z — mirror — deferred — Ready#672 exact-head sync review; publication resumes by 2026-11-09T07:23:50+00:00; local work continues
 ## 2026-11-09T06:10:42Z — mirror — deferred — Ready#672 exact-head sync review; publication resumes by 2026-11-09T07:23:50+00:00; local work continues
 ## 2026-11-09T06:25:46Z — mirror — deferred — Ready#672 exact-head sync review; publication resumes by 2026-11-09T07:23:50+00:00; local work continues
+## 2026-11-09T09:33:19Z — mirror — deferred — Ready#673 exact-head sync review; publication resumes by 2026-11-09T11:21:01+00:00; local work continues
+## 2026-11-09T09:48:21Z — mirror — deferred — Ready#673 exact-head sync review; publication resumes by 2026-11-09T11:21:01+00:00; local work continues
+## 2026-11-09T10:03:23Z — mirror — deferred — Ready#673 exact-head sync review; publication resumes by 2026-11-09T11:21:01+00:00; local work continues
+## 2026-11-09T10:19:06Z — unblock — enqueued D3-unblock-sweep-2026-11-09T10
+## 2026-11-09T10:19:17Z — D3-unblock-sweep-2026-11-09T10 — route — router picked codex from ['codex', 'cursor']
+## 2026-11-09T10:19:17Z — D3-unblock-sweep-2026-11-09T10 — claimed by driver (agent codex)
+## 2026-11-09T10:19:18Z — mirror — deferred — Ready#673 exact-head sync review; publication resumes by 2026-11-09T11:21:01+00:00; local work continues
+## 2026-11-09T10:23:52Z — D3-unblock-sweep-2026-11-09T10 — done — codex produced 552 words at artifacts/sweeps/D3-unblock-sweep-2026-11-09T10.md in 270s

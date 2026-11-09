@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-09T09:17:11Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-09T10:23:52Z)
 
-Units: 375 — done 370, failed 1, superseded 4
+Units: 376 — done 371, failed 1, superseded 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=warn claude=shed cursor=shed gemini=shed vibe=ok muse=ok aider=ok
 Orchestrator evidence (30d): offload runs 0, bound to a research round 0, scored 0 (PASS 0, FAIL 0, infra 0) — no offload runs
@@ -216,6 +216,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D3-unblock-sweep-2026-11-08T10 | D | D | done | codex | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-2026-11-08T18 | D | D | done | codex | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-2026-11-09T02 | D | D | done | codex | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
+| D3-unblock-sweep-2026-11-09T10 | D | D | done | codex | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-pass2-20260913T2023 | D | D | done | cursor | driver | Unblock sweep pass 2: the seven repos the budgeted first pass deferred |  |
 | D-audit-Counter_Risk--2026-09-07T04-47-32Z | D | D | done | codex | driver | Audit stranske/Counter_Risk and file issues (supply 2 <= 2) |  |
 | D-audit-Counter_Risk--2026-09-08T17-11-36Z | D | D | done | codex | codex | Audit stranske/Counter_Risk and file issues (supply 1 <= 2) |  |
@@ -388,18 +389,18 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-08T22:44:41Z — D4-verify-merged-2026-11-08T22 — claimed by driver (agent codex)
-- 2026-11-08T22:55:28Z — D4-verify-merged-2026-11-08T22 — done — vibe produced 2313 words at artifacts/verification/D4-verify-merged-2026-11-08T22.md in 574s
-- 2026-11-08T23:42:26Z — mirror — FAILED — RuntimeError; pending commits retained for next tick
-- 2026-11-09T02:18:43Z — unblock — enqueued D3-unblock-sweep-2026-11-09T02
-- 2026-11-09T02:18:43Z — D3-unblock-sweep-2026-11-09T02 — route — router picked codex from ['codex', 'cursor']
-- 2026-11-09T02:18:43Z — D3-unblock-sweep-2026-11-09T02 — claimed by driver (agent codex)
-- 2026-11-09T02:27:00Z — D3-unblock-sweep-2026-11-09T02 — done — vibe produced 608 words at artifacts/sweeps/D3-unblock-sweep-2026-11-09T02.md in 460s
-- 2026-11-09T05:23:59Z — mirror — deferred — Ready#672 exact-head sync review; publication resumes by 2026-11-09T07:23:50+00:00; local work continues
 - 2026-11-09T05:39:01Z — mirror — deferred — Ready#672 exact-head sync review; publication resumes by 2026-11-09T07:23:50+00:00; local work continues
 - 2026-11-09T05:55:38Z — mirror — deferred — Ready#672 exact-head sync review; publication resumes by 2026-11-09T07:23:50+00:00; local work continues
 - 2026-11-09T06:10:42Z — mirror — deferred — Ready#672 exact-head sync review; publication resumes by 2026-11-09T07:23:50+00:00; local work continues
 - 2026-11-09T06:25:46Z — mirror — deferred — Ready#672 exact-head sync review; publication resumes by 2026-11-09T07:23:50+00:00; local work continues
+- 2026-11-09T09:33:19Z — mirror — deferred — Ready#673 exact-head sync review; publication resumes by 2026-11-09T11:21:01+00:00; local work continues
+- 2026-11-09T09:48:21Z — mirror — deferred — Ready#673 exact-head sync review; publication resumes by 2026-11-09T11:21:01+00:00; local work continues
+- 2026-11-09T10:03:23Z — mirror — deferred — Ready#673 exact-head sync review; publication resumes by 2026-11-09T11:21:01+00:00; local work continues
+- 2026-11-09T10:19:06Z — unblock — enqueued D3-unblock-sweep-2026-11-09T10
+- 2026-11-09T10:19:17Z — D3-unblock-sweep-2026-11-09T10 — route — router picked codex from ['codex', 'cursor']
+- 2026-11-09T10:19:17Z — D3-unblock-sweep-2026-11-09T10 — claimed by driver (agent codex)
+- 2026-11-09T10:19:18Z — mirror — deferred — Ready#673 exact-head sync review; publication resumes by 2026-11-09T11:21:01+00:00; local work continues
+- 2026-11-09T10:23:52Z — D3-unblock-sweep-2026-11-09T10 — done — codex produced 552 words at artifacts/sweeps/D3-unblock-sweep-2026-11-09T10.md in 270s
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
