@@ -8,6 +8,7 @@ coverage-min in pr-00-gate.yml and fail_under in pyproject.toml or the three dri
 
 from __future__ import annotations
 
+import fcntl
 import json
 import math
 import os
@@ -140,6 +141,10 @@ def test_publication_source_and_baseline_notes_agree():
 @pytest.fixture
 def coverage_project(tmp_path: Path) -> Path:
     """Isolate the real coverage config and hooks with small, fully exercised scripts."""
+    return _build_coverage_project(tmp_path)
+
+
+def _build_coverage_project(tmp_path: Path) -> Path:
     for relative in (
         "pyproject.toml",
         "config/coverage-baseline.json",
@@ -2046,6 +2051,45 @@ def _use_real_publication_tests(project: Path) -> None:
         shutil.copyfile(REPO_ROOT / relative, project / relative)
 
 
+# Both real-publication gate probes start from the same measured project: the
+# isolated hooks plus the repository's publication tests, run once with these
+# arguments. Workflow-shell tests need the full repository, so they are excluded.
+REAL_PUBLICATION_ARGS = ("-k", "not workflow and not gate_summary")
+
+
+@pytest.fixture(scope="session")
+def _real_publication_baseline(tmp_path_factory: pytest.TempPathFactory) -> Path:
+    """Measure the complete real-publication project once per test session.
+
+    Every probe used to repeat this identical complete run (about a third of each
+    probe's time, and the bulk of the Python CI job). Under xdist the parent of the
+    worker basetemp is unique to this session and shared by its workers, so a lock
+    there lets the first worker measure and the others reuse its result. Without
+    xdist the basetemp itself is the session directory.
+    """
+    basetemp = tmp_path_factory.getbasetemp()
+    shared = basetemp.parent if os.environ.get("PYTEST_XDIST_WORKER") else basetemp
+    target = shared / "real-publication-baseline"
+    with (shared / "real-publication-baseline.lock").open("w") as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        if not (target / "coverage.json").is_file():
+            build = tmp_path_factory.mktemp("real-publication-build")
+            _build_coverage_project(build)
+            _use_real_publication_tests(build)
+            complete = _run_coverage_project(build, *REAL_PUBLICATION_ARGS)
+            assert complete.returncode == 0, complete.stdout + complete.stderr
+            shutil.copytree(build, target)
+    return target
+
+
+@pytest.fixture
+def real_publication_project(tmp_path: Path, _real_publication_baseline: Path) -> Path:
+    """A private copy of the measured real-publication project, report included."""
+    project = tmp_path / "project"
+    shutil.copytree(_real_publication_baseline, project)
+    return project
+
+
 def _set_current_publication_floors(project: Path, report: dict) -> None:
     baseline_path = project / "config/coverage-baseline.json"
     baseline = json.loads(baseline_path.read_text())
@@ -2064,13 +2108,11 @@ def _set_current_publication_floors(project: Path, report: dict) -> None:
     ids=["scanner", "preparer", "both"],
 )
 def test_real_publication_source_addition_fails_gate(
-    coverage_project: Path, changed_files: tuple[str, ...]
+    real_publication_project: Path, changed_files: tuple[str, ...]
 ) -> None:
     """New untested production paths must breach the floor without removing any tests."""
-    _use_real_publication_tests(coverage_project)
-    args = ("-k", "not workflow and not gate_summary")
-    complete = _run_coverage_project(coverage_project, *args)
-    assert complete.returncode == 0, complete.stdout + complete.stderr
+    coverage_project = real_publication_project
+    args = REAL_PUBLICATION_ARGS
     report_path = coverage_project / "coverage.json"
     before = json.loads(report_path.read_text())
     _set_current_publication_floors(coverage_project, before)
@@ -2194,16 +2236,15 @@ def test_real_publication_source_addition_fails_gate(
     ],
 )
 def test_real_test_removal_fails_publication_gate(
-    coverage_project: Path, regressions: tuple[tuple[str, str], ...], lost_metrics: tuple[str, ...]
+    real_publication_project: Path,
+    regressions: tuple[tuple[str, str], ...],
+    lost_metrics: tuple[str, ...],
 ) -> None:
     """Reject real line-only and branch losses until the removed tests are restored."""
-    _use_real_publication_tests(coverage_project)
-
     # Workflow-shell tests need the full repository; this isolated reproduction
     # exercises the real publication scripts without copying workflow files.
-    args = ("-k", "not workflow and not gate_summary")
-    complete = _run_coverage_project(coverage_project, *args)
-    assert complete.returncode == 0, complete.stdout + complete.stderr
+    coverage_project = real_publication_project
+    args = REAL_PUBLICATION_ARGS
     report_path = coverage_project / "coverage.json"
     before = json.loads(report_path.read_text())
     _assert_xml_matches_json(coverage_project, before)
