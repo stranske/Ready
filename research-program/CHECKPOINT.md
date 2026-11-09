@@ -4927,3 +4927,4 @@ remote: - Required status check "Gate / gate" is
 ## 2026-11-09T18:25:25Z — D3-unblock-sweep-2026-11-09T18 — route — router picked codex from ['codex', 'cursor']
 ## 2026-11-09T18:25:25Z — D3-unblock-sweep-2026-11-09T18 — claimed by driver (agent codex)
 ## 2026-11-09T18:31:47Z — D3-unblock-sweep-2026-11-09T18 — done — vibe produced 654 words at artifacts/sweeps/D3-unblock-sweep-2026-11-09T18.md in 353s
+## 2026-11-09T20:19:53Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas

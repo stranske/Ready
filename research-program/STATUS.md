@@ -1,8 +1,8 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-09T20:04:28Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-09T20:19:53Z)
 
 Units: 377 — done 372, failed 1, superseded 4
 Paused: False   Phase stops: []
-Capacity (Orchestrator): codex=warn claude=shed cursor=shed gemini=warn vibe=ok muse=ok aider=ok
+Capacity (Orchestrator): codex=warn claude=warn cursor=shed gemini=warn vibe=ok muse=ok aider=ok
 Orchestrator evidence (30d): offload runs 0, bound to a research round 0, scored 0 (PASS 0, FAIL 0, infra 0) — no offload runs
 Worker write boundary: on — each unit writes only unitdirs/<unit>/, its output directory, artifacts/proposals/, its own clone's working tree (not .git) and temp
 Claude conservation: off (weekly window available)
@@ -390,7 +390,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-09T10:03:23Z — mirror — deferred — Ready#673 exact-head sync review; publication resumes by 2026-11-09T11:21:01+00:00; local work continues
 - 2026-11-09T10:19:06Z — unblock — enqueued D3-unblock-sweep-2026-11-09T10
 - 2026-11-09T10:19:17Z — D3-unblock-sweep-2026-11-09T10 — route — router picked codex from ['codex', 'cursor']
 - 2026-11-09T10:19:17Z — D3-unblock-sweep-2026-11-09T10 — claimed by driver (agent codex)
@@ -402,6 +401,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-09T18:25:25Z — D3-unblock-sweep-2026-11-09T18 — route — router picked codex from ['codex', 'cursor']
 - 2026-11-09T18:25:25Z — D3-unblock-sweep-2026-11-09T18 — claimed by driver (agent codex)
 - 2026-11-09T18:31:47Z — D3-unblock-sweep-2026-11-09T18 — done — vibe produced 654 words at artifacts/sweeps/D3-unblock-sweep-2026-11-09T18.md in 353s
+- 2026-11-09T20:19:53Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
