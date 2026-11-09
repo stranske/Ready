@@ -131,3 +131,9 @@ node_modules/
 
 # Generated coverage report; stable measurements live in docs/evidence.
 /coverage.json
+
+# setuptools build output (`pip install .` / `python -m build`) copies src/ into build/lib/.
+# Root-anchored: only the checkout-root build tree is debris. Ignoring alone is not enough --
+# `git add -A` still stages an ignored path that is already tracked -- so the same commit that
+# adds this entry also untracks build/lib/my_project/__init__.py.
+/build/
