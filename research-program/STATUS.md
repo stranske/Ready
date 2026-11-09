@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-09T22:38:52Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-09T22:54:20Z)
 
-Units: 377 — done 372, failed 1, superseded 4
+Units: 378 — claimed 1, done 372, failed 1, superseded 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=warn claude=ok cursor=shed gemini=warn vibe=ok muse=ok aider=ok
 Orchestrator evidence (30d): offload runs 0, bound to a research round 0, scored 0 (PASS 0, FAIL 0, infra 0) — no offload runs
@@ -387,12 +387,10 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D4-verify-merged-2026-11-06T21 | D | D | done | codex | driver | Verify merged PRs against their issues' acceptance criteria |  |
 | D4-verify-merged-2026-11-07T21 | D | D | done | codex | driver | Verify merged PRs against their issues' acceptance criteria |  |
 | D4-verify-merged-2026-11-08T22 | D | D | done | codex | driver | Verify merged PRs against their issues' acceptance criteria |  |
+| D4-verify-merged-2026-11-09T22 | D | D | claimed | codex | driver | Verify merged PRs against their issues' acceptance criteria |  |
 
 ## Last checkpoints
 
-- 2026-11-09T10:19:17Z — D3-unblock-sweep-2026-11-09T10 — route — router picked codex from ['codex', 'cursor']
-- 2026-11-09T10:19:17Z — D3-unblock-sweep-2026-11-09T10 — claimed by driver (agent codex)
-- 2026-11-09T10:19:18Z — mirror — deferred — Ready#673 exact-head sync review; publication resumes by 2026-11-09T11:21:01+00:00; local work continues
 - 2026-11-09T10:23:52Z — D3-unblock-sweep-2026-11-09T10 — done — codex produced 552 words at artifacts/sweeps/D3-unblock-sweep-2026-11-09T10.md in 270s
 - 2026-11-09T12:43:31Z — mirror — FAILED — RuntimeError; pending commits retained for next tick
 - 2026-11-09T13:14:14Z — inbox — read FAILED — Get "https://api.github.com/repos/stranske/Ready/issues/553/comments?per_page=100": unexpected EOF
@@ -402,6 +400,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-09T18:31:47Z — D3-unblock-sweep-2026-11-09T18 — done — vibe produced 654 words at artifacts/sweeps/D3-unblock-sweep-2026-11-09T18.md in 353s
 - 2026-11-09T20:19:53Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 - 2026-11-09T22:23:25Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+- 2026-11-09T22:54:20Z — verify — enqueued D4-verify-merged-2026-11-09T22
+- 2026-11-09T22:54:20Z — D4-verify-merged-2026-11-09T22 — route — router picked codex from ['codex', 'cursor']
+- 2026-11-09T22:54:20Z — D4-verify-merged-2026-11-09T22 — claimed by driver (agent codex)
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
