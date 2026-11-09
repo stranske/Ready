@@ -4908,3 +4908,8 @@ remote: - Required status check "Gate / gate" is
 ## 2026-11-09T02:18:43Z — D3-unblock-sweep-2026-11-09T02 — route — router picked codex from ['codex', 'cursor']
 ## 2026-11-09T02:18:43Z — D3-unblock-sweep-2026-11-09T02 — claimed by driver (agent codex)
 ## 2026-11-09T02:27:00Z — D3-unblock-sweep-2026-11-09T02 — done — vibe produced 608 words at artifacts/sweeps/D3-unblock-sweep-2026-11-09T02.md in 460s
+## 2026-11-09T05:23:59Z — mirror — deferred — Ready#672 exact-head sync review; publication resumes by 2026-11-09T07:23:50+00:00; local work continues
+## 2026-11-09T05:39:01Z — mirror — deferred — Ready#672 exact-head sync review; publication resumes by 2026-11-09T07:23:50+00:00; local work continues
+## 2026-11-09T05:55:38Z — mirror — deferred — Ready#672 exact-head sync review; publication resumes by 2026-11-09T07:23:50+00:00; local work continues
+## 2026-11-09T06:10:42Z — mirror — deferred — Ready#672 exact-head sync review; publication resumes by 2026-11-09T07:23:50+00:00; local work continues
+## 2026-11-09T06:25:46Z — mirror — deferred — Ready#672 exact-head sync review; publication resumes by 2026-11-09T07:23:50+00:00; local work continues

@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-09T05:06:59Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-09T06:40:47Z)
 
 Units: 375 — done 370, failed 1, superseded 4
 Paused: False   Phase stops: []
@@ -388,11 +388,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-08T18:25:23Z — mirror — deferred — Ready#669 exact-head sync review; publication resumes by 2026-11-08T18:37:48+00:00; local work continues
-- 2026-11-08T20:19:14Z — mirror — deferred — Ready#669 exact-head sync review; publication resumes by 2026-11-08T22:03:59+00:00; local work continues
-- 2026-11-08T20:34:21Z — mirror — deferred — Ready#669 exact-head sync review; publication resumes by 2026-11-08T22:03:59+00:00; local work continues
-- 2026-11-08T22:44:30Z — verify — enqueued D4-verify-merged-2026-11-08T22
-- 2026-11-08T22:44:41Z — D4-verify-merged-2026-11-08T22 — route — router picked codex from ['codex', 'cursor']
 - 2026-11-08T22:44:41Z — D4-verify-merged-2026-11-08T22 — claimed by driver (agent codex)
 - 2026-11-08T22:55:28Z — D4-verify-merged-2026-11-08T22 — done — vibe produced 2313 words at artifacts/verification/D4-verify-merged-2026-11-08T22.md in 574s
 - 2026-11-08T23:42:26Z — mirror — FAILED — RuntimeError; pending commits retained for next tick
@@ -400,6 +395,11 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-09T02:18:43Z — D3-unblock-sweep-2026-11-09T02 — route — router picked codex from ['codex', 'cursor']
 - 2026-11-09T02:18:43Z — D3-unblock-sweep-2026-11-09T02 — claimed by driver (agent codex)
 - 2026-11-09T02:27:00Z — D3-unblock-sweep-2026-11-09T02 — done — vibe produced 608 words at artifacts/sweeps/D3-unblock-sweep-2026-11-09T02.md in 460s
+- 2026-11-09T05:23:59Z — mirror — deferred — Ready#672 exact-head sync review; publication resumes by 2026-11-09T07:23:50+00:00; local work continues
+- 2026-11-09T05:39:01Z — mirror — deferred — Ready#672 exact-head sync review; publication resumes by 2026-11-09T07:23:50+00:00; local work continues
+- 2026-11-09T05:55:38Z — mirror — deferred — Ready#672 exact-head sync review; publication resumes by 2026-11-09T07:23:50+00:00; local work continues
+- 2026-11-09T06:10:42Z — mirror — deferred — Ready#672 exact-head sync review; publication resumes by 2026-11-09T07:23:50+00:00; local work continues
+- 2026-11-09T06:25:46Z — mirror — deferred — Ready#672 exact-head sync review; publication resumes by 2026-11-09T07:23:50+00:00; local work continues
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
