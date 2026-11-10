@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-10T22:59:13Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-10T23:20:33Z)
 
 Units: 382 — claimed 1, done 375, failed 2, superseded 4
 Paused: False   Phase stops: []
@@ -395,9 +395,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-10T10:39:29Z — D3-unblock-sweep-2026-11-10T10 — claimed by driver (agent codex)
-- 2026-11-10T10:40:01Z — D3-unblock-sweep-2026-11-10T10 — fail — offload to codex exited 125; offload raised RuntimeError: exact Codex profiles require ORCH_CODEX_PROFILE_BIN or an installed global Codex CLI; refusing an unre
-- 2026-11-10T10:55:04Z — D3-unblock-sweep-2026-11-10T10 — route — router picked codex from ['codex', 'cursor']
 - 2026-11-10T10:55:04Z — D3-unblock-sweep-2026-11-10T10 — claimed by driver (agent codex)
 - 2026-11-10T10:59:57Z — D3-unblock-sweep-2026-11-10T10 — done — vibe produced 885 words at artifacts/sweeps/D3-unblock-sweep-2026-11-10T10.md in 263s
 - 2026-11-10T18:47:27Z — unblock — enqueued D3-unblock-sweep-2026-11-10T18
@@ -407,6 +404,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-10T22:59:12Z — verify — enqueued D4-verify-merged-2026-11-10T22
 - 2026-11-10T22:59:13Z — D4-verify-merged-2026-11-10T22 — route — router picked codex from ['codex', 'cursor']
 - 2026-11-10T22:59:13Z — D4-verify-merged-2026-11-10T22 — claimed by driver (agent codex)
+- 2026-11-10T23:05:30Z — D4-verify-merged-2026-11-10T22 — fail — offload to codex exited 70; agent reported OFFLOAD_INCOMPLETE
+- 2026-11-10T23:20:33Z — D4-verify-merged-2026-11-10T22 — route — router picked codex from ['codex', 'cursor']
+- 2026-11-10T23:20:33Z — D4-verify-merged-2026-11-10T22 — claimed by driver (agent codex)
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 

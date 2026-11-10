@@ -4969,3 +4969,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-11-10T22:59:12Z — verify — enqueued D4-verify-merged-2026-11-10T22
 ## 2026-11-10T22:59:13Z — D4-verify-merged-2026-11-10T22 — route — router picked codex from ['codex', 'cursor']
 ## 2026-11-10T22:59:13Z — D4-verify-merged-2026-11-10T22 — claimed by driver (agent codex)
+## 2026-11-10T23:05:30Z — D4-verify-merged-2026-11-10T22 — fail — offload to codex exited 70; agent reported OFFLOAD_INCOMPLETE
+## 2026-11-10T23:20:33Z — D4-verify-merged-2026-11-10T22 — route — router picked codex from ['codex', 'cursor']
+## 2026-11-10T23:20:33Z — D4-verify-merged-2026-11-10T22 — claimed by driver (agent codex)
