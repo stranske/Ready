@@ -53,3 +53,11 @@ def test_all_pyproject_dependencies_are_in_lock() -> None:
             missing.append(dependency)
 
     assert not missing, "requirements.lock is missing pinned versions for: " + ", ".join(missing)
+
+
+def test_setuptools_build_requirement_matches_restored_floor() -> None:
+    """Catch a repeat of the setuptools build floor regression from PR #638."""
+    pyproject_path = Path(__file__).resolve().parents[1] / "pyproject.toml"
+    pyproject = tomllib.loads(pyproject_path.read_text(encoding="utf-8"))
+
+    assert pyproject["build-system"]["requires"] == ["setuptools>=82.0.1", "wheel"]
