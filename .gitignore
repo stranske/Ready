@@ -4,6 +4,8 @@ __pycache__/
 
 # Distribution metadata is regenerated from pyproject.toml by builds and editable installs.
 *.egg-info/
+# setuptools build output (e.g. `pip wheel .`) is a local artifact, never source.
+/build/
 
 # Codex working files (preserved via workflow artifacts, not git)
 # These files are rebuilt each run and would cause merge conflicts
