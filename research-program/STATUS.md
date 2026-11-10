@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-10T00:31:36Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-10T00:47:07Z)
 
-Units: 378 — claimed 1, done 372, failed 1, superseded 4
+Units: 378 — done 372, failed 2, superseded 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=ok cursor=shed gemini=warn vibe=ok muse=ok aider=ok
 Orchestrator evidence (30d): offload runs 0, bound to a research round 0, scored 0 (PASS 0, FAIL 0, infra 0) — no offload runs
@@ -387,11 +387,10 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D4-verify-merged-2026-11-06T21 | D | D | done | codex | driver | Verify merged PRs against their issues' acceptance criteria |  |
 | D4-verify-merged-2026-11-07T21 | D | D | done | codex | driver | Verify merged PRs against their issues' acceptance criteria |  |
 | D4-verify-merged-2026-11-08T22 | D | D | done | codex | driver | Verify merged PRs against their issues' acceptance criteria |  |
-| D4-verify-merged-2026-11-09T22 | D | D | claimed | codex | driver | Verify merged PRs against their issues' acceptance criteria |  |
+| D4-verify-merged-2026-11-09T22 | D | D | failed | codex |  | Verify merged PRs against their issues' acceptance criteria |  |
 
 ## Last checkpoints
 
-- 2026-11-09T18:31:47Z — D3-unblock-sweep-2026-11-09T18 — done — vibe produced 654 words at artifacts/sweeps/D3-unblock-sweep-2026-11-09T18.md in 353s
 - 2026-11-09T20:19:53Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 - 2026-11-09T22:23:25Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 - 2026-11-09T22:54:20Z — verify — enqueued D4-verify-merged-2026-11-09T22
@@ -403,6 +402,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-10T00:15:51Z — D4-verify-merged-2026-11-09T22 — fail — offload to codex exited -9; agent exited -9
 - 2026-11-10T00:31:36Z — D4-verify-merged-2026-11-09T22 — route — router picked codex from ['codex', 'cursor']
 - 2026-11-10T00:31:36Z — D4-verify-merged-2026-11-09T22 — claimed by driver (agent codex)
+- 2026-11-10T00:32:05Z — D4-verify-merged-2026-11-09T22 — fail — offload to codex exited 125; offload raised RuntimeError: exact Codex profiles require ORCH_CODEX_PROFILE_BIN or an installed global Codex CLI; refusing an unre
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
