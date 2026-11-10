@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-10T02:19:32Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-10T02:35:00Z)
 
-Units: 378 — done 372, failed 2, superseded 4
+Units: 379 — claimed 1, done 372, failed 2, superseded 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=warn claude=shed cursor=shed gemini=warn vibe=ok muse=ok aider=ok
 Orchestrator evidence (30d): offload runs 0, bound to a research round 0, scored 0 (PASS 0, FAIL 0, infra 0) — no offload runs
@@ -218,6 +218,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D3-unblock-sweep-2026-11-09T02 | D | D | done | codex | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-2026-11-09T10 | D | D | done | codex | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-2026-11-09T18 | D | D | done | codex | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
+| D3-unblock-sweep-2026-11-10T02 | D | D | claimed | codex | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-pass2-20260913T2023 | D | D | done | cursor | driver | Unblock sweep pass 2: the seven repos the budgeted first pass deferred |  |
 | D-audit-Counter_Risk--2026-09-07T04-47-32Z | D | D | done | codex | driver | Audit stranske/Counter_Risk and file issues (supply 2 <= 2) |  |
 | D-audit-Counter_Risk--2026-09-08T17-11-36Z | D | D | done | codex | codex | Audit stranske/Counter_Risk and file issues (supply 1 <= 2) |  |
@@ -391,9 +392,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-09T22:23:25Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
-- 2026-11-09T22:54:20Z — verify — enqueued D4-verify-merged-2026-11-09T22
-- 2026-11-09T22:54:20Z — D4-verify-merged-2026-11-09T22 — route — router picked codex from ['codex', 'cursor']
 - 2026-11-09T22:54:20Z — D4-verify-merged-2026-11-09T22 — claimed by driver (agent codex)
 - 2026-11-09T23:34:46Z — D4-verify-merged-2026-11-09T22 — fail — offload to codex exited 124; timed out after 2400s
 - 2026-11-09T23:49:48Z — D4-verify-merged-2026-11-09T22 — route — router picked codex from ['codex', 'cursor']
@@ -403,6 +401,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-10T00:31:36Z — D4-verify-merged-2026-11-09T22 — claimed by driver (agent codex)
 - 2026-11-10T00:32:05Z — D4-verify-merged-2026-11-09T22 — fail — offload to codex exited 125; offload raised RuntimeError: exact Codex profiles require ORCH_CODEX_PROFILE_BIN or an installed global Codex CLI; refusing an unre
 - 2026-11-10T02:04:30Z — mirror — deferred — Ready#676 exact-head sync review; publication resumes by 2026-11-10T03:49:57+00:00; local work continues
+- 2026-11-10T02:35:00Z — unblock — enqueued D3-unblock-sweep-2026-11-10T02
+- 2026-11-10T02:35:00Z — D3-unblock-sweep-2026-11-10T02 — route — router picked codex from ['codex', 'cursor']
+- 2026-11-10T02:35:00Z — D3-unblock-sweep-2026-11-10T02 — claimed by driver (agent codex)
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
