@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-10T02:50:33Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-10T02:57:55Z)
 
-Units: 379 — claimed 1, done 372, failed 2, superseded 4
+Units: 379 — done 373, failed 2, superseded 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=shed claude=warn cursor=shed gemini=warn vibe=ok muse=ok aider=ok
 Orchestrator evidence (30d): offload runs 0, bound to a research round 0, scored 0 (PASS 0, FAIL 0, infra 0) — no offload runs
@@ -218,7 +218,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D3-unblock-sweep-2026-11-09T02 | D | D | done | codex | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-2026-11-09T10 | D | D | done | codex | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-2026-11-09T18 | D | D | done | codex | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
-| D3-unblock-sweep-2026-11-10T02 | D | D | claimed | codex | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
+| D3-unblock-sweep-2026-11-10T02 | D | D | done | codex | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-pass2-20260913T2023 | D | D | done | cursor | driver | Unblock sweep pass 2: the seven repos the budgeted first pass deferred |  |
 | D-audit-Counter_Risk--2026-09-07T04-47-32Z | D | D | done | codex | driver | Audit stranske/Counter_Risk and file issues (supply 2 <= 2) |  |
 | D-audit-Counter_Risk--2026-09-08T17-11-36Z | D | D | done | codex | codex | Audit stranske/Counter_Risk and file issues (supply 1 <= 2) |  |
@@ -392,7 +392,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-09T23:49:48Z — D4-verify-merged-2026-11-09T22 — claimed by driver (agent codex)
 - 2026-11-10T00:15:51Z — D4-verify-merged-2026-11-09T22 — fail — offload to codex exited -9; agent exited -9
 - 2026-11-10T00:31:36Z — D4-verify-merged-2026-11-09T22 — route — router picked codex from ['codex', 'cursor']
 - 2026-11-10T00:31:36Z — D4-verify-merged-2026-11-09T22 — claimed by driver (agent codex)
@@ -404,6 +403,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-10T02:35:31Z — D3-unblock-sweep-2026-11-10T02 — fail — offload to codex exited 125; offload raised RuntimeError: exact Codex profiles require ORCH_CODEX_PROFILE_BIN or an installed global Codex CLI; refusing an unre
 - 2026-11-10T02:50:33Z — D3-unblock-sweep-2026-11-10T02 — route — router picked codex from ['codex', 'cursor']
 - 2026-11-10T02:50:33Z — D3-unblock-sweep-2026-11-10T02 — claimed by driver (agent codex)
+- 2026-11-10T02:57:55Z — D3-unblock-sweep-2026-11-10T02 — done — vibe produced 857 words at artifacts/sweeps/D3-unblock-sweep-2026-11-10T02.md in 414s
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
