@@ -4947,3 +4947,11 @@ remote: - Required status check "Gate / gate" is
 ## 2026-11-10T02:50:33Z — D3-unblock-sweep-2026-11-10T02 — route — router picked codex from ['codex', 'cursor']
 ## 2026-11-10T02:50:33Z — D3-unblock-sweep-2026-11-10T02 — claimed by driver (agent codex)
 ## 2026-11-10T02:57:55Z — D3-unblock-sweep-2026-11-10T02 — done — vibe produced 857 words at artifacts/sweeps/D3-unblock-sweep-2026-11-10T02.md in 414s
+## 2026-11-10T05:32:40Z — mirror — deferred — Ready#677 exact-head sync review; publication resumes by 2026-11-10T07:19:13+00:00; local work continues
+## 2026-11-10T05:47:42Z — mirror — deferred — Ready#677 exact-head sync review; publication resumes by 2026-11-10T07:19:13+00:00; local work continues
+## 2026-11-10T06:02:45Z — mirror — deferred — Ready#677 exact-head sync review; publication resumes by 2026-11-10T07:19:13+00:00; local work continues
+## 2026-11-10T06:17:48Z — mirror — deferred — Ready#677 exact-head sync review; publication resumes by 2026-11-10T07:19:13+00:00; local work continues
+## 2026-11-10T06:33:29Z — mirror — deferred — Ready#677 exact-head sync review; publication resumes by 2026-11-10T07:19:13+00:00; local work continues
+## 2026-11-10T06:48:31Z — mirror — deferred — Ready#677 exact-head sync review; publication resumes by 2026-11-10T07:19:13+00:00; local work continues
+## 2026-11-10T07:03:33Z — mirror — deferred — Ready#677 exact-head sync review; publication resumes by 2026-11-10T07:19:13+00:00; local work continues
+## 2026-11-10T07:18:36Z — mirror — deferred — Ready#677 exact-head sync review; publication resumes by 2026-11-10T07:19:13+00:00; local work continues
