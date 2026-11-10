@@ -4955,3 +4955,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-11-10T06:48:31Z — mirror — deferred — Ready#677 exact-head sync review; publication resumes by 2026-11-10T07:19:13+00:00; local work continues
 ## 2026-11-10T07:03:33Z — mirror — deferred — Ready#677 exact-head sync review; publication resumes by 2026-11-10T07:19:13+00:00; local work continues
 ## 2026-11-10T07:18:36Z — mirror — deferred — Ready#677 exact-head sync review; publication resumes by 2026-11-10T07:19:13+00:00; local work continues
+## 2026-11-10T10:39:29Z — unblock — enqueued D3-unblock-sweep-2026-11-10T10
+## 2026-11-10T10:39:29Z — D3-unblock-sweep-2026-11-10T10 — route — router picked codex from ['codex', 'cursor']
+## 2026-11-10T10:39:29Z — D3-unblock-sweep-2026-11-10T10 — claimed by driver (agent codex)
