@@ -1,8 +1,8 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-09T16:05:13Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-10T00:31:36Z)
 
-Units: 376 — done 371, failed 1, superseded 4
+Units: 378 — claimed 1, done 372, failed 1, superseded 4
 Paused: False   Phase stops: []
-Capacity (Orchestrator): codex=shed claude=shed cursor=shed gemini=warn vibe=ok muse=ok aider=ok
+Capacity (Orchestrator): codex=ok claude=ok cursor=shed gemini=warn vibe=ok muse=ok aider=ok
 Orchestrator evidence (30d): offload runs 0, bound to a research round 0, scored 0 (PASS 0, FAIL 0, infra 0) — no offload runs
 Worker write boundary: on — each unit writes only unitdirs/<unit>/, its output directory, artifacts/proposals/, its own clone's working tree (not .git) and temp
 Claude conservation: off (weekly window available)
@@ -217,6 +217,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D3-unblock-sweep-2026-11-08T18 | D | D | done | codex | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-2026-11-09T02 | D | D | done | codex | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-2026-11-09T10 | D | D | done | codex | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
+| D3-unblock-sweep-2026-11-09T18 | D | D | done | codex | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-pass2-20260913T2023 | D | D | done | cursor | driver | Unblock sweep pass 2: the seven repos the budgeted first pass deferred |  |
 | D-audit-Counter_Risk--2026-09-07T04-47-32Z | D | D | done | codex | driver | Audit stranske/Counter_Risk and file issues (supply 2 <= 2) |  |
 | D-audit-Counter_Risk--2026-09-08T17-11-36Z | D | D | done | codex | codex | Audit stranske/Counter_Risk and file issues (supply 1 <= 2) |  |
@@ -386,21 +387,22 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D4-verify-merged-2026-11-06T21 | D | D | done | codex | driver | Verify merged PRs against their issues' acceptance criteria |  |
 | D4-verify-merged-2026-11-07T21 | D | D | done | codex | driver | Verify merged PRs against their issues' acceptance criteria |  |
 | D4-verify-merged-2026-11-08T22 | D | D | done | codex | driver | Verify merged PRs against their issues' acceptance criteria |  |
+| D4-verify-merged-2026-11-09T22 | D | D | claimed | codex | driver | Verify merged PRs against their issues' acceptance criteria |  |
 
 ## Last checkpoints
 
-- 2026-11-09T06:10:42Z — mirror — deferred — Ready#672 exact-head sync review; publication resumes by 2026-11-09T07:23:50+00:00; local work continues
-- 2026-11-09T06:25:46Z — mirror — deferred — Ready#672 exact-head sync review; publication resumes by 2026-11-09T07:23:50+00:00; local work continues
-- 2026-11-09T09:33:19Z — mirror — deferred — Ready#673 exact-head sync review; publication resumes by 2026-11-09T11:21:01+00:00; local work continues
-- 2026-11-09T09:48:21Z — mirror — deferred — Ready#673 exact-head sync review; publication resumes by 2026-11-09T11:21:01+00:00; local work continues
-- 2026-11-09T10:03:23Z — mirror — deferred — Ready#673 exact-head sync review; publication resumes by 2026-11-09T11:21:01+00:00; local work continues
-- 2026-11-09T10:19:06Z — unblock — enqueued D3-unblock-sweep-2026-11-09T10
-- 2026-11-09T10:19:17Z — D3-unblock-sweep-2026-11-09T10 — route — router picked codex from ['codex', 'cursor']
-- 2026-11-09T10:19:17Z — D3-unblock-sweep-2026-11-09T10 — claimed by driver (agent codex)
-- 2026-11-09T10:19:18Z — mirror — deferred — Ready#673 exact-head sync review; publication resumes by 2026-11-09T11:21:01+00:00; local work continues
-- 2026-11-09T10:23:52Z — D3-unblock-sweep-2026-11-09T10 — done — codex produced 552 words at artifacts/sweeps/D3-unblock-sweep-2026-11-09T10.md in 270s
-- 2026-11-09T12:43:31Z — mirror — FAILED — RuntimeError; pending commits retained for next tick
-- 2026-11-09T13:14:14Z — inbox — read FAILED — Get "https://api.github.com/repos/stranske/Ready/issues/553/comments?per_page=100": unexpected EOF
+- 2026-11-09T18:31:47Z — D3-unblock-sweep-2026-11-09T18 — done — vibe produced 654 words at artifacts/sweeps/D3-unblock-sweep-2026-11-09T18.md in 353s
+- 2026-11-09T20:19:53Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+- 2026-11-09T22:23:25Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+- 2026-11-09T22:54:20Z — verify — enqueued D4-verify-merged-2026-11-09T22
+- 2026-11-09T22:54:20Z — D4-verify-merged-2026-11-09T22 — route — router picked codex from ['codex', 'cursor']
+- 2026-11-09T22:54:20Z — D4-verify-merged-2026-11-09T22 — claimed by driver (agent codex)
+- 2026-11-09T23:34:46Z — D4-verify-merged-2026-11-09T22 — fail — offload to codex exited 124; timed out after 2400s
+- 2026-11-09T23:49:48Z — D4-verify-merged-2026-11-09T22 — route — router picked codex from ['codex', 'cursor']
+- 2026-11-09T23:49:48Z — D4-verify-merged-2026-11-09T22 — claimed by driver (agent codex)
+- 2026-11-10T00:15:51Z — D4-verify-merged-2026-11-09T22 — fail — offload to codex exited -9; agent exited -9
+- 2026-11-10T00:31:36Z — D4-verify-merged-2026-11-09T22 — route — router picked codex from ['codex', 'cursor']
+- 2026-11-10T00:31:36Z — D4-verify-merged-2026-11-09T22 — claimed by driver (agent codex)
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 

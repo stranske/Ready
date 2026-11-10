@@ -4923,3 +4923,18 @@ remote: - Required status check "Gate / gate" is
 ## 2026-11-09T10:23:52Z — D3-unblock-sweep-2026-11-09T10 — done — codex produced 552 words at artifacts/sweeps/D3-unblock-sweep-2026-11-09T10.md in 270s
 ## 2026-11-09T12:43:31Z — mirror — FAILED — RuntimeError; pending commits retained for next tick
 ## 2026-11-09T13:14:14Z — inbox — read FAILED — Get "https://api.github.com/repos/stranske/Ready/issues/553/comments?per_page=100": unexpected EOF
+## 2026-11-09T18:25:25Z — unblock — enqueued D3-unblock-sweep-2026-11-09T18
+## 2026-11-09T18:25:25Z — D3-unblock-sweep-2026-11-09T18 — route — router picked codex from ['codex', 'cursor']
+## 2026-11-09T18:25:25Z — D3-unblock-sweep-2026-11-09T18 — claimed by driver (agent codex)
+## 2026-11-09T18:31:47Z — D3-unblock-sweep-2026-11-09T18 — done — vibe produced 654 words at artifacts/sweeps/D3-unblock-sweep-2026-11-09T18.md in 353s
+## 2026-11-09T20:19:53Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+## 2026-11-09T22:23:25Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+## 2026-11-09T22:54:20Z — verify — enqueued D4-verify-merged-2026-11-09T22
+## 2026-11-09T22:54:20Z — D4-verify-merged-2026-11-09T22 — route — router picked codex from ['codex', 'cursor']
+## 2026-11-09T22:54:20Z — D4-verify-merged-2026-11-09T22 — claimed by driver (agent codex)
+## 2026-11-09T23:34:46Z — D4-verify-merged-2026-11-09T22 — fail — offload to codex exited 124; timed out after 2400s
+## 2026-11-09T23:49:48Z — D4-verify-merged-2026-11-09T22 — route — router picked codex from ['codex', 'cursor']
+## 2026-11-09T23:49:48Z — D4-verify-merged-2026-11-09T22 — claimed by driver (agent codex)
+## 2026-11-10T00:15:51Z — D4-verify-merged-2026-11-09T22 — fail — offload to codex exited -9; agent exited -9
+## 2026-11-10T00:31:36Z — D4-verify-merged-2026-11-09T22 — route — router picked codex from ['codex', 'cursor']
+## 2026-11-10T00:31:36Z — D4-verify-merged-2026-11-09T22 — claimed by driver (agent codex)
