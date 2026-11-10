@@ -4943,3 +4943,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-11-10T02:35:00Z — unblock — enqueued D3-unblock-sweep-2026-11-10T02
 ## 2026-11-10T02:35:00Z — D3-unblock-sweep-2026-11-10T02 — route — router picked codex from ['codex', 'cursor']
 ## 2026-11-10T02:35:00Z — D3-unblock-sweep-2026-11-10T02 — claimed by driver (agent codex)
+## 2026-11-10T02:35:31Z — D3-unblock-sweep-2026-11-10T02 — fail — offload to codex exited 125; offload raised RuntimeError: exact Codex profiles require ORCH_CODEX_PROFILE_BIN or an installed global Codex CLI; refusing an unre
+## 2026-11-10T02:50:33Z — D3-unblock-sweep-2026-11-10T02 — route — router picked codex from ['codex', 'cursor']
+## 2026-11-10T02:50:33Z — D3-unblock-sweep-2026-11-10T02 — claimed by driver (agent codex)

@@ -1,8 +1,8 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-10T02:35:00Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-10T02:50:33Z)
 
 Units: 379 — claimed 1, done 372, failed 2, superseded 4
 Paused: False   Phase stops: []
-Capacity (Orchestrator): codex=warn claude=shed cursor=shed gemini=warn vibe=ok muse=ok aider=ok
+Capacity (Orchestrator): codex=shed claude=warn cursor=shed gemini=warn vibe=ok muse=ok aider=ok
 Orchestrator evidence (30d): offload runs 0, bound to a research round 0, scored 0 (PASS 0, FAIL 0, infra 0) — no offload runs
 Worker write boundary: on — each unit writes only unitdirs/<unit>/, its output directory, artifacts/proposals/, its own clone's working tree (not .git) and temp
 Claude conservation: off (weekly window available)
@@ -392,9 +392,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-09T22:54:20Z — D4-verify-merged-2026-11-09T22 — claimed by driver (agent codex)
-- 2026-11-09T23:34:46Z — D4-verify-merged-2026-11-09T22 — fail — offload to codex exited 124; timed out after 2400s
-- 2026-11-09T23:49:48Z — D4-verify-merged-2026-11-09T22 — route — router picked codex from ['codex', 'cursor']
 - 2026-11-09T23:49:48Z — D4-verify-merged-2026-11-09T22 — claimed by driver (agent codex)
 - 2026-11-10T00:15:51Z — D4-verify-merged-2026-11-09T22 — fail — offload to codex exited -9; agent exited -9
 - 2026-11-10T00:31:36Z — D4-verify-merged-2026-11-09T22 — route — router picked codex from ['codex', 'cursor']
@@ -404,6 +401,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-10T02:35:00Z — unblock — enqueued D3-unblock-sweep-2026-11-10T02
 - 2026-11-10T02:35:00Z — D3-unblock-sweep-2026-11-10T02 — route — router picked codex from ['codex', 'cursor']
 - 2026-11-10T02:35:00Z — D3-unblock-sweep-2026-11-10T02 — claimed by driver (agent codex)
+- 2026-11-10T02:35:31Z — D3-unblock-sweep-2026-11-10T02 — fail — offload to codex exited 125; offload raised RuntimeError: exact Codex profiles require ORCH_CODEX_PROFILE_BIN or an installed global Codex CLI; refusing an unre
+- 2026-11-10T02:50:33Z — D3-unblock-sweep-2026-11-10T02 — route — router picked codex from ['codex', 'cursor']
+- 2026-11-10T02:50:33Z — D3-unblock-sweep-2026-11-10T02 — claimed by driver (agent codex)
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
