@@ -4935,3 +4935,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-11-09T23:34:46Z — D4-verify-merged-2026-11-09T22 — fail — offload to codex exited 124; timed out after 2400s
 ## 2026-11-09T23:49:48Z — D4-verify-merged-2026-11-09T22 — route — router picked codex from ['codex', 'cursor']
 ## 2026-11-09T23:49:48Z — D4-verify-merged-2026-11-09T22 — claimed by driver (agent codex)
+## 2026-11-10T00:15:51Z — D4-verify-merged-2026-11-09T22 — fail — offload to codex exited -9; agent exited -9
+## 2026-11-10T00:31:36Z — D4-verify-merged-2026-11-09T22 — route — router picked codex from ['codex', 'cursor']
+## 2026-11-10T00:31:36Z — D4-verify-merged-2026-11-09T22 — claimed by driver (agent codex)

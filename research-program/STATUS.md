@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-09T23:49:48Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-10T00:31:36Z)
 
 Units: 378 — claimed 1, done 372, failed 1, superseded 4
 Paused: False   Phase stops: []
@@ -391,9 +391,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-09T18:25:25Z — unblock — enqueued D3-unblock-sweep-2026-11-09T18
-- 2026-11-09T18:25:25Z — D3-unblock-sweep-2026-11-09T18 — route — router picked codex from ['codex', 'cursor']
-- 2026-11-09T18:25:25Z — D3-unblock-sweep-2026-11-09T18 — claimed by driver (agent codex)
 - 2026-11-09T18:31:47Z — D3-unblock-sweep-2026-11-09T18 — done — vibe produced 654 words at artifacts/sweeps/D3-unblock-sweep-2026-11-09T18.md in 353s
 - 2026-11-09T20:19:53Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 - 2026-11-09T22:23:25Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
@@ -403,6 +400,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-09T23:34:46Z — D4-verify-merged-2026-11-09T22 — fail — offload to codex exited 124; timed out after 2400s
 - 2026-11-09T23:49:48Z — D4-verify-merged-2026-11-09T22 — route — router picked codex from ['codex', 'cursor']
 - 2026-11-09T23:49:48Z — D4-verify-merged-2026-11-09T22 — claimed by driver (agent codex)
+- 2026-11-10T00:15:51Z — D4-verify-merged-2026-11-09T22 — fail — offload to codex exited -9; agent exited -9
+- 2026-11-10T00:31:36Z — D4-verify-merged-2026-11-09T22 — route — router picked codex from ['codex', 'cursor']
+- 2026-11-10T00:31:36Z — D4-verify-merged-2026-11-09T22 — claimed by driver (agent codex)
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
