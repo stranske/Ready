@@ -133,7 +133,6 @@ node_modules/
 /coverage.json
 
 # setuptools build output (`pip install .` / `python -m build`) copies src/ into build/lib/.
-# Root-anchored: only the checkout-root build tree is debris. Ignoring alone is not enough --
-# `git add -A` still stages an ignored path that is already tracked -- so the same commit that
-# adds this entry also untracks build/lib/my_project/__init__.py.
+# Root-anchored: only the checkout-root build tree is debris. Ignoring does not untrack a path
+# that is already committed, so keep build/ out of the index as well.
 /build/
