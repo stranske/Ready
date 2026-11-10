@@ -1,8 +1,8 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-10T10:39:29Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-10T10:55:04Z)
 
 Units: 380 — claimed 1, done 373, failed 2, superseded 4
 Paused: False   Phase stops: []
-Capacity (Orchestrator): codex=warn claude=shed cursor=shed gemini=warn vibe=ok muse=ok aider=ok
+Capacity (Orchestrator): codex=shed claude=shed cursor=shed gemini=warn vibe=ok muse=ok aider=ok
 Orchestrator evidence (30d): offload runs 0, bound to a research round 0, scored 0 (PASS 0, FAIL 0, infra 0) — no offload runs
 Worker write boundary: on — each unit writes only unitdirs/<unit>/, its output directory, artifacts/proposals/, its own clone's working tree (not .git) and temp
 Claude conservation: off (weekly window available)
@@ -393,9 +393,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-10T02:57:55Z — D3-unblock-sweep-2026-11-10T02 — done — vibe produced 857 words at artifacts/sweeps/D3-unblock-sweep-2026-11-10T02.md in 414s
-- 2026-11-10T05:32:40Z — mirror — deferred — Ready#677 exact-head sync review; publication resumes by 2026-11-10T07:19:13+00:00; local work continues
-- 2026-11-10T05:47:42Z — mirror — deferred — Ready#677 exact-head sync review; publication resumes by 2026-11-10T07:19:13+00:00; local work continues
 - 2026-11-10T06:02:45Z — mirror — deferred — Ready#677 exact-head sync review; publication resumes by 2026-11-10T07:19:13+00:00; local work continues
 - 2026-11-10T06:17:48Z — mirror — deferred — Ready#677 exact-head sync review; publication resumes by 2026-11-10T07:19:13+00:00; local work continues
 - 2026-11-10T06:33:29Z — mirror — deferred — Ready#677 exact-head sync review; publication resumes by 2026-11-10T07:19:13+00:00; local work continues
@@ -405,6 +402,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-10T10:39:29Z — unblock — enqueued D3-unblock-sweep-2026-11-10T10
 - 2026-11-10T10:39:29Z — D3-unblock-sweep-2026-11-10T10 — route — router picked codex from ['codex', 'cursor']
 - 2026-11-10T10:39:29Z — D3-unblock-sweep-2026-11-10T10 — claimed by driver (agent codex)
+- 2026-11-10T10:40:01Z — D3-unblock-sweep-2026-11-10T10 — fail — offload to codex exited 125; offload raised RuntimeError: exact Codex profiles require ORCH_CODEX_PROFILE_BIN or an installed global Codex CLI; refusing an unre
+- 2026-11-10T10:55:04Z — D3-unblock-sweep-2026-11-10T10 — route — router picked codex from ['codex', 'cursor']
+- 2026-11-10T10:55:04Z — D3-unblock-sweep-2026-11-10T10 — claimed by driver (agent codex)
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
