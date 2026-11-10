@@ -4939,3 +4939,4 @@ remote: - Required status check "Gate / gate" is
 ## 2026-11-10T00:31:36Z — D4-verify-merged-2026-11-09T22 — route — router picked codex from ['codex', 'cursor']
 ## 2026-11-10T00:31:36Z — D4-verify-merged-2026-11-09T22 — claimed by driver (agent codex)
 ## 2026-11-10T00:32:05Z — D4-verify-merged-2026-11-09T22 — fail — offload to codex exited 125; offload raised RuntimeError: exact Codex profiles require ORCH_CODEX_PROFILE_BIN or an installed global Codex CLI; refusing an unre
+## 2026-11-10T02:04:30Z — mirror — deferred — Ready#676 exact-head sync review; publication resumes by 2026-11-10T03:49:57+00:00; local work continues

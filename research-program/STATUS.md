@@ -1,8 +1,8 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-10T01:49:02Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-10T02:19:32Z)
 
 Units: 378 — done 372, failed 2, superseded 4
 Paused: False   Phase stops: []
-Capacity (Orchestrator): codex=shed claude=ok cursor=ok gemini=warn vibe=ok muse=ok aider=ok
+Capacity (Orchestrator): codex=warn claude=shed cursor=shed gemini=warn vibe=ok muse=ok aider=ok
 Orchestrator evidence (30d): offload runs 0, bound to a research round 0, scored 0 (PASS 0, FAIL 0, infra 0) — no offload runs
 Worker write boundary: on — each unit writes only unitdirs/<unit>/, its output directory, artifacts/proposals/, its own clone's working tree (not .git) and temp
 Claude conservation: off (weekly window available)
@@ -391,7 +391,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-09T20:19:53Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 - 2026-11-09T22:23:25Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 - 2026-11-09T22:54:20Z — verify — enqueued D4-verify-merged-2026-11-09T22
 - 2026-11-09T22:54:20Z — D4-verify-merged-2026-11-09T22 — route — router picked codex from ['codex', 'cursor']
@@ -403,6 +402,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-10T00:31:36Z — D4-verify-merged-2026-11-09T22 — route — router picked codex from ['codex', 'cursor']
 - 2026-11-10T00:31:36Z — D4-verify-merged-2026-11-09T22 — claimed by driver (agent codex)
 - 2026-11-10T00:32:05Z — D4-verify-merged-2026-11-09T22 — fail — offload to codex exited 125; offload raised RuntimeError: exact Codex profiles require ORCH_CODEX_PROFILE_BIN or an installed global Codex CLI; refusing an unre
+- 2026-11-10T02:04:30Z — mirror — deferred — Ready#676 exact-head sync review; publication resumes by 2026-11-10T03:49:57+00:00; local work continues
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
