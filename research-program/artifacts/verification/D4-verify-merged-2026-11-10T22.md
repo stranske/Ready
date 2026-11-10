@@ -1,27 +1,36 @@
-# D4 Verification Report — 2026-11-10T22
+# D4 — merged PR verification — 2026-11-10T22
 
-**Unit:** D4-verify-merged-2026-11-10T22 (attempt 1)  
-**Window:** 2026-11-09T11:00:23Z to 2026-11-10T23:00:23Z  
-**Scope result:** 1 issue-linked, non-chore PR completed before evidence collection was interrupted. Template-sync chores and PRs with no linked issue were excluded. No GitHub writes were performed: the offload rules prohibit comments, reopening issues, and follow-up filing.
+Window queried: 2026-11-09T11:21:32Z through 2026-11-10T23:00Z (UTC). Scope excludes `stranske/Orchestrator`, template-sync, dependency, and release chores. This is a resumable capped pass: 20 eligible/referencing PRs were inspected, including one excluded incidental reference.
 
-## Verification ledger
+| Repo | PR | Issue | Verdict | Unmet criteria | Follow-up filed |
+| --- | ---: | ---: | --- | --- | --- |
+| Workflows | #4578 (`e1b5c52`) | #4515 | PARTIAL | Acceptance criterion A3 remains unchecked; the merged PR says overall acceptance is not established and its diff is evidence collection, not the required qualifying production run. | Not filed: this synchronous offload forbids GitHub writes. |
+| Workflows | #4586 (`6324a78`) | #4522 | PARTIAL | Literal A1 requires PAEM #2390 to be `MERGED` with non-null `mergedAt`; merged evidence records it as `CLOSED` with `mergedAt: null`. A different PR (#2456) is equivalent integration, not the stated criterion. A2 and A3 are evidenced by the committed all-match drift report and complete 0.0% observation. | Not filed: this synchronous offload forbids GitHub writes. |
+| Workflows | #4588 (`3ff10a1`) | #4461 | VERIFIED | None found. The squash diff supplies live maint-68/maint-71 and exact-head readback, records the original thread as superseded (not falsely resolved), and adds a manifest-generation regression test. | — |
+| Workflows | #4577 (`c2b5384`) | #3904 | PARTIAL | The issue requires all dominant matrices, three named test files, deliberate-break evidence for two production functions, CI-summary workflow changes, controlled hosted before/after results, and growth prevention. The squash diff changes only the delivery-destinations test/inventory artifacts; it does not change the two other named test files, `scripts/langchain/pr_verifier.py`, or `reusable-10-ci-python.yml`. | Not filed: this synchronous offload forbids GitHub writes. |
+| Portable-Alpha-Extension-Model | #2491 (`9c4a2c3`) | #2447 | NOT IMPLEMENTED | The required floor edits and named `tests/test_python_floor.py::test_python_floor_is_3_13` are absent. The diff only makes the offline-runtime marker dynamic and adjusts related tests; it does not update `pyproject.toml`, lock file, README, zip defaults, or the other specified floor locations. | Not filed: this synchronous offload forbids GitHub writes. |
+| Workflows | #4600 (`855ae02`) | #4595 | VERIFIED | `scripts/ci_history.py` stops recording unsupported shallow-history regression evidence for missing JUnit; its named tests assert omission. The workflow test now performs the specified real depth-1 local-clone check. | — |
+| Workflows | #4582 (`517c588`) | #4581 | VERIFIED | The evidence-only squash diff contains the chain receipt, merge receipt, immutable source/candidate/consumer blobs, and Orchestrator model-table test receipt required by all four command-based criteria. | — |
+| Workflows | #4599 (`07e6dc7`) | #4594 | VERIFIED | The diff adds the pinned runtime canary, wires `agents.enabled=false` into both root and consumer transport code, and adds CI documentation/wiring. The test explicitly models the forbidden `spawn_agent` call and fails if it is offered or executes. | — |
+| Workflows | #4610 (`3c1e255`) | #4563 | PARTIAL | This follow-up corrects the retry-budget comment from the pre-retry to post-retry count and tests that display. It does not itself deliver the issue's bounded-wakeup workflow/module integration or its live seven-day outcome criterion. | Not filed: this synchronous offload forbids GitHub writes. |
+| Workflows | #4602 (`9753209`) | #4405 | PARTIAL | It carries useful tests from a closed-unmerged PR, but the linked issue requires whole-suite coverage evidence of roughly 180 units (or concrete per-target reasons). Its own updated inventory says the Gate coverage artifact/delta remains a planned check. | Not filed: this synchronous offload forbids GitHub writes. |
+| Pension-Data | #1022 (`edb6891`) | #1021 | VERIFIED | The diff implements legacy-key content matching in `staging_persistence.py`, adds both named integration tests for SQLite/PostgreSQL, and includes a deliberate-break/revert transcript plus PostgreSQL CI receipt. | — |
+| Workflows | #4617 (`de6bb95`) | #4615 | PARTIAL | Root/template policy and named tests land, but the acceptance requires a deliberately broken flag test and a post-2026-11-17/24 Orchestrator `agent_switches` observation. The squash diff contains neither the break record nor the future operational result. | Not filed: this synchronous offload forbids GitHub writes. |
+| Workflows | #4621 (`e0ce646`) | #4615 | PARTIAL | The repair strengthens the omitted-flag fixture after #4617, but it is only one test correction; the same deliberate-break and future operational acceptance criteria remain unproven. | Not filed: this synchronous offload forbids GitHub writes. |
+| Workflows | #4564 (`751ae46`) | #4562 | PARTIAL | The diff adds credential clearing, PR-state push gating, and a source-parsing test, but the required 14-day post-merge no-orphan-PR observation cannot exist on the merge date and is not present in the squash diff. | Not filed: this synchronous offload forbids GitHub writes. |
+| Manager-Database | #1889 (`48ef1e7`) | #1888 | PARTIAL | The diff is evidence and test material only. It does not add tests for `etl/edgar_flow.py` or demonstrate the required about-180-unit CI reduction; the linked issue’s stated substantive gaps remain. | Not filed: this synchronous offload forbids GitHub writes. |
+| Manager-Database | #1909 (`48efb17`) | #1888 | NOT IMPLEMENTED | This is a two-Markdown-file documentation repair; it makes no code or test change addressing the issue’s EDGAR, behavior-test, coverage, or break/revert criteria. | Not filed: this synchronous offload forbids GitHub writes. |
+| Workflows | #4596 (`94fd047`) | #4590 | PARTIAL | The root/template publisher fix and zero-match tests land, but the required deliberate-break/revert record is absent from the squash diff. | Not filed: this synchronous offload forbids GitHub writes. |
+| Workflows | #4624 (`8c678c1`) | #4514 | PARTIAL | It adds cross-repository identity fixtures and collector tests, but there is no diff evidence that the exact #4509 capture’s unresolved integrity/extraction gaps were cleared or that a provider evaluation covered both changed files. | Not filed: this synchronous offload forbids GitHub writes. |
+| Fine-Art-Archive | #884 (`5a92cc0`) | #883 | PARTIAL | The audit/report tests and defensive API guards land, but the report itself records the required selected-interpreter pytest command as blocked before start, so the command/coverage and current red/green acceptance remain unmet. | Not filed: this synchronous offload forbids GitHub writes. |
+| trip-planner | #2027 (`cc9f62f`) | #2019 | VERIFIED | The squash diff supplies matching source/interpreter/result metadata and full-suite log with exit 0 (2,893 passed), plus the retained collection-test evidence requested by the issue. | — |
 
-| Repo | PR | Issue | Merged | Verdict | Unmet criteria | Follow-up filed |
-|---|---|---|---|---|---|---|
-| stranske/Workflows | [#4578](https://github.com/stranske/Workflows/pull/4578) | [#4515](https://github.com/stranske/Workflows/issues/4515) | 2026-11-09T11:15:22Z | PARTIAL | Required real post-merge intake run showing a non-Codex `DEFAULT_AGENT` under the specified posterior/capacity condition is explicitly unchecked. | No — offload rule prohibits GitHub writes. |
+## Evidence and limits
 
-## Finding: Workflows #4578 / #4515 — PARTIAL
-
-Merged commit: `e1b5c5284108b94eacaab658cfcc60196c2dd0ce`.
-
-The issue’s first, second, and fourth acceptance criteria are checked. The required A3 production observation is not: the issue explicitly leaves unchecked the criterion requiring a qualifying post-merge intake summary with a non-Codex `DEFAULT_AGENT`. The PR body likewise says “overall acceptance is NOT ESTABLISHED” and “A3 remains unchecked.”
-
-The squash diff contains collected fleet-history evidence and acceptance artifacts, but no diff line can substitute for the missing live run. The named node test and deliberate-break evidence are represented by retained evidence; they do not satisfy A3. This is a genuine operational acceptance gap, not a test failure.
-
-**Required external follow-up (not filed):** create or continue a follow-up against #4515 that names the missing production run URL and records the requested summary condition. Cite `artifacts/issue-3988/acceptance.md` and the merged commit above.
-
-## Limits and unknowns
-
-Discovery identified additional issue-linked candidates in merge order, including Workflows #4586, #4588, #4600, #4582, #4585, #4598, #4599, #4602, #4596, and #4605. They were not assigned verdicts: the combined diff/issue retrieval response was truncated before each issue’s criteria and its corresponding diff could be independently retained and compared. No secondary-rate-limit response was observed.
-
-Confidence: high for #4578’s PARTIAL verdict because the source issue and the PR body explicitly retain the failed A3 condition. A qualifying live run with the specified summary would change that criterion’s status.
+- #4586 squash diff adds `docs/evidence/issue-4082/VERIFICATION_SUMMARY_4522.md`, the drift JSON, and the anchored observation JSON. The summary explicitly identifies A1 as unmet and provides the command outputs for A2/A3.
+- #4588's evidence is bounded to the merged files: `docs/evidence/issue-4461/2026-11-09-propagation.md`, its structured readback JSON, and `tests/scripts/test_pr_verifier_sync_manifest.py`.
+- #4577 reduces many parametrizations and adds inventory checks, but that useful subset cannot meet the issue's broader explicit acceptance criteria.
+- #4592 was inspected but excluded from the table: it references incident #4478 as an example of a later successful run; it does not claim to implement that incident’s failed-sync root cause. Treating that incidental mention as a delivery claim would be a false negative.
+- Belt rule: none of the inspected bootstrap PRs was a ledger-only `.agents/issue-<n>-ledger.yml` commit. They therefore required normal diff review rather than the bookkeeping exception.
+- No secondary-rate-limit response was observed.
+- The 20-PR cap is exhausted (including excluded incidental reference #4592). Next unverified eligible candidate: `stranske/Fine-Art-Archive#885`.
