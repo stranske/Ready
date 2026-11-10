@@ -2,8 +2,11 @@
 
 from __future__ import annotations
 
+import subprocess
 import tomllib
 from pathlib import Path
+
+import pytest
 
 _OPERATORS = ("==", ">=", "<=", "~=", "!=", ">", "<", "===")
 
@@ -61,3 +64,27 @@ def test_setuptools_build_requirement_matches_restored_floor() -> None:
     pyproject = tomllib.loads(pyproject_path.read_text(encoding="utf-8"))
 
     assert pyproject["build-system"]["requires"] == ["setuptools>=82.0.1", "wheel"]
+
+
+@pytest.mark.parametrize("regressed", [False, True])
+def test_setuptools_verification_command(tmp_path: Path, regressed: bool) -> None:
+    """The acceptance command must reject the previous build requirement."""
+    source = Path(__file__).resolve().parents[1] / "pyproject.toml"
+    contents = source.read_text(encoding="utf-8")
+    if regressed:
+        assert "setuptools>=82.0.1" in contents
+        contents = contents.replace("setuptools>=82.0.1", "setuptools>=69.0.0")
+    (tmp_path / "pyproject.toml").write_text(contents, encoding="utf-8")
+
+    result = subprocess.run(
+        ["grep", "-n", "setuptools>=82.0.1", "pyproject.toml"],
+        cwd=tmp_path,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == (1 if regressed else 0)
+    expected = "" if regressed else '2:requires = ["setuptools>=82.0.1", "wheel"]\n'
+    assert result.stdout == expected
+    assert result.stderr == ""
