@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-11T19:06:30Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-11T19:25:22Z)
 
 Units: 385 — claimed 1, done 378, failed 2, superseded 4
 Paused: False   Phase stops: []
@@ -398,9 +398,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-11T04:29:01Z — mirror — deferred — Ready#677 exact-head sync review; publication resumes by 2026-11-11T04:35:52+00:00; local work continues
-- 2026-11-11T05:30:26Z — mirror — deferred — Ready#677 exact-head sync review; publication resumes by 2026-11-11T07:18:34+00:00; local work continues
-- 2026-11-11T10:55:26Z — unblock — enqueued D3-unblock-sweep-2026-11-11T10
 - 2026-11-11T10:55:26Z — D3-unblock-sweep-2026-11-11T10 — route — router picked codex from ['codex', 'cursor']
 - 2026-11-11T10:55:26Z — D3-unblock-sweep-2026-11-11T10 — claimed by driver (agent codex)
 - 2026-11-11T10:58:09Z — D3-unblock-sweep-2026-11-11T10 — fail — codex produced 395 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/sweeps/D3-unblock-sweep-2026-11-11T10.md (min 400); rotating agent
@@ -410,6 +407,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-11T19:06:30Z — unblock — enqueued D3-unblock-sweep-2026-11-11T19
 - 2026-11-11T19:06:30Z — D3-unblock-sweep-2026-11-11T19 — route — router picked codex from ['codex', 'cursor']
 - 2026-11-11T19:06:30Z — D3-unblock-sweep-2026-11-11T19 — claimed by driver (agent codex)
+- 2026-11-11T19:10:20Z — D3-unblock-sweep-2026-11-11T19 — fail — codex produced 376 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/sweeps/D3-unblock-sweep-2026-11-11T19.md (min 400); rotating agent
+- 2026-11-11T19:25:22Z — D3-unblock-sweep-2026-11-11T19 — route — router picked codex from ['codex', 'cursor']
+- 2026-11-11T19:25:22Z — D3-unblock-sweep-2026-11-11T19 — claimed by driver (agent codex)
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
