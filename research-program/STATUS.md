@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-11T05:14:59Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-11T05:45:28Z)
 
 Units: 383 — done 377, failed 2, superseded 4
 Paused: False   Phase stops: []
@@ -396,7 +396,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-11T02:54:57Z — mirror — deferred — Ready#677 exact-head sync review; publication resumes by 2026-11-11T04:35:52+00:00; local work continues
 - 2026-11-11T02:57:10Z — D3-unblock-sweep-2026-11-11T02 — fail — codex produced 394 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/sweeps/D3-unblock-sweep-2026-11-11T02.md (min 400); rotating agent
 - 2026-11-11T03:12:13Z — D3-unblock-sweep-2026-11-11T02 — route — router picked codex from ['codex', 'cursor']
 - 2026-11-11T03:12:13Z — D3-unblock-sweep-2026-11-11T02 — claimed by driver (agent codex)
@@ -408,6 +407,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-11T03:58:55Z — mirror — deferred — Ready#677 exact-head sync review; publication resumes by 2026-11-11T04:35:52+00:00; local work continues
 - 2026-11-11T04:13:58Z — mirror — deferred — Ready#677 exact-head sync review; publication resumes by 2026-11-11T04:35:52+00:00; local work continues
 - 2026-11-11T04:29:01Z — mirror — deferred — Ready#677 exact-head sync review; publication resumes by 2026-11-11T04:35:52+00:00; local work continues
+- 2026-11-11T05:30:26Z — mirror — deferred — Ready#677 exact-head sync review; publication resumes by 2026-11-11T07:18:34+00:00; local work continues
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
