@@ -22,3 +22,5 @@ Covered: Workflows, Travel-Plan-Permission, Trend_Model_Project, Portable-Alpha-
 Deferred by the eight-repository budget: Ready, trip-planner, learning-management-system, Fine-Art-Archive, Doc-Lineage, Deliverable-Render, Manager-Mosaic. Orchestrator is excluded by scope.
 
 Risk/unknown: this was a point-in-time GitHub read at 2026-11-11T10:56Z; automation can change these labels and runs after the read. Confidence high for the reported lists and counts, medium for the absence of a product Gate where no run bears a Gate/CI name.
+
+Method boundary: `SUPPORTED_REPOS` supplied the ordering, the run stopped after its mandated eighth repository, and `stranske/Orchestrator` was omitted despite appearing in that array. The existing per-repository checkpoint entries were preserved on resumption; no clone freshness assertion was used in place of the live GitHub reads. The next run should begin with `Ready`, not revisit this completed slice.
