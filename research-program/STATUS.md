@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-11T10:55:26Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-11T11:13:13Z)
 
 Units: 384 — claimed 1, done 377, failed 2, superseded 4
 Paused: False   Phase stops: []
@@ -397,9 +397,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-11T03:12:14Z — mirror — deferred — Ready#677 exact-head sync review; publication resumes by 2026-11-11T04:35:52+00:00; local work continues
-- 2026-11-11T03:13:46Z — D3-unblock-sweep-2026-11-11T02 — done — codex produced 500 words at artifacts/sweeps/D3-unblock-sweep-2026-11-11T02.md in 87s
-- 2026-11-11T03:13:46Z — mirror — deferred — Ready#677 exact-head sync review; publication resumes by 2026-11-11T04:35:52+00:00; local work continues
 - 2026-11-11T03:28:49Z — mirror — deferred — Ready#677 exact-head sync review; publication resumes by 2026-11-11T04:35:52+00:00; local work continues
 - 2026-11-11T03:43:52Z — mirror — deferred — Ready#677 exact-head sync review; publication resumes by 2026-11-11T04:35:52+00:00; local work continues
 - 2026-11-11T03:58:55Z — mirror — deferred — Ready#677 exact-head sync review; publication resumes by 2026-11-11T04:35:52+00:00; local work continues
@@ -409,6 +406,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-11T10:55:26Z — unblock — enqueued D3-unblock-sweep-2026-11-11T10
 - 2026-11-11T10:55:26Z — D3-unblock-sweep-2026-11-11T10 — route — router picked codex from ['codex', 'cursor']
 - 2026-11-11T10:55:26Z — D3-unblock-sweep-2026-11-11T10 — claimed by driver (agent codex)
+- 2026-11-11T10:58:09Z — D3-unblock-sweep-2026-11-11T10 — fail — codex produced 395 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/sweeps/D3-unblock-sweep-2026-11-11T10.md (min 400); rotating agent
+- 2026-11-11T11:13:13Z — D3-unblock-sweep-2026-11-11T10 — route — router picked codex from ['codex', 'cursor']
+- 2026-11-11T11:13:13Z — D3-unblock-sweep-2026-11-11T10 — claimed by driver (agent codex)
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
