@@ -5010,3 +5010,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-11-11T23:09:28Z — D4-verify-merged-2026-11-11T23 — route — router picked codex from ['codex', 'cursor']
 ## 2026-11-11T23:09:28Z — D4-verify-merged-2026-11-11T23 — claimed by driver (agent codex)
 ## 2026-11-11T23:20:10Z — D4-verify-merged-2026-11-11T23 — done — codex produced 1087 words at artifacts/verification/D4-verify-merged-2026-11-11T23.md in 609s
+## 2026-11-12T01:25:02Z — mirror — deferred — Ready#680 exact-head sync review; publication resumes by 2026-11-12T03:14:08+00:00; local work continues
+## 2026-11-12T01:40:04Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+## 2026-11-12T01:40:04Z — mirror — deferred — Ready#680 exact-head sync review; publication resumes by 2026-11-12T03:14:08+00:00; local work continues
