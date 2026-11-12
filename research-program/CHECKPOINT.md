@@ -5044,3 +5044,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-11-12T23:13:48Z — D4-verify-merged-2026-11-12T23 — fail — offload to cursor exited 1; agent exited 1
 ## 2026-11-12T23:28:51Z — D4-verify-merged-2026-11-12T23 — route — router picked cursor from ['codex', 'cursor']
 ## 2026-11-12T23:28:51Z — D4-verify-merged-2026-11-12T23 — claimed by driver (agent cursor)
+## 2026-11-12T23:29:23Z — D4-verify-merged-2026-11-12T23 — fail — offload to cursor exited 1; agent exited 1
+## 2026-11-12T23:44:28Z — D4-verify-merged-2026-11-12T23 — route — router picked codex from ['codex', 'cursor']
+## 2026-11-12T23:44:28Z — D4-verify-merged-2026-11-12T23 — claimed by driver (agent codex)

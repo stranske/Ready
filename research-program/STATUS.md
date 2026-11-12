@@ -1,8 +1,8 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-12T23:28:51Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-12T23:44:28Z)
 
 Units: 390 — claimed 1, done 382, failed 3, superseded 4
 Paused: False   Phase stops: []
-Capacity (Orchestrator): codex=shed claude=shed cursor=ok gemini=warn vibe=shed muse=shed
+Capacity (Orchestrator): codex=shed claude=shed cursor=shed gemini=warn vibe=shed muse=shed
 Orchestrator evidence (30d): offload runs 0, bound to a research round 0, scored 0 (PASS 0, FAIL 0, infra 0) — no offload runs
 Worker write boundary: on — each unit writes only unitdirs/<unit>/, its output directory, artifacts/proposals/, its own clone's working tree (not .git) and temp
 Claude conservation: off (weekly window available)
@@ -399,13 +399,10 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D4-verify-merged-2026-11-09T22 | D | D | failed | codex |  | Verify merged PRs against their issues' acceptance criteria |  |
 | D4-verify-merged-2026-11-10T22 | D | D | done | codex | driver | Verify merged PRs against their issues' acceptance criteria |  |
 | D4-verify-merged-2026-11-11T23 | D | D | done | codex | driver | Verify merged PRs against their issues' acceptance criteria |  |
-| D4-verify-merged-2026-11-12T23 | D | D | claimed | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
+| D4-verify-merged-2026-11-12T23 | D | D | claimed | codex | driver | Verify merged PRs against their issues' acceptance criteria |  |
 
 ## Last checkpoints
 
-- 2026-11-12T12:00:32Z — D3-unblock-sweep-2026-11-12T11 — claimed by driver (agent codex)
-- 2026-11-12T12:02:03Z — D3-unblock-sweep-2026-11-12T11 — fail — codex did not write a fresh output artifact
-- 2026-11-12T19:31:41Z — unblock — enqueued D3-unblock-sweep-2026-11-12T19
 - 2026-11-12T19:31:41Z — D3-unblock-sweep-2026-11-12T19 — route — router picked codex from ['codex', 'cursor']
 - 2026-11-12T19:31:41Z — D3-unblock-sweep-2026-11-12T19 — claimed by driver (agent codex)
 - 2026-11-12T19:35:54Z — D3-unblock-sweep-2026-11-12T19 — done — codex produced 548 words at artifacts/sweeps/D3-unblock-sweep-2026-11-12T19.md in 224s
@@ -415,6 +412,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-12T23:13:48Z — D4-verify-merged-2026-11-12T23 — fail — offload to cursor exited 1; agent exited 1
 - 2026-11-12T23:28:51Z — D4-verify-merged-2026-11-12T23 — route — router picked cursor from ['codex', 'cursor']
 - 2026-11-12T23:28:51Z — D4-verify-merged-2026-11-12T23 — claimed by driver (agent cursor)
+- 2026-11-12T23:29:23Z — D4-verify-merged-2026-11-12T23 — fail — offload to cursor exited 1; agent exited 1
+- 2026-11-12T23:44:28Z — D4-verify-merged-2026-11-12T23 — route — router picked codex from ['codex', 'cursor']
+- 2026-11-12T23:44:28Z — D4-verify-merged-2026-11-12T23 — claimed by driver (agent codex)
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
