@@ -1,8 +1,8 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-12T03:32:51Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-12T03:49:16Z)
 
 Units: 387 — claimed 1, done 380, failed 2, superseded 4
 Paused: False   Phase stops: []
-Capacity (Orchestrator): codex=warn claude=shed cursor=shed gemini=warn vibe=shed muse=shed
+Capacity (Orchestrator): codex=warn claude=shed cursor=shed gemini=warn vibe=shed muse=ok
 Orchestrator evidence (30d): offload runs 0, bound to a research round 0, scored 0 (PASS 0, FAIL 0, infra 0) — no offload runs
 Worker write boundary: on — each unit writes only unitdirs/<unit>/, its output directory, artifacts/proposals/, its own clone's working tree (not .git) and temp
 Claude conservation: off (weekly window available)
@@ -400,9 +400,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-11T23:09:28Z — D4-verify-merged-2026-11-11T23 — claimed by driver (agent codex)
-- 2026-11-11T23:20:10Z — D4-verify-merged-2026-11-11T23 — done — codex produced 1087 words at artifacts/verification/D4-verify-merged-2026-11-11T23.md in 609s
-- 2026-11-12T01:25:02Z — mirror — deferred — Ready#680 exact-head sync review; publication resumes by 2026-11-12T03:14:08+00:00; local work continues
 - 2026-11-12T01:40:04Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 - 2026-11-12T01:40:04Z — mirror — deferred — Ready#680 exact-head sync review; publication resumes by 2026-11-12T03:14:08+00:00; local work continues
 - 2026-11-12T02:44:12Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
@@ -412,6 +409,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-12T03:17:48Z — D3-unblock-sweep-2026-11-12T03 — fail — codex produced 369 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/sweeps/D3-unblock-sweep-2026-11-12T03.md (min 400); rotating agent
 - 2026-11-12T03:32:51Z — D3-unblock-sweep-2026-11-12T03 — route — router picked codex from ['codex', 'cursor']
 - 2026-11-12T03:32:51Z — D3-unblock-sweep-2026-11-12T03 — claimed by driver (agent codex)
+- 2026-11-12T03:34:13Z — D3-unblock-sweep-2026-11-12T03 — fail — codex did not write a fresh output artifact
+- 2026-11-12T03:49:16Z — D3-unblock-sweep-2026-11-12T03 — route — router picked codex from ['codex', 'cursor']
+- 2026-11-12T03:49:16Z — D3-unblock-sweep-2026-11-12T03 — claimed by driver (agent codex)
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
