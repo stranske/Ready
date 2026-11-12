@@ -5017,3 +5017,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-11-12T03:15:11Z — unblock — enqueued D3-unblock-sweep-2026-11-12T03
 ## 2026-11-12T03:15:11Z — D3-unblock-sweep-2026-11-12T03 — route — router picked codex from ['codex', 'cursor']
 ## 2026-11-12T03:15:11Z — D3-unblock-sweep-2026-11-12T03 — claimed by driver (agent codex)
+## 2026-11-12T03:17:48Z — D3-unblock-sweep-2026-11-12T03 — fail — codex produced 369 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/sweeps/D3-unblock-sweep-2026-11-12T03.md (min 400); rotating agent
+## 2026-11-12T03:32:51Z — D3-unblock-sweep-2026-11-12T03 — route — router picked codex from ['codex', 'cursor']
+## 2026-11-12T03:32:51Z — D3-unblock-sweep-2026-11-12T03 — claimed by driver (agent codex)
