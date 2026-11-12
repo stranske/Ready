@@ -1,28 +1,41 @@
-# D3 unblock sweep — 2026-11-12T03:14Z
+# D3 unblock sweep — 2026-11-12T03
 
-**Outcome 8/8:** all eight permitted repositories were live-checked; 0 frozen issues, 0 releasable silent claims, 0 stalled agent PRs, and 0 red latest main CI/Gate runs were found. Evidence was queried from GitHub at 2026-11-12T03:14Z. The host-supplied calendar date is one day earlier; that clock discrepancy is unknown, but GitHub timestamps were used for age tests.
+**Outcome: 0 eligible frozen issues repaired; 0 stalled PRs needed rerouting; 5 agent-ready issues remain.** Live GitHub reads completed 2026-11-12T03:50Z. The synchronous-offload rule forbids GitHub mutations, so any otherwise-eligible label/body repair is reported rather than applied.
 
-## Coverage
+| Repository | Frozen issues / disposition | Stalled agent PRs re-routed | Default-branch state | Agent-ready supply |
+|---|---|---:|---|---:|
+| Workflows | 0 / none | 0 | latest CI/Gate success | 2 |
+| Travel-Plan-Permission | 0 / none | 0 | latest CI/Gate success | 0 |
+| Trend_Model_Project | 0 / none | 0 | latest CI/Gate success | 0 |
+| Portable-Alpha-Extension-Model | 0 / none | 0 | latest CI/Gate success | 2 |
+| Counter_Risk | 0 / none | 0 | latest CI/Gate success | 0 |
+| Manager-Database | 0 / none | 0 | latest CI/Gate success | 0 |
+| Inv-Man-Intake | 0 / none | 0 | latest CI/Gate success | 0 |
+| Pension-Data | 0 / none | 0 | latest CI/Gate success | 0 |
+| Ready | 0 / durable trackers only | 0 | CI and Publication guard in progress; no failed completed Gate/CI | 0 |
+| trip-planner | 0 / durable trackers only | 0 | latest main automation success | 1 |
+| learning-management-system | 0 / durable trackers only | 0 | latest main automation success | 0 |
+| Fine-Art-Archive | 0 / durable trackers only | 0 | latest main automation success | 0 |
+| Doc-Lineage | 0 actionable; dependency dashboard has `agents:auto-pilot-pause`, intentionally untouched | 0 | latest main automation success | 0 |
+| Deliverable-Render | 0 actionable; dependency dashboard has `agents:auto-pilot-pause`, intentionally untouched | 0 | latest main automation success | 0 |
+| Manager-Mosaic | 0 / agent-metrics tracker and dependency dashboard only | 0 | latest main automation success | 0 |
 
-Covered (first eight in `SUPPORTED_REPOS`): Workflows, Travel-Plan-Permission, Trend_Model_Project, Portable-Alpha-Extension-Model, Counter_Risk, Manager-Database, Inv-Man-Intake, and Pension-Data.
+`stranske/Orchestrator` was excluded by the unit instruction. `stranske/Collab-Admin` was not inspected, per owner instruction. No eligible repository remains deferred: this resumed run covered the seven uncheckpointed, in-scope repositories, while the prior checkpoint covers the first eight.
 
-Deferred by the mandatory eight-repository cap: Ready, trip-planner, learning-management-system, Fine-Art-Archive, Doc-Lineage, Deliverable-Render, and Manager-Mosaic. Orchestrator was not inspected, as required.
+## Findings
 
-| Repository | Frozen found / repaired | Frozen left for owner | Stalled PRs re-routed | Latest main CI/Gate | Agent-ready supply |
-|---|---:|---|---:|---|---:|
-| Workflows | 0 / 0 | — | 0 | success | 2 |
-| Travel-Plan-Permission | 0 / 0 | — | 0 | success | 0 |
-| Trend_Model_Project | 0 / 0 | — | 0 | success | 0 |
-| Portable-Alpha-Extension-Model | 0 / 0 | — | 0 | success | 2 |
-| Counter_Risk | 0 / 0 | — | 0 | success | 0 |
-| Manager-Database | 0 / 0 | — | 0 | success | 0 |
-| Inv-Man-Intake | 0 / 0 | — | 0 | success | 0 |
-| Pension-Data | 0 / 0 | — | 0 | success | 0 |
+- `trip-planner#1967` carries `agents:auto-pilot`, but is not a silent claim: open PR [#2029](https://github.com/stranske/trip-planner/pull/2029) references it, was updated at 03:28Z, and already has `agent:auto`.
+- The paused labels in Doc-Lineage and Deliverable-Render are solely on Dependency Dashboard tracker issues. Treating them as frozen implementation work would violate the track's explicit tracker exclusion.
+- No refutation was observed against a live tip, so no `REFUTED:` lines are warranted.
 
-All open implementation issues in the covered repositories have a `priority:*` label: Workflows 5/5 and Portable-Alpha-Extension-Model 2/2; the other six repositories have 0/0. No repository has a priority shortfall.
+## Priority-label check
 
-`Portable-Alpha-Extension-Model#2476` retains `agent:codex`, but it is not a silent claim: open PR #2498 explicitly references it. Workflows #4671 had been updated about one hour before the query, so it did not cross the 12-hour stale threshold.
+Open implementation issues / priority-labelled implementation issues: Workflows 2/2, Travel-Plan-Permission 0/0, Trend_Model_Project 0/0, Portable-Alpha-Extension-Model 2/2, Counter_Risk 0/0, Manager-Database 0/0, Inv-Man-Intake 0/0, Pension-Data 0/0, Ready 0/0, trip-planner 1/1, learning-management-system 0/0, Fine-Art-Archive 0/0, Doc-Lineage 0/0, Deliverable-Render 0/0, Manager-Mosaic 0/0. Durable trackers and dependency dashboards are not implementation issues, so none has a priority-label deficit.
 
-## Constraint / handoff
+## Genuinely needs the owner
 
-The governing offload rules prohibit editing issue bodies or labels, creating PRs, and posting comments. That conflicts with the track's requested repair actions; no qualifying item needed those actions in this pass. No refutation was observed. Confidence is high for the snapshot and low for any inference beyond it, because GitHub state can change after the query.
+None found.
+
+## Constraint and confidence
+
+**Strong objection to treating this as a mutation sweep:** the offload rules prohibit editing GitHub issue bodies/labels and PR labels. Read-only evidence supports the zero-action result at high confidence. A fresh run after the currently in-progress Ready CI/Gate completes would be needed to characterize its terminal branch state.
