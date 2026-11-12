@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-12T23:13:13Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-12T23:28:51Z)
 
 Units: 390 — claimed 1, done 382, failed 3, superseded 4
 Paused: False   Phase stops: []
@@ -403,9 +403,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-12T11:43:40Z — D3-unblock-sweep-2026-11-12T11 — claimed by driver (agent codex)
-- 2026-11-12T11:45:30Z — D3-unblock-sweep-2026-11-12T11 — fail — codex did not write a fresh output artifact
-- 2026-11-12T12:00:32Z — D3-unblock-sweep-2026-11-12T11 — route — router picked codex from ['codex', 'cursor']
 - 2026-11-12T12:00:32Z — D3-unblock-sweep-2026-11-12T11 — claimed by driver (agent codex)
 - 2026-11-12T12:02:03Z — D3-unblock-sweep-2026-11-12T11 — fail — codex did not write a fresh output artifact
 - 2026-11-12T19:31:41Z — unblock — enqueued D3-unblock-sweep-2026-11-12T19
@@ -415,6 +412,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-12T23:13:13Z — verify — enqueued D4-verify-merged-2026-11-12T23
 - 2026-11-12T23:13:13Z — D4-verify-merged-2026-11-12T23 — route — router picked cursor from ['codex', 'cursor']
 - 2026-11-12T23:13:13Z — D4-verify-merged-2026-11-12T23 — claimed by driver (agent cursor)
+- 2026-11-12T23:13:48Z — D4-verify-merged-2026-11-12T23 — fail — offload to cursor exited 1; agent exited 1
+- 2026-11-12T23:28:51Z — D4-verify-merged-2026-11-12T23 — route — router picked cursor from ['codex', 'cursor']
+- 2026-11-12T23:28:51Z — D4-verify-merged-2026-11-12T23 — claimed by driver (agent cursor)
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
