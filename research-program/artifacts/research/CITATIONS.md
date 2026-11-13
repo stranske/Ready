@@ -6,21 +6,17 @@
 | B3-interop-architecture.md | 1 | 0 | 1 |
 | B7-PROGRAM-PLAN-v3.md | 2 | 2 | 0 |
 | C-skill-curriculum.md | 0 | 0 | 0 |
-| R1-legal-decomposition.md | 17 | 16 | 1 |
+| R1-legal-decomposition.md | 17 | 17 | 0 |
 | R2-consultant-report-diffing.md | 16 | 16 | 0 |
 | R3-manager-mosaic-synthesis.md | 12 | 12 | 0 |
 | R4-document-access-substrate.md | 15 | 10 | 5 |
 | R5-output-substrate.md | 10 | 9 | 1 |
 | R6-public-corpora-and-synthetic-data.md | 26 | 19 | 7 |
-| R7-trip-planning-core.md | 28 | 23 | 5 |
+| R7-trip-planning-core.md | 28 | 24 | 4 |
 
 ## Unreachable in B3-interop-architecture.md
 
 - https://…
-
-## Unreachable in R1-legal-decomposition.md
-
-- https://repository.tudelft.nl/file/File_e0c6743a-a0db-46b6-8227-557db173ea98
 
 ## Unreachable in R4-document-access-substrate.md
 
@@ -46,7 +42,6 @@
 
 ## Unreachable in R7-trip-planning-core.md
 
-- https://doi.org/10.5281/zenodo.18316076
 - https://www.sciencedirect.com/science/article/abs/pii/S030505480900080X
 - https://www.techrxiv.org/doi/pdf/10.36227/techrxiv.177219979.94060974
 - https://www.whitecase.com/insight-our-thinking/web-scraping-website-terms-and-cfaa-hiqs-preliminary-injunction-affirmed-again
