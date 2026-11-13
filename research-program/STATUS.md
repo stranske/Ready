@@ -1,8 +1,8 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-13T11:39:40Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-13T11:55:16Z)
 
 Units: 392 — claimed 1, done 384, failed 3, superseded 4
 Paused: False   Phase stops: []
-Capacity (Orchestrator): codex=shed claude=shed cursor=shed gemini=warn vibe=ok muse=shed
+Capacity (Orchestrator): codex=shed claude=shed cursor=shed gemini=warn vibe=shed muse=shed
 Orchestrator evidence (30d): offload runs 0, bound to a research round 0, scored 0 (PASS 0, FAIL 0, infra 0) — no offload runs
 Worker write boundary: on — each unit writes only unitdirs/<unit>/, its output directory, artifacts/proposals/, its own clone's working tree (not .git) and temp
 Claude conservation: off (weekly window available)
@@ -405,9 +405,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-12T23:44:28Z — D4-verify-merged-2026-11-12T23 — claimed by driver (agent codex)
-- 2026-11-12T23:55:44Z — D4-verify-merged-2026-11-12T23 — done — gemini produced 2290 words at artifacts/verification/D4-verify-merged-2026-11-12T23.md in 643s
-- 2026-11-13T03:34:52Z — unblock — enqueued D3-unblock-sweep-2026-11-13T03
 - 2026-11-13T03:34:52Z — D3-unblock-sweep-2026-11-13T03 — route — router picked codex from ['codex', 'cursor']
 - 2026-11-13T03:34:52Z — D3-unblock-sweep-2026-11-13T03 — claimed by driver (agent codex)
 - 2026-11-13T03:37:50Z — D3-unblock-sweep-2026-11-13T03 — fail — codex produced 386 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/sweeps/D3-unblock-sweep-2026-11-13T03.md (min 400); rotating agent
@@ -417,6 +414,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-13T11:39:39Z — unblock — enqueued D3-unblock-sweep-2026-11-13T11
 - 2026-11-13T11:39:40Z — D3-unblock-sweep-2026-11-13T11 — route — router picked codex from ['codex', 'cursor']
 - 2026-11-13T11:39:40Z — D3-unblock-sweep-2026-11-13T11 — claimed by driver (agent codex)
+- 2026-11-13T11:40:14Z — D3-unblock-sweep-2026-11-13T11 — fail — offload to vibe exited 1; agent exited 1
+- 2026-11-13T11:55:16Z — D3-unblock-sweep-2026-11-13T11 — route — router picked codex from ['codex', 'cursor']
+- 2026-11-13T11:55:16Z — D3-unblock-sweep-2026-11-13T11 — claimed by driver (agent codex)
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 

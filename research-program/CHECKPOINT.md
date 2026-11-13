@@ -5058,3 +5058,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-11-13T11:39:39Z — unblock — enqueued D3-unblock-sweep-2026-11-13T11
 ## 2026-11-13T11:39:40Z — D3-unblock-sweep-2026-11-13T11 — route — router picked codex from ['codex', 'cursor']
 ## 2026-11-13T11:39:40Z — D3-unblock-sweep-2026-11-13T11 — claimed by driver (agent codex)
+## 2026-11-13T11:40:14Z — D3-unblock-sweep-2026-11-13T11 — fail — offload to vibe exited 1; agent exited 1
+## 2026-11-13T11:55:16Z — D3-unblock-sweep-2026-11-13T11 — route — router picked codex from ['codex', 'cursor']
+## 2026-11-13T11:55:16Z — D3-unblock-sweep-2026-11-13T11 — claimed by driver (agent codex)
