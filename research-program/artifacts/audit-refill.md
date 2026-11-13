@@ -1,4 +1,4 @@
-# Audit refill check 2026-11-12T13:04:12Z
+# Audit refill check 2026-11-13T01:14:16Z
 
 | repo | open agent-ready | last set | threshold | scorecard | broken/fab | unscored | ux | action |
 |---|---|---|---|---|---|---|---|---|
