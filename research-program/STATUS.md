@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-13T19:48:29Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-13T20:04:03Z)
 
 Units: 393 — claimed 1, done 384, failed 4, superseded 4
 Paused: False   Phase stops: []
@@ -406,9 +406,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-13T11:39:40Z — D3-unblock-sweep-2026-11-13T11 — route — router picked codex from ['codex', 'cursor']
-- 2026-11-13T11:39:40Z — D3-unblock-sweep-2026-11-13T11 — claimed by driver (agent codex)
-- 2026-11-13T11:40:14Z — D3-unblock-sweep-2026-11-13T11 — fail — offload to vibe exited 1; agent exited 1
 - 2026-11-13T11:55:16Z — D3-unblock-sweep-2026-11-13T11 — route — router picked codex from ['codex', 'cursor']
 - 2026-11-13T11:55:16Z — D3-unblock-sweep-2026-11-13T11 — claimed by driver (agent codex)
 - 2026-11-13T12:35:41Z — D3-unblock-sweep-2026-11-13T11 — fail — offload to codex exited 124; timed out after 2400s
@@ -418,6 +415,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-13T19:48:28Z — unblock — enqueued D3-unblock-sweep-2026-11-13T19
 - 2026-11-13T19:48:29Z — D3-unblock-sweep-2026-11-13T19 — route — router picked cursor from ['codex', 'cursor']
 - 2026-11-13T19:48:29Z — D3-unblock-sweep-2026-11-13T19 — claimed by driver (agent cursor)
+- 2026-11-13T19:49:00Z — D3-unblock-sweep-2026-11-13T19 — fail — offload to cursor exited 1; agent exited 1
+- 2026-11-13T20:04:03Z — D3-unblock-sweep-2026-11-13T19 — route — router picked cursor from ['codex', 'cursor']
+- 2026-11-13T20:04:03Z — D3-unblock-sweep-2026-11-13T19 — claimed by driver (agent cursor)
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
