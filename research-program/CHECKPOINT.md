@@ -5071,3 +5071,5 @@ remote: - Required status check "Gate / gate" is
 ## 2026-11-13T19:49:00Z — D3-unblock-sweep-2026-11-13T19 — fail — offload to cursor exited 1; agent exited 1
 ## 2026-11-13T20:04:03Z — D3-unblock-sweep-2026-11-13T19 — route — router picked cursor from ['codex', 'cursor']
 ## 2026-11-13T20:04:03Z — D3-unblock-sweep-2026-11-13T19 — claimed by driver (agent cursor)
+## 2026-11-13T20:06:33Z — D3-unblock-sweep-2026-11-13T19 — done — cursor produced 564 words at artifacts/sweeps/D3-unblock-sweep-2026-11-13T19.md in 123s
+## 2026-11-13T20:06:34Z — D3-unblock-sweep-2026-11-13T19 — refutation posted — stranske/Portable-Alpha-Extension-Model#2496
