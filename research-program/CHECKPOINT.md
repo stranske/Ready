@@ -5120,3 +5120,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-11-15T20:13:02Z — D3-unblock-sweep-2026-11-15T20 — claimed by driver (agent codex)
 ## 2026-11-15T20:15:14Z — D3-unblock-sweep-2026-11-15T20 — done — codex produced 420 words at artifacts/sweeps/D3-unblock-sweep-2026-11-15T20.md in 103s
 ## 2026-11-15T22:50:22Z — mirror — FAILED — RuntimeError; pending commits retained for next tick
+## 2026-11-15T23:51:52Z — verify — enqueued D4-verify-merged-2026-11-15T23
+## 2026-11-15T23:51:52Z — D4-verify-merged-2026-11-15T23 — route — router picked cursor from ['codex', 'cursor']
+## 2026-11-15T23:51:52Z — D4-verify-merged-2026-11-15T23 — claimed by driver (agent cursor)
