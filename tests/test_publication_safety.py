@@ -988,12 +988,35 @@ def test_deflated_xlsx_pptx_zip_member_markers_fail_guard(tmp_path, suffix, mark
         ".pptx": "ppt/slides/slide1.xml",
         ".zip": "private-member-SYNTHETIC.txt",
     }[suffix]
-    # Split XML runs so neither compressed nor uncompressed raw bytes match.
-    text = (
-        marker
-        if suffix == ".zip"
-        else ("<root>" + "".join(f"<t>{escape(char)}</t>" for char in marker) + "</root>")
-    )
+
+    def member_text(name):
+        if suffix == ".zip":
+            return marker
+        # Real OOXML uses namespaced text runs. Indentation between runs must
+        # not interrupt visible markers in shared/inline strings or paragraphs.
+        if suffix == ".xlsx":
+            runs = "\n    ".join(f"<r><t>{escape(char)}</t></r>" for char in marker)
+            namespace = "http://schemas.openxmlformats.org/spreadsheetml/2006/main"
+            if name == "xl/sharedStrings.xml":
+                return f'<sst xmlns="{namespace}"><si>\n    {runs}\n</si></sst>'
+            return (
+                f'<worksheet xmlns="{namespace}"><sheetData><row><c t="inlineStr">'
+                f"<is>\n    {runs}\n</is></c></row></sheetData></worksheet>"
+            )
+        runs = "\n    ".join(f"<a:r><a:t>{escape(char)}</a:t></a:r>" for char in marker)
+        root = "notes" if name.startswith("ppt/notesSlides/") else "sld"
+        return (
+            f'<p:{root} xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" '
+            'xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">'
+            f"<p:cSld><p:spTree><p:sp><p:txBody><a:p>\n    {runs}\n</a:p>"
+            f"</p:txBody></p:sp></p:spTree></p:cSld></p:{root}>"
+        )
+
+    text = member_text(member)
+    if suffix != ".zip":
+        assert not any(
+            pattern.search(text.encode("utf-8")) for pattern in load_scanner().RULES.values()
+        )
     with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
         archive.writestr(member, text)
     with zipfile.ZipFile(path) as archive:
@@ -1025,7 +1048,7 @@ def test_deflated_xlsx_pptx_zip_member_markers_fail_guard(tmp_path, suffix, mark
         ".zip": "second-private-member-SYNTHETIC.txt",
     }[suffix]
     with zipfile.ZipFile(path, "a", compression=zipfile.ZIP_DEFLATED) as archive:
-        archive.writestr(second_member, text)
+        archive.writestr(second_member, member_text(second_member))
     original = path.read_bytes()
     assert not any(pattern.search(original) for pattern in load_scanner().RULES.values())
 
