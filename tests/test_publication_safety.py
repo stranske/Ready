@@ -1467,17 +1467,43 @@ def test_docx_fail_closed_without_xml_disclosure(tmp_path, capsys, monkeypatch, 
 
 
 @pytest.mark.parametrize(
-    "member", ["word/document.xml", "word/header1.xml", "word/footer1.xml", "word/footnotes.xml"]
+    ("suffix", "member"),
+    [
+        *[
+            (".docx", member)
+            for member in (
+                "word/document.xml",
+                "word/header1.xml",
+                "word/footer1.xml",
+                "word/footnotes.xml",
+            )
+        ],
+        (".xlsx", "xl/sharedStrings.xml"),
+        (".xlsx", "xl/worksheets/sheet1.xml"),
+        (".pptx", "ppt/slides/slide1.xml"),
+        (".pptx", "ppt/notesSlides/notesSlide1.xml"),
+        *[
+            (suffix, member)
+            for suffix in (".xlsx", ".pptx", ".zip")
+            for member in ("custom/metadata.xml", "_rels/.rels", "custom/links.RELS")
+        ],
+    ],
 )
-def test_malformed_word_part_is_not_allowlisted_and_scan_continues(tmp_path, member):
+def test_malformed_package_part_is_not_allowlisted_and_scan_continues(tmp_path, suffix, member):
     import zipfile
 
-    path = tmp_path / "a-report.docx"
+    path = tmp_path / f"a-report{suffix}"
+    main_member = {
+        ".docx": "word/document.xml",
+        ".xlsx": "xl/worksheets/sheet1.xml",
+        ".pptx": "ppt/slides/slide1.xml",
+        ".zip": "public.xml",
+    }[suffix]
     with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
-        if member != "word/document.xml":
-            archive.writestr("word/document.xml", "<document/>")
+        if member != main_member:
+            archive.writestr(main_member, "<document/>")
         archive.writestr(member, '<broken hidden="ghp_SYNTHETIC"')
-    allowlist_for(tmp_path).write_text("a-report.docx:credential # Reviewed synthetic fixture.\n")
+    allowlist_for(tmp_path).write_text(f"{path.name}:credential # Reviewed synthetic fixture.\n")
     (tmp_path / "z-report.md").write_text("Public introduction\nclones/SYNTHETIC\n")
     original = path.read_bytes()
 
@@ -1485,7 +1511,7 @@ def test_malformed_word_part_is_not_allowlisted_and_scan_continues(tmp_path, mem
 
     assert result.returncode == 1
     assert set(result.stdout.splitlines()) == {
-        "ERROR: a-report.docx: invalid or oversized package",
+        f"ERROR: {path.name}: invalid or oversized package",
         "z-report.md:2: scratch-path (1 hit(s))",
         "files_scanned=2 home-path=0 credential=0 private-key=0 "
         "scratch-path=1 internal-host=0 allowed_hits=0 errors=1",
