@@ -1573,17 +1573,25 @@ def test_strict_word_namespace_split_runs_are_guarded(tmp_path):
     assert "SYNTHETIC" not in result.stdout + result.stderr
 
 
-def test_utf16_dtd_is_rejected_without_entity_expansion(tmp_path, capsys):
+@pytest.mark.parametrize("suffix", [".docx", ".xlsx", ".pptx", ".zip"])
+@pytest.mark.parametrize("encoding", ["utf-16-le", "utf-16-be"])
+def test_utf16_dtd_is_rejected_without_entity_expansion(tmp_path, capsys, suffix, encoding):
+    import codecs
     import zipfile
 
-    path = tmp_path / "report.docx"
+    path = tmp_path / f"report{suffix}"
     xml = '<!DOCTYPE x [<!ENTITY e "SYNTHETIC">]><x>&e;</x>'
+    bom = codecs.BOM_UTF16_LE if encoding == "utf-16-le" else codecs.BOM_UTF16_BE
+    member = "word/document.xml" if suffix == ".docx" else "private-SYNTHETIC.xml"
     with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
-        archive.writestr("word/document.xml", xml.encode("utf-16"))
+        archive.writestr(member, bom + xml.encode(encoding))
     assert load_scanner().scan(tmp_path) == 1
-    output = capsys.readouterr().out
-    assert "ERROR: report.docx: invalid or oversized package" in output
-    assert "SYNTHETIC" not in output
+    output = capsys.readouterr()
+    assert f"ERROR: {path.name}: invalid or oversized package" in output.out
+    assert "errors=1" in output.out
+    assert "SYNTHETIC" not in output.out + output.err
+    assert member not in output.out + output.err
+    assert not output.err
 
 
 @pytest.mark.parametrize("encoding", ["utf-16-le", "utf-16-be"])
@@ -1626,6 +1634,63 @@ def test_utf16_docx_visible_text_is_decoded(tmp_path, encoding, member, unsafe):
     assert "errors=0" in result.stdout
     if unsafe:
         assert "report.docx:1: scratch-path (1 hit(s))" in result.stdout
+    assert "SYNTHETIC" not in result.stdout + result.stderr
+    assert member not in result.stdout + result.stderr
+    assert not result.stderr
+    assert path.read_bytes() == original
+
+
+@pytest.mark.parametrize("encoding", ["utf-16-le", "utf-16-be"])
+@pytest.mark.parametrize("strict", [False, True])
+@pytest.mark.parametrize("unsafe", [False, True])
+@pytest.mark.parametrize(
+    ("suffix", "member", "root", "unit", "vocabulary"),
+    [
+        (".xlsx", "xl/sharedStrings.xml", "sst", "si", "spreadsheetml"),
+        (".xlsx", "xl/worksheets/sheet1.xml", "worksheet", "is", "spreadsheetml"),
+        (".pptx", "ppt/slides/slide1.xml", "sld", "p", "drawingml"),
+        (".pptx", "ppt/notesSlides/notesSlide1.xml", "notes", "p", "drawingml"),
+        (".zip", "private-SYNTHETIC.xml", "root", "p", "drawingml"),
+    ],
+)
+def test_utf16_package_visible_text_is_decoded(
+    tmp_path, encoding, strict, unsafe, suffix, member, root, unit, vocabulary
+):
+    import codecs
+    import zipfile
+
+    namespace = (
+        f"http://purl.oclc.org/ooxml/{vocabulary}/main"
+        if strict
+        else f"http://schemas.openxmlformats.org/{vocabulary}/2006/main"
+    )
+    runs = ("scratch", "pad/SYNTHETIC") if unsafe else ("Public", " report")
+    text = "\n    ".join(f"<r><t>{run}</t></r>" for run in runs)
+    xml = (
+        '<?xml version="1.0" encoding="UTF-16"?>'
+        f'<{root} xmlns="{namespace}"><{unit}>\n    {text}\n</{unit}></{root}>'
+    )
+    bom = codecs.BOM_UTF16_LE if encoding == "utf-16-le" else codecs.BOM_UTF16_BE
+    payload = bom + xml.encode(encoding)
+    scanner = load_scanner()
+    # Neither byte layer exposes the marker. The guard must decode XML and
+    # join formatted runs, including strict OOXML and presentation notes.
+    assert not any(pattern.search(payload) for pattern in scanner.RULES.values())
+    path = tmp_path / f"report{suffix}"
+    with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+        archive.writestr(member, payload)
+    original = path.read_bytes()
+    assert not any(pattern.search(original) for pattern in scanner.RULES.values())
+
+    result = run_guard(tmp_path)
+
+    assert result.returncode == int(unsafe)
+    expected = [f"{path.name}:1: scratch-path (1 hit(s))"] if unsafe else []
+    expected.append(
+        "files_scanned=1 home-path=0 credential=0 private-key=0 "
+        f"scratch-path={int(unsafe)} internal-host=0 allowed_hits=0 errors=0"
+    )
+    assert result.stdout.splitlines() == expected
     assert "SYNTHETIC" not in result.stdout + result.stderr
     assert member not in result.stdout + result.stderr
     assert not result.stderr
