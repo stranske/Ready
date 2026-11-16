@@ -1818,11 +1818,12 @@ def test_docx_drawingml_split_text_is_scanned(tmp_path, member, namespace):
     assert "SYNTHETIC" not in result.stdout + result.stderr
 
 
-def test_docx_corrupt_auxiliary_member_fails_closed(tmp_path):
+@pytest.mark.parametrize("suffix", [".docx", ".xlsx", ".pptx", ".zip"])
+def test_package_corrupt_auxiliary_member_fails_closed(tmp_path, suffix):
     import struct
     import zipfile
 
-    path = tmp_path / "report.docx"
+    path = tmp_path / f"a-report{suffix}"
     write_docx(path, [["Public report"]])
     with zipfile.ZipFile(path, "a", compression=zipfile.ZIP_STORED) as archive:
         archive.writestr("media/image.bin", b"SYNTHETIC image bytes")
@@ -1832,10 +1833,24 @@ def test_docx_corrupt_auxiliary_member_fails_closed(tmp_path):
     offset = member.header_offset + 30 + name_size + extra_size
     content[offset] ^= 1
     path.write_bytes(content)
+    original = path.read_bytes()
+    # The stored member still decompresses; CRC validation must reject it.
+    with zipfile.ZipFile(path) as archive, pytest.raises(zipfile.BadZipFile, match="CRC"):
+        archive.read(member)
+    (tmp_path / "z-report.md").write_text("Public report.\n")
+
     result = run_guard(tmp_path)
+
     assert result.returncode == 1
-    assert "ERROR: report.docx: invalid or oversized package" in result.stdout
+    assert result.stdout.splitlines() == [
+        f"ERROR: {path.name}: invalid or oversized package",
+        "files_scanned=2 home-path=0 credential=0 private-key=0 "
+        "scratch-path=0 internal-host=0 allowed_hits=0 errors=1",
+    ]
     assert "SYNTHETIC" not in result.stdout + result.stderr
+    assert member.filename not in result.stdout + result.stderr
+    assert not result.stderr
+    assert path.read_bytes() == original
 
 
 @pytest.mark.parametrize("kind", ["missing-document", "encrypted", "unsupported-compression"])
