@@ -1853,13 +1853,28 @@ def test_package_corrupt_auxiliary_member_fails_closed(tmp_path, suffix):
     assert path.read_bytes() == original
 
 
-@pytest.mark.parametrize("kind", ["missing-document", "encrypted", "unsupported-compression"])
-def test_unreadable_docx_structure_fails_closed_through_cli(tmp_path, kind):
+@pytest.mark.parametrize(
+    ("suffix", "kind"),
+    [
+        (".docx", "missing-document"),
+        *[
+            (suffix, kind)
+            for suffix in (".docx", ".xlsx", ".pptx", ".zip")
+            for kind in ("encrypted", "unsupported-compression")
+        ],
+    ],
+)
+def test_unreadable_package_structure_fails_closed_through_cli(tmp_path, suffix, kind):
     import struct
     import zipfile
 
-    path = tmp_path / "a-report.docx"
-    member = "word/header1.xml" if kind == "missing-document" else "word/document.xml"
+    path = tmp_path / f"a-report{suffix}"
+    member = {
+        ".docx": "word/header1.xml" if kind == "missing-document" else "word/document.xml",
+        ".xlsx": "xl/sharedStrings.xml",
+        ".pptx": "ppt/slides/slide1.xml",
+        ".zip": "private-SYNTHETIC.xml",
+    }[suffix]
     with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
         archive.writestr(member, "<document>SYNTHETIC</document>")
     if kind != "missing-document":
@@ -1872,13 +1887,20 @@ def test_unreadable_docx_structure_fails_closed_through_cli(tmp_path, kind):
             struct.pack_into("<H", content, offset, value)
         path.write_bytes(content)
     original = path.read_bytes()
+    # Rule exceptions cannot authorize an unreadable package, even when every
+    # rule has an explicit exception for this outer file.
+    allowlist_for(tmp_path).write_text(
+        "".join(
+            f"{path.name}:{rule} # Reviewed synthetic fixture.\n" for rule in load_scanner().RULES
+        )
+    )
     (tmp_path / "z-report.md").write_text("Public report.\n")
 
     result = run_guard(tmp_path)
 
     assert result.returncode == 1
     assert result.stdout.splitlines() == [
-        "ERROR: a-report.docx: invalid or oversized package",
+        f"ERROR: {path.name}: invalid or oversized package",
         "files_scanned=2 home-path=0 credential=0 private-key=0 "
         "scratch-path=0 internal-host=0 allowed_hits=0 errors=1",
     ]
