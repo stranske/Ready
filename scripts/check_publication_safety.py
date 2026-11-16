@@ -158,8 +158,16 @@ def package_text_lines(
                 Path(member.filename).suffix.lower()
                 in PACKAGE_SUFFIXES | {".tar", ".gz", ".tgz", ".bz2", ".xz", ".7z", ".rar"}
                 or xml.startswith(
-                    (b"PK\x03\x04", b"PK\x05\x06", b"PK\x07\x08", b"\x1f\x8b", b"BZh",
-                     b"\xfd7zXZ\x00", b"7z\xbc\xaf\x27\x1c", b"Rar!\x1a\x07")
+                    (
+                        b"PK\x03\x04",
+                        b"PK\x05\x06",
+                        b"PK\x07\x08",
+                        b"\x1f\x8b",
+                        b"BZh",
+                        b"\xfd7zXZ\x00",
+                        b"7z\xbc\xaf\x27\x1c",
+                        b"Rar!\x1a\x07",
+                    )
                 )
                 or xml[257:262] == b"ustar"
                 or zipfile.is_zipfile(io.BytesIO(xml))

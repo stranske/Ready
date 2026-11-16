@@ -989,11 +989,17 @@ def test_deflated_xlsx_pptx_zip_member_markers_fail_guard(tmp_path, suffix, mark
         ".zip": "private-member-SYNTHETIC.txt",
     }[suffix]
     # Split XML runs so neither compressed nor uncompressed raw bytes match.
-    text = marker if suffix == ".zip" else (
-        "<root>" + "".join(f"<t>{escape(char)}</t>" for char in marker) + "</root>"
+    text = (
+        marker
+        if suffix == ".zip"
+        else ("<root>" + "".join(f"<t>{escape(char)}</t>" for char in marker) + "</root>")
     )
     with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
         archive.writestr(member, text)
+    with zipfile.ZipFile(path) as archive:
+        assert archive.namelist() == [member]
+        assert archive.getinfo(member).compress_type == zipfile.ZIP_DEFLATED
+        assert archive.read(member) == text.encode("utf-8")
     original = path.read_bytes()
     assert not any(pattern.search(original) for pattern in load_scanner().RULES.values())
 
@@ -1005,6 +1011,26 @@ def test_deflated_xlsx_pptx_zip_member_markers_fail_guard(tmp_path, suffix, mark
     assert "SYNTHETIC" not in result.stdout + result.stderr
     assert member not in result.stdout + result.stderr
     assert not result.stderr
+    assert result.stdout.splitlines() == [
+        f"{path.name}:1: {rule} (1 hit(s))",
+        "files_scanned=1 "
+        + " ".join(f"{name}={int(name == rule)}" for name in load_scanner().RULES)
+        + " allowed_hits=0 errors=0",
+    ]
+    assert path.read_bytes() == original
+
+    # Package exceptions must use the outer path and rule, never member paths.
+    allowlist_for(tmp_path).write_text(
+        f"{path.name}:{rule} # Reviewed synthetic compressed fixture.\n"
+    )
+    allowed = run_guard(tmp_path)
+    assert allowed.returncode == 0
+    assert allowed.stdout.splitlines() == [
+        "files_scanned=1 "
+        + " ".join(f"{name}=0" for name in load_scanner().RULES)
+        + " allowed_hits=1 errors=0",
+    ]
+    assert not allowed.stderr
     assert path.read_bytes() == original
 
 
@@ -1038,10 +1064,22 @@ def test_package_xml_references_and_split_text(tmp_path, suffix, member, unsafe)
 @pytest.mark.parametrize("suffix", [".xlsx", ".pptx", ".zip"])
 @pytest.mark.parametrize(
     "kind",
-    ["not-zip", "bad-xml", "entity", "size", "members", "total", "duplicate",
-     "encrypted", "nested-name", "nested-bytes"],
+    [
+        "not-zip",
+        "bad-xml",
+        "entity",
+        "size",
+        "members",
+        "total",
+        "duplicate",
+        "encrypted",
+        "nested-name",
+        "nested-bytes",
+    ],
 )
-def test_packages_fail_closed_without_member_disclosure(tmp_path, capsys, monkeypatch, suffix, kind):
+def test_packages_fail_closed_without_member_disclosure(
+    tmp_path, capsys, monkeypatch, suffix, kind
+):
     import io
     import zipfile
 
@@ -1057,10 +1095,13 @@ def test_packages_fail_closed_without_member_disclosure(tmp_path, capsys, monkey
                 inner.writestr("note.txt", "Public report")
             archive.writestr("private-SYNTHETIC.bin", nested.getvalue())
         else:
-            archive.writestr(member, {
-                "bad-xml": "<SYNTHETIC",
-                "entity": '<!DOCTYPE x [<!ENTITY e "SYNTHETIC">]><x>&e;</x>',
-            }.get(kind, "<root>Public report</root>"))
+            archive.writestr(
+                member,
+                {
+                    "bad-xml": "<SYNTHETIC",
+                    "entity": '<!DOCTYPE x [<!ENTITY e "SYNTHETIC">]><x>&e;</x>',
+                }.get(kind, "<root>Public report</root>"),
+            )
     if kind == "not-zip":
         path.write_bytes(b"SYNTHETIC invalid zip")
     elif kind == "duplicate":
@@ -1073,11 +1114,15 @@ def test_packages_fail_closed_without_member_disclosure(tmp_path, capsys, monkey
         content[content.index(b"PK\x01\x02") + 8] |= 1
         path.write_bytes(content)
     elif kind in {"size", "members", "total"}:
-        monkeypatch.setattr(scanner, {
-            "size": "DOCX_MAX_MEMBER_BYTES",
-            "members": "DOCX_MAX_MEMBERS",
-            "total": "DOCX_MAX_TOTAL_BYTES",
-        }[kind], 0 if kind == "members" else 1)
+        monkeypatch.setattr(
+            scanner,
+            {
+                "size": "DOCX_MAX_MEMBER_BYTES",
+                "members": "DOCX_MAX_MEMBERS",
+                "total": "DOCX_MAX_TOTAL_BYTES",
+            }[kind],
+            0 if kind == "members" else 1,
+        )
 
     assert scanner.scan(tmp_path) == 1
     output = capsys.readouterr()
