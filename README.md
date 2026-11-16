@@ -28,7 +28,9 @@ Two defect classes have already reached this tree and both are invisible on a ca
 
 Run `python scripts/check_publication_safety.py` with Python 3.13 or later (3.14 preferred) before
 publishing. It scans bytes in every file under `research-program/`, including
-binary files, and separately scans the selected allowlist exactly once. JSON and JSONL string
+binary files, and separately scans the selected allowlist exactly once. DOCX, XLSX,
+PPTX and ZIP packages also receive bounded decompressed member scans, including
+decoded XML text; other binary formats receive byte scans only. JSON and JSONL string
 values and keys are also scanned after decoding escapes once, with findings
 attributed to their physical source lines. Diagnostics contain
 the relative file, line, and rule, never the matched content. Missing or empty
@@ -73,11 +75,15 @@ credential and host references with explicit redaction markers. Local evidence
 is preserved. Affected JSON and JSONL must remain parseable; ambiguous keys, invalid structured
 data requiring redaction, unreadable files and links stop preparation. Clean
 historical process captures retain their original bytes. Binary files remain intact
-and must pass the guard. DOCX packages also receive bounded Word XML inspection,
-including headers, footers, footnotes and visible paragraph text joined across runs.
-Malformed XML, invalid packages, encryption and package resource-limit violations
-fail closed without printing package text. Unsafe Word exports must be regenerated
-upstream; preparation never edits their bytes. This export step is not a confidentiality review
+and must pass the guard. DOCX, XLSX, PPTX and ZIP packages retain their bytes during
+preparation. The guard scans their top-level decompressed members and decoded XML
+text, including spreadsheet shared strings and worksheets, slides and notes.
+DOCX inspection joins visible Word paragraph runs, including headers, footers and
+footnotes. Malformed XML, invalid packages, encryption, duplicate members, nested
+archives and package resource-limit violations fail closed without printing member
+names or package text. Unsafe packages must be regenerated upstream; preparation
+never edits their bytes. Other binary formats are byte-scanned only.
+This export step is not a confidentiality review
 and never substitutes for the guard. Correct the source or export policy when
 a finding remains; subsequent publication must not restore it.
 
