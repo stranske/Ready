@@ -1109,6 +1109,27 @@ def test_package_xml_references_and_split_text(tmp_path, suffix, member, unsafe)
     assert not result.stderr
 
 
+@pytest.mark.parametrize("with_paragraph", [False, True])
+def test_zip_xml_mixed_content_with_optional_text_unit(tmp_path, with_paragraph):
+    import zipfile
+
+    paragraph = "<a:p><a:r><a:t>Public text</a:t></a:r></a:p>" if with_paragraph else ""
+    xml = (
+        '<root xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">'
+        f"{paragraph}<path>&#47;Us<b>ers/SYNTHETIC/report</b></path></root>"
+    )
+    with zipfile.ZipFile(tmp_path / "report.zip", "w", compression=zipfile.ZIP_DEFLATED) as archive:
+        archive.writestr("custom.xml", xml)
+
+    result = run_guard(tmp_path)
+
+    assert result.returncode == 1
+    assert "home-path=1" in result.stdout
+    assert "errors=0" in result.stdout
+    assert "SYNTHETIC" not in result.stdout + result.stderr
+    assert not result.stderr
+
+
 @pytest.mark.parametrize(
     ("suffix", "member", "root", "unit", "run"),
     [
@@ -1181,6 +1202,10 @@ def test_packages_fail_closed_without_member_disclosure(
             with zipfile.ZipFile(nested, "w") as inner:
                 inner.writestr("note.txt", "Public report")
             archive.writestr("private-SYNTHETIC.bin", nested.getvalue())
+        elif kind == "total":
+            for name in ("total-a.xml", "total-b.xml"):
+                archive.writestr(name, "<root>" + "A" * 4096 + "</root>")
+            members = archive.infolist()
         else:
             archive.writestr(
                 member,
@@ -1200,13 +1225,17 @@ def test_packages_fail_closed_without_member_disclosure(
         content[6] |= 1
         content[content.index(b"PK\x01\x02") + 8] |= 1
         path.write_bytes(content)
-    elif kind in {"size", "members", "total"}:
+    elif kind == "total":
+        limit = path.stat().st_size + 1
+        assert all(member.file_size < scanner.DOCX_MAX_MEMBER_BYTES for member in members)
+        assert sum(member.file_size for member in members) > limit
+        monkeypatch.setattr(scanner, "DOCX_MAX_TOTAL_BYTES", limit)
+    elif kind in {"size", "members"}:
         monkeypatch.setattr(
             scanner,
             {
                 "size": "DOCX_MAX_MEMBER_BYTES",
                 "members": "DOCX_MAX_MEMBERS",
-                "total": "DOCX_MAX_TOTAL_BYTES",
             }[kind],
             0 if kind == "members" else 1,
         )

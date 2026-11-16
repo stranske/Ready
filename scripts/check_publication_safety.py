@@ -139,22 +139,25 @@ class _PackageTreeBuilder(ET.TreeBuilder):
 
 
 def package_xml_text(document: ET.Element):
-    if not any(node.tag in PACKAGE_TEXT_UNITS for node in document.iter()):
-        yield "".join(document.itertext())
-        return
-
-    pending = [document]
+    buffer: list[str] = []
+    pending = [(document, False)]
     while pending:
-        node = pending.pop()
-        if node.tag in PACKAGE_TEXT_UNITS:
+        node, exiting = pending.pop()
+        if exiting:
+            buffer.append(node.tail or "")
+        elif node.tag in PACKAGE_TEXT_UNITS:
+            yield "".join(buffer)
+            buffer.clear()
             # Join runs within one string or paragraph. Preserve their whitespace
             # without including indentation between XML elements.
             text_tag = node.tag.rsplit("}", 1)[0] + "}t"
             yield "".join(run.text or "" for run in node.iter(text_tag))
+            buffer.append(node.tail or "")
         else:
-            yield node.text or ""
-            pending.extend(reversed(node))
-        yield node.tail or ""
+            buffer.append(node.text or "")
+            pending.append((node, True))
+            pending.extend((child, False) for child in reversed(node))
+    yield "".join(buffer)
 
 
 def package_text_lines(
