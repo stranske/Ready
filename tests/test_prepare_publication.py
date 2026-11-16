@@ -100,6 +100,39 @@ def test_package_bytes_preserved_then_guarded(tmp_path, capsys, suffix, packaged
     assert not output.err
 
 
+@pytest.mark.parametrize("suffix", [".xlsx", ".XLSX", ".pptx", ".PPTX", ".zip", ".ZIP"])
+def test_clean_package_export_preserves_source_and_staged_bytes(tmp_path, capsys, suffix):
+    source = tmp_path / "source"
+    source.mkdir()
+    path = source / ("report" + suffix)
+    member = {
+        ".xlsx": "xl/sharedStrings.xml",
+        ".pptx": "ppt/slides/slide1.xml",
+        ".zip": "public.xml",
+    }[suffix.lower()]
+    with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+        archive.writestr(member, "<root><t>Public café report</t></root>")
+        archive.writestr("media/image.bin", b"\xff\x00\xfe")
+        archive.comment = b"Public package metadata"
+    original = path.read_bytes()
+    stage = tmp_path / "stage"
+    shutil.copytree(source, stage)
+
+    counts = prepare.prepare_copy(stage)
+
+    assert counts["files_scanned"] == 1
+    assert counts["files_redacted"] == 0
+    assert (stage / path.name).read_bytes() == original
+    assert path.read_bytes() == original
+    assert guard.scan(stage) == 0
+    output = capsys.readouterr()
+    assert "files_scanned=1" in output.out
+    assert "errors=0" in output.out
+    assert not output.err
+    assert (stage / path.name).read_bytes() == original
+    assert path.read_bytes() == original
+
+
 @pytest.mark.parametrize("content", ['{"clones/a": 1, "scratchpad/a": 2}', '{"path": "clones/a"'])
 def test_invalid_or_colliding_json_fails_without_partial_write(tmp_path, content):
     (tmp_path / "a.txt").write_text("clones/a")

@@ -1019,6 +1019,31 @@ def test_deflated_xlsx_pptx_zip_member_markers_fail_guard(tmp_path, suffix, mark
     ]
     assert path.read_bytes() == original
 
+    second_member = {
+        ".xlsx": "xl/worksheets/sheet1.xml",
+        ".pptx": "ppt/notesSlides/notesSlide1.xml",
+        ".zip": "second-private-member-SYNTHETIC.txt",
+    }[suffix]
+    with zipfile.ZipFile(path, "a", compression=zipfile.ZIP_DEFLATED) as archive:
+        archive.writestr(second_member, text)
+    original = path.read_bytes()
+    assert not any(pattern.search(original) for pattern in load_scanner().RULES.values())
+
+    # Every member must be scanned, including worksheets and presentation notes.
+    repeated = run_guard(tmp_path)
+    assert repeated.returncode == 1
+    assert repeated.stdout.splitlines() == [
+        f"{path.name}:1: {rule} (2 hit(s))",
+        "files_scanned=1 "
+        + " ".join(f"{name}={2 * int(name == rule)}" for name in load_scanner().RULES)
+        + " allowed_hits=0 errors=0",
+    ]
+    assert "SYNTHETIC" not in repeated.stdout + repeated.stderr
+    assert member not in repeated.stdout + repeated.stderr
+    assert second_member not in repeated.stdout + repeated.stderr
+    assert not repeated.stderr
+    assert path.read_bytes() == original
+
     # Package exceptions must use the outer path and rule, never member paths.
     allowlist_for(tmp_path).write_text(
         f"{path.name}:{rule} # Reviewed synthetic compressed fixture.\n"
@@ -1028,7 +1053,7 @@ def test_deflated_xlsx_pptx_zip_member_markers_fail_guard(tmp_path, suffix, mark
     assert allowed.stdout.splitlines() == [
         "files_scanned=1 "
         + " ".join(f"{name}=0" for name in load_scanner().RULES)
-        + " allowed_hits=1 errors=0",
+        + " allowed_hits=2 errors=0",
     ]
     assert not allowed.stderr
     assert path.read_bytes() == original
