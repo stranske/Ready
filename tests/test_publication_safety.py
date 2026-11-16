@@ -1086,6 +1086,45 @@ def test_package_xml_references_and_split_text(tmp_path, suffix, member, unsafe)
     assert not result.stderr
 
 
+@pytest.mark.parametrize(
+    ("suffix", "member", "root", "unit", "run"),
+    [
+        (".xlsx", "xl/sharedStrings.xml", "sst", "si", "r"),
+        (".xlsx", "xl/worksheets/sheet1.xml", "worksheet", "is", "r"),
+        (".pptx", "ppt/slides/slide1.xml", "sld", "a:p", "a:r"),
+        (".pptx", "ppt/notesSlides/notesSlide1.xml", "notes", "a:p", "a:r"),
+    ],
+)
+@pytest.mark.parametrize("same_unit", [False, True])
+def test_formatted_ooxml_runs_preserve_text_boundaries(
+    tmp_path, suffix, member, root, unit, run, same_unit
+):
+    import zipfile
+
+    text_tag = "t" if suffix == ".xlsx" else "a:t"
+    first = f"<{run}><{text_tag}>/Us</{text_tag}></{run}>"
+    second = f"<{run}><{text_tag}>ers/SYNTHETIC/report</{text_tag}></{run}>"
+    # Indentation is present inside one string, while independent strings can
+    # be adjacent in a compact XML serialization.
+    contents = f"{first}\n    {second}" if same_unit else f"{first}</{unit}><{unit}>{second}"
+    namespace = "spreadsheetml" if suffix == ".xlsx" else "presentationml"
+    xml = (
+        f'<{root} xmlns="http://schemas.openxmlformats.org/{namespace}/2006/main" '
+        'xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">'
+        f"<{unit}>{contents}</{unit}></{root}>"
+    )
+    with zipfile.ZipFile(tmp_path / f"report{suffix}", "w", zipfile.ZIP_DEFLATED) as archive:
+        archive.writestr(member, xml)
+
+    result = run_guard(tmp_path)
+
+    assert result.returncode == int(same_unit)
+    assert f"home-path={int(same_unit)}" in result.stdout
+    assert "errors=0" in result.stdout
+    assert "SYNTHETIC" not in result.stdout + result.stderr
+    assert not result.stderr
+
+
 @pytest.mark.parametrize("suffix", [".xlsx", ".pptx", ".zip"])
 @pytest.mark.parametrize(
     "kind",

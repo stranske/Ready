@@ -123,11 +123,38 @@ DOCX_MAX_MEMBER_BYTES = 8 * 1024 * 1024
 DOCX_MAX_TOTAL_BYTES = 64 * 1024 * 1024
 PACKAGE_SUFFIXES = {".docx", ".xlsx", ".pptx", ".zip"}
 WORD_NS = "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}"
+PACKAGE_TEXT_UNITS = {
+    "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}si",
+    "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}is",
+    "{http://purl.oclc.org/ooxml/spreadsheetml/main}si",
+    "{http://purl.oclc.org/ooxml/spreadsheetml/main}is",
+    "{http://schemas.openxmlformats.org/drawingml/2006/main}p",
+    "{http://purl.oclc.org/ooxml/drawingml/main}p",
+}
 
 
 class _PackageTreeBuilder(ET.TreeBuilder):
     def doctype(self, name, pubid, system):
         raise ValueError("package XML declaration")
+
+
+def package_xml_text(document: ET.Element):
+    if not any(node.tag in PACKAGE_TEXT_UNITS for node in document.iter()):
+        yield "".join(document.itertext())
+        return
+
+    pending = [document]
+    while pending:
+        node = pending.pop()
+        if node.tag in PACKAGE_TEXT_UNITS:
+            # Join runs within one string or paragraph. Preserve their whitespace
+            # without including indentation between XML elements.
+            text_tag = node.tag.rsplit("}", 1)[0] + "}t"
+            yield "".join(run.text or "" for run in node.iter(text_tag))
+        else:
+            yield node.text or ""
+            pending.extend(reversed(node))
+        yield node.tail or ""
 
 
 def package_text_lines(
@@ -192,9 +219,8 @@ def package_text_lines(
                 raise ValueError("DOCX XML limit or declaration")
             document = ET.fromstring(xml, parser=ET.XMLParser(target=_PackageTreeBuilder()))
             if not docx:
-                # XML parsing strips tags, decodes character references, and joins
-                # split text runs in worksheets, shared strings, slides and notes.
-                lines.extend("".join(document.itertext()).encode("utf-8").splitlines())
+                for text in package_xml_text(document):
+                    lines.extend(text.encode("utf-8").splitlines())
                 continue
             # Join visible runs in both WordprocessingML and DrawingML dialects.
             for namespace in (
