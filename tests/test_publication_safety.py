@@ -1300,6 +1300,12 @@ def test_disguised_nested_archives_fail_closed_through_cli(tmp_path, suffix, nes
         control_path = control_dir / f"control-report{suffix}"
         with zipfile.ZipFile(control_path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
             archive.writestr(member_name, b"\xff\x00\xfe" + public_text)
+            # A full tar block of ordinary bytes must not be mistaken for a header.
+            long_control = bytes(range(256)) * 4
+            assert len(long_control) >= tarfile.BLOCKSIZE
+            with pytest.raises(tarfile.TarError):
+                tarfile.TarInfo.frombuf(long_control[: tarfile.BLOCKSIZE], "utf-8", "strict")
+            archive.writestr("private-long-SYNTHETIC.bin", long_control)
         control_result = run_guard(control_dir)
         assert control_result.returncode == 0
         assert "SYNTHETIC" not in control_result.stdout + control_result.stderr
