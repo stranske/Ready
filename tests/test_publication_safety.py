@@ -967,6 +967,125 @@ def write_docx(path, paragraphs, *, member="word/document.xml"):
             archive.writestr(member, xml)
 
 
+@pytest.mark.parametrize("suffix", [".xlsx", ".pptx", ".zip"])
+@pytest.mark.parametrize(
+    ("marker", "rule"),
+    [
+        ("/Users/SYNTHETIC/report", "home-path"),
+        ("ghp_SYNTHETIC", "credential"),
+        ("-----BEGIN RSA PRIVATE KEY-----", "private-key"),
+        ("worker.local:8080/SYNTHETIC", "internal-host"),
+        ("scratchpad/SYNTHETIC", "scratch-path"),
+    ],
+)
+def test_deflated_xlsx_pptx_zip_member_markers_fail_guard(tmp_path, suffix, marker, rule):
+    import zipfile
+    from xml.sax.saxutils import escape
+
+    path = tmp_path / ("report" + suffix)
+    member = {
+        ".xlsx": "xl/sharedStrings.xml",
+        ".pptx": "ppt/slides/slide1.xml",
+        ".zip": "private-member-SYNTHETIC.txt",
+    }[suffix]
+    # Split XML runs so neither compressed nor uncompressed raw bytes match.
+    text = marker if suffix == ".zip" else (
+        "<root>" + "".join(f"<t>{escape(char)}</t>" for char in marker) + "</root>"
+    )
+    with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+        archive.writestr(member, text)
+    original = path.read_bytes()
+    assert not any(pattern.search(original) for pattern in load_scanner().RULES.values())
+
+    result = run_guard(tmp_path)
+
+    assert result.returncode == 1
+    assert f"{path.name}:1: {rule} (1 hit(s))" in result.stdout
+    assert "errors=0" in result.stdout
+    assert "SYNTHETIC" not in result.stdout + result.stderr
+    assert member not in result.stdout + result.stderr
+    assert not result.stderr
+    assert path.read_bytes() == original
+
+
+@pytest.mark.parametrize(
+    ("suffix", "member"),
+    [
+        (".xlsx", "xl/worksheets/sheet1.xml"),
+        (".pptx", "ppt/notesSlides/notesSlide1.xml"),
+        (".zip", "other.xml"),
+    ],
+)
+@pytest.mark.parametrize("unsafe", [False, True])
+def test_package_xml_references_and_split_text(tmp_path, suffix, member, unsafe):
+    import zipfile
+
+    text = "ghp_SYNTHETIC" if unsafe else "Public report"
+    xml = "<root>" + "".join(f"<t>&#{ord(char)};</t>" for char in text) + "</root>"
+    path = tmp_path / ("report" + suffix.upper())
+    with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+        archive.writestr(member, xml)
+        archive.writestr("public.txt", "Public report")
+    result = run_guard(tmp_path)
+    assert result.returncode == int(unsafe)
+    assert f"credential={int(unsafe)}" in result.stdout
+    assert "errors=0" in result.stdout
+    assert "SYNTHETIC" not in result.stdout + result.stderr
+    assert member not in result.stdout + result.stderr
+    assert not result.stderr
+
+
+@pytest.mark.parametrize("suffix", [".xlsx", ".pptx", ".zip"])
+@pytest.mark.parametrize(
+    "kind",
+    ["not-zip", "bad-xml", "entity", "size", "members", "total", "duplicate",
+     "encrypted", "nested-name", "nested-bytes"],
+)
+def test_packages_fail_closed_without_member_disclosure(tmp_path, capsys, monkeypatch, suffix, kind):
+    import io
+    import zipfile
+
+    scanner = load_scanner()
+    path = tmp_path / ("report" + suffix)
+    member = "private-member-SYNTHETIC.xml"
+    with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+        if kind == "nested-name":
+            archive.writestr("private-SYNTHETIC.zip", "Public report")
+        elif kind == "nested-bytes":
+            nested = io.BytesIO()
+            with zipfile.ZipFile(nested, "w") as inner:
+                inner.writestr("note.txt", "Public report")
+            archive.writestr("private-SYNTHETIC.bin", nested.getvalue())
+        else:
+            archive.writestr(member, {
+                "bad-xml": "<SYNTHETIC",
+                "entity": '<!DOCTYPE x [<!ENTITY e "SYNTHETIC">]><x>&e;</x>',
+            }.get(kind, "<root>Public report</root>"))
+    if kind == "not-zip":
+        path.write_bytes(b"SYNTHETIC invalid zip")
+    elif kind == "duplicate":
+        with pytest.warns(UserWarning, match="Duplicate"), zipfile.ZipFile(path, "a") as archive:
+            archive.writestr(member, "SYNTHETIC")
+    elif kind == "encrypted":
+        content = bytearray(path.read_bytes())
+        # Mark both local and central headers as encrypted.
+        content[6] |= 1
+        content[content.index(b"PK\x01\x02") + 8] |= 1
+        path.write_bytes(content)
+    elif kind in {"size", "members", "total"}:
+        monkeypatch.setattr(scanner, {
+            "size": "DOCX_MAX_MEMBER_BYTES",
+            "members": "DOCX_MAX_MEMBERS",
+            "total": "DOCX_MAX_TOTAL_BYTES",
+        }[kind], 0 if kind == "members" else 1)
+
+    assert scanner.scan(tmp_path) == 1
+    output = capsys.readouterr()
+    assert f"ERROR: {path.name}: invalid or oversized package" in output.out
+    assert "SYNTHETIC" not in output.out + output.err
+    assert not output.err
+
+
 @pytest.mark.parametrize(
     ("runs", "rule"),
     [
@@ -1153,7 +1272,7 @@ def test_docx_fail_closed_without_xml_disclosure(tmp_path, capsys, monkeypatch, 
             )
     assert scanner.scan(tmp_path) == 1
     output = capsys.readouterr().out
-    assert "ERROR: report.docx: invalid or oversized DOCX" in output
+    assert "ERROR: report.docx: invalid or oversized package" in output
     assert "SYNTHETIC" not in output
 
 
@@ -1176,7 +1295,7 @@ def test_malformed_word_part_is_not_allowlisted_and_scan_continues(tmp_path, mem
 
     assert result.returncode == 1
     assert set(result.stdout.splitlines()) == {
-        "ERROR: a-report.docx: invalid or oversized DOCX",
+        "ERROR: a-report.docx: invalid or oversized package",
         "z-report.md:2: scratch-path (1 hit(s))",
         "files_scanned=2 home-path=0 credential=0 private-key=0 "
         "scratch-path=1 internal-host=0 allowed_hits=0 errors=1",
@@ -1214,7 +1333,7 @@ def test_docx_resource_limit_boundaries(tmp_path, capsys, monkeypatch, limit, ov
 
     output = capsys.readouterr().out
     if overflow:
-        assert "ERROR: report.docx: invalid or oversized DOCX" in output
+        assert "ERROR: report.docx: invalid or oversized package" in output
     assert f"errors={int(overflow)}" in output
     assert "files_scanned=1" in output
     assert "SYNTHETIC" not in output
@@ -1256,7 +1375,7 @@ def test_expanded_docx_member_reads_are_bounded(tmp_path, capsys, monkeypatch, o
     assert f"errors={int(overflow)}" in output.out
     assert "files_scanned=1" in output.out
     if overflow:
-        assert "ERROR: report.docx: invalid or oversized DOCX" in output.out
+        assert "ERROR: report.docx: invalid or oversized package" in output.out
     assert not output.err
     assert path.read_bytes() == original
 
@@ -1302,7 +1421,7 @@ def test_outer_docx_read_is_bounded(tmp_path, capsys, monkeypatch, overflow):
     assert f"errors={int(overflow)}" in output.out
     assert "files_scanned=2" in output.out
     if overflow:
-        assert "ERROR: report.DOCX: invalid or oversized DOCX" in output.out
+        assert "ERROR: report.DOCX: invalid or oversized package" in output.out
     assert not output.err
     assert path.read_bytes() == original
 
@@ -1328,7 +1447,7 @@ def test_utf16_dtd_is_rejected_without_entity_expansion(tmp_path, capsys):
         archive.writestr("word/document.xml", xml.encode("utf-16"))
     assert load_scanner().scan(tmp_path) == 1
     output = capsys.readouterr().out
-    assert "ERROR: report.docx: invalid or oversized DOCX" in output
+    assert "ERROR: report.docx: invalid or oversized package" in output
     assert "SYNTHETIC" not in output
 
 
@@ -1440,7 +1559,7 @@ def test_docx_corrupt_auxiliary_member_fails_closed(tmp_path):
     path.write_bytes(content)
     result = run_guard(tmp_path)
     assert result.returncode == 1
-    assert "ERROR: report.docx: invalid or oversized DOCX" in result.stdout
+    assert "ERROR: report.docx: invalid or oversized package" in result.stdout
     assert "SYNTHETIC" not in result.stdout + result.stderr
 
 
@@ -1469,7 +1588,7 @@ def test_unreadable_docx_structure_fails_closed_through_cli(tmp_path, kind):
 
     assert result.returncode == 1
     assert result.stdout.splitlines() == [
-        "ERROR: a-report.docx: invalid or oversized DOCX",
+        "ERROR: a-report.docx: invalid or oversized package",
         "files_scanned=2 home-path=0 credential=0 private-key=0 "
         "scratch-path=0 internal-host=0 allowed_hits=0 errors=1",
     ]
@@ -1501,7 +1620,7 @@ def test_corrupt_zip_lzma_docx_continues_scanning_through_cli(tmp_path):
 
     assert result.returncode == 1
     assert result.stdout.splitlines() == [
-        "ERROR: a-report.docx: invalid or oversized DOCX",
+        "ERROR: a-report.docx: invalid or oversized package",
         "files_scanned=2 home-path=0 credential=0 private-key=0 "
         "scratch-path=0 internal-host=0 allowed_hits=0 errors=1",
     ]

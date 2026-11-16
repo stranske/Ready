@@ -121,16 +121,19 @@ def line_hits(line: bytes, structured: bool) -> tuple[Counter[str], bool]:
 DOCX_MAX_MEMBERS = 4096
 DOCX_MAX_MEMBER_BYTES = 8 * 1024 * 1024
 DOCX_MAX_TOTAL_BYTES = 64 * 1024 * 1024
+PACKAGE_SUFFIXES = {".docx", ".xlsx", ".pptx", ".zip"}
 WORD_NS = "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}"
 
 
-class _DocxTreeBuilder(ET.TreeBuilder):
+class _PackageTreeBuilder(ET.TreeBuilder):
     def doctype(self, name, pubid, system):
-        raise ValueError("DOCX XML declaration")
+        raise ValueError("package XML declaration")
 
 
-def docx_text_lines(content: bytes, *, raw_lines: list[bytes] | None = None) -> list[bytes]:
-    """Decode bounded Word XML without extracting files or disclosing package text."""
+def package_text_lines(
+    content: bytes, *, docx: bool = False, raw_lines: list[bytes] | None = None
+) -> list[bytes]:
+    """Scan bounded top-level members without extracting or disclosing their text."""
     if len(content) > DOCX_MAX_TOTAL_BYTES:
         raise ValueError("DOCX limit")
     lines: list[bytes] = []
@@ -140,7 +143,7 @@ def docx_text_lines(content: bytes, *, raw_lines: list[bytes] | None = None) -> 
         if (
             len(members) > DOCX_MAX_MEMBERS
             or len(names) != len(set(names))
-            or "word/document.xml" not in names
+            or (docx and "word/document.xml" not in names)
             or sum(member.file_size for member in members) > DOCX_MAX_TOTAL_BYTES
         ):
             raise ValueError("DOCX limit or structure")
@@ -151,9 +154,27 @@ def docx_text_lines(content: bytes, *, raw_lines: list[bytes] | None = None) -> 
                 xml = stream.read(DOCX_MAX_MEMBER_BYTES + 1)
             if len(xml) > DOCX_MAX_MEMBER_BYTES:
                 raise ValueError("DOCX member limit")
+            if (
+                Path(member.filename).suffix.lower()
+                in PACKAGE_SUFFIXES | {".tar", ".gz", ".tgz", ".bz2", ".xz", ".7z", ".rar"}
+                or xml.startswith(
+                    (b"PK\x03\x04", b"PK\x05\x06", b"PK\x07\x08", b"\x1f\x8b", b"BZh",
+                     b"\xfd7zXZ\x00", b"7z\xbc\xaf\x27\x1c", b"Rar!\x1a\x07")
+                )
+                or xml[257:262] == b"ustar"
+                or zipfile.is_zipfile(io.BytesIO(xml))
+            ):
+                raise ValueError("nested archive")
             if raw_lines is not None:
                 raw_lines.extend(xml.splitlines())
-            if not (member.filename.startswith("word/") and member.filename.endswith(".xml")):
+            is_xml = member.filename.lower().endswith((".xml", ".rels"))
+            if not docx and not is_xml:
+                # Binary members retain byte coverage; UTF-8 text has the same bytes.
+                lines.extend(xml.decode("utf-8", errors="replace").encode("utf-8").splitlines())
+                continue
+            if docx and not (
+                member.filename.startswith("word/") and member.filename.endswith(".xml")
+            ):
                 continue
             if (
                 len(xml) > DOCX_MAX_MEMBER_BYTES
@@ -161,7 +182,12 @@ def docx_text_lines(content: bytes, *, raw_lines: list[bytes] | None = None) -> 
                 or b"<!ENTITY" in xml.upper()
             ):
                 raise ValueError("DOCX XML limit or declaration")
-            document = ET.fromstring(xml, parser=ET.XMLParser(target=_DocxTreeBuilder()))
+            document = ET.fromstring(xml, parser=ET.XMLParser(target=_PackageTreeBuilder()))
+            if not docx:
+                # XML parsing strips tags, decodes character references, and joins
+                # split text runs in worksheets, shared strings, slides and notes.
+                lines.extend("".join(document.itertext()).encode("utf-8").splitlines())
+                continue
             # Join visible runs in both WordprocessingML and DrawingML dialects.
             for namespace in (
                 WORD_NS,
@@ -188,6 +214,11 @@ def docx_text_lines(content: bytes, *, raw_lines: list[bytes] | None = None) -> 
                         paragraphs[-1].append(node.text or "")
                     pending.extend((child, False) for child in reversed(node))
     return lines
+
+
+def docx_text_lines(content: bytes, *, raw_lines: list[bytes] | None = None) -> list[bytes]:
+    """Retain Word paragraph boundaries while sharing the bounded package reader."""
+    return package_text_lines(content, docx=True, raw_lines=raw_lines)
 
 
 def scan(root: Path, allowlist: Path | None = None) -> int:
@@ -228,7 +259,7 @@ def scan(root: Path, allowlist: Path | None = None) -> int:
                         and path.samefile(allowlist_path)
                     ):
                         continue
-                    if path.suffix.lower() == ".docx":
+                    if path.suffix.lower() in PACKAGE_SUFFIXES:
                         # Bound the outer package before decoding its ZIP members.
                         # One extra byte lets the decoder reject oversized input.
                         with path.open("rb") as stream:
@@ -239,10 +270,12 @@ def scan(root: Path, allowlist: Path | None = None) -> int:
                     errors.append(f"{name}: cannot read file")
                     continue
                 files_scanned += 1
-                if path.suffix.lower() == ".docx":
+                if path.suffix.lower() in PACKAGE_SUFFIXES:
                     try:
                         member_lines: list[bytes] = []
-                        visible_lines = docx_text_lines(content, raw_lines=member_lines)
+                        visible_lines = package_text_lines(
+                            content, docx=path.suffix.lower() == ".docx", raw_lines=member_lines
+                        )
                     except (
                         OSError,
                         ValueError,
@@ -255,7 +288,7 @@ def scan(root: Path, allowlist: Path | None = None) -> int:
                         LookupError,
                     ):
                         # Fail closed without disclosing corrupt package contents.
-                        errors.append(f"{name}: invalid or oversized DOCX")
+                        errors.append(f"{name}: invalid or oversized package")
                         continue
                     # Preserve byte/member/visible coverage without counting one
                     # exposed marker repeatedly across representations. Counts are

@@ -75,6 +75,31 @@ def test_binary_findings_still_block_after_preparation(tmp_path):
     assert guard.scan(tmp_path) == 1
 
 
+@pytest.mark.parametrize("suffix", [".xlsx", ".pptx", ".zip"])
+@pytest.mark.parametrize("packaged", [False, True])
+def test_package_bytes_preserved_then_guarded(tmp_path, capsys, suffix, packaged):
+    path = tmp_path / ("report" + suffix)
+    if packaged:
+        with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+            archive.writestr("xl/sharedStrings.xml", "<root>scratchpad/SYNTHETIC</root>")
+    else:
+        # Even malformed packages whose bytes decode as UTF-8 must not be rewritten.
+        path.write_bytes(b"scratchpad/SYNTHETIC")
+    original = path.read_bytes()
+
+    assert prepare.prepare_copy(tmp_path)["files_redacted"] == 0
+    assert path.read_bytes() == original
+    assert guard.scan(tmp_path) == 1
+    output = capsys.readouterr()
+    if packaged:
+        assert f"{path.name}:1: scratch-path (1 hit(s))" in output.out
+        assert "errors=0" in output.out
+    else:
+        assert f"ERROR: {path.name}: invalid or oversized package" in output.out
+    assert "SYNTHETIC" not in output.out + output.err
+    assert not output.err
+
+
 @pytest.mark.parametrize("content", ['{"clones/a": 1, "scratchpad/a": 2}', '{"path": "clones/a"'])
 def test_invalid_or_colliding_json_fails_without_partial_write(tmp_path, content):
     (tmp_path / "a.txt").write_text("clones/a")
