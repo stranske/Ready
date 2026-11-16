@@ -1218,6 +1218,64 @@ def test_packages_fail_closed_without_member_disclosure(
     assert not output.err
 
 
+@pytest.mark.parametrize("suffix", [".xlsx", ".pptx", ".zip"])
+@pytest.mark.parametrize(
+    "nested_format", ["zip", "empty-zip", "prefixed-zip", "gzip", "bzip2", "xz", "tar"]
+)
+def test_disguised_nested_archives_fail_closed_through_cli(tmp_path, suffix, nested_format):
+    import bz2
+    import gzip
+    import io
+    import lzma
+    import tarfile
+    import zipfile
+
+    public_text = b"Public report"
+    if nested_format in {"zip", "empty-zip", "prefixed-zip"}:
+        buffer = io.BytesIO()
+        with zipfile.ZipFile(buffer, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+            if nested_format != "empty-zip":
+                archive.writestr("public.txt", public_text)
+        payload = buffer.getvalue()
+        if nested_format == "prefixed-zip":
+            # An executable or other prefix can hide ZIP's opening signature.
+            payload = b"Public prefix\n" + payload
+    elif nested_format == "tar":
+        buffer = io.BytesIO()
+        with tarfile.open(fileobj=buffer, mode="w") as archive:
+            member = tarfile.TarInfo("public.txt")
+            member.size = len(public_text)
+            archive.addfile(member, io.BytesIO(public_text))
+        payload = buffer.getvalue()
+    else:
+        compress = {
+            "gzip": gzip.compress,
+            "bzip2": bz2.compress,
+            "xz": lzma.compress,
+        }[nested_format]
+        payload = compress(public_text)
+
+    path = tmp_path / f"a-report{suffix}"
+    member_name = "private-SYNTHETIC.bin"
+    with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+        archive.writestr(member_name, payload)
+    original = path.read_bytes()
+    (tmp_path / "z-report.md").write_text("Public report.\n")
+
+    result = run_guard(tmp_path)
+
+    assert result.returncode == 1
+    assert result.stdout.splitlines() == [
+        f"ERROR: {path.name}: invalid or oversized package",
+        "files_scanned=2 home-path=0 credential=0 private-key=0 "
+        "scratch-path=0 internal-host=0 allowed_hits=0 errors=1",
+    ]
+    assert "SYNTHETIC" not in result.stdout + result.stderr
+    assert member_name not in result.stdout + result.stderr
+    assert not result.stderr
+    assert path.read_bytes() == original
+
+
 @pytest.mark.parametrize(
     ("runs", "rule"),
     [
