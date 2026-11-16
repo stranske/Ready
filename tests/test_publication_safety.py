@@ -1438,17 +1438,18 @@ def test_malformed_word_part_is_not_allowlisted_and_scan_continues(tmp_path, mem
     assert path.read_bytes() == original
 
 
+@pytest.mark.parametrize("suffix", [".docx", ".xlsx", ".pptx", ".zip"])
 @pytest.mark.parametrize("limit", ["members", "member-bytes", "expanded-bytes"])
 @pytest.mark.parametrize("overflow", [False, True])
-def test_docx_resource_limit_boundaries(tmp_path, capsys, monkeypatch, limit, overflow):
+def test_package_resource_limit_boundaries(tmp_path, capsys, monkeypatch, suffix, limit, overflow):
     import zipfile
 
     scanner = load_scanner()
-    path = tmp_path / "report.docx"
+    path = tmp_path / f"report{suffix}"
     write_docx(path, [["Public report"]])
     with zipfile.ZipFile(path, "a", compression=zipfile.ZIP_DEFLATED) as archive:
         # An auxiliary member must count toward both size budgets, even though
-        # it contains no Word XML. Compression keeps the ZIP below either cap.
+        # it contains no XML. Compression keeps the ZIP below either cap.
         archive.writestr("custom/data.bin", b"SYNTHETIC" * 1024)
         members = archive.infolist()
     setting, boundary = {
@@ -1465,7 +1466,7 @@ def test_docx_resource_limit_boundaries(tmp_path, capsys, monkeypatch, limit, ov
 
     output = capsys.readouterr().out
     if overflow:
-        assert "ERROR: report.docx: invalid or oversized package" in output
+        assert f"ERROR: {path.name}: invalid or oversized package" in output
     assert f"errors={int(overflow)}" in output
     assert "files_scanned=1" in output
     assert "SYNTHETIC" not in output
@@ -1473,12 +1474,13 @@ def test_docx_resource_limit_boundaries(tmp_path, capsys, monkeypatch, limit, ov
     assert path.read_bytes() == original
 
 
+@pytest.mark.parametrize("suffix", [".docx", ".xlsx", ".pptx", ".zip"])
 @pytest.mark.parametrize("overflow", [False, True])
-def test_expanded_docx_member_reads_are_bounded(tmp_path, capsys, monkeypatch, overflow):
+def test_expanded_package_member_reads_are_bounded(tmp_path, capsys, monkeypatch, suffix, overflow):
     import zipfile
 
     scanner = load_scanner()
-    path = tmp_path / "report.docx"
+    path = tmp_path / f"report{suffix}"
     write_docx(path, [["Public report"]])
     with zipfile.ZipFile(path, "a", compression=zipfile.ZIP_DEFLATED) as archive:
         xml = archive.read("word/document.xml")
@@ -1494,7 +1496,7 @@ def test_expanded_docx_member_reads_are_bounded(tmp_path, capsys, monkeypatch, o
     reads = []
 
     def bounded_read(stream, size=-1):
-        assert 0 <= size <= limit + 1, "Expanded DOCX member read exceeded its budget"
+        assert 0 <= size <= limit + 1, "Expanded package member read exceeded its budget"
         reads.append(stream.name)
         return real_read(stream, size)
 
@@ -1507,17 +1509,18 @@ def test_expanded_docx_member_reads_are_bounded(tmp_path, capsys, monkeypatch, o
     assert f"errors={int(overflow)}" in output.out
     assert "files_scanned=1" in output.out
     if overflow:
-        assert "ERROR: report.docx: invalid or oversized package" in output.out
+        assert f"ERROR: {path.name}: invalid or oversized package" in output.out
     assert not output.err
     assert path.read_bytes() == original
 
 
+@pytest.mark.parametrize("suffix", [".DOCX", ".XLSX", ".PPTX", ".ZIP"])
 @pytest.mark.parametrize("overflow", [False, True])
-def test_outer_docx_read_is_bounded(tmp_path, capsys, monkeypatch, overflow):
+def test_outer_package_read_is_bounded(tmp_path, capsys, monkeypatch, suffix, overflow):
     import io
 
     scanner = load_scanner()
-    path = tmp_path / "report.DOCX"
+    path = tmp_path / f"report{suffix}"
     write_docx(path, [["Public report"]])
     limit = path.stat().st_size
     if overflow:
@@ -1532,7 +1535,7 @@ def test_outer_docx_read_is_bounded(tmp_path, capsys, monkeypatch, overflow):
     class BudgetedInput(io.BytesIO):
         def read(self, size=-1):
             nonlocal bytes_read
-            assert 0 <= size <= limit + 1 - bytes_read, "DOCX input read exceeded its budget"
+            assert 0 <= size <= limit + 1 - bytes_read, "Package input read exceeded its budget"
             chunk = super().read(size)
             bytes_read += len(chunk)
             return chunk
@@ -1553,7 +1556,7 @@ def test_outer_docx_read_is_bounded(tmp_path, capsys, monkeypatch, overflow):
     assert f"errors={int(overflow)}" in output.out
     assert "files_scanned=2" in output.out
     if overflow:
-        assert "ERROR: report.DOCX: invalid or oversized package" in output.out
+        assert f"ERROR: {path.name}: invalid or oversized package" in output.out
     assert not output.err
     assert path.read_bytes() == original
 
