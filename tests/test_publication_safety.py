@@ -1632,24 +1632,41 @@ def test_utf16_docx_visible_text_is_decoded(tmp_path, encoding, member, unsafe):
     assert path.read_bytes() == original
 
 
+@pytest.mark.parametrize("suffix", [".docx", ".xlsx", ".pptx", ".zip"])
 @pytest.mark.parametrize("location", ["zip-comment", "xml-attribute", "auxiliary"])
-def test_docx_preserves_raw_byte_and_member_scans(tmp_path, location):
+def test_packages_preserve_raw_byte_and_member_scans(tmp_path, suffix, location):
     import zipfile
 
-    path = tmp_path / "report.docx"
-    write_docx(path, [["Public report"]])
+    path = tmp_path / f"report{suffix}"
+    member = {
+        ".docx": "word/document.xml",
+        ".xlsx": "xl/sharedStrings.xml",
+        ".pptx": "ppt/slides/slide1.xml",
+        ".zip": "public.xml",
+    }[suffix]
+    with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+        archive.writestr(member, "<root>Public report</root>")
     with zipfile.ZipFile(path, "a", compression=zipfile.ZIP_DEFLATED) as archive:
         if location == "zip-comment":
             archive.comment = b"ghp_SYNTHETIC"
         elif location == "xml-attribute":
-            archive.writestr("word/header1.xml", '<x hidden="ghp_SYNTHETIC"/>')
+            archive.writestr("custom/metadata.xml", '<x hidden="ghp_SYNTHETIC"/>')
         else:
-            archive.writestr("custom/data.bin", b"ghp_SYNTHETIC")
+            # Non-UTF-8 binary members still require a decompressed byte scan.
+            archive.writestr("custom/data.bin", b"\xff\x00ghp_SYNTHETIC\x00\xfe")
     original = path.read_bytes()
+    if location != "zip-comment":
+        # Only decompression exposes these findings; visible XML omits attributes.
+        assert not any(pattern.search(original) for pattern in load_scanner().RULES.values())
     result = run_guard(tmp_path)
     assert result.returncode == 1
-    assert "credential=1" in result.stdout
+    assert result.stdout.splitlines() == [
+        f"{path.name}:1: credential (1 hit(s))",
+        "files_scanned=1 home-path=0 credential=1 private-key=0 "
+        "scratch-path=0 internal-host=0 allowed_hits=0 errors=0",
+    ]
     assert "SYNTHETIC" not in result.stdout + result.stderr
+    assert not result.stderr
     assert path.read_bytes() == original
 
 
