@@ -7,6 +7,7 @@ import io
 import json
 import lzma
 import re
+import tarfile
 import xml.etree.ElementTree as ET
 import zipfile
 import zlib
@@ -160,6 +161,16 @@ def package_xml_text(document: ET.Element):
     yield "".join(buffer)
 
 
+def _checksum_valid_tar_header(data: bytes) -> bool:
+    if len(data) < tarfile.BLOCKSIZE:
+        return False
+    try:
+        tarfile.TarInfo.frombuf(data[: tarfile.BLOCKSIZE], "utf-8", "surrogateescape")
+    except tarfile.TarError:
+        return False
+    return True
+
+
 def package_text_lines(
     content: bytes, *, docx: bool = False, raw_lines: list[bytes] | None = None
 ) -> list[bytes]:
@@ -200,6 +211,7 @@ def package_text_lines(
                     )
                 )
                 or xml[257:262] == b"ustar"
+                or _checksum_valid_tar_header(xml)
                 or zipfile.is_zipfile(io.BytesIO(xml))
             ):
                 raise ValueError("nested archive")

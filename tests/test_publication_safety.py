@@ -1260,6 +1260,7 @@ def test_disguised_nested_archives_fail_closed_through_cli(tmp_path, suffix, nes
     import zipfile
 
     public_text = b"Public report"
+    member_name = "private-SYNTHETIC.bin"
     if nested_format in {"zip", "empty-zip", "prefixed-zip"}:
         buffer = io.BytesIO()
         with zipfile.ZipFile(buffer, "w", compression=zipfile.ZIP_DEFLATED) as archive:
@@ -1270,12 +1271,38 @@ def test_disguised_nested_archives_fail_closed_through_cli(tmp_path, suffix, nes
             # An executable or other prefix can hide ZIP's opening signature.
             payload = b"Public prefix\n" + payload
     elif nested_format == "tar":
+        inner_zip = io.BytesIO()
+        with zipfile.ZipFile(inner_zip, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+            archive.writestr("note-SYNTHETIC.txt", public_text)
+        zip_bytes = inner_zip.getvalue()
+        tar_member = zip_bytes + b"\x00" * 70000
         buffer = io.BytesIO()
-        with tarfile.open(fileobj=buffer, mode="w") as archive:
-            member = tarfile.TarInfo("public.txt")
-            member.size = len(public_text)
-            archive.addfile(member, io.BytesIO(public_text))
-        payload = buffer.getvalue()
+        with tarfile.open(fileobj=buffer, mode="w", format=tarfile.USTAR_FORMAT) as archive:
+            header = tarfile.TarInfo("nested.zip")
+            header.size = len(tar_member)
+            archive.addfile(header, io.BytesIO(tar_member))
+        payload = bytearray(buffer.getvalue())
+        payload[257:262] = b"\x00" * 5
+        header_block = bytearray(payload[:512])
+        header_block[148:156] = b"        "
+        chksum = sum(header_block)
+        chk = f"{chksum:06o}\0".encode("ascii")
+        header_block[148 : 148 + len(chk)] = chk
+        payload[:512] = header_block
+        payload = bytes(payload)
+        with tarfile.open(fileobj=io.BytesIO(payload), mode="r") as archive:
+            assert archive.getnames() == ["nested.zip"]
+        assert payload[257:262] != b"ustar"
+        assert not zipfile.is_zipfile(io.BytesIO(payload))
+        control_dir = tmp_path.parent / f"{tmp_path.name}-binary-control"
+        control_dir.mkdir()
+        (control_dir / "z-control.md").write_text("Public report.\n")
+        control_path = control_dir / f"control-report{suffix}"
+        with zipfile.ZipFile(control_path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+            archive.writestr(member_name, b"\xff\x00\xfe" + public_text)
+        control_result = run_guard(control_dir)
+        assert control_result.returncode == 0
+        assert "SYNTHETIC" not in control_result.stdout + control_result.stderr
     else:
         compress = {
             "gzip": gzip.compress,
@@ -1285,7 +1312,6 @@ def test_disguised_nested_archives_fail_closed_through_cli(tmp_path, suffix, nes
         payload = compress(public_text)
 
     path = tmp_path / f"a-report{suffix}"
-    member_name = "private-SYNTHETIC.bin"
     with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
         archive.writestr(member_name, payload)
     original = path.read_bytes()
