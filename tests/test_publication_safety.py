@@ -967,34 +967,63 @@ def write_docx(path, paragraphs, *, member="word/document.xml"):
             archive.writestr(member, xml)
 
 
-@pytest.mark.parametrize("unsafe", [False, True])
-def test_large_xlsx_styles_are_fully_scanned(tmp_path, capsys, unsafe):
+@pytest.mark.parametrize("unsafe_member", [None, "styles", "shared-strings"])
+def test_large_xlsx_styles_are_fully_scanned(tmp_path, unsafe_member):
     import zipfile
 
-    scanner = load_scanner()
     path = tmp_path / "report.xlsx"
-    format_code = "scratchpad/SYNTHETIC" if unsafe else "0.00"
+    # The five affected audit workbooks contain about 60,000 cell styles,
+    # expanding xl/styles.xml past the former 8 MiB member limit.
+    style_count = 60_000
+    format_code = "scratchpad/SYNTHETIC" if unsafe_member == "styles" else "0.00"
     xml = (
         '<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">'
-        + " " * (10 * 1024 * 1024)
+        + f'<cellStyleXfs count="{style_count}">'
+        + (
+            '<xf numFmtId="0" fontId="0" fillId="0" borderId="0" '
+            'applyNumberFormat="0" applyAlignment="0"/>'
+        )
+        * style_count
+        + f'</cellStyleXfs><cellStyles count="{style_count}">'
+        + "".join(
+            f'<cellStyle name="Public report style {index}" xfId="{index}" builtinId="0"/>'
+            for index in range(style_count)
+        )
+        + "</cellStyles>"
         + f'<numFmts count="1"><numFmt numFmtId="164" formatCode="{format_code}"/></numFmts>'
         + "</styleSheet>"
     )
+    assert 8 * 1024 * 1024 < len(xml.encode()) < 16 * 1024 * 1024
+    visible_text = (
+        "<r><t>scratch</t></r><r><t>pad/SYNTHETIC</t></r>"
+        if unsafe_member == "shared-strings"
+        else "<t>Public report</t>"
+    )
     with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
         archive.writestr("xl/styles.xml", xml)
+        archive.writestr(
+            "xl/sharedStrings.xml",
+            '<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">'
+            f"<si>{visible_text}</si></sst>",
+        )
     original = path.read_bytes()
+    # Exercise the failing job's CLI with an explicitly selected policy.
+    policy = tmp_path.parent / ".publication-allow"
+    policy.write_text("# No exceptions for these synthetic packages.\n")
 
-    assert scanner.scan(tmp_path) == int(unsafe)
+    result = run_guard(tmp_path, allowlist=policy)
 
-    output = capsys.readouterr()
-    assert "files_scanned=1" in output.out
-    assert "errors=0" in output.out
-    assert f"scratch-path={int(unsafe)}" in output.out
+    unsafe = unsafe_member is not None
+    assert result.returncode == int(unsafe)
+    assert "files_scanned=1" in result.stdout
+    assert "errors=0" in result.stdout
+    assert f"scratch-path={int(unsafe)}" in result.stdout
     if unsafe:
-        assert "report.xlsx:1: scratch-path (1 hit(s))" in output.out
-    assert "SYNTHETIC" not in output.out + output.err
-    assert "xl/styles.xml" not in output.out + output.err
-    assert not output.err
+        assert "report.xlsx:1: scratch-path (1 hit(s))" in result.stdout
+    assert "SYNTHETIC" not in result.stdout + result.stderr
+    assert "xl/styles.xml" not in result.stdout + result.stderr
+    assert "xl/sharedStrings.xml" not in result.stdout + result.stderr
+    assert not result.stderr
     assert path.read_bytes() == original
 
 
