@@ -119,7 +119,7 @@ def line_hits(line: bytes, structured: bool) -> tuple[Counter[str], bool]:
 
 
 DOCX_MAX_MEMBERS = 4096
-DOCX_MAX_MEMBER_BYTES = 8 * 1024 * 1024
+DOCX_MAX_MEMBER_BYTES = 16 * 1024 * 1024
 DOCX_MAX_TOTAL_BYTES = 64 * 1024 * 1024
 PACKAGE_SUFFIXES = {".docx", ".xlsx", ".pptx", ".zip"}
 WORD_NS = "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}"

@@ -1,0 +1,179 @@
+version: 1
+issue: 689
+base: main
+branch: codex/issue-689
+tasks:
+  - id: task-01
+    title: Fix the source of the `publication-safety` failure in `stranske/Ready`
+      identified in the linked log.
+    status: doing
+    started_at: '2026-11-17T05:47:25Z'
+    finished_at: null
+    commit: ''
+    notes: []
+  - id: task-02
+    title: 'Read the linked publication-safety job log (verify: confirm completion
+      in repo)'
+    status: todo
+    started_at: null
+    finished_at: null
+    commit: ''
+    notes: []
+  - id: task-03
+    title: 'identify the specific step (verify: confirm completion in repo)'
+    status: todo
+    started_at: null
+    finished_at: null
+    commit: ''
+    notes: []
+  - id: task-04
+    title: 'command that exits with code 1 (verify: confirm completion in repo)'
+    status: todo
+    started_at: null
+    finished_at: null
+    commit: ''
+    notes: []
+  - id: task-05
+    title: 'Reproduce the publication-safety failure locally by running the same command
+      the failing job step runs (verify: confirm completion in repo)'
+    status: todo
+    started_at: null
+    finished_at: null
+    commit: ''
+    notes: []
+  - id: task-06
+    title: 'Fix the root cause in the source file or script that triggers the publication-safety
+      failure (verify: confirm completion in repo)'
+    status: todo
+    started_at: null
+    finished_at: null
+    commit: ''
+    notes: []
+  - id: task-07
+    title: _(3 further sub-tasks elided; split this issue)_
+    status: todo
+    started_at: null
+    finished_at: null
+    commit: ''
+    notes: []
+  - id: task-08
+    title: Add or extend a regression test reproducing the failure using `pytest`
+      or `node --test`, whichever the source uses.
+    status: todo
+    started_at: null
+    finished_at: null
+    commit: ''
+    notes: []
+  - id: task-09
+    title: 'Determine whether the failing source uses pytest or node --test by inspecting
+      the repository''s test configuration (verify: config validated)'
+    status: todo
+    started_at: null
+    finished_at: null
+    commit: ''
+    notes: []
+  - id: task-10
+    title: 'Write a regression test that fails when the publication-safety violation
+      is present (verify: confirm completion in repo)'
+    status: todo
+    started_at: null
+    finished_at: null
+    commit: ''
+    notes: []
+  - id: task-11
+    title: 'passes after the fix (verify: confirm completion in repo)'
+    status: todo
+    started_at: null
+    finished_at: null
+    commit: ''
+    notes: []
+  - id: task-12
+    title: 'Run the full repository test command locally (verify: confirm completion
+      in repo)'
+    status: todo
+    started_at: null
+    finished_at: null
+    commit: ''
+    notes: []
+  - id: task-13
+    title: 'confirm that the new regression test passes along with the existing tests
+      (verify: tests pass)'
+    status: todo
+    started_at: null
+    finished_at: null
+    commit: ''
+    notes: []
+  - id: task-14
+    title: The named `publication-safety` check passes on regenerated stranske/Ready#688,
+      verified with `gh run view <run-id>`, and the repository's test command passes
+      locally.
+    status: todo
+    started_at: null
+    finished_at: null
+    commit: ''
+    notes: []
+  - id: task-15
+    title: Reintroducing the reported behavior makes the regression test fail; reverting
+      restores a passing test.
+    status: todo
+    started_at: null
+    finished_at: null
+    commit: ''
+    notes: []
+  - id: task-16
+    title: The next sync-core round classifies stranske/Ready#688 without this finding.
+    status: todo
+    started_at: null
+    finished_at: null
+    commit: ''
+    notes: []
+  - id: task-17
+    title: 'Fix the failure named in the title (`Pre-existing failure: publication-safety
+      fails on main and on sync PR`) at its source; the failing check''s log is linked
+      under Evidence and the sync PR is stranske/Ready#688.'
+    status: todo
+    started_at: null
+    finished_at: null
+    commit: ''
+    notes: []
+  - id: task-18
+    title: Add or extend a test that reproduces the failure and passes after the fix
+      (`pytest` or `node --test`, whichever the source uses).
+    status: todo
+    started_at: null
+    finished_at: null
+    commit: ''
+    notes: []
+  - id: task-19
+    title: The named `publication-safety` check passes on regenerated stranske/Ready#688,
+      verified with `gh run view <run-id>` (Regeneration happens through `.github/workflows/maint-68-sync-consumer-repos.yml`,
+      which the agent cannot modify and cannot re-trigger or retry. The check also
+      runs in a different repository (stranske/Ready), which the agent may not have
+      access to. | Have a human maintainer trigger the sync workflow and verify the
+      run. Limit the agent's scope to a local fix plus a passing local test run.)
+    status: todo
+    started_at: null
+    finished_at: null
+    commit: ''
+    notes: []
+  - id: task-20
+    title: The next sync-core round classifies stranske/Ready#688 without this finding.
+      (This depends on an external sync-core process and schedule that the agent cannot
+      control, observe, or retry. | Move this to a human-verified post-merge checklist
+      item. It is not an agent task.)
+    status: todo
+    started_at: null
+    finished_at: null
+    commit: ''
+    notes: []
+  - id: task-21
+    title: Fix the source of the failure (if the fix requires editing a file under
+      .github/workflows/) (Workflow files are protected. If the publication-safety
+      failure originates in a workflow definition, the agent cannot fix it. | If the
+      log shows that the cause is in a workflow YAML file, escalate to a human. Otherwise
+      restrict the agent to scripts, source, or content files.)
+    status: todo
+    started_at: null
+    finished_at: null
+    commit: ''
+    notes: []
