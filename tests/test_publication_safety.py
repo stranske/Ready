@@ -967,6 +967,37 @@ def write_docx(path, paragraphs, *, member="word/document.xml"):
             archive.writestr(member, xml)
 
 
+@pytest.mark.parametrize("unsafe", [False, True])
+def test_large_xlsx_styles_are_fully_scanned(tmp_path, capsys, unsafe):
+    import zipfile
+
+    scanner = load_scanner()
+    path = tmp_path / "report.xlsx"
+    format_code = "scratchpad/SYNTHETIC" if unsafe else "0.00"
+    xml = (
+        '<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">'
+        + " " * (10 * 1024 * 1024)
+        + f'<numFmts count="1"><numFmt numFmtId="164" formatCode="{format_code}"/></numFmts>'
+        + "</styleSheet>"
+    )
+    with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+        archive.writestr("xl/styles.xml", xml)
+    original = path.read_bytes()
+
+    assert scanner.scan(tmp_path) == int(unsafe)
+
+    output = capsys.readouterr()
+    assert "files_scanned=1" in output.out
+    assert "errors=0" in output.out
+    assert f"scratch-path={int(unsafe)}" in output.out
+    if unsafe:
+        assert "report.xlsx:1: scratch-path (1 hit(s))" in output.out
+    assert "SYNTHETIC" not in output.out + output.err
+    assert "xl/styles.xml" not in output.out + output.err
+    assert not output.err
+    assert path.read_bytes() == original
+
+
 @pytest.mark.parametrize("suffix", [".xlsx", ".pptx", ".zip"])
 @pytest.mark.parametrize(
     ("marker", "rule"),
