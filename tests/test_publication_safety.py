@@ -1027,6 +1027,40 @@ def test_large_xlsx_styles_are_fully_scanned(tmp_path, unsafe_member):
     assert path.read_bytes() == original
 
 
+@pytest.mark.parametrize("overflow", [False, True])
+def test_xlsx_styles_member_limit_through_cli(tmp_path, overflow):
+    import zipfile
+
+    path = tmp_path / "report.xlsx"
+    member = "xl/styles.xml"
+    opening = (
+        b'<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">'
+        b'<numFmts count="1"><numFmt numFmtId="164" formatCode="0.00"/></numFmts>'
+    )
+    closing = b"</styleSheet>"
+    # Exercise the configured 16 MiB boundary in a fresh CLI process, rather
+    # than lowering the scanner's budget to fit a small synthetic member.
+    member_bytes = 16 * 1024 * 1024 + int(overflow)
+    xml = opening + b" " * (member_bytes - len(opening) - len(closing)) + closing
+    with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+        archive.writestr(member, xml)
+        assert archive.getinfo(member).file_size == member_bytes
+    original = path.read_bytes()
+    assert len(original) < 8 * 1024 * 1024
+    policy = tmp_path.parent / ".publication-allow"
+    policy.write_text("# No exceptions for the member size boundary.\n")
+
+    result = run_guard(tmp_path, allowlist=policy)
+
+    assert result.returncode == int(overflow)
+    assert "files_scanned=1" in result.stdout
+    assert f"allowed_hits=0 errors={int(overflow)}" in result.stdout
+    assert ("ERROR: report.xlsx: invalid or oversized package" in result.stdout) == overflow
+    assert member not in result.stdout + result.stderr
+    assert not result.stderr
+    assert path.read_bytes() == original
+
+
 @pytest.mark.parametrize("suffix", [".xlsx", ".pptx", ".zip"])
 @pytest.mark.parametrize(
     ("marker", "rule"),
