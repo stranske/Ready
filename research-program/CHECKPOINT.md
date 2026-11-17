@@ -5146,3 +5146,10 @@ remote: - Required status check "Gate / gate" is
 ## 2026-11-17T04:36:43Z — D3-unblock-sweep-2026-11-17T04 — route — router picked codex from ['codex', 'cursor']
 ## 2026-11-17T04:36:43Z — D3-unblock-sweep-2026-11-17T04 — claimed by driver (agent codex)
 ## 2026-11-17T04:41:06Z — D3-unblock-sweep-2026-11-17T04 — done — codex produced 463 words at artifacts/sweeps/D3-unblock-sweep-2026-11-17T04.md in 202s
+## 2026-11-17T05:43:10Z — mirror — deferred — Ready#688 exact-head sync review; publication resumes by 2026-11-17T07:28:15+00:00; local work continues
+## 2026-11-17T05:58:13Z — mirror — deferred — Ready#688 exact-head sync review; publication resumes by 2026-11-17T07:28:15+00:00; local work continues
+## 2026-11-17T06:13:17Z — mirror — deferred — Ready#688 exact-head sync review; publication resumes by 2026-11-17T07:28:15+00:00; local work continues
+## 2026-11-17T06:28:21Z — mirror — deferred — Ready#688 exact-head sync review; publication resumes by 2026-11-17T07:28:15+00:00; local work continues
+## 2026-11-17T06:43:24Z — mirror — deferred — Ready#688 exact-head sync review; publication resumes by 2026-11-17T07:28:15+00:00; local work continues
+## 2026-11-17T06:58:27Z — mirror — deferred — Ready#688 exact-head sync review; publication resumes by 2026-11-17T07:28:15+00:00; local work continues
+## 2026-11-17T07:13:30Z — mirror — deferred — Ready#688 exact-head sync review; publication resumes by 2026-11-17T09:02:51+00:00; local work continues

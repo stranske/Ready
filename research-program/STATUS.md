@@ -1,8 +1,8 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-17T05:27:42Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-17T07:28:31Z)
 
 Units: 407 — done 399, failed 4, superseded 4
 Paused: False   Phase stops: []
-Capacity (Orchestrator): codex=ok claude=warn cursor=ok gemini=warn vibe=shed muse=ok
+Capacity (Orchestrator): codex=ok claude=shed cursor=ok gemini=warn vibe=ok muse=ok
 Orchestrator evidence (30d): offload runs 0, bound to a research round 0, scored 0 (PASS 0, FAIL 0, infra 0) — no offload runs
 Worker write boundary: on — each unit writes only unitdirs/<unit>/, its output directory, artifacts/proposals/, its own clone's working tree (not .git) and temp
 Claude conservation: off (weekly window available)
@@ -420,18 +420,18 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-16T20:27:11Z — unblock — enqueued D3-unblock-sweep-2026-11-16T20
-- 2026-11-16T20:27:11Z — D3-unblock-sweep-2026-11-16T20 — route — router picked cursor from ['codex', 'cursor']
-- 2026-11-16T20:27:11Z — D3-unblock-sweep-2026-11-16T20 — claimed by driver (agent cursor)
-- 2026-11-16T20:30:03Z — D3-unblock-sweep-2026-11-16T20 — done — cursor produced 608 words at artifacts/sweeps/D3-unblock-sweep-2026-11-16T20.md in 143s
-- 2026-11-17T00:06:51Z — verify — enqueued D4-verify-merged-2026-11-17T00
-- 2026-11-17T00:06:51Z — D4-verify-merged-2026-11-17T00 — route — router picked cursor from ['codex', 'cursor']
-- 2026-11-17T00:06:51Z — D4-verify-merged-2026-11-17T00 — claimed by driver (agent cursor)
 - 2026-11-17T00:10:53Z — D4-verify-merged-2026-11-17T00 — done — cursor produced 781 words at artifacts/verification/D4-verify-merged-2026-11-17T00.md in 213s
 - 2026-11-17T04:36:42Z — unblock — enqueued D3-unblock-sweep-2026-11-17T04
 - 2026-11-17T04:36:43Z — D3-unblock-sweep-2026-11-17T04 — route — router picked codex from ['codex', 'cursor']
 - 2026-11-17T04:36:43Z — D3-unblock-sweep-2026-11-17T04 — claimed by driver (agent codex)
 - 2026-11-17T04:41:06Z — D3-unblock-sweep-2026-11-17T04 — done — codex produced 463 words at artifacts/sweeps/D3-unblock-sweep-2026-11-17T04.md in 202s
+- 2026-11-17T05:43:10Z — mirror — deferred — Ready#688 exact-head sync review; publication resumes by 2026-11-17T07:28:15+00:00; local work continues
+- 2026-11-17T05:58:13Z — mirror — deferred — Ready#688 exact-head sync review; publication resumes by 2026-11-17T07:28:15+00:00; local work continues
+- 2026-11-17T06:13:17Z — mirror — deferred — Ready#688 exact-head sync review; publication resumes by 2026-11-17T07:28:15+00:00; local work continues
+- 2026-11-17T06:28:21Z — mirror — deferred — Ready#688 exact-head sync review; publication resumes by 2026-11-17T07:28:15+00:00; local work continues
+- 2026-11-17T06:43:24Z — mirror — deferred — Ready#688 exact-head sync review; publication resumes by 2026-11-17T07:28:15+00:00; local work continues
+- 2026-11-17T06:58:27Z — mirror — deferred — Ready#688 exact-head sync review; publication resumes by 2026-11-17T07:28:15+00:00; local work continues
+- 2026-11-17T07:13:30Z — mirror — deferred — Ready#688 exact-head sync review; publication resumes by 2026-11-17T09:02:51+00:00; local work continues
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
