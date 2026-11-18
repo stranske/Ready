@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-18T00:20:44Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-18T00:24:48Z)
 
-Units: 410 — claimed 1, done 401, failed 4, superseded 4
+Units: 410 — done 402, failed 4, superseded 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=shed cursor=ok gemini=ok vibe=shed muse=ok
 Orchestrator evidence (30d): offload runs 0, bound to a research round 0, scored 0 (PASS 0, FAIL 0, infra 0) — no offload runs
@@ -419,11 +419,10 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D4-verify-merged-2026-11-14T23 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
 | D4-verify-merged-2026-11-15T23 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
 | D4-verify-merged-2026-11-17T00 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
-| D4-verify-merged-2026-11-18T00 | D | D | claimed | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
+| D4-verify-merged-2026-11-18T00 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
 
 ## Last checkpoints
 
-- 2026-11-17T07:13:30Z — mirror — deferred — Ready#688 exact-head sync review; publication resumes by 2026-11-17T09:02:51+00:00; local work continues
 - 2026-11-17T12:38:12Z — unblock — enqueued D3-unblock-sweep-2026-11-17T12
 - 2026-11-17T12:38:13Z — D3-unblock-sweep-2026-11-17T12 — route — router picked cursor from ['codex', 'cursor']
 - 2026-11-17T12:38:13Z — D3-unblock-sweep-2026-11-17T12 — claimed by driver (agent cursor)
@@ -435,6 +434,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-18T00:20:43Z — verify — enqueued D4-verify-merged-2026-11-18T00
 - 2026-11-18T00:20:44Z — D4-verify-merged-2026-11-18T00 — route — router picked cursor from ['codex', 'cursor']
 - 2026-11-18T00:20:44Z — D4-verify-merged-2026-11-18T00 — claimed by driver (agent cursor)
+- 2026-11-18T00:24:48Z — D4-verify-merged-2026-11-18T00 — done — cursor produced 641 words at artifacts/verification/D4-verify-merged-2026-11-18T00.md in 214s
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
