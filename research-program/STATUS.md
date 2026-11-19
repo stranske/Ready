@@ -1,8 +1,8 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-19T17:31:49Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-19T18:47:56Z)
 
 Units: 416 — done 408, failed 4, superseded 4
 Paused: False   Phase stops: []
-Capacity (Orchestrator): codex=warn claude=shed cursor=ok gemini=ok vibe=shed muse=ok
+Capacity (Orchestrator): codex=ok claude=shed cursor=ok gemini=ok vibe=shed muse=ok
 Orchestrator evidence (30d): offload runs 0, bound to a research round 0, scored 0 (PASS 0, FAIL 0, infra 0) — no offload runs
 Worker write boundary: on — each unit writes only unitdirs/<unit>/, its output directory, artifacts/proposals/, its own clone's working tree (not .git) and temp
 Claude conservation: off (weekly window available)
@@ -429,10 +429,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-19T03:59:59Z — mirror — deferred — Ready#692 exact-head sync review; publication resumes by 2026-11-19T05:13:32+00:00; local work continues
-- 2026-11-19T05:01:27Z — unblock — enqueued D3-unblock-sweep-2026-11-19T05
-- 2026-11-19T05:01:28Z — D3-unblock-sweep-2026-11-19T05 — route — router picked codex from ['codex', 'cursor']
-- 2026-11-19T05:01:28Z — D3-unblock-sweep-2026-11-19T05 — claimed by driver (agent codex)
 - 2026-11-19T05:03:50Z — D3-unblock-sweep-2026-11-19T05 — done — codex produced 416 words at artifacts/sweeps/D3-unblock-sweep-2026-11-19T05.md in 111s
 - 2026-11-19T13:04:01Z — unblock — enqueued D3-unblock-sweep-2026-11-19T13
 - 2026-11-19T13:04:01Z — D3-unblock-sweep-2026-11-19T13 — route — router picked codex from ['codex', 'cursor']
@@ -441,6 +437,10 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-19T13:21:36Z — D3-unblock-sweep-2026-11-19T13 — route — router picked cursor from ['codex', 'cursor']
 - 2026-11-19T13:21:36Z — D3-unblock-sweep-2026-11-19T13 — claimed by driver (agent cursor)
 - 2026-11-19T13:23:12Z — D3-unblock-sweep-2026-11-19T13 — done — cursor produced 510 words at artifacts/sweeps/D3-unblock-sweep-2026-11-19T13.md in 67s
+- 2026-11-19T17:47:20Z — mirror — deferred — Ready#693 exact-head sync review; publication resumes by 2026-11-19T19:44:43+00:00; local work continues
+- 2026-11-19T18:02:23Z — mirror — deferred — Ready#693 exact-head sync review; publication resumes by 2026-11-19T19:44:43+00:00; local work continues
+- 2026-11-19T18:17:25Z — mirror — deferred — Ready#693 exact-head sync review; publication resumes by 2026-11-19T19:44:43+00:00; local work continues
+- 2026-11-19T18:32:53Z — mirror — deferred — Ready#693 exact-head sync review; publication resumes by 2026-11-19T19:44:43+00:00; local work continues
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
