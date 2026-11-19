@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-19T02:59:20Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-19T04:15:00Z)
 
 Units: 414 — done 406, failed 4, superseded 4
 Paused: False   Phase stops: []
@@ -427,10 +427,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-18T12:50:01Z — unblock — enqueued D3-unblock-sweep-2026-11-18T12
-- 2026-11-18T12:50:01Z — D3-unblock-sweep-2026-11-18T12 — route — router picked codex from ['codex', 'cursor']
-- 2026-11-18T12:50:01Z — D3-unblock-sweep-2026-11-18T12 — claimed by driver (agent codex)
-- 2026-11-18T12:53:42Z — D3-unblock-sweep-2026-11-18T12 — done — codex produced 488 words at artifacts/sweeps/D3-unblock-sweep-2026-11-18T12.md in 192s
 - 2026-11-18T20:55:34Z — unblock — enqueued D3-unblock-sweep-2026-11-18T20
 - 2026-11-18T20:55:41Z — D3-unblock-sweep-2026-11-18T20 — route — router picked codex from ['codex', 'cursor']
 - 2026-11-18T20:55:41Z — D3-unblock-sweep-2026-11-18T20 — claimed by driver (agent codex)
@@ -439,6 +435,10 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-19T00:20:47Z — D4-verify-merged-2026-11-19T00 — route — router picked cursor from ['codex', 'cursor']
 - 2026-11-19T00:20:47Z — D4-verify-merged-2026-11-19T00 — claimed by driver (agent cursor)
 - 2026-11-19T00:24:14Z — D4-verify-merged-2026-11-19T00 — done — cursor produced 520 words at artifacts/verification/D4-verify-merged-2026-11-19T00.md in 177s
+- 2026-11-19T03:14:48Z — mirror — deferred — Ready#692 exact-head sync review; publication resumes by 2026-11-19T05:13:32+00:00; local work continues
+- 2026-11-19T03:29:52Z — mirror — deferred — Ready#692 exact-head sync review; publication resumes by 2026-11-19T05:13:32+00:00; local work continues
+- 2026-11-19T03:44:55Z — mirror — deferred — Ready#692 exact-head sync review; publication resumes by 2026-11-19T05:13:32+00:00; local work continues
+- 2026-11-19T03:59:59Z — mirror — deferred — Ready#692 exact-head sync review; publication resumes by 2026-11-19T05:13:32+00:00; local work continues
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
