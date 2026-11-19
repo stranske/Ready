@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-19T00:05:10Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-19T00:20:47Z)
 
-Units: 413 — done 405, failed 4, superseded 4
+Units: 414 — claimed 1, done 405, failed 4, superseded 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=ok claude=shed cursor=ok gemini=ok vibe=shed muse=ok
 Orchestrator evidence (30d): offload runs 0, bound to a research round 0, scored 0 (PASS 0, FAIL 0, infra 0) — no offload runs
@@ -423,12 +423,10 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D4-verify-merged-2026-11-15T23 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
 | D4-verify-merged-2026-11-17T00 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
 | D4-verify-merged-2026-11-18T00 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
+| D4-verify-merged-2026-11-19T00 | D | D | claimed | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
 
 ## Last checkpoints
 
-- 2026-11-18T04:47:58Z — D3-unblock-sweep-2026-11-18T04 — claimed by driver (agent cursor)
-- 2026-11-18T04:50:03Z — D3-unblock-sweep-2026-11-18T04 — done — cursor produced 504 words at artifacts/sweeps/D3-unblock-sweep-2026-11-18T04.md in 90s
-- 2026-11-18T05:20:57Z — mirror — deferred — Ready#691 exact-head sync review; publication resumes by 2026-11-18T07:18:35+00:00; local work continues
 - 2026-11-18T05:36:20Z — mirror — deferred — Ready#691 exact-head sync review; publication resumes by 2026-11-18T07:18:35+00:00; local work continues
 - 2026-11-18T12:50:01Z — unblock — enqueued D3-unblock-sweep-2026-11-18T12
 - 2026-11-18T12:50:01Z — D3-unblock-sweep-2026-11-18T12 — route — router picked codex from ['codex', 'cursor']
@@ -438,6 +436,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-18T20:55:41Z — D3-unblock-sweep-2026-11-18T20 — route — router picked codex from ['codex', 'cursor']
 - 2026-11-18T20:55:41Z — D3-unblock-sweep-2026-11-18T20 — claimed by driver (agent codex)
 - 2026-11-18T20:58:30Z — D3-unblock-sweep-2026-11-18T20 — done — codex produced 421 words at artifacts/sweeps/D3-unblock-sweep-2026-11-18T20.md in 127s
+- 2026-11-19T00:20:46Z — verify — enqueued D4-verify-merged-2026-11-19T00
+- 2026-11-19T00:20:47Z — D4-verify-merged-2026-11-19T00 — route — router picked cursor from ['codex', 'cursor']
+- 2026-11-19T00:20:47Z — D4-verify-merged-2026-11-19T00 — claimed by driver (agent cursor)
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
