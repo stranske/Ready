@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-21T00:38:24Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-21T00:57:43Z)
 
 Units: 422 — claimed 1, done 413, failed 4, superseded 4
 Paused: False   Phase stops: []
@@ -431,13 +431,10 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D4-verify-merged-2026-11-18T00 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
 | D4-verify-merged-2026-11-19T00 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
 | D4-verify-merged-2026-11-20T00 | D | D | done | codex | driver | Verify merged PRs against their issues' acceptance criteria |  |
-| D4-verify-merged-2026-11-21T00 | D | D | claimed | codex | driver | Verify merged PRs against their issues' acceptance criteria |  |
+| D4-verify-merged-2026-11-21T00 | D | D | claimed | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
 
 ## Last checkpoints
 
-- 2026-11-20T05:24:55Z — D3-unblock-sweep-2026-11-20T05 — done — codex produced 462 words at artifacts/sweeps/D3-unblock-sweep-2026-11-20T05.md in 128s
-- 2026-11-20T13:24:54Z — unblock — enqueued D3-unblock-sweep-2026-11-20T13
-- 2026-11-20T13:24:54Z — D3-unblock-sweep-2026-11-20T13 — route — router picked cursor from ['codex', 'cursor']
 - 2026-11-20T13:24:54Z — D3-unblock-sweep-2026-11-20T13 — claimed by driver (agent cursor)
 - 2026-11-20T13:27:24Z — D3-unblock-sweep-2026-11-20T13 — done — cursor produced 617 words at artifacts/sweeps/D3-unblock-sweep-2026-11-20T13.md in 121s
 - 2026-11-20T21:29:44Z — unblock — enqueued D3-unblock-sweep-2026-11-20T21
@@ -447,6 +444,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-21T00:38:23Z — verify — enqueued D4-verify-merged-2026-11-21T00
 - 2026-11-21T00:38:24Z — D4-verify-merged-2026-11-21T00 — route — router picked codex from ['codex', 'cursor']
 - 2026-11-21T00:38:24Z — D4-verify-merged-2026-11-21T00 — claimed by driver (agent codex)
+- 2026-11-21T00:42:40Z — D4-verify-merged-2026-11-21T00 — fail — codex produced 395 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/verification/D4-verify-merged-2026-11-21T00.md (min 400); rotating agen
+- 2026-11-21T00:57:43Z — D4-verify-merged-2026-11-21T00 — route — router picked cursor from ['codex', 'cursor']
+- 2026-11-21T00:57:43Z — D4-verify-merged-2026-11-21T00 — claimed by driver (agent cursor)
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 

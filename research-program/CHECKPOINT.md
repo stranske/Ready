@@ -5225,3 +5225,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-11-21T00:38:23Z — verify — enqueued D4-verify-merged-2026-11-21T00
 ## 2026-11-21T00:38:24Z — D4-verify-merged-2026-11-21T00 — route — router picked codex from ['codex', 'cursor']
 ## 2026-11-21T00:38:24Z — D4-verify-merged-2026-11-21T00 — claimed by driver (agent codex)
+## 2026-11-21T00:42:40Z — D4-verify-merged-2026-11-21T00 — fail — codex produced 395 words at [LOCAL_HOME]/.codex/automations/research-program/artifacts/verification/D4-verify-merged-2026-11-21T00.md (min 400); rotating agen
+## 2026-11-21T00:57:43Z — D4-verify-merged-2026-11-21T00 — route — router picked cursor from ['codex', 'cursor']
+## 2026-11-21T00:57:43Z — D4-verify-merged-2026-11-21T00 — claimed by driver (agent cursor)
