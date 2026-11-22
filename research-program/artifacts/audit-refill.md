@@ -1,10 +1,10 @@
-# Audit refill check 2026-11-22T03:50:22Z
+# Audit refill check 2026-11-22T16:05:16Z
 
 | repo | open agent-ready | last set | threshold | scorecard | broken/fab | unscored | ux | action |
 |---|---|---|---|---|---|---|---|---|
 | stranske/Deliverable-Render | 0 | 0 (round filed nothing) | 2 | 2026-10-25 | 0/0 | 0+0 (prev 0) | — | idle |
 | stranske/Manager-Mosaic | 1 | 0 (round filed nothing) | 2 | 2026-10-24 | 0/0 | 0+0 (prev 2) | — | idle |
-| stranske/Workflows | 2 | 1 | 2 | 2026-11-03 | 0/0 | 0+0 (prev 2) | — | idle |
+| stranske/Workflows | 0 | 1 | 2 | 2026-11-03 | 0/0 | 0+0 (prev 2) | — | idle |
 | stranske/Travel-Plan-Permission | 0 | 2 | 2 | 2026-11-04 | 0/0 | 0+0 (prev 12) | — | idle |
 | stranske/Trend_Model_Project | 0 | 3 | 2 | 2026-10-25 | 0/0 | 0+0 (prev 0) | — | idle |
 | stranske/Portable-Alpha-Extension-Model | 0 | 1 | 2 | 2026-10-24 | 0/0 | 0+0 (prev 6) | — | idle |
