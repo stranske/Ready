@@ -5266,3 +5266,11 @@ remote: - Required status check "Gate / gate" is
 ## 2026-11-23T00:41:54Z — D4-verify-merged-2026-11-23T00 — route — router picked cursor from ['codex', 'cursor']
 ## 2026-11-23T00:41:54Z — D4-verify-merged-2026-11-23T00 — claimed by driver (agent cursor)
 ## 2026-11-23T00:46:46Z — D4-verify-merged-2026-11-23T00 — done — cursor produced 824 words at artifacts/verification/D4-verify-merged-2026-11-23T00.md in 262s
+## 2026-11-23T05:56:38Z — mirror — deferred — Ready#695 exact-head sync review; publication resumes by 2026-11-23T07:54:20+00:00; local work continues
+## 2026-11-23T06:11:40Z — unblock — enqueued D3-unblock-sweep-2026-11-23T06
+## 2026-11-23T06:11:41Z — D3-unblock-sweep-2026-11-23T06 — route — router picked cursor from ['codex', 'cursor']
+## 2026-11-23T06:11:41Z — D3-unblock-sweep-2026-11-23T06 — claimed by driver (agent cursor)
+## 2026-11-23T06:11:42Z — mirror — deferred — Ready#695 exact-head sync review; publication resumes by 2026-11-23T07:54:20+00:00; local work continues
+## 2026-11-23T06:13:29Z — D3-unblock-sweep-2026-11-23T06 — done — cursor produced 591 words at artifacts/sweeps/D3-unblock-sweep-2026-11-23T06.md in 103s
+## 2026-11-23T06:13:29Z — mirror — deferred — Ready#695 exact-head sync review; publication resumes by 2026-11-23T07:54:20+00:00; local work continues
+## 2026-11-23T06:28:32Z — mirror — deferred — Ready#695 exact-head sync review; publication resumes by 2026-11-23T07:54:20+00:00; local work continues
