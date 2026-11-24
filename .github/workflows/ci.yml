@@ -18,6 +18,12 @@ name: CI
 on:
   push:
     branches: [main]
+    # research-program/ is a published mirror of a local engine's notes and artifacts.
+    # Its scheduled status pushes (about 97 a day) change no code: tests use testpaths
+    # ["tests"], and ruff and black exclude research-program/artifacts. A push that
+    # touches anything else still runs CI on the whole tree.
+    paths-ignore:
+      - 'research-program/**'
   workflow_dispatch:
 
 jobs:
