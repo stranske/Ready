@@ -5286,3 +5286,8 @@ remote: - Required status check "Gate / gate" is
 ## 2026-11-24T00:44:54Z — D4-verify-merged-2026-11-24T00 — route — router picked cursor from ['codex', 'cursor']
 ## 2026-11-24T00:44:54Z — D4-verify-merged-2026-11-24T00 — claimed by driver (agent cursor)
 ## 2026-11-24T00:48:48Z — D4-verify-merged-2026-11-24T00 — done — cursor produced 797 words at artifacts/verification/D4-verify-merged-2026-11-24T00.md in 204s
+## 2026-11-24T04:25:42Z — refill — Manager-Mosaic: scorecard 2026-10-24 is 31d old (> 30) → audit queued
+## 2026-11-24T04:25:43Z — refill — Portable-Alpha-Extension-Model: scorecard 2026-10-24 is 31d old (> 30) → audit queued
+## 2026-11-24T04:25:45Z — refill — Pension-Data: scorecard 2026-10-24 is 31d old (> 30) → audit queued
+## 2026-11-24T04:25:48Z — D-audit-Manager-Mosaic--2026-11-24T04-25-42Z — route — router picked cursor from ['codex', 'cursor']
+## 2026-11-24T04:25:48Z — D-audit-Manager-Mosaic--2026-11-24T04-25-42Z — claimed by driver (agent cursor)
