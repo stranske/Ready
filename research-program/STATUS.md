@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-24T14:19:11Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-24T14:34:42Z)
 
-Units: 438 — done 430, failed 4, superseded 4
+Units: 439 — claimed 1, done 430, failed 4, superseded 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=shed claude=shed cursor=ok gemini=ok vibe=ok muse=ok
 Orchestrator evidence (30d): offload runs 0, bound to a research round 0, scored 0 (PASS 0, FAIL 0, infra 0) — no offload runs
@@ -261,6 +261,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D3-unblock-sweep-2026-11-23T14 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-2026-11-23T22 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-2026-11-24T06 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
+| D3-unblock-sweep-2026-11-24T14 | D | D | claimed | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-pass2-20260913T2023 | D | D | done | cursor | driver | Unblock sweep pass 2: the seven repos the budgeted first pass deferred |  |
 | D-audit-Counter_Risk--2026-09-07T04-47-32Z | D | D | done | codex | driver | Audit stranske/Counter_Risk and file issues (supply 2 <= 2) |  |
 | D-audit-Counter_Risk--2026-09-08T17-11-36Z | D | D | done | codex | codex | Audit stranske/Counter_Risk and file issues (supply 1 <= 2) |  |
@@ -451,9 +452,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-24T04:44:27Z — D-audit-Pension-Data--2026-11-24T04-25-45Z — route — router picked cursor from ['codex', 'cursor']
-- 2026-11-24T04:44:27Z — D-audit-Pension-Data--2026-11-24T04-25-45Z — claimed by driver (agent cursor)
-- 2026-11-24T04:47:30Z — D-audit-Pension-Data--2026-11-24T04-25-45Z — done — cursor produced 368 words at artifacts/audits/Pension-Data-2026-11-24.md in 154s
 - 2026-11-24T05:02:58Z — D-audit-Portable-Alpha-Extension-Model--2026-11-24T04-25-43Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-11-24T05:02:58Z — D-audit-Portable-Alpha-Extension-Model--2026-11-24T04-25-43Z — claimed by driver (agent cursor)
 - 2026-11-24T05:09:05Z — D-audit-Portable-Alpha-Extension-Model--2026-11-24T04-25-43Z — done — cursor produced 215 words at artifacts/audits/Portable-Alpha-Extension-Model-2026-11-24.md in 337s
@@ -463,6 +461,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-24T06:29:39Z — D3-unblock-sweep-2026-11-24T06 — route — router picked cursor from ['codex', 'cursor']
 - 2026-11-24T06:29:39Z — D3-unblock-sweep-2026-11-24T06 — claimed by driver (agent cursor)
 - 2026-11-24T06:31:49Z — D3-unblock-sweep-2026-11-24T06 — done — cursor produced 402 words at artifacts/sweeps/D3-unblock-sweep-2026-11-24T06.md in 97s
+- 2026-11-24T14:34:41Z — unblock — enqueued D3-unblock-sweep-2026-11-24T14
+- 2026-11-24T14:34:42Z — D3-unblock-sweep-2026-11-24T14 — route — router picked cursor from ['codex', 'cursor']
+- 2026-11-24T14:34:42Z — D3-unblock-sweep-2026-11-24T14 — claimed by driver (agent cursor)
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
