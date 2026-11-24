@@ -5295,3 +5295,5 @@ remote: - Required status check "Gate / gate" is
 ## 2026-11-24T04:44:27Z — D-audit-Pension-Data--2026-11-24T04-25-45Z — route — router picked cursor from ['codex', 'cursor']
 ## 2026-11-24T04:44:27Z — D-audit-Pension-Data--2026-11-24T04-25-45Z — claimed by driver (agent cursor)
 ## 2026-11-24T04:47:30Z — D-audit-Pension-Data--2026-11-24T04-25-45Z — done — cursor produced 368 words at artifacts/audits/Pension-Data-2026-11-24.md in 154s
+## 2026-11-24T05:02:58Z — D-audit-Portable-Alpha-Extension-Model--2026-11-24T04-25-43Z — route — router picked cursor from ['codex', 'cursor']
+## 2026-11-24T05:02:58Z — D-audit-Portable-Alpha-Extension-Model--2026-11-24T04-25-43Z — claimed by driver (agent cursor)
