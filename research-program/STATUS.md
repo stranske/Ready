@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-24T04:28:58Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-24T04:44:27Z)
 
-Units: 437 — done 427, failed 4, queued 2, superseded 4
+Units: 437 — claimed 1, done 427, failed 4, queued 1, superseded 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=shed claude=ok cursor=ok gemini=ok vibe=ok muse=ok
 Orchestrator evidence (30d): offload runs 0, bound to a research round 0, scored 0 (PASS 0, FAIL 0, infra 0) — no offload runs
@@ -325,7 +325,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Pension-Data--2026-09-23T09-11-18Z | D | D | done | cursor | codex | Audit stranske/Pension-Data and file issues (scorecard 2026-09-20 has  | 2W/1P/0B/0F of 3 |
 | D-audit-Pension-Data--2026-09-23T22-11-16Z | D | D | done | cursor | codex | Audit stranske/Pension-Data and file issues (scorecard 2026-09-23 has  | 3W/0P/0B/0F of 3 |
 | D-audit-Pension-Data--2026-10-24T04-03-29Z | D | D | done | codex | driver | Audit stranske/Pension-Data and file issues (scorecard 2026-09-23 is 3 | 3W/0P/0B/0F of 3 |
-| D-audit-Pension-Data--2026-11-24T04-25-45Z | D | D | queued | claude |  | Audit stranske/Pension-Data and file issues (scorecard 2026-10-24 is 3 |  |
+| D-audit-Pension-Data--2026-11-24T04-25-45Z | D | D | claimed | cursor | driver | Audit stranske/Pension-Data and file issues (scorecard 2026-10-24 is 3 |  |
 | D-audit-Portable-Alpha-Extension-Model--2026-09-07T04-47-31Z | D | D | done | codex | codex | Audit stranske/Portable-Alpha-Extension-Model and file issues (supply  |  |
 | D-audit-Portable-Alpha-Extension-Model--2026-09-07T17-01-44Z | D | D | done | codex | driver | Audit stranske/Portable-Alpha-Extension-Model and file issues (supply  |  |
 | D-audit-Portable-Alpha-Extension-Model--2026-09-23T09-11-16Z | D | D | done | cursor | driver | Audit stranske/Portable-Alpha-Extension-Model and file issues (scoreca | 2W/1P/0B/0F of 6 |
@@ -450,8 +450,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-23T22:22:54Z — D3-unblock-sweep-2026-11-23T22 — claimed by driver (agent cursor)
-- 2026-11-23T22:25:33Z — D3-unblock-sweep-2026-11-23T22 — done — cursor produced 514 words at artifacts/sweeps/D3-unblock-sweep-2026-11-23T22.md in 129s
 - 2026-11-24T00:44:53Z — verify — enqueued D4-verify-merged-2026-11-24T00
 - 2026-11-24T00:44:54Z — D4-verify-merged-2026-11-24T00 — route — router picked cursor from ['codex', 'cursor']
 - 2026-11-24T00:44:54Z — D4-verify-merged-2026-11-24T00 — claimed by driver (agent cursor)
@@ -462,6 +460,8 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-24T04:25:48Z — D-audit-Manager-Mosaic--2026-11-24T04-25-42Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-11-24T04:25:48Z — D-audit-Manager-Mosaic--2026-11-24T04-25-42Z — claimed by driver (agent cursor)
 - 2026-11-24T04:28:58Z — D-audit-Manager-Mosaic--2026-11-24T04-25-42Z — done — cursor produced 539 words at artifacts/audits/Manager-Mosaic-2026-11-24.md in 161s
+- 2026-11-24T04:44:27Z — D-audit-Pension-Data--2026-11-24T04-25-45Z — route — router picked cursor from ['codex', 'cursor']
+- 2026-11-24T04:44:27Z — D-audit-Pension-Data--2026-11-24T04-25-45Z — claimed by driver (agent cursor)
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
