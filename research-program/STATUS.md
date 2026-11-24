@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-24T05:09:05Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-24T05:56:36Z)
 
 Units: 437 — done 429, failed 4, superseded 4
 Paused: False   Phase stops: []
@@ -450,8 +450,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-24T04:25:42Z — refill — Manager-Mosaic: scorecard 2026-10-24 is 31d old (> 30) → audit queued
-- 2026-11-24T04:25:43Z — refill — Portable-Alpha-Extension-Model: scorecard 2026-10-24 is 31d old (> 30) → audit queued
 - 2026-11-24T04:25:45Z — refill — Pension-Data: scorecard 2026-10-24 is 31d old (> 30) → audit queued
 - 2026-11-24T04:25:48Z — D-audit-Manager-Mosaic--2026-11-24T04-25-42Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-11-24T04:25:48Z — D-audit-Manager-Mosaic--2026-11-24T04-25-42Z — claimed by driver (agent cursor)
@@ -462,6 +460,8 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-24T05:02:58Z — D-audit-Portable-Alpha-Extension-Model--2026-11-24T04-25-43Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-11-24T05:02:58Z — D-audit-Portable-Alpha-Extension-Model--2026-11-24T04-25-43Z — claimed by driver (agent cursor)
 - 2026-11-24T05:09:05Z — D-audit-Portable-Alpha-Extension-Model--2026-11-24T04-25-43Z — done — cursor produced 215 words at artifacts/audits/Portable-Alpha-Extension-Model-2026-11-24.md in 337s
+- 2026-11-24T05:26:33Z — mirror — deferred — Ready#696 exact-head sync review; publication resumes by 2026-11-24T07:19:15+00:00; local work continues
+- 2026-11-24T05:41:34Z — mirror — deferred — Ready#696 exact-head sync review; publication resumes by 2026-11-24T07:19:15+00:00; local work continues
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 

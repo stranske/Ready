@@ -5298,3 +5298,5 @@ remote: - Required status check "Gate / gate" is
 ## 2026-11-24T05:02:58Z — D-audit-Portable-Alpha-Extension-Model--2026-11-24T04-25-43Z — route — router picked cursor from ['codex', 'cursor']
 ## 2026-11-24T05:02:58Z — D-audit-Portable-Alpha-Extension-Model--2026-11-24T04-25-43Z — claimed by driver (agent cursor)
 ## 2026-11-24T05:09:05Z — D-audit-Portable-Alpha-Extension-Model--2026-11-24T04-25-43Z — done — cursor produced 215 words at artifacts/audits/Portable-Alpha-Extension-Model-2026-11-24.md in 337s
+## 2026-11-24T05:26:33Z — mirror — deferred — Ready#696 exact-head sync review; publication resumes by 2026-11-24T07:19:15+00:00; local work continues
+## 2026-11-24T05:41:34Z — mirror — deferred — Ready#696 exact-head sync review; publication resumes by 2026-11-24T07:19:15+00:00; local work continues
