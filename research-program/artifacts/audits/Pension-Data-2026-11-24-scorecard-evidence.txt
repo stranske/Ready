@@ -1,0 +1,8 @@
+tip=29aaa8a9f6dee84f29622c03b699ab7c9684974c
+F1 one-pdf-pilot synthetic vs calpers excerpt (--ingestion-date 2024-07-01):
+  SYN-PLAN funded_ratio normalized_value=0.784 (staging_core_metrics.json)
+  CA-PERS funded_ratio normalized_value=0.768
+F2 tests/api/test_app_serving.py::test_metric_history_serves_two_plans_under_one_artifact_root PASSED
+F3 tests/web/test_build_workspace_bundle.py PASSED (59 in api/web/backplane batch)
+pytest -q (clone): 2569 passed, 51 skipped, 1 failed local-only (test_non_editable_wheel_loads_packaged_schemas — pip wheel env); CI main success 2026-11-23
+OpenAPI diff vs 2026-10-24: unchanged (7 paths)
