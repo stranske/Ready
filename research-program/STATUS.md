@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-24T05:02:58Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-24T05:09:05Z)
 
-Units: 437 — claimed 1, done 428, failed 4, superseded 4
+Units: 437 — done 429, failed 4, superseded 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=shed claude=ok cursor=ok gemini=ok vibe=ok muse=ok
 Orchestrator evidence (30d): offload runs 0, bound to a research round 0, scored 0 (PASS 0, FAIL 0, infra 0) — no offload runs
@@ -331,7 +331,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Portable-Alpha-Extension-Model--2026-09-23T09-11-16Z | D | D | done | cursor | driver | Audit stranske/Portable-Alpha-Extension-Model and file issues (scoreca | 2W/1P/0B/0F of 6 |
 | D-audit-Portable-Alpha-Extension-Model--2026-09-23T22-11-14Z | D | D | done | cursor | codex | Audit stranske/Portable-Alpha-Extension-Model and file issues (scoreca | 2W/1P/0B/0F of 6 |
 | D-audit-Portable-Alpha-Extension-Model--2026-10-24T04-03-27Z | D | D | done | cursor | driver | Audit stranske/Portable-Alpha-Extension-Model and file issues (scoreca | 2W/4P/0B/0F of 6 |
-| D-audit-Portable-Alpha-Extension-Model--2026-11-24T04-25-43Z | D | D | claimed | cursor | driver | Audit stranske/Portable-Alpha-Extension-Model and file issues (scoreca |  |
+| D-audit-Portable-Alpha-Extension-Model--2026-11-24T04-25-43Z | D | D | done | cursor | driver | Audit stranske/Portable-Alpha-Extension-Model and file issues (scoreca | 2W/4P/0B/0F of 6 |
 | D-audit-Ready--2026-09-07T04-47-33Z | D | D | done | codex | driver | Audit stranske/Ready and file issues (supply 1 <= 2) |  |
 | D-audit-Travel-Plan-Permission--2026-09-05T16-11-36Z | D | D | done | codex | codex | Audit stranske/Travel-Plan-Permission and file issues (supply 3 <= 3) |  |
 | D-audit-Travel-Plan-Permission--2026-09-06T04-25-49Z | D | D | done | codex | driver | Audit stranske/Travel-Plan-Permission and file issues (supply 1 <= 2) |  |
@@ -450,7 +450,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-24T00:48:48Z — D4-verify-merged-2026-11-24T00 — done — cursor produced 797 words at artifacts/verification/D4-verify-merged-2026-11-24T00.md in 204s
 - 2026-11-24T04:25:42Z — refill — Manager-Mosaic: scorecard 2026-10-24 is 31d old (> 30) → audit queued
 - 2026-11-24T04:25:43Z — refill — Portable-Alpha-Extension-Model: scorecard 2026-10-24 is 31d old (> 30) → audit queued
 - 2026-11-24T04:25:45Z — refill — Pension-Data: scorecard 2026-10-24 is 31d old (> 30) → audit queued
@@ -462,6 +461,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-24T04:47:30Z — D-audit-Pension-Data--2026-11-24T04-25-45Z — done — cursor produced 368 words at artifacts/audits/Pension-Data-2026-11-24.md in 154s
 - 2026-11-24T05:02:58Z — D-audit-Portable-Alpha-Extension-Model--2026-11-24T04-25-43Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-11-24T05:02:58Z — D-audit-Portable-Alpha-Extension-Model--2026-11-24T04-25-43Z — claimed by driver (agent cursor)
+- 2026-11-24T05:09:05Z — D-audit-Portable-Alpha-Extension-Model--2026-11-24T04-25-43Z — done — cursor produced 215 words at artifacts/audits/Portable-Alpha-Extension-Model-2026-11-24.md in 337s
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
