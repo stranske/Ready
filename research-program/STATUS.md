@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-25T05:00:07Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-25T05:04:17Z)
 
-Units: 448 — claimed 1, done 434, failed 4, queued 5, superseded 4
+Units: 448 — done 435, failed 4, queued 5, superseded 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=shed claude=ok cursor=ok gemini=ok vibe=ok muse=ok
 Orchestrator evidence (30d): offload runs 0, bound to a research round 0, scored 0 (PASS 0, FAIL 0, infra 0) — no offload runs
@@ -289,7 +289,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Deliverable-Render--2026-09-24T01-13-07Z | D | D | done | cursor | driver | Audit stranske/Deliverable-Render and file issues (scorecard 2026-09-2 | 7W/0P/0B/0F of 7 |
 | D-audit-Deliverable-Render--2026-10-25T08-11-07Z | D | D | done | codex | driver | Audit stranske/Deliverable-Render and file issues (scorecard 2026-09-2 | 7W/0P/0B/0F of 7 |
 | D-audit-Deliverable-Render--2026-10-25T20-34-21Z | D | D | done | codex | driver | Audit stranske/Deliverable-Render and file issues (scorecard 2026-09-2 | 7W/0P/0B/0F of 7 |
-| D-audit-Deliverable-Render--2026-11-25T04-28-12Z | D | D | claimed | cursor | driver | Audit stranske/Deliverable-Render and file issues (scorecard 2026-10-2 |  |
+| D-audit-Deliverable-Render--2026-11-25T04-28-12Z | D | D | done | cursor | driver | Audit stranske/Deliverable-Render and file issues (scorecard 2026-10-2 | 7W/0P/0B/0F of 7 |
 | D-audit-Doc-Lineage--2026-09-19T20-12-10Z | D | D | done | codex | codex | Audit stranske/Doc-Lineage and file issues (supply 2 <= 2) |  |
 | D-audit-Doc-Lineage--2026-09-23T09-11-20Z | D | D | done | cursor | driver | Audit stranske/Doc-Lineage and file issues (scorecard 2026-09-20 has n | 4W/1P/0B/0F of 5 |
 | D-audit-Doc-Lineage--2026-09-23T22-11-18Z | D | D | done | cursor | driver | Audit stranske/Doc-Lineage and file issues (scorecard 2026-09-23 has n | 4W/1P/0B/0F of 5 |
@@ -461,7 +461,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-25T04:28:12Z — refill — Deliverable-Render: scorecard 2026-10-25 is 31d old (> 30) → audit queued
 - 2026-11-25T04:28:15Z — refill — Trend_Model_Project: scorecard 2026-10-25 is 31d old (> 30) → audit queued
 - 2026-11-25T04:28:16Z — refill — Counter_Risk: scorecard 2026-10-25 is 31d old (> 30) → audit queued
 - 2026-11-25T04:28:16Z — refill — Manager-Database: scorecard 2026-10-25 is 31d old (> 30) → audit queued
@@ -473,6 +472,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-25T04:44:38Z — D-audit-Counter_Risk--2026-11-25T04-28-16Z — done — cursor produced 535 words at artifacts/audits/Counter_Risk-2026-11-25.md in 947s
 - 2026-11-25T05:00:07Z — D-audit-Deliverable-Render--2026-11-25T04-28-12Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-11-25T05:00:07Z — D-audit-Deliverable-Render--2026-11-25T04-28-12Z — claimed by driver (agent cursor)
+- 2026-11-25T05:04:17Z — D-audit-Deliverable-Render--2026-11-25T04-28-12Z — done — cursor produced 360 words at artifacts/audits/Deliverable-Render-2026-11-25.md in 219s
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
