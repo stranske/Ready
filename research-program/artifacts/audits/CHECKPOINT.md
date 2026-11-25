@@ -1,5 +1,11 @@
 # Audits CHECKPOINT (append-only)
 
+## 2026-11-25 — Trend_Model_Project Track D (D-audit-Trend_Model_Project--2026-11-25T16-43-02Z)
+- Phase 1.5 scorecard: 4 work / 0 partial / 0 broken / 0 fabricated / 0 not exercised of 4; journey passes; surfaces unscored 0; C=0
+- Tip: `9b7a7d4` (`main`)
+- Filed: 0 (prior #6127–#6129 and Nov design-review batch verified delivered)
+- OUT: `artifacts/audits/Trend_Model_Project-2026-11-25.md` (same mirror path; superseding scorecard for refill trigger)
+
 ## 2026-11-25 — Trend_Model_Project Track D (D-audit-Trend_Model_Project--2026-11-25T04-28-15Z)
 - Phase 1.5 scorecard: 4 work / 0 partial / 0 broken / 0 fabricated / 0 not exercised of 4; journey passes; surfaces unscored 0; C=0
 - Tip: `bb216c4` (`main`, +27 commits since 2026-10-25 scorecard)
