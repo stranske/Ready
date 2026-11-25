@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-25T14:51:59Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-25T15:40:43Z)
 
-Units: 449 — done 441, failed 4, superseded 4
+Units: 450 — done 442, failed 4, superseded 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=shed claude=ok cursor=ok gemini=ok vibe=shed muse=ok
 Orchestrator evidence (30d): offload runs 0, bound to a research round 0, scored 0 (PASS 0, FAIL 0, infra 0) — no offload runs
@@ -264,6 +264,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D3-unblock-sweep-2026-11-24T14 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-2026-11-24T22 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-2026-11-25T06 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
+| D3-unblock-sweep-2026-11-25T15 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-pass2-20260913T2023 | D | D | done | cursor | driver | Unblock sweep pass 2: the seven repos the budgeted first pass deferred |  |
 | D-audit-Counter_Risk--2026-09-07T04-47-32Z | D | D | done | codex | driver | Audit stranske/Counter_Risk and file issues (supply 2 <= 2) |  |
 | D-audit-Counter_Risk--2026-09-08T17-11-36Z | D | D | done | codex | codex | Audit stranske/Counter_Risk and file issues (supply 1 <= 2) |  |
@@ -462,18 +463,18 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-25T06:54:44Z — D3-unblock-sweep-2026-11-25T06 — claimed by driver (agent cursor)
-- 2026-11-25T06:56:35Z — D3-unblock-sweep-2026-11-25T06 — done — cursor produced 419 words at artifacts/sweeps/D3-unblock-sweep-2026-11-25T06.md in 81s
-- 2026-11-25T07:12:05Z — D-audit-Trend_Model_Project--2026-11-25T04-28-15Z — route — router picked cursor from ['codex', 'cursor']
-- 2026-11-25T07:12:05Z — D-audit-Trend_Model_Project--2026-11-25T04-28-15Z — claimed by driver (agent cursor)
-- 2026-11-25T07:17:39Z — D-audit-Trend_Model_Project--2026-11-25T04-28-15Z — done — cursor produced 268 words at artifacts/audits/Trend_Model_Project-2026-11-25.md in 305s
-- 2026-11-25T07:17:40Z — D-audit-Trend_Model_Project--2026-11-25T04-28-15Z — refutation posted — stranske/Trend_Model_Project#6127
-- 2026-11-25T07:33:10Z — D-audit-learning-management-system--2026-11-25T04-28-18Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-11-25T07:33:10Z — D-audit-learning-management-system--2026-11-25T04-28-18Z — claimed by driver (agent cursor)
 - 2026-11-25T07:45:57Z — D-audit-learning-management-system--2026-11-25T04-28-18Z — done — cursor produced 202 words at artifacts/audits/learning-management-system-2026-11-25.md in 735s
 - 2026-11-25T12:46:53Z — mirror — deferred — Ready#699 exact-head sync review; publication resumes by 2026-11-25T14:38:39+00:00; local work continues
 - 2026-11-25T13:02:00Z — mirror — deferred — Ready#699 exact-head sync review; publication resumes by 2026-11-25T14:38:39+00:00; local work continues
 - 2026-11-25T13:17:03Z — mirror — deferred — Ready#699 exact-head sync review; publication resumes by 2026-11-25T14:38:39+00:00; local work continues
+- 2026-11-25T15:07:55Z — unblock — enqueued D3-unblock-sweep-2026-11-25T15
+- 2026-11-25T15:07:58Z — D3-unblock-sweep-2026-11-25T15 — route — router picked cursor from ['codex', 'cursor']
+- 2026-11-25T15:07:58Z — D3-unblock-sweep-2026-11-25T15 — claimed by driver (agent cursor)
+- 2026-11-25T15:07:59Z — mirror — deferred — Ready#700 exact-head sync review; publication resumes by 2026-11-25T17:01:45+00:00; local work continues
+- 2026-11-25T15:10:37Z — D3-unblock-sweep-2026-11-25T15 — done — cursor produced 579 words at artifacts/sweeps/D3-unblock-sweep-2026-11-25T15.md in 153s
+- 2026-11-25T15:10:38Z — mirror — deferred — Ready#700 exact-head sync review; publication resumes by 2026-11-25T17:01:45+00:00; local work continues
+- 2026-11-25T15:25:41Z — mirror — deferred — Ready#700 exact-head sync review; publication resumes by 2026-11-25T17:01:45+00:00; local work continues
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
