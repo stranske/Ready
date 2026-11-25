@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-25T12:30:28Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-25T13:32:05Z)
 
 Units: 449 — done 441, failed 4, superseded 4
 Paused: False   Phase stops: []
@@ -462,9 +462,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-25T06:38:48Z — D-audit-Manager-Database--2026-11-25T04-28-16Z — refutation posted — stranske/Manager-Database#1786
-- 2026-11-25T06:54:43Z — unblock — enqueued D3-unblock-sweep-2026-11-25T06
-- 2026-11-25T06:54:44Z — D3-unblock-sweep-2026-11-25T06 — route — router picked cursor from ['codex', 'cursor']
 - 2026-11-25T06:54:44Z — D3-unblock-sweep-2026-11-25T06 — claimed by driver (agent cursor)
 - 2026-11-25T06:56:35Z — D3-unblock-sweep-2026-11-25T06 — done — cursor produced 419 words at artifacts/sweeps/D3-unblock-sweep-2026-11-25T06.md in 81s
 - 2026-11-25T07:12:05Z — D-audit-Trend_Model_Project--2026-11-25T04-28-15Z — route — router picked cursor from ['codex', 'cursor']
@@ -474,6 +471,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-25T07:33:10Z — D-audit-learning-management-system--2026-11-25T04-28-18Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-11-25T07:33:10Z — D-audit-learning-management-system--2026-11-25T04-28-18Z — claimed by driver (agent cursor)
 - 2026-11-25T07:45:57Z — D-audit-learning-management-system--2026-11-25T04-28-18Z — done — cursor produced 202 words at artifacts/audits/learning-management-system-2026-11-25.md in 735s
+- 2026-11-25T12:46:53Z — mirror — deferred — Ready#699 exact-head sync review; publication resumes by 2026-11-25T14:38:39+00:00; local work continues
+- 2026-11-25T13:02:00Z — mirror — deferred — Ready#699 exact-head sync review; publication resumes by 2026-11-25T14:38:39+00:00; local work continues
+- 2026-11-25T13:17:03Z — mirror — deferred — Ready#699 exact-head sync review; publication resumes by 2026-11-25T14:38:39+00:00; local work continues
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
