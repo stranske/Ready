@@ -5364,3 +5364,4 @@ remote: - Required status check "Gate / gate" is
 ## 2026-11-25T16:43:03Z — refill — Counter_Risk: scorecard 2026-11-25: coverage debt 2 (not exercised 1 + unscored 1) not reduced since 2026-10-25 (2) → audit queued
 ## 2026-11-25T16:43:06Z — D-audit-Counter_Risk--2026-11-25T16-43-03Z — route — router picked cursor from ['codex', 'cursor']
 ## 2026-11-25T16:43:06Z — D-audit-Counter_Risk--2026-11-25T16-43-03Z — claimed by driver (agent cursor)
+## 2026-11-25T16:54:43Z — D-audit-Counter_Risk--2026-11-25T16-43-03Z — done — cursor produced 564 words at artifacts/audits/Counter_Risk-2026-11-25.md in 668s
