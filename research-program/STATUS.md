@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-25T05:19:45Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-25T05:23:30Z)
 
-Units: 448 — claimed 1, done 435, failed 4, queued 4, superseded 4
+Units: 448 — done 436, failed 4, queued 4, superseded 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=shed claude=warn cursor=ok gemini=ok vibe=ok muse=ok
 Orchestrator evidence (30d): offload runs 0, bound to a research round 0, scored 0 (PASS 0, FAIL 0, infra 0) — no offload runs
@@ -296,7 +296,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D-audit-Doc-Lineage--2026-09-24T01-13-13Z | D | D | done | cursor | driver | Audit stranske/Doc-Lineage and file issues (scorecard 2026-09-23 has n | 4W/1P/0B/0F of 5 |
 | D-audit-Doc-Lineage--2026-10-25T08-11-13Z | D | D | done | codex | driver | Audit stranske/Doc-Lineage and file issues (scorecard 2026-09-24 is 31 | 6W/2P/0B/0F of 8 |
 | D-audit-Doc-Lineage--2026-10-25T20-34-28Z | D | D | done | codex | driver | Audit stranske/Doc-Lineage and file issues (scorecard 2026-09-24 is 31 | 6W/2P/0B/0F of 8 |
-| D-audit-Doc-Lineage--2026-11-25T04-28-19Z | D | D | claimed | cursor | driver | Audit stranske/Doc-Lineage and file issues (scorecard 2026-10-25 is 31 |  |
+| D-audit-Doc-Lineage--2026-11-25T04-28-19Z | D | D | done | cursor | driver | Audit stranske/Doc-Lineage and file issues (scorecard 2026-10-25 is 31 | 6W/2P/0B/0F of 8 |
 | D-audit-Fine-Art-Archive--2026-09-05T04-00-31Z | D | D | done | codex | codex | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 2) |  |
 | D-audit-Fine-Art-Archive--2026-09-06T04-25-53Z | D | D | done | codex | driver | Audit stranske/Fine-Art-Archive and file issues (supply 1 <= 3) |  |
 | D-audit-Fine-Art-Archive--2026-09-23T09-11-19Z | D | D | done | cursor |  | Audit stranske/Fine-Art-Archive and file issues (scorecard 2026-09-20  |  |
@@ -461,7 +461,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-25T04:28:16Z — refill — Manager-Database: scorecard 2026-10-25 is 31d old (> 30) → audit queued
 - 2026-11-25T04:28:18Z — refill — learning-management-system: scorecard 2026-10-25 is 31d old (> 30) → audit queued
 - 2026-11-25T04:28:18Z — refill — Fine-Art-Archive: scorecard 2026-10-25 is 31d old (> 30) → audit queued
 - 2026-11-25T04:28:19Z — refill — Doc-Lineage: scorecard 2026-10-25 is 31d old (> 30) → audit queued
@@ -473,6 +472,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-25T05:04:17Z — D-audit-Deliverable-Render--2026-11-25T04-28-12Z — done — cursor produced 360 words at artifacts/audits/Deliverable-Render-2026-11-25.md in 219s
 - 2026-11-25T05:19:45Z — D-audit-Doc-Lineage--2026-11-25T04-28-19Z — route — router picked cursor from ['codex', 'cursor']
 - 2026-11-25T05:19:45Z — D-audit-Doc-Lineage--2026-11-25T04-28-19Z — claimed by driver (agent cursor)
+- 2026-11-25T05:23:30Z — D-audit-Doc-Lineage--2026-11-25T04-28-19Z — done — cursor produced 682 words at artifacts/audits/Doc-Lineage-2026-11-25.md in 195s
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 

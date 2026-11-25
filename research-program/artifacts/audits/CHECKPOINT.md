@@ -1,5 +1,11 @@
 # Audits CHECKPOINT (append-only)
 
+## 2026-11-25 — Doc-Lineage Track D (D-audit-Doc-Lineage--2026-11-25T04-28-19Z)
+- Phase 1.5 scorecard: 6 work / 2 partial / 0 broken / 0 fabricated / 0 not exercised of 8; journey passes; surfaces unscored 0; C=0
+- Tip: `8ec540ad` (+1 workflow-sync commit vs 2026-10-25)
+- Filed: 0
+- OUT: `artifacts/audits/Doc-Lineage-2026-11-25.md`
+
 ## 2026-11-25 — Counter_Risk Track D (D-audit-Counter_Risk--2026-11-25T04-28-16Z)
 - Phase 1.5 scorecard: 6 work / 1 partial / 0 broken / 0 fabricated / 1 not exercised of 8; journey passes; surfaces unscored 1; C=0
 - Tip audited: `683a970` (`main` via shallow clone; workspace clone stale)
