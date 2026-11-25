@@ -5316,3 +5316,12 @@ remote: - Required status check "Gate / gate" is
 ## 2026-11-25T00:46:37Z — D4-verify-merged-2026-11-25T00 — route — router picked cursor from ['codex', 'cursor']
 ## 2026-11-25T00:46:37Z — D4-verify-merged-2026-11-25T00 — claimed by driver (agent cursor)
 ## 2026-11-25T00:49:54Z — D4-verify-merged-2026-11-25T00 — done — cursor produced 777 words at artifacts/verification/D4-verify-merged-2026-11-25T00.md in 166s
+## 2026-11-25T04:28:12Z — refill — Deliverable-Render: scorecard 2026-10-25 is 31d old (> 30) → audit queued
+## 2026-11-25T04:28:15Z — refill — Trend_Model_Project: scorecard 2026-10-25 is 31d old (> 30) → audit queued
+## 2026-11-25T04:28:16Z — refill — Counter_Risk: scorecard 2026-10-25 is 31d old (> 30) → audit queued
+## 2026-11-25T04:28:16Z — refill — Manager-Database: scorecard 2026-10-25 is 31d old (> 30) → audit queued
+## 2026-11-25T04:28:18Z — refill — learning-management-system: scorecard 2026-10-25 is 31d old (> 30) → audit queued
+## 2026-11-25T04:28:18Z — refill — Fine-Art-Archive: scorecard 2026-10-25 is 31d old (> 30) → audit queued
+## 2026-11-25T04:28:19Z — refill — Doc-Lineage: scorecard 2026-10-25 is 31d old (> 30) → audit queued
+## 2026-11-25T04:28:20Z — D-audit-Counter_Risk--2026-11-25T04-28-16Z — route — router picked cursor from ['codex', 'cursor']
+## 2026-11-25T04:28:20Z — D-audit-Counter_Risk--2026-11-25T04-28-16Z — claimed by driver (agent cursor)
