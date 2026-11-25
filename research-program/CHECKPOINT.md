@@ -5360,3 +5360,7 @@ remote: - Required status check "Gate / gate" is
 ## 2026-11-25T15:10:37Z — D3-unblock-sweep-2026-11-25T15 — done — cursor produced 579 words at artifacts/sweeps/D3-unblock-sweep-2026-11-25T15.md in 153s
 ## 2026-11-25T15:10:38Z — mirror — deferred — Ready#700 exact-head sync review; publication resumes by 2026-11-25T17:01:45+00:00; local work continues
 ## 2026-11-25T15:25:41Z — mirror — deferred — Ready#700 exact-head sync review; publication resumes by 2026-11-25T17:01:45+00:00; local work continues
+## 2026-11-25T16:43:02Z — refill — Trend_Model_Project: scorecard 2026-10-25 is 31d old (> 30) → audit queued
+## 2026-11-25T16:43:03Z — refill — Counter_Risk: scorecard 2026-11-25: coverage debt 2 (not exercised 1 + unscored 1) not reduced since 2026-10-25 (2) → audit queued
+## 2026-11-25T16:43:06Z — D-audit-Counter_Risk--2026-11-25T16-43-03Z — route — router picked cursor from ['codex', 'cursor']
+## 2026-11-25T16:43:06Z — D-audit-Counter_Risk--2026-11-25T16-43-03Z — claimed by driver (agent cursor)
