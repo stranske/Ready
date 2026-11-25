@@ -1,5 +1,12 @@
 # Audits CHECKPOINT (append-only)
 
+## 2026-11-25 — Trend_Model_Project Track D (D-audit-Trend_Model_Project--2026-11-25T04-28-15Z)
+- Phase 1.5 scorecard: 4 work / 0 partial / 0 broken / 0 fabricated / 0 not exercised of 4; journey passes; surfaces unscored 0; C=0
+- Tip: `bb216c4` (`main`, +27 commits since 2026-10-25 scorecard)
+- Filed: #6246 (preprocessing.winsorise inert)
+- REFUTED: #6127 (store_paths rejection)
+- OUT: `artifacts/audits/Trend_Model_Project-2026-11-25.md`
+
 ## 2026-11-25 — Manager-Database Track D (D-audit-Manager-Database--2026-11-25T04-28-16Z)
 - Phase 1.5 scorecard: 8 work / 0 partial / 0 broken / 0 fabricated / 0 not exercised of 8; journey passes; surfaces unscored 0; C=0
 - Tip: `6b8175d` (+1 workflow-sync vs 2026-10-25)
