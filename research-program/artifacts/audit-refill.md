@@ -1,4 +1,4 @@
-# Audit refill check 2026-11-26T04:50:02Z
+# Audit refill check 2026-11-26T17:02:49Z
 
 | repo | open agent-ready | last set | threshold | scorecard | broken/fab | unscored | ux | action |
 |---|---|---|---|---|---|---|---|---|
@@ -8,7 +8,7 @@
 | stranske/Travel-Plan-Permission | 0 | 2 | 2 | 2026-11-04 | 0/0 | 0+0 (prev 12) | — | idle |
 | stranske/Trend_Model_Project | 0 | 0 (round filed nothing) | 2 | 2026-11-25 | 0/0 | 0+0 (prev 0) | — | idle |
 | stranske/Portable-Alpha-Extension-Model | 0 | 1 | 2 | 2026-11-24 | 0/0 | 0+0 (prev 0) | — | idle |
-| stranske/Counter_Risk | 0 | 1 | 2 | 2026-11-25 | 0/0 | 1+1 (prev 2) | — | AUDIT QUEUED — scorecard 2026-11-25: coverage debt 2 (not exercised 1 + unscored 1) not reduced since 2026-10-25 (2) |
+| stranske/Counter_Risk | 0 | 1 | 2 | 2026-11-26 | 0/0 | 1+0 (prev 2) | — | idle |
 | stranske/Manager-Database | 0 | 0 (round filed nothing) | 2 | 2026-11-25 | 0/0 | 0+0 (prev 0) | — | idle |
 | stranske/Inv-Man-Intake | 0 | 0 (round filed nothing) | 2 | 2026-11-02 | 0/0 | 0+0 (prev 0) | — | idle |
 | stranske/Pension-Data | 0 | 0 (round filed nothing) | 2 | 2026-11-24 | 0/0 | 0+0 (prev 0) | — | idle |
