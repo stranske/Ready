@@ -5376,3 +5376,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-11-26T00:48:11Z — D4-verify-merged-2026-11-26T00 — route — router picked cursor from ['codex', 'cursor']
 ## 2026-11-26T00:48:11Z — D4-verify-merged-2026-11-26T00 — claimed by driver (agent cursor)
 ## 2026-11-26T00:54:51Z — D4-verify-merged-2026-11-26T00 — done — cursor produced 691 words at artifacts/verification/D4-verify-merged-2026-11-26T00.md in 358s
+## 2026-11-26T04:50:05Z — refill — Counter_Risk: scorecard 2026-11-25: coverage debt 2 (not exercised 1 + unscored 1) not reduced since 2026-10-25 (2) → audit queued
+## 2026-11-26T04:50:09Z — D-audit-Counter_Risk--2026-11-26T04-50-05Z — route — router picked cursor from ['codex', 'cursor']
+## 2026-11-26T04:50:09Z — D-audit-Counter_Risk--2026-11-26T04-50-05Z — claimed by driver (agent cursor)
