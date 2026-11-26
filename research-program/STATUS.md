@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-26T23:33:48Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-26T23:35:22Z)
 
-Units: 458 — claimed 1, done 449, failed 4, superseded 4
+Units: 458 — done 450, failed 4, superseded 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=shed claude=shed cursor=ok gemini=ok vibe=shed muse=ok
 Orchestrator evidence (30d): offload runs 0, bound to a research round 0, scored 0 (PASS 0, FAIL 0, infra 0) — no offload runs
@@ -268,7 +268,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D3-unblock-sweep-2026-11-25T23 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-2026-11-26T07 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-2026-11-26T15 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
-| D3-unblock-sweep-2026-11-26T23 | D | D | claimed | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
+| D3-unblock-sweep-2026-11-26T23 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-pass2-20260913T2023 | D | D | done | cursor | driver | Unblock sweep pass 2: the seven repos the budgeted first pass deferred |  |
 | D-audit-Counter_Risk--2026-09-07T04-47-32Z | D | D | done | codex | driver | Audit stranske/Counter_Risk and file issues (supply 2 <= 2) |  |
 | D-audit-Counter_Risk--2026-09-08T17-11-36Z | D | D | done | codex | codex | Audit stranske/Counter_Risk and file issues (supply 1 <= 2) |  |
@@ -471,7 +471,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-26T07:56:17Z — mirror — deferred — Ready#701 exact-head sync review; publication resumes by 2026-11-26T08:42:18+00:00; local work continues
 - 2026-11-26T08:11:19Z — mirror — deferred — Ready#701 exact-head sync review; publication resumes by 2026-11-26T08:42:18+00:00; local work continues
 - 2026-11-26T08:26:22Z — mirror — deferred — Ready#701 exact-head sync review; publication resumes by 2026-11-26T08:42:18+00:00; local work continues
 - 2026-11-26T08:41:28Z — mirror — deferred — Ready#701 exact-head sync review; publication resumes by 2026-11-26T08:42:18+00:00; local work continues
@@ -483,6 +482,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-26T23:33:48Z — unblock — enqueued D3-unblock-sweep-2026-11-26T23
 - 2026-11-26T23:33:48Z — D3-unblock-sweep-2026-11-26T23 — route — router picked cursor from ['codex', 'cursor']
 - 2026-11-26T23:33:48Z — D3-unblock-sweep-2026-11-26T23 — claimed by driver (agent cursor)
+- 2026-11-26T23:35:21Z — D3-unblock-sweep-2026-11-26T23 — done — cursor produced 492 words at artifacts/sweeps/D3-unblock-sweep-2026-11-26T23.md in 53s
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
