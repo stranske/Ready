@@ -1,5 +1,12 @@
 # Audits CHECKPOINT (append-only)
 
+## 2026-11-26 — Counter_Risk Track D (D-audit-Counter_Risk--2026-11-26T04-50-05Z)
+- Phase 1.5 scorecard: 6 work / 1 partial / 0 broken / 0 fabricated / 1 not exercised of 8; journey passes; surfaces unscored 0; C=0
+- Tip: `83a8987` (`main`)
+- Coverage debt: 2→1 (CF7 scored NOT EXERCISED)
+- Filed: #1274 (stale `REMAINING_WORK` / `IMPLEMENTATION_SUMMARY` bullets)
+- OUT: `artifacts/audits/Counter_Risk-2026-11-26.md`
+
 ## 2026-11-25 — Trend_Model_Project Track D (D-audit-Trend_Model_Project--2026-11-25T16-43-02Z)
 - Phase 1.5 scorecard: 4 work / 0 partial / 0 broken / 0 fabricated / 0 not exercised of 4; journey passes; surfaces unscored 0; C=0
 - Tip: `9b7a7d4` (`main`)
