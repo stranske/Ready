@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-26T21:27:23Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-26T21:58:12Z)
 
 Units: 457 — done 449, failed 4, superseded 4
 Paused: False   Phase stops: []
@@ -470,7 +470,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-26T07:25:00Z — mirror — deferred — Ready#701 exact-head sync review; publication resumes by 2026-11-26T08:42:18+00:00; local work continues
 - 2026-11-26T07:26:10Z — D3-unblock-sweep-2026-11-26T07 — done — cursor produced 687 words at artifacts/sweeps/D3-unblock-sweep-2026-11-26T07.md in 65s
 - 2026-11-26T07:26:10Z — mirror — deferred — Ready#701 exact-head sync review; publication resumes by 2026-11-26T08:42:18+00:00; local work continues
 - 2026-11-26T07:41:14Z — mirror — deferred — Ready#701 exact-head sync review; publication resumes by 2026-11-26T08:42:18+00:00; local work continues
@@ -482,6 +481,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-26T15:25:52Z — D3-unblock-sweep-2026-11-26T15 — route — router picked cursor from ['codex', 'cursor']
 - 2026-11-26T15:25:52Z — D3-unblock-sweep-2026-11-26T15 — claimed by driver (agent cursor)
 - 2026-11-26T15:28:38Z — D3-unblock-sweep-2026-11-26T15 — done — cursor produced 599 words at artifacts/sweeps/D3-unblock-sweep-2026-11-26T15.md in 92s
+- 2026-11-26T21:43:09Z — mirror — deferred — Ready#701 exact-head sync review; publication resumes by 2026-11-26T23:36:09+00:00; local work continues
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
