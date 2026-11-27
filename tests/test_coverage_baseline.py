@@ -16,6 +16,7 @@ import re
 import shutil
 import subprocess
 import sys
+from collections.abc import Iterable
 from pathlib import Path
 from xml.etree import ElementTree
 
@@ -2102,10 +2103,34 @@ def _set_current_publication_floors(project: Path, report: dict) -> None:
     baseline_path.write_text(json.dumps(baseline))
 
 
+def _checks_real_recovery(regressed_files: Iterable[str]) -> bool:
+    """Run the real-suite recovery only after both scripts left failing evidence.
+
+    Each recovery is another complete real-publication run, and those runs dominated
+    Python CI / python 3.14. Replacing prior failing evidence on disk does not depend
+    on which individual real test or source regressed, and the case that regresses both
+    scripts leaves the most failing evidence to overwrite. Per-script and per-metric
+    recovery remain covered by the synthetic probes above.
+    """
+    return set(regressed_files) == PUBLICATION_FILES
+
+
+def test_checks_real_recovery_selects_only_both_script_cases() -> None:
+    """Guard the real-recovery selector against accidentally skipping all or none."""
+    assert _checks_real_recovery(PUBLICATION_FILES)
+    assert _checks_real_recovery(sorted(PUBLICATION_FILES))
+    assert not _checks_real_recovery(())
+    assert not _checks_real_recovery((*PUBLICATION_FILES, "scripts/ci_coverage_delta.py"))
+    for name in sorted(PUBLICATION_FILES):
+        assert not _checks_real_recovery((name,))
+
+
+# Schedule two-run `both` probes ahead of one-run single-script probes so xdist
+# workers do not start a double-length probe at the tail of the test session.
 @pytest.mark.parametrize(
     "changed_files",
-    [(name,) for name in sorted(PUBLICATION_FILES)] + [tuple(sorted(PUBLICATION_FILES))],
-    ids=["scanner", "preparer", "both"],
+    [tuple(sorted(PUBLICATION_FILES))] + [(name,) for name in sorted(PUBLICATION_FILES)],
+    ids=["both", "scanner", "preparer"],
 )
 def test_real_publication_source_addition_fails_gate(
     real_publication_project: Path, changed_files: tuple[str, ...]
@@ -2151,6 +2176,8 @@ def test_real_publication_source_addition_fails_gate(
             assert error.startswith(f"PUBLICATION COVERAGE: {name}: {metric} coverage ")
             assert "below floor" in error
 
+    if not _checks_real_recovery(changed_files):
+        return
     for name, original in originals.items():
         (coverage_project / name).write_bytes(original)
     restored = _run_coverage_project(coverage_project, *args)
@@ -2164,6 +2191,20 @@ def test_real_publication_source_addition_fails_gate(
 @pytest.mark.parametrize(
     "regressions, lost_metrics",
     [
+        (
+            (
+                (
+                    "scripts/check_publication_safety.py",
+                    "tests/test_publication_safety.py::test_empty_or_missing_tree_fails",
+                ),
+                (
+                    "scripts/prepare_publication.py",
+                    "tests/test_prepare_publication.py::"
+                    "test_named_legacy_process_capture_is_wrapped_without_losing_output",
+                ),
+            ),
+            ("line", "branch"),
+        ),
         (
             (
                 (
@@ -2211,28 +2252,14 @@ def test_real_publication_source_addition_fails_gate(
             ),
             ("line", "branch"),
         ),
-        (
-            (
-                (
-                    "scripts/check_publication_safety.py",
-                    "tests/test_publication_safety.py::test_empty_or_missing_tree_fails",
-                ),
-                (
-                    "scripts/prepare_publication.py",
-                    "tests/test_prepare_publication.py::"
-                    "test_named_legacy_process_capture_is_wrapped_without_losing_output",
-                ),
-            ),
-            ("line", "branch"),
-        ),
     ],
     ids=[
+        "both",
         "guard-line-only",
         "preparer-line-only",
         "guard",
         "guard-single-case",
         "preparer",
-        "both",
     ],
 )
 def test_real_test_removal_fails_publication_gate(
@@ -2294,6 +2321,8 @@ def test_real_test_removal_fails_publication_gate(
             assert error.startswith(f"PUBLICATION COVERAGE: {name}: {metric} coverage ")
             assert "below floor" in error
 
+    if not _checks_real_recovery(name for name, _ in regressions):
+        return
     # Keep the failed report and coverage database in place: restoring test
     # collection must replace that evidence with the original measurements.
     restored = _run_coverage_project(coverage_project, *args)
