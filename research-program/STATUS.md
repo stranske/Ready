@@ -1,8 +1,8 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-27T05:07:07Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-27T05:52:41Z)
 
 Units: 459 — done 451, failed 4, superseded 4
 Paused: False   Phase stops: []
-Capacity (Orchestrator): codex=shed claude=ok cursor=ok gemini=ok vibe=shed muse=ok
+Capacity (Orchestrator): codex=shed claude=warn cursor=ok gemini=ok vibe=shed muse=ok
 Orchestrator evidence (30d): offload runs 0, bound to a research round 0, scored 0 (PASS 0, FAIL 0, infra 0) — no offload runs
 Worker write boundary: on — each unit writes only unitdirs/<unit>/, its output directory, artifacts/proposals/, its own clone's working tree (not .git) and temp
 Claude conservation: off (weekly window available)
@@ -472,8 +472,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-26T15:25:52Z — D3-unblock-sweep-2026-11-26T15 — route — router picked cursor from ['codex', 'cursor']
-- 2026-11-26T15:25:52Z — D3-unblock-sweep-2026-11-26T15 — claimed by driver (agent cursor)
 - 2026-11-26T15:28:38Z — D3-unblock-sweep-2026-11-26T15 — done — cursor produced 599 words at artifacts/sweeps/D3-unblock-sweep-2026-11-26T15.md in 92s
 - 2026-11-26T21:43:09Z — mirror — deferred — Ready#701 exact-head sync review; publication resumes by 2026-11-26T23:36:09+00:00; local work continues
 - 2026-11-26T23:33:48Z — unblock — enqueued D3-unblock-sweep-2026-11-26T23
@@ -484,6 +482,8 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-27T00:53:08Z — D4-verify-merged-2026-11-27T00 — route — router picked cursor from ['codex', 'cursor']
 - 2026-11-27T00:53:08Z — D4-verify-merged-2026-11-27T00 — claimed by driver (agent cursor)
 - 2026-11-27T00:58:42Z — D4-verify-merged-2026-11-27T00 — done — cursor produced 993 words at artifacts/verification/D4-verify-merged-2026-11-27T00.md in 297s
+- 2026-11-27T05:22:36Z — mirror — deferred — Ready#702 exact-head sync review; publication resumes by 2026-11-27T07:19:27+00:00; local work continues
+- 2026-11-27T05:37:39Z — mirror — deferred — Ready#702 exact-head sync review; publication resumes by 2026-11-27T07:19:27+00:00; local work continues
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
