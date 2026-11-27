@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-27T22:58:38Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-27T23:30:15Z)
 
 Units: 461 — done 453, failed 4, superseded 4
 Paused: False   Phase stops: []
@@ -474,7 +474,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-27T15:46:05Z — D3-unblock-sweep-2026-11-27T15 — done — cursor produced 643 words at artifacts/sweeps/D3-unblock-sweep-2026-11-27T15.md in 77s
 - 2026-11-27T15:46:06Z — mirror — deferred — Ready#705 exact-head sync review; publication resumes by 2026-11-27T17:05:08+00:00; local work continues
 - 2026-11-27T16:32:12Z — mirror — deferred — Ready#706 exact-head sync review; publication resumes by 2026-11-27T18:28:31+00:00; local work continues
 - 2026-11-27T16:47:17Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
@@ -486,6 +485,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-27T22:13:05Z — mirror — deferred — Ready#709 exact-head sync review; publication resumes by 2026-11-28T00:11:32+00:00; local work continues
 - 2026-11-27T22:28:07Z — mirror — deferred — Ready#709 exact-head sync review; publication resumes by 2026-11-28T00:11:32+00:00; local work continues
 - 2026-11-27T22:43:09Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+- 2026-11-27T23:14:53Z — mirror — deferred — Ready#710 exact-head sync review; publication resumes by 2026-11-28T01:00:33+00:00; local work continues
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
