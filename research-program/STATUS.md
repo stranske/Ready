@@ -1,8 +1,8 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-27T21:57:16Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-27T22:43:09Z)
 
 Units: 461 — done 453, failed 4, superseded 4
 Paused: False   Phase stops: []
-Capacity (Orchestrator): codex=shed claude=ok cursor=ok gemini=ok vibe=shed muse=ok
+Capacity (Orchestrator): codex=warn claude=ok cursor=ok gemini=ok vibe=shed muse=ok
 Orchestrator evidence (30d): offload runs 0, bound to a research round 0, scored 0 (PASS 0, FAIL 0, infra 0) — no offload runs
 Worker write boundary: on — each unit writes only unitdirs/<unit>/, its output directory, artifacts/proposals/, its own clone's working tree (not .git) and temp
 Claude conservation: off (weekly window available)
@@ -474,9 +474,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-27T15:44:43Z — D3-unblock-sweep-2026-11-27T15 — route — router picked cursor from ['codex', 'cursor']
-- 2026-11-27T15:44:43Z — D3-unblock-sweep-2026-11-27T15 — claimed by driver (agent cursor)
-- 2026-11-27T15:44:44Z — mirror — deferred — Ready#705 exact-head sync review; publication resumes by 2026-11-27T17:05:08+00:00; local work continues
 - 2026-11-27T15:46:05Z — D3-unblock-sweep-2026-11-27T15 — done — cursor produced 643 words at artifacts/sweeps/D3-unblock-sweep-2026-11-27T15.md in 77s
 - 2026-11-27T15:46:06Z — mirror — deferred — Ready#705 exact-head sync review; publication resumes by 2026-11-27T17:05:08+00:00; local work continues
 - 2026-11-27T16:32:12Z — mirror — deferred — Ready#706 exact-head sync review; publication resumes by 2026-11-27T18:28:31+00:00; local work continues
@@ -486,6 +483,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-27T17:17:54Z — mirror — deferred — Ready#706 exact-head sync review; publication resumes by 2026-11-27T18:28:31+00:00; local work continues
 - 2026-11-27T19:06:13Z — mirror — deferred — Ready#707 exact-head sync review; publication resumes by 2026-11-27T21:04:40+00:00; local work continues
 - 2026-11-27T19:21:18Z — mirror — deferred — Ready#707 exact-head sync review; publication resumes by 2026-11-27T21:04:40+00:00; local work continues
+- 2026-11-27T22:13:05Z — mirror — deferred — Ready#709 exact-head sync review; publication resumes by 2026-11-28T00:11:32+00:00; local work continues
+- 2026-11-27T22:28:07Z — mirror — deferred — Ready#709 exact-head sync review; publication resumes by 2026-11-28T00:11:32+00:00; local work continues
+- 2026-11-27T22:43:09Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
