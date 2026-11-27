@@ -16,6 +16,7 @@ import re
 import shutil
 import subprocess
 import sys
+from collections.abc import Iterable
 from pathlib import Path
 from xml.etree import ElementTree
 
@@ -2102,6 +2103,18 @@ def _set_current_publication_floors(project: Path, report: dict) -> None:
     baseline_path.write_text(json.dumps(baseline))
 
 
+def _checks_real_recovery(regressed_files: Iterable[str]) -> bool:
+    """Run the real-suite recovery only after both scripts left failing evidence.
+
+    Each recovery is another complete real-publication run, and those runs were most
+    of the Python CI job. Whether a fresh run replaces failing evidence does not
+    depend on which real test or source regressed, and the case that regresses both
+    scripts leaves the most stale evidence. The synthetic probes above still check
+    recovery for every script and metric.
+    """
+    return set(regressed_files) == PUBLICATION_FILES
+
+
 @pytest.mark.parametrize(
     "changed_files",
     [(name,) for name in sorted(PUBLICATION_FILES)] + [tuple(sorted(PUBLICATION_FILES))],
@@ -2151,6 +2164,8 @@ def test_real_publication_source_addition_fails_gate(
             assert error.startswith(f"PUBLICATION COVERAGE: {name}: {metric} coverage ")
             assert "below floor" in error
 
+    if not _checks_real_recovery(changed_files):
+        return
     for name, original in originals.items():
         (coverage_project / name).write_bytes(original)
     restored = _run_coverage_project(coverage_project, *args)
@@ -2294,6 +2309,8 @@ def test_real_test_removal_fails_publication_gate(
             assert error.startswith(f"PUBLICATION COVERAGE: {name}: {metric} coverage ")
             assert "below floor" in error
 
+    if not _checks_real_recovery(name for name, _ in regressions):
+        return
     # Keep the failed report and coverage database in place: restoring test
     # collection must replace that evidence with the original measurements.
     restored = _run_coverage_project(coverage_project, *args)
