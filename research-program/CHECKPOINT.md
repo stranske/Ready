@@ -5412,3 +5412,13 @@ remote: - Required status check "Gate / gate" is
 ## 2026-11-27T07:41:20Z — D3-unblock-sweep-2026-11-27T07 — route — router picked cursor from ['codex', 'cursor']
 ## 2026-11-27T07:41:20Z — D3-unblock-sweep-2026-11-27T07 — claimed by driver (agent cursor)
 ## 2026-11-27T07:43:40Z — D3-unblock-sweep-2026-11-27T07 — done — cursor produced 522 words at artifacts/sweeps/D3-unblock-sweep-2026-11-27T07.md in 101s
+## 2026-11-27T15:14:37Z — mirror — deferred — Ready#705 exact-head sync review; publication resumes by 2026-11-27T17:05:08+00:00; local work continues
+## 2026-11-27T15:29:39Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+## 2026-11-27T15:29:40Z — mirror — deferred — Ready#705 exact-head sync review; publication resumes by 2026-11-27T17:05:08+00:00; local work continues
+## 2026-11-27T15:44:43Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+## 2026-11-27T15:44:43Z — unblock — enqueued D3-unblock-sweep-2026-11-27T15
+## 2026-11-27T15:44:43Z — D3-unblock-sweep-2026-11-27T15 — route — router picked cursor from ['codex', 'cursor']
+## 2026-11-27T15:44:43Z — D3-unblock-sweep-2026-11-27T15 — claimed by driver (agent cursor)
+## 2026-11-27T15:44:44Z — mirror — deferred — Ready#705 exact-head sync review; publication resumes by 2026-11-27T17:05:08+00:00; local work continues
+## 2026-11-27T15:46:05Z — D3-unblock-sweep-2026-11-27T15 — done — cursor produced 643 words at artifacts/sweeps/D3-unblock-sweep-2026-11-27T15.md in 77s
+## 2026-11-27T15:46:06Z — mirror — deferred — Ready#705 exact-head sync review; publication resumes by 2026-11-27T17:05:08+00:00; local work continues

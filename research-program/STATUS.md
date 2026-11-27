@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-27T14:59:00Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-27T16:01:09Z)
 
-Units: 460 — done 452, failed 4, superseded 4
+Units: 461 — done 453, failed 4, superseded 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=shed claude=ok cursor=ok gemini=ok vibe=shed muse=ok
 Orchestrator evidence (30d): offload runs 0, bound to a research round 0, scored 0 (PASS 0, FAIL 0, infra 0) — no offload runs
@@ -270,6 +270,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D3-unblock-sweep-2026-11-26T15 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-2026-11-26T23 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-2026-11-27T07 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
+| D3-unblock-sweep-2026-11-27T15 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-pass2-20260913T2023 | D | D | done | cursor | driver | Unblock sweep pass 2: the seven repos the budgeted first pass deferred |  |
 | D-audit-Counter_Risk--2026-09-07T04-47-32Z | D | D | done | codex | driver | Audit stranske/Counter_Risk and file issues (supply 2 <= 2) |  |
 | D-audit-Counter_Risk--2026-09-08T17-11-36Z | D | D | done | codex | codex | Audit stranske/Counter_Risk and file issues (supply 1 <= 2) |  |
@@ -473,18 +474,18 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-26T23:33:48Z — D3-unblock-sweep-2026-11-26T23 — claimed by driver (agent cursor)
-- 2026-11-26T23:35:21Z — D3-unblock-sweep-2026-11-26T23 — done — cursor produced 492 words at artifacts/sweeps/D3-unblock-sweep-2026-11-26T23.md in 53s
-- 2026-11-27T00:53:08Z — verify — enqueued D4-verify-merged-2026-11-27T00
-- 2026-11-27T00:53:08Z — D4-verify-merged-2026-11-27T00 — route — router picked cursor from ['codex', 'cursor']
-- 2026-11-27T00:53:08Z — D4-verify-merged-2026-11-27T00 — claimed by driver (agent cursor)
-- 2026-11-27T00:58:42Z — D4-verify-merged-2026-11-27T00 — done — cursor produced 993 words at artifacts/verification/D4-verify-merged-2026-11-27T00.md in 297s
-- 2026-11-27T05:22:36Z — mirror — deferred — Ready#702 exact-head sync review; publication resumes by 2026-11-27T07:19:27+00:00; local work continues
-- 2026-11-27T05:37:39Z — mirror — deferred — Ready#702 exact-head sync review; publication resumes by 2026-11-27T07:19:27+00:00; local work continues
-- 2026-11-27T07:41:19Z — unblock — enqueued D3-unblock-sweep-2026-11-27T07
-- 2026-11-27T07:41:20Z — D3-unblock-sweep-2026-11-27T07 — route — router picked cursor from ['codex', 'cursor']
 - 2026-11-27T07:41:20Z — D3-unblock-sweep-2026-11-27T07 — claimed by driver (agent cursor)
 - 2026-11-27T07:43:40Z — D3-unblock-sweep-2026-11-27T07 — done — cursor produced 522 words at artifacts/sweeps/D3-unblock-sweep-2026-11-27T07.md in 101s
+- 2026-11-27T15:14:37Z — mirror — deferred — Ready#705 exact-head sync review; publication resumes by 2026-11-27T17:05:08+00:00; local work continues
+- 2026-11-27T15:29:39Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+- 2026-11-27T15:29:40Z — mirror — deferred — Ready#705 exact-head sync review; publication resumes by 2026-11-27T17:05:08+00:00; local work continues
+- 2026-11-27T15:44:43Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+- 2026-11-27T15:44:43Z — unblock — enqueued D3-unblock-sweep-2026-11-27T15
+- 2026-11-27T15:44:43Z — D3-unblock-sweep-2026-11-27T15 — route — router picked cursor from ['codex', 'cursor']
+- 2026-11-27T15:44:43Z — D3-unblock-sweep-2026-11-27T15 — claimed by driver (agent cursor)
+- 2026-11-27T15:44:44Z — mirror — deferred — Ready#705 exact-head sync review; publication resumes by 2026-11-27T17:05:08+00:00; local work continues
+- 2026-11-27T15:46:05Z — D3-unblock-sweep-2026-11-27T15 — done — cursor produced 643 words at artifacts/sweeps/D3-unblock-sweep-2026-11-27T15.md in 77s
+- 2026-11-27T15:46:06Z — mirror — deferred — Ready#705 exact-head sync review; publication resumes by 2026-11-27T17:05:08+00:00; local work continues
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
