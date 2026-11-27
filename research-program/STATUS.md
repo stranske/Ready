@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-27T16:16:42Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-27T17:32:56Z)
 
 Units: 461 — done 453, failed 4, superseded 4
 Paused: False   Phase stops: []
@@ -474,11 +474,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-27T07:41:20Z — D3-unblock-sweep-2026-11-27T07 — claimed by driver (agent cursor)
-- 2026-11-27T07:43:40Z — D3-unblock-sweep-2026-11-27T07 — done — cursor produced 522 words at artifacts/sweeps/D3-unblock-sweep-2026-11-27T07.md in 101s
-- 2026-11-27T15:14:37Z — mirror — deferred — Ready#705 exact-head sync review; publication resumes by 2026-11-27T17:05:08+00:00; local work continues
-- 2026-11-27T15:29:39Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
-- 2026-11-27T15:29:40Z — mirror — deferred — Ready#705 exact-head sync review; publication resumes by 2026-11-27T17:05:08+00:00; local work continues
 - 2026-11-27T15:44:43Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 - 2026-11-27T15:44:43Z — unblock — enqueued D3-unblock-sweep-2026-11-27T15
 - 2026-11-27T15:44:43Z — D3-unblock-sweep-2026-11-27T15 — route — router picked cursor from ['codex', 'cursor']
@@ -486,6 +481,11 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-27T15:44:44Z — mirror — deferred — Ready#705 exact-head sync review; publication resumes by 2026-11-27T17:05:08+00:00; local work continues
 - 2026-11-27T15:46:05Z — D3-unblock-sweep-2026-11-27T15 — done — cursor produced 643 words at artifacts/sweeps/D3-unblock-sweep-2026-11-27T15.md in 77s
 - 2026-11-27T15:46:06Z — mirror — deferred — Ready#705 exact-head sync review; publication resumes by 2026-11-27T17:05:08+00:00; local work continues
+- 2026-11-27T16:32:12Z — mirror — deferred — Ready#706 exact-head sync review; publication resumes by 2026-11-27T18:28:31+00:00; local work continues
+- 2026-11-27T16:47:17Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
+- 2026-11-27T16:47:20Z — mirror — deferred — Ready#706 exact-head sync review; publication resumes by 2026-11-27T18:28:31+00:00; local work continues
+- 2026-11-27T17:02:23Z — mirror — deferred — Ready#706 exact-head sync review; publication resumes by 2026-11-27T18:28:31+00:00; local work continues
+- 2026-11-27T17:17:54Z — mirror — deferred — Ready#706 exact-head sync review; publication resumes by 2026-11-27T18:28:31+00:00; local work continues
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
