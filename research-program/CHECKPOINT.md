@@ -5433,3 +5433,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-11-27T22:28:07Z — mirror — deferred — Ready#709 exact-head sync review; publication resumes by 2026-11-28T00:11:32+00:00; local work continues
 ## 2026-11-27T22:43:09Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 ## 2026-11-27T23:14:53Z — mirror — deferred — Ready#710 exact-head sync review; publication resumes by 2026-11-28T01:00:33+00:00; local work continues
+## 2026-11-27T23:45:49Z — unblock — enqueued D3-unblock-sweep-2026-11-27T23
+## 2026-11-27T23:45:51Z — D3-unblock-sweep-2026-11-27T23 — route — router picked codex from ['codex', 'cursor']
+## 2026-11-27T23:45:51Z — D3-unblock-sweep-2026-11-27T23 — claimed by driver (agent codex)
