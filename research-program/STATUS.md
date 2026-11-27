@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-27T18:50:28Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-27T19:36:21Z)
 
 Units: 461 — done 453, failed 4, superseded 4
 Paused: False   Phase stops: []
@@ -474,8 +474,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-27T15:44:43Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
-- 2026-11-27T15:44:43Z — unblock — enqueued D3-unblock-sweep-2026-11-27T15
 - 2026-11-27T15:44:43Z — D3-unblock-sweep-2026-11-27T15 — route — router picked cursor from ['codex', 'cursor']
 - 2026-11-27T15:44:43Z — D3-unblock-sweep-2026-11-27T15 — claimed by driver (agent cursor)
 - 2026-11-27T15:44:44Z — mirror — deferred — Ready#705 exact-head sync review; publication resumes by 2026-11-27T17:05:08+00:00; local work continues
@@ -486,6 +484,8 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-27T16:47:20Z — mirror — deferred — Ready#706 exact-head sync review; publication resumes by 2026-11-27T18:28:31+00:00; local work continues
 - 2026-11-27T17:02:23Z — mirror — deferred — Ready#706 exact-head sync review; publication resumes by 2026-11-27T18:28:31+00:00; local work continues
 - 2026-11-27T17:17:54Z — mirror — deferred — Ready#706 exact-head sync review; publication resumes by 2026-11-27T18:28:31+00:00; local work continues
+- 2026-11-27T19:06:13Z — mirror — deferred — Ready#707 exact-head sync review; publication resumes by 2026-11-27T21:04:40+00:00; local work continues
+- 2026-11-27T19:21:18Z — mirror — deferred — Ready#707 exact-head sync review; publication resumes by 2026-11-27T21:04:40+00:00; local work continues
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
