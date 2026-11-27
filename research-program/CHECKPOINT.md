@@ -5408,3 +5408,6 @@ remote: - Required status check "Gate / gate" is
 ## 2026-11-27T00:58:42Z — D4-verify-merged-2026-11-27T00 — done — cursor produced 993 words at artifacts/verification/D4-verify-merged-2026-11-27T00.md in 297s
 ## 2026-11-27T05:22:36Z — mirror — deferred — Ready#702 exact-head sync review; publication resumes by 2026-11-27T07:19:27+00:00; local work continues
 ## 2026-11-27T05:37:39Z — mirror — deferred — Ready#702 exact-head sync review; publication resumes by 2026-11-27T07:19:27+00:00; local work continues
+## 2026-11-27T07:41:19Z — unblock — enqueued D3-unblock-sweep-2026-11-27T07
+## 2026-11-27T07:41:20Z — D3-unblock-sweep-2026-11-27T07 — route — router picked cursor from ['codex', 'cursor']
+## 2026-11-27T07:41:20Z — D3-unblock-sweep-2026-11-27T07 — claimed by driver (agent cursor)
