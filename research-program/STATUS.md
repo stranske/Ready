@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-28T06:26:04Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-28T07:27:37Z)
 
 Units: 463 — done 455, failed 4, superseded 4
 Paused: False   Phase stops: []
@@ -476,9 +476,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-27T23:45:49Z — unblock — enqueued D3-unblock-sweep-2026-11-27T23
-- 2026-11-27T23:45:51Z — D3-unblock-sweep-2026-11-27T23 — route — router picked codex from ['codex', 'cursor']
-- 2026-11-27T23:45:51Z — D3-unblock-sweep-2026-11-27T23 — claimed by driver (agent codex)
 - 2026-11-27T23:47:27Z — D3-unblock-sweep-2026-11-27T23 — done — cursor produced 706 words at artifacts/sweeps/D3-unblock-sweep-2026-11-27T23.md in 65s
 - 2026-11-28T00:33:55Z — mirror — deferred — Ready#712 exact-head sync review; publication resumes by 2026-11-28T02:22:02+00:00; local work continues
 - 2026-11-28T00:54:47Z — verify — enqueued D4-verify-merged-2026-11-28T00
@@ -488,6 +485,9 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-28T01:12:15Z — D4-verify-merged-2026-11-28T00 — done — gemini produced 1808 words at artifacts/verification/D4-verify-merged-2026-11-28T00.md in 752s
 - 2026-11-28T05:22:29Z — mirror — deferred — Ready#713 exact-head sync review; publication resumes by 2026-11-28T07:17:39+00:00; local work continues
 - 2026-11-28T05:37:51Z — mirror — deferred — Ready#713 exact-head sync review; publication resumes by 2026-11-28T07:17:39+00:00; local work continues
+- 2026-11-28T06:42:18Z — mirror — deferred — Ready#714 exact-head sync review; publication resumes by 2026-11-28T08:34:33+00:00; local work continues
+- 2026-11-28T06:57:22Z — mirror — deferred — Ready#714 exact-head sync review; publication resumes by 2026-11-28T08:34:33+00:00; local work continues
+- 2026-11-28T07:12:34Z — mirror — deferred — Ready#714 exact-head sync review; publication resumes by 2026-11-28T08:34:33+00:00; local work continues
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
