@@ -1,4 +1,4 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-28T05:06:42Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-28T05:52:55Z)
 
 Units: 463 — done 455, failed 4, superseded 4
 Paused: False   Phase stops: []
@@ -476,8 +476,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-27T22:43:09Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
-- 2026-11-27T23:14:53Z — mirror — deferred — Ready#710 exact-head sync review; publication resumes by 2026-11-28T01:00:33+00:00; local work continues
 - 2026-11-27T23:45:49Z — unblock — enqueued D3-unblock-sweep-2026-11-27T23
 - 2026-11-27T23:45:51Z — D3-unblock-sweep-2026-11-27T23 — route — router picked codex from ['codex', 'cursor']
 - 2026-11-27T23:45:51Z — D3-unblock-sweep-2026-11-27T23 — claimed by driver (agent codex)
@@ -488,6 +486,8 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-28T00:58:05Z — D4-verify-merged-2026-11-28T00 — claimed by driver (agent codex)
 - 2026-11-28T00:58:08Z — mirror — deferred — Ready#712 exact-head sync review; publication resumes by 2026-11-28T02:22:02+00:00; local work continues
 - 2026-11-28T01:12:15Z — D4-verify-merged-2026-11-28T00 — done — gemini produced 1808 words at artifacts/verification/D4-verify-merged-2026-11-28T00.md in 752s
+- 2026-11-28T05:22:29Z — mirror — deferred — Ready#713 exact-head sync review; publication resumes by 2026-11-28T07:17:39+00:00; local work continues
+- 2026-11-28T05:37:51Z — mirror — deferred — Ready#713 exact-head sync review; publication resumes by 2026-11-28T07:17:39+00:00; local work continues
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
