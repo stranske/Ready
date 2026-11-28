@@ -5437,3 +5437,9 @@ remote: - Required status check "Gate / gate" is
 ## 2026-11-27T23:45:51Z — D3-unblock-sweep-2026-11-27T23 — route — router picked codex from ['codex', 'cursor']
 ## 2026-11-27T23:45:51Z — D3-unblock-sweep-2026-11-27T23 — claimed by driver (agent codex)
 ## 2026-11-27T23:47:27Z — D3-unblock-sweep-2026-11-27T23 — done — cursor produced 706 words at artifacts/sweeps/D3-unblock-sweep-2026-11-27T23.md in 65s
+## 2026-11-28T00:33:55Z — mirror — deferred — Ready#712 exact-head sync review; publication resumes by 2026-11-28T02:22:02+00:00; local work continues
+## 2026-11-28T00:54:47Z — verify — enqueued D4-verify-merged-2026-11-28T00
+## 2026-11-28T00:58:05Z — D4-verify-merged-2026-11-28T00 — route — router picked codex from ['codex', 'cursor']
+## 2026-11-28T00:58:05Z — D4-verify-merged-2026-11-28T00 — claimed by driver (agent codex)
+## 2026-11-28T00:58:08Z — mirror — deferred — Ready#712 exact-head sync review; publication resumes by 2026-11-28T02:22:02+00:00; local work continues
+## 2026-11-28T01:12:15Z — D4-verify-merged-2026-11-28T00 — done — gemini produced 1808 words at artifacts/verification/D4-verify-merged-2026-11-28T00.md in 752s

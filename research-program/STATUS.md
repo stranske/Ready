@@ -1,8 +1,8 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-28T00:18:25Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-28T01:12:15Z)
 
-Units: 462 — done 454, failed 4, superseded 4
+Units: 463 — done 455, failed 4, superseded 4
 Paused: False   Phase stops: []
-Capacity (Orchestrator): codex=warn claude=ok cursor=ok gemini=ok vibe=shed muse=ok
+Capacity (Orchestrator): codex=warn claude=warn cursor=ok gemini=ok vibe=shed muse=ok
 Orchestrator evidence (30d): offload runs 0, bound to a research round 0, scored 0 (PASS 0, FAIL 0, infra 0) — no offload runs
 Worker write boundary: on — each unit writes only unitdirs/<unit>/, its output directory, artifacts/proposals/, its own clone's working tree (not .git) and temp
 Claude conservation: off (weekly window available)
@@ -472,21 +472,22 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D4-verify-merged-2026-11-25T00 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
 | D4-verify-merged-2026-11-26T00 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
 | D4-verify-merged-2026-11-27T00 | D | D | done | cursor | driver | Verify merged PRs against their issues' acceptance criteria |  |
+| D4-verify-merged-2026-11-28T00 | D | D | done | codex | driver | Verify merged PRs against their issues' acceptance criteria |  |
 
 ## Last checkpoints
 
-- 2026-11-27T17:02:23Z — mirror — deferred — Ready#706 exact-head sync review; publication resumes by 2026-11-27T18:28:31+00:00; local work continues
-- 2026-11-27T17:17:54Z — mirror — deferred — Ready#706 exact-head sync review; publication resumes by 2026-11-27T18:28:31+00:00; local work continues
-- 2026-11-27T19:06:13Z — mirror — deferred — Ready#707 exact-head sync review; publication resumes by 2026-11-27T21:04:40+00:00; local work continues
-- 2026-11-27T19:21:18Z — mirror — deferred — Ready#707 exact-head sync review; publication resumes by 2026-11-27T21:04:40+00:00; local work continues
-- 2026-11-27T22:13:05Z — mirror — deferred — Ready#709 exact-head sync review; publication resumes by 2026-11-28T00:11:32+00:00; local work continues
-- 2026-11-27T22:28:07Z — mirror — deferred — Ready#709 exact-head sync review; publication resumes by 2026-11-28T00:11:32+00:00; local work continues
 - 2026-11-27T22:43:09Z — inbox — read FAILED — gh: API rate limit exceeded for user ID 23046322. If you reach out to GitHub Support for help, pleas
 - 2026-11-27T23:14:53Z — mirror — deferred — Ready#710 exact-head sync review; publication resumes by 2026-11-28T01:00:33+00:00; local work continues
 - 2026-11-27T23:45:49Z — unblock — enqueued D3-unblock-sweep-2026-11-27T23
 - 2026-11-27T23:45:51Z — D3-unblock-sweep-2026-11-27T23 — route — router picked codex from ['codex', 'cursor']
 - 2026-11-27T23:45:51Z — D3-unblock-sweep-2026-11-27T23 — claimed by driver (agent codex)
 - 2026-11-27T23:47:27Z — D3-unblock-sweep-2026-11-27T23 — done — cursor produced 706 words at artifacts/sweeps/D3-unblock-sweep-2026-11-27T23.md in 65s
+- 2026-11-28T00:33:55Z — mirror — deferred — Ready#712 exact-head sync review; publication resumes by 2026-11-28T02:22:02+00:00; local work continues
+- 2026-11-28T00:54:47Z — verify — enqueued D4-verify-merged-2026-11-28T00
+- 2026-11-28T00:58:05Z — D4-verify-merged-2026-11-28T00 — route — router picked codex from ['codex', 'cursor']
+- 2026-11-28T00:58:05Z — D4-verify-merged-2026-11-28T00 — claimed by driver (agent codex)
+- 2026-11-28T00:58:08Z — mirror — deferred — Ready#712 exact-head sync review; publication resumes by 2026-11-28T02:22:02+00:00; local work continues
+- 2026-11-28T01:12:15Z — D4-verify-merged-2026-11-28T00 — done — gemini produced 1808 words at artifacts/verification/D4-verify-merged-2026-11-28T00.md in 752s
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 

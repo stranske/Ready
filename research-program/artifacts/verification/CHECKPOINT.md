@@ -168,3 +168,10 @@
 - GitHub writes: 0; this synchronous offload prohibits issue comments, reopens, and follow-up filing.
 - OUT: [LOCAL_HOME]/.codex/automations/research-program/artifacts/verification/D4-verify-merged-2026-11-02T21.md
 - Checkpoint: [LOCAL_HOME]/.codex/automations/research-program/artifacts/verification/D4-verify-merged-2026-11-02T21.CHECKPOINT.md
+
+## Run D4-verify-merged-2026-11-28T00 (2026-11-28T00:58:40Z)
+- Window: >= 2026-11-26T12:58:40Z (36h), 203 merged PRs scanned across 15 repos (excluding Orchestrator), 20 oldest unverified issue-linked non-chore PRs verified.
+- Results: 19 VERIFIED, 1 PARTIAL (`Workflows#5332` -> `#5324`, AC 5 post-merge tracker identity failed on `#5332` tip `af8b2c9990`, subsequently repaired by merged `Workflows#5338`), 0 NOT IMPLEMENTED, 0 belt-ledger-only defects (`Workflows#3391` not triggered).
+- Follow-ups filed: 0 (withheld per OFFLOAD WORKSPACE RULES prohibiting GitHub writes; `#5332` identity bug already repaired in `#5338`, deferred to next run).
+- Report: [LOCAL_HOME]/.codex/automations/research-program/artifacts/verification/D4-verify-merged-2026-11-28T00.md
+- Checkpoint: [LOCAL_HOME]/.codex/automations/research-program/artifacts/verification/D4-verify-merged-2026-11-28T00.CHECKPOINT.md
