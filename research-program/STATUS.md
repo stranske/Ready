@@ -1,6 +1,6 @@
-# Research Program 2026-09 — STATUS (generated 2026-11-28T07:58:43Z)
+# Research Program 2026-09 — STATUS (generated 2026-11-28T08:01:43Z)
 
-Units: 464 — claimed 1, done 455, failed 4, superseded 4
+Units: 464 — done 456, failed 4, superseded 4
 Paused: False   Phase stops: []
 Capacity (Orchestrator): codex=warn claude=shed cursor=ok gemini=ok vibe=shed muse=ok
 Orchestrator evidence (30d): offload runs 0, bound to a research round 0, scored 0 (PASS 0, FAIL 0, infra 0) — no offload runs
@@ -272,7 +272,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 | D3-unblock-sweep-2026-11-27T07 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-2026-11-27T15 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-2026-11-27T23 | D | D | done | codex | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
-| D3-unblock-sweep-2026-11-28T07 | D | D | claimed | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
+| D3-unblock-sweep-2026-11-28T07 | D | D | done | cursor | driver | Unblock sweep: frozen issues, stalled agent PRs, red default branches |  |
 | D3-unblock-sweep-pass2-20260913T2023 | D | D | done | cursor | driver | Unblock sweep pass 2: the seven repos the budgeted first pass deferred |  |
 | D-audit-Counter_Risk--2026-09-07T04-47-32Z | D | D | done | codex | driver | Audit stranske/Counter_Risk and file issues (supply 2 <= 2) |  |
 | D-audit-Counter_Risk--2026-09-08T17-11-36Z | D | D | done | codex | codex | Audit stranske/Counter_Risk and file issues (supply 1 <= 2) |  |
@@ -477,7 +477,6 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 
 ## Last checkpoints
 
-- 2026-11-28T00:58:05Z — D4-verify-merged-2026-11-28T00 — route — router picked codex from ['codex', 'cursor']
 - 2026-11-28T00:58:05Z — D4-verify-merged-2026-11-28T00 — claimed by driver (agent codex)
 - 2026-11-28T00:58:08Z — mirror — deferred — Ready#712 exact-head sync review; publication resumes by 2026-11-28T02:22:02+00:00; local work continues
 - 2026-11-28T01:12:15Z — D4-verify-merged-2026-11-28T00 — done — gemini produced 1808 words at artifacts/verification/D4-verify-merged-2026-11-28T00.md in 752s
@@ -489,6 +488,7 @@ Owner inbox: https://github.com/stranske/Ready/issues/553
 - 2026-11-28T07:58:42Z — unblock — enqueued D3-unblock-sweep-2026-11-28T07
 - 2026-11-28T07:58:43Z — D3-unblock-sweep-2026-11-28T07 — route — router picked cursor from ['codex', 'cursor']
 - 2026-11-28T07:58:43Z — D3-unblock-sweep-2026-11-28T07 — claimed by driver (agent cursor)
+- 2026-11-28T08:01:42Z — D3-unblock-sweep-2026-11-28T07 — done — cursor produced 718 words at artifacts/sweeps/D3-unblock-sweep-2026-11-28T07.md in 141s
 
 ## Proposed program changes (FYI; never applied automatically; expire after 14 days) — 0 live, 0 expired
 
